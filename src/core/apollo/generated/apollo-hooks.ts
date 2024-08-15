@@ -1771,7 +1771,6 @@ export const UserDetailsFragmentDoc = gql`
     lastName
     email
     phone
-    accountUpn
     profile {
       id
       displayName
@@ -15742,58 +15741,6 @@ export type UpdateInnovationHubMutationResult = Apollo.MutationResult<SchemaType
 export type UpdateInnovationHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationHubMutation,
   SchemaTypes.UpdateInnovationHubMutationVariables
->;
-export const UpdateInnovationHubPlatformSettingsDocument = gql`
-  mutation updateInnovationHubPlatformSettings($innovationHubId: UUID!, $accountId: UUID!) {
-    updateInnovationHubPlatformSettings(updateData: { ID: $innovationHubId, accountID: $accountId }) {
-      id
-    }
-  }
-`;
-export type UpdateInnovationHubPlatformSettingsMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateInnovationHubPlatformSettingsMutation,
-  SchemaTypes.UpdateInnovationHubPlatformSettingsMutationVariables
->;
-
-/**
- * __useUpdateInnovationHubPlatformSettingsMutation__
- *
- * To run a mutation, you first call `useUpdateInnovationHubPlatformSettingsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateInnovationHubPlatformSettingsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateInnovationHubPlatformSettingsMutation, { data, loading, error }] = useUpdateInnovationHubPlatformSettingsMutation({
- *   variables: {
- *      innovationHubId: // value for 'innovationHubId'
- *      accountId: // value for 'accountId'
- *   },
- * });
- */
-export function useUpdateInnovationHubPlatformSettingsMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateInnovationHubPlatformSettingsMutation,
-    SchemaTypes.UpdateInnovationHubPlatformSettingsMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateInnovationHubPlatformSettingsMutation,
-    SchemaTypes.UpdateInnovationHubPlatformSettingsMutationVariables
-  >(UpdateInnovationHubPlatformSettingsDocument, options);
-}
-
-export type UpdateInnovationHubPlatformSettingsMutationHookResult = ReturnType<
-  typeof useUpdateInnovationHubPlatformSettingsMutation
->;
-export type UpdateInnovationHubPlatformSettingsMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateInnovationHubPlatformSettingsMutation>;
-export type UpdateInnovationHubPlatformSettingsMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateInnovationHubPlatformSettingsMutation,
-  SchemaTypes.UpdateInnovationHubPlatformSettingsMutationVariables
 >;
 export const InnovationHubDocument = gql`
   query InnovationHub($subdomain: String) {

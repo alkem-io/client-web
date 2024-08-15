@@ -884,6 +884,7 @@ export enum AuthorizationPrivilege {
   ReadUserPii = 'READ_USER_PII',
   ReadUserSettings = 'READ_USER_SETTINGS',
   SaveAsTemplate = 'SAVE_AS_TEMPLATE',
+  TransferResource = 'TRANSFER_RESOURCE',
   Update = 'UPDATE',
   UpdateCalloutPublisher = 'UPDATE_CALLOUT_PUBLISHER',
   UpdateContent = 'UPDATE_CONTENT',
@@ -1819,7 +1820,7 @@ export type CreateInnovationPackOnAccountInput = {
   /** The Account where the InnovationPack is to be created. */
   accountID: Scalars['UUID'];
   /** A readable identifier, unique within the containing scope. */
-  nameID: Scalars['NameID'];
+  nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -1966,7 +1967,7 @@ export type CreateSpaceOnAccountInput = {
   accountID: Scalars['UUID'];
   collaborationData?: InputMaybe<CreateCollaborationInput>;
   context?: InputMaybe<CreateContextInput>;
-  /** A readable identifier, unique within the containing Account. */
+  /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
@@ -1976,7 +1977,7 @@ export type CreateSpaceOnAccountInput = {
 export type CreateSubspaceInput = {
   collaborationData?: InputMaybe<CreateCollaborationInput>;
   context?: InputMaybe<CreateContextInput>;
-  /** A readable identifier, unique within the containing Account. */
+  /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
   spaceID: Scalars['UUID_NAMEID'];
@@ -2025,7 +2026,7 @@ export type CreateVirtualContributorOnAccountInput = {
 
 export type CreateWhiteboardInput = {
   content?: InputMaybe<Scalars['WhiteboardContent']>;
-  /** A readable identifier, unique within the containing scope. If not provided it will be generated based on the displayName. */
+  /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
 };
@@ -2510,6 +2511,8 @@ export type InnovationHub = {
   nameID: Scalars['NameID'];
   /** The Innovation Hub profile. */
   profile: Profile;
+  /** The InnovationHub provider. */
+  provider: Contributor;
   /** Visibility of the InnovationHub in searches. */
   searchVisibility: SearchVisibility;
   spaceListFilter?: Maybe<Array<Space>>;
@@ -3278,6 +3281,14 @@ export type Mutation = {
   sendMessageToRoom: Message;
   /** Send message to a User. */
   sendMessageToUser: Scalars['Boolean'];
+  /** Transfer the specified InnovationHub to another Account. */
+  transferInnovationHubToAccount: InnovationHub;
+  /** Transfer the specified Innovation Pack to another Account. */
+  transferInnovationPackToAccount: InnovationPack;
+  /** Transfer the specified Space to another Account. */
+  transferSpaceToAccount: Space;
+  /** Transfer the specified Virtual Contributor to another Account. */
+  transferVirtualContributorToAccount: InnovationPack;
   /** Updates the specified Actor. */
   updateActor: Actor;
   /** Updates the specified AiPersona. */
@@ -3320,8 +3331,6 @@ export type Mutation = {
   updateInnovationFlowTemplate: InnovationFlowTemplate;
   /** Update Innovation Hub. */
   updateInnovationHub: InnovationHub;
-  /** Update Innovation Hub Settings. */
-  updateInnovationHubPlatformSettings: InnovationHub;
   /** Updates the InnovationPack. */
   updateInnovationPack: InnovationPack;
   /** Updates the LicensePlan. */
@@ -3362,8 +3371,6 @@ export type Mutation = {
   updateUserPlatformSettings: User;
   /** Updates the specified VirtualContributor. */
   updateVirtualContributor: VirtualContributor;
-  /** Update VirtualContributor Platform Settings. */
-  updateVirtualContributorPlatformSettings: VirtualContributor;
   /** Updates the image URI for the specified Visual. */
   updateVisual: Visual;
   /** Updates the specified Whiteboard. */
@@ -3802,6 +3809,22 @@ export type MutationSendMessageToUserArgs = {
   messageData: CommunicationSendMessageToUserInput;
 };
 
+export type MutationTransferInnovationHubToAccountArgs = {
+  transferData: TransferAccountInnovationHubInput;
+};
+
+export type MutationTransferInnovationPackToAccountArgs = {
+  transferData: TransferAccountInnovationPackInput;
+};
+
+export type MutationTransferSpaceToAccountArgs = {
+  transferData: TransferAccountSpaceInput;
+};
+
+export type MutationTransferVirtualContributorToAccountArgs = {
+  transferData: TransferAccountVirtualContributorInput;
+};
+
 export type MutationUpdateActorArgs = {
   actorData: UpdateActorInput;
 };
@@ -3886,10 +3909,6 @@ export type MutationUpdateInnovationHubArgs = {
   updateData: UpdateInnovationHubInput;
 };
 
-export type MutationUpdateInnovationHubPlatformSettingsArgs = {
-  updateData: UpdateInnovationHubPlatformSettingsInput;
-};
-
 export type MutationUpdateInnovationPackArgs = {
   innovationPackData: UpdateInnovationPackInput;
 };
@@ -3968,10 +3987,6 @@ export type MutationUpdateUserPlatformSettingsArgs = {
 
 export type MutationUpdateVirtualContributorArgs = {
   virtualContributorData: UpdateVirtualContributorInput;
-};
-
-export type MutationUpdateVirtualContributorPlatformSettingsArgs = {
-  updateData: UpdateVirtualContributorPlatformSettingsInput;
 };
 
 export type MutationUpdateVisualArgs = {
@@ -4808,6 +4823,8 @@ export type RelayPaginatedSpace = {
   nameID: Scalars['NameID'];
   /** The Profile for the Space. */
   profile: Profile;
+  /** The Space provider. */
+  provider: Contributor;
   /** The settings for this Space. */
   settings: SpaceSettings;
   /** The StorageAggregator in use by this Space */
@@ -5260,6 +5277,8 @@ export type Space = {
   nameID: Scalars['NameID'];
   /** The Profile for the Space. */
   profile: Profile;
+  /** The Space provider. */
+  provider: Contributor;
   /** The settings for this Space. */
   settings: SpaceSettings;
   /** The StorageAggregator in use by this Space */
@@ -5681,6 +5700,34 @@ export type Timeline = {
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
+export type TransferAccountInnovationHubInput = {
+  /** The Innovation Hub to be transferred. */
+  innovationHubID: Scalars['UUID'];
+  /** The Account to which the Innovation Hub will be transferred. */
+  targetAccountID: Scalars['UUID'];
+};
+
+export type TransferAccountInnovationPackInput = {
+  /** The InnovationPack to be transferred. */
+  innovationPackID: Scalars['UUID'];
+  /** The Account to which the Innovation Pack will be transferred. */
+  targetAccountID: Scalars['UUID'];
+};
+
+export type TransferAccountSpaceInput = {
+  /** The Space to be transferred. */
+  spaceID: Scalars['UUID'];
+  /** The Account to which the Space will be transferred. */
+  targetAccountID: Scalars['UUID'];
+};
+
+export type TransferAccountVirtualContributorInput = {
+  /** The Account to which the Virtual Contributor will be transferred. */
+  targetAccountID: Scalars['UUID'];
+  /** The Virtual Contributor to be transferred. */
+  virtualContributorID: Scalars['UUID'];
+};
+
 export type UpdateActorInput = {
   ID: Scalars['UUID'];
   description?: InputMaybe<Scalars['String']>;
@@ -5912,12 +5959,6 @@ export type UpdateInnovationHubInput = {
   spaceListFilter?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
   /** Spaces with which visibility this Innovation Hub will display. Only valid when type 'visibility' is used. */
   spaceVisibilityFilter?: InputMaybe<SpaceVisibility>;
-};
-
-export type UpdateInnovationHubPlatformSettingsInput = {
-  ID: Scalars['UUID'];
-  /** An Account ID associated with the InnovationHub */
-  accountID: Scalars['UUID'];
 };
 
 export type UpdateInnovationPackInput = {
@@ -6169,12 +6210,6 @@ export type UpdateVirtualContributorInput = {
   searchVisibility?: InputMaybe<SearchVisibility>;
 };
 
-export type UpdateVirtualContributorPlatformSettingsInput = {
-  ID: Scalars['UUID'];
-  /** An Account ID associated with the VirtualContributor */
-  accountID: Scalars['UUID'];
-};
-
 export type UpdateVisualInput = {
   alternativeText?: InputMaybe<Scalars['String']>;
   uri: Scalars['String'];
@@ -6205,7 +6240,7 @@ export type UpdateWhiteboardTemplateInput = {
 export type User = Contributor & {
   __typename?: 'User';
   /** The account hosted by this User. */
-  account: Account;
+  account?: Maybe<Account>;
   /** The unique personal identifier (upn) for the account associated with this user profile */
   accountUpn: Scalars['String'];
   /** The Agent representing this User. */
@@ -6381,6 +6416,8 @@ export type VirtualContributor = Contributor & {
   nameID: Scalars['NameID'];
   /** The profile for this Virtual. */
   profile: Profile;
+  /** The Virtual Contributor provider. */
+  provider: Contributor;
   /** Visibility of the VC in searches. */
   searchVisibility: SearchVisibility;
   /** The date at which the entity was last updated. */
@@ -17901,7 +17938,7 @@ export type UserSelectorQuery = {
     users: Array<{
       __typename?: 'User';
       id: string;
-      account: { __typename?: 'Account'; id: string };
+      account?: { __typename?: 'Account'; id: string } | undefined;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -17922,7 +17959,7 @@ export type UserSelectorUserDetailsQuery = {
   user: {
     __typename?: 'User';
     id: string;
-    account: { __typename?: 'Account'; id: string };
+    account?: { __typename?: 'Account'; id: string } | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -17936,7 +17973,7 @@ export type UserSelectorUserDetailsQuery = {
 export type UserSelectorUserInformationFragment = {
   __typename?: 'User';
   id: string;
-  account: { __typename?: 'Account'; id: string };
+  account?: { __typename?: 'Account'; id: string } | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -18086,7 +18123,6 @@ export type UserDetailsFragment = {
   lastName: string;
   email: string;
   phone: string;
-  accountUpn: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -18194,7 +18230,6 @@ export type CreateUserMutation = {
     lastName: string;
     email: string;
     phone: string;
-    accountUpn: string;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18246,7 +18281,6 @@ export type CreateUserNewRegistrationMutation = {
     lastName: string;
     email: string;
     phone: string;
-    accountUpn: string;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18376,7 +18410,6 @@ export type UpdateUserMutation = {
     lastName: string;
     email: string;
     phone: string;
-    accountUpn: string;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18439,7 +18472,6 @@ export type UserQuery = {
     lastName: string;
     email: string;
     phone: string;
-    accountUpn: string;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18488,94 +18520,96 @@ export type UserAccountQuery = {
   user: {
     __typename?: 'User';
     id: string;
-    account: {
-      __typename?: 'Account';
-      id: string;
-      spaces: Array<{
-        __typename?: 'Space';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          tagline: string;
+    account?:
+      | {
+          __typename?: 'Account';
           id: string;
-          displayName: string;
-          description?: string | undefined;
-          url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        };
-      }>;
-      virtualContributors: Array<{
-        __typename?: 'VirtualContributor';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          tagline: string;
-          id: string;
-          displayName: string;
-          description?: string | undefined;
-          url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        };
-      }>;
-      innovationPacks: Array<{
-        __typename?: 'InnovationPack';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          description?: string | undefined;
-          url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        };
-        templates?:
-          | {
-              __typename?: 'TemplatesSet';
+          spaces: Array<{
+            __typename?: 'Space';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              tagline: string;
               id: string;
-              calloutTemplatesCount: number;
-              communityGuidelinesTemplatesCount: number;
-              innovationFlowTemplatesCount: number;
-              postTemplatesCount: number;
-              whiteboardTemplatesCount: number;
-            }
-          | undefined;
-      }>;
-      innovationHubs: Array<{
-        __typename?: 'InnovationHub';
-        id: string;
-        spaceVisibilityFilter?: SpaceVisibility | undefined;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          description?: string | undefined;
-          url: string;
-          banner?:
-            | {
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-                alternativeText?: string | undefined;
-              }
-            | undefined;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        };
-        spaceListFilter?:
-          | Array<{
-              __typename?: 'Space';
+              displayName: string;
+              description?: string | undefined;
+              url: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }>;
+          virtualContributors: Array<{
+            __typename?: 'VirtualContributor';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              tagline: string;
               id: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string };
-            }>
-          | undefined;
-      }>;
-    };
+              displayName: string;
+              description?: string | undefined;
+              url: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }>;
+          innovationPacks: Array<{
+            __typename?: 'InnovationPack';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              url: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+            templates?:
+              | {
+                  __typename?: 'TemplatesSet';
+                  id: string;
+                  calloutTemplatesCount: number;
+                  communityGuidelinesTemplatesCount: number;
+                  innovationFlowTemplatesCount: number;
+                  postTemplatesCount: number;
+                  whiteboardTemplatesCount: number;
+                }
+              | undefined;
+          }>;
+          innovationHubs: Array<{
+            __typename?: 'InnovationHub';
+            id: string;
+            spaceVisibilityFilter?: SpaceVisibility | undefined;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              url: string;
+              banner?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+            spaceListFilter?:
+              | Array<{
+                  __typename?: 'Space';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }>
+              | undefined;
+          }>;
+        }
+      | undefined;
   };
 };
 
@@ -18652,7 +18686,6 @@ export type UserProfileQuery = {
     lastName: string;
     email: string;
     phone: string;
-    accountUpn: string;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18778,7 +18811,6 @@ export type UserProviderQuery = {
           lastName: string;
           email: string;
           phone: string;
-          accountUpn: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -18841,7 +18873,6 @@ export type UserPendingMembershipsQuery = {
           lastName: string;
           email: string;
           phone: string;
-          accountUpn: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -20014,16 +20045,6 @@ export type UpdateInnovationHubMutation = {
         }>
       | undefined;
   };
-};
-
-export type UpdateInnovationHubPlatformSettingsMutationVariables = Exact<{
-  innovationHubId: Scalars['UUID'];
-  accountId: Scalars['UUID'];
-}>;
-
-export type UpdateInnovationHubPlatformSettingsMutation = {
-  __typename?: 'Mutation';
-  updateInnovationHubPlatformSettings: { __typename?: 'InnovationHub'; id: string };
 };
 
 export type InnovationHubQueryVariables = Exact<{
@@ -22285,13 +22306,19 @@ export type FreePlanAvailabilityQuery = {
       | {
           __typename?: 'User';
           id: string;
-          account: {
-            __typename?: 'Account';
-            id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-          };
+          account?:
+            | {
+                __typename?: 'Account';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -30462,36 +30489,38 @@ export type MyAccountQuery = {
             id: string;
             credentials?: Array<{ __typename?: 'Credential'; resourceID: string; type: CredentialType }> | undefined;
           };
-          account: {
-            __typename?: 'Account';
-            id: string;
-            virtualContributors: Array<{
-              __typename?: 'VirtualContributor';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
+          account?:
+            | {
+                __typename?: 'Account';
                 id: string;
-                displayName: string;
-                tagline: string;
-                url: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              };
-            }>;
-            spaces: Array<{
-              __typename?: 'Space';
-              id: string;
-              level: number;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                tagline: string;
-                url: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              };
-            }>;
-          };
+                virtualContributors: Array<{
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    tagline: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  };
+                }>;
+                spaces: Array<{
+                  __typename?: 'Space';
+                  id: string;
+                  level: number;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    tagline: string;
+                    url: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  };
+                }>;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -30685,28 +30714,30 @@ export type NewVirtualContributorMySpacesQuery = {
       | {
           __typename?: 'User';
           id: string;
-          account: {
-            __typename?: 'Account';
-            id: string;
-            host?:
-              | { __typename?: 'Organization'; id: string }
-              | { __typename?: 'User'; id: string }
-              | { __typename?: 'VirtualContributor'; id: string }
-              | undefined;
-            spaces: Array<{
-              __typename?: 'Space';
-              id: string;
-              community: { __typename?: 'Community'; id: string };
-              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-              subspaces: Array<{
-                __typename?: 'Space';
+          account?:
+            | {
+                __typename?: 'Account';
                 id: string;
-                type: SpaceType;
-                profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-                community: { __typename?: 'Community'; id: string };
-              }>;
-            }>;
-          };
+                host?:
+                  | { __typename?: 'Organization'; id: string }
+                  | { __typename?: 'User'; id: string }
+                  | { __typename?: 'VirtualContributor'; id: string }
+                  | undefined;
+                spaces: Array<{
+                  __typename?: 'Space';
+                  id: string;
+                  community: { __typename?: 'Community'; id: string };
+                  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                  subspaces: Array<{
+                    __typename?: 'Space';
+                    id: string;
+                    type: SpaceType;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                    community: { __typename?: 'Community'; id: string };
+                  }>;
+                }>;
+              }
+            | undefined;
         }
       | undefined;
   };

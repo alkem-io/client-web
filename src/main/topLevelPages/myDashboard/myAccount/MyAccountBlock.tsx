@@ -62,8 +62,8 @@ const MyAccountBlock = () => {
 
   // Curently displaying only the first hosted space and the first VC in it
 
-  const hostedSpace = data?.me.user?.account.spaces?.[0];
-  const virtualContributors: MyAccountVirtualContributor[] = data?.me.user?.account.virtualContributors ?? [];
+  const hostedSpace = data?.me.user?.account?.spaces?.[0];
+  const virtualContributors: MyAccountVirtualContributor[] = data?.me.user?.account?.virtualContributors ?? [];
 
   const { user } = useUserContext();
   const userRoles: CredentialType[] | undefined = data?.me.user?.agent.credentials?.map(credential => credential.type);

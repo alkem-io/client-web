@@ -80,8 +80,3 @@ mutation updateInnovationHub($hubData: UpdateInnovationHubInput!) {
     ...AdminInnovationHub
   }
 }
-mutation updateInnovationHubPlatformSettings($innovationHubId: UUID!, $accountId: UUID!) {
-  updateInnovationHubPlatformSettings(updateData: { ID: $innovationHubId, accountID: $accountId }) {
-    id
-  }
-}

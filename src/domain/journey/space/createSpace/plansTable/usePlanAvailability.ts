@@ -16,7 +16,7 @@ export const usePlanAvailability = ({ skip }: { skip?: boolean }): Provided => {
   const { data: freePlanAvailableData, loading: loadingPlanAvailability } = useFreePlanAvailabilityQuery({
     skip,
   });
-  const myPrivileges = freePlanAvailableData?.me.user?.account.authorization?.myPrivileges ?? [];
+  const myPrivileges = freePlanAvailableData?.me.user?.account?.authorization?.myPrivileges ?? [];
 
   const isPlanAvailable = (plan: { name: string }) => {
     if (loadingUser || loadingPlanAvailability) {

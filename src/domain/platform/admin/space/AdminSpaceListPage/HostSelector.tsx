@@ -30,31 +30,6 @@ export interface Host {
   };
 }
 
-/*
-//!!
-interface AllHosts extends Omit<Host, 'type'> {
-  __typename?: 'User' | 'Organization' | 'VirtualContributor';
-}
-
-const mapUserOrOrganizationToHost = (host: AllHosts | undefined): Host | undefined => {
-  if (!host || !host.__typename || (host.__typename !== 'User' && host.__typename !== 'Organization')) {
-    // We don't allow VirtualContributors as hosts, at least for now
-    return undefined;
-  }
-
-  return {
-    id: host.id,
-    accountId: host.accountId,
-    type: host.__typename === 'User' ? 'user' : 'organization',
-    profile: {
-      displayName: host.profile?.displayName ?? '',
-      location: host.profile?.location,
-      visual: host.profile?.visual,
-    },
-  };
-};
-*/
-
 interface HostSelectorProps {
   name: string;
   defaultValue?: {
@@ -78,26 +53,24 @@ export const HostSelector: FC<HostSelectorProps> = ({ name, defaultValue, ...con
 
   const options = useMemo(() => {
     const organizations =
-      organizationData?.organizations
-        .filter(org => org.account) //!! filter out organizations without account
-        .map(org => ({
-          id: org.id,
-          accountId: org.account!.id,
-          type: 'organization',
-          profile: {
-            id: org.profile.id,
-            displayName: org.profile.displayName,
-            location: org.profile.location,
-            visual: {
-              uri: org.profile.visual?.uri,
-            },
+      organizationData?.organizations.map(org => ({
+        id: org.id,
+        accountId: org.account?.id,
+        type: 'organization',
+        profile: {
+          id: org.profile.id,
+          displayName: org.profile.displayName,
+          location: org.profile.location,
+          visual: {
+            uri: org.profile.visual?.uri,
           },
-        })) ?? [];
+        },
+      })) ?? [];
 
     const users =
       userData?.usersPaginated.users.map(user => ({
         id: user.id,
-        accountId: user.account.id,
+        accountId: user.account?.id,
         type: 'user',
         profile: {
           id: user.profile.id,

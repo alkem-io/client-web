@@ -213,11 +213,10 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         return;
       }
 
-      const accountID = 'TO BE SET PROPERLY';
       const { data: newSpace } = await CreateNewSpace({
         variables: {
           spaceData: {
-            accountID: accountID,
+            accountID: myAccountId!,
             profileData: {
               displayName: generateSpaceName(user?.user.profile.displayName!, creationIndex),
             },

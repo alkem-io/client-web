@@ -1472,6 +1472,7 @@ export type InnovationHubKeySpecifier = (
   | 'listedInStore'
   | 'nameID'
   | 'profile'
+  | 'provider'
   | 'searchVisibility'
   | 'spaceListFilter'
   | 'spaceVisibilityFilter'
@@ -1488,6 +1489,7 @@ export type InnovationHubFieldPolicy = {
   listedInStore?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  provider?: FieldPolicy<any> | FieldReadFunction<any>;
   searchVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceListFilter?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceVisibilityFilter?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1948,6 +1950,10 @@ export type MutationKeySpecifier = (
   | 'sendMessageToOrganization'
   | 'sendMessageToRoom'
   | 'sendMessageToUser'
+  | 'transferInnovationHubToAccount'
+  | 'transferInnovationPackToAccount'
+  | 'transferSpaceToAccount'
+  | 'transferVirtualContributorToAccount'
   | 'updateActor'
   | 'updateAiPersona'
   | 'updateAnswerRelevance'
@@ -1969,7 +1975,6 @@ export type MutationKeySpecifier = (
   | 'updateInnovationFlowStatesFromTemplate'
   | 'updateInnovationFlowTemplate'
   | 'updateInnovationHub'
-  | 'updateInnovationHubPlatformSettings'
   | 'updateInnovationPack'
   | 'updateLicensePlan'
   | 'updateLink'
@@ -1990,7 +1995,6 @@ export type MutationKeySpecifier = (
   | 'updateUserGroup'
   | 'updateUserPlatformSettings'
   | 'updateVirtualContributor'
-  | 'updateVirtualContributorPlatformSettings'
   | 'updateVisual'
   | 'updateWhiteboard'
   | 'updateWhiteboardContent'
@@ -2116,6 +2120,10 @@ export type MutationFieldPolicy = {
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  transferInnovationHubToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
+  transferInnovationPackToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
+  transferSpaceToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
+  transferVirtualContributorToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   updateActor?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAnswerRelevance?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2137,7 +2145,6 @@ export type MutationFieldPolicy = {
   updateInnovationFlowStatesFromTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateInnovationHubPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   updateLicensePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   updateLink?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2158,7 +2165,6 @@ export type MutationFieldPolicy = {
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateVirtualContributorPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2676,6 +2682,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'metrics'
   | 'nameID'
   | 'profile'
+  | 'provider'
   | 'settings'
   | 'storageAggregator'
   | 'subspace'
@@ -2701,6 +2708,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  provider?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subspace?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2974,6 +2982,7 @@ export type SpaceKeySpecifier = (
   | 'metrics'
   | 'nameID'
   | 'profile'
+  | 'provider'
   | 'settings'
   | 'storageAggregator'
   | 'subspace'
@@ -2999,6 +3008,7 @@ export type SpaceFieldPolicy = {
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  provider?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subspace?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3397,6 +3407,7 @@ export type VirtualContributorKeySpecifier = (
   | 'listedInStore'
   | 'nameID'
   | 'profile'
+  | 'provider'
   | 'searchVisibility'
   | 'updatedDate'
   | VirtualContributorKeySpecifier
@@ -3411,6 +3422,7 @@ export type VirtualContributorFieldPolicy = {
   listedInStore?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  provider?: FieldPolicy<any> | FieldReadFunction<any>;
   searchVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
