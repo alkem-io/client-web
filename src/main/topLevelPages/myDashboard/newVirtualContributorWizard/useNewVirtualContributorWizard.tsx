@@ -37,6 +37,7 @@ import {
 } from '../../../../domain/collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreation';
 import SetupVCInfo from './SetupVCInfo';
 import { info } from '../../../../core/logging/sentry/log';
+import { compact } from 'lodash';
 
 const SPACE_LABEL = '(space)';
 const entityNamePostfixes = {
@@ -111,33 +112,35 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   // subspaces has communityId in order to manually add the VC to it
   const { mySpaceId, myAccountId, selectableSpaces } = useMemo(() => {
     const account = data?.me.user?.account;
-    const accountID = account?.id || ''; // TODO: how to handle this?
-    const mySpaces = account?.spaces;
+    const accountId = account?.id;
+    const mySpaces = compact(account?.spaces);
     let selectableSpaces: SelectableKnowledgeProps[] = [];
 
-    mySpaces?.forEach(space => {
-      if (space) {
-        selectableSpaces.push({
-          id: space.id,
-          name: `${space.profile.displayName} ${SPACE_LABEL}`,
-          accountId: accountID,
-          url: space.profile.url,
-        });
-        selectableSpaces = selectableSpaces.concat(
-          space.subspaces?.map(subspace => ({
-            id: subspace.id,
-            name: subspace.profile.displayName,
-            accountId: accountID,
-            url: subspace.profile.url, // TODO: subspace?
-            communityId: subspace.community.id,
-          })) ?? []
-        );
-      }
-    });
+    if (accountId) {
+      account?.spaces?.forEach(space => {
+        if (space) {
+          selectableSpaces.push({
+            id: space.id,
+            name: `${space.profile.displayName} ${SPACE_LABEL}`,
+            accountId,
+            url: space.profile.url,
+          });
+          selectableSpaces = selectableSpaces.concat(
+            space.subspaces?.map(subspace => ({
+              id: subspace.id,
+              name: subspace.profile.displayName,
+              accountId,
+              url: subspace.profile.url,
+              communityId: subspace.community.id,
+            })) ?? []
+          );
+        }
+      });
+    }
 
     return {
-      mySpaceId: mySpaces?.[0]?.id, // TODO: what is this field for?
-      myAccountId: accountID,
+      mySpaceId: mySpaces?.[0]?.id,
+      myAccountId: accountId,
       selectableSpaces,
     };
   }, [data, user]);

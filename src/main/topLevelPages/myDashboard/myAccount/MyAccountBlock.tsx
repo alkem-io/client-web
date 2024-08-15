@@ -62,8 +62,7 @@ const MyAccountBlock = () => {
 
   // Curently displaying only the first hosted space and the first VC in it
 
-  const spaces = data?.me.user?.account.spaces ?? [];
-  const hostedSpace = spaces[0];
+  const hostedSpace = data?.me.user?.account.spaces?.[0];
   const virtualContributors: MyAccountVirtualContributor[] = data?.me.user?.account.virtualContributors ?? [];
 
   const { user } = useUserContext();

@@ -55,17 +55,14 @@ interface Provided {
 }
 
 export const getStorageAggregatorParentIcon = (level: SpaceLevel | undefined) => {
-  if (!level) {
-    // TODO: do we have an undefined icon?
-    return SpaceIcon;
-  }
   switch (level) {
-    case SpaceLevel.Space:
-      return SpaceIcon;
     case SpaceLevel.Challenge:
       return ChallengeIcon;
     case SpaceLevel.Opportunity:
       return OpportunityIcon;
+    case SpaceLevel.Space:
+    default:
+      return SpaceIcon;
   }
 };
 
