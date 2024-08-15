@@ -1772,7 +1772,6 @@ export type LookupQueryResultsFieldPolicy = {
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MeQueryResultsKeySpecifier = (
-  | 'canCreateFreeSpace'
   | 'communityApplications'
   | 'communityInvitations'
   | 'id'
@@ -1783,7 +1782,6 @@ export type MeQueryResultsKeySpecifier = (
   | MeQueryResultsKeySpecifier
 )[];
 export type MeQueryResultsFieldPolicy = {
-  canCreateFreeSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   communityApplications?: FieldPolicy<any> | FieldReadFunction<any>;
   communityInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;

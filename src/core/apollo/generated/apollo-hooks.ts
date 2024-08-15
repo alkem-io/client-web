@@ -17211,7 +17211,17 @@ export function refetchPlansTableQuery(variables?: SchemaTypes.PlansTableQueryVa
 export const FreePlanAvailabilityDocument = gql`
   query FreePlanAvailability {
     me {
-      canCreateFreeSpace
+      id
+      user {
+        id
+        account {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
     }
   }
 `;

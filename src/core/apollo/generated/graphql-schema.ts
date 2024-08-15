@@ -2943,8 +2943,6 @@ export type LookupQueryResultsWhiteboardTemplateArgs = {
 
 export type MeQueryResults = {
   __typename?: 'MeQueryResults';
-  /** Can I create a free space? */
-  canCreateFreeSpace: Scalars['Boolean'];
   /** The community applications current authenticated user can act on. */
   communityApplications: Array<CommunityApplicationResult>;
   /** The invitations the current authenticated user can act on. */
@@ -22280,7 +22278,23 @@ export type FreePlanAvailabilityQueryVariables = Exact<{ [key: string]: never }>
 
 export type FreePlanAvailabilityQuery = {
   __typename?: 'Query';
-  me: { __typename?: 'MeQueryResults'; canCreateFreeSpace: boolean };
+  me: {
+    __typename?: 'MeQueryResults';
+    id: string;
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          account: {
+            __typename?: 'Account';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          };
+        }
+      | undefined;
+  };
 };
 
 export type ContactSupportLocationQueryVariables = Exact<{ [key: string]: never }>;
