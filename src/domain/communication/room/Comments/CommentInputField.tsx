@@ -15,7 +15,7 @@ export const POPPER_Z_INDEX = 1400; // Dialogs are 1300
 const MAX_USERS_LISTED = 30;
 
 export const MENTION_SYMBOL = '@';
-const MENTION_INVALID_CHARS_REGEXP = /[.?%_\\]/; // skip mentions if any of these are used after MENTION_SYMBOL
+const MENTION_INVALID_CHARS_REGEXP = /[?]/; // skip mentions if any of these are used after MENTION_SYMBOL
 const MAX_SPACES_IN_MENTION = 2;
 const MAX_MENTION_LENGTH = 30;
 
