@@ -19,7 +19,6 @@ import {
   CalloutType,
   CalloutVisibility,
   LicensePlanType,
-  NewVirtualContributorMySpacesQuery,
 } from '../../../../core/apollo/generated/graphql-schema';
 import CreateNewVirtualContributor, { VirtualContributorFromProps } from './CreateNewVirtualContributor';
 import LoadingState from './LoadingState';
@@ -38,6 +37,7 @@ import {
 } from '../../../../domain/collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreation';
 import SetupVCInfo from './SetupVCInfo';
 import { info } from '../../../../core/logging/sentry/log';
+import { compact } from 'lodash';
 
 const SPACE_LABEL = '(space)';
 const entityNamePostfixes = {
@@ -108,49 +108,39 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     fetchPolicy: 'cache-and-network',
   });
 
-  const findMySpaces = (
-    userId: string | undefined,
-    mySpaces: NewVirtualContributorMySpacesQuery['me']['myCreatedSpaces'] | undefined
-  ) => {
-    if (!userId || !mySpaces) {
-      return undefined;
-    }
-
-    const spacesHostedByUser = mySpaces.filter(space => space.account.host?.id === userId);
-    if (spacesHostedByUser.length > 0) {
-      return spacesHostedByUser;
-    }
-  };
-
   // selectableSpaces are space and subspaces
   // subspaces has communityId in order to manually add the VC to it
   const { mySpaceId, myAccountId, selectableSpaces } = useMemo(() => {
-    const mySpaces = findMySpaces(user?.user.id, data?.me.myCreatedSpaces);
+    const account = data?.me.user?.account;
+    const accountId = account?.id;
+    const mySpaces = compact(account?.spaces);
     let selectableSpaces: SelectableKnowledgeProps[] = [];
 
-    mySpaces?.forEach(space => {
-      if (space) {
-        selectableSpaces.push({
-          id: space.id,
-          name: `${space.profile.displayName} ${SPACE_LABEL}`,
-          accountId: space.account.id,
-          url: space.profile.url,
-        });
-        selectableSpaces = selectableSpaces.concat(
-          space.subspaces?.map(subspace => ({
-            id: subspace.id,
-            name: subspace.profile.displayName,
-            accountId: space.account.id,
+    if (accountId) {
+      account?.spaces?.forEach(space => {
+        if (space) {
+          selectableSpaces.push({
+            id: space.id,
+            name: `${space.profile.displayName} ${SPACE_LABEL}`,
+            accountId,
             url: space.profile.url,
-            communityId: subspace.community.id,
-          })) ?? []
-        );
-      }
-    });
+          });
+          selectableSpaces = selectableSpaces.concat(
+            space.subspaces?.map(subspace => ({
+              id: subspace.id,
+              name: subspace.profile.displayName,
+              accountId,
+              url: subspace.profile.url,
+              communityId: subspace.community.id,
+            })) ?? []
+          );
+        }
+      });
+    }
 
     return {
       mySpaceId: mySpaces?.[0]?.id,
-      myAccountId: mySpaces?.[0]?.account.id,
+      myAccountId: accountId,
       selectableSpaces,
     };
   }, [data, user]);

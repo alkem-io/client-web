@@ -17211,7 +17211,17 @@ export function refetchPlansTableQuery(variables?: SchemaTypes.PlansTableQueryVa
 export const FreePlanAvailabilityDocument = gql`
   query FreePlanAvailability {
     me {
-      canCreateFreeSpace
+      id
+      user {
+        id
+        account {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
     }
   }
 `;
@@ -23583,35 +23593,6 @@ export function refetchMembershipSuggestionSpaceQuery(variables: SchemaTypes.Mem
 export const MyAccountDocument = gql`
   query MyAccount {
     me {
-      myCreatedSpaces {
-        id
-        profile {
-          id
-          displayName
-          tagline
-          url
-          avatar: visual(type: AVATAR) {
-            ...VisualUri
-          }
-          cardBanner: visual(type: CARD) {
-            ...VisualUri
-          }
-        }
-        level
-        account {
-          id
-          host {
-            id
-            nameID
-            profile {
-              id
-              displayName
-              tagline
-              url
-            }
-          }
-        }
-      }
       user {
         id
         agent {
@@ -23634,6 +23615,22 @@ export const MyAccountDocument = gql`
                 ...VisualUri
               }
             }
+          }
+          spaces {
+            id
+            profile {
+              id
+              displayName
+              tagline
+              url
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
+              cardBanner: visual(type: CARD) {
+                ...VisualUri
+              }
+            }
+            level
           }
         }
       }
@@ -23842,32 +23839,35 @@ export const NewVirtualContributorMySpacesDocument = gql`
   query NewVirtualContributorMySpaces {
     me {
       id
-      myCreatedSpaces {
+      user {
         id
         account {
           id
           host {
             id
           }
-        }
-        community {
-          id
-        }
-        profile {
-          id
-          displayName
-          url
-        }
-        subspaces {
-          id
-          type
-          profile {
+          spaces {
             id
-            displayName
-            url
-          }
-          community {
-            id
+            community {
+              id
+            }
+            profile {
+              id
+              displayName
+              url
+            }
+            subspaces {
+              id
+              type
+              profile {
+                id
+                displayName
+                url
+              }
+              community {
+                id
+              }
+            }
           }
         }
       }

@@ -470,6 +470,7 @@ export type AgentKeySpecifier = (
   | 'credentials'
   | 'did'
   | 'id'
+  | 'type'
   | 'updatedDate'
   | 'verifiedCredentials'
   | AgentKeySpecifier
@@ -480,6 +481,7 @@ export type AgentFieldPolicy = {
   credentials?: FieldPolicy<any> | FieldReadFunction<any>;
   did?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   verifiedCredentials?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1770,11 +1772,9 @@ export type LookupQueryResultsFieldPolicy = {
   whiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MeQueryResultsKeySpecifier = (
-  | 'canCreateFreeSpace'
   | 'communityApplications'
   | 'communityInvitations'
   | 'id'
-  | 'myCreatedSpaces'
   | 'mySpaces'
   | 'spaceMembershipsFlat'
   | 'spaceMembershipsHierarchical'
@@ -1782,11 +1782,9 @@ export type MeQueryResultsKeySpecifier = (
   | MeQueryResultsKeySpecifier
 )[];
 export type MeQueryResultsFieldPolicy = {
-  canCreateFreeSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   communityApplications?: FieldPolicy<any> | FieldReadFunction<any>;
   communityInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  myCreatedSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMembershipsFlat?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMembershipsHierarchical?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3070,6 +3068,7 @@ export type StorageAggregatorKeySpecifier = (
   | 'size'
   | 'storageAggregators'
   | 'storageBuckets'
+  | 'type'
   | 'updatedDate'
   | StorageAggregatorKeySpecifier
 )[];
@@ -3082,6 +3081,7 @@ export type StorageAggregatorFieldPolicy = {
   size?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregators?: FieldPolicy<any> | FieldReadFunction<any>;
   storageBuckets?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageAggregatorParentKeySpecifier = (

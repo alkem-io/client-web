@@ -54,14 +54,15 @@ interface Provided {
   reload: () => void;
 }
 
-export const getStorageAggregatorParentIcon = (level: SpaceLevel) => {
+export const getStorageAggregatorParentIcon = (level: SpaceLevel | undefined) => {
   switch (level) {
-    case SpaceLevel.Space:
-      return SpaceIcon;
     case SpaceLevel.Challenge:
       return ChallengeIcon;
     case SpaceLevel.Opportunity:
       return OpportunityIcon;
+    case SpaceLevel.Space:
+    default:
+      return SpaceIcon;
   }
 };
 

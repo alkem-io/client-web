@@ -551,6 +551,8 @@ export type Agent = {
   did?: Maybe<Scalars['DID']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** A type of entity that this Agent is being used with. */
+  type?: Maybe<AgentType>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** The Verfied Credentials for this Agent. */
@@ -572,6 +574,14 @@ export type AgentBeginVerifiedCredentialRequestOutput = {
   /** The QR Code Image to be offered on the client for scanning by a mobile wallet */
   qrCodeImg: Scalars['String'];
 };
+
+export enum AgentType {
+  Account = 'ACCOUNT',
+  Organization = 'ORGANIZATION',
+  Space = 'SPACE',
+  User = 'USER',
+  VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
+}
 
 export type AiPersona = {
   __typename?: 'AiPersona';
@@ -793,7 +803,6 @@ export type Authorization = {
 };
 
 export enum AuthorizationCredential {
-  AccountHost = 'ACCOUNT_HOST',
   BetaTester = 'BETA_TESTER',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
@@ -2073,7 +2082,6 @@ export type CredentialMetadataOutput = {
 };
 
 export enum CredentialType {
-  AccountHost = 'ACCOUNT_HOST',
   BetaTester = 'BETA_TESTER',
   FeatureCalloutToCalloutTemplate = 'FEATURE_CALLOUT_TO_CALLOUT_TEMPLATE',
   FeatureVirtualContributors = 'FEATURE_VIRTUAL_CONTRIBUTORS',
@@ -2935,16 +2943,12 @@ export type LookupQueryResultsWhiteboardTemplateArgs = {
 
 export type MeQueryResults = {
   __typename?: 'MeQueryResults';
-  /** Can I create a free space? */
-  canCreateFreeSpace: Scalars['Boolean'];
   /** The community applications current authenticated user can act on. */
   communityApplications: Array<CommunityApplicationResult>;
   /** The invitations the current authenticated user can act on. */
   communityInvitations: Array<CommunityInvitationResult>;
   /** The query id */
   id: Scalars['String'];
-  /** The Spaces I have created */
-  myCreatedSpaces: Array<Space>;
   /** The Spaces I am contributing to */
   mySpaces: Array<MySpaceResults>;
   /** The Spaces the current user is a member of as a flat list. */
@@ -2961,10 +2965,6 @@ export type MeQueryResultsCommunityApplicationsArgs = {
 
 export type MeQueryResultsCommunityInvitationsArgs = {
   states?: InputMaybe<Array<Scalars['String']>>;
-};
-
-export type MeQueryResultsMyCreatedSpacesArgs = {
-  limit?: InputMaybe<Scalars['Float']>;
 };
 
 export type MeQueryResultsMySpacesArgs = {
@@ -5386,6 +5386,8 @@ export type StorageAggregator = {
   storageAggregators: Array<StorageAggregator>;
   /** The Storage Buckets that are being managed via this StorageAggregators. */
   storageBuckets: Array<StorageBucket>;
+  /** A type of entity that this StorageAggregator is being used with. */
+  type?: Maybe<StorageAggregatorType>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
@@ -5396,11 +5398,19 @@ export type StorageAggregatorParent = {
   displayName: Scalars['String'];
   /** The UUID of the parent entity. */
   id: Scalars['UUID'];
-  /** The level of the parent Entity. */
-  level: SpaceLevel;
+  /** If the parent entity is a Space, then the level of the Space. */
+  level?: Maybe<SpaceLevel>;
   /** The URL that can be used to access the parent entity. */
   url: Scalars['String'];
 };
+
+export enum StorageAggregatorType {
+  Account = 'ACCOUNT',
+  Organization = 'ORGANIZATION',
+  Platform = 'PLATFORM',
+  Space = 'SPACE',
+  User = 'USER',
+}
 
 export type StorageBucket = {
   __typename?: 'StorageBucket';
@@ -22268,7 +22278,23 @@ export type FreePlanAvailabilityQueryVariables = Exact<{ [key: string]: never }>
 
 export type FreePlanAvailabilityQuery = {
   __typename?: 'Query';
-  me: { __typename?: 'MeQueryResults'; canCreateFreeSpace: boolean };
+  me: {
+    __typename?: 'MeQueryResults';
+    id: string;
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          account: {
+            __typename?: 'Account';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          };
+        }
+      | undefined;
+  };
 };
 
 export type ContactSupportLocationQueryVariables = Exact<{ [key: string]: never }>;
@@ -24064,7 +24090,7 @@ export type SpaceStorageAdminPageQuery = {
               | {
                   __typename?: 'StorageAggregatorParent';
                   id: string;
-                  level: SpaceLevel;
+                  level?: SpaceLevel | undefined;
                   displayName: string;
                   url: string;
                 }
@@ -24076,7 +24102,7 @@ export type SpaceStorageAdminPageQuery = {
                 | {
                     __typename?: 'StorageAggregatorParent';
                     id: string;
-                    level: SpaceLevel;
+                    level?: SpaceLevel | undefined;
                     displayName: string;
                     url: string;
                   }
@@ -24180,7 +24206,7 @@ export type StorageAggregatorLookupQuery = {
             | {
                 __typename?: 'StorageAggregatorParent';
                 id: string;
-                level: SpaceLevel;
+                level?: SpaceLevel | undefined;
                 displayName: string;
                 url: string;
               }
@@ -24192,7 +24218,7 @@ export type StorageAggregatorLookupQuery = {
               | {
                   __typename?: 'StorageAggregatorParent';
                   id: string;
-                  level: SpaceLevel;
+                  level?: SpaceLevel | undefined;
                   displayName: string;
                   url: string;
                 }
@@ -24263,13 +24289,25 @@ export type StorageAggregatorFragment = {
   __typename?: 'StorageAggregator';
   id: string;
   parentEntity?:
-    | { __typename?: 'StorageAggregatorParent'; id: string; level: SpaceLevel; displayName: string; url: string }
+    | {
+        __typename?: 'StorageAggregatorParent';
+        id: string;
+        level?: SpaceLevel | undefined;
+        displayName: string;
+        url: string;
+      }
     | undefined;
   storageAggregators: Array<{
     __typename?: 'StorageAggregator';
     id: string;
     parentEntity?:
-      | { __typename?: 'StorageAggregatorParent'; id: string; level: SpaceLevel; displayName: string; url: string }
+      | {
+          __typename?: 'StorageAggregatorParent';
+          id: string;
+          level?: SpaceLevel | undefined;
+          displayName: string;
+          url: string;
+        }
       | undefined;
   }>;
   storageBuckets: Array<{
@@ -24334,7 +24372,13 @@ export type LoadableStorageAggregatorFragment = {
   __typename?: 'StorageAggregator';
   id: string;
   parentEntity?:
-    | { __typename?: 'StorageAggregatorParent'; id: string; level: SpaceLevel; displayName: string; url: string }
+    | {
+        __typename?: 'StorageAggregatorParent';
+        id: string;
+        level?: SpaceLevel | undefined;
+        displayName: string;
+        url: string;
+      }
     | undefined;
 };
 
@@ -24378,7 +24422,7 @@ export type StorageBucketParentFragment = {
 export type StorageAggregatorParentFragment = {
   __typename?: 'StorageAggregatorParent';
   id: string;
-  level: SpaceLevel;
+  level?: SpaceLevel | undefined;
   displayName: string;
   url: string;
 };
@@ -30409,44 +30453,6 @@ export type MyAccountQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
-    myCreatedSpaces: Array<{
-      __typename?: 'Space';
-      id: string;
-      level: number;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        displayName: string;
-        tagline: string;
-        url: string;
-        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      };
-      account: {
-        __typename?: 'Account';
-        id: string;
-        host?:
-          | {
-              __typename?: 'Organization';
-              id: string;
-              nameID: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
-            }
-          | {
-              __typename?: 'User';
-              id: string;
-              nameID: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
-            }
-          | {
-              __typename?: 'VirtualContributor';
-              id: string;
-              nameID: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string; tagline: string; url: string };
-            }
-          | undefined;
-      };
-    }>;
     user?:
       | {
           __typename?: 'User';
@@ -30469,6 +30475,20 @@ export type MyAccountQuery = {
                 tagline: string;
                 url: string;
                 avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }>;
+            spaces: Array<{
+              __typename?: 'Space';
+              id: string;
+              level: number;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                tagline: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
             }>;
           };
@@ -30661,28 +30681,34 @@ export type NewVirtualContributorMySpacesQuery = {
   me: {
     __typename?: 'MeQueryResults';
     id: string;
-    myCreatedSpaces: Array<{
-      __typename?: 'Space';
-      id: string;
-      account: {
-        __typename?: 'Account';
-        id: string;
-        host?:
-          | { __typename?: 'Organization'; id: string }
-          | { __typename?: 'User'; id: string }
-          | { __typename?: 'VirtualContributor'; id: string }
-          | undefined;
-      };
-      community: { __typename?: 'Community'; id: string };
-      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-      subspaces: Array<{
-        __typename?: 'Space';
-        id: string;
-        type: SpaceType;
-        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-        community: { __typename?: 'Community'; id: string };
-      }>;
-    }>;
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          account: {
+            __typename?: 'Account';
+            id: string;
+            host?:
+              | { __typename?: 'Organization'; id: string }
+              | { __typename?: 'User'; id: string }
+              | { __typename?: 'VirtualContributor'; id: string }
+              | undefined;
+            spaces: Array<{
+              __typename?: 'Space';
+              id: string;
+              community: { __typename?: 'Community'; id: string };
+              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+              subspaces: Array<{
+                __typename?: 'Space';
+                id: string;
+                type: SpaceType;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                community: { __typename?: 'Community'; id: string };
+              }>;
+            }>;
+          };
+        }
+      | undefined;
   };
 };
 
