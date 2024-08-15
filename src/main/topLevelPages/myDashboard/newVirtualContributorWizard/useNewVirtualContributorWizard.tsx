@@ -19,6 +19,7 @@ import {
   CalloutType,
   CalloutVisibility,
   LicensePlanType,
+  SpaceType,
 } from '../../../../core/apollo/generated/graphql-schema';
 import CreateNewVirtualContributor, { VirtualContributorFromProps } from './CreateNewVirtualContributor';
 import LoadingState from './LoadingState';
@@ -74,7 +75,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [bokId, setbokId] = useState<string | undefined>(undefined);
   const [creationIndex, setCreationIndex] = useState<number>(0);
   const [bokCommunityId, setBokCommunityId] = useState<string | undefined>(undefined);
-  const [accountId, setAccountId] = useState<string>();
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps | undefined>(
     undefined
   );
@@ -153,6 +153,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     return await createSubspace({
       variables: {
         input: {
+          type: SpaceType.Knowledge,
           spaceID: parentId,
           context: {
             vision: '-',
@@ -163,7 +164,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           },
           tags: [],
           collaborationData: {
-            addDefaultCallouts: false,
+            addDefaultCallouts: true,
           },
         },
       },
@@ -201,7 +202,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     // otherwise create a new space
     if (mySpaceId && myAccountId) {
       setSpaceId(mySpaceId);
-      setAccountId(myAccountId);
 
       const subspace = await handleSubspaceCreation(mySpaceId, values.name);
       setbokId(subspace?.data?.createSubspace.id);
@@ -224,10 +224,12 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           },
         },
       });
-
       setSpaceId(newSpace?.createSpace.id);
-      //setAccountId(newSpace?.createAccount.id);
       setCreationIndex(0);
+
+      const subspace = await handleSubspaceCreation(newSpace?.createSpace.id ?? '', values.name);
+      setbokId(subspace?.data?.createSubspace.id);
+      setBokCommunityId(subspace?.data?.createSubspace.community.id);
     }
 
     setStep('addKnowledge');
@@ -346,8 +348,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
 
     // create VC
-    if (virtualContributorInput && accountId && spaceId) {
-      await handleCreateVirtualContributor(virtualContributorInput, accountId, bokId ?? spaceId, bokCommunityId);
+    if (virtualContributorInput && myAccountId && spaceId) {
+      await handleCreateVirtualContributor(virtualContributorInput, myAccountId, bokId ?? spaceId, bokCommunityId);
       addVCCreationCache(virtualContributorInput.name);
       const { data } = await getNewSpaceUrl();
       navigate(data?.space.profile.url ?? '');

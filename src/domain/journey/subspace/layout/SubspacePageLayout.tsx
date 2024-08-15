@@ -95,6 +95,12 @@ export const useConsumeAction = (action: SubspaceDialog | undefined | null | fal
   return actionDef;
 };
 
+const MENU_STATE_KEY = 'menuState';
+enum MenuState {
+  EXPANDED = 'expanded',
+  COLLAPSED = 'collapsed',
+}
+
 const SubspacePageLayout = ({
   journeyId,
   spaceReadAccess,
@@ -108,7 +114,7 @@ const SubspacePageLayout = ({
   children,
   infoColumnChildren,
 }: PropsWithChildren<SubspacePageLayoutProps>) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false);
 
   const { t } = useTranslation();
 
@@ -178,26 +184,32 @@ const SubspacePageLayout = ({
                 }
               >
                 <PageContent>
-                  <InfoColumn collapsed={isExpanded}>
-                    {!isExpanded && <WelcomeBlock about={!isMobile}>{welcome}</WelcomeBlock>}
-                    {!isExpanded && (
+                  <InfoColumn collapsed={isCollapsed}>
+                    {!isCollapsed && <WelcomeBlock about={!isMobile}>{welcome}</WelcomeBlock>}
+                    {!isCollapsed && (
                       <FullWidthButton
                         startIcon={<KeyboardTab />}
                         variant="contained"
-                        onClick={() => setIsExpanded(true)}
+                        onClick={() => {
+                          setIsCollapsed(true);
+                          localStorage.setItem(MENU_STATE_KEY, MenuState.COLLAPSED);
+                        }}
                         sx={{ '.MuiSvgIcon-root': { transform: 'rotate(180deg)' } }}
                       >
                         {t('buttons.collapse')}
                       </FullWidthButton>
                     )}
-                    <DialogActionButtons column={isExpanded}>
+                    <DialogActionButtons column={isCollapsed}>
                       {unconsumedActions}
-                      {isExpanded && (
+                      {isCollapsed && (
                         <ButtonWithTooltip
                           tooltip={t('buttons.expand')}
                           tooltipPlacement="right"
                           iconButton
-                          onClick={() => setIsExpanded(false)}
+                          onClick={() => {
+                            setIsCollapsed(false);
+                            localStorage.setItem(MENU_STATE_KEY, MenuState.EXPANDED);
+                          }}
                         >
                           <KeyboardTab />
                         </ButtonWithTooltip>
@@ -206,7 +218,7 @@ const SubspacePageLayout = ({
                     {infoColumnChildren}
                   </InfoColumn>
                   <PageContentColumnBase
-                    columns={isExpanded ? 12 : 9}
+                    columns={isCollapsed ? 12 : 9}
                     flexBasis={0}
                     flexGrow={1}
                     flexShrink={1}

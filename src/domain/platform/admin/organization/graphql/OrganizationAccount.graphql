@@ -47,6 +47,7 @@ query OrganizationAccount($organizationNameId: UUID_NAMEID!) {
             displayName
           }
         }
+        subdomain
       }
     }
   }

@@ -14049,6 +14049,7 @@ export const UserAccountDocument = gql`
               displayName
             }
           }
+          subdomain
         }
       }
     }
@@ -18923,6 +18924,7 @@ export const OrganizationAccountDocument = gql`
               displayName
             }
           }
+          subdomain
         }
       }
     }
