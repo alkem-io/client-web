@@ -51,22 +51,15 @@ jobs:
           echo "${{ secrets.KUBECONFIG_SECRET_HETZNER_TEST }}" > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
 
-      # - name: Create Image Pull Secret
-      #   run: |
-      #     kubectl create secret docker-registry alkemio-web-secret \
-      #       --docker-server=${{ secrets.REGISTRY_LOGIN_SERVER }} \
-      #       --docker-username=${{ secrets.REGISTRY_USERNAME }} \
-      #       --docker-password=${{ secrets.REGISTRY_PASSWORD }} \
-      #       --dry-run=client -o yaml | kubectl apply -f -
+      - name: Create Image Pull Secret
+        run: |
+          kubectl create secret docker-registry alkemio-web-secret \
+            --docker-server=${{ secrets.REGISTRY_LOGIN_SERVER }} \
+            --docker-username=${{ secrets.REGISTRY_USERNAME }} \
+            --docker-password=${{ secrets.REGISTRY_PASSWORD }} \
+            --dry-run=client -o yaml | kubectl apply -f -
 
-      - uses: Azure/k8s-create-secret@v4.0
-        with:
-          container-registry-url: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-          container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
-          container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
-          secret-name: alkemio-web-secret
-
-      - uses: Azure/k8s-deploy@v4.10
+      - uses: azure/k8s-deploy@v5.0.0
         with:
           manifests: |
             manifests/26-web-deployment-test.yaml
