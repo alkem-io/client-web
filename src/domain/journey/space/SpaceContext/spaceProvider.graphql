@@ -20,9 +20,6 @@ fragment SpaceInfo on Space {
     id
     myPrivileges
   }
-  account {
-    id
-  }
   community {
     id
     myMembershipStatus
@@ -44,27 +41,24 @@ fragment SpaceInfo on Space {
 query SpaceHost($spaceNameId: UUID_NAMEID!) {
   space(ID: $spaceNameId) {
     id
-    account {
+    provider {
       id
-      host {
+      nameID
+      profile {
         id
-        nameID
-        profile {
+        displayName
+        avatar: visual(type: AVATAR) {
           id
-          displayName
-          avatar: visual(type: AVATAR) {
-            id
-            uri
-          }
-          location {
-            id
-            city
-            country
-          }
-          tagsets {
-            id
-            tags
-          }
+          uri
+        }
+        location {
+          id
+          city
+          country
+        }
+        tagsets {
+          id
+          tags
         }
       }
     }

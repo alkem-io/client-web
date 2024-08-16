@@ -1977,14 +1977,11 @@ export const InnovationHubSpaceFragmentDoc = gql`
   fragment InnovationHubSpace on Space {
     id
     visibility
-    account {
+    provider {
       id
-      host {
+      profile {
         id
-        profile {
-          id
-          displayName
-        }
+        displayName
       }
     }
     profile {
@@ -2362,11 +2359,6 @@ export const SpaceDetailsFragmentDoc = gql`
         ...fullLocation
       }
     }
-    account {
-      host {
-        id
-      }
-    }
     context {
       ...ContextDetails
     }
@@ -2387,9 +2379,6 @@ export const SpaceInfoFragmentDoc = gql`
     authorization {
       id
       myPrivileges
-    }
-    account {
-      id
     }
     community {
       id
@@ -2513,11 +2502,8 @@ export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
     id
     nameID
-    account {
-      id
-      host {
-        ...ContributorDetails
-      }
+    provider {
+      ...ContributorDetails
     }
     metrics {
       id
@@ -5037,14 +5023,11 @@ export const SpaceInnovationFlowTemplatesLibraryDocument = gql`
           ...InnovationFlowTemplateCard
         }
       }
-      account {
+      provider {
         id
-        host {
-          id
-          nameID
-          profile {
-            ...TemplateProviderProfile
-          }
+        nameID
+        profile {
+          ...TemplateProviderProfile
         }
       }
     }
@@ -5747,14 +5730,11 @@ export const SpaceCalloutTemplatesLibraryDocument = gql`
           ...CalloutTemplateCard
         }
       }
-      account {
+      provider {
         id
-        host {
-          id
-          nameID
-          profile {
-            ...TemplateProviderProfile
-          }
+        nameID
+        profile {
+          ...TemplateProviderProfile
         }
       }
     }
@@ -6890,14 +6870,11 @@ export const SpaceCommunityGuidelinesTemplatesLibraryDocument = gql`
           ...CommunityGuidelinesTemplateCard
         }
       }
-      account {
+      provider {
         id
-        host {
-          id
-          nameID
-          profile {
-            ...TemplateProviderProfile
-          }
+        nameID
+        profile {
+          ...TemplateProviderProfile
         }
       }
     }
@@ -7065,14 +7042,11 @@ export const SpacePostTemplatesLibraryDocument = gql`
           ...PostTemplateCard
         }
       }
-      account {
+      provider {
         id
-        host {
-          id
-          nameID
-          profile {
-            ...TemplateProviderProfile
-          }
+        nameID
+        profile {
+          ...TemplateProviderProfile
         }
       }
     }
@@ -7706,14 +7680,11 @@ export const SpaceWhiteboardTemplatesLibraryDocument = gql`
           ...WhiteboardTemplateCard
         }
       }
-      account {
+      provider {
         id
-        host {
-          id
-          nameID
-          profile {
-            ...TemplateProviderProfile
-          }
+        nameID
+        profile {
+          ...TemplateProviderProfile
         }
       }
     }
@@ -10729,10 +10700,8 @@ export const CommunityMembersListDocument = gql`
   ) {
     lookup {
       space(ID: $spaceId) @include(if: $includeSpaceHost) {
-        account {
-          host {
-            ...ContributorDetails
-          }
+        provider {
+          ...ContributorDetails
         }
       }
       community(ID: $communityId) {
@@ -14602,11 +14571,6 @@ export const SpaceCommunityContributorsDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
-        account {
-          host {
-            ...OrganizationCard
-          }
-        }
         community {
           id
           leadUsers: usersInRole(role: LEAD) {
@@ -14635,8 +14599,8 @@ export const SpaceCommunityContributorsDocument = gql`
       }
     }
   }
-  ${OrganizationCardFragmentDoc}
   ${UserCardFragmentDoc}
+  ${OrganizationCardFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 
@@ -14908,23 +14872,12 @@ export const VirtualContributorDocument = gql`
         id
         myPrivileges
       }
-      account {
+      provider {
         id
-        host {
+        profile {
           id
-          profile {
-            id
-            displayName
-            tagline
-            avatar: visual(type: AVATAR) {
-              uri
-            }
-            location {
-              id
-              city
-              country
-            }
-          }
+          displayName
+          description
         }
       }
       searchVisibility
@@ -15819,11 +15772,8 @@ export const AboutPageNonMembersDocument = gql`
             ...VisualFull
           }
         }
-        account {
-          id
-          host {
-            ...ContributorDetails
-          }
+        provider {
+          ...ContributorDetails
         }
         metrics {
           ...MetricsItem
@@ -16092,11 +16042,8 @@ export const JourneyDataDocument = gql`
         metrics {
           ...MetricsItem
         }
-        account {
-          id
-          host {
-            ...ContributorDetails
-          }
+        provider {
+          ...ContributorDetails
         }
       }
     }
@@ -16598,11 +16545,8 @@ export const SpaceCommunityPageDocument = gql`
         id
         url
       }
-      account {
-        id
-        host {
-          ...ContributorDetails
-        }
+      provider {
+        ...ContributorDetails
       }
       authorization {
         id
@@ -16781,27 +16725,24 @@ export const SpaceHostDocument = gql`
   query SpaceHost($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
       id
-      account {
+      provider {
         id
-        host {
+        nameID
+        profile {
           id
-          nameID
-          profile {
+          displayName
+          avatar: visual(type: AVATAR) {
             id
-            displayName
-            avatar: visual(type: AVATAR) {
-              id
-              uri
-            }
-            location {
-              id
-              city
-              country
-            }
-            tagsets {
-              id
-              tags
-            }
+            uri
+          }
+          location {
+            id
+            city
+            country
+          }
+          tagsets {
+            id
+            tags
           }
         }
       }
@@ -18184,6 +18125,101 @@ export function refetchSpaceSettingsQuery(variables: SchemaTypes.SpaceSettingsQu
   return { query: SpaceSettingsDocument, variables: variables };
 }
 
+export const SpaceSubspacesDocument = gql`
+  query SpaceSubspaces($spaceId: UUID_NAMEID!) {
+    space(ID: $spaceId) {
+      id
+      profile {
+        id
+        displayName
+      }
+      account {
+        id
+        authorization {
+          myPrivileges
+        }
+        virtualContributors {
+          id
+          nameID
+          profile {
+            id
+            displayName
+            tagline
+            url
+            tagsets {
+              ...TagsetDetails
+            }
+            avatar: visual(type: AVATAR) {
+              ...VisualFull
+            }
+          }
+        }
+      }
+      subspaces {
+        id
+        profile {
+          id
+          displayName
+          tagline
+          url
+          avatar: visual(type: AVATAR) {
+            ...VisualUri
+          }
+        }
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useSpaceSubspacesQuery__
+ *
+ * To run a query within a React component, call `useSpaceSubspacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceSubspacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceSubspacesQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceSubspacesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceSubspacesQuery, SchemaTypes.SpaceSubspacesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceSubspacesQuery, SchemaTypes.SpaceSubspacesQueryVariables>(
+    SpaceSubspacesDocument,
+    options
+  );
+}
+
+export function useSpaceSubspacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceSubspacesQuery, SchemaTypes.SpaceSubspacesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceSubspacesQuery, SchemaTypes.SpaceSubspacesQueryVariables>(
+    SpaceSubspacesDocument,
+    options
+  );
+}
+
+export type SpaceSubspacesQueryHookResult = ReturnType<typeof useSpaceSubspacesQuery>;
+export type SpaceSubspacesLazyQueryHookResult = ReturnType<typeof useSpaceSubspacesLazyQuery>;
+export type SpaceSubspacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceSubspacesQuery,
+  SchemaTypes.SpaceSubspacesQueryVariables
+>;
+export function refetchSpaceSubspacesQuery(variables: SchemaTypes.SpaceSubspacesQueryVariables) {
+  return { query: SpaceSubspacesDocument, variables: variables };
+}
+
 export const UpdateSpaceSettingsDocument = gql`
   mutation UpdateSpaceSettings($settingsData: UpdateSpaceSettingsInput!) {
     updateSpaceSettings(settingsData: $settingsData) {
@@ -18355,101 +18391,6 @@ export type DeleteVirtualContributorOnAccountMutationOptions = Apollo.BaseMutati
   SchemaTypes.DeleteVirtualContributorOnAccountMutation,
   SchemaTypes.DeleteVirtualContributorOnAccountMutationVariables
 >;
-export const SpaceSubspacesDocument = gql`
-  query SpaceSubspaces($spaceId: UUID_NAMEID!) {
-    space(ID: $spaceId) {
-      id
-      profile {
-        id
-        displayName
-      }
-      account {
-        id
-        authorization {
-          myPrivileges
-        }
-        virtualContributors {
-          id
-          nameID
-          profile {
-            id
-            displayName
-            tagline
-            url
-            tagsets {
-              ...TagsetDetails
-            }
-            avatar: visual(type: AVATAR) {
-              ...VisualFull
-            }
-          }
-        }
-      }
-      subspaces {
-        id
-        profile {
-          id
-          displayName
-          tagline
-          url
-          avatar: visual(type: AVATAR) {
-            ...VisualUri
-          }
-        }
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
-  ${VisualUriFragmentDoc}
-`;
-
-/**
- * __useSpaceSubspacesQuery__
- *
- * To run a query within a React component, call `useSpaceSubspacesQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceSubspacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceSubspacesQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useSpaceSubspacesQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceSubspacesQuery, SchemaTypes.SpaceSubspacesQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceSubspacesQuery, SchemaTypes.SpaceSubspacesQueryVariables>(
-    SpaceSubspacesDocument,
-    options
-  );
-}
-
-export function useSpaceSubspacesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SpaceSubspacesQuery, SchemaTypes.SpaceSubspacesQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SpaceSubspacesQuery, SchemaTypes.SpaceSubspacesQueryVariables>(
-    SpaceSubspacesDocument,
-    options
-  );
-}
-
-export type SpaceSubspacesQueryHookResult = ReturnType<typeof useSpaceSubspacesQuery>;
-export type SpaceSubspacesLazyQueryHookResult = ReturnType<typeof useSpaceSubspacesLazyQuery>;
-export type SpaceSubspacesQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceSubspacesQuery,
-  SchemaTypes.SpaceSubspacesQueryVariables
->;
-export function refetchSpaceSubspacesQuery(variables: SchemaTypes.SpaceSubspacesQueryVariables) {
-  return { query: SpaceSubspacesDocument, variables: variables };
-}
-
 export const SpaceDashboardNavigationChallengesDocument = gql`
   query SpaceDashboardNavigationChallenges($spaceId: UUID!) {
     lookup {

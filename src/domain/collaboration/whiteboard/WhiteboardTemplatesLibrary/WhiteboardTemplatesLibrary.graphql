@@ -7,14 +7,11 @@ query SpaceWhiteboardTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
         ...WhiteboardTemplateCard
       }
     }
-    account {
+    provider {
       id
-      host {
-        id
-        nameID
-        profile {
-          ...TemplateProviderProfile
-        }
+      nameID
+      profile {
+        ...TemplateProviderProfile
       }
     }
   }

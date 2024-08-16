@@ -60,7 +60,7 @@ const CommunityGuidelinesTemplatesLibrary: FC<CommunityGuidelinesTemplatesLibrar
           ...template,
           innovationPack: {
             profile: { displayName: '' },
-            provider: spaceData?.space.account.host,
+            provider: spaceData?.space.provider,
           },
         }))
       ),

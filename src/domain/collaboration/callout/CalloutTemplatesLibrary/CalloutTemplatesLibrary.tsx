@@ -55,7 +55,7 @@ const CalloutTemplatesLibrary: FC<CalloutTemplatesLibraryProps> = ({ onImportTem
           ...template,
           innovationPack: {
             profile: { displayName: '' },
-            provider: spaceData?.space.account.host,
+            provider: spaceData?.space.provider,
           },
         }))
       ),

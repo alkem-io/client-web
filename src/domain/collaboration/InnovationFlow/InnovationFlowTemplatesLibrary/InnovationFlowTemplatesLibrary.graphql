@@ -7,14 +7,11 @@ query SpaceInnovationFlowTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
         ...InnovationFlowTemplateCard
       }
     }
-    account {
+    provider {
       id
-      host {
-        id
-        nameID
-        profile {
-          ...TemplateProviderProfile
-        }
+      nameID
+      profile {
+        ...TemplateProviderProfile
       }
     }
   }

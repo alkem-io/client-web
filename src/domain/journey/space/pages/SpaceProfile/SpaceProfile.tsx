@@ -54,7 +54,6 @@ export const SpaceProfile: FC = () => {
         edit
         name={space.profile.displayName}
         nameID={spaceNameId}
-        accountId={space.accountId}
         tagset={space.profile.tagset}
         context={space.context}
         profile={space.profile}

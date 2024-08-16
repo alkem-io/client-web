@@ -106,11 +106,11 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
     });
   };
 
-  const { data: hostOrganization } = useSpaceHostQuery({
+  const { data: hostData } = useSpaceHostQuery({
     variables: { spaceNameId: journeyId },
     skip: isSubspace,
   });
-  const hostOrganizationId = hostOrganization?.space.account.host?.id;
+  const hostId = hostData?.space.provider.id;
 
   const { data: settingsData, loading } = useSpaceSettingsQuery({
     variables: {
@@ -123,10 +123,9 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
     const settings = settingsData?.lookup.space?.settings;
     return {
       ...settings,
-      hostOrganizationTrusted:
-        (!!hostOrganizationId && settings?.membership.trustedOrganizations.includes(hostOrganizationId)) ?? false,
+      hostOrganizationTrusted: (!!hostId && settings?.membership.trustedOrganizations.includes(hostId)) ?? false,
     };
-  }, [settingsData, hostOrganizationId]);
+  }, [settingsData, hostId]);
 
   const [updateSpaceSettings] = useUpdateSpaceSettingsMutation();
 
@@ -151,9 +150,9 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
     allowPlatformSupportAsAdmin?: boolean;
   }) => {
     const trustedOrganizations = [...(currentSettings?.membership?.trustedOrganizations ?? [])];
-    if (hostOrganizationTrusted && hostOrganizationId) {
-      if (!trustedOrganizations.includes(hostOrganizationId)) {
-        trustedOrganizations.push(hostOrganizationId);
+    if (hostOrganizationTrusted && hostId) {
+      if (!trustedOrganizations.includes(hostId)) {
+        trustedOrganizations.push(hostId);
       }
     } else {
       trustedOrganizations.splice(0, trustedOrganizations.length); // Clear the array
@@ -311,7 +310,7 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
                           t={t}
                           i18nKey="pages.admin.space.settings.membership.hostOrganizationJoin"
                           values={{
-                            host: hostOrganization?.space?.account.host?.profile?.displayName,
+                            host: hostData?.space?.provider.profile?.displayName,
                           }}
                           components={{ b: <strong />, i: <em /> }}
                         />

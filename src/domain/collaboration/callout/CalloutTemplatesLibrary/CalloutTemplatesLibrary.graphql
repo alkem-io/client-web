@@ -7,14 +7,11 @@ query SpaceCalloutTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
         ...CalloutTemplateCard
       }
     }
-    account {
+    provider {
       id
-      host {
-        id
-        nameID
-        profile {
-          ...TemplateProviderProfile
-        }
+      nameID
+      profile {
+        ...TemplateProviderProfile
       }
     }
   }

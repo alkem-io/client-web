@@ -7,15 +7,11 @@ query SpaceCommunityGuidelinesTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
         ...CommunityGuidelinesTemplateCard
       }
     }
-    account {
+    provider {
       id
-
-      host {
-        id
-        nameID
-        profile {
-          ...TemplateProviderProfile
-        }
+      nameID
+      profile {
+        ...TemplateProviderProfile
       }
     }
   }

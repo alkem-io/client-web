@@ -58,7 +58,7 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
             profile: {
               displayName: '',
             },
-            provider: spaceData?.space.account.host,
+            provider: spaceData?.space.provider,
           },
         }))
         .filter(filterByText(filter)),

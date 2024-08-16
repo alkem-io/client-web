@@ -62,7 +62,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ open,
             profile: {
               displayName: '',
             },
-            provider: spaceData?.space.account.host,
+            provider: spaceData?.space.provider,
           },
         }))
       ),

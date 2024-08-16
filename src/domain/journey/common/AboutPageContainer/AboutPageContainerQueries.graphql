@@ -33,11 +33,8 @@ query AboutPageNonMembers($spaceId: UUID!) {
           ...VisualFull
         }
       }
-      account {
-        id
-        host {
-          ...ContributorDetails
-        }
+      provider {
+        ...ContributorDetails
       }
       metrics {
         ...MetricsItem

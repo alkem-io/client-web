@@ -78,10 +78,7 @@ const SpaceCommunityPage = () => {
     [leadUsers]
   );
 
-  const hostOrganizations = useMemo(
-    () => data?.space.account.host && [data?.space.account.host],
-    [data?.space.account.host]
-  );
+  const hostOrganizations = useMemo(() => data?.space.provider && [data.space.provider], [data?.space.provider]);
 
   const spacePrivileges = data?.space.authorization?.myPrivileges ?? [];
 
