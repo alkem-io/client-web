@@ -474,6 +474,7 @@ export type AgentKeySpecifier = (
   | 'credentials'
   | 'did'
   | 'id'
+  | 'type'
   | 'updatedDate'
   | 'verifiedCredentials'
   | AgentKeySpecifier
@@ -484,6 +485,7 @@ export type AgentFieldPolicy = {
   credentials?: FieldPolicy<any> | FieldReadFunction<any>;
   did?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   verifiedCredentials?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -3068,6 +3070,7 @@ export type StorageAggregatorKeySpecifier = (
   | 'size'
   | 'storageAggregators'
   | 'storageBuckets'
+  | 'type'
   | 'updatedDate'
   | StorageAggregatorKeySpecifier
 )[];
@@ -3080,6 +3083,7 @@ export type StorageAggregatorFieldPolicy = {
   size?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregators?: FieldPolicy<any> | FieldReadFunction<any>;
   storageBuckets?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageAggregatorParentKeySpecifier = (
