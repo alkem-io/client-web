@@ -98,7 +98,6 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
       <DialogWithGrid open={open} onClose={onClose} columns={isSmall ? 6 : 12} fullScreen={isMobile}>
         <DialogHeader onClose={onClose}>{t('plansTable.title')}</DialogHeader>
         <Gutters>
-          <Caption>{t('plansTable.subtitle')}</Caption>
           <GridContainer sameHeight disablePadding disableGap>
             {loading && <Loading text={t('common.loading')} />}
             {plansData.map(plan => {
