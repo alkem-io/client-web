@@ -621,6 +621,7 @@ export type AuthorizationKeySpecifier = (
   | 'id'
   | 'myPrivileges'
   | 'privilegeRules'
+  | 'type'
   | 'updatedDate'
   | 'verifiedCredentialRules'
   | AuthorizationKeySpecifier
@@ -632,6 +633,7 @@ export type AuthorizationFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   myPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   privilegeRules?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   verifiedCredentialRules?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -869,7 +871,6 @@ export type CollaborationKeySpecifier = (
   | 'groups'
   | 'id'
   | 'innovationFlow'
-  | 'relations'
   | 'tagsetTemplates'
   | 'timeline'
   | 'updatedDate'
@@ -882,7 +883,6 @@ export type CollaborationFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
-  relations?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsetTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1890,7 +1890,6 @@ export type MutationKeySpecifier = (
   | 'createOrganization'
   | 'createPostTemplate'
   | 'createReferenceOnProfile'
-  | 'createRelationOnCollaboration'
   | 'createSubspace'
   | 'createTagsetOnProfile'
   | 'createUser'
@@ -1917,7 +1916,6 @@ export type MutationKeySpecifier = (
   | 'deletePost'
   | 'deletePostTemplate'
   | 'deleteReference'
-  | 'deleteRelation'
   | 'deleteSpace'
   | 'deleteStorageBucket'
   | 'deleteUser'
@@ -2059,7 +2057,6 @@ export type MutationFieldPolicy = {
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createPostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
-  createRelationOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   createSubspace?: FieldPolicy<any> | FieldReadFunction<any>;
   createTagsetOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2086,7 +2083,6 @@ export type MutationFieldPolicy = {
   deletePost?: FieldPolicy<any> | FieldReadFunction<any>;
   deletePostTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteReference?: FieldPolicy<any> | FieldReadFunction<any>;
-  deleteRelation?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2646,29 +2642,6 @@ export type ReferenceFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   uri?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type RelationKeySpecifier = (
-  | 'actorName'
-  | 'actorRole'
-  | 'actorType'
-  | 'authorization'
-  | 'createdDate'
-  | 'description'
-  | 'id'
-  | 'type'
-  | 'updatedDate'
-  | RelationKeySpecifier
-)[];
-export type RelationFieldPolicy = {
-  actorName?: FieldPolicy<any> | FieldReadFunction<any>;
-  actorRole?: FieldPolicy<any> | FieldReadFunction<any>;
-  actorType?: FieldPolicy<any> | FieldReadFunction<any>;
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  description?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RelayPaginatedSpaceKeySpecifier = (
   | 'account'
@@ -4100,10 +4073,6 @@ export type StrictTypedTypePolicies = {
   Reference?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ReferenceKeySpecifier | (() => undefined | ReferenceKeySpecifier);
     fields?: ReferenceFieldPolicy;
-  };
-  Relation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | RelationKeySpecifier | (() => undefined | RelationKeySpecifier);
-    fields?: RelationFieldPolicy;
   };
   RelayPaginatedSpace?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RelayPaginatedSpaceKeySpecifier | (() => undefined | RelayPaginatedSpaceKeySpecifier);
