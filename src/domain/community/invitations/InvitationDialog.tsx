@@ -18,11 +18,12 @@ import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { useTranslation } from 'react-i18next';
 import { CommunityContributorType, VisualType } from '../../../core/apollo/generated/graphql-schema';
-import { Box, DialogActions, DialogContent } from '@mui/material';
+import { Box, DialogActions, DialogContent, useMediaQuery } from '@mui/material';
 import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
 import References from '../../shared/components/References/References';
 import { gutters } from '../../../core/ui/grid/utils';
 import FlexSpacer from '../../../core/ui/utils/FlexSpacer';
+import { theme } from '../../../core/ui/themes/default/Theme';
 
 interface InvitationDialogProps {
   open: boolean;
@@ -48,6 +49,8 @@ const InvitationDialog = ({
   actions,
 }: InvitationDialogProps) => {
   const { t } = useTranslation();
+
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const getTitle = (invitation: InvitationWithMeta) => {
     if (invitation.invitation.contributorType === CommunityContributorType.Virtual) {
@@ -83,7 +86,7 @@ const InvitationDialog = ({
               <>
                 <DialogHeader
                   title={
-                    <Gutters row disablePadding>
+                    <Gutters row disablePadding sx={{ whiteSpace: 'break-space' }}>
                       <HdrStrongOutlined fontSize="small" />
                       {getTitle(invitation)}
                     </Gutters>
@@ -91,7 +94,11 @@ const InvitationDialog = ({
                   onClose={onClose}
                 />
                 <DialogContent sx={{ padding: 0 }}>
-                  <Gutters paddingTop={0} row alignItems="start">
+                  <Gutters
+                    paddingTop={0}
+                    flexDirection={isMobile ? 'column' : 'row'}
+                    alignItems={isMobile ? 'center' : 'start'}
+                  >
                     <JourneyCard
                       iconComponent={journeyIcon[getChildJourneyTypeName(invitation.space)]}
                       header={invitation.space.profile.displayName}
