@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
-import { Menu } from '@mui/material';
+import { Box, Collapse, Menu } from '@mui/material';
 import {
   AuthorizationPrivilege,
   CalloutGroupName,
@@ -25,6 +25,10 @@ import {
   CheckCircleOutlined,
   DeleteOutline,
   EditOutlined,
+  KeyboardArrowRightOutlined,
+  ShareOutlined,
+  SwapVerticalCircleOutlined,
+  SwapVertOutlined,
   UnpublishedOutlined,
   VerticalAlignBottomOutlined,
   VerticalAlignTopOutlined,
@@ -39,11 +43,15 @@ import { LinkDetails } from '../links/LinkCollectionCallout';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
+import ExpandContentIcon from '../../../../core/ui/content/ExpandContent/ExpandContentIcon';
+import { ShareDialog } from '../../../shared/components/ShareDialog/ShareDialog';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;
   onOpenSettings: (event: React.MouseEvent<HTMLElement>) => void;
   onCloseSettings: () => void;
+  onOpenPosition: (event: React.MouseEvent<HTMLElement>) => void;
+  onClosePosition: () => void;
 }
 
 export interface CalloutSettingsContainerProps
@@ -96,6 +104,7 @@ export interface CalloutSettingsContainerProps
   };
   calloutNames: string[];
   expanded?: boolean;
+  onExpand?: () => void;
   journeyTypeName: JourneyTypeName;
 }
 
@@ -112,6 +121,7 @@ const CalloutSettingsContainer = ({
   onMoveToTop,
   onMoveToBottom,
   expanded = false,
+  onExpand,
   journeyTypeName,
   children,
 }: CalloutSettingsContainerProps) => {
@@ -147,6 +157,10 @@ const CalloutSettingsContainer = ({
     setSettingsAnchorEl(null);
   };
 
+  const handleSort = () => {
+    // TODO: Implement sorting in #5405
+  };
+
   const [handleDelete, loadingDelete] = useLoadingState(async () => {
     await onCalloutDelete?.(callout);
     setDeleteDialogOpen(false);
@@ -176,11 +190,24 @@ const CalloutSettingsContainer = ({
     },
     [onCalloutEdit, setEditDialogOpened]
   );
+  const [positionAnchorEl, setPositionAnchorEl] = useState<null | HTMLElement>(null);
+  const handlePositionOpened = (event: React.MouseEvent<HTMLElement>) => setPositionAnchorEl(event.currentTarget);
+  const handlePositionClose = () => {
+    setPositionDialogOpen(false);
+    setPositionAnchorEl(null);
+  };
+  const [positionDialogOpen, setPositionDialogOpen] = useState(false);
+  const handlePositionDialogOpen = () => {
+    setPositionDialogOpen(true);
+    setPositionAnchorEl(null);
+  };
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
   const dontShow = callout.draft && !callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
 
   const handleMove = (callback?: (id: string) => void) => () => {
     handleSettingsClose();
+    handlePositionClose();
     callback?.(callout.id);
   };
 
@@ -194,6 +221,8 @@ const CalloutSettingsContainer = ({
         settingsOpen: settingsOpened,
         onOpenSettings: handleSettingsOpened,
         onCloseSettings: handleSettingsClose,
+        onOpenPosition: handlePositionOpened,
+        onClosePosition: handlePositionClose,
       })}
       <Menu
         id="callout-settings-menu"
@@ -206,65 +235,55 @@ const CalloutSettingsContainer = ({
           horizontal: 'right',
         }}
       >
-        <MenuItemWithIcon key="edit" iconComponent={EditOutlined} onClick={handleEditDialogOpen}>
-          {t('buttons.edit')}
-        </MenuItemWithIcon>
-        <MenuItemWithIcon
-          key="publish"
-          iconComponent={callout.draft ? CheckCircleOutlined : UnpublishedOutlined}
-          onClick={handleVisibilityDialogOpen}
-        >
-          {t(`buttons.${callout.draft ? '' : 'un'}publish` as const)}
-        </MenuItemWithIcon>
-        <MenuItemWithIcon key="delete" iconComponent={DeleteOutline} onClick={handleDeleteDialogOpen}>
-          {t('buttons.delete')}
-        </MenuItemWithIcon>
+        {callout.editable && (
+          <MenuItemWithIcon key="edit" iconComponent={EditOutlined} onClick={handleEditDialogOpen}>
+            {t('buttons.edit')}
+          </MenuItemWithIcon>
+        )}
+        {callout.editable && (
+          <MenuItemWithIcon
+            key="publish"
+            iconComponent={callout.draft ? CheckCircleOutlined : UnpublishedOutlined}
+            onClick={handleVisibilityDialogOpen}
+          >
+            {t(`buttons.${callout.draft ? '' : 'un'}publish` as const)}
+          </MenuItemWithIcon>
+        )}
+        {callout.editable && (
+          <MenuItemWithIcon key="delete" iconComponent={DeleteOutline} onClick={handleDeleteDialogOpen}>
+            {t('buttons.delete')}
+          </MenuItemWithIcon>
+        )}
+        {callout.editable && (
+          <MenuItemWithIcon key="sort" iconComponent={SwapVerticalCircleOutlined} onClick={handleSort}>
+            {t('callout.sortContributions')}
+          </MenuItemWithIcon>
+        )}
         {callout.canSaveAsTemplate && (
           <MenuItemWithIcon
             key="saveAsTemplate"
             iconComponent={DownloadForOfflineOutlinedIcon}
             onClick={handleSaveAsTemplateDialogOpen}
           >
-            {t('buttons.saveAsTemplate')}
+            {t('callout.saveAsCallout')}
           </MenuItemWithIcon>
         )}
-        {!expanded &&
-          callout.movable && [
-            /* Put MenuItems into an array to avoid a weird warning from MUI
-          https://stackoverflow.com/questions/75083605/mui-the-menu-component-doesnt-accept-a-fragment-as-a-child-consider-providing */
-            <MenuItemWithIcon
-              key="moveUp"
-              iconComponent={ArrowUpwardOutlined}
-              onClick={handleMove(onMoveUp)}
-              disabled={topCallout}
-            >
-              {t('buttons.moveUp')}
-            </MenuItemWithIcon>,
-            <MenuItemWithIcon
-              key="moveDown"
-              iconComponent={ArrowDownwardOutlined}
-              onClick={handleMove(onMoveDown)}
-              disabled={bottomCallout}
-            >
-              {t('buttons.moveDown')}
-            </MenuItemWithIcon>,
-            <MenuItemWithIcon
-              key="moveToTop"
-              iconComponent={VerticalAlignTopOutlined}
-              onClick={handleMove(onMoveToTop)}
-              disabled={topCallout}
-            >
-              {t('buttons.moveToTop')}
-            </MenuItemWithIcon>,
-            <MenuItemWithIcon
-              key="moveToBottom"
-              iconComponent={VerticalAlignBottomOutlined}
-              onClick={handleMove(onMoveToBottom)}
-              disabled={bottomCallout}
-            >
-              {t('buttons.moveToBottom')}
-            </MenuItemWithIcon>,
-          ]}
+        {callout.movable && (
+          <MenuItemWithIcon key="toolPosition" iconComponent={SwapVertOutlined} onClick={handlePositionDialogOpen}>
+            <Box display="flex" alignItems="center">
+              {t('buttons.toolPosition')}
+              {positionDialogOpen && <KeyboardArrowRightOutlined fontSize="small" />}
+            </Box>
+          </MenuItemWithIcon>
+        )}
+        {!expanded && (
+          <MenuItemWithIcon key="expand" iconComponent={ExpandContentIcon} onClick={onExpand}>
+            {t('common.fullScreen')}
+          </MenuItemWithIcon>
+        )}
+        <MenuItemWithIcon key="share" iconComponent={ShareOutlined} onClick={() => setShareDialogOpen(true)}>
+          {t('buttons.share')}
+        </MenuItemWithIcon>
       </Menu>
       <CalloutVisibilityChangeDialog
         open={visibilityDialogOpen}
@@ -280,6 +299,58 @@ const CalloutSettingsContainer = ({
         open={saveAsTemplateDialogOpen}
         onClose={() => setSaveAsTemplateDialogOpen(false)}
         onSubmit={handleSaveAsTemplate}
+      />
+      <Collapse in={positionDialogOpen} timeout="auto" unmountOnExit>
+        <Menu
+          id="callout-position-menu"
+          aria-labelledby="callout-position-button"
+          anchorEl={positionAnchorEl}
+          open={positionDialogOpen}
+          onClose={handlePositionClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+        >
+          <MenuItemWithIcon
+            key="moveUp"
+            iconComponent={ArrowUpwardOutlined}
+            onClick={handleMove(onMoveUp)}
+            disabled={topCallout}
+          >
+            {t('buttons.moveUp')}
+          </MenuItemWithIcon>
+          <MenuItemWithIcon
+            key="moveDown"
+            iconComponent={ArrowDownwardOutlined}
+            onClick={handleMove(onMoveDown)}
+            disabled={bottomCallout}
+          >
+            {t('buttons.moveDown')}
+          </MenuItemWithIcon>
+          <MenuItemWithIcon
+            key="moveToTop"
+            iconComponent={VerticalAlignTopOutlined}
+            onClick={handleMove(onMoveToTop)}
+            disabled={topCallout}
+          >
+            {t('buttons.moveToTop')}
+          </MenuItemWithIcon>
+          <MenuItemWithIcon
+            key="moveToBottom"
+            iconComponent={VerticalAlignBottomOutlined}
+            onClick={handleMove(onMoveToBottom)}
+            disabled={bottomCallout}
+          >
+            {t('buttons.moveToBottom')}
+          </MenuItemWithIcon>
+        </Menu>
+      </Collapse>
+      <ShareDialog
+        open={shareDialogOpen}
+        entityTypeName="callout"
+        url={callout.framing.profile.url}
+        onClose={() => setShareDialogOpen(false)}
       />
       {!!onCalloutDelete && (
         <CalloutEditDialog

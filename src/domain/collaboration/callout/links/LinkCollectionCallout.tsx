@@ -201,6 +201,7 @@ const LinkCollectionCallout = ({
         calloutNames={calloutNames}
         journeyTypeName={journeyTypeName}
         expanded={expanded}
+        onExpand={onExpand}
         {...calloutLayoutProps}
       >
         {calloutSettingsProps => (
