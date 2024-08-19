@@ -17,7 +17,6 @@ interface CalloutsGroupProps extends CalloutsViewProps {
 
 const CalloutsGroupView = ({
   journeyId,
-  calloutNames,
   canCreateCallout,
   groupName,
   flowState,
@@ -50,7 +49,7 @@ const CalloutsGroupView = ({
   return (
     <>
       {canCreateCallout && createButtonPlace === 'top' && createButton}
-      <CalloutsView calloutNames={calloutNames} journeyTypeName={journeyTypeName} {...calloutsViewProps} />
+      <CalloutsView journeyTypeName={journeyTypeName} {...calloutsViewProps} />
       {canCreateCallout && createButtonPlace === 'bottom' && createButton}
       <CalloutCreationDialog
         open={isCalloutCreationDialogOpen}

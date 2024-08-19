@@ -24,7 +24,6 @@ interface SubspaceHomeViewProps {
   currentInnovationFlowState: string | undefined;
   callouts: TypedCallout[] | undefined;
   canCreateCallout: boolean;
-  calloutNames: string[];
   loading: boolean;
   refetchCallout: (calloutId: string) => void;
   onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
@@ -38,7 +37,6 @@ const SubspaceHomeView = ({
   currentInnovationFlowState,
   callouts,
   canCreateCallout,
-  calloutNames,
   loading,
   onCalloutsSortOrderUpdate,
   refetchCallout,
@@ -125,7 +123,6 @@ const SubspaceHomeView = ({
         canCreateCallout={canCreateCallout && isMobile}
         loading={loading}
         journeyTypeName={journeyTypeName}
-        calloutNames={calloutNames}
         onSortOrderUpdate={onCalloutsSortOrderUpdate}
         onCalloutUpdate={refetchCallout}
         groupName={CalloutGroupName.Home}
