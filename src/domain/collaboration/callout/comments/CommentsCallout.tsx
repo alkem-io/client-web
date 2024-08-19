@@ -90,7 +90,7 @@ const CommentsCallout = ({
   const lastMessageOnly = breakpoint === 'xs' && !expanded;
 
   return (
-    <CalloutSettingsContainer callout={callout} expanded={expanded} {...calloutSettingsProps}>
+    <CalloutSettingsContainer callout={callout} expanded={expanded} onExpand={onExpand} {...calloutSettingsProps}>
       {calloutSettingsProvided => (
         <CommentsCalloutLayout
           callout={callout}

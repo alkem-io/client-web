@@ -65,7 +65,7 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
     const isMobile = breakpoint === 'xs';
 
     return (
-      <CalloutSettingsContainer callout={callout} expanded={expanded} {...calloutSettingsProps}>
+      <CalloutSettingsContainer callout={callout} expanded={expanded} onExpand={onExpand} {...calloutSettingsProps}>
         {calloutSettingsProvided => (
           <CalloutLayout
             contentRef={ref}

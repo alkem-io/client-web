@@ -27,7 +27,7 @@ import {
   EditOutlined,
   KeyboardArrowRightOutlined,
   ShareOutlined,
-  SwapVerticalCircleOutlined,
+  // SwapVerticalCircleOutlined,
   SwapVertOutlined,
   UnpublishedOutlined,
   VerticalAlignBottomOutlined,
@@ -45,13 +45,12 @@ import useLoadingState from '../../../shared/utils/useLoadingState';
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
 import ExpandContentIcon from '../../../../core/ui/content/ExpandContent/ExpandContentIcon';
 import { ShareDialog } from '../../../shared/components/ShareDialog/ShareDialog';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;
   onOpenSettings: (event: React.MouseEvent<HTMLElement>) => void;
   onCloseSettings: () => void;
-  onOpenPosition: (event: React.MouseEvent<HTMLElement>) => void;
-  onClosePosition: () => void;
 }
 
 export interface CalloutSettingsContainerProps
@@ -157,9 +156,8 @@ const CalloutSettingsContainer = ({
     setSettingsAnchorEl(null);
   };
 
-  const handleSort = () => {
-    // TODO: Implement sorting in #5405
-  };
+  // TODO: Implement sorting in #5405
+  // const handleSort = () => {};
 
   const [handleDelete, loadingDelete] = useLoadingState(async () => {
     await onCalloutDelete?.(callout);
@@ -191,15 +189,14 @@ const CalloutSettingsContainer = ({
     [onCalloutEdit, setEditDialogOpened]
   );
   const [positionAnchorEl, setPositionAnchorEl] = useState<null | HTMLElement>(null);
-  const handlePositionOpened = (event: React.MouseEvent<HTMLElement>) => setPositionAnchorEl(event.currentTarget);
   const handlePositionClose = () => {
     setPositionDialogOpen(false);
     setPositionAnchorEl(null);
   };
   const [positionDialogOpen, setPositionDialogOpen] = useState(false);
-  const handlePositionDialogOpen = () => {
+  const handlePositionDialogOpen = (event: React.MouseEvent<HTMLElement>) => {
     setPositionDialogOpen(true);
-    setPositionAnchorEl(null);
+    setPositionAnchorEl(event.target as HTMLElement);
   };
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
@@ -221,8 +218,6 @@ const CalloutSettingsContainer = ({
         settingsOpen: settingsOpened,
         onOpenSettings: handleSettingsOpened,
         onCloseSettings: handleSettingsClose,
-        onOpenPosition: handlePositionOpened,
-        onClosePosition: handlePositionClose,
       })}
       <Menu
         id="callout-settings-menu"
@@ -254,11 +249,12 @@ const CalloutSettingsContainer = ({
             {t('buttons.delete')}
           </MenuItemWithIcon>
         )}
-        {callout.editable && (
+        {/* TODO: Implement sorting in #5405 */}
+        {/* {callout.editable && (
           <MenuItemWithIcon key="sort" iconComponent={SwapVerticalCircleOutlined} onClick={handleSort}>
             {t('callout.sortContributions')}
           </MenuItemWithIcon>
-        )}
+        )} */}
         {callout.canSaveAsTemplate && (
           <MenuItemWithIcon
             key="saveAsTemplate"
@@ -272,12 +268,19 @@ const CalloutSettingsContainer = ({
           <MenuItemWithIcon key="toolPosition" iconComponent={SwapVertOutlined} onClick={handlePositionDialogOpen}>
             <Box display="flex" alignItems="center">
               {t('buttons.toolPosition')}
-              {positionDialogOpen && <KeyboardArrowRightOutlined fontSize="small" />}
+              {positionDialogOpen ? <KeyboardArrowRightOutlined fontSize="small" /> : <Box marginLeft={gutters()} />}
             </Box>
           </MenuItemWithIcon>
         )}
         {!expanded && (
-          <MenuItemWithIcon key="expand" iconComponent={ExpandContentIcon} onClick={onExpand}>
+          <MenuItemWithIcon
+            key="expand"
+            iconComponent={ExpandContentIcon}
+            onClick={() => {
+              onExpand?.();
+              setSettingsAnchorEl(null);
+            }}
+          >
             {t('common.fullScreen')}
           </MenuItemWithIcon>
         )}
@@ -302,13 +305,11 @@ const CalloutSettingsContainer = ({
       />
       <Collapse in={positionDialogOpen} timeout="auto" unmountOnExit>
         <Menu
-          id="callout-position-menu"
-          aria-labelledby="callout-position-button"
           anchorEl={positionAnchorEl}
           open={positionDialogOpen}
           onClose={handlePositionClose}
           anchorOrigin={{
-            vertical: 'bottom',
+            vertical: 'top',
             horizontal: 'right',
           }}
         >

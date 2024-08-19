@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import Authorship from '../../../../core/ui/authorship/Authorship';
 import { BlockTitle } from '../../../../core/ui/typography';
 import SkipLink from '../../../../core/ui/keyboardNavigation/SkipLink';
@@ -52,20 +54,47 @@ const CalloutHeader = ({
       actions={
         calloutActions ? (
           <>
-            <IconButton
-              id="callout-settings-button"
-              aria-label={t('common.settings')}
-              aria-haspopup="true"
-              aria-controls={settingsOpen ? 'callout-settings-menu' : undefined}
-              aria-expanded={settingsOpen ? 'true' : undefined}
-              onClick={onOpenSettings}
-            >
-              <MoreVertIcon color="primary" />
-            </IconButton>
-            {expanded && (
-              <IconButton onClick={onCollapse} aria-label={t('buttons.expandWindow')} aria-haspopup="true">
-                <Close />
-              </IconButton>
+            {expanded ? (
+              <>
+                <IconButton
+                  onClick={expanded ? onCollapse : onExpand}
+                  aria-label={t('buttons.expandWindow')}
+                  aria-haspopup="true"
+                >
+                  <Close />
+                </IconButton>
+                {callout.editable && (
+                  <IconButton
+                    id="callout-settings-button"
+                    aria-label={t('common.settings')}
+                    aria-haspopup="true"
+                    aria-controls={settingsOpen ? 'callout-settings-menu' : undefined}
+                    aria-expanded={settingsOpen ? 'true' : undefined}
+                    onClick={onOpenSettings}
+                  >
+                    <SettingsOutlinedIcon />
+                  </IconButton>
+                )}
+                <ShareButton url={callout.framing.profile.url} entityTypeName="callout" />
+              </>
+            ) : (
+              <>
+                <IconButton
+                  id="callout-settings-button"
+                  aria-label={t('common.settings')}
+                  aria-haspopup="true"
+                  aria-controls={settingsOpen ? 'callout-settings-menu' : undefined}
+                  aria-expanded={settingsOpen ? 'true' : undefined}
+                  onClick={onOpenSettings}
+                >
+                  <MoreVertIcon color="primary" />
+                </IconButton>
+                {expanded && (
+                  <IconButton onClick={onCollapse} aria-label={t('buttons.expandWindow')} aria-haspopup="true">
+                    <Close />
+                  </IconButton>
+                )}
+              </>
             )}
           </>
         ) : null
