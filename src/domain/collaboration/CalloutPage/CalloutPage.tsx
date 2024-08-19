@@ -164,7 +164,6 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
         <CalloutView
           callout={typedCalloutDetails}
           journeyTypeName={journeyTypeName}
-          calloutNames={[]}
           contributionsCount={typedCalloutDetails.activity}
           onVisibilityChange={handleVisibilityChange}
           onCalloutEdit={handleEdit}

@@ -23,7 +23,6 @@ export interface CalloutEditDialogProps {
   onDelete: (callout: CalloutDeleteType) => void;
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
   canChangeCalloutLocation?: boolean;
-  calloutNames: string[];
   journeyTypeName: JourneyTypeName;
 }
 
@@ -35,7 +34,6 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   onDelete,
   onCalloutEdit,
   canChangeCalloutLocation,
-  calloutNames,
   journeyTypeName,
 }) => {
   const { t } = useTranslation();
@@ -109,7 +107,6 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
             <CalloutForm
               calloutType={calloutType}
               callout={initialValues}
-              calloutNames={calloutNames}
               editMode
               onStatusChanged={handleStatusChanged}
               onChange={handleChange}

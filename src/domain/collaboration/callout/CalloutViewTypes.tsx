@@ -26,7 +26,6 @@ export interface CalloutLayoutEvents extends Partial<CalloutSortEvents> {
 
 export interface BaseCalloutViewProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
   journeyTypeName: JourneyTypeName;
-  calloutNames: string[];
   contributionsCount: number;
   loading?: boolean;
   canCreate?: boolean;
