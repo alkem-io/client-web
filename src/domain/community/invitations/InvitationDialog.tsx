@@ -86,7 +86,7 @@ const InvitationDialog = ({
               <>
                 <DialogHeader
                   title={
-                    <Gutters row disablePadding sx={{ whiteSpace: 'break-space' }}>
+                    <Gutters row disablePadding sx={{ whiteSpace: 'break-spaces' }}>
                       <HdrStrongOutlined fontSize="small" />
                       {getTitle(invitation)}
                     </Gutters>
