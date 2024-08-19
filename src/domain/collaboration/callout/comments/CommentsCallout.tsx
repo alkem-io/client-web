@@ -26,7 +26,6 @@ interface CommentsCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'] & {
     comments: CommentsCalloutData | undefined;
   };
-  calloutNames: string[];
   calloutActions?: boolean;
 }
 

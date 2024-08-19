@@ -106,7 +106,6 @@ const SpaceSubspacesPage: FC<SpaceSubspacesPageProps> = () => {
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}
                 journeyTypeName="space"
-                calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
                 groupName={CalloutGroupName.Subspaces}

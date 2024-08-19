@@ -101,7 +101,6 @@ export interface CalloutSettingsContainerProps
     authorAvatarUri?: string;
     publishedAt?: string;
   };
-  calloutNames: string[];
   expanded?: boolean;
   onExpand?: () => void;
   journeyTypeName: JourneyTypeName;
@@ -112,7 +111,6 @@ const CalloutSettingsContainer = ({
   onVisibilityChange,
   onCalloutEdit,
   onCalloutDelete,
-  calloutNames,
   topCallout,
   bottomCallout,
   onMoveUp,
@@ -362,7 +360,6 @@ const CalloutSettingsContainer = ({
           onCalloutEdit={handleCalloutEdit}
           onDelete={() => setDeleteDialogOpen(true)}
           canChangeCalloutLocation
-          calloutNames={calloutNames}
           journeyTypeName={journeyTypeName}
         />
       )}

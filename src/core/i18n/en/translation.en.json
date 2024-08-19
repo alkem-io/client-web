@@ -352,6 +352,7 @@
     "virtual-contributors": "VC",
     "virtual-contributor": "Virtual Contributor",
     "collaborationTool": "Collaboration tool",
+    "optional": "optional",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -2837,7 +2838,6 @@
   },
   "createSpace": {
     "title": "Create a Space",
-    "subtitle": "To create a safe environment to train your Virtual Contributor, you first need to create a Space. Enter the details for this Space below.",
     "terms": {
       "checkboxLabel": "I have read and accept the <terms>terms and agreements (click here to open them)</terms> for creating a Space.",
       "dialogTitle": "Terms and Conditions for creating a Space",
