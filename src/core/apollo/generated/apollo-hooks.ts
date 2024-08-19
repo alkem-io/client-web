@@ -14000,6 +14000,10 @@ export const UserAccountDocument = gql`
   query UserAccount($userId: UUID_NAMEID_EMAIL!) {
     user(ID: $userId) {
       id
+      profile {
+        id
+        displayName
+      }
       accounts {
         id
         spaceID

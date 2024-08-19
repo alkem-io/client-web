@@ -27,6 +27,7 @@ import { useUserContext } from '../hooks/useUserContext';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import { compact } from 'lodash';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
+import CreateInnovationHubDialog from '../../../innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
 
 interface UserAccountPageProps {}
 
@@ -46,10 +47,12 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
   const isMyProfile = data?.user.id === currentUser?.user.id;
   const canCreateSpace =
     isMyProfile && currentUser && currentUser.hasPlatformPrivilege(AuthorizationPrivilege.CreateSpace);
+  const canCreateInnovationHub = currentUser && currentUser.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin);
 
   const accounts = data?.user?.accounts ?? [];
   // TODO: This will not be needed when we have multiple spaces per account and a single account per user
   const accountId = accounts[0]?.id;
+  const accountHostName = data?.user.profile?.displayName;
 
   const { spaceIds, virtualContributors, innovationPacks, innovationHubs } = useMemo(
     () => ({
@@ -117,13 +120,16 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
           {!loading && innovationPacks?.map(pack => <InnovationPackCardHorizontal {...pack} />)}
           <Actions>{isMyProfile && accountId && <CreateInnovationPackDialog accountId={accountId} />}</Actions>
         </PageContentBlock>
-        {innovationHubs.length > 0 && (
-          <PageContentBlock halfWidth>
-            <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
-            {loading && <InnovationHubCardHorizontalSkeleton />}
-            {!loading && innovationHubs?.map(hub => <InnovationHubCardHorizontal {...hub} />)}
-          </PageContentBlock>
-        )}
+        <PageContentBlock halfWidth>
+          <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
+          {loading && <InnovationHubCardHorizontalSkeleton />}
+          {!loading && innovationHubs?.map(hub => <InnovationHubCardHorizontal {...hub} />)}
+          <Actions>
+            {canCreateInnovationHub && accountId && (
+              <CreateInnovationHubDialog accountId={accountId} accountHostName={accountHostName} />
+            )}
+          </Actions>
+        </PageContentBlock>
       </PageContentColumn>
     </UserSettingsLayout>
   );

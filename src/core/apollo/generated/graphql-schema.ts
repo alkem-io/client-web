@@ -18520,6 +18520,7 @@ export type UserAccountQuery = {
   user: {
     __typename?: 'User';
     id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
     accounts: Array<{
       __typename?: 'Account';
       id: string;

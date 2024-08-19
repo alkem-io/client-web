@@ -1994,6 +1994,7 @@
         "saved-successfully": "Saved Successfully"
       },
       "innovationHubs": {
+        "create": "Create Innovation Hub",
         "fields": {
           "host": "Host Account",
           "subdomain": "Subdomain"
