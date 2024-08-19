@@ -81,7 +81,6 @@ const KnowledgeBasePage = () => {
               onClose={handleCreateCalloutClosed}
               onCreateCallout={handleCreateCallout}
               loading={loadingCalloutCreation}
-              calloutNames={calloutNames}
               groupName={CalloutGroupName.Knowledge}
               journeyTypeName="space"
             />

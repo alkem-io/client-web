@@ -137,7 +137,6 @@ const SubspaceHomeView = ({
         onClose={handleCreateCalloutClosed}
         onCreateCallout={handleCreateCallout}
         loading={loading}
-        calloutNames={calloutNames}
         groupName={CalloutGroupName.Home}
         journeyTypeName={journeyTypeName}
         flowState={selectedInnovationFlowState}

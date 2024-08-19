@@ -57,7 +57,6 @@ const CalloutsGroupView = ({
         onClose={handleCreateCalloutClosed}
         onCreateCallout={handleCreateCallout}
         loading={loading}
-        calloutNames={calloutNames}
         groupName={groupName}
         flowState={flowState}
         journeyTypeName={journeyTypeName}
