@@ -96,19 +96,8 @@ const PostForm: FC<PostFormProps> = ({
     [post?.id]
   );
 
-  const uniqueNameValidator = yup
-    .string()
-    .required(t('common.field-required'))
-    .test('is-valid-name', t('components.post-creation.info-step.unique-name-validation-text'), value => {
-      if (edit) {
-        return Boolean(value && (!postNames?.includes(value) || value === post?.profileData?.displayName));
-      } else {
-        return Boolean(value && !postNames?.includes(value));
-      }
-    });
-
   const validationSchema = yup.object().shape({
-    name: displayNameValidator.concat(uniqueNameValidator),
+    name: displayNameValidator,
     description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH).required(),
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentSchema,
