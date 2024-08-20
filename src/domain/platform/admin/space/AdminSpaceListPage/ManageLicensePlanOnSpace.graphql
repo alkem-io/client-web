@@ -1,0 +1,23 @@
+mutation AssignLicensePlanToSpace($licensePlanId: UUID!, $spaceId: UUID!) {
+  assignLicensePlanToSpace(planData: {
+    spaceID: $spaceId
+    licensePlanID: $licensePlanId
+  }) {
+    id
+    subscriptions {
+      name
+    }
+  }
+}
+
+mutation RevokeLicensePlanFromSpace($licensePlanId: UUID!, $spaceId: UUID!) {
+  revokeLicensePlanFromSpace(planData: {
+    spaceID: $spaceId
+    licensePlanID: $licensePlanId
+  }) {
+    id
+    subscriptions {
+      name
+    }
+  }
+}

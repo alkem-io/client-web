@@ -11,6 +11,10 @@ query SpaceAccount($spaceId: UUID!) {
         myPrivileges
       }
       visibility
+      activeSubscription {
+        name
+        expires
+      }
       account {
         id
         host {
@@ -30,10 +34,7 @@ query SpaceAccount($spaceId: UUID!) {
             url
           }
         }
-        activeSubscription {
-          name
-          expires
-        }
+
       }
     }
   }
