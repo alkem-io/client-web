@@ -29,6 +29,8 @@ import { compact } from 'lodash';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 import CreateInnovationHubDialog from '../../../innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
 
+const SPACE_COUNT_LIMIT = 3;
+
 interface UserAccountPageProps {}
 
 export const UserAccountPage: FC<UserAccountPageProps> = () => {
@@ -44,13 +46,8 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
     skip: !userNameId,
   });
 
-  const isMyProfile = data?.user.id === currentUser?.user.id;
-  const canCreateSpace =
-    isMyProfile && currentUser && currentUser.hasPlatformPrivilege(AuthorizationPrivilege.CreateSpace);
-  const canCreateInnovationHub = currentUser && currentUser.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin);
-
-  const accounts = data?.user?.accounts ?? [];
   // TODO: This will not be needed when we have multiple spaces per account and a single account per user
+  const accounts = data?.user?.accounts ?? [];
   const accountId = accounts[0]?.id;
   const accountHostName = data?.user.profile?.displayName;
 
@@ -71,12 +68,26 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
     skip: !spaceIds.length,
   });
 
+  const isMyProfile = data?.user.id === currentUser?.user.id;
+  const privileges = accounts[0]?.authorization?.myPrivileges ?? [];
+  const isPlatformAdmin = privileges.includes(AuthorizationPrivilege.PlatformAdmin);
+
+  const isSpaceLimitReached = spaceIds.length >= SPACE_COUNT_LIMIT;
+  const canCreateSpace =
+    (isMyProfile && privileges.includes(AuthorizationPrivilege.Create) && !isSpaceLimitReached) || isPlatformAdmin;
+
+  // TODO: CREATE_INNOVATION_PACK & CREATE_INNOVATION_HUB privileges to be implemented and used
+  // const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack);
+  const canCreateInnovationPack =
+    (isMyProfile && privileges.includes(AuthorizationPrivilege.Create)) || isPlatformAdmin;
+  const canCreateInnovationHub = isPlatformAdmin;
+
   return (
     <UserSettingsLayout currentTab={SettingsSection.Account}>
       <PageContentColumn columns={12}>
         <PageContentBlock halfWidth>
           <BlockTitle>{t('pages.admin.generic.sections.account.hostedSpaces')}</BlockTitle>
-          <Gutters disablePadding>
+          <Gutters disablePadding disableGap>
             {spacesLoading && <JourneyCardHorizontalSkeleton />}
             {!spacesLoading &&
               spacesData?.spaces.map(space => (
@@ -118,7 +129,9 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
           <BlockTitle>{t('pages.admin.generic.sections.account.innovationPacks')}</BlockTitle>
           {loading && <InnovationPackCardHorizontalSkeleton />}
           {!loading && innovationPacks?.map(pack => <InnovationPackCardHorizontal {...pack} />)}
-          <Actions>{isMyProfile && accountId && <CreateInnovationPackDialog accountId={accountId} />}</Actions>
+          <Actions>
+            {canCreateInnovationPack && accountId && <CreateInnovationPackDialog accountId={accountId} />}
+          </Actions>
         </PageContentBlock>
         <PageContentBlock halfWidth>
           <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>

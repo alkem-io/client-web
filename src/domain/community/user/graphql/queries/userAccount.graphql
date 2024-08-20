@@ -8,6 +8,9 @@ query UserAccount($userId: UUID_NAMEID_EMAIL!) {
     accounts {
       id
       spaceID
+      authorization {
+        myPrivileges
+      }
       virtualContributors {
         id
         profile {

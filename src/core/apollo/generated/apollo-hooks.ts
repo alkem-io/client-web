@@ -14007,6 +14007,9 @@ export const UserAccountDocument = gql`
       accounts {
         id
         spaceID
+        authorization {
+          myPrivileges
+        }
         virtualContributors {
           id
           profile {

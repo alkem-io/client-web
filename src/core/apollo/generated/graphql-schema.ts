@@ -662,15 +662,19 @@ export type AiPersonaServiceIngestInput = {
 export type AiPersonaServiceQuestionInput = {
   /** Virtual Persona Type. */
   aiPersonaServiceID: Scalars['UUID'];
-  /** The ID of the context, the Virtual Persona is asked a question */
+  /** The ID of the context, the Virtual Persona is asked a question. */
   contextID?: InputMaybe<Scalars['String']>;
-  /** The Virtual Contributor interaciton part of which is this question */
+  /** The Virtual Contributor description. */
+  description?: InputMaybe<Scalars['String']>;
+  /** The Virtual Contributor displayName. */
+  displayName: Scalars['String'];
+  /** The Virtual Contributor interaciton part of which is this question. */
   interactionID?: InputMaybe<Scalars['String']>;
   /** The question that is being asked. */
   question: Scalars['String'];
-  /** The ID of the message thread where the Virtual Contributor is asked a question if applicable */
+  /** The ID of the message thread where the Virtual Contributor is asked a question if applicable. */
   threadID?: InputMaybe<Scalars['String']>;
-  /** User identifier used internaly by the engine */
+  /** User identifier used internaly by the engine. */
   userID?: InputMaybe<Scalars['String']>;
 };
 
@@ -18525,6 +18529,9 @@ export type UserAccountQuery = {
       __typename?: 'Account';
       id: string;
       spaceID?: string | undefined;
+      authorization?:
+        | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
       virtualContributors: Array<{
         __typename?: 'VirtualContributor';
         id: string;
