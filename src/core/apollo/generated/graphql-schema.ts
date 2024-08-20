@@ -18525,12 +18525,17 @@ export type UserAccountQuery = {
     __typename?: 'User';
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
+    agent: {
+      __typename?: 'Agent';
+      id: string;
+      credentials?: Array<{ __typename?: 'Credential'; id: string; type: CredentialType }> | undefined;
+    };
     accounts: Array<{
       __typename?: 'Account';
       id: string;
       spaceID?: string | undefined;
       authorization?:
-        | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
       virtualContributors: Array<{
         __typename?: 'VirtualContributor';

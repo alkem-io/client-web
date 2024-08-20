@@ -5,10 +5,18 @@ query UserAccount($userId: UUID_NAMEID_EMAIL!) {
         id
         displayName
     }
+    agent {
+        id
+        credentials {
+            id
+            type
+        }
+    }
     accounts {
       id
       spaceID
       authorization {
+        id
         myPrivileges
       }
       virtualContributors {

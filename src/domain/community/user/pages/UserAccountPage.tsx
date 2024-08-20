@@ -24,10 +24,12 @@ import CreateInnovationPackDialog from '../../../platform/admin/templates/Innova
 import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDialog';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useUserContext } from '../hooks/useUserContext';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CredentialType } from '../../../../core/apollo/generated/graphql-schema';
 import { compact } from 'lodash';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 import CreateInnovationHubDialog from '../../../innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
+import useNewVirtualContributorWizard from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
+import { VIRTUAL_CONTRIBUTORS_LIMIT } from '../../../../main/topLevelPages/myDashboard/myAccount/MyAccountBlockVCCampaignUser';
 
 const SPACE_COUNT_LIMIT = 3;
 
@@ -38,6 +40,7 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
   const { user: currentUser } = useUserContext();
   const { t } = useTranslation();
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
 
   const { data, loading } = useUserAccountQuery({
     variables: {
@@ -71,16 +74,22 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
   const isMyProfile = data?.user.id === currentUser?.user.id;
   const privileges = accounts[0]?.authorization?.myPrivileges ?? [];
   const isPlatformAdmin = privileges.includes(AuthorizationPrivilege.PlatformAdmin);
+  const vcCampaignUser = data?.user?.agent.credentials
+    ?.map(credential => credential.type)
+    .includes(CredentialType.VcCampaign);
 
   const isSpaceLimitReached = spaceIds.length >= SPACE_COUNT_LIMIT;
-  const canCreateSpace =
-    (isMyProfile && privileges.includes(AuthorizationPrivilege.Create) && !isSpaceLimitReached) || isPlatformAdmin;
+  // currently creation is available only for accounts owned by the user
+  const canCreateSpace = isMyProfile && privileges.includes(AuthorizationPrivilege.Create) && !isSpaceLimitReached;
 
   // TODO: CREATE_INNOVATION_PACK & CREATE_INNOVATION_HUB privileges to be implemented and used
   // const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack);
   const canCreateInnovationPack =
     (isMyProfile && privileges.includes(AuthorizationPrivilege.Create)) || isPlatformAdmin;
   const canCreateInnovationHub = isPlatformAdmin;
+  const isVCLimitReached = virtualContributors.length >= VIRTUAL_CONTRIBUTORS_LIMIT;
+  // currently creation is available only for accounts owned by the user
+  const canCreateVirtualContributor = isMyProfile && vcCampaignUser && !isVCLimitReached;
 
   return (
     <UserSettingsLayout currentTab={SettingsSection.Account}>
@@ -123,6 +132,14 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
           <Gutters disablePadding>
             {loading && <JourneyCardHorizontalSkeleton />}
             {!loading && virtualContributors?.map(vc => <ContributorCardHorizontal profile={vc.profile} seamless />)}
+            <Actions>
+              {canCreateVirtualContributor && (
+                <IconButton aria-label={t('common.add')} aria-haspopup="true" size="small" onClick={startWizard}>
+                  <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
+                </IconButton>
+              )}
+            </Actions>
+            <NewVirtualContributorWizard />
           </Gutters>
         </PageContentBlock>
         <PageContentBlock halfWidth>

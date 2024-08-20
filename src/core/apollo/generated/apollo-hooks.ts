@@ -14004,10 +14004,18 @@ export const UserAccountDocument = gql`
         id
         displayName
       }
+      agent {
+        id
+        credentials {
+          id
+          type
+        }
+      }
       accounts {
         id
         spaceID
         authorization {
+          id
           myPrivileges
         }
         virtualContributors {
