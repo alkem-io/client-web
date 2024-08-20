@@ -49,56 +49,54 @@ const CalloutHeader = ({
 
   const hasCalloutDetails = callout.authorName && callout.publishedAt;
 
+  const expandedActions = () => (
+    <>
+      <IconButton
+        onClick={expanded ? onCollapse : onExpand}
+        aria-label={t('buttons.expandWindow')}
+        aria-haspopup="true"
+      >
+        <Close />
+      </IconButton>
+      {callout.editable && (
+        <IconButton
+          id="callout-settings-button"
+          aria-label={t('common.settings')}
+          aria-haspopup="true"
+          aria-controls={settingsOpen ? 'callout-settings-menu' : undefined}
+          aria-expanded={settingsOpen ? 'true' : undefined}
+          onClick={onOpenSettings}
+        >
+          <SettingsOutlinedIcon />
+        </IconButton>
+      )}
+      <ShareButton url={callout.framing.profile.url} entityTypeName="callout" />
+    </>
+  );
+
+  const collapsedActions = () => (
+    <>
+      <IconButton
+        id="callout-settings-button"
+        aria-label={t('common.settings')}
+        aria-haspopup="true"
+        aria-controls={settingsOpen ? 'callout-settings-menu' : undefined}
+        aria-expanded={settingsOpen ? 'true' : undefined}
+        onClick={onOpenSettings}
+      >
+        <MoreVertIcon color="primary" />
+      </IconButton>
+      {expanded && (
+        <IconButton onClick={onCollapse} aria-label={t('buttons.expandWindow')} aria-haspopup="true">
+          <Close />
+        </IconButton>
+      )}
+    </>
+  );
+
   return (
     <DialogHeader
-      actions={
-        calloutActions ? (
-          <>
-            {expanded ? (
-              <>
-                <IconButton
-                  onClick={expanded ? onCollapse : onExpand}
-                  aria-label={t('buttons.expandWindow')}
-                  aria-haspopup="true"
-                >
-                  <Close />
-                </IconButton>
-                {callout.editable && (
-                  <IconButton
-                    id="callout-settings-button"
-                    aria-label={t('common.settings')}
-                    aria-haspopup="true"
-                    aria-controls={settingsOpen ? 'callout-settings-menu' : undefined}
-                    aria-expanded={settingsOpen ? 'true' : undefined}
-                    onClick={onOpenSettings}
-                  >
-                    <SettingsOutlinedIcon />
-                  </IconButton>
-                )}
-                <ShareButton url={callout.framing.profile.url} entityTypeName="callout" />
-              </>
-            ) : (
-              <>
-                <IconButton
-                  id="callout-settings-button"
-                  aria-label={t('common.settings')}
-                  aria-haspopup="true"
-                  aria-controls={settingsOpen ? 'callout-settings-menu' : undefined}
-                  aria-expanded={settingsOpen ? 'true' : undefined}
-                  onClick={onOpenSettings}
-                >
-                  <MoreVertIcon color="primary" />
-                </IconButton>
-                {expanded && (
-                  <IconButton onClick={onCollapse} aria-label={t('buttons.expandWindow')} aria-haspopup="true">
-                    <Close />
-                  </IconButton>
-                )}
-              </>
-            )}
-          </>
-        ) : null
-      }
+      actions={calloutActions ? (expanded ? expandedActions() : collapsedActions()) : null}
       titleContainerProps={{ display: 'block', position: 'relative' }}
     >
       {hasCalloutDetails && (

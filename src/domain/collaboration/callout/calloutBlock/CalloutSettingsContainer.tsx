@@ -282,9 +282,11 @@ const CalloutSettingsContainer = ({
             {t('common.fullScreen')}
           </MenuItemWithIcon>
         )}
-        <MenuItemWithIcon key="share" iconComponent={ShareOutlined} onClick={() => setShareDialogOpen(true)}>
-          {t('buttons.share')}
-        </MenuItemWithIcon>
+        {!expanded && (
+          <MenuItemWithIcon key="share" iconComponent={ShareOutlined} onClick={() => setShareDialogOpen(true)}>
+            {t('buttons.share')}
+          </MenuItemWithIcon>
+        )}
       </Menu>
       <CalloutVisibilityChangeDialog
         open={visibilityDialogOpen}
