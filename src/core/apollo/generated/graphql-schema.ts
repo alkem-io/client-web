@@ -22383,15 +22383,6 @@ export type SubspacesOnSpaceFragment = {
   }>;
 };
 
-export type CreateAccountMutationVariables = Exact<{
-  input: CreateAccountInput;
-}>;
-
-export type CreateAccountMutation = {
-  __typename?: 'Mutation';
-  createAccount: { __typename?: 'Account'; id: string; spaceID?: string | undefined };
-};
-
 export type DeleteSpaceMutationVariables = Exact<{
   input: DeleteSpaceInput;
 }>;

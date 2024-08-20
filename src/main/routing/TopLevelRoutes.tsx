@@ -27,7 +27,7 @@ import NonIdentity from '../../domain/platform/routes/NonIdentity';
 import useRedirectToIdentityDomain from '../../core/auth/authentication/routing/useRedirectToIdentityDomain';
 import { EntityPageLayoutHolder, NotFoundPageLayout, RenderPoint } from '../../domain/journey/common/EntityPageLayout';
 import RedirectToWelcomeSite from '../../domain/platform/routes/RedirectToWelcomeSite';
-import DashboardCreateSpaceDialog from '../../domain/journey/space/createSpace/DashboardCreateSpaceDialog';
+import CreateSpaceDialog from '../../domain/journey/space/createSpace/CreateSpaceDialog';
 import VCRoute from '../../domain/community/virtualContributor/VCRoute';
 import { TopLevelRoutePath } from './TopLevelRoutePath';
 
@@ -53,7 +53,7 @@ export const TopLevelRoutes: FC = () => {
               <WithApmTransaction path={TopLevelRoutePath.CreateSpace}>
                 <>
                   <HomePage />
-                  <DashboardCreateSpaceDialog />
+                  <CreateSpaceDialog />
                 </>
               </WithApmTransaction>
             </NonIdentity>
