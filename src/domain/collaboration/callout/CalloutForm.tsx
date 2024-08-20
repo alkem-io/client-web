@@ -88,14 +88,12 @@ export interface CalloutFormProps {
   onChange?: (callout: CalloutFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<FormValueType>['children'];
-  calloutNames: string[];
   journeyTypeName: JourneyTypeName;
 }
 
 const CalloutForm: FC<CalloutFormProps> = ({
   calloutType,
   callout,
-  calloutNames,
   editMode = false,
   canChangeCalloutLocation,
   onChange,
@@ -145,19 +143,8 @@ const CalloutForm: FC<CalloutFormProps> = ({
     [callout?.id, tagsets]
   );
 
-  const uniqueNameValidator = yup
-    .string()
-    .required(t('common.field-required'))
-    .test('is-valid-name', t('components.callout-creation.info-step.unique-title-validation-text'), value => {
-      if (editMode) {
-        return Boolean(value && (!calloutNames.includes(value) || value === callout?.displayName));
-      } else {
-        return Boolean(value && !calloutNames.includes(value));
-      }
-    });
-
   const validationSchema = yup.object().shape({
-    displayName: displayNameValidator.concat(uniqueNameValidator),
+    displayName: displayNameValidator,
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     type: yup.string().required(t('common.field-required')),
     opened: yup.boolean().required(),

@@ -182,7 +182,6 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
                 <CalloutView
                   callout={typedCalloutDetails}
                   journeyTypeName="space"
-                  calloutNames={[]}
                   contributionsCount={typedCalloutDetails.activity}
                   onCalloutUpdate={refetchCalloutData}
                   calloutActions={false}

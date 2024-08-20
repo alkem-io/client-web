@@ -51,7 +51,6 @@ export interface CalloutCreationDialogProps {
   onClose: () => void;
   onCreateCallout: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
   loading: boolean;
-  calloutNames: string[];
   groupName: CalloutGroupName;
   flowState?: string;
   journeyTypeName: JourneyTypeName;
@@ -62,7 +61,6 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   onClose,
   onCreateCallout,
   loading,
-  calloutNames,
   groupName,
   flowState,
   journeyTypeName,
@@ -245,7 +243,6 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             <CalloutForm
               calloutType={selectedCalloutType}
               callout={callout}
-              calloutNames={calloutNames}
               onChange={handleValueChange}
               onStatusChanged={handleStatusChange}
               journeyTypeName={journeyTypeName}

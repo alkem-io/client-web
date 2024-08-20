@@ -41,7 +41,6 @@ const KnowledgeBasePage = () => {
             canReadCallout,
             canCreateCallout,
             groupedCallouts,
-            calloutNames,
             onCalloutsSortOrderUpdate,
             refetchCallout,
           },
@@ -68,7 +67,6 @@ const KnowledgeBasePage = () => {
                     canCreateCallout={canCreateCallout}
                     loading={loading}
                     journeyTypeName="space"
-                    calloutNames={calloutNames}
                     onSortOrderUpdate={onCalloutsSortOrderUpdate}
                     onCalloutUpdate={refetchCallout}
                     groupName={CalloutGroupName.Knowledge}
@@ -81,7 +79,6 @@ const KnowledgeBasePage = () => {
               onClose={handleCreateCalloutClosed}
               onCreateCallout={handleCreateCallout}
               loading={loadingCalloutCreation}
-              calloutNames={calloutNames}
               groupName={CalloutGroupName.Knowledge}
               journeyTypeName="space"
             />
