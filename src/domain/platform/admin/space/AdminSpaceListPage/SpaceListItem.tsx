@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   refetchAdminSpacesListQuery,
-  useAssignLicensePlanToAccountMutation,
-  useRevokeLicensePlanFromAccountMutation,
+  useAssignLicensePlanToSpaceMutation,
+  useRevokeLicensePlanFromSpaceMutation,
   useUpdateSpacePlatformSettingsMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import ListItemLink, { ListItemLinkProps } from '../../../../shared/components/SearchableList/ListItemLink';
@@ -67,8 +67,8 @@ const SpaceListItem = ({
   };
 
   const [updateSpacePlatformSettings] = useUpdateSpacePlatformSettingsMutation();
-  const [assignLicensePlan] = useAssignLicensePlanToAccountMutation();
-  const [revokeLicensePlan] = useRevokeLicensePlanFromAccountMutation();
+  const [assignLicensePlan] = useAssignLicensePlanToSpaceMutation();
+  const [revokeLicensePlan] = useRevokeLicensePlanFromSpaceMutation();
 
   const [handleSubmit, saving] = useLoadingState(
     async ({ nameId, visibility }: Partial<AccountPlatformSettings & SpacePlatformSettings>) => {
@@ -169,12 +169,12 @@ const SpaceListItem = ({
             <PlansTable
               activeLicensePlanIds={activeLicensePlanIds}
               licensePlans={licensePlans}
-              onDelete={plan => revokeLicensePlan({ variables: { accountId, licensePlanId: plan.id } })}
+              onDelete={plan => revokeLicensePlan({ variables: { spaceId, licensePlanId: plan.id } })}
             />
           )}
           {licensePlans && (
             <AssignPlan
-              onAssignPlan={licensePlanId => assignLicensePlan({ variables: { accountId, licensePlanId } })}
+              onAssignPlan={licensePlanId => assignLicensePlan({ variables: { spaceId, licensePlanId } })}
               licensePlans={licensePlans}
             />
           )}

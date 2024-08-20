@@ -54,7 +54,7 @@ export const SpaceList: FC = () => {
           url: buildSettingsUrl(space.profile.url),
         }))
         .map(space => {
-          const activeLicenseCredentials = space.account.subscriptions.map(subscription => subscription.name);
+          const activeLicenseCredentials = space.subscriptions.map(subscription => subscription.name);
           // TODO filter out expired ones
           const activeLicensePlanIds = spacesData?.platform.licensing.plans
             .filter(({ licenseCredential }) => activeLicenseCredentials.includes(licenseCredential))
