@@ -2330,6 +2330,7 @@ export const ContextDetailsFragmentDoc = gql`
       id
       myPrivileges
       anonymousReadAccess
+      type
     }
   }
 `;
@@ -2393,6 +2394,7 @@ export const SpaceInfoFragmentDoc = gql`
       authorization {
         id
         myPrivileges
+        type
       }
     }
     visibility

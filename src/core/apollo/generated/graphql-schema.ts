@@ -552,7 +552,7 @@ export type Agent = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A type of entity that this Agent is being used with. */
-  type?: Maybe<AgentType>;
+  type: AgentType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** The Verfied Credentials for this Agent. */
@@ -658,15 +658,19 @@ export type AiPersonaServiceIngestInput = {
 export type AiPersonaServiceQuestionInput = {
   /** Virtual Persona Type. */
   aiPersonaServiceID: Scalars['UUID'];
-  /** The ID of the context, the Virtual Persona is asked a question */
+  /** The ID of the context, the Virtual Persona is asked a question. */
   contextID?: InputMaybe<Scalars['String']>;
-  /** The Virtual Contributor interaciton part of which is this question */
+  /** The Virtual Contributor description. */
+  description?: InputMaybe<Scalars['String']>;
+  /** The Virtual Contributor displayName. */
+  displayName: Scalars['String'];
+  /** The Virtual Contributor interaciton part of which is this question. */
   interactionID?: InputMaybe<Scalars['String']>;
   /** The question that is being asked. */
   question: Scalars['String'];
-  /** The ID of the message thread where the Virtual Contributor is asked a question if applicable */
+  /** The ID of the message thread where the Virtual Contributor is asked a question if applicable. */
   threadID?: InputMaybe<Scalars['String']>;
-  /** User identifier used internaly by the engine */
+  /** User identifier used internaly by the engine. */
   userID?: InputMaybe<Scalars['String']>;
 };
 
@@ -796,6 +800,8 @@ export type Authorization = {
   myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
   /** The set of privilege rules that are contained by this Authorization Policy. */
   privilegeRules?: Maybe<Array<AuthorizationPolicyRulePrivilege>>;
+  /** A type of entity that this Authorization Policy is being used with. */
+  type: AuthorizationPolicyType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** The set of verified credential rules that are contained by this Authorization Policy. */
@@ -843,6 +849,59 @@ export type AuthorizationPolicyRuleVerifiedCredential = {
   credentialName: Scalars['String'];
   grantedPrivileges: Array<AuthorizationPrivilege>;
 };
+
+export enum AuthorizationPolicyType {
+  Account = 'ACCOUNT',
+  Actor = 'ACTOR',
+  ActorGroup = 'ACTOR_GROUP',
+  Agent = 'AGENT',
+  AiPersona = 'AI_PERSONA',
+  AiPersonaService = 'AI_PERSONA_SERVICE',
+  Application = 'APPLICATION',
+  Calendar = 'CALENDAR',
+  CalendarEvent = 'CALENDAR_EVENT',
+  Callout = 'CALLOUT',
+  CalloutContribution = 'CALLOUT_CONTRIBUTION',
+  CalloutFraming = 'CALLOUT_FRAMING',
+  Collaboration = 'COLLABORATION',
+  Communication = 'COMMUNICATION',
+  Community = 'COMMUNITY',
+  CommunityGuidelines = 'COMMUNITY_GUIDELINES',
+  Context = 'CONTEXT',
+  Discussion = 'DISCUSSION',
+  Document = 'DOCUMENT',
+  EcosystemModel = 'ECOSYSTEM_MODEL',
+  Forum = 'FORUM',
+  InnovationFlow = 'INNOVATION_FLOW',
+  InnovationHub = 'INNOVATION_HUB',
+  InnovationPack = 'INNOVATION_PACK',
+  Invitation = 'INVITATION',
+  InMemory = 'IN_MEMORY',
+  Link = 'LINK',
+  Organization = 'ORGANIZATION',
+  OrganizationVerification = 'ORGANIZATION_VERIFICATION',
+  Platform = 'PLATFORM',
+  Post = 'POST',
+  Preference = 'PREFERENCE',
+  PreferenceSet = 'PREFERENCE_SET',
+  Profile = 'PROFILE',
+  Reference = 'REFERENCE',
+  Room = 'ROOM',
+  Space = 'SPACE',
+  SpaceDefaults = 'SPACE_DEFAULTS',
+  StorageAggregator = 'STORAGE_AGGREGATOR',
+  StorageBucket = 'STORAGE_BUCKET',
+  Tagset = 'TAGSET',
+  Template = 'TEMPLATE',
+  TemplatesSet = 'TEMPLATES_SET',
+  Timeline = 'TIMELINE',
+  Unknown = 'UNKNOWN',
+  User = 'USER',
+  UserGroup = 'USER_GROUP',
+  VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
+  Visual = 'VISUAL',
+  Whiteboard = 'WHITEBOARD',
+}
 
 export enum AuthorizationPrivilege {
   AccessDashboardRefresh = 'ACCESS_DASHBOARD_REFRESH',
@@ -1175,8 +1234,6 @@ export type Collaboration = {
   id: Scalars['UUID'];
   /** The InnovationFlow for the Collaboration. */
   innovationFlow: InnovationFlow;
-  /** List of relations */
-  relations?: Maybe<Array<Relation>>;
   /** The tagset templates on this Collaboration. */
   tagsetTemplates?: Maybe<Array<TagsetTemplate>>;
   /** The timeline with events in use by this Space */
@@ -1953,15 +2010,6 @@ export type CreateReferenceOnProfileInput = {
   uri?: InputMaybe<Scalars['String']>;
 };
 
-export type CreateRelationOnCollaborationInput = {
-  actorName: Scalars['String'];
-  actorRole?: InputMaybe<Scalars['String']>;
-  actorType?: InputMaybe<Scalars['String']>;
-  collaborationID: Scalars['UUID'];
-  description?: InputMaybe<Scalars['String']>;
-  type: Scalars['String'];
-};
-
 export type CreateSpaceOnAccountInput = {
   /** The Account where the Space is to be created. */
   accountID: Scalars['UUID'];
@@ -2195,10 +2243,6 @@ export type DeletePostTemplateInput = {
 
 export type DeleteReferenceInput = {
   ID: Scalars['UUID'];
-};
-
-export type DeleteRelationInput = {
-  ID: Scalars['String'];
 };
 
 export type DeleteSpaceInput = {
@@ -2779,6 +2823,8 @@ export type LookupByNameQueryResultsInnovationPackArgs = {
 
 export type LookupQueryResults = {
   __typename?: 'LookupQueryResults';
+  /** Lookup the specified Account */
+  account?: Maybe<Account>;
   /** Lookup the specified Application */
   application?: Maybe<Application>;
   /** Lookup the specified Authorization Policy */
@@ -2833,6 +2879,10 @@ export type LookupQueryResults = {
   whiteboard?: Maybe<Whiteboard>;
   /** Lookup the specified Whiteboard Template */
   whiteboardTemplate?: Maybe<WhiteboardTemplate>;
+};
+
+export type LookupQueryResultsAccountArgs = {
+  ID: Scalars['UUID'];
 };
 
 export type LookupQueryResultsApplicationArgs = {
@@ -3147,8 +3197,6 @@ export type Mutation = {
   createPostTemplate: PostTemplate;
   /** Creates a new Reference on the specified Profile. */
   createReferenceOnProfile: Reference;
-  /** Create a new Relation on the Collaboration. */
-  createRelationOnCollaboration: Relation;
   /** Creates a new Level Zero Space within the specified Account. */
   createSpace: Account;
   /** Creates a new Subspace within the specified Space. */
@@ -3203,8 +3251,6 @@ export type Mutation = {
   deletePostTemplate: PostTemplate;
   /** Deletes the specified Reference. */
   deleteReference: Reference;
-  /** Deletes the specified Relation. */
-  deleteRelation: Relation;
   /** Deletes the specified Space. */
   deleteSpace: Space;
   /** Deletes a Storage Bucket */
@@ -3553,10 +3599,6 @@ export type MutationCreateReferenceOnProfileArgs = {
   referenceInput: CreateReferenceOnProfileInput;
 };
 
-export type MutationCreateRelationOnCollaborationArgs = {
-  relationData: CreateRelationOnCollaborationInput;
-};
-
 export type MutationCreateSpaceArgs = {
   spaceData: CreateSpaceOnAccountInput;
 };
@@ -3659,10 +3701,6 @@ export type MutationDeletePostTemplateArgs = {
 
 export type MutationDeleteReferenceArgs = {
   deleteData: DeleteReferenceInput;
-};
-
-export type MutationDeleteRelationArgs = {
-  deleteData: DeleteRelationInput;
 };
 
 export type MutationDeleteSpaceArgs = {
@@ -4774,23 +4812,6 @@ export type RefreshVirtualContributorBodyOfKnowledgeInput = {
   virtualContributorID: Scalars['UUID'];
 };
 
-export type Relation = {
-  __typename?: 'Relation';
-  actorName: Scalars['String'];
-  actorRole: Scalars['String'];
-  actorType: Scalars['String'];
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']>;
-  description: Scalars['String'];
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  type: Scalars['String'];
-  /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']>;
-};
-
 export type RelayPaginatedSpace = {
   __typename?: 'RelayPaginatedSpace';
   /** The Account that this Space is part of. */
@@ -5411,6 +5432,7 @@ export type StorageAggregator = {
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
+/** Valid parent is Account, Space, User, Organization, Platform */
 export type StorageAggregatorParent = {
   __typename?: 'StorageAggregatorParent';
   /** The display name. */
@@ -19440,6 +19462,7 @@ export type ContextDetailsFragment = {
         id: string;
         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
         anonymousReadAccess: boolean;
+        type: AuthorizationPolicyType;
       }
     | undefined;
 };
@@ -21217,6 +21240,7 @@ export type SpaceDetailsFragment = {
           id: string;
           myPrivileges?: Array<AuthorizationPrivilege> | undefined;
           anonymousReadAccess: boolean;
+          type: AuthorizationPolicyType;
         }
       | undefined;
   };
@@ -21256,6 +21280,7 @@ export type SpaceProviderQuery = {
             __typename?: 'Authorization';
             id: string;
             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            type: AuthorizationPolicyType;
             anonymousReadAccess: boolean;
           }
         | undefined;
@@ -21349,6 +21374,7 @@ export type SpaceInfoFragment = {
           __typename?: 'Authorization';
           id: string;
           myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+          type: AuthorizationPolicyType;
           anonymousReadAccess: boolean;
         }
       | undefined;
@@ -22293,6 +22319,7 @@ export type UpdateSpaceMutation = {
             id: string;
             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
             anonymousReadAccess: boolean;
+            type: AuthorizationPolicyType;
           }
         | undefined;
     };
@@ -22505,6 +22532,7 @@ export type SubspaceProfileInfoQuery = {
                   id: string;
                   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                   anonymousReadAccess: boolean;
+                  type: AuthorizationPolicyType;
                 }
               | undefined;
           };

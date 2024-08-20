@@ -119,7 +119,7 @@ const newStorageAggregatorRow = (storageAggregator: LoadableStorageAggregatorFra
     return {
       id: storageAggregator.id,
       displayName: storageAggregator.parentEntity.displayName,
-      iconComponent: getStorageAggregatorParentIcon(storageAggregator.parentEntity.level),
+      iconComponent: getStorageAggregatorParentIcon(storageAggregator.parentEntity.level ?? SpaceLevel.Space),
       url: storageAggregator.parentEntity.url,
       size: 0,
       collapsible: true,
