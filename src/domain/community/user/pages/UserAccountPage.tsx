@@ -1,4 +1,6 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useMemo, useState } from 'react';
+import { IconButton } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import { useAccountSpacesQuery, useUserAccountQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -23,6 +25,7 @@ import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDia
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useUserContext } from '../hooks/useUserContext';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 
 interface UserAccountPageProps {}
 
@@ -30,6 +33,7 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
   const { userNameId = '' } = useUrlParams();
   const { user: currentUser } = useUserContext();
   const { t } = useTranslation();
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
   const { data, loading } = useUserAccountQuery({
     variables: {
@@ -81,7 +85,23 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
                 />
               ))}
           </Gutters>
-          <Actions>{canCreateSpace && <CreateSpaceDialog />}</Actions>
+          <Actions>
+            {canCreateSpace && (
+              <>
+                <IconButton
+                  aria-label={t('common.add')}
+                  aria-haspopup="true"
+                  size="small"
+                  onClick={() => setCreateDialogOpen(true)}
+                >
+                  <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
+                </IconButton>
+                {createDialogOpen && (
+                  <CreateSpaceDialog redirectOnComplete={false} onClose={() => setCreateDialogOpen(false)} />
+                )}
+              </>
+            )}
+          </Actions>
         </PageContentBlock>
         <PageContentBlock halfWidth>
           <BlockTitle>{t('pages.admin.generic.sections.account.virtualContributors')}</BlockTitle>
