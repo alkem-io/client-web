@@ -1,14 +1,14 @@
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
-import { ExpandContentIcon } from '../../../../core/ui/content/ExpandContent';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import Authorship from '../../../../core/ui/authorship/Authorship';
 import { BlockTitle } from '../../../../core/ui/typography';
 import SkipLink from '../../../../core/ui/keyboardNavigation/SkipLink';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNextBlockAnchor } from '../../../../core/ui/keyboardNavigation/NextBlockAnchor';
 
 interface CalloutHeaderProps {
@@ -49,34 +49,54 @@ const CalloutHeader = ({
 
   const hasCalloutDetails = callout.authorName && callout.publishedAt;
 
+  const expandedActions = () => (
+    <>
+      <IconButton
+        onClick={expanded ? onCollapse : onExpand}
+        aria-label={t('buttons.expandWindow')}
+        aria-haspopup="true"
+      >
+        <Close />
+      </IconButton>
+      {callout.editable && (
+        <IconButton
+          id="callout-settings-button"
+          aria-label={t('common.settings')}
+          aria-haspopup="true"
+          aria-controls={settingsOpen ? 'callout-settings-menu' : undefined}
+          aria-expanded={settingsOpen ? 'true' : undefined}
+          onClick={onOpenSettings}
+        >
+          <SettingsOutlinedIcon />
+        </IconButton>
+      )}
+      <ShareButton url={callout.framing.profile.url} entityTypeName="callout" />
+    </>
+  );
+
+  const collapsedActions = () => (
+    <>
+      <IconButton
+        id="callout-settings-button"
+        aria-label={t('common.settings')}
+        aria-haspopup="true"
+        aria-controls={settingsOpen ? 'callout-settings-menu' : undefined}
+        aria-expanded={settingsOpen ? 'true' : undefined}
+        onClick={onOpenSettings}
+      >
+        <MoreVertIcon color="primary" />
+      </IconButton>
+      {expanded && (
+        <IconButton onClick={onCollapse} aria-label={t('buttons.expandWindow')} aria-haspopup="true">
+          <Close />
+        </IconButton>
+      )}
+    </>
+  );
+
   return (
     <DialogHeader
-      actions={
-        calloutActions ? (
-          <>
-            <IconButton
-              onClick={expanded ? onCollapse : onExpand}
-              aria-label={t('buttons.expandWindow')}
-              aria-haspopup="true"
-            >
-              {expanded ? <Close /> : <ExpandContentIcon />}
-            </IconButton>
-            {callout.editable && (
-              <IconButton
-                id="callout-settings-button"
-                aria-label={t('common.settings')}
-                aria-haspopup="true"
-                aria-controls={settingsOpen ? 'callout-settings-menu' : undefined}
-                aria-expanded={settingsOpen ? 'true' : undefined}
-                onClick={onOpenSettings}
-              >
-                <SettingsOutlinedIcon />
-              </IconButton>
-            )}
-            <ShareButton url={callout.framing.profile.url} entityTypeName="callout" />
-          </>
-        ) : null
-      }
+      actions={calloutActions ? (expanded ? expandedActions() : collapsedActions()) : null}
       titleContainerProps={{ display: 'block', position: 'relative' }}
     >
       {hasCalloutDetails && (
@@ -90,7 +110,11 @@ const CalloutHeader = ({
           })}`}
         </Authorship>
       )}
-      {!hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
+      {!hasCalloutDetails && (
+        <BlockTitle noWrap onClick={onExpand} sx={{ cursor: 'pointer' }}>
+          {callout.framing.profile.displayName}
+        </BlockTitle>
+      )}
       <SkipLink anchor={nextBlockAnchor} sx={{ position: 'absolute', right: 0, top: 0, zIndex: 99999 }} />
     </DialogHeader>
   );
