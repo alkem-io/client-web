@@ -15,24 +15,21 @@ query SpaceAccount($spaceId: UUID!) {
         myPrivileges
       }
       visibility
-      account {
+      provider {
         id
-        host {
+        nameID
+        profile {
           id
-          nameID
-          profile {
-            id
-            displayName
-            avatar: visual(type: AVATAR) {
-              ...VisualUri
-            }
-            location {
-              id
-              city
-              country
-            }
-            url
+          displayName
+          avatar: visual(type: AVATAR) {
+            ...VisualUri
           }
+          location {
+            id
+            city
+            country
+          }
+          url
         }
 
       }
