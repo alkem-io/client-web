@@ -15,7 +15,7 @@ const MenuItemWithIcon = ({ iconComponent: Icon, children, ...props }: MenuItemP
   return (
     <MuiMenuItem {...props}>
       <ListItemIcon>
-        <Icon fontSize="small" />
+        <Icon fontSize="small" color="primary" />
       </ListItemIcon>
       <ListItemText>{children}</ListItemText>
     </MuiMenuItem>
