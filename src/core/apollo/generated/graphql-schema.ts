@@ -18513,6 +18513,12 @@ export type UserAccountQuery = {
   user: {
     __typename?: 'User';
     id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    agent: {
+      __typename?: 'Agent';
+      id: string;
+      credentials?: Array<{ __typename?: 'Credential'; id: string; type: CredentialType }> | undefined;
+    };
     account?:
       | {
           __typename?: 'Account';
@@ -18530,6 +18536,9 @@ export type UserAccountQuery = {
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
           }>;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           virtualContributors: Array<{
             __typename?: 'VirtualContributor';
             id: string;
@@ -23733,6 +23742,7 @@ export type OrganizationAccountQuery = {
   organization: {
     __typename?: 'Organization';
     id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
     account?:
       | {
           __typename?: 'Account';
@@ -23750,6 +23760,9 @@ export type OrganizationAccountQuery = {
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
           }>;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           virtualContributors: Array<{
             __typename?: 'VirtualContributor';
             id: string;

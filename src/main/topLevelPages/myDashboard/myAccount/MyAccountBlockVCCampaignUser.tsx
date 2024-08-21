@@ -10,7 +10,7 @@ import Avatar from '../../../../core/ui/avatar/Avatar';
 import RouterLink, { RouterLinkProps } from '../../../../core/ui/link/RouterLink';
 import { MyAccountSpace, MyAccountVirtualContributor } from './MyAccountBlock';
 
-const VIRTUAL_CONTRIBUTORS_LIMIT = 3;
+export const VIRTUAL_CONTRIBUTORS_LIMIT = 3;
 
 interface MyAccountBlockVCCampaignUserProps {
   hostedSpace: MyAccountSpace | undefined;
