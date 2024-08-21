@@ -14000,9 +14000,24 @@ export const UserAccountDocument = gql`
   query UserAccount($userId: UUID_NAMEID_EMAIL!) {
     user(ID: $userId) {
       id
+      profile {
+        id
+        displayName
+      }
+      agent {
+        id
+        credentials {
+          id
+          type
+        }
+      }
       accounts {
         id
         spaceID
+        authorization {
+          id
+          myPrivileges
+        }
         virtualContributors {
           id
           profile {
@@ -18921,9 +18936,17 @@ export const OrganizationAccountDocument = gql`
   query OrganizationAccount($organizationNameId: UUID_NAMEID!) {
     organization(ID: $organizationNameId) {
       id
+      profile {
+        id
+        displayName
+      }
       accounts {
         id
         spaceID
+        authorization {
+          id
+          myPrivileges
+        }
         virtualContributors {
           id
           profile {
