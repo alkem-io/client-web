@@ -21359,6 +21359,15 @@ export type SpaceUrlQuery = {
   space: { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
 };
 
+export type SpaceCommunityIdQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type SpaceCommunityIdQuery = {
+  __typename?: 'Query';
+  space: { __typename?: 'Space'; id: string; community: { __typename?: 'Community'; id: string } };
+};
+
 export type SpaceInfoFragment = {
   __typename?: 'Space';
   visibility: SpaceVisibility;

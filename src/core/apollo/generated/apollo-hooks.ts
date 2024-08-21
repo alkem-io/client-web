@@ -16722,6 +16722,66 @@ export function refetchSpaceUrlQuery(variables: SchemaTypes.SpaceUrlQueryVariabl
   return { query: SpaceUrlDocument, variables: variables };
 }
 
+export const SpaceCommunityIdDocument = gql`
+  query SpaceCommunityId($spaceNameId: UUID_NAMEID!) {
+    space(ID: $spaceNameId) {
+      id
+      community {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceCommunityIdQuery__
+ *
+ * To run a query within a React component, call `useSpaceCommunityIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceCommunityIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceCommunityIdQuery({
+ *   variables: {
+ *      spaceNameId: // value for 'spaceNameId'
+ *   },
+ * });
+ */
+export function useSpaceCommunityIdQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceCommunityIdQuery, SchemaTypes.SpaceCommunityIdQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceCommunityIdQuery, SchemaTypes.SpaceCommunityIdQueryVariables>(
+    SpaceCommunityIdDocument,
+    options
+  );
+}
+
+export function useSpaceCommunityIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceCommunityIdQuery,
+    SchemaTypes.SpaceCommunityIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceCommunityIdQuery, SchemaTypes.SpaceCommunityIdQueryVariables>(
+    SpaceCommunityIdDocument,
+    options
+  );
+}
+
+export type SpaceCommunityIdQueryHookResult = ReturnType<typeof useSpaceCommunityIdQuery>;
+export type SpaceCommunityIdLazyQueryHookResult = ReturnType<typeof useSpaceCommunityIdLazyQuery>;
+export type SpaceCommunityIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceCommunityIdQuery,
+  SchemaTypes.SpaceCommunityIdQueryVariables
+>;
+export function refetchSpaceCommunityIdQuery(variables: SchemaTypes.SpaceCommunityIdQueryVariables) {
+  return { query: SpaceCommunityIdDocument, variables: variables };
+}
+
 export const SpaceHostDocument = gql`
   query SpaceHost($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {

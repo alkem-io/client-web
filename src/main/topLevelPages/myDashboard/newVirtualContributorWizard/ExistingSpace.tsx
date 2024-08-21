@@ -15,6 +15,7 @@ export interface SelectableKnowledgeProps {
   accountId: string;
   url: string | undefined;
   communityId?: string;
+  parentCommunityId?: string;
 }
 
 interface ExistingSpaceProps {

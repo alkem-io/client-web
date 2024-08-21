@@ -14,6 +14,15 @@ query SpaceUrl($spaceNameId: UUID_NAMEID!) {
   }
 }
 
+query SpaceCommunityId($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    community {
+      id
+    }
+  }
+}
+
 fragment SpaceInfo on Space {
   ...SpaceDetails
   authorization {
