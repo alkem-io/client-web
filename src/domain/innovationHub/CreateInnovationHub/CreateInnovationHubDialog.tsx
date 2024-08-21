@@ -41,7 +41,7 @@ const CreateInnovationHubDialog = ({ accountId, accountHostName = '' }: CreateIn
           spaceListFilter: [],
         },
       },
-      refetchQueries: ['AdminInnovationHubsList', 'UserAccount'],
+      refetchQueries: ['AdminInnovationHubsList', 'UserAccount', 'OrganizationAccount'],
       onCompleted: () => {
         notify('The Innovation Hub was successfully created!', 'success');
         setIsOpen(false);
