@@ -11,14 +11,12 @@ import Loading from '../../../../../core/ui/loading/Loading';
 import ListPage from '../../components/ListPage';
 import { SearchableListItem, searchableListItemMapper } from '../../components/SearchableList';
 import { AuthorizationPrivilege, SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
-import { useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
 import SpaceListItem from './SpaceListItem';
 import { sortBy } from 'lodash';
 
 export const SpaceList: FC = () => {
-  const { pathname: url } = useResolvedPath('.');
   const notify = useNotification();
   const { t } = useTranslation();
 
@@ -99,7 +97,6 @@ export const SpaceList: FC = () => {
   return (
     <ListPage
       data={spaceList}
-      newLink={`${url}/new`}
       onDelete={spaceList.length > 1 ? handleDelete : undefined}
       itemViewComponent={SpaceListItem}
     />

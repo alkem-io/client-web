@@ -39,7 +39,6 @@ export interface LinkDetails {
 
 interface LinkCollectionCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'];
-  calloutNames: string[];
 }
 
 const LinkCollectionCallout = ({
@@ -50,7 +49,6 @@ const LinkCollectionCallout = ({
   onExpand,
   onCollapse,
   onCalloutUpdate,
-  calloutNames,
   journeyTypeName,
   ...calloutLayoutProps
 }: LinkCollectionCalloutProps) => {
@@ -198,9 +196,9 @@ const LinkCollectionCallout = ({
     >
       <CalloutSettingsContainer
         callout={callout}
-        calloutNames={calloutNames}
         journeyTypeName={journeyTypeName}
         expanded={expanded}
+        onExpand={onExpand}
         {...calloutLayoutProps}
       >
         {calloutSettingsProps => (

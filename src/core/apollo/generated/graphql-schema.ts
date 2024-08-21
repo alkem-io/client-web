@@ -644,15 +644,19 @@ export type AiPersonaServiceIngestInput = {
 export type AiPersonaServiceQuestionInput = {
   /** Virtual Persona Type. */
   aiPersonaServiceID: Scalars['UUID'];
-  /** The ID of the context, the Virtual Persona is asked a question */
+  /** The ID of the context, the Virtual Persona is asked a question. */
   contextID?: InputMaybe<Scalars['String']>;
-  /** The Virtual Contributor interaciton part of which is this question */
+  /** The Virtual Contributor description. */
+  description?: InputMaybe<Scalars['String']>;
+  /** The Virtual Contributor displayName. */
+  displayName: Scalars['String'];
+  /** The Virtual Contributor interaciton part of which is this question. */
   interactionID?: InputMaybe<Scalars['String']>;
   /** The question that is being asked. */
   question: Scalars['String'];
-  /** The ID of the message thread where the Virtual Contributor is asked a question if applicable */
+  /** The ID of the message thread where the Virtual Contributor is asked a question if applicable. */
   threadID?: InputMaybe<Scalars['String']>;
-  /** User identifier used internaly by the engine */
+  /** User identifier used internaly by the engine. */
   userID?: InputMaybe<Scalars['String']>;
 };
 
@@ -5434,6 +5438,7 @@ export type StorageAggregator = {
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
+/** Valid parent is Account, Space, User, Organization, Platform */
 export type StorageAggregatorParent = {
   __typename?: 'StorageAggregatorParent';
   /** The display name. */
@@ -19463,6 +19468,7 @@ export type ContextDetailsFragment = {
         id: string;
         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
         anonymousReadAccess: boolean;
+        type: AuthorizationPolicyType;
       }
     | undefined;
 };
@@ -21240,6 +21246,7 @@ export type SpaceDetailsFragment = {
           id: string;
           myPrivileges?: Array<AuthorizationPrivilege> | undefined;
           anonymousReadAccess: boolean;
+          type: AuthorizationPolicyType;
         }
       | undefined;
   };
@@ -21279,6 +21286,7 @@ export type SpaceProviderQuery = {
             __typename?: 'Authorization';
             id: string;
             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            type: AuthorizationPolicyType;
             anonymousReadAccess: boolean;
           }
         | undefined;
@@ -21372,6 +21380,7 @@ export type SpaceInfoFragment = {
           __typename?: 'Authorization';
           id: string;
           myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+          type: AuthorizationPolicyType;
           anonymousReadAccess: boolean;
         }
       | undefined;
@@ -22316,6 +22325,7 @@ export type UpdateSpaceMutation = {
             id: string;
             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
             anonymousReadAccess: boolean;
+            type: AuthorizationPolicyType;
           }
         | undefined;
     };
@@ -22528,6 +22538,7 @@ export type SubspaceProfileInfoQuery = {
                   id: string;
                   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                   anonymousReadAccess: boolean;
+                  type: AuthorizationPolicyType;
                 }
               | undefined;
           };

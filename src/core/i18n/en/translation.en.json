@@ -164,7 +164,8 @@
     "toolsMenu": "Tools Menu",
     "userMenu": "User Menu",
     "scrollToTop": "Scroll to top",
-    "addSubject": "Add {{subject}}"
+    "addSubject": "Add {{subject}}",
+    "toolPosition": "Position of tool"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -236,6 +237,7 @@
     "description": "Description",
     "event": "Event",
     "events": "Events",
+    "fullScreen": "Full screen",
     "about": "About",
     "aboutThis": "About this {{entity}}",
     "explore": "Contribute",
@@ -350,6 +352,7 @@
     "virtual-contributors": "VC",
     "virtual-contributor": "Virtual Contributor",
     "collaborationTool": "Collaboration tool",
+    "optional": "optional",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -687,6 +690,8 @@
     "state-permission": "Accept new responses",
     "permission-helptext": "Use the switch below to close this callout for new entries.",
     "callout-location": "Location: ",
+    "sortContributions": "Sort contributions",
+    "saveAsCallout": "Save as callout",
     "alkemio-link": "Click here to read more about Alkemio's collaboration tools",
     "link-collection": {
       "add-link": "Add link to {{title}}",
@@ -2833,7 +2838,6 @@
   },
   "createSpace": {
     "title": "Create a Space",
-    "subtitle": "To create a safe environment to train your Virtual Contributor, you first need to create a Space. Enter the details for this Space below.",
     "terms": {
       "checkboxLabel": "I have read and accept the <terms>terms and agreements (click here to open them)</terms> for creating a Space.",
       "dialogTitle": "Terms and Conditions for creating a Space",

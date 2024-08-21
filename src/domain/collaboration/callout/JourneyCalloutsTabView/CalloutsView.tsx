@@ -33,7 +33,6 @@ export interface CalloutsViewProps {
   onSortOrderUpdate?: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
   onCalloutUpdate?: (calloutId: string) => void;
   loading?: boolean;
-  calloutNames: string[];
   blockProps?:
     | Partial<PageContentBlockProps>
     | ((callout: TypedCallout, index: number) => Partial<PageContentBlockProps> | undefined);
@@ -43,7 +42,6 @@ export interface CalloutsViewProps {
 const CalloutsView = ({
   callouts,
   journeyTypeName,
-  calloutNames,
   loading = false,
   onSortOrderUpdate,
   onCalloutUpdate,
@@ -126,7 +124,6 @@ const CalloutsView = ({
                     {!loading && calloutDetails && (
                       <CalloutView
                         callout={calloutDetails}
-                        calloutNames={calloutNames}
                         contributionsCount={callout.activity}
                         journeyTypeName={journeyTypeName}
                         onCalloutEdit={handleEdit}
