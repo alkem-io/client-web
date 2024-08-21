@@ -22665,7 +22665,6 @@ export type SpaceAccountQuery = {
             | {
                 __typename?: 'Organization';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -22678,7 +22677,6 @@ export type SpaceAccountQuery = {
             | {
                 __typename?: 'User';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -22691,7 +22689,6 @@ export type SpaceAccountQuery = {
             | {
                 __typename?: 'VirtualContributor';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;

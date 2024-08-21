@@ -15,9 +15,12 @@ query SpaceAccount($spaceId: UUID!) {
         myPrivileges
       }
       visibility
+      activeSubscription {
+        name
+        expires
+      }
       provider {
         id
-        nameID
         profile {
           id
           displayName
@@ -31,7 +34,6 @@ query SpaceAccount($spaceId: UUID!) {
           }
           url
         }
-
       }
     }
   }

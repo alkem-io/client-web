@@ -19,8 +19,8 @@ fragment AdminSpace on Space {
   nameID
   visibility
   subscriptions {
-      name
-    }
+    name
+  }
   provider {
     id
     profile {
