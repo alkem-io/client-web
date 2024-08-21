@@ -787,7 +787,7 @@ export type Authorization = {
   /** The set of privilege rules that are contained by this Authorization Policy. */
   privilegeRules?: Maybe<Array<AuthorizationPolicyRulePrivilege>>;
   /** A type of entity that this Authorization Policy is being used with. */
-  type: AuthorizationPolicyType;
+  type?: Maybe<AuthorizationPolicyType>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** The set of verified credential rules that are contained by this Authorization Policy. */
@@ -19468,7 +19468,7 @@ export type ContextDetailsFragment = {
         id: string;
         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
         anonymousReadAccess: boolean;
-        type: AuthorizationPolicyType;
+        type?: AuthorizationPolicyType | undefined;
       }
     | undefined;
 };
@@ -21246,7 +21246,7 @@ export type SpaceDetailsFragment = {
           id: string;
           myPrivileges?: Array<AuthorizationPrivilege> | undefined;
           anonymousReadAccess: boolean;
-          type: AuthorizationPolicyType;
+          type?: AuthorizationPolicyType | undefined;
         }
       | undefined;
   };
@@ -21286,7 +21286,7 @@ export type SpaceProviderQuery = {
             __typename?: 'Authorization';
             id: string;
             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-            type: AuthorizationPolicyType;
+            type?: AuthorizationPolicyType | undefined;
             anonymousReadAccess: boolean;
           }
         | undefined;
@@ -21380,7 +21380,7 @@ export type SpaceInfoFragment = {
           __typename?: 'Authorization';
           id: string;
           myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-          type: AuthorizationPolicyType;
+          type?: AuthorizationPolicyType | undefined;
           anonymousReadAccess: boolean;
         }
       | undefined;
@@ -22325,7 +22325,7 @@ export type UpdateSpaceMutation = {
             id: string;
             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
             anonymousReadAccess: boolean;
-            type: AuthorizationPolicyType;
+            type?: AuthorizationPolicyType | undefined;
           }
         | undefined;
     };
@@ -22538,7 +22538,7 @@ export type SubspaceProfileInfoQuery = {
                   id: string;
                   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                   anonymousReadAccess: boolean;
-                  type: AuthorizationPolicyType;
+                  type?: AuthorizationPolicyType | undefined;
                 }
               | undefined;
           };

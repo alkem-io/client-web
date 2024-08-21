@@ -11,7 +11,7 @@ export const typePolicies: TypedTypePolicies = {
   MeQueryResults: {
     merge: true,
   },
-  Account: {
+  Space: {
     fields: {
       activeSubscription: {
         merge: true,
