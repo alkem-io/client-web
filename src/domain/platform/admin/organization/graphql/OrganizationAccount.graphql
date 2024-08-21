@@ -1,14 +1,26 @@
 query OrganizationAccount($organizationNameId: UUID_NAMEID!) {
   organization(ID: $organizationNameId) {
     id
+    profile {
+      id
+      displayName
+    }
     account {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       spaces {
         id
         profile {
           ...AccountItemProfile
           tagline
         }
+      }
+      authorization {
+        id
+        myPrivileges
       }
       virtualContributors {
         id

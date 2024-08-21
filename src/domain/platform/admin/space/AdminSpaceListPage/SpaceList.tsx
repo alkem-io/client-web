@@ -61,14 +61,9 @@ export const SpaceList: FC = () => {
           return {
             ...searchableListItemMapper()(space),
             spaceId: space.id,
-            accountId: space.account.id,
             nameId: space.nameID,
             visibility: space.visibility,
-            account: {
-              ...space.account,
-              activeLicensePlanIds,
-              organizations,
-            },
+            activeLicensePlanIds,
             licensePlans: spacesData?.platform.licensing.plans,
           };
         }) ?? []

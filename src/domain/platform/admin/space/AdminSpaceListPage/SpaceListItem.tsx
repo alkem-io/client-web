@@ -33,22 +33,16 @@ export interface SpacePlatformSettings {
   visibility: SpaceVisibility;
 }
 
-export interface AccountPlatformSettings {
-  activeLicensePlanIds: string[] | undefined;
-}
-
 interface SpaceListItemProps extends ListItemLinkProps, SpacePlatformSettings {
   spaceId: string;
-  accountId: string;
-  account: AccountPlatformSettings;
+  activeLicensePlanIds: string[] | undefined;
   licensePlans: LicensePlan[] | undefined;
 }
 
 const SpaceListItem = ({
   spaceId,
-  accountId,
   nameId,
-  account: { activeLicensePlanIds },
+  activeLicensePlanIds,
   licensePlans,
   visibility,
   ...props
@@ -70,20 +64,18 @@ const SpaceListItem = ({
   const [assignLicensePlan] = useAssignLicensePlanToSpaceMutation();
   const [revokeLicensePlan] = useRevokeLicensePlanFromSpaceMutation();
 
-  const [handleSubmit, saving] = useLoadingState(
-    async ({ nameId, visibility }: Partial<AccountPlatformSettings & SpacePlatformSettings>) => {
-      await updateSpacePlatformSettings({
-        variables: {
-          spaceId,
-          nameId: nameId!,
-          visibility: visibility!,
-        },
-        refetchQueries: [refetchAdminSpacesListQuery()],
-        awaitRefetchQueries: true,
-      });
-      setSettingsModalOpen(false);
-    }
-  );
+  const [handleSubmit, saving] = useLoadingState(async ({ nameId, visibility }: Partial<SpacePlatformSettings>) => {
+    await updateSpacePlatformSettings({
+      variables: {
+        spaceId,
+        nameId: nameId!,
+        visibility: visibility!,
+      },
+      refetchQueries: [refetchAdminSpacesListQuery()],
+      awaitRefetchQueries: true,
+    });
+    setSettingsModalOpen(false);
+  });
 
   const { t } = useTranslation();
 

@@ -1,6 +1,17 @@
 query UserAccount($userId: UUID_NAMEID_EMAIL!) {
   user(ID: $userId) {
     id
+    profile {
+      id
+      displayName
+    }
+    agent {
+      id
+      credentials {
+        id
+        type
+      }
+    }
     account {
       id
       spaces {
@@ -9,6 +20,10 @@ query UserAccount($userId: UUID_NAMEID_EMAIL!) {
           ...AccountItemProfile
           tagline
         }
+      }
+      authorization {
+        id
+        myPrivileges
       }
       virtualContributors {
         id

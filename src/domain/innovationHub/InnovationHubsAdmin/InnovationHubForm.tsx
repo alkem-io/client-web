@@ -12,10 +12,10 @@ import { BlockSectionTitle } from '../../../core/ui/typography';
 import { TagsetSegment, tagsetSegmentSchema } from '../../platform/admin/components/Common/TagsetSegment';
 import SaveButton from '../../../core/ui/actions/SaveButton';
 import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInputField';
-import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import { nameIdValidator } from '../../../core/ui/forms/validator';
 import VisualUpload from '../../../core/ui/upload/VisualUpload/VisualUpload';
 import MarkdownValidator from '../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import Gutters from '../../../core/ui/grid/Gutters';
 
 export interface InnovationHubFormValues {
   nameID: string;
@@ -92,7 +92,7 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
     <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
       {({ values: { profile }, errors, handleSubmit }) => {
         return (
-          <PageContentBlock>
+          <Gutters>
             <FormikInputField
               name="subdomain"
               title={t('pages.admin.innovationHubs.fields.subdomain')}
@@ -144,7 +144,7 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
                 />
               </Box>
             </FormGroup>
-          </PageContentBlock>
+          </Gutters>
         );
       }}
     </Formik>

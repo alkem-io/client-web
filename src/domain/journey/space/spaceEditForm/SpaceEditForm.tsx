@@ -21,14 +21,12 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
 import { Caption } from '../../../../core/ui/typography';
-import HostSelector from '../../../platform/admin/space/AdminSpaceListPage/HostSelector';
 
 interface SpaceEditFormProps {
   context?: Context;
   profile?: Omit<Profile, 'storageBucket' | 'url'>;
   name?: string;
   nameID?: string;
-  accountId?: string;
   tagset?: Tagset;
   onSubmit: (formData: SpaceEditFormValuesType) => void;
   edit?: boolean;
@@ -38,25 +36,13 @@ interface SpaceEditFormProps {
 export interface SpaceEditFormValuesType {
   name: string;
   nameID: string;
-  host: {
-    accountId: string;
-  };
   tagline: string;
   location: Partial<Location>;
   references: Reference[];
   tagsets: Tagset[];
 }
 
-const SpaceEditForm: FC<SpaceEditFormProps> = ({
-  profile,
-  name,
-  nameID,
-  accountId,
-  tagset,
-  onSubmit,
-  edit,
-  loading,
-}) => {
+const SpaceEditForm: FC<SpaceEditFormProps> = ({ profile, name, nameID, tagset, onSubmit, edit, loading }) => {
   const { t } = useTranslation();
 
   const tagsets = useMemo(() => {
@@ -77,9 +63,6 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({
   const initialValues: SpaceEditFormValuesType = {
     name: name ?? '',
     nameID: nameID ?? '',
-    host: {
-      accountId: accountId ?? '',
-    },
     tagline: profile?.tagline ?? '',
     location: formatLocation(profile?.location) || EmptyLocation,
     references: profile?.references ?? [],
@@ -89,9 +72,6 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({
   const validationSchema = yup.object().shape({
     name: nameSegmentSchema.fields?.name ?? yup.string(),
     nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
-    host: yup.object().shape({
-      accountId: yup.string().required(t('forms.validations.required')),
-    }),
     tagline: contextSegmentSchema.fields?.tagline ?? yup.string(),
     references: referenceSegmentSchema,
     tagsets: tagsetSegmentSchema,
@@ -119,15 +99,6 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({
                     title={t('components.nameSegment.nameID.title')}
                     placeholder={t('components.nameSegment.nameID.placeholder')}
                     required
-                  />
-                )}
-                {!edit && (
-                  <HostSelector
-                    title={t('components.editSpaceForm.host.title')}
-                    name="host"
-                    required
-                    placeholder={t('components.editSpaceForm.host.title')}
-                    disabled={edit}
                   />
                 )}
                 <FormikInputField

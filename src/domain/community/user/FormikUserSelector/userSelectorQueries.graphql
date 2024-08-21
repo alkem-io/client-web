@@ -14,9 +14,6 @@ query UserSelectorUserDetails($id: UUID_NAMEID_EMAIL!) {
 
 fragment UserSelectorUserInformation on User {
   id
-  account {
-    id
-  }
   profile {
     id
     displayName

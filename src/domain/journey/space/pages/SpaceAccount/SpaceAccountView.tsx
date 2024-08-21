@@ -71,7 +71,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   });
 
   const space = data?.lookup.space;
-  const hostOrganization = space?.account.host;
+  const hostOrganization = space?.provider;
   const activeSubscription = space?.activeSubscription;
   const canDelete = (space?.authorization?.myPrivileges ?? [])?.includes(AuthorizationPrivilege.Delete);
 

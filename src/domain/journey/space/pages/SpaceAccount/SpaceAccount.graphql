@@ -6,6 +6,10 @@ query SpaceAccount($spaceId: UUID!) {
         id
         url
       }
+      activeSubscription {
+        name
+        expires
+      }
       authorization {
         id
         myPrivileges
@@ -15,26 +19,21 @@ query SpaceAccount($spaceId: UUID!) {
         name
         expires
       }
-      account {
+      provider {
         id
-        host {
+        profile {
           id
-          nameID
-          profile {
-            id
-            displayName
-            avatar: visual(type: AVATAR) {
-              ...VisualUri
-            }
-            location {
-              id
-              city
-              country
-            }
-            url
+          displayName
+          avatar: visual(type: AVATAR) {
+            ...VisualUri
           }
+          location {
+            id
+            city
+            country
+          }
+          url
         }
-
       }
     }
   }

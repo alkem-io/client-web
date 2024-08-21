@@ -1699,9 +1699,6 @@ export const CommunityGuidelinesSummaryFragmentDoc = gql`
 export const UserSelectorUserInformationFragmentDoc = gql`
   fragment UserSelectorUserInformation on User {
     id
-    account {
-      id
-    }
     profile {
       id
       displayName
@@ -1771,6 +1768,9 @@ export const UserDetailsFragmentDoc = gql`
     lastName
     email
     phone
+    account {
+      id
+    }
     profile {
       id
       displayName
@@ -2796,14 +2796,11 @@ export const AdminSpaceFragmentDoc = gql`
     subscriptions {
       name
     }
-    account {
+    provider {
       id
-      host {
+      profile {
         id
-        profile {
-          id
-          displayName
-        }
+        displayName
       }
     }
     profile {
@@ -12660,25 +12657,12 @@ export const OrganizationsListDocument = gql`
   query organizationsList($limit: Float, $shuffle: Boolean, $filterCredentials: [AuthorizationCredential!]) {
     organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
       id
-      nameID
-      account {
-        id
-      }
       profile {
         id
         displayName
-        visual(type: AVATAR) {
-          ...VisualUri
-        }
-        location {
-          id
-          city
-          country
-        }
       }
     }
   }
-  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -13974,6 +13958,17 @@ export const UserAccountDocument = gql`
   query UserAccount($userId: UUID_NAMEID_EMAIL!) {
     user(ID: $userId) {
       id
+      profile {
+        id
+        displayName
+      }
+      agent {
+        id
+        credentials {
+          id
+          type
+        }
+      }
       account {
         id
         spaces {
@@ -13982,6 +13977,10 @@ export const UserAccountDocument = gql`
             ...AccountItemProfile
             tagline
           }
+        }
+        authorization {
+          id
+          myPrivileges
         }
         virtualContributors {
           id
@@ -17825,6 +17824,10 @@ export const SpaceAccountDocument = gql`
           id
           url
         }
+        activeSubscription {
+          name
+          expires
+        }
         authorization {
           id
           myPrivileges
@@ -17834,24 +17837,20 @@ export const SpaceAccountDocument = gql`
           name
           expires
         }
-        account {
+        provider {
           id
-          host {
+          profile {
             id
-            nameID
-            profile {
-              id
-              displayName
-              avatar: visual(type: AVATAR) {
-                ...VisualUri
-              }
-              location {
-                id
-                city
-                country
-              }
-              url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
             }
+            location {
+              id
+              city
+              country
+            }
+            url
           }
         }
       }
@@ -18821,14 +18820,26 @@ export const OrganizationAccountDocument = gql`
   query OrganizationAccount($organizationNameId: UUID_NAMEID!) {
     organization(ID: $organizationNameId) {
       id
+      profile {
+        id
+        displayName
+      }
       account {
         id
+        authorization {
+          id
+          myPrivileges
+        }
         spaces {
           id
           profile {
             ...AccountItemProfile
             tagline
           }
+        }
+        authorization {
+          id
+          myPrivileges
         }
         virtualContributors {
           id

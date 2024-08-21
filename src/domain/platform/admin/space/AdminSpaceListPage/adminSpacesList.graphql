@@ -21,15 +21,11 @@ fragment AdminSpace on Space {
   subscriptions {
     name
   }
-  account {
+  provider {
     id
-
-    host {
+    profile {
       id
-      profile {
-        id
-        displayName
-      }
+      displayName
     }
   }
   profile {

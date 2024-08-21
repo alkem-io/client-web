@@ -52,6 +52,7 @@ fragment AdminInnovationHub on InnovationHub {
   profile {
     ...InnovationHubProfile
   }
+  # Requires admin privileges
   account {
     id
     host {
