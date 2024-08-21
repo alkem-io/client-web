@@ -367,7 +367,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
     // create VC
     if (virtualContributorInput && myAccountId && bokId && bokCommunityId) {
-      // pass parentCommunityId
       await handleCreateVirtualContributor(
         virtualContributorInput,
         myAccountId,
