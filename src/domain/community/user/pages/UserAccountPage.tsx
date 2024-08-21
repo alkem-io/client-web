@@ -56,7 +56,7 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
   const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack);
   const canCreateInnovationHub = privileges.includes(AuthorizationPrivilege.CreateInnovationHub);
   const isVCLimitReached = virtualContributors.length >= VIRTUAL_CONTRIBUTORS_LIMIT;
-  // currently creation is available only for accounts owned by the user
+  // TODO: Move to server logic
   const canCreateVirtualContributor = isMyProfile && ((vcCampaignUser && !isVCLimitReached) || isPlatformAdmin);
 
   return (

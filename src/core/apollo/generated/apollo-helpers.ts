@@ -5,7 +5,6 @@ export type APMFieldPolicy = {
   rumEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AccountKeySpecifier = (
-  | 'activeSubscription'
   | 'agent'
   | 'authorization'
   | 'createdDate'
@@ -13,16 +12,13 @@ export type AccountKeySpecifier = (
   | 'id'
   | 'innovationHubs'
   | 'innovationPacks'
-  | 'licensePrivileges'
   | 'spaces'
   | 'storageAggregator'
-  | 'subscriptions'
   | 'updatedDate'
   | 'virtualContributors'
   | AccountKeySpecifier
 )[];
 export type AccountFieldPolicy = {
-  activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -30,17 +26,10 @@ export type AccountFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
-  licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
-  subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type AccountSubscriptionKeySpecifier = ('expires' | 'name' | AccountSubscriptionKeySpecifier)[];
-export type AccountSubscriptionFieldPolicy = {
-  expires?: FieldPolicy<any> | FieldReadFunction<any>;
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityCreatedSubscriptionResultKeySpecifier = (
   | 'activity'
@@ -1852,7 +1841,7 @@ export type MutationKeySpecifier = (
   | 'assignCommunityRoleToOrganization'
   | 'assignCommunityRoleToUser'
   | 'assignCommunityRoleToVirtual'
-  | 'assignLicensePlanToAccount'
+  | 'assignLicensePlanToSpace'
   | 'assignOrganizationRoleToUser'
   | 'assignPlatformRoleToUser'
   | 'assignUserToGroup'
@@ -1944,7 +1933,7 @@ export type MutationKeySpecifier = (
   | 'resetChatGuidance'
   | 'revokeCredentialFromOrganization'
   | 'revokeCredentialFromUser'
-  | 'revokeLicensePlanFromAccount'
+  | 'revokeLicensePlanFromSpace'
   | 'sendMessageReplyToRoom'
   | 'sendMessageToCommunityLeads'
   | 'sendMessageToOrganization'
@@ -2020,7 +2009,7 @@ export type MutationFieldPolicy = {
   assignCommunityRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignCommunityRoleToVirtual?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignLicensePlanToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   assignOrganizationRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignPlatformRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToGroup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2112,7 +2101,7 @@ export type MutationFieldPolicy = {
   resetChatGuidance?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  revokeLicensePlanFromAccount?: FieldPolicy<any> | FieldReadFunction<any>;
+  revokeLicensePlanFromSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageReplyToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToCommunityLeads?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2643,6 +2632,7 @@ export type ReferenceFieldPolicy = {
 };
 export type RelayPaginatedSpaceKeySpecifier = (
   | 'account'
+  | 'activeSubscription'
   | 'agent'
   | 'authorization'
   | 'collaboration'
@@ -2654,12 +2644,14 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'level'
   | 'levelZeroSpaceID'
   | 'library'
+  | 'licensePrivileges'
   | 'metrics'
   | 'nameID'
   | 'profile'
   | 'provider'
   | 'settings'
   | 'storageAggregator'
+  | 'subscriptions'
   | 'subspace'
   | 'subspaces'
   | 'type'
@@ -2669,6 +2661,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
 )[];
 export type RelayPaginatedSpaceFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
+  activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2680,12 +2673,14 @@ export type RelayPaginatedSpaceFieldPolicy = {
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
+  licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   subspace?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2943,6 +2938,7 @@ export type ServiceMetadataFieldPolicy = {
 };
 export type SpaceKeySpecifier = (
   | 'account'
+  | 'activeSubscription'
   | 'agent'
   | 'authorization'
   | 'collaboration'
@@ -2954,12 +2950,14 @@ export type SpaceKeySpecifier = (
   | 'level'
   | 'levelZeroSpaceID'
   | 'library'
+  | 'licensePrivileges'
   | 'metrics'
   | 'nameID'
   | 'profile'
   | 'provider'
   | 'settings'
   | 'storageAggregator'
+  | 'subscriptions'
   | 'subspace'
   | 'subspaces'
   | 'type'
@@ -2969,6 +2967,7 @@ export type SpaceKeySpecifier = (
 )[];
 export type SpaceFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
+  activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2980,12 +2979,14 @@ export type SpaceFieldPolicy = {
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
+  licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   subspace?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3043,6 +3044,11 @@ export type SpaceSettingsPrivacyKeySpecifier = (
 export type SpaceSettingsPrivacyFieldPolicy = {
   allowPlatformSupportAsAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   mode?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SpaceSubscriptionKeySpecifier = ('expires' | 'name' | SpaceSubscriptionKeySpecifier)[];
+export type SpaceSubscriptionFieldPolicy = {
+  expires?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StorageAggregatorKeySpecifier = (
   | 'authorization'
@@ -3491,10 +3497,6 @@ export type StrictTypedTypePolicies = {
   Account?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AccountKeySpecifier | (() => undefined | AccountKeySpecifier);
     fields?: AccountFieldPolicy;
-  };
-  AccountSubscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | AccountSubscriptionKeySpecifier | (() => undefined | AccountSubscriptionKeySpecifier);
-    fields?: AccountSubscriptionFieldPolicy;
   };
   ActivityCreatedSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
@@ -4204,6 +4206,10 @@ export type StrictTypedTypePolicies = {
   SpaceSettingsPrivacy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceSettingsPrivacyKeySpecifier | (() => undefined | SpaceSettingsPrivacyKeySpecifier);
     fields?: SpaceSettingsPrivacyFieldPolicy;
+  };
+  SpaceSubscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | SpaceSubscriptionKeySpecifier | (() => undefined | SpaceSubscriptionKeySpecifier);
+    fields?: SpaceSubscriptionFieldPolicy;
   };
   StorageAggregator?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | StorageAggregatorKeySpecifier | (() => undefined | StorageAggregatorKeySpecifier);

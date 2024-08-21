@@ -2,7 +2,7 @@ import DialogWithGrid, { DialogFooter } from '../../../../core/ui/dialog/DialogW
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
 import { ROUTE_HOME } from '../../../platform/routes/constants';
-import { Button, Checkbox, Dialog, DialogContent, FormControlLabel, Link, TextField } from '@mui/material';
+import { Button, Checkbox, Dialog, DialogContent, FormControlLabel, Link } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
 import { Formik } from 'formik';
 import { Trans, useTranslation } from 'react-i18next';
@@ -107,7 +107,6 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
 
   // either the account is passed in or we pick it up from the user context
   const accountId = account?.id ?? user?.user.account?.id;
-  const accountName = account?.name ?? user?.user.profile.displayName ?? '';
 
   const [CreateNewSpace] = useCreateSpaceMutation();
   const [getSpaceUrl] = useSpaceUrlLazyQuery();
@@ -184,7 +183,6 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
                   <PageContentBlockSeamless sx={{ paddingX: 0, paddingBottom: 0 }}>
                     <FormikInputField name="name" title={t('components.nameSegment.name')} required />
                     <NameIdField name="nameID" title={t('common.url')} required />
-                    <TextField label={t('common.host')} value={accountName} disabled />
                     <FormikInputField
                       name="tagline"
                       title={`${t('context.space.tagline.title')} (${t('common.optional')})`}

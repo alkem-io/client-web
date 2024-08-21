@@ -33,12 +33,13 @@ const OrganizationAccountPage: FC<SettingsPageProps> = () => {
   const isPlatformAdmin = privileges.includes(AuthorizationPrivilege.PlatformAdmin);
 
   const isSpaceLimitReached = spaces.length >= SPACE_COUNT_LIMIT;
+
+  // TODO: move to server logic
   const canCreateSpace =
     privileges.includes(AuthorizationPrivilege.CreateSpace) && (!isSpaceLimitReached || isPlatformAdmin);
   const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack);
   const canCreateInnovationHub = privileges.includes(AuthorizationPrivilege.CreateInnovationHub);
-  // currently creation is available only for accounts owned by the user
-  const canCreateVirtualContributor = false;
+  const canCreateVirtualContributor = privileges.includes(AuthorizationPrivilege.CreateVirtualContributor);
 
   return (
     <OrganizationAdminLayout currentTab={SettingsSection.Account}>

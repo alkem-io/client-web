@@ -36,8 +36,6 @@ export type Apm = {
 
 export type Account = {
   __typename?: 'Account';
-  /** The "highest" subscription active for this Account. */
-  activeSubscription?: Maybe<AccountSubscription>;
   /** The Agent representing this Account. */
   agent: Agent;
   /** The authorization rules for the entity */
@@ -52,14 +50,10 @@ export type Account = {
   innovationHubs: Array<InnovationHub>;
   /** The InnovationPacks for this Account. */
   innovationPacks: Array<InnovationPack>;
-  /** The privileges granted based on the License credentials held by this Account. */
-  licensePrivileges?: Maybe<Array<LicensePrivilege>>;
   /** The Spaces within this Account. */
   spaces: Array<Space>;
   /** The StorageAggregator in use by this Account */
   storageAggregator: StorageAggregator;
-  /** The subscriptions active for this Account. */
-  subscriptions: Array<AccountSubscription>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** The virtual contributors for this Account. */
@@ -69,14 +63,6 @@ export type Account = {
 export type AccountAuthorizationResetInput = {
   /** The identifier of the Account whose Authorization Policy should be reset. */
   accountID: Scalars['UUID_NAMEID'];
-};
-
-export type AccountSubscription = {
-  __typename?: 'AccountSubscription';
-  /** The expiry date of this subscription, null if it does never expire. */
-  expires?: Maybe<Scalars['DateTime']>;
-  /** The name of the Subscription. */
-  name: LicenseCredential;
 };
 
 export type ActivityCreatedSubscriptionInput = {
@@ -740,13 +726,13 @@ export type AssignCommunityRoleToVirtualInput = {
   virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
-export type AssignLicensePlanToAccount = {
-  /** The ID of the Account to assign the LicensePlan to. */
-  accountID: Scalars['UUID'];
+export type AssignLicensePlanToSpace = {
   /** The ID of the LicensePlan to assign. */
   licensePlanID: Scalars['UUID'];
   /** The ID of the Licensing to use. */
   licensingID?: InputMaybe<Scalars['UUID']>;
+  /** The ID of the Space to assign the LicensePlan to. */
+  spaceID: Scalars['UUID'];
 };
 
 export type AssignOrganizationRoleToUserInput = {
@@ -801,7 +787,7 @@ export type Authorization = {
   /** The set of privilege rules that are contained by this Authorization Policy. */
   privilegeRules?: Maybe<Array<AuthorizationPolicyRulePrivilege>>;
   /** A type of entity that this Authorization Policy is being used with. */
-  type: AuthorizationPolicyType;
+  type?: Maybe<AuthorizationPolicyType>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** The set of verified credential rules that are contained by this Authorization Policy. */
@@ -3131,8 +3117,8 @@ export type Mutation = {
   assignCommunityRoleToUser: User;
   /** Assigns a Virtual Contributor to a role in the specified Community. */
   assignCommunityRoleToVirtual: VirtualContributor;
-  /** Assign the specified LicensePlan to an Account. */
-  assignLicensePlanToAccount: Account;
+  /** Assign the specified LicensePlan to a Space. */
+  assignLicensePlanToSpace: Space;
   /** Assigns an Organization Role to user. */
   assignOrganizationRoleToUser: User;
   /** Assigns a platform role to a User. */
@@ -3315,8 +3301,8 @@ export type Mutation = {
   revokeCredentialFromOrganization: Organization;
   /** Removes an authorization credential from a User. */
   revokeCredentialFromUser: User;
-  /** Revokes the specified LicensePlan on an Account. */
-  revokeLicensePlanFromAccount: Account;
+  /** Revokes the specified LicensePlan on a Space. */
+  revokeLicensePlanFromSpace: Space;
   /** Sends a reply to a message from the specified Room. */
   sendMessageReplyToRoom: Message;
   /** Send message to Community Leads. */
@@ -3483,8 +3469,8 @@ export type MutationAssignCommunityRoleToVirtualArgs = {
   roleData: AssignCommunityRoleToVirtualInput;
 };
 
-export type MutationAssignLicensePlanToAccountArgs = {
-  planData: AssignLicensePlanToAccount;
+export type MutationAssignLicensePlanToSpaceArgs = {
+  planData: AssignLicensePlanToSpace;
 };
 
 export type MutationAssignOrganizationRoleToUserArgs = {
@@ -3823,8 +3809,8 @@ export type MutationRevokeCredentialFromUserArgs = {
   revokeCredentialData: RevokeAuthorizationCredentialInput;
 };
 
-export type MutationRevokeLicensePlanFromAccountArgs = {
-  planData: RevokeLicensePlanFromAccount;
+export type MutationRevokeLicensePlanFromSpaceArgs = {
+  planData: RevokeLicensePlanFromSpace;
 };
 
 export type MutationSendMessageReplyToRoomArgs = {
@@ -4816,6 +4802,8 @@ export type RelayPaginatedSpace = {
   __typename?: 'RelayPaginatedSpace';
   /** The Account that this Space is part of. */
   account: Account;
+  /** The "highest" subscription active for this Space. */
+  activeSubscription?: Maybe<SpaceSubscription>;
   /** The Agent representing this Space. */
   agent: Agent;
   /** The authorization rules for the entity */
@@ -4838,6 +4826,8 @@ export type RelayPaginatedSpace = {
   levelZeroSpaceID: Scalars['String'];
   /** The Library in use by this Space */
   library?: Maybe<TemplatesSet>;
+  /** The privileges granted based on the License credentials held by this Space. */
+  licensePrivileges?: Maybe<Array<LicensePrivilege>>;
   /** Metrics about activity within this Space. */
   metrics?: Maybe<Array<Nvp>>;
   /** A name identifier of the entity, unique within a given scope. */
@@ -4850,6 +4840,8 @@ export type RelayPaginatedSpace = {
   settings: SpaceSettings;
   /** The StorageAggregator in use by this Space */
   storageAggregator: StorageAggregator;
+  /** The subscriptions active for this Space. */
+  subscriptions: Array<SpaceSubscription>;
   /** A particular subspace, either by its ID or nameID */
   subspace: Space;
   /** The subspaces for the space. */
@@ -4931,13 +4923,13 @@ export type RevokeAuthorizationCredentialInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type RevokeLicensePlanFromAccount = {
-  /** The ID of the Account to assign the LicensePlan to. */
-  accountID: Scalars['UUID'];
+export type RevokeLicensePlanFromSpace = {
   /** The ID of the LicensePlan to assign. */
   licensePlanID: Scalars['UUID'];
   /** The ID of the Licensing to use. */
   licensingID?: InputMaybe<Scalars['UUID']>;
+  /** The ID of the Space to assign the LicensePlan to. */
+  spaceID: Scalars['UUID'];
 };
 
 export type RevokeOrganizationAuthorizationCredentialInput = {
@@ -5270,6 +5262,8 @@ export type Space = {
   __typename?: 'Space';
   /** The Account that this Space is part of. */
   account: Account;
+  /** The "highest" subscription active for this Space. */
+  activeSubscription?: Maybe<SpaceSubscription>;
   /** The Agent representing this Space. */
   agent: Agent;
   /** The authorization rules for the entity */
@@ -5292,6 +5286,8 @@ export type Space = {
   levelZeroSpaceID: Scalars['String'];
   /** The Library in use by this Space */
   library?: Maybe<TemplatesSet>;
+  /** The privileges granted based on the License credentials held by this Space. */
+  licensePrivileges?: Maybe<Array<LicensePrivilege>>;
   /** Metrics about activity within this Space. */
   metrics?: Maybe<Array<Nvp>>;
   /** A name identifier of the entity, unique within a given scope. */
@@ -5304,6 +5300,8 @@ export type Space = {
   settings: SpaceSettings;
   /** The StorageAggregator in use by this Space */
   storageAggregator: StorageAggregator;
+  /** The subscriptions active for this Space. */
+  subscriptions: Array<SpaceSubscription>;
   /** A particular subspace, either by its ID or nameID */
   subspace: Space;
   /** The subspaces for the space. */
@@ -5392,6 +5390,14 @@ export type SpaceSettingsPrivacy = {
   allowPlatformSupportAsAdmin: Scalars['Boolean'];
   /** The privacy mode for this Space */
   mode: SpacePrivacyMode;
+};
+
+export type SpaceSubscription = {
+  __typename?: 'SpaceSubscription';
+  /** The expiry date of this subscription, null if it does never expire. */
+  expires?: Maybe<Scalars['DateTime']>;
+  /** The name of the Subscription. */
+  name: LicenseCredential;
 };
 
 export enum SpaceType {
@@ -19479,7 +19485,7 @@ export type ContextDetailsFragment = {
         id: string;
         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
         anonymousReadAccess: boolean;
-        type: AuthorizationPolicyType;
+        type?: AuthorizationPolicyType | undefined;
       }
     | undefined;
 };
@@ -21257,7 +21263,7 @@ export type SpaceDetailsFragment = {
           id: string;
           myPrivileges?: Array<AuthorizationPrivilege> | undefined;
           anonymousReadAccess: boolean;
-          type: AuthorizationPolicyType;
+          type?: AuthorizationPolicyType | undefined;
         }
       | undefined;
   };
@@ -21297,7 +21303,7 @@ export type SpaceProviderQuery = {
             __typename?: 'Authorization';
             id: string;
             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-            type: AuthorizationPolicyType;
+            type?: AuthorizationPolicyType | undefined;
             anonymousReadAccess: boolean;
           }
         | undefined;
@@ -21391,7 +21397,7 @@ export type SpaceInfoFragment = {
           __typename?: 'Authorization';
           id: string;
           myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-          type: AuthorizationPolicyType;
+          type?: AuthorizationPolicyType | undefined;
           anonymousReadAccess: boolean;
         }
       | undefined;
@@ -22336,7 +22342,7 @@ export type UpdateSpaceMutation = {
             id: string;
             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
             anonymousReadAccess: boolean;
-            type: AuthorizationPolicyType;
+            type?: AuthorizationPolicyType | undefined;
           }
         | undefined;
     };
@@ -22549,7 +22555,7 @@ export type SubspaceProfileInfoQuery = {
                   id: string;
                   myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                   anonymousReadAccess: boolean;
-                  type: AuthorizationPolicyType;
+                  type?: AuthorizationPolicyType | undefined;
                 }
               | undefined;
           };
@@ -22660,6 +22666,9 @@ export type SpaceAccountQuery = {
           id: string;
           visibility: SpaceVisibility;
           profile: { __typename?: 'Profile'; id: string; url: string };
+          activeSubscription?:
+            | { __typename?: 'SpaceSubscription'; name: LicenseCredential; expires?: Date | undefined }
+            | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -22706,9 +22715,6 @@ export type SpaceAccountQuery = {
                     location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
                   };
                 }
-              | undefined;
-            activeSubscription?:
-              | { __typename?: 'AccountSubscription'; name: LicenseCredential; expires?: Date | undefined }
               | undefined;
           };
         }
@@ -23848,31 +23854,31 @@ export type OrganizationAccountQuery = {
   };
 };
 
-export type AssignLicensePlanToAccountMutationVariables = Exact<{
+export type AssignLicensePlanToSpaceMutationVariables = Exact<{
   licensePlanId: Scalars['UUID'];
-  accountId: Scalars['UUID'];
+  spaceId: Scalars['UUID'];
 }>;
 
-export type AssignLicensePlanToAccountMutation = {
+export type AssignLicensePlanToSpaceMutation = {
   __typename?: 'Mutation';
-  assignLicensePlanToAccount: {
-    __typename?: 'Account';
+  assignLicensePlanToSpace: {
+    __typename?: 'Space';
     id: string;
-    subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
+    subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicenseCredential }>;
   };
 };
 
-export type RevokeLicensePlanFromAccountMutationVariables = Exact<{
+export type RevokeLicensePlanFromSpaceMutationVariables = Exact<{
   licensePlanId: Scalars['UUID'];
-  accountId: Scalars['UUID'];
+  spaceId: Scalars['UUID'];
 }>;
 
-export type RevokeLicensePlanFromAccountMutation = {
+export type RevokeLicensePlanFromSpaceMutation = {
   __typename?: 'Mutation';
-  revokeLicensePlanFromAccount: {
-    __typename?: 'Account';
+  revokeLicensePlanFromSpace: {
+    __typename?: 'Space';
     id: string;
-    subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
+    subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicenseCredential }>;
   };
 };
 
@@ -23896,24 +23902,19 @@ export type AdminSpacesListQuery = {
     id: string;
     nameID: string;
     visibility: SpaceVisibility;
-    account: {
-      __typename?: 'Account';
-      id: string;
-      subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
-      host?:
-        | {
-            __typename?: 'Organization';
-            id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          }
-        | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
-        | {
-            __typename?: 'VirtualContributor';
-            id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          }
-        | undefined;
-    };
+    subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicenseCredential }>;
+    provider:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        }
+      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+      | {
+          __typename?: 'VirtualContributor';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+        };
     profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -23934,24 +23935,15 @@ export type AdminSpaceFragment = {
   id: string;
   nameID: string;
   visibility: SpaceVisibility;
-  account: {
-    __typename?: 'Account';
-    id: string;
-    subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
-    host?:
-      | {
-          __typename?: 'Organization';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        }
-      | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
-      | {
-          __typename?: 'VirtualContributor';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        }
-      | undefined;
-  };
+  subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicenseCredential }>;
+  provider:
+    | { __typename?: 'Organization'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+    | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+    | {
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+      };
   profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }

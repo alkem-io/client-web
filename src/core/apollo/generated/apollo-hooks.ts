@@ -2796,17 +2796,14 @@ export const AdminSpaceFragmentDoc = gql`
     id
     nameID
     visibility
-    account {
+    subscriptions {
+      name
+    }
+    provider {
       id
-      subscriptions {
-        name
-      }
-      host {
+      profile {
         id
-        profile {
-          id
-          displayName
-        }
+        displayName
       }
     }
     profile {
@@ -17843,6 +17840,10 @@ export const SpaceAccountDocument = gql`
           id
           url
         }
+        activeSubscription {
+          name
+          expires
+        }
         authorization {
           id
           myPrivileges
@@ -17866,10 +17867,6 @@ export const SpaceAccountDocument = gql`
               }
               url
             }
-          }
-          activeSubscription {
-            name
-            expires
           }
         }
       }
@@ -18954,9 +18951,9 @@ export function refetchOrganizationAccountQuery(variables: SchemaTypes.Organizat
   return { query: OrganizationAccountDocument, variables: variables };
 }
 
-export const AssignLicensePlanToAccountDocument = gql`
-  mutation AssignLicensePlanToAccount($licensePlanId: UUID!, $accountId: UUID!) {
-    assignLicensePlanToAccount(planData: { accountID: $accountId, licensePlanID: $licensePlanId }) {
+export const AssignLicensePlanToSpaceDocument = gql`
+  mutation AssignLicensePlanToSpace($licensePlanId: UUID!, $spaceId: UUID!) {
+    assignLicensePlanToSpace(planData: { spaceID: $spaceId, licensePlanID: $licensePlanId }) {
       id
       subscriptions {
         name
@@ -18964,52 +18961,52 @@ export const AssignLicensePlanToAccountDocument = gql`
     }
   }
 `;
-export type AssignLicensePlanToAccountMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignLicensePlanToAccountMutation,
-  SchemaTypes.AssignLicensePlanToAccountMutationVariables
+export type AssignLicensePlanToSpaceMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignLicensePlanToSpaceMutation,
+  SchemaTypes.AssignLicensePlanToSpaceMutationVariables
 >;
 
 /**
- * __useAssignLicensePlanToAccountMutation__
+ * __useAssignLicensePlanToSpaceMutation__
  *
- * To run a mutation, you first call `useAssignLicensePlanToAccountMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignLicensePlanToAccountMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useAssignLicensePlanToSpaceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignLicensePlanToSpaceMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [assignLicensePlanToAccountMutation, { data, loading, error }] = useAssignLicensePlanToAccountMutation({
+ * const [assignLicensePlanToSpaceMutation, { data, loading, error }] = useAssignLicensePlanToSpaceMutation({
  *   variables: {
  *      licensePlanId: // value for 'licensePlanId'
- *      accountId: // value for 'accountId'
+ *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useAssignLicensePlanToAccountMutation(
+export function useAssignLicensePlanToSpaceMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignLicensePlanToAccountMutation,
-    SchemaTypes.AssignLicensePlanToAccountMutationVariables
+    SchemaTypes.AssignLicensePlanToSpaceMutation,
+    SchemaTypes.AssignLicensePlanToSpaceMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.AssignLicensePlanToAccountMutation,
-    SchemaTypes.AssignLicensePlanToAccountMutationVariables
-  >(AssignLicensePlanToAccountDocument, options);
+    SchemaTypes.AssignLicensePlanToSpaceMutation,
+    SchemaTypes.AssignLicensePlanToSpaceMutationVariables
+  >(AssignLicensePlanToSpaceDocument, options);
 }
 
-export type AssignLicensePlanToAccountMutationHookResult = ReturnType<typeof useAssignLicensePlanToAccountMutation>;
-export type AssignLicensePlanToAccountMutationResult =
-  Apollo.MutationResult<SchemaTypes.AssignLicensePlanToAccountMutation>;
-export type AssignLicensePlanToAccountMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignLicensePlanToAccountMutation,
-  SchemaTypes.AssignLicensePlanToAccountMutationVariables
+export type AssignLicensePlanToSpaceMutationHookResult = ReturnType<typeof useAssignLicensePlanToSpaceMutation>;
+export type AssignLicensePlanToSpaceMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignLicensePlanToSpaceMutation>;
+export type AssignLicensePlanToSpaceMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignLicensePlanToSpaceMutation,
+  SchemaTypes.AssignLicensePlanToSpaceMutationVariables
 >;
-export const RevokeLicensePlanFromAccountDocument = gql`
-  mutation RevokeLicensePlanFromAccount($licensePlanId: UUID!, $accountId: UUID!) {
-    revokeLicensePlanFromAccount(planData: { accountID: $accountId, licensePlanID: $licensePlanId }) {
+export const RevokeLicensePlanFromSpaceDocument = gql`
+  mutation RevokeLicensePlanFromSpace($licensePlanId: UUID!, $spaceId: UUID!) {
+    revokeLicensePlanFromSpace(planData: { spaceID: $spaceId, licensePlanID: $licensePlanId }) {
       id
       subscriptions {
         name
@@ -19017,48 +19014,48 @@ export const RevokeLicensePlanFromAccountDocument = gql`
     }
   }
 `;
-export type RevokeLicensePlanFromAccountMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RevokeLicensePlanFromAccountMutation,
-  SchemaTypes.RevokeLicensePlanFromAccountMutationVariables
+export type RevokeLicensePlanFromSpaceMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RevokeLicensePlanFromSpaceMutation,
+  SchemaTypes.RevokeLicensePlanFromSpaceMutationVariables
 >;
 
 /**
- * __useRevokeLicensePlanFromAccountMutation__
+ * __useRevokeLicensePlanFromSpaceMutation__
  *
- * To run a mutation, you first call `useRevokeLicensePlanFromAccountMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRevokeLicensePlanFromAccountMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useRevokeLicensePlanFromSpaceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRevokeLicensePlanFromSpaceMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [revokeLicensePlanFromAccountMutation, { data, loading, error }] = useRevokeLicensePlanFromAccountMutation({
+ * const [revokeLicensePlanFromSpaceMutation, { data, loading, error }] = useRevokeLicensePlanFromSpaceMutation({
  *   variables: {
  *      licensePlanId: // value for 'licensePlanId'
- *      accountId: // value for 'accountId'
+ *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useRevokeLicensePlanFromAccountMutation(
+export function useRevokeLicensePlanFromSpaceMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RevokeLicensePlanFromAccountMutation,
-    SchemaTypes.RevokeLicensePlanFromAccountMutationVariables
+    SchemaTypes.RevokeLicensePlanFromSpaceMutation,
+    SchemaTypes.RevokeLicensePlanFromSpaceMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.RevokeLicensePlanFromAccountMutation,
-    SchemaTypes.RevokeLicensePlanFromAccountMutationVariables
-  >(RevokeLicensePlanFromAccountDocument, options);
+    SchemaTypes.RevokeLicensePlanFromSpaceMutation,
+    SchemaTypes.RevokeLicensePlanFromSpaceMutationVariables
+  >(RevokeLicensePlanFromSpaceDocument, options);
 }
 
-export type RevokeLicensePlanFromAccountMutationHookResult = ReturnType<typeof useRevokeLicensePlanFromAccountMutation>;
-export type RevokeLicensePlanFromAccountMutationResult =
-  Apollo.MutationResult<SchemaTypes.RevokeLicensePlanFromAccountMutation>;
-export type RevokeLicensePlanFromAccountMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RevokeLicensePlanFromAccountMutation,
-  SchemaTypes.RevokeLicensePlanFromAccountMutationVariables
+export type RevokeLicensePlanFromSpaceMutationHookResult = ReturnType<typeof useRevokeLicensePlanFromSpaceMutation>;
+export type RevokeLicensePlanFromSpaceMutationResult =
+  Apollo.MutationResult<SchemaTypes.RevokeLicensePlanFromSpaceMutation>;
+export type RevokeLicensePlanFromSpaceMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RevokeLicensePlanFromSpaceMutation,
+  SchemaTypes.RevokeLicensePlanFromSpaceMutationVariables
 >;
 export const UpdateSpacePlatformSettingsDocument = gql`
   mutation UpdateSpacePlatformSettings($spaceId: UUID!, $nameId: NameID!, $visibility: SpaceVisibility!) {
