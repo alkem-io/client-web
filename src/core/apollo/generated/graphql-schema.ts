@@ -23902,10 +23902,14 @@ export type OrganizationAccountQuery = {
   organization: {
     __typename?: 'Organization';
     id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
     accounts: Array<{
       __typename?: 'Account';
       id: string;
       spaceID?: string | undefined;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
       virtualContributors: Array<{
         __typename?: 'VirtualContributor';
         id: string;

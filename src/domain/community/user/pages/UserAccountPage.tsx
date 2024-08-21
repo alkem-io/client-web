@@ -1,46 +1,21 @@
-import React, { FC, useMemo, useState } from 'react';
-import { IconButton } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import React, { FC, useMemo } from 'react';
 import { useAccountSpacesQuery, useUserAccountQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettingsLayout';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
-import { BlockTitle } from '../../../../core/ui/typography';
-import { useTranslation } from 'react-i18next';
-import JourneyCardHorizontal, {
-  JourneyCardHorizontalSkeleton,
-} from '../../../journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
-import InnovationPackCardHorizontal, {
-  InnovationPackCardHorizontalSkeleton,
-} from '../../../collaboration/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
-import InnovationHubCardHorizontal, {
-  InnovationHubCardHorizontalSkeleton,
-} from '../../../innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import CreateInnovationPackDialog from '../../../platform/admin/templates/InnovationPacks/admin/CreateInnovationPackDialog';
-import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDialog';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useUserContext } from '../hooks/useUserContext';
 import { AuthorizationPrivilege, CredentialType } from '../../../../core/apollo/generated/graphql-schema';
 import { compact } from 'lodash';
-import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
-import CreateInnovationHubDialog from '../../../innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
-import useNewVirtualContributorWizard from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
 import { VIRTUAL_CONTRIBUTORS_LIMIT } from '../../../../main/topLevelPages/myDashboard/myAccount/MyAccountBlockVCCampaignUser';
+import ContributorAccountView from '../../../platform/admin/components/Common/ContributorAccountView';
 
-const SPACE_COUNT_LIMIT = 3;
+export const SPACE_COUNT_LIMIT = 3;
 
 interface UserAccountPageProps {}
 
 export const UserAccountPage: FC<UserAccountPageProps> = () => {
   const { userNameId = '' } = useUrlParams();
   const { user: currentUser } = useUserContext();
-  const { t } = useTranslation();
-  const [createDialogOpen, setCreateDialogOpen] = useState(false);
-  const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
 
   const { data, loading } = useUserAccountQuery({
     variables: {
@@ -80,7 +55,8 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
 
   const isSpaceLimitReached = spaceIds.length >= SPACE_COUNT_LIMIT;
   // currently creation is available only for accounts owned by the user
-  const canCreateSpace = isMyProfile && privileges.includes(AuthorizationPrivilege.Create) && !isSpaceLimitReached;
+  const canCreateSpace =
+    isMyProfile && privileges.includes(AuthorizationPrivilege.Create) && (!isSpaceLimitReached || isPlatformAdmin);
 
   // TODO: CREATE_INNOVATION_PACK & CREATE_INNOVATION_HUB privileges to be implemented and used
   // const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack);
@@ -89,78 +65,24 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
   const canCreateInnovationHub = isPlatformAdmin;
   const isVCLimitReached = virtualContributors.length >= VIRTUAL_CONTRIBUTORS_LIMIT;
   // currently creation is available only for accounts owned by the user
-  const canCreateVirtualContributor = isMyProfile && vcCampaignUser && !isVCLimitReached;
+  const canCreateVirtualContributor = isMyProfile && ((vcCampaignUser && !isVCLimitReached) || isPlatformAdmin);
 
   return (
     <UserSettingsLayout currentTab={SettingsSection.Account}>
-      <PageContentColumn columns={12}>
-        <PageContentBlock halfWidth>
-          <BlockTitle>{t('pages.admin.generic.sections.account.hostedSpaces')}</BlockTitle>
-          <Gutters disablePadding disableGap>
-            {spacesLoading && <JourneyCardHorizontalSkeleton />}
-            {!spacesLoading &&
-              spacesData?.spaces.map(space => (
-                <JourneyCardHorizontal
-                  journeyTypeName="space"
-                  journey={space}
-                  deepness={0}
-                  seamless
-                  sx={{ display: 'inline-block', maxWidth: '100%' }}
-                />
-              ))}
-          </Gutters>
-          <Actions>
-            {canCreateSpace && (
-              <>
-                <IconButton
-                  aria-label={t('common.add')}
-                  aria-haspopup="true"
-                  size="small"
-                  onClick={() => setCreateDialogOpen(true)}
-                >
-                  <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
-                </IconButton>
-                {createDialogOpen && (
-                  <CreateSpaceDialog redirectOnComplete={false} onClose={() => setCreateDialogOpen(false)} />
-                )}
-              </>
-            )}
-          </Actions>
-        </PageContentBlock>
-        <PageContentBlock halfWidth>
-          <BlockTitle>{t('pages.admin.generic.sections.account.virtualContributors')}</BlockTitle>
-          <Gutters disablePadding>
-            {loading && <JourneyCardHorizontalSkeleton />}
-            {!loading && virtualContributors?.map(vc => <ContributorCardHorizontal profile={vc.profile} seamless />)}
-            <Actions>
-              {canCreateVirtualContributor && (
-                <IconButton aria-label={t('common.add')} aria-haspopup="true" size="small" onClick={startWizard}>
-                  <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
-                </IconButton>
-              )}
-            </Actions>
-            <NewVirtualContributorWizard />
-          </Gutters>
-        </PageContentBlock>
-        <PageContentBlock halfWidth>
-          <BlockTitle>{t('pages.admin.generic.sections.account.innovationPacks')}</BlockTitle>
-          {loading && <InnovationPackCardHorizontalSkeleton />}
-          {!loading && innovationPacks?.map(pack => <InnovationPackCardHorizontal {...pack} />)}
-          <Actions>
-            {canCreateInnovationPack && accountId && <CreateInnovationPackDialog accountId={accountId} />}
-          </Actions>
-        </PageContentBlock>
-        <PageContentBlock halfWidth>
-          <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
-          {loading && <InnovationHubCardHorizontalSkeleton />}
-          {!loading && innovationHubs?.map(hub => <InnovationHubCardHorizontal {...hub} />)}
-          <Actions>
-            {canCreateInnovationHub && accountId && (
-              <CreateInnovationHubDialog accountId={accountId} accountHostName={accountHostName} />
-            )}
-          </Actions>
-        </PageContentBlock>
-      </PageContentColumn>
+      <ContributorAccountView
+        accountId={accountId}
+        accountHostName={accountHostName}
+        spaces={spacesData?.spaces ?? []}
+        virtualContributors={virtualContributors}
+        innovationPacks={innovationPacks}
+        innovationHubs={innovationHubs}
+        loading={loading}
+        spacesLoading={spacesLoading}
+        canCreateSpace={canCreateSpace}
+        canCreateVirtualContributor={canCreateVirtualContributor}
+        canCreateInnovationPack={canCreateInnovationPack}
+        canCreateInnovationHub={canCreateInnovationHub}
+      />
     </UserSettingsLayout>
   );
 };
