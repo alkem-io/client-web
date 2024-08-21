@@ -2946,6 +2946,10 @@
       "description": "",
       "successMessage": "Virtual Contributor '{{name}}' created successfully"
     },
+    "autoCreated": {
+      "subSpaceVision": "-",
+      "subSpaceTagline": "A Knowledge Base of a Virtual Contributor"
+    },
     "initial": {
       "title": "Create a Virtual Contributor",
       "profileDescription": "Choose a name and enrich your Virtual Contributors profile below.",

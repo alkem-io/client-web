@@ -1,4 +1,4 @@
-import { ComponentType, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ComponentType, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   refetchSubspacesInSpaceQuery,
   useAddVirtualContributorToCommunityMutation,
@@ -71,17 +71,17 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [step, setStep] = useState<Step>('initial');
-  const [cachedSpaceId, setCachedSpaceId] = useState<string | undefined>(undefined);
+
+  const [createdSpaceId, setCreatedSpaceId] = useState<string | undefined>(undefined);
   const [bokId, setbokId] = useState<string | undefined>(undefined);
-  const [creationIndex, setCreationIndex] = useState<number>(0);
   const [bokCommunityId, setBokCommunityId] = useState<string | undefined>(undefined);
   const [boKParentCommunityId, setBoKParentCommunityId] = useState<string | undefined>(undefined);
+  const [creationIndex, setCreationIndex] = useState<number>(0); // used in case of space deletion
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps | undefined>(
     undefined
   );
   const [calloutPostData, setCalloutPostData] = useState<PostsFormValues | undefined>(undefined);
   const [tryCreateCallout, setTryCreateCallout] = useState<boolean>(false);
-  const calloutId = useRef<string>();
 
   const startWizard = () => {
     setStep('initial');
@@ -111,7 +111,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   // selectableSpaces are space and subspaces
   // subspaces has communityId in order to manually add the VC to it
-  const { mySpaceId, myAccountId, selectableSpaces } = useMemo(() => {
+  const { selectedExistingSpaceId, myAccountId, selectableSpaces } = useMemo(() => {
     const account = data?.me.user?.account;
     const accountId = account?.id;
     const mySpaces = compact(account?.spaces);
@@ -142,14 +142,14 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
 
     return {
-      mySpaceId: mySpaces?.[0]?.id, // TODO: auto-selecting the first space, not ideal
+      selectedExistingSpaceId: mySpaces?.[0]?.id, // TODO: auto-selecting the first space, not ideal
       myAccountId: accountId,
       selectableSpaces,
     };
   }, [data, user]);
 
   const [createSubspace] = useCreateSubspaceMutation({
-    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: cachedSpaceId ?? mySpaceId })],
+    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: createdSpaceId ?? selectedExistingSpaceId })],
   });
 
   const handleSubspaceCreation = async (parentId: string, vcName: string) => {
@@ -159,11 +159,11 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           type: SpaceType.Knowledge,
           spaceID: parentId,
           context: {
-            vision: '-', // todo: translate
+            vision: t('createVirtualContributorWizard.autoCreated.subSpaceVision'),
           },
           profileData: {
             displayName: generateSubSpaceName(vcName),
-            tagline: 'A Knowledge Base of a Virtual Contributor', // todo: translate
+            tagline: t('createVirtualContributorWizard.autoCreated.subSpaceTagline'),
           },
           tags: [],
           collaborationData: {
@@ -175,10 +175,10 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   };
 
   const { data: plansData } = usePlansTableQuery({
-    skip: !!mySpaceId,
+    skip: !!selectedExistingSpaceId,
   });
 
-  const { isPlanAvailable } = usePlanAvailability({ skip: !!mySpaceId });
+  const { isPlanAvailable } = usePlanAvailability({ skip: !!selectedExistingSpaceId });
 
   const plans = useMemo(
     () =>
@@ -203,11 +203,11 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
     // in case of existing space, create subspace as BoK
     // otherwise create a new space
-    if (mySpaceId && myAccountId) {
-      const subspace = await handleSubspaceCreation(mySpaceId, values.name);
+    if (selectedExistingSpaceId && myAccountId) {
+      const subspace = await handleSubspaceCreation(selectedExistingSpaceId, values.name);
       setbokId(subspace?.data?.createSubspace.id);
       setBokCommunityId(subspace?.data?.createSubspace.community.id);
-      const parentCommunityId = selectableSpaces.filter(space => space.id === mySpaceId)[0].communityId;
+      const parentCommunityId = selectableSpaces.filter(space => space.id === selectedExistingSpaceId)[0]?.communityId;
 
       if (parentCommunityId) {
         setBoKParentCommunityId(parentCommunityId);
@@ -234,7 +234,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       const newlyCreatedSpaceId = newSpace?.createSpace.id;
 
       if (newlyCreatedSpaceId) {
-        setCachedSpaceId(newlyCreatedSpaceId);
+        setCreatedSpaceId(newlyCreatedSpaceId);
         setCreationIndex(0);
 
         const subspace = await handleSubspaceCreation(newlyCreatedSpaceId, values.name);
@@ -270,18 +270,17 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       setBoKParentCommunityId(undefined);
     }
 
-    // if there was a space before the VC creation, let's not delete it
-    if (cachedSpaceId && cachedSpaceId !== mySpaceId) {
+    if (createdSpaceId) {
       await deleteSpace({
         variables: {
           input: {
-            ID: cachedSpaceId,
+            ID: createdSpaceId,
           },
         },
       });
 
       setCreationIndex(prevIndex => prevIndex + 1);
-      setCachedSpaceId(undefined);
+      setCreatedSpaceId(undefined);
     }
 
     onDialogClose();
@@ -289,13 +288,13 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const [getNewSpaceUrl] = useSpaceUrlLazyQuery({
     variables: {
-      spaceNameId: cachedSpaceId ?? mySpaceId,
+      spaceNameId: createdSpaceId ?? selectedExistingSpaceId,
     },
   });
 
   const [getSpaceCommunity] = useSpaceCommunityIdLazyQuery({
     variables: {
-      spaceNameId: cachedSpaceId!,
+      spaceNameId: createdSpaceId!,
     },
   });
 
@@ -355,7 +354,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     // create collection of posts
     if (calloutPostData?.posts && calloutPostData?.posts.length > 0 && bokId) {
       const callout = await handleCreateCallout(calloutDetails);
-      calloutId.current = callout?.id;
 
       // add posts to collection
       if (callout?.id) {
@@ -422,6 +420,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
     if (vcId) {
       if (parentCommunityId) {
+        // the VC cannot be added to the BoK community
+        // if it's not part of the parent community
         await addVirtualContributorToCommunity({
           variables: {
             communityId: parentCommunityId,
@@ -430,6 +430,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         });
       }
 
+      // add the VC to the BoK community
       await addVirtualContributorToCommunity({
         variables: {
           communityId: communityId,
@@ -475,7 +476,9 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             onUseExistingKnowledge={values => onStepSelection('existingKnowledge', values)}
           />
         )}
-        {step === 'createSpace' && <LoadingState onClose={handleCancel} entity={mySpaceId ? 'subspace' : 'space'} />}
+        {step === 'createSpace' && (
+          <LoadingState onClose={handleCancel} entity={selectedExistingSpaceId ? 'subspace' : 'space'} />
+        )}
         {step === 'addKnowledge' && virtualContributorInput && (
           <AddContent onClose={handleCancel} onCreateVC={handleAddContent} />
         )}
