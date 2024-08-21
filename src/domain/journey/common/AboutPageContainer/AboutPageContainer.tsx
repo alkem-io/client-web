@@ -41,7 +41,7 @@ export interface AboutPageContainerEntities {
   leadUsers: DashboardLeadUserFragment[] | undefined;
   leadVirtualContributors: ContributorViewProps[] | undefined;
   leadOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
-  host: ContributorViewProps | undefined;
+  provider: ContributorViewProps | undefined;
   references: ReferenceDetailsFragment[] | undefined;
   virtualContributors?: VirtualContributorProps[];
   hasReadPrivilege?: boolean;
@@ -105,7 +105,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }
   // TODO looks like space is missing
   const collaboration = nonMembersData?.lookup.space?.collaboration;
 
-  const host = nonMembersData?.lookup.space?.account.host;
+  const provider = nonMembersData?.lookup.space?.provider;
   const community = {
     ...nonMemberJourney?.community,
     ...memberJourney?.community,
@@ -153,7 +153,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }
           leadUsers,
           leadOrganizations,
           leadVirtualContributors,
-          host,
+          provider,
           references,
           virtualContributors,
           hasReadPrivilege,

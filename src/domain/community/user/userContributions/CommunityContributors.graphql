@@ -2,11 +2,6 @@ query SpaceCommunityContributors($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id
-      account {
-        host {
-          ...OrganizationCard
-        }
-      }
       community {
         id
         leadUsers: usersInRole(role: LEAD) {

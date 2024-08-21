@@ -21,12 +21,15 @@ import { BlockSectionTitle, BlockTitle } from '../../../core/ui/typography';
 import { Remove, Search } from '@mui/icons-material';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import Gutters from '../../../core/ui/grid/Gutters';
-import { Account } from '../../journey/account/Account';
 import { SpaceVisibility } from '../../../core/apollo/generated/graphql-schema';
 
 export interface Space extends Identifiable {
   id: string;
-  account: Account;
+  provider: {
+    profile: {
+      displayName: string;
+    };
+  };
   visibility: SpaceVisibility;
   profile: {
     displayName: string;
@@ -86,8 +89,8 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
       field: 'host.profile.displayName',
       headerName: t('pages.admin.innovationHubs.fields.host'),
       renderHeader: () => <>{t('pages.admin.innovationHubs.fields.host')}</>,
-      renderCell: ({ row }: GridRenderCellParams<string, Space>) => <>{row.account.host?.profile.displayName}</>,
-      valueGetter: ({ row }: GridValueGetterParams<string, Space>) => row.account.host?.profile.displayName,
+      renderCell: ({ row }: GridRenderCellParams<string, Space>) => <>{row.provider.profile.displayName}</>,
+      valueGetter: ({ row }: GridValueGetterParams<string, Space>) => row.provider.profile.displayName,
       filterable: false,
       resizable: true,
     },
@@ -194,7 +197,7 @@ const InnovationHubSpacesField = ({ spaces, onChange }: InnovationHubSpacesField
                         >
                           <TableCell>{space.profile.displayName}</TableCell>
                           <TableCell>{space.visibility}</TableCell>
-                          <TableCell>{space.account.host?.profile.displayName}</TableCell>
+                          <TableCell>{space.provider.profile.displayName}</TableCell>
                           <TableCell>
                             <IconButton
                               color="warning"

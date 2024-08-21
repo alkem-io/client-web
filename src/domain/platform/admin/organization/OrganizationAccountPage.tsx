@@ -4,8 +4,7 @@ import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
 import ContributorAccountView from '../components/Common/ContributorAccountView';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { useAccountSpacesQuery, useOrganizationAccountQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { compact } from 'lodash';
+import { useOrganizationAccountQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import { SPACE_COUNT_LIMIT } from '../../../community/user/pages/UserAccountPage';
 
@@ -18,53 +17,40 @@ const OrganizationAccountPage: FC<SettingsPageProps> = () => {
     skip: !organizationNameId,
   });
 
-  // TODO: This will not be needed when we have multiple spaces per account and a single account per user
-  const accounts = data?.organization?.accounts ?? [];
-  const accountId = accounts[0]?.id;
-  const accountHostName = data?.organization.profile?.displayName;
+  const account = data?.organization?.account;
 
-  const { spaceIds, virtualContributors, innovationPacks, innovationHubs } = useMemo(
+  const { spaces, virtualContributors, innovationPacks, innovationHubs } = useMemo(
     () => ({
-      spaceIds: compact(accounts.flatMap(account => account.spaceID)),
-      virtualContributors: accounts.flatMap(account => account.virtualContributors) ?? [],
-      innovationPacks: accounts.flatMap(account => account.innovationPacks) ?? [],
-      innovationHubs: accounts.flatMap(account => account.innovationHubs) ?? [],
+      spaces: account?.spaces ?? [],
+      virtualContributors: account?.virtualContributors ?? [],
+      innovationPacks: account?.innovationPacks ?? [],
+      innovationHubs: account?.innovationHubs ?? [],
     }),
-    [accounts]
+    [account]
   );
 
-  const { data: spacesData, loading: spacesLoading } = useAccountSpacesQuery({
-    variables: {
-      spacesIds: spaceIds,
-    },
-    skip: !spaceIds.length,
-  });
-
-  const privileges = accounts[0]?.authorization?.myPrivileges ?? [];
+  const privileges = account?.authorization?.myPrivileges ?? [];
   const isPlatformAdmin = privileges.includes(AuthorizationPrivilege.PlatformAdmin);
 
-  const isSpaceLimitReached = spaceIds.length >= SPACE_COUNT_LIMIT;
-  // currently creation is available only for accounts owned by the user
-  const canCreateSpace = privileges.includes(AuthorizationPrivilege.Create) && !isSpaceLimitReached;
+  const isSpaceLimitReached = spaces.length >= SPACE_COUNT_LIMIT;
 
-  // TODO: CREATE_INNOVATION_PACK & CREATE_INNOVATION_HUB privileges to be implemented and used
-  // const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack);
-  const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.Create) || isPlatformAdmin;
-  const canCreateInnovationHub = isPlatformAdmin;
-  // currently creation is available only for accounts owned by the user
-  const canCreateVirtualContributor = false;
+  // TODO: move to server logic
+  const canCreateSpace =
+    privileges.includes(AuthorizationPrivilege.CreateSpace) && (!isSpaceLimitReached || isPlatformAdmin);
+  const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack);
+  const canCreateInnovationHub = privileges.includes(AuthorizationPrivilege.CreateInnovationHub);
+  const canCreateVirtualContributor = privileges.includes(AuthorizationPrivilege.CreateVirtualContributor);
 
   return (
     <OrganizationAdminLayout currentTab={SettingsSection.Account}>
       <ContributorAccountView
-        accountId={accountId}
-        accountHostName={accountHostName}
-        spaces={spacesData?.spaces ?? []}
+        accountId={account?.id}
+        accountHostName={data?.organization.profile?.displayName ?? ''}
+        spaces={spaces}
         virtualContributors={virtualContributors}
         innovationPacks={innovationPacks}
         innovationHubs={innovationHubs}
         loading={loading}
-        spacesLoading={spacesLoading}
         canCreateSpace={canCreateSpace}
         canCreateVirtualContributor={canCreateVirtualContributor}
         canCreateInnovationPack={canCreateInnovationPack}

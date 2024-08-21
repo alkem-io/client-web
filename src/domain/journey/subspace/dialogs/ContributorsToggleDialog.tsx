@@ -33,8 +33,9 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
     },
     skip: !open || !journeyId || !isAuthenticated,
   });
+  const community = data?.lookup.space?.community;
 
-  const users: ContributorCardSquareProps[] | undefined = data?.lookup.space?.community.memberUsers.map(user => ({
+  const users: ContributorCardSquareProps[] | undefined = community?.memberUsers.map(user => ({
     id: user.id,
     avatar: user.profile.visual?.uri || '',
     displayName: user.profile.displayName || '',
@@ -42,19 +43,16 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
     contributorType: CommunityContributorType.User,
   }));
 
-  const organizations: ContributorCardSquareProps[] | undefined = data?.lookup.space?.community.memberOrganizations.map(
-    organization => ({
-      id: organization.id,
-      avatar: organization.profile.visual?.uri || '',
-      displayName: organization.profile.displayName || '',
-      url: organization.profile.url,
-      contributorType: CommunityContributorType.Organization,
-    })
-  );
+  const organizations: ContributorCardSquareProps[] | undefined = community?.memberOrganizations.map(organization => ({
+    id: organization.id,
+    avatar: organization.profile.visual?.uri || '',
+    displayName: organization.profile.displayName || '',
+    url: organization.profile.url,
+    contributorType: CommunityContributorType.Organization,
+  }));
 
   const virtualContributors: VirtualContributorProps[] =
-    data?.lookup.space?.community.virtualContributors.filter(vc => vc.searchVisibility !== SearchVisibility.Hidden) ??
-    [];
+    community?.virtualContributors.filter(vc => vc.searchVisibility !== SearchVisibility.Hidden) ?? [];
 
   return (
     <DialogWithGrid open={open} fullWidth columns={12} aria-labelledby="contributors-dialog-title">

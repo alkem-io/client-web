@@ -11,7 +11,6 @@ import { Identifiable } from '../../../../core/utils/Identifiable';
 import { Link } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
-import { Account } from '../../../journey/account/Account';
 
 export interface SpaceAttrs extends Identifiable {
   context?: { vision?: string };
@@ -26,7 +25,11 @@ export interface SpaceAttrs extends Identifiable {
     cardBanner?: Visual;
   };
   visibility: SpaceVisibility;
-  account?: Account;
+  provider?: {
+    profile: {
+      displayName: string;
+    };
+  };
   metrics?: Pick<Nvp, 'name' | 'value'>[];
 }
 

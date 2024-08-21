@@ -6,24 +6,12 @@ query VirtualContributor($id: UUID_NAMEID!) {
       id
       myPrivileges
     }
-    account {
+    provider {
       id
-      spaceID
-      host {
+      profile {
         id
-        profile {
-          id
-          displayName
-          tagline
-          avatar: visual(type: AVATAR) {
-            uri
-          }
-          location {
-            id
-            city
-            country
-          }
-        }
+        displayName
+        description
       }
     }
     searchVisibility

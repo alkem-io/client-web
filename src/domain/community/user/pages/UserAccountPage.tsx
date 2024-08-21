@@ -5,7 +5,6 @@ import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLa
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useUserContext } from '../hooks/useUserContext';
 import { AuthorizationPrivilege, CredentialType } from '../../../../core/apollo/generated/graphql-schema';
-import { compact } from 'lodash';
 import { VIRTUAL_CONTRIBUTORS_LIMIT } from '../../../../main/topLevelPages/myDashboard/myAccount/MyAccountBlockVCCampaignUser';
 import ContributorAccountView from '../../../platform/admin/components/Common/ContributorAccountView';
 
@@ -24,54 +23,47 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
     skip: !userNameId,
   });
 
-  // TODO: This will not be needed when we have multiple spaces per account and a single account per user
-  const accounts = data?.user?.accounts ?? [];
-  const accountId = accounts[0]?.id;
-  const accountHostName = data?.user.profile?.displayName;
+  const account = data?.user?.account;
 
-  const { spaceIds, virtualContributors, innovationPacks, innovationHubs } = useMemo(
+  const { spaces, virtualContributors, innovationPacks, innovationHubs } = useMemo(
     () => ({
-      spaceIds: compact(accounts.flatMap(account => account.spaceID)),
-      virtualContributors: accounts.flatMap(account => account.virtualContributors) ?? [],
-      innovationPacks: accounts.flatMap(account => account.innovationPacks) ?? [],
-      innovationHubs: accounts.flatMap(account => account.innovationHubs) ?? [],
+      spaces: data?.user?.account?.spaces ?? [],
+      virtualContributors: data?.user?.account?.virtualContributors ?? [],
+      innovationPacks: data?.user?.account?.innovationPacks ?? [],
+      innovationHubs: data?.user?.account?.innovationHubs ?? [],
     }),
-    [accounts]
+    [data?.user?.account]
   );
+  const spaceIds = spaces.map(space => space.id);
 
   const { data: spacesData, loading: spacesLoading } = useAccountSpacesQuery({
     variables: {
       spacesIds: spaceIds,
     },
-    skip: !spaceIds.length,
+    skip: !spaces.length,
   });
 
   const isMyProfile = data?.user.id === currentUser?.user.id;
-  const privileges = accounts[0]?.authorization?.myPrivileges ?? [];
+  const privileges = account?.authorization?.myPrivileges ?? [];
   const isPlatformAdmin = privileges.includes(AuthorizationPrivilege.PlatformAdmin);
   const vcCampaignUser = data?.user?.agent.credentials
     ?.map(credential => credential.type)
     .includes(CredentialType.VcCampaign);
 
   const isSpaceLimitReached = spaceIds.length >= SPACE_COUNT_LIMIT;
-  // currently creation is available only for accounts owned by the user
   const canCreateSpace =
-    isMyProfile && privileges.includes(AuthorizationPrivilege.Create) && (!isSpaceLimitReached || isPlatformAdmin);
-
-  // TODO: CREATE_INNOVATION_PACK & CREATE_INNOVATION_HUB privileges to be implemented and used
-  // const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack);
-  const canCreateInnovationPack =
-    (isMyProfile && privileges.includes(AuthorizationPrivilege.Create)) || isPlatformAdmin;
-  const canCreateInnovationHub = isPlatformAdmin;
+    privileges.includes(AuthorizationPrivilege.CreateSpace) && (!isSpaceLimitReached || isPlatformAdmin);
+  const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack);
+  const canCreateInnovationHub = privileges.includes(AuthorizationPrivilege.CreateInnovationHub);
   const isVCLimitReached = virtualContributors.length >= VIRTUAL_CONTRIBUTORS_LIMIT;
-  // currently creation is available only for accounts owned by the user
+  // TODO: Move to server logic
   const canCreateVirtualContributor = isMyProfile && ((vcCampaignUser && !isVCLimitReached) || isPlatformAdmin);
 
   return (
     <UserSettingsLayout currentTab={SettingsSection.Account}>
       <ContributorAccountView
-        accountId={accountId}
-        accountHostName={accountHostName}
+        accountId={account?.id}
+        accountHostName={data?.user.profile?.displayName ?? ''}
         spaces={spacesData?.spaces ?? []}
         virtualContributors={virtualContributors}
         innovationPacks={innovationPacks}

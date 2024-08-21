@@ -56,11 +56,11 @@ const CommunityGuidelinesTemplatesLibrary: FC<CommunityGuidelinesTemplatesLibrar
     () =>
       applyFilter(
         filter,
-        spaceData?.space.account.library?.communityGuidelinesTemplates.map(template => ({
+        spaceData?.space.library?.communityGuidelinesTemplates.map(template => ({
           ...template,
           innovationPack: {
             profile: { displayName: '' },
-            provider: spaceData?.space.account.host,
+            provider: spaceData?.space.provider,
           },
         }))
       ),

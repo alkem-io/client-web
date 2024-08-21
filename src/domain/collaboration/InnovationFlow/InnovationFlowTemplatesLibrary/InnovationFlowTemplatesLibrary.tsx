@@ -50,7 +50,7 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
 
   const templatesFromSpace = useMemo(
     () =>
-      spaceData?.space.account.library?.innovationFlowTemplates
+      spaceData?.space.library?.innovationFlowTemplates
         .map(template => ({
           ...template,
           innovationPack: {
@@ -58,7 +58,7 @@ const InnovationFlowTemplatesLibrary: FC<InnovationFlowTemplatesLibraryProps> = 
             profile: {
               displayName: '',
             },
-            provider: spaceData?.space.account.host,
+            provider: spaceData?.space.provider,
           },
         }))
         .filter(filterByText(filter)),

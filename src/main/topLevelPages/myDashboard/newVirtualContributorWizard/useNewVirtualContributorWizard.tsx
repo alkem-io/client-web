@@ -3,7 +3,7 @@ import {
   refetchMyAccountQuery,
   refetchSubspacesInSpaceQuery,
   useAddVirtualContributorToCommunityMutation,
-  useCreateNewSpaceMutation,
+  useCreateSpaceMutation,
   useCreatePostFromContributeTabMutation,
   useCreateSubspaceMutation,
   useCreateVirtualContributorOnAccountMutation,
@@ -19,7 +19,6 @@ import {
   CalloutType,
   CalloutVisibility,
   LicensePlanType,
-  NewVirtualContributorMySpacesQuery,
   SpaceType,
 } from '../../../../core/apollo/generated/graphql-schema';
 import CreateNewVirtualContributor, { VirtualContributorFromProps } from './CreateNewVirtualContributor';
@@ -39,6 +38,7 @@ import {
 } from '../../../../domain/collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreation';
 import SetupVCInfo from './SetupVCInfo';
 import { info } from '../../../../core/logging/sentry/log';
+import { compact } from 'lodash';
 
 const SPACE_LABEL = '(space)';
 const entityNamePostfixes = {
@@ -75,7 +75,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [bokId, setbokId] = useState<string | undefined>(undefined);
   const [creationIndex, setCreationIndex] = useState<number>(0);
   const [bokCommunityId, setBokCommunityId] = useState<string | undefined>(undefined);
-  const [accountId, setAccountId] = useState<string>();
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps | undefined>(
     undefined
   );
@@ -109,49 +108,39 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     fetchPolicy: 'cache-and-network',
   });
 
-  const findMySpaces = (
-    userId: string | undefined,
-    mySpaces: NewVirtualContributorMySpacesQuery['me']['myCreatedSpaces'] | undefined
-  ) => {
-    if (!userId || !mySpaces) {
-      return undefined;
-    }
-
-    const spacesHostedByUser = mySpaces.filter(space => space.account.host?.id === userId);
-    if (spacesHostedByUser.length > 0) {
-      return spacesHostedByUser;
-    }
-  };
-
   // selectableSpaces are space and subspaces
   // subspaces has communityId in order to manually add the VC to it
   const { mySpaceId, myAccountId, selectableSpaces } = useMemo(() => {
-    const mySpaces = findMySpaces(user?.user.id, data?.me.myCreatedSpaces);
+    const account = data?.me.user?.account;
+    const accountId = account?.id;
+    const mySpaces = compact(account?.spaces);
     let selectableSpaces: SelectableKnowledgeProps[] = [];
 
-    mySpaces?.forEach(space => {
-      if (space) {
-        selectableSpaces.push({
-          id: space.id,
-          name: `${space.profile.displayName} ${SPACE_LABEL}`,
-          accountId: space.account.id,
-          url: space.profile.url,
-        });
-        selectableSpaces = selectableSpaces.concat(
-          space.subspaces?.map(subspace => ({
-            id: subspace.id,
-            name: subspace.profile.displayName,
-            accountId: space.account.id,
+    if (accountId) {
+      account?.spaces?.forEach(space => {
+        if (space) {
+          selectableSpaces.push({
+            id: space.id,
+            name: `${space.profile.displayName} ${SPACE_LABEL}`,
+            accountId,
             url: space.profile.url,
-            communityId: subspace.community.id,
-          })) ?? []
-        );
-      }
-    });
+          });
+          selectableSpaces = selectableSpaces.concat(
+            space.subspaces?.map(subspace => ({
+              id: subspace.id,
+              name: subspace.profile.displayName,
+              accountId,
+              url: subspace.profile.url,
+              communityId: subspace.community.id,
+            })) ?? []
+          );
+        }
+      });
+    }
 
     return {
       mySpaceId: mySpaces?.[0]?.id,
-      myAccountId: mySpaces?.[0]?.account.id,
+      myAccountId: accountId,
       selectableSpaces,
     };
   }, [data, user]);
@@ -198,7 +187,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     [plansData, isPlanAvailable]
   );
 
-  const [CreateNewSpace] = useCreateNewSpaceMutation({
+  const [CreateNewSpace] = useCreateSpaceMutation({
     refetchQueries: [refetchMyAccountQuery()],
   });
   const handleCreateSpace = async (values: VirtualContributorFromProps) => {
@@ -213,7 +202,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     // otherwise create a new space
     if (mySpaceId && myAccountId) {
       setSpaceId(mySpaceId);
-      setAccountId(myAccountId);
 
       const subspace = await handleSubspaceCreation(mySpaceId, values.name);
       setbokId(subspace?.data?.createSubspace.id);
@@ -227,21 +215,19 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
       const { data: newSpace } = await CreateNewSpace({
         variables: {
-          hostId: user?.user.id,
           spaceData: {
+            accountID: myAccountId!,
             profileData: {
               displayName: generateSpaceName(user?.user.profile.displayName!, creationIndex),
             },
             collaborationData: {},
           },
-          licensePlanId: plans[0]?.id,
         },
       });
-      setSpaceId(newSpace?.createAccount.spaceID);
-      setAccountId(newSpace?.createAccount.id);
+      setSpaceId(newSpace?.createSpace.id);
       setCreationIndex(0);
 
-      const subspace = await handleSubspaceCreation(newSpace?.createAccount.spaceID ?? '', values.name);
+      const subspace = await handleSubspaceCreation(newSpace?.createSpace.id ?? '', values.name);
       setbokId(subspace?.data?.createSubspace.id);
       setBokCommunityId(subspace?.data?.createSubspace.community.id);
     }
@@ -362,8 +348,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
 
     // create VC
-    if (virtualContributorInput && accountId && spaceId) {
-      await handleCreateVirtualContributor(virtualContributorInput, accountId, bokId ?? spaceId, bokCommunityId);
+    if (virtualContributorInput && myAccountId && spaceId) {
+      await handleCreateVirtualContributor(virtualContributorInput, myAccountId, bokId ?? spaceId, bokCommunityId);
       addVCCreationCache(virtualContributorInput.name);
       const { data } = await getNewSpaceUrl();
       navigate(data?.space.profile.url ?? '');

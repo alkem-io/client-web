@@ -1,5 +1,6 @@
 import { useUserContext } from '../../../../community/user';
 import { useFreePlanAvailabilityQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface Provided {
   loading: boolean;
@@ -7,14 +8,15 @@ interface Provided {
 }
 
 // TODO: This is temporary
-// At the moment the logic is checking if the user is the host of any other space
-// but in the future it should block the availability of the FREE plan if the user has a trial or paid one.
+// At the moment the logic is just checking if the user has CreateSpace privilege to allow the FREE plan
+// but in the future it should check the license and the other spaces created
 export const usePlanAvailability = ({ skip }: { skip?: boolean }): Provided => {
   const { user: currentUser, loading: loadingUser } = useUserContext();
 
   const { data: freePlanAvailableData, loading: loadingPlanAvailability } = useFreePlanAvailabilityQuery({
     skip,
   });
+  const myPrivileges = freePlanAvailableData?.me.user?.account?.authorization?.myPrivileges ?? [];
 
   const isPlanAvailable = (plan: { name: string }) => {
     if (loadingUser || loadingPlanAvailability) {
@@ -24,7 +26,7 @@ export const usePlanAvailability = ({ skip }: { skip?: boolean }): Provided => {
       return false;
     }
     if (plan.name === 'FREE') {
-      return freePlanAvailableData?.me.canCreateFreeSpace ?? false;
+      return myPrivileges.includes(AuthorizationPrivilege.CreateSpace);
     } else {
       return true;
     }

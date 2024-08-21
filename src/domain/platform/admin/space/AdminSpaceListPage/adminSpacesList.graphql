@@ -18,17 +18,14 @@ fragment AdminSpace on Space {
   id
   nameID
   visibility
-  account {
-    id
-    subscriptions {
+  subscriptions {
       name
     }
-    host {
+  provider {
+    id
+    profile {
       id
-      profile {
-        id
-        displayName
-      }
+      displayName
     }
   }
   profile {

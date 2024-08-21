@@ -28,15 +28,11 @@ mutation UpdateCalloutTemplate($template: UpdateCalloutTemplateInput!) {
   }
 }
 
-
 query SpaceTemplateSetId($spaceNameId: UUID_NAMEID!) {
   space(ID: $spaceNameId) {
     id
-    account {
+    library {
       id
-      library {
-        id
-      }
     }
   }
 }

@@ -7,11 +7,7 @@ interface CancelDialogProps {
   onConfirm: () => void;
 }
 
-const CancelDialog: FC<CancelDialogProps> = ({
-  open,
-  onClose,
-  onConfirm,
-}) => {
+const CancelDialog: FC<CancelDialogProps> = ({ open, onClose, onConfirm }) => {
   return (
     <ConfirmationDialog
       actions={{

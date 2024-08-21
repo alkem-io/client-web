@@ -2,19 +2,25 @@ query UserAccount($userId: UUID_NAMEID_EMAIL!) {
   user(ID: $userId) {
     id
     profile {
-        id
-        displayName
+      id
+      displayName
     }
     agent {
-        id
-        credentials {
-            id
-            type
-        }
-    }
-    accounts {
       id
-      spaceID
+      credentials {
+        id
+        type
+      }
+    }
+    account {
+      id
+      spaces {
+        id
+        profile {
+          ...AccountItemProfile
+          tagline
+        }
+      }
       authorization {
         id
         myPrivileges

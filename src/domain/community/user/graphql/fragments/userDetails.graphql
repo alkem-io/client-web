@@ -5,7 +5,9 @@ fragment UserDetails on User {
   lastName
   email
   phone
-  accountUpn
+  account {
+    id
+  }
   profile {
     id
     displayName
@@ -25,7 +27,7 @@ fragment UserDetails on User {
       description
     }
     tagsets {
-        ...TagsetDetails
+      ...TagsetDetails
     }
   }
 }
