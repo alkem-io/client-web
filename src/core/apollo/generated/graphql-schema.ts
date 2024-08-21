@@ -18116,6 +18116,7 @@ export type UserDetailsFragment = {
   lastName: string;
   email: string;
   phone: string;
+  account?: { __typename?: 'Account'; id: string } | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -18223,6 +18224,7 @@ export type CreateUserMutation = {
     lastName: string;
     email: string;
     phone: string;
+    account?: { __typename?: 'Account'; id: string } | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18274,6 +18276,7 @@ export type CreateUserNewRegistrationMutation = {
     lastName: string;
     email: string;
     phone: string;
+    account?: { __typename?: 'Account'; id: string } | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18403,6 +18406,7 @@ export type UpdateUserMutation = {
     lastName: string;
     email: string;
     phone: string;
+    account?: { __typename?: 'Account'; id: string } | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18465,6 +18469,7 @@ export type UserQuery = {
     lastName: string;
     email: string;
     phone: string;
+    account?: { __typename?: 'Account'; id: string } | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18513,6 +18518,12 @@ export type UserAccountQuery = {
   user: {
     __typename?: 'User';
     id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    agent: {
+      __typename?: 'Agent';
+      id: string;
+      credentials?: Array<{ __typename?: 'Credential'; id: string; type: CredentialType }> | undefined;
+    };
     account?:
       | {
           __typename?: 'Account';
@@ -18530,6 +18541,9 @@ export type UserAccountQuery = {
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
           }>;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           virtualContributors: Array<{
             __typename?: 'VirtualContributor';
             id: string;
@@ -18680,6 +18694,7 @@ export type UserProfileQuery = {
     lastName: string;
     email: string;
     phone: string;
+    account?: { __typename?: 'Account'; id: string } | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18805,6 +18820,7 @@ export type UserProviderQuery = {
           lastName: string;
           email: string;
           phone: string;
+          account?: { __typename?: 'Account'; id: string } | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -18867,6 +18883,7 @@ export type UserPendingMembershipsQuery = {
           lastName: string;
           email: string;
           phone: string;
+          account?: { __typename?: 'Account'; id: string } | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -23733,6 +23750,7 @@ export type OrganizationAccountQuery = {
   organization: {
     __typename?: 'Organization';
     id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
     account?:
       | {
           __typename?: 'Account';
@@ -23750,6 +23768,9 @@ export type OrganizationAccountQuery = {
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
           }>;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           virtualContributors: Array<{
             __typename?: 'VirtualContributor';
             id: string;

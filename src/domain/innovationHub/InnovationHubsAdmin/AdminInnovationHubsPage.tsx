@@ -1,5 +1,4 @@
 import { FC, useMemo, useState } from 'react';
-import { useResolvedPath } from 'react-router-dom';
 import { sortBy } from 'lodash';
 import AdminLayout from '../../platform/admin/layout/toplevel/AdminLayout';
 import SearchableListLayout from '../../shared/components/SearchableList/SearchableListLayout';
@@ -14,7 +13,6 @@ import {
 interface AdminInnovationHubsPageProps {}
 
 const AdminInnovationHubsPage: FC<AdminInnovationHubsPageProps> = () => {
-  const { pathname } = useResolvedPath('.');
   const { data, loading } = useAdminInnovationHubsListQuery();
   const [deleteInnovationHub] = useDeleteInnovationHubMutation({
     refetchQueries: [refetchAdminInnovationHubsListQuery()],
@@ -46,7 +44,7 @@ const AdminInnovationHubsPage: FC<AdminInnovationHubsPageProps> = () => {
 
   return (
     <AdminLayout currentTab={AdminSection.InnovationHubs}>
-      <SearchableListLayout newLink={`${pathname}/new`}>
+      <SearchableListLayout>
         <SimpleSearchableList
           data={innovationHubs}
           onDelete={item => handleDelete(item.id)}
