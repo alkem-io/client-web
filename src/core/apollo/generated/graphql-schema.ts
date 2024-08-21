@@ -17709,15 +17709,7 @@ export type OrganizationsListQuery = {
   organizations: Array<{
     __typename?: 'Organization';
     id: string;
-    nameID: string;
-    account?: { __typename?: 'Account'; id: string } | undefined;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-    };
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
   }>;
 };
 
@@ -17937,7 +17929,6 @@ export type UserSelectorQuery = {
     users: Array<{
       __typename?: 'User';
       id: string;
-      account?: { __typename?: 'Account'; id: string } | undefined;
       profile: {
         __typename?: 'Profile';
         id: string;
@@ -17958,7 +17949,6 @@ export type UserSelectorUserDetailsQuery = {
   user: {
     __typename?: 'User';
     id: string;
-    account?: { __typename?: 'Account'; id: string } | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -17972,7 +17962,6 @@ export type UserSelectorUserDetailsQuery = {
 export type UserSelectorUserInformationFragment = {
   __typename?: 'User';
   id: string;
-  account?: { __typename?: 'Account'; id: string } | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -22672,51 +22661,46 @@ export type SpaceAccountQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
-          account: {
-            __typename?: 'Account';
-            id: string;
-            host?:
-              | {
-                  __typename?: 'Organization';
+          provider:
+            | {
+                __typename?: 'Organization';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
                   id: string;
-                  nameID: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                  };
-                }
-              | {
-                  __typename?: 'User';
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'User';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
                   id: string;
-                  nameID: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                  };
-                }
-              | {
-                  __typename?: 'VirtualContributor';
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                };
+              }
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
                   id: string;
-                  nameID: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    url: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
-                  };
-                }
-              | undefined;
-          };
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+                };
+              };
         }
       | undefined;
   };
@@ -23761,6 +23745,9 @@ export type OrganizationAccountQuery = {
       | {
           __typename?: 'Account';
           id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           spaces: Array<{
             __typename?: 'Space';
             id: string;
@@ -23774,9 +23761,6 @@ export type OrganizationAccountQuery = {
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
           }>;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
           virtualContributors: Array<{
             __typename?: 'VirtualContributor';
             id: string;

@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   refetchAdminSpacesListQuery,
-  useAssignLicensePlanToAccountMutation,
-  useRevokeLicensePlanFromAccountMutation,
+  useAssignLicensePlanToSpaceMutation,
+  useRevokeLicensePlanFromSpaceMutation,
   useUpdateSpacePlatformSettingsMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import ListItemLink, { ListItemLinkProps } from '../../../../shared/components/SearchableList/ListItemLink';
@@ -33,22 +33,16 @@ export interface SpacePlatformSettings {
   visibility: SpaceVisibility;
 }
 
-export interface AccountPlatformSettings {
-  activeLicensePlanIds: string[] | undefined;
-}
-
 interface SpaceListItemProps extends ListItemLinkProps, SpacePlatformSettings {
   spaceId: string;
-  accountId: string;
-  account: AccountPlatformSettings;
+  activeLicensePlanIds: string[] | undefined;
   licensePlans: LicensePlan[] | undefined;
 }
 
 const SpaceListItem = ({
   spaceId,
-  accountId,
   nameId,
-  account: { activeLicensePlanIds },
+  activeLicensePlanIds,
   licensePlans,
   visibility,
   ...props
@@ -67,23 +61,21 @@ const SpaceListItem = ({
   };
 
   const [updateSpacePlatformSettings] = useUpdateSpacePlatformSettingsMutation();
-  const [assignLicensePlan] = useAssignLicensePlanToAccountMutation();
-  const [revokeLicensePlan] = useRevokeLicensePlanFromAccountMutation();
+  const [assignLicensePlan] = useAssignLicensePlanToSpaceMutation();
+  const [revokeLicensePlan] = useRevokeLicensePlanFromSpaceMutation();
 
-  const [handleSubmit, saving] = useLoadingState(
-    async ({ nameId, visibility }: Partial<AccountPlatformSettings & SpacePlatformSettings>) => {
-      await updateSpacePlatformSettings({
-        variables: {
-          spaceId,
-          nameId: nameId!,
-          visibility: visibility!,
-        },
-        refetchQueries: [refetchAdminSpacesListQuery()],
-        awaitRefetchQueries: true,
-      });
-      setSettingsModalOpen(false);
-    }
-  );
+  const [handleSubmit, saving] = useLoadingState(async ({ nameId, visibility }: Partial<SpacePlatformSettings>) => {
+    await updateSpacePlatformSettings({
+      variables: {
+        spaceId,
+        nameId: nameId!,
+        visibility: visibility!,
+      },
+      refetchQueries: [refetchAdminSpacesListQuery()],
+      awaitRefetchQueries: true,
+    });
+    setSettingsModalOpen(false);
+  });
 
   const { t } = useTranslation();
 
@@ -169,12 +161,12 @@ const SpaceListItem = ({
             <PlansTable
               activeLicensePlanIds={activeLicensePlanIds}
               licensePlans={licensePlans}
-              onDelete={plan => revokeLicensePlan({ variables: { accountId, licensePlanId: plan.id } })}
+              onDelete={plan => revokeLicensePlan({ variables: { spaceId, licensePlanId: plan.id } })}
             />
           )}
           {licensePlans && (
             <AssignPlan
-              onAssignPlan={licensePlanId => assignLicensePlan({ variables: { accountId, licensePlanId } })}
+              onAssignPlan={licensePlanId => assignLicensePlan({ variables: { spaceId, licensePlanId } })}
               licensePlans={licensePlans}
             />
           )}

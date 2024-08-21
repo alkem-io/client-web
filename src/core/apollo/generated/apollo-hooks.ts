@@ -1699,9 +1699,6 @@ export const CommunityGuidelinesSummaryFragmentDoc = gql`
 export const UserSelectorUserInformationFragmentDoc = gql`
   fragment UserSelectorUserInformation on User {
     id
-    account {
-      id
-    }
     profile {
       id
       displayName
@@ -12660,25 +12657,12 @@ export const OrganizationsListDocument = gql`
   query organizationsList($limit: Float, $shuffle: Boolean, $filterCredentials: [AuthorizationCredential!]) {
     organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
       id
-      nameID
-      account {
-        id
-      }
       profile {
         id
         displayName
-        visual(type: AVATAR) {
-          ...VisualUri
-        }
-        location {
-          id
-          city
-          country
-        }
       }
     }
   }
-  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -17849,24 +17833,21 @@ export const SpaceAccountDocument = gql`
           myPrivileges
         }
         visibility
-        account {
+        provider {
           id
-          host {
+          nameID
+          profile {
             id
-            nameID
-            profile {
-              id
-              displayName
-              avatar: visual(type: AVATAR) {
-                ...VisualUri
-              }
-              location {
-                id
-                city
-                country
-              }
-              url
+            displayName
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
             }
+            location {
+              id
+              city
+              country
+            }
+            url
           }
         }
       }
@@ -18842,6 +18823,10 @@ export const OrganizationAccountDocument = gql`
       }
       account {
         id
+        authorization {
+          id
+          myPrivileges
+        }
         spaces {
           id
           profile {
