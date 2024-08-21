@@ -90,7 +90,11 @@ export const ContributorAccountView = ({
                 <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
               </IconButton>
               {createDialogOpen && (
-                <CreateSpaceDialog redirectOnComplete={false} onClose={() => setCreateDialogOpen(false)} />
+                <CreateSpaceDialog
+                  redirectOnComplete={false}
+                  onClose={() => setCreateDialogOpen(false)}
+                  account={{ id: accountId, name: accountHostName }}
+                />
               )}
             </>
           )}

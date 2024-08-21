@@ -41,11 +41,17 @@ interface FormValues extends SpaceEditFormValuesType {
 }
 
 interface CreateSpaceDialogProps {
+  account?:
+    | {
+        id: string | undefined;
+        name: string | undefined;
+      }
+    | undefined;
   redirectOnComplete?: boolean;
   onClose?: () => void;
 }
 
-const CreateSpaceDialog = ({ redirectOnComplete = true, onClose }: CreateSpaceDialogProps) => {
+const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: CreateSpaceDialogProps) => {
   const redirectToHome = useBackToStaticPath(ROUTE_HOME);
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -99,19 +105,24 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose }: CreateSpaceDi
 
   const config = useConfig();
 
+  // either the account is passed in or we pick it up from the user context
+  const accountId = account?.id ?? user?.user.account?.id;
+  const accountName = account?.name ?? user?.user.profile.displayName ?? '';
+
   const [CreateNewSpace] = useCreateSpaceMutation();
   const [getSpaceUrl] = useSpaceUrlLazyQuery();
   const [handleSubmit] = useLoadingState(async (values: Partial<FormValues>) => {
-    if (!user?.user.id) {
+    if (!accountId) {
       return;
     }
+
     setDialogOpen(false);
     setPlansTableDialogOpen(false);
     setCreatingDialogOpen(true);
     const { data: newSpace } = await CreateNewSpace({
       variables: {
         spaceData: {
-          accountID: '', // TODO: pick up from where the space is being created
+          accountID: accountId,
           nameID: values.nameID,
           profileData: {
             displayName: values.name!, // ensured by yup validation
@@ -121,7 +132,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose }: CreateSpaceDi
           tags: compact(values.tagsets?.reduce((acc: string[], tagset) => [...acc, ...tagset.tags], [])),
         },
       },
-      refetchQueries: ['UserAccount'],
+      refetchQueries: ['UserAccount', 'OrganizationAccount'],
     });
 
     const spaceID = newSpace?.createSpace.id;
@@ -173,7 +184,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose }: CreateSpaceDi
                   <PageContentBlockSeamless sx={{ paddingX: 0, paddingBottom: 0 }}>
                     <FormikInputField name="name" title={t('components.nameSegment.name')} required />
                     <NameIdField name="nameID" title={t('common.url')} required />
-                    <TextField label={t('common.host')} value={user?.user.profile.displayName ?? ''} disabled />
+                    <TextField label={t('common.host')} value={accountName} disabled />
                     <FormikInputField
                       name="tagline"
                       title={`${t('context.space.tagline.title')} (${t('common.optional')})`}

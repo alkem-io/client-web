@@ -51,15 +51,10 @@ export const UserAccountPage: FC<UserAccountPageProps> = () => {
     .includes(CredentialType.VcCampaign);
 
   const isSpaceLimitReached = spaceIds.length >= SPACE_COUNT_LIMIT;
-  // currently creation is available only for accounts owned by the user
   const canCreateSpace =
-    isMyProfile && privileges.includes(AuthorizationPrivilege.Create) && (!isSpaceLimitReached || isPlatformAdmin);
-
-  // TODO: CREATE_INNOVATION_PACK & CREATE_INNOVATION_HUB privileges to be implemented and used
-  // const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack);
-  const canCreateInnovationPack =
-    (isMyProfile && privileges.includes(AuthorizationPrivilege.Create)) || isPlatformAdmin;
-  const canCreateInnovationHub = isPlatformAdmin;
+    privileges.includes(AuthorizationPrivilege.CreateSpace) && (!isSpaceLimitReached || isPlatformAdmin);
+  const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack);
+  const canCreateInnovationHub = privileges.includes(AuthorizationPrivilege.CreateInnovationHub);
   const isVCLimitReached = virtualContributors.length >= VIRTUAL_CONTRIBUTORS_LIMIT;
   // currently creation is available only for accounts owned by the user
   const canCreateVirtualContributor = isMyProfile && ((vcCampaignUser && !isVCLimitReached) || isPlatformAdmin);

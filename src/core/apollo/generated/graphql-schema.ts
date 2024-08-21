@@ -18116,6 +18116,7 @@ export type UserDetailsFragment = {
   lastName: string;
   email: string;
   phone: string;
+  account?: { __typename?: 'Account'; id: string } | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -18223,6 +18224,7 @@ export type CreateUserMutation = {
     lastName: string;
     email: string;
     phone: string;
+    account?: { __typename?: 'Account'; id: string } | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18274,6 +18276,7 @@ export type CreateUserNewRegistrationMutation = {
     lastName: string;
     email: string;
     phone: string;
+    account?: { __typename?: 'Account'; id: string } | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18403,6 +18406,7 @@ export type UpdateUserMutation = {
     lastName: string;
     email: string;
     phone: string;
+    account?: { __typename?: 'Account'; id: string } | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18465,6 +18469,7 @@ export type UserQuery = {
     lastName: string;
     email: string;
     phone: string;
+    account?: { __typename?: 'Account'; id: string } | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18689,6 +18694,7 @@ export type UserProfileQuery = {
     lastName: string;
     email: string;
     phone: string;
+    account?: { __typename?: 'Account'; id: string } | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -18814,6 +18820,7 @@ export type UserProviderQuery = {
           lastName: string;
           email: string;
           phone: string;
+          account?: { __typename?: 'Account'; id: string } | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -18876,6 +18883,7 @@ export type UserPendingMembershipsQuery = {
           lastName: string;
           email: string;
           phone: string;
+          account?: { __typename?: 'Account'; id: string } | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;

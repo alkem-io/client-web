@@ -1771,6 +1771,9 @@ export const UserDetailsFragmentDoc = gql`
     lastName
     email
     phone
+    account {
+      id
+    }
     profile {
       id
       displayName
