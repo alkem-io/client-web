@@ -5,9 +5,6 @@ fragment UserDetails on User {
   lastName
   email
   phone
-  account {
-    id
-  }
   profile {
     id
     displayName
