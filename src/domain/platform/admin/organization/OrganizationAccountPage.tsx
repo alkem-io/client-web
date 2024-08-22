@@ -4,23 +4,33 @@ import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
 import ContributorAccountView from '../components/Common/ContributorAccountView';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { useOrganizationAccountQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useAccountInformationQuery,
+  useOrganizationAccountQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 
 const OrganizationAccountPage: FC<SettingsPageProps> = () => {
   const { organizationNameId = '' } = useUrlParams();
-  const { data, loading } = useOrganizationAccountQuery({
+  const { data: organizationData, loading: loadingOrganization } = useOrganizationAccountQuery({
     variables: {
       organizationNameId,
     },
     skip: !organizationNameId,
   });
 
+  const { data: accountData, loading: loadingAccount } = useAccountInformationQuery({
+    variables: {
+      accountId: organizationData?.organization.account?.id!,
+    },
+    skip: !organizationData?.organization.account?.id,
+  });
+
   return (
     <OrganizationAdminLayout currentTab={SettingsSection.Account}>
       <ContributorAccountView
-        accountHostName={data?.organization.profile?.displayName ?? ''}
-        account={data?.organization?.account}
-        loading={loading}
+        accountHostName={organizationData?.organization.profile?.displayName ?? ''}
+        account={accountData?.lookup.account}
+        loading={loadingOrganization || loadingAccount}
       />
     </OrganizationAdminLayout>
   );

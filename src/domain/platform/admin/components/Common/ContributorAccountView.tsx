@@ -19,24 +19,79 @@ import InnovationHubCardHorizontal, {
 import { Actions } from '../../../../../core/ui/actions/Actions';
 import RoundedIcon from '../../../../../core/ui/icon/RoundedIcon';
 import CreateSpaceDialog from '../../../../journey/space/createSpace/CreateSpaceDialog';
-import useNewVirtualContributorWizard, {
-  UserAccountProps,
-} from '../../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
+import useNewVirtualContributorWizard from '../../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
 import CreateInnovationPackDialog from '../../templates/InnovationPacks/admin/CreateInnovationPackDialog';
 import CreateInnovationHubDialog from '../../../../innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
 import {
   AuthorizationPrivilege,
-  OrganizationAccountQuery,
-  UserAccountQuery,
+  SpaceType,
+  SpaceVisibility,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { VIRTUAL_CONTRIBUTORS_LIMIT } from '../../../../../main/topLevelPages/myDashboard/myAccount/MyAccountBlockVCCampaignUser';
 
 export const SPACE_COUNT_LIMIT = 3;
 
+interface AccountProfile {
+  id: string;
+  displayName: string;
+  description?: string;
+  avatar?: { uri: string };
+  url: string;
+}
+
 export interface ContributorAccountViewProps {
   accountHostName?: string;
-  account?: UserAccountQuery['user']['account'] | OrganizationAccountQuery['organization']['account'];
   loading?: boolean;
+  account?: {
+    id: string;
+    __typename: string;
+    authorization?: { myPrivileges?: AuthorizationPrivilege[] };
+    spaces: {
+      id: string;
+      level: number;
+      profile: AccountProfile & {
+        cardBanner?: { uri: string };
+        tagline: string;
+      };
+      community: { id: string };
+      subspaces: {
+        id: string;
+        profile: AccountProfile & {
+          cardBanner?: { uri: string };
+        };
+        community: { id: string };
+        type: SpaceType;
+      }[];
+    }[];
+    virtualContributors: {
+      profile: AccountProfile & {
+        tagline: string;
+      };
+    }[];
+    innovationPacks: {
+      profile: AccountProfile;
+      templates?: {
+        calloutTemplatesCount: number;
+        communityGuidelinesTemplatesCount: number;
+        innovationFlowTemplatesCount: number;
+        postTemplatesCount: number;
+        whiteboardTemplatesCount: number;
+      };
+    }[];
+    innovationHubs: {
+      profile: AccountProfile & {
+        banner?: { uri: string };
+      };
+      spaceVisibilityFilter?: SpaceVisibility;
+      spaceListFilter?: {
+        id: string;
+        profile: {
+          displayName: string;
+        };
+      }[];
+      subdomain: string;
+    }[];
+  };
 }
 
 export const ContributorAccountView = ({ accountHostName, account, loading }: ContributorAccountViewProps) => {
@@ -116,7 +171,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                 aria-label={t('common.add')}
                 aria-haspopup="true"
                 size="small"
-                onClick={() => startWizard(account as unknown as UserAccountProps)}
+                onClick={() => startWizard(account)}
               >
                 <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
               </IconButton>

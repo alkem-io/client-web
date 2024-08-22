@@ -50,6 +50,7 @@ type Step = 'initial' | 'createSpace' | 'addKnowledge' | 'existingKnowledge' | '
 
 export interface UserAccountProps {
   id: string;
+  __typename: string;
   host?: {
     id: string;
   };
@@ -85,7 +86,7 @@ interface useNewVirtualContributorWizardProvided {
 
 interface NewVirtualContributorWizardProps {}
 
-const isAccount = (obj: { __typename: string }) => {
+const isAccount = (obj: { __typename: string } | undefined) => {
   return obj && obj.__typename === 'Account';
 };
 
@@ -118,7 +119,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [calloutPostData, setCalloutPostData] = useState<PostsFormValues | undefined>(undefined);
   const [tryCreateCallout, setTryCreateCallout] = useState<boolean>(false);
 
-  const startWizard = initAccount => {
+  const startWizard = (initAccount: UserAccountProps | undefined) => {
     isAccount(initAccount) ? setTargetAccount(initAccount) : setTargetAccount(undefined);
     setStep('initial');
     setDialogOpen(true);
@@ -148,7 +149,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   // selectableSpaces are space and subspaces
   // subspaces has communityId in order to manually add the VC to it
   const { selectedExistingSpaceId, myAccountId, selectableSpaces } = useMemo(() => {
-    const account = targetAccount ?? (data?.me.user?.account as UserAccountProps);
+    const account = targetAccount ?? data?.me.user?.account;
     const accountId = account?.id;
     const mySpaces = compact(account?.spaces);
     let selectableSpaces: SelectableKnowledgeProps[] = [];
