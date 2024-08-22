@@ -11,7 +11,7 @@ import {
   usePlansTableQuery,
   useSpaceUrlLazyQuery,
   useSubspaceProfileInfoQuery,
-  useSpaceCommunityIdLazyQuery,
+  useSubspaceCommunityIdLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   CalloutGroupName,
@@ -242,7 +242,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         setBokCommunityId(subspace?.data?.createSubspace.community.id);
 
         const parentCommunityData = await getSpaceCommunity();
-        setBoKParentCommunityId(parentCommunityData.data?.space.community.id);
+        setBoKParentCommunityId(parentCommunityData.data?.lookup.space?.community.id);
       }
     }
 
@@ -292,9 +292,9 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     },
   });
 
-  const [getSpaceCommunity] = useSpaceCommunityIdLazyQuery({
+  const [getSpaceCommunity] = useSubspaceCommunityIdLazyQuery({
     variables: {
-      spaceNameId: createdSpaceId!,
+      spaceId: createdSpaceId!,
     },
   });
 

@@ -863,6 +863,7 @@ export enum AuthorizationPolicyType {
   InnovationPack = 'INNOVATION_PACK',
   Invitation = 'INVITATION',
   InMemory = 'IN_MEMORY',
+  Licensing = 'LICENSING',
   Link = 'LINK',
   Organization = 'ORGANIZATION',
   OrganizationVerification = 'ORGANIZATION_VERIFICATION',
@@ -21357,15 +21358,6 @@ export type SpaceUrlQueryVariables = Exact<{
 export type SpaceUrlQuery = {
   __typename?: 'Query';
   space: { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
-};
-
-export type SpaceCommunityIdQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
-}>;
-
-export type SpaceCommunityIdQuery = {
-  __typename?: 'Query';
-  space: { __typename?: 'Space'; id: string; community: { __typename?: 'Community'; id: string } };
 };
 
 export type SpaceInfoFragment = {
