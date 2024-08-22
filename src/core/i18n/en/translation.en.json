@@ -2944,7 +2944,11 @@
     "noSpaces": "Couldn't find any Space hosted by you, please contact us for support.",
     "createdVirtualContributor": {
       "description": "",
-      "successMessage": "Virtual Contributor '{{virtualContributorName}}' created successfully"
+      "successMessage": "Virtual Contributor '{{name}}' created successfully"
+    },
+    "autoCreated": {
+      "subSpaceVision": "-",
+      "subSpaceTagline": "A Knowledge Base of a Virtual Contributor"
     },
     "initial": {
       "title": "Create a Virtual Contributor",

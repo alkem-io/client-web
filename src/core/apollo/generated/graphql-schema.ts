@@ -863,6 +863,7 @@ export enum AuthorizationPolicyType {
   InnovationPack = 'INNOVATION_PACK',
   Invitation = 'INVITATION',
   InMemory = 'IN_MEMORY',
+  Licensing = 'LICENSING',
   Link = 'LINK',
   Organization = 'ORGANIZATION',
   OrganizationVerification = 'ORGANIZATION_VERIFICATION',
