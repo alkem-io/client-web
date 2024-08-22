@@ -18522,11 +18522,17 @@ export type UserAccountQuery = {
     };
     account?:
       | {
-          __typename?: 'Account';
+          __typename: 'Account';
           id: string;
+          host?:
+            | { __typename?: 'Organization'; id: string }
+            | { __typename?: 'User'; id: string }
+            | { __typename?: 'VirtualContributor'; id: string }
+            | undefined;
           spaces: Array<{
             __typename?: 'Space';
             id: string;
+            level: number;
             profile: {
               __typename?: 'Profile';
               tagline: string;
@@ -18534,8 +18540,23 @@ export type UserAccountQuery = {
               displayName: string;
               description?: string | undefined;
               url: string;
+              cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
+            community: { __typename?: 'Community'; id: string };
+            subspaces: Array<{
+              __typename?: 'Space';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                description?: string | undefined;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+              community: { __typename?: 'Community'; id: string };
+            }>;
           }>;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -23743,12 +23764,15 @@ export type OrganizationAccountQuery = {
       | {
           __typename?: 'Account';
           id: string;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          host?:
+            | { __typename?: 'Organization'; id: string }
+            | { __typename?: 'User'; id: string }
+            | { __typename?: 'VirtualContributor'; id: string }
             | undefined;
           spaces: Array<{
-            __typename?: 'Space';
+            __typename: 'Space';
             id: string;
+            level: number;
             profile: {
               __typename?: 'Profile';
               tagline: string;
@@ -23756,9 +23780,27 @@ export type OrganizationAccountQuery = {
               displayName: string;
               description?: string | undefined;
               url: string;
+              cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
+            community: { __typename?: 'Community'; id: string };
+            subspaces: Array<{
+              __typename?: 'Space';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                description?: string | undefined;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+              community: { __typename?: 'Community'; id: string };
+            }>;
           }>;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           virtualContributors: Array<{
             __typename?: 'VirtualContributor';
             id: string;

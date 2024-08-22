@@ -7,15 +7,31 @@ query OrganizationAccount($organizationNameId: UUID_NAMEID!) {
     }
     account {
       id
-      authorization {
+      host {
         id
-        myPrivileges
       }
       spaces {
         id
+        __typename
+        level
         profile {
           ...AccountItemProfile
+          cardBanner: visual(type: CARD) {
+            ...VisualUri
+          }
           tagline
+        }
+        community {
+          id
+        }
+        subspaces {
+          id
+          profile {
+            ...AccountItemProfile
+          }
+          community {
+            id
+          }
         }
       }
       authorization {

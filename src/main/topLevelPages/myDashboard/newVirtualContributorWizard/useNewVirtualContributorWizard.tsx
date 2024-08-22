@@ -48,12 +48,46 @@ const entityNamePostfixes = {
 
 type Step = 'initial' | 'createSpace' | 'addKnowledge' | 'existingKnowledge' | 'loadingVCSetup';
 
+export interface UserAccountProps {
+  id: string;
+  host?: {
+    id: string;
+  };
+  spaces: Array<{
+    id: string;
+    community: {
+      id: string;
+    };
+    profile: {
+      id: string;
+      displayName: string;
+      url: string;
+    };
+    subspaces: Array<{
+      id: string;
+      type: SpaceType;
+      profile: {
+        id: string;
+        displayName: string;
+        url: string;
+      };
+      community: {
+        id: string;
+      };
+    }>;
+  }>;
+}
+
 interface useNewVirtualContributorWizardProvided {
-  startWizard: () => void;
+  startWizard: (initAccount?: UserAccountProps | undefined) => void;
   NewVirtualContributorWizard: ComponentType<NewVirtualContributorWizardProps>;
 }
 
 interface NewVirtualContributorWizardProps {}
+
+const isAccount = (obj: { __typename: string }) => {
+  return obj && obj.__typename === 'Account';
+};
 
 // generate name for the space/subspace based on the VC name
 // index is needed in case of canceling the flow. Creation with the same name/nameID leads to issues accessing it later
@@ -72,6 +106,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [dialogOpen, setDialogOpen] = useState(false);
   const [step, setStep] = useState<Step>('initial');
 
+  const [targetAccount, setTargetAccount] = useState<UserAccountProps | undefined>(undefined);
   const [createdSpaceId, setCreatedSpaceId] = useState<string | undefined>(undefined);
   const [bokId, setbokId] = useState<string | undefined>(undefined);
   const [bokCommunityId, setBokCommunityId] = useState<string | undefined>(undefined);
@@ -83,7 +118,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [calloutPostData, setCalloutPostData] = useState<PostsFormValues | undefined>(undefined);
   const [tryCreateCallout, setTryCreateCallout] = useState<boolean>(false);
 
-  const startWizard = () => {
+  const startWizard = initAccount => {
+    isAccount(initAccount) ? setTargetAccount(initAccount) : setTargetAccount(undefined);
     setStep('initial');
     setDialogOpen(true);
   };
@@ -112,7 +148,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   // selectableSpaces are space and subspaces
   // subspaces has communityId in order to manually add the VC to it
   const { selectedExistingSpaceId, myAccountId, selectableSpaces } = useMemo(() => {
-    const account = data?.me.user?.account;
+    const account = targetAccount ?? (data?.me.user?.account as UserAccountProps);
     const accountId = account?.id;
     const mySpaces = compact(account?.spaces);
     let selectableSpaces: SelectableKnowledgeProps[] = [];
@@ -146,7 +182,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       myAccountId: accountId,
       selectableSpaces,
     };
-  }, [data, user]);
+  }, [data, user, targetAccount]);
 
   const [createSubspace] = useCreateSubspaceMutation({
     refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: createdSpaceId ?? selectedExistingSpaceId })],

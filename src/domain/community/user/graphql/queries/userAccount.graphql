@@ -14,11 +14,31 @@ query UserAccount($userId: UUID_NAMEID_EMAIL!) {
     }
     account {
       id
+      __typename
+      host {
+        id
+      }
       spaces {
         id
+        level
         profile {
           ...AccountItemProfile
+          cardBanner: visual(type: CARD) {
+            ...VisualUri
+          }
           tagline
+        }
+        community {
+          id
+        }
+        subspaces {
+          id
+          profile {
+            ...AccountItemProfile
+          }
+          community {
+            id
+          }
         }
       }
       authorization {

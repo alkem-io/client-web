@@ -13971,11 +13971,31 @@ export const UserAccountDocument = gql`
       }
       account {
         id
+        __typename
+        host {
+          id
+        }
         spaces {
           id
+          level
           profile {
             ...AccountItemProfile
+            cardBanner: visual(type: CARD) {
+              ...VisualUri
+            }
             tagline
+          }
+          community {
+            id
+          }
+          subspaces {
+            id
+            profile {
+              ...AccountItemProfile
+            }
+            community {
+              id
+            }
           }
         }
         authorization {
@@ -14025,6 +14045,7 @@ export const UserAccountDocument = gql`
     }
   }
   ${AccountItemProfileFragmentDoc}
+  ${VisualUriFragmentDoc}
   ${VisualFullFragmentDoc}
 `;
 
@@ -18826,15 +18847,31 @@ export const OrganizationAccountDocument = gql`
       }
       account {
         id
-        authorization {
+        host {
           id
-          myPrivileges
         }
         spaces {
           id
+          __typename
+          level
           profile {
             ...AccountItemProfile
+            cardBanner: visual(type: CARD) {
+              ...VisualUri
+            }
             tagline
+          }
+          community {
+            id
+          }
+          subspaces {
+            id
+            profile {
+              ...AccountItemProfile
+            }
+            community {
+              id
+            }
           }
         }
         authorization {
@@ -18884,6 +18921,7 @@ export const OrganizationAccountDocument = gql`
     }
   }
   ${AccountItemProfileFragmentDoc}
+  ${VisualUriFragmentDoc}
   ${VisualFullFragmentDoc}
 `;
 
