@@ -7,60 +7,6 @@ query OrganizationAccount($organizationNameId: UUID_NAMEID!) {
     }
     account {
       id
-      authorization {
-        id
-        myPrivileges
-      }
-      spaces {
-        id
-        profile {
-          ...AccountItemProfile
-          tagline
-        }
-      }
-      authorization {
-        id
-        myPrivileges
-      }
-      virtualContributors {
-        id
-        profile {
-          ...AccountItemProfile
-          tagline
-        }
-      }
-      innovationPacks {
-        id
-        profile {
-          ...AccountItemProfile
-        }
-        templates {
-          id
-          calloutTemplatesCount
-          communityGuidelinesTemplatesCount
-          innovationFlowTemplatesCount
-          postTemplatesCount
-          whiteboardTemplatesCount
-        }
-      }
-      innovationHubs {
-        id
-        profile {
-          ...AccountItemProfile
-          banner: visual(type: BANNER_WIDE) {
-            ...VisualFull
-          }
-        }
-        spaceVisibilityFilter
-        spaceListFilter {
-          id
-          profile {
-            id
-            displayName
-          }
-        }
-        subdomain
-      }
     }
   }
 }

@@ -97,7 +97,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
 
   const { isAuthenticated } = useAuthenticationContext();
 
-  const { user } = useUserContext();
+  const { accountId: currentUserAccountId } = useUserContext();
 
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
 
@@ -106,7 +106,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
   const config = useConfig();
 
   // either the account is passed in or we pick it up from the user context
-  const accountId = account?.id ?? user?.user.account?.id;
+  const accountId = account?.id ?? currentUserAccountId;
 
   const [CreateNewSpace] = useCreateSpaceMutation();
   const [getSpaceUrl] = useSpaceUrlLazyQuery();
