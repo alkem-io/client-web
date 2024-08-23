@@ -755,6 +755,7 @@ export type CalloutContributionKeySpecifier = (
   | 'id'
   | 'link'
   | 'post'
+  | 'sortOrder'
   | 'updatedDate'
   | 'whiteboard'
   | CalloutContributionKeySpecifier
@@ -766,6 +767,7 @@ export type CalloutContributionFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1955,6 +1957,7 @@ export type MutationKeySpecifier = (
   | 'updateCommunityApplicationForm'
   | 'updateCommunityGuidelines'
   | 'updateCommunityGuidelinesTemplate'
+  | 'updateContributionsSortOrder'
   | 'updateDiscussion'
   | 'updateDocument'
   | 'updateEcosystemModel'
@@ -2123,6 +2126,7 @@ export type MutationFieldPolicy = {
   updateCommunityApplicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityGuidelinesTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateContributionsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -24,6 +24,7 @@ export interface PostCardPost extends Identifiable {
   createdBy?: { profile: { displayName: string } };
   comments?: Pick<Room, 'messagesCount'>;
   createdDate: string | Date; // Apollo says Date while actually it's a string
+  contributionId?: string;
 }
 
 interface PostCardProps {

@@ -4,6 +4,7 @@ query CalloutWhiteboards($calloutId: UUID!) {
       id
       contributions {
         id
+        sortOrder
         whiteboard {
           ...WhiteboardCollectionCalloutCard
         }

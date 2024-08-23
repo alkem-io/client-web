@@ -4,9 +4,14 @@ import { ContributeTabPostFragment } from '../../../../core/apollo/generated/gra
 import useCalloutPostCreatedSubscription from './useCalloutPostCreatedSubscription';
 import { compact } from 'lodash';
 
+export interface PostContributionProps extends Partial<ContributeTabPostFragment> {
+  sortOrder: number;
+  contributionId: string;
+}
+
 export interface PostsData {
   subscriptionEnabled: boolean;
-  posts: ContributeTabPostFragment[];
+  posts: PostContributionProps[];
   loading: boolean;
 }
 
@@ -27,8 +32,15 @@ export const useCalloutPosts = ({ calloutId, skip = false }: UsePostDataHookProp
     variables: { calloutId },
   });
 
-  const posts = useMemo(
-    () => compact(callout?.contributions?.map(contribution => contribution.post)),
+  const posts: PostContributionProps[] = useMemo(
+    () =>
+      compact(
+        callout?.contributions?.map(contribution => ({
+          ...contribution.post,
+          sortOrder: contribution.sortOrder,
+          contributionId: contribution.id,
+        }))
+      ),
     [callout?.contributions]
   );
 

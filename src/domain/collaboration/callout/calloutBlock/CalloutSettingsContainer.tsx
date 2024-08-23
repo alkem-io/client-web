@@ -27,7 +27,7 @@ import {
   EditOutlined,
   KeyboardArrowRightOutlined,
   ShareOutlined,
-  // SwapVerticalCircleOutlined,
+  SwapVerticalCircleOutlined,
   SwapVertOutlined,
   UnpublishedOutlined,
   VerticalAlignBottomOutlined,
@@ -39,13 +39,17 @@ import { WhiteboardFragmentWithCallout } from '../useCallouts/useCallouts';
 import CreateCalloutTemplateDialog from '../../../platform/admin/templates/CalloutTemplates/CreateCalloutTemplateDialog';
 import { CalloutTemplateFormSubmittedValues } from '../../../platform/admin/templates/CalloutTemplates/CalloutTemplateForm';
 import { useCreateCalloutTemplate } from '../../../platform/admin/templates/CalloutTemplates/useCreateCalloutTemplate';
-import { LinkDetails } from '../links/LinkCollectionCallout';
+import { FormatedLink, LinkDetails } from '../links/LinkCollectionCallout';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
 import ExpandContentIcon from '../../../../core/ui/content/ExpandContent/ExpandContentIcon';
 import { ShareDialog } from '../../../shared/components/ShareDialog/ShareDialog';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { PostCardPost } from '../post/PostCard';
+import { WhiteboardCardWhiteboard } from '../whiteboard/WhiteboardCard';
+import SortDialog from './sort/SortDialog';
+import { useUpdateContributionsSortOrderMutation } from '../../../../core/apollo/generated/apollo-hooks';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;
@@ -101,6 +105,11 @@ export interface CalloutSettingsContainerProps
     authorAvatarUri?: string;
     publishedAt?: string;
   };
+  items?: {
+    posts?: PostCardPost[];
+    whiteboards?: WhiteboardCardWhiteboard[];
+    links?: FormatedLink[];
+  };
   expanded?: boolean;
   onExpand?: () => void;
   journeyTypeName: JourneyTypeName;
@@ -108,6 +117,7 @@ export interface CalloutSettingsContainerProps
 
 const CalloutSettingsContainer = ({
   callout,
+  items,
   onVisibilityChange,
   onCalloutEdit,
   onCalloutDelete,
@@ -154,8 +164,9 @@ const CalloutSettingsContainer = ({
     setSettingsAnchorEl(null);
   };
 
-  // TODO: Implement sorting in #5405
-  // const handleSort = () => {};
+  const [sortDialogOpen, setSortDialogOpen] = useState(false);
+  const handleSortDialogOpen = () => setSortDialogOpen(true);
+  const handleSortDialogClose = () => setSortDialogOpen(false);
 
   const [handleDelete, loadingDelete] = useLoadingState(async () => {
     await onCalloutDelete?.(callout);
@@ -206,6 +217,40 @@ const CalloutSettingsContainer = ({
     callback?.(callout.id);
   };
 
+  const isCollection = (type: CalloutType) =>
+    [CalloutType.LinkCollection, CalloutType.PostCollection, CalloutType.WhiteboardCollection].includes(type);
+
+  const getCalloutItems = (type: CalloutType) => {
+    switch (type) {
+      case CalloutType.PostCollection:
+        return items?.posts?.map(post => ({
+          name: post.profile.displayName,
+          id: post.contributionId,
+          commentsCount: post.comments?.messagesCount,
+        }));
+      case CalloutType.WhiteboardCollection:
+        return items?.whiteboards?.map(whiteboard => ({
+          name: whiteboard.profile.displayName,
+          id: whiteboard.contributionId,
+        }));
+      case CalloutType.LinkCollection:
+        return items?.links?.map(link => ({ name: link.name, id: link.contributionId }));
+      default:
+        return undefined;
+    }
+  };
+
+  const [updateContributionsSortOrder] = useUpdateContributionsSortOrderMutation();
+
+  const handleSortContributions = async contributions => {
+    return updateContributionsSortOrder({
+      variables: {
+        calloutID: callout.id,
+        contributionIds: contributions.map(contribution => contribution.id),
+      },
+    });
+  };
+
   if (dontShow) {
     return null;
   }
@@ -247,12 +292,20 @@ const CalloutSettingsContainer = ({
             {t('buttons.delete')}
           </MenuItemWithIcon>
         )}
-        {/* TODO: Implement sorting in #5405 */}
-        {/* {callout.editable && (
-          <MenuItemWithIcon key="sort" iconComponent={SwapVerticalCircleOutlined} onClick={handleSort}>
+        {callout.editable && isCollection(callout.type) && (
+          <MenuItemWithIcon
+            key="sort"
+            iconComponent={SwapVerticalCircleOutlined}
+            onClick={handleSortDialogOpen}
+            disabled={
+              !(callout.type === CalloutType.LinkCollection
+                ? !!callout.contributions?.[0]?.link
+                : !!callout.contributions?.length)
+            }
+          >
             {t('callout.sortContributions')}
           </MenuItemWithIcon>
-        )} */}
+        )}
         {callout.canSaveAsTemplate && (
           <MenuItemWithIcon
             key="saveAsTemplate"
@@ -288,6 +341,13 @@ const CalloutSettingsContainer = ({
           </MenuItemWithIcon>
         )}
       </Menu>
+      <SortDialog
+        open={sortDialogOpen}
+        onClose={handleSortDialogClose}
+        collaborationId={callout.id}
+        contributions={getCalloutItems(callout.type) || []}
+        onUpdateContributionsOrder={handleSortContributions}
+      />
       <CalloutVisibilityChangeDialog
         open={visibilityDialogOpen}
         onClose={() => setVisibilityDialogOpen(false)}

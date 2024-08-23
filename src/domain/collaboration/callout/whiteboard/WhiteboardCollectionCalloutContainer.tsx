@@ -14,9 +14,14 @@ import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
 import { Ref, useMemo } from 'react';
 import { compact } from 'lodash';
 
+interface WhiteboardContributionProps extends Partial<WhiteboardCollectionCalloutCardFragment> {
+  sortOrder: number;
+  contributionId: string;
+}
+
 interface WhiteboardCollectionCalloutContainerProvided {
   ref: Ref<Element>;
-  whiteboards: WhiteboardCollectionCalloutCardFragment[];
+  whiteboards: WhiteboardContributionProps[];
   createNewWhiteboard: () => Promise<{ profile: { url: string } } | undefined>;
   loading: boolean;
   canCreate: boolean;
@@ -53,8 +58,15 @@ const WhiteboardCollectionCalloutContainer = ({ callout, children }: WhiteboardC
     skip: !inView,
   });
 
-  const whiteboards = useMemo(
-    () => compact(data?.lookup.callout?.contributions?.map(contribution => contribution.whiteboard)) ?? [],
+  const whiteboards: WhiteboardContributionProps[] = useMemo(
+    () =>
+      compact(
+        data?.lookup.callout?.contributions?.map(contribution => ({
+          ...contribution.whiteboard,
+          sortOrder: contribution.sortOrder,
+          contributionId: contribution.id,
+        }))
+      ) ?? [],
     [data]
   );
 
