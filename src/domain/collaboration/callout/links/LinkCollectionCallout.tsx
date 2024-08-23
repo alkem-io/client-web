@@ -208,7 +208,6 @@ const LinkCollectionCallout = ({
       })),
     [callout]
   );
-  console.log(formatedLinks);
   const sortedFormatedLinks = useMemo(() => sortBy(formatedLinks, 'sortOrder'), [formatedLinks]);
   const limitedLinks = useMemo(() => sortedFormatedLinks?.slice(0, MAX_LINKS_NORMALVIEW), [callout]);
   const isListTruncated = useMemo(
