@@ -38,14 +38,13 @@ const SortDialog: FC<SortDialogProps> = ({
   }, [contributions]);
 
   const handleDragEnd: OnDragEndResponder = result => {
-    // TODO:
     if (result.destination && items) {
       const newItems = Array.from(items);
       const [reorderedItem] = newItems.splice(result.source.index, 1);
       newItems.splice(result.destination.index, 0, reorderedItem);
       setItems(newItems);
+      onUpdateContributionsOrder(newItems);
     }
-    items && onUpdateContributionsOrder(items);
   };
 
   return (
