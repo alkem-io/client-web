@@ -53,12 +53,12 @@ const LicenseActionBlock = ({
   <StyledPageContentBlock>
     {disabled ? (
       <Caption>
-        <Icon fontSize="small" />
+        <Icon fontSize="small" sx={{ marginRight: gutters(0.5) }} />
         {title}
       </Caption>
     ) : (
       <Caption onClick={onClick} sx={{ cursor: 'pointer' }}>
-        <Icon fontSize="small" />
+        <Icon fontSize="small" sx={{ marginRight: gutters(0.5) }} />
         {title}
       </Caption>
     )}
@@ -200,9 +200,11 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                       <PlanFeatures planTranslation={plansData.currentPlan.translation} listItemComponent={Caption} />
                       <PlanFooter>
                         <BlockTitle>
-                          {t('pages.admin.generic.sections.account.freeTrialNotice.title', {
-                            daysLeft: plansData.daysLeft,
-                          })}
+                          {plansData.daysLeft
+                            ? t('pages.admin.generic.sections.account.freeTrialNotice.titleWithDaysLeft', {
+                                daysLeft: plansData.daysLeft,
+                              })
+                            : t('pages.admin.generic.sections.account.freeTrialNotice.title')}
                         </BlockTitle>
                         {switchPlanLink && (
                           <Caption
