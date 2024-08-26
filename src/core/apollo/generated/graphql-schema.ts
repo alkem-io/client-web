@@ -6649,7 +6649,7 @@ export type AccountInformationQuery = {
     __typename?: 'LookupQueryResults';
     account?:
       | {
-          __typename: 'Account';
+          __typename?: 'Account';
           id: string;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }

@@ -4129,7 +4129,6 @@ export const AccountInformationDocument = gql`
     lookup {
       account(ID: $accountId) {
         id
-        __typename
         authorization {
           id
           myPrivileges
