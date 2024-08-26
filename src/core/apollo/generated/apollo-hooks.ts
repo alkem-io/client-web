@@ -1755,6 +1755,7 @@ export const UserDetailsFragmentDoc = gql`
       tagsets {
         ...TagsetDetails
       }
+      url
     }
   }
   ${VisualFullFragmentDoc}
