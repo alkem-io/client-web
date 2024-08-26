@@ -120,6 +120,17 @@ mutation updatePostTemplate(
     id
   }
 }
+mutation updateCalloutTemplate($templateId: UUID!, $callout: UpdateCalloutInput, $profile: UpdateProfileInput!) {
+  updateTemplate(updateData: { ID: $templateId, callout: $callout, profile: $profile }) {
+    id
+    profile {
+      id
+      visual(type: CARD) {
+        id
+      }
+    }
+  }
+}
 
 
 mutation updateWhiteboardTemplate($templateId: UUID!, $content: WhiteboardContent, $profile: UpdateProfileInput!) {

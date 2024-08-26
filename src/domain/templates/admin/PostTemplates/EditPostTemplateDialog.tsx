@@ -21,7 +21,7 @@ const EditPostTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }:
   }
 
   const values: Partial<PostTemplateFormValues> = {
-    defaultDescription: template.postDefaultDescription,
+    postDefaultDescription: template.postDefaultDescription,
     displayName: template.profile.displayName,
     description: template.profile.description,
     tags: template.profile.tagset?.tags,

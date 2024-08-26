@@ -25095,6 +25095,21 @@ export type UpdatePostTemplateMutation = {
   updateTemplate: { __typename?: 'Template'; id: string };
 };
 
+export type UpdateCalloutTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+  callout?: InputMaybe<UpdateCalloutInput>;
+  profile: UpdateProfileInput;
+}>;
+
+export type UpdateCalloutTemplateMutation = {
+  __typename?: 'Mutation';
+  updateTemplate: {
+    __typename?: 'Template';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; visual?: { __typename?: 'Visual'; id: string } | undefined };
+  };
+};
+
 export type UpdateWhiteboardTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
   content?: InputMaybe<Scalars['WhiteboardContent']>;

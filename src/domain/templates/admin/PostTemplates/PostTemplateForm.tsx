@@ -14,11 +14,11 @@ export interface PostTemplateFormValues {
   description: string;
   tags: string[];
   type: string;
-  defaultDescription: string;
+  postDefaultDescription: string;
 }
 
 export interface PostTemplateFormSubmittedValues {
-  defaultDescription: string;
+  postDefaultDescription: string;
   type: string;
   profile: CreateProfileInput;
   tags?: string[];
@@ -33,7 +33,7 @@ interface PostTemplateFormProps {
 }
 
 const validator = {
-  defaultDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
+  postDefaultDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
   type: yup.string().required(),
 };
 

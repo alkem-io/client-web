@@ -6,7 +6,7 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 
 interface PostTemplatePreviewProps {
   template?: {
-    defaultDescription?: string;
+    postDefaultDescription?: string;
   };
 }
 
@@ -18,7 +18,7 @@ const PostTemplatePreview: FC<PostTemplatePreviewProps> = ({ template }) => {
       <BlockSectionTitle>
         {t('components.callout-creation.template-step.post-template-default-description')}
       </BlockSectionTitle>
-      <WrapperMarkdown>{template?.defaultDescription ?? ''}</WrapperMarkdown>
+      <WrapperMarkdown>{template?.postDefaultDescription ?? ''}</WrapperMarkdown>
     </PageContentBlock>
   );
 };

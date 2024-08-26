@@ -19,6 +19,7 @@ import {
   useCalloutTemplateContentLazyQuery,
   useCreateCalloutTemplateMutation,
   useDeleteTemplateMutation,
+  useUpdateCalloutTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import AdminTemplatesSection from '../../../platform/admin/InnovationPacks/AdminTemplatesSection';
 import { Identifiable } from '../../../../core/utils/Identifiable';
@@ -102,7 +103,7 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
       }: UpdateTemplateInput & { templateId: string; type: CalloutType }) => {
         const { type, ...updatedValues } = produce(template, draft => {
           if (draft.type !== CalloutType.Whiteboard && draft.callout?.framing) {
-            delete draft.callout?.framing?.whiteboard.content;
+            delete draft.callout?.framing?.whiteboard?.content;
           }
           if (draft.type !== CalloutType.PostCollection && draft.callout?.contributionDefaults) {
             delete draft.callout?.contributionDefaults.postDescription;
