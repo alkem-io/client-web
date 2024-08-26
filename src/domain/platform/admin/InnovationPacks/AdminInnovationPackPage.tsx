@@ -11,18 +11,18 @@ import {
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
-import AdminInnovationTemplatesSection from '../../InnovationTemplates/AdminInnovationTemplatesSection';
 import AdminPostTemplatesSection from '../../../templates/admin/PostTemplates/AdminPostTemplatesSection';
 import AdminWhiteboardTemplatesSection from '../../../templates/admin/WhiteboardTemplates/AdminWhiteboardTemplatesSection';
-import InnovationPackForm, { InnovationPackFormValues } from './admin/InnovationPackForm';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import InnovationPackProfileLayout from '../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfileLayout';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import AdminCalloutTemplatesSection from '../../CalloutTemplates/AdminCalloutTemplatesSection';
 import AdminCommunityGuidelinesTemplatesSection from '../../../templates/admin/CommunityGuidelines/AdminCommunityGuidelinesTemplatesSection';
+import InnovationPackForm, { InnovationPackFormValues } from './InnovationPackForm';
+import AdminCalloutTemplatesSection from '../../../templates/admin/CalloutTemplates/AdminCalloutTemplatesSection';
+import AdminInnovationTemplatesSection from '../../../templates/admin/InnovationTemplates/AdminInnovationTemplatesSection';
 
 export enum RoutePaths {
   postTemplatesRoutePath = 'post-templates',

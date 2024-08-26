@@ -94,7 +94,7 @@ const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhit
       getWhiteboardTemplateContent={getWhiteboardTemplateContent}
       getImportedWhiteboardTemplateContent={getImportedWhiteboardTemplateContent}
       whiteboardTemplateContent={whiteboardContent?.lookup.template?.whiteboard?.content}
-      importedTemplateContent={importedWhiteboardContent?.lookup.template}
+      importedTemplateContent={importedWhiteboardContent?.lookup.template?.whiteboard?.content}
       createTemplateDialogComponent={CreateWhiteboardTemplateDialog}
       editTemplateDialogComponent={EditWhiteboardTemplateDialog}
       onCreateTemplate={variables => createWhiteboardTemplate({ variables, refetchQueries })}

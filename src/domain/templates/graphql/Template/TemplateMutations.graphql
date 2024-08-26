@@ -19,17 +19,17 @@ mutation createCalloutTemplate(
 
 mutation createPostTemplate(
   $templatesSetId: UUID!
-  $defaultDescription: Markdown!
+  $postDefaultDescription: Markdown!
   $profile: CreateProfileInput!
   $tags: [String!]
 ) {
   createTemplate(
     templateData: {
       templatesSetID: $templatesSetId
-      postDefaultDescription: $defaultDescription
       profile: $profile
       type: POST
       tags: $tags
+      postDefaultDescription: $postDefaultDescription
     }
   ) {
     id
@@ -72,8 +72,8 @@ mutation createInnovationFlowTemplate(
       templatesSetID: $templatesSetId
       profile: $profile
       type: INNOVATION_FLOW
-      innovationFlowStates: $states
       tags: $tags
+      innovationFlowStates: $states
     }
   ) {
     id
@@ -83,7 +83,7 @@ mutation createInnovationFlowTemplate(
 mutation createCommunityGuidelinesTemplate(
   $templatesSetId: UUID!
   $profile: CreateProfileInput!
-  $guidelines: CreateCommunityGuidelinesInput!
+  $communityGuidelines: CreateCommunityGuidelinesInput!
   $tags: [String!]
 ) {
   createTemplate(
@@ -92,7 +92,7 @@ mutation createCommunityGuidelinesTemplate(
       profile: $profile
       tags: $tags
       type: COMMUNITY_GUIDELINES
-      communityGuidelines: $guidelines
+      communityGuidelines: $communityGuidelines
     }
   ) {
     id
@@ -102,20 +102,20 @@ mutation createCommunityGuidelinesTemplate(
 mutation updateInnovationFlowTemplate(
   $templateId: UUID!
   $profile: UpdateProfileInput!
-  $states: [UpdateInnovationFlowStateInput!]
+  $innovationFlowStates: [UpdateInnovationFlowStateInput!]
 ) {
-  updateTemplate(updateData: { ID: $templateId, profile: $profile, innovationFlowStates: $states }) {
+  updateTemplate(updateData: { ID: $templateId, profile: $profile, innovationFlowStates: $innovationFlowStates }) {
     id
   }
 }
 
 mutation updatePostTemplate(
   $templateId: UUID!
-  $defaultDescription: Markdown
+  $postDefaultDescription: Markdown
   $profile: UpdateProfileInput
 ) {
   updateTemplate(
-    updateData: { ID: $templateId, postDefaultDescription: $defaultDescription, profile: $profile }
+    updateData: { ID: $templateId, postDefaultDescription: $postDefaultDescription, profile: $profile }
   ) {
     id
   }

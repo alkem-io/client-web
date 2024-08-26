@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
 import { makeStyles } from '@mui/styles';
 import WrapperTypography from '../../../../core/ui/typography/deprecated/WrapperTypography';
-import LifecycleButton from '../../../platform/admin/templates/InnovationTemplates/LifecycleButton';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { ProfileChip } from '../../contributor/ProfileChip/ProfileChip';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
+import LifecycleButton from '../../../templates/admin/InnovationTemplates/LifecycleButton';
 
 const appStyles = makeStyles(theme => ({
   minHeight: {

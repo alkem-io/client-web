@@ -101,14 +101,14 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
         ...template
       }: UpdateTemplateInput & { templateId: string; type: CalloutType }) => {
         const { type, ...updatedValues } = produce(template, draft => {
-          if (draft.type !== CalloutType.Whiteboard && draft.framing) {
-            delete draft.framing.whiteboardContent;
+          if (draft.type !== CalloutType.Whiteboard && draft.callout?.framing) {
+            delete draft.callout?.framing?.whiteboard.content;
           }
-          if (draft.type !== CalloutType.PostCollection && draft.contributionDefaults) {
-            delete draft.contributionDefaults.postDescription;
+          if (draft.type !== CalloutType.PostCollection && draft.callout?.contributionDefaults) {
+            delete draft.callout?.contributionDefaults.postDescription;
           }
-          if (draft.type !== CalloutType.WhiteboardCollection && draft.contributionDefaults) {
-            delete draft.contributionDefaults.whiteboardContent;
+          if (draft.type !== CalloutType.WhiteboardCollection && draft.callout?.contributionDefaults) {
+            delete draft.callout?.contributionDefaults.whiteboardContent;
           }
         });
 

@@ -6,7 +6,7 @@ import {
   useInnovationPackResolveIdQuery,
   useWhiteboardTemplateContentQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, TemplateType } from '../../../core/apollo/generated/graphql-schema';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import PageContent from '../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';

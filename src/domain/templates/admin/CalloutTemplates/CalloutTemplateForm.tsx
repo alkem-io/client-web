@@ -8,8 +8,8 @@ import {
   CreateProfileInput,
   CreateReferenceInput,
   CreateWhiteboardInput,
+  Visual,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { Visual } from '../../../common/visual/Visual';
 import { displayNameValidator } from '../../../../core/ui/forms/validator/displayNameValidator';
 import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
 import { RadioButtonOption } from '../../../../core/ui/forms/radioButtons/RadioButtonsGroup';
@@ -46,6 +46,7 @@ export interface CalloutTemplateFormSubmittedValues {
   visualUri?: string;
   profile: CreateProfileInput;
   tags?: string[];
+  // TODO: this needs to be a callout field of type CreateCalloutInput
   framing: {
     profile: {
       displayName: string;

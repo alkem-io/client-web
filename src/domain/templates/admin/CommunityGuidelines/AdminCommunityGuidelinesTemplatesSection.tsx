@@ -55,17 +55,17 @@ const AdminCommunityGuidelinesTemplatesSection = ({
       editTemplateDialogComponent={EditCommunityGuidelinesTemplateDialog}
       onCreateTemplate={variables => {
         const { communityGuidelines, ...rest } = variables;
-        const { profile } = communityGuidelines;
+        const profile = communityGuidelines?.profile;
         const updatedProfile = {
-          displayName: profile.displayName,
-          description: profile.description,
+          displayName: profile?.displayName || '',
+          description: profile?.description || '',
           // TODO: References refactor referencesData should be just references
           referencesData: (profile as unknown as { referencesData?: Reference[] }).referencesData?.map(
             ({ id, ...reference }) => ({ ...reference })
           ),
         };
         const updatedGuidelines = { profile: updatedProfile };
-        const updatedVariables = { guidelines: updatedGuidelines, ...rest };
+        const updatedVariables = { communityGuidelines: updatedGuidelines, ...rest };
         return createCommunityGuidelinesTemplate({ variables: updatedVariables, refetchQueries });
       }}
       onUpdateTemplate={variables => updateCommunityGuidelinesTemplate({ variables, refetchQueries })}

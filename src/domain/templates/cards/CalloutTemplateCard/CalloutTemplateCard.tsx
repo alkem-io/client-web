@@ -21,7 +21,9 @@ import { CalloutIcon } from '../../../collaboration/callout/icon/CalloutIcon';
 import { gutters } from '../../../../core/ui/grid/utils';
 
 export interface CalloutTemplate extends InnovationPackTemplate {
-  type: CalloutType;
+  callout: {
+    type: CalloutType;
+  };
 }
 
 interface CalloutTemplateCardProps extends TemplateCardBaseProps<CalloutTemplate> {}
@@ -30,7 +32,7 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
   const { t } = useTranslation();
 
   const hasTags = (template?.profile.tagset?.tags ?? []).length > 0;
-  const footerHeight = template?.type === CalloutType.LinkCollection ? (hasTags ? 3 : 1) : hasTags ? 2 : 0;
+  const footerHeight = template?.callout.type === CalloutType.LinkCollection ? (hasTags ? 3 : 1) : hasTags ? 2 : 0;
   const descriptionHeightGutters = DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS - footerHeight;
 
   const Icon = template?.type && calloutIcons[template?.type];
@@ -51,7 +53,7 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
           {template && (
             <Box display="flex" alignItems="center" marginLeft={-0.5} gap={gutters(0.5)}>
               {Icon && <RoundedIcon marginLeft={0.5} size="xsmall" component={Icon} flexShrink={0} />}
-              <Caption>{t(`components.calloutTypeSelect.label.${template.type}` as const)}</Caption>
+              <Caption>{t(`components.calloutTypeSelect.label.${template.callout.type}` as const)}</Caption>
             </Box>
           )}
         </CardContent>

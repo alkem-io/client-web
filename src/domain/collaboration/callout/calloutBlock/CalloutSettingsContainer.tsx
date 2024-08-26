@@ -36,9 +36,6 @@ import {
 import { Reference, Tagset } from '../../../common/profile/Profile';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { WhiteboardFragmentWithCallout } from '../useCallouts/useCallouts';
-import CreateCalloutTemplateDialog from '../../../platform/admin/templates/CalloutTemplates/CreateCalloutTemplateDialog';
-import { CalloutTemplateFormSubmittedValues } from '../../../platform/admin/templates/CalloutTemplates/CalloutTemplateForm';
-import { useCreateCalloutTemplate } from '../../../platform/admin/templates/CalloutTemplates/useCreateCalloutTemplate';
 import { LinkDetails } from '../links/LinkCollectionCallout';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '../../../shared/utils/useLoadingState';
@@ -46,6 +43,9 @@ import { SimpleContainerProps } from '../../../../core/container/SimpleContainer
 import ExpandContentIcon from '../../../../core/ui/content/ExpandContent/ExpandContentIcon';
 import { ShareDialog } from '../../../shared/components/ShareDialog/ShareDialog';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { useCreateCalloutTemplate } from '../../../templates/admin/CalloutTemplates/useCreateCalloutTemplate';
+import { CalloutTemplateFormSubmittedValues } from '../../../templates/admin/CalloutTemplates/CalloutTemplateForm';
+import CreateCalloutTemplateDialog from '../../../templates/admin/CalloutTemplates/CreateCalloutTemplateDialog';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;
