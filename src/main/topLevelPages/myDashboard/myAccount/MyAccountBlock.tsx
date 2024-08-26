@@ -59,6 +59,7 @@ const MyAccountBlock = () => {
   const { t } = useTranslation();
   const { data, loading } = useMyAccountQuery({ fetchPolicy: 'cache-and-network' });
   const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
+  const handleStartWizard = () => startWizard(); // Do not remove: Inside the blocks startWizard() is being called with a ClickEvent and that messes up with the param that startWizard expects
 
   // Curently displaying only the first hosted space and the first VC in it
 
@@ -89,7 +90,7 @@ const MyAccountBlock = () => {
           <MyAccountBlockNoGlobalRoleUser
             hostedSpace={hostedSpace}
             virtualContributors={virtualContributors}
-            startWizard={startWizard}
+            startWizard={handleStartWizard}
           />
         );
       }
@@ -98,7 +99,7 @@ const MyAccountBlock = () => {
           <MyAccountBlockVCCampaignUser
             hostedSpace={hostedSpace}
             virtualContributors={virtualContributors}
-            startWizard={startWizard}
+            startWizard={handleStartWizard}
           />
         );
       }
@@ -107,7 +108,7 @@ const MyAccountBlock = () => {
           <MyAccountBlockGlobalRoleUser
             hostedSpace={hostedSpace}
             virtualContributors={virtualContributors}
-            startWizard={startWizard}
+            startWizard={handleStartWizard}
             createLink={createLink}
           />
         );
