@@ -53,12 +53,12 @@ const LicenseActionBlock = ({
   <StyledPageContentBlock>
     {disabled ? (
       <Caption>
-        <Icon fontSize="small" />
+        <Icon fontSize="small" sx={{ marginRight: gutters(0.5), display: 'flex', alignItems: 'cener' }} />
         {title}
       </Caption>
     ) : (
-      <Caption onClick={onClick} sx={{ cursor: 'pointer' }}>
-        <Icon fontSize="small" />
+      <Caption onClick={onClick} sx={{ cursor: 'pointer', display: 'flex', alignItems: 'cener' }}>
+        <Icon fontSize="small" sx={{ marginRight: gutters(0.5) }} />
         {title}
       </Caption>
     )}
