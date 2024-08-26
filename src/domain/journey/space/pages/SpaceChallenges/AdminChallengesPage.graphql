@@ -16,7 +16,7 @@ query AdminSpaceChallengesPage($spaceId: UUID_NAMEID!) {
         profile {
           ...InnovationFlowProfile
         }
-        states {
+        innovationFlowStates {
           displayName
           description
         }

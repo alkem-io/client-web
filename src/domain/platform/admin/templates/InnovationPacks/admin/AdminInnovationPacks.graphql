@@ -39,25 +39,6 @@ fragment InnovationPackProfile on Profile {
   url
 }
 
-fragment AdminInnovationPackTemplates on TemplatesSet {
-  id
-  postTemplates {
-    ...AdminPostTemplate
-  }
-  innovationFlowTemplates {
-    ...AdminInnovationFlowTemplate
-  }
-  whiteboardTemplates {
-    ...AdminWhiteboardTemplate
-  }
-  calloutTemplates {
-    ...AdminCalloutTemplate
-  }
-  communityGuidelinesTemplates {
-    ...AdminCommunityGuidelinesTemplate
-  }
-}
-
 query InnovationPackResolveId($innovationPackNameId: NameID!) {
   lookupByName {
     innovationPack(NAMEID: $innovationPackNameId) {
@@ -78,7 +59,8 @@ query AdminInnovationPack($innovationPackId: UUID!) {
         ...InnovationPackProfile
       }
       templates {
-        ...AdminInnovationPackTemplates
+        id
+        ...TemplatesSetTemplates
       }
       listedInStore
       searchVisibility

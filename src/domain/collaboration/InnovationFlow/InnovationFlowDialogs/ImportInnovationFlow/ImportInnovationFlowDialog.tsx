@@ -6,7 +6,7 @@ import { useSpaceInnovationFlowTemplatesQuery } from '../../../../../core/apollo
 import { Button } from '@mui/material';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
-import { TemplateType } from '../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import { TemplateType } from '../../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 
 interface ImportInnovationFlowDialogProps {
   open: boolean;
@@ -17,15 +17,15 @@ interface ImportInnovationFlowDialogProps {
 const ImportInnovationFlowDialog = ({ open, onClose, handleImportTemplate }: ImportInnovationFlowDialogProps) => {
   const { t } = useTranslation();
   const {
-    spaceId,
+    libraryId,
     profile: { displayName: spaceDisplayName },
   } = useSpace();
 
   const { data: templatesData, loading: loadingTemplates } = useSpaceInnovationFlowTemplatesQuery({
     variables: {
-      spaceId: spaceId!,
+      templatesSetId: libraryId!,
     },
-    skip: !spaceId || !open,
+    skip: !libraryId || !open,
   });
 
   const innovationPacks = [
@@ -33,7 +33,7 @@ const ImportInnovationFlowDialog = ({ open, onClose, handleImportTemplate }: Imp
       profile: { id: '', displayName: spaceDisplayName },
       nameID: '',
       id: '',
-      templates: templatesData?.lookup.space?.library?.innovationFlowTemplates ?? [],
+      templates: templatesData?.lookup.templatesSet?.innovationFlowTemplates ?? [],
     },
   ];
 

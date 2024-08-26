@@ -1,10 +1,10 @@
 import React, { ReactNode, useEffect, useMemo } from 'react';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
+import { TemplateType } from '../../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import { TemplateBase } from '../../../../templates/library/CollaborationTemplatesLibrary/TemplateBase';
 import TemplatePreviewDialog, {
   TemplatePreviewDialogProps,
-} from '../../../../collaboration/templates/templatePreviewDialog/TemplatePreviewDialog';
-import { TemplateType } from '../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
-import { TemplateBase } from '../../../../collaboration/templates/CollaborationTemplatesLibrary/TemplateBase';
+} from '../../../../templates/Dialogs/templatePreviewDialog/TemplatePreviewDialog';
 
 export interface ImportTemplatesDialogPreviewStepProps<T extends TemplateBase, V extends T> {
   onClose: () => void;

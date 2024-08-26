@@ -1,11 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
-import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
 import CommunityGuidelinesTemplateForm, {
   CommunityGuidelinesTemplateFormSubmittedValues,
   CommunityGuidelinesTemplateFormValues,
 } from './CommunityGuidelinesTemplateForm';
+import TemplateDialogBase from '../../../../templates/templateDialog/TemplateDialogBase';
 
 export interface CommunityGuidelinesFormValues {
   displayName: string;

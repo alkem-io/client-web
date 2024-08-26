@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
 import {
   useCreateWhiteboardTemplateMutation,
-  useDeleteWhiteboardTemplateMutation,
+  useDeleteTemplateMutation,
   useUpdateWhiteboardTemplateMutation,
   useWhiteboardTemplateContentLazyQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
-  AdminWhiteboardTemplateFragment,
+  WhiteboardTemplateFragment,
   CreateWhiteboardTemplateMutation,
   UpdateWhiteboardTemplateMutation,
 } from '../../../../../core/apollo/generated/graphql-schema';
@@ -23,19 +23,19 @@ import {
   WhiteboardPreviewImage,
 } from '../../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
-import { TemplateType } from '../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import { TemplateType } from '../../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 
 interface AdminWhiteboardTemplatesSectionProps {
   templateId: string | undefined;
   templatesSetId: string | undefined;
-  templates: AdminWhiteboardTemplateFragment[] | undefined;
+  templates: WhiteboardTemplateFragment[] | undefined;
   onCloseTemplateDialog: () => void;
   refetchQueries: InternalRefetchQueriesInclude;
-  buildTemplateLink: (post: AdminWhiteboardTemplateFragment) => LinkWithState;
+  buildTemplateLink: (post: WhiteboardTemplateFragment) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
   loadingInnovationPacks?: boolean;
-  innovationPacks: InnovationPack<AdminWhiteboardTemplateFragment>[];
+  innovationPacks: InnovationPack<WhiteboardTemplateFragment>[];
   canImportTemplates: boolean;
 }
 
@@ -48,7 +48,7 @@ const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhit
   });
 
   const getWhiteboardTemplateContent = useCallback(
-    (template: AdminWhiteboardTemplateFragment) => {
+    (template: WhiteboardTemplateFragment) => {
       fetchWhiteboardTemplateContent({
         variables: { whiteboardTemplateId: template.id },
       });
@@ -80,7 +80,7 @@ const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhit
 
   const [createWhiteboardTemplate] = useCreateWhiteboardTemplateMutation();
   const [updateWhiteboardTemplate] = useUpdateWhiteboardTemplateMutation();
-  const [deleteWhiteboardTemplate] = useDeleteWhiteboardTemplateMutation();
+  const [deleteWhiteboardTemplate] = useDeleteTemplateMutation();
 
   return (
     <AdminTemplatesSection
@@ -93,8 +93,8 @@ const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhit
       templateImportCardComponent={WhiteboardImportTemplateCard}
       getWhiteboardTemplateContent={getWhiteboardTemplateContent}
       getImportedWhiteboardTemplateContent={getImportedWhiteboardTemplateContent}
-      whiteboardTemplateContent={whiteboardContent?.lookup.whiteboardTemplate}
-      importedTemplateContent={importedWhiteboardContent?.lookup.whiteboardTemplate}
+      whiteboardTemplateContent={whiteboardContent?.lookup.template?.whiteboard?.content}
+      importedTemplateContent={importedWhiteboardContent?.lookup.template}
       createTemplateDialogComponent={CreateWhiteboardTemplateDialog}
       editTemplateDialogComponent={EditWhiteboardTemplateDialog}
       onCreateTemplate={variables => createWhiteboardTemplate({ variables, refetchQueries })}
@@ -103,10 +103,10 @@ const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhit
         await deleteWhiteboardTemplate({ variables, refetchQueries });
       }}
       onTemplateCreated={(mutationResult: CreateWhiteboardTemplateMutation | undefined | null, previewImages) =>
-        onMutationCalled(mutationResult?.createWhiteboardTemplate, previewImages)
+        onMutationCalled(mutationResult?.createTemplate, previewImages)
       }
       onTemplateUpdated={(mutationResult: UpdateWhiteboardTemplateMutation | undefined | null, previewImages) =>
-        onMutationCalled(mutationResult?.updateWhiteboardTemplate, previewImages)
+        onMutationCalled(mutationResult?.updateTemplate, previewImages)
       }
       templateType={TemplateType.WhiteboardTemplate}
     />

@@ -87,9 +87,9 @@ query InnovationHubStorageConfig($innovationHubId: UUID_NAMEID!) {
   }
 }
 
-query SpaceGuidelinesTemplateStorageConfig($templateId: UUID!) {
+query TemplateStorageConfig($templateId: UUID!) {
   lookup {
-    communityGuidelinesTemplate(ID: $templateId) {
+    template(ID: $templateId) {
       id
       profile {
         ...ProfileStorageConfig

@@ -6,7 +6,7 @@ import WhiteboardTemplateForm, {
 import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
 import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
-import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
+import TemplateDialogBase from '../../../../templates/Dialogs/templateDialog/TemplateDialogBase';
 
 export interface CreateWhiteboardTemplateDialogProps {
   open: boolean;

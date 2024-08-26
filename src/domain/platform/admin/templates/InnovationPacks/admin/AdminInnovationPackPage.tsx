@@ -16,7 +16,7 @@ import AdminPostTemplatesSection from '../../PostTemplates/AdminPostTemplatesSec
 import AdminWhiteboardTemplatesSection from '../../WhiteboardTemplates/AdminWhiteboardTemplatesSection';
 import InnovationPackForm, { InnovationPackFormValues } from './InnovationPackForm';
 import { StorageConfigContextProvider } from '../../../../../storage/StorageBucket/StorageConfigContext';
-import InnovationPackProfileLayout from '../../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfileLayout';
+import InnovationPackProfileLayout from '../../../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfileLayout';
 import PageContentColumn from '../../../../../../core/ui/content/PageContentColumn';
 import PageContent from '../../../../../../core/ui/content/PageContent';
 import PageContentBlockSeamless from '../../../../../../core/ui/content/PageContentBlockSeamless';

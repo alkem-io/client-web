@@ -1,16 +1,16 @@
-import { AdminPostTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import PostTemplateForm, { PostTemplateFormSubmittedValues, PostTemplateFormValues } from './PostTemplateForm';
 import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
+import { PostTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import TemplateDialogBase from '../../../../templates/Dialogs/templateDialog/TemplateDialogBase';
 
 interface EditPostTemplateDialogProps {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
   onSubmit: (values: PostTemplateFormSubmittedValues & { tagsetId: string | undefined; tags?: string[] }) => void;
   onDelete: () => void;
-  template: AdminPostTemplateFragment | undefined;
+  template: PostTemplateFragment | undefined;
 }
 
 const EditPostTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }: EditPostTemplateDialogProps) => {
@@ -21,8 +21,7 @@ const EditPostTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }:
   }
 
   const values: Partial<PostTemplateFormValues> = {
-    type: template.type,
-    defaultDescription: template.defaultDescription,
+    defaultDescription: template.postDefaultDescription,
     displayName: template.profile.displayName,
     description: template.profile.description,
     tags: template.profile.tagset?.tags,

@@ -17,7 +17,7 @@ export interface CalloutCreationUtils {
     values: CalloutTemplateFormSubmittedValues,
     callout: CalloutLayoutProps['callout'],
     spaceNameId: string
-  ) => Promise<CreateCalloutTemplateMutation['createCalloutTemplate'] | undefined>;
+  ) => Promise<CreateCalloutTemplateMutation['createTemplate'] | undefined>;
 }
 
 export const useCreateCalloutTemplate = (): CalloutCreationUtils => {
@@ -53,7 +53,7 @@ export const useCreateCalloutTemplate = (): CalloutCreationUtils => {
 
       const res = await createCalloutTemplate({ variables });
 
-      return res.data?.createCalloutTemplate;
+      return res.data?.createTemplate;
     },
     [createCalloutTemplate]
   );

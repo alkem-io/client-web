@@ -12,7 +12,7 @@ import Gutters from '../../../../../core/ui/grid/Gutters';
 import ContributorCardHorizontal from '../../../../../core/ui/card/ContributorCardHorizontal';
 import InnovationPackCardHorizontal, {
   InnovationPackCardHorizontalSkeleton,
-} from '../../../../collaboration/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
+} from '../../../../InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
 import InnovationHubCardHorizontal, {
   InnovationHubCardHorizontalSkeleton,
 } from '../../../../innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';

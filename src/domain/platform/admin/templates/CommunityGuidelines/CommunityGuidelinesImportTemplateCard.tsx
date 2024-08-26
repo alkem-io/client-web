@@ -1,6 +1,6 @@
 import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
-import CommunityGuidelinesTemplateCard from '../../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelinesTemplateCard';
+import CommunityGuidelinesTemplateCard from '../../../../templates/cards/CommunityGuidelinesTemplateCard/CommunityGuidelinesTemplateCard';
 
 interface CommunityGuidelinesImportTemplateCardProps extends TemplateImportCardComponentProps {}
 

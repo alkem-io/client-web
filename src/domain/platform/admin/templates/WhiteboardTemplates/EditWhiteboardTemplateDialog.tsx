@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { AdminWhiteboardTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import WhiteboardTemplateForm, {
   WhiteboardTemplateFormSubmittedValuesWithPreviewImages,
   WhiteboardTemplateFormValues,
 } from './WhiteboardTemplateForm';
 import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
-import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
+import { WhiteboardTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import TemplateDialogBase from '../../../../templates/Dialogs/templateDialog/TemplateDialogBase';
 
 export interface EditWhiteboardTemplateDialogProps {
   open: boolean;
@@ -15,8 +15,8 @@ export interface EditWhiteboardTemplateDialogProps {
     values: WhiteboardTemplateFormSubmittedValuesWithPreviewImages & { tagsetId: string | undefined; tags?: string[] }
   ) => void;
   onDelete: () => void;
-  template: AdminWhiteboardTemplateFragment | undefined;
-  getTemplateContent: (template: AdminWhiteboardTemplateFragment) => void;
+  template: WhiteboardTemplateFragment | undefined;
+  getTemplateContent: (template: WhiteboardTemplateFragment) => void;
   templateContent: { content: string | undefined } | undefined;
 }
 

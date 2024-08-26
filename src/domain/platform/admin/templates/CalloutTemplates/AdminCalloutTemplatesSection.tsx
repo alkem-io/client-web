@@ -3,21 +3,20 @@ import { useTranslation } from 'react-i18next';
 import {
   useCalloutTemplateContentLazyQuery,
   useCreateCalloutTemplateMutation,
-  useDeleteCalloutTemplateMutation,
-  useUpdateCalloutTemplateMutation,
+  useDeleteTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import {
-  AdminCalloutTemplateFragment,
+  CalloutTemplateFragment,
   CalloutState,
   CalloutType,
   CreateCalloutTemplateMutationVariables,
-  UpdateCalloutTemplateInput,
+  UpdateTemplateInput,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import AdminTemplatesSection from '../AdminTemplatesSection';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import CalloutImportTemplateCard from './CalloutImportTemplateCard';
-import { TemplateType } from '../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import { TemplateType } from '../../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 import CreateCalloutTemplateDialog from './CreateCalloutTemplateDialog';
 import { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
 import produce from 'immer';
@@ -27,14 +26,14 @@ import { Identifiable } from '../../../../../core/utils/Identifiable';
 interface AdminCalloutTemplatesSectionProps {
   templateId: string | undefined;
   templatesSetId: string | undefined;
-  templates: AdminCalloutTemplateFragment[] | undefined;
+  templates: CalloutTemplateFragment[] | undefined;
   onCloseTemplateDialog: () => void;
   refetchQueries: InternalRefetchQueriesInclude;
-  buildTemplateLink: (callout: AdminCalloutTemplateFragment) => LinkWithState;
+  buildTemplateLink: (callout: CalloutTemplateFragment) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
   loadingInnovationPacks?: boolean;
-  innovationPacks: InnovationPack<AdminCalloutTemplateFragment>[];
+  innovationPacks: InnovationPack<CalloutTemplateFragment>[];
   canImportTemplates: boolean;
 }
 
@@ -43,7 +42,7 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
 
   const [createCalloutTemplate] = useCreateCalloutTemplateMutation();
   const [updateCalloutTemplate] = useUpdateCalloutTemplateMutation();
-  const [deleteCalloutTemplate] = useDeleteCalloutTemplateMutation();
+  const [deleteTemplate] = useDeleteTemplateMutation();
   const [fetchTemplateData] = useCalloutTemplateContentLazyQuery();
 
   return (
@@ -84,12 +83,14 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
           templatesSetId: calloutTemplate.templatesSetId,
           profile: calloutTemplate.profile,
           tags: calloutTemplate.tags,
-          framing,
-          type: calloutTemplate.type ?? CalloutType.Post,
-          contributionPolicy: {
-            state: CalloutState.Open,
+          callout: {
+            framing,
+            contributionPolicy: {
+              state: CalloutState.Open,
+            },
+            contributionDefaults,
+            type: calloutTemplate.type,
           },
-          contributionDefaults,
         };
 
         return createCalloutTemplate({ variables, refetchQueries });
@@ -98,7 +99,7 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
       onUpdateTemplate={async ({
         templateId,
         ...template
-      }: UpdateCalloutTemplateInput & { templateId: string; type: CalloutType }) => {
+      }: UpdateTemplateInput & { templateId: string; type: CalloutType }) => {
         const { type, ...updatedValues } = produce(template, draft => {
           if (draft.type !== CalloutType.Whiteboard && draft.framing) {
             delete draft.framing.whiteboardContent;
@@ -114,50 +115,51 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
         await updateCalloutTemplate({ variables: { template: updatedValues }, refetchQueries });
       }}
       onDeleteTemplate={async variables => {
-        await deleteCalloutTemplate({ variables, refetchQueries });
+        await deleteTemplate({ variables, refetchQueries });
       }}
       templateType={TemplateType.CalloutTemplate}
       onTemplateImport={async (template: Identifiable) => {
         const { data } = await fetchTemplateData({ variables: { calloutTemplateId: template.id } });
-        const calloutTemplate = data?.lookup.calloutTemplate;
-        if (!calloutTemplate) {
+        const templateData = data?.lookup.template;
+        const templateCallout = templateData?.callout;
+
+        if (!templateData || !templateCallout) {
           throw new TypeError('Template not found!');
         }
         return {
-          type: calloutTemplate.type,
           profile: {
-            displayName: calloutTemplate.profile.displayName,
-            description: calloutTemplate.profile.description,
-            tagset: calloutTemplate.profile.tagset,
-            visual: calloutTemplate.profile.visual,
+            displayName: templateData.profile.displayName,
+            description: templateData.profile.description,
+            tagset: templateData.profile.tagset,
+            visual: templateData.profile.visual,
           },
           framing: {
             profile: {
-              displayName: calloutTemplate.framing.profile.displayName,
-              description: calloutTemplate.framing.profile.description,
+              displayName: templateCallout.framing.profile.displayName,
+              description: templateCallout.framing.profile.description,
               tagsets:
-                calloutTemplate.framing.profile.tagsets?.map(tagset => ({
+                templateCallout.framing.profile.tagsets?.map(tagset => ({
                   name: tagset.name,
                   tags: tagset.tags,
                   type: tagset.type,
                 })) ?? [],
               referencesData:
-                calloutTemplate.framing.profile.references?.map(reference => ({
+                templateCallout.framing.profile.references?.map(reference => ({
                   name: reference.name,
                   uri: reference.uri,
                   description: reference.description,
                 })) ?? [],
             },
-            whiteboard: calloutTemplate.framing.whiteboard
-              ? { content: calloutTemplate.framing.whiteboard.content }
+            whiteboard: templateCallout?.framing.whiteboard
+              ? { content: templateCallout.framing.whiteboard.content }
               : undefined,
           },
           contributionPolicy: {
-            state: calloutTemplate.contributionPolicy.state,
+            state: templateCallout.contributionPolicy.state,
           },
           contributionDefaults: {
-            postDescription: calloutTemplate.contributionDefaults.postDescription,
-            whiteboardContent: calloutTemplate.contributionDefaults.whiteboardContent,
+            postDescription: templateCallout.contributionDefaults.postDescription,
+            whiteboardContent: templateCallout.contributionDefaults.whiteboardContent,
           },
           // TODO: Remove this
           // eslint-disable-next-line @typescript-eslint/no-explicit-any

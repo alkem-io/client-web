@@ -1,0 +1,75 @@
+fragment CalloutTemplate on Template {
+  id
+  profile {
+    ...TemplateProfileInfoWithVisual
+  }
+  callout {
+    id
+    type
+    contributionPolicy {
+      id
+      allowedContributionTypes
+      state
+    }
+  }
+}
+
+fragment PostTemplate on Template {
+  id
+  profile {
+    ...TemplateProfileInfoWithVisual
+  }
+  postDefaultDescription
+}
+
+fragment WhiteboardTemplate on Template {
+  id
+  profile {
+    ...TemplateProfileInfoWithVisual
+  }
+  whiteboard {
+    id
+  }
+}
+
+fragment InnovationFlowTemplate on Template {
+  id
+  profile {
+    ...TemplateProfileInfoWithVisual
+  }
+  innovationFlowStates {
+    displayName
+    description
+  }
+}
+
+fragment CommunityGuidelinesTemplate on Template {
+  id
+  profile {
+    ...TemplateProfileInfoWithVisual
+  }
+  communityGuidelines {
+    id
+    profile {
+      id
+      displayName
+      description
+      references {
+        ...ReferenceDetails
+      }
+    }
+  }
+}
+
+fragment TemplateProfileInfoWithVisual on Profile {
+  id
+  displayName
+  description
+  tagset {
+    ...TagsetDetails
+  }
+  visual(type: CARD) {
+    ...VisualFull
+  }
+}
+

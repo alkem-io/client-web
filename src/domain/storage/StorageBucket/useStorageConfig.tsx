@@ -6,7 +6,7 @@ import {
   useJourneyStorageConfigQuery,
   useOrganizationStorageConfigQuery,
   usePlatformStorageConfigQuery,
-  useSpaceGuidelinesTemplateStorageConfigQuery,
+  useTemplateStorageConfigQuery,
   useUserStorageConfigQuery,
   useVirtualContributorStorageConfigQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
@@ -130,7 +130,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
   });
 
   const guidelinesTemplateOptions = options as UseStorageConfigOptionsGuidelinesTemplate;
-  const { data: guidelinesTemplateStorageConfigData } = useSpaceGuidelinesTemplateStorageConfigQuery({
+  const { data: guidelinesTemplateStorageConfigData } = useTemplateStorageConfigQuery({
     variables: {
       templateId: guidelinesTemplateOptions.guidelinesTemplateId!,
     },
@@ -187,7 +187,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     journey ??
     callout?.framing ??
     contribution?.post ??
-    guidelinesTemplateStorageConfigData?.lookup.communityGuidelinesTemplate ??
+    guidelinesTemplateStorageConfigData?.lookup.template ??
     userStorageConfigData?.user ??
     virtualContributorStorageConfigData?.virtualContributor ??
     organizationStorageConfigData?.organization ??

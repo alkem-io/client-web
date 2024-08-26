@@ -7,13 +7,13 @@ import {
   useWhiteboardTemplateContentLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import CollaborationTemplatesLibrary from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
-import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
-import WhiteboardTemplateCard from '../WhiteboardTemplateCard/WhiteboardTemplateCard';
-import WhiteboardTemplatePreview from './WhiteboardTemplatePreview';
-import { TemplateBase } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import WhiteboardTemplateCard from '../../../templates/cards/WhiteboardTemplateCard/WhiteboardTemplateCard';
 import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../core/utils/Identifiable';
+import { WhiteboardTemplateWithContent } from '../../../templates/cards/WhiteboardTemplateCard/WhiteboardTemplateWithContent';
+import { TemplateBase } from '../../../templates/library/CollaborationTemplatesLibrary/TemplateBase';
+import CollaborationTemplatesLibrary from '../../../templates/library/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
+import WhiteboardTemplatePreview from '../../../templates/library/WhiteboardTemplatesLibrary/WhiteboardTemplatePreview';
 
 export interface WhiteboardTemplatesLibraryProps {
   open: boolean;
@@ -96,7 +96,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ open,
       },
     });
 
-    const content = data?.lookup.whiteboardTemplate?.content ?? '';
+    const content = data?.lookup.template?.whiteboard?.content ?? '';
 
     return {
       ...template,

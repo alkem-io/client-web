@@ -3,29 +3,29 @@ import EditInnovationTemplateDialog from './EditInnovationTemplateDialog';
 import React from 'react';
 import {
   useCreateInnovationFlowTemplateMutation,
-  useDeleteInnovationFlowTemplateMutation,
+  useDeleteTemplateMutation,
   useUpdateInnovationFlowTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { AdminInnovationFlowTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import AdminTemplatesSection from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import InnovationImportTemplateCard from './InnovationImportTemplateCard';
-import { TemplateType } from '../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import { TemplateType } from '../../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import { InnovationFlowTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface AdminInnovationTemplatesSectionProps {
   templateId: string | undefined;
   templatesSetId: string | undefined;
-  templates: AdminInnovationFlowTemplateFragment[] | undefined;
+  templates: InnovationFlowTemplateFragment[] | undefined;
   onCloseTemplateDialog: () => void;
   refetchQueries: InternalRefetchQueriesInclude;
-  buildTemplateLink: (post: AdminInnovationFlowTemplateFragment) => LinkWithState;
+  buildTemplateLink: (post: InnovationFlowTemplateFragment) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
   loadingInnovationPacks?: boolean;
-  innovationPacks: InnovationPack<AdminInnovationFlowTemplateFragment>[];
+  innovationPacks: InnovationPack<InnovationFlowTemplateFragment>[];
   canImportTemplates: boolean;
 }
 
@@ -34,7 +34,7 @@ const AdminInnovationTemplatesSection = ({ refetchQueries, ...props }: AdminInno
 
   const [createInnovationFlowTemplate] = useCreateInnovationFlowTemplateMutation();
   const [updateInnovationFlowTemplate] = useUpdateInnovationFlowTemplateMutation();
-  const [deleteInnovationFlowTemplate] = useDeleteInnovationFlowTemplateMutation();
+  const [deleteTemplate] = useDeleteTemplateMutation();
 
   return (
     <AdminTemplatesSection
@@ -49,7 +49,7 @@ const AdminInnovationTemplatesSection = ({ refetchQueries, ...props }: AdminInno
       editTemplateDialogComponent={EditInnovationTemplateDialog}
       onCreateTemplate={variables => createInnovationFlowTemplate({ variables, refetchQueries })}
       onUpdateTemplate={variables => updateInnovationFlowTemplate({ variables, refetchQueries })}
-      onDeleteTemplate={variables => deleteInnovationFlowTemplate({ variables, refetchQueries })}
+      onDeleteTemplate={variables => deleteTemplate({ variables, refetchQueries })}
       templateType={TemplateType.InnovationFlowTemplate}
     />
   );

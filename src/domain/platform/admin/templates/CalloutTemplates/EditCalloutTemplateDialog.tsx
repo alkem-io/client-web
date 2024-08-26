@@ -1,16 +1,16 @@
 import { useTranslation } from 'react-i18next';
 import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
-import { CalloutType, UpdateCalloutTemplateInput } from '../../../../../core/apollo/generated/graphql-schema';
+import { CalloutType, UpdateTemplateInput } from '../../../../../core/apollo/generated/graphql-schema';
 import { useCalloutTemplateEditableAttributesQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import EditCalloutTemplateForm from './EditCalloutTemplateForm';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
+import TemplateDialogBase from '../../../../templates/Dialogs/templateDialog/TemplateDialogBase';
 
 export interface EditCalloutTemplateDialogProps {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
-  onSubmit: (values: UpdateCalloutTemplateInput & { type: CalloutType }) => void;
+  onSubmit: (values: UpdateTemplateInput & { type: CalloutType }) => void;
   onDelete: () => void;
   template: Identifiable | undefined;
 }
@@ -34,7 +34,7 @@ const EditCalloutTemplateDialog = ({ template, open, onClose, onSubmit, onDelete
       editMode
     >
       {({ actions }) => (
-        <EditCalloutTemplateForm template={data?.lookup.calloutTemplate} onSubmit={onSubmit} actions={actions} />
+        <EditCalloutTemplateForm template={data?.lookup.template} onSubmit={onSubmit} actions={actions} />
       )}
     </TemplateDialogBase>
   );

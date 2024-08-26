@@ -1,7 +1,7 @@
 import React, { ReactNode, useMemo } from 'react';
 import { FormikProps } from 'formik';
 import * as yup from 'yup';
-import { CalloutType, UpdateCalloutTemplateInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
+import { CalloutType, UpdateTemplateInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
 import TemplateForm, { TemplateProfileValues } from '../TemplateForm';
 import { useTranslation } from 'react-i18next';
 import FormikRadioButtonsGroup from '../../../../../core/ui/forms/radioButtons/FormikRadioButtonsGroup';
@@ -63,7 +63,7 @@ interface CalloutTemplateFormProps {
   };
   // initialValues: Partial<CalloutTemplateFormValues>;
   visual?: Visual;
-  onSubmit: (values: UpdateCalloutTemplateInput & { type: CalloutType }) => void;
+  onSubmit: (values: UpdateTemplateInput & { type: CalloutType }) => void;
   actions: ReactNode | ((formState: FormikProps<CalloutTemplateFormValues>) => ReactNode);
   loading?: boolean;
 }
@@ -143,7 +143,7 @@ const EditCalloutTemplateForm = ({ template, visual, onSubmit, actions }: Callou
       throw new Error('Template is not loaded');
     }
 
-    const submittedValues: UpdateCalloutTemplateInput & { type: CalloutType } = {
+    const submittedValues: UpdateTemplateInput & { type: CalloutType } = {
       ID: template.id!,
       type: template.type,
       profile: {
@@ -155,28 +155,29 @@ const EditCalloutTemplateForm = ({ template, visual, onSubmit, actions }: Callou
           },
         ],
       },
-      framing: {
-        profile: {
-          displayName: framing.profile.displayName,
-          description: framing.profile.description,
-          references: framing.profile.references.map(reference => ({ ID: reference.id, ...reference })),
-          tagsets: template.framing.profile.tagset &&
-            framing.profile.tags && [
-              {
-                ID: template.framing.profile.tagset.id!,
-                tags: framing.profile.tags,
-              },
-            ],
-        },
-        whiteboardContent: template.framing.whiteboard &&
-          framing.whiteboard && {
-            ID: template.framing.whiteboard?.id!,
-            content: framing.whiteboard.content,
+      callout: {
+        framing: {
+          profile: {
+            displayName: framing.profile.displayName,
+            description: framing.profile.description,
+            references: framing.profile.references.map(reference => ({ ID: reference.id, ...reference })),
+            tagsets: template.framing.profile.tagset &&
+              framing.profile.tags && [
+                {
+                  ID: template.framing.profile.tagset.id!,
+                  tags: framing.profile.tags,
+                },
+              ],
           },
-      },
-      contributionDefaults: {
-        postDescription: contributionDefaults.postDescription,
-        whiteboardContent: contributionDefaults.whiteboardContent,
+          whiteboard: template.framing.whiteboard &&
+            framing.whiteboard && {
+              content: framing.whiteboard.content,
+            },
+        },
+        contributionDefaults: {
+          postDescription: contributionDefaults.postDescription,
+          whiteboardContent: contributionDefaults.whiteboardContent,
+        },
       },
     };
 

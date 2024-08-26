@@ -3,29 +3,29 @@ import EditPostTemplateDialog from './EditPostTemplateDialog';
 import React from 'react';
 import {
   useCreatePostTemplateMutation,
-  useDeletePostTemplateMutation,
+  useDeleteTemplateMutation,
   useUpdatePostTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { AdminPostTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import AdminTemplatesSection from '../AdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import PostImportTemplateCard from './PostImportTemplateCard';
-import { TemplateType } from '../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import { TemplateType } from '../../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import { PostTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface AdminPostTemplatesSectionProps {
   templateId: string | undefined;
   templatesSetId: string | undefined;
-  templates: AdminPostTemplateFragment[] | undefined;
+  templates: PostTemplateFragment[] | undefined;
   onCloseTemplateDialog: () => void;
   refetchQueries: InternalRefetchQueriesInclude;
-  buildTemplateLink: (post: AdminPostTemplateFragment) => LinkWithState;
+  buildTemplateLink: (post: PostTemplateFragment) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
   loadingInnovationPacks?: boolean;
-  innovationPacks: InnovationPack<AdminPostTemplateFragment>[];
+  innovationPacks: InnovationPack<PostTemplateFragment>[];
   canImportTemplates: boolean;
 }
 
@@ -34,7 +34,7 @@ const AdminPostTemplatesSection = ({ refetchQueries, ...props }: AdminPostTempla
 
   const [createPostTemplate] = useCreatePostTemplateMutation();
   const [updatePostTemplate] = useUpdatePostTemplateMutation();
-  const [deletePostTemplate] = useDeletePostTemplateMutation();
+  const [deleteTemplate] = useDeleteTemplateMutation();
 
   return (
     <AdminTemplatesSection
@@ -50,7 +50,7 @@ const AdminPostTemplatesSection = ({ refetchQueries, ...props }: AdminPostTempla
       onCreateTemplate={variables => createPostTemplate({ variables, refetchQueries })}
       onUpdateTemplate={variables => updatePostTemplate({ variables, refetchQueries })}
       onDeleteTemplate={async variables => {
-        await deletePostTemplate({ variables, refetchQueries });
+        await deleteTemplate({ variables, refetchQueries });
       }}
       templateType={TemplateType.PostTemplate}
     />

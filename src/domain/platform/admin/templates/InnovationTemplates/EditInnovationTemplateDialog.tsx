@@ -1,4 +1,3 @@
-import { AdminInnovationFlowTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import InnovationFlowTemplateForm, {
   InnovationTemplateFormSubmittedValues,
@@ -6,14 +5,15 @@ import InnovationFlowTemplateForm, {
 } from './InnovationFlowTemplateForm';
 import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
+import { InnovationFlowTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import TemplateDialogBase from '../../../../templates/Dialogs/templateDialog/TemplateDialogBase';
 
 interface EditInnovationTemplateDialogProps {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
   onSubmit: (values: InnovationTemplateFormSubmittedValues & { tagsetId: string | undefined; tags?: string[] }) => void;
   onDelete: () => void;
-  template: AdminInnovationFlowTemplateFragment | undefined;
+  template: InnovationFlowTemplateFragment | undefined;
 }
 
 const EditInnovationTemplateDialog = ({
@@ -30,7 +30,7 @@ const EditInnovationTemplateDialog = ({
   }
 
   const values: Partial<InnovationTemplateFormValues> = {
-    states: template.states,
+    states: template.innovationFlowStates,
     displayName: template.profile.displayName,
     description: template.profile.description,
     tags: template.profile.tagset?.tags,

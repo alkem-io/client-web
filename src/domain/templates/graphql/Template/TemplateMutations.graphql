@@ -1,0 +1,172 @@
+mutation createCalloutTemplate(
+  $templatesSetId: UUID!
+  $profile: CreateProfileInput!
+  $tags: [String!]
+  $callout: CreateCalloutInput!
+) {
+  createTemplate(
+    templateData: {
+      templatesSetID: $templatesSetId
+      profile: $profile
+      tags: $tags
+      type: CALLOUT
+      callout: $callout
+    }
+  ) {
+    id
+  }
+}
+
+mutation createPostTemplate(
+  $templatesSetId: UUID!
+  $defaultDescription: Markdown!
+  $profile: CreateProfileInput!
+  $tags: [String!]
+) {
+  createTemplate(
+    templateData: {
+      templatesSetID: $templatesSetId
+      postDefaultDescription: $defaultDescription
+      profile: $profile
+      type: POST
+      tags: $tags
+    }
+  ) {
+    id
+  }
+}
+
+mutation createWhiteboardTemplate(
+  $templatesSetId: UUID!
+  $profile: CreateProfileInput!
+  $tags: [String!]
+  $whiteboard: CreateWhiteboardInput!
+) {
+  createTemplate(
+    templateData: {
+      templatesSetID: $templatesSetId
+      profile: $profile
+      type: WHITEBOARD
+      tags: $tags
+      whiteboard: $whiteboard
+    }
+  ) {
+    id
+    profile {
+      id
+      visual(type: CARD) {
+        id
+      }
+    }
+  }
+}
+
+mutation createInnovationFlowTemplate(
+  $templatesSetId: UUID!
+  $profile: CreateProfileInput!
+  $states: [UpdateInnovationFlowStateInput!]
+  $tags: [String!]
+) {
+  createTemplate(
+    templateData: {
+      templatesSetID: $templatesSetId
+      profile: $profile
+      type: INNOVATION_FLOW
+      innovationFlowStates: $states
+      tags: $tags
+    }
+  ) {
+    id
+  }
+}
+
+mutation createCommunityGuidelinesTemplate(
+  $templatesSetId: UUID!
+  $profile: CreateProfileInput!
+  $guidelines: CreateCommunityGuidelinesInput!
+  $tags: [String!]
+) {
+  createTemplate(
+    templateData:  {
+      templatesSetID: $templatesSetId
+      profile: $profile
+      tags: $tags
+      type: COMMUNITY_GUIDELINES
+      communityGuidelines: $guidelines
+    }
+  ) {
+    id
+  }
+}
+
+mutation updateInnovationFlowTemplate(
+  $templateId: UUID!
+  $profile: UpdateProfileInput!
+  $states: [UpdateInnovationFlowStateInput!]
+) {
+  updateTemplate(updateData: { ID: $templateId, profile: $profile, innovationFlowStates: $states }) {
+    id
+  }
+}
+
+mutation updatePostTemplate(
+  $templateId: UUID!
+  $defaultDescription: Markdown
+  $profile: UpdateProfileInput
+) {
+  updateTemplate(
+    updateData: { ID: $templateId, postDefaultDescription: $defaultDescription, profile: $profile }
+  ) {
+    id
+  }
+}
+
+
+mutation updateWhiteboardTemplate($templateId: UUID!, $content: WhiteboardContent, $profile: UpdateProfileInput!) {
+  updateTemplate(updateData: { ID: $templateId, whiteboard: { content: $content }, profile: $profile }) {
+    id
+    profile {
+      id
+      visual(type: CARD) {
+        id
+      }
+    }
+  }
+}
+
+mutation updateCommunityGuidelinesTemplate(
+  $templateId: UUID!
+  $profile: UpdateProfileInput
+  $communityGuidelines: UpdateCommunityGuidelinesInput
+) {
+  updateTemplate(
+    updateData: {
+      ID: $templateId,
+      profile: $profile,
+      communityGuidelines: $communityGuidelines
+    }
+  ) {
+    id
+  }
+}
+
+mutation deleteTemplate($templateId: UUID!) {
+  deleteTemplate(deleteData: { ID: $templateId }) {
+    id
+  }
+}
+
+mutation UpdateTemplate($template: UpdateTemplateInput!) {
+  updateTemplate(updateData: $template) {
+    id
+  }
+}
+
+query SpaceTemplateSetId($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    library {
+      id
+    }
+  }
+}

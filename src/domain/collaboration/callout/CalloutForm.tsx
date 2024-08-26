@@ -14,14 +14,12 @@ import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInpu
 import FormikEffectFactory from '../../../core/ui/forms/FormikEffect';
 import { FormikSwitch } from '../../../core/ui/forms/FormikSwitch';
 import { displayNameValidator } from '../../../core/ui/forms/validator/displayNameValidator';
-import WhiteboardTemplatesChooser from './creationDialog/CalloutTemplate/WhiteboardTemplateChooser';
 import MarkdownValidator from '../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import FormikMarkdownField from '../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { TagsetSegment } from '../../platform/admin/components/Common/TagsetSegment';
 import ReferenceSegment, { referenceSegmentSchema } from '../../platform/admin/components/Common/ReferenceSegment';
 import { Reference } from '../../common/profile/Profile';
 import { ProfileReferenceSegment } from '../../platform/admin/components/Common/ProfileReferenceSegment';
-import PostTemplatesChooser from './creationDialog/CalloutTemplate/PostTemplateChooser';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { gutters } from '../../../core/ui/grid/utils';
 import EmptyWhiteboard from '../../common/whiteboard/EmptyWhiteboard';
@@ -36,6 +34,8 @@ import CalloutWhiteboardField, {
 import { JourneyTypeName } from '../../journey/JourneyTypeName';
 import { JourneyCalloutGroupNameOptions } from './CalloutsInContext/CalloutsGroup';
 import { DEFAULT_TAGSET } from '../../common/tags/tagset.constants';
+import PostTemplatesChooser from '../../templates/TemplateChooser/PostTemplateChooser';
+import WhiteboardTemplatesChooser from './creationDialog/CalloutTemplate/WhiteboardTemplateChooser';
 
 type FormValueType = {
   displayName: string;

@@ -6,14 +6,14 @@ import {
   usePlatformPostTemplatesLibraryLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import CollaborationTemplatesLibrary from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
-import { PostTemplate, PostTemplateWithValue } from '../PostTemplateCard/PostTemplate';
-import PostTemplateCard from '../PostTemplateCard/PostTemplateCard';
-import PostTemplatePreview from './PostTemplatePreview';
-import { TemplateCardBaseProps } from '../../templates/CollaborationTemplatesLibrary/TemplateBase';
+import PostTemplateCard from '../../../templates/cards/PostTemplateCard/PostTemplateCard';
 import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../core/utils/Identifiable';
-import CollaborationTemplatesLibraryButton from '../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
+import { PostTemplate, PostTemplateWithValue } from '../../../templates/cards/PostTemplateCard/PostTemplate';
+import CollaborationTemplatesLibraryButton from '../../../templates/library/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
+import CollaborationTemplatesLibrary from '../../../templates/library/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
+import { TemplateCardBaseProps } from '../../../templates/library/CollaborationTemplatesLibrary/TemplateBase';
+import PostTemplatePreview from '../../../templates/library/PostTemplatesLibrary/PostTemplatePreview';
 
 export interface PostTemplatesLibraryProps {
   onSelectTemplate: (template: PostTemplateWithValue) => void;

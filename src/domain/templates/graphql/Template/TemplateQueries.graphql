@@ -1,0 +1,99 @@
+query CalloutTemplateContent($calloutTemplateId: UUID!) {
+  lookup {
+    template(ID: $calloutTemplateId) {
+      id
+      profile {
+        ...TemplateCardProfileInfo
+      }
+      callout {
+        type
+        framing {
+          id
+          profile {
+            id
+            displayName
+            description
+            tagset {
+              ...TagsetDetails
+            }
+            tagsets {
+              ...TagsetDetails
+            }
+            storageBucket {
+              id
+            }
+            references {
+              ...ReferenceDetails
+            }
+          }
+          whiteboard {
+            ...WhiteboardDetails
+            ...WhiteboardContent
+          }
+        }
+        contributionPolicy {
+          state
+        }
+        contributionDefaults {
+          id
+          postDescription
+          whiteboardContent
+        }
+      }
+    }
+  }
+}
+
+query whiteboardTemplateContent($whiteboardTemplateId: UUID!) {
+  lookup {
+    template(ID: $whiteboardTemplateId) {
+      id
+      profile {
+        ...WhiteboardProfile
+      }
+      whiteboard {
+        content
+      }
+    }
+  }
+}
+
+query CalloutTemplatePreview($calloutTemplateId: UUID!) {
+  lookup {
+    template(ID: $calloutTemplateId) {
+      ...CalloutTemplatePreview
+    }
+  }
+}
+
+fragment CalloutTemplatePreview on Template {
+  id
+  callout {
+    type
+    framing {
+      id
+      profile {
+        id
+        displayName
+        description
+        tagset {
+          ...TagsetDetails
+        }
+        storageBucket {
+          id
+        }
+      }
+      whiteboard {
+        ...WhiteboardDetails
+      }
+    }
+    contributionPolicy {
+      state
+    }
+    contributionDefaults {
+      id
+      postDescription
+      whiteboardContent
+    }
+  }
+}

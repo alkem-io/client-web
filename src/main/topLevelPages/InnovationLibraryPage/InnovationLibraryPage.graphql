@@ -23,6 +23,7 @@ fragment InnovationPackData on InnovationPack {
     url
   }
   templates {
+    id
     ...LibraryTemplates
   }
   provider {
@@ -45,8 +46,7 @@ fragment LibraryTemplates on TemplatesSet {
         ...TagsetDetails
       }
     }
-    type
-    defaultDescription
+    postDefaultDescription
   }
   postTemplatesCount
   whiteboardTemplates {
@@ -77,7 +77,7 @@ fragment LibraryTemplates on TemplatesSet {
         ...TagsetDetails
       }
     }
-    states {
+    innovationFlowStates {
       displayName
       description
     }
@@ -89,28 +89,30 @@ fragment LibraryTemplates on TemplatesSet {
     profile {
       ...TemplateCardProfileInfo
     }
-    framing {
-      id
-      profile {
+    callout {
+      framing {
         id
-        displayName
-        description
-        tagset {
-          ...TagsetDetails
-        }
-        tagsets {
-          ...TagsetDetails
-        }
-        storageBucket {
+        profile {
           id
+          displayName
+          description
+          tagset {
+            ...TagsetDetails
+          }
+          tagsets {
+            ...TagsetDetails
+          }
+          storageBucket {
+            id
+          }
+          references {
+            ...ReferenceDetails
+          }
         }
-        references {
-          ...ReferenceDetails
+        whiteboard {
+          ...WhiteboardDetails
+          ...WhiteboardContent
         }
-      }
-      whiteboard {
-        ...WhiteboardDetails
-        ...WhiteboardContent
       }
     }
   }
@@ -125,7 +127,7 @@ fragment LibraryTemplates on TemplatesSet {
         ...TagsetDetails
       }
     }
-    guidelines {
+    communityGuidelines {
       id
       profile {
         displayName

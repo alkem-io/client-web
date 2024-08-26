@@ -5,11 +5,11 @@ import {
   useDeleteReferenceMutation,
   useUpdateCommunityGuidelinesMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { CommunityGuidelinesTemplateWithContent } from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelines';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
 import { useTranslation } from 'react-i18next';
 import { compact } from 'lodash';
+import { CommunityGuidelinesTemplateWithContent } from '../../../templates/cards/CommunityGuidelinesTemplateCard/CommunityGuidelines';
 
 interface CommunityGuidelines {
   displayName: string;

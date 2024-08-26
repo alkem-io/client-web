@@ -2,7 +2,7 @@ import React from 'react';
 import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
 import InnovationFlowTemplateCard, {
   InnovationFlowTemplate,
-} from '../../../../collaboration/InnovationFlow/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
+} from '../../../../templates/cards/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
 
 interface InnovationImportTemplateCardProps extends TemplateImportCardComponentProps<InnovationFlowTemplate> {}
 

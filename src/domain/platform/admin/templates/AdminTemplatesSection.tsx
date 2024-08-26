@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { InnovationPack } from './InnovationPacks/InnovationPack';
-import { LibraryIcon } from '../../../collaboration/templates/LibraryIcon';
 import ImportTemplatesDialog from './InnovationPacks/ImportTemplatesDialog';
 import {
   TemplateImportCardComponentProps,
@@ -15,17 +14,18 @@ import { useNotification } from '../../../../core/ui/notifications/useNotificati
 import { UpdateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { WhiteboardPreviewImage } from '../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
-import { TemplateBase } from '../../../collaboration/templates/CollaborationTemplatesLibrary/TemplateBase';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { GraphQLError } from 'graphql';
-import TemplatePreviewDialog, {
-  TemplatePreviewDialogProps,
-} from '../../../collaboration/templates/templatePreviewDialog/TemplatePreviewDialog';
-import { TemplateType } from '../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import { TemplateType } from '../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 import { Link } from 'react-router-dom';
 import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import { TemplateBase } from '../../../templates/library/CollaborationTemplatesLibrary/TemplateBase';
+import TemplatePreviewDialog, {
+  TemplatePreviewDialogProps,
+} from '../../../templates/Dialogs/templatePreviewDialog/TemplatePreviewDialog';
+import { LibraryIcon } from '../../../templates/LibraryIcon';
 
 /**
  * @deprecated TODO remove

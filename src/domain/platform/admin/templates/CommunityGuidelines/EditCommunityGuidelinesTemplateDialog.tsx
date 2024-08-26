@@ -1,22 +1,22 @@
 import { useTranslation } from 'react-i18next';
 import {
-  AdminCommunityGuidelinesTemplateFragment,
+  CommunityGuidelinesTemplateFragment,
   UpdateCommunityGuidelinesTemplateMutationVariables,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
-import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
 import CommunityGuidelinesTemplateForm, {
   CommunityGuidelinesTemplateFormSubmittedValues,
   CommunityGuidelinesTemplateFormValues,
 } from './CommunityGuidelinesTemplateForm';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
+import TemplateDialogBase from '../../../../templates/Dialogs/templateDialog/TemplateDialogBase';
 
 interface EditCommunityGuidelinesTemplateDialogProps {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
   onSubmit: (values: UpdateCommunityGuidelinesTemplateMutationVariables) => void;
   onDelete: () => void;
-  template: AdminCommunityGuidelinesTemplateFragment | undefined;
+  template: CommunityGuidelinesTemplateFragment | undefined;
 }
 
 const EditCommunityGuidelinesTemplateDialog = ({
@@ -35,9 +35,9 @@ const EditCommunityGuidelinesTemplateDialog = ({
   const initialValues: Partial<CommunityGuidelinesTemplateFormValues> = {
     guidelines: {
       profile: {
-        displayName: template.guidelines.profile.displayName,
-        description: template.guidelines.profile.description ?? '',
-        references: template.guidelines.profile.references ?? [],
+        displayName: template.communityGuidelines?.profile.displayName,
+        description: template.communityGuidelines?.profile.description ?? '',
+        references: template.communityGuidelines?.profile.references ?? [],
       },
     },
     displayName: template.profile.displayName,
@@ -88,7 +88,7 @@ const EditCommunityGuidelinesTemplateDialog = ({
             visual={template.profile.visual}
             onSubmit={handleSubmit}
             actions={actions}
-            profileId={template.guidelines.profile.id}
+            profileId={template.communityGuidelines?.profile.id}
           />
         </StorageConfigContextProvider>
       )}

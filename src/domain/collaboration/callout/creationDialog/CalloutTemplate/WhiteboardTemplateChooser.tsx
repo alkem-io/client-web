@@ -6,10 +6,10 @@ import { Box, Button } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import FormikWhiteboardPreview from '../../../../platform/admin/templates/WhiteboardTemplates/FormikWhiteboardPreview';
 import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
-import WhiteboardTemplatesLibrary from '../../../whiteboard/WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
-import { WhiteboardTemplateWithContent } from '../../../whiteboard/WhiteboardTemplateCard/WhiteboardTemplate';
+import WhiteboardTemplatesLibrary from '../../../../templates/library/WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
 import { gutters } from '../../../../../core/ui/grid/utils';
-import CollaborationTemplatesLibraryButton from '../../../templates/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
+import { WhiteboardTemplateWithContent } from '../../../../templates/cards/WhiteboardTemplateCard/WhiteboardTemplateWithContent';
+import CollaborationTemplatesLibraryButton from '../../../../templates/library/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
 
 interface WhiteboardTemplatesChooserProps {
   name: string;

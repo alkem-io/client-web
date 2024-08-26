@@ -1,0 +1,36 @@
+query InnovationPacks {
+  platform {
+    id
+    library {
+      id
+      innovationPacks {
+        id
+        nameID
+        provider {
+          ...InnovationPackProviderProfileWithAvatar
+        }
+        profile {
+          id
+          displayName
+        }
+        templates {
+          id
+          ...TemplatesSetTemplates
+        }
+      }
+    }
+  }
+}
+
+fragment InnovationPackProviderProfileWithAvatar on Contributor {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+    url
+  }
+}

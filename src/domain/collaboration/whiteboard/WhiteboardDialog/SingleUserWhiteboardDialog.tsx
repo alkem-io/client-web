@@ -19,8 +19,7 @@ import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import whiteboardSchema from '../validation/whiteboardSchema';
 import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import WhiteboardDialogTemplatesLibrary from './WhiteboardDialogTemplatesLibrary';
-import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
+import WhiteboardDialogTemplatesLibrary from '../../../templates/TemplateChooser/WhiteboardDialogTemplatesLibrary';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import { error as logError, TagCategoryValues } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
@@ -30,6 +29,7 @@ import {
   WhiteboardPreviewImage,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import { WhiteboardTemplateWithContent } from '../../../templates/cards/WhiteboardTemplateCard/WhiteboardTemplateWithContent';
 
 interface SingleUserWhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {

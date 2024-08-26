@@ -22,7 +22,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CommunityGuidelinesForm from '../../../community/community/CommunityGuidelines/CommunityGuidelinesForm';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
-import CommunityGuidelinesTemplatesLibrary from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatesLibrary';
+import CommunityGuidelinesTemplatesLibrary from '../../../templates/library/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatesLibrary';
 import CommunityGuidelinesContainer from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import CreateCommunityGuidelinesTemplateDialog, {
   CommunityGuidelinesFormValues,

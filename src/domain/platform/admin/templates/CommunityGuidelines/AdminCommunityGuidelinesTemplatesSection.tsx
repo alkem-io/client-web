@@ -1,15 +1,12 @@
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import { useTranslation } from 'react-i18next';
-import {
-  AdminCommunityGuidelinesTemplateFragment,
-  Reference,
-} from '../../../../../core/apollo/generated/graphql-schema';
+import { CommunityGuidelinesTemplateFragment, Reference } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   useCreateCommunityGuidelinesTemplateMutation,
-  useDeleteCommunityGuidelinesTemplateMutation,
+  useDeleteTemplateMutation,
   useUpdateCommunityGuidelinesTemplateMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { TemplateType } from '../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import { TemplateType } from '../../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import AdminTemplatesSection from '../AdminTemplatesSection';
 import { InnovationPack } from '../InnovationPacks/InnovationPack';
@@ -20,14 +17,14 @@ import EditCommunityGuidelinesTemplateDialog from './EditCommunityGuidelinesTemp
 interface AdminCommunityGuidelinesTemplatesSectionProps {
   templateId: string | undefined;
   templatesSetId: string | undefined;
-  templates: AdminCommunityGuidelinesTemplateFragment[] | undefined;
+  templates: CommunityGuidelinesTemplateFragment[] | undefined;
   onCloseTemplateDialog: () => void;
   refetchQueries: InternalRefetchQueriesInclude;
-  buildTemplateLink: (guidelines: AdminCommunityGuidelinesTemplateFragment) => LinkWithState;
+  buildTemplateLink: (guidelines: CommunityGuidelinesTemplateFragment) => LinkWithState;
   edit?: boolean;
   loadInnovationPacks: () => void;
   loadingInnovationPacks?: boolean;
-  innovationPacks: InnovationPack<AdminCommunityGuidelinesTemplateFragment>[];
+  innovationPacks: InnovationPack<ommunityGuidelinesTemplateFragment>[];
   canImportTemplates: boolean;
 }
 
@@ -39,7 +36,7 @@ const AdminCommunityGuidelinesTemplatesSection = ({
 
   const [createCommunityGuidelinesTemplate] = useCreateCommunityGuidelinesTemplateMutation();
   const [updateCommunityGuidelinesTemplate] = useUpdateCommunityGuidelinesTemplateMutation();
-  const [deleteCommunityGuidelinesTemplate] = useDeleteCommunityGuidelinesTemplateMutation();
+  const [deleteTemplate] = useDeleteTemplateMutation();
 
   return (
     <AdminTemplatesSection
@@ -54,8 +51,8 @@ const AdminCommunityGuidelinesTemplatesSection = ({
       // @ts-ignore
       editTemplateDialogComponent={EditCommunityGuidelinesTemplateDialog}
       onCreateTemplate={variables => {
-        const { guidelines, ...rest } = variables;
-        const { profile } = guidelines;
+        const { communityGuidelines, ...rest } = variables;
+        const { profile } = communityGuidelines;
         const updatedProfile = {
           displayName: profile.displayName,
           description: profile.description,
@@ -70,13 +67,13 @@ const AdminCommunityGuidelinesTemplatesSection = ({
       }}
       onUpdateTemplate={variables => updateCommunityGuidelinesTemplate({ variables, refetchQueries })}
       onDeleteTemplate={async variables => {
-        await deleteCommunityGuidelinesTemplate({ variables, refetchQueries });
+        await deleteTemplate({ variables, refetchQueries });
       }}
       templateType={TemplateType.CommunityGuidelinesTemplate}
-      onTemplateImport={(template: AdminCommunityGuidelinesTemplateFragment) => {
-        const { guidelines, innovationPack, ...templateRest } =
-          template as unknown as AdminCommunityGuidelinesTemplateFragment & { innovationPack: unknown };
-        const { profile, ...guidelinesRest } = guidelines;
+      onTemplateImport={(template: CommunityGuidelinesTemplateFragment) => {
+        const { communityGuidelines, innovationPack, ...templateRest } =
+          template as unknown as CommunityGuidelinesTemplateFragment & { innovationPack: unknown };
+        const { profile, ...guidelinesRest } = communityGuidelines;
         const { references, ...profileRest } = profile;
         // TODO: Refactor references
         // Map references to referencesData, as the backend expects it

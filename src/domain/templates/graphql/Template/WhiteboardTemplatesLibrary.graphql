@@ -1,0 +1,48 @@
+query SpaceWhiteboardTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    library {
+      id
+      whiteboardTemplates {
+        ...WhiteboardTemplate
+      }
+    }
+    provider {
+      id
+      nameID
+      profile {
+        ...TemplateProviderProfile
+      }
+    }
+  }
+}
+
+query PlatformWhiteboardTemplatesLibrary {
+  platform {
+    id
+    library {
+      id
+      innovationPacks {
+        id
+        nameID
+        profile {
+          id
+          displayName
+        }
+        provider {
+          id
+          nameID
+          profile {
+            ...TemplateProviderProfile
+          }
+        }
+        templates {
+          id
+          whiteboardTemplates {
+            ...WhiteboardTemplate
+          }
+        }
+      }
+    }
+  }
+}

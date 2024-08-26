@@ -2,11 +2,7 @@ import React, { FC, useMemo } from 'react';
 import SpaceSettingsLayout from './SpaceSettingsLayout';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
-import {
-  refetchAdminSpaceTemplatesQuery,
-  useAdminSpaceTemplatesQuery,
-  useInnovationPacksLazyQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import { useInnovationPacksLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useParams } from 'react-router-dom';
 import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
 import AdminPostTemplatesSection from '../templates/PostTemplates/AdminPostTemplatesSection';

@@ -29,7 +29,7 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import CalloutTemplatesLibrary from '../CalloutTemplatesLibrary/CalloutTemplatesLibrary';
+import CalloutTemplatesLibrary from '../../../templates/library/CalloutTemplatesLibrary/CalloutTemplatesLibrary';
 import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
 
 export type CalloutCreationDialogFields = {
@@ -181,24 +181,26 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       },
     });
 
-    const template = data?.lookup.calloutTemplate;
+    const template = data?.lookup.template;
+    const templateCallout = template?.callout;
 
-    if (!template) {
+    if (!template || !templateCallout) {
       throw new Error("Couldn't load CalloutTemplate");
     }
 
-    const whiteboard = template.type === CalloutType.Whiteboard ? template.framing.whiteboard : undefined;
+    const whiteboard = templateCallout.type === CalloutType.Whiteboard ? templateCallout.framing.whiteboard : undefined;
 
-    const references = template.type === CalloutType.LinkCollection ? undefined : template.framing.profile.references;
+    const references =
+      templateCallout.type === CalloutType.LinkCollection ? undefined : templateCallout.framing.profile.references;
 
     setCallout({
-      displayName: template.framing.profile.displayName,
-      description: template.framing.profile.description,
-      tags: template.framing.profile.tagset?.tags,
+      displayName: templateCallout.framing.profile.displayName,
+      description: templateCallout.framing.profile.description,
+      tags: templateCallout.framing.profile.tagset?.tags,
       references,
-      type: template.type,
-      postDescription: template.contributionDefaults?.postDescription,
-      whiteboardContent: template.contributionDefaults?.whiteboardContent,
+      type: templateCallout.type,
+      postDescription: templateCallout.contributionDefaults?.postDescription,
+      whiteboardContent: templateCallout.contributionDefaults?.whiteboardContent,
       whiteboard: whiteboard && {
         content: whiteboard.content,
         profileData: {
@@ -207,7 +209,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
         previewImages: [],
       },
     });
-    setSelectedCalloutType(template.type);
+    setSelectedCalloutType(templateCallout.type);
   };
 
   const CalloutIcon = selectedCalloutType ? calloutIcons[selectedCalloutType] : undefined;

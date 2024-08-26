@@ -11,7 +11,7 @@ import CollaborativeExcalidrawWrapper from '../../../common/whiteboard/excalidra
 import type { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import whiteboardSchema from '../validation/whiteboardSchema';
-import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
+import { WhiteboardTemplateWithContent } from '../../../templates/cards/WhiteboardTemplateCard/WhiteboardTemplateWithContent';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import { error as logError, TagCategoryValues } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
@@ -30,7 +30,7 @@ import WhiteboardDisplayName from './WhiteboardDisplayName';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
-import WhiteboardDialogTemplatesLibrary from './WhiteboardDialogTemplatesLibrary';
+import WhiteboardDialogTemplatesLibrary from '../../../templates/TemplateChooser/WhiteboardDialogTemplatesLibrary';
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {

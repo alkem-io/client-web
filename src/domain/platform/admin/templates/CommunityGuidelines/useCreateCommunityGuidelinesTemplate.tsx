@@ -11,7 +11,7 @@ interface CreateCommunityGuidelinesProps {
   handleCreateCommunityGuidelinesTemplate: (
     values: CommunityGuidelinesTemplateFormSubmittedValues,
     spaceNameId: string
-  ) => Promise<CreateCommunityGuidelinesTemplateMutation['createCommunityGuidelinesTemplate'] | undefined>;
+  ) => Promise<CreateCommunityGuidelinesTemplateMutation['createTemplate'] | undefined>;
 }
 
 export const useCreateCommunityGuidelinesTemplate = (): CreateCommunityGuidelinesProps => {
@@ -39,7 +39,7 @@ export const useCreateCommunityGuidelinesTemplate = (): CreateCommunityGuideline
         },
       });
 
-      return result.data?.createCommunityGuidelinesTemplate;
+      return result.data?.createTemplate;
     },
     [createCommunityGuidelinesTemplate]
   );

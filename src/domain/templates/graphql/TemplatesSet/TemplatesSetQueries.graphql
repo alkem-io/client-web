@@ -1,0 +1,91 @@
+query TemplatesSetAll($templatesSetId: UUID!) {
+  lookup {
+    templatesSet(ID: $templatesSetId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      ...TemplatesSetTemplates
+    }
+  }
+}
+
+query AllTemplatesFromSpace($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      library {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        ...TemplatesSetTemplates
+      }
+    }
+  }
+}
+
+query PostTemplatesFromSpace($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      library {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        postTemplates  {
+          ...PostTemplate
+        }
+      }
+    }
+  }
+}
+
+query TemplatesFromPlatform {
+  platform {
+    library {
+      id
+      innovationPacks {
+        id
+        templates {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+          ...TemplatesSetTemplates
+        }
+      }
+    }
+  }
+}
+
+query TemplatesSetCommunityGuidelines($templatesSetId: UUID!) {
+  lookup {
+    templatesSet(ID: $templatesSetId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      communityGuidelinesTemplates {
+        ...CommunityGuidelinesTemplate
+      }
+    }
+  }
+}
+
+query SpaceLibrary($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      library {
+        id
+      }
+    }
+  }
+}

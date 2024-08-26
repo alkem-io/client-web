@@ -1,0 +1,50 @@
+query SpaceCalloutTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    library {
+      id
+      calloutTemplates {
+        ...CalloutTemplate
+      }
+    }
+    provider {
+      id
+      nameID
+      profile {
+        ...TemplateProviderProfile
+      }
+    }
+  }
+}
+
+query PlatformCalloutTemplatesLibrary {
+  platform {
+    id
+    library {
+      id
+      innovationPacks {
+        id
+        nameID
+        profile {
+          id
+          displayName
+        }
+        provider {
+          id
+          nameID
+          profile {
+            ...TemplateProviderProfile
+          }
+        }
+        templates {
+          id
+          calloutTemplates {
+            ...CalloutTemplate
+          }
+        }
+      }
+    }
+  }
+}
+
+

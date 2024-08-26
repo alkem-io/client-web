@@ -3,14 +3,14 @@ import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
 import React, { cloneElement, ComponentType, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogActions } from '../../../../../core/ui/dialog/deprecated';
-import { LibraryIcon } from '../../../../collaboration/templates/LibraryIcon';
 import { Template } from '../AdminTemplatesSection';
 import { InnovationPack } from './InnovationPack';
 import ImportTemplatesDialogPreviewStep from './ImportTemplatesDialogPreviewStep';
 import ImportTemplatesDialogGalleryStep, { TemplateImportCardComponentProps } from './ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
 import DialogTitleWithIcon from '../../../../../core/ui/dialog/DialogTitleWithIcon';
-import { TemplateType } from '../../../../collaboration/InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import { TemplateType } from '../../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import { LibraryIcon } from '../../../../templates/LibraryIcon';
 
 export interface ImportTemplatesDialogProps<T extends Template, V extends T> {
   headerText: string;

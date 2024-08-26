@@ -1,37 +1,39 @@
 query CalloutTemplateEditableAttributes($templateId: UUID!) {
   lookup {
-    calloutTemplate(ID: $templateId) {
+    template(ID: $templateId) {
       id
-      type
       profile {
-        id
-        displayName
-        description
-        tagset {
-          ...TagsetDetails
-        }
-      }
-      framing {
-        id
-        profile {
           id
           displayName
           description
           tagset {
             ...TagsetDetails
           }
-          storageBucket {
+        }
+      callout {
+        type
+        framing {
+          id
+          profile {
             id
+            displayName
+            description
+            tagset {
+              ...TagsetDetails
+            }
+            storageBucket {
+              id
+            }
+          }
+          whiteboard {
+            ...WhiteboardContent
           }
         }
-        whiteboard {
-          ...WhiteboardContent
+        contributionDefaults {
+          id
+          postDescription
+          whiteboardContent
         }
-      }
-      contributionDefaults {
-        id
-        postDescription
-        whiteboardContent
       }
     }
   }

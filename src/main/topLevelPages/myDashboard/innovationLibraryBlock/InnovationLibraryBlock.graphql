@@ -23,6 +23,7 @@ fragment InnovationPackCard on InnovationPack {
     url
   }
   templates {
+    id
     postTemplatesCount
     whiteboardTemplatesCount
     innovationFlowTemplatesCount

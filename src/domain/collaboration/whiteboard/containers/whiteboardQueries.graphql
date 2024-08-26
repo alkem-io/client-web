@@ -64,14 +64,16 @@ fragment WhiteboardContent on Whiteboard {
   content
 }
 
-fragment CreateWhiteboardWhiteboardTemplate on WhiteboardTemplate {
+fragment CreateWhiteboardWhiteboardTemplate on Template {
   id
   profile {
     id
     displayName
     description
   }
-  content
+  whiteboard {
+    content
+  }
 }
 
 fragment CalloutWithWhiteboard on Callout {
@@ -164,7 +166,7 @@ mutation deleteWhiteboard($input: DeleteWhiteboardInput!) {
   }
 }
 
-mutation updateWhiteboard($input: UpdateWhiteboardInput!) {
+mutation updateWhiteboard($input: UpdateWhiteboardEntityInput!) {
   updateWhiteboard(whiteboardData: $input) {
     id
     profile {

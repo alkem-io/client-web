@@ -21,7 +21,7 @@ import PageContentBlockCollapsible from '../../../../core/ui/content/PageContent
 import { BlockTitle } from '../../../../core/ui/typography';
 import CommunityGuidelinesContainer from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import CommunityGuidelinesForm from '../../../community/community/CommunityGuidelines/CommunityGuidelinesForm';
-import CommunityGuidelinesTemplatesLibrary from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatesLibrary';
+import CommunityGuidelinesTemplatesLibrary from '../../../templates/library/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatesLibrary';
 import { useSpace } from '../../space/SpaceContext/useSpace';
 
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
