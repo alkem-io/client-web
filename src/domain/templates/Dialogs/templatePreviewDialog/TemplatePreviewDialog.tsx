@@ -3,8 +3,6 @@ import { useTranslation } from 'react-i18next';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { BlockTitle } from '../../../../core/ui/typography';
-
-import { TemplateType } from '../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 import DisabledUseButton from './DisabledUseButton';
 import DialogContent from '../../../../core/ui/dialog/DialogContent';
 import { Identifiable } from '../../../../core/utils/Identifiable';
@@ -23,27 +21,29 @@ import CollaborationTemplatesLibraryPreview, {
   CollaborationTemplatesLibraryPreviewProps,
 } from '../../library/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryPreview';
 import CommunityGuidelinesTemplateCard from '../../cards/CommunityGuidelinesTemplateCard/CommunityGuidelinesTemplateCard';
+import CalloutTemplatePreview from '../../library/CalloutTemplatesLibrary/CalloutTemplatePreview';
+import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 
 export type TemplatePreview =
   | {
       template: TemplateBase & { content?: string };
-      templateType: TemplateType.WhiteboardTemplate;
+      templateType: TemplateType.Whiteboard;
     }
   | {
       template: PostTemplate;
-      templateType: TemplateType.PostTemplate;
+      templateType: TemplateType.Post;
     }
   | {
       template: TemplateBase & { states: InnovationFlowState[] } & Identifiable;
-      templateType: TemplateType.InnovationFlowTemplate;
+      templateType: TemplateType.InnovationFlow;
     }
   | {
       template: CalloutTemplate & Identifiable;
-      templateType: TemplateType.CalloutTemplate;
+      templateType: TemplateType.Callout;
     }
   | {
       template: TemplateBase;
-      templateType: TemplateType.CommunityGuidelinesTemplate;
+      templateType: TemplateType.CommunityGuidelines;
     };
 
 const Noop = () => null;
@@ -70,7 +70,7 @@ const TemplatePreviewChooser = ({ templatePreview, ...props }: TemplatePreviewCh
     );
   }
   switch (templatePreview.templateType) {
-    case TemplateType.WhiteboardTemplate: {
+    case TemplateType.Whiteboard: {
       return (
         <CollaborationTemplatesLibraryPreview
           {...{
@@ -82,7 +82,7 @@ const TemplatePreviewChooser = ({ templatePreview, ...props }: TemplatePreviewCh
         />
       );
     }
-    case TemplateType.PostTemplate: {
+    case TemplateType.Post: {
       return (
         <CollaborationTemplatesLibraryPreview
           {...{
@@ -94,7 +94,7 @@ const TemplatePreviewChooser = ({ templatePreview, ...props }: TemplatePreviewCh
         />
       );
     }
-    case TemplateType.InnovationFlowTemplate: {
+    case TemplateType.InnovationFlow: {
       return (
         <CollaborationTemplatesLibraryPreview
           {...{
@@ -106,7 +106,7 @@ const TemplatePreviewChooser = ({ templatePreview, ...props }: TemplatePreviewCh
         />
       );
     }
-    case TemplateType.CalloutTemplate: {
+    case TemplateType.Callout: {
       return (
         <CollaborationTemplatesLibraryPreview
           {...{
@@ -118,7 +118,7 @@ const TemplatePreviewChooser = ({ templatePreview, ...props }: TemplatePreviewCh
         />
       );
     }
-    case TemplateType.CommunityGuidelinesTemplate: {
+    case TemplateType.CommunityGuidelines: {
       return (
         <CollaborationTemplatesLibraryPreview
           {...{

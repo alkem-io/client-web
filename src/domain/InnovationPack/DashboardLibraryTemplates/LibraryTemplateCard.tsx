@@ -6,42 +6,42 @@ import WhiteboardTemplateCard from '../../templates/cards/WhiteboardTemplateCard
 import InnovationFlowTemplateCard, {
   InnovationFlowTemplate,
 } from '../../templates/cards/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
-import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
 import { PostTemplate } from '../../templates/cards/PostTemplateCard/PostTemplate';
 import { TemplateBase } from '../../templates/library/CollaborationTemplatesLibrary/TemplateBase';
 import CalloutTemplateCard, { CalloutTemplate } from '../../templates/cards/CalloutTemplateCard/CalloutTemplateCard';
 import CommunityGuidelinesTemplateCard from '../../templates/cards/CommunityGuidelinesTemplateCard/CommunityGuidelinesTemplateCard';
+import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
 
 export type LibraryTemplateCardProps = Identifiable &
   TemplateWithInnovationPack<
-    | (PostTemplate & { templateType: TemplateType.PostTemplate })
-    | (TemplateBase & { templateType: TemplateType.WhiteboardTemplate })
-    | (InnovationFlowTemplate & { templateType: TemplateType.InnovationFlowTemplate })
-    | (CalloutTemplate & { templateType: TemplateType.CalloutTemplate })
-    | (TemplateBase & { templateType: TemplateType.CommunityGuidelinesTemplate })
+    | (PostTemplate & { templateType: TemplateType.Post })
+    | (TemplateBase & { templateType: TemplateType.Whiteboard })
+    | (InnovationFlowTemplate & { templateType: TemplateType.InnovationFlow })
+    | (CalloutTemplate & { templateType: TemplateType.Callout })
+    | (TemplateBase & { templateType: TemplateType.CommunityGuidelines })
   > & { onClick?: ContributeCardProps['onClick'] };
 
 const LibraryTemplateCard = (props: LibraryTemplateCardProps) => {
   switch (props.templateType) {
-    case TemplateType.PostTemplate: {
+    case TemplateType.Post: {
       const { onClick, templateType, ...template } = props;
       return <PostTemplateCard onClick={onClick} template={template} innovationPack={template.innovationPack} />;
     }
-    case TemplateType.WhiteboardTemplate: {
+    case TemplateType.Whiteboard: {
       const { onClick, templateType, ...template } = props;
       return <WhiteboardTemplateCard onClick={onClick} template={template} innovationPack={template.innovationPack} />;
     }
-    case TemplateType.InnovationFlowTemplate: {
+    case TemplateType.InnovationFlow: {
       const { onClick, templateType, ...template } = props;
       return (
         <InnovationFlowTemplateCard onClick={onClick} template={template} innovationPack={template.innovationPack} />
       );
     }
-    case TemplateType.CalloutTemplate: {
+    case TemplateType.Callout: {
       const { onClick, templateType, ...template } = props;
       return <CalloutTemplateCard onClick={onClick} template={template} innovationPack={template.innovationPack} />;
     }
-    case TemplateType.CommunityGuidelinesTemplate: {
+    case TemplateType.CommunityGuidelines: {
       const { onClick, templateType, ...template } = props;
       return (
         <CommunityGuidelinesTemplateCard

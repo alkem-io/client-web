@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
-import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import { CalloutType, UpdateTemplateInput } from '../../../../../core/apollo/generated/graphql-schema';
-import { useCalloutTemplateEditableAttributesQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import EditCalloutTemplateForm from './EditCalloutTemplateForm';
-import { Identifiable } from '../../../../../core/utils/Identifiable';
-import TemplateDialogBase from '../../../../templates/Dialogs/templateDialog/TemplateDialogBase';
+import { CalloutType, UpdateTemplateInput } from '../../../../core/apollo/generated/graphql-schema';
+import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
+import { Identifiable } from '../../../../core/utils/Identifiable';
+import { useCalloutTemplateEditableAttributesQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import TemplateDialogBase from '../../Dialogs/templateDialog/TemplateDialogBase';
 
 export interface EditCalloutTemplateDialogProps {
   open: boolean;

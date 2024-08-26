@@ -9,8 +9,8 @@ import ImportTemplatesDialogPreviewStep from './ImportTemplatesDialogPreviewStep
 import ImportTemplatesDialogGalleryStep, { TemplateImportCardComponentProps } from './ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import DialogTitleWithIcon from '../../../../core/ui/dialog/DialogTitleWithIcon';
-import { TemplateType } from '../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 import { LibraryIcon } from '../../../templates/LibraryIcon';
+import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface ImportTemplatesDialogProps<T extends Template, V extends T> {
   headerText: string;

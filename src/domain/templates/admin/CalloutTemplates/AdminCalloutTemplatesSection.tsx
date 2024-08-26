@@ -1,27 +1,27 @@
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import { useTranslation } from 'react-i18next';
-import {
-  useCalloutTemplateContentLazyQuery,
-  useCreateCalloutTemplateMutation,
-  useDeleteTemplateMutation,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import {
-  CalloutTemplateFragment,
-  CalloutState,
-  CalloutType,
-  CreateCalloutTemplateMutationVariables,
-  UpdateTemplateInput,
-} from '../../../../../core/apollo/generated/graphql-schema';
-import { LinkWithState } from '../../../../shared/types/LinkWithState';
-import AdminTemplatesSection from '../AdminTemplatesSection';
-import { InnovationPack } from '../InnovationPacks/InnovationPack';
 import CalloutImportTemplateCard from './CalloutImportTemplateCard';
-import { TemplateType } from '../../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 import CreateCalloutTemplateDialog from './CreateCalloutTemplateDialog';
 import { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
 import produce from 'immer';
 import EditCalloutTemplateDialog from './EditCalloutTemplateDialog';
-import { Identifiable } from '../../../../../core/utils/Identifiable';
+import {
+  CalloutState,
+  CalloutTemplateFragment,
+  CalloutType,
+  CreateCalloutTemplateMutationVariables,
+  TemplateType,
+  UpdateTemplateInput,
+} from '../../../../core/apollo/generated/graphql-schema';
+import { LinkWithState } from '../../../shared/types/LinkWithState';
+import { InnovationPack } from '../../../platform/admin/InnovationPacks/InnovationPack';
+import {
+  useCalloutTemplateContentLazyQuery,
+  useCreateCalloutTemplateMutation,
+  useDeleteTemplateMutation,
+} from '../../../../core/apollo/generated/apollo-hooks';
+import AdminTemplatesSection from '../../../platform/admin/InnovationPacks/AdminTemplatesSection';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
 interface AdminCalloutTemplatesSectionProps {
   templateId: string | undefined;
@@ -117,7 +117,7 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
       onDeleteTemplate={async variables => {
         await deleteTemplate({ variables, refetchQueries });
       }}
-      templateType={TemplateType.CalloutTemplate}
+      templateType={TemplateType.Callout}
       onTemplateImport={async (template: Identifiable) => {
         const { data } = await fetchTemplateData({ variables: { calloutTemplateId: template.id } });
         const templateData = data?.lookup.template;

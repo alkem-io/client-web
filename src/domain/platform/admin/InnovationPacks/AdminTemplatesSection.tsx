@@ -8,12 +8,11 @@ import { InnovationPack } from './InnovationPack';
 import ImportTemplatesDialog from './ImportTemplatesDialog';
 import { TemplateImportCardComponentProps, TemplateWithInnovationPack } from './ImportTemplatesDialogGalleryStep';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { UpdateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
+import { TemplateType, UpdateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { WhiteboardPreviewImage } from '../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { GraphQLError } from 'graphql';
-import { TemplateType } from '../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 import { Link } from 'react-router-dom';
 import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -291,7 +290,7 @@ const AdminTemplatesSection = <
     }
 
     const template =
-      templateType === TemplateType.WhiteboardTemplate
+      templateType === TemplateType.Whiteboard
         ? {
             ...selectedTemplate,
             ...(dialogProps.whiteboardTemplateContent as V),
@@ -313,7 +312,7 @@ const AdminTemplatesSection = <
   }, [templateWithValue]);
 
   useEffect(() => {
-    if (selectedTemplate && templateType === TemplateType.WhiteboardTemplate) {
+    if (selectedTemplate && templateType === TemplateType.Whiteboard) {
       getWhiteboardTemplateContent(selectedTemplate);
     }
   }, [selectedTemplate, templateType, getWhiteboardTemplateContent]);

@@ -10,9 +10,9 @@ import { useTranslation } from 'react-i18next';
 import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import { CONTRIBUTE_CARD_COLUMNS } from '../../../core/ui/card/ContributeCard';
 import GridItem from '../../../core/ui/grid/GridItem';
-import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
 import TemplateTypeFilter from './TemplateTypeFilter';
 import TemplateTypeFilterMobile from './TemplateTypeFilterMobile';
+import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
 
 export interface LibraryTemplatesFilter {
   templateTypes: TemplateType[];

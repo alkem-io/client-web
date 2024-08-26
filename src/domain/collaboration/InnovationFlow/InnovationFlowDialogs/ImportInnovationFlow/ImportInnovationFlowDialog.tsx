@@ -1,12 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import ImportTemplatesDialog from '../../../../platform/admin/InnovationPacks/ImportTemplatesDialog';
-import InnovationImportTemplateCard from '../../../../platform/admin/templates/InnovationTemplates/InnovationImportTemplateCard';
-
 import { useSpaceInnovationFlowTemplatesQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { Button } from '@mui/material';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
-import { TemplateType } from '../../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
+import InnovationImportTemplateCard from '../../../../templates/admin/InnovationTemplates/InnovationImportTemplateCard';
+import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface ImportInnovationFlowDialogProps {
   open: boolean;
@@ -17,15 +16,15 @@ interface ImportInnovationFlowDialogProps {
 const ImportInnovationFlowDialog = ({ open, onClose, handleImportTemplate }: ImportInnovationFlowDialogProps) => {
   const { t } = useTranslation();
   const {
-    libraryId,
+    spaceId,
     profile: { displayName: spaceDisplayName },
   } = useSpace();
 
   const { data: templatesData, loading: loadingTemplates } = useSpaceInnovationFlowTemplatesQuery({
     variables: {
-      templatesSetId: libraryId!,
+      spaceId: spaceId!,
     },
-    skip: !libraryId || !open,
+    skip: !spaceId || !open,
   });
 
   const innovationPacks = [
@@ -42,7 +41,7 @@ const ImportInnovationFlowDialog = ({ open, onClose, handleImportTemplate }: Imp
       headerText={t('templateLibrary.innovationFlowTemplates.title')}
       dialogSubtitle={t('pages.admin.generic.sections.templates.import.subtitle')}
       templateImportCardComponent={InnovationImportTemplateCard}
-      templateType={TemplateType.InnovationFlowTemplate}
+      templateType={TemplateType.InnovationFlow}
       open={open}
       onClose={onClose}
       onImportTemplate={template => handleImportTemplate(template.id)}

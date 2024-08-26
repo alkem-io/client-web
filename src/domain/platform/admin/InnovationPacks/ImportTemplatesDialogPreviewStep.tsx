@@ -1,10 +1,10 @@
 import React, { ReactNode, useEffect, useMemo } from 'react';
 import { Identifiable } from '../../../../core/utils/Identifiable';
-import { TemplateType } from '../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 import { TemplateBase } from '../../../templates/library/CollaborationTemplatesLibrary/TemplateBase';
 import TemplatePreviewDialog, {
   TemplatePreviewDialogProps,
 } from '../../../templates/Dialogs/templatePreviewDialog/TemplatePreviewDialog';
+import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface ImportTemplatesDialogPreviewStepProps<T extends TemplateBase, V extends T> {
   onClose: () => void;
@@ -25,7 +25,7 @@ const ImportTemplatesDialogPreviewStep = <T extends TemplateBase, V extends T>({
 }: ImportTemplatesDialogPreviewStepProps<T, V>) => {
   const templateWithValue = useMemo(() => {
     const templateWithValue =
-      templateType === TemplateType.WhiteboardTemplate
+      templateType === TemplateType.Whiteboard
         ? {
             ...template,
             ...(importedTemplateContent as V),
@@ -48,7 +48,7 @@ const ImportTemplatesDialogPreviewStep = <T extends TemplateBase, V extends T>({
   }, [templateWithValue]);
 
   useEffect(() => {
-    if (templateType === TemplateType.WhiteboardTemplate && getImportedTemplateContent) {
+    if (templateType === TemplateType.Whiteboard && getImportedTemplateContent) {
       getImportedTemplateContent(template);
     }
   }, [template, templateType, getImportedTemplateContent]);

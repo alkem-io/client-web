@@ -12,8 +12,7 @@ import AdminTemplatesSection from '../../../platform/admin/InnovationPacks/Admin
 import { useTranslation } from 'react-i18next';
 import { InnovationPack } from '../../../platform/admin/InnovationPacks/InnovationPack';
 import PostImportTemplateCard from './PostImportTemplateCard';
-import { TemplateType } from '../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
-import { PostTemplateFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { PostTemplateFragment, TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 
 interface AdminPostTemplatesSectionProps {
   templateId: string | undefined;
@@ -52,7 +51,7 @@ const AdminPostTemplatesSection = ({ refetchQueries, ...props }: AdminPostTempla
       onDeleteTemplate={async variables => {
         await deleteTemplate({ variables, refetchQueries });
       }}
-      templateType={TemplateType.PostTemplate}
+      templateType={TemplateType.Post}
     />
   );
 };

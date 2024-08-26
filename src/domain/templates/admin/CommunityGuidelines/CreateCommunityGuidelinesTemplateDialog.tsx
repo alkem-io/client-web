@@ -5,7 +5,7 @@ import CommunityGuidelinesTemplateForm, {
   CommunityGuidelinesTemplateFormSubmittedValues,
   CommunityGuidelinesTemplateFormValues,
 } from './CommunityGuidelinesTemplateForm';
-import TemplateDialogBase from '../../../../templates/templateDialog/TemplateDialogBase';
+import TemplateDialogBase from '../../Dialogs/templateDialog/TemplateDialogBase';
 
 export interface CommunityGuidelinesFormValues {
   displayName: string;

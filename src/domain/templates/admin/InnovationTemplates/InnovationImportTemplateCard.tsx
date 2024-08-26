@@ -1,8 +1,8 @@
 import React from 'react';
-import { TemplateImportCardComponentProps } from '../InnovationPacks/ImportTemplatesDialogGalleryStep';
+import { TemplateImportCardComponentProps } from '../../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import InnovationFlowTemplateCard, {
   InnovationFlowTemplate,
-} from '../../../../templates/cards/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
+} from '../../cards/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
 
 interface InnovationImportTemplateCardProps extends TemplateImportCardComponentProps<InnovationFlowTemplate> {}
 

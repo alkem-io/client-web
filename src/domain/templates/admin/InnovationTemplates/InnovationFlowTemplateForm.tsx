@@ -1,13 +1,13 @@
 import React, { ReactNode } from 'react';
 import * as yup from 'yup';
 import { FormikProps } from 'formik';
-import { CreateProfileInput } from '../../../../../core/apollo/generated/graphql-schema';
-import TemplateForm from '../TemplateForm';
-import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlow';
-import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
-import InnovationFlowDragNDropEditor from '../../../../collaboration/InnovationFlow/InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
-import { BlockSectionTitle } from '../../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
+import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
+import { CreateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
+import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import TemplateForm from '../../../platform/admin/InnovationPacks/TemplateForm';
+import { BlockSectionTitle } from '../../../../core/ui/typography';
+import InnovationFlowDragNDropEditor from '../../../collaboration/InnovationFlow/InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
 
 export const MAX_INNOVATIONFLOW_STATES = 100;
 

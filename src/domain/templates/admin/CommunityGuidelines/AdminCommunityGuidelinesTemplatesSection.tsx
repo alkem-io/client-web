@@ -1,12 +1,15 @@
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import { useTranslation } from 'react-i18next';
-import { CommunityGuidelinesTemplateFragment, Reference } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  CommunityGuidelinesTemplateFragment,
+  Reference,
+  TemplateType,
+} from '../../../../core/apollo/generated/graphql-schema';
 import {
   useCreateCommunityGuidelinesTemplateMutation,
   useDeleteTemplateMutation,
   useUpdateCommunityGuidelinesTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { TemplateType } from '../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import AdminTemplatesSection from '../../../platform/admin/InnovationPacks/AdminTemplatesSection';
 import { InnovationPack } from '../../../platform/admin/InnovationPacks/InnovationPack';
@@ -24,7 +27,7 @@ interface AdminCommunityGuidelinesTemplatesSectionProps {
   edit?: boolean;
   loadInnovationPacks: () => void;
   loadingInnovationPacks?: boolean;
-  innovationPacks: InnovationPack<ommunityGuidelinesTemplateFragment>[];
+  innovationPacks: InnovationPack<CommunityGuidelinesTemplateFragment>[];
   canImportTemplates: boolean;
 }
 
@@ -69,7 +72,7 @@ const AdminCommunityGuidelinesTemplatesSection = ({
       onDeleteTemplate={async variables => {
         await deleteTemplate({ variables, refetchQueries });
       }}
-      templateType={TemplateType.CommunityGuidelinesTemplate}
+      templateType={TemplateType.CommunityGuidelines}
       onTemplateImport={(template: CommunityGuidelinesTemplateFragment) => {
         const { communityGuidelines, innovationPack, ...templateRest } =
           template as unknown as CommunityGuidelinesTemplateFragment & { innovationPack: unknown };

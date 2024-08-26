@@ -13,6 +13,7 @@ import { TemplateBase } from '../CollaborationTemplatesLibrary/TemplateBase';
 import CollaborationTemplatesLibraryButton from '../CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
 import CollaborationTemplatesLibrary from '../CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
 import CalloutTemplateCard, { CalloutTemplate } from '../../cards/CalloutTemplateCard/CalloutTemplateCard';
+import CalloutTemplatePreview from './CalloutTemplatePreview';
 
 export interface CalloutTemplatesLibraryProps {
   onImportTemplate: (template: Identifiable) => void;
@@ -98,7 +99,7 @@ const CalloutTemplatesLibrary: FC<CalloutTemplatesLibraryProps> = ({ onImportTem
         dialogTitle={t('templateLibrary.calloutTemplates.title')}
         onImportTemplate={onImportTemplate}
         templateCardComponent={CalloutTemplateCard}
-        templatePreviewComponent={CalloutTemplatePreviewX}
+        templatePreviewComponent={CalloutTemplatePreview}
         filter={filter}
         onFilterChange={setFilter}
         fetchSpaceTemplatesOnLoad={Boolean(spaceNameId)}

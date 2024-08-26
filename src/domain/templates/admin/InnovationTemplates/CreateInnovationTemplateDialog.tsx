@@ -3,9 +3,9 @@ import InnovationFlowTemplateForm, {
   InnovationTemplateFormValues,
 } from './InnovationFlowTemplateForm';
 import { useTranslation } from 'react-i18next';
-import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import TemplateDialogBase from '../../../../templates/Dialogs/templateDialog/TemplateDialogBase';
+import TemplateDialogBase from '../../Dialogs/templateDialog/TemplateDialogBase';
+import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 
 interface CreatePostTemplateDialogProps {
   open: boolean;

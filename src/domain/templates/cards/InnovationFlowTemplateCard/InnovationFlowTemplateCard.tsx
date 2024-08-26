@@ -20,7 +20,7 @@ import {
 } from '../../library/CollaborationTemplatesLibrary/TemplateBase';
 
 export interface InnovationFlowTemplate extends InnovationPackTemplate {
-  innovationFlowStates: InnovationFlowState[];
+  innovationFlowStates?: InnovationFlowState[];
 }
 
 interface InnovationFlowTemplateCardProps extends TemplateCardBaseProps<InnovationFlowTemplate> {}

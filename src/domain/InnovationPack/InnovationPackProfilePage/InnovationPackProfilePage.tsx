@@ -30,14 +30,6 @@ import TemplatePreviewDialog, {
 import CalloutTemplateCard from '../../templates/cards/CalloutTemplateCard/CalloutTemplateCard';
 import CommunityGuidelinesTemplateCard from '../../templates/cards/CommunityGuidelinesTemplateCard/CommunityGuidelinesTemplateCard';
 
-export enum TemplateType {
-  CalloutTemplate = 'CalloutTemplate',
-  WhiteboardTemplate = 'WhiteboardTemplate',
-  CommunityGuidelinesTemplate = 'CommunityGuidelinesTemplate',
-  PostTemplate = 'PostTemplate',
-  InnovationFlowTemplate = 'InnovationFlowTemplate',
-}
-
 const InnovationPackProfilePage = () => {
   const { innovationPackNameId } = useUrlParams();
 
@@ -83,11 +75,11 @@ const InnovationPackProfilePage = () => {
       variables: {
         whiteboardTemplateId: selectedTemplate?.template['id']!,
       },
-      skip: !selectedTemplate || selectedTemplate.templateType !== TemplateType.WhiteboardTemplate,
+      skip: !selectedTemplate || selectedTemplate.templateType !== TemplateType.Whiteboard,
     });
 
   const previewedTemplate = useMemo<TemplatePreview | undefined>(() => {
-    if (!selectedTemplate || selectedTemplate.templateType !== TemplateType.WhiteboardTemplate) {
+    if (!selectedTemplate || selectedTemplate.templateType !== TemplateType.Whiteboard) {
       return selectedTemplate;
     }
     return {
@@ -145,7 +137,7 @@ const InnovationPackProfilePage = () => {
               title={t('common.enums.templateTypes.WhiteboardTemplate')}
               templates={whiteboardTemplates}
               cardComponent={WhiteboardTemplateCard}
-              templateType={TemplateType.WhiteboardTemplate}
+              templateType={TemplateType.Whiteboard}
               onClickCard={setSelectedTemplate}
               innovationPack={innovationPack}
             />
@@ -153,7 +145,7 @@ const InnovationPackProfilePage = () => {
               title={t('common.enums.templateTypes.CalloutTemplate')}
               templates={calloutTemplates}
               cardComponent={CalloutTemplateCard}
-              templateType={TemplateType.CalloutTemplate}
+              templateType={TemplateType.Callout}
               onClickCard={setSelectedTemplate}
               innovationPack={innovationPack}
             />
@@ -161,7 +153,7 @@ const InnovationPackProfilePage = () => {
               title={t('common.enums.templateTypes.InnovationFlowTemplate')}
               templates={innovationFlowTemplates}
               cardComponent={InnovationFlowTemplateCard}
-              templateType={TemplateType.InnovationFlowTemplate}
+              templateType={TemplateType.InnovationFlow}
               onClickCard={setSelectedTemplate}
               innovationPack={innovationPack}
             />
@@ -169,7 +161,7 @@ const InnovationPackProfilePage = () => {
               title={t('common.enums.templateTypes.CommunityGuidelinesTemplate')}
               templates={communityGuidelinesTemplates}
               cardComponent={CommunityGuidelinesTemplateCard}
-              templateType={TemplateType.CommunityGuidelinesTemplate}
+              templateType={TemplateType.CommunityGuidelines}
               onClickCard={setSelectedTemplate}
               innovationPack={innovationPack}
             />
@@ -177,7 +169,7 @@ const InnovationPackProfilePage = () => {
               title={t('common.enums.templateTypes.PostTemplate')}
               templates={postTemplates}
               cardComponent={PostTemplateCard}
-              templateType={TemplateType.PostTemplate}
+              templateType={TemplateType.Post}
               onClickCard={setSelectedTemplate}
               innovationPack={innovationPack}
             />

@@ -1,19 +1,19 @@
 import CreateInnovationTemplateDialog from './CreateInnovationTemplateDialog';
 import EditInnovationTemplateDialog from './EditInnovationTemplateDialog';
 import React from 'react';
+
+import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
+import { useTranslation } from 'react-i18next';
+import InnovationImportTemplateCard from './InnovationImportTemplateCard';
+import { InnovationFlowTemplateFragment, TemplateType } from '../../../../core/apollo/generated/graphql-schema';
+import { LinkWithState } from '../../../shared/types/LinkWithState';
+import { InnovationPack } from '../../../platform/admin/InnovationPacks/InnovationPack';
 import {
   useCreateInnovationFlowTemplateMutation,
   useDeleteTemplateMutation,
   useUpdateInnovationFlowTemplateMutation,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import { LinkWithState } from '../../../../shared/types/LinkWithState';
-import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
-import AdminTemplatesSection from '../AdminTemplatesSection';
-import { useTranslation } from 'react-i18next';
-import { InnovationPack } from '../InnovationPacks/InnovationPack';
-import InnovationImportTemplateCard from './InnovationImportTemplateCard';
-import { TemplateType } from '../../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
-import { InnovationFlowTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
+} from '../../../../core/apollo/generated/apollo-hooks';
+import AdminTemplatesSection from '../../../platform/admin/InnovationPacks/AdminTemplatesSection';
 
 interface AdminInnovationTemplatesSectionProps {
   templateId: string | undefined;
@@ -50,7 +50,7 @@ const AdminInnovationTemplatesSection = ({ refetchQueries, ...props }: AdminInno
       onCreateTemplate={variables => createInnovationFlowTemplate({ variables, refetchQueries })}
       onUpdateTemplate={variables => updateInnovationFlowTemplate({ variables, refetchQueries })}
       onDeleteTemplate={variables => deleteTemplate({ variables, refetchQueries })}
-      templateType={TemplateType.InnovationFlowTemplate}
+      templateType={TemplateType.InnovationFlow}
     />
   );
 };

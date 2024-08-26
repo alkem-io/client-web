@@ -9,6 +9,7 @@ import {
   WhiteboardTemplateFragment,
   CreateWhiteboardTemplateMutation,
   UpdateWhiteboardTemplateMutation,
+  TemplateType,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
@@ -23,7 +24,6 @@ import {
   WhiteboardPreviewImage,
 } from '../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { Identifiable } from '../../../../core/utils/Identifiable';
-import { TemplateType } from '../../../InnovationPack/InnovationPackProfilePage/InnovationPackProfilePage';
 
 interface AdminWhiteboardTemplatesSectionProps {
   templateId: string | undefined;
@@ -108,7 +108,7 @@ const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhit
       onTemplateUpdated={(mutationResult: UpdateWhiteboardTemplateMutation | undefined | null, previewImages) =>
         onMutationCalled(mutationResult?.updateTemplate, previewImages)
       }
-      templateType={TemplateType.WhiteboardTemplate}
+      templateType={TemplateType.Whiteboard}
     />
   );
 };

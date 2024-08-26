@@ -6,10 +6,10 @@ import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import { compact } from 'lodash';
 import LibraryTemplatesView, { LibraryTemplatesFilter } from './LibraryTemplatesView';
 import { useWhiteboardTemplateContentQuery } from '../../../core/apollo/generated/apollo-hooks';
-import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
 import TemplatePreviewDialog, {
   TemplatePreview,
 } from '../../templates/Dialogs/templatePreviewDialog/TemplatePreviewDialog';
+import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
 
 interface DashboardLibraryTemplatesProps {
   headerTitle: ReactNode;
@@ -43,7 +43,7 @@ const DashboardLibraryTemplates = ({ headerTitle, dialogTitle, templates }: Dash
       variables: {
         whiteboardTemplateId: selectedTemplate?.id!,
       },
-      skip: !selectedTemplate || selectedTemplate.templateType !== TemplateType.WhiteboardTemplate,
+      skip: !selectedTemplate || selectedTemplate.templateType !== TemplateType.Whiteboard,
     });
 
   const filteredLibraryTemplates = useMemo(() => {
@@ -63,7 +63,7 @@ const DashboardLibraryTemplates = ({ headerTitle, dialogTitle, templates }: Dash
       return undefined;
     }
     const template =
-      selectedTemplate.templateType !== TemplateType.WhiteboardTemplate
+      selectedTemplate.templateType !== TemplateType.Whiteboard
         ? selectedTemplate
         : {
             ...selectedTemplate,

@@ -1,10 +1,9 @@
-import { InnovationPackDataFragment } from '../../../core/apollo/generated/graphql-schema';
+import { InnovationPackDataFragment, TemplateType } from '../../../core/apollo/generated/graphql-schema';
 import { useMemo } from 'react';
 import { Identifiable } from '../../../core/utils/Identifiable';
 import { LibraryTemplateCardProps } from './LibraryTemplateCard';
 import { sortBy } from 'lodash';
 import { TemplateWithInnovationPack } from '../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
-import { TemplateType } from '../InnovationPackProfilePage/InnovationPackProfilePage';
 import { TemplateBase } from '../../templates/library/CollaborationTemplatesLibrary/TemplateBase';
 
 const templateInnovationPackHydrator =
@@ -24,19 +23,19 @@ const useLibraryTemplateCardProps = (
         innovationPacks?.flatMap(innovationPack => {
           return [
             ...(innovationPack.templates?.calloutTemplates ?? []).map(
-              templateInnovationPackHydrator(innovationPack, TemplateType.CalloutTemplate)
+              templateInnovationPackHydrator(innovationPack, TemplateType.Callout)
             ),
             ...(innovationPack.templates?.whiteboardTemplates ?? []).map(
-              templateInnovationPackHydrator(innovationPack, TemplateType.WhiteboardTemplate)
+              templateInnovationPackHydrator(innovationPack, TemplateType.Whiteboard)
             ),
             ...(innovationPack.templates?.communityGuidelinesTemplates ?? []).map(
-              templateInnovationPackHydrator(innovationPack, TemplateType.CommunityGuidelinesTemplate)
+              templateInnovationPackHydrator(innovationPack, TemplateType.CommunityGuidelines)
             ),
             ...(innovationPack.templates?.postTemplates ?? []).map(
-              templateInnovationPackHydrator(innovationPack, TemplateType.PostTemplate)
+              templateInnovationPackHydrator(innovationPack, TemplateType.Post)
             ),
             ...(innovationPack.templates?.innovationFlowTemplates ?? []).map(
-              templateInnovationPackHydrator(innovationPack, TemplateType.InnovationFlowTemplate)
+              templateInnovationPackHydrator(innovationPack, TemplateType.InnovationFlow)
             ),
           ] as LibraryTemplateCardProps[];
         }),

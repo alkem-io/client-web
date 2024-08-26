@@ -3,10 +3,10 @@ import InnovationFlowTemplateForm, {
   InnovationTemplateFormSubmittedValues,
   InnovationTemplateFormValues,
 } from './InnovationFlowTemplateForm';
-import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import { InnovationFlowTemplateFragment } from '../../../../../core/apollo/generated/graphql-schema';
-import TemplateDialogBase from '../../../../templates/Dialogs/templateDialog/TemplateDialogBase';
+import { InnovationFlowTemplateFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
+import TemplateDialogBase from '../../Dialogs/templateDialog/TemplateDialogBase';
 
 interface EditInnovationTemplateDialogProps {
   open: boolean;

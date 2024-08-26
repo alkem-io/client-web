@@ -1,16 +1,16 @@
 import { useCallback } from 'react';
-import {
-  useCreateCalloutTemplateMutation,
-  useSpaceTemplateSetIdLazyQuery,
-} from '../../../../../core/apollo/generated/apollo-hooks';
+import { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
+import produce from 'immer';
 import {
   CalloutType,
   CreateCalloutTemplateMutation,
   CreateCalloutTemplateMutationVariables,
-} from '../../../../../core/apollo/generated/graphql-schema';
-import { CalloutLayoutProps } from '../../../../collaboration/callout/calloutBlock/CalloutLayout';
-import { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
-import produce from 'immer';
+} from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutLayoutProps } from '../../../collaboration/callout/calloutBlock/CalloutLayout';
+import {
+  useCreateCalloutTemplateMutation,
+  useSpaceTemplateSetIdLazyQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 
 export interface CalloutCreationUtils {
   handleCreateCalloutTemplate: (

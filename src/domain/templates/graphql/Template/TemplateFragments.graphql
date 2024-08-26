@@ -1,8 +1,22 @@
-fragment CalloutTemplate on Template {
+
+fragment TemplateProfileInfo on Template {
   id
   profile {
-    ...TemplateProfileInfoWithVisual
+    id
+    displayName
+    description
+    tagset {
+      ...TagsetDetails
+    }
+    visual(type: CARD) {
+      ...VisualFull
+    }
   }
+  type
+}
+
+fragment CalloutTemplate on Template {
+  ...TemplateProfileInfo
   callout {
     id
     type
@@ -15,28 +29,19 @@ fragment CalloutTemplate on Template {
 }
 
 fragment PostTemplate on Template {
-  id
-  profile {
-    ...TemplateProfileInfoWithVisual
-  }
+  ...TemplateProfileInfo
   postDefaultDescription
 }
 
 fragment WhiteboardTemplate on Template {
-  id
-  profile {
-    ...TemplateProfileInfoWithVisual
-  }
+  ...TemplateProfileInfo
   whiteboard {
     id
   }
 }
 
 fragment InnovationFlowTemplate on Template {
-  id
-  profile {
-    ...TemplateProfileInfoWithVisual
-  }
+  ...TemplateProfileInfo
   innovationFlowStates {
     displayName
     description
@@ -44,10 +49,7 @@ fragment InnovationFlowTemplate on Template {
 }
 
 fragment CommunityGuidelinesTemplate on Template {
-  id
-  profile {
-    ...TemplateProfileInfoWithVisual
-  }
+  ...TemplateProfileInfo
   communityGuidelines {
     id
     profile {
@@ -61,15 +63,4 @@ fragment CommunityGuidelinesTemplate on Template {
   }
 }
 
-fragment TemplateProfileInfoWithVisual on Profile {
-  id
-  displayName
-  description
-  tagset {
-    ...TagsetDetails
-  }
-  visual(type: CARD) {
-    ...VisualFull
-  }
-}
 
