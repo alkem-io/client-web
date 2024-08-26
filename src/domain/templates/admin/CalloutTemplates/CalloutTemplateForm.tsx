@@ -1,26 +1,26 @@
 import React, { ReactNode, useMemo } from 'react';
 import { FormikProps } from 'formik';
 import * as yup from 'yup';
+import { useTranslation } from 'react-i18next';
+import { Box } from '@mui/material';
 import {
   CalloutType,
   CreateProfileInput,
   CreateReferenceInput,
   CreateWhiteboardInput,
-  Visual,
-} from '../../../../../core/apollo/generated/graphql-schema';
-import TemplateForm from '../TemplateForm';
-import { useTranslation } from 'react-i18next';
-import FormikRadioButtonsGroup from '../../../../../core/ui/forms/radioButtons/FormikRadioButtonsGroup';
-import { RadioButtonOption } from '../../../../../core/ui/forms/radioButtons/RadioButtonsGroup';
-import calloutIcons from '../../../../collaboration/callout/utils/calloutIcons';
-import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { Box } from '@mui/material';
-import { gutters } from '../../../../../core/ui/grid/utils';
-import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
-import { TagsetField } from '../../components/Common/TagsetSegment';
-import FormikWhiteboardPreview from '../../../../templates/admin/WhiteboardTemplates/FormikWhiteboardPreview';
-import { displayNameValidator } from '../../../../../core/ui/forms/validator';
+} from '../../../../core/apollo/generated/graphql-schema';
+import { Visual } from '../../../common/visual/Visual';
+import { displayNameValidator } from '../../../../core/ui/forms/validator/displayNameValidator';
+import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
+import { RadioButtonOption } from '../../../../core/ui/forms/radioButtons/RadioButtonsGroup';
+import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
+import TemplateForm from '../../../platform/admin/InnovationPacks/TemplateForm';
+import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { gutters } from '../../../../core/ui/grid/utils';
+import { TagsetField } from '../../../platform/admin/components/Common/TagsetSegment';
+import FormikRadioButtonsGroup from '../../../../core/ui/forms/radioButtons/FormikRadioButtonsGroup';
+import FormikWhiteboardPreview from '../WhiteboardTemplates/FormikWhiteboardPreview';
 
 export interface CalloutTemplateFormValues {
   displayName: string;

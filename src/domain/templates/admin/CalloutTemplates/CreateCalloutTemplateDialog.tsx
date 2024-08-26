@@ -1,16 +1,16 @@
 import { useTranslation } from 'react-i18next';
-import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
 import CalloutTemplateForm, {
   CalloutTemplateFormSubmittedValues,
   CalloutTemplateFormValues,
 } from './CalloutTemplateForm';
-import TemplateDialogBase from '../../../../collaboration/templates/templateDialog/TemplateDialogBase';
-import { Reference, Tagset } from '../../../../common/profile/Profile';
-import { WhiteboardFragmentWithCallout } from '../../../../collaboration/callout/useCallouts/useCallouts';
-import { CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
-import { useWhiteboardWithContentQuery } from '../../../../../core/apollo/generated/apollo-hooks';
-import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
+import { Reference, Tagset } from '../../../common/profile/Profile';
+import { WhiteboardFragmentWithCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
+import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
+import { useWhiteboardWithContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
+import TemplateDialogBase from '../../Dialogs/templateDialog/TemplateDialogBase';
 
 export interface CreateCalloutTemplateDialogProps {
   open: boolean;

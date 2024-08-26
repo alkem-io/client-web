@@ -2,16 +2,20 @@ import React, { FC, useMemo } from 'react';
 import SpaceSettingsLayout from './SpaceSettingsLayout';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
-import { useInnovationPacksLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  refetchAllTemplatesFromSpaceQuery,
+  useAllTemplatesFromSpaceQuery,
+  useInnovationPacksLazyQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { useParams } from 'react-router-dom';
 import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
 import AdminPostTemplatesSection from '../../../templates/admin/PostTemplates/AdminPostTemplatesSection';
 import Gutters from '../../../../core/ui/grid/Gutters';
-import AdminInnovationTemplatesSection from '../templates/InnovationTemplates/AdminInnovationTemplatesSection';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import AdminWhiteboardTemplatesSection from '../../../templates/admin/WhiteboardTemplates/AdminWhiteboardTemplatesSection';
-import AdminCalloutTemplatesSection from '../templates/CalloutTemplates/AdminCalloutTemplatesSection';
 import AdminCommunityGuidelinesTemplatesSection from '../../../templates/admin/CommunityGuidelines/AdminCommunityGuidelinesTemplatesSection';
+import AdminCalloutTemplatesSection from '../../../templates/admin/CalloutTemplates/AdminCalloutTemplatesSection';
+import AdminInnovationTemplatesSection from '../../../templates/admin/InnovationTemplates/AdminInnovationTemplatesSection';
 
 interface SpaceTemplatesAdminPageProps extends SettingsPageProps {
   spaceId: string;
@@ -44,7 +48,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
 
   const [backFromTemplateDialog, buildLink] = useBackToParentPage(routePrefix);
 
-  const { data: spaceTemplatesData } = useAdminSpaceTemplatesQuery({
+  const { data: spaceTemplatesData } = useAllTemplatesFromSpaceQuery({
     variables: { spaceId },
     skip: !spaceId, // space id can be an empty string due to some `|| ''` happening above in the tree
   });
@@ -121,7 +125,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
           templatesSetId={templatesSetID}
           templates={calloutTemplates}
           onCloseTemplateDialog={backFromTemplateDialog}
-          refetchQueries={[refetchAdminSpaceTemplatesQuery({ spaceId })]}
+          refetchQueries={[refetchAllTemplatesFromSpaceQuery({ spaceId })]}
           buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${calloutTemplatesRoutePath}/${id}`)}
           edit={edit}
           loadInnovationPacks={loadInnovationPacks}
@@ -134,7 +138,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
           templatesSetId={templatesSetID}
           templates={postTemplates}
           onCloseTemplateDialog={backFromTemplateDialog}
-          refetchQueries={[refetchAdminSpaceTemplatesQuery({ spaceId })]}
+          refetchQueries={[refetchAllTemplatesFromSpaceQuery({ spaceId })]}
           buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${postTemplatesRoutePath}/${id}`)}
           edit={edit}
           loadInnovationPacks={loadInnovationPacks}
@@ -147,7 +151,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
           templatesSetId={templatesSetID}
           templates={whiteboardTemplates}
           onCloseTemplateDialog={backFromTemplateDialog}
-          refetchQueries={[refetchAdminSpaceTemplatesQuery({ spaceId })]}
+          refetchQueries={[refetchAllTemplatesFromSpaceQuery({ spaceId })]}
           buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${whiteboardTemplatesRoutePath}/${id}`)}
           edit={edit}
           loadInnovationPacks={loadInnovationPacks}
@@ -160,7 +164,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
           templatesSetId={templatesSetID}
           templates={innovationFlowTemplates}
           onCloseTemplateDialog={backFromTemplateDialog}
-          refetchQueries={[refetchAdminSpaceTemplatesQuery({ spaceId })]}
+          refetchQueries={[refetchAllTemplatesFromSpaceQuery({ spaceId })]}
           buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${innovationTemplatesRoutePath}/${id}`)}
           edit={edit}
           loadInnovationPacks={loadInnovationPacks}
@@ -173,7 +177,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
           templatesSetId={templatesSetID}
           templates={communityGuidelinesTemplates}
           onCloseTemplateDialog={backFromTemplateDialog}
-          refetchQueries={[refetchAdminSpaceTemplatesQuery({ spaceId })]}
+          refetchQueries={[refetchAllTemplatesFromSpaceQuery({ spaceId })]}
           buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${communityGuidelinesTemplatesRoutePath}/${id}`)}
           edit={edit}
           loadInnovationPacks={loadInnovationPacks}
