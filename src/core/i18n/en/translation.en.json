@@ -1862,7 +1862,7 @@
             "deleteSpace": "Delete this Space",
             "deleteSpace_description": "Click here to delete this Space. Be careful, this action cannot be undone.",
             "deleteSpace_disallowed": "The Space can only be deleted by the host of this Space.",
-            "moreInfo": "More about Alkemio licenses can be found <pricing>here</pricing>.",
+            "moreInfo": "More about Alkemio licenses can be found <moreinfo>here</moreinfo>.",
             "moreInfoUrl": "$t(plansTable.seeMoreUrl)"
           },
           "settings": {

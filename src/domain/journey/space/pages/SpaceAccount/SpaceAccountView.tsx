@@ -256,7 +256,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
               {isHost && (
                 <Caption>
                   {tLink('pages.admin.generic.sections.account.moreInfo', {
-                    pricing: { href: t('pages.admin.generic.sections.account.moreInfoUrl') },
+                    moreinfo: { href: t('pages.admin.generic.sections.account.moreInfoUrl') },
                   })}
                 </Caption>
               )}
