@@ -4,7 +4,7 @@ import { useField } from 'formik';
 // import { Caption, CardText } from '../../../../../core/ui/typography/components';
 import { Box, Button } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import FormikWhiteboardPreview from '../../platform/admin/templates/WhiteboardTemplates/FormikWhiteboardPreview';
+import FormikWhiteboardPreview from '../admin/WhiteboardTemplates/FormikWhiteboardPreview';
 import EmptyWhiteboard from '../../common/whiteboard/EmptyWhiteboard';
 import WhiteboardTemplatesLibrary from '../library/WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
 import { gutters } from '../../../core/ui/grid/utils';

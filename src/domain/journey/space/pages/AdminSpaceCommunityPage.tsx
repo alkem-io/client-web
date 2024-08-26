@@ -26,9 +26,9 @@ import CommunityGuidelinesTemplatesLibrary from '../../../templates/library/Comm
 import CommunityGuidelinesContainer from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import CreateCommunityGuidelinesTemplateDialog, {
   CommunityGuidelinesFormValues,
-} from '../../../platform/admin/templates/CommunityGuidelines/CreateCommunityGuidelinesTemplateDialog';
-import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../../platform/admin/templates/CommunityGuidelines/CommunityGuidelinesTemplateForm';
-import { useCreateCommunityGuidelinesTemplate } from '../../../platform/admin/templates/CommunityGuidelines/useCreateCommunityGuidelinesTemplate';
+} from '../../../templates/admin/CommunityGuidelines/CreateCommunityGuidelinesTemplateDialog';
+import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../../templates/admin/CommunityGuidelines/CommunityGuidelinesTemplateForm';
+import { useCreateCommunityGuidelinesTemplate } from '../../../templates/admin/CommunityGuidelines/useCreateCommunityGuidelinesTemplate';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {

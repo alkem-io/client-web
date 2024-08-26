@@ -11,7 +11,7 @@ import InnovationFlowTemplateCard, {
 } from '../../cards/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
 import InnovationFlowTemplatePreview from './InnovationFlowTemplatePreview';
 import { Autorenew } from '@mui/icons-material';
-import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
+import { TemplateWithInnovationPack } from '../../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { TemplateBase } from '../CollaborationTemplatesLibrary/TemplateBase';
 import CollaborationTemplatesLibraryButton from '../CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';

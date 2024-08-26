@@ -5,13 +5,13 @@ import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
 import { useInnovationPacksLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useParams } from 'react-router-dom';
 import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
-import AdminPostTemplatesSection from '../templates/PostTemplates/AdminPostTemplatesSection';
+import AdminPostTemplatesSection from '../../../templates/admin/PostTemplates/AdminPostTemplatesSection';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import AdminInnovationTemplatesSection from '../templates/InnovationTemplates/AdminInnovationTemplatesSection';
 import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
-import AdminWhiteboardTemplatesSection from '../templates/WhiteboardTemplates/AdminWhiteboardTemplatesSection';
+import AdminWhiteboardTemplatesSection from '../../../templates/admin/WhiteboardTemplates/AdminWhiteboardTemplatesSection';
 import AdminCalloutTemplatesSection from '../templates/CalloutTemplates/AdminCalloutTemplatesSection';
-import AdminCommunityGuidelinesTemplatesSection from '../templates/CommunityGuidelines/AdminCommunityGuidelinesTemplatesSection';
+import AdminCommunityGuidelinesTemplatesSection from '../../../templates/admin/CommunityGuidelines/AdminCommunityGuidelinesTemplatesSection';
 
 interface SpaceTemplatesAdminPageProps extends SettingsPageProps {
   spaceId: string;

@@ -17,7 +17,7 @@ export const PostTemplatesChooser: FC<PostTemplatesChooserProps> = ({ name }) =>
   const [, , helpers] = useField<String>(name);
 
   const handleSelectTemplate = (template: PostTemplateWithValue) => {
-    helpers.setValue(template.postDefaultDescriptionefaultDescription);
+    helpers.setValue(template.postDefaultDescription);
   };
 
   return (

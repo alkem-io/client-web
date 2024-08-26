@@ -9,7 +9,7 @@ import {
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import WhiteboardTemplateCard from '../../cards/WhiteboardTemplateCard/WhiteboardTemplateCard';
 import WhiteboardTemplatePreview from './WhiteboardTemplatePreview';
-import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
+import { TemplateWithInnovationPack } from '../../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { WhiteboardTemplateWithContent } from '../../cards/WhiteboardTemplateCard/WhiteboardTemplateWithContent';
 import { TemplateBase } from '../CollaborationTemplatesLibrary/TemplateBase';

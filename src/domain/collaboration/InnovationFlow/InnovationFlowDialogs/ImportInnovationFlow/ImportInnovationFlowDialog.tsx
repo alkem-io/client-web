@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import ImportTemplatesDialog from '../../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialog';
+import ImportTemplatesDialog from '../../../../platform/admin/InnovationPacks/ImportTemplatesDialog';
 import InnovationImportTemplateCard from '../../../../platform/admin/templates/InnovationTemplates/InnovationImportTemplateCard';
 
 import { useSpaceInnovationFlowTemplatesQuery } from '../../../../../core/apollo/generated/apollo-hooks';

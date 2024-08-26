@@ -3,7 +3,7 @@ import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { TemplateWithInnovationPack } from '../../../platform/admin/templates/InnovationPacks/ImportTemplatesDialogGalleryStep';
+import { TemplateWithInnovationPack } from '../../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import {
   usePlatformCalloutTemplatesLibraryLazyQuery,
   useSpaceCalloutTemplatesLibraryLazyQuery,
@@ -13,7 +13,6 @@ import { TemplateBase } from '../CollaborationTemplatesLibrary/TemplateBase';
 import CollaborationTemplatesLibraryButton from '../CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
 import CollaborationTemplatesLibrary from '../CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
 import CalloutTemplateCard, { CalloutTemplate } from '../../cards/CalloutTemplateCard/CalloutTemplateCard';
-import CalloutTemplatePreviewX from '../../cards/calloutTemplate/CalloutTemplatePreviewX';
 
 export interface CalloutTemplatesLibraryProps {
   onImportTemplate: (template: Identifiable) => void;
