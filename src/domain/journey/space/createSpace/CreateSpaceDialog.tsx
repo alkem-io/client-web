@@ -131,7 +131,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
           tags: compact(values.tagsets?.reduce((acc: string[], tagset) => [...acc, ...tagset.tags], [])),
         },
       },
-      refetchQueries: ['UserAccount', 'OrganizationAccount'],
+      refetchQueries: ['UserAccount', 'OrganizationAccount', 'AccountInformation'],
     });
 
     const spaceID = newSpace?.createSpace.id;
