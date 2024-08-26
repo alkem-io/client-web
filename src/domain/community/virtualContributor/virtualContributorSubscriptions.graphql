@@ -1,0 +1,9 @@
+subscription virtualContributorUpdates($virtualContributorId: UUID_NAMEID!) {
+  virtualContributorUpdated(virtualContributorId: $virtualContributorId) {
+    virtualContributor {
+      id
+      status
+      bodyOfKnowledgeLastUpdated
+    }
+  }
+}

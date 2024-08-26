@@ -520,6 +520,7 @@ export type AiPersonaFieldPolicy = {
 export type AiPersonaServiceKeySpecifier = (
   | 'authorization'
   | 'bodyOfKnowledgeID'
+  | 'bodyOfKnowledgeLastUpdated'
   | 'bodyOfKnowledgeType'
   | 'createdDate'
   | 'dataAccessMode'
@@ -532,6 +533,7 @@ export type AiPersonaServiceKeySpecifier = (
 export type AiPersonaServiceFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledgeLastUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   dataAccessMode?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3137,6 +3139,7 @@ export type SubscriptionKeySpecifier = (
   | 'profileVerifiedCredential'
   | 'roomEvents'
   | 'subspaceCreated'
+  | 'virtualContributorUpdated'
   | 'whiteboardSaved'
   | SubscriptionKeySpecifier
 )[];
@@ -3147,6 +3150,7 @@ export type SubscriptionFieldPolicy = {
   profileVerifiedCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   roomEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributorUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardSaved?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SubspaceCreatedKeySpecifier = ('spaceID' | 'subspace' | SubspaceCreatedKeySpecifier)[];
@@ -3390,6 +3394,7 @@ export type VirtualContributorKeySpecifier = (
   | 'profile'
   | 'provider'
   | 'searchVisibility'
+  | 'status'
   | 'updatedDate'
   | VirtualContributorKeySpecifier
 )[];
@@ -3405,7 +3410,15 @@ export type VirtualContributorFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
   searchVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
+  status?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VirtualContributorUpdatedSubscriptionResultKeySpecifier = (
+  | 'virtualContributor'
+  | VirtualContributorUpdatedSubscriptionResultKeySpecifier
+)[];
+export type VirtualContributorUpdatedSubscriptionResultFieldPolicy = {
+  virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VisualKeySpecifier = (
   | 'allowedTypes'
@@ -4282,6 +4295,13 @@ export type StrictTypedTypePolicies = {
   VirtualContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VirtualContributorKeySpecifier | (() => undefined | VirtualContributorKeySpecifier);
     fields?: VirtualContributorFieldPolicy;
+  };
+  VirtualContributorUpdatedSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | VirtualContributorUpdatedSubscriptionResultKeySpecifier
+      | (() => undefined | VirtualContributorUpdatedSubscriptionResultKeySpecifier);
+    fields?: VirtualContributorUpdatedSubscriptionResultFieldPolicy;
   };
   Visual?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VisualKeySpecifier | (() => undefined | VisualKeySpecifier);

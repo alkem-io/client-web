@@ -14902,6 +14902,7 @@ export const VirtualContributorDocument = gql`
       }
       searchVisibility
       listedInStore
+      status
       aiPersona {
         id
         bodyOfKnowledgeID
@@ -15134,6 +15135,7 @@ export const UpdateVirtualContributorDocument = gql`
     updateVirtualContributor(virtualContributorData: $virtualContributorData) {
       id
       listedInStore
+      status
       searchVisibility
       profile {
         id
@@ -15312,6 +15314,51 @@ export function refetchVcMembershipsQuery(variables: SchemaTypes.VcMembershipsQu
   return { query: VcMembershipsDocument, variables: variables };
 }
 
+export const VirtualContributorUpdatesDocument = gql`
+  subscription virtualContributorUpdates($virtualContributorId: UUID_NAMEID!) {
+    virtualContributorUpdated(virtualContributorId: $virtualContributorId) {
+      virtualContributor {
+        id
+        status
+      }
+    }
+  }
+`;
+
+/**
+ * __useVirtualContributorUpdatesSubscription__
+ *
+ * To run a query within a React component, call `useVirtualContributorUpdatesSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useVirtualContributorUpdatesSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVirtualContributorUpdatesSubscription({
+ *   variables: {
+ *      virtualContributorId: // value for 'virtualContributorId'
+ *   },
+ * });
+ */
+export function useVirtualContributorUpdatesSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.VirtualContributorUpdatesSubscription,
+    SchemaTypes.VirtualContributorUpdatesSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.VirtualContributorUpdatesSubscription,
+    SchemaTypes.VirtualContributorUpdatesSubscriptionVariables
+  >(VirtualContributorUpdatesDocument, options);
+}
+
+export type VirtualContributorUpdatesSubscriptionHookResult = ReturnType<
+  typeof useVirtualContributorUpdatesSubscription
+>;
+export type VirtualContributorUpdatesSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.VirtualContributorUpdatesSubscription>;
 export const AccountsListDocument = gql`
   query AccountsList {
     accounts {

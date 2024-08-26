@@ -19,6 +19,7 @@ import { SearchVisibility } from '../../../../core/apollo/generated/graphql-sche
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
+import { useSubscribeOnVirtualContributorEvents } from '../useSubscribeOnVirtualContributorEvents';
 
 interface VCAccessibilityProps {
   listedInStore?: boolean;
@@ -37,6 +38,8 @@ export const VCAccessibilitySettingsPage = () => {
       id: vcNameId,
     },
   });
+
+  useSubscribeOnVirtualContributorEvents(vcNameId);
 
   const [updateContributorMutation] = useUpdateVirtualContributorMutation();
   const handleUpdate = (props: VCAccessibilityProps) => {
@@ -139,6 +142,7 @@ export const VCAccessibilitySettingsPage = () => {
                   {t('pages.virtualContributorProfile.settings.ingestion.refreshBtn')}
                 </LoadingButton>
               </Actions>
+              {data.virtualContributor.status}
             </PageContentBlock>
           </PageContentColumn>
         </PageContent>

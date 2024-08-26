@@ -621,6 +621,8 @@ export type AiPersonaService = {
   authorization?: Maybe<Authorization>;
   /** The body of knowledge ID used for the AI Persona Service */
   bodyOfKnowledgeID?: Maybe<Scalars['UUID']>;
+  /** When wat the body of knowledge of the VC last updated. */
+  bodyOfKnowledgeLastUpdated?: Maybe<Scalars['DateTime']>;
   /** The body of knowledge type used for the AI Persona Service */
   bodyOfKnowledgeType?: Maybe<AiPersonaBodyOfKnowledgeType>;
   /** The date at which the entity was created. */
@@ -5536,6 +5538,8 @@ export type Subscription = {
   roomEvents: RoomEventSubscriptionResult;
   /** Receive new Subspaces created on the Space. */
   subspaceCreated: SubspaceCreated;
+  /** Receive updates on virtual contributors */
+  virtualContributorUpdated: VirtualContributorUpdatedSubscriptionResult;
   /** Receive Whiteboard Saved event */
   whiteboardSaved: WhiteboardSavedSubscriptionResult;
 };
@@ -5558,6 +5562,10 @@ export type SubscriptionRoomEventsArgs = {
 
 export type SubscriptionSubspaceCreatedArgs = {
   spaceID: Scalars['UUID'];
+};
+
+export type SubscriptionVirtualContributorUpdatedArgs = {
+  virtualContributorId: Scalars['UUID_NAMEID'];
 };
 
 export type SubscriptionWhiteboardSavedArgs = {
@@ -6449,6 +6457,8 @@ export type VirtualContributor = Contributor & {
   provider: Contributor;
   /** Visibility of the VC in searches. */
   searchVisibility: SearchVisibility;
+  /** The status of the virtual contributor */
+  status: VirtualContributorStatus;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
@@ -6466,6 +6476,18 @@ export type VirtualContributorQuestionInput = {
   vcInteractionID?: InputMaybe<Scalars['String']>;
   /** Virtual Contributor to be asked. */
   virtualContributorID: Scalars['UUID'];
+};
+
+export enum VirtualContributorStatus {
+  Nitializing = 'NITIALIZING',
+  Ready = 'READY',
+}
+
+/** The result from a Virtual Contributor update */
+export type VirtualContributorUpdatedSubscriptionResult = {
+  __typename?: 'VirtualContributorUpdatedSubscriptionResult';
+  /** The Virtual Contributor that was updated */
+  virtualContributor: VirtualContributor;
 };
 
 export type Visual = {
@@ -19228,6 +19250,7 @@ export type VirtualContributorQuery = {
     nameID: string;
     searchVisibility: SearchVisibility;
     listedInStore: boolean;
+    status: VirtualContributorStatus;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
@@ -19372,6 +19395,7 @@ export type UpdateVirtualContributorMutation = {
     __typename?: 'VirtualContributor';
     id: string;
     listedInStore: boolean;
+    status: VirtualContributorStatus;
     searchVisibility: SearchVisibility;
     profile: {
       __typename?: 'Profile';
@@ -19450,6 +19474,18 @@ export type VcMembershipsQuery = {
           | { __typename?: 'VirtualContributor'; id: string };
       };
     }>;
+  };
+};
+
+export type VirtualContributorUpdatesSubscriptionVariables = Exact<{
+  virtualContributorId: Scalars['UUID_NAMEID'];
+}>;
+
+export type VirtualContributorUpdatesSubscription = {
+  __typename?: 'Subscription';
+  virtualContributorUpdated: {
+    __typename?: 'VirtualContributorUpdatedSubscriptionResult';
+    virtualContributor: { __typename?: 'VirtualContributor'; id: string; status: VirtualContributorStatus };
   };
 };
 
