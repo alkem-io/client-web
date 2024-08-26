@@ -6665,7 +6665,7 @@ export type AccountInformationQuery = {
     __typename?: 'LookupQueryResults';
     account?:
       | {
-          __typename: 'Account';
+          __typename?: 'Account';
           id: string;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -18222,6 +18222,7 @@ export type UserDetailsFragment = {
     displayName: string;
     tagline: string;
     description?: string | undefined;
+    url: string;
     location?: { __typename?: 'Location'; country: string; city: string } | undefined;
     avatar?:
       | {
@@ -18386,6 +18387,7 @@ export type CreateUserMutation = {
       displayName: string;
       tagline: string;
       description?: string | undefined;
+      url: string;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       avatar?:
         | {
@@ -18437,6 +18439,7 @@ export type CreateUserNewRegistrationMutation = {
       displayName: string;
       tagline: string;
       description?: string | undefined;
+      url: string;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       avatar?:
         | {
@@ -18566,6 +18569,7 @@ export type UpdateUserMutation = {
       displayName: string;
       tagline: string;
       description?: string | undefined;
+      url: string;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       avatar?:
         | {
@@ -18647,6 +18651,7 @@ export type UserQuery = {
       displayName: string;
       tagline: string;
       description?: string | undefined;
+      url: string;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       avatar?:
         | {
@@ -18727,6 +18732,7 @@ export type UserProfileQuery = {
       displayName: string;
       tagline: string;
       description?: string | undefined;
+      url: string;
       location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       avatar?:
         | {
@@ -18853,6 +18859,7 @@ export type UserProviderQuery = {
             displayName: string;
             tagline: string;
             description?: string | undefined;
+            url: string;
             location?: { __typename?: 'Location'; country: string; city: string } | undefined;
             avatar?:
               | {
@@ -18915,6 +18922,7 @@ export type UserPendingMembershipsQuery = {
             displayName: string;
             tagline: string;
             description?: string | undefined;
+            url: string;
             location?: { __typename?: 'Location'; country: string; city: string } | undefined;
             avatar?:
               | {

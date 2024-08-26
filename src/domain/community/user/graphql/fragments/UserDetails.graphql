@@ -26,5 +26,6 @@ fragment UserDetails on User {
     tagsets {
       ...TagsetDetails
     }
+    url
   }
 }

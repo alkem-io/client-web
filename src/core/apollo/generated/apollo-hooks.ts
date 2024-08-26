@@ -1757,6 +1757,7 @@ export const UserDetailsFragmentDoc = gql`
       tagsets {
         ...TagsetDetails
       }
+      url
     }
   }
   ${VisualFullFragmentDoc}
@@ -4130,7 +4131,6 @@ export const AccountInformationDocument = gql`
     lookup {
       account(ID: $accountId) {
         id
-        __typename
         authorization {
           id
           myPrivileges
