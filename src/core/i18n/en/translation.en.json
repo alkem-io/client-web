@@ -1862,7 +1862,8 @@
             "deleteSpace": "Delete this Space",
             "deleteSpace_description": "Click here to delete this Space. Be careful, this action cannot be undone.",
             "deleteSpace_disallowed": "The Space can only be deleted by the host of this Space.",
-            "moreInfo": "More about Alkemio licenses can be found <licenses>here</licenses>."
+            "moreInfo": "More about Alkemio licenses can be found <pricing>here</pricing>.",
+            "moreInfoUrl": "$t(plansTable.seeMoreUrl)"
           },
           "settings": {
             "description": "Here you can edit the visibility settings of your {{entity}}."
@@ -2856,7 +2857,7 @@
     "title": "Choose a plan",
     "subtitle": "To create a safe environment to train your Virtual Contributor, you first need to create a Space. Choose a plan for this Space below.",
     "seeMore": "Click here for the full description of each plan",
-    "seeMoreUrl": "https://welcome.alkem.io/pricing-own-space/",
+    "seeMoreUrl": "https://welcome.alkem.io/pricing/",
     "pricingPeriods": {
       "monthly": "/Month",
       "lifetime": "/Lifetime",
