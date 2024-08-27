@@ -15,10 +15,6 @@ query SpaceAccount($spaceId: UUID!) {
         myPrivileges
       }
       visibility
-      activeSubscription {
-        name
-        expires
-      }
       provider {
         id
         __typename # do not remove. Used by SpaceAccountView.tsx

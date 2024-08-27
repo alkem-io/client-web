@@ -17916,10 +17916,6 @@ export const SpaceAccountDocument = gql`
           myPrivileges
         }
         visibility
-        activeSubscription {
-          name
-          expires
-        }
         provider {
           id
           __typename
