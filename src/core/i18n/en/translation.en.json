@@ -1843,7 +1843,7 @@
             }
           },
           "account": {
-            "description": "Here you can see details about things hosted by your account.",
+            "description": "Here you find all your Spaces, Virtual Contributors, and other hosted resources. If you have any questions, feel free to reach out to the Alkemio team.",
             "hostedSpaces": "Hosted Spaces",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
