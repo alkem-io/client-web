@@ -21,6 +21,10 @@ query SpaceAccount($spaceId: UUID!) {
       }
       provider {
         id
+        __typename # do not remove. Used by SpaceAccountView.tsx
+        authorization {
+          myPrivileges
+        }
         profile {
           id
           displayName

@@ -1858,7 +1858,7 @@
             },
             "yourLicense": "Your current license:",
             "changeLicense": "Change the Space license",
-            "changeLicense_description": "You will be redirected to the account settings on the host profile.",
+            "changeLicense_description": "Contact the Alkemio team to change the license.",
             "changeLicense_disallowed": "The Space license can only be changed by the host of this Space.",
             "deleteSpace": "Delete this Space",
             "deleteSpace_description": "Click here to delete this Space. Be careful, this action cannot be undone.",

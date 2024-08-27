@@ -4,6 +4,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import {
   refetchAdminSpacesListQuery,
   useDeleteSpaceMutation,
+  useOrganizationAuthorizationQuery,
   useSpaceAccountQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, LicensePlanType } from '../../../../../core/apollo/generated/graphql-schema';
@@ -73,7 +74,8 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   const notify = useNotification();
   const navigate = useNavigate();
   const planTranslations = getPlanTranslations(t);
-  const tLink = translateWithElements(<Link />);
+  const tLink = translateWithElements(<Link target="_blank" />);
+  const [organizationId, setOrganizationId] = useState<string>();
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -81,11 +83,32 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     variables: { spaceId: journeyId },
   });
 
+  const { data: organizationData, loading: loadingOrganization } = useOrganizationAuthorizationQuery({
+    variables: {
+      organizationId: organizationId!,
+    },
+    skip: !organizationId,
+  });
+
   const space = data?.lookup.space;
-  const isHost = data?.lookup.space?.provider.id === user?.user.id;
+  const provider = data?.lookup.space?.provider;
   const canDelete = (space?.authorization?.myPrivileges ?? [])?.includes(AuthorizationPrivilege.Delete);
   const contactsLink = data?.platform.configuration.locations.support;
   const switchPlanLink = data?.platform.configuration.locations.switchplan;
+
+  let isHost = false;
+  if (provider?.__typename === 'User') {
+    isHost = provider?.id === user?.user.id;
+  } else if (provider?.__typename === 'Organization') {
+    if (!organizationId) {
+      // Will re-render and fetch the organization info with the SpaceAccount query
+      setOrganizationId(provider.id);
+    } else {
+      // We can consider ourselves the host if we can Update the organization that provides this space
+      isHost =
+        organizationData?.organization?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+    }
+  }
 
   const plansData = useMemo(() => {
     const activeSubscription = space?.activeSubscription;
@@ -141,7 +164,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     });
   };
 
-  const loading = loadingAccount && deletingSpace;
+  const loading = loadingAccount && loadingOrganization && deletingSpace;
 
   return (
     <PageContent background="transparent">

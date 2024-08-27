@@ -3100,6 +3100,8 @@ export type Mutation = {
   adminCommunicationUpdateRoomState: Scalars['Boolean'];
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
   adminSearchIngestFromScratch: Scalars['String'];
+  /** Update the Avatar on the Profile with the spedified profileID to be stored as a Document. */
+  adminUpdateContributorAvatars: Scalars['String'];
   /** Reset the Authorization Policy on the specified AiServer. */
   aiServerAuthorizationPolicyReset: AiServer;
   /** Creates a new AiPersonaService on the aiServer. */
@@ -3436,6 +3438,10 @@ export type MutationAdminCommunicationRemoveOrphanedRoomArgs = {
 
 export type MutationAdminCommunicationUpdateRoomStateArgs = {
   roomStateData: CommunicationAdminUpdateRoomStateInput;
+};
+
+export type MutationAdminUpdateContributorAvatarsArgs = {
+  profileID: Scalars['UUID'];
 };
 
 export type MutationAiServerCreateAiPersonaServiceArgs = {
@@ -17675,6 +17681,21 @@ export type UpdateOrganizationMutation = {
   };
 };
 
+export type OrganizationAuthorizationQueryVariables = Exact<{
+  organizationId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OrganizationAuthorizationQuery = {
+  __typename?: 'Query';
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
+};
+
 export type OrganizationGroupQueryVariables = Exact<{
   organizationId: Scalars['UUID_NAMEID'];
   groupId: Scalars['UUID'];
@@ -22662,8 +22683,11 @@ export type SpaceAccountQuery = {
             | undefined;
           provider:
             | {
-                __typename?: 'Organization';
+                __typename: 'Organization';
                 id: string;
+                authorization?:
+                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                  | undefined;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -22674,8 +22698,11 @@ export type SpaceAccountQuery = {
                 };
               }
             | {
-                __typename?: 'User';
+                __typename: 'User';
                 id: string;
+                authorization?:
+                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                  | undefined;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -22686,8 +22713,11 @@ export type SpaceAccountQuery = {
                 };
               }
             | {
-                __typename?: 'VirtualContributor';
+                __typename: 'VirtualContributor';
                 id: string;
+                authorization?:
+                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                  | undefined;
                 profile: {
                   __typename?: 'Profile';
                   id: string;

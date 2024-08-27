@@ -1832,6 +1832,7 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomState'
   | 'adminSearchIngestFromScratch'
+  | 'adminUpdateContributorAvatars'
   | 'aiServerAuthorizationPolicyReset'
   | 'aiServerCreateAiPersonaService'
   | 'aiServerDeleteAiPersonaService'
@@ -2000,6 +2001,7 @@ export type MutationFieldPolicy = {
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomState?: FieldPolicy<any> | FieldReadFunction<any>;
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerAuthorizationPolicyReset?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerCreateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerDeleteAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
