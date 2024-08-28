@@ -1,6 +1,6 @@
 import { useUserContext } from '../../../../community/user';
 import { useFreePlanAvailabilityQuery } from '../../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '../../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, LicenseCredential } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface Provided {
   loading: boolean;
@@ -25,7 +25,7 @@ export const usePlanAvailability = ({ skip }: { skip?: boolean }): Provided => {
     if (!currentUser?.user.id) {
       return false;
     }
-    if (plan.name === 'FREE') {
+    if (plan.name === LicenseCredential.SpaceLicenseFree) {
       return myPrivileges.includes(AuthorizationPrivilege.CreateSpace);
     } else {
       return true;

@@ -17,7 +17,7 @@ import { usePlanAvailability } from './usePlanAvailability';
 import { TagCategoryValues, error } from '../../../../../core/logging/sentry/log';
 import { getPlanTranslations } from '../../../../license/plans/utils/getPlanTranslations';
 import { PlanFeatures, PlanName, PlanPrice } from '../../../../license/plans/ui/PlanCardsComponents';
-import { LicensePlanType } from '../../../../../core/apollo/generated/graphql-schema';
+import { LicenseCredential, LicensePlanType } from '../../../../../core/apollo/generated/graphql-schema';
 
 const lines = (theme: Theme) => `1px solid ${theme.palette.divider}`;
 
@@ -161,10 +161,10 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
           <WrapperMarkdown>{t('plansTable.confirmationDialogs.freeTrial.content')}</WrapperMarkdown>
         </DialogContent>
         <DialogActions>
-          <Button variant="text" onClick={() => handleSelectPlan('FREE')}>
+          <Button variant="text" onClick={() => handleSelectPlan(LicenseCredential.SpaceLicenseFree)}>
             {t('plansTable.confirmationDialogs.freeTrial.buttons.continue')}
           </Button>
-          <Button variant="contained" onClick={() => handleSelectPlan('PLUS')}>
+          <Button variant="contained" onClick={() => handleSelectPlan(LicenseCredential.SpaceLicensePlus)}>
             {t('plansTable.confirmationDialogs.freeTrial.buttons.startPlus')}
           </Button>
         </DialogActions>
