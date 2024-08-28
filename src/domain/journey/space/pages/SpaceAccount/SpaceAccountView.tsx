@@ -1,9 +1,10 @@
 import { Box, CircularProgress, Link, styled } from '@mui/material';
-import { FC, PropsWithChildren, useMemo, useState } from 'react';
+import { FC, PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import {
   refetchAdminSpacesListQuery,
   useDeleteSpaceMutation,
+  useOrganizationAuthorizationLazyQuery,
   useSpaceAccountQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, LicensePlanType } from '../../../../../core/apollo/generated/graphql-schema';
@@ -26,6 +27,7 @@ import SpaceProfileDeleteDialog from '../SpaceSettings/SpaceProfileDeleteDialog'
 import { SvgIconComponent } from '@mui/icons-material';
 import { useUserContext } from '../../../../community/user';
 import translateWithElements from '../../../../shared/i18n/TranslateWithElements/TranslateWithElements';
+import { useConfig } from '../../../../platform/config/useConfig';
 
 interface SpaceAccountPageProps {
   journeyId: string;
@@ -42,30 +44,37 @@ const LicenseActionBlock = ({
   disabled,
   icon: Icon,
   onClick,
+  href,
   children,
 }: PropsWithChildren<{
   icon: SvgIconComponent;
   title: string;
   description: string;
   disabled?: boolean;
-  onClick: () => void;
-}>) => (
-  <StyledPageContentBlock>
-    {disabled ? (
-      <Caption>
+  onClick?: () => void;
+  href?: string;
+}>) => {
+  const captionProps = {
+    ...(disabled
+      ? {} // If disabled it's just a Caption
+      : onClick
+      ? { onClick, sx: { cursor: 'pointer' } } // If enabled and onClick is defined, pass onClick and cursor pointer
+      : href
+      ? { component: RouterLink, to: href, target: '_blank' } // If enabled and href is defined, use RouterLink component
+      : {}),
+  };
+
+  return (
+    <StyledPageContentBlock>
+      <Caption {...captionProps}>
         <Icon fontSize="small" sx={{ marginRight: gutters(0.5) }} />
         {title}
       </Caption>
-    ) : (
-      <Caption onClick={onClick} sx={{ cursor: 'pointer' }}>
-        <Icon fontSize="small" sx={{ marginRight: gutters(0.5) }} />
-        {title}
-      </Caption>
-    )}
-    <CaptionSmall>{description}</CaptionSmall>
-    {children}
-  </StyledPageContentBlock>
-);
+      <CaptionSmall>{description}</CaptionSmall>
+      {children}
+    </StyledPageContentBlock>
+  );
+};
 
 const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   const { t } = useTranslation();
@@ -73,19 +82,43 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   const notify = useNotification();
   const navigate = useNavigate();
   const planTranslations = getPlanTranslations(t);
-  const tLink = translateWithElements(<Link />);
+  const tLink = translateWithElements(<Link target="_blank" />);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const { data, loading: loadingAccount } = useSpaceAccountQuery({
+  const { data, loading } = useSpaceAccountQuery({
     variables: { spaceId: journeyId },
   });
 
+  const [fetchOrganizationAuthorization, { data: organizationData }] = useOrganizationAuthorizationLazyQuery();
+
+  const { locations } = useConfig();
+
   const space = data?.lookup.space;
-  const isHost = data?.lookup.space?.provider.id === user?.user.id;
   const canDelete = (space?.authorization?.myPrivileges ?? [])?.includes(AuthorizationPrivilege.Delete);
   const contactsLink = data?.platform.configuration.locations.support;
   const switchPlanLink = data?.platform.configuration.locations.switchplan;
+
+  const provider = data?.lookup.space?.provider;
+  const [isHost, setIsHost] = useState(false);
+  useEffect(() => {
+    // TODO: After server #4471 we should be able to see account.type to check if the space provider is a User or an Organization, and this __typename can be removed from the query
+    if (provider?.__typename === 'User') {
+      setIsHost(provider?.id === user?.user.id);
+    } else if (provider?.__typename === 'Organization') {
+      if (!organizationData) {
+        fetchOrganizationAuthorization({
+          variables: {
+            organizationId: provider.id,
+          },
+        });
+      } else {
+        setIsHost(
+          organizationData.organization.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false
+        );
+      }
+    }
+  }, [provider, organizationData]);
 
   const plansData = useMemo(() => {
     const activeSubscription = space?.activeSubscription;
@@ -140,8 +173,6 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
       },
     });
   };
-
-  const loading = loadingAccount && deletingSpace;
 
   return (
     <PageContent background="transparent">
@@ -236,7 +267,9 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                     )}
                     disabled={!isHost}
                     icon={CachedIcon}
-                    onClick={() => navigate(`${user?.user.profile.url}/settings/account`)}
+                    href={locations?.feedback}
+                    // TODO: Temporarily redirect to Alekmio contact page until the account settings tab is ready to handle a license change
+                    // onClick={() => navigate(`${provider?.profile.url}/settings/account`)}
                   />
                   <LicenseActionBlock
                     title={t('pages.admin.generic.sections.account.deleteSpace')}

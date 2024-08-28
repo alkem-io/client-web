@@ -17695,6 +17695,21 @@ export type UpdateOrganizationMutation = {
   };
 };
 
+export type OrganizationAuthorizationQueryVariables = Exact<{
+  organizationId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OrganizationAuthorizationQuery = {
+  __typename?: 'Query';
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
+};
+
 export type OrganizationGroupQueryVariables = Exact<{
   organizationId: Scalars['UUID_NAMEID'];
   groupId: Scalars['UUID'];
@@ -22682,8 +22697,11 @@ export type SpaceAccountQuery = {
             | undefined;
           provider:
             | {
-                __typename?: 'Organization';
+                __typename: 'Organization';
                 id: string;
+                authorization?:
+                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                  | undefined;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -22694,8 +22712,11 @@ export type SpaceAccountQuery = {
                 };
               }
             | {
-                __typename?: 'User';
+                __typename: 'User';
                 id: string;
+                authorization?:
+                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                  | undefined;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -22706,8 +22727,11 @@ export type SpaceAccountQuery = {
                 };
               }
             | {
-                __typename?: 'VirtualContributor';
+                __typename: 'VirtualContributor';
                 id: string;
+                authorization?:
+                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                  | undefined;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
