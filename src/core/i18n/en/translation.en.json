@@ -2871,7 +2871,7 @@
     },
     "plans": [
       {
-        "name": "FREE",
+        "name": "SPACE_LICENSE_FREE",
         "displayName": "Free",
         "priceDescription": "For Change-Makers Exploring Alkemio",
         "features": ["Up to 10 members", "Various tools, including standard Whiteboards"],
@@ -2879,7 +2879,7 @@
         "disabledDisclaimer": "Each user can have 1 free space. It seems like you’ve already used yours!"
       },
       {
-        "name": "PLUS",
+        "name": "SPACE_LICENSE_PLUS",
         "displayName": "Plus",
         "priceDescription": "For Starting Communities, coalitions, programs...",
         "features": ["Up to 100 members", "Realtime, multi-user Whiteboards", "Create your Virtual Contributor"],
@@ -2887,7 +2887,7 @@
         "disabledDisclaimer": ""
       },
       {
-        "name": "PREMIUM",
+        "name": "SPACE_LICENSE_PREMIUM",
         "displayName": "Premium",
         "priceDescription": "For Established Communities, organisations, coalitions...",
         "features": [
@@ -2900,7 +2900,7 @@
         "disabledDisclaimer": ""
       },
       {
-        "name": "ENTERPRISE",
+        "name": "SPACE_LICENSE_ENTERPRISE",
         "displayName": "Enterprise",
         "priceDescription": "Your Customized plan",
         "features": [
