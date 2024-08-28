@@ -2009,6 +2009,8 @@ export type CreateSpaceOnAccountInput = {
   accountID: Scalars['UUID'];
   collaborationData?: InputMaybe<CreateCollaborationInput>;
   context?: InputMaybe<CreateContextInput>;
+  /** The license plan the user wishes to use when creating the space. */
+  licensePlanID?: InputMaybe<Scalars['UUID']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
