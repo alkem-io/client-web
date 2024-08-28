@@ -1,0 +1,9 @@
+query OrganizationAuthorization($organizationId: UUID_NAMEID!) {
+  organization(ID: $organizationId) {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+}

@@ -54,6 +54,8 @@ export type Account = {
   spaces: Array<Space>;
   /** The StorageAggregator in use by this Account */
   storageAggregator: StorageAggregator;
+  /** A type of entity that this Account is being used with. */
+  type?: Maybe<AccountType>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** The virtual contributors for this Account. */
@@ -64,6 +66,11 @@ export type AccountAuthorizationResetInput = {
   /** The identifier of the Account whose Authorization Policy should be reset. */
   accountID: Scalars['UUID_NAMEID'];
 };
+
+export enum AccountType {
+  Organization = 'ORGANIZATION',
+  User = 'USER',
+}
 
 export type ActivityCreatedSubscriptionInput = {
   /** The collaboration on which to subscribe for new activity */
@@ -2002,6 +2009,8 @@ export type CreateSpaceOnAccountInput = {
   accountID: Scalars['UUID'];
   collaborationData?: InputMaybe<CreateCollaborationInput>;
   context?: InputMaybe<CreateContextInput>;
+  /** The license plan the user wishes to use when creating the space. */
+  licensePlanID?: InputMaybe<Scalars['UUID']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
@@ -2118,25 +2127,26 @@ export type CredentialMetadataOutput = {
 };
 
 export enum CredentialType {
+  AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
   BetaTester = 'BETA_TESTER',
-  FeatureCalloutToCalloutTemplate = 'FEATURE_CALLOUT_TO_CALLOUT_TEMPLATE',
-  FeatureVirtualContributors = 'FEATURE_VIRTUAL_CONTRIBUTORS',
-  FeatureWhiteboardMultiUser = 'FEATURE_WHITEBOARD_MULTI_USER',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
   GlobalSpacesReader = 'GLOBAL_SPACES_READER',
   GlobalSupport = 'GLOBAL_SUPPORT',
-  LicenseSpaceEnterprise = 'LICENSE_SPACE_ENTERPRISE',
-  LicenseSpaceFree = 'LICENSE_SPACE_FREE',
-  LicenseSpacePlus = 'LICENSE_SPACE_PLUS',
-  LicenseSpacePremium = 'LICENSE_SPACE_PREMIUM',
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
   SpaceAdmin = 'SPACE_ADMIN',
+  SpaceFeatureSaveAsTemplate = 'SPACE_FEATURE_SAVE_AS_TEMPLATE',
+  SpaceFeatureVirtualContributors = 'SPACE_FEATURE_VIRTUAL_CONTRIBUTORS',
+  SpaceFeatureWhiteboardMultiUser = 'SPACE_FEATURE_WHITEBOARD_MULTI_USER',
   SpaceLead = 'SPACE_LEAD',
+  SpaceLicenseEnterprise = 'SPACE_LICENSE_ENTERPRISE',
+  SpaceLicenseFree = 'SPACE_LICENSE_FREE',
+  SpaceLicensePlus = 'SPACE_LICENSE_PLUS',
+  SpaceLicensePremium = 'SPACE_LICENSE_PREMIUM',
   SpaceMember = 'SPACE_MEMBER',
   SpaceSubspaceAdmin = 'SPACE_SUBSPACE_ADMIN',
   UserGroupMember = 'USER_GROUP_MEMBER',
@@ -2655,13 +2665,14 @@ export type LibraryInnovationPacksArgs = {
 };
 
 export enum LicenseCredential {
-  FeatureCalloutToCalloutTemplate = 'FEATURE_CALLOUT_TO_CALLOUT_TEMPLATE',
-  FeatureVirtualContributors = 'FEATURE_VIRTUAL_CONTRIBUTORS',
-  FeatureWhiteboardMultiUser = 'FEATURE_WHITEBOARD_MULTI_USER',
-  LicenseSpaceEnterprise = 'LICENSE_SPACE_ENTERPRISE',
-  LicenseSpaceFree = 'LICENSE_SPACE_FREE',
-  LicenseSpacePlus = 'LICENSE_SPACE_PLUS',
-  LicenseSpacePremium = 'LICENSE_SPACE_PREMIUM',
+  AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
+  SpaceFeatureSaveAsTemplate = 'SPACE_FEATURE_SAVE_AS_TEMPLATE',
+  SpaceFeatureVirtualContributors = 'SPACE_FEATURE_VIRTUAL_CONTRIBUTORS',
+  SpaceFeatureWhiteboardMultiUser = 'SPACE_FEATURE_WHITEBOARD_MULTI_USER',
+  SpaceLicenseEnterprise = 'SPACE_LICENSE_ENTERPRISE',
+  SpaceLicenseFree = 'SPACE_LICENSE_FREE',
+  SpaceLicensePlus = 'SPACE_LICENSE_PLUS',
+  SpaceLicensePremium = 'SPACE_LICENSE_PREMIUM',
 }
 
 export type LicensePlan = {
@@ -2699,6 +2710,8 @@ export type LicensePlan = {
 };
 
 export enum LicensePlanType {
+  AccountFeatureFlag = 'ACCOUNT_FEATURE_FLAG',
+  AccountPlan = 'ACCOUNT_PLAN',
   SpaceFeatureFlag = 'SPACE_FEATURE_FLAG',
   SpacePlan = 'SPACE_PLAN',
 }
@@ -2725,9 +2738,12 @@ export type LicensePolicyCredentialRule = {
 };
 
 export enum LicensePrivilege {
-  CalloutSaveAsTemplate = 'CALLOUT_SAVE_AS_TEMPLATE',
-  VirtualContributorAccess = 'VIRTUAL_CONTRIBUTOR_ACCESS',
-  WhiteboardMultiUser = 'WHITEBOARD_MULTI_USER',
+  AccountCreateInnovationPack = 'ACCOUNT_CREATE_INNOVATION_PACK',
+  AccountCreateSpace = 'ACCOUNT_CREATE_SPACE',
+  AccountCreateVirtualContributor = 'ACCOUNT_CREATE_VIRTUAL_CONTRIBUTOR',
+  SpaceSaveAsTemplate = 'SPACE_SAVE_AS_TEMPLATE',
+  SpaceVirtualContributorAccess = 'SPACE_VIRTUAL_CONTRIBUTOR_ACCESS',
+  SpaceWhiteboardMultiUser = 'SPACE_WHITEBOARD_MULTI_USER',
 }
 
 export type Licensing = {
@@ -3100,6 +3116,8 @@ export type Mutation = {
   adminCommunicationUpdateRoomState: Scalars['Boolean'];
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
   adminSearchIngestFromScratch: Scalars['String'];
+  /** Update the Avatar on the Profile with the spedified profileID to be stored as a Document. */
+  adminUpdateContributorAvatars: Scalars['String'];
   /** Reset the Authorization Policy on the specified AiServer. */
   aiServerAuthorizationPolicyReset: AiServer;
   /** Creates a new AiPersonaService on the aiServer. */
@@ -3436,6 +3454,10 @@ export type MutationAdminCommunicationRemoveOrphanedRoomArgs = {
 
 export type MutationAdminCommunicationUpdateRoomStateArgs = {
   roomStateData: CommunicationAdminUpdateRoomStateInput;
+};
+
+export type MutationAdminUpdateContributorAvatarsArgs = {
+  profileID: Scalars['UUID'];
 };
 
 export type MutationAiServerCreateAiPersonaServiceArgs = {
@@ -17675,6 +17697,21 @@ export type UpdateOrganizationMutation = {
   };
 };
 
+export type OrganizationAuthorizationQueryVariables = Exact<{
+  organizationId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OrganizationAuthorizationQuery = {
+  __typename?: 'Query';
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
+};
+
 export type OrganizationGroupQueryVariables = Exact<{
   organizationId: Scalars['UUID_NAMEID'];
   groupId: Scalars['UUID'];
@@ -22662,8 +22699,11 @@ export type SpaceAccountQuery = {
             | undefined;
           provider:
             | {
-                __typename?: 'Organization';
+                __typename: 'Organization';
                 id: string;
+                authorization?:
+                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                  | undefined;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -22674,8 +22714,11 @@ export type SpaceAccountQuery = {
                 };
               }
             | {
-                __typename?: 'User';
+                __typename: 'User';
                 id: string;
+                authorization?:
+                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                  | undefined;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -22686,8 +22729,11 @@ export type SpaceAccountQuery = {
                 };
               }
             | {
-                __typename?: 'VirtualContributor';
+                __typename: 'VirtualContributor';
                 id: string;
+                authorization?:
+                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                  | undefined;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
