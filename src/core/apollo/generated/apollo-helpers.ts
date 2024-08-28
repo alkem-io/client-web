@@ -14,6 +14,7 @@ export type AccountKeySpecifier = (
   | 'innovationPacks'
   | 'spaces'
   | 'storageAggregator'
+  | 'type'
   | 'updatedDate'
   | 'virtualContributors'
   | AccountKeySpecifier
@@ -28,6 +29,7 @@ export type AccountFieldPolicy = {
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1832,6 +1834,7 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomState'
   | 'adminSearchIngestFromScratch'
+  | 'adminUpdateContributorAvatars'
   | 'aiServerAuthorizationPolicyReset'
   | 'aiServerCreateAiPersonaService'
   | 'aiServerDeleteAiPersonaService'
@@ -2000,6 +2003,7 @@ export type MutationFieldPolicy = {
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomState?: FieldPolicy<any> | FieldReadFunction<any>;
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerAuthorizationPolicyReset?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerCreateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerDeleteAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
