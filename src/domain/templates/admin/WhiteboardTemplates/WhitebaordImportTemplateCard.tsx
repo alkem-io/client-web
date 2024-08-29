@@ -1,6 +1,6 @@
 import React from 'react';
 import { TemplateImportCardComponentProps } from '../../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
-import WhiteboardTemplateCard from '../../cards/WhiteboardTemplateCard/WhiteboardTemplateCard';
+import WhiteboardTemplateCard from '../../_new/components/cards/WhiteboardTemplateCard';
 
 interface WhiteboardImportTemplateCardProps extends TemplateImportCardComponentProps {}
 

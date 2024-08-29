@@ -38,7 +38,7 @@ const AdminPostTemplatesSection = ({ refetchQueries, ...props }: AdminPostTempla
   return (
     <AdminTemplatesSection
       {...props}
-      headerText={t('common.enums.templateTypes.PostTemplate')}
+      headerText={t('common.enums.templateTypes.Post')}
       importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
         templateType: t('common.cards'),
       })}

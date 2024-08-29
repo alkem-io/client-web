@@ -8,7 +8,7 @@ import {
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import InnovationFlowTemplateCard, {
   InnovationFlowTemplate,
-} from '../../cards/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
+} from '../../_new/components/cards/InnovationFlowTemplateCard';
 import InnovationFlowTemplatePreview from './InnovationFlowTemplatePreview';
 import { Autorenew } from '@mui/icons-material';
 import { TemplateWithInnovationPack } from '../../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';

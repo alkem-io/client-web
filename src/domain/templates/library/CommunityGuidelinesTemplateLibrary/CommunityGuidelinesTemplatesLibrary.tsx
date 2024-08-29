@@ -12,8 +12,8 @@ import { Identifiable } from '../../../../core/utils/Identifiable';
 import CommunityGuidelinesConfirmationDialog from './CommunityGuidelinesConfirmationDialog';
 import { TemplateBase } from '../CollaborationTemplatesLibrary/TemplateBase';
 import CollaborationTemplatesLibrary from '../CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
-import { CommunityGuidelinesTemplateWithContent } from '../../cards/CommunityGuidelinesTemplateCard/CommunityGuidelines';
-import CommunityGuidelinesTemplateCard from '../../cards/CommunityGuidelinesTemplateCard/CommunityGuidelinesTemplateCard';
+import { CommunityGuidelinesTemplateWithContent } from '../../_new/models/CommunityGuidelines';
+import CommunityGuidelinesTemplateCard from '../../_new/components/cards/CommunityGuidelinesTemplateCard';
 
 export interface CommunityGuidelinesTemplatesLibraryProps {
   open: boolean;

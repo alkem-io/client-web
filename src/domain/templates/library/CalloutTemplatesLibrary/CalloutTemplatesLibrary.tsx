@@ -12,7 +12,7 @@ import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlin
 import { TemplateBase } from '../CollaborationTemplatesLibrary/TemplateBase';
 import CollaborationTemplatesLibraryButton from '../CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
 import CollaborationTemplatesLibrary from '../CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
-import CalloutTemplateCard, { CalloutTemplate } from '../../cards/CalloutTemplateCard/CalloutTemplateCard';
+import CalloutTemplateCard, { CalloutTemplate } from '../../_new/components/cards/CalloutTemplateCard';
 import CalloutTemplatePreview from './CalloutTemplatePreview';
 
 export interface CalloutTemplatesLibraryProps {

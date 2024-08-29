@@ -1,15 +1,15 @@
 import { ContributeCardProps } from '../../../core/ui/card/ContributeCard';
 import { Identifiable } from '../../../core/utils/Identifiable';
 import { TemplateWithInnovationPack } from '../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
-import PostTemplateCard from '../../templates/cards/PostTemplateCard/PostTemplateCard';
-import WhiteboardTemplateCard from '../../templates/cards/WhiteboardTemplateCard/WhiteboardTemplateCard';
+import PostTemplateCard from '../../templates/_new/components/cards/PostTemplateCard';
+import WhiteboardTemplateCard from '../../templates/_new/components/cards/WhiteboardTemplateCard';
 import InnovationFlowTemplateCard, {
   InnovationFlowTemplate,
-} from '../../templates/cards/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
-import { PostTemplate } from '../../templates/cards/PostTemplateCard/PostTemplate';
+} from '../../templates/_new/components/cards/InnovationFlowTemplateCard';
+import { PostTemplate } from '../../templates/_new/models/PostTemplate';
 import { TemplateBase } from '../../templates/library/CollaborationTemplatesLibrary/TemplateBase';
-import CalloutTemplateCard, { CalloutTemplate } from '../../templates/cards/CalloutTemplateCard/CalloutTemplateCard';
-import CommunityGuidelinesTemplateCard from '../../templates/cards/CommunityGuidelinesTemplateCard/CommunityGuidelinesTemplateCard';
+import CalloutTemplateCard, { CalloutTemplate } from '../../templates/_new/components/cards/CalloutTemplateCard';
+import CommunityGuidelinesTemplateCard from '../../templates/_new/components/cards/CommunityGuidelinesTemplateCard';
 import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
 
 export type LibraryTemplateCardProps = Identifiable &

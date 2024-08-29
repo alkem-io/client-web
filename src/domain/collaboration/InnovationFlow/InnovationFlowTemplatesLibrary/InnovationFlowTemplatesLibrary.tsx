@@ -6,14 +6,14 @@ import {
   useSpaceInnovationFlowTemplatesLibraryLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { InnovationFlowTemplate } from '../../../templates/cards/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
+import { InnovationFlowTemplate } from '../../../templates/_new/components/cards/InnovationFlowTemplateCard';
 import { Autorenew } from '@mui/icons-material';
 import { TemplateWithInnovationPack } from '../../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { TemplateBase } from '../../../templates/library/CollaborationTemplatesLibrary/TemplateBase';
 import CollaborationTemplatesLibraryButton from '../../../templates/library/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
 import CollaborationTemplatesLibrary from '../../../templates/library/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
-import InnovationFlowTemplateCard from '../../../templates/cards/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
+import InnovationFlowTemplateCard from '../../../templates/_new/components/cards/InnovationFlowTemplateCard';
 import InnovationFlowTemplatePreview from '../../../templates/library/InnovationFlowTemplatesLibrary/InnovationFlowTemplatePreview';
 
 export interface InnovationFlowTemplatesLibraryProps {

@@ -6,7 +6,7 @@ import FormikMarkdownField from '../../../core/ui/forms/MarkdownInput/FormikMark
 import { MARKDOWN_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
 import { Caption, CardText } from '../../../core/ui/typography';
 import PostTemplatesLibrary from '../library/PostTemplatesLibrary/PostTemplatesLibrary';
-import { PostTemplateWithValue } from '../cards/PostTemplateCard/PostTemplate';
+import { PostTemplateWithValue } from '../_new/models/PostTemplate';
 
 interface PostTemplatesChooserProps {
   name: string;
@@ -17,7 +17,9 @@ export const PostTemplatesChooser: FC<PostTemplatesChooserProps> = ({ name }) =>
   const [, , helpers] = useField<String>(name);
 
   const handleSelectTemplate = (template: PostTemplateWithValue) => {
-    helpers.setValue(template.postDefaultDescription);
+    if (template.postDefaultDescription) {
+      helpers.setValue(template.postDefaultDescription);
+    }
   };
 
   return (

@@ -6,10 +6,10 @@ import {
   usePlatformPostTemplatesLibraryLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import PostTemplateCard from '../../../templates/cards/PostTemplateCard/PostTemplateCard';
+import PostTemplateCard from '../../../templates/_new/components/cards/PostTemplateCard';
 import { TemplateWithInnovationPack } from '../../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../core/utils/Identifiable';
-import { PostTemplate, PostTemplateWithValue } from '../../../templates/cards/PostTemplateCard/PostTemplate';
+import { PostTemplate, PostTemplateWithValue } from '../../../templates/_new/models/PostTemplate';
 import CollaborationTemplatesLibraryButton from '../../../templates/library/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
 import CollaborationTemplatesLibrary from '../../../templates/library/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
 import { TemplateCardBaseProps } from '../../../templates/library/CollaborationTemplatesLibrary/TemplateBase';

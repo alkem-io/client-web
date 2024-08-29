@@ -64,18 +64,6 @@ fragment WhiteboardContent on Whiteboard {
   content
 }
 
-fragment CreateWhiteboardWhiteboardTemplate on Template {
-  id
-  profile {
-    id
-    displayName
-    description
-  }
-  whiteboard {
-    content
-  }
-}
-
 fragment CalloutWithWhiteboard on Callout {
   id
   nameID

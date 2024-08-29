@@ -11,7 +11,7 @@ import CollaborativeExcalidrawWrapper from '../../../common/whiteboard/excalidra
 import type { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import whiteboardSchema from '../validation/whiteboardSchema';
-import { WhiteboardTemplateWithContent } from '../../../templates/cards/WhiteboardTemplateCard/WhiteboardTemplateWithContent';
+import { WhiteboardTemplateWithContent } from '../../../templates/_new/models/WhiteboardTemplateWithContent';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import { error as logError, TagCategoryValues } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';

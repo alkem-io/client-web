@@ -29,7 +29,7 @@ export interface CollaborationTemplatesLibraryPreviewProps<Template extends Temp
       profile: {
         displayName: string;
         avatar?: Visual;
-        url: string;
+        url?: string;
       };
     };
   };

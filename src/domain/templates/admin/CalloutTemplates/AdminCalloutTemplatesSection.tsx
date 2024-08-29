@@ -49,34 +49,38 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
   return (
     <AdminTemplatesSection
       {...props}
-      headerText={t('common.enums.templateTypes.CalloutTemplate')}
+      headerText={t('common.enums.templateTypes.Callout')}
       importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
         templateType: t('common.callouts'),
       })}
       templateCardComponent={CalloutImportTemplateCard}
       templateImportCardComponent={CalloutImportTemplateCard}
       createTemplateDialogComponent={CreateCalloutTemplateDialog}
+      //!!
       // @ts-ignore
       editTemplateDialogComponent={EditCalloutTemplateDialog}
+      //!!
       // @ts-ignore
       onCreateTemplate={(calloutTemplate: CalloutTemplateFormSubmittedValues & { templatesSetId: string }) => {
-        const { framing, contributionDefaults } = produce(calloutTemplate, draft => {
-          if (draft.type !== CalloutType.Whiteboard) {
-            delete draft.framing.whiteboard;
+        const {
+          callout: { framing, contributionDefaults },
+        } = produce(calloutTemplate, draft => {
+          if (draft.callout.type !== CalloutType.Whiteboard) {
+            delete draft.callout.framing.whiteboard;
           } else {
-            draft.framing.whiteboard = {
-              ...draft.framing.whiteboard,
+            draft.callout.framing.whiteboard = {
+              ...draft.callout.framing.whiteboard,
               profileData: {
-                ...draft.framing.whiteboard?.profileData,
-                displayName: calloutTemplate.framing.profile.displayName,
+                ...draft.callout.framing.whiteboard?.profileData,
+                displayName: calloutTemplate.callout.framing.profile.displayName,
               },
             };
           }
-          if (draft.type !== CalloutType.PostCollection) {
-            delete draft.contributionDefaults.postDescription;
+          if (draft.callout.type !== CalloutType.PostCollection && draft.callout.contributionDefaults) {
+            delete draft.callout.contributionDefaults.postDescription;
           }
-          if (draft.type !== CalloutType.WhiteboardCollection) {
-            delete draft.contributionDefaults.whiteboardContent;
+          if (draft.callout.type !== CalloutType.WhiteboardCollection && draft.callout.contributionDefaults) {
+            delete draft.callout.contributionDefaults.whiteboardContent;
           }
         });
 
@@ -90,12 +94,13 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
               state: CalloutState.Open,
             },
             contributionDefaults,
-            type: calloutTemplate.type,
+            type: calloutTemplate.callout.type,
           },
         };
 
         return createCalloutTemplate({ variables, refetchQueries });
       }}
+      //!!
       // @ts-ignore
       onUpdateTemplate={async ({
         templateId,
@@ -113,7 +118,14 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
           }
         });
 
-        await updateCalloutTemplate({ variables: { template: updatedValues }, refetchQueries });
+        await updateCalloutTemplate({
+          variables: {
+            templateId: templateId,
+            callout: updatedValues.callout,
+            profile: updatedValues.profile ?? {},
+          },
+          refetchQueries,
+        });
       }}
       onDeleteTemplate={async variables => {
         await deleteTemplate({ variables, refetchQueries });
@@ -162,7 +174,7 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
             postDescription: templateCallout.contributionDefaults.postDescription,
             whiteboardContent: templateCallout.contributionDefaults.whiteboardContent,
           },
-          // TODO: Remove this
+          // TODO: Remove this  //!!
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any;
       }}

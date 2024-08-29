@@ -512,16 +512,16 @@
         "OTHER": "Other"
       },
       "templateTypes": {
-        "WhiteboardTemplate": "Whiteboard Template",
-        "WhiteboardTemplate_plural": "Whiteboard Templates",
-        "PostTemplate": "Post Template",
-        "PostTemplate_plural": "Post Templates",
-        "InnovationFlowTemplate": "Innovation Flow",
-        "InnovationFlowTemplate_plural": "Innovation Flow Templates",
-        "CalloutTemplate": "Collaboration Tool Template",
-        "CollaborationToolTemplate_plural": "Collaboration Tool Templates",
-        "CommunityGuidelinesTemplate": "Community Guidelines Template",
-        "CommunityGuidelinesTemplate_plural": "Community Guidelines Templates"
+        "Whiteboard": "Whiteboard Template",
+        "Whiteboard_plural": "Whiteboard Templates",
+        "Post": "Post Template",
+        "Post_plural": "Post Templates",
+        "InnovationFlow": "Innovation Flow",
+        "InnovationFlow_plural": "Innovation Flow Templates",
+        "Callout": "Collaboration Tool Template",
+        "CollaborationTool_plural": "Collaboration Tool Templates",
+        "CommunityGuidelines": "Community Guidelines Template",
+        "CommunityGuidelines_plural": "Community Guidelines Templates"
       },
       "calloutType": {
         "LINK_COLLECTION": "Link Collection",

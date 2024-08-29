@@ -39,7 +39,7 @@ const AdminInnovationTemplatesSection = ({ refetchQueries, ...props }: AdminInno
   return (
     <AdminTemplatesSection
       {...props}
-      headerText={t('common.enums.templateTypes.InnovationFlowTemplate')}
+      headerText={t('common.enums.templateTypes.InnovationFlow')}
       importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
         templateType: t('common.innovation-flows'),
       })}

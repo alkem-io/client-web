@@ -29,7 +29,7 @@ import {
   WhiteboardPreviewImage,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import { WhiteboardTemplateWithContent } from '../../../templates/cards/WhiteboardTemplateCard/WhiteboardTemplateWithContent';
+import { WhiteboardTemplateWithContent } from '../../../templates/_new/models/WhiteboardTemplateWithContent';
 
 interface SingleUserWhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {

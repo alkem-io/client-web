@@ -5,7 +5,7 @@ import { useGlobalGridColumns } from '../../../core/ui/grid/constants';
 import { gutters } from '../../../core/ui/grid/utils';
 import WhiteboardTemplatesLibrary from '../library/WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
 import { LibraryIcon } from '../LibraryIcon';
-import { WhiteboardTemplateWithContent } from '../cards/WhiteboardTemplateCard/WhiteboardTemplateWithContent';
+import { WhiteboardTemplateWithContent } from '../_new/models/WhiteboardTemplateWithContent';
 import CollaborationTemplatesLibraryButton from '../library/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
 
 export interface WhiteboardDialogTemplatesLibraryProps {

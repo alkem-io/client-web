@@ -3,14 +3,15 @@ query CalloutTemplateEditableAttributes($templateId: UUID!) {
     template(ID: $templateId) {
       id
       profile {
-          id
-          displayName
-          description
-          tagset {
-            ...TagsetDetails
-          }
+        id
+        displayName
+        description
+        tagset {
+          ...TagsetDetails
         }
+      }
       callout {
+        id
         type
         framing {
           id

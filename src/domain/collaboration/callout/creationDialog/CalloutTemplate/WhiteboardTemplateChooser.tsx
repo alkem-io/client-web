@@ -1,14 +1,13 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useField } from 'formik';
-// import { Caption, CardText } from '../../../../../core/ui/typography/components';
 import { Box, Button } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import FormikWhiteboardPreview from '../../../../templates/admin/WhiteboardTemplates/FormikWhiteboardPreview';
 import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
 import WhiteboardTemplatesLibrary from '../../../../templates/library/WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
 import { gutters } from '../../../../../core/ui/grid/utils';
-import { WhiteboardTemplateWithContent } from '../../../../templates/cards/WhiteboardTemplateCard/WhiteboardTemplateWithContent';
+import { WhiteboardTemplateWithContent } from '../../../../templates/_new/models/WhiteboardTemplateWithContent';
 import CollaborationTemplatesLibraryButton from '../../../../templates/library/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
 
 interface WhiteboardTemplatesChooserProps {

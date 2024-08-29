@@ -82,7 +82,7 @@ const EditCommunityGuidelinesTemplateDialog = ({
       editMode
     >
       {({ actions }) => (
-        <StorageConfigContextProvider locationType="guidelinesTemplate" guidelinesTemplateId={template?.id}>
+        <StorageConfigContextProvider locationType="template" templateId={template?.id}>
           <CommunityGuidelinesTemplateForm
             initialValues={initialValues}
             visual={template.profile.visual}

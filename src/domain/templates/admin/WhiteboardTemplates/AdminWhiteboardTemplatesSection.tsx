@@ -85,7 +85,7 @@ const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhit
   return (
     <AdminTemplatesSection
       {...props}
-      headerText={t('common.enums.templateTypes.WhiteboardTemplate')}
+      headerText={t('common.enums.templateTypes.Whiteboard')}
       importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
         templateType: t('common.whiteboards'),
       })}

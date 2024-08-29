@@ -19,16 +19,16 @@ import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
 import { BlockSectionTitle, Text } from '../../../core/ui/typography';
 import ReferencesListSmallItem from '../../profile/Reference/ReferencesListSmallItem/ReferencesListSmallItem';
 import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
-import PostTemplateCard from '../../templates/cards/PostTemplateCard/PostTemplateCard';
-import WhiteboardTemplateCard from '../../templates/cards/WhiteboardTemplateCard/WhiteboardTemplateCard';
-import InnovationFlowTemplateCard from '../../templates/cards/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
+import PostTemplateCard from '../../templates/_new/components/cards/PostTemplateCard';
+import WhiteboardTemplateCard from '../../templates/_new/components/cards/WhiteboardTemplateCard';
+import InnovationFlowTemplateCard from '../../templates/_new/components/cards/InnovationFlowTemplateCard';
 import InnovationPackProfileLayout from './InnovationPackProfileLayout';
 import TemplatesBlock from './TemplatesBlock';
 import TemplatePreviewDialog, {
   TemplatePreview,
 } from '../../templates/Dialogs/templatePreviewDialog/TemplatePreviewDialog';
-import CalloutTemplateCard from '../../templates/cards/CalloutTemplateCard/CalloutTemplateCard';
-import CommunityGuidelinesTemplateCard from '../../templates/cards/CommunityGuidelinesTemplateCard/CommunityGuidelinesTemplateCard';
+import CalloutTemplateCard from '../../templates/_new/components/cards/CalloutTemplateCard';
+import CommunityGuidelinesTemplateCard from '../../templates/_new/components/cards/CommunityGuidelinesTemplateCard';
 
 const InnovationPackProfilePage = () => {
   const { innovationPackNameId } = useUrlParams();
@@ -134,7 +134,7 @@ const InnovationPackProfilePage = () => {
               </GridItem>
             </PageContentBlock>
             <TemplatesBlock
-              title={t('common.enums.templateTypes.WhiteboardTemplate')}
+              title={t('common.enums.templateTypes.Whiteboard')}
               templates={whiteboardTemplates}
               cardComponent={WhiteboardTemplateCard}
               templateType={TemplateType.Whiteboard}
@@ -142,7 +142,7 @@ const InnovationPackProfilePage = () => {
               innovationPack={innovationPack}
             />
             <TemplatesBlock
-              title={t('common.enums.templateTypes.CalloutTemplate')}
+              title={t('common.enums.templateTypes.Callout')}
               templates={calloutTemplates}
               cardComponent={CalloutTemplateCard}
               templateType={TemplateType.Callout}
@@ -150,7 +150,7 @@ const InnovationPackProfilePage = () => {
               innovationPack={innovationPack}
             />
             <TemplatesBlock
-              title={t('common.enums.templateTypes.InnovationFlowTemplate')}
+              title={t('common.enums.templateTypes.InnovationFlow')}
               templates={innovationFlowTemplates}
               cardComponent={InnovationFlowTemplateCard}
               templateType={TemplateType.InnovationFlow}
@@ -158,7 +158,7 @@ const InnovationPackProfilePage = () => {
               innovationPack={innovationPack}
             />
             <TemplatesBlock
-              title={t('common.enums.templateTypes.CommunityGuidelinesTemplate')}
+              title={t('common.enums.templateTypes.CommunityGuidelines')}
               templates={communityGuidelinesTemplates}
               cardComponent={CommunityGuidelinesTemplateCard}
               templateType={TemplateType.CommunityGuidelines}
@@ -166,7 +166,7 @@ const InnovationPackProfilePage = () => {
               innovationPack={innovationPack}
             />
             <TemplatesBlock
-              title={t('common.enums.templateTypes.PostTemplate')}
+              title={t('common.enums.templateTypes.Post')}
               templates={postTemplates}
               cardComponent={PostTemplateCard}
               templateType={TemplateType.Post}

@@ -46,7 +46,7 @@ export const ChallengeListView: FC = () => {
   const spaceDefaultsID = data?.space.defaults?.id || ''; // How to handle when IDs are not found?
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   useEffect(() => {
-    setSelectedState(defaultInnovationFlow?.innovationFlowStates[0].displayName);
+    setSelectedState(defaultInnovationFlow?.innovationFlowStates?.[0].displayName);
   }, [defaultInnovationFlow?.innovationFlowStates?.[0]?.displayName]);
 
   const challengeList =

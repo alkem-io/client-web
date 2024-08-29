@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import {
   CalloutType,
+  CreateCalloutInput,
   CreateProfileInput,
   CreateReferenceInput,
   CreateWhiteboardInput,
@@ -46,21 +47,22 @@ export interface CalloutTemplateFormSubmittedValues {
   visualUri?: string;
   profile: CreateProfileInput;
   tags?: string[];
-  // TODO: this needs to be a callout field of type CreateCalloutInput
-  framing: {
-    profile: {
-      displayName: string;
-      description: string;
-      referencesData?: CreateReferenceInput[];
+  callout: CreateCalloutInput /* { //!!
+    framing: {
+      profile: {
+        displayName: string;
+        description: string;
+        referencesData?: CreateReferenceInput[];
+      };
+      tags: string[];
+      whiteboard?: CreateWhiteboardInput;
     };
-    tags: string[];
-    whiteboard?: CreateWhiteboardInput;
-  };
-  contributionDefaults: {
-    postDescription?: string;
-    whiteboardContent?: string;
-  };
-  type: CalloutType;
+    contributionDefaults: {
+      postDescription?: string;
+      whiteboardContent?: string;
+    };
+    type: CalloutType;
+  }*/;
 }
 
 interface CalloutTemplateFormProps {

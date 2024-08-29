@@ -837,19 +837,6 @@ export const WhiteboardSummaryFragmentDoc = gql`
     }
   }
 `;
-export const CreateWhiteboardWhiteboardTemplateFragmentDoc = gql`
-  fragment CreateWhiteboardWhiteboardTemplate on Template {
-    id
-    profile {
-      id
-      displayName
-      description
-    }
-    whiteboard {
-      content
-    }
-  }
-`;
 export const CalloutWithWhiteboardFragmentDoc = gql`
   fragment CalloutWithWhiteboard on Callout {
     id
@@ -2623,6 +2610,9 @@ export const SubspacePageSpaceFragmentDoc = gql`
       myMembershipStatus
     }
     collaboration {
+      id
+    }
+    library {
       id
     }
   }
@@ -19415,6 +19405,7 @@ export const CalloutTemplateEditableAttributesDocument = gql`
           }
         }
         callout {
+          id
           type
           framing {
             id

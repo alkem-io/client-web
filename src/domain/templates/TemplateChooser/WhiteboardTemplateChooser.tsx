@@ -8,7 +8,7 @@ import FormikWhiteboardPreview from '../admin/WhiteboardTemplates/FormikWhiteboa
 import EmptyWhiteboard from '../../common/whiteboard/EmptyWhiteboard';
 import WhiteboardTemplatesLibrary from '../library/WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
 import { gutters } from '../../../core/ui/grid/utils';
-import { WhiteboardTemplateWithContent } from '../cards/WhiteboardTemplateCard/WhiteboardTemplateWithContent';
+import { WhiteboardTemplateWithContent } from '../_new/models/WhiteboardTemplateWithContent';
 import CollaborationTemplatesLibraryButton from '../library/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
 
 interface WhiteboardTemplatesChooserProps {

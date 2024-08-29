@@ -45,25 +45,27 @@ interface CalloutTemplateFormProps {
       description?: string;
       tagset?: Tagset;
     };
-    framing: {
-      profile: {
-        displayName: string;
-        description?: string;
-        tagset?: Tagset;
+    callout?: {
+      framing: {
+        profile: {
+          displayName: string;
+          description?: string;
+          tagset?: Tagset;
+        };
+        whiteboard?: Identifiable & {
+          content: string;
+        };
       };
-      whiteboard?: Identifiable & {
-        content: string;
+      contributionDefaults: {
+        postDescription?: string;
+        whiteboardContent?: string;
       };
+      type: CalloutType;
     };
-    contributionDefaults: {
-      postDescription?: string;
-      whiteboardContent?: string;
-    };
-    type: CalloutType;
   };
   // initialValues: Partial<CalloutTemplateFormValues>;
   visual?: Visual;
-  onSubmit: (values: UpdateTemplateInput & { type: CalloutType }) => void;
+  onSubmit: (values: UpdateTemplateInput) => void;
   actions: ReactNode | ((formState: FormikProps<CalloutTemplateFormValues>) => ReactNode);
   loading?: boolean;
 }
@@ -99,7 +101,8 @@ const EditCalloutTemplateForm = ({ template, visual, onSubmit, actions }: Callou
   }, [t]);
 
   const initialValues = useMemo<CalloutTemplateFormValues>(() => {
-    const { framing, contributionDefaults, profile, ...rest } = template ?? {};
+    const { callout, profile, ...rest } = template ?? {};
+    const { framing, contributionDefaults } = callout ?? {};
 
     const { profile: framingProfile, ...framingRest } = framing ?? {};
 
@@ -143,9 +146,8 @@ const EditCalloutTemplateForm = ({ template, visual, onSubmit, actions }: Callou
       throw new Error('Template is not loaded');
     }
 
-    const submittedValues: UpdateTemplateInput & { type: CalloutType } = {
+    const submittedValues: UpdateTemplateInput = {
       ID: template.id!,
-      type: template.type,
       profile: {
         ...profile,
         tagsets: template.profile.tagset && [
@@ -161,15 +163,15 @@ const EditCalloutTemplateForm = ({ template, visual, onSubmit, actions }: Callou
             displayName: framing.profile.displayName,
             description: framing.profile.description,
             references: framing.profile.references.map(reference => ({ ID: reference.id, ...reference })),
-            tagsets: template.framing.profile.tagset &&
+            tagsets: template.callout?.framing.profile.tagset &&
               framing.profile.tags && [
                 {
-                  ID: template.framing.profile.tagset.id!,
+                  ID: template.callout.framing.profile.tagset.id!,
                   tags: framing.profile.tags,
                 },
               ],
           },
-          whiteboard: template.framing.whiteboard &&
+          whiteboard: template.callout?.framing.whiteboard &&
             framing.whiteboard && {
               content: framing.whiteboard.content,
             },

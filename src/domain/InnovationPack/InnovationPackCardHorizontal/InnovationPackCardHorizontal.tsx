@@ -75,7 +75,7 @@ const InnovationPackCardHorizontal = ({
         {!!calloutTemplatesCount && (
           <CardFooterCountWithBadge
             iconComponent={DesignServicesIcon}
-            tooltip={t('common.enums.templateTypes.CollaborationToolTemplate_plural')}
+            tooltip={t('common.enums.templateTypes.CollaborationTool_plural')}
           >
             <Caption>{calloutTemplatesCount}</Caption>
           </CardFooterCountWithBadge>
@@ -83,7 +83,7 @@ const InnovationPackCardHorizontal = ({
         {!!whiteboardTemplatesCount && (
           <CardFooterCountWithBadge
             iconComponent={WhiteboardIcon}
-            tooltip={t('common.enums.templateTypes.WhiteboardTemplate_plural')}
+            tooltip={t('common.enums.templateTypes.Whiteboard_plural')}
           >
             <Caption>{whiteboardTemplatesCount}</Caption>
           </CardFooterCountWithBadge>
@@ -91,22 +91,19 @@ const InnovationPackCardHorizontal = ({
         {!!communityGuidelinesTemplatesCount && (
           <CardFooterCountWithBadge
             iconComponent={CommunityGuidelinesIcon}
-            tooltip={t('common.enums.templateTypes.CommunityGuidelinesTemplate_plural')}
+            tooltip={t('common.enums.templateTypes.CommunityGuidelines_plural')}
           >
             <Caption>{communityGuidelinesTemplatesCount}</Caption>
           </CardFooterCountWithBadge>
         )}
         {!!postTemplatesCount && (
-          <CardFooterCountWithBadge
-            iconComponent={PostIcon}
-            tooltip={t('common.enums.templateTypes.PostTemplate_plural')}
-          >
+          <CardFooterCountWithBadge iconComponent={PostIcon} tooltip={t('common.enums.templateTypes.Post_plural')}>
             <Caption>{postTemplatesCount}</Caption>
           </CardFooterCountWithBadge>
         )}
         {!!innovationFlowTemplatesCount && (
           <CardFooterCountWithBadge
-            tooltip={t('common.enums.templateTypes.InnovationFlowTemplate_plural')}
+            tooltip={t('common.enums.templateTypes.InnovationFlow_plural')}
             icon={
               // TODO Try to redraw InnovationFlowIcon in the same way as MUI icons are done
               <Box

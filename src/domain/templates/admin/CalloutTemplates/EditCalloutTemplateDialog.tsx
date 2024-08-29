@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import React from 'react';
 import EditCalloutTemplateForm from './EditCalloutTemplateForm';
-import { CalloutType, UpdateTemplateInput } from '../../../../core/apollo/generated/graphql-schema';
+import { UpdateTemplateInput } from '../../../../core/apollo/generated/graphql-schema';
 import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { useCalloutTemplateEditableAttributesQuery } from '../../../../core/apollo/generated/apollo-hooks';
@@ -10,7 +10,7 @@ import TemplateDialogBase from '../../Dialogs/templateDialog/TemplateDialogBase'
 export interface EditCalloutTemplateDialogProps {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
-  onSubmit: (values: UpdateTemplateInput & { type: CalloutType }) => void;
+  onSubmit: (values: UpdateTemplateInput) => void;
   onDelete: () => void;
   template: Identifiable | undefined;
 }

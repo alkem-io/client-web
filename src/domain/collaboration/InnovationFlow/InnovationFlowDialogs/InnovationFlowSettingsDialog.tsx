@@ -17,6 +17,7 @@ interface InnovationFlowSettingsDialogProps {
   open?: boolean;
   onClose: () => void;
   collaborationId: string | undefined;
+  templatesSetId: string | undefined;
   filterCalloutGroups?: CalloutGroupNameValuesMap[];
 }
 
@@ -24,6 +25,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
   open = false,
   onClose,
   collaborationId,
+  templatesSetId,
   filterCalloutGroups = undefined,
 }) => {
   const { t } = useTranslation();
@@ -115,6 +117,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
       />
       <ImportInnovationFlowDialog
         open={importInnovationFlowDialogOpen}
+        templatesSetId={templatesSetId}
         onClose={() => setImportInnovationFlowDialogOpen(false)}
         handleImportTemplate={handleImportTemplate}
       />

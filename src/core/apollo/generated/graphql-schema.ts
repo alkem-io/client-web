@@ -11469,13 +11469,6 @@ export type WhiteboardSummaryFragment = {
 
 export type WhiteboardContentFragment = { __typename?: 'Whiteboard'; id: string; content: string };
 
-export type CreateWhiteboardWhiteboardTemplateFragment = {
-  __typename?: 'Template';
-  id: string;
-  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
-  whiteboard?: { __typename?: 'Whiteboard'; content: string } | undefined;
-};
-
 export type CalloutWithWhiteboardFragment = {
   __typename?: 'Callout';
   id: string;
@@ -21908,6 +21901,7 @@ export type SubspacePageQuery = {
               | undefined;
           };
           collaboration: { __typename?: 'Collaboration'; id: string };
+          library?: { __typename?: 'TemplatesSet'; id: string } | undefined;
         }
       | undefined;
   };
@@ -22037,6 +22031,7 @@ export type SubspacePageSpaceFragment = {
       | undefined;
   };
   collaboration: { __typename?: 'Collaboration'; id: string };
+  library?: { __typename?: 'TemplatesSet'; id: string } | undefined;
 };
 
 export type PlatformLevelAuthorizationQueryVariables = Exact<{ [key: string]: never }>;
@@ -23507,6 +23502,7 @@ export type CalloutTemplateEditableAttributesQuery = {
           callout?:
             | {
                 __typename?: 'Callout';
+                id: string;
                 type: CalloutType;
                 framing: {
                   __typename?: 'CalloutFraming';

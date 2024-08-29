@@ -7,11 +7,11 @@ import {
   useWhiteboardTemplateContentLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import WhiteboardTemplateCard from '../../cards/WhiteboardTemplateCard/WhiteboardTemplateCard';
+import WhiteboardTemplateCard from '../../_new/components/cards/WhiteboardTemplateCard';
 import WhiteboardTemplatePreview from './WhiteboardTemplatePreview';
 import { TemplateWithInnovationPack } from '../../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../core/utils/Identifiable';
-import { WhiteboardTemplateWithContent } from '../../cards/WhiteboardTemplateCard/WhiteboardTemplateWithContent';
+import { WhiteboardTemplateWithContent } from '../../_new/models/WhiteboardTemplateWithContent';
 import { TemplateBase } from '../CollaborationTemplatesLibrary/TemplateBase';
 import CollaborationTemplatesLibrary from '../CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
 

@@ -7,20 +7,20 @@ import DisabledUseButton from './DisabledUseButton';
 import DialogContent from '../../../../core/ui/dialog/DialogContent';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
-import WhiteboardTemplateCard from '../../cards/WhiteboardTemplateCard/WhiteboardTemplateCard';
-import PostTemplateCard from '../../cards/PostTemplateCard/PostTemplateCard';
+import WhiteboardTemplateCard from '../../_new/components/cards/WhiteboardTemplateCard';
+import PostTemplateCard from '../../_new/components/cards/PostTemplateCard';
 import WhiteboardTemplatePreview from '../../library/WhiteboardTemplatesLibrary/WhiteboardTemplatePreview';
 import PostTemplatePreview from '../../library/PostTemplatesLibrary/PostTemplatePreview';
 import CommunityGuidelinesTemplatePreview from '../../library/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatePreview';
-import InnovationFlowTemplateCard from '../../cards/InnovationFlowTemplateCard/InnovationFlowTemplateCard';
+import InnovationFlowTemplateCard from '../../_new/components/cards/InnovationFlowTemplateCard';
 import InnovationFlowTemplatePreview from '../../library/InnovationFlowTemplatesLibrary/InnovationFlowTemplatePreview';
-import { PostTemplate } from '../../cards/PostTemplateCard/PostTemplate';
+import { PostTemplate } from '../../_new/models/PostTemplate';
 import { TemplateBase } from '../../library/CollaborationTemplatesLibrary/TemplateBase';
-import CalloutTemplateCard, { CalloutTemplate } from '../../cards/CalloutTemplateCard/CalloutTemplateCard';
+import CalloutTemplateCard, { CalloutTemplate } from '../../_new/components/cards/CalloutTemplateCard';
 import CollaborationTemplatesLibraryPreview, {
   CollaborationTemplatesLibraryPreviewProps,
 } from '../../library/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryPreview';
-import CommunityGuidelinesTemplateCard from '../../cards/CommunityGuidelinesTemplateCard/CommunityGuidelinesTemplateCard';
+import CommunityGuidelinesTemplateCard from '../../_new/components/cards/CommunityGuidelinesTemplateCard';
 import CalloutTemplatePreview from '../../library/CalloutTemplatesLibrary/CalloutTemplatePreview';
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 

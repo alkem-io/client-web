@@ -2,7 +2,7 @@ import { TemplateBase } from '../../library/CollaborationTemplatesLibrary/Templa
 
 export interface PostTemplate extends TemplateBase {
   // Template value:
-  postDefaultDescription: string;
+  postDefaultDescription?: string;
 }
 
 // PostTemplate includes the value

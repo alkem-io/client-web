@@ -1,6 +1,6 @@
 import React from 'react';
 import { TemplateImportCardComponentProps } from '../../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
-import PostTemplateCard from '../../cards/PostTemplateCard/PostTemplateCard';
+import PostTemplateCard from '../../_new/components/cards/PostTemplateCard';
 
 interface PostImportTemplateCardProps extends TemplateImportCardComponentProps {}
 

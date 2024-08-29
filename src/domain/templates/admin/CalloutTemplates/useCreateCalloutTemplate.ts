@@ -34,21 +34,19 @@ export const useCreateCalloutTemplate = (): CalloutCreationUtils => {
       }
 
       const submittedValues = produce(values, draft => {
-        if (draft.type !== CalloutType.Whiteboard) {
-          delete draft.framing.whiteboard;
+        if (draft.callout.type !== CalloutType.Whiteboard) {
+          delete draft.callout.framing.whiteboard;
         }
-        if (draft.type !== CalloutType.PostCollection) {
-          delete draft.contributionDefaults.postDescription;
+        if (draft.callout.type !== CalloutType.PostCollection && draft.callout.contributionDefaults) {
+          delete draft.callout.contributionDefaults.postDescription;
         }
-        if (draft.type !== CalloutType.WhiteboardCollection) {
-          delete draft.contributionDefaults.whiteboardContent;
+        if (draft.callout.type !== CalloutType.WhiteboardCollection && draft.callout.contributionDefaults) {
+          delete draft.callout.contributionDefaults.whiteboardContent;
         }
       });
-
       const variables: CreateCalloutTemplateMutationVariables = {
-        ...submittedValues,
         templatesSetId,
-        contributionPolicy: callout.contributionPolicy,
+        ...submittedValues,
       };
 
       const res = await createCalloutTemplate({ variables });

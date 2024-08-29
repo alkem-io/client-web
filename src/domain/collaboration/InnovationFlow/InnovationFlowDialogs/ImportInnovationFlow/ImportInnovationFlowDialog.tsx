@@ -3,33 +3,36 @@ import ImportTemplatesDialog from '../../../../platform/admin/InnovationPacks/Im
 import { useSpaceInnovationFlowTemplatesQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { Button } from '@mui/material';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
 import InnovationImportTemplateCard from '../../../../templates/admin/InnovationTemplates/InnovationImportTemplateCard';
 import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface ImportInnovationFlowDialogProps {
   open: boolean;
+  templatesSetId: string | undefined;
+  originDisplayName?: string; // TODO: I have removed this from the parents, should add it back at some point, it's the root space name //!!
   onClose?: () => void;
   handleImportTemplate: (templateId: string) => Promise<unknown>;
 }
 
-const ImportInnovationFlowDialog = ({ open, onClose, handleImportTemplate }: ImportInnovationFlowDialogProps) => {
+const ImportInnovationFlowDialog = ({
+  open,
+  templatesSetId,
+  originDisplayName,
+  onClose,
+  handleImportTemplate,
+}: ImportInnovationFlowDialogProps) => {
   const { t } = useTranslation();
-  const {
-    spaceId,
-    profile: { displayName: spaceDisplayName },
-  } = useSpace();
 
   const { data: templatesData, loading: loadingTemplates } = useSpaceInnovationFlowTemplatesQuery({
     variables: {
-      spaceId: spaceId!,
+      templatesSetId: templatesSetId!,
     },
-    skip: !spaceId || !open,
+    skip: !templatesSetId || !open,
   });
 
   const innovationPacks = [
     {
-      profile: { id: '', displayName: spaceDisplayName },
+      profile: { id: '', displayName: originDisplayName ?? '' },
       nameID: '',
       id: '',
       templates: templatesData?.lookup.templatesSet?.innovationFlowTemplates ?? [],
