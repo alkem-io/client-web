@@ -7,7 +7,7 @@ import FormikWhiteboardPreview from '../../../../templates/admin/WhiteboardTempl
 import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
 import WhiteboardTemplatesLibrary from '../../../../templates/library/WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
 import { gutters } from '../../../../../core/ui/grid/utils';
-import { WhiteboardTemplateWithContent } from '../../../../templates/_new/models/WhiteboardTemplateWithContent';
+import { WhiteboardTemplate } from '../../../../templates/_new/models/WhiteboardTemplate';
 import CollaborationTemplatesLibraryButton from '../../../../templates/library/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
 
 interface WhiteboardTemplatesChooserProps {
@@ -26,7 +26,7 @@ export const WhiteboardTemplatesChooser: FC<WhiteboardTemplatesChooserProps> = (
     helpers.setValue(newContent);
   };
 
-  const handleSelectTemplate = (template: WhiteboardTemplateWithContent) => {
+  const handleSelectTemplate = (template: WhiteboardTemplate) => {
     helpers.setValue(template.content);
   };
 

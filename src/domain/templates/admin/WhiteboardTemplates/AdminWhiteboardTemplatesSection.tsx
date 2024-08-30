@@ -13,7 +13,7 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
-import AdminTemplatesSection from '../../../platform/admin/InnovationPacks/AdminTemplatesSection';
+import AdminTemplatesSection from '../../../platform/admin/InnovationPacks/OldAdminTemplatesSection';
 import EditWhiteboardTemplateDialog from './EditWhiteboardTemplateDialog';
 import CreateWhiteboardTemplateDialog from './CreateWhiteboardTemplateDialog';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +24,7 @@ import {
   WhiteboardPreviewImage,
 } from '../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { Identifiable } from '../../../../core/utils/Identifiable';
+import { Box } from '@mui/material';
 
 interface AdminWhiteboardTemplatesSectionProps {
   templateId: string | undefined;
@@ -83,33 +84,35 @@ const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhit
   const [deleteWhiteboardTemplate] = useDeleteTemplateMutation();
 
   return (
-    <AdminTemplatesSection
-      {...props}
-      headerText={t('common.enums.templateTypes.Whiteboard')}
-      importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
-        templateType: t('common.whiteboards'),
-      })}
-      templateCardComponent={WhiteboardImportTemplateCard}
-      templateImportCardComponent={WhiteboardImportTemplateCard}
-      getWhiteboardTemplateContent={getWhiteboardTemplateContent}
-      getImportedWhiteboardTemplateContent={getImportedWhiteboardTemplateContent}
-      whiteboardTemplateContent={whiteboardContent?.lookup.template?.whiteboard?.content}
-      importedTemplateContent={importedWhiteboardContent?.lookup.template?.whiteboard?.content}
-      createTemplateDialogComponent={CreateWhiteboardTemplateDialog}
-      editTemplateDialogComponent={EditWhiteboardTemplateDialog}
-      onCreateTemplate={variables => createWhiteboardTemplate({ variables, refetchQueries })}
-      onUpdateTemplate={variables => updateWhiteboardTemplate({ variables, refetchQueries })}
-      onDeleteTemplate={async variables => {
-        await deleteWhiteboardTemplate({ variables, refetchQueries });
-      }}
-      onTemplateCreated={(mutationResult: CreateWhiteboardTemplateMutation | undefined | null, previewImages) =>
-        onMutationCalled(mutationResult?.createTemplate, previewImages)
-      }
-      onTemplateUpdated={(mutationResult: UpdateWhiteboardTemplateMutation | undefined | null, previewImages) =>
-        onMutationCalled(mutationResult?.updateTemplate, previewImages)
-      }
-      templateType={TemplateType.Whiteboard}
-    />
+    <Box sx={{ border: '1px solid red' }}>
+      <AdminTemplatesSection
+        {...props}
+        headerText={t('common.enums.templateTypes.Whiteboard')}
+        importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
+          templateType: t('common.whiteboards'),
+        })}
+        templateCardComponent={WhiteboardImportTemplateCard}
+        templateImportCardComponent={WhiteboardImportTemplateCard}
+        getWhiteboardTemplateContent={getWhiteboardTemplateContent}
+        getImportedWhiteboardTemplateContent={getImportedWhiteboardTemplateContent}
+        whiteboardTemplateContent={whiteboardContent?.lookup.template?.whiteboard?.content}
+        importedTemplateContent={importedWhiteboardContent?.lookup.template?.whiteboard?.content}
+        createTemplateDialogComponent={CreateWhiteboardTemplateDialog}
+        editTemplateDialogComponent={EditWhiteboardTemplateDialog}
+        onCreateTemplate={variables => createWhiteboardTemplate({ variables, refetchQueries })}
+        onUpdateTemplate={variables => updateWhiteboardTemplate({ variables, refetchQueries })}
+        onDeleteTemplate={async variables => {
+          await deleteWhiteboardTemplate({ variables, refetchQueries });
+        }}
+        onTemplateCreated={(mutationResult: CreateWhiteboardTemplateMutation | undefined | null, previewImages) =>
+          onMutationCalled(mutationResult?.createTemplate, previewImages)
+        }
+        onTemplateUpdated={(mutationResult: UpdateWhiteboardTemplateMutation | undefined | null, previewImages) =>
+          onMutationCalled(mutationResult?.updateTemplate, previewImages)
+        }
+        templateType={TemplateType.Whiteboard}
+      />
+    </Box>
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { ComponentType, useMemo } from 'react';
 import { InnovationPack } from './InnovationPack';
-import { Template } from './AdminTemplatesSection';
+import { Template } from './OldAdminTemplatesSection';
 import { useTranslation } from 'react-i18next';
 import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import { Caption } from '../../../../core/ui/typography';
@@ -9,6 +9,10 @@ import { Skeleton } from '@mui/material';
 import { Visual } from '../../../common/visual/Visual';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 
+/**
+ * @deprecated Maybe use src/domain/templates/_new/models/TemplateBase.ts
+ * //!!
+ */
 export type TemplateWithInnovationPack<T extends Template> = T & {
   innovationPack?: {
     profile: {

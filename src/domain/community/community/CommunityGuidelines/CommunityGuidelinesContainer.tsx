@@ -9,7 +9,7 @@ import { useNotification } from '../../../../core/ui/notifications/useNotificati
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
 import { useTranslation } from 'react-i18next';
 import { compact } from 'lodash';
-import { CommunityGuidelinesTemplateWithContent } from '../../../templates/_new/models/CommunityGuidelines';
+import { CommunityGuidelinesTemplate } from '../../../templates/_new/models/CommunityGuidelinesTemplate';
 
 interface CommunityGuidelines {
   displayName: string;
@@ -27,7 +27,7 @@ interface CommunityGuidelinesContainerProvided {
   communityGuidelinesId: string | undefined;
   profileId: string | undefined; // ProfileId is required to create references
   loading: boolean;
-  onSelectCommunityGuidelinesTemplate: (template: CommunityGuidelinesTemplateWithContent) => Promise<unknown>;
+  onSelectCommunityGuidelinesTemplate: (template: CommunityGuidelinesTemplate) => Promise<unknown>;
   onUpdateCommunityGuidelines: (values: CommunityGuidelines) => Promise<unknown>;
 }
 
@@ -94,7 +94,7 @@ const CommunityGuidelinesContainer = ({ communityId, children }: CommunityGuidel
 
   const [removeReference, { loading: removingReference }] = useDeleteReferenceMutation();
   const [createReference, { loading: addingReference }] = useCreateReferenceOnProfileMutation();
-  const onSelectCommunityGuidelinesTemplate = async (template: CommunityGuidelinesTemplateWithContent) => {
+  const onSelectCommunityGuidelinesTemplate = async (template: CommunityGuidelinesTemplate) => {
     const currentReferences = communityGuidelines?.references ?? [];
     const templateReferences = template.guidelines?.profile.references ?? [];
     const guidelines = template.guidelines;

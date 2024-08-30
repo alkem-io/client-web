@@ -10,21 +10,20 @@ import InnovationPackIcon from '../../../../InnovationPack/InnovationPackIcon';
 import { WhiteboardIcon } from '../../../../collaboration/whiteboard/icon/WhiteboardIcon';
 import CardTags from '../../../../../core/ui/card/CardTags';
 import { gutters } from '../../../../../core/ui/grid/utils';
-import {
-  InnovationPackTemplate,
-  TemplateCardBaseProps,
-} from '../../../library/CollaborationTemplatesLibrary/TemplateBase';
+import { WhiteboardTemplate } from '../../models/WhiteboardTemplate';
+import { TemplateCardProps } from './TemplateCard';
 
-interface WhiteboardTemplateCardProps extends TemplateCardBaseProps<InnovationPackTemplate> {}
+interface WhiteboardTemplateCardProps extends TemplateCardProps {
+  template: WhiteboardTemplate;
+}
 
 const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, innovationPack, loading, ...props }) => {
-  const cardInnovationPack = innovationPack || template?.innovationPack;
   return (
-    <ContributeCard {...props} good>
+    <ContributeCard {...props}>
       <CardHeader title={template?.profile.displayName} iconComponent={WhiteboardIcon}>
         {loading && <Skeleton />}
-        <CardHeaderCaption logoUrl={cardInnovationPack?.provider?.profile.avatar?.uri}>
-          {cardInnovationPack?.provider?.profile.displayName}
+        <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
+          {innovationPack?.provider?.profile.displayName}
         </CardHeaderCaption>
       </CardHeader>
       <CardImage
@@ -39,9 +38,9 @@ const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, inn
         tags={template?.profile.tagset?.tags ?? []}
         hideIfEmpty
       />
-      {cardInnovationPack?.profile.displayName && (
+      {innovationPack?.profile.displayName && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
-          <Caption noWrap>{cardInnovationPack?.profile.displayName}</Caption>
+          <Caption noWrap>{innovationPack?.profile.displayName}</Caption>
         </CardSegmentCaption>
       )}
       {loading && <Skeleton />}

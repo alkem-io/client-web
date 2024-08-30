@@ -67,7 +67,7 @@ type AdminTemplatesSectionProps<
   DialogProps,
   keyof CreateTemplateDialogProps<SubmittedValues> | keyof EditTemplateDialogProps<T, V, SubmittedValues>
 > & {
-  headerText: string;
+  headerText: string; //
   importDialogHeaderText: string;
   templateId: string | undefined;
   templatesSetId: string | undefined;
@@ -108,7 +108,9 @@ type AdminTemplatesSectionProps<
   ) => void;
   templateType: TemplateType;
 };
-
+/**
+ * @deprecated WE REALLY WANT TO REMOVE THIS FILE
+ */
 const AdminTemplatesSection = <
   T extends TemplateBase,
   V extends T,
@@ -319,7 +321,7 @@ const AdminTemplatesSection = <
 
   return (
     <>
-      <PageContentBlock>
+      <PageContentBlock sx={{ border: '1px solid red' }}>
         <PageContentBlockHeader
           title={headerText}
           actions={

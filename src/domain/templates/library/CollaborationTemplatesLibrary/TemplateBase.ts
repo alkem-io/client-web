@@ -1,6 +1,9 @@
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { Visual } from '../../../common/visual/Visual';
 
+/**
+ * @deprecated
+ */
 export interface TemplateBase {
   id: string;
   type?: TemplateType;
@@ -14,6 +17,9 @@ export interface TemplateBase {
   };
 }
 
+/**
+ * @deprecated
+ */
 interface TemplateInnovationPack {
   profile: {
     displayName: string;
@@ -26,10 +32,15 @@ interface TemplateInnovationPack {
   };
 }
 
+/**
+ * @deprecated
+ */
 export interface InnovationPackTemplate extends TemplateBase {
   innovationPack?: TemplateInnovationPack;
 }
-
+/**
+ * @deprecated
+ */
 export interface TemplateCardBaseProps<Template extends TemplateBase = TemplateBase> {
   template?: Template;
   innovationPack?: TemplateInnovationPack;

@@ -20,7 +20,7 @@ import { Actions } from '../../../../../core/ui/actions/Actions';
 import RoundedIcon from '../../../../../core/ui/icon/RoundedIcon';
 import CreateSpaceDialog from '../../../../journey/space/createSpace/CreateSpaceDialog';
 import useNewVirtualContributorWizard from '../../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
-import CreateInnovationPackDialog from '../../InnovationPacks/CreateInnovationPackDialog';
+import CreateInnovationPackDialog from '../../../../InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
 import CreateInnovationHubDialog from '../../../../innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
 import {
   AuthorizationPrivilege,

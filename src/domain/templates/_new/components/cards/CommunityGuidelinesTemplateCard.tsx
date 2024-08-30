@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { Skeleton } from '@mui/material';
-import { TemplateBase, TemplateCardBaseProps } from '../../../library/CollaborationTemplatesLibrary/TemplateBase';
 import { CommunityGuidelinesIcon } from '../../../../community/communityGuidelines/icon/CommunityGuidelinesIcon';
 import ContributeCard from '../../../../../core/ui/card/ContributeCard';
 import CardHeaderCaption from '../../../../../core/ui/card/CardHeaderCaption';
@@ -10,8 +9,12 @@ import CardDetails from '../../../../../core/ui/card/CardDetails';
 import CardSegmentCaption from '../../../../../core/ui/card/CardSegmentCaption';
 import InnovationPackIcon from '../../../../InnovationPack/InnovationPackIcon';
 import { Caption } from '../../../../../core/ui/typography';
+import { TemplateCardProps } from './TemplateCard';
+import { CommunityGuidelinesTemplate } from '../../models/CommunityGuidelinesTemplate';
 
-interface CommunityGuidelinesTemplateCardProps extends TemplateCardBaseProps<TemplateBase> {}
+interface CommunityGuidelinesTemplateCardProps extends TemplateCardProps {
+  template: CommunityGuidelinesTemplate;
+}
 
 const CommunityGuidelinesTemplateCard: FC<CommunityGuidelinesTemplateCardProps> = ({
   template,
@@ -20,7 +23,7 @@ const CommunityGuidelinesTemplateCard: FC<CommunityGuidelinesTemplateCardProps> 
   ...props
 }) => {
   return (
-    <ContributeCard {...props} good>
+    <ContributeCard {...props}>
       <CardHeader title={template?.profile.displayName} iconComponent={CommunityGuidelinesIcon}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>

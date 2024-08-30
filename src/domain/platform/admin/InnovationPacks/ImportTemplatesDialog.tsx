@@ -3,7 +3,7 @@ import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import React, { cloneElement, ComponentType, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogActions } from '../../../../core/ui/dialog/deprecated';
-import { Template } from './AdminTemplatesSection';
+import { Template } from './OldAdminTemplatesSection';
 import { InnovationPack } from './InnovationPack';
 import ImportTemplatesDialogPreviewStep from './ImportTemplatesDialogPreviewStep';
 import ImportTemplatesDialogGalleryStep, { TemplateImportCardComponentProps } from './ImportTemplatesDialogGalleryStep';

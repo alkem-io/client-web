@@ -1,0 +1,37 @@
+import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
+import { Identifiable } from '../../../../core/utils/Identifiable';
+
+export interface NewTemplateBase extends Identifiable {
+  type: TemplateType;
+  profile: {
+    displayName: string;
+    description?: string;
+    tagset?: {
+      id: string;
+      tags: string[];
+    };
+    visual?: {
+      id: string;
+      uri: string;
+    };
+  };
+}
+
+/**
+ * The Innovation Pack holder of a template
+ */
+export interface NewTemplateInnovationPack extends Identifiable {
+  profile: {
+    displayName: string;
+  };
+  provider?: {
+    nameID: string;
+    profile: {
+      displayName: string;
+      avatar?: {
+        id: string;
+        uri: string;
+      };
+    };
+  };
+}

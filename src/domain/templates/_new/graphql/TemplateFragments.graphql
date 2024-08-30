@@ -42,9 +42,12 @@ fragment WhiteboardTemplate on Template {
 
 fragment InnovationFlowTemplate on Template {
   ...TemplateProfileInfo
-  innovationFlowStates {
-    displayName
-    description
+  innovationFlow {
+    id
+    states {
+      displayName
+      description
+    }
   }
 }
 

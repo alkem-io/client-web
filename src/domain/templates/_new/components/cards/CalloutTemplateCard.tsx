@@ -1,10 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, CardContent, Skeleton } from '@mui/material';
-import {
-  InnovationPackTemplate,
-  TemplateCardBaseProps,
-} from '../../../library/CollaborationTemplatesLibrary/TemplateBase';
 import { CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
 import ContributeCard from '../../../../../core/ui/card/ContributeCard';
 import CardHeader from '../../../../../core/ui/card/CardHeader';
@@ -19,14 +15,12 @@ import calloutIcons from '../../../../collaboration/callout/utils/calloutIcons';
 import RoundedIcon from '../../../../../core/ui/icon/RoundedIcon';
 import { CalloutIcon } from '../../../../collaboration/callout/icon/CalloutIcon';
 import { gutters } from '../../../../../core/ui/grid/utils';
+import { CalloutTemplate } from '../../models/CalloutTemplate';
+import { TemplateCardProps } from './TemplateCard';
 
-export interface CalloutTemplate extends InnovationPackTemplate {
-  callout?: {
-    type: CalloutType;
-  };
+interface CalloutTemplateCardProps extends TemplateCardProps {
+  template: CalloutTemplate;
 }
-
-interface CalloutTemplateCardProps extends TemplateCardBaseProps<CalloutTemplate> {}
 
 const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovationPack, loading, ...props }) => {
   const { t } = useTranslation();
@@ -38,7 +32,7 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
   const Icon = template?.type && calloutIcons[template?.type];
 
   return (
-    <ContributeCard {...props} good>
+    <ContributeCard {...props}>
       <CardHeader title={template?.profile.displayName} iconComponent={CalloutIcon}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>

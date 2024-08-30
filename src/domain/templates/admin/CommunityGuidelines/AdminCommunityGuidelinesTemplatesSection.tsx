@@ -11,11 +11,12 @@ import {
   useUpdateCommunityGuidelinesTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
-import AdminTemplatesSection from '../../../platform/admin/InnovationPacks/AdminTemplatesSection';
+import AdminTemplatesSection from '../../../platform/admin/InnovationPacks/OldAdminTemplatesSection';
 import { InnovationPack } from '../../../platform/admin/InnovationPacks/InnovationPack';
 import CommunityGuidelinesImportTemplateCard from './CommunityGuidelinesImportTemplateCard';
 import CreateCommunityGuidelinesTemplateDialog from './CreateCommunityGuidelinesTemplateDialog';
 import EditCommunityGuidelinesTemplateDialog from './EditCommunityGuidelinesTemplateDialog';
+import { Box } from '@mui/material';
 
 interface AdminCommunityGuidelinesTemplatesSectionProps {
   templateId: string | undefined;
@@ -42,55 +43,57 @@ const AdminCommunityGuidelinesTemplatesSection = ({
   const [deleteTemplate] = useDeleteTemplateMutation();
 
   return (
-    <AdminTemplatesSection
-      {...props}
-      headerText={t('common.enums.templateTypes.CommunityGuidelines')}
-      importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
-        templateType: t('community.communityGuidelines.title'),
-      })}
-      templateCardComponent={CommunityGuidelinesImportTemplateCard}
-      templateImportCardComponent={CommunityGuidelinesImportTemplateCard}
-      createTemplateDialogComponent={CreateCommunityGuidelinesTemplateDialog}
-      editTemplateDialogComponent={EditCommunityGuidelinesTemplateDialog}
-      onCreateTemplate={variables => {
-        const { communityGuidelines, ...rest } = variables;
-        const profile = communityGuidelines?.profile;
-        const updatedProfile = {
-          displayName: profile?.displayName || '',
-          description: profile?.description || '',
-          // TODO: References refactor referencesData should be just references
-          referencesData: (profile as unknown as { referencesData?: Reference[] }).referencesData?.map(
-            ({ id, ...reference }) => ({ ...reference })
-          ),
-        };
-        const updatedGuidelines = { profile: updatedProfile };
-        const updatedVariables = { communityGuidelines: updatedGuidelines, ...rest };
-        return createCommunityGuidelinesTemplate({ variables: updatedVariables, refetchQueries });
-      }}
-      onUpdateTemplate={variables => updateCommunityGuidelinesTemplate({ variables, refetchQueries })}
-      onDeleteTemplate={async variables => {
-        await deleteTemplate({ variables, refetchQueries });
-      }}
-      templateType={TemplateType.CommunityGuidelines}
-      onTemplateImport={(template: CommunityGuidelinesTemplateFragment) => {
-        const { communityGuidelines, innovationPack, ...templateRest } =
-          template as unknown as CommunityGuidelinesTemplateFragment & { innovationPack: unknown };
-        const { profile, ...guidelinesRest } = communityGuidelines;
-        const { references, ...profileRest } = profile;
-        // TODO: Refactor references
-        // Map references to referencesData, as the backend expects it
-        return Promise.resolve({
-          guidelines: {
-            profile: {
-              ...profileRest,
-              referencesData: references?.map(({ uri, name, description }) => ({ uri, name, description })),
+    <Box sx={{ border: '1px solid red' }}>
+      <AdminTemplatesSection
+        {...props}
+        headerText={t('common.enums.templateTypes.CommunityGuidelines')}
+        importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
+          templateType: t('community.communityGuidelines.title'),
+        })}
+        templateCardComponent={CommunityGuidelinesImportTemplateCard}
+        templateImportCardComponent={CommunityGuidelinesImportTemplateCard}
+        createTemplateDialogComponent={CreateCommunityGuidelinesTemplateDialog}
+        editTemplateDialogComponent={EditCommunityGuidelinesTemplateDialog}
+        onCreateTemplate={variables => {
+          const { communityGuidelines, ...rest } = variables;
+          const profile = communityGuidelines?.profile;
+          const updatedProfile = {
+            displayName: profile?.displayName || '',
+            description: profile?.description || '',
+            // TODO: References refactor referencesData should be just references
+            referencesData: (profile as unknown as { referencesData?: Reference[] }).referencesData?.map(
+              ({ id, ...reference }) => ({ ...reference })
+            ),
+          };
+          const updatedGuidelines = { profile: updatedProfile };
+          const updatedVariables = { communityGuidelines: updatedGuidelines, ...rest };
+          return createCommunityGuidelinesTemplate({ variables: updatedVariables, refetchQueries });
+        }}
+        onUpdateTemplate={variables => updateCommunityGuidelinesTemplate({ variables, refetchQueries })}
+        onDeleteTemplate={async variables => {
+          await deleteTemplate({ variables, refetchQueries });
+        }}
+        templateType={TemplateType.CommunityGuidelines}
+        onTemplateImport={(template: CommunityGuidelinesTemplateFragment) => {
+          const { communityGuidelines, innovationPack, ...templateRest } =
+            template as unknown as CommunityGuidelinesTemplateFragment & { innovationPack: unknown };
+          const { profile, ...guidelinesRest } = communityGuidelines;
+          const { references, ...profileRest } = profile;
+          // TODO: Refactor references
+          // Map references to referencesData, as the backend expects it
+          return Promise.resolve({
+            guidelines: {
+              profile: {
+                ...profileRest,
+                referencesData: references?.map(({ uri, name, description }) => ({ uri, name, description })),
+              },
+              ...guidelinesRest,
             },
-            ...guidelinesRest,
-          },
-          ...templateRest,
-        });
-      }}
-    />
+            ...templateRest,
+          });
+        }}
+      />
+    </Box>
   );
 };
 

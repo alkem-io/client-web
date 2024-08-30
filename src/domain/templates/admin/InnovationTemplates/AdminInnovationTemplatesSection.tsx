@@ -13,7 +13,8 @@ import {
   useDeleteTemplateMutation,
   useUpdateInnovationFlowTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import AdminTemplatesSection from '../../../platform/admin/InnovationPacks/AdminTemplatesSection';
+import AdminTemplatesSection from '../../../platform/admin/InnovationPacks/OldAdminTemplatesSection';
+import { Box } from '@mui/material';
 
 interface AdminInnovationTemplatesSectionProps {
   templateId: string | undefined;
@@ -37,21 +38,23 @@ const AdminInnovationTemplatesSection = ({ refetchQueries, ...props }: AdminInno
   const [deleteTemplate] = useDeleteTemplateMutation();
 
   return (
-    <AdminTemplatesSection
-      {...props}
-      headerText={t('common.enums.templateTypes.InnovationFlow')}
-      importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
-        templateType: t('common.innovation-flows'),
-      })}
-      templateCardComponent={InnovationImportTemplateCard}
-      templateImportCardComponent={InnovationImportTemplateCard}
-      createTemplateDialogComponent={CreateInnovationTemplateDialog}
-      editTemplateDialogComponent={EditInnovationTemplateDialog}
-      onCreateTemplate={variables => createInnovationFlowTemplate({ variables, refetchQueries })}
-      onUpdateTemplate={variables => updateInnovationFlowTemplate({ variables, refetchQueries })}
-      onDeleteTemplate={variables => deleteTemplate({ variables, refetchQueries })}
-      templateType={TemplateType.InnovationFlow}
-    />
+    <Box sx={{ border: '1px solid red' }}>
+      <AdminTemplatesSection
+        {...props}
+        headerText={t('common.enums.templateTypes.InnovationFlow')}
+        importDialogHeaderText={t('pages.admin.generic.sections.templates.import.title', {
+          templateType: t('common.innovation-flows'),
+        })}
+        templateCardComponent={InnovationImportTemplateCard}
+        templateImportCardComponent={InnovationImportTemplateCard}
+        createTemplateDialogComponent={CreateInnovationTemplateDialog}
+        editTemplateDialogComponent={EditInnovationTemplateDialog}
+        onCreateTemplate={variables => createInnovationFlowTemplate({ variables, refetchQueries })}
+        onUpdateTemplate={variables => updateInnovationFlowTemplate({ variables, refetchQueries })}
+        onDeleteTemplate={variables => deleteTemplate({ variables, refetchQueries })}
+        templateType={TemplateType.InnovationFlow}
+      />
+    </Box>
   );
 };
 

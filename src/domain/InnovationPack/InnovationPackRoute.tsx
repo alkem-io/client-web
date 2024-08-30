@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router';
 import { PageLayoutHolderWithOutlet } from '../journey/common/EntityPageLayout';
 import { Error404 } from '../../core/pages/Errors/Error404';
 import InnovationPackProfilePage from './InnovationPackProfilePage/InnovationPackProfilePage';
-import AdminInnovationPackPage, { RoutePaths } from '../platform/admin/InnovationPacks/AdminInnovationPackPage';
+import AdminInnovationPackPage, { RoutePaths } from './admin/AdminInnovationPackPage';
 import { nameOfUrl } from '../../main/routing/urlParams';
 
 const InnovationPackRoute = () => {

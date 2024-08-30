@@ -10,7 +10,7 @@ import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import WhiteboardTemplateCard from '../../../templates/_new/components/cards/WhiteboardTemplateCard';
 import { TemplateWithInnovationPack } from '../../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../core/utils/Identifiable';
-import { WhiteboardTemplateWithContent } from '../../../templates/_new/models/WhiteboardTemplateWithContent';
+import { WhiteboardTemplate } from '../../../templates/_new/models/WhiteboardTemplate';
 import { TemplateBase } from '../../../templates/library/CollaborationTemplatesLibrary/TemplateBase';
 import CollaborationTemplatesLibrary from '../../../templates/library/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
 import WhiteboardTemplatePreview from '../../../templates/library/WhiteboardTemplatesLibrary/WhiteboardTemplatePreview';
@@ -18,7 +18,7 @@ import WhiteboardTemplatePreview from '../../../templates/library/WhiteboardTemp
 export interface WhiteboardTemplatesLibraryProps {
   open: boolean;
   onClose: () => void;
-  onImportTemplate: (template: WhiteboardTemplateWithContent) => void;
+  onImportTemplate: (template: WhiteboardTemplate) => void;
 }
 
 const applyFilter = <T extends TemplateWithInnovationPack<TemplateBase>>(
@@ -105,7 +105,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ open,
   }, []);
 
   return (
-    <CollaborationTemplatesLibrary<TemplateBase, WhiteboardTemplateWithContent, { content?: string }>
+    <CollaborationTemplatesLibrary<TemplateBase, WhiteboardTemplate, { content?: string }>
       open={open}
       onClose={onClose}
       dialogTitle={t('templateLibrary.whiteboardTemplates.title')}

@@ -11,14 +11,14 @@ import WhiteboardTemplateCard from '../../_new/components/cards/WhiteboardTempla
 import WhiteboardTemplatePreview from './WhiteboardTemplatePreview';
 import { TemplateWithInnovationPack } from '../../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import { Identifiable } from '../../../../core/utils/Identifiable';
-import { WhiteboardTemplateWithContent } from '../../_new/models/WhiteboardTemplateWithContent';
+import { WhiteboardTemplate } from '../../_new/models/WhiteboardTemplate';
 import { TemplateBase } from '../CollaborationTemplatesLibrary/TemplateBase';
 import CollaborationTemplatesLibrary from '../CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
 
 export interface WhiteboardTemplatesLibraryProps {
   open: boolean;
   onClose: () => void;
-  onImportTemplate: (template: WhiteboardTemplateWithContent) => void;
+  onImportTemplate: (template: WhiteboardTemplate) => void;
 }
 
 const applyFilter = <T extends TemplateWithInnovationPack<TemplateBase>>(
@@ -105,7 +105,7 @@ const WhiteboardTemplatesLibrary: FC<WhiteboardTemplatesLibraryProps> = ({ open,
   }, []);
 
   return (
-    <CollaborationTemplatesLibrary<TemplateBase, WhiteboardTemplateWithContent, { content?: string }>
+    <CollaborationTemplatesLibrary<TemplateBase, WhiteboardTemplate, { content?: string }>
       open={open}
       onClose={onClose}
       dialogTitle={t('templateLibrary.whiteboardTemplates.title')}

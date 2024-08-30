@@ -9,21 +9,20 @@ import InnovationPackIcon from '../../../../InnovationPack/InnovationPackIcon';
 import CardDescriptionWithTags from '../../../../../core/ui/card/CardDescriptionWithTags';
 import CardDetails from '../../../../../core/ui/card/CardDetails';
 import { PostIcon } from '../../../../collaboration/post/icon/PostIcon';
-import {
-  InnovationPackTemplate,
-  TemplateCardBaseProps,
-} from '../../../library/CollaborationTemplatesLibrary/TemplateBase';
+import { PostTemplate } from '../../models/PostTemplate';
+import { TemplateCardProps } from './TemplateCard';
 
-interface PostTemplateCardProps extends TemplateCardBaseProps<InnovationPackTemplate> {}
+interface PostTemplateCardProps extends TemplateCardProps {
+  template: PostTemplate;
+}
 
 const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, innovationPack, loading, ...props }) => {
-  const cardInnovationPack = innovationPack || template?.innovationPack;
   return (
-    <ContributeCard {...props} good>
+    <ContributeCard {...props}>
       <CardHeader title={template?.profile.displayName} iconComponent={PostIcon}>
         {loading && <Skeleton />}
-        <CardHeaderCaption logoUrl={cardInnovationPack?.provider?.profile.avatar?.uri}>
-          {cardInnovationPack?.provider?.profile.displayName}
+        <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
+          {innovationPack?.provider?.profile.displayName}
         </CardHeaderCaption>
       </CardHeader>
       <CardDetails>
@@ -31,9 +30,9 @@ const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, innovationPack,
           {template?.profile.description}
         </CardDescriptionWithTags>
       </CardDetails>
-      {cardInnovationPack?.profile.displayName && (
+      {innovationPack?.profile.displayName && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>
-          <Caption noWrap>{cardInnovationPack?.profile.displayName}</Caption>
+          <Caption noWrap>{innovationPack?.profile.displayName}</Caption>
         </CardSegmentCaption>
       )}
       {loading && <Skeleton />}

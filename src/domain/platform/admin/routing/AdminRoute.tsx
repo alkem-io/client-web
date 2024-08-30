@@ -8,7 +8,7 @@ import { AdminOrganizationsRoutes } from '../organization';
 import { UsersRoute } from '../user/routing/UsersRoute';
 import { SpacesRoute } from '../space/routing/SpacesRoute';
 import NoIdentityRedirect from '../../../../core/routing/NoIdentityRedirect';
-import AdminInnovationPacksRoutes from '../InnovationPacks/AdminInnovationPackRoutes';
+import AdminInnovationPacksRoutes from '../../../InnovationPack/admin/AdminInnovationPackRoutes';
 import AdminInnovationHubsRoutes from '../../../innovationHub/InnovationHubsAdmin/InnovationHubsAdminRoutes';
 import VirtualContributorsRoutes from '../virtual-contributors/VirtualContributorsRoutes';
 import AuthorizationPoliciesPage from '../../../../main/admin/authorizationPolicies/AuthorizationPoliciesPage';

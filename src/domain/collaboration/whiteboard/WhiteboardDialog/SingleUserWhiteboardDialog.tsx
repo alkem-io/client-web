@@ -29,7 +29,7 @@ import {
   WhiteboardPreviewImage,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import { WhiteboardTemplateWithContent } from '../../../templates/_new/models/WhiteboardTemplateWithContent';
+import { WhiteboardTemplate } from '../../../templates/_new/models/WhiteboardTemplate';
 
 interface SingleUserWhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {
@@ -174,7 +174,7 @@ const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     actions.onCancel(whiteboard!);
   };
 
-  const handleImportTemplate = async (template: WhiteboardTemplateWithContent) => {
+  const handleImportTemplate = async (template: WhiteboardTemplate) => {
     if (excalidrawAPI && options.canEdit) {
       try {
         mergeWhiteboard(excalidrawAPI, template.content);

@@ -13,17 +13,12 @@ import CardDescription, { DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from '../../.
 import CardContent from '../../../../../core/ui/card/CardContent';
 import CardTags from '../../../../../core/ui/card/CardTags';
 import webkitLineClamp from '../../../../../core/ui/utils/webkitLineClamp';
-import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlow';
-import {
-  InnovationPackTemplate,
-  TemplateCardBaseProps,
-} from '../../../library/CollaborationTemplatesLibrary/TemplateBase';
+import { TemplateCardProps } from './TemplateCard';
+import { InnovationFlowTemplate } from '../../models/InnovationFlowTemplate';
 
-export interface InnovationFlowTemplate extends InnovationPackTemplate {
-  innovationFlowStates?: InnovationFlowState[];
+interface InnovationFlowTemplateCardProps extends TemplateCardProps {
+  template: InnovationFlowTemplate;
 }
-
-interface InnovationFlowTemplateCardProps extends TemplateCardBaseProps<InnovationFlowTemplate> {}
 
 const InnovationFlowTemplateCard = ({
   template,
@@ -39,7 +34,7 @@ const InnovationFlowTemplateCard = ({
     : DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS;
 
   return (
-    <ContributeCard {...props} good>
+    <ContributeCard {...props}>
       <CardHeader title={template?.profile.displayName} iconComponent={InnovationFlowIcon as SvgIconComponent}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>

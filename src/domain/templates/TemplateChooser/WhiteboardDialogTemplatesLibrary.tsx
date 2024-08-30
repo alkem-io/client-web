@@ -5,12 +5,12 @@ import { useGlobalGridColumns } from '../../../core/ui/grid/constants';
 import { gutters } from '../../../core/ui/grid/utils';
 import WhiteboardTemplatesLibrary from '../library/WhiteboardTemplatesLibrary/WhiteboardTemplatesLibrary';
 import { LibraryIcon } from '../LibraryIcon';
-import { WhiteboardTemplateWithContent } from '../_new/models/WhiteboardTemplateWithContent';
+import { WhiteboardTemplate } from '../_new/models/WhiteboardTemplate';
 import CollaborationTemplatesLibraryButton from '../library/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
 
 export interface WhiteboardDialogTemplatesLibraryProps {
   editModeEnabled?: boolean;
-  onImportTemplate: (template: WhiteboardTemplateWithContent) => void;
+  onImportTemplate: (template: WhiteboardTemplate) => void;
 }
 
 const WhiteboardDialogTemplatesLibrary: FC<WhiteboardDialogTemplatesLibraryProps> = ({

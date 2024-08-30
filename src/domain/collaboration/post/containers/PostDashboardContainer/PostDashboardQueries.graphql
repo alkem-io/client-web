@@ -20,7 +20,6 @@ query Post(
 fragment PostDashboard on Post {
   id
   nameID
-  type
   createdDate
   profile {
     id

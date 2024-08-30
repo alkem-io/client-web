@@ -77,9 +77,12 @@ fragment LibraryTemplates on TemplatesSet {
         ...TagsetDetails
       }
     }
-    innovationFlowStates {
-      displayName
-      description
+    innovationFlow {
+      id
+      states {
+        displayName
+        description
+      }
     }
   }
   innovationFlowTemplatesCount

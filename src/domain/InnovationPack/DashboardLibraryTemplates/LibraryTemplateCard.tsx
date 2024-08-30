@@ -3,24 +3,28 @@ import { Identifiable } from '../../../core/utils/Identifiable';
 import { TemplateWithInnovationPack } from '../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
 import PostTemplateCard from '../../templates/_new/components/cards/PostTemplateCard';
 import WhiteboardTemplateCard from '../../templates/_new/components/cards/WhiteboardTemplateCard';
-import InnovationFlowTemplateCard, {
-  InnovationFlowTemplate,
-} from '../../templates/_new/components/cards/InnovationFlowTemplateCard';
+import InnovationFlowTemplateCard from '../../templates/_new/components/cards/InnovationFlowTemplateCard';
 import { PostTemplate } from '../../templates/_new/models/PostTemplate';
-import { TemplateBase } from '../../templates/library/CollaborationTemplatesLibrary/TemplateBase';
-import CalloutTemplateCard, { CalloutTemplate } from '../../templates/_new/components/cards/CalloutTemplateCard';
+import CalloutTemplateCard from '../../templates/_new/components/cards/CalloutTemplateCard';
 import CommunityGuidelinesTemplateCard from '../../templates/_new/components/cards/CommunityGuidelinesTemplateCard';
 import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
+import { InnovationFlowTemplate } from '../../templates/_new/models/InnovationFlowTemplate';
+import { CalloutTemplate } from '../../templates/_new/models/CalloutTemplate';
+import { WhiteboardTemplate } from '../../templates/_new/models/WhiteboardTemplate';
+import { CommunityGuidelinesTemplate } from '../../templates/_new/models/CommunityGuidelinesTemplate';
 
 export type LibraryTemplateCardProps = Identifiable &
   TemplateWithInnovationPack<
     | (PostTemplate & { templateType: TemplateType.Post })
-    | (TemplateBase & { templateType: TemplateType.Whiteboard })
+    | (WhiteboardTemplate & { templateType: TemplateType.Whiteboard })
     | (InnovationFlowTemplate & { templateType: TemplateType.InnovationFlow })
     | (CalloutTemplate & { templateType: TemplateType.Callout })
-    | (TemplateBase & { templateType: TemplateType.CommunityGuidelines })
+    | (CommunityGuidelinesTemplate & { templateType: TemplateType.CommunityGuidelines })
   > & { onClick?: ContributeCardProps['onClick'] };
-
+/**
+ * @deprecated Maybe use src/domain/templates/_new/components/cards/TemplateCard.tsx
+ * //!!
+ */
 const LibraryTemplateCard = (props: LibraryTemplateCardProps) => {
   switch (props.templateType) {
     case TemplateType.Post: {

@@ -1,5 +1,5 @@
 import { InnovationPacksQuery } from '../../../../core/apollo/generated/graphql-schema';
-import { Template } from './AdminTemplatesSection';
+import { Template } from './OldAdminTemplatesSection';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 
 type InnovationPackArray = InnovationPacksQuery['platform']['library']['innovationPacks'][number];

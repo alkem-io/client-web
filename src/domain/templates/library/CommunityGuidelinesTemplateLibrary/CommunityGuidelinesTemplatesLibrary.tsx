@@ -12,13 +12,13 @@ import { Identifiable } from '../../../../core/utils/Identifiable';
 import CommunityGuidelinesConfirmationDialog from './CommunityGuidelinesConfirmationDialog';
 import { TemplateBase } from '../CollaborationTemplatesLibrary/TemplateBase';
 import CollaborationTemplatesLibrary from '../CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
-import { CommunityGuidelinesTemplateWithContent } from '../../_new/models/CommunityGuidelines';
+import { CommunityGuidelinesTemplate } from '../../_new/models/CommunityGuidelinesTemplate';
 import CommunityGuidelinesTemplateCard from '../../_new/components/cards/CommunityGuidelinesTemplateCard';
 
 export interface CommunityGuidelinesTemplatesLibraryProps {
   open: boolean;
   onClose: () => void;
-  onSelectTemplate: (template: CommunityGuidelinesTemplateWithContent) => void;
+  onSelectTemplate: (template: CommunityGuidelinesTemplate) => void;
 }
 
 const applyFilter = <T extends TemplateWithInnovationPack<TemplateBase>>(
@@ -88,8 +88,8 @@ const CommunityGuidelinesTemplatesLibrary: FC<CommunityGuidelinesTemplatesLibrar
   );
 
   const getCommunityGuidelinesTemplateWithContent = (
-    template: CommunityGuidelinesTemplateWithContent & Identifiable
-  ): Promise<CommunityGuidelinesTemplateWithContent & Identifiable> => {
+    template: CommunityGuidelinesTemplate & Identifiable
+  ): Promise<CommunityGuidelinesTemplate & Identifiable> => {
     return Promise.resolve(template);
   };
 
