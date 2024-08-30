@@ -22,7 +22,6 @@ interface FormValue {
   description: string;
   tagsets: Tagset[];
   postNames: string[];
-  type: string;
   references: Reference[];
 }
 
@@ -35,7 +34,6 @@ export type PostFormOutput = {
   displayName: string;
   description: string;
   tags: string[];
-  type: string;
 } & PostEditFields;
 export type PostFormInput = PostCreationType & PostEditFields;
 export interface PostFormProps {
@@ -90,7 +88,6 @@ const PostForm: FC<PostFormProps> = ({
       description: getDescriptionValue(),
       tagsets,
       postNames: postNames ?? [],
-      type: post?.type ?? '',
       references: post?.references ?? [],
     }),
     [post?.id]
@@ -108,7 +105,6 @@ const PostForm: FC<PostFormProps> = ({
       displayName: values.name,
       description: values.description,
       tags: values.tagsets[0].tags,
-      type: values.type,
       references: values.references,
     };
 
