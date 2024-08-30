@@ -20,7 +20,7 @@ const CommunityGuidelinesTemplateCard: FC<CommunityGuidelinesTemplateCardProps> 
   ...props
 }) => {
   return (
-    <ContributeCard {...props}>
+    <ContributeCard {...props} good>
       <CardHeader title={template?.profile.displayName} iconComponent={CommunityGuidelinesIcon}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>

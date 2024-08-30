@@ -20,7 +20,7 @@ interface WhiteboardTemplateCardProps extends TemplateCardBaseProps<InnovationPa
 const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, innovationPack, loading, ...props }) => {
   const cardInnovationPack = innovationPack || template?.innovationPack;
   return (
-    <ContributeCard {...props}>
+    <ContributeCard {...props} good>
       <CardHeader title={template?.profile.displayName} iconComponent={WhiteboardIcon}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={cardInnovationPack?.provider?.profile.avatar?.uri}>

@@ -56,11 +56,7 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
       templateCardComponent={CalloutImportTemplateCard}
       templateImportCardComponent={CalloutImportTemplateCard}
       createTemplateDialogComponent={CreateCalloutTemplateDialog}
-      //!!
-      // @ts-ignore
       editTemplateDialogComponent={EditCalloutTemplateDialog}
-      //!!
-      // @ts-ignore
       onCreateTemplate={(calloutTemplate: CalloutTemplateFormSubmittedValues & { templatesSetId: string }) => {
         const {
           callout: { framing, contributionDefaults },
@@ -100,8 +96,6 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
 
         return createCalloutTemplate({ variables, refetchQueries });
       }}
-      //!!
-      // @ts-ignore
       onUpdateTemplate={async ({
         templateId,
         ...template

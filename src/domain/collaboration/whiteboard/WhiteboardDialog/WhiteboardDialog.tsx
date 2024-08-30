@@ -234,7 +234,6 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
         mergeWhiteboard(excalidrawAPI, template.content);
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
-        // @ts-ignore
         logError(new Error(`Error importing whiteboard template ${template.id}: '${err}'`), {
           category: TagCategoryValues.WHITEBOARD,
         });

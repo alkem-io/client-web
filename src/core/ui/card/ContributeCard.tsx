@@ -15,12 +15,13 @@ export interface ContributeCardProps {
   columns?: number;
   to?: string;
   state?: Record<string, unknown>;
+  good?: boolean; //!! Remove this!
 }
 
 export const CONTRIBUTE_CARD_COLUMNS = 3;
 
 const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCardProps>>(
-  ({ columns = CONTRIBUTE_CARD_COLUMNS, to, state, onClick, sx, highlighted, children }, ref) => {
+  ({ columns = CONTRIBUTE_CARD_COLUMNS, to, state, onClick, sx, highlighted, good, children }, ref) => {
     const getBaseComponentProps = () => {
       if (onClick) {
         return {
@@ -48,6 +49,7 @@ const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCa
             flexDirection: 'column',
             alignItems: 'stretch',
             cursor: onClick || to ? 'pointer' : 'default',
+            border: good ? '1px solid green' : undefined,
             ...sx,
           }}
           ref={ref}

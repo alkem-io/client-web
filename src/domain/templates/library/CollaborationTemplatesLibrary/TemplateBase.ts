@@ -2,6 +2,7 @@ import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { Visual } from '../../../common/visual/Visual';
 
 export interface TemplateBase {
+  id: string;
   type?: TemplateType;
   profile: {
     displayName: string;

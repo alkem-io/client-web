@@ -51,7 +51,6 @@ const AdminCommunityGuidelinesTemplatesSection = ({
       templateCardComponent={CommunityGuidelinesImportTemplateCard}
       templateImportCardComponent={CommunityGuidelinesImportTemplateCard}
       createTemplateDialogComponent={CreateCommunityGuidelinesTemplateDialog}
-      // @ts-ignore
       editTemplateDialogComponent={EditCommunityGuidelinesTemplateDialog}
       onCreateTemplate={variables => {
         const { communityGuidelines, ...rest } = variables;

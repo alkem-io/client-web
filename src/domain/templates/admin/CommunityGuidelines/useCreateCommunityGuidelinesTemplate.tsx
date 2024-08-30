@@ -31,7 +31,6 @@ export const useCreateCommunityGuidelinesTemplate = (): CreateCommunityGuideline
           templatesSetId,
           profile: values.profile || { displayName: '' },
           tags: values.tags,
-          // @ts-ignore
           guidelines: values.guidelines,
         },
         update: cache => {

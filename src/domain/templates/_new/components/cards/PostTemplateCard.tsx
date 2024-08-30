@@ -19,7 +19,7 @@ interface PostTemplateCardProps extends TemplateCardBaseProps<InnovationPackTemp
 const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, innovationPack, loading, ...props }) => {
   const cardInnovationPack = innovationPack || template?.innovationPack;
   return (
-    <ContributeCard {...props}>
+    <ContributeCard {...props} good>
       <CardHeader title={template?.profile.displayName} iconComponent={PostIcon}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={cardInnovationPack?.provider?.profile.avatar?.uri}>

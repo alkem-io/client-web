@@ -38,7 +38,7 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
   const Icon = template?.type && calloutIcons[template?.type];
 
   return (
-    <ContributeCard {...props}>
+    <ContributeCard {...props} good>
       <CardHeader title={template?.profile.displayName} iconComponent={CalloutIcon}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
