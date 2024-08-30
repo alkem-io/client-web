@@ -1843,7 +1843,7 @@
             }
           },
           "account": {
-            "description": "Here you can see details about things hosted by your account.",
+            "description": "Here you find all your Spaces, Virtual Contributors, and other hosted resources. If you have any questions, feel free to reach out to the Alkemio team.",
             "hostedSpaces": "Hosted Spaces",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
@@ -1852,12 +1852,19 @@
             "hostTitle": "Host",
             "contactsLink": "If you want to change any of these settings, please contact the Alkemio team here.",
             "freeTrialNotice": {
-              "title": "Free Trial - {{daysLeft}} days left",
+              "title": "Free Trial",
+              "titleWithDaysLeft": "Free Trial - {{daysLeft}} days left",
               "description": "Click here to set up your full {{planName}} subscription"
             },
             "yourLicense": "Your current license:",
-            "downgradeTo": "Downgrade to {{planName}}",
-            "upgradeTo": "Upgrade to {{planName}}"
+            "changeLicense": "Change the Space license",
+            "changeLicense_description": "Contact the Alkemio team to change the license.",
+            "changeLicense_disallowed": "The Space license can only be changed by the host of this Space.",
+            "deleteSpace": "Delete this Space",
+            "deleteSpace_description": "Click here to delete this Space. Be careful, this action cannot be undone.",
+            "deleteSpace_disallowed": "The Space can only be deleted by the host of this Space.",
+            "moreInfo": "More about Alkemio licenses can be found <moreinfo>here</moreinfo>.",
+            "moreInfoUrl": "$t(plansTable.seeMoreUrl)"
           },
           "settings": {
             "description": "Here you can edit the visibility settings of your {{entity}}."
@@ -2851,7 +2858,7 @@
     "title": "Choose a plan",
     "subtitle": "To create a safe environment to train your Virtual Contributor, you first need to create a Space. Choose a plan for this Space below.",
     "seeMore": "Click here for the full description of each plan",
-    "seeMoreUrl": "https://welcome.alkem.io/pricing-own-space/",
+    "seeMoreUrl": "https://welcome.alkem.io/pricing/",
     "pricingPeriods": {
       "monthly": "/Month",
       "lifetime": "/Lifetime",
@@ -2864,7 +2871,7 @@
     },
     "plans": [
       {
-        "name": "FREE",
+        "name": "SPACE_LICENSE_FREE",
         "displayName": "Free",
         "priceDescription": "For Change-Makers Exploring Alkemio",
         "features": ["Up to 10 members", "Various tools, including standard Whiteboards"],
@@ -2872,7 +2879,7 @@
         "disabledDisclaimer": "Each user can have 1 free space. It seems like you’ve already used yours!"
       },
       {
-        "name": "PLUS",
+        "name": "SPACE_LICENSE_PLUS",
         "displayName": "Plus",
         "priceDescription": "For Starting Communities, coalitions, programs...",
         "features": ["Up to 100 members", "Realtime, multi-user Whiteboards", "Create your Virtual Contributor"],
@@ -2880,7 +2887,7 @@
         "disabledDisclaimer": ""
       },
       {
-        "name": "PREMIUM",
+        "name": "SPACE_LICENSE_PREMIUM",
         "displayName": "Premium",
         "priceDescription": "For Established Communities, organisations, coalitions...",
         "features": [
@@ -2893,7 +2900,7 @@
         "disabledDisclaimer": ""
       },
       {
-        "name": "ENTERPRISE",
+        "name": "SPACE_LICENSE_ENTERPRISE",
         "displayName": "Enterprise",
         "priceDescription": "Your Customized plan",
         "features": [

@@ -44,7 +44,6 @@ export interface ContributorAccountViewProps {
   loading?: boolean;
   account?: {
     id: string;
-    __typename: string;
     authorization?: { myPrivileges?: AuthorizationPrivilege[] };
     spaces: {
       id: string;

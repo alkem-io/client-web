@@ -129,9 +129,10 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
           },
           collaborationData: {},
           tags: compact(values.tagsets?.reduce((acc: string[], tagset) => [...acc, ...tagset.tags], [])),
+          licensePlanID: values.licensePlanId,
         },
       },
-      refetchQueries: ['UserAccount', 'OrganizationAccount'],
+      refetchQueries: ['AccountInformation'],
     });
 
     const spaceID = newSpace?.createSpace.id;

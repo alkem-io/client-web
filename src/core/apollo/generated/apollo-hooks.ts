@@ -1755,6 +1755,7 @@ export const UserDetailsFragmentDoc = gql`
       tagsets {
         ...TagsetDetails
       }
+      url
     }
   }
   ${VisualFullFragmentDoc}
@@ -4128,7 +4129,6 @@ export const AccountInformationDocument = gql`
     lookup {
       account(ID: $accountId) {
         id
-        __typename
         authorization {
           id
           myPrivileges
@@ -12591,6 +12591,70 @@ export type UpdateOrganizationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateOrganizationMutation,
   SchemaTypes.UpdateOrganizationMutationVariables
 >;
+export const OrganizationAuthorizationDocument = gql`
+  query OrganizationAuthorization($organizationId: UUID_NAMEID!) {
+    organization(ID: $organizationId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+`;
+
+/**
+ * __useOrganizationAuthorizationQuery__
+ *
+ * To run a query within a React component, call `useOrganizationAuthorizationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationAuthorizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationAuthorizationQuery({
+ *   variables: {
+ *      organizationId: // value for 'organizationId'
+ *   },
+ * });
+ */
+export function useOrganizationAuthorizationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OrganizationAuthorizationQuery,
+    SchemaTypes.OrganizationAuthorizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.OrganizationAuthorizationQuery,
+    SchemaTypes.OrganizationAuthorizationQueryVariables
+  >(OrganizationAuthorizationDocument, options);
+}
+
+export function useOrganizationAuthorizationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrganizationAuthorizationQuery,
+    SchemaTypes.OrganizationAuthorizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OrganizationAuthorizationQuery,
+    SchemaTypes.OrganizationAuthorizationQueryVariables
+  >(OrganizationAuthorizationDocument, options);
+}
+
+export type OrganizationAuthorizationQueryHookResult = ReturnType<typeof useOrganizationAuthorizationQuery>;
+export type OrganizationAuthorizationLazyQueryHookResult = ReturnType<typeof useOrganizationAuthorizationLazyQuery>;
+export type OrganizationAuthorizationQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrganizationAuthorizationQuery,
+  SchemaTypes.OrganizationAuthorizationQueryVariables
+>;
+export function refetchOrganizationAuthorizationQuery(variables: SchemaTypes.OrganizationAuthorizationQueryVariables) {
+  return { query: OrganizationAuthorizationDocument, variables: variables };
+}
+
 export const OrganizationGroupDocument = gql`
   query organizationGroup($organizationId: UUID_NAMEID!, $groupId: UUID!) {
     organization(ID: $organizationId) {
@@ -17899,12 +17963,12 @@ export const SpaceAccountDocument = gql`
           myPrivileges
         }
         visibility
-        activeSubscription {
-          name
-          expires
-        }
         provider {
           id
+          __typename
+          authorization {
+            myPrivileges
+          }
           profile {
             id
             displayName

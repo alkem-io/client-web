@@ -2,7 +2,6 @@ query AccountInformation($accountId: UUID!) {
   lookup {
     account(ID: $accountId) {
       id
-      __typename # do not remove
       authorization {
         id
         myPrivileges
