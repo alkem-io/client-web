@@ -3102,6 +3102,8 @@ export type Mutation = {
   adminCommunicationUpdateRoomState: Scalars['Boolean'];
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
   adminSearchIngestFromScratch: Scalars['String'];
+  /** Update the Avatar on the Profile with the spedified profileID to be stored as a Document. */
+  adminUpdateContributorAvatars: Scalars['String'];
   /** Reset the Authorization Policy on the specified AiServer. */
   aiServerAuthorizationPolicyReset: AiServer;
   /** Creates a new AiPersonaService on the aiServer. */
@@ -3438,6 +3440,10 @@ export type MutationAdminCommunicationRemoveOrphanedRoomArgs = {
 
 export type MutationAdminCommunicationUpdateRoomStateArgs = {
   roomStateData: CommunicationAdminUpdateRoomStateInput;
+};
+
+export type MutationAdminUpdateContributorAvatarsArgs = {
+  profileID: Scalars['UUID'];
 };
 
 export type MutationAiServerCreateAiPersonaServiceArgs = {
@@ -5565,7 +5571,7 @@ export type SubscriptionSubspaceCreatedArgs = {
 };
 
 export type SubscriptionVirtualContributorUpdatedArgs = {
-  virtualContributorId: Scalars['UUID_NAMEID'];
+  virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
 export type SubscriptionWhiteboardSavedArgs = {
@@ -6479,7 +6485,7 @@ export type VirtualContributorQuestionInput = {
 };
 
 export enum VirtualContributorStatus {
-  Nitializing = 'NITIALIZING',
+  Initializing = 'INITIALIZING',
   Ready = 'READY',
 }
 
@@ -19478,7 +19484,7 @@ export type VcMembershipsQuery = {
 };
 
 export type VirtualContributorUpdatesSubscriptionVariables = Exact<{
-  virtualContributorId: Scalars['UUID_NAMEID'];
+  virtualContributorID: Scalars['UUID_NAMEID'];
 }>;
 
 export type VirtualContributorUpdatesSubscription = {

@@ -3,15 +3,15 @@ import { PlatformFeatureFlagName } from '../../../core/apollo/generated/graphql-
 import { useConfig } from '../../platform/config/useConfig';
 import { useUserContext } from '../user';
 
-export const useSubscribeOnVirtualContributorEvents = (virtualContributorId: string, skip?: boolean) => {
+export const useSubscribeOnVirtualContributorEvents = (virtualContributorID: string, skip?: boolean) => {
   const { isFeatureEnabled } = useConfig();
   const areSubscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);
   const { isAuthenticated } = useUserContext();
 
-  const enabled = !!virtualContributorId && areSubscriptionsEnabled && isAuthenticated && !skip;
+  const enabled = !!virtualContributorID && areSubscriptionsEnabled && isAuthenticated && !skip;
   useVirtualContributorUpdatesSubscription({
     shouldResubscribe: true,
-    variables: { virtualContributorId }, // Ensured by skip
+    variables: { virtualContributorID }, // Ensured by skip
     skip: !enabled,
     onSubscriptionData: ({ subscriptionData, client }) => {
       const data = subscriptionData?.data;
@@ -20,7 +20,7 @@ export const useSubscribeOnVirtualContributorEvents = (virtualContributorId: str
       }
 
       const vcRefId = client.cache.identify({
-        id: virtualContributorId,
+        id: virtualContributorID,
         __typename: 'VirtualContributor',
       });
 
@@ -30,7 +30,7 @@ export const useSubscribeOnVirtualContributorEvents = (virtualContributorId: str
         },
       } = data;
 
-      if (!vcRefId || id !== virtualContributorId) {
+      if (!vcRefId || id !== virtualContributorID) {
         return;
       }
 

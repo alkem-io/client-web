@@ -15315,8 +15315,8 @@ export function refetchVcMembershipsQuery(variables: SchemaTypes.VcMembershipsQu
 }
 
 export const VirtualContributorUpdatesDocument = gql`
-  subscription virtualContributorUpdates($virtualContributorId: UUID_NAMEID!) {
-    virtualContributorUpdated(virtualContributorId: $virtualContributorId) {
+  subscription virtualContributorUpdates($virtualContributorID: UUID_NAMEID!) {
+    virtualContributorUpdated(virtualContributorID: $virtualContributorID) {
       virtualContributor {
         id
         status
@@ -15337,7 +15337,7 @@ export const VirtualContributorUpdatesDocument = gql`
  * @example
  * const { data, loading, error } = useVirtualContributorUpdatesSubscription({
  *   variables: {
- *      virtualContributorId: // value for 'virtualContributorId'
+ *      virtualContributorID: // value for 'virtualContributorID'
  *   },
  * });
  */
