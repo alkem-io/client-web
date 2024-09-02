@@ -16,15 +16,6 @@ export interface PostContributionProps {
       id: string;
       uri: string;
     }[];
-    // tagset?:
-    //   | {
-    //       id: string;
-    //       name: string;
-    //       tags: Array<string>;
-    //       allowedValues: Array<string>;
-    //       type: TagsetType;
-    //     }
-    //   | undefined;
     references?: {
       id: string;
       name: string;
