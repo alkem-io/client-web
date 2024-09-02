@@ -1,7 +1,4 @@
-import {
-  AuthorizationPrivilege,
-  WhiteboardCollectionCalloutCardFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import {
   refetchCalloutWhiteboardsQuery,
   useCalloutWhiteboardsQuery,
@@ -14,7 +11,15 @@ import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
 import { Ref, useMemo } from 'react';
 import { compact } from 'lodash';
 
-interface WhiteboardContributionProps extends Partial<WhiteboardCollectionCalloutCardFragment> {
+interface WhiteboardContributionProps {
+  id: string;
+  createdDate: Date;
+  profile: {
+    id: string;
+    url: string;
+    displayName: string;
+    visual?: { id: string; uri: string };
+  };
   sortOrder: number;
   contributionId: string;
 }
@@ -61,11 +66,14 @@ const WhiteboardCollectionCalloutContainer = ({ callout, children }: WhiteboardC
   const whiteboards: WhiteboardContributionProps[] = useMemo(
     () =>
       compact(
-        data?.lookup.callout?.contributions?.map(contribution => ({
-          ...contribution.whiteboard,
-          sortOrder: contribution.sortOrder,
-          contributionId: contribution.id,
-        }))
+        data?.lookup.callout?.contributions?.map(
+          contribution =>
+            contribution.whiteboard && {
+              ...contribution.whiteboard,
+              sortOrder: contribution.sortOrder,
+              contributionId: contribution.id,
+            }
+        )
       ) ?? [],
     [data]
   );

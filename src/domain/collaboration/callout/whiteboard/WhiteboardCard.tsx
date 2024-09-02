@@ -20,7 +20,7 @@ export interface WhiteboardCardWhiteboard {
     url: string;
   };
   createdDate?: Date | string;
-  contributionId?: string;
+  contributionId: string;
 }
 
 interface WhiteboardCardProps {

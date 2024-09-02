@@ -24,7 +24,7 @@ export interface PostCardPost extends Identifiable {
   createdBy?: { profile: { displayName: string } };
   comments?: Pick<Room, 'messagesCount'>;
   createdDate: string | Date; // Apollo says Date while actually it's a string
-  contributionId?: string;
+  contributionId: string;
 }
 
 interface PostCardProps {
@@ -50,11 +50,11 @@ const PostCard = ({ post, onClick }: PostCardProps) => {
   }
   return (
     <ContributeCard onClick={handleClick}>
-      <CardHeader title={post.profile.displayName} iconComponent={PostIcon}>
+      <CardHeader title={post.profile?.displayName} iconComponent={PostIcon}>
         <CardHeaderCaption>{post.createdBy?.profile.displayName}</CardHeaderCaption>
       </CardHeader>
       <CardDetails>
-        <CardDescriptionWithTags tags={post.profile.tagset?.tags}>{post.profile.description}</CardDescriptionWithTags>
+        <CardDescriptionWithTags tags={post.profile?.tagset?.tags}>{post.profile?.description}</CardDescriptionWithTags>
       </CardDetails>
       <CardFooter>
         {post.createdDate && <CardFooterDate date={post.createdDate} />}

@@ -48,8 +48,8 @@ export interface FormatedLink {
         myPrivileges: AuthorizationPrivilege[];
       }
     | undefined;
-  sortOrder?: number;
-  contributionId?: string;
+  sortOrder: number;
+  contributionId: string;
 }
 
 interface LinkCollectionCalloutProps extends BaseCalloutViewProps {
@@ -191,7 +191,8 @@ const LinkCollectionCallout = ({
       compact(
         callout.contributions?.map(
           contribution =>
-            contribution.link && {
+            contribution.link &&
+            contribution.id && {
               ...contribution.link,
               sortOrder: contribution.sortOrder ?? 0,
               contributionId: contribution.id,

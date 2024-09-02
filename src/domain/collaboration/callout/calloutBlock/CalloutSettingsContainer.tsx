@@ -224,7 +224,7 @@ const CalloutSettingsContainer = ({
     switch (type) {
       case CalloutType.PostCollection:
         return items?.posts?.map(post => ({
-          name: post.profile.displayName,
+          name: post.profile?.displayName,
           id: post.contributionId,
           commentsCount: post.comments?.messagesCount,
         }));
