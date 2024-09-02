@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { ReactNode, useState } from 'react';
 import { gutters } from '../../../../core/ui/grid/utils';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import { Chip, Paper, PaperProps, Skeleton, Typography } from '@mui/material';
+import { Chip, IconButton, Menu, Paper, PaperProps, Skeleton, Typography } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Caption } from '../../../../core/ui/typography';
 import { Visual } from '../../../common/visual/Visual';
 import withElevationOnHover from '../../../shared/components/withElevationOnHover';
@@ -14,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { intersection } from 'lodash';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import JourneyAvatar from '../JourneyAvatar/JourneyAvatar';
+import Gutters from '../../../../core/ui/grid/Gutters';
 
 export const JourneyCardHorizontalSkeleton = () => (
   <ElevatedPaper sx={{ padding: gutters() }}>
@@ -43,6 +45,7 @@ export interface JourneyCardHorizontalProps {
   seamless?: boolean;
   journeyTypeName: JourneyTypeName;
   sx?: PaperProps['sx'];
+  actions?: ReactNode;
 }
 
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
@@ -55,6 +58,7 @@ const JourneyCardHorizontal = ({
   deepness = journeyTypeName === 'subspace' ? 0 : 1,
   seamless,
   sx,
+  actions,
 }: JourneyCardHorizontalProps) => {
   const Icon = JourneyIcon[journeyTypeName];
 
@@ -68,8 +72,13 @@ const JourneyCardHorizontal = ({
     ...sx,
   };
 
+  const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
+  const settingsOpened = Boolean(settingsAnchorEl);
+  const handleSettingsOpened = (event: React.MouseEvent<HTMLElement>) => setSettingsAnchorEl(event.currentTarget);
+  const handleSettingsClose = () => setSettingsAnchorEl(null);
+
   return (
-    <ElevatedPaper component={RouterLink} to={journey.profile.url} sx={mergedSx} elevation={seamless ? 0 : undefined}>
+    <ElevatedPaper sx={mergedSx} elevation={seamless ? 0 : undefined}>
       <BadgeCardView
         visual={
           <JourneyAvatar
@@ -77,22 +86,51 @@ const JourneyCardHorizontal = ({
             sx={{ width: gutters(3), height: gutters(3) }}
           />
         }
+        actions={
+          actions && (
+            <>
+              <IconButton
+                aria-label={t('common.settings')}
+                aria-haspopup="true"
+                aria-controls={settingsOpened ? 'settings-menu' : undefined}
+                aria-expanded={settingsOpened ? 'true' : undefined}
+                onClick={handleSettingsOpened}
+              >
+                <MoreVertIcon color="primary" />
+              </IconButton>
+              <Menu
+                aria-labelledby="settings-button"
+                anchorEl={settingsAnchorEl}
+                open={settingsOpened}
+                onClose={handleSettingsClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+              >
+                {actions}
+              </Menu>
+            </>
+          )
+        }
       >
-        <BlockTitleWithIcon title={journey.profile.displayName} icon={<Icon />} sx={{ height: gutters(1.5) }}>
-          <FlexSpacer />
-          {communityRole && (
-            <Chip
-              variant="filled"
-              color="primary"
-              label={
-                <Typography variant="button">{t(`common.enums.communityRole.${communityRole}` as const)}</Typography>
-              }
-            />
-          )}
-        </BlockTitleWithIcon>
-        <Caption noWrap component="div" lineHeight={gutters(1.5)}>
-          {journey.profile.tagline}
-        </Caption>
+        <Gutters disableGap disablePadding component={RouterLink} to={journey.profile.url}>
+          <BlockTitleWithIcon title={journey.profile.displayName} icon={<Icon />} sx={{ height: gutters(1.5) }}>
+            <FlexSpacer />
+            {communityRole && (
+              <Chip
+                variant="filled"
+                color="primary"
+                label={
+                  <Typography variant="button">{t(`common.enums.communityRole.${communityRole}` as const)}</Typography>
+                }
+              />
+            )}
+          </BlockTitleWithIcon>
+          <Caption noWrap component="div" lineHeight={gutters(1.5)}>
+            {journey.profile.tagline}
+          </Caption>
+        </Gutters>
       </BadgeCardView>
     </ElevatedPaper>
   );

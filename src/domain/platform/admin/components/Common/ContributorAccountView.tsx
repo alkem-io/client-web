@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import { IconButton } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import { BlockTitle } from '../../../../../core/ui/typography';
@@ -28,6 +29,11 @@ import {
   SpaceVisibility,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { VIRTUAL_CONTRIBUTORS_LIMIT } from '../../../../../main/topLevelPages/myDashboard/myAccount/MyAccountBlockVCCampaignUser';
+import MenuItemWithIcon from '../../../../../core/ui/menu/MenuItemWithIcon';
+import { DeleteOutline } from '@mui/icons-material';
+import { useDeleteSpaceMutation } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import SpaceProfileDeleteDialog from '../../../../journey/space/pages/SpaceSettings/SpaceProfileDeleteDialog';
 
 export const SPACE_COUNT_LIMIT = 3;
 
@@ -93,10 +99,23 @@ export interface ContributorAccountViewProps {
   };
 }
 
-export const ContributorAccountView = ({ accountHostName, account, loading }: ContributorAccountViewProps) => {
+const useStyles = makeStyles(() => ({
+  gutters: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    height: '100%',
+  },
+}));
+
+export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accountHostName, account, loading }) => {
   const { t } = useTranslation();
+  const notify = useNotification();
   const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
+  const styles = useStyles();
 
   const { virtualContributors, innovationPacks, innovationHubs } = useMemo(
     () => ({
@@ -120,20 +139,61 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const canCreateVirtualContributor =
     privileges.includes(AuthorizationPrivilege.CreateVirtualContributor) && (!isVCLimitReached || isPlatformAdmin);
 
+  const [deleteSpaceMutation, { loading: deleteSpaceLoading }] = useDeleteSpaceMutation({
+    onCompleted: () => {
+      setSelectedId(undefined);
+      setDeleteDialogOpen(false);
+      notify('Space deleted successfully!', 'success');
+    },
+    refetchQueries: ['AccountInformation'],
+  });
+
+  const deleteSpace = () => {
+    if (!selectedId) {
+      return;
+    }
+
+    deleteSpaceMutation({
+      variables: {
+        input: {
+          ID: selectedId,
+        },
+      },
+    });
+  };
+
+  const onDeleteSpaceClick = (spaceId: string) => {
+    setSelectedId(spaceId);
+    setDeleteDialogOpen(true);
+  };
+
+  const getSpaceActions = (spaceId: string) => (
+    <MenuItemWithIcon
+      key="delete"
+      disabled={deleteSpaceLoading}
+      iconComponent={DeleteOutline}
+      onClick={() => onDeleteSpaceClick(spaceId)}
+    >
+      {t('buttons.delete')}
+    </MenuItemWithIcon>
+  );
+
   return (
     <PageContentColumn columns={12}>
       <PageContentBlock halfWidth>
         <BlockTitle>{t('pages.admin.generic.sections.account.hostedSpaces')}</BlockTitle>
-        <Gutters disablePadding disableGap>
+        <Gutters disablePadding disableGap className={styles.gutters}>
           {loading && <JourneyCardHorizontalSkeleton />}
           {!loading &&
             account?.spaces.map(space => (
               <JourneyCardHorizontal
+                key={space.id}
                 journeyTypeName="space"
                 journey={{ profile: space.profile, community: {} }}
                 deepness={0}
                 seamless
                 sx={{ display: 'inline-block', maxWidth: '100%' }}
+                actions={getSpaceActions(space.id)}
               />
             ))}
         </Gutters>
@@ -161,7 +221,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
       </PageContentBlock>
       <PageContentBlock halfWidth>
         <BlockTitle>{t('pages.admin.generic.sections.account.virtualContributors')}</BlockTitle>
-        <Gutters disablePadding>
+        <Gutters disablePadding className={styles.gutters}>
           {loading && <JourneyCardHorizontalSkeleton />}
           {!loading && virtualContributors?.map(vc => <ContributorCardHorizontal profile={vc.profile} seamless />)}
           <Actions>
@@ -181,21 +241,34 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
       </PageContentBlock>
       <PageContentBlock halfWidth>
         <BlockTitle>{t('pages.admin.generic.sections.account.innovationPacks')}</BlockTitle>
-        {loading && <InnovationPackCardHorizontalSkeleton />}
-        {!loading && innovationPacks?.map(pack => <InnovationPackCardHorizontal {...pack} />)}
-        <Actions>
-          {canCreateInnovationPack && account?.id && <CreateInnovationPackDialog accountId={account?.id} />}
-        </Actions>
+        <Gutters disablePadding className={styles.gutters}>
+          {loading && <InnovationPackCardHorizontalSkeleton />}
+          {!loading && innovationPacks?.map(pack => <InnovationPackCardHorizontal {...pack} />)}
+          <Actions>
+            {canCreateInnovationPack && account?.id && <CreateInnovationPackDialog accountId={account?.id} />}
+          </Actions>
+        </Gutters>
       </PageContentBlock>
       <PageContentBlock halfWidth>
         <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
-        {loading && <InnovationHubCardHorizontalSkeleton />}
-        {!loading && innovationHubs?.map(hub => <InnovationHubCardHorizontal {...hub} />)}
-        <Actions>
-          {canCreateInnovationHub && account?.id && (
-            <CreateInnovationHubDialog accountId={account?.id} accountHostName={accountHostName} />
-          )}
-        </Actions>
+        <Gutters disablePadding className={styles.gutters}>
+          {loading && <InnovationHubCardHorizontalSkeleton />}
+          {!loading && innovationHubs?.map(hub => <InnovationHubCardHorizontal {...hub} />)}
+          <Actions>
+            {canCreateInnovationHub && account?.id && (
+              <CreateInnovationHubDialog accountId={account?.id} accountHostName={accountHostName} />
+            )}
+          </Actions>
+        </Gutters>
+        {deleteDialogOpen && (
+          <SpaceProfileDeleteDialog
+            entity={t('common.space')}
+            open={deleteDialogOpen}
+            onClose={() => setDeleteDialogOpen(false)}
+            onDelete={deleteSpace}
+            submitting={deleteSpaceLoading}
+          />
+        )}
       </PageContentBlock>
     </PageContentColumn>
   );
