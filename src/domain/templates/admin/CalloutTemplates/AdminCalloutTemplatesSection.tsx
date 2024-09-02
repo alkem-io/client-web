@@ -9,7 +9,7 @@ import {
   CalloutState,
   CalloutTemplateFragment,
   CalloutType,
-  CreateCalloutTemplateMutationVariables,
+  CreateTemplateMutationVariables,
   TemplateType,
   UpdateTemplateInput,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -17,13 +17,14 @@ import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InnovationPack } from '../../../platform/admin/InnovationPacks/InnovationPack';
 import {
   useCalloutTemplateContentLazyQuery,
-  useCreateCalloutTemplateMutation,
+  useCreateTemplateMutation,
   useDeleteTemplateMutation,
   useUpdateCalloutTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import AdminTemplatesSection from '../../../platform/admin/InnovationPacks/OldAdminTemplatesSection';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { Box } from '@mui/material';
+import { CARLOS_BORDER_RED } from '../../_new/borders';
 
 interface AdminCalloutTemplatesSectionProps {
   templateId: string | undefined;
@@ -42,13 +43,13 @@ interface AdminCalloutTemplatesSectionProps {
 const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCalloutTemplatesSectionProps) => {
   const { t } = useTranslation();
 
-  const [createCalloutTemplate] = useCreateCalloutTemplateMutation();
+  const [createCalloutTemplate] = useCreateTemplateMutation();
   const [updateCalloutTemplate] = useUpdateCalloutTemplateMutation();
   const [deleteTemplate] = useDeleteTemplateMutation();
   const [fetchTemplateData] = useCalloutTemplateContentLazyQuery();
 
   return (
-    <Box sx={{ border: '1px solid red' }}>
+    <Box sx={{ border: CARLOS_BORDER_RED }}>
       <AdminTemplatesSection
         {...props}
         headerText={t('common.enums.templateTypes.Callout')}
@@ -82,9 +83,10 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
             }
           });
 
-          const variables: CreateCalloutTemplateMutationVariables = {
+          const variables: CreateTemplateMutationVariables = {
             templatesSetId: calloutTemplate.templatesSetId,
             profile: calloutTemplate.profile,
+            type: TemplateType.Callout,
             tags: calloutTemplate.tags,
             callout: {
               framing,

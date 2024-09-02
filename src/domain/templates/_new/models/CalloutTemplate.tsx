@@ -7,7 +7,7 @@ export interface CalloutTemplate extends NewTemplateBase {
   callout?: {
     id: string;
     type: CalloutType;
-    profile: {
+    profile?: {
       displayName: string;
       description?: string;
       references?: Reference[];

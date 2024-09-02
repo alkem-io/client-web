@@ -3,7 +3,7 @@ import PostTemplateForm, { PostTemplateFormSubmittedValues, PostTemplateFormValu
 import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
 import { PostTemplateFragment } from '../../../../core/apollo/generated/graphql-schema';
-import TemplateDialogBase from '../../Dialogs/templateDialog/TemplateDialogBase';
+import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase';
 
 interface EditPostTemplateDialogProps {
   open: boolean;

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   refetchAdminInnovationPackQuery,
   useAdminInnovationPackQuery,
+  useAllTemplatesInTemplatesSetQuery,
   useInnovationPackResolveIdQuery,
   useOrganizationsListQuery,
   useUpdateInnovationPackMutation,
@@ -23,6 +24,7 @@ import AdminCommunityGuidelinesTemplatesSection from '../../templates/admin/Comm
 import InnovationPackForm, { InnovationPackFormValues } from '../../platform/admin/InnovationPacks/InnovationPackForm';
 import AdminCalloutTemplatesSection from '../../templates/admin/CalloutTemplates/AdminCalloutTemplatesSection';
 import AdminInnovationTemplatesSection from '../../templates/admin/InnovationTemplates/AdminInnovationTemplatesSection';
+import TemplatesAdmin from '../../templates/_new/components/TemplatesAdmin/TemplatesAdmin';
 
 export enum RoutePaths {
   postTemplatesRoutePath = 'post-templates',
@@ -33,10 +35,9 @@ export enum RoutePaths {
 }
 
 interface AdminInnovationPackPageProps {
-  editTemplates?: boolean;
 }
 
-const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplates }) => {
+const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = () => {
   const { t } = useTranslation();
   const notify = useNotification();
   const {
@@ -47,6 +48,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
     calloutTemplateId,
     communityGuidelinesNameId,
   } = useUrlParams();
+  const templateSelected = communityGuidelinesNameId || calloutTemplateId || innovationTemplateId || postNameId || whiteboardNameId;
 
   if (!innovationPackNameId) {
     throw new Error('Must be within Innovation Pack');
@@ -67,27 +69,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
     skip: !innovationPackId,
   });
 
-  const innovationPackRoute = data?.lookup.innovationPack?.profile.url ?? '';
-  const [backFromTemplateDialog, buildLink] = useBackToParentPage(innovationPackRoute);
-
-  const {
-    postTemplates,
-    whiteboardTemplates,
-    innovationFlowTemplates,
-    calloutTemplates,
-    communityGuidelinesTemplates,
-    id: templatesSetID,
-  } = data?.lookup.innovationPack?.templates ?? {};
-
-  const { data: organizationsList, loading: loadingOrganizations } = useOrganizationsListQuery();
-  const organizations = useMemo(
-    () =>
-      sortBy(
-        organizationsList?.organizations.map(e => ({ id: e.id, name: e.profile.displayName })) || [],
-        org => org.name
-      ),
-    [organizationsList]
-  );
+  const innovationPack = data?.lookup.innovationPack;
 
   const [updateInnovationPack, { loading: updating }] = useUpdateInnovationPackMutation();
 
@@ -121,9 +103,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
     }
   };
 
-  const innovationPack = data?.lookup.innovationPack;
-
-  const isLoading = resolving || loadingInnovationPack || loadingOrganizations || updating;
+  const isLoading = resolving || loadingInnovationPack || updating;
 
   return (
     <InnovationPackProfileLayout
@@ -141,14 +121,37 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
                   <InnovationPackForm
                     nameID={innovationPack?.nameID}
                     profile={innovationPack?.profile}
-                    providerId={innovationPack?.provider?.id}
-                    organizations={organizations}
+                    provider={innovationPack?.provider}
                     onSubmit={handleSubmit}
                     loading={isLoading}
                     listedInStore={innovationPack?.listedInStore}
                     searchVisibility={innovationPack?.searchVisibility}
                   />
                 </PageContentBlock>
+                <TemplatesAdmin
+                  templatesSetId={innovationPack?.templates?.id}
+                  templateId={templateSelected}
+                  baseUrl={innovationPack?.profile.url}
+                />
+
+                {/*
+                <AdminPostTemplatesSection
+                   - templateId={postNameId}
+                   - templatesSetId={templatesSetID}
+                   - templates={postTemplates}
+                   - onCloseTemplateDialog={backFromTemplateDialog}
+                   - refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId })]}
+                   - buildTemplateLink={({ id }) =>
+                   -   buildLink(`${innovationPackRoute}/${RoutePaths.postTemplatesRoutePath}/${id}`)
+                   - }
+                   - edit={editTemplates}
+                   - loadInnovationPacks={() => {}}
+                   - loadingInnovationPacks={isLoading}
+                   - innovationPacks={[]}
+                   - canImportTemplates={false}
+                  />
+
+
                 <PageContentBlockSeamless disablePadding>
                   <AdminWhiteboardTemplatesSection
                     templateId={whiteboardNameId}
@@ -217,23 +220,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = ({ editTemplat
                     canImportTemplates={false}
                   />
                 </PageContentBlockSeamless>
-                <PageContentBlockSeamless disablePadding>
-                  <AdminPostTemplatesSection
-                    templateId={postNameId}
-                    templatesSetId={templatesSetID}
-                    templates={postTemplates}
-                    onCloseTemplateDialog={backFromTemplateDialog}
-                    refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId })]}
-                    buildTemplateLink={({ id }) =>
-                      buildLink(`${innovationPackRoute}/${RoutePaths.postTemplatesRoutePath}/${id}`)
-                    }
-                    edit={editTemplates}
-                    loadInnovationPacks={() => {}}
-                    loadingInnovationPacks={isLoading}
-                    innovationPacks={[]}
-                    canImportTemplates={false}
-                  />
-                </PageContentBlockSeamless>
+                */}
               </PageContentColumn>
             </PageContent>
           </StorageConfigContextProvider>

@@ -8,7 +8,7 @@ import LibraryTemplatesView, { LibraryTemplatesFilter } from './LibraryTemplates
 import { useWhiteboardTemplateContentQuery } from '../../../core/apollo/generated/apollo-hooks';
 import TemplatePreviewDialog, {
   TemplatePreview,
-} from '../../templates/Dialogs/templatePreviewDialog/TemplatePreviewDialog';
+} from '../../templates/_new/components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
 import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
 
 interface DashboardLibraryTemplatesProps {

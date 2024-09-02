@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react';
 import {
-  useCreateWhiteboardTemplateMutation,
+  useCreateTemplateMutation,
   useDeleteTemplateMutation,
   useUpdateWhiteboardTemplateMutation,
   useWhiteboardTemplateContentLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   WhiteboardTemplateFragment,
-  CreateWhiteboardTemplateMutation,
+  CreateTemplateMutation,
   UpdateWhiteboardTemplateMutation,
   TemplateType,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -25,6 +25,7 @@ import {
 } from '../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { Box } from '@mui/material';
+import { CARLOS_BORDER_RED } from '../../_new/borders';
 
 interface AdminWhiteboardTemplatesSectionProps {
   templateId: string | undefined;
@@ -79,12 +80,12 @@ const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhit
     }
   };
 
-  const [createWhiteboardTemplate] = useCreateWhiteboardTemplateMutation();
+  const [createTemplate] = useCreateTemplateMutation();
   const [updateWhiteboardTemplate] = useUpdateWhiteboardTemplateMutation();
   const [deleteWhiteboardTemplate] = useDeleteTemplateMutation();
 
   return (
-    <Box sx={{ border: '1px solid red' }}>
+    <Box sx={{ border: CARLOS_BORDER_RED }}>
       <AdminTemplatesSection
         {...props}
         headerText={t('common.enums.templateTypes.Whiteboard')}
@@ -99,12 +100,12 @@ const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhit
         importedTemplateContent={importedWhiteboardContent?.lookup.template?.whiteboard?.content}
         createTemplateDialogComponent={CreateWhiteboardTemplateDialog}
         editTemplateDialogComponent={EditWhiteboardTemplateDialog}
-        onCreateTemplate={variables => createWhiteboardTemplate({ variables, refetchQueries })}
+        onCreateTemplate={variables => createTemplate({ variables, refetchQueries })}
         onUpdateTemplate={variables => updateWhiteboardTemplate({ variables, refetchQueries })}
         onDeleteTemplate={async variables => {
           await deleteWhiteboardTemplate({ variables, refetchQueries });
         }}
-        onTemplateCreated={(mutationResult: CreateWhiteboardTemplateMutation | undefined | null, previewImages) =>
+        onTemplateCreated={(mutationResult: CreateTemplateMutation | undefined | null, previewImages) =>
           onMutationCalled(mutationResult?.createTemplate, previewImages)
         }
         onTemplateUpdated={(mutationResult: UpdateWhiteboardTemplateMutation | undefined | null, previewImages) =>

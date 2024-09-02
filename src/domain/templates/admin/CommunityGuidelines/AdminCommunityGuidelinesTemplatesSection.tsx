@@ -6,7 +6,7 @@ import {
   TemplateType,
 } from '../../../../core/apollo/generated/graphql-schema';
 import {
-  useCreateCommunityGuidelinesTemplateMutation,
+  useCreateTemplateMutation,
   useDeleteTemplateMutation,
   useUpdateCommunityGuidelinesTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
@@ -17,6 +17,7 @@ import CommunityGuidelinesImportTemplateCard from './CommunityGuidelinesImportTe
 import CreateCommunityGuidelinesTemplateDialog from './CreateCommunityGuidelinesTemplateDialog';
 import EditCommunityGuidelinesTemplateDialog from './EditCommunityGuidelinesTemplateDialog';
 import { Box } from '@mui/material';
+import { CARLOS_BORDER_RED } from '../../_new/borders';
 
 interface AdminCommunityGuidelinesTemplatesSectionProps {
   templateId: string | undefined;
@@ -38,12 +39,12 @@ const AdminCommunityGuidelinesTemplatesSection = ({
 }: AdminCommunityGuidelinesTemplatesSectionProps) => {
   const { t } = useTranslation();
 
-  const [createCommunityGuidelinesTemplate] = useCreateCommunityGuidelinesTemplateMutation();
+  const [createTemplate] = useCreateTemplateMutation();
   const [updateCommunityGuidelinesTemplate] = useUpdateCommunityGuidelinesTemplateMutation();
   const [deleteTemplate] = useDeleteTemplateMutation();
 
   return (
-    <Box sx={{ border: '1px solid red' }}>
+    <Box sx={{ border: CARLOS_BORDER_RED }}>
       <AdminTemplatesSection
         {...props}
         headerText={t('common.enums.templateTypes.CommunityGuidelines')}
@@ -66,8 +67,8 @@ const AdminCommunityGuidelinesTemplatesSection = ({
             ),
           };
           const updatedGuidelines = { profile: updatedProfile };
-          const updatedVariables = { communityGuidelines: updatedGuidelines, ...rest };
-          return createCommunityGuidelinesTemplate({ variables: updatedVariables, refetchQueries });
+          const updatedVariables = { communityGuidelines: updatedGuidelines, ...rest, type: TemplateType.CommunityGuidelines };
+          return createTemplate({ variables: updatedVariables, refetchQueries });
         }}
         onUpdateTemplate={variables => updateCommunityGuidelinesTemplate({ variables, refetchQueries })}
         onDeleteTemplate={async variables => {

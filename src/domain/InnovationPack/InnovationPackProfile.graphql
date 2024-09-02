@@ -16,6 +16,7 @@ query InnovationPackProfilePage($innovationPackId: UUID!) {
       }
       templates {
         id
+        #//!! Confirm if this is needed
         ...TemplatesSetTemplates
       }
     }

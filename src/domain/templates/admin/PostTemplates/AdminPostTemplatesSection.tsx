@@ -2,7 +2,7 @@ import CreatePostTemplateDialog from './CreatePostTemplateDialog';
 import EditPostTemplateDialog from './EditPostTemplateDialog';
 import React from 'react';
 import {
-  useCreatePostTemplateMutation,
+  useCreateTemplateMutation,
   useDeleteTemplateMutation,
   useUpdatePostTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
@@ -15,6 +15,8 @@ import PostImportTemplateCard from './PostImportTemplateCard';
 import { PostTemplateFragment, TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { Box } from '@mui/material';
 import TemplatesGallery from '../../_new/components/TemplatesGallery/TemplatesGallery';
+import { CARLOS_BORDER_GREEN, CARLOS_BORDER_RED } from '../../_new/borders';
+import TemplatesGalleryContainer from '../../_new/components/TemplatesGallery/TemplatesGalleryContainer';
 
 interface AdminPostTemplatesSectionProps {
   templateId: string | undefined;
@@ -33,20 +35,13 @@ interface AdminPostTemplatesSectionProps {
 const AdminPostTemplatesSection = ({ refetchQueries, ...props }: AdminPostTemplatesSectionProps) => {
   const { t } = useTranslation();
 
-  const [createPostTemplate] = useCreatePostTemplateMutation();
+  const [createTemplate] = useCreateTemplateMutation();
   const [updatePostTemplate] = useUpdatePostTemplateMutation();
   const [deleteTemplate] = useDeleteTemplateMutation();
 
   return (
     <>
-      <Box sx={{ border: '1px solid green' }}>
-        <TemplatesGallery
-          headerText={t('common.enums.templateTypes.Post')}
-          templates={props.templates}
-          buildTemplateLink={props.buildTemplateLink}
-        />
-      </Box>
-      <Box sx={{ border: '1px solid red' }}>
+      <Box sx={{ border: CARLOS_BORDER_RED }}>
         <AdminTemplatesSection
           {...props}
           headerText={t('common.enums.templateTypes.Post')}
@@ -57,7 +52,7 @@ const AdminPostTemplatesSection = ({ refetchQueries, ...props }: AdminPostTempla
           templateImportCardComponent={PostImportTemplateCard}
           createTemplateDialogComponent={CreatePostTemplateDialog}
           editTemplateDialogComponent={EditPostTemplateDialog}
-          onCreateTemplate={variables => createPostTemplate({ variables, refetchQueries })}
+          onCreateTemplate={variables => createTemplate({ variables, refetchQueries })}
           onUpdateTemplate={variables => updatePostTemplate({ variables, refetchQueries })}
           onDeleteTemplate={async variables => {
             await deleteTemplate({ variables, refetchQueries });

@@ -32,26 +32,22 @@ export interface InnovationPackFormValues {
 
 interface InnovationPackFormProps {
   isNew?: boolean;
-  nameID?: string;
-  profile?: {
+  nameID: string | undefined;
+  profile: {
     id?: string;
     displayName?: string;
     description?: string;
     tagset?: { id: string; name: string; tags: string[]; allowedValues: string[]; type: TagsetType };
     references?: Pick<Reference, 'id' | 'name' | 'description' | 'uri'>[];
-  };
-  providerId?: string;
+  } | undefined;
+  provider: { id: string; profile: { displayName: string } } | undefined;
   listedInStore?: boolean;
   searchVisibility?: SearchVisibility;
 
-  organizations?: { id: string; name: string }[];
 
   loading?: boolean;
   onSubmit: (formData: InnovationPackFormValues) => void;
 }
-
-const findProvider = (providerId: string | undefined, organizations: { id: string; name: string }[] = []) =>
-  organizations.find(org => org.id === providerId)?.name ?? `Organization not found: ${providerId}`;
 
 const InnovationPackForm: FC<InnovationPackFormProps> = ({
   isNew = false,
@@ -59,8 +55,7 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
   profile,
   listedInStore,
   searchVisibility,
-  providerId,
-  organizations,
+  provider,
   loading,
   onSubmit,
 }) => {
@@ -105,7 +100,7 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
                 <TextField
                   title={t('pages.admin.innovation-packs.fields.provider')}
                   label={t('pages.admin.innovation-packs.fields.provider')}
-                  value={findProvider(providerId, organizations)}
+                  value={provider?.profile.displayName ?? ''}
                   disabled
                   placeholder={t('pages.admin.innovation-packs.fields.provider')}
                 />

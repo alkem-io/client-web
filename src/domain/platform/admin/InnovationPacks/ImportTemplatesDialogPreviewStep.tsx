@@ -3,7 +3,7 @@ import { Identifiable } from '../../../../core/utils/Identifiable';
 import { TemplateBase } from '../../../templates/library/CollaborationTemplatesLibrary/TemplateBase';
 import TemplatePreviewDialog, {
   TemplatePreviewDialogProps,
-} from '../../../templates/Dialogs/templatePreviewDialog/TemplatePreviewDialog';
+} from '../../../templates/_new/components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface ImportTemplatesDialogPreviewStepProps<T extends TemplateBase, V extends T> {

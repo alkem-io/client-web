@@ -523,6 +523,13 @@
         "CommunityGuidelines": "Community Guidelines Template",
         "CommunityGuidelines_plural": "Community Guidelines Templates"
       },
+      "templateType": {
+        "CALLOUT": "$t(common.enums.templateTypes.Callout)",
+        "COMMUNITY_GUIDELINES": "$t(common.enums.templateTypes.CommunityGuidelines)",
+        "INNOVATION_FLOW": "$t(common.enums.templateTypes.InnovationFlow)",
+        "POST": "$t(common.enums.templateTypes.Post)",
+        "WHITEBOARD": "$t(common.enums.templateTypes.Whiteboard)"
+      },
       "calloutType": {
         "LINK_COLLECTION": "Link Collection",
         "POST": "Post",

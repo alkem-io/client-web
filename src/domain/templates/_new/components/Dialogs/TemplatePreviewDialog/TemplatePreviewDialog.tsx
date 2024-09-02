@@ -1,50 +1,50 @@
 import { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import { BlockTitle } from '../../../../core/ui/typography';
+import DialogHeader from '../../../../../../core/ui/dialog/DialogHeader';
+import DialogWithGrid from '../../../../../../core/ui/dialog/DialogWithGrid';
+import { BlockTitle } from '../../../../../../core/ui/typography';
 import DisabledUseButton from './DisabledUseButton';
-import DialogContent from '../../../../core/ui/dialog/DialogContent';
-import { Identifiable } from '../../../../core/utils/Identifiable';
-import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
-import WhiteboardTemplateCard from '../../_new/components/cards/WhiteboardTemplateCard';
-import PostTemplateCard from '../../_new/components/cards/PostTemplateCard';
-import WhiteboardTemplatePreview from '../../library/WhiteboardTemplatesLibrary/WhiteboardTemplatePreview';
-import PostTemplatePreview from '../../library/PostTemplatesLibrary/PostTemplatePreview';
-import CommunityGuidelinesTemplatePreview from '../../library/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatePreview';
-import InnovationFlowTemplateCard from '../../_new/components/cards/InnovationFlowTemplateCard';
-import InnovationFlowTemplatePreview from '../../library/InnovationFlowTemplatesLibrary/InnovationFlowTemplatePreview';
-import { PostTemplate } from '../../_new/models/PostTemplate';
-import { TemplateBase } from '../../library/CollaborationTemplatesLibrary/TemplateBase';
-import CalloutTemplateCard, { CalloutTemplate } from '../../_new/components/cards/CalloutTemplateCard';
+import DialogContent from '../../../../../../core/ui/dialog/DialogContent';
+import { Identifiable } from '../../../../../../core/utils/Identifiable';
+import { InnovationFlowState } from '../../../../../collaboration/InnovationFlow/InnovationFlow';
+import WhiteboardTemplateCard from '../../cards/WhiteboardTemplateCard';
+import PostTemplateCard from '../../cards/PostTemplateCard';
+import WhiteboardTemplatePreview from '../../../../library/WhiteboardTemplatesLibrary/WhiteboardTemplatePreview';
+import PostTemplatePreview from '../../../../library/PostTemplatesLibrary/PostTemplatePreview';
+import CommunityGuidelinesTemplatePreview from '../../../../library/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatePreview';
+import InnovationFlowTemplateCard from '../../cards/InnovationFlowTemplateCard';
+import InnovationFlowTemplatePreview from '../../../../library/InnovationFlowTemplatesLibrary/InnovationFlowTemplatePreview';
+import { PostTemplate } from '../../../models/PostTemplate';
+import { TemplateBase } from '../../../../library/CollaborationTemplatesLibrary/TemplateBase';
+import CalloutTemplateCard, { CalloutTemplate } from '../../cards/CalloutTemplateCard';
 import CollaborationTemplatesLibraryPreview, {
   CollaborationTemplatesLibraryPreviewProps,
-} from '../../library/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryPreview';
-import CommunityGuidelinesTemplateCard from '../../_new/components/cards/CommunityGuidelinesTemplateCard';
-import CalloutTemplatePreview from '../../library/CalloutTemplatesLibrary/CalloutTemplatePreview';
-import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
+} from '../../../../library/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryPreview';
+import CommunityGuidelinesTemplateCard from '../../cards/CommunityGuidelinesTemplateCard';
+import CalloutTemplatePreview from '../../../../library/CalloutTemplatesLibrary/CalloutTemplatePreview';
+import { TemplateType } from '../../../../../../core/apollo/generated/graphql-schema';
 
 export type TemplatePreview =
   | {
-      template: TemplateBase & { content?: string };
-      templateType: TemplateType.Whiteboard;
-    }
+    template: TemplateBase & { content?: string };
+    templateType: TemplateType.Whiteboard;
+  }
   | {
-      template: PostTemplate;
-      templateType: TemplateType.Post;
-    }
+    template: PostTemplate;
+    templateType: TemplateType.Post;
+  }
   | {
-      template: TemplateBase & { states: InnovationFlowState[] } & Identifiable;
-      templateType: TemplateType.InnovationFlow;
-    }
+    template: TemplateBase & { states: InnovationFlowState[] } & Identifiable;
+    templateType: TemplateType.InnovationFlow;
+  }
   | {
-      template: CalloutTemplate & Identifiable;
-      templateType: TemplateType.Callout;
-    }
+    template: CalloutTemplate & Identifiable;
+    templateType: TemplateType.Callout;
+  }
   | {
-      template: TemplateBase;
-      templateType: TemplateType.CommunityGuidelines;
-    };
+    template: TemplateBase;
+    templateType: TemplateType.CommunityGuidelines;
+  };
 
 const Noop = () => null;
 

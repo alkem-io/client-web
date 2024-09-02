@@ -6,7 +6,7 @@ import WhiteboardTemplateForm, {
 } from './WhiteboardTemplateForm';
 import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import { WhiteboardTemplateFragment } from '../../../../core/apollo/generated/graphql-schema';
-import TemplateDialogBase from '../../Dialogs/templateDialog/TemplateDialogBase';
+import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase';
 
 export interface EditWhiteboardTemplateDialogProps {
   open: boolean;

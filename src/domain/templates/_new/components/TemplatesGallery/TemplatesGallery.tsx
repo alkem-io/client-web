@@ -2,18 +2,21 @@ import { FC, ReactNode } from 'react';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import ScrollableCardsLayoutContainer from '../../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import TemplateCard, { TemplateCardProps } from '../cards/TemplateCard';
+import TemplateCard from '../cards/TemplateCard';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
 import { Skeleton } from '@mui/material';
+import { AnyTemplate } from '../../models/TemplateBase';
+import { CARLOS_BORDER_GREEN } from '../../borders';
 
-type Template = TemplateCardProps['template'];
 
 interface TemplatesGalleryProps {
   headerText: string;
   actions?: ReactNode;
-  templates: Template[] | undefined;
+
+  // Provided by the container
+  templates: AnyTemplate[] | undefined;
   loading?: boolean;
-  buildTemplateLink: (template: Template) => LinkWithState;
+  buildTemplateLink: (template: AnyTemplate) => LinkWithState;
 }
 
 const TemplatesGallery: FC<TemplatesGalleryProps> = ({
@@ -25,7 +28,7 @@ const TemplatesGallery: FC<TemplatesGalleryProps> = ({
 }) => {
   return (
     <>
-      <PageContentBlock sx={{ border: '1px solid green' }}>
+      <PageContentBlock sx={{ border: CARLOS_BORDER_GREEN }}>
         <PageContentBlockHeader title={headerText} actions={actions} />
         <ScrollableCardsLayoutContainer>
           {loading ? <Skeleton /> : null}

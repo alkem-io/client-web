@@ -2,16 +2,17 @@ import React, { ReactNode } from 'react';
 import { DialogActions, DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { FormikProps } from 'formik/dist/types';
-import DialogHeader, { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
-import DialogWithGrid, { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
-import { FormikSubmitButtonPure } from '../../../shared/components/forms/FormikSubmitButton';
-import DeleteButton from '../../../shared/components/DeleteButton';
+import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
+import DialogWithGrid, { DialogFooter } from '../../../../../core/ui/dialog/DialogWithGrid';
+import { FormikSubmitButtonPure } from '../../../../shared/components/forms/FormikSubmitButton';
+import DeleteButton from '../../../../shared/components/DeleteButton';
+import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
 
 interface TemplateDialogBaseProps<Values extends {}> {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
   editMode?: boolean;
-  templateTypeName: string;
+  templateType: TemplateType;
   onDelete?: () => void;
   children?: (props: { actions: (formik: FormikProps<Values>) => ReactNode }) => ReactNode;
 }
@@ -21,7 +22,7 @@ const TemplateDialogBase = <InitialValues extends {}>({
   onClose,
   children,
   editMode,
-  templateTypeName,
+  templateType,
   onDelete,
 }: TemplateDialogBaseProps<InitialValues>) => {
   const { t } = useTranslation();
@@ -30,7 +31,7 @@ const TemplateDialogBase = <InitialValues extends {}>({
 
   return (
     <DialogWithGrid columns={12} open={open} onClose={onClose}>
-      <DialogHeader title={t(titleLabel, { entity: templateTypeName })} onClose={onClose} />
+      <DialogHeader title={t(titleLabel, { entity: t(`common.enums.templateType.${templateType}` as const) })} onClose={onClose} />
       <DialogContent sx={{ paddingTop: 0 }}>
         {children?.({
           actions: formik => (

@@ -20,8 +20,9 @@ import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlock
 import { TemplateBase } from '../../../templates/library/CollaborationTemplatesLibrary/TemplateBase';
 import TemplatePreviewDialog, {
   TemplatePreviewDialogProps,
-} from '../../../templates/Dialogs/templatePreviewDialog/TemplatePreviewDialog';
+} from '../../../templates/_new/components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
 import { LibraryIcon } from '../../../templates/LibraryIcon';
+import { CARLOS_BORDER_RED } from '../../../templates/_new/borders';
 
 /**
  * @deprecated TODO remove
@@ -321,7 +322,7 @@ const AdminTemplatesSection = <
 
   return (
     <>
-      <PageContentBlock sx={{ border: '1px solid red' }}>
+      <PageContentBlock sx={{ border: CARLOS_BORDER_RED }}>
         <PageContentBlockHeader
           title={headerText}
           actions={

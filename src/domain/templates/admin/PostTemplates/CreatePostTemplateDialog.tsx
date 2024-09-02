@@ -2,7 +2,7 @@ import PostTemplateForm, { PostTemplateFormSubmittedValues, PostTemplateFormValu
 import { useTranslation } from 'react-i18next';
 import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import TemplateDialogBase from '../../Dialogs/templateDialog/TemplateDialogBase';
+import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase';
 
 interface CreatePostTemplateDialogProps {
   open: boolean;

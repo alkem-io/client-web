@@ -3,13 +3,14 @@ import { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
 import produce from 'immer';
 import {
   CalloutType,
-  CreateCalloutTemplateMutation,
-  CreateCalloutTemplateMutationVariables,
+  CreateTemplateMutation,
+  CreateTemplateMutationVariables,
+  TemplateType,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutLayoutProps } from '../../../collaboration/callout/calloutBlock/CalloutLayout';
 import {
-  useCreateCalloutTemplateMutation,
-  useSpaceTemplateSetIdLazyQuery,
+  useCreateTemplateMutation,
+  useSpaceTemplatesSetIdLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 
 export interface CalloutCreationUtils {
@@ -17,17 +18,17 @@ export interface CalloutCreationUtils {
     values: CalloutTemplateFormSubmittedValues,
     callout: CalloutLayoutProps['callout'],
     spaceNameId: string
-  ) => Promise<CreateCalloutTemplateMutation['createTemplate'] | undefined>;
+  ) => Promise<CreateTemplateMutation['createTemplate'] | undefined>;
 }
 
 export const useCreateCalloutTemplate = (): CalloutCreationUtils => {
-  const [createCalloutTemplate] = useCreateCalloutTemplateMutation();
+  const [createCalloutTemplate] = useCreateTemplateMutation();
 
-  const [fetchTemplateSetId] = useSpaceTemplateSetIdLazyQuery();
+  const [fetchTemplatesSetId] = useSpaceTemplatesSetIdLazyQuery();
 
   const handleCreateCalloutTemplate = useCallback(
     async (values: CalloutTemplateFormSubmittedValues, callout: CalloutLayoutProps['callout'], spaceNameId: string) => {
-      const { data: templatesData } = await fetchTemplateSetId({ variables: { spaceNameId } });
+      const { data: templatesData } = await fetchTemplatesSetId({ variables: { spaceNameId } });
       const templatesSetId = templatesData?.space.library?.id;
       if (!templatesSetId) {
         throw new TypeError('TemplateSet not found!');
@@ -44,8 +45,9 @@ export const useCreateCalloutTemplate = (): CalloutCreationUtils => {
           delete draft.callout.contributionDefaults.whiteboardContent;
         }
       });
-      const variables: CreateCalloutTemplateMutationVariables = {
+      const variables: CreateTemplateMutationVariables = {
         templatesSetId,
+        type: TemplateType.Callout,
         ...submittedValues,
       };
 

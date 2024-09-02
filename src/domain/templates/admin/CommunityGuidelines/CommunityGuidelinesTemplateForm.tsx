@@ -8,7 +8,7 @@ import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikI
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { gutters } from '../../../../core/ui/grid/utils';
-import TemplateForm, { TemplateProfileValues } from '../../../platform/admin/InnovationPacks/TemplateForm';
+import TemplateForm, { TemplateProfileValues } from '../../_new/components/Forms/TemplateForm';
 import { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
 import FormikReferenceSegment from '../../../platform/admin/components/Common/FormikReferenceSegment';
 import ProfileReferenceSegment from '../../../platform/admin/components/Common/ProfileReferenceSegment';

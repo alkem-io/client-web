@@ -14,23 +14,23 @@ const InnovationPackRoute = () => {
         <Route path={`:${nameOfUrl.innovationPackNameId}/settings`} element={<AdminInnovationPackPage />} />
         <Route
           path={`:${nameOfUrl.innovationPackNameId}/${RoutePaths.postTemplatesRoutePath}/:${nameOfUrl.postNameId}`}
-          element={<AdminInnovationPackPage editTemplates />}
+          element={<AdminInnovationPackPage />}
         />
         <Route
           path={`:${nameOfUrl.innovationPackNameId}/${RoutePaths.whiteboardTemplatesRoutePath}/:${nameOfUrl.whiteboardNameId}`}
-          element={<AdminInnovationPackPage editTemplates />}
+          element={<AdminInnovationPackPage />}
         />
         <Route
           path={`:${nameOfUrl.innovationPackNameId}/${RoutePaths.calloutTemplatesRoutePath}/:${nameOfUrl.calloutTemplateId}`}
-          element={<AdminInnovationPackPage editTemplates />}
+          element={<AdminInnovationPackPage />}
         />
         <Route
           path={`:${nameOfUrl.innovationPackNameId}/${RoutePaths.innovationTemplatesRoutePath}/:${nameOfUrl.innovationTemplateId}`}
-          element={<AdminInnovationPackPage editTemplates />}
+          element={<AdminInnovationPackPage />}
         />
         <Route
           path={`:${nameOfUrl.innovationPackNameId}/${RoutePaths.communityGuidelinesTemplatesRoutePath}/:${nameOfUrl.communityGuidelinesNameId}`}
-          element={<AdminInnovationPackPage editTemplates />}
+          element={<AdminInnovationPackPage />}
         />
         <Route path="*" element={<Error404 />} />
       </Route>

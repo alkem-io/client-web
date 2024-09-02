@@ -15,7 +15,7 @@ import { displayNameValidator } from '../../../../core/ui/forms/validator/displa
 import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
 import { RadioButtonOption } from '../../../../core/ui/forms/radioButtons/RadioButtonsGroup';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import TemplateForm from '../../../platform/admin/InnovationPacks/TemplateForm';
+import TemplateForm from '../../_new/components/Forms/TemplateForm';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { gutters } from '../../../../core/ui/grid/utils';

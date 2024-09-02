@@ -9,12 +9,13 @@ import { InnovationFlowTemplateFragment, TemplateType } from '../../../../core/a
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InnovationPack } from '../../../platform/admin/InnovationPacks/InnovationPack';
 import {
-  useCreateInnovationFlowTemplateMutation,
+  useCreateTemplateMutation,
   useDeleteTemplateMutation,
   useUpdateInnovationFlowTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import AdminTemplatesSection from '../../../platform/admin/InnovationPacks/OldAdminTemplatesSection';
 import { Box } from '@mui/material';
+import { CARLOS_BORDER_RED } from '../../_new/borders';
 
 interface AdminInnovationTemplatesSectionProps {
   templateId: string | undefined;
@@ -33,12 +34,12 @@ interface AdminInnovationTemplatesSectionProps {
 const AdminInnovationTemplatesSection = ({ refetchQueries, ...props }: AdminInnovationTemplatesSectionProps) => {
   const { t } = useTranslation();
 
-  const [createInnovationFlowTemplate] = useCreateInnovationFlowTemplateMutation();
+  const [createTemplate] = useCreateTemplateMutation();
   const [updateInnovationFlowTemplate] = useUpdateInnovationFlowTemplateMutation();
   const [deleteTemplate] = useDeleteTemplateMutation();
 
   return (
-    <Box sx={{ border: '1px solid red' }}>
+    <Box sx={{ border: CARLOS_BORDER_RED }}>
       <AdminTemplatesSection
         {...props}
         headerText={t('common.enums.templateTypes.InnovationFlow')}
@@ -49,7 +50,7 @@ const AdminInnovationTemplatesSection = ({ refetchQueries, ...props }: AdminInno
         templateImportCardComponent={InnovationImportTemplateCard}
         createTemplateDialogComponent={CreateInnovationTemplateDialog}
         editTemplateDialogComponent={EditInnovationTemplateDialog}
-        onCreateTemplate={variables => createInnovationFlowTemplate({ variables, refetchQueries })}
+        onCreateTemplate={variables => createTemplate({ variables, refetchQueries })}
         onUpdateTemplate={variables => updateInnovationFlowTemplate({ variables, refetchQueries })}
         onDeleteTemplate={variables => deleteTemplate({ variables, refetchQueries })}
         templateType={TemplateType.InnovationFlow}

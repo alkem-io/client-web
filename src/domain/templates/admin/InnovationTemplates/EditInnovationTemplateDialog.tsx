@@ -6,7 +6,7 @@ import InnovationFlowTemplateForm, {
 import React from 'react';
 import { InnovationFlowTemplateFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
-import TemplateDialogBase from '../../Dialogs/templateDialog/TemplateDialogBase';
+import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase';
 
 interface EditInnovationTemplateDialogProps {
   open: boolean;

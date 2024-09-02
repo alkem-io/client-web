@@ -6,5 +6,7 @@ type InnovationPackArray = InnovationPacksQuery['platform']['library']['innovati
 type InnovationPackInfo = Pick<InnovationPackArray, 'id' | 'nameID' | 'profile'> & {
   provider?: InnovationPackArray['provider'];
 };
-
+/**
+ * @deprecated
+ */
 export type InnovationPack<T extends Template> = InnovationPackInfo & { templates: (T & Identifiable)[] };

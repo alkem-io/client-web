@@ -60,7 +60,6 @@ query AdminInnovationPack($innovationPackId: UUID!) {
       }
       templates {
         id
-        ...TemplatesSetTemplates
       }
       listedInStore
       searchVisibility

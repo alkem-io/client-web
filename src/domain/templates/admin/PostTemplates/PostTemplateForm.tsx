@@ -6,7 +6,7 @@ import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikI
 import { CreateProfileInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import TemplateForm from '../../../platform/admin/InnovationPacks/TemplateForm';
+import TemplateForm from '../../_new/components/Forms/TemplateForm';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 export interface PostTemplateFormValues {

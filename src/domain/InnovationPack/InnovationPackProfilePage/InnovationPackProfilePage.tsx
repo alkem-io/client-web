@@ -26,7 +26,7 @@ import InnovationPackProfileLayout from './InnovationPackProfileLayout';
 import TemplatesBlock from './TemplatesBlock';
 import TemplatePreviewDialog, {
   TemplatePreview,
-} from '../../templates/Dialogs/templatePreviewDialog/TemplatePreviewDialog';
+} from '../../templates/_new/components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
 import CalloutTemplateCard from '../../templates/_new/components/cards/CalloutTemplateCard';
 import CommunityGuidelinesTemplateCard from '../../templates/_new/components/cards/CommunityGuidelinesTemplateCard';
 

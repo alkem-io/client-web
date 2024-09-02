@@ -5,6 +5,7 @@ import withElevationOnHover from '../../../domain/shared/components/withElevatio
 import GridItem from '../grid/GridItem';
 import RouterLink from '../link/RouterLink';
 import ButtonBaseAlignReset from '../button/ButtonBaseAlignReset';
+import { CARLOS_BORDER_GREEN } from '../../../domain/templates/_new/borders';
 
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
@@ -49,7 +50,7 @@ const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCa
             flexDirection: 'column',
             alignItems: 'stretch',
             cursor: onClick || to ? 'pointer' : 'default',
-            border: good ? '1px solid green' : undefined,
+            border: good ? CARLOS_BORDER_GREEN : undefined,
             ...sx,
           }}
           ref={ref}

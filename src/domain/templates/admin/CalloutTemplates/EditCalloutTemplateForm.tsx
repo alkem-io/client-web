@@ -3,7 +3,7 @@ import { FormikProps } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
-import TemplateForm, { TemplateProfileValues } from '../../../platform/admin/InnovationPacks/TemplateForm';
+import TemplateForm, { TemplateProfileValues } from '../../_new/components/Forms/TemplateForm';
 import { Reference, Tagset } from '../../../common/profile/Profile';
 import { CalloutType, UpdateTemplateInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../../core/utils/Identifiable';

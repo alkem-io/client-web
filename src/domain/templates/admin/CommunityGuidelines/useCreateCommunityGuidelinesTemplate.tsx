@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import {
-  useCreateCommunityGuidelinesTemplateMutation,
-  useSpaceTemplateSetIdLazyQuery,
+  useCreateTemplateMutation,
+  useSpaceTemplatesSetIdLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { CreateCommunityGuidelinesTemplateMutation } from '../../../../core/apollo/generated/graphql-schema';
+import { CreateTemplateMutation, TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { CommunityGuidelinesTemplateFormSubmittedValues } from './CommunityGuidelinesTemplateForm';
 import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
 
@@ -11,16 +11,16 @@ interface CreateCommunityGuidelinesProps {
   handleCreateCommunityGuidelinesTemplate: (
     values: CommunityGuidelinesTemplateFormSubmittedValues,
     spaceNameId: string
-  ) => Promise<CreateCommunityGuidelinesTemplateMutation['createTemplate'] | undefined>;
+  ) => Promise<CreateTemplateMutation['createTemplate'] | undefined>;
 }
 
 export const useCreateCommunityGuidelinesTemplate = (): CreateCommunityGuidelinesProps => {
-  const [createCommunityGuidelinesTemplate] = useCreateCommunityGuidelinesTemplateMutation();
-  const [fetchTemplateSetId] = useSpaceTemplateSetIdLazyQuery();
+  const [createCommunityGuidelinesTemplate] = useCreateTemplateMutation();
+  const [fetchTemplatesSetId] = useSpaceTemplatesSetIdLazyQuery();
 
   const handleCreateCommunityGuidelinesTemplate = useCallback(
     async (values: CommunityGuidelinesTemplateFormSubmittedValues, spaceNameId: string) => {
-      const { data: templatesData } = await fetchTemplateSetId({ variables: { spaceNameId } });
+      const { data: templatesData } = await fetchTemplatesSetId({ variables: { spaceNameId } });
       const templatesSetId = templatesData?.space.library?.id;
       if (!templatesSetId) {
         throw new TypeError('TemplateSet not found!');
@@ -31,7 +31,8 @@ export const useCreateCommunityGuidelinesTemplate = (): CreateCommunityGuideline
           templatesSetId,
           profile: values.profile || { displayName: '' },
           tags: values.tags,
-          guidelines: values.guidelines,
+          type: TemplateType.CommunityGuidelines,
+          communityGuidelines: values.guidelines,
         },
         update: cache => {
           evictFromCache(cache, templatesSetId, 'TemplatesSet');

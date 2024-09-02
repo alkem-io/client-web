@@ -10,7 +10,7 @@ import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import { useWhiteboardWithContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
-import TemplateDialogBase from '../../Dialogs/templateDialog/TemplateDialogBase';
+import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase';
 
 export interface CreateCalloutTemplateDialogProps {
   open: boolean;

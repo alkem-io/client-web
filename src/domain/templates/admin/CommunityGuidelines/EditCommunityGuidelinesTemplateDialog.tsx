@@ -9,7 +9,7 @@ import CommunityGuidelinesTemplateForm, {
   CommunityGuidelinesTemplateFormValues,
 } from './CommunityGuidelinesTemplateForm';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import TemplateDialogBase from '../../Dialogs/templateDialog/TemplateDialogBase';
+import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase';
 
 interface EditCommunityGuidelinesTemplateDialogProps {
   open: boolean;

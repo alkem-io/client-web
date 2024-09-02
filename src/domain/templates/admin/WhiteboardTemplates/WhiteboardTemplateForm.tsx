@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import * as yup from 'yup';
 import { FormikProps } from 'formik';
 import { CreateProfileInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
-import TemplateForm from '../../../platform/admin/InnovationPacks/TemplateForm';
+import TemplateForm from '../../_new/components/Forms/TemplateForm';
 import FormikWhiteboardPreview from './FormikWhiteboardPreview';
 import { useTranslation } from 'react-i18next';
 import { WhiteboardPreviewImage } from '../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
