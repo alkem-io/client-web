@@ -2,6 +2,9 @@ query UserProvider {
   me {
     user {
       ...UserDetails
+      account {
+        id
+      }
     }
   }
 }

@@ -48,7 +48,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               readUsersAccess={entities.permissions.readUsers}
               leadUsers={entities.space?.community?.leadUsers}
               leadVirtualContributors={entities.space?.community?.leadVirtualContributors}
-              host={entities.host}
+              host={entities.provider}
               callouts={callouts}
               journeyTypeName="space"
               myMembershipStatus={entities.space?.community?.myMembershipStatus}
@@ -95,7 +95,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               }
               loading={state.loading}
               leadUsers={entities.space?.community?.leadUsers}
-              host={entities.host}
+              provider={entities.provider}
               leadOrganizations={entities.space?.community?.leadOrganizations}
               leadVirtualContributors={entities.space?.community?.leadVirtualContributors}
               endButton={

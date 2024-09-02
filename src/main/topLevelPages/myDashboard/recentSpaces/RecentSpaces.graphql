@@ -3,7 +3,7 @@ query RecentSpaces($limit: Float) {
     mySpaces(limit: $limit) {
       space {
         id
-        __typename
+        __typename # do not remove
       }
     }
   }

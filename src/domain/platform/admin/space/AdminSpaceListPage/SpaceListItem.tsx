@@ -7,9 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   refetchAdminSpacesListQuery,
-  useAssignLicensePlanToAccountMutation,
-  useRevokeLicensePlanFromAccountMutation,
-  useUpdateAccountPlatformSettingsMutation,
+  useAssignLicensePlanToSpaceMutation,
+  useRevokeLicensePlanFromSpaceMutation,
   useUpdateSpacePlatformSettingsMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import ListItemLink, { ListItemLinkProps } from '../../../../shared/components/SearchableList/ListItemLink';
@@ -25,7 +24,6 @@ import useLoadingState from '../../../../shared/utils/useLoadingState';
 import PlansTable, { LicensePlan } from './PlansTable';
 import AssignPlan from './AssignPlan';
 import FlexSpacer from '../../../../../core/ui/utils/FlexSpacer';
-import { Host, HostSelector } from './HostSelector';
 import FormikAutocomplete from '../../../../../core/ui/forms/FormikAutocomplete';
 import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
@@ -35,23 +33,16 @@ export interface SpacePlatformSettings {
   visibility: SpaceVisibility;
 }
 
-export interface AccountPlatformSettings {
-  host: Host | undefined;
-  activeLicensePlanIds: string[] | undefined;
-}
-
 interface SpaceListItemProps extends ListItemLinkProps, SpacePlatformSettings {
   spaceId: string;
-  accountId: string;
-  account: AccountPlatformSettings;
+  activeLicensePlanIds: string[] | undefined;
   licensePlans: LicensePlan[] | undefined;
 }
 
 const SpaceListItem = ({
   spaceId,
-  accountId,
   nameId,
-  account: { host, activeLicensePlanIds },
+  activeLicensePlanIds,
   licensePlans,
   visibility,
   ...props
@@ -65,36 +56,26 @@ const SpaceListItem = ({
   };
 
   const initialValues = {
-    host,
     nameId,
     visibility,
   };
 
-  const [updateAccountSettings] = useUpdateAccountPlatformSettingsMutation();
-  const [updatePlatformSettings] = useUpdateSpacePlatformSettingsMutation();
-  const [assignLicensePlan] = useAssignLicensePlanToAccountMutation();
-  const [revokeLicensePlan] = useRevokeLicensePlanFromAccountMutation();
+  const [updateSpacePlatformSettings] = useUpdateSpacePlatformSettingsMutation();
+  const [assignLicensePlan] = useAssignLicensePlanToSpaceMutation();
+  const [revokeLicensePlan] = useRevokeLicensePlanFromSpaceMutation();
 
-  const [handleSubmit, saving] = useLoadingState(
-    async ({ host, nameId, visibility }: Partial<AccountPlatformSettings & SpacePlatformSettings>) => {
-      await updateAccountSettings({
-        variables: {
-          accountId,
-          hostId: host?.id,
-        },
-      });
-      await updatePlatformSettings({
-        variables: {
-          spaceId,
-          nameId: nameId!,
-          visibility: visibility!,
-        },
-        refetchQueries: [refetchAdminSpacesListQuery()],
-        awaitRefetchQueries: true,
-      });
-      setSettingsModalOpen(false);
-    }
-  );
+  const [handleSubmit, saving] = useLoadingState(async ({ nameId, visibility }: Partial<SpacePlatformSettings>) => {
+    await updateSpacePlatformSettings({
+      variables: {
+        spaceId,
+        nameId: nameId!,
+        visibility: visibility!,
+      },
+      refetchQueries: [refetchAdminSpacesListQuery()],
+      awaitRefetchQueries: true,
+    });
+    setSettingsModalOpen(false);
+  });
 
   const { t } = useTranslation();
 
@@ -149,7 +130,6 @@ const SpaceListItem = ({
                   placeholder={t('components.nameSegment.nameID.placeholder')}
                   required
                 />
-                <HostSelector name="host" host={host} />
                 <FormikAutocomplete
                   name="visibility"
                   values={visibilitySelectOptions}
@@ -181,12 +161,12 @@ const SpaceListItem = ({
             <PlansTable
               activeLicensePlanIds={activeLicensePlanIds}
               licensePlans={licensePlans}
-              onDelete={plan => revokeLicensePlan({ variables: { accountId, licensePlanId: plan.id } })}
+              onDelete={plan => revokeLicensePlan({ variables: { spaceId, licensePlanId: plan.id } })}
             />
           )}
           {licensePlans && (
             <AssignPlan
-              onAssignPlan={licensePlanId => assignLicensePlan({ variables: { accountId, licensePlanId } })}
+              onAssignPlan={licensePlanId => assignLicensePlan({ variables: { spaceId, licensePlanId } })}
               licensePlans={licensePlans}
             />
           )}

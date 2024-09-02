@@ -1,9 +1,38 @@
-query UserAccount($userId: UUID_NAMEID_EMAIL!) {
-  user(ID: $userId) {
-    id
-    accounts {
+query AccountInformation($accountId: UUID!) {
+  lookup {
+    account(ID: $accountId) {
       id
-      spaceID
+      authorization {
+        id
+        myPrivileges
+      }
+      host {
+        id
+      }
+      spaces {
+        id
+        level
+        profile {
+          ...AccountItemProfile
+          cardBanner: visual(type: CARD) {
+            ...VisualUri
+          }
+          tagline
+        }
+        community {
+          id
+        }
+        subspaces {
+          id
+          profile {
+            ...AccountItemProfile
+          }
+          type
+          community {
+            id
+          }
+        }
+      }
       virtualContributors {
         id
         profile {
@@ -30,7 +59,7 @@ query UserAccount($userId: UUID_NAMEID_EMAIL!) {
         profile {
           ...AccountItemProfile
           banner: visual(type: BANNER_WIDE) {
-            ...VisualFull
+            ...VisualUri
           }
         }
         spaceVisibilityFilter
@@ -41,21 +70,8 @@ query UserAccount($userId: UUID_NAMEID_EMAIL!) {
             displayName
           }
         }
+        subdomain
       }
-    }
-  }
-}
-
-query AccountSpaces($spacesIds: [UUID!]) {
-  spaces(IDs: $spacesIds) {
-    id
-    level
-    profile {
-      ...AccountItemProfile
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
-      tagline
     }
   }
 }

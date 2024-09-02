@@ -65,7 +65,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
     const isMobile = breakpoint === 'xs';
 
     return (
-      <CalloutSettingsContainer callout={callout} expanded={expanded} {...calloutSettingsProps}>
+      <CalloutSettingsContainer callout={callout} expanded={expanded} onExpand={onExpand} {...calloutSettingsProps}>
         {calloutSettingsProvided => (
           <>
             <CalloutLayout

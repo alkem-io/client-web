@@ -21,7 +21,17 @@ query PlansTable {
 
 query FreePlanAvailability {
   me {
-    canCreateFreeSpace
+    id
+    user {
+      id
+      account {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
   }
 }
 

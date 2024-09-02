@@ -95,7 +95,7 @@ const JourneyAboutDialog = ({
   leadUsers,
   leadOrganizations,
   leadVirtualContributors,
-  host,
+  provider: host,
   sendMessageToCommunityLeads,
   metrics,
   description,

@@ -53,35 +53,18 @@ export interface MyAccountSpace extends Pick<Space, 'id' | 'level'> {
       name: string;
     };
   };
-  account: {
-    id: string;
-    host?: {
-      id: string;
-      nameID: string;
-      profile: {
-        id: string;
-        displayName: string;
-        tagline: string;
-        url: string;
-      };
-    };
-  };
 }
 
 const MyAccountBlock = () => {
   const { t } = useTranslation();
   const { data, loading } = useMyAccountQuery({ fetchPolicy: 'cache-and-network' });
   const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
+  const handleStartWizard = () => startWizard(); // Do not remove: Inside the blocks startWizard() is being called with a ClickEvent and that messes up with the param that startWizard expects
 
-  // Curently displaying only the first hosted space and the first VC in it.
-  const hostedSpace = data?.me.myCreatedSpaces.find(
-    spaceData => spaceData.account && spaceData.account.host?.id === data?.me.user?.id && spaceData.level === 0
-  );
+  // Curently displaying only the first hosted space and the first VC in it
 
-  const virtualContributors: MyAccountVirtualContributor[] =
-    data?.me.user?.accounts
-      .filter(account => account.id === hostedSpace?.account.id)
-      .find(vc => vc.virtualContributors.length > 0)?.virtualContributors ?? [];
+  const hostedSpace = data?.me.user?.account?.spaces?.[0];
+  const virtualContributors: MyAccountVirtualContributor[] = data?.me.user?.account?.virtualContributors ?? [];
 
   const { user } = useUserContext();
   const userRoles: CredentialType[] | undefined = data?.me.user?.agent.credentials?.map(credential => credential.type);
@@ -107,7 +90,7 @@ const MyAccountBlock = () => {
           <MyAccountBlockNoGlobalRoleUser
             hostedSpace={hostedSpace}
             virtualContributors={virtualContributors}
-            startWizard={startWizard}
+            startWizard={handleStartWizard}
           />
         );
       }
@@ -116,7 +99,7 @@ const MyAccountBlock = () => {
           <MyAccountBlockVCCampaignUser
             hostedSpace={hostedSpace}
             virtualContributors={virtualContributors}
-            startWizard={startWizard}
+            startWizard={handleStartWizard}
           />
         );
       }
@@ -125,7 +108,7 @@ const MyAccountBlock = () => {
           <MyAccountBlockGlobalRoleUser
             hostedSpace={hostedSpace}
             virtualContributors={virtualContributors}
-            startWizard={startWizard}
+            startWizard={handleStartWizard}
             createLink={createLink}
           />
         );

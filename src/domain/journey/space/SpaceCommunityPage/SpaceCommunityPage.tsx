@@ -78,10 +78,7 @@ const SpaceCommunityPage = () => {
     [leadUsers]
   );
 
-  const hostOrganizations = useMemo(
-    () => data?.space.account.host && [data?.space.account.host],
-    [data?.space.account.host]
-  );
+  const hostOrganizations = useMemo(() => data?.space.provider && [data.space.provider], [data?.space.provider]);
 
   const spacePrivileges = data?.space.authorization?.myPrivileges ?? [];
 
@@ -176,7 +173,6 @@ const SpaceCommunityPage = () => {
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}
                 journeyTypeName="space"
-                calloutNames={callouts.calloutNames}
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
                 groupName={CalloutGroupName.Community}

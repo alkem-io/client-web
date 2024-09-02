@@ -1,15 +1,10 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import SpaceEditForm, { SpaceEditFormValuesType } from '../../spaceEditForm/SpaceEditForm';
-import {
-  useOrganizationsListQuery,
-  useSpaceHostQuery,
-  useUpdateSpaceMutation,
-} from '../../../../../core/apollo/generated/apollo-hooks';
+import { useUpdateSpaceMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useSpace } from '../../SpaceContext/useSpace';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import EditVisualsView from '../../../../common/visual/EditVisuals/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
-import { sortBy } from 'lodash';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
@@ -17,19 +12,12 @@ import { useTranslation } from 'react-i18next';
 
 export const SpaceProfile: FC = () => {
   const { spaceNameId, ...space } = useSpace();
-  const { data: organizationList } = useOrganizationsListQuery();
-  const { data: hostOrganization } = useSpaceHostQuery({ variables: { spaceNameId }, skip: !spaceNameId });
   const notify = useNotification();
   const { t } = useTranslation();
 
   const [updateSpace, { loading }] = useUpdateSpaceMutation({
     onCompleted: () => onSuccess('Successfully updated'),
   });
-
-  const organizations = useMemo(
-    () => organizationList?.organizations.map(e => ({ id: e.id, name: e.profile.displayName })) || [],
-    [organizationList]
-  );
 
   const onSuccess = (message: string) => {
     notify(message, 'success');
@@ -58,8 +46,6 @@ export const SpaceProfile: FC = () => {
     });
   };
 
-  const organizationsSorted = useMemo(() => sortBy(organizations, org => org.name), [organizations]);
-
   const visuals = space.profile.visuals ?? [];
 
   return (
@@ -68,11 +54,9 @@ export const SpaceProfile: FC = () => {
         edit
         name={space.profile.displayName}
         nameID={spaceNameId}
-        hostId={hostOrganization?.space.account.host?.id}
         tagset={space.profile.tagset}
         context={space.context}
         profile={space.profile}
-        organizations={organizationsSorted}
         onSubmit={onSubmit}
         loading={loading}
       />

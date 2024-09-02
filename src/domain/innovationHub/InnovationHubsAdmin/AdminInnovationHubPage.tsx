@@ -7,7 +7,6 @@ import {
   useAccountsListQuery,
   useAdminInnovationHubQuery,
   useUpdateInnovationHubMutation,
-  useUpdateInnovationHubPlatformSettingsMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
 import InnovationHubForm, { InnovationHubFormValues } from './InnovationHubForm';
 import { StorageConfigContextProvider } from '../../storage/StorageBucket/StorageConfigContext';
@@ -49,20 +48,10 @@ const AdminInnovationHubPage: FC<AdminInnovationHubPageProps> = () => {
   );
 
   const [updateInnovationHub, { loading: updating }] = useUpdateInnovationHubMutation();
-  const [updateInnovationHubPlatformSettings, { loading: updatingPlatformSettings }] =
-    useUpdateInnovationHubPlatformSettingsMutation();
 
   const handleSubmit = async (formData: InnovationHubFormValues) => {
     if (!innovationHub?.id) {
       return;
-    }
-    if (innovationHub.account.id !== formData.accountId) {
-      await updateInnovationHubPlatformSettings({
-        variables: {
-          innovationHubId: innovationHub.id,
-          accountId: formData.accountId,
-        },
-      });
     }
 
     const { data } = await updateInnovationHub({
@@ -110,7 +99,7 @@ const AdminInnovationHubPage: FC<AdminInnovationHubPageProps> = () => {
     }
   };
 
-  const isLoading = loading || loadingAccounts || updating || updatingPlatformSettings;
+  const isLoading = loading || loadingAccounts || updating;
 
   return (
     <AdminLayout currentTab={AdminSection.InnovationHubs}>

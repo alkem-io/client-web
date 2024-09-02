@@ -35,7 +35,7 @@ export interface SpaceContainerEntities {
   isAuthenticated: boolean;
   isMember: boolean;
   references: Reference[] | undefined;
-  host: ContributorViewProps | undefined;
+  provider: ContributorViewProps | undefined;
   sendMessageToCommunityLeads: (message: string) => Promise<void>;
   callouts: UseCalloutsProvided;
 }
@@ -103,8 +103,6 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
 
   const references = referencesData?.lookup.space?.profile.references;
 
-  const host = space?.account.host;
-
   const communityId = space?.community?.id ?? '';
 
   const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
@@ -140,7 +138,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
           isAuthenticated,
           isMember,
           references,
-          host,
+          provider: space?.provider,
           sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
           callouts,
         },

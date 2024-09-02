@@ -54,14 +54,15 @@ interface Provided {
   reload: () => void;
 }
 
-export const getStorageAggregatorParentIcon = (level: SpaceLevel) => {
+export const getStorageAggregatorParentIcon = (level: SpaceLevel | undefined) => {
   switch (level) {
-    case SpaceLevel.Space:
-      return SpaceIcon;
     case SpaceLevel.Challenge:
       return ChallengeIcon;
     case SpaceLevel.Opportunity:
       return OpportunityIcon;
+    case SpaceLevel.Space:
+    default:
+      return SpaceIcon;
   }
 };
 
@@ -118,7 +119,7 @@ const newStorageAggregatorRow = (storageAggregator: LoadableStorageAggregatorFra
     return {
       id: storageAggregator.id,
       displayName: storageAggregator.parentEntity.displayName,
-      iconComponent: getStorageAggregatorParentIcon(storageAggregator.parentEntity.level),
+      iconComponent: getStorageAggregatorParentIcon(storageAggregator.parentEntity.level ?? SpaceLevel.Space),
       url: storageAggregator.parentEntity.url,
       size: 0,
       collapsible: true,

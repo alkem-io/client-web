@@ -82,7 +82,6 @@ export interface UseCalloutsProvided {
   groupedCallouts: Record<CalloutGroupName, TypedCallout[] | undefined>;
   canCreateCallout: boolean;
   canReadCallout: boolean;
-  calloutNames: string[];
   loading: boolean;
   refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;
   refetchCallout: (calloutId: string) => void;
@@ -182,8 +181,6 @@ const useCallouts = ({ journeyId, journeyTypeName, ...params }: UseCalloutsParam
     [collaboration]
   );
 
-  const calloutNames = useMemo(() => callouts?.map(c => c.framing.profile.displayName) ?? [], [callouts]);
-
   const sortedCallouts = useMemo(() => callouts?.sort((a, b) => a.sortOrder - b.sortOrder), [callouts]);
 
   const onCalloutsSortOrderUpdate = useCallback(
@@ -216,7 +213,6 @@ const useCallouts = ({ journeyId, journeyTypeName, ...params }: UseCalloutsParam
     groupedCallouts,
     canCreateCallout,
     canReadCallout,
-    calloutNames,
     loading: calloutsLoading || authorizationLoading,
     refetchCallouts,
     refetchCallout,

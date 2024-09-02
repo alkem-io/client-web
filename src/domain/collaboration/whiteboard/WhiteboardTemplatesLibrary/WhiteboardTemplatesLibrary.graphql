@@ -1,20 +1,17 @@
 query SpaceWhiteboardTemplatesLibrary($spaceNameId: UUID_NAMEID!) {
   space(ID: $spaceNameId) {
     id
-    account {
+    library {
       id
-      library {
-        id
-        whiteboardTemplates {
-          ...WhiteboardTemplateCard
-        }
+      whiteboardTemplates {
+        ...WhiteboardTemplateCard
       }
-      host {
-        id
-        nameID
-        profile {
-          ...TemplateProviderProfile
-        }
+    }
+    provider {
+      id
+      nameID
+      profile {
+        ...TemplateProviderProfile
       }
     }
   }

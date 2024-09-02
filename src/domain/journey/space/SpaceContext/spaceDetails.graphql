@@ -23,11 +23,6 @@ fragment SpaceDetails on Space {
       ...fullLocation
     }
   }
-  account {
-    host {
-      id
-    }
-  }
   context {
     ...ContextDetails
   }

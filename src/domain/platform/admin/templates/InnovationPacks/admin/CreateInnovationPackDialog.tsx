@@ -34,7 +34,7 @@ const CreateInnovationPackDialog = ({ accountId }: CreateInnovationPackDialogPro
           },
         },
       },
-      refetchQueries: ['AdminInnovationPacksList', 'UserAccount'],
+      refetchQueries: ['AdminInnovationPacksList', 'AccountInformation'],
     });
     if (data?.createInnovationPack.nameID) {
       setIsOpen(false);

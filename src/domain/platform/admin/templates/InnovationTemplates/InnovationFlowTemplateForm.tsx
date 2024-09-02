@@ -38,7 +38,7 @@ const validator = {
         .object()
         .shape({
           displayName: yup.string().required().max(SMALL_TEXT_LENGTH),
-          description: yup.string().required().max(MARKDOWN_TEXT_LENGTH),
+          description: yup.string().max(MARKDOWN_TEXT_LENGTH),
         })
         .required()
     )

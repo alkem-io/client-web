@@ -1,47 +1,12 @@
 query OrganizationAccount($organizationNameId: UUID_NAMEID!) {
   organization(ID: $organizationNameId) {
     id
-    accounts {
+    profile {
       id
-      spaceID
-      virtualContributors {
-        id
-        profile {
-          ...AccountItemProfile
-          tagline
-        }
-      }
-      innovationPacks {
-        id
-        profile {
-          ...AccountItemProfile
-        }
-        templates {
-          id
-          calloutTemplatesCount
-          communityGuidelinesTemplatesCount
-          innovationFlowTemplatesCount
-          postTemplatesCount
-          whiteboardTemplatesCount
-        }
-      }
-      innovationHubs {
-        id
-        profile {
-          ...AccountItemProfile
-          banner: visual(type: BANNER_WIDE) {
-            ...VisualFull
-          }
-        }
-        spaceVisibilityFilter
-        spaceListFilter {
-          id
-          profile {
-            id
-            displayName
-          }
-        }
-      }
+      displayName
+    }
+    account {
+      id
     }
   }
 }

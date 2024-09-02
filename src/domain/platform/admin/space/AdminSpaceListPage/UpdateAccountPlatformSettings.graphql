@@ -1,8 +1,0 @@
-mutation UpdateAccountPlatformSettings($accountId: UUID!, $hostId: UUID_NAMEID) {
-  updateAccountPlatformSettings(updateData: { accountID: $accountId, hostID: $hostId }) {
-    id
-    host {
-      id
-    }
-  }
-}

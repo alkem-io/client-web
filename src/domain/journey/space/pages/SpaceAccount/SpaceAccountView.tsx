@@ -1,81 +1,128 @@
-import { FC, useMemo, useState } from 'react';
+import { Box, CircularProgress, Link, styled } from '@mui/material';
+import { FC, PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Box, Button, CircularProgress } from '@mui/material';
-import ControlPointIcon from '@mui/icons-material/ControlPoint';
-import PageContent from '../../../../../core/ui/content/PageContent';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
-import SeeMore from '../../../../../core/ui/content/SeeMore';
-import { BlockTitle, Caption } from '../../../../../core/ui/typography';
-import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import ContributorCardHorizontal from '../../../../../core/ui/card/ContributorCardHorizontal';
-import Gutters from '../../../../../core/ui/grid/Gutters';
-import { AuthorizationPrivilege, LicensePlanType } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   refetchAdminSpacesListQuery,
-  refetchSpaceSubspacesQuery,
-  useCreateVirtualContributorOnAccountMutation,
   useDeleteSpaceMutation,
-  useDeleteVirtualContributorOnAccountMutation,
+  useOrganizationAuthorizationLazyQuery,
   useSpaceAccountQuery,
-  useSpaceSubspacesQuery,
-  useUpdateVirtualContributorMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { gutters } from '../../../../../core/ui/grid/utils';
-import { ROUTE_HOME } from '../../../../platform/routes/constants';
-import DeleteIcon from '../SpaceSettings/icon/DeleteIcon';
-import SpaceProfileDeleteDialog from '../SpaceSettings/SpaceProfileDeleteDialog';
-import CreateVirtualContributorDialog, {
-  VirtualContributorFormValues,
-} from '../SpaceSettings/CreateVirtualContributorDialog';
-import ContributorOnAccountCard from '../SpaceSettings/ContributorOnAccountCard';
+import { AuthorizationPrivilege, LicensePlanType } from '../../../../../core/apollo/generated/graphql-schema';
 import useNavigate from '../../../../../core/routing/useNavigate';
-import { PlanFeatures, PlanFooter, PlanName, PlanPrice } from '../../../../license/plans/ui/PlanCardsComponents';
-import { getPlanTranslations } from '../../../../license/plans/utils/getPlanTranslations';
+import ContributorCardHorizontal from '../../../../../core/ui/card/ContributorCardHorizontal';
+import PageContent from '../../../../../core/ui/content/PageContent';
+import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
+import SeeMore from '../../../../../core/ui/content/SeeMore';
+import Gutters from '../../../../../core/ui/grid/Gutters';
+import { gutters } from '../../../../../core/ui/grid/utils';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
-import useCommunityAdmin from '../../../../community/community/CommunityAdmin/useCommunityAdmin';
-import { useSpace } from '../../SpaceContext/useSpace';
-import EditVirtualContributorDialog from '../SpaceSettings/EditVirtualContributorDialog';
+import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { BlockTitle, Caption, CaptionSmall } from '../../../../../core/ui/typography';
+import { PlanFeatures, PlanFooter, PlanName } from '../../../../license/plans/ui/PlanCardsComponents';
+import { getPlanTranslations } from '../../../../license/plans/utils/getPlanTranslations';
+import { ROUTE_HOME } from '../../../../platform/routes/constants';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CachedIcon from '@mui/icons-material/Cached';
+import SpaceProfileDeleteDialog from '../SpaceSettings/SpaceProfileDeleteDialog';
+import { SvgIconComponent } from '@mui/icons-material';
+import { useUserContext } from '../../../../community/user';
+import translateWithElements from '../../../../shared/i18n/TranslateWithElements/TranslateWithElements';
+import { useConfig } from '../../../../platform/config/useConfig';
 
 interface SpaceAccountPageProps {
   journeyId: string;
 }
 
+const StyledPageContentBlock = styled(PageContentBlock)(({ theme }) => ({
+  color: theme.palette.primary.main,
+  svg: { verticalAlign: 'middle', marginRight: gutters(0.5) },
+}));
+
+const LicenseActionBlock = ({
+  title,
+  description,
+  disabled,
+  icon: Icon,
+  onClick,
+  href,
+  children,
+}: PropsWithChildren<{
+  icon: SvgIconComponent;
+  title: string;
+  description: string;
+  disabled?: boolean;
+  onClick?: () => void;
+  href?: string;
+}>) => {
+  const captionProps = {
+    ...(disabled
+      ? {} // If disabled it's just a Caption
+      : onClick
+      ? { onClick, sx: { cursor: 'pointer' } } // If enabled and onClick is defined, pass onClick and cursor pointer
+      : href
+      ? { component: RouterLink, to: href, target: '_blank' } // If enabled and href is defined, use RouterLink component
+      : {}),
+  };
+
+  return (
+    <StyledPageContentBlock>
+      <Caption {...captionProps}>
+        <Icon fontSize="small" sx={{ marginRight: gutters(0.5) }} />
+        {title}
+      </Caption>
+      <CaptionSmall>{description}</CaptionSmall>
+      {children}
+    </StyledPageContentBlock>
+  );
+};
+
 const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
-  const { communityId } = useSpace();
   const { t } = useTranslation();
-  const planTranslations = getPlanTranslations(t);
+  const { user } = useUserContext();
   const notify = useNotification();
   const navigate = useNavigate();
+  const planTranslations = getPlanTranslations(t);
+  const tLink = translateWithElements(<Link target="_blank" />);
 
-  const errorColor = '#940000';
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const openDialog = () => setOpenDeleteDialog(true);
-  const closeDialog = () => setOpenDeleteDialog(false);
-  const [isCreateVCDialogOpen, setIsCreateVCDialogOpen] = useState(false);
-  const openCreateVCDialog = () => setIsCreateVCDialogOpen(true);
-  const closeCreateVCDialog = () => setIsCreateVCDialogOpen(false);
-  const [isOpenDeleteVCDialog, setIsOpenDeleteVCDialog] = useState(false);
-  const openDeleteVCDialog = () => setIsOpenDeleteVCDialog(true);
-  const closeDeleteVCDialog = () => setIsOpenDeleteVCDialog(false);
-  const [isEditVCDialogOpen, setIsEditVCDialogOpen] = useState(false);
-  const openEditVCDialog = () => setIsEditVCDialogOpen(true);
-  const closeEditVCDialog = () => setIsEditVCDialogOpen(false);
-  const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState<string | null>(null);
-
-  const { permissions } = useCommunityAdmin({ communityId, spaceId: journeyId, journeyLevel: 0 });
-
-  const { data, loading: loadingAccount } = useSpaceAccountQuery({
+  const { data, loading } = useSpaceAccountQuery({
     variables: { spaceId: journeyId },
   });
 
+  const [fetchOrganizationAuthorization, { data: organizationData }] = useOrganizationAuthorizationLazyQuery();
+
+  const { locations } = useConfig();
+
   const space = data?.lookup.space;
-  const hostOrganization = space?.account.host;
-  const activeSubscription = space?.account.activeSubscription;
   const canDelete = (space?.authorization?.myPrivileges ?? [])?.includes(AuthorizationPrivilege.Delete);
+  const contactsLink = data?.platform.configuration.locations.support;
+  const switchPlanLink = data?.platform.configuration.locations.switchplan;
+
+  const provider = data?.lookup.space?.provider;
+  const [isHost, setIsHost] = useState(false);
+  useEffect(() => {
+    // TODO: After server #4471 we should be able to see account.type to check if the space provider is a User or an Organization, and this __typename can be removed from the query
+    if (provider?.__typename === 'User') {
+      setIsHost(provider?.id === user?.user.id);
+    } else if (provider?.__typename === 'Organization') {
+      if (!organizationData) {
+        fetchOrganizationAuthorization({
+          variables: {
+            organizationId: provider.id,
+          },
+        });
+      } else {
+        setIsHost(
+          organizationData.organization.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false
+        );
+      }
+    }
+  }, [provider, organizationData]);
 
   const plansData = useMemo(() => {
+    const activeSubscription = space?.activeSubscription;
+
     // Need to clone the array to be able to sort it:
     const plans = [...(data?.platform.licensing.plans ?? [])]
       .filter(plan => plan.type === LicensePlanType.SpacePlan)
@@ -93,31 +140,16 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
       return undefined;
     }
 
-    const currentPlanIndex = plans.findIndex(plan => plan.name === currentPlan.name);
-
-    // The previous 2 plans in the list
-    const availableDowngrades = plans.slice(Math.max(currentPlanIndex - 2, 0), currentPlanIndex);
-    // The next plans 2 plans in the list, with a maximum of 3 - the number of available downgrades
-    const availableUpgrades = plans
-      .slice(currentPlanIndex + 1, currentPlanIndex + 3)
-      .slice(0, 3 - availableDowngrades.length);
-
     const daysLeft =
       activeSubscription && activeSubscription.expires
         ? Math.ceil((new Date(activeSubscription.expires).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
         : undefined;
 
     return {
-      plans,
-      freePlan: plans.find(plan => plan.isFree),
       currentPlan,
-      availableUpgrades,
-      availableDowngrades,
       daysLeft,
-      contactLink: data.platform.configuration.locations.support,
-      switchPlanLink: data.platform.configuration.locations.switchplan,
     };
-  }, [data, activeSubscription]);
+  }, [data]);
 
   const [deleteSpace, { loading: deletingSpace }] = useDeleteSpaceMutation({
     refetchQueries: [refetchAdminSpacesListQuery()],
@@ -142,107 +174,9 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     });
   };
 
-  const initiateDeleteVC = (id: string) => {
-    setSelectedVirtualContributorId(id);
-    openDeleteVCDialog();
-  };
-
-  const [deleteVirtualContributor, { loading: deletingVirtualContributor }] =
-    useDeleteVirtualContributorOnAccountMutation({
-      refetchQueries: [refetchSpaceSubspacesQuery({ spaceId: journeyId })],
-      awaitRefetchQueries: true,
-    });
-
-  const handleDeleteVC = async () => {
-    await deleteVirtualContributor({
-      variables: {
-        virtualContributorData: {
-          ID: selectedVirtualContributorId || '',
-        },
-      },
-    });
-
-    notify('Virtual Contributor deleted successfuly!', 'success');
-    closeDeleteVCDialog();
-  };
-
-  const { data: spaceData, loading: spaceDataLoading } = useSpaceSubspacesQuery({
-    variables: {
-      spaceId: journeyId,
-    },
-    skip: !journeyId,
-  });
-
-  const accountPrivileges = spaceData?.space?.account.authorization?.myPrivileges ?? [];
-  const canCreateVirtualContributor = accountPrivileges?.includes(AuthorizationPrivilege.CreateVirtualContributor);
-
-  const subspaces = useMemo(
-    () =>
-      spaceData?.space?.subspaces.map(subspace => ({
-        id: subspace.id,
-        name: subspace?.profile.displayName,
-      })) ?? [],
-    [spaceData]
-  );
-
-  const virtualContributors = spaceData?.space?.account?.virtualContributors;
-
-  const [createVirtualContributorOnAccount, { loading: loadingVCCreation }] =
-    useCreateVirtualContributorOnAccountMutation({
-      refetchQueries: [refetchSpaceSubspacesQuery({ spaceId: journeyId })],
-      awaitRefetchQueries: true,
-    });
-
-  const handleCreateVirtualContributor = async ({ displayName, bodyOfKnowledgeID }: VirtualContributorFormValues) => {
-    const vcResponse = await createVirtualContributorOnAccount({
-      variables: {
-        virtualContributorData: {
-          profileData: {
-            displayName,
-          },
-          accountID: spaceData?.space.account.id ?? '',
-          aiPersona: {
-            description: '',
-            aiPersonaService: {
-              bodyOfKnowledgeID,
-            },
-          },
-        },
-      },
-    });
-
-    notify('Virtual Contributor Created Successfully!', 'success');
-    closeCreateVCDialog();
-    setSelectedVirtualContributorId(vcResponse.data?.createVirtualContributor.id ?? null);
-    openEditVCDialog();
-  };
-
-  const [updateContributorMutation] = useUpdateVirtualContributorMutation();
-
-  const handleEditVirtualContributor = async virtualContributor => {
-    await updateContributorMutation({
-      variables: {
-        virtualContributorData: {
-          ID: virtualContributor.ID,
-          profileData: virtualContributor.profileData,
-        },
-      },
-    });
-    notify('Virtual Contributor Updated Successfully!', 'success');
-    closeEditVCDialog();
-  };
-
-  const loading = loadingAccount && deletingSpace;
-  const noSubspaces = subspaces?.length < 1;
-  const hasVirtualContributors = virtualContributors && virtualContributors.length > 0;
-  const isPlatformAdmin = accountPrivileges?.includes(AuthorizationPrivilege.PlatformAdmin);
-  const disabledVirtualCreation = (hasVirtualContributors && !isPlatformAdmin) || spaceDataLoading || noSubspaces;
-
-  const selectedVirtualContributor = virtualContributors?.find(vc => vc.id === selectedVirtualContributorId);
-
   return (
     <PageContent background="transparent">
-      {!loading && space && hostOrganization && plansData && (
+      {!loading && space && (
         <>
           <PageContentBlock columns={5} sx={{ gap: gutters(2) }}>
             <Gutters disablePadding>
@@ -268,11 +202,11 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
               <BlockTitle>{t('pages.admin.generic.sections.account.hostTitle')}</BlockTitle>
               <ContributorCardHorizontal
                 profile={{
-                  displayName: hostOrganization.profile.displayName,
-                  avatar: hostOrganization.profile.avatar,
-                  location: hostOrganization.profile.location,
+                  displayName: space.provider.profile.displayName,
+                  avatar: space.provider.profile.avatar,
+                  location: space.provider.profile.location,
                   tagsets: undefined,
-                  url: hostOrganization.profile.url,
+                  url: space?.provider.profile.url,
                 }}
                 seamless
               />
@@ -280,7 +214,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
             <Gutters disablePadding>
               <SeeMore
                 label="pages.admin.generic.sections.account.contactsLink"
-                to={plansData.contactLink}
+                to={contactsLink}
                 sx={{ textAlign: 'left' }}
               />
             </Gutters>
@@ -289,23 +223,24 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
             <Gutters disablePadding>
               <BlockTitle>{t('common.license')}</BlockTitle>
               <Gutters row disablePadding>
-                <Box width="50%">
-                  <PageContentBlock fullHeight sx={{ borderColor: theme => theme.palette.primary.main }}>
-                    <Caption textAlign="center">{t('pages.admin.generic.sections.account.yourLicense')}</Caption>
-                    {plansData.currentPlan && (
-                      <>
-                        <PlanName>{plansData.currentPlan.translation.displayName}</PlanName>
-                        <PlanPrice plan={plansData.currentPlan} />
-                        <PlanFeatures planTranslation={plansData.currentPlan.translation} listItemComponent={Caption} />
-                        <PlanFooter>
-                          <BlockTitle>
-                            {t('pages.admin.generic.sections.account.freeTrialNotice.title', {
-                              daysLeft: plansData.daysLeft,
-                            })}
-                          </BlockTitle>
+                {plansData?.currentPlan && (
+                  <Box width="50%">
+                    <PageContentBlock fullHeight sx={{ borderColor: theme => theme.palette.primary.main }}>
+                      <Caption textAlign="center">{t('pages.admin.generic.sections.account.yourLicense')}</Caption>
+                      <PlanName>{plansData.currentPlan.translation.displayName}</PlanName>
+                      <PlanFeatures planTranslation={plansData.currentPlan.translation} listItemComponent={Caption} />
+                      <PlanFooter>
+                        <BlockTitle>
+                          {plansData.daysLeft
+                            ? t('pages.admin.generic.sections.account.freeTrialNotice.titleWithDaysLeft', {
+                                daysLeft: plansData.daysLeft,
+                              })
+                            : t('pages.admin.generic.sections.account.freeTrialNotice.title')}
+                        </BlockTitle>
+                        {switchPlanLink && (
                           <Caption
                             component={RouterLink}
-                            to={plansData.switchPlanLink}
+                            to={switchPlanLink}
                             textAlign="center"
                             sx={{
                               color: theme => theme.palette.primary.contrastText,
@@ -316,127 +251,59 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                               planName: plansData.currentPlan.translation.displayName,
                             })}
                           </Caption>
-                        </PlanFooter>
-                      </>
-                    )}
-                  </PageContentBlock>
-                </Box>
-                <Gutters disablePadding width="50%">
-                  {plansData.availableUpgrades.map(plan => (
-                    <PageContentBlock key={plan.name}>
-                      <Caption component={RouterLink} to={plansData.switchPlanLink} textAlign="center">
-                        {t('pages.admin.generic.sections.account.upgradeTo')}
-                        <PlanName inline>{plan.translation.displayName}</PlanName>
-                      </Caption>
-                      <PlanFeatures planTranslation={plan.translation} listItemComponent={Caption} />
-                    </PageContentBlock>
-                  ))}
-                  {plansData.availableDowngrades.map(plan => (
-                    <PageContentBlock key={plan.name}>
-                      <Caption component={RouterLink} to={plansData.switchPlanLink} textAlign="center">
-                        {plan.isFree ? (
-                          t('pages.admin.generic.sections.account.downgradeTo', {
-                            planName: plan.translation.displayName,
-                          })
-                        ) : (
-                          <>
-                            {t('pages.admin.generic.sections.account.downgradeTo')}
-                            <PlanName inline>{plan.translation.displayName}</PlanName>
-                          </>
                         )}
-                      </Caption>
-                      <PlanFeatures planTranslation={plan.translation} listItemComponent={Caption} />
+                      </PlanFooter>
                     </PageContentBlock>
-                  ))}
+                  </Box>
+                )}
+
+                <Gutters disablePadding width="50%">
+                  <LicenseActionBlock
+                    title={t('pages.admin.generic.sections.account.changeLicense')}
+                    description={t(
+                      `pages.admin.generic.sections.account.changeLicense_${
+                        isHost ? 'description' : 'disallowed'
+                      }` as const
+                    )}
+                    disabled={!isHost}
+                    icon={CachedIcon}
+                    href={locations?.feedback}
+                    // TODO: Temporarily redirect to Alekmio contact page until the account settings tab is ready to handle a license change
+                    // onClick={() => navigate(`${provider?.profile.url}/settings/account`)}
+                  />
+                  <LicenseActionBlock
+                    title={t('pages.admin.generic.sections.account.deleteSpace')}
+                    description={t(
+                      `pages.admin.generic.sections.account.deleteSpace_${
+                        canDelete ? 'description' : 'disallowed'
+                      }` as const
+                    )}
+                    disabled={!canDelete}
+                    icon={DeleteIcon}
+                    onClick={() => setDeleteDialogOpen(true)}
+                  >
+                    <Caption color={theme => theme.palette.error.dark} textAlign="right">
+                      {t('components.deleteSpace.title')}
+                    </Caption>
+                  </LicenseActionBlock>
                 </Gutters>
               </Gutters>
-              {plansData.freePlan && // if there is a free plan
-                plansData.availableDowngrades.length > 0 && // and we have printed some downgrades
-                !plansData.availableDowngrades.some(plan => plan.isFree) && ( // but the free plan was not one of them
-                  <PageContentBlock>
-                    <Caption textAlign="center">
-                      {t('pages.admin.generic.sections.account.downgradeTo', {
-                        planName: plansData.freePlan.translation.displayName,
-                      })}
-                    </Caption>
-                    <PlanFeatures planTranslation={plansData.freePlan.translation} listItemComponent={Caption} />
-                  </PageContentBlock>
-                )}
+              {isHost && (
+                <Caption>
+                  {tLink('pages.admin.generic.sections.account.moreInfo', {
+                    moreinfo: { href: t('pages.admin.generic.sections.account.moreInfoUrl') },
+                  })}
+                </Caption>
+              )}
             </Gutters>
           </PageContentBlock>
-          {permissions.virtualContributorsEnabled && (
-            <PageContentBlock columns={5} sx={{ gap: gutters(2) }}>
-              <Gutters disablePadding alignItems={'flex-start'}>
-                {hasVirtualContributors && (
-                  <BlockTitle>{t('pages.admin.space.settings.account.vc-section-title')}</BlockTitle>
-                )}
-                {hasVirtualContributors &&
-                  virtualContributors?.map(vc => (
-                    <ContributorOnAccountCard
-                      key={vc.id}
-                      contributor={vc}
-                      // space={getBoKSpaceData(vc.bodyOfKnowledgeID ?? '')}
-                      hasDelete={canCreateVirtualContributor}
-                      onDeleteClick={() => initiateDeleteVC(vc.id)}
-                    />
-                  ))}
-                {canCreateVirtualContributor && (
-                  <>
-                    <Button
-                      variant="outlined"
-                      startIcon={<ControlPointIcon />}
-                      onClick={openCreateVCDialog}
-                      disabled={disabledVirtualCreation}
-                    >
-                      {t('pages.admin.space.settings.account.vc-create-button')}
-                    </Button>
-                    {noSubspaces && <Caption>{t('virtualContributorSpaceSettings.noSubspacesInfo')}</Caption>}
-                  </>
-                )}
-              </Gutters>
-            </PageContentBlock>
-          )}
-          {canDelete && (
-            <PageContentBlock sx={{ borderColor: errorColor }}>
-              <PageContentBlockHeader sx={{ color: errorColor }} title={t('components.deleteSpace.title')} />
-              <Box display="flex" gap={1} alignItems="center" sx={{ cursor: 'pointer' }} onClick={openDialog}>
-                <DeleteIcon />
-                <Caption>{t('components.deleteSpace.description', { entity: t('common.space') })}</Caption>
-              </Box>
-            </PageContentBlock>
-          )}
-          {openDeleteDialog && (
+          {deleteDialogOpen && (
             <SpaceProfileDeleteDialog
               entity={t('common.space')}
-              open={openDeleteDialog}
-              onClose={closeDialog}
+              open={deleteDialogOpen}
+              onClose={() => setDeleteDialogOpen(false)}
               onDelete={() => handleDelete(journeyId)}
               submitting={deletingSpace}
-            />
-          )}
-          <SpaceProfileDeleteDialog
-            entity={t('common.virtual-contributor')}
-            description="virtualContributorSpaceSettings.confirmDeletion.description"
-            open={isOpenDeleteVCDialog}
-            onClose={closeDeleteVCDialog}
-            onDelete={handleDeleteVC}
-            submitting={deletingVirtualContributor}
-          />
-          <CreateVirtualContributorDialog
-            spaces={subspaces}
-            open={isCreateVCDialogOpen}
-            onClose={closeCreateVCDialog}
-            onCreate={handleCreateVirtualContributor}
-            submitting={loadingVCCreation || spaceDataLoading}
-          />
-          {selectedVirtualContributor && (
-            <EditVirtualContributorDialog
-              virtualContributor={selectedVirtualContributor}
-              // bok={getBoKProfile(selectedVirtualContributor.bodyOfKnowledgeID ?? '')}
-              open={isEditVCDialogOpen}
-              onClose={closeEditVCDialog}
-              onSave={handleEditVirtualContributor}
-              submitting={false}
             />
           )}
         </>

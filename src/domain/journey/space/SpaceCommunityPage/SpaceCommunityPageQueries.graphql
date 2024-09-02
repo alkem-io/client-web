@@ -9,11 +9,8 @@ query SpaceCommunityPage($spaceNameId: UUID_NAMEID!, $includeCommunity: Boolean!
       id
       url
     }
-    account {
-      id
-      host {
-        ...ContributorDetails
-      }
+    provider {
+      ...ContributorDetails
     }
     authorization {
       id

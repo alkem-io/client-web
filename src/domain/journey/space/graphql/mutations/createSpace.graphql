@@ -1,6 +1,0 @@
-mutation createAccount($input: CreateAccountInput!) {
-  createAccount(accountData: $input) {
-    id
-    spaceID 
-  }
-}

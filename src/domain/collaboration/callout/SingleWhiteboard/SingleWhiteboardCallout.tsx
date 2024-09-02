@@ -33,6 +33,7 @@ const SingleWhiteboardCallout = ({
     <CalloutSettingsContainer
       callout={callout}
       expanded={expanded}
+      onExpand={onExpand}
       journeyTypeName={journeyTypeName}
       {...calloutSettingsProps}
     >

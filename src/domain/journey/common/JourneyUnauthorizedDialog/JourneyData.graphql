@@ -14,11 +14,8 @@ query JourneyData($spaceId: UUID!, $includeCommunity: Boolean = false) {
       metrics {
         ...MetricsItem
       }
-      account {
-        id
-        host {
-          ...ContributorDetails
-        }
+      provider {
+        ...ContributorDetails
       }
     }
   }

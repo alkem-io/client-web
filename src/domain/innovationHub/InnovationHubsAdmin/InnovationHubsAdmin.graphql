@@ -52,6 +52,7 @@ fragment AdminInnovationHub on InnovationHub {
   profile {
     ...InnovationHubProfile
   }
+  # Requires admin privileges
   account {
     id
     host {
@@ -78,10 +79,5 @@ mutation createInnovationHub($hubData: CreateInnovationHubOnAccountInput!) {
 mutation updateInnovationHub($hubData: UpdateInnovationHubInput!) {
   updateInnovationHub(updateData: $hubData) {
     ...AdminInnovationHub
-  }
-}
-mutation updateInnovationHubPlatformSettings($innovationHubId: UUID!, $accountId: UUID!) {
-  updateInnovationHubPlatformSettings(updateData: { ID: $innovationHubId, accountID: $accountId }) {
-    id
   }
 }
