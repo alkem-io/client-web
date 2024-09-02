@@ -2,13 +2,13 @@ import React, { useCallback } from 'react';
 import {
   useCreateTemplateMutation,
   useDeleteTemplateMutation,
-  useUpdateWhiteboardTemplateMutation,
+  useUpdateTemplateMutation,
   useWhiteboardTemplateContentLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   WhiteboardTemplateFragment,
   CreateTemplateMutation,
-  UpdateWhiteboardTemplateMutation,
+  UpdateTemplateMutation,
   TemplateType,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
@@ -81,7 +81,7 @@ const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhit
   };
 
   const [createTemplate] = useCreateTemplateMutation();
-  const [updateWhiteboardTemplate] = useUpdateWhiteboardTemplateMutation();
+  const [updateTemplate] = useUpdateTemplateMutation();
   const [deleteWhiteboardTemplate] = useDeleteTemplateMutation();
 
   return (
@@ -101,15 +101,15 @@ const AdminWhiteboardTemplatesSection = ({ refetchQueries, ...props }: AdminWhit
         createTemplateDialogComponent={CreateWhiteboardTemplateDialog}
         editTemplateDialogComponent={EditWhiteboardTemplateDialog}
         onCreateTemplate={variables => createTemplate({ variables, refetchQueries })}
-        onUpdateTemplate={variables => updateWhiteboardTemplate({ variables, refetchQueries })}
+        onUpdateTemplate={variables => updateTemplate({ variables, refetchQueries })}
         onDeleteTemplate={async variables => {
           await deleteWhiteboardTemplate({ variables, refetchQueries });
         }}
         onTemplateCreated={(mutationResult: CreateTemplateMutation | undefined | null, previewImages) =>
           onMutationCalled(mutationResult?.createTemplate, previewImages)
         }
-        onTemplateUpdated={(mutationResult: UpdateWhiteboardTemplateMutation | undefined | null, previewImages) =>
-          onMutationCalled(mutationResult?.updateTemplate, previewImages)
+        onTemplateUpdated={(mutationResult: UpdateTemplateMutation | undefined | null, previewImages) =>
+          onMutationCalled(mutationResult?.updateTemplate, previewImages) //!! what does this do?!
         }
         templateType={TemplateType.Whiteboard}
       />

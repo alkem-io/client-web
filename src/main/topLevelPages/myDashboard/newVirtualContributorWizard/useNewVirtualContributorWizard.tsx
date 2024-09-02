@@ -378,7 +378,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
               displayName: post.title,
               description: post.description,
             },
-            type: CalloutType.Post,
           },
         },
       },

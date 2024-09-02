@@ -15,6 +15,7 @@ export interface NewTemplateBase extends Identifiable {
     description?: string;
     tagset?: {
       id: string;
+      name: string;
       tags: string[];
     };
     visual?: {

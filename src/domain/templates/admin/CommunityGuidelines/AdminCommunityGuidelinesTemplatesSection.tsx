@@ -8,7 +8,7 @@ import {
 import {
   useCreateTemplateMutation,
   useDeleteTemplateMutation,
-  useUpdateCommunityGuidelinesTemplateMutation,
+  useUpdateTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import AdminTemplatesSection from '../../../platform/admin/InnovationPacks/OldAdminTemplatesSection';
@@ -40,7 +40,7 @@ const AdminCommunityGuidelinesTemplatesSection = ({
   const { t } = useTranslation();
 
   const [createTemplate] = useCreateTemplateMutation();
-  const [updateCommunityGuidelinesTemplate] = useUpdateCommunityGuidelinesTemplateMutation();
+  const [updateTemplate] = useUpdateTemplateMutation();
   const [deleteTemplate] = useDeleteTemplateMutation();
 
   return (
@@ -70,7 +70,7 @@ const AdminCommunityGuidelinesTemplatesSection = ({
           const updatedVariables = { communityGuidelines: updatedGuidelines, ...rest, type: TemplateType.CommunityGuidelines };
           return createTemplate({ variables: updatedVariables, refetchQueries });
         }}
-        onUpdateTemplate={variables => updateCommunityGuidelinesTemplate({ variables, refetchQueries })}
+        onUpdateTemplate={variables => updateTemplate({ variables, refetchQueries })}
         onDeleteTemplate={async variables => {
           await deleteTemplate({ variables, refetchQueries });
         }}

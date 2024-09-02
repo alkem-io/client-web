@@ -4,12 +4,12 @@ import { DialogHeaderProps } from '../../../../../../core/ui/dialog/DialogHeader
 import TemplateDialogBase from '../TemplateDialogBase';
 import { TemplateType } from '../../../../../../core/apollo/generated/graphql-schema';
 import { AnyTemplate } from '../../../models/TemplateBase';
-import TemplateForm, { TemplateFormSubmittedValues } from '../../Forms/TemplateForm';
+import TemplateForm, { AnyTemplateFormSubmittedValues } from '../../Forms/TemplateForm';
 
 interface EditTemplateDialogProps {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
-  onSubmit: (values: TemplateFormSubmittedValues) => void;
+  onSubmit: (values: AnyTemplateFormSubmittedValues) => void;
   onDelete: () => void;
   template: AnyTemplate | undefined;
   templateType: TemplateType;
@@ -20,11 +20,9 @@ const EditTemplateDialog = ({ template, templateType, open, onClose, onSubmit, o
     return null;
   }
 
-  const handleSubmit = (values: TemplateFormSubmittedValues) => {
-    return onSubmit({
-      ...values,
-      tagsetId: template.profile.tagset?.id,
-    });
+  const handleSubmit = (values: AnyTemplateFormSubmittedValues) => {
+    //!! maybe here we have to add the tagsetId
+    return onSubmit(values);
   };
 
   return (
@@ -38,10 +36,8 @@ const EditTemplateDialog = ({ template, templateType, open, onClose, onSubmit, o
       {({ actions }) => (
         <TemplateForm
           template={template}
-          templateType={templateType}
           onSubmit={handleSubmit}
           actions={actions}
-          validator={undefined}
         />
       )}
     </TemplateDialogBase>

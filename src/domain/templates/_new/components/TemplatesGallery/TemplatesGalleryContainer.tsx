@@ -29,11 +29,8 @@ const TemplatesGalleryContainer = ({ templates, templatesSetId, baseUrl, childre
         return buildLink(`${baseUrl}/${RoutePaths.communityGuidelinesTemplatesRoutePath}/${template.id}`);
       case TemplateType.InnovationFlow:
         return buildLink(`${baseUrl}/${RoutePaths.innovationTemplatesRoutePath}/${template.id}`);
-      case TemplateType.Post: {
-        const link = buildLink(`${baseUrl}/${RoutePaths.postTemplatesRoutePath}/${template.id}`);
-        console.log('template', template, link);
-        return link;
-      }
+      case TemplateType.Post:
+        return buildLink(`${baseUrl}/${RoutePaths.postTemplatesRoutePath}/${template.id}`);
       case TemplateType.Whiteboard:
         return buildLink(`${baseUrl}/${RoutePaths.whiteboardTemplatesRoutePath}/${template.id}`);
     }

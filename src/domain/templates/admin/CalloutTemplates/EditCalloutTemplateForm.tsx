@@ -3,7 +3,7 @@ import { FormikProps } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
-import TemplateForm, { TemplateProfileValues } from '../../_new/components/Forms/TemplateForm';
+import TemplateFormBase, { TemplateProfileValues } from '../../_new/components/Forms/TemplateFormBase';
 import { Reference, Tagset } from '../../../common/profile/Profile';
 import { CalloutType, UpdateTemplateInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../../core/utils/Identifiable';
@@ -187,7 +187,7 @@ const EditCalloutTemplateForm = ({ template, visual, onSubmit, actions }: Callou
   };
 
   return (
-    <TemplateForm
+    <TemplateFormBase
       initialValues={initialValues}
       visual={visual}
       onSubmit={handleSubmit}
@@ -229,7 +229,7 @@ const EditCalloutTemplateForm = ({ template, visual, onSubmit, actions }: Callou
           )}
         </>
       )}
-    </TemplateForm>
+    </TemplateFormBase>
   );
 };
 

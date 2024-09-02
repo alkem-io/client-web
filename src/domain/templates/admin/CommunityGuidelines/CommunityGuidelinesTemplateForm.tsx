@@ -8,7 +8,7 @@ import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikI
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { gutters } from '../../../../core/ui/grid/utils';
-import TemplateForm, { TemplateProfileValues } from '../../_new/components/Forms/TemplateForm';
+import TemplateFormBase, { TemplateProfileValues } from '../../_new/components/Forms/TemplateFormBase';
 import { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
 import FormikReferenceSegment from '../../../platform/admin/components/Common/FormikReferenceSegment';
 import ProfileReferenceSegment from '../../../platform/admin/components/Common/ProfileReferenceSegment';
@@ -78,7 +78,7 @@ const CommunityGuidelinesTemplateForm = ({
 }: CommunityGuidelinesTemplateFormProps) => {
   const { t } = useTranslation();
   return (
-    <TemplateForm
+    <TemplateFormBase
       initialValues={initialValues}
       visual={visual}
       onSubmit={onSubmit}
@@ -110,7 +110,7 @@ const CommunityGuidelinesTemplateForm = ({
           )}
         </>
       )}
-    </TemplateForm>
+    </TemplateFormBase>
   );
 };
 

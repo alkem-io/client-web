@@ -25,53 +25,26 @@ mutation createTemplate(
     id
   }
 }
-
-# //!!
-mutation updateInnovationFlowTemplate(
+mutation UpdateTemplate(
   $templateId: UUID!
   $profile: UpdateProfileInput!
+  $postDefaultDescription: Markdown
+  $callout: UpdateCalloutInput
   $innovationFlowStates: [UpdateInnovationFlowStateInput!]
-) {
-  updateTemplate(updateData: { ID: $templateId, profile: $profile, innovationFlowStates: $innovationFlowStates }) {
-    id
-  }
-}
-
-mutation updatePostTemplate($templateId: UUID!, $postDefaultDescription: Markdown, $profile: UpdateProfileInput) {
-  updateTemplate(updateData: { ID: $templateId, postDefaultDescription: $postDefaultDescription, profile: $profile }) {
-    id
-  }
-}
-mutation updateCalloutTemplate($templateId: UUID!, $callout: UpdateCalloutInput, $profile: UpdateProfileInput!) {
-  updateTemplate(updateData: { ID: $templateId, callout: $callout, profile: $profile }) {
-    id
-    profile {
-      id
-      visual(type: CARD) {
-        id
-      }
-    }
-  }
-}
-
-mutation updateWhiteboardTemplate($templateId: UUID!, $content: WhiteboardContent, $profile: UpdateProfileInput!) {
-  updateTemplate(updateData: { ID: $templateId, whiteboard: { content: $content }, profile: $profile }) {
-    id
-    profile {
-      id
-      visual(type: CARD) {
-        id
-      }
-    }
-  }
-}
-
-mutation updateCommunityGuidelinesTemplate(
-  $templateId: UUID!
-  $profile: UpdateProfileInput
+  $whiteboard: UpdateWhiteboardInput
   $communityGuidelines: UpdateCommunityGuidelinesInput
 ) {
-  updateTemplate(updateData: { ID: $templateId, profile: $profile, communityGuidelines: $communityGuidelines }) {
+  updateTemplate(
+    updateData: {
+      ID: $templateId
+      profile: $profile
+      callout: $callout
+      postDefaultDescription: $postDefaultDescription
+      innovationFlowStates: $innovationFlowStates
+      whiteboard: $whiteboard
+      communityGuidelines: $communityGuidelines
+    }
+  ) {
     id
   }
 }
@@ -81,13 +54,7 @@ mutation deleteTemplate($templateId: UUID!) {
     id
   }
 }
-
-mutation UpdateTemplate($template: UpdateTemplateInput!) {
-  updateTemplate(updateData: $template) {
-    id
-  }
-}
-
+##//!! move this to somewhere else
 query SpaceTemplatesSetId($spaceNameId: UUID_NAMEID!) {
   space(ID: $spaceNameId) {
     id

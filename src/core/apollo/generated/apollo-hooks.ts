@@ -4422,12 +4422,6 @@ export const AdminInnovationPackDocument = gql`
         }
         listedInStore
         searchVisibility
-        provider {
-          id
-          profile {
-            displayName
-          }
-        }
       }
     }
   }
@@ -19631,282 +19625,77 @@ export type CreateTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateTemplateMutation,
   SchemaTypes.CreateTemplateMutationVariables
 >;
-export const UpdateInnovationFlowTemplateDocument = gql`
-  mutation updateInnovationFlowTemplate(
+export const UpdateTemplateDocument = gql`
+  mutation UpdateTemplate(
     $templateId: UUID!
     $profile: UpdateProfileInput!
+    $postDefaultDescription: Markdown
+    $callout: UpdateCalloutInput
     $innovationFlowStates: [UpdateInnovationFlowStateInput!]
+    $whiteboard: UpdateWhiteboardInput
+    $communityGuidelines: UpdateCommunityGuidelinesInput
   ) {
-    updateTemplate(updateData: { ID: $templateId, profile: $profile, innovationFlowStates: $innovationFlowStates }) {
-      id
-    }
-  }
-`;
-export type UpdateInnovationFlowTemplateMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateInnovationFlowTemplateMutation,
-  SchemaTypes.UpdateInnovationFlowTemplateMutationVariables
->;
-
-/**
- * __useUpdateInnovationFlowTemplateMutation__
- *
- * To run a mutation, you first call `useUpdateInnovationFlowTemplateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateInnovationFlowTemplateMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateInnovationFlowTemplateMutation, { data, loading, error }] = useUpdateInnovationFlowTemplateMutation({
- *   variables: {
- *      templateId: // value for 'templateId'
- *      profile: // value for 'profile'
- *      innovationFlowStates: // value for 'innovationFlowStates'
- *   },
- * });
- */
-export function useUpdateInnovationFlowTemplateMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateInnovationFlowTemplateMutation,
-    SchemaTypes.UpdateInnovationFlowTemplateMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateInnovationFlowTemplateMutation,
-    SchemaTypes.UpdateInnovationFlowTemplateMutationVariables
-  >(UpdateInnovationFlowTemplateDocument, options);
-}
-
-export type UpdateInnovationFlowTemplateMutationHookResult = ReturnType<typeof useUpdateInnovationFlowTemplateMutation>;
-export type UpdateInnovationFlowTemplateMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowTemplateMutation>;
-export type UpdateInnovationFlowTemplateMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateInnovationFlowTemplateMutation,
-  SchemaTypes.UpdateInnovationFlowTemplateMutationVariables
->;
-export const UpdatePostTemplateDocument = gql`
-  mutation updatePostTemplate($templateId: UUID!, $postDefaultDescription: Markdown, $profile: UpdateProfileInput) {
     updateTemplate(
-      updateData: { ID: $templateId, postDefaultDescription: $postDefaultDescription, profile: $profile }
+      updateData: {
+        ID: $templateId
+        profile: $profile
+        callout: $callout
+        postDefaultDescription: $postDefaultDescription
+        innovationFlowStates: $innovationFlowStates
+        whiteboard: $whiteboard
+        communityGuidelines: $communityGuidelines
+      }
     ) {
       id
     }
   }
 `;
-export type UpdatePostTemplateMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdatePostTemplateMutation,
-  SchemaTypes.UpdatePostTemplateMutationVariables
+export type UpdateTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateTemplateMutation,
+  SchemaTypes.UpdateTemplateMutationVariables
 >;
 
 /**
- * __useUpdatePostTemplateMutation__
+ * __useUpdateTemplateMutation__
  *
- * To run a mutation, you first call `useUpdatePostTemplateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdatePostTemplateMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTemplateMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updatePostTemplateMutation, { data, loading, error }] = useUpdatePostTemplateMutation({
+ * const [updateTemplateMutation, { data, loading, error }] = useUpdateTemplateMutation({
  *   variables: {
  *      templateId: // value for 'templateId'
+ *      profile: // value for 'profile'
  *      postDefaultDescription: // value for 'postDefaultDescription'
- *      profile: // value for 'profile'
- *   },
- * });
- */
-export function useUpdatePostTemplateMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdatePostTemplateMutation,
-    SchemaTypes.UpdatePostTemplateMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UpdatePostTemplateMutation, SchemaTypes.UpdatePostTemplateMutationVariables>(
-    UpdatePostTemplateDocument,
-    options
-  );
-}
-
-export type UpdatePostTemplateMutationHookResult = ReturnType<typeof useUpdatePostTemplateMutation>;
-export type UpdatePostTemplateMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePostTemplateMutation>;
-export type UpdatePostTemplateMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdatePostTemplateMutation,
-  SchemaTypes.UpdatePostTemplateMutationVariables
->;
-export const UpdateCalloutTemplateDocument = gql`
-  mutation updateCalloutTemplate($templateId: UUID!, $callout: UpdateCalloutInput, $profile: UpdateProfileInput!) {
-    updateTemplate(updateData: { ID: $templateId, callout: $callout, profile: $profile }) {
-      id
-      profile {
-        id
-        visual(type: CARD) {
-          id
-        }
-      }
-    }
-  }
-`;
-export type UpdateCalloutTemplateMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateCalloutTemplateMutation,
-  SchemaTypes.UpdateCalloutTemplateMutationVariables
->;
-
-/**
- * __useUpdateCalloutTemplateMutation__
- *
- * To run a mutation, you first call `useUpdateCalloutTemplateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateCalloutTemplateMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateCalloutTemplateMutation, { data, loading, error }] = useUpdateCalloutTemplateMutation({
- *   variables: {
- *      templateId: // value for 'templateId'
  *      callout: // value for 'callout'
- *      profile: // value for 'profile'
- *   },
- * });
- */
-export function useUpdateCalloutTemplateMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateCalloutTemplateMutation,
-    SchemaTypes.UpdateCalloutTemplateMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateCalloutTemplateMutation,
-    SchemaTypes.UpdateCalloutTemplateMutationVariables
-  >(UpdateCalloutTemplateDocument, options);
-}
-
-export type UpdateCalloutTemplateMutationHookResult = ReturnType<typeof useUpdateCalloutTemplateMutation>;
-export type UpdateCalloutTemplateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutTemplateMutation>;
-export type UpdateCalloutTemplateMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateCalloutTemplateMutation,
-  SchemaTypes.UpdateCalloutTemplateMutationVariables
->;
-export const UpdateWhiteboardTemplateDocument = gql`
-  mutation updateWhiteboardTemplate($templateId: UUID!, $content: WhiteboardContent, $profile: UpdateProfileInput!) {
-    updateTemplate(updateData: { ID: $templateId, whiteboard: { content: $content }, profile: $profile }) {
-      id
-      profile {
-        id
-        visual(type: CARD) {
-          id
-        }
-      }
-    }
-  }
-`;
-export type UpdateWhiteboardTemplateMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateWhiteboardTemplateMutation,
-  SchemaTypes.UpdateWhiteboardTemplateMutationVariables
->;
-
-/**
- * __useUpdateWhiteboardTemplateMutation__
- *
- * To run a mutation, you first call `useUpdateWhiteboardTemplateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateWhiteboardTemplateMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateWhiteboardTemplateMutation, { data, loading, error }] = useUpdateWhiteboardTemplateMutation({
- *   variables: {
- *      templateId: // value for 'templateId'
- *      content: // value for 'content'
- *      profile: // value for 'profile'
- *   },
- * });
- */
-export function useUpdateWhiteboardTemplateMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateWhiteboardTemplateMutation,
-    SchemaTypes.UpdateWhiteboardTemplateMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateWhiteboardTemplateMutation,
-    SchemaTypes.UpdateWhiteboardTemplateMutationVariables
-  >(UpdateWhiteboardTemplateDocument, options);
-}
-
-export type UpdateWhiteboardTemplateMutationHookResult = ReturnType<typeof useUpdateWhiteboardTemplateMutation>;
-export type UpdateWhiteboardTemplateMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateWhiteboardTemplateMutation>;
-export type UpdateWhiteboardTemplateMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateWhiteboardTemplateMutation,
-  SchemaTypes.UpdateWhiteboardTemplateMutationVariables
->;
-export const UpdateCommunityGuidelinesTemplateDocument = gql`
-  mutation updateCommunityGuidelinesTemplate(
-    $templateId: UUID!
-    $profile: UpdateProfileInput
-    $communityGuidelines: UpdateCommunityGuidelinesInput
-  ) {
-    updateTemplate(updateData: { ID: $templateId, profile: $profile, communityGuidelines: $communityGuidelines }) {
-      id
-    }
-  }
-`;
-export type UpdateCommunityGuidelinesTemplateMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateCommunityGuidelinesTemplateMutation,
-  SchemaTypes.UpdateCommunityGuidelinesTemplateMutationVariables
->;
-
-/**
- * __useUpdateCommunityGuidelinesTemplateMutation__
- *
- * To run a mutation, you first call `useUpdateCommunityGuidelinesTemplateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateCommunityGuidelinesTemplateMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateCommunityGuidelinesTemplateMutation, { data, loading, error }] = useUpdateCommunityGuidelinesTemplateMutation({
- *   variables: {
- *      templateId: // value for 'templateId'
- *      profile: // value for 'profile'
+ *      innovationFlowStates: // value for 'innovationFlowStates'
+ *      whiteboard: // value for 'whiteboard'
  *      communityGuidelines: // value for 'communityGuidelines'
  *   },
  * });
  */
-export function useUpdateCommunityGuidelinesTemplateMutation(
+export function useUpdateTemplateMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateCommunityGuidelinesTemplateMutation,
-    SchemaTypes.UpdateCommunityGuidelinesTemplateMutationVariables
+    SchemaTypes.UpdateTemplateMutation,
+    SchemaTypes.UpdateTemplateMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateCommunityGuidelinesTemplateMutation,
-    SchemaTypes.UpdateCommunityGuidelinesTemplateMutationVariables
-  >(UpdateCommunityGuidelinesTemplateDocument, options);
+  return Apollo.useMutation<SchemaTypes.UpdateTemplateMutation, SchemaTypes.UpdateTemplateMutationVariables>(
+    UpdateTemplateDocument,
+    options
+  );
 }
 
-export type UpdateCommunityGuidelinesTemplateMutationHookResult = ReturnType<
-  typeof useUpdateCommunityGuidelinesTemplateMutation
->;
-export type UpdateCommunityGuidelinesTemplateMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateCommunityGuidelinesTemplateMutation>;
-export type UpdateCommunityGuidelinesTemplateMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateCommunityGuidelinesTemplateMutation,
-  SchemaTypes.UpdateCommunityGuidelinesTemplateMutationVariables
+export type UpdateTemplateMutationHookResult = ReturnType<typeof useUpdateTemplateMutation>;
+export type UpdateTemplateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateTemplateMutation>;
+export type UpdateTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateTemplateMutation,
+  SchemaTypes.UpdateTemplateMutationVariables
 >;
 export const DeleteTemplateDocument = gql`
   mutation deleteTemplate($templateId: UUID!) {
@@ -19955,54 +19744,6 @@ export type DeleteTemplateMutationResult = Apollo.MutationResult<SchemaTypes.Del
 export type DeleteTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteTemplateMutation,
   SchemaTypes.DeleteTemplateMutationVariables
->;
-export const UpdateTemplateDocument = gql`
-  mutation UpdateTemplate($template: UpdateTemplateInput!) {
-    updateTemplate(updateData: $template) {
-      id
-    }
-  }
-`;
-export type UpdateTemplateMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateTemplateMutation,
-  SchemaTypes.UpdateTemplateMutationVariables
->;
-
-/**
- * __useUpdateTemplateMutation__
- *
- * To run a mutation, you first call `useUpdateTemplateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateTemplateMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateTemplateMutation, { data, loading, error }] = useUpdateTemplateMutation({
- *   variables: {
- *      template: // value for 'template'
- *   },
- * });
- */
-export function useUpdateTemplateMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateTemplateMutation,
-    SchemaTypes.UpdateTemplateMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UpdateTemplateMutation, SchemaTypes.UpdateTemplateMutationVariables>(
-    UpdateTemplateDocument,
-    options
-  );
-}
-
-export type UpdateTemplateMutationHookResult = ReturnType<typeof useUpdateTemplateMutation>;
-export type UpdateTemplateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateTemplateMutation>;
-export type UpdateTemplateMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateTemplateMutation,
-  SchemaTypes.UpdateTemplateMutationVariables
 >;
 export const SpaceTemplatesSetIdDocument = gql`
   query SpaceTemplatesSetId($spaceNameId: UUID_NAMEID!) {

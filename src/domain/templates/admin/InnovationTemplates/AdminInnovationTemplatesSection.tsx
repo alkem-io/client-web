@@ -11,7 +11,7 @@ import { InnovationPack } from '../../../platform/admin/InnovationPacks/Innovati
 import {
   useCreateTemplateMutation,
   useDeleteTemplateMutation,
-  useUpdateInnovationFlowTemplateMutation,
+  useUpdateTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import AdminTemplatesSection from '../../../platform/admin/InnovationPacks/OldAdminTemplatesSection';
 import { Box } from '@mui/material';
@@ -35,7 +35,7 @@ const AdminInnovationTemplatesSection = ({ refetchQueries, ...props }: AdminInno
   const { t } = useTranslation();
 
   const [createTemplate] = useCreateTemplateMutation();
-  const [updateInnovationFlowTemplate] = useUpdateInnovationFlowTemplateMutation();
+  const [updateTemplate] = useUpdateTemplateMutation();
   const [deleteTemplate] = useDeleteTemplateMutation();
 
   return (
@@ -51,7 +51,7 @@ const AdminInnovationTemplatesSection = ({ refetchQueries, ...props }: AdminInno
         createTemplateDialogComponent={CreateInnovationTemplateDialog}
         editTemplateDialogComponent={EditInnovationTemplateDialog}
         onCreateTemplate={variables => createTemplate({ variables, refetchQueries })}
-        onUpdateTemplate={variables => updateInnovationFlowTemplate({ variables, refetchQueries })}
+        onUpdateTemplate={variables => updateTemplate({ variables, refetchQueries })}
         onDeleteTemplate={variables => deleteTemplate({ variables, refetchQueries })}
         templateType={TemplateType.InnovationFlow}
       />

@@ -1,7 +1,7 @@
-import { useTranslation } from 'react-i18next';
 import {
   CommunityGuidelinesTemplateFragment,
-  UpdateCommunityGuidelinesTemplateMutationVariables,
+  TemplateType,
+  UpdateTemplateMutationVariables,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import CommunityGuidelinesTemplateForm, {
@@ -14,7 +14,7 @@ import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase
 interface EditCommunityGuidelinesTemplateDialogProps {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
-  onSubmit: (values: UpdateCommunityGuidelinesTemplateMutationVariables) => void;
+  onSubmit: (values: UpdateTemplateMutationVariables) => void;
   onDelete: () => void;
   template: CommunityGuidelinesTemplateFragment | undefined;
 }
@@ -26,7 +26,6 @@ const EditCommunityGuidelinesTemplateDialog = ({
   onSubmit,
   onDelete,
 }: EditCommunityGuidelinesTemplateDialogProps) => {
-  const { t } = useTranslation();
 
   if (!template) {
     return null;
@@ -40,13 +39,15 @@ const EditCommunityGuidelinesTemplateDialog = ({
         references: template.communityGuidelines?.profile.references ?? [],
       },
     },
-    displayName: template.profile.displayName,
-    description: template.profile.description,
-    tags: template.profile.tagset?.tags,
+    profile: {
+      displayName: template.profile.displayName,
+      description: template.profile.description ?? '',
+      tags: template.profile.tagset?.tags ?? [],
+    }
   };
 
   const handleSubmit = (values: CommunityGuidelinesTemplateFormSubmittedValues) => {
-    const variables: UpdateCommunityGuidelinesTemplateMutationVariables = {
+    const variables: UpdateTemplateMutationVariables = {
       templateId: template.id,
       profile: {
         displayName: values.profile?.displayName,
@@ -77,7 +78,7 @@ const EditCommunityGuidelinesTemplateDialog = ({
     <TemplateDialogBase
       open={open}
       onClose={onClose}
-      templateTypeName={t('templateLibrary.communityGuidelinesTemplates.name')}
+      templateType={TemplateType.CommunityGuidelines}
       onDelete={onDelete}
       editMode
     >

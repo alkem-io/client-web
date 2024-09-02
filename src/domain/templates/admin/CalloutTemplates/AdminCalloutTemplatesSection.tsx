@@ -19,7 +19,7 @@ import {
   useCalloutTemplateContentLazyQuery,
   useCreateTemplateMutation,
   useDeleteTemplateMutation,
-  useUpdateCalloutTemplateMutation,
+  useUpdateTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import AdminTemplatesSection from '../../../platform/admin/InnovationPacks/OldAdminTemplatesSection';
 import { Identifiable } from '../../../../core/utils/Identifiable';
@@ -43,8 +43,8 @@ interface AdminCalloutTemplatesSectionProps {
 const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCalloutTemplatesSectionProps) => {
   const { t } = useTranslation();
 
-  const [createCalloutTemplate] = useCreateTemplateMutation();
-  const [updateCalloutTemplate] = useUpdateCalloutTemplateMutation();
+  const [createTemplate] = useCreateTemplateMutation();
+  const [updateTemplate] = useUpdateTemplateMutation();
   const [deleteTemplate] = useDeleteTemplateMutation();
   const [fetchTemplateData] = useCalloutTemplateContentLazyQuery();
 
@@ -98,7 +98,7 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
             },
           };
 
-          return createCalloutTemplate({ variables, refetchQueries });
+          return createTemplate({ variables, refetchQueries });
         }}
         onUpdateTemplate={async ({
           templateId,
@@ -116,7 +116,7 @@ const AdminCalloutTemplatesSection = ({ refetchQueries, ...props }: AdminCallout
             }
           });
 
-          await updateCalloutTemplate({
+          await updateTemplate({
             variables: {
               templateId: templateId,
               callout: updatedValues.callout,

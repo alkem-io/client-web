@@ -1,15 +1,14 @@
 import React, { FC, useMemo, useState } from 'react';
 import TemplatesGalleryContainer from '../TemplatesGallery/TemplatesGalleryContainer';
 import TemplatesGallery from '../TemplatesGallery/TemplatesGallery';
-import { useAllTemplatesInTemplatesSetQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useAllTemplatesInTemplatesSetQuery, useUpdateTemplateMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 import { useTranslation } from 'react-i18next';
 import EditTemplateDialog from '../Dialogs/EditTemplateDialog/EditTemplateDialog';
-import useNavigate from '../../../../../core/routing/useNavigate';
 import { AnyTemplate } from '../../models/TemplateBase';
 import useLoadingState from '../../../../shared/utils/useLoadingState';
 import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
-import { TemplateFormSubmittedValues } from '../Forms/TemplateForm';
+import { AnyTemplateFormSubmittedValues } from '../Forms/TemplateForm';
 import useBackToPath from '../../../../../core/routing/useBackToPath';
 
 interface TemplatesAdminProps {
@@ -71,14 +70,70 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
     ].find(template => template.id === templateId);
   }, [templateId, data?.lookup.templatesSet])
 
-  const handleTemplateUpdate = async (values: TemplateFormSubmittedValues) => {
-    //!!
-    return Promise.resolve();
+  const [updateTemplate] = useUpdateTemplateMutation();
+  const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
+    const { profile: { tagsets, ...profile }, ...rest } = values;
+
+    return updateTemplate({
+      variables: {
+        templateId: templateId!,
+        profile: {
+          ...profile,
+          tagsets: tagsets?.map(tagset => ({
+            ID: tagset.id,
+            tags: tagset.tags,
+          })),
+        },
+        ...rest
+      }
+    });
   };
 
   return (
     <>
-      <PageContentBlockSeamless disablePadding >
+      <PageContentBlockSeamless disablePadding>
+        <TemplatesGalleryContainer
+          templates={calloutTemplates}
+          templatesSetId={templatesSetId}
+          baseUrl={baseUrl}
+        >
+          {provided => (
+            <TemplatesGallery
+              headerText={t('common.enums.templateTypes.Callout')}
+              {...provided}
+            />
+          )}
+        </TemplatesGalleryContainer>
+      </PageContentBlockSeamless>
+      <PageContentBlockSeamless disablePadding>
+        <TemplatesGalleryContainer
+          templates={communityGuidelinesTemplates}
+          templatesSetId={templatesSetId}
+          baseUrl={baseUrl}
+        >
+          {provided => (
+            <TemplatesGallery
+              headerText={t('common.enums.templateTypes.CommunityGuidelines')}
+              {...provided}
+            />
+          )}
+        </TemplatesGalleryContainer>
+      </PageContentBlockSeamless>
+      <PageContentBlockSeamless disablePadding>
+        <TemplatesGalleryContainer
+          templates={innovationFlowTemplates}
+          templatesSetId={templatesSetId}
+          baseUrl={baseUrl}
+        >
+          {provided => (
+            <TemplatesGallery
+              headerText={t('common.enums.templateTypes.InnovationFlow')}
+              {...provided}
+            />
+          )}
+        </TemplatesGalleryContainer>
+      </PageContentBlockSeamless>
+      <PageContentBlockSeamless disablePadding>
         <TemplatesGalleryContainer
           templates={postTemplates}
           templatesSetId={templatesSetId}
@@ -92,7 +147,21 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           )}
         </TemplatesGalleryContainer>
       </PageContentBlockSeamless>
-      ... More template types
+      <PageContentBlockSeamless disablePadding>
+        <TemplatesGalleryContainer
+          templates={whiteboardTemplates}
+          templatesSetId={templatesSetId}
+          baseUrl={baseUrl}
+        >
+          {provided => (
+            <TemplatesGallery
+              headerText={t('common.enums.templateTypes.Whiteboard')}
+              {...provided}
+            />
+          )}
+        </TemplatesGalleryContainer>
+      </PageContentBlockSeamless>
+
       {selectedTemplate && (
         <EditTemplateDialog
           open

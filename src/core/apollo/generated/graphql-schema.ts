@@ -7221,8 +7221,8 @@ export type AdminInnovationPackQuery = {
                 nameID: string;
                 profile: {
                   __typename?: 'Profile';
-                  displayName: string;
                   id: string;
+                  displayName: string;
                   url: string;
                   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 };
@@ -7233,8 +7233,8 @@ export type AdminInnovationPackQuery = {
                 nameID: string;
                 profile: {
                   __typename?: 'Profile';
-                  displayName: string;
                   id: string;
+                  displayName: string;
                   url: string;
                   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 };
@@ -7245,8 +7245,8 @@ export type AdminInnovationPackQuery = {
                 nameID: string;
                 profile: {
                   __typename?: 'Profile';
-                  displayName: string;
                   id: string;
+                  displayName: string;
                   url: string;
                   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 };
@@ -24129,65 +24129,17 @@ export type CreateTemplateMutation = {
   createTemplate: { __typename?: 'Template'; id: string };
 };
 
-export type UpdateInnovationFlowTemplateMutationVariables = Exact<{
+export type UpdateTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
   profile: UpdateProfileInput;
-  innovationFlowStates?: InputMaybe<Array<UpdateInnovationFlowStateInput> | UpdateInnovationFlowStateInput>;
-}>;
-
-export type UpdateInnovationFlowTemplateMutation = {
-  __typename?: 'Mutation';
-  updateTemplate: { __typename?: 'Template'; id: string };
-};
-
-export type UpdatePostTemplateMutationVariables = Exact<{
-  templateId: Scalars['UUID'];
   postDefaultDescription?: InputMaybe<Scalars['Markdown']>;
-  profile?: InputMaybe<UpdateProfileInput>;
-}>;
-
-export type UpdatePostTemplateMutation = {
-  __typename?: 'Mutation';
-  updateTemplate: { __typename?: 'Template'; id: string };
-};
-
-export type UpdateCalloutTemplateMutationVariables = Exact<{
-  templateId: Scalars['UUID'];
   callout?: InputMaybe<UpdateCalloutInput>;
-  profile: UpdateProfileInput;
-}>;
-
-export type UpdateCalloutTemplateMutation = {
-  __typename?: 'Mutation';
-  updateTemplate: {
-    __typename?: 'Template';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; visual?: { __typename?: 'Visual'; id: string } | undefined };
-  };
-};
-
-export type UpdateWhiteboardTemplateMutationVariables = Exact<{
-  templateId: Scalars['UUID'];
-  content?: InputMaybe<Scalars['WhiteboardContent']>;
-  profile: UpdateProfileInput;
-}>;
-
-export type UpdateWhiteboardTemplateMutation = {
-  __typename?: 'Mutation';
-  updateTemplate: {
-    __typename?: 'Template';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; visual?: { __typename?: 'Visual'; id: string } | undefined };
-  };
-};
-
-export type UpdateCommunityGuidelinesTemplateMutationVariables = Exact<{
-  templateId: Scalars['UUID'];
-  profile?: InputMaybe<UpdateProfileInput>;
+  innovationFlowStates?: InputMaybe<Array<UpdateInnovationFlowStateInput> | UpdateInnovationFlowStateInput>;
+  whiteboard?: InputMaybe<UpdateWhiteboardInput>;
   communityGuidelines?: InputMaybe<UpdateCommunityGuidelinesInput>;
 }>;
 
-export type UpdateCommunityGuidelinesTemplateMutation = {
+export type UpdateTemplateMutation = {
   __typename?: 'Mutation';
   updateTemplate: { __typename?: 'Template'; id: string };
 };
@@ -24199,15 +24151,6 @@ export type DeleteTemplateMutationVariables = Exact<{
 export type DeleteTemplateMutation = {
   __typename?: 'Mutation';
   deleteTemplate: { __typename?: 'Template'; id: string };
-};
-
-export type UpdateTemplateMutationVariables = Exact<{
-  template: UpdateTemplateInput;
-}>;
-
-export type UpdateTemplateMutation = {
-  __typename?: 'Mutation';
-  updateTemplate: { __typename?: 'Template'; id: string };
 };
 
 export type SpaceTemplatesSetIdQueryVariables = Exact<{

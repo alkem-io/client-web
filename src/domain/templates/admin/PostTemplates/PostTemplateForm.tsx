@@ -6,7 +6,7 @@ import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikI
 import { CreateProfileInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import TemplateForm from '../../_new/components/Forms/TemplateForm';
+import TemplateFormBase from '../../_new/components/Forms/TemplateFormBase';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 
 export interface PostTemplateFormValues {
@@ -41,7 +41,7 @@ const PostTemplateForm = ({ initialValues, visual, onSubmit, actions }: PostTemp
   const { t } = useTranslation();
 
   return (
-    <TemplateForm
+    <TemplateFormBase
       initialValues={initialValues}
       visual={visual}
       onSubmit={onSubmit}
@@ -55,7 +55,7 @@ const PostTemplateForm = ({ initialValues, visual, onSubmit, actions }: PostTemp
         title={t('templateLibrary.postTemplates.defaultDescription')}
         maxLength={MARKDOWN_TEXT_LENGTH}
       />
-    </TemplateForm>
+    </TemplateFormBase>
   );
 };
 

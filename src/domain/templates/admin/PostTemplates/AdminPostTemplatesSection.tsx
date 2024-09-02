@@ -4,7 +4,7 @@ import React from 'react';
 import {
   useCreateTemplateMutation,
   useDeleteTemplateMutation,
-  useUpdatePostTemplateMutation,
+  useUpdateTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
@@ -36,7 +36,7 @@ const AdminPostTemplatesSection = ({ refetchQueries, ...props }: AdminPostTempla
   const { t } = useTranslation();
 
   const [createTemplate] = useCreateTemplateMutation();
-  const [updatePostTemplate] = useUpdatePostTemplateMutation();
+  const [updateTemplate] = useUpdateTemplateMutation();
   const [deleteTemplate] = useDeleteTemplateMutation();
 
   return (
@@ -53,7 +53,7 @@ const AdminPostTemplatesSection = ({ refetchQueries, ...props }: AdminPostTempla
           createTemplateDialogComponent={CreatePostTemplateDialog}
           editTemplateDialogComponent={EditPostTemplateDialog}
           onCreateTemplate={variables => createTemplate({ variables, refetchQueries })}
-          onUpdateTemplate={variables => updatePostTemplate({ variables, refetchQueries })}
+          onUpdateTemplate={variables => updateTemplate({ variables, refetchQueries })}
           onDeleteTemplate={async variables => {
             await deleteTemplate({ variables, refetchQueries });
           }}
