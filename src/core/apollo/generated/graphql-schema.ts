@@ -733,6 +733,15 @@ export type AssignCommunityRoleToVirtualInput = {
   virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
+export type AssignLicensePlanToAccount = {
+  /** The ID of the Account to assign the LicensePlan to. */
+  accountID: Scalars['UUID'];
+  /** The ID of the LicensePlan to assign. */
+  licensePlanID: Scalars['UUID'];
+  /** The ID of the Licensing to use. */
+  licensingID?: InputMaybe<Scalars['UUID']>;
+};
+
 export type AssignLicensePlanToSpace = {
   /** The ID of the LicensePlan to assign. */
   licensePlanID: Scalars['UUID'];
@@ -3136,6 +3145,8 @@ export type Mutation = {
   assignCommunityRoleToUser: User;
   /** Assigns a Virtual Contributor to a role in the specified Community. */
   assignCommunityRoleToVirtual: VirtualContributor;
+  /** Assign the specified LicensePlan to an Account. */
+  assignLicensePlanToAccount: Account;
   /** Assign the specified LicensePlan to a Space. */
   assignLicensePlanToSpace: Space;
   /** Assigns an Organization Role to user. */
@@ -3320,6 +3331,8 @@ export type Mutation = {
   revokeCredentialFromOrganization: Organization;
   /** Removes an authorization credential from a User. */
   revokeCredentialFromUser: User;
+  /** Revokes the specified LicensePlan on an Account. */
+  revokeLicensePlanFromAccount: Account;
   /** Revokes the specified LicensePlan on a Space. */
   revokeLicensePlanFromSpace: Space;
   /** Sends a reply to a message from the specified Room. */
@@ -3490,6 +3503,10 @@ export type MutationAssignCommunityRoleToUserArgs = {
 
 export type MutationAssignCommunityRoleToVirtualArgs = {
   roleData: AssignCommunityRoleToVirtualInput;
+};
+
+export type MutationAssignLicensePlanToAccountArgs = {
+  planData: AssignLicensePlanToAccount;
 };
 
 export type MutationAssignLicensePlanToSpaceArgs = {
@@ -3830,6 +3847,10 @@ export type MutationRevokeCredentialFromOrganizationArgs = {
 
 export type MutationRevokeCredentialFromUserArgs = {
   revokeCredentialData: RevokeAuthorizationCredentialInput;
+};
+
+export type MutationRevokeLicensePlanFromAccountArgs = {
+  planData: RevokeLicensePlanFromAccount;
 };
 
 export type MutationRevokeLicensePlanFromSpaceArgs = {
@@ -4944,6 +4965,15 @@ export type RevokeAuthorizationCredentialInput = {
   type: AuthorizationCredential;
   /** The user from whom the credential is being removed. */
   userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RevokeLicensePlanFromAccount = {
+  /** The ID of the Account to assign the LicensePlan to. */
+  accountID: Scalars['UUID'];
+  /** The ID of the LicensePlan to assign. */
+  licensePlanID: Scalars['UUID'];
+  /** The ID of the Licensing to use. */
+  licensingID?: InputMaybe<Scalars['UUID']>;
 };
 
 export type RevokeLicensePlanFromSpace = {
@@ -16811,16 +16841,6 @@ export type VirtualContributorNameFragment = {
   profile: { __typename?: 'Profile'; id: string; displayName: string };
 };
 
-export type AddVirtualContributorToCommunityMutationVariables = Exact<{
-  communityId: Scalars['UUID'];
-  virtualContributorId: Scalars['UUID_NAMEID'];
-}>;
-
-export type AddVirtualContributorToCommunityMutation = {
-  __typename?: 'Mutation';
-  assignCommunityRoleToVirtual: { __typename?: 'VirtualContributor'; id: string };
-};
-
 export type RemoveVirtualContributorFromCommunityMutationVariables = Exact<{
   communityId: Scalars['UUID'];
   virtualContributorId: Scalars['UUID_NAMEID'];
@@ -16834,7 +16854,7 @@ export type RemoveVirtualContributorFromCommunityMutation = {
 export type AssignCommunityRoleToVirtualContributorMutationVariables = Exact<{
   communityId: Scalars['UUID'];
   virtualContributorId: Scalars['UUID_NAMEID'];
-  role: CommunityRole;
+  role?: CommunityRole;
 }>;
 
 export type AssignCommunityRoleToVirtualContributorMutation = {

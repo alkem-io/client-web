@@ -46,14 +46,6 @@ fragment VirtualContributorName on VirtualContributor {
   }
 }
 
-mutation AddVirtualContributorToCommunity($communityId: UUID!, $virtualContributorId: UUID_NAMEID!) {
-  assignCommunityRoleToVirtual(
-    roleData: { communityID: $communityId, role: MEMBER, virtualContributorID: $virtualContributorId }
-  ) {
-    id
-  }
-}
-
 mutation RemoveVirtualContributorFromCommunity($communityId: UUID!, $virtualContributorId: UUID_NAMEID!) {
   removeCommunityRoleFromVirtual(
     roleData: { communityID: $communityId, role: MEMBER, virtualContributorID: $virtualContributorId }
@@ -65,7 +57,7 @@ mutation RemoveVirtualContributorFromCommunity($communityId: UUID!, $virtualCont
 mutation AssignCommunityRoleToVirtualContributor(
   $communityId: UUID!
   $virtualContributorId: UUID_NAMEID!
-  $role: CommunityRole!
+  $role: CommunityRole! = MEMBER
 ) {
   assignCommunityRoleToVirtual(
     roleData: { communityID: $communityId, role: $role, virtualContributorID: $virtualContributorId }
