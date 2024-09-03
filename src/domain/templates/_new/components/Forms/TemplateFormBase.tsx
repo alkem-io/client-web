@@ -19,6 +19,14 @@ import BlockSectionTitleWithIcon from '../../../../../core/ui/content/BlockSecti
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { BlockSectionTitle } from '../../../../../core/ui/typography';
 import { AnyTemplate } from '../../models/TemplateBase';
+import { WhiteboardPreviewImage } from '../../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+
+/**
+ * Whiteboards have preview imagesTemplates, they are handled separately and uploaded as the Visual of the Template
+ */
+export interface TemplateFormWithPreviewImages {
+  whiteboardPreviewImages?: WhiteboardPreviewImage[];
+}
 
 export interface TemplateFormProfileSubmittedValues {
   profile: {  // Match CreateProfileInput | UpdateProfileInput;
@@ -38,7 +46,7 @@ export interface TemplateFormProfileSubmittedValues {
       name?: string;
       uri?: string;
     }[];
-  }
+  };
 }
 
 interface TemplateFormBaseProps<T extends TemplateFormProfileSubmittedValues> {

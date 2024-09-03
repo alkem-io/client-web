@@ -24548,11 +24548,21 @@ export type CreateTemplateMutationVariables = Exact<{
   innovationFlowData?: InputMaybe<CreateInnovationFlowInput>;
   postDefaultDescription?: InputMaybe<Scalars['Markdown']>;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
+  includeProfileVisuals?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CreateTemplateMutation = {
   __typename?: 'Mutation';
-  createTemplate: { __typename?: 'Template'; id: string };
+  createTemplate: {
+    __typename?: 'Template';
+    id: string;
+    profile?: {
+      __typename?: 'Profile';
+      id: string;
+      cardVisual?: { __typename?: 'Visual'; id: string } | undefined;
+      previewVisual?: { __typename?: 'Visual'; id: string } | undefined;
+    };
+  };
 };
 
 export type UpdateTemplateMutationVariables = Exact<{
@@ -24563,11 +24573,21 @@ export type UpdateTemplateMutationVariables = Exact<{
   innovationFlow?: InputMaybe<UpdateInnovationFlowInput>;
   postDefaultDescription?: InputMaybe<Scalars['Markdown']>;
   whiteboard?: InputMaybe<UpdateWhiteboardInput>;
+  includeProfileVisuals?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type UpdateTemplateMutation = {
   __typename?: 'Mutation';
-  updateTemplate: { __typename?: 'Template'; id: string };
+  updateTemplate: {
+    __typename?: 'Template';
+    id: string;
+    profile?: {
+      __typename?: 'Profile';
+      id: string;
+      cardVisual?: { __typename?: 'Visual'; id: string } | undefined;
+      previewVisual?: { __typename?: 'Visual'; id: string } | undefined;
+    };
+  };
 };
 
 export type DeleteTemplateMutationVariables = Exact<{

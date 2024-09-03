@@ -8,6 +8,7 @@ mutation createTemplate(
   $innovationFlowData: CreateInnovationFlowInput
   $postDefaultDescription: Markdown
   $whiteboard: CreateWhiteboardInput
+  $includeProfileVisuals: Boolean = false
 ) {
   createTemplate(
     templateData: {
@@ -23,6 +24,15 @@ mutation createTemplate(
     }
   ) {
     id
+    profile @include(if: $includeProfileVisuals) {
+      id
+      cardVisual: visual(type: CARD) {
+        id
+      }
+      previewVisual: visual(type: BANNER) {
+        id
+      }
+    }
   }
 }
 mutation UpdateTemplate(
@@ -33,6 +43,7 @@ mutation UpdateTemplate(
   $innovationFlow: UpdateInnovationFlowInput
   $postDefaultDescription: Markdown
   $whiteboard: UpdateWhiteboardInput
+  $includeProfileVisuals: Boolean = false
 ) {
   updateTemplate(
     updateData: {
@@ -46,6 +57,15 @@ mutation UpdateTemplate(
     }
   ) {
     id
+    profile @include(if: $includeProfileVisuals) {
+      id
+      cardVisual: visual(type: CARD) {
+        id
+      }
+      previewVisual: visual(type: BANNER) {
+        id
+      }
+    }
   }
 }
 

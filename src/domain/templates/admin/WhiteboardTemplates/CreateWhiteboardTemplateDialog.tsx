@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import WhiteboardTemplateForm, {
   WhiteboardTemplateFormSubmittedValuesWithPreviewImages,
   WhiteboardTemplateFormValues,
-} from './WhiteboardTemplateForm';
+} from '../../_new/components/Forms/WhiteboardTemplateForm';
 import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
 import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';

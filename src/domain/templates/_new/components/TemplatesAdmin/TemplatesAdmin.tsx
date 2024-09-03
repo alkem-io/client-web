@@ -13,7 +13,9 @@ import useBackToPath from '../../../../../core/routing/useBackToPath';
 import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
 import { Button, ButtonProps } from '@mui/material';
 import CreateTemplateDialog from '../Dialogs/CreateTemplateDialog/CreateTemplateDialog';
-import { toCreateTemplateMutationVariables, toUpdateTemplateMutationVariables } from '../Forms/common/common';
+import { toCreateTemplateMutationVariables, toUpdateTemplateMutationVariables } from '../Forms/common/mappings';
+import { WhiteboardTemplateFormSubmittedValues } from '../Forms/WhiteboardTemplateForm';
+import { useUploadWhiteboardVisuals } from '../../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 interface TemplatesAdminProps {
   templatesSetId: string;
@@ -40,7 +42,21 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   const { t } = useTranslation();
   const backToTemplates = useBackToPath();
 
-  // Read
+
+  // Visuals management (for whiteboards)
+  const { uploadVisuals } = useUploadWhiteboardVisuals();
+  const handlePreviewTemplates = (
+    values: AnyTemplateFormSubmittedValues,
+    mutationResult?: { cardVisual?: { id: string }, previewVisual?: { id: string } }
+  ) => {
+    const whiteboardTemplate = values as WhiteboardTemplateFormSubmittedValues;
+    const previewImages = whiteboardTemplate.whiteboardPreviewImages;
+    if (mutationResult && previewImages) {
+      uploadVisuals(previewImages, { cardVisualId: mutationResult.cardVisual?.id, previewVisualId: mutationResult.previewVisual?.id });
+    }
+  }
+
+  // Read Template
   const { data, loading } = useAllTemplatesInTemplatesSetQuery({
     variables: { templatesSetId },
     skip: !templatesSetId,
@@ -65,30 +81,40 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
     ].find(template => template.id === templateId);
   }, [templateId, data?.lookup.templatesSet])
 
-  // Update
+  // Update Template
   const [updateTemplate] = useUpdateTemplateMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet']
   });
   const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
     const variables = toUpdateTemplateMutationVariables(templateId!, values);
-    await updateTemplate({
+    const result = await updateTemplate({
       variables
     });
+
+    if (selectedTemplate?.type === TemplateType.Whiteboard) {
+      // Handle the visual in a special way with the preview images
+      handlePreviewTemplates(values, result.data?.updateTemplate.profile);
+    }
   };
 
-  // Create
+  // Create Template
   const [creatingTemplateType, setCreatingTemplateType] = useState<TemplateType>();
   const [createTemplate] = useCreateTemplateMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet']
   });
   const handleTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
     const variables = toCreateTemplateMutationVariables(templatesSetId, creatingTemplateType!, values);
-    await createTemplate({
+    const result = await createTemplate({
       variables,
     });
+    if (creatingTemplateType === TemplateType.Whiteboard) {
+      // Handle the visual in a special way with the preview images
+      handlePreviewTemplates(values, result.data?.createTemplate.profile);
+    }
     setCreatingTemplateType(undefined);
   };
-  // Delete
+
+  // Delete Template
   const [deletingTemplate, setDeletingTemplate] = useState<AnyTemplate>();
   const [deleteTemplate] = useDeleteTemplateMutation();
   const [handleTemplateDeletion, isDeletingTemplate] = useLoadingState(async () => {

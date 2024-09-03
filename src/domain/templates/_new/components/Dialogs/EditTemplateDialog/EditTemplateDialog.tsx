@@ -20,11 +20,6 @@ const EditTemplateDialog = ({ template, templateType, open, onClose, onSubmit, o
     return null;
   }
 
-  const handleSubmit = (values: AnyTemplateFormSubmittedValues) => {
-    //!! maybe here we have to add the tagsetId
-    return onSubmit(values);
-  };
-
   return (
     <TemplateDialogBase
       open={open}
@@ -36,7 +31,7 @@ const EditTemplateDialog = ({ template, templateType, open, onClose, onSubmit, o
       {({ actions }) => (
         <TemplateForm
           template={template}
-          onSubmit={handleSubmit}
+          onSubmit={onSubmit}
           actions={actions}
         />
       )}

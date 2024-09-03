@@ -19558,6 +19558,7 @@ export const CreateTemplateDocument = gql`
     $innovationFlowData: CreateInnovationFlowInput
     $postDefaultDescription: Markdown
     $whiteboard: CreateWhiteboardInput
+    $includeProfileVisuals: Boolean = false
   ) {
     createTemplate(
       templateData: {
@@ -19573,6 +19574,15 @@ export const CreateTemplateDocument = gql`
       }
     ) {
       id
+      profile @include(if: $includeProfileVisuals) {
+        id
+        cardVisual: visual(type: CARD) {
+          id
+        }
+        previewVisual: visual(type: BANNER) {
+          id
+        }
+      }
     }
   }
 `;
@@ -19603,6 +19613,7 @@ export type CreateTemplateMutationFn = Apollo.MutationFunction<
  *      innovationFlowData: // value for 'innovationFlowData'
  *      postDefaultDescription: // value for 'postDefaultDescription'
  *      whiteboard: // value for 'whiteboard'
+ *      includeProfileVisuals: // value for 'includeProfileVisuals'
  *   },
  * });
  */
@@ -19634,6 +19645,7 @@ export const UpdateTemplateDocument = gql`
     $innovationFlow: UpdateInnovationFlowInput
     $postDefaultDescription: Markdown
     $whiteboard: UpdateWhiteboardInput
+    $includeProfileVisuals: Boolean = false
   ) {
     updateTemplate(
       updateData: {
@@ -19647,6 +19659,15 @@ export const UpdateTemplateDocument = gql`
       }
     ) {
       id
+      profile @include(if: $includeProfileVisuals) {
+        id
+        cardVisual: visual(type: CARD) {
+          id
+        }
+        previewVisual: visual(type: BANNER) {
+          id
+        }
+      }
     }
   }
 `;
@@ -19675,6 +19696,7 @@ export type UpdateTemplateMutationFn = Apollo.MutationFunction<
  *      innovationFlow: // value for 'innovationFlow'
  *      postDefaultDescription: // value for 'postDefaultDescription'
  *      whiteboard: // value for 'whiteboard'
+ *      includeProfileVisuals: // value for 'includeProfileVisuals'
  *   },
  * });
  */

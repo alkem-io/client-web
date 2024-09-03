@@ -6,6 +6,7 @@ import CalloutTemplateForm, { CalloutTemplateFormSubmittedValues } from './Callo
 import CommunityGuidelinesTemplateForm, { CommunityGuidelinesTemplateFormSubmittedValues } from './CommunityGuidelinesTemplateForm';
 import PostTemplateForm, { PostTemplateFormSubmittedValues } from './PostTemplateForm';
 import InnovationFlowTemplateForm, { InnovationFlowTemplateFormSubmittedValues } from './InnovationFlowTemplateForm';
+import WhiteboardTemplateForm, { WhiteboardTemplateFormSubmittedValues } from './WhiteboardTemplateForm';
 
 interface TemplateFormProps {
   template: AnyTemplate;
@@ -13,18 +14,20 @@ interface TemplateFormProps {
   actions: ReactNode | ((formState: FormikProps<AnyTemplate>) => ReactNode);
 }
 
-export type AnyTemplateFormSubmittedValues = CalloutTemplateFormSubmittedValues | CommunityGuidelinesTemplateFormSubmittedValues | PostTemplateFormSubmittedValues | InnovationFlowTemplateFormSubmittedValues
+export type AnyTemplateFormSubmittedValues = CalloutTemplateFormSubmittedValues | CommunityGuidelinesTemplateFormSubmittedValues | PostTemplateFormSubmittedValues | InnovationFlowTemplateFormSubmittedValues | WhiteboardTemplateFormSubmittedValues;
 
 const TemplateForm = ({ template, ...rest }: TemplateFormProps) => {
   switch (template.type) {
     case TemplateType.Callout:
       return <CalloutTemplateForm template={template} {...rest} />
-    case TemplateType.Post:
-      return <PostTemplateForm template={template} {...rest} />
     case TemplateType.CommunityGuidelines:
       return <CommunityGuidelinesTemplateForm template={template} {...rest} />
+    case TemplateType.Post:
+      return <PostTemplateForm template={template} {...rest} />
     case TemplateType.InnovationFlow:
       return <InnovationFlowTemplateForm template={template} {...rest} />
+    case TemplateType.Whiteboard:
+      return <WhiteboardTemplateForm template={template} {...rest} />
   }
   throw new Error('Template type not supported');
 };

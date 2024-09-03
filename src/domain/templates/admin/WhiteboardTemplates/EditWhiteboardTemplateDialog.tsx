@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import WhiteboardTemplateForm, {
   WhiteboardTemplateFormSubmittedValuesWithPreviewImages,
   WhiteboardTemplateFormValues,
-} from './WhiteboardTemplateForm';
+} from '../../_new/components/Forms/WhiteboardTemplateForm';
 import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import { WhiteboardTemplateFragment } from '../../../../core/apollo/generated/graphql-schema';
 import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase';
