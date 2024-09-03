@@ -66,7 +66,7 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({ calloutId, po
   const creator = post?.createdBy;
   const creatorAvatar = creator?.profile.avatar?.uri;
   const creatorName = creator?.profile.displayName;
-  const createdDate = post?.createdDate.toString();
+  const createdDate = post?.createdDate?.toString();
 
   const _messages = useMemo(() => post?.comments?.messages ?? [], [post?.comments?.messages]);
   const messages = useMemo<Message[]>(
@@ -81,6 +81,8 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({ calloutId, po
       })),
     [_messages]
   );
+
+  const vcInteractions = useMemo(() => post?.comments?.vcInteractions ?? [], [post?.comments?.vcInteractions]);
 
   const commentsPrivileges = post?.comments?.authorization?.myPrivileges ?? [];
   const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
@@ -122,6 +124,7 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({ calloutId, po
     canAddReaction,
     post,
     messages,
+    vcInteractions,
     roomId,
     creatorAvatar,
     creatorName,

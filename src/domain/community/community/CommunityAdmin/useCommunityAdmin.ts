@@ -184,7 +184,7 @@ const useCommunityAdmin = ({
       ...member,
       isMember: true,
       isLead: leads.find(lead => lead.id === member.id) !== undefined,
-      isFacilitating: data?.lookup.space?.account.host?.id === member.id,
+      isFacilitating: data?.lookup.space?.provider.id === member.id,
     }));
 
     // Push the rest of the leads that are not yet in the list of members
@@ -195,16 +195,16 @@ const useCommunityAdmin = ({
           ...lead,
           isMember: false,
           isLead: true,
-          isFacilitating: data?.lookup.space?.account.host?.id === lead.id,
+          isFacilitating: data?.lookup.space?.provider.id === lead.id,
         });
       }
     });
 
     // Add Facilitating if it's not yet in the result
-    if (data?.lookup.space?.account.host) {
-      const member = result.find(organization => organization.id === data.lookup.space?.account.host?.id);
+    if (data?.lookup.space?.provider) {
+      const member = result.find(organization => organization.id === data.lookup.space?.provider?.id);
       if (!member) {
-        result.push({ ...data.lookup.space.account.host, isMember: false, isLead: false, isFacilitating: true });
+        result.push({ ...data.lookup.space.provider, isMember: false, isLead: false, isFacilitating: true });
       }
     }
     return result;

@@ -1,12 +1,12 @@
 query UserContributionDisplayNames($userId: UUID_NAMEID_EMAIL!) {
   rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
+    id
     spaces {
       id
       displayName
       subspaces {
         id
         displayName
-    
       }
     }
     organizations {

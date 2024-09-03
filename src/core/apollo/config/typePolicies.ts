@@ -11,7 +11,7 @@ export const typePolicies: TypedTypePolicies = {
   MeQueryResults: {
     merge: true,
   },
-  Account: {
+  Space: {
     fields: {
       activeSubscription: {
         merge: true,
@@ -27,33 +27,18 @@ export const typePolicies: TypedTypePolicies = {
   },
   Config: {
     merge: true,
-    fields: {
-      template: {
-        merge: true,
-      },
-    },
   },
   Metadata: {
     merge: true,
   },
   Community: {
     fields: {
-      members: {
-        merge: false,
-      },
-      leadOrganizations: {
-        merge: false,
-      },
       availableLeadUsers: paginationFieldPolicy(['filter'], 'User'),
       availableMemberUsers: paginationFieldPolicy(['filter'], 'User'),
     },
   },
   Post: {
-    fields: {
-      references: {
-        merge: false,
-      },
-    },
+    fields: {},
   },
   Message: {
     fields: {

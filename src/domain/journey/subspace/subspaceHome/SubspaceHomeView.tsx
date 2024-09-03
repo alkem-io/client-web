@@ -7,26 +7,23 @@ import InnovationFlowStates from '../../../collaboration/InnovationFlow/Innovati
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { SubspaceInnovationFlow, useConsumeAction } from '../layout/SubspacePageLayout';
 import { useCalloutCreationWithPreviewImages } from '../../../collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import CalloutCreationDialog from '../../../collaboration/callout/creationDialog/CalloutCreationDialog';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import InnovationFlowVisualizerMobile from '../../../collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
 import InnovationFlowChips from '../../../collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
-import useResettableState from '../../../../core/utils/useResettableState';
 import InnovationFlowSettingsButton from '../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
 import { CalloutGroupNameValuesMap } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
 
 interface SubspaceHomeViewProps {
   journeyId: string | undefined;
   collaborationId: string | undefined;
-  innovationFlowId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
   callouts: TypedCallout[] | undefined;
   canCreateCallout: boolean;
-  calloutNames: string[];
   loading: boolean;
   refetchCallout: (calloutId: string) => void;
   onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
@@ -36,12 +33,10 @@ interface SubspaceHomeViewProps {
 const SubspaceHomeView = ({
   journeyId,
   collaborationId,
-  innovationFlowId,
   innovationFlowStates,
   currentInnovationFlowState,
   callouts,
   canCreateCallout,
-  calloutNames,
   loading,
   onCalloutsSortOrderUpdate,
   refetchCallout,
@@ -67,9 +62,19 @@ const SubspaceHomeView = ({
     </Button>
   );
 
-  const [selectedInnovationFlowState, setSelectedInnovationFlowState] = useResettableState(currentInnovationFlowState, [
-    innovationFlowId,
-  ]);
+  // on innovation flow tab change
+  const [selectedInnovationFlowState, setSelectedInnovationFlowState] = useState(currentInnovationFlowState);
+
+  const doesSelectedInnovationFlowStateExist = innovationFlowStates?.some(
+    state => state.displayName === selectedInnovationFlowState
+  );
+
+  // on e.g. innovation flow template change #6319
+  useEffect(() => {
+    if (!doesSelectedInnovationFlowStateExist) {
+      setSelectedInnovationFlowState(currentInnovationFlowState);
+    }
+  }, [doesSelectedInnovationFlowStateExist]);
 
   const selectedFlowStateCallouts = useMemo(() => {
     const filterCallouts = (callouts: TypedCallout[] | undefined) => {
@@ -118,7 +123,6 @@ const SubspaceHomeView = ({
         canCreateCallout={canCreateCallout && isMobile}
         loading={loading}
         journeyTypeName={journeyTypeName}
-        calloutNames={calloutNames}
         onSortOrderUpdate={onCalloutsSortOrderUpdate}
         onCalloutUpdate={refetchCallout}
         groupName={CalloutGroupName.Home}
@@ -130,7 +134,6 @@ const SubspaceHomeView = ({
         onClose={handleCreateCalloutClosed}
         onCreateCallout={handleCreateCallout}
         loading={loading}
-        calloutNames={calloutNames}
         groupName={CalloutGroupName.Home}
         journeyTypeName={journeyTypeName}
         flowState={selectedInnovationFlowState}

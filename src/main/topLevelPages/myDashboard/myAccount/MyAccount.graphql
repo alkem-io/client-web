@@ -1,39 +1,15 @@
 query MyAccount {
   me {
-    mySpaces (showOnlyMyCreatedSpaces: true) {
-      space {
-        id
-        profile {
-          id
-          displayName
-          tagline
-          url
-          avatar: visual(type: AVATAR) {
-            ...VisualUri
-          }
-          cardBanner: visual(type: CARD) {
-            ...VisualUri
-          }
-        }
-        level
-        account {
-          id
-          host {
-            id
-            nameID
-            profile {
-              id
-              displayName
-              tagline
-              url
-            }
-          }
-        }
-      }
-    }
     user {
       id
-      accounts {
+      agent {
+        id
+        credentials {
+          resourceID
+          type
+        }
+      }
+      account {
         id
         virtualContributors {
           id
@@ -46,6 +22,22 @@ query MyAccount {
               ...VisualUri
             }
           }
+        }
+        spaces {
+          id
+          profile {
+            id
+            displayName
+            tagline
+            url
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
+            cardBanner: visual(type: CARD) {
+              ...VisualUri
+            }
+          }
+          level
         }
       }
     }

@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import AssociatedOrganizationsDashboardSection, {
   AssociatedOrganizationsDashboardSectionProps,
 } from './AssociatedOrganizationsDashboardSection';
-import OrganizationCard from '../OrganizationCard/OrganizationCard';
 import AssociatedOrganizationContainer from './AssociatedOrganizationContainer';
+import AssociatedOrganizationCard from './AssociatedOrganizationCard';
 
 interface AssociatedOrganizationsLazilyFetchedProps
   extends Omit<
@@ -27,7 +27,7 @@ const OrganizationCardLazilyFetched = ({ organizationId, enableLeave }: Organiza
     <AssociatedOrganizationContainer
       organizationId={organizationId}
       enableLeave={enableLeave}
-      component={OrganizationCard}
+      component={AssociatedOrganizationCard}
     />
   );
 };

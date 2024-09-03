@@ -19,14 +19,14 @@ import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import CommentsCalloutLayout from './CommentsCalloutLayout';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 
-type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
+type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId' | 'vcInteractions';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;
 
 interface CommentsCalloutProps extends BaseCalloutViewProps {
   callout: CalloutLayoutProps['callout'] & {
     comments: CommentsCalloutData | undefined;
   };
-  calloutNames: string[];
+  calloutActions?: boolean;
 }
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
@@ -38,6 +38,7 @@ const CommentsCallout = ({
   contributionsCount,
   onExpand,
   onCollapse,
+  calloutActions = true,
   ...calloutSettingsProps
 }: CommentsCalloutProps) => {
   const { user: userMetadata, isAuthenticated } = useUserContext();
@@ -88,7 +89,7 @@ const CommentsCallout = ({
   const lastMessageOnly = breakpoint === 'xs' && !expanded;
 
   return (
-    <CalloutSettingsContainer callout={callout} expanded={expanded} {...calloutSettingsProps}>
+    <CalloutSettingsContainer callout={callout} expanded={expanded} onExpand={onExpand} {...calloutSettingsProps}>
       {calloutSettingsProvided => (
         <CommentsCalloutLayout
           callout={callout}
@@ -98,9 +99,11 @@ const CommentsCallout = ({
           expanded={expanded}
           onExpand={onExpand}
           onCollapse={onCollapse}
+          calloutActions={calloutActions}
         >
           <CommentsComponent
             messages={messages}
+            vcInteractions={callout?.comments?.vcInteractions || []}
             commentsId={commentsId}
             canReadMessages={canReadMessages}
             canPostMessages={canPostMessages}

@@ -1,10 +1,14 @@
-import { Box } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import FormikAutocomplete from '../../../../../../core/ui/forms/FormikAutocomplete';
-import { Reference, Tagset, TagsetType } from '../../../../../../core/apollo/generated/graphql-schema';
+import {
+  Reference,
+  SearchVisibility,
+  Tagset,
+  TagsetType,
+} from '../../../../../../core/apollo/generated/graphql-schema';
 import SaveButton from '../../../../../../core/ui/actions/SaveButton';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../../../core/ui/forms/field-length.constants';
 import FormikMarkdownField from '../../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
@@ -16,6 +20,8 @@ import { TagsetSegment, tagsetSegmentSchema } from '../../../components/Common/T
 import Gutters from '../../../../../../core/ui/grid/Gutters';
 import MarkdownValidator from '../../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import { DEFAULT_TAGSET } from '../../../../../common/tags/tagset.constants';
+import FormikCheckboxField from '../../../../../../core/ui/forms/FormikCheckboxField';
+import FormikSelect from '../../../../../../core/ui/forms/FormikSelect';
 
 export interface InnovationPackFormValues {
   nameID: string;
@@ -25,7 +31,8 @@ export interface InnovationPackFormValues {
     tagsets: Pick<Tagset, 'id' | 'tags' | 'name' | 'allowedValues' | 'type'>[];
     references: Pick<Reference, 'id' | 'name' | 'description' | 'uri'>[];
   };
-  providerId: string;
+  listedInStore: boolean;
+  searchVisibility: SearchVisibility;
 }
 
 interface InnovationPackFormProps {
@@ -39,6 +46,8 @@ interface InnovationPackFormProps {
     references?: Pick<Reference, 'id' | 'name' | 'description' | 'uri'>[];
   };
   providerId?: string;
+  listedInStore?: boolean;
+  searchVisibility?: SearchVisibility;
 
   organizations?: { id: string; name: string }[];
 
@@ -46,10 +55,15 @@ interface InnovationPackFormProps {
   onSubmit: (formData: InnovationPackFormValues) => void;
 }
 
+const findProvider = (providerId: string | undefined, organizations: { id: string; name: string }[] = []) =>
+  organizations.find(org => org.id === providerId)?.name ?? `Organization not found: ${providerId}`;
+
 const InnovationPackForm: FC<InnovationPackFormProps> = ({
   isNew = false,
   nameID,
   profile,
+  listedInStore,
+  searchVisibility,
   providerId,
   organizations,
   loading,
@@ -69,7 +83,8 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
       ],
       references: profile?.references ?? [],
     },
-    providerId: providerId ?? '',
+    listedInStore: listedInStore ?? false,
+    searchVisibility: searchVisibility ?? SearchVisibility.Hidden,
   };
 
   const validationSchema = yup.object().shape({
@@ -80,7 +95,8 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
       references: referenceSegmentSchema,
       tagsets: tagsetSegmentSchema,
     }),
-    providerId: yup.string().required(),
+    listedInStore: yup.boolean(),
+    searchVisibility: yup.string().required(),
   });
 
   return (
@@ -89,13 +105,29 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
         return (
           <Gutters disablePadding>
             <NameSegment disabled={!isNew} required={isNew} nameFieldName="profile.displayName" />
-            <FormikAutocomplete
-              title={t('pages.admin.innovation-packs.fields.provider')}
-              name="providerId"
-              values={organizations ?? []}
-              required
-              placeholder={t('pages.admin.innovation-packs.fields.provider')}
-            />
+            {!isNew && (
+              <>
+                <TextField
+                  title={t('pages.admin.innovation-packs.fields.provider')}
+                  label={t('pages.admin.innovation-packs.fields.provider')}
+                  value={findProvider(providerId, organizations)}
+                  disabled
+                  placeholder={t('pages.admin.innovation-packs.fields.provider')}
+                />
+                <FormikCheckboxField
+                  name="listedInStore"
+                  title={t('pages.admin.innovation-packs.fields.listedInStore')}
+                />
+                <FormikSelect
+                  name="searchVisibility"
+                  title={t('pages.admin.innovation-packs.fields.searchVisibility')}
+                  values={Object.values(SearchVisibility).map(id => ({
+                    id,
+                    name: t(`common.enums.searchVisibility.${id}` as const),
+                  }))}
+                />
+              </>
+            )}
             <FormikMarkdownField
               title={t('common.description')}
               name="profile.description"

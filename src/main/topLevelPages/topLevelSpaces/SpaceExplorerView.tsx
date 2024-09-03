@@ -10,7 +10,11 @@ import Gutters from '../../../core/ui/grid/Gutters';
 import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import SpaceSubspaceCard from '../../../domain/journey/space/SpaceSubspaceCard/SpaceSubspaceCard';
 import { Identifiable } from '../../../core/utils/Identifiable';
-import { CommunityMembershipStatus, ProfileType } from '../../../core/apollo/generated/graphql-schema';
+import {
+  CommunityMembershipStatus,
+  ProfileType,
+  SpacePrivacyMode,
+} from '../../../core/apollo/generated/graphql-schema';
 import { Visual } from '../../../domain/common/visual/Visual';
 import { gutters, useGridItem } from '../../../core/ui/grid/utils';
 import useLazyLoading from '../../../domain/shared/pagination/useLazyLoading';
@@ -80,10 +84,12 @@ interface Space extends Identifiable {
   community?: {
     myMembershipStatus?: CommunityMembershipStatus;
   };
-  authorization?: {
-    anonymousReadAccess: boolean;
-  };
   matchedTerms?: string[];
+  settings: {
+    privacy?: {
+      mode: SpacePrivacyMode;
+    };
+  };
 }
 
 interface WithBanner {
@@ -194,22 +200,22 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
             {visibleSpaces!.map(space => (
               <SpaceSubspaceCard
                 key={space.id}
-                tagline={space.profile!.tagline}
-                displayName={space.profile!.displayName}
+                tagline={space.profile.tagline}
+                displayName={space.profile.displayName}
                 vision={space.context?.vision ?? ''}
-                journeyUri={space.profile!.url}
-                type={space.profile!.type!}
-                banner={space.profile!.cardBanner}
+                journeyUri={space.profile.url}
+                type={space.profile.type!}
+                banner={space.profile.cardBanner}
                 avatarUris={collectParentAvatars(space)}
-                tags={space.matchedTerms ?? space.profile?.tagset?.tags ?? []}
+                tags={space.matchedTerms ?? space.profile.tagset?.tags.length ? space.profile.tagset?.tags : undefined}
                 spaceDisplayName={space.parent?.profile?.displayName}
                 matchedTerms={!!space.matchedTerms}
                 label={
                   shouldDisplayPrivacyInfo && (
                     <SpaceSubspaceCardLabel
-                      type={space.profile!.type!}
+                      type={space.profile.type!}
                       member={space.community?.myMembershipStatus === CommunityMembershipStatus.Member}
-                      isPrivate={!space.authorization?.anonymousReadAccess}
+                      isPrivate={space.settings.privacy?.mode === SpacePrivacyMode.Private}
                     />
                   )
                 }

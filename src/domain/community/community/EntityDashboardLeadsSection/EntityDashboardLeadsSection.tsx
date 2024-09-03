@@ -2,17 +2,26 @@ import React, { PropsWithChildren, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EntityDashboardLeads } from '../EntityDashboardContributorsSection/Types';
 import AssociatedOrganizationsView from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
-import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
+import {
+  buildOrganizationUrl,
+  buildUserProfileUrl,
+  buildVirtualContributorUrl,
+} from '../../../../main/routing/urlBuilders';
 import { useUserContext } from '../../user';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import LeadOrganizationCard, { LeadOrganizationCardProps } from '../LeadCards/LeadOrganizationCard';
 import { SvgIconProps } from '@mui/material';
 import DashboardLeads from './DashboardLeads';
-import LeadContributorCard from '../LeadCards/LeadContributorCard';
-import LeadUserCard from '../LeadCards/LeadUserCard';
+import ContributorCardHorizontal, {
+  ContributorCardHorizontalProps,
+} from '../../../../core/ui/card/ContributorCardHorizontal';
+import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 
-const OrganizationCardTransparent = (props: LeadOrganizationCardProps) => <LeadOrganizationCard {...props} />;
+const OrganizationCardTransparent = (props: ContributorCardHorizontalProps) => <ContributorCardHorizontal {...props} />;
+
+const ContributorCard = ({ contributor }: { contributor: ContributorCardHorizontalProps }) => (
+  <ContributorCardHorizontal {...contributor} />
+);
 
 interface EntityDashboardLeadsProps extends EntityDashboardLeads {
   organizationsHeader: string;
@@ -33,33 +42,64 @@ const EntityDashboardLeadsSection = ({
 
   const { user } = useUserContext();
 
+  const { sendMessage, directMessageDialog } = useDirectMessageDialog({
+    dialogTitle: t('send-message-dialog.direct-message-title'),
+  });
+
   const leadOrganizationsMapped = useMemo(
     () =>
       leadOrganizations?.map(org => ({
         key: org.id,
         id: org.id,
-        organizationUrl: org.profile.url,
-        avatarSrc: org.profile.avatar?.uri,
-        displayName: org.profile.displayName,
-        city: org.profile.location?.city,
-        country: org.profile.location?.country,
-        tagline: org.profile.tagline,
-        tags: org.profile.tagsets?.flatMap(({ tags }) => tags),
+        profile: org.profile,
+        url: buildOrganizationUrl(org.nameID),
+        seamless: true,
+        onContact: () => {
+          sendMessage('organization', {
+            id: org.id,
+            avatarUri: org.profile.avatar?.uri,
+            displayName: org.profile.displayName,
+            city: org.profile.location?.city,
+            country: org.profile.location?.country,
+          });
+        },
       })),
     [leadOrganizations, user?.user]
   );
 
   const leadUsersMapped = useMemo(() => {
     return leadUsers?.map(user => ({
-      id: user.id,
-      userUrl: buildUserProfileUrl(user.nameID),
-      fullName: user.profile.displayName,
-      city: user.profile.location?.city,
-      country: user.profile.location?.country,
-      avatarUrl: user.profile.avatar?.uri,
-      tags: user.profile.tagsets?.flatMap(({ tags }) => tags),
+      id: user.profile.id,
+      profile: user.profile,
+      url: buildUserProfileUrl(user.nameID),
+      seamless: true,
+      onContact: () => {
+        sendMessage('user', {
+          id: user.profile.id,
+          avatarUri: user.profile.avatar?.uri,
+          displayName: user.profile.displayName,
+          city: user.profile.location?.city,
+          country: user.profile.location?.country,
+        });
+      },
     }));
   }, [leadUsers]);
+
+  const leadVirtualContributorsMapped = useMemo(() => {
+    return leadVirtualContributors?.map(vc => ({
+      id: vc.id,
+      profile: vc.profile,
+      url: buildVirtualContributorUrl(vc.nameID),
+      seamless: true,
+      onContact: () => {
+        sendMessage('user', {
+          id: vc.id,
+          avatarUri: vc.profile.avatar?.uri,
+          displayName: vc.profile.displayName,
+        });
+      },
+    }));
+  }, [leadVirtualContributors]);
 
   const leadUsersSectionVisible = !!leadUsersMapped && leadUsersMapped.length > 0;
   const leadOrganizationsSectionVisible = !!leadOrganizationsMapped && leadOrganizationsMapped.length > 0;
@@ -69,7 +109,7 @@ const EntityDashboardLeadsSection = ({
   return (
     <PageContentBlock>
       {leadUsersSectionVisible && usersHeader && (
-        <DashboardLeads headerText={usersHeader} contributors={leadUsersMapped} CardComponent={LeadUserCard} />
+        <DashboardLeads headerText={usersHeader} contributors={leadUsersMapped} CardComponent={ContributorCard} />
       )}
       {leadOrganizationsSectionVisible && organizationsHeader && (
         <>
@@ -82,9 +122,10 @@ const EntityDashboardLeadsSection = ({
         </>
       )}
       {leadUsersSectionVisible && usersHeader && (
-        <DashboardLeads headerText="" contributors={leadVirtualContributors} CardComponent={LeadContributorCard} />
+        <DashboardLeads headerText="" contributors={leadVirtualContributorsMapped} CardComponent={ContributorCard} />
       )}
       {children}
+      {directMessageDialog}
     </PageContentBlock>
   );
 };

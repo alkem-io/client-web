@@ -15,18 +15,17 @@ export interface CalloutSortProps {
 }
 
 export interface CalloutLayoutEvents extends Partial<CalloutSortEvents> {
-  onVisibilityChange: (
+  onVisibilityChange?: (
     calloutId: Callout['id'],
     visibility: CalloutVisibility,
     sendNotification: boolean
   ) => Promise<void> | undefined;
-  onCalloutEdit: (callout: CalloutEditType) => Promise<void> | undefined;
-  onCalloutDelete: (callout: CalloutDeleteType) => Promise<void> | undefined;
+  onCalloutEdit?: (callout: CalloutEditType) => Promise<void> | undefined;
+  onCalloutDelete?: (callout: CalloutDeleteType) => Promise<void> | undefined;
 }
 
 export interface BaseCalloutViewProps extends CalloutLayoutEvents, Partial<CalloutSortProps> {
   journeyTypeName: JourneyTypeName;
-  calloutNames: string[];
   contributionsCount: number;
   loading?: boolean;
   canCreate?: boolean;

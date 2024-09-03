@@ -1,29 +1,17 @@
-query VirtualContributor ($id: UUID_NAMEID!) {
-  virtualContributor (ID: $id) {
+query VirtualContributor($id: UUID_NAMEID!) {
+  virtualContributor(ID: $id) {
     id
     nameID
     authorization {
       id
       myPrivileges
     }
-    account {
+    provider {
       id
-      spaceID
-      host {
+      profile {
         id
-				profile {
-          id
-          displayName
-          tagline
-          avatar: visual(type: AVATAR) {
-            uri
-          }
-          location {
-            id
-            city
-            country
-          }
-        }
+        displayName
+        description
       }
     }
     searchVisibility
@@ -50,8 +38,8 @@ query VirtualContributor ($id: UUID_NAMEID!) {
   }
 }
 
-query VirtualContributorProfile ($id: UUID_NAMEID!) {
-  virtualContributor (ID: $id) {
+query VirtualContributorProfile($id: UUID_NAMEID!) {
+  virtualContributor(ID: $id) {
     id
     profile {
       id
@@ -107,6 +95,6 @@ mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContribu
   }
 }
 
-mutation refreshBodyOfKnowledge($deleteData: RefreshVirtualContributorBodyOfKnowledgeInput!) {
-  refreshVirtualContributorBodyOfKnowledge(deleteData: $deleteData)
+mutation refreshBodyOfKnowledge($refreshData: RefreshVirtualContributorBodyOfKnowledgeInput!) {
+  refreshVirtualContributorBodyOfKnowledge(refreshData: $refreshData)
 }

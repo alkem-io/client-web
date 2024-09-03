@@ -5,10 +5,8 @@ query CommunityMembersList(
 ) {
   lookup {
     space(ID: $spaceId) @include(if: $includeSpaceHost) {
-      account {
-        host {
-          ...ContributorDetails
-        }
+      provider {
+        ...ContributorDetails
       }
     }
     community(ID: $communityId) {

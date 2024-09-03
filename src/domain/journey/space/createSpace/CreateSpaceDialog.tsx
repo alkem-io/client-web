@@ -2,7 +2,7 @@ import DialogWithGrid, { DialogFooter } from '../../../../core/ui/dialog/DialogW
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
 import { ROUTE_HOME } from '../../../platform/routes/constants';
-import { Button, Checkbox, Dialog, DialogContent, FormControlLabel, Link, TextField } from '@mui/material';
+import { Button, Checkbox, Dialog, DialogContent, FormControlLabel, Link } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
 import { Formik } from 'formik';
 import { Trans, useTranslation } from 'react-i18next';
@@ -28,23 +28,45 @@ import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { useConfig } from '../../../platform/config/useConfig';
 import PlansTableDialog from './plansTable/PlansTableDialog';
-import { useCreateNewSpaceMutation, useSpaceUrlLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useCreateSpaceMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import { useSpaceUrlLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import useNavigate from '../../../../core/routing/useNavigate';
 import Loading from '../../../../core/ui/loading/Loading';
 import { TagCategoryValues, info } from '../../../../core/logging/sentry/log';
 import { compact } from 'lodash';
+import { useNotification } from '../../../../core/ui/notifications/useNotification';
 
 interface FormValues extends SpaceEditFormValuesType {
   licensePlanId: string;
 }
 
-const CreateSpaceDialog = () => {
-  const handleClose = useBackToStaticPath(ROUTE_HOME);
+interface CreateSpaceDialogProps {
+  account?:
+    | {
+        id: string | undefined;
+        name: string | undefined;
+      }
+    | undefined;
+  redirectOnComplete?: boolean;
+  onClose?: () => void;
+}
+
+const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: CreateSpaceDialogProps) => {
+  const redirectToHome = useBackToStaticPath(ROUTE_HOME);
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const notify = useNotification();
   const [dialogOpen, setDialogOpen] = useState(true);
   const [plansTableDialogOpen, setPlansTableDialogOpen] = useState(false);
   const [creatingDialogOpen, setCreatingDialogOpen] = useState(false);
+
+  const handleClose = () => {
+    setDialogOpen(false);
+    setPlansTableDialogOpen(false);
+    setCreatingDialogOpen(false);
+    onClose?.();
+    redirectOnComplete && redirectToHome();
+  };
 
   const tagsets = useMemo(() => {
     return [
@@ -63,7 +85,6 @@ const CreateSpaceDialog = () => {
     nameID: '',
     tagline: '',
     tagsets,
-    hostId: '',
     licensePlanId: '',
   };
 
@@ -76,7 +97,7 @@ const CreateSpaceDialog = () => {
 
   const { isAuthenticated } = useAuthenticationContext();
 
-  const { user } = useUserContext();
+  const { accountId: currentUserAccountId } = useUserContext();
 
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
 
@@ -84,19 +105,23 @@ const CreateSpaceDialog = () => {
 
   const config = useConfig();
 
-  const [CreateNewSpace] = useCreateNewSpaceMutation();
+  // either the account is passed in or we pick it up from the user context
+  const accountId = account?.id ?? currentUserAccountId;
+
+  const [CreateNewSpace] = useCreateSpaceMutation();
   const [getSpaceUrl] = useSpaceUrlLazyQuery();
   const [handleSubmit] = useLoadingState(async (values: Partial<FormValues>) => {
-    if (!user?.user.id) {
+    if (!accountId) {
       return;
     }
+
     setDialogOpen(false);
     setPlansTableDialogOpen(false);
     setCreatingDialogOpen(true);
     const { data: newSpace } = await CreateNewSpace({
       variables: {
-        hostId: user.user.id,
         spaceData: {
+          accountID: accountId,
           nameID: values.nameID,
           profileData: {
             displayName: values.name!, // ensured by yup validation
@@ -104,29 +129,36 @@ const CreateSpaceDialog = () => {
           },
           collaborationData: {},
           tags: compact(values.tagsets?.reduce((acc: string[], tagset) => [...acc, ...tagset.tags], [])),
+          licensePlanID: values.licensePlanId,
         },
-        licensePlanId: values.licensePlanId,
       },
+      refetchQueries: ['AccountInformation'],
     });
 
-    if (newSpace?.createAccount.spaceID) {
-      const { data: spaceUrlData } = await getSpaceUrl({
-        variables: {
-          spaceNameId: newSpace.createAccount.spaceID,
-        },
+    const spaceID = newSpace?.createSpace.id;
+    if (spaceID) {
+      setDialogOpen(false);
+      setCreatingDialogOpen(false);
+      info(`Space Created SpaceId:${spaceID}`, {
+        category: TagCategoryValues.SPACE_CREATION,
+        label: 'Space Created',
       });
-      info(
-        `Space Created SpaceId:${newSpace.createAccount.spaceID} Plan:${values.licensePlanId} SpaceUrl:${spaceUrlData?.space.profile.url}`,
-        {
-          category: TagCategoryValues.SPACE_CREATION,
-          label: 'Space Created',
-        }
-      );
+      notify(t('pages.admin.space.notifications.space-created'), 'success');
 
-      const spaceUrl = spaceUrlData?.space.profile.url;
-      if (spaceUrl) {
-        navigate(spaceUrl);
-        return;
+      if (redirectOnComplete) {
+        const { data: spaceUrlData } = await getSpaceUrl({
+          variables: {
+            spaceNameId: newSpace.createSpace.id,
+          },
+        });
+
+        const spaceUrl = spaceUrlData?.space.profile.url;
+        if (spaceUrl) {
+          navigate(spaceUrl);
+          return;
+        }
+      } else {
+        handleClose();
       }
     }
   });
@@ -149,19 +181,16 @@ const CreateSpaceDialog = () => {
               <DialogWithGrid open={dialogOpen} columns={12} onClose={handleClose}>
                 <DialogHeader title={t('createSpace.title')} onClose={handleClose} />
                 <DialogContent sx={{ paddingTop: 0, marginTop: -1 }}>
-                  <PageContentBlockSeamless disablePadding>
-                    <Caption>{t('createSpace.subtitle')}</Caption>
-
+                  <PageContentBlockSeamless sx={{ paddingX: 0, paddingBottom: 0 }}>
                     <FormikInputField name="name" title={t('components.nameSegment.name')} required />
                     <NameIdField name="nameID" title={t('common.url')} required />
-                    <TextField value={user?.user.profile.displayName} disabled />
                     <FormikInputField
                       name="tagline"
-                      title={t('context.space.tagline.title')}
+                      title={`${t('context.space.tagline.title')} (${t('common.optional')})`}
                       rows={3}
                       maxLength={SMALL_TEXT_LENGTH}
                     />
-                    <TagsetSegment title={t('common.tags')} tagsets={tagsets} />
+                    <TagsetSegment title={`${t('common.tags')} (${t('common.optional')})`} tagsets={tagsets} />
                     <FormControlLabel
                       value={hasAcceptedTerms}
                       onChange={(event, isChecked) => setHasAcceptedTerms(isChecked)}

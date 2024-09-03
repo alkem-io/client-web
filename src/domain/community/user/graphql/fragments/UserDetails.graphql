@@ -1,0 +1,31 @@
+fragment UserDetails on User {
+  id
+  nameID
+  firstName
+  lastName
+  email
+  phone
+  profile {
+    id
+    displayName
+    tagline
+    location {
+      country
+      city
+    }
+    description
+    avatar: visual(type: AVATAR) {
+      ...VisualFull
+    }
+    references {
+      id
+      name
+      uri
+      description
+    }
+    tagsets {
+      ...TagsetDetails
+    }
+    url
+  }
+}

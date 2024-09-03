@@ -1,0 +1,87 @@
+query AccountInformation($accountId: UUID!) {
+  lookup {
+    account(ID: $accountId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      host {
+        id
+      }
+      spaces {
+        id
+        level
+        profile {
+          ...AccountItemProfile
+          cardBanner: visual(type: CARD) {
+            ...VisualUri
+          }
+          tagline
+        }
+        community {
+          id
+        }
+        subspaces {
+          id
+          profile {
+            ...AccountItemProfile
+          }
+          type
+          community {
+            id
+          }
+        }
+      }
+      virtualContributors {
+        id
+        profile {
+          ...AccountItemProfile
+          tagline
+        }
+      }
+      innovationPacks {
+        id
+        profile {
+          ...AccountItemProfile
+        }
+        templates {
+          id
+          calloutTemplatesCount
+          communityGuidelinesTemplatesCount
+          innovationFlowTemplatesCount
+          postTemplatesCount
+          whiteboardTemplatesCount
+        }
+      }
+      innovationHubs {
+        id
+        profile {
+          ...AccountItemProfile
+          banner: visual(type: BANNER_WIDE) {
+            ...VisualUri
+          }
+        }
+        spaceVisibilityFilter
+        spaceListFilter {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+        subdomain
+      }
+    }
+  }
+}
+
+fragment AccountItemProfile on Profile {
+  id
+  displayName
+  description
+  avatar: visual(type: AVATAR) {
+    ...VisualUri
+  }
+  url
+}

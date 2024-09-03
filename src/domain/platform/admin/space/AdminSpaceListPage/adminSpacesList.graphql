@@ -17,21 +17,15 @@ query adminSpacesList {
 fragment AdminSpace on Space {
   id
   nameID
-  account {
+  visibility
+  subscriptions {
+    name
+  }
+  provider {
     id
-    subscriptions {
-      name
-    }
-    license {
+    profile {
       id
-      visibility
-    }
-    host {
-      id
-      profile {
-        id
-        displayName
-      }
+      displayName
     }
   }
   profile {

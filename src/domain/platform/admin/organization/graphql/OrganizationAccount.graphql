@@ -1,0 +1,12 @@
+query OrganizationAccount($organizationNameId: UUID_NAMEID!) {
+  organization(ID: $organizationNameId) {
+    id
+    profile {
+      id
+      displayName
+    }
+    account {
+      id
+    }
+  }
+}

@@ -1,25 +1,22 @@
-import ListItemLink, { ListItemLinkProps } from '../../../../shared/components/SearchableList/ListItemLink';
 import React, { MouseEventHandler, useMemo, useState } from 'react';
 import * as yup from 'yup';
-import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
-import { Button, CircularProgress, DialogContent, ListItemIcon, TextField } from '@mui/material';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
-import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 import { Formik } from 'formik';
+import { Button, CircularProgress, DialogContent, ListItemIcon } from '@mui/material';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import { useTranslation } from 'react-i18next';
 import { SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
-import FormikAutocomplete from '../../../../../core/ui/forms/FormikAutocomplete';
-import { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
 import {
-  useAssignLicensePlanToAccountMutation,
-  useRevokeLicensePlanFromAccountMutation,
-  useUpdateAccountPlatformSettingsMutation,
+  refetchAdminSpacesListQuery,
+  useAssignLicensePlanToSpaceMutation,
+  useRevokeLicensePlanFromSpaceMutation,
   useUpdateSpacePlatformSettingsMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useTranslation } from 'react-i18next';
+import ListItemLink, { ListItemLinkProps } from '../../../../shared/components/SearchableList/ListItemLink';
+import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
+import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
+import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 import { BlockTitle } from '../../../../../core/ui/typography';
 import { Actions } from '../../../../../core/ui/actions/Actions';
-import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { nameSegmentSchema } from '../../components/Common/NameSegment';
 import { LoadingButton } from '@mui/lab';
 import { gutters } from '../../../../../core/ui/grid/utils';
@@ -27,35 +24,30 @@ import useLoadingState from '../../../../shared/utils/useLoadingState';
 import PlansTable, { LicensePlan } from './PlansTable';
 import AssignPlan from './AssignPlan';
 import FlexSpacer from '../../../../../core/ui/utils/FlexSpacer';
-import { Host, HostSelector } from './HostSelector';
+import FormikAutocomplete from '../../../../../core/ui/forms/FormikAutocomplete';
+import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
+import { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
 
 export interface SpacePlatformSettings {
   nameId: string;
-}
-
-export interface AccountPlatformSettings {
-  host: Host | undefined;
   visibility: SpaceVisibility;
-  activeLicensePlanIds: string[] | undefined;
 }
 
 interface SpaceListItemProps extends ListItemLinkProps, SpacePlatformSettings {
   spaceId: string;
-  accountId: string;
-  account: AccountPlatformSettings;
+  activeLicensePlanIds: string[] | undefined;
   licensePlans: LicensePlan[] | undefined;
 }
 
 const SpaceListItem = ({
   spaceId,
-  accountId,
   nameId,
-  account: { visibility, host, activeLicensePlanIds },
+  activeLicensePlanIds,
   licensePlans,
+  visibility,
   ...props
 }: SpaceListItemProps) => {
   const [isSettingsModalOpen, setSettingsModalOpen] = useState(false);
-  const [isPlatformSettingsModalOpen, setPlatformSettingsModalOpen] = useState(false);
 
   const handlePlatformSettingsClick: MouseEventHandler = event => {
     event.preventDefault();
@@ -64,48 +56,26 @@ const SpaceListItem = ({
   };
 
   const initialValues = {
-    accountSettings: {
-      visibility,
-      host,
-    },
-    platformSettings: {
-      nameId,
-    },
+    nameId,
+    visibility,
   };
 
-  const [updateAccountSettings] = useUpdateAccountPlatformSettingsMutation();
-  const [updatePlatformSettings] = useUpdateSpacePlatformSettingsMutation();
-  const [assignLicensePlan] = useAssignLicensePlanToAccountMutation();
-  const [revokeLicensePlan] = useRevokeLicensePlanFromAccountMutation();
+  const [updateSpacePlatformSettings] = useUpdateSpacePlatformSettingsMutation();
+  const [assignLicensePlan] = useAssignLicensePlanToSpaceMutation();
+  const [revokeLicensePlan] = useRevokeLicensePlanFromSpaceMutation();
 
-  const [handleSubmitAccountSettings, savingAccountSettings] = useLoadingState(
-    async ({ visibility, host }: Partial<AccountPlatformSettings>) => {
-      await updateAccountSettings({
-        variables: {
-          accountId,
-          hostId: host?.id,
-          license: {
-            visibility,
-          },
-        },
-      });
-      setSettingsModalOpen(false);
-      setPlatformSettingsModalOpen(false);
-    }
-  );
-
-  const [handleSubmitPlatformSettings, savingPlatformSettings] = useLoadingState(
-    async ({ nameId }: Partial<SpacePlatformSettings>) => {
-      await updatePlatformSettings({
-        variables: {
-          spaceId,
-          nameId: nameId!,
-        },
-      });
-      setPlatformSettingsModalOpen(false);
-    }
-  );
-  const loading = savingAccountSettings || savingPlatformSettings;
+  const [handleSubmit, saving] = useLoadingState(async ({ nameId, visibility }: Partial<SpacePlatformSettings>) => {
+    await updateSpacePlatformSettings({
+      variables: {
+        spaceId,
+        nameId: nameId!,
+        visibility: visibility!,
+      },
+      refetchQueries: [refetchAdminSpacesListQuery()],
+      awaitRefetchQueries: true,
+    });
+    setSettingsModalOpen(false);
+  });
 
   const { t } = useTranslation();
 
@@ -128,13 +98,10 @@ const SpaceListItem = ({
     [t]
   );
 
-  const accountSettingsValidationSchema = yup.object().shape({
+  const validationSchema = yup.object().shape({
     host: yup.object().shape({ id: yup.string() }).required(t('forms.validations.required')),
+    nameId: nameSegmentSchema.fields?.nameID || yup.string().required(t('forms.validations.required')),
     visibility: yup.string().required(t('forms.validations.required')),
-  });
-
-  const platformSettingsValidationSchema = yup.object().shape({
-    nameId: nameSegmentSchema.fields?.nameID || yup.string(),
   });
 
   const [isManageLicensePlansDialogOpen, setIsManageLicensePlansDialogOpen] = useState(false);
@@ -144,40 +111,30 @@ const SpaceListItem = ({
       <ListItemLink
         {...props}
         actions={
-          <ListItemIcon onClick={loading ? undefined : handlePlatformSettingsClick}>
-            {loading ? <CircularProgress size={24} /> : <SettingsOutlinedIcon />}
+          <ListItemIcon onClick={saving ? undefined : handlePlatformSettingsClick}>
+            {saving ? <CircularProgress size={24} /> : <SettingsOutlinedIcon />}
           </ListItemIcon>
         }
       />
       <DialogWithGrid open={isSettingsModalOpen} onClose={() => setSettingsModalOpen(false)}>
-        <Formik
-          initialValues={initialValues.accountSettings}
-          validationSchema={accountSettingsValidationSchema}
-          onSubmit={handleSubmitAccountSettings}
-        >
+        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
           {({ handleSubmit, isValid }) => (
             <>
               <DialogHeader onClose={() => setSettingsModalOpen(false)}>
                 <BlockTitle>{t('pages.admin.spaces.spaceSettings')}</BlockTitle>
               </DialogHeader>
               <PageContentBlockSeamless>
-                <TextField
-                  value={initialValues.platformSettings.nameId}
+                <FormikInputField
+                  name="nameId"
                   title={t('components.nameSegment.nameID.title')}
                   placeholder={t('components.nameSegment.nameID.placeholder')}
-                  disabled
-                  InputProps={{
-                    endAdornment: (
-                      <Button onClick={() => setPlatformSettingsModalOpen(true)}>{t('buttons.change')}</Button>
-                    ),
-                  }}
+                  required
                 />
-                <HostSelector name="host" host={host} />
                 <FormikAutocomplete
                   name="visibility"
                   values={visibilitySelectOptions}
                   disablePortal={false}
-                  disabled={loading}
+                  disabled={saving}
                 />
               </PageContentBlockSeamless>
               <Actions padding={gutters()}>
@@ -186,7 +143,7 @@ const SpaceListItem = ({
                 </Button>
                 <FlexSpacer />
                 <Button onClick={() => setSettingsModalOpen(false)}>{t('buttons.cancel')}</Button>
-                <LoadingButton variant="contained" loading={loading} onClick={() => handleSubmit()} disabled={!isValid}>
+                <LoadingButton variant="contained" loading={saving} onClick={() => handleSubmit()} disabled={!isValid}>
                   {t('buttons.save')}
                 </LoadingButton>
               </Actions>
@@ -204,45 +161,16 @@ const SpaceListItem = ({
             <PlansTable
               activeLicensePlanIds={activeLicensePlanIds}
               licensePlans={licensePlans}
-              onDelete={plan => revokeLicensePlan({ variables: { accountId, licensePlanId: plan.id } })}
+              onDelete={plan => revokeLicensePlan({ variables: { spaceId, licensePlanId: plan.id } })}
             />
           )}
           {licensePlans && (
             <AssignPlan
-              onAssignPlan={licensePlanId => assignLicensePlan({ variables: { accountId, licensePlanId } })}
+              onAssignPlan={licensePlanId => assignLicensePlan({ variables: { spaceId, licensePlanId } })}
               licensePlans={licensePlans}
             />
           )}
         </DialogContent>
-      </DialogWithGrid>
-      <DialogWithGrid open={isPlatformSettingsModalOpen} onClose={() => setSettingsModalOpen(false)}>
-        <Formik
-          initialValues={initialValues.platformSettings}
-          validationSchema={platformSettingsValidationSchema}
-          onSubmit={handleSubmitPlatformSettings}
-        >
-          {({ handleSubmit, isValid }) => (
-            <>
-              <DialogHeader onClose={() => setPlatformSettingsModalOpen(false)}>
-                <BlockTitle>{t('pages.admin.spaces.changeNameId')}</BlockTitle>
-              </DialogHeader>
-              <DialogContent>
-                <FormikInputField
-                  name="nameId"
-                  title={t('components.nameSegment.nameID.title')}
-                  placeholder={t('components.nameSegment.nameID.placeholder')}
-                  required
-                />
-              </DialogContent>
-              <Actions padding={gutters()} justifyContent="end">
-                <Button onClick={() => setPlatformSettingsModalOpen(false)}>{t('buttons.cancel')}</Button>
-                <LoadingButton variant="contained" loading={loading} onClick={() => handleSubmit()} disabled={!isValid}>
-                  {t('buttons.save')}
-                </LoadingButton>
-              </Actions>
-            </>
-          )}
-        </Formik>
       </DialogWithGrid>
     </>
   );

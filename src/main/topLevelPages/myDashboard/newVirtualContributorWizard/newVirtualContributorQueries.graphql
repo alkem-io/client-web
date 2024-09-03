@@ -1,29 +1,34 @@
 query NewVirtualContributorMySpaces {
   me {
     id
-    mySpaces(showOnlyMyCreatedSpaces: true) {
-      space {
+    user {
+      id
+      account {
         id
-        account {
+        host {
           id
-          host {
+        }
+        spaces {
+          id
+          community {
             id
           }
-        }
-        profile {
-          id
-          displayName
-        }
-        subspaces {
-          id
-          type
           profile {
             id
             displayName
             url
           }
-          community {
+          subspaces {
             id
+            type
+            profile {
+              id
+              displayName
+              url
+            }
+            community {
+              id
+            }
           }
         }
       }

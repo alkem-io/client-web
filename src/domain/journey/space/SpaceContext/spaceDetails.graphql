@@ -23,16 +23,12 @@ fragment SpaceDetails on Space {
       ...fullLocation
     }
   }
-  account {
-    host {
-      id
-    }
-  }
-  authorization {
-    id
-    anonymousReadAccess
-  }
   context {
     ...ContextDetails
+  }
+  settings {
+    privacy {
+      mode
+    }
   }
 }

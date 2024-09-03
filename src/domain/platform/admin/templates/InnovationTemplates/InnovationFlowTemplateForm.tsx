@@ -38,7 +38,7 @@ const validator = {
         .object()
         .shape({
           displayName: yup.string().required().max(SMALL_TEXT_LENGTH),
-          description: yup.string().required().max(MARKDOWN_TEXT_LENGTH),
+          description: yup.string().max(MARKDOWN_TEXT_LENGTH),
         })
         .required()
     )
@@ -127,6 +127,7 @@ const InnovationFlowTemplateForm = ({ initialValues, onSubmit, actions }: Innova
       initialValues={initialValues}
       onSubmit={onSubmit}
       actions={actions}
+      // @ts-ignore TS5UPGRADE
       validator={validator}
       entityTypeName={t('common.innovation-flow')}
     >

@@ -30,11 +30,8 @@ query SpaceDashboardReferences($spaceId: UUID!) {
 fragment SpacePage on Space {
   id
   nameID
-  account {
-    id
-    host {
-      ...ContributorDetails
-    }
+  provider {
+    ...ContributorDetails
   }
   metrics {
     id
@@ -43,7 +40,6 @@ fragment SpacePage on Space {
   }
   authorization {
     id
-    anonymousReadAccess
     myPrivileges
   }
   profile {

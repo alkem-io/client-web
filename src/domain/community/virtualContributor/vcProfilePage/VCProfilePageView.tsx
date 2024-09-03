@@ -5,7 +5,6 @@ import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import BookIcon from '@mui/icons-material/Book';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
-import { VirtualContributorQuery } from '../../../../core/apollo/generated/graphql-schema';
 import { BlockTitle, Text } from '../../../../core/ui/typography';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import HostCard from '../components/HostCard';
@@ -16,8 +15,26 @@ import BasicSpaceCard, { BasicSpaceProps } from '../components/BasicSpaceCard';
 import Spacer from '../../../../core/ui/content/Spacer';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 
-interface Props {
-  virtualContributor: VirtualContributorQuery['virtualContributor'] | undefined;
+interface VCProfilePageViewProps {
+  virtualContributor?: {
+    profile: {
+      avatar?: {
+        uri: string;
+      };
+      displayName: string;
+      description?: string;
+      location?: {
+        city: string;
+        country: string;
+      };
+    };
+    provider: {
+      profile: {
+        displayName: string;
+        description?: string;
+      };
+    };
+  };
   bokProfile?: BasicSpaceProps;
   bokDescription?: string;
 }
@@ -30,7 +47,11 @@ const SectionTitle = ({ children }) => (
 
 const SectionContent = ({ children }) => <Text>{children}</Text>;
 
-export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({ virtualContributor, bokProfile, bokDescription }) => {
+export const VCProfilePageView: FC<PropsWithChildren<VCProfilePageViewProps>> = ({
+  virtualContributor,
+  bokProfile,
+  bokDescription,
+}) => {
   const theme = useTheme();
   const { t } = useTranslation();
 
@@ -46,7 +67,7 @@ export const VCProfilePageView: FC<PropsWithChildren<Props>> = ({ virtualContrib
             aria-label="description"
           />
         </PageContentBlock>
-        <HostCard hostProfile={virtualContributor?.account?.host?.profile} />
+        <HostCard hostProfile={virtualContributor?.provider.profile} />
       </PageContentColumn>
       <PageContentColumn columns={8}>
         <PageContentBlock>

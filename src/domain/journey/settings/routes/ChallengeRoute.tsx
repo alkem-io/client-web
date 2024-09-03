@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSpace } from '../../space/SpaceContext/useSpace';
-import { useSubSpace } from '../../subspace/hooks/useChallenge';
+import { useSubSpace } from '../../subspace/hooks/useSubSpace';
 import { Error404 } from '../../../../core/pages/Errors/Error404';
 import SubspaceCommunicationsPage from '../../subspace/pages/SubspaceCommunications/SubspaceCommunicationsPage';
 import ChallengeProfilePage from '../../subspace/pages/SubspaceProfile/SubspaceProfilePage';

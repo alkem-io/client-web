@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { useSubSpace } from '../hooks/useChallenge';
+import { useSubSpace } from '../hooks/useSubSpace';
 import AboutPageContainer from '../../common/AboutPageContainer/AboutPageContainer';
 import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
 import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
@@ -8,7 +8,7 @@ import { Close } from '@mui/icons-material';
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
 import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
-import ChallengeContributorsDialogContent from '../../../community/community/entities/ChallengeContributorsDialogContent';
+import SubspaceContributorsDialogContent from '../../../community/community/entities/SubspaceContributorsDialogContent';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
 import { buildAboutUrl } from '../../../../main/routing/urlBuilders';
@@ -35,7 +35,7 @@ const SubspaceAboutPage: FC = () => {
           {
             context,
             references,
-            host,
+            provider,
             leadOrganizations,
             leadUsers,
             leadVirtualContributors,
@@ -65,7 +65,7 @@ const SubspaceAboutPage: FC = () => {
             loading={state.loading}
             leadUsers={leadUsers}
             leadVirtualContributors={leadVirtualContributors}
-            host={host}
+            provider={provider}
             leadOrganizations={leadOrganizations}
             endButton={
               <IconButton onClick={backToParentPage} aria-label={t('buttons.close')}>
@@ -74,14 +74,16 @@ const SubspaceAboutPage: FC = () => {
             }
             shareUrl={buildAboutUrl(profile.url)}
             leftColumnChildrenBottom={
-              <EntityDashboardContributorsSection
-                memberUsers={memberUsers}
-                memberUsersCount={memberUsersCount}
-                memberOrganizations={memberOrganizations}
-                memberOrganizationsCount={memberOrganizationsCount}
-              >
-                <SeeMore subject={t('common.contributors')} onClick={() => setIsContributorsDialogOpen(true)} />
-              </EntityDashboardContributorsSection>
+              hasReadPrivilege && (
+                <EntityDashboardContributorsSection
+                  memberUsers={memberUsers}
+                  memberUsersCount={memberUsersCount}
+                  memberOrganizations={memberOrganizations}
+                  memberOrganizationsCount={memberOrganizationsCount}
+                >
+                  <SeeMore subject={t('common.contributors')} onClick={() => setIsContributorsDialogOpen(true)} />
+                </EntityDashboardContributorsSection>
+              )
             }
             virtualContributors={virtualContributors}
             hasReadPrivilege={hasReadPrivilege}
@@ -91,7 +93,7 @@ const SubspaceAboutPage: FC = () => {
       <ContributorsDialog
         open={isContributorsDialogOpen}
         onClose={() => setIsContributorsDialogOpen(false)}
-        dialogContent={ChallengeContributorsDialogContent}
+        dialogContent={SubspaceContributorsDialogContent}
       />
     </>
   );

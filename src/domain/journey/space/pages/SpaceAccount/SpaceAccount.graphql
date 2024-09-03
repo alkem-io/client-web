@@ -6,36 +6,33 @@ query SpaceAccount($spaceId: UUID!) {
         id
         url
       }
+      activeSubscription {
+        name
+        expires
+      }
       authorization {
         id
         myPrivileges
       }
-      account {
+      visibility
+      provider {
         id
-        host {
+        __typename # do not remove. Used by SpaceAccountView.tsx
+        authorization {
+          myPrivileges
+        }
+        profile {
           id
-          nameID
-          profile {
-            id
-            displayName
-            avatar: visual(type: AVATAR) {
-              ...VisualUri
-            }
-            location {
-              id
-              city
-              country
-            }
-            url
+          displayName
+          avatar: visual(type: AVATAR) {
+            ...VisualUri
           }
-        }
-        license {
-          id
-          visibility
-        }
-        activeSubscription {
-          name
-          expires
+          location {
+            id
+            city
+            country
+          }
+          url
         }
       }
     }

@@ -11,6 +11,7 @@ type FormikFileInputProps = FormikInputFieldProps & {
   entityID?: string;
   entityType?: FileUploadEntityType;
   defaultProtocol?: string;
+  onChange?: (fileName: string) => void;
 };
 
 const FormikFileInput = ({
@@ -18,6 +19,7 @@ const FormikFileInput = ({
   entityID,
   defaultProtocol = DEFAULT_PROTOCOL,
   entityType,
+  onChange,
   ...props
 }: FormikFileInputProps) => {
   const [field, , helpers] = useField(name);
@@ -46,6 +48,7 @@ const FormikFileInput = ({
         storageConfig.canUpload && (
           <FileUploadButton
             onUpload={helpers.setValue}
+            onChange={(fileName: string) => onChange?.(fileName)}
             entityID={entityID}
             entityType={entityType}
             storageConfig={storageConfig}

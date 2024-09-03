@@ -2,14 +2,13 @@ import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
-import { serializeAsJSON } from '@alkemio/excalidraw';
-import { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
+import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import Loading from '../../../../core/ui/loading/Loading';
 import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import CollaborativeExcalidrawWrapper from '../../../common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
-import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
+import type { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import whiteboardSchema from '../validation/whiteboardSchema';
 import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
@@ -26,7 +25,7 @@ import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/useColla
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import { useLocation } from 'react-router-dom';
-import { ExcalidrawElement, ExcalidrawImageElement } from '@alkemio/excalidraw/types/element/types';
+import type { ExcalidrawElement, ExcalidrawImageElement } from '@alkemio/excalidraw/types/element/types';
 import WhiteboardDisplayName from './WhiteboardDisplayName';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '../../../shared/utils/useLoadingState';
@@ -166,6 +165,8 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
       shouldUploadPreviewImages && !filesManager.loading.downloadingFiles
         ? await generateWhiteboardPreviewImages(whiteboard, state)
         : undefined;
+
+    const { serializeAsJSON } = await import('@alkemio/excalidraw');
 
     const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
     const whiteboardIsConsistent = checkWhiteboardConsistency(whiteboard.id, elements, files ?? {});

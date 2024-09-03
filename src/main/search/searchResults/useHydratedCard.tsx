@@ -6,6 +6,7 @@ import {
   SearchResultSpaceFragment,
   SearchResultType,
   SearchResultUserFragment,
+  SpacePrivacyMode,
   SpaceType,
   UserRolesSearchCardsQuery,
 } from '../../../core/apollo/generated/graphql-schema';
@@ -111,7 +112,7 @@ const hydrateSpaceCard = (
       <CardParentJourneySegment
         iconComponent={parentIcon}
         parentJourneyUri={data.parentSpace?.profile.url ?? ''}
-        locked={!data.parentSpace?.authorization?.anonymousReadAccess}
+        locked={data.parentSpace?.settings.privacy?.mode === SpacePrivacyMode.Private}
       >
         {data.parentSpace?.profile.displayName}
       </CardParentJourneySegment>
@@ -129,8 +130,8 @@ const hydrateSpaceCard = (
       tags={tags}
       matchedTerms
       vision={vision}
-      locked={!space.authorization?.anonymousReadAccess}
-      spaceVisibility={space.account.license.visibility}
+      locked={space.settings.privacy?.mode === SpacePrivacyMode.Private}
+      spaceVisibility={space.visibility}
       parentSegment={parentSegment(data)}
     />
   );
@@ -139,7 +140,7 @@ const hydrateSpaceCard = (
 const getContributionParentInformation = (data: TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>) => {
   const info = {
     displayName: data.space.profile.displayName,
-    locked: !data.space?.authorization?.anonymousReadAccess,
+    locked: data.space?.settings.privacy?.mode === SpacePrivacyMode.Private,
     url: data.space.profile.url,
     icon: SpaceIcon,
   };

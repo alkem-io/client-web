@@ -22,6 +22,7 @@ import { NavigationState } from '../../../core/routing/ScrollToTop';
 import { useRouteResolver } from '../../../main/routing/resolvers/RouteResolver';
 import { getCalloutGroupNameValue } from '../callout/utils/getCalloutGroupValue';
 import useCanReadSpace from '../../journey/common/authorization/useCanReadSpace';
+import { CalloutDeleteType } from '../callout/edit/CalloutEditType';
 
 interface CalloutLocation {
   journeyTypeName: JourneyTypeName;
@@ -133,6 +134,11 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
     backOrElse(parentPagePath);
   };
 
+  const handleDeleteWithClose = async (callout: CalloutDeleteType) => {
+    await handleDelete(callout);
+    handleClose();
+  };
+
   if (isApolloForbiddenError(error)) {
     return (
       <>
@@ -158,12 +164,11 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
         <CalloutView
           callout={typedCalloutDetails}
           journeyTypeName={journeyTypeName}
-          calloutNames={[]}
           contributionsCount={typedCalloutDetails.activity}
           onVisibilityChange={handleVisibilityChange}
           onCalloutEdit={handleEdit}
           onCalloutUpdate={refetchCalloutData}
-          onCalloutDelete={handleDelete}
+          onCalloutDelete={handleDeleteWithClose}
           onCollapse={handleClose}
           expanded
         />

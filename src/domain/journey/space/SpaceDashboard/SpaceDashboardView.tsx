@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   CalloutGroupName,
@@ -30,6 +30,11 @@ import ContentColumn from '../../../../core/ui/content/ContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
+import TryVCInfoDialog from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVCInfoDialog';
+import {
+  getVCCreationCache,
+  removeVCCreationCache,
+} from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/vcCreationUtil';
 
 interface SpaceWelcomeBlockContributor {
   profile: SpaceWelcomeBlockContributorProfileFragment;
@@ -58,7 +63,6 @@ interface SpaceDashboardViewProps {
   callouts: {
     groupedCallouts: Record<CalloutGroupName, TypedCallout[] | undefined>;
     canCreateCallout: boolean;
-    calloutNames: string[];
     loading: boolean;
     refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;
     refetchCallout: (calloutId: string) => void;
@@ -84,6 +88,9 @@ const SpaceDashboardView = ({
 }: SpaceDashboardViewProps) => {
   const { t } = useTranslation();
 
+  const [tryVirtualContributorOpen, setTryVirtualContributorOpen] = useState(false);
+  const [vcName, setVcName] = useState<string>('');
+
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
   const translatedJourneyTypeName = t(`common.${journeyTypeName}` as const);
@@ -93,6 +100,23 @@ const SpaceDashboardView = ({
   });
 
   const welcomeBlockContributors = useMemo(() => host && [host], [host]);
+
+  const onCloseTryVirtualContributor = () => {
+    setTryVirtualContributorOpen(false);
+    removeVCCreationCache();
+  };
+
+  useEffect(() => {
+    // on mount of a space, check the LS and show the try dialog if present
+    const cachedVC = getVCCreationCache();
+
+    if (cachedVC) {
+      setVcName(cachedVC);
+      setTryVirtualContributorOpen(true);
+    }
+
+    return onCloseTryVirtualContributor;
+  }, []);
 
   return (
     <>
@@ -155,12 +179,19 @@ const SpaceDashboardView = ({
             canCreateCallout={callouts.canCreateCallout}
             loading={callouts.loading}
             journeyTypeName={journeyTypeName}
-            calloutNames={callouts.calloutNames}
             onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
             onCalloutUpdate={callouts.refetchCallout}
             groupName={CalloutGroupName.Home}
           />
         </ContentColumn>
+        {spaceId && tryVirtualContributorOpen && (
+          <TryVCInfoDialog
+            open={tryVirtualContributorOpen}
+            onClose={onCloseTryVirtualContributor}
+            spaceId={spaceId}
+            vcName={vcName}
+          />
+        )}
       </PageContent>
     </>
   );

@@ -95,7 +95,7 @@ const JourneyAboutDialog = ({
   leadUsers,
   leadOrganizations,
   leadVirtualContributors,
-  host,
+  provider: host,
   sendMessageToCommunityLeads,
   metrics,
   description,
@@ -142,7 +142,8 @@ const JourneyAboutDialog = ({
     [leadUsers]
   );
 
-  const JourneyIcon = journeyIconByJourneyLevel[journeyLevel];
+  // @ts-ignore TS5UPGRADE
+  const JourneyIcon = journeyLevel > -1 ? journeyIconByJourneyLevel[journeyLevel] : undefined;
 
   const metricsItems = useMetricsItems(metrics, getMetricsSpec(journeyLevel));
 

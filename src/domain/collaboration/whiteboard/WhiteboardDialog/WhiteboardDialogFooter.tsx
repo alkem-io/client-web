@@ -9,7 +9,7 @@ import { useAuthenticationContext } from '../../../../core/auth/authentication/h
 import { CommunityMembershipStatus, ContentUpdatePolicy } from '../../../../core/apollo/generated/graphql-schema';
 import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
-import { useSubSpace } from '../../../journey/subspace/hooks/useChallenge';
+import { useSubSpace } from '../../../journey/subspace/hooks/useSubSpace';
 import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
 import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
 import RouterLink from '../../../../core/ui/link/RouterLink';

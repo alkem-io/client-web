@@ -2,10 +2,12 @@ import { onError } from '@apollo/client/link/error';
 import { error as sentryError, TagCategoryValues } from '../../logging/sentry/log';
 import { useApm } from '../../analytics/apm/context';
 
-const getErrorCode = error => {
-  if (error && typeof error !== 'string') {
-    return error?.extensions?.code ?? undefined;
-  }
+const getErrorCode = (error: Error & { extensions?: { code?: string } }) => {
+  return error?.extensions?.code ?? undefined;
+};
+
+const getErrorMessage = (error: Error) => {
+  return error?.message ?? undefined;
 };
 
 /**
@@ -31,7 +33,7 @@ export const useErrorLoggerLink = (errorLogging = false) => {
     }
 
     errors.forEach(e => {
-      sentryError(e, { category: TagCategoryValues.SERVER, code: getErrorCode(e) });
+      sentryError(e, { category: TagCategoryValues.SERVER, code: getErrorCode(e), label: getErrorMessage(e) });
       apm?.captureError(e);
     });
   });

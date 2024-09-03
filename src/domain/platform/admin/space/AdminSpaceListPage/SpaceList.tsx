@@ -11,15 +11,12 @@ import Loading from '../../../../../core/ui/loading/Loading';
 import ListPage from '../../components/ListPage';
 import { SearchableListItem, searchableListItemMapper } from '../../components/SearchableList';
 import { AuthorizationPrivilege, SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
-import { useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
 import SpaceListItem from './SpaceListItem';
 import { sortBy } from 'lodash';
-import { mapUserOrOrganizationToHost } from './HostSelector';
 
 export const SpaceList: FC = () => {
-  const { pathname: url } = useResolvedPath('.');
   const notify = useNotification();
   const { t } = useTranslation();
 
@@ -38,12 +35,12 @@ export const SpaceList: FC = () => {
           (space.authorization?.myPrivileges ?? []).find(privilege => privilege === AuthorizationPrivilege.Update)
         )
         .map(space => {
-          if (space.account.license.visibility !== SpaceVisibility.Active) {
+          if (space.visibility !== SpaceVisibility.Active) {
             return {
               ...space,
               profile: {
                 ...space.profile,
-                displayName: `${space.profile.displayName} [${space.account.license.visibility.toUpperCase()}]`,
+                displayName: `${space.profile.displayName} [${space.visibility.toUpperCase()}]`,
               },
             };
           }
@@ -55,7 +52,7 @@ export const SpaceList: FC = () => {
           url: buildSettingsUrl(space.profile.url),
         }))
         .map(space => {
-          const activeLicenseCredentials = space.account.subscriptions.map(subscription => subscription.name);
+          const activeLicenseCredentials = space.subscriptions.map(subscription => subscription.name);
           // TODO filter out expired ones
           const activeLicensePlanIds = spacesData?.platform.licensing.plans
             .filter(({ licenseCredential }) => activeLicenseCredentials.includes(licenseCredential))
@@ -64,14 +61,9 @@ export const SpaceList: FC = () => {
           return {
             ...searchableListItemMapper()(space),
             spaceId: space.id,
-            accountId: space.account.id,
             nameId: space.nameID,
-            account: {
-              visibility: space.account.license.visibility,
-              host: mapUserOrOrganizationToHost(space.account.host),
-              activeLicensePlanIds,
-              organizations,
-            },
+            visibility: space.visibility,
+            activeLicensePlanIds,
             licensePlans: spacesData?.platform.licensing.plans,
           };
         }) ?? []
@@ -100,7 +92,6 @@ export const SpaceList: FC = () => {
   return (
     <ListPage
       data={spaceList}
-      newLink={`${url}/new`}
       onDelete={spaceList.length > 1 ? handleDelete : undefined}
       itemViewComponent={SpaceListItem}
     />

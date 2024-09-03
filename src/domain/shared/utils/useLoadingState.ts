@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export interface Callback<Args extends unknown[], Result> {
   (...args: Args): Promise<Result>;
@@ -16,15 +16,27 @@ const useLoadingState = <Args extends unknown[], Result>(
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error>();
 
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
   const callback = async (...args: Args) => {
-    setIsLoading(true);
+    if (isMountedRef.current) setIsLoading(true);
     try {
       return await originalCallback(...args);
     } catch (error) {
-      setError(error);
+      if (error instanceof Error) {
+        setError(error);
+      }
       throw error;
     } finally {
-      setIsLoading(false);
+      if (isMountedRef.current) setIsLoading(false);
     }
   };
 

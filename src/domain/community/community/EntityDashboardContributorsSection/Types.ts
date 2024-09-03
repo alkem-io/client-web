@@ -35,5 +35,5 @@ export interface EntityDashboardLeads {
   leadUsers: DashboardLeadUserFragment[] | undefined;
   leadOrganizations: ContributorViewProps[] | undefined;
   leadVirtualContributors: ContributorViewProps[] | undefined;
-  host?: ContributorViewProps;
+  provider?: ContributorViewProps;
 }

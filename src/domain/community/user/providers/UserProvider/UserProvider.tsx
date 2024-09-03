@@ -12,6 +12,7 @@ import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper
 
 export interface UserContextValue {
   user: UserMetadata | undefined;
+  accountId: string | undefined;
   loading: boolean;
   loadingMe: boolean; // Loading Authentication and Profile data. Once it's false that's enough for showing the page header and avatar.
   verified: boolean;
@@ -20,6 +21,7 @@ export interface UserContextValue {
 
 const UserContext = React.createContext<UserContextValue>({
   user: undefined,
+  accountId: undefined,
   loading: true,
   loadingMe: true,
   verified: false,
@@ -66,6 +68,7 @@ const UserProvider: FC<{}> = ({ children }) => {
   const providedValue = useMemo<UserContextValue>(
     () => ({
       user: userMetadata,
+      accountId: meData?.me.user?.account?.id,
       loading,
       loadingMe: loadingMeAndParentQueries,
       verified,

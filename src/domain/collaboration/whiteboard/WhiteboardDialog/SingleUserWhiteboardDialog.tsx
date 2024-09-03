@@ -2,15 +2,14 @@ import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
-import { serializeAsJSON } from '@alkemio/excalidraw';
-import { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import { Delete, Save } from '@mui/icons-material';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import Loading from '../../../../core/ui/loading/Loading';
 import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
-import { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
+import type { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { Box, Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -117,6 +116,9 @@ const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     if (!state) {
       return;
     }
+
+    const { serializeAsJSON } = await import('@alkemio/excalidraw');
+
     const { appState, elements, files } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
 
     const previewImages = await generateWhiteboardPreviewImages(whiteboard, state);
@@ -149,8 +151,10 @@ const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     await handleUpdate(whiteboard, state);
   };
 
-  const onClose = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const onClose = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (excalidrawAPI && options.canEdit) {
+      const { serializeAsJSON } = await import('@alkemio/excalidraw');
+
       const elements = excalidrawAPI.getSceneElements();
       const appState = excalidrawAPI.getAppState();
       const files = excalidrawAPI.getFiles();

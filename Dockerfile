@@ -1,4 +1,4 @@
-FROM node:16.15.0-alpine as builder
+FROM node:20.9.0-alpine as builder
 
 # Create app directory
 WORKDIR /app
@@ -25,7 +25,7 @@ ENV VITE_APP_SENTRY_AUTH_TOKEN=${ARG_SENTRY_AUTH_TOKEN}
 # where available (npm@5+)
 COPY package*.json ./
 
-RUN npm i -g npm@8.5.5
+RUN npm i -g npm@10.1.0
 RUN npm install
 
 # Everything for now

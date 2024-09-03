@@ -1,4 +1,4 @@
-import { ReactComponent as AlkemioLogo } from '../logo/logoSmall.svg';
+import AlkemioLogo from '../logo/logoSmall.svg?react';
 import { ROUTE_HOME } from '../../../domain/platform/routes/constants';
 import useJourneyBreadcrumbsTopLevelItem from '../../../domain/journey/common/journeyBreadcrumbs/useJourneyBreadcrumbsTopLevelItem';
 import { Expandable } from '../../../core/ui/navigation/Expandable';

@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useNotification } from '../../../core/ui/notifications/useNotification';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import {
+  useAccountsListQuery,
   useAdminInnovationHubQuery,
-  useOrganizationsListQuery,
   useUpdateInnovationHubMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
 import InnovationHubForm, { InnovationHubFormValues } from './InnovationHubForm';
@@ -37,14 +37,14 @@ const AdminInnovationHubPage: FC<AdminInnovationHubPageProps> = () => {
 
   const innovationHub = data?.platform.innovationHub;
 
-  const { data: organizationsList, loading: loadingOrganizations } = useOrganizationsListQuery();
-  const organizations = useMemo(
+  const { data: accountsList, loading: loadingAccounts } = useAccountsListQuery();
+  const accounts = useMemo(
     () =>
       sortBy(
-        organizationsList?.organizations.map(e => ({ id: e.id, name: e.profile.displayName })) || [],
-        org => org.name
+        accountsList?.accounts.map(acc => ({ id: acc.id, name: acc.host?.profile.displayName ?? acc.id })) || [],
+        acc => acc.name
       ),
-    [organizationsList]
+    [accountsList]
   );
 
   const [updateInnovationHub, { loading: updating }] = useUpdateInnovationHubMutation();
@@ -53,6 +53,7 @@ const AdminInnovationHubPage: FC<AdminInnovationHubPageProps> = () => {
     if (!innovationHub?.id) {
       return;
     }
+
     const { data } = await updateInnovationHub({
       variables: {
         hubData: {
@@ -98,7 +99,7 @@ const AdminInnovationHubPage: FC<AdminInnovationHubPageProps> = () => {
     }
   };
 
-  const isLoading = loading || loadingOrganizations || updating;
+  const isLoading = loading || loadingAccounts || updating;
 
   return (
     <AdminLayout currentTab={AdminSection.InnovationHubs}>
@@ -111,8 +112,9 @@ const AdminInnovationHubPage: FC<AdminInnovationHubPageProps> = () => {
             <InnovationHubForm
               nameID={innovationHub?.nameID}
               profile={innovationHub?.profile}
+              accountId={innovationHub?.account.id}
               subdomain={innovationHub?.subdomain}
-              organizations={organizations}
+              accounts={accounts}
               onSubmit={handleSubmit}
               loading={isLoading}
             />

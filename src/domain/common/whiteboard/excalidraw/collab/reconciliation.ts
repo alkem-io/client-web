@@ -1,6 +1,6 @@
 import { PRECEDING_ELEMENT_KEY } from './excalidrawAppConstants';
-import { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import { AppState } from '@alkemio/excalidraw/types/types';
+import type { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
+import type { AppState } from '@alkemio/excalidraw/types/types';
 import { arrayToMapWithIndex } from './utils';
 
 export type ReconciledElements = readonly ExcalidrawElement[] & {

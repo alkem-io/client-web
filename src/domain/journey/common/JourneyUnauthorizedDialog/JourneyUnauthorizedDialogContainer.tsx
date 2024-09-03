@@ -87,8 +87,6 @@ const JourneyUnauthorizedDialogContainer = ({
     [sendMessageToCommunityLeads, community]
   );
 
-  const host = journeyDataQueryData?.lookup.space?.account.host;
-
   const provided: JourneyUnauthorizedDialogContainerProvided = {
     authorized: !isUnauthorized,
     background: profile?.description,
@@ -100,7 +98,7 @@ const JourneyUnauthorizedDialogContainer = ({
     impact: context?.impact,
     metrics,
     sendMessageToCommunityLeads: handleSendMessageToCommunityLeads,
-    host,
+    provider: journeyDataQueryData?.lookup.space?.provider,
     leadOrganizations: community?.leadOrganizations,
     leadUsers: community?.leadUsers,
     leadVirtualContributors: undefined,

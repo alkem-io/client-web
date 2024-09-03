@@ -1,6 +1,7 @@
-mutation UpdateSpacePlatformSettings($spaceId: UUID!, $nameId: NameID!) {
-  updateSpacePlatformSettings(updateData: { spaceID: $spaceId, nameID: $nameId }) {
+mutation UpdateSpacePlatformSettings($spaceId: UUID!, $nameId: NameID!, $visibility: SpaceVisibility!) {
+  updateSpacePlatformSettings(updateData: { spaceID: $spaceId, nameID: $nameId, visibility: $visibility }) {
     id
     nameID
+    visibility
   }
 }

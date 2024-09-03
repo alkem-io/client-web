@@ -22,7 +22,7 @@ export const UserProfilePage: FC<UserProfileProps> = () => {
 
   const contributions = useUserContributions(userMetadata?.user.id);
 
-  const organizationIds = useUserOrganizationIds(userNameId);
+  const organizationIds = useUserOrganizationIds(userMetadata?.user.id);
 
   if (loading) return <Loading text={'Loading User Profile ...'} />;
 

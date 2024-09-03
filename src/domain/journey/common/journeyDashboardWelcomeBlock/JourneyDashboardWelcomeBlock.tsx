@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import OverflowGradient from '../../../../core/ui/overflow/OverflowGradient';
 import { gutters } from '../../../../core/ui/grid/utils';
 import DashboardMemberIcon from '../../../community/membership/DashboardMemberIcon/DashboardMemberIcon';
@@ -35,6 +35,11 @@ const JourneyDashboardWelcomeBlock = ({
   vision,
   member = false,
 }: JourneyDashboardWelcomeBlockProps) => {
+  const leadOrganizationsUnique = useMemo(
+    () => leadOrganizations?.filter(({ id }) => !leadUsers?.some(user => user.id === id)),
+    [leadOrganizations, leadUsers]
+  );
+
   return (
     <>
       <OverflowGradient
@@ -49,8 +54,7 @@ const JourneyDashboardWelcomeBlock = ({
           {leadUsers.slice(0, 2).map(user => (
             <ContributorCardHorizontal
               key={user.id}
-              profile={user.profile}
-              url={buildUserProfileUrl(user.nameID)}
+              profile={{ ...user.profile, url: buildUserProfileUrl(user.nameID) }}
               onContact={() => {
                 onContactLeadUser({
                   id: user.id,
@@ -65,13 +69,12 @@ const JourneyDashboardWelcomeBlock = ({
           ))}
         </Gutters>
       )}
-      {leadOrganizations && leadOrganizations.length > 0 && (
+      {leadOrganizationsUnique && leadOrganizationsUnique.length > 0 && (
         <Gutters flexWrap="wrap" row disablePadding>
-          {leadOrganizations.slice(0, 2).map(org => (
+          {leadOrganizationsUnique.slice(0, 2).map(org => (
             <ContributorCardHorizontal
               key={org.id}
-              profile={org.profile}
-              url={buildOrganizationUrl(org.nameID)}
+              profile={{ ...org.profile, url: buildOrganizationUrl(org.nameID) }}
               onContact={() => {
                 onContactLeadOrganization({
                   id: org.id,
@@ -89,7 +92,7 @@ const JourneyDashboardWelcomeBlock = ({
       {leadVirtualContributors && leadVirtualContributors.length > 0 && (
         <Gutters flexWrap="wrap" row disablePadding>
           {leadVirtualContributors.slice(0, 2).map(vc => (
-            <ContributorCardHorizontal key={vc.id} profile={vc.profile} url={vc.profile.url} seamless />
+            <ContributorCardHorizontal key={vc.id} profile={vc.profile} seamless />
           ))}
         </Gutters>
       )}

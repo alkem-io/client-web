@@ -24,15 +24,14 @@ const SettingsPageContent = <Section extends string | number>({
 
   type TLabel = Parameters<typeof t>[0];
 
-  const tabDescriptionText = t(
-    [
-      `${tabDescriptionNs}.${entityTypeName}.sections.${currentSection}.description`,
-      `${tabDescriptionNs}.generic.sections.${currentSection}.description`,
-    ] as TLabel,
-    {
-      entity: t(`common.${entityTypeName}` as const).toLowerCase(),
-    }
-  );
+  const tabDescriptionKeys = [
+    `${tabDescriptionNs}.${entityTypeName}.sections.${currentSection}.description`,
+    `${tabDescriptionNs}.generic.sections.${currentSection}.description`,
+  ] as unknown as TLabel;
+
+  const tabDescriptionText = t(tabDescriptionKeys, {
+    entity: t(`common.${entityTypeName}` as const).toLowerCase(),
+  });
 
   return (
     <>

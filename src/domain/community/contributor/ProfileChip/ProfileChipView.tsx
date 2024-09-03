@@ -33,7 +33,14 @@ export const ProfileChipView: FC<ProfileChipViewProps> = ({
         backgroundColor: selected ? theme.palette.highlight.light : undefined,
       })}
     >
-      <Box sx={{ display: 'flex', flexDirection: 'row', height: gutters(3), alignItems: 'center' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          height: gutters(3),
+          alignItems: 'center',
+        }}
+      >
         <Box
           component="img"
           width={gutters(2)}

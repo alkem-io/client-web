@@ -4,7 +4,7 @@
 
 ### Directory structure and file naming
 
-All new code should be put under `src/core`, `src/domain` or `src/platform`.
+All new code should be put under `src/core`, `src/domain` or `src/main`.
 
 - `src/core` contains all components and utilities that are not directly connected to the App business domain. If a file can be potentially reused in another app with a different domain, it should be put into `core`. Examples:
   - `src/core/ui/button/FullWidthButton.tsx`
