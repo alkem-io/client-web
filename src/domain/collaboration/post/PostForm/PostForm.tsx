@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Formik, FormikConfig } from 'formik';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { TagsetSegment, tagsetSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
 import FormikEffectFactory from '../../../../core/ui/forms/FormikEffect';
 import { PostCreationType } from '../PostCreationDialog/PostCreationDialog';
 import { Post, Tagset, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
@@ -96,7 +96,7 @@ const PostForm: FC<PostFormProps> = ({
   const validationSchema = yup.object().shape({
     name: displayNameValidator,
     description: MarkdownValidator(LONG_MARKDOWN_TEXT_LENGTH).required(),
-    tagsets: tagsetSegmentSchema,
+    tagsets: tagsetsSegmentSchema,
     references: referenceSegmentSchema,
   });
 

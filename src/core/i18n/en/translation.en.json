@@ -1805,7 +1805,7 @@
           },
           "templates": {
             "description": "Here you can create and edit templates for this {{entity}}.",
-            "delete-confirmation": "Are you sure you want to delete {{template}} from the Space? You can also edit the information of this template.",
+            "delete-confirmation": "Are you sure you want to delete the template '{{template}}'?",
             "import": {
               "title": "Template Library: {{templateType}}",
               "subtitle": "Find templates to use in your Space or Subspace. Select the template and click `Import` to add it to your Template set.",

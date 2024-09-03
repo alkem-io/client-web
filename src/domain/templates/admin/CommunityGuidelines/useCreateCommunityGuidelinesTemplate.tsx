@@ -4,7 +4,7 @@ import {
   useSpaceTemplatesSetIdLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { CreateTemplateMutation, TemplateType } from '../../../../core/apollo/generated/graphql-schema';
-import { CommunityGuidelinesTemplateFormSubmittedValues } from './CommunityGuidelinesTemplateForm';
+import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../_new/components/Forms/CommunityGuidelinesTemplateForm';
 import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
 
 interface CreateCommunityGuidelinesProps {

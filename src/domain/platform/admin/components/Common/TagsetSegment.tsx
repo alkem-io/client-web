@@ -22,7 +22,7 @@ export const tagsetSegmentValidationObject = yup.object().shape({
   name: yup.string(),
   tags: yup.array().of(yup.string().min(2)),
 });
-export const tagsetSegmentSchema = yup.array().of(tagsetSegmentValidationObject);
+export const tagsetsSegmentSchema = yup.array().of(tagsetSegmentValidationObject);
 
 export const TagsetSegment: FC<TagsSegmentProps> = ({
   fieldName = 'tagsets',

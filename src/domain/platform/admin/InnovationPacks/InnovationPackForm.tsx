@@ -11,7 +11,7 @@ import { BlockSectionTitle } from '../../../../core/ui/typography';
 import ContextReferenceSegment from '../components/Common/ContextReferenceSegment';
 import { NameSegment, nameSegmentSchema } from '../components/Common/NameSegment';
 import { referenceSegmentSchema } from '../components/Common/ReferenceSegment';
-import { TagsetSegment, tagsetSegmentSchema } from '../components/Common/TagsetSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '../components/Common/TagsetSegment';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
@@ -83,7 +83,7 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
       displayName: nameSegmentSchema.fields?.name ?? yup.string(),
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
       references: referenceSegmentSchema,
-      tagsets: tagsetSegmentSchema,
+      tagsets: tagsetsSegmentSchema,
     }),
     listedInStore: yup.boolean(),
     searchVisibility: yup.string().required(),

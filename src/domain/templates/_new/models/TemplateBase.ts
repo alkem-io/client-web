@@ -1,5 +1,6 @@
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../../core/utils/Identifiable';
+import { UpdateTagset } from '../../../common/profile/Profile';
 import { CalloutTemplate } from './CalloutTemplate';
 import { CommunityGuidelinesTemplate } from './CommunityGuidelinesTemplate';
 import { InnovationFlowTemplate } from './InnovationFlowTemplate';
@@ -13,11 +14,7 @@ export interface NewTemplateBase extends Identifiable {
   profile: {
     displayName: string;
     description?: string;
-    tagset?: {
-      id: string;
-      name: string;
-      tags: string[];
-    };
+    tagsets?: UpdateTagset[];
     visual?: {
       id: string;
       uri: string;

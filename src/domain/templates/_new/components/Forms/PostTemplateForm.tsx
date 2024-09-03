@@ -1,25 +1,22 @@
 import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FormikProps } from 'formik';
-import TemplateFormBase, { TemplateFormSubmittedValues, TemplateProfileValues } from './TemplateFormBase';
+import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import { PostTemplate } from '../../models/PostTemplate';
 import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
+import { mapTagsetsToUpdateTagsets } from './common/mappings';
 
-export interface PostTemplateFormValues extends TemplateProfileValues {
-  postDefaultDescription: string;
-}
-
-export interface PostTemplateFormSubmittedValues extends TemplateFormSubmittedValues {
+export interface PostTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   postDefaultDescription?: string;
 }
 
 interface PostTemplateFormProps {
   template?: PostTemplate;
   onSubmit: (values: PostTemplateFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<PostTemplateFormValues>) => ReactNode);
+  actions: ReactNode | ((formState: FormikProps<PostTemplateFormSubmittedValues>) => ReactNode);
 }
 
 const validator = {
@@ -29,11 +26,11 @@ const validator = {
 const PostTemplateForm = ({ template, onSubmit, actions }: PostTemplateFormProps) => {
   const { t } = useTranslation();
 
-  const initialValues: PostTemplateFormValues = {
+  const initialValues: PostTemplateFormSubmittedValues = {
     profile: {
       displayName: template?.profile.displayName ?? '',
       description: template?.profile.description ?? '',
-      tagsets: template?.profile.tagset ? [template?.profile.tagset] : [],
+      tagsets: mapTagsetsToUpdateTagsets(template?.profile.tagsets) ?? [],
     },
     postDefaultDescription: template?.postDefaultDescription ?? '',
   };

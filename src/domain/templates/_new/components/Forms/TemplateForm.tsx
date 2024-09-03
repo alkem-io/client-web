@@ -1,9 +1,10 @@
+import { ReactNode } from 'react';
 import { FormikProps } from 'formik';
 import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
 import { AnyTemplate } from '../../models/TemplateBase';
+import CalloutTemplateForm, { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
+import CommunityGuidelinesTemplateForm, { CommunityGuidelinesTemplateFormSubmittedValues } from './CommunityGuidelinesTemplateForm';
 import PostTemplateForm, { PostTemplateFormSubmittedValues } from './PostTemplateForm';
-import { ReactNode } from 'react';
-import CalloutTemplateForm from './CalloutTemplateForm';
 
 interface TemplateFormProps {
   template: AnyTemplate;
@@ -11,7 +12,7 @@ interface TemplateFormProps {
   actions: ReactNode | ((formState: FormikProps<AnyTemplate>) => ReactNode);
 }
 
-export type AnyTemplateFormSubmittedValues = PostTemplateFormSubmittedValues
+export type AnyTemplateFormSubmittedValues = CalloutTemplateFormSubmittedValues | CommunityGuidelinesTemplateFormSubmittedValues | PostTemplateFormSubmittedValues
 
 const TemplateForm = ({ template, ...rest }: TemplateFormProps) => {
   switch (template.type) {
@@ -19,6 +20,8 @@ const TemplateForm = ({ template, ...rest }: TemplateFormProps) => {
       return <CalloutTemplateForm template={template} {...rest} />
     case TemplateType.Post:
       return <PostTemplateForm template={template} {...rest} />
+    case TemplateType.CommunityGuidelines:
+      return <CommunityGuidelinesTemplateForm template={template} {...rest} />
   }
   throw new Error('Template type not supported');
 };

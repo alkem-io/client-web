@@ -4,7 +4,7 @@ import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import CommunityGuidelinesTemplateForm, {
   CommunityGuidelinesTemplateFormSubmittedValues,
   CommunityGuidelinesTemplateFormValues,
-} from './CommunityGuidelinesTemplateForm';
+} from '../../_new/components/Forms/CommunityGuidelinesTemplateForm';
 import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase';
 
 export interface CommunityGuidelinesFormValues {

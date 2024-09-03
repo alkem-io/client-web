@@ -3,11 +3,11 @@ mutation createTemplate(
   $profile: CreateProfileInput!
   $type: TemplateType!
   $tags: [String!]
-  $callout: CreateCalloutInput
+  $calloutData: CreateCalloutInput
+  $communityGuidelinesData: CreateCommunityGuidelinesInput
+  $innovationFlowData: CreateInnovationFlowInput
   $postDefaultDescription: Markdown
-  $innovationFlowStates: [UpdateInnovationFlowStateInput!]
   $whiteboard: CreateWhiteboardInput
-  $communityGuidelines: CreateCommunityGuidelinesInput
 ) {
   createTemplate(
     templateData: {
@@ -15,11 +15,11 @@ mutation createTemplate(
       profile: $profile
       tags: $tags
       type: $type
-      callout: $callout
+      calloutData: $calloutData
+      communityGuidelinesData: $communityGuidelinesData
+      innovationFlowData: $innovationFlowData
       postDefaultDescription: $postDefaultDescription
       whiteboard: $whiteboard
-      communityGuidelines: $communityGuidelines
-      innovationFlowStates: $innovationFlowStates
     }
   ) {
     id
@@ -28,21 +28,21 @@ mutation createTemplate(
 mutation UpdateTemplate(
   $templateId: UUID!
   $profile: UpdateProfileInput!
-  $postDefaultDescription: Markdown
   $callout: UpdateCalloutInput
-  $innovationFlowStates: [UpdateInnovationFlowStateInput!]
-  $whiteboard: UpdateWhiteboardInput
   $communityGuidelines: UpdateCommunityGuidelinesInput
+  $innovationFlowStates: [UpdateInnovationFlowStateInput!]
+  $postDefaultDescription: Markdown
+  $whiteboard: UpdateWhiteboardInput
 ) {
   updateTemplate(
     updateData: {
       ID: $templateId
       profile: $profile
       callout: $callout
-      postDefaultDescription: $postDefaultDescription
-      innovationFlowStates: $innovationFlowStates
-      whiteboard: $whiteboard
       communityGuidelines: $communityGuidelines
+      innovationFlowStates: $innovationFlowStates
+      postDefaultDescription: $postDefaultDescription
+      whiteboard: $whiteboard
     }
   ) {
     id

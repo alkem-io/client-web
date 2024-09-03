@@ -2907,7 +2907,7 @@ export const TemplateProfileInfoFragmentDoc = gql`
       id
       displayName
       description
-      tagset {
+      tagsets {
         ...TagsetDetails
       }
       visual(type: CARD) {
@@ -19553,11 +19553,11 @@ export const CreateTemplateDocument = gql`
     $profile: CreateProfileInput!
     $type: TemplateType!
     $tags: [String!]
-    $callout: CreateCalloutInput
+    $calloutData: CreateCalloutInput
+    $communityGuidelinesData: CreateCommunityGuidelinesInput
+    $innovationFlowData: CreateInnovationFlowInput
     $postDefaultDescription: Markdown
-    $innovationFlowStates: [UpdateInnovationFlowStateInput!]
     $whiteboard: CreateWhiteboardInput
-    $communityGuidelines: CreateCommunityGuidelinesInput
   ) {
     createTemplate(
       templateData: {
@@ -19565,11 +19565,11 @@ export const CreateTemplateDocument = gql`
         profile: $profile
         tags: $tags
         type: $type
-        callout: $callout
+        calloutData: $calloutData
+        communityGuidelinesData: $communityGuidelinesData
+        innovationFlowData: $innovationFlowData
         postDefaultDescription: $postDefaultDescription
         whiteboard: $whiteboard
-        communityGuidelines: $communityGuidelines
-        innovationFlowStates: $innovationFlowStates
       }
     ) {
       id
@@ -19598,11 +19598,11 @@ export type CreateTemplateMutationFn = Apollo.MutationFunction<
  *      profile: // value for 'profile'
  *      type: // value for 'type'
  *      tags: // value for 'tags'
- *      callout: // value for 'callout'
+ *      calloutData: // value for 'calloutData'
+ *      communityGuidelinesData: // value for 'communityGuidelinesData'
+ *      innovationFlowData: // value for 'innovationFlowData'
  *      postDefaultDescription: // value for 'postDefaultDescription'
- *      innovationFlowStates: // value for 'innovationFlowStates'
  *      whiteboard: // value for 'whiteboard'
- *      communityGuidelines: // value for 'communityGuidelines'
  *   },
  * });
  */
@@ -19629,21 +19629,21 @@ export const UpdateTemplateDocument = gql`
   mutation UpdateTemplate(
     $templateId: UUID!
     $profile: UpdateProfileInput!
-    $postDefaultDescription: Markdown
     $callout: UpdateCalloutInput
-    $innovationFlowStates: [UpdateInnovationFlowStateInput!]
-    $whiteboard: UpdateWhiteboardInput
     $communityGuidelines: UpdateCommunityGuidelinesInput
+    $innovationFlowStates: [UpdateInnovationFlowStateInput!]
+    $postDefaultDescription: Markdown
+    $whiteboard: UpdateWhiteboardInput
   ) {
     updateTemplate(
       updateData: {
         ID: $templateId
         profile: $profile
         callout: $callout
-        postDefaultDescription: $postDefaultDescription
-        innovationFlowStates: $innovationFlowStates
-        whiteboard: $whiteboard
         communityGuidelines: $communityGuidelines
+        innovationFlowStates: $innovationFlowStates
+        postDefaultDescription: $postDefaultDescription
+        whiteboard: $whiteboard
       }
     ) {
       id
@@ -19670,11 +19670,11 @@ export type UpdateTemplateMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      templateId: // value for 'templateId'
  *      profile: // value for 'profile'
- *      postDefaultDescription: // value for 'postDefaultDescription'
  *      callout: // value for 'callout'
- *      innovationFlowStates: // value for 'innovationFlowStates'
- *      whiteboard: // value for 'whiteboard'
  *      communityGuidelines: // value for 'communityGuidelines'
+ *      innovationFlowStates: // value for 'innovationFlowStates'
+ *      postDefaultDescription: // value for 'postDefaultDescription'
+ *      whiteboard: // value for 'whiteboard'
  *   },
  * });
  */

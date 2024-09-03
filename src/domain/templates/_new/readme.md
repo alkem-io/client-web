@@ -1,0 +1,3 @@
+- In Models folder, models are as similar as possible to graphql modules, (nullable fields match nullable fields of Graphql Template)
+- Avoid `as` for casting, try to keep the types consistent
+- CreateProfileInput expects referencesData, but UpdateProfileInput expects just references

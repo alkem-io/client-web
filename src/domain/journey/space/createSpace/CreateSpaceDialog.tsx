@@ -12,7 +12,7 @@ import { Tagset, TagsetType } from '../../../../core/apollo/generated/graphql-sc
 import * as yup from 'yup';
 import { nameSegmentSchema } from '../../../platform/admin/components/Common/NameSegment';
 import { contextSegmentSchema } from '../../../platform/admin/components/Common/ContextSegment';
-import { TagsetSegment, tagsetSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
 import { SpaceEditFormValuesType } from '../spaceEditForm/SpaceEditForm';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
@@ -92,7 +92,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
     name: nameSegmentSchema.fields?.name ?? yup.string(),
     nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
     tagline: contextSegmentSchema.fields?.tagline ?? yup.string(),
-    tagsets: tagsetSegmentSchema,
+    tagsets: tagsetsSegmentSchema,
   });
 
   const { isAuthenticated } = useAuthenticationContext();

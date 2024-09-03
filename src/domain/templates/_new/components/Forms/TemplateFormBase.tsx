@@ -20,58 +20,38 @@ import { gutters } from '../../../../../core/ui/grid/utils';
 import { BlockSectionTitle } from '../../../../../core/ui/typography';
 import { AnyTemplate } from '../../models/TemplateBase';
 
-export interface TemplateProfileValues {
-  profile: {
+export interface TemplateFormProfileSubmittedValues {
+  profile: {  // Match CreateProfileInput | UpdateProfileInput;
     displayName: string;
-    description: string;
-    tagsets: {
-      id: string;
+    description?: string;
+    // On CreateProfileInput tags need to be one level higher, and tagsets need to be removed from here.
+    // On UpdateProfileInput tagsets need to be here and the id needs to be passed
+    tagsets?: {
+      ID: string;
       tags: string[];
-    }[] | undefined;
+    }[];
+    // On CreateProfileInput is called referencesData and id needs to be removed
+    // On UpdateProfileInput it's references need to be here and the ids need to be passed
+    references?: {
+      ID: string;
+      description?: string;
+      name?: string;
+      uri?: string;
+    }[];
   }
 }
 
-export interface TemplateFormSubmittedValues {
-  profile: {  // CreateProfileInput | UpdateProfileInput;
-    displayName: string;
-    description: string;
-    tagsets: {
-      id: string;
-      tags: string[];
-    }[] | undefined;
-  }
-
-  // tags?: InputMaybe<Array<Scalars['String']>>;
-
-  // callout?: InputMaybe<UpdateCalloutInput>;
-  // callout?: InputMaybe<CreateCalloutInput>;
-  // communityGuidelines?: InputMaybe<UpdateCommunityGuidelinesInput>;
-  // communityGuidelinesID?: InputMaybe<Scalars['String']>;
-  // communityGuidelines?: InputMaybe<CreateCommunityGuidelinesInput>;
-  // innovationFlowStates?: InputMaybe<Array<UpdateInnovationFlowStateInput>>;
-  // innovationFlowStates?: InputMaybe<Array<UpdateInnovationFlowStateInput>>;
-  // postDefaultDescription?: InputMaybe<Scalars['Markdown']>;
-  // postDefaultDescription?: InputMaybe<Scalars['Markdown']>;
-  // whiteboard?: InputMaybe<UpdateWhiteboardInput>;
-  // whiteboard?: InputMaybe<CreateWhiteboardInput>;
-
-
-  // id. templatesSetId
-  //  type: TemplateType;
-  //  visualUri?: InputMaybe<Scalars['String']>;
-}
-
-interface TemplateFormBaseProps {
+interface TemplateFormBaseProps<T extends TemplateFormProfileSubmittedValues> {
   templateType: TemplateType;
   template?: AnyTemplate;
-  initialValues: TemplateProfileValues;
-  onSubmit: (values: TemplateFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<TemplateProfileValues>) => ReactNode);
-  children?: ReactNode | ((formState: FormikProps<TemplateProfileValues>) => ReactNode);
+  initialValues: T;
+  onSubmit: (values: T) => void;
+  actions: ReactNode | ((formState: FormikProps<T>) => ReactNode);
+  children?: ReactNode | ((formState: FormikProps<T>) => ReactNode);
   validator?: yup.ObjectSchemaDefinition<{}>;
 }
 
-const TemplateFormBase = ({
+const TemplateFormBase = <T extends TemplateFormProfileSubmittedValues>({
   template,
   initialValues,
   onSubmit,
@@ -79,7 +59,7 @@ const TemplateFormBase = ({
   children,
   validator,
   templateType,
-}: TemplateFormBaseProps) => {
+}: TemplateFormBaseProps<T>) => {
   const { t } = useTranslation();
 
   const validationSchema = yup.object().shape({

@@ -3,7 +3,7 @@ import { FormikProps } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
-import TemplateFormBase, { TemplateProfileValues } from '../../_new/components/Forms/TemplateFormBase';
+import TemplateFormBase from '../../_new/components/Forms/TemplateFormBase';
 import { Reference, Tagset } from '../../../common/profile/Profile';
 import { CalloutType, UpdateTemplateInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../../core/utils/Identifiable';
@@ -18,8 +18,16 @@ import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.con
 import { TagsetField } from '../../../platform/admin/components/Common/TagsetSegment';
 import FormikWhiteboardPreview from '../WhiteboardTemplates/FormikWhiteboardPreview';
 import FormikRadioButtonsGroup from '../../../../core/ui/forms/radioButtons/FormikRadioButtonsGroup';
-
-export interface CalloutTemplateFormValues extends TemplateProfileValues {
+/**
+ * @deprecated DELETE THIS FILE
+ * //!!
+ */
+export interface CalloutTemplateFormValues {
+  profile: {
+    displayName: string;
+    description: string;
+    tagsets: Tagset[];
+  };
   framing: {
     profile: {
       displayName: string;

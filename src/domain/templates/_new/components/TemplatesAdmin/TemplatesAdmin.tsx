@@ -13,6 +13,7 @@ import useBackToPath from '../../../../../core/routing/useBackToPath';
 import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
 import { Button, ButtonProps } from '@mui/material';
 import CreateTemplateDialog from '../Dialogs/CreateTemplateDialog/CreateTemplateDialog';
+import { toCreateTemplateMutationVariables, toUpdateTemplateMutationVariables } from '../Forms/common/common';
 
 interface TemplatesAdminProps {
   templatesSetId: string;
@@ -69,45 +70,23 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
     refetchQueries: ['AllTemplatesInTemplatesSet']
   });
   const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
-    const { profile: { tagsets, ...profile }, ...rest } = values;
-
+    const variables = toUpdateTemplateMutationVariables(templateId!, values);
     await updateTemplate({
-      variables: {
-        templateId: templateId!,
-        profile: {
-          ...profile,
-          tagsets: tagsets?.map(tagset => ({
-            ID: tagset.id,
-            tags: tagset.tags,
-          })),
-        },
-        ...rest
-      }
+      variables
     });
   };
 
   // Create
-  const [creatingTemplate, setCreatingTemplate] = useState<TemplateType>();
+  const [creatingTemplateType, setCreatingTemplateType] = useState<TemplateType>();
   const [createTemplate] = useCreateTemplateMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet']
   });
   const handleTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
-    // remove all ids, they should be empty anyway
-    const { profile: { tagsets, ...profile }, ...rest } = values;
-
+    const variables = toCreateTemplateMutationVariables(templatesSetId, creatingTemplateType!, values);
     await createTemplate({
-      variables: {
-        templatesSetId: templatesSetId,
-        type: creatingTemplate!,
-        profile: {
-          ...profile,
-        },
-        tags: tagsets?.[0]?.tags,
-        ...rest
-      },
-      refetchQueries: ['AllTemplatesInTemplatesSet']
+      variables,
     });
-    setCreatingTemplate(undefined);
+    setCreatingTemplateType(undefined);
   };
   // Delete
   const [deletingTemplate, setDeletingTemplate] = useState<AnyTemplate>();
@@ -138,7 +117,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           {provided => (
             <TemplatesGallery
               headerText={t('common.enums.templateTypes.Callout')}
-              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplate(TemplateType.Callout)} /> : undefined}
+              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(TemplateType.Callout)} /> : undefined}
               {...provided}
             />
           )}
@@ -154,7 +133,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           {provided => (
             <TemplatesGallery
               headerText={t('common.enums.templateTypes.CommunityGuidelines')}
-              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplate(TemplateType.CommunityGuidelines)} /> : undefined}
+              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(TemplateType.CommunityGuidelines)} /> : undefined}
               {...provided}
             />
           )}
@@ -170,7 +149,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           {provided => (
             <TemplatesGallery
               headerText={t('common.enums.templateTypes.InnovationFlow')}
-              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplate(TemplateType.InnovationFlow)} /> : undefined}
+              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(TemplateType.InnovationFlow)} /> : undefined}
               {...provided}
             />
           )}
@@ -186,7 +165,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           {provided => (
             <TemplatesGallery
               headerText={t('common.enums.templateTypes.Post')}
-              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplate(TemplateType.Post)} /> : undefined}
+              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(TemplateType.Post)} /> : undefined}
               {...provided}
             />
           )}
@@ -202,17 +181,17 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           {provided => (
             <TemplatesGallery
               headerText={t('common.enums.templateTypes.Whiteboard')}
-              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplate(TemplateType.Whiteboard)} /> : undefined}
+              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(TemplateType.Whiteboard)} /> : undefined}
               {...provided}
             />
           )}
         </TemplatesGalleryContainer>
       </PageContentBlockSeamless>
-      {creatingTemplate && (
+      {creatingTemplateType && (
         <CreateTemplateDialog
           open
           onClose={() => backToTemplates(`${baseUrl}/settings`)}
-          templateType={creatingTemplate}
+          templateType={creatingTemplateType}
           onSubmit={handleTemplateCreate}
         />
       )}

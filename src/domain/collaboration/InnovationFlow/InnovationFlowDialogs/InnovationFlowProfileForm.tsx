@@ -8,7 +8,7 @@ import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikI
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { referenceSegmentSchema } from '../../../../domain/platform/admin/components/Common/ReferenceSegment';
-import { tagsetSegmentSchema } from '../../../../domain/platform/admin/components/Common/TagsetSegment';
+import { tagsetsSegmentSchema } from '../../../../domain/platform/admin/components/Common/TagsetSegment';
 import { InnovationFlowProfile } from './InnovationFlowProfileBlock';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
@@ -48,7 +48,7 @@ const InnovationFlowProfileForm: FC<InnovationFlowProfileFormProps> = ({
     displayName: yup.string().required().max(SMALL_TEXT_LENGTH),
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
     references: referenceSegmentSchema,
-    tagsets: tagsetSegmentSchema,
+    tagsets: tagsetsSegmentSchema,
   });
 
   const [handleSave, loading] = useLoadingState(async (profileData: InnovationFlowProfileFormValues) => {

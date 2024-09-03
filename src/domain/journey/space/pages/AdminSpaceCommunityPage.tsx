@@ -27,7 +27,7 @@ import CommunityGuidelinesContainer from '../../../community/community/Community
 import CreateCommunityGuidelinesTemplateDialog, {
   CommunityGuidelinesFormValues,
 } from '../../../templates/admin/CommunityGuidelines/CreateCommunityGuidelinesTemplateDialog';
-import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../../templates/admin/CommunityGuidelines/CommunityGuidelinesTemplateForm';
+import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../../templates/_new/components/Forms/CommunityGuidelinesTemplateForm';
 import { useCreateCommunityGuidelinesTemplate } from '../../../templates/admin/CommunityGuidelines/useCreateCommunityGuidelinesTemplate';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 

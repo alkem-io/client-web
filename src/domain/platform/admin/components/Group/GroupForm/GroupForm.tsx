@@ -19,7 +19,7 @@ import Section, { Header } from '../../../../../../core/ui/content/deprecated/Se
 import VisualUpload from '../../../../../../core/ui/upload/VisualUpload/VisualUpload';
 import ProfileReferenceSegment from '../../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../../Common/ReferenceSegment';
-import { TagsetSegment, tagsetSegmentSchema } from '../../Common/TagsetSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '../../Common/TagsetSegment';
 import GroupMembersDetails from '../GroupMembersDetails';
 
 interface GroupFormProps {
@@ -55,7 +55,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
   const validationSchema = yup.object().shape({
     name: yup.string().required(t('forms.validations.required')),
     avatar: yup.string(),
-    tagsets: tagsetSegmentSchema,
+    tagsets: tagsetsSegmentSchema,
     references: referenceSegmentSchema,
     description: yup.string().max(400),
   });
