@@ -3806,7 +3806,7 @@ export type MutationUpdateEcosystemModelArgs = {
 };
 
 export type MutationUpdateInnovationFlowArgs = {
-  innovationFlowData: UpdateInnovationFlowInput;
+  innovationFlowData: UpdateInnovationFlowEntityInput;
 };
 
 export type MutationUpdateInnovationFlowSelectedStateArgs = {
@@ -5810,6 +5810,14 @@ export type UpdateFormQuestionInput = {
   sortOrder: Scalars['Float'];
 };
 
+export type UpdateInnovationFlowEntityInput = {
+  /** ID of the Innovation Flow */
+  innovationFlowID: Scalars['UUID'];
+  /** The Profile of this entity. */
+  profileData?: InputMaybe<UpdateProfileInput>;
+  states?: InputMaybe<Array<UpdateInnovationFlowStateInput>>;
+};
+
 export type UpdateInnovationFlowFromTemplateInput = {
   /** ID of the Innovation Flow */
   innovationFlowID: Scalars['UUID'];
@@ -5818,8 +5826,6 @@ export type UpdateInnovationFlowFromTemplateInput = {
 };
 
 export type UpdateInnovationFlowInput = {
-  /** ID of the Innovation Flow */
-  innovationFlowID: Scalars['UUID'];
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
   states?: InputMaybe<Array<UpdateInnovationFlowStateInput>>;
@@ -6058,7 +6064,7 @@ export type UpdateTemplateInput = {
   callout?: InputMaybe<UpdateCalloutInput>;
   /** The Community guidelines to associate with this template. */
   communityGuidelines?: InputMaybe<UpdateCommunityGuidelinesInput>;
-  innovationFlowStates?: InputMaybe<Array<UpdateInnovationFlowStateInput>>;
+  innovationFlow?: InputMaybe<UpdateInnovationFlowInput>;
   /** The default description to be pre-filled when users create Posts based on this template. */
   postDefaultDescription?: InputMaybe<Scalars['Markdown']>;
   /** The Profile of the Template. */
@@ -8286,7 +8292,7 @@ export type SpaceInnovationFlowsQuery = {
 };
 
 export type UpdateInnovationFlowMutationVariables = Exact<{
-  input: UpdateInnovationFlowInput;
+  input: UpdateInnovationFlowEntityInput;
 }>;
 
 export type UpdateInnovationFlowMutation = {
@@ -24554,7 +24560,7 @@ export type UpdateTemplateMutationVariables = Exact<{
   profile: UpdateProfileInput;
   callout?: InputMaybe<UpdateCalloutInput>;
   communityGuidelines?: InputMaybe<UpdateCommunityGuidelinesInput>;
-  innovationFlowStates?: InputMaybe<Array<UpdateInnovationFlowStateInput> | UpdateInnovationFlowStateInput>;
+  innovationFlow?: InputMaybe<UpdateInnovationFlowInput>;
   postDefaultDescription?: InputMaybe<Scalars['Markdown']>;
   whiteboard?: InputMaybe<UpdateWhiteboardInput>;
 }>;

@@ -1,39 +1,32 @@
 import React, { ReactNode } from 'react';
 import * as yup from 'yup';
-import { FormikProps } from 'formik';
 import { useTranslation } from 'react-i18next';
-import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
-import { CreateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
-import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import TemplateFormBase from '../../_new/components/Forms/TemplateFormBase';
-import { BlockSectionTitle } from '../../../../core/ui/typography';
-import InnovationFlowDragNDropEditor from '../../../collaboration/InnovationFlow/InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
+import { FormikProps } from 'formik';
+import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
+import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
+import { mapTagsetsToUpdateTagsets } from './common/mappings';
+import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlow';
+import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
+import { BlockSectionTitle } from '../../../../../core/ui/typography';
+import InnovationFlowDragNDropEditor from '../../../../collaboration/InnovationFlow/InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
+import { InnovationFlowTemplate, MAX_INNOVATIONFLOW_STATES } from '../../models/InnovationFlowTemplate';
 
-export const MAX_INNOVATIONFLOW_STATES = 100;
 
-export interface InnovationTemplateFormValues {
-  displayName: string;
-  description: string;
-  tags: string[];
-  states: InnovationFlowState[];
-}
-
-export interface InnovationTemplateFormSubmittedValues {
-  states: InnovationFlowState[];
-  profile: CreateProfileInput;
+export interface InnovationFlowTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
+  innovationFlow: {
+    states: InnovationFlowState[];
+  }
 }
 
 interface InnovationFlowTemplateFormProps {
-  initialValues: Partial<InnovationTemplateFormValues>;
-  onSubmit: (values: InnovationTemplateFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<InnovationTemplateFormValues>) => ReactNode);
+  template?: InnovationFlowTemplate;
+  onSubmit: (values: InnovationFlowTemplateFormSubmittedValues) => void;
+  actions: ReactNode | ((formState: FormikProps<InnovationFlowTemplateFormSubmittedValues>) => ReactNode);
 }
 
 const validator = {
-  states: yup
-    .array()
-    .required()
-    .of(
+  innovationFlow: yup.object().shape({
+    states: yup.array().required().of(
       yup
         .object()
         .shape({
@@ -41,12 +34,23 @@ const validator = {
           description: yup.string().max(MARKDOWN_TEXT_LENGTH),
         })
         .required()
-    )
-    .min(1)
-    .max(MAX_INNOVATIONFLOW_STATES),
+    ).min(1).max(MAX_INNOVATIONFLOW_STATES),
+  })
 };
 
-const InnovationFlowTemplateForm = ({ initialValues, onSubmit, actions }: InnovationFlowTemplateFormProps) => {
+const InnovationFlowTemplateForm = ({ template, onSubmit, actions }: InnovationFlowTemplateFormProps) => {
+
+  const initialValues: InnovationFlowTemplateFormSubmittedValues = {
+    profile: {
+      displayName: template?.profile.displayName ?? '',
+      description: template?.profile.description ?? '',
+      tagsets: mapTagsetsToUpdateTagsets(template?.profile.tagsets) ?? [],
+    },
+    innovationFlow: {
+      states: template?.innovationFlow?.states ?? [],
+    }
+  };
+
   const { t } = useTranslation();
 
   const onCreateState = (
@@ -124,28 +128,28 @@ const InnovationFlowTemplateForm = ({ initialValues, onSubmit, actions }: Innova
 
   return (
     <TemplateFormBase
+      templateType={TemplateType.InnovationFlow}
+      template={template}
       initialValues={initialValues}
       onSubmit={onSubmit}
       actions={actions}
-      // @ts-ignore TS5UPGRADE
       validator={validator}
-      entityTypeName={t('common.innovation-flow')}
     >
       {({ values, setFieldValue, setFieldTouched }) => {
         const setStates = (states: InnovationFlowState[]) => {
-          setFieldTouched('states', true);
-          setFieldValue('states', states);
+          setFieldTouched('innovationFlow.states', true);
+          setFieldValue('innovationFlow.states', states);
         };
 
         return (
           <>
             <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
             <InnovationFlowDragNDropEditor
-              innovationFlowStates={values.states}
-              onCreateFlowState={(newState, options) => onCreateState(values.states, newState, options, setStates)}
-              onEditFlowState={(oldState, newState) => onEditState(values.states, oldState, newState, setStates)}
-              onDeleteFlowState={stateName => onDeleteState(values.states, stateName, setStates)}
-              onUpdateFlowStateOrder={(states, sortOrder) => onSortStates(values.states, states, sortOrder, setStates)}
+              innovationFlowStates={values.innovationFlow.states}
+              onCreateFlowState={(newState, options) => onCreateState(values.innovationFlow.states, newState, options, setStates)}
+              onEditFlowState={(oldState, newState) => onEditState(values.innovationFlow.states, oldState, newState, setStates)}
+              onDeleteFlowState={stateName => onDeleteState(values.innovationFlow.states, stateName, setStates)}
+              onUpdateFlowStateOrder={(states, sortOrder) => onSortStates(values.innovationFlow.states, states, sortOrder, setStates)}
             />
           </>
         );

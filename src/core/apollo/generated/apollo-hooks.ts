@@ -5601,7 +5601,7 @@ export function refetchSpaceInnovationFlowsQuery(variables: SchemaTypes.SpaceInn
 }
 
 export const UpdateInnovationFlowDocument = gql`
-  mutation updateInnovationFlow($input: UpdateInnovationFlowInput!) {
+  mutation updateInnovationFlow($input: UpdateInnovationFlowEntityInput!) {
     updateInnovationFlow(innovationFlowData: $input) {
       id
       profile {
@@ -19631,7 +19631,7 @@ export const UpdateTemplateDocument = gql`
     $profile: UpdateProfileInput!
     $callout: UpdateCalloutInput
     $communityGuidelines: UpdateCommunityGuidelinesInput
-    $innovationFlowStates: [UpdateInnovationFlowStateInput!]
+    $innovationFlow: UpdateInnovationFlowInput
     $postDefaultDescription: Markdown
     $whiteboard: UpdateWhiteboardInput
   ) {
@@ -19641,7 +19641,7 @@ export const UpdateTemplateDocument = gql`
         profile: $profile
         callout: $callout
         communityGuidelines: $communityGuidelines
-        innovationFlowStates: $innovationFlowStates
+        innovationFlow: $innovationFlow
         postDefaultDescription: $postDefaultDescription
         whiteboard: $whiteboard
       }
@@ -19672,7 +19672,7 @@ export type UpdateTemplateMutationFn = Apollo.MutationFunction<
  *      profile: // value for 'profile'
  *      callout: // value for 'callout'
  *      communityGuidelines: // value for 'communityGuidelines'
- *      innovationFlowStates: // value for 'innovationFlowStates'
+ *      innovationFlow: // value for 'innovationFlow'
  *      postDefaultDescription: // value for 'postDefaultDescription'
  *      whiteboard: // value for 'whiteboard'
  *   },

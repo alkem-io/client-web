@@ -1,7 +1,7 @@
 import InnovationFlowTemplateForm, {
   InnovationTemplateFormSubmittedValues,
   InnovationTemplateFormValues,
-} from './InnovationFlowTemplateForm';
+} from '../../_new/components/Forms/InnovationFlowTemplateForm';
 import { useTranslation } from 'react-i18next';
 import React from 'react';
 import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase';

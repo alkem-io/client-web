@@ -30,7 +30,7 @@ mutation UpdateTemplate(
   $profile: UpdateProfileInput!
   $callout: UpdateCalloutInput
   $communityGuidelines: UpdateCommunityGuidelinesInput
-  $innovationFlowStates: [UpdateInnovationFlowStateInput!]
+  $innovationFlow: UpdateInnovationFlowInput
   $postDefaultDescription: Markdown
   $whiteboard: UpdateWhiteboardInput
 ) {
@@ -40,7 +40,7 @@ mutation UpdateTemplate(
       profile: $profile
       callout: $callout
       communityGuidelines: $communityGuidelines
-      innovationFlowStates: $innovationFlowStates
+      innovationFlow: $innovationFlow
       postDefaultDescription: $postDefaultDescription
       whiteboard: $whiteboard
     }

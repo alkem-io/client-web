@@ -5,6 +5,7 @@ import { AnyTemplate } from '../../models/TemplateBase';
 import CalloutTemplateForm, { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
 import CommunityGuidelinesTemplateForm, { CommunityGuidelinesTemplateFormSubmittedValues } from './CommunityGuidelinesTemplateForm';
 import PostTemplateForm, { PostTemplateFormSubmittedValues } from './PostTemplateForm';
+import InnovationFlowTemplateForm, { InnovationFlowTemplateFormSubmittedValues } from './InnovationFlowTemplateForm';
 
 interface TemplateFormProps {
   template: AnyTemplate;
@@ -12,7 +13,7 @@ interface TemplateFormProps {
   actions: ReactNode | ((formState: FormikProps<AnyTemplate>) => ReactNode);
 }
 
-export type AnyTemplateFormSubmittedValues = CalloutTemplateFormSubmittedValues | CommunityGuidelinesTemplateFormSubmittedValues | PostTemplateFormSubmittedValues
+export type AnyTemplateFormSubmittedValues = CalloutTemplateFormSubmittedValues | CommunityGuidelinesTemplateFormSubmittedValues | PostTemplateFormSubmittedValues | InnovationFlowTemplateFormSubmittedValues
 
 const TemplateForm = ({ template, ...rest }: TemplateFormProps) => {
   switch (template.type) {
@@ -22,6 +23,8 @@ const TemplateForm = ({ template, ...rest }: TemplateFormProps) => {
       return <PostTemplateForm template={template} {...rest} />
     case TemplateType.CommunityGuidelines:
       return <CommunityGuidelinesTemplateForm template={template} {...rest} />
+    case TemplateType.InnovationFlow:
+      return <InnovationFlowTemplateForm template={template} {...rest} />
   }
   throw new Error('Template type not supported');
 };

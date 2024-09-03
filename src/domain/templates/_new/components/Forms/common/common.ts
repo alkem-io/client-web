@@ -3,6 +3,7 @@ import { CreateTemplateMutationVariables, TemplateType, UpdateTemplateMutationVa
 import { AnyTemplateFormSubmittedValues } from '../TemplateForm';
 import { CommunityGuidelinesTemplateFormSubmittedValues } from '../CommunityGuidelinesTemplateForm';
 import { WritableDraft } from 'immer/dist/internal';
+import { InnovationFlowTemplateFormSubmittedValues } from '../InnovationFlowTemplateForm';
 //!! All the ugly things, those `as`, those mappings that drive TypeScript crazy, put them in here
 
 /**
@@ -153,6 +154,19 @@ export const toCreateTemplateMutationVariables = (
         if (communityGuidelinesDraft.communityGuidelines?.profile.references) {
           handleReferences(communityGuidelinesDraft.communityGuidelines);
         }
+        delete draft['callout'];
+        delete draft['communityGuidelines'];
+        delete draft['innovationFlow'];
+      });
+      break;
+    }
+    case TemplateType.InnovationFlow: {
+      newValues = produce(newValues, draft => {
+        const innovationFlowDraft = draft as InnovationFlowTemplateFormSubmittedValues;
+        innovationFlowDraft['innovationFlowData'] = innovationFlowDraft.innovationFlow
+        innovationFlowDraft['innovationFlowData']['profile'] = {
+          displayName: 'Innovation Flow Template'
+        };
         delete draft['callout'];
         delete draft['communityGuidelines'];
         delete draft['innovationFlow'];

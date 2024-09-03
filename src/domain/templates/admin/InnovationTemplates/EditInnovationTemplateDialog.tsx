@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import InnovationFlowTemplateForm, {
   InnovationTemplateFormSubmittedValues,
   InnovationTemplateFormValues,
-} from './InnovationFlowTemplateForm';
+} from '../../_new/components/Forms/InnovationFlowTemplateForm';
 import React from 'react';
 import { InnovationFlowTemplateFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
