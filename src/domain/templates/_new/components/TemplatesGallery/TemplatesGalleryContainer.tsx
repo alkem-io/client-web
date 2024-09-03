@@ -25,7 +25,7 @@ const TemplatesGalleryContainer = ({ templates, templatesSetId, baseUrl, loading
 
     switch (template.type) {
       case TemplateType.Callout:
-        return buildLink(`${baseUrl}/${RoutePaths.postTemplatesRoutePath}/${template.id}`);
+        return buildLink(`${baseUrl}/${RoutePaths.calloutTemplatesRoutePath}/${template.id}`);
       case TemplateType.CommunityGuidelines:
         return buildLink(`${baseUrl}/${RoutePaths.communityGuidelinesTemplatesRoutePath}/${template.id}`);
       case TemplateType.InnovationFlow:

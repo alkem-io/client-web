@@ -18,6 +18,7 @@ import { TagsetField } from '../../../../platform/admin/components/Common/Tagset
 import FormikRadioButtonsGroup from '../../../../../core/ui/forms/radioButtons/FormikRadioButtonsGroup';
 import FormikWhiteboardPreview from '../../../admin/WhiteboardTemplates/FormikWhiteboardPreview';
 import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
+import { mapReferencesToUpdateReferences, mapTagsetsToUpdateTagsets } from './common/mappings';
 
 export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   callout?: {
@@ -27,11 +28,11 @@ export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileS
         description: string;
         references?: {
           ID: string;
-          name: string;
+          name?: string;
           description?: string;
           uri?: string;
         }[];
-        tagsets: {
+        tagsets?: {
           ID: string;
           tags: string[];
         }[];
@@ -115,24 +116,22 @@ const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFor
     profile: {
       displayName: template?.profile.displayName ?? '',
       description: template?.profile.description ?? '',
-      tagsets: template?.profile.tagset ? [template?.profile.tagset] : [],
+      tagsets: mapTagsetsToUpdateTagsets(template?.profile.tagsets) ?? [],
     },
     callout: {
       framing: {
         profile: {
-          displayName: template?.callout?.framing.profile?.displayName ?? '',
-          description: template?.callout?.framing.profile?.description ?? '',
-          references: template?.callout?.framing.profile?.references?.map(ref => (
-            { ID: ref.id, name: ref.name, description: ref.description, uri: ref.uri }
-          )) ?? [],
-          tagsets: template?.callout?.framing.profile?.tagsets ?? [],
+          displayName: template?.callout?.framing?.profile?.displayName ?? '',
+          description: template?.callout?.framing?.profile?.description ?? '',
+          references: mapReferencesToUpdateReferences(template?.callout?.framing?.profile?.references),
+          tagsets: mapTagsetsToUpdateTagsets(template?.callout?.framing?.profile?.tagsets),
         },
         whiteboard: {
           profileData: {
-            displayName: template?.callout?.framing.whiteboard?.profileData.displayName ?? '',
-            description: template?.callout?.framing.whiteboard?.profileData.description ?? '',
+            displayName: template?.callout?.framing?.whiteboard?.profileData.displayName ?? '',
+            description: template?.callout?.framing?.whiteboard?.profileData.description ?? '',
           },
-          content: template?.callout?.framing.whiteboard?.content ?? JSON.stringify(EmptyWhiteboard),
+          content: template?.callout?.framing?.whiteboard?.content ?? JSON.stringify(EmptyWhiteboard),
         },
       },
       contributionDefaults: {
