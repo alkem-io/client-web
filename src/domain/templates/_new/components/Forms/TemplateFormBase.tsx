@@ -87,7 +87,6 @@ const TemplateFormBase = ({
       displayName: displayNameValidator,
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
       tagsets: yup.array().of(yup.object().shape({
-        id: yup.string().required(),
         tags: yup.array().of(yup.string().min(2)),
       }))
     }),
@@ -98,7 +97,7 @@ const TemplateFormBase = ({
 
   const renderActions = typeof actions === 'function' ? actions : () => actions;
   const renderChildren = typeof children === 'function' ? children : () => children;
-  console.log({ initialValues });
+
   return (
     <Formik
       enableReinitialize
@@ -125,7 +124,7 @@ const TemplateFormBase = ({
                 />
               </Box>
               <TagsetField
-                name="profile.tags"
+                name="profile.tagsets[0].tags"
                 title={t('templateDialog.profile.fields.tags')}
                 helpTextIcon={t('components.post-creation.info-step.tags-help-text')}
               />

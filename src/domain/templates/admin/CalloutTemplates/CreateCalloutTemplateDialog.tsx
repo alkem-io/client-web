@@ -3,7 +3,7 @@ import React from 'react';
 import CalloutTemplateForm, {
   CalloutTemplateFormSubmittedValues,
   CalloutTemplateFormValues,
-} from './CalloutTemplateForm';
+} from '../../_new/components/Forms/CalloutTemplateForm';
 import { Reference, Tagset } from '../../../common/profile/Profile';
 import { WhiteboardFragmentWithCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
 import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';

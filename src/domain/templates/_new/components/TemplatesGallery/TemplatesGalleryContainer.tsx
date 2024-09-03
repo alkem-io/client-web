@@ -14,11 +14,12 @@ interface TemplatesGalleryContainerProvided {
 
 interface TemplatesGalleryContainerProps extends SimpleContainerProps<TemplatesGalleryContainerProvided> {
   templates: AnyTemplate[] | undefined;
-  templatesSetId: string | undefined;
+  templatesSetId: string;
   baseUrl: string;  // Url to go back after closing dialogs: InnovationPack settings url or Space settings url.
+  loading?: boolean;
 }
 
-const TemplatesGalleryContainer = ({ templates, templatesSetId, baseUrl, children }: TemplatesGalleryContainerProps) => {
+const TemplatesGalleryContainer = ({ templates, templatesSetId, baseUrl, loading, children }: TemplatesGalleryContainerProps) => {
   const [, buildLink] = useBackToParentPage(baseUrl);
   const buildTemplateLink = (template: AnyTemplate) => {
 
@@ -37,7 +38,7 @@ const TemplatesGalleryContainer = ({ templates, templatesSetId, baseUrl, childre
   }
   const provided = {
     templates,
-    loading: false,
+    loading,
     buildTemplateLink,
   }
   return <>{children(provided)}</>;

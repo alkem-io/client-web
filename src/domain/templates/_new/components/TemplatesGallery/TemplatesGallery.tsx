@@ -4,9 +4,10 @@ import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBl
 import ScrollableCardsLayoutContainer from '../../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import TemplateCard from '../cards/TemplateCard';
 import { LinkWithState } from '../../../../shared/types/LinkWithState';
-import { Skeleton } from '@mui/material';
 import { AnyTemplate } from '../../models/TemplateBase';
 import { CARLOS_BORDER_GREEN } from '../../borders';
+import ContributeCardSkeleton from '../../../../../core/ui/card/ContributeCardSkeleton';
+import { times } from 'lodash';
 
 
 interface TemplatesGalleryProps {
@@ -31,7 +32,7 @@ const TemplatesGallery: FC<TemplatesGalleryProps> = ({
       <PageContentBlock sx={{ border: CARLOS_BORDER_GREEN }}>
         <PageContentBlockHeader title={headerText} actions={actions} />
         <ScrollableCardsLayoutContainer>
-          {loading ? <Skeleton /> : null}
+          {loading && !templates ? times(3, () => <ContributeCardSkeleton />) : null}
           {templates?.map(template => (
             <TemplateCard key={template.id} template={template} link={buildTemplateLink(template)} />
           ))}

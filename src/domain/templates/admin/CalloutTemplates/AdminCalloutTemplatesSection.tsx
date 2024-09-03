@@ -2,7 +2,7 @@ import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import { useTranslation } from 'react-i18next';
 import CalloutImportTemplateCard from './CalloutImportTemplateCard';
 import CreateCalloutTemplateDialog from './CreateCalloutTemplateDialog';
-import { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
+import { CalloutTemplateFormSubmittedValues } from '../../_new/components/Forms/CalloutTemplateForm';
 import produce from 'immer';
 import EditCalloutTemplateDialog from './EditCalloutTemplateDialog';
 import {

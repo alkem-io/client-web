@@ -44,7 +44,7 @@ import ExpandContentIcon from '../../../../core/ui/content/ExpandContent/ExpandC
 import { ShareDialog } from '../../../shared/components/ShareDialog/ShareDialog';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { useCreateCalloutTemplate } from '../../../templates/admin/CalloutTemplates/useCreateCalloutTemplate';
-import { CalloutTemplateFormSubmittedValues } from '../../../templates/admin/CalloutTemplates/CalloutTemplateForm';
+import { CalloutTemplateFormSubmittedValues } from '../../../templates/_new/components/Forms/CalloutTemplateForm';
 import CreateCalloutTemplateDialog from '../../../templates/admin/CalloutTemplates/CreateCalloutTemplateDialog';
 
 interface CalloutSettingsProvided {

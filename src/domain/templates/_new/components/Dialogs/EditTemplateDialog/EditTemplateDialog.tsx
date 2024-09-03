@@ -10,7 +10,7 @@ interface EditTemplateDialogProps {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
   onSubmit: (values: AnyTemplateFormSubmittedValues) => void;
-  onDelete: () => void;
+  onDelete?: () => void;
   template: AnyTemplate | undefined;
   templateType: TemplateType;
 }

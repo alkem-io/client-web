@@ -3,6 +3,7 @@ import { TemplateType } from '../../../../../core/apollo/generated/graphql-schem
 import { AnyTemplate } from '../../models/TemplateBase';
 import PostTemplateForm, { PostTemplateFormSubmittedValues } from './PostTemplateForm';
 import { ReactNode } from 'react';
+import CalloutTemplateForm from './CalloutTemplateForm';
 
 interface TemplateFormProps {
   template: AnyTemplate;
@@ -14,6 +15,8 @@ export type AnyTemplateFormSubmittedValues = PostTemplateFormSubmittedValues
 
 const TemplateForm = ({ template, ...rest }: TemplateFormProps) => {
   switch (template.type) {
+    case TemplateType.Callout:
+      return <CalloutTemplateForm template={template} {...rest} />
     case TemplateType.Post:
       return <PostTemplateForm template={template} {...rest} />
   }

@@ -25,6 +25,7 @@ import InnovationPackForm, { InnovationPackFormValues } from '../../platform/adm
 import AdminCalloutTemplatesSection from '../../templates/admin/CalloutTemplates/AdminCalloutTemplatesSection';
 import AdminInnovationTemplatesSection from '../../templates/admin/InnovationTemplates/AdminInnovationTemplatesSection';
 import TemplatesAdmin from '../../templates/_new/components/TemplatesAdmin/TemplatesAdmin';
+import Loading from '../../../core/ui/loading/Loading';
 
 export enum RoutePaths {
   postTemplatesRoutePath = 'post-templates',
@@ -71,7 +72,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = () => {
 
   const innovationPack = data?.lookup.innovationPack;
 
-  const [updateInnovationPack, { loading: updating }] = useUpdateInnovationPackMutation();
+  const [updateInnovationPack, { loading: updatingProfile }] = useUpdateInnovationPackMutation();
 
   const handleSubmit = async (formData: InnovationPackFormValues) => {
     const { data } = await updateInnovationPack({
@@ -103,7 +104,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = () => {
     }
   };
 
-  const isLoading = resolving || loadingInnovationPack || updating;
+  const isLoading = resolving || loadingInnovationPack;
 
   return (
     <InnovationPackProfileLayout
@@ -112,26 +113,29 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = () => {
       showSettings
       settings
     >
-      {innovationPackId && (
+      {isLoading && <Loading />}
+      {innovationPackId && !isLoading && innovationPack?.templates?.id && (
         <>
           <StorageConfigContextProvider locationType="innovationPack" innovationPackId={innovationPackId}>
             <PageContent>
               <PageContentColumn columns={12}>
                 <PageContentBlock>
                   <InnovationPackForm
-                    nameID={innovationPack?.nameID}
-                    profile={innovationPack?.profile}
-                    provider={innovationPack?.provider}
+                    nameID={innovationPack.nameID}
+                    profile={innovationPack.profile}
+                    provider={innovationPack.provider}
                     onSubmit={handleSubmit}
-                    loading={isLoading}
-                    listedInStore={innovationPack?.listedInStore}
-                    searchVisibility={innovationPack?.searchVisibility}
+                    loading={updatingProfile}
+                    listedInStore={innovationPack.listedInStore}
+                    searchVisibility={innovationPack.searchVisibility}
                   />
                 </PageContentBlock>
                 <TemplatesAdmin
-                  templatesSetId={innovationPack?.templates?.id}
+                  templatesSetId={innovationPack.templates.id}
                   templateId={templateSelected}
-                  baseUrl={innovationPack?.profile.url}
+                  baseUrl={innovationPack.profile.url}
+                  canDeleteTemplates
+                  canCreateTemplates
                 />
 
                 {/*

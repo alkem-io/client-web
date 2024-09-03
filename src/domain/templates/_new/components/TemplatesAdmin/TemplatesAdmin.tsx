@@ -1,7 +1,7 @@
 import React, { FC, useMemo, useState } from 'react';
 import TemplatesGalleryContainer from '../TemplatesGallery/TemplatesGalleryContainer';
 import TemplatesGallery from '../TemplatesGallery/TemplatesGallery';
-import { useAllTemplatesInTemplatesSetQuery, useUpdateTemplateMutation } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useAllTemplatesInTemplatesSetQuery, useCreateTemplateMutation, useDeleteTemplateMutation, useUpdateTemplateMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 import { useTranslation } from 'react-i18next';
 import EditTemplateDialog from '../Dialogs/EditTemplateDialog/EditTemplateDialog';
@@ -10,14 +10,22 @@ import useLoadingState from '../../../../shared/utils/useLoadingState';
 import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
 import { AnyTemplateFormSubmittedValues } from '../Forms/TemplateForm';
 import useBackToPath from '../../../../../core/routing/useBackToPath';
+import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
+import { Button, ButtonProps } from '@mui/material';
+import CreateTemplateDialog from '../Dialogs/CreateTemplateDialog/CreateTemplateDialog';
 
 interface TemplatesAdminProps {
-  templatesSetId: string | undefined;
+  templatesSetId: string;
   templateId?: string;  // Template selected, if any
   baseUrl: string | undefined;
   canImportTemplates?: boolean;
+  canCreateTemplates?: boolean;
+  canDeleteTemplates?: boolean;
+}
 
-  onDeleteTemplate?: (template: { templateId: string }) => Promise<void>;
+const CreateTemplateButton = (props: ButtonProps) => {
+  const { t } = useTranslation();
+  return <Button variant="outlined" {...props}>{t('common.create-new')} </Button>
 }
 
 const TemplatesAdmin: FC<TemplatesAdminProps> = ({
@@ -25,29 +33,15 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   templateId,
   baseUrl = '',
   canImportTemplates = false,
-  onDeleteTemplate,
+  canCreateTemplates = false,
+  canDeleteTemplates = false,
 }) => {
   const { t } = useTranslation();
   const backToTemplates = useBackToPath();
 
-  const [deletingTemplate, setDeletingTemplate] = useState<AnyTemplate>();
-  const [handleTemplateDeletion, isDeletingTemplate] = useLoadingState(async () => {
-    if (!deletingTemplate) {
-      throw new TypeError('Missing Template to delete ID.');
-    }
-    if (!onDeleteTemplate) {
-      throw new TypeError('Cannot delete template in this form');
-    }
-
-    await onDeleteTemplate({
-      templateId: deletingTemplate.id,
-    });
-
-    setDeletingTemplate(undefined);
-  });
-
-  const { data, loading, refetch } = useAllTemplatesInTemplatesSetQuery({
-    variables: { templatesSetId: templatesSetId! },
+  // Read
+  const { data, loading } = useAllTemplatesInTemplatesSetQuery({
+    variables: { templatesSetId },
     skip: !templatesSetId,
   });
 
@@ -70,11 +64,14 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
     ].find(template => template.id === templateId);
   }, [templateId, data?.lookup.templatesSet])
 
-  const [updateTemplate] = useUpdateTemplateMutation();
+  // Update
+  const [updateTemplate] = useUpdateTemplateMutation({
+    refetchQueries: ['AllTemplatesInTemplatesSet']
+  });
   const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
     const { profile: { tagsets, ...profile }, ...rest } = values;
 
-    return updateTemplate({
+    await updateTemplate({
       variables: {
         templateId: templateId!,
         profile: {
@@ -89,17 +86,59 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
     });
   };
 
+  // Create
+  const [creatingTemplate, setCreatingTemplate] = useState<TemplateType>();
+  const [createTemplate] = useCreateTemplateMutation({
+    refetchQueries: ['AllTemplatesInTemplatesSet']
+  });
+  const handleTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
+    // remove all ids, they should be empty anyway
+    const { profile: { tagsets, ...profile }, ...rest } = values;
+
+    await createTemplate({
+      variables: {
+        templatesSetId: templatesSetId,
+        type: creatingTemplate!,
+        profile: {
+          ...profile,
+        },
+        tags: tagsets?.[0]?.tags,
+        ...rest
+      },
+      refetchQueries: ['AllTemplatesInTemplatesSet']
+    });
+    setCreatingTemplate(undefined);
+  };
+  // Delete
+  const [deletingTemplate, setDeletingTemplate] = useState<AnyTemplate>();
+  const [deleteTemplate] = useDeleteTemplateMutation();
+  const [handleTemplateDeletion, isDeletingTemplate] = useLoadingState(async () => {
+    if (!deletingTemplate) {
+      throw new TypeError('Missing Template to delete ID.');
+    }
+    await deleteTemplate({
+      variables: {
+        templateId: deletingTemplate.id
+      },
+      refetchQueries: ['AllTemplatesInTemplatesSet']
+    });
+
+    setDeletingTemplate(undefined);
+  });
+
   return (
     <>
       <PageContentBlockSeamless disablePadding>
         <TemplatesGalleryContainer
           templates={calloutTemplates}
           templatesSetId={templatesSetId}
+          loading={loading}
           baseUrl={baseUrl}
         >
           {provided => (
             <TemplatesGallery
               headerText={t('common.enums.templateTypes.Callout')}
+              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplate(TemplateType.Callout)} /> : undefined}
               {...provided}
             />
           )}
@@ -109,11 +148,13 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
         <TemplatesGalleryContainer
           templates={communityGuidelinesTemplates}
           templatesSetId={templatesSetId}
+          loading={loading}
           baseUrl={baseUrl}
         >
           {provided => (
             <TemplatesGallery
               headerText={t('common.enums.templateTypes.CommunityGuidelines')}
+              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplate(TemplateType.CommunityGuidelines)} /> : undefined}
               {...provided}
             />
           )}
@@ -123,11 +164,13 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
         <TemplatesGalleryContainer
           templates={innovationFlowTemplates}
           templatesSetId={templatesSetId}
+          loading={loading}
           baseUrl={baseUrl}
         >
           {provided => (
             <TemplatesGallery
               headerText={t('common.enums.templateTypes.InnovationFlow')}
+              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplate(TemplateType.InnovationFlow)} /> : undefined}
               {...provided}
             />
           )}
@@ -137,11 +180,13 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
         <TemplatesGalleryContainer
           templates={postTemplates}
           templatesSetId={templatesSetId}
+          loading={loading}
           baseUrl={baseUrl}
         >
           {provided => (
             <TemplatesGallery
               headerText={t('common.enums.templateTypes.Post')}
+              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplate(TemplateType.Post)} /> : undefined}
               {...provided}
             />
           )}
@@ -151,17 +196,26 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
         <TemplatesGalleryContainer
           templates={whiteboardTemplates}
           templatesSetId={templatesSetId}
+          loading={loading}
           baseUrl={baseUrl}
         >
           {provided => (
             <TemplatesGallery
               headerText={t('common.enums.templateTypes.Whiteboard')}
+              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplate(TemplateType.Whiteboard)} /> : undefined}
               {...provided}
             />
           )}
         </TemplatesGalleryContainer>
       </PageContentBlockSeamless>
-
+      {creatingTemplate && (
+        <CreateTemplateDialog
+          open
+          onClose={() => backToTemplates(`${baseUrl}/settings`)}
+          templateType={creatingTemplate}
+          onSubmit={handleTemplateCreate}
+        />
+      )}
       {selectedTemplate && (
         <EditTemplateDialog
           open
@@ -169,7 +223,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           template={selectedTemplate}
           templateType={selectedTemplate.type}
           onSubmit={handleTemplateUpdate}
-          onDelete={() => setDeletingTemplate(selectedTemplate)}
+          onDelete={canDeleteTemplates ? () => setDeletingTemplate(selectedTemplate) : undefined}
         />
       )}
       {deletingTemplate && (

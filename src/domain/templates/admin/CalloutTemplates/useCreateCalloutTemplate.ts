@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
+import { CalloutTemplateFormSubmittedValues } from '../../_new/components/Forms/CalloutTemplateForm';
 import produce from 'immer';
 import {
   CalloutType,
