@@ -733,6 +733,15 @@ export type AssignCommunityRoleToVirtualInput = {
   virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
+export type AssignLicensePlanToAccount = {
+  /** The ID of the Account to assign the LicensePlan to. */
+  accountID: Scalars['UUID'];
+  /** The ID of the LicensePlan to assign. */
+  licensePlanID: Scalars['UUID'];
+  /** The ID of the Licensing to use. */
+  licensingID?: InputMaybe<Scalars['UUID']>;
+};
+
 export type AssignLicensePlanToSpace = {
   /** The ID of the LicensePlan to assign. */
   licensePlanID: Scalars['UUID'];
@@ -1070,6 +1079,8 @@ export type CalloutContribution = {
   link?: Maybe<Link>;
   /** The Post that was contributed. */
   post?: Maybe<Post>;
+  /** The sorting order for this Contribution. */
+  sortOrder: Scalars['Float'];
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** The Whiteboard that was contributed. */
@@ -1153,10 +1164,14 @@ export enum CalloutGroupName {
 
 export type CalloutPostCreated = {
   __typename?: 'CalloutPostCreated';
-  /** The identifier for the Callout on which the post was created. */
+  /** The identifier of the Callout on which the post was created. */
   calloutID: Scalars['String'];
-  /** The post that has been created. */
+  /** The identifier of the Contribution. */
+  contributionID: Scalars['String'];
+  /** The Post that has been created. */
   post: Post;
+  /** he sorting order for this Contribution. */
+  sortOrder: Scalars['Float'];
 };
 
 export enum CalloutState {
@@ -1839,6 +1854,8 @@ export type CreateContributionOnCalloutInput = {
   calloutID: Scalars['UUID'];
   link?: InputMaybe<CreateLinkInput>;
   post?: InputMaybe<CreatePostInput>;
+  /** The sort order to assign to this Contribution. */
+  sortOrder?: InputMaybe<Scalars['Float']>;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
 
@@ -3136,6 +3153,8 @@ export type Mutation = {
   assignCommunityRoleToUser: User;
   /** Assigns a Virtual Contributor to a role in the specified Community. */
   assignCommunityRoleToVirtual: VirtualContributor;
+  /** Assign the specified LicensePlan to an Account. */
+  assignLicensePlanToAccount: Account;
   /** Assign the specified LicensePlan to a Space. */
   assignLicensePlanToSpace: Space;
   /** Assigns an Organization Role to user. */
@@ -3320,6 +3339,8 @@ export type Mutation = {
   revokeCredentialFromOrganization: Organization;
   /** Removes an authorization credential from a User. */
   revokeCredentialFromUser: User;
+  /** Revokes the specified LicensePlan on an Account. */
+  revokeLicensePlanFromAccount: Account;
   /** Revokes the specified LicensePlan on a Space. */
   revokeLicensePlanFromSpace: Space;
   /** Sends a reply to a message from the specified Room. */
@@ -3364,6 +3385,8 @@ export type Mutation = {
   updateCommunityGuidelines: CommunityGuidelines;
   /** Updates the specified CommunityGuidelinesTemplate. */
   updateCommunityGuidelinesTemplate: CommunityGuidelinesTemplate;
+  /** Update the sortOrder field of the Contributions of s Callout. */
+  updateContributionsSortOrder: Array<CalloutContribution>;
   /** Updates the specified Discussion. */
   updateDiscussion: Discussion;
   /** Updates the specified Document. */
@@ -3490,6 +3513,10 @@ export type MutationAssignCommunityRoleToUserArgs = {
 
 export type MutationAssignCommunityRoleToVirtualArgs = {
   roleData: AssignCommunityRoleToVirtualInput;
+};
+
+export type MutationAssignLicensePlanToAccountArgs = {
+  planData: AssignLicensePlanToAccount;
 };
 
 export type MutationAssignLicensePlanToSpaceArgs = {
@@ -3832,6 +3859,10 @@ export type MutationRevokeCredentialFromUserArgs = {
   revokeCredentialData: RevokeAuthorizationCredentialInput;
 };
 
+export type MutationRevokeLicensePlanFromAccountArgs = {
+  planData: RevokeLicensePlanFromAccount;
+};
+
 export type MutationRevokeLicensePlanFromSpaceArgs = {
   planData: RevokeLicensePlanFromSpace;
 };
@@ -3918,6 +3949,10 @@ export type MutationUpdateCommunityGuidelinesArgs = {
 
 export type MutationUpdateCommunityGuidelinesTemplateArgs = {
   communityGuidelinesTemplateInput: UpdateCommunityGuidelinesTemplateInput;
+};
+
+export type MutationUpdateContributionsSortOrderArgs = {
+  sortOrderData: UpdateContributionCalloutsSortOrderInput;
 };
 
 export type MutationUpdateDiscussionArgs = {
@@ -4946,6 +4981,15 @@ export type RevokeAuthorizationCredentialInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type RevokeLicensePlanFromAccount = {
+  /** The ID of the Account to assign the LicensePlan to. */
+  accountID: Scalars['UUID'];
+  /** The ID of the LicensePlan to assign. */
+  licensePlanID: Scalars['UUID'];
+  /** The ID of the Licensing to use. */
+  licensingID?: InputMaybe<Scalars['UUID']>;
+};
+
 export type RevokeLicensePlanFromSpace = {
   /** The ID of the LicensePlan to assign. */
   licensePlanID: Scalars['UUID'];
@@ -5910,6 +5954,12 @@ export type UpdateContextInput = {
   impact?: InputMaybe<Scalars['Markdown']>;
   vision?: InputMaybe<Scalars['Markdown']>;
   who?: InputMaybe<Scalars['Markdown']>;
+};
+
+export type UpdateContributionCalloutsSortOrderInput = {
+  calloutID: Scalars['UUID'];
+  /** The IDs of the contributions to update the sort order on */
+  contributionIDs: Array<Scalars['UUID']>;
 };
 
 export type UpdateDiscussionInput = {
@@ -7044,6 +7094,8 @@ export type CalloutPageCalloutQuery = {
           };
           contributions: Array<{
             __typename?: 'CalloutContribution';
+            id: string;
+            sortOrder: number;
             link?:
               | {
                   __typename?: 'Link';
@@ -9726,6 +9778,16 @@ export type UpdateCalloutsSortOrderMutation = {
   updateCalloutsSortOrder: Array<{ __typename?: 'Callout'; id: string; sortOrder: number }>;
 };
 
+export type UpdateContributionsSortOrderMutationVariables = Exact<{
+  calloutID: Scalars['UUID'];
+  contributionIds: Array<Scalars['UUID']> | Scalars['UUID'];
+}>;
+
+export type UpdateContributionsSortOrderMutation = {
+  __typename?: 'Mutation';
+  updateContributionsSortOrder: Array<{ __typename?: 'CalloutContribution'; id: string; sortOrder: number }>;
+};
+
 export type DashboardTopCalloutsFragment = {
   __typename?: 'Collaboration';
   callouts: Array<{
@@ -9898,6 +9960,8 @@ export type CreateCalloutMutation = {
     };
     contributions: Array<{
       __typename?: 'CalloutContribution';
+      id: string;
+      sortOrder: number;
       link?:
         | {
             __typename?: 'Link';
@@ -10219,6 +10283,8 @@ export type UpdateCalloutVisibilityMutation = {
     };
     contributions: Array<{
       __typename?: 'CalloutContribution';
+      id: string;
+      sortOrder: number;
       link?:
         | {
             __typename?: 'Link';
@@ -10470,6 +10536,8 @@ export type CalloutPostCreatedSubscription = {
   __typename?: 'Subscription';
   calloutPostCreated: {
     __typename?: 'CalloutPostCreated';
+    contributionID: string;
+    sortOrder: number;
     post: {
       __typename?: 'Post';
       id: string;
@@ -10533,6 +10601,8 @@ export type CalloutPostsQuery = {
           id: string;
           contributions: Array<{
             __typename?: 'CalloutContribution';
+            id: string;
+            sortOrder: number;
             post?:
               | {
                   __typename?: 'Post';
@@ -10965,6 +11035,8 @@ export type CalloutDetailsQuery = {
           };
           contributions: Array<{
             __typename?: 'CalloutContribution';
+            id: string;
+            sortOrder: number;
             link?:
               | {
                   __typename?: 'Link';
@@ -11239,6 +11311,8 @@ export type CalloutDetailsFragment = {
   };
   contributions: Array<{
     __typename?: 'CalloutContribution';
+    id: string;
+    sortOrder: number;
     link?:
       | {
           __typename?: 'Link';
@@ -11385,6 +11459,7 @@ export type CalloutWhiteboardsQuery = {
           contributions: Array<{
             __typename?: 'CalloutContribution';
             id: string;
+            sortOrder: number;
             whiteboard?:
               | {
                   __typename?: 'Whiteboard';
