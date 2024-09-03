@@ -6766,6 +6766,8 @@ export type UpdateLinkMutationOptions = Apollo.BaseMutationOptions<
 export const CalloutPostCreatedDocument = gql`
   subscription CalloutPostCreated($calloutId: UUID!) {
     calloutPostCreated(calloutID: $calloutId) {
+      contributionID
+      sortOrder
       post {
         ...ContributeTabPost
       }

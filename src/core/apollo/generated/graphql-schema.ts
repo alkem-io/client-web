@@ -733,6 +733,15 @@ export type AssignCommunityRoleToVirtualInput = {
   virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
+export type AssignLicensePlanToAccount = {
+  /** The ID of the Account to assign the LicensePlan to. */
+  accountID: Scalars['UUID'];
+  /** The ID of the LicensePlan to assign. */
+  licensePlanID: Scalars['UUID'];
+  /** The ID of the Licensing to use. */
+  licensingID?: InputMaybe<Scalars['UUID']>;
+};
+
 export type AssignLicensePlanToSpace = {
   /** The ID of the LicensePlan to assign. */
   licensePlanID: Scalars['UUID'];
@@ -1155,10 +1164,14 @@ export enum CalloutGroupName {
 
 export type CalloutPostCreated = {
   __typename?: 'CalloutPostCreated';
-  /** The identifier for the Callout on which the post was created. */
+  /** The identifier of the Callout on which the post was created. */
   calloutID: Scalars['String'];
-  /** The post that has been created. */
+  /** The identifier of the Contribution. */
+  contributionID: Scalars['String'];
+  /** The Post that has been created. */
   post: Post;
+  /** he sorting order for this Contribution. */
+  sortOrder: Scalars['Float'];
 };
 
 export enum CalloutState {
@@ -3140,6 +3153,8 @@ export type Mutation = {
   assignCommunityRoleToUser: User;
   /** Assigns a Virtual Contributor to a role in the specified Community. */
   assignCommunityRoleToVirtual: VirtualContributor;
+  /** Assign the specified LicensePlan to an Account. */
+  assignLicensePlanToAccount: Account;
   /** Assign the specified LicensePlan to a Space. */
   assignLicensePlanToSpace: Space;
   /** Assigns an Organization Role to user. */
@@ -3324,6 +3339,8 @@ export type Mutation = {
   revokeCredentialFromOrganization: Organization;
   /** Removes an authorization credential from a User. */
   revokeCredentialFromUser: User;
+  /** Revokes the specified LicensePlan on an Account. */
+  revokeLicensePlanFromAccount: Account;
   /** Revokes the specified LicensePlan on a Space. */
   revokeLicensePlanFromSpace: Space;
   /** Sends a reply to a message from the specified Room. */
@@ -3369,7 +3386,7 @@ export type Mutation = {
   /** Updates the specified CommunityGuidelinesTemplate. */
   updateCommunityGuidelinesTemplate: CommunityGuidelinesTemplate;
   /** Update the sortOrder field of the Contributions of s Callout. */
-  updateContributionsSortOrder: CalloutContribution;
+  updateContributionsSortOrder: Array<CalloutContribution>;
   /** Updates the specified Discussion. */
   updateDiscussion: Discussion;
   /** Updates the specified Document. */
@@ -3496,6 +3513,10 @@ export type MutationAssignCommunityRoleToUserArgs = {
 
 export type MutationAssignCommunityRoleToVirtualArgs = {
   roleData: AssignCommunityRoleToVirtualInput;
+};
+
+export type MutationAssignLicensePlanToAccountArgs = {
+  planData: AssignLicensePlanToAccount;
 };
 
 export type MutationAssignLicensePlanToSpaceArgs = {
@@ -3836,6 +3857,10 @@ export type MutationRevokeCredentialFromOrganizationArgs = {
 
 export type MutationRevokeCredentialFromUserArgs = {
   revokeCredentialData: RevokeAuthorizationCredentialInput;
+};
+
+export type MutationRevokeLicensePlanFromAccountArgs = {
+  planData: RevokeLicensePlanFromAccount;
 };
 
 export type MutationRevokeLicensePlanFromSpaceArgs = {
@@ -4954,6 +4979,15 @@ export type RevokeAuthorizationCredentialInput = {
   type: AuthorizationCredential;
   /** The user from whom the credential is being removed. */
   userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RevokeLicensePlanFromAccount = {
+  /** The ID of the Account to assign the LicensePlan to. */
+  accountID: Scalars['UUID'];
+  /** The ID of the LicensePlan to assign. */
+  licensePlanID: Scalars['UUID'];
+  /** The ID of the Licensing to use. */
+  licensingID?: InputMaybe<Scalars['UUID']>;
 };
 
 export type RevokeLicensePlanFromSpace = {
@@ -9751,7 +9785,7 @@ export type UpdateContributionsSortOrderMutationVariables = Exact<{
 
 export type UpdateContributionsSortOrderMutation = {
   __typename?: 'Mutation';
-  updateContributionsSortOrder: { __typename?: 'CalloutContribution'; id: string; sortOrder: number };
+  updateContributionsSortOrder: Array<{ __typename?: 'CalloutContribution'; id: string; sortOrder: number }>;
 };
 
 export type DashboardTopCalloutsFragment = {
@@ -10502,6 +10536,8 @@ export type CalloutPostCreatedSubscription = {
   __typename?: 'Subscription';
   calloutPostCreated: {
     __typename?: 'CalloutPostCreated';
+    contributionID: string;
+    sortOrder: number;
     post: {
       __typename?: 'Post';
       id: string;
