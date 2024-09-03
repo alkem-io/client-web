@@ -104,7 +104,7 @@ const JourneyCardHorizontal = ({
                 open={settingsOpened}
                 onClose={handleSettingsClose}
                 anchorOrigin={{
-                  vertical: 'bottom',
+                  vertical: 'top',
                   horizontal: 'right',
                 }}
               >

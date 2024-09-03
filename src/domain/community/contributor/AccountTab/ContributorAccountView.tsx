@@ -3,39 +3,47 @@ import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import { IconButton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
-import { BlockTitle } from '../../../../../core/ui/typography';
+import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import { BlockTitle } from '../../../../core/ui/typography';
 import JourneyCardHorizontal, {
   JourneyCardHorizontalSkeleton,
-} from '../../../../journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
-import Gutters from '../../../../../core/ui/grid/Gutters';
-import ContributorCardHorizontal from '../../../../../core/ui/card/ContributorCardHorizontal';
+} from '../../../journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
 import InnovationPackCardHorizontal, {
   InnovationPackCardHorizontalSkeleton,
-} from '../../../../collaboration/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
+} from '../../../collaboration/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
 import InnovationHubCardHorizontal, {
   InnovationHubCardHorizontalSkeleton,
-} from '../../../../innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
-import { Actions } from '../../../../../core/ui/actions/Actions';
-import RoundedIcon from '../../../../../core/ui/icon/RoundedIcon';
-import CreateSpaceDialog from '../../../../journey/space/createSpace/CreateSpaceDialog';
-import useNewVirtualContributorWizard from '../../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
-import CreateInnovationPackDialog from '../../templates/InnovationPacks/admin/CreateInnovationPackDialog';
-import CreateInnovationHubDialog from '../../../../innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
-import {
-  AuthorizationPrivilege,
-  SpaceType,
-  SpaceVisibility,
-} from '../../../../../core/apollo/generated/graphql-schema';
-import { VIRTUAL_CONTRIBUTORS_LIMIT } from '../../../../../main/topLevelPages/myDashboard/myAccount/MyAccountBlockVCCampaignUser';
-import MenuItemWithIcon from '../../../../../core/ui/menu/MenuItemWithIcon';
+} from '../../../innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
+import { Actions } from '../../../../core/ui/actions/Actions';
+import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
+import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDialog';
+import useNewVirtualContributorWizard from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
+import CreateInnovationPackDialog from '../../../platform/admin/templates/InnovationPacks/admin/CreateInnovationPackDialog';
+import CreateInnovationHubDialog from '../../../innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
+import { AuthorizationPrivilege, SpaceType, SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { VIRTUAL_CONTRIBUTORS_LIMIT } from '../../../../main/topLevelPages/myDashboard/myAccount/MyAccountBlockVCCampaignUser';
+import MenuItemWithIcon from '../../../../core/ui/menu/MenuItemWithIcon';
 import { DeleteOutline } from '@mui/icons-material';
-import { useDeleteSpaceMutation } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import SpaceProfileDeleteDialog from '../../../../journey/space/pages/SpaceSettings/SpaceProfileDeleteDialog';
+import {
+  useDeleteInnovationPackMutation,
+  useDeleteSpaceMutation,
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { useNotification } from '../../../../core/ui/notifications/useNotification';
+import EntityConfirmDeleteDialog from '../../../journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
 
 export const SPACE_COUNT_LIMIT = 3;
+
+const enum Entities {
+  Space = 'Space',
+  VirtualContributor = 'VirtualContributor',
+  InnovationPack = 'InnovationPack',
+  InnovationHub = 'InnovationHub',
+}
+
+const SHORT_NON_SPACE_DESCRIPTION = 'components.deleteEntity.confirmDialog.descriptionShort';
 
 interface AccountProfile {
   id: string;
@@ -74,6 +82,7 @@ export interface ContributorAccountViewProps {
       };
     }[];
     innovationPacks: {
+      id: string;
       profile: AccountProfile;
       templates?: {
         calloutTemplatesCount: number;
@@ -115,6 +124,7 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
+  const [entity, setSelectedEntity] = useState<Entities | undefined>(undefined);
   const styles = useStyles();
 
   const { virtualContributors, innovationPacks, innovationHubs } = useMemo(
@@ -139,8 +149,10 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
   const canCreateVirtualContributor =
     privileges.includes(AuthorizationPrivilege.CreateVirtualContributor) && (!isVCLimitReached || isPlatformAdmin);
 
+  // Space deletion
   const [deleteSpaceMutation, { loading: deleteSpaceLoading }] = useDeleteSpaceMutation({
     onCompleted: () => {
+      setSelectedEntity(undefined);
       setSelectedId(undefined);
       setDeleteDialogOpen(false);
       notify('Space deleted successfully!', 'success');
@@ -163,8 +175,69 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
   };
 
   const onDeleteSpaceClick = (spaceId: string) => {
+    setSelectedEntity(Entities.Space);
     setSelectedId(spaceId);
     setDeleteDialogOpen(true);
+  };
+
+  // Pack Deletion
+  const [deletePackMutation, { loading: deletePackLoading }] = useDeleteInnovationPackMutation({
+    onCompleted: () => {
+      setSelectedEntity(undefined);
+      setSelectedId(undefined);
+      setDeleteDialogOpen(false);
+      notify('Innovation Pack deleted successfully!', 'success');
+    },
+    refetchQueries: ['AccountInformation'],
+  });
+
+  const deletePack = () => {
+    if (!selectedId) {
+      return;
+    }
+
+    deletePackMutation({
+      variables: {
+        innovationPackId: selectedId,
+      },
+    });
+  };
+
+  const onDeletePackClick = (spaceId: string) => {
+    setSelectedEntity(Entities.InnovationPack);
+    setSelectedId(spaceId);
+    setDeleteDialogOpen(true);
+  };
+
+  const deleteEntity = () => {
+    switch (entity) {
+      case Entities.Space:
+        deleteSpace();
+        break;
+      case Entities.VirtualContributor:
+        // deleteVirtualContributor();
+        break;
+      case Entities.InnovationPack:
+        deletePack();
+        break;
+      case Entities.InnovationHub:
+        // deleteInnovationHub();
+        break;
+    }
+  };
+
+  const getEntityName = (entity: Entities | undefined) => {
+    switch (entity) {
+      case Entities.VirtualContributor:
+        return t('common.virtual-contributor');
+      case Entities.InnovationPack:
+        return t('common.innovationPack');
+      case Entities.InnovationHub:
+        return t('common.innovation-hub');
+      case Entities.Space:
+      default:
+        return t('common.space');
+    }
   };
 
   const getSpaceActions = (spaceId: string) => (
@@ -173,6 +246,17 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
       disabled={deleteSpaceLoading}
       iconComponent={DeleteOutline}
       onClick={() => onDeleteSpaceClick(spaceId)}
+    >
+      {t('buttons.delete')}
+    </MenuItemWithIcon>
+  );
+
+  const getPackActions = (spaceId: string) => (
+    <MenuItemWithIcon
+      key="delete"
+      disabled={deleteSpaceLoading}
+      iconComponent={DeleteOutline}
+      onClick={() => onDeletePackClick(spaceId)}
     >
       {t('buttons.delete')}
     </MenuItemWithIcon>
@@ -243,7 +327,10 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
         <BlockTitle>{t('pages.admin.generic.sections.account.innovationPacks')}</BlockTitle>
         <Gutters disablePadding className={styles.gutters}>
           {loading && <InnovationPackCardHorizontalSkeleton />}
-          {!loading && innovationPacks?.map(pack => <InnovationPackCardHorizontal {...pack} />)}
+          {!loading &&
+            innovationPacks?.map(pack => (
+              <InnovationPackCardHorizontal key={pack.id} {...pack} actions={getPackActions(pack.id)} />
+            ))}
           <Actions>
             {canCreateInnovationPack && account?.id && <CreateInnovationPackDialog accountId={account?.id} />}
           </Actions>
@@ -261,12 +348,13 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
           </Actions>
         </Gutters>
         {deleteDialogOpen && (
-          <SpaceProfileDeleteDialog
-            entity={t('common.space')}
+          <EntityConfirmDeleteDialog
+            entity={getEntityName(entity)}
             open={deleteDialogOpen}
             onClose={() => setDeleteDialogOpen(false)}
-            onDelete={deleteSpace}
-            submitting={deleteSpaceLoading}
+            onDelete={deleteEntity}
+            submitting={deleteSpaceLoading || deletePackLoading}
+            description={entity === Entities.Space ? undefined : SHORT_NON_SPACE_DESCRIPTION}
           />
         )}
       </PageContentBlock>
