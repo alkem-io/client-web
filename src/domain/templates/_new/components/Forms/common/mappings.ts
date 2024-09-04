@@ -66,6 +66,10 @@ export const mapTemplateProfileToUpdateProfile = (profile?: TemplateProfile): Up
   };
 };
 
+/* ==========================
+ * CREATE TEMPLATES MUTATIONS
+ * ==========================
+ */
 interface ProfileWithTags {
   profile: {
     tagsets?: {
@@ -140,8 +144,33 @@ export const toCreateTemplateMutationVariables = (
         }
         switch (calloutDraft.callout?.type) {
           case CalloutType.Post: {
-            delete calloutDraft.callout.contributionDefaults.whiteboardContent;
+            delete calloutDraft.callout.contributionDefaults?.whiteboardContent;
             delete calloutDraft.callout.framing.whiteboard;
+            break;
+          }
+          case CalloutType.PostCollection: {
+            delete calloutDraft.callout.contributionDefaults?.whiteboardContent;
+            delete calloutDraft.callout.framing.whiteboard;
+            break;
+          }
+          case CalloutType.LinkCollection: {
+            delete calloutDraft.callout.contributionDefaults;
+            delete calloutDraft.callout.framing.whiteboard;
+            break;
+          }
+          case CalloutType.Whiteboard: {
+            delete calloutDraft.callout.contributionDefaults;
+            if (calloutDraft.callout.framing.whiteboard) {
+              calloutDraft.callout.framing.whiteboard.profileData = {
+                displayName: 'Whiteboard Template',
+              };
+            }
+            break;
+          }
+          case CalloutType.WhiteboardCollection: {
+            delete calloutDraft.callout.framing.whiteboard;
+            delete calloutDraft.callout.contributionDefaults?.postDescription;
+            break;
           }
         }
         calloutDraft.callout['contributionPolicy'] = { state: 'OPEN' };
@@ -217,6 +246,11 @@ export const toCreateTemplateMutationVariables = (
   };
 };
 
+/* ==========================
+ * UPDATE TEMPLATES MUTATIONS
+ * ==========================
+ */
+
 const mapReferences = (ref: { id?: string; ID?: string; name?: string; uri?: string; description?: string }) => ({
   ID: ref.ID ?? ref.id ?? '', // We have some cases where id is lowercase, see ProfileReferenceSegment
   name: ref.name,
@@ -242,15 +276,35 @@ export const toUpdateTemplateMutationVariables = (
     }
     if (draft['callout']) {
       const calloutDraft = draft as WritableDraft<CalloutTemplateFormSubmittedValues>;
-      delete calloutDraft.callout?.type; // Never send Callout type as it cannot be changed
-
-      if (
-        calloutDraft.callout?.type !== CalloutType.Whiteboard &&
-        calloutDraft.callout?.type !== CalloutType.WhiteboardCollection
-      ) {
-        delete calloutDraft.callout?.contributionDefaults.whiteboardContent;
-        delete calloutDraft.callout?.framing.whiteboard;
+      // Delete useless fields and leave only the fields relevant to the callout types
+      switch (calloutDraft.callout?.type) {
+        case CalloutType.Post: {
+          delete calloutDraft.callout?.contributionDefaults;
+          delete calloutDraft.callout?.framing.whiteboard;
+          break;
+        }
+        case CalloutType.PostCollection: {
+          delete calloutDraft.callout?.framing.whiteboard;
+          delete calloutDraft.callout?.contributionDefaults?.whiteboardContent;
+          break;
+        }
+        case CalloutType.LinkCollection: {
+          delete calloutDraft.callout?.framing.whiteboard;
+          delete calloutDraft.callout?.contributionDefaults;
+          break;
+        }
+        case CalloutType.Whiteboard: {
+          delete calloutDraft.callout?.contributionDefaults;
+          break;
+        }
+        case CalloutType.WhiteboardCollection: {
+          delete calloutDraft.callout?.framing.whiteboard;
+          delete calloutDraft.callout?.contributionDefaults?.postDescription;
+          break;
+        }
       }
+
+      delete calloutDraft.callout?.type; // Never send Callout type as it cannot be changed
     }
   });
 

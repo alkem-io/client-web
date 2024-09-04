@@ -13,19 +13,20 @@ export interface CalloutTemplate extends NewTemplateBase {
         description?: string;
         references?: Reference[];
         tagsets?: UpdateTagset[];
-      }
+      };
       whiteboard?: {
+        // For Whiteboard Callout templates
         nameID?: string;
         profileData: {
           displayName: string;
           description?: string;
-        }
+        };
         content?: string;
       };
-    }
+    };
     contributionDefaults?: {
       postDescription?: string;
-      whiteboardContent?: string;
+      whiteboardContent?: string; // For Whiteboard Collection Callout templates
     };
   };
 }

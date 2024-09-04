@@ -45,7 +45,6 @@ export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileS
         }[];
       };
       whiteboard?: {
-        nameID?: string;
         profileData: {
           displayName: string;
           description?: string;
@@ -53,7 +52,7 @@ export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileS
         content: string;
       };
     };
-    contributionDefaults: {
+    contributionDefaults?: {
       postDescription?: string;
       whiteboardContent?: string;
     };
@@ -88,18 +87,19 @@ const validator = {
             })
           ),
         }),
-        whiteboard: yup.object().shape({
-          nameID: yup.string(),
-          profileData: yup.object().shape({
-            displayName: yup.string(),
-            description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+        whiteboard: yup.object().when('type', {
+          is: (type: CalloutType) => type === CalloutType.Whiteboard,
+          then: yup.object().shape({
+            content: yup.string().required(),
           }),
-          content: yup.string().required(),
+          otherwise: yup.object().shape({
+            content: yup.string(),
+          }),
         }),
       }),
       contributionDefaults: yup.object().shape({
         postDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-        whiteboardContent: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+        whiteboardContent: yup.string(),
       }),
       type: yup
         .mixed<CalloutType>()
@@ -174,7 +174,8 @@ const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFor
       actions={actions}
       validator={validator}
     >
-      {({ values }) => {
+      {({ values, errors }) => {
+        console.log({ values, errors });
         return (
           <>
             {loading && <Loading />}
