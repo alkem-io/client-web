@@ -15992,16 +15992,6 @@ export type VirtualContributorNameFragment = {
   profile: { __typename?: 'Profile'; id: string; displayName: string };
 };
 
-export type AddVirtualContributorToCommunityMutationVariables = Exact<{
-  communityId: Scalars['UUID'];
-  virtualContributorId: Scalars['UUID_NAMEID'];
-}>;
-
-export type AddVirtualContributorToCommunityMutation = {
-  __typename?: 'Mutation';
-  assignCommunityRoleToVirtual: { __typename?: 'VirtualContributor'; id: string };
-};
-
 export type RemoveVirtualContributorFromCommunityMutationVariables = Exact<{
   communityId: Scalars['UUID'];
   virtualContributorId: Scalars['UUID_NAMEID'];
@@ -16015,7 +16005,7 @@ export type RemoveVirtualContributorFromCommunityMutation = {
 export type AssignCommunityRoleToVirtualContributorMutationVariables = Exact<{
   communityId: Scalars['UUID'];
   virtualContributorId: Scalars['UUID_NAMEID'];
-  role: CommunityRole;
+  role?: CommunityRole;
 }>;
 
 export type AssignCommunityRoleToVirtualContributorMutation = {
