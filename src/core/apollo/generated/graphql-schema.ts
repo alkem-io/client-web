@@ -1079,6 +1079,8 @@ export type CalloutContribution = {
   link?: Maybe<Link>;
   /** The Post that was contributed. */
   post?: Maybe<Post>;
+  /** The sorting order for this Contribution. */
+  sortOrder: Scalars['Float'];
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** The Whiteboard that was contributed. */
@@ -1162,10 +1164,14 @@ export enum CalloutGroupName {
 
 export type CalloutPostCreated = {
   __typename?: 'CalloutPostCreated';
-  /** The identifier for the Callout on which the post was created. */
+  /** The identifier of the Callout on which the post was created. */
   calloutID: Scalars['String'];
-  /** The post that has been created. */
+  /** The identifier of the Contribution. */
+  contributionID: Scalars['String'];
+  /** The Post that has been created. */
   post: Post;
+  /** he sorting order for this Contribution. */
+  sortOrder: Scalars['Float'];
 };
 
 export enum CalloutState {
@@ -1848,6 +1854,8 @@ export type CreateContributionOnCalloutInput = {
   calloutID: Scalars['UUID'];
   link?: InputMaybe<CreateLinkInput>;
   post?: InputMaybe<CreatePostInput>;
+  /** The sort order to assign to this Contribution. */
+  sortOrder?: InputMaybe<Scalars['Float']>;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
 
@@ -3377,6 +3385,8 @@ export type Mutation = {
   updateCommunityGuidelines: CommunityGuidelines;
   /** Updates the specified CommunityGuidelinesTemplate. */
   updateCommunityGuidelinesTemplate: CommunityGuidelinesTemplate;
+  /** Update the sortOrder field of the Contributions of s Callout. */
+  updateContributionsSortOrder: Array<CalloutContribution>;
   /** Updates the specified Discussion. */
   updateDiscussion: Discussion;
   /** Updates the specified Document. */
@@ -3939,6 +3949,10 @@ export type MutationUpdateCommunityGuidelinesArgs = {
 
 export type MutationUpdateCommunityGuidelinesTemplateArgs = {
   communityGuidelinesTemplateInput: UpdateCommunityGuidelinesTemplateInput;
+};
+
+export type MutationUpdateContributionsSortOrderArgs = {
+  sortOrderData: UpdateContributionCalloutsSortOrderInput;
 };
 
 export type MutationUpdateDiscussionArgs = {
@@ -5942,6 +5956,12 @@ export type UpdateContextInput = {
   who?: InputMaybe<Scalars['Markdown']>;
 };
 
+export type UpdateContributionCalloutsSortOrderInput = {
+  calloutID: Scalars['UUID'];
+  /** The IDs of the contributions to update the sort order on */
+  contributionIDs: Array<Scalars['UUID']>;
+};
+
 export type UpdateDiscussionInput = {
   ID: Scalars['UUID'];
   /** The category for the Discussion */
@@ -7074,6 +7094,8 @@ export type CalloutPageCalloutQuery = {
           };
           contributions: Array<{
             __typename?: 'CalloutContribution';
+            id: string;
+            sortOrder: number;
             link?:
               | {
                   __typename?: 'Link';
@@ -9756,6 +9778,16 @@ export type UpdateCalloutsSortOrderMutation = {
   updateCalloutsSortOrder: Array<{ __typename?: 'Callout'; id: string; sortOrder: number }>;
 };
 
+export type UpdateContributionsSortOrderMutationVariables = Exact<{
+  calloutID: Scalars['UUID'];
+  contributionIds: Array<Scalars['UUID']> | Scalars['UUID'];
+}>;
+
+export type UpdateContributionsSortOrderMutation = {
+  __typename?: 'Mutation';
+  updateContributionsSortOrder: Array<{ __typename?: 'CalloutContribution'; id: string; sortOrder: number }>;
+};
+
 export type DashboardTopCalloutsFragment = {
   __typename?: 'Collaboration';
   callouts: Array<{
@@ -9928,6 +9960,8 @@ export type CreateCalloutMutation = {
     };
     contributions: Array<{
       __typename?: 'CalloutContribution';
+      id: string;
+      sortOrder: number;
       link?:
         | {
             __typename?: 'Link';
@@ -10249,6 +10283,8 @@ export type UpdateCalloutVisibilityMutation = {
     };
     contributions: Array<{
       __typename?: 'CalloutContribution';
+      id: string;
+      sortOrder: number;
       link?:
         | {
             __typename?: 'Link';
@@ -10500,6 +10536,8 @@ export type CalloutPostCreatedSubscription = {
   __typename?: 'Subscription';
   calloutPostCreated: {
     __typename?: 'CalloutPostCreated';
+    contributionID: string;
+    sortOrder: number;
     post: {
       __typename?: 'Post';
       id: string;
@@ -10563,6 +10601,8 @@ export type CalloutPostsQuery = {
           id: string;
           contributions: Array<{
             __typename?: 'CalloutContribution';
+            id: string;
+            sortOrder: number;
             post?:
               | {
                   __typename?: 'Post';
@@ -10995,6 +11035,8 @@ export type CalloutDetailsQuery = {
           };
           contributions: Array<{
             __typename?: 'CalloutContribution';
+            id: string;
+            sortOrder: number;
             link?:
               | {
                   __typename?: 'Link';
@@ -11269,6 +11311,8 @@ export type CalloutDetailsFragment = {
   };
   contributions: Array<{
     __typename?: 'CalloutContribution';
+    id: string;
+    sortOrder: number;
     link?:
       | {
           __typename?: 'Link';
@@ -11415,6 +11459,7 @@ export type CalloutWhiteboardsQuery = {
           contributions: Array<{
             __typename?: 'CalloutContribution';
             id: string;
+            sortOrder: number;
             whiteboard?:
               | {
                   __typename?: 'Whiteboard';
