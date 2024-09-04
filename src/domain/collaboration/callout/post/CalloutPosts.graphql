@@ -3,6 +3,8 @@ query CalloutPosts($calloutId: UUID!) {
     callout(ID: $calloutId) {
       id
       contributions {
+        id
+        sortOrder
         post {
           ...ContributeTabPost
         }
