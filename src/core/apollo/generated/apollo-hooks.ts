@@ -23592,6 +23592,9 @@ export const MyAccountDocument = gql`
         }
         account {
           id
+          authorization {
+            myPrivileges
+          }
           virtualContributors {
             id
             profile {
