@@ -1,7 +1,6 @@
 import { FieldArray, useField } from 'formik';
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import * as yup from 'yup';
-import { TagsetTemplate } from '../../../../../core/apollo/generated/graphql-schema';
 import { Tagset } from '../../../../common/profile/Profile';
 import { toTagsetTitle } from '../../../../common/tags/toTagsetTitle';
 import TagsInput from '../../../../../core/ui/forms/tagsInput/TagsInput';
@@ -9,7 +8,6 @@ import TagsInput from '../../../../../core/ui/forms/tagsInput/TagsInput';
 interface TagsSegmentProps {
   fieldName?: string;
   tagsets: Tagset[];
-  template?: TagsetTemplate[];
   readOnly?: boolean;
   disabled?: boolean;
   title?: string;
@@ -17,7 +15,6 @@ interface TagsSegmentProps {
   loading?: boolean;
 }
 
-const DEFAULT_PLACEHOLDER = 'Innovation, AI, Technology, Blockchain';
 export const tagsetSegmentValidationObject = yup.object().shape({
   name: yup.string(),
   tags: yup.array().of(yup.string().min(2)),
@@ -28,17 +25,11 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({
   fieldName = 'tagsets',
   tagsets,
   readOnly = false,
-  template,
   disabled,
   title,
   helpText,
   loading,
 }) => {
-  const getTagsetPlaceholder = useCallback(() => {
-    //toDo check with Neil why the placeholder was removed so I am just going to pass the default placeholder...
-    return DEFAULT_PLACEHOLDER;
-  }, [template]);
-
   return (
     <FieldArray name={fieldName}>
       {() =>
@@ -47,7 +38,6 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({
             key={index}
             name={`${fieldName}[${index}].tags`}
             title={toTagsetTitle(tagSet, title)}
-            placeholder={getTagsetPlaceholder()}
             readOnly={readOnly}
             disabled={disabled}
             helpTextIcon={helpText}

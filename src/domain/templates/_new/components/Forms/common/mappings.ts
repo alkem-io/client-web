@@ -1,40 +1,70 @@
 import produce from 'immer';
-import { UpdateReferenceInput, UpdateTagsetInput } from '../../../../../../core/apollo/generated/graphql-schema';
-import { CreateTemplateMutationVariables, TemplateType, UpdateTemplateMutationVariables } from '../../../../../../core/apollo/generated/graphql-schema';
+import {
+  CalloutType,
+  UpdateProfileInput,
+  UpdateReferenceInput,
+  UpdateTagsetInput,
+} from '../../../../../../core/apollo/generated/graphql-schema';
+import {
+  CreateTemplateMutationVariables,
+  TemplateType,
+  UpdateTemplateMutationVariables,
+} from '../../../../../../core/apollo/generated/graphql-schema';
 import { AnyTemplateFormSubmittedValues } from '../TemplateForm';
 import { CommunityGuidelinesTemplateFormSubmittedValues } from '../CommunityGuidelinesTemplateForm';
 import { WritableDraft } from 'immer/dist/internal';
 import { InnovationFlowTemplateFormSubmittedValues } from '../InnovationFlowTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../WhiteboardTemplateForm';
+import { CalloutTemplateFormSubmittedValues } from '../CalloutTemplateForm';
 
-interface TemplateTagsets {
+interface TemplateTagset {
   id?: string;
   name?: string;
   tags?: string[];
 }
 
-export const mapTagsetsToUpdateTagsets = (tagsets: TemplateTagsets[] | undefined): UpdateTagsetInput[] | undefined => {
-  return tagsets?.map(tagset => ({
-    ID: tagset.id ?? '',
-    tags: tagset.tags ?? []
-  }));
-}
+export const mapTagsetsToUpdateTagsets = (tagsets: TemplateTagset[] | undefined): UpdateTagsetInput[] => {
+  return (
+    tagsets?.map(tagset => ({
+      ID: tagset.id ?? '',
+      tags: tagset.tags ?? [],
+    })) ?? [{ ID: '', tags: [] }]
+  );
+};
 
-interface TemplateReferences {
+interface TemplateReference {
   id?: string;
   name?: string;
   uri?: string;
   description?: string;
 }
 
-export const mapReferencesToUpdateReferences = (references: TemplateReferences[] | undefined): UpdateReferenceInput[] | undefined => {
+export const mapReferencesToUpdateReferences = (
+  references: TemplateReference[] | undefined
+): UpdateReferenceInput[] | undefined => {
   return references?.map(reference => ({
     ID: reference.id ?? '',
     description: reference.description,
     uri: reference.uri,
     name: reference.name,
   }));
+};
+
+interface TemplateProfile {
+  displayName: string;
+  description?: string;
+  defaultTagset?: TemplateTagset;
 }
+
+export const mapTemplateProfileToUpdateProfile = (profile?: TemplateProfile): UpdateProfileInput => {
+  return {
+    displayName: profile?.displayName ?? '',
+    description: profile?.description ?? '',
+    tagsets: profile?.defaultTagset
+      ? mapTagsetsToUpdateTagsets([profile.defaultTagset])
+      : mapTagsetsToUpdateTagsets(undefined),
+  };
+};
 
 interface ProfileWithTags {
   profile: {
@@ -42,7 +72,7 @@ interface ProfileWithTags {
       ID: string;
       tags: string[];
     }[];
-  }
+  };
 }
 
 interface ProfileWithReferences {
@@ -53,7 +83,7 @@ interface ProfileWithReferences {
       uri?: string;
       description?: string;
     }[];
-  }
+  };
 }
 
 // For creation, instead of tagsets, we want tags at the parent level
@@ -63,22 +93,26 @@ const handleTags = (draft: WritableDraft<ProfileWithTags>) => {
     draft['tags'] = tags;
   }
   delete draft.profile.tagsets;
-}
+};
 
 // For creation, instead of references, we need to pass referencesData without ids
 const handleReferences = (draft: WritableDraft<ProfileWithReferences>) => {
   const references = draft.profile.references ?? [];
   if (references.length > 0) {
-    draft.profile['referencesData'] = references.map(ref => ({ name: ref.name, uri: ref.uri, description: ref.description }));
+    draft.profile['referencesData'] = references.map(ref => ({
+      name: ref.name,
+      uri: ref.uri,
+      description: ref.description,
+    }));
   }
   delete draft.profile.references;
-}
+};
 
-// Always remove the preview images from the call, they are handled separately
-const handlePreviewImages = (draft) => {
+// Always remove the preview images from the Create/Update calls, visuals are handled separately
+const handlePreviewImages = draft => {
   if (draft.whiteboardPreviewImages) {
     delete draft.whiteboardPreviewImages;
-    draft['includeProfileVisuals'] = true;  // Will tell the mutation to retrieve the CARD visual after creation/update to upload the preview images of f.e. whiteboards
+    draft['includeProfileVisuals'] = true; // Will tell the mutation to retrieve the visuals after creation/update to upload the preview images of f.e. whiteboards
   }
 };
 
@@ -93,8 +127,34 @@ export const toCreateTemplateMutationVariables = (
     handlePreviewImages(draft);
   });
 
-
   switch (templateType) {
+    case TemplateType.Callout: {
+      newValues = produce(newValues, draft => {
+        const calloutDraft = draft as CalloutTemplateFormSubmittedValues;
+        if (!calloutDraft.callout) {
+          throw new Error('Callout template must have a callout object');
+        }
+        if (calloutDraft.callout?.framing) {
+          handleTags(calloutDraft.callout.framing);
+          handleReferences(calloutDraft.callout.framing);
+        }
+        switch (calloutDraft.callout?.type) {
+          case CalloutType.Post: {
+            delete calloutDraft.callout.contributionDefaults.whiteboardContent;
+            delete calloutDraft.callout.framing.whiteboard;
+          }
+        }
+        calloutDraft.callout['contributionPolicy'] = { state: 'OPEN' };
+
+        calloutDraft['calloutData'] = calloutDraft.callout;
+        delete draft['callout'];
+
+        delete draft['communityGuidelines'];
+        delete draft['innovationFlow'];
+        delete draft['whiteboard'];
+      });
+      break;
+    }
     case TemplateType.Post: {
       newValues = produce(newValues, draft => {
         delete draft['callout'];
@@ -107,7 +167,7 @@ export const toCreateTemplateMutationVariables = (
     case TemplateType.CommunityGuidelines: {
       newValues = produce(newValues, draft => {
         const communityGuidelinesDraft = draft as CommunityGuidelinesTemplateFormSubmittedValues;
-        communityGuidelinesDraft['communityGuidelinesData'] = communityGuidelinesDraft.communityGuidelines
+        communityGuidelinesDraft['communityGuidelinesData'] = communityGuidelinesDraft.communityGuidelines;
         if (communityGuidelinesDraft.communityGuidelines?.profile.references) {
           handleReferences(communityGuidelinesDraft.communityGuidelines);
         }
@@ -123,7 +183,7 @@ export const toCreateTemplateMutationVariables = (
         const innovationFlowDraft = draft as InnovationFlowTemplateFormSubmittedValues;
         innovationFlowDraft['innovationFlowData'] = innovationFlowDraft.innovationFlow;
         innovationFlowDraft['innovationFlowData']['profile'] = {
-          displayName: 'Innovation Flow Template'
+          displayName: 'Innovation Flow Template',
         };
         delete draft['callout'];
         delete draft['communityGuidelines'];
@@ -136,8 +196,9 @@ export const toCreateTemplateMutationVariables = (
       newValues = produce(newValues, draft => {
         const whiteboardDraft = draft as WhiteboardTemplateFormSubmittedValues;
         if (whiteboardDraft.whiteboard) {
-          whiteboardDraft.whiteboard['profileData'] = { // This shoudln't be required by the server but for now can stay
-            displayName: 'Whiteboard Template'
+          whiteboardDraft.whiteboard['profileData'] = {
+            // This shoudln't be required by the server but for now can stay
+            displayName: 'Whiteboard Template',
           };
         }
         delete draft['callout'];
@@ -145,7 +206,6 @@ export const toCreateTemplateMutationVariables = (
         delete draft['innovationFlow'];
       });
     }
-
   }
 
   // After those productions TypeScript is completely clueless of what's in newValues.
@@ -153,20 +213,16 @@ export const toCreateTemplateMutationVariables = (
   return {
     templatesSetId: templatesSetId,
     type: templateType,
-    ...newValues
+    ...newValues,
   };
-}
+};
 
-
-const mapReferences = (ref: { id?: string, ID?: string; name?: string, uri?: string, description?: string }) => (
-  {
-    ID: ref.ID ?? ref.id ?? '', // We have some cases where id is lowercase, see ProfileReferenceSegment
-    name: ref.name,
-    uri: ref.uri,
-    description: ref.description
-  }
-);
-
+const mapReferences = (ref: { id?: string; ID?: string; name?: string; uri?: string; description?: string }) => ({
+  ID: ref.ID ?? ref.id ?? '', // We have some cases where id is lowercase, see ProfileReferenceSegment
+  name: ref.name,
+  uri: ref.uri,
+  description: ref.description,
+});
 
 export const toUpdateTemplateMutationVariables = (
   templateId: string,
@@ -178,9 +234,22 @@ export const toUpdateTemplateMutationVariables = (
       draft.profile.references = draft.profile.references.map(mapReferences);
     }
     if (draft['communityGuidelines']) {
-      const communityGuidelinesDraft = draft as CommunityGuidelinesTemplateFormSubmittedValues;
+      const communityGuidelinesDraft = draft as WritableDraft<CommunityGuidelinesTemplateFormSubmittedValues>;
       if (communityGuidelinesDraft.communityGuidelines?.profile.references) {
-        communityGuidelinesDraft.communityGuidelines.profile.references = communityGuidelinesDraft.communityGuidelines.profile.references.map(mapReferences);
+        communityGuidelinesDraft.communityGuidelines.profile.references =
+          communityGuidelinesDraft.communityGuidelines.profile.references.map(mapReferences);
+      }
+    }
+    if (draft['callout']) {
+      const calloutDraft = draft as WritableDraft<CalloutTemplateFormSubmittedValues>;
+      delete calloutDraft.callout?.type; // Never send Callout type as it cannot be changed
+
+      if (
+        calloutDraft.callout?.type !== CalloutType.Whiteboard &&
+        calloutDraft.callout?.type !== CalloutType.WhiteboardCollection
+      ) {
+        delete calloutDraft.callout?.contributionDefaults.whiteboardContent;
+        delete calloutDraft.callout?.framing.whiteboard;
       }
     }
   });
@@ -188,5 +257,5 @@ export const toUpdateTemplateMutationVariables = (
   return {
     templateId: templateId!,
     ...newValues,
-  }
-}
+  };
+};

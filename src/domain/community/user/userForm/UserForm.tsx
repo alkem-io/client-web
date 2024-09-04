@@ -271,7 +271,7 @@ export const UserForm: FC<UserProps> = ({
                     disabled={isSubmitting}
                     maxLength={MARKDOWN_TEXT_LENGTH}
                   />
-                  <TagsetSegment tagsets={tagsets} template={[]} readOnly={isReadOnlyMode} disabled={isSubmitting} />
+                  <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} disabled={isSubmitting} />
 
                   <SocialSegment isNew={editMode === EditMode.new} readOnly={isReadOnlyMode} disabled={isSubmitting} />
 

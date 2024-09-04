@@ -13,8 +13,9 @@ import ProfileReferenceSegment from '../../../../platform/admin/components/Commo
 import FormikReferenceSegment from '../../../../platform/admin/components/Common/FormikReferenceSegment';
 import { referenceSegmentSchema } from '../../../../platform/admin/components/Common/ReferenceSegment';
 import { tagsetsSegmentSchema } from '../../../../platform/admin/components/Common/TagsetSegment';
-import { mapReferencesToUpdateReferences, mapTagsetsToUpdateTagsets } from './common/mappings';
+import { mapReferencesToUpdateReferences, mapTemplateProfileToUpdateProfile } from './common/mappings';
 import { gutters } from '../../../../../core/ui/grid/utils';
+import { displayNameValidator } from '../../../../../core/ui/forms/validator';
 
 export interface CommunityGuidelinesTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   communityGuidelines?: {
@@ -39,12 +40,15 @@ interface CommunityGuidelinesTemplateFormProps {
 
 const validator = {
   communityGuidelines: yup.object().shape({
-    profile: yup.object().shape({
-      displayName: yup.string().required(),
-      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-      references: referenceSegmentSchema,
-      tagsets: tagsetsSegmentSchema,
-    }).required(),
+    profile: yup
+      .object()
+      .shape({
+        displayName: displayNameValidator,
+        description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+        references: referenceSegmentSchema,
+        tagsets: tagsetsSegmentSchema,
+      })
+      .required(),
   }),
 };
 
@@ -53,20 +57,15 @@ const CommunityGuidelinesTemplateForm = ({ template, onSubmit, actions }: Commun
   const profileId = template?.communityGuidelines?.profile.id;
 
   const initialValues: CommunityGuidelinesTemplateFormSubmittedValues = {
-    profile: {
-      displayName: template?.profile.displayName ?? '',
-      description: template?.profile.description ?? '',
-      tagsets: mapTagsetsToUpdateTagsets(template?.profile.tagsets) ?? [],
-    },
+    profile: mapTemplateProfileToUpdateProfile(template?.profile),
     communityGuidelines: {
       profile: {
         displayName: template?.communityGuidelines?.profile.displayName ?? '',
         description: template?.communityGuidelines?.profile.description ?? '',
         references: mapReferencesToUpdateReferences(template?.communityGuidelines?.profile.references) ?? [],
-      }
-    }
+      },
+    },
   };
-  console.log({ initialValues, template });
 
   return (
     <TemplateFormBase
@@ -93,15 +92,26 @@ const CommunityGuidelinesTemplateForm = ({ template, onSubmit, actions }: Commun
               profileId={profileId}
               compactMode
               fieldName="communityGuidelines.profile.references"
-              references={values.communityGuidelines?.profile?.references?.map(ref => ({ id: ref.ID, name: ref.name ?? '', description: ref.description, uri: ref.uri ?? '' })) ?? []}
+              references={
+                values.communityGuidelines?.profile?.references?.map(ref => ({
+                  id: ref.ID,
+                  name: ref.name ?? '',
+                  description: ref.description,
+                  uri: ref.uri ?? '',
+                })) ?? []
+              }
               marginTop={gutters(-1)}
             />
           ) : (
-            <FormikReferenceSegment compactMode fieldName="communityGuidelines.profile.references" marginTop={gutters(-1)} />
+            <FormikReferenceSegment
+              compactMode
+              fieldName="communityGuidelines.profile.references"
+              marginTop={gutters(-1)}
+            />
           )}
         </>
       )}
-    </TemplateFormBase >
+    </TemplateFormBase>
   );
 };
 

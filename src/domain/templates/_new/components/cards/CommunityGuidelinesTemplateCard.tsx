@@ -31,7 +31,7 @@ const CommunityGuidelinesTemplateCard: FC<CommunityGuidelinesTemplateCardProps> 
         </CardHeaderCaption>
       </CardHeader>
       <CardDetails>
-        <CardDescriptionWithTags tags={template?.profile.tagset?.tags}>
+        <CardDescriptionWithTags tags={template?.profile.defaultTagset?.tags}>
           {template?.profile.description}
         </CardDescriptionWithTags>
       </CardDetails>

@@ -4,18 +4,18 @@ import { useTranslation } from 'react-i18next';
 import { FormikProps } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
-import { mapTagsetsToUpdateTagsets } from './common/mappings';
+import { mapTemplateProfileToUpdateProfile } from './common/mappings';
 import { InnovationFlowState } from '../../../../collaboration/InnovationFlow/InnovationFlow';
-import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 import { BlockSectionTitle } from '../../../../../core/ui/typography';
 import InnovationFlowDragNDropEditor from '../../../../collaboration/InnovationFlow/InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
 import { InnovationFlowTemplate, MAX_INNOVATIONFLOW_STATES } from '../../models/InnovationFlowTemplate';
-
+import { displayNameValidator } from '../../../../../core/ui/forms/validator';
 
 export interface InnovationFlowTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   innovationFlow: {
     states: InnovationFlowState[];
-  }
+  };
 }
 
 interface InnovationFlowTemplateFormProps {
@@ -26,29 +26,29 @@ interface InnovationFlowTemplateFormProps {
 
 const validator = {
   innovationFlow: yup.object().shape({
-    states: yup.array().required().of(
-      yup
-        .object()
-        .shape({
-          displayName: yup.string().required().max(SMALL_TEXT_LENGTH),
-          description: yup.string().max(MARKDOWN_TEXT_LENGTH),
-        })
-        .required()
-    ).min(1).max(MAX_INNOVATIONFLOW_STATES),
-  })
+    states: yup
+      .array()
+      .required()
+      .of(
+        yup
+          .object()
+          .shape({
+            displayName: displayNameValidator,
+            description: yup.string().max(MARKDOWN_TEXT_LENGTH),
+          })
+          .required()
+      )
+      .min(1)
+      .max(MAX_INNOVATIONFLOW_STATES),
+  }),
 };
 
 const InnovationFlowTemplateForm = ({ template, onSubmit, actions }: InnovationFlowTemplateFormProps) => {
-
   const initialValues: InnovationFlowTemplateFormSubmittedValues = {
-    profile: {
-      displayName: template?.profile.displayName ?? '',
-      description: template?.profile.description ?? '',
-      tagsets: mapTagsetsToUpdateTagsets(template?.profile.tagsets) ?? [],
-    },
+    profile: mapTemplateProfileToUpdateProfile(template?.profile),
     innovationFlow: {
       states: template?.innovationFlow?.states ?? [],
-    }
+    },
   };
 
   const { t } = useTranslation();
@@ -146,10 +146,16 @@ const InnovationFlowTemplateForm = ({ template, onSubmit, actions }: InnovationF
             <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
             <InnovationFlowDragNDropEditor
               innovationFlowStates={values.innovationFlow.states}
-              onCreateFlowState={(newState, options) => onCreateState(values.innovationFlow.states, newState, options, setStates)}
-              onEditFlowState={(oldState, newState) => onEditState(values.innovationFlow.states, oldState, newState, setStates)}
+              onCreateFlowState={(newState, options) =>
+                onCreateState(values.innovationFlow.states, newState, options, setStates)
+              }
+              onEditFlowState={(oldState, newState) =>
+                onEditState(values.innovationFlow.states, oldState, newState, setStates)
+              }
               onDeleteFlowState={stateName => onDeleteState(values.innovationFlow.states, stateName, setStates)}
-              onUpdateFlowStateOrder={(states, sortOrder) => onSortStates(values.innovationFlow.states, states, sortOrder, setStates)}
+              onUpdateFlowStateOrder={(states, sortOrder) =>
+                onSortStates(values.innovationFlow.states, states, sortOrder, setStates)
+              }
             />
           </>
         );

@@ -5,7 +5,7 @@ fragment TemplateProfileInfo on Template {
     id
     displayName
     description
-    tagsets {
+    defaultTagset: tagset {
       ...TagsetDetails
     }
     visual(type: CARD) {

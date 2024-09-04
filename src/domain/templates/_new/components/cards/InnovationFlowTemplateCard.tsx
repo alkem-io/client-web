@@ -26,9 +26,9 @@ const InnovationFlowTemplateCard = ({
   loading,
   ...props
 }: InnovationFlowTemplateCardProps) => {
-  const innovationFlowStates = template?.innovationFlowStates;
+  const innovationFlowStates = template?.innovationFlow?.states;
 
-  const hasTags = (template?.profile.tagset?.tags ?? []).length > 0;
+  const hasTags = (template?.profile.defaultTagset?.tags ?? []).length > 0;
   const descriptionHeightGutters = hasTags
     ? DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS - 2
     : DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS;
@@ -52,7 +52,7 @@ const InnovationFlowTemplateCard = ({
         </CardContent>
       </CardDetails>
       <CardDetails>
-        <CardTags tags={template?.profile.tagset?.tags ?? []} marginY={1} hideIfEmpty />
+        <CardTags tags={template?.profile.defaultTagset?.tags ?? []} marginY={1} hideIfEmpty />
       </CardDetails>
       {innovationPack && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>

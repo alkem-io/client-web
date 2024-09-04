@@ -13,9 +13,6 @@ query CalloutTemplateContent($calloutTemplateId: UUID!) {
             id
             displayName
             description
-            tagset {
-              ...TagsetDetails
-            }
             tagsets {
               ...TagsetDetails
             }
@@ -44,7 +41,7 @@ query CalloutTemplateContent($calloutTemplateId: UUID!) {
   }
 }
 
-query whiteboardTemplateContent($whiteboardTemplateId: UUID!) {
+query WhiteboardTemplateContent($whiteboardTemplateId: UUID!) {
   lookup {
     template(ID: $whiteboardTemplateId) {
       id
@@ -76,7 +73,7 @@ fragment CalloutTemplatePreview on Template {
         id
         displayName
         description
-        tagset {
+        tagsets {
           ...TagsetDetails
         }
         storageBucket {
@@ -88,6 +85,7 @@ fragment CalloutTemplatePreview on Template {
       }
     }
     contributionPolicy {
+      id
       state
     }
     contributionDefaults {

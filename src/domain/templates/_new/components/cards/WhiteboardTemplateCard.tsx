@@ -35,7 +35,7 @@ const WhiteboardTemplateCard: FC<WhiteboardTemplateCardProps> = ({ template, inn
         position="relative"
         top={gutters(-1)}
         marginY={gutters(-0.5)}
-        tags={template?.profile.tagset?.tags ?? []}
+        tags={template?.profile.defaultTagset.tags ?? []}
         hideIfEmpty
       />
       {innovationPack?.profile.displayName && (

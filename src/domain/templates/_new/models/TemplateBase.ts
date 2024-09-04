@@ -1,20 +1,24 @@
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../../core/utils/Identifiable';
-import { UpdateTagset } from '../../../common/profile/Profile';
 import { CalloutTemplate } from './CalloutTemplate';
 import { CommunityGuidelinesTemplate } from './CommunityGuidelinesTemplate';
 import { InnovationFlowTemplate } from './InnovationFlowTemplate';
 import { PostTemplate } from './PostTemplate';
 import { WhiteboardTemplate } from './WhiteboardTemplate';
 
-export type AnyTemplate = CalloutTemplate | CommunityGuidelinesTemplate | InnovationFlowTemplate | PostTemplate | WhiteboardTemplate;
+export type AnyTemplate =
+  | CalloutTemplate
+  | CommunityGuidelinesTemplate
+  | InnovationFlowTemplate
+  | PostTemplate
+  | WhiteboardTemplate;
 
 export interface NewTemplateBase extends Identifiable {
   type: TemplateType;
   profile: {
     displayName: string;
     description?: string;
-    tagsets?: UpdateTagset[];
+    defaultTagset: { tags: string[] };
     visual?: {
       id: string;
       uri: string;

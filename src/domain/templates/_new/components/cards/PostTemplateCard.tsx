@@ -26,7 +26,7 @@ const PostTemplateCard: FC<PostTemplateCardProps> = ({ template, innovationPack,
         </CardHeaderCaption>
       </CardHeader>
       <CardDetails>
-        <CardDescriptionWithTags tags={template?.profile.tagset?.tags}>
+        <CardDescriptionWithTags tags={template?.profile.defaultTagset?.tags}>
           {template?.profile.description}
         </CardDescriptionWithTags>
       </CardDetails>

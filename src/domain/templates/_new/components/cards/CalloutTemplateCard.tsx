@@ -25,11 +25,11 @@ interface CalloutTemplateCardProps extends TemplateCardProps {
 const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovationPack, loading, ...props }) => {
   const { t } = useTranslation();
 
-  const hasTags = (template?.profile.tagset?.tags ?? []).length > 0;
+  const hasTags = (template?.profile.defaultTagset?.tags ?? []).length > 0;
   const footerHeight = template?.callout?.type === CalloutType.LinkCollection ? (hasTags ? 3 : 1) : hasTags ? 2 : 0;
   const descriptionHeightGutters = DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS - footerHeight;
 
-  const Icon = template?.type && calloutIcons[template?.type];
+  const Icon = template?.callout?.type && calloutIcons[template.callout.type];
 
   return (
     <ContributeCard {...props}>
@@ -55,7 +55,7 @@ const CalloutTemplateCard: FC<CalloutTemplateCardProps> = ({ template, innovatio
         </CardContent>
       </CardDetails>
       <CardDetails>
-        <CardTags tags={template?.profile.tagset?.tags ?? []} marginY={1} hideIfEmpty />
+        <CardTags tags={template?.profile.defaultTagset?.tags ?? []} marginY={1} hideIfEmpty />
       </CardDetails>
       {innovationPack?.profile.displayName && (
         <CardSegmentCaption icon={<InnovationPackIcon />}>

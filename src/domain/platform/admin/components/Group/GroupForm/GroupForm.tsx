@@ -117,7 +117,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
                   />
                 </Grid>
 
-                <TagsetSegment tagsets={tagsets} template={[]} readOnly={isReadOnlyMode} disabled={isSubmitting} />
+                <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} disabled={isSubmitting} />
                 {isEditMode && (
                   <ProfileReferenceSegment
                     references={references}

@@ -18,7 +18,14 @@ import { TagsetField } from '../../../../platform/admin/components/Common/Tagset
 import FormikRadioButtonsGroup from '../../../../../core/ui/forms/radioButtons/FormikRadioButtonsGroup';
 import FormikWhiteboardPreview from '../../../admin/WhiteboardTemplates/FormikWhiteboardPreview';
 import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
-import { mapReferencesToUpdateReferences, mapTagsetsToUpdateTagsets } from './common/mappings';
+import {
+  mapReferencesToUpdateReferences,
+  mapTagsetsToUpdateTagsets,
+  mapTemplateProfileToUpdateProfile,
+} from './common/mappings';
+import { useCalloutTemplateContentQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import Loading from '../../../../../core/ui/loading/Loading';
+import { Caption } from '../../../../../core/ui/typography';
 
 export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   callout?: {
@@ -42,7 +49,7 @@ export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileS
         profileData: {
           displayName: string;
           description?: string;
-        }
+        };
         content: string;
       };
     };
@@ -50,8 +57,8 @@ export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileS
       postDescription?: string;
       whiteboardContent?: string;
     };
-    type: CalloutType;
-  }
+    type?: CalloutType; // Cannot be sent on updates, but it's needed in the forms
+  };
 }
 
 interface CalloutTemplateFormProps {
@@ -61,42 +68,51 @@ interface CalloutTemplateFormProps {
 }
 
 const validator = {
-  callout: yup.object().shape({
-    framing: yup.object().shape({
-      profile: yup.object().shape({
-        displayName: displayNameValidator,
-        description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
-        references: yup.array().of(
-          yup.object().shape({
-            name: yup.string().required(),
-            description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-            uri: yup.string().url(),
-          }),
-        ),
-        tagsets: yup.array().of(yup.object().shape({
-          tags: yup.array().of(yup.string().required()).required()
-        })),
-      }),
-      whiteboard: yup.object().shape({
-        nameID: yup.string(),
-        profileData: yup.object().shape({
-          displayName: yup.string(),
-          description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+  callout: yup
+    .object()
+    .shape({
+      framing: yup.object().shape({
+        profile: yup.object().shape({
+          displayName: displayNameValidator.required(),
+          description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
+          references: yup.array().of(
+            yup.object().shape({
+              name: yup.string().required(),
+              description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+              uri: yup.string().url(),
+            })
+          ),
+          tagsets: yup.array().of(
+            yup.object().shape({
+              tags: yup.array().of(yup.string().required()).required(),
+            })
+          ),
         }),
-        content: yup.string(),
+        whiteboard: yup.object().shape({
+          nameID: yup.string(),
+          profileData: yup.object().shape({
+            displayName: yup.string(),
+            description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+          }),
+          content: yup.string().required(),
+        }),
       }),
-    }),
-    contributionDefaults: yup.object().shape({
-      postDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-      whiteboardContent: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-    }),
-    type: yup.mixed<CalloutType>().oneOf(Object.values(CalloutType).filter(value => typeof value === 'string')).required(),
-  }).required(),
+      contributionDefaults: yup.object().shape({
+        postDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+        whiteboardContent: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+      }),
+      type: yup
+        .mixed<CalloutType>()
+        .oneOf(Object.values(CalloutType).filter(value => typeof value === 'string'))
+        .required(),
+    })
+    .required(),
 };
-
 
 const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFormProps) => {
   const { t } = useTranslation();
+  const createMode = !template?.id;
+  console.log({ createMode, template });
 
   const calloutTypeOptions = useMemo<RadioButtonOption<CalloutType>[]>(() => {
     return [
@@ -109,37 +125,44 @@ const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFor
       value: type,
       icon: calloutIcons[type],
       label: t(`components.calloutTypeSelect.label.${type}` as const),
+      tooltip: createMode ? undefined : <Caption>{t('components.calloutTemplateDialog.typeReadonly')}</Caption>,
     }));
   }, [t]);
 
+  const { data: calloutTemplateData, loading } = useCalloutTemplateContentQuery({
+    variables: { calloutTemplateId: template?.id! },
+    skip: !template?.id,
+  });
+
   const initialValues: CalloutTemplateFormSubmittedValues = {
-    profile: {
-      displayName: template?.profile.displayName ?? '',
-      description: template?.profile.description ?? '',
-      tagsets: mapTagsetsToUpdateTagsets(template?.profile.tagsets) ?? [],
-    },
+    profile: mapTemplateProfileToUpdateProfile(template?.profile),
     callout: {
       framing: {
         profile: {
-          displayName: template?.callout?.framing?.profile?.displayName ?? '',
-          description: template?.callout?.framing?.profile?.description ?? '',
-          references: mapReferencesToUpdateReferences(template?.callout?.framing?.profile?.references),
-          tagsets: mapTagsetsToUpdateTagsets(template?.callout?.framing?.profile?.tagsets),
+          displayName: calloutTemplateData?.lookup.template?.callout?.framing?.profile?.displayName ?? '',
+          description: calloutTemplateData?.lookup.template?.callout?.framing?.profile?.description ?? '',
+          references:
+            mapReferencesToUpdateReferences(
+              calloutTemplateData?.lookup.template?.callout?.framing?.profile?.references
+            ) ?? [],
+          tagsets: mapTagsetsToUpdateTagsets(calloutTemplateData?.lookup.template?.callout?.framing?.profile?.tagsets),
         },
         whiteboard: {
           profileData: {
-            displayName: template?.callout?.framing?.whiteboard?.profileData.displayName ?? '',
-            description: template?.callout?.framing?.whiteboard?.profileData.description ?? '',
+            displayName: calloutTemplateData?.lookup.template?.callout?.framing?.whiteboard?.profile.displayName ?? '',
+            description: calloutTemplateData?.lookup.template?.callout?.framing?.whiteboard?.profile.description ?? '',
           },
-          content: template?.callout?.framing?.whiteboard?.content ?? JSON.stringify(EmptyWhiteboard),
+          content:
+            calloutTemplateData?.lookup.template?.callout?.framing?.whiteboard?.content ??
+            JSON.stringify(EmptyWhiteboard),
         },
       },
       contributionDefaults: {
-        postDescription: template?.callout?.contributionDefaults?.postDescription ?? '',
-        whiteboardContent: template?.callout?.contributionDefaults?.whiteboardContent ?? '',
+        postDescription: calloutTemplateData?.lookup.template?.callout?.contributionDefaults?.postDescription ?? '',
+        whiteboardContent: calloutTemplateData?.lookup.template?.callout?.contributionDefaults?.whiteboardContent ?? '',
       },
       type: template?.callout?.type ?? CalloutType.Post,
-    }
+    },
   };
 
   return (
@@ -151,35 +174,43 @@ const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFor
       actions={actions}
       validator={validator}
     >
-      {({ values, errors }) => {
-        console.log('CalloutTemplatesForm validation errors', errors); //!!
-
+      {({ values }) => {
         return (
           <>
-            <FormikInputField name="callout.framing.profile.displayName" title={t('common.title')} />
-            <Box marginBottom={gutters(-1)}>
-              <FormikMarkdownField
-                name="callout.framing.profile.description"
-                title={t('common.description')}
-                maxLength={MARKDOWN_TEXT_LENGTH}
-              />
-            </Box>
-            <TagsetField name="callout.framing.profile.tagsets[0].tags" title={t('common.tags')} />
-            <FormikRadioButtonsGroup name="callout.type" options={calloutTypeOptions} />
-            {values.callout?.type === CalloutType.Whiteboard && (
-              <FormikWhiteboardPreview name="callout.framing.whiteboard.content" canEdit />
-            )}
-            {values.callout?.type === CalloutType.WhiteboardCollection && (
-              <FormikWhiteboardPreview name="callout.contributionDefaults.whiteboardContent" canEdit />
-            )}
-            {values.callout?.type === CalloutType.PostCollection && (
-              <Box marginBottom={gutters(-1)}>
-                <FormikMarkdownField
-                  name="callout.contributionDefaults.postDescription"
-                  title={t('common.description')}
-                  maxLength={MARKDOWN_TEXT_LENGTH}
+            {loading && <Loading />}
+            {!loading && (
+              <>
+                <FormikInputField name="callout.framing.profile.displayName" title={t('common.title')} />
+                <Box marginBottom={gutters(-1)}>
+                  <FormikMarkdownField
+                    name="callout.framing.profile.description"
+                    title={t('common.description')}
+                    maxLength={MARKDOWN_TEXT_LENGTH}
+                  />
+                </Box>
+                <TagsetField name="callout.framing.profile.tagsets[0].tags" title={t('common.tags')} />
+                <FormikRadioButtonsGroup
+                  name="callout.type"
+                  options={calloutTypeOptions}
+                  readOnly={!createMode}
+                  tooltipProps={{ PopperProps: { sx: { pointerEvents: 'none' } } }}
                 />
-              </Box>
+                {values.callout?.type === CalloutType.Whiteboard && (
+                  <FormikWhiteboardPreview name="callout.framing.whiteboard.content" canEdit />
+                )}
+                {values.callout?.type === CalloutType.WhiteboardCollection && (
+                  <FormikWhiteboardPreview name="callout.contributionDefaults.whiteboardContent" canEdit />
+                )}
+                {values.callout?.type === CalloutType.PostCollection && (
+                  <Box marginBottom={gutters(-1)}>
+                    <FormikMarkdownField
+                      name="callout.contributionDefaults.postDescription"
+                      title={t('common.description')}
+                      maxLength={MARKDOWN_TEXT_LENGTH}
+                    />
+                  </Box>
+                )}
+              </>
             )}
           </>
         );
@@ -189,5 +220,3 @@ const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFor
 };
 
 export default CalloutTemplateForm;
-
-

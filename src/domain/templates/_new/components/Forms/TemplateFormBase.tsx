@@ -29,8 +29,9 @@ export interface TemplateFormWithPreviewImages {
 }
 
 export interface TemplateFormProfileSubmittedValues {
-  profile: {  // Match CreateProfileInput | UpdateProfileInput;
-    displayName: string;
+  profile: {
+    // Match CreateProfileInput | UpdateProfileInput;
+    displayName?: string;
     description?: string;
     // On CreateProfileInput tags need to be one level higher, and tagsets need to be removed from here.
     // On UpdateProfileInput tagsets need to be here and the id needs to be passed
@@ -74,32 +75,31 @@ const TemplateFormBase = <T extends TemplateFormProfileSubmittedValues>({
     profile: yup.object().shape({
       displayName: displayNameValidator,
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
-      tagsets: yup.array().of(yup.object().shape({
-        tags: yup.array().of(yup.string().min(2)),
-      }))
+      tagsets: yup.array().of(
+        yup.object().shape({
+          tags: yup.array().of(yup.string().min(2)),
+        })
+      ),
     }),
     ...validator,
   });
 
-  const visual = template?.profile.visual as Visual | undefined;  //!!
+  const visual = template?.profile.visual as Visual | undefined; //!!
 
   const renderActions = typeof actions === 'function' ? actions : () => actions;
   const renderChildren = typeof children === 'function' ? children : () => children;
 
   return (
-    <Formik
-      enableReinitialize
-      initialValues={initialValues}
-      onSubmit={onSubmit}
-      validationSchema={validationSchema}
-    >
+    <Formik enableReinitialize initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {formState => (
         <GridContainer disablePadding>
           <PageContentColumn columns={3}>
             <PageContentBlockSeamless disablePadding>
               <BlockSectionTitleWithIcon
                 icon={<InfoOutlined />}
-                tooltip={t('templateDialog.profile.help', { entityTypeName: t(`common.enums.templateType.${templateType}`) })}
+                tooltip={t('templateDialog.profile.help', {
+                  entityTypeName: t(`common.enums.templateType.${templateType}`),
+                })}
               >
                 {t('templateDialog.profile.title')}
               </BlockSectionTitleWithIcon>

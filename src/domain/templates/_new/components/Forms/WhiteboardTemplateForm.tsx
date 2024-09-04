@@ -1,16 +1,21 @@
 import React, { ReactNode } from 'react';
 import * as yup from 'yup';
 import { FormikProps } from 'formik';
-import TemplateFormBase, { TemplateFormProfileSubmittedValues, TemplateFormWithPreviewImages } from './TemplateFormBase';
+import TemplateFormBase, {
+  TemplateFormProfileSubmittedValues,
+  TemplateFormWithPreviewImages,
+} from './TemplateFormBase';
 import FormikWhiteboardPreview from '../../../admin/WhiteboardTemplates/FormikWhiteboardPreview';
 import { useTranslation } from 'react-i18next';
 import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
-import { mapTagsetsToUpdateTagsets } from './common/mappings';
+import { mapTemplateProfileToUpdateProfile } from './common/mappings';
 import { WhiteboardTemplate } from '../../models/WhiteboardTemplate';
 import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
 import { useWhiteboardTemplateContentQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 
-export interface WhiteboardTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues, TemplateFormWithPreviewImages {
+export interface WhiteboardTemplateFormSubmittedValues
+  extends TemplateFormProfileSubmittedValues,
+    TemplateFormWithPreviewImages {
   whiteboard?: {
     content: string;
   };
@@ -25,7 +30,7 @@ interface WhiteboardTemplateFormProps {
 const validator = {
   whiteboard: yup.object().shape({
     content: yup.string().required(),
-  })
+  }),
 };
 
 const WhiteboardTemplateForm = ({ template, onSubmit, actions }: WhiteboardTemplateFormProps) => {
@@ -36,11 +41,7 @@ const WhiteboardTemplateForm = ({ template, onSubmit, actions }: WhiteboardTempl
   });
 
   const initialValues: WhiteboardTemplateFormSubmittedValues = {
-    profile: {
-      displayName: template?.profile.displayName ?? '',
-      description: template?.profile.description ?? '',
-      tagsets: mapTagsetsToUpdateTagsets(template?.profile.tagsets) ?? [],
-    },
+    profile: mapTemplateProfileToUpdateProfile(template?.profile),
     whiteboard: {
       content: whiteboardData?.lookup.template?.whiteboard?.content ?? JSON.stringify(EmptyWhiteboard),
     },
@@ -55,24 +56,15 @@ const WhiteboardTemplateForm = ({ template, onSubmit, actions }: WhiteboardTempl
       actions={actions}
       validator={validator}
     >
-      {({ values, errors }) => {
-        console.log({ values, errors })
-        return (
-          <>
-            <FormikWhiteboardPreview
-              name="whiteboard.content"
-              previewImagesName="whiteboardPreviewImages"
-              canEdit
-              loading={loading}
-              dialogProps={{ title: t('templateLibrary.whiteboardTemplates.editDialogTitle') }}
-            />
-          </>
-        );
-      }}
+      <FormikWhiteboardPreview
+        name="whiteboard.content"
+        previewImagesName="whiteboardPreviewImages"
+        canEdit
+        loading={loading}
+        dialogProps={{ title: t('templateLibrary.whiteboardTemplates.editDialogTitle') }}
+      />
     </TemplateFormBase>
   );
 };
 
 export default WhiteboardTemplateForm;
-
-
