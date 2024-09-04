@@ -1,7 +1,6 @@
 import { ComponentType, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   refetchSubspacesInSpaceQuery,
-  useAddVirtualContributorToCommunityMutation,
   useCreateSpaceMutation,
   useCreatePostFromContributeTabMutation,
   useCreateSubspaceMutation,
@@ -12,6 +11,7 @@ import {
   useSpaceUrlLazyQuery,
   useSubspaceProfileInfoQuery,
   useSubspaceCommunityIdLazyQuery,
+  useAssignCommunityRoleToVirtualContributorMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   CalloutGroupName,
@@ -412,7 +412,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
   };
 
-  const [addVirtualContributorToCommunity] = useAddVirtualContributorToCommunityMutation();
+  const [addVirtualContributorToCommunity] = useAssignCommunityRoleToVirtualContributorMutation();
   const [createVirtualContributor] = useCreateVirtualContributorOnAccountMutation({
     refetchQueries: ['MyAccount', 'AccountInformation'],
   });
