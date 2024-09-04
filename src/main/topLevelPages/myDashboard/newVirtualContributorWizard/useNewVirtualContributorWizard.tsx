@@ -50,7 +50,6 @@ type Step = 'initial' | 'createSpace' | 'addKnowledge' | 'existingKnowledge' | '
 
 export interface UserAccountProps {
   id: string;
-  __typename: string;
   host?: {
     id: string;
   };
@@ -86,10 +85,6 @@ interface useNewVirtualContributorWizardProvided {
 
 interface NewVirtualContributorWizardProps {}
 
-const isAccount = (obj: { __typename: string } | undefined) => {
-  return obj && obj.__typename === 'Account';
-};
-
 // generate name for the space/subspace based on the VC name
 // index is needed in case of canceling the flow. Creation with the same name/nameID leads to issues accessing it later
 const generateEntityName = (name: string, entityPostfix: string, index: number = 0) => {
@@ -120,7 +115,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [tryCreateCallout, setTryCreateCallout] = useState<boolean>(false);
 
   const startWizard = (initAccount: UserAccountProps | undefined) => {
-    isAccount(initAccount) ? setTargetAccount(initAccount) : setTargetAccount(undefined);
+    setTargetAccount(initAccount);
     setStep('initial');
     setDialogOpen(true);
   };

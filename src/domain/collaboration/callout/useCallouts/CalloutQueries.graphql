@@ -92,6 +92,8 @@ fragment CalloutDetails on Callout {
   sortOrder
   activity
   contributions {
+    id
+    sortOrder
     link {
       ...LinkDetailsWithAuthorization
     }

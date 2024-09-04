@@ -628,6 +628,8 @@ export type AiPersonaService = {
   authorization?: Maybe<Authorization>;
   /** The body of knowledge ID used for the AI Persona Service */
   bodyOfKnowledgeID?: Maybe<Scalars['UUID']>;
+  /** When wat the body of knowledge of the VC last updated. */
+  bodyOfKnowledgeLastUpdated?: Maybe<Scalars['DateTime']>;
   /** The body of knowledge type used for the AI Persona Service */
   bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
   /** The date at which the entity was created. */
@@ -1079,6 +1081,8 @@ export type CalloutContribution = {
   link?: Maybe<Link>;
   /** The Post that was contributed. */
   post?: Maybe<Post>;
+  /** The sorting order for this Contribution. */
+  sortOrder: Scalars['Float'];
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** The Whiteboard that was contributed. */
@@ -1162,10 +1166,14 @@ export enum CalloutGroupName {
 
 export type CalloutPostCreated = {
   __typename?: 'CalloutPostCreated';
-  /** The identifier for the Callout on which the post was created. */
+  /** The identifier of the Callout on which the post was created. */
   calloutID: Scalars['String'];
-  /** The post that has been created. */
+  /** The identifier of the Contribution. */
+  contributionID: Scalars['String'];
+  /** The Post that has been created. */
   post: Post;
+  /** The sorting order for this Contribution. */
+  sortOrder: Scalars['Float'];
 };
 
 export enum CalloutState {
@@ -1807,6 +1815,8 @@ export type CreateContributionOnCalloutInput = {
   calloutID: Scalars['UUID'];
   link?: InputMaybe<CreateLinkInput>;
   post?: InputMaybe<CreatePostInput>;
+  /** The sort order to assign to this Contribution. */
+  sortOrder?: InputMaybe<Scalars['Float']>;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
 
@@ -3273,6 +3283,8 @@ export type Mutation = {
   updateCommunityApplicationForm: Community;
   /** Updates the CommunityGuidelines. */
   updateCommunityGuidelines: CommunityGuidelines;
+  /** Update the sortOrder field of the Contributions of s Callout. */
+  updateContributionsSortOrder: Array<CalloutContribution>;
   /** Updates the specified Discussion. */
   updateDiscussion: Discussion;
   /** Updates the specified Document. */
@@ -3791,6 +3803,10 @@ export type MutationUpdateCommunityApplicationFormArgs = {
 
 export type MutationUpdateCommunityGuidelinesArgs = {
   communityGuidelinesData: UpdateCommunityGuidelinesEntityInput;
+};
+
+export type MutationUpdateContributionsSortOrderArgs = {
+  sortOrderData: UpdateContributionCalloutsSortOrderInput;
 };
 
 export type MutationUpdateDiscussionArgs = {
@@ -5408,6 +5424,8 @@ export type Subscription = {
   roomEvents: RoomEventSubscriptionResult;
   /** Receive new Subspaces created on the Space. */
   subspaceCreated: SubspaceCreated;
+  /** Receive updates on virtual contributors */
+  virtualContributorUpdated: VirtualContributorUpdatedSubscriptionResult;
   /** Receive Whiteboard Saved event */
   whiteboardSaved: WhiteboardSavedSubscriptionResult;
 };
@@ -5430,6 +5448,10 @@ export type SubscriptionRoomEventsArgs = {
 
 export type SubscriptionSubspaceCreatedArgs = {
   spaceID: Scalars['UUID'];
+};
+
+export type SubscriptionVirtualContributorUpdatedArgs = {
+  virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
 export type SubscriptionWhiteboardSavedArgs = {
@@ -5768,6 +5790,12 @@ export type UpdateContextInput = {
   impact?: InputMaybe<Scalars['Markdown']>;
   vision?: InputMaybe<Scalars['Markdown']>;
   who?: InputMaybe<Scalars['Markdown']>;
+};
+
+export type UpdateContributionCalloutsSortOrderInput = {
+  calloutID: Scalars['UUID'];
+  /** The IDs of the contributions to update the sort order on */
+  contributionIDs: Array<Scalars['UUID']>;
 };
 
 export type UpdateDiscussionInput = {
@@ -6337,6 +6365,8 @@ export type VirtualContributor = Contributor & {
   provider: Contributor;
   /** Visibility of the VC in searches. */
   searchVisibility: SearchVisibility;
+  /** The status of the virtual contributor */
+  status: VirtualContributorStatus;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
@@ -6354,6 +6384,18 @@ export type VirtualContributorQuestionInput = {
   vcInteractionID?: InputMaybe<Scalars['String']>;
   /** Virtual Contributor to be asked. */
   virtualContributorID: Scalars['UUID'];
+};
+
+export enum VirtualContributorStatus {
+  Initializing = 'INITIALIZING',
+  Ready = 'READY',
+}
+
+/** The result from a Virtual Contributor update */
+export type VirtualContributorUpdatedSubscriptionResult = {
+  __typename?: 'VirtualContributorUpdatedSubscriptionResult';
+  /** The Virtual Contributor that was updated */
+  virtualContributor: VirtualContributor;
 };
 
 export type Visual = {
@@ -7331,7 +7373,7 @@ export type AccountInformationQuery = {
     __typename?: 'LookupQueryResults';
     account?:
       | {
-          __typename: 'Account';
+          __typename?: 'Account';
           id: string;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -7711,6 +7753,8 @@ export type CalloutPageCalloutQuery = {
           };
           contributions: Array<{
             __typename?: 'CalloutContribution';
+            id: string;
+            sortOrder: number;
             link?:
               | {
                   __typename?: 'Link';
@@ -9563,6 +9607,16 @@ export type UpdateCalloutsSortOrderMutation = {
   updateCalloutsSortOrder: Array<{ __typename?: 'Callout'; id: string; sortOrder: number }>;
 };
 
+export type UpdateContributionsSortOrderMutationVariables = Exact<{
+  calloutID: Scalars['UUID'];
+  contributionIds: Array<Scalars['UUID']> | Scalars['UUID'];
+}>;
+
+export type UpdateContributionsSortOrderMutation = {
+  __typename?: 'Mutation';
+  updateContributionsSortOrder: Array<{ __typename?: 'CalloutContribution'; id: string; sortOrder: number }>;
+};
+
 export type DashboardTopCalloutsFragment = {
   __typename?: 'Collaboration';
   callouts: Array<{
@@ -9737,6 +9791,8 @@ export type CreateCalloutMutation = {
     };
     contributions: Array<{
       __typename?: 'CalloutContribution';
+      id: string;
+      sortOrder: number;
       link?:
         | {
             __typename?: 'Link';
@@ -10066,6 +10122,8 @@ export type UpdateCalloutVisibilityMutation = {
     };
     contributions: Array<{
       __typename?: 'CalloutContribution';
+      id: string;
+      sortOrder: number;
       link?:
         | {
             __typename?: 'Link';
@@ -10322,6 +10380,8 @@ export type CalloutPostCreatedSubscription = {
   __typename?: 'Subscription';
   calloutPostCreated: {
     __typename?: 'CalloutPostCreated';
+    contributionID: string;
+    sortOrder: number;
     post: {
       __typename?: 'Post';
       id: string;
@@ -10384,6 +10444,8 @@ export type CalloutPostsQuery = {
           id: string;
           contributions: Array<{
             __typename?: 'CalloutContribution';
+            id: string;
+            sortOrder: number;
             post?:
               | {
                   __typename?: 'Post';
@@ -10820,6 +10882,8 @@ export type CalloutDetailsQuery = {
           };
           contributions: Array<{
             __typename?: 'CalloutContribution';
+            id: string;
+            sortOrder: number;
             link?:
               | {
                   __typename?: 'Link';
@@ -11117,6 +11181,8 @@ export type CalloutDetailsFragment = {
   };
   contributions: Array<{
     __typename?: 'CalloutContribution';
+    id: string;
+    sortOrder: number;
     link?:
       | {
           __typename?: 'Link';
@@ -11269,6 +11335,7 @@ export type CalloutWhiteboardsQuery = {
           contributions: Array<{
             __typename?: 'CalloutContribution';
             id: string;
+            sortOrder: number;
             whiteboard?:
               | {
                   __typename?: 'Whiteboard';
@@ -16823,6 +16890,21 @@ export type UpdateOrganizationMutation = {
   };
 };
 
+export type OrganizationAuthorizationQueryVariables = Exact<{
+  organizationId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OrganizationAuthorizationQuery = {
+  __typename?: 'Query';
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
+};
+
 export type OrganizationGroupQueryVariables = Exact<{
   organizationId: Scalars['UUID_NAMEID'];
   groupId: Scalars['UUID'];
@@ -17337,6 +17419,7 @@ export type UserDetailsFragment = {
     displayName: string;
     tagline?: string | undefined;
     description?: string | undefined;
+    url: string;
     location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
     avatar?:
       | {
@@ -17501,6 +17584,7 @@ export type CreateUserMutation = {
       displayName: string;
       tagline?: string | undefined;
       description?: string | undefined;
+      url: string;
       location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
       avatar?:
         | {
@@ -17552,6 +17636,7 @@ export type CreateUserNewRegistrationMutation = {
       displayName: string;
       tagline?: string | undefined;
       description?: string | undefined;
+      url: string;
       location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
       avatar?:
         | {
@@ -17681,6 +17766,7 @@ export type UpdateUserMutation = {
       displayName: string;
       tagline?: string | undefined;
       description?: string | undefined;
+      url: string;
       location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
       avatar?:
         | {
@@ -17762,6 +17848,7 @@ export type UserQuery = {
       displayName: string;
       tagline?: string | undefined;
       description?: string | undefined;
+      url: string;
       location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
       avatar?:
         | {
@@ -17842,6 +17929,7 @@ export type UserProfileQuery = {
       displayName: string;
       tagline?: string | undefined;
       description?: string | undefined;
+      url: string;
       location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
       avatar?:
         | {
@@ -17968,6 +18056,7 @@ export type UserProviderQuery = {
             displayName: string;
             tagline?: string | undefined;
             description?: string | undefined;
+            url: string;
             location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
             avatar?:
               | {
@@ -18030,6 +18119,7 @@ export type UserPendingMembershipsQuery = {
             displayName: string;
             tagline?: string | undefined;
             description?: string | undefined;
+            url: string;
             location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
             avatar?:
               | {
@@ -21898,8 +21988,11 @@ export type SpaceAccountQuery = {
             | undefined;
           provider:
             | {
-                __typename?: 'Organization';
+                __typename: 'Organization';
                 id: string;
+                authorization?:
+                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                  | undefined;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -21912,8 +22005,11 @@ export type SpaceAccountQuery = {
                 };
               }
             | {
-                __typename?: 'User';
+                __typename: 'User';
                 id: string;
+                authorization?:
+                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                  | undefined;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -21926,8 +22022,11 @@ export type SpaceAccountQuery = {
                 };
               }
             | {
-                __typename?: 'VirtualContributor';
+                __typename: 'VirtualContributor';
                 id: string;
+                authorization?:
+                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                  | undefined;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -31376,6 +31475,9 @@ export type MyAccountQuery = {
             | {
                 __typename?: 'Account';
                 id: string;
+                authorization?:
+                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                  | undefined;
                 virtualContributors: Array<{
                   __typename?: 'VirtualContributor';
                   id: string;
