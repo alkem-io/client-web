@@ -28,6 +28,7 @@ import { VIRTUAL_CONTRIBUTORS_LIMIT } from '../../../../main/topLevelPages/myDas
 import MenuItemWithIcon from '../../../../core/ui/menu/MenuItemWithIcon';
 import { DeleteOutline } from '@mui/icons-material';
 import {
+  useDeleteInnovationHubMutation,
   useDeleteInnovationPackMutation,
   useDeleteSpaceMutation,
   useDeleteVirtualContributorOnAccountMutation,
@@ -95,6 +96,7 @@ export interface ContributorAccountViewProps {
       };
     }[];
     innovationHubs: {
+      id: string;
       profile: AccountProfile & {
         banner?: { uri: string };
       };
@@ -187,33 +189,6 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
     setDeleteDialogOpen(true);
   };
 
-  // Pack Deletion
-  const [deletePackMutation, { loading: deletePackLoading }] = useDeleteInnovationPackMutation({
-    onCompleted: () => {
-      clearDeleteState();
-      notify('Innovation Pack deleted successfully!', 'success');
-    },
-    refetchQueries: ['AccountInformation'],
-  });
-
-  const deletePack = () => {
-    if (!selectedId) {
-      return;
-    }
-
-    deletePackMutation({
-      variables: {
-        innovationPackId: selectedId,
-      },
-    });
-  };
-
-  const onDeletePackClick = (id: string) => {
-    setSelectedEntity(Entities.InnovationPack);
-    setSelectedId(id);
-    setDeleteDialogOpen(true);
-  };
-
   // VC Deletion
   const [deleteVCMutation, { loading: deleteVCLoading }] = useDeleteVirtualContributorOnAccountMutation({
     onCompleted: () => {
@@ -243,6 +218,60 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
     setDeleteDialogOpen(true);
   };
 
+  // Pack Deletion
+  const [deletePackMutation, { loading: deletePackLoading }] = useDeleteInnovationPackMutation({
+    onCompleted: () => {
+      clearDeleteState();
+      notify('Innovation Pack deleted successfully!', 'success');
+    },
+    refetchQueries: ['AccountInformation'],
+  });
+
+  const deletePack = () => {
+    if (!selectedId) {
+      return;
+    }
+
+    deletePackMutation({
+      variables: {
+        innovationPackId: selectedId,
+      },
+    });
+  };
+
+  const onDeletePackClick = (id: string) => {
+    setSelectedEntity(Entities.InnovationPack);
+    setSelectedId(id);
+    setDeleteDialogOpen(true);
+  };
+
+  // Hub Deletion
+  const [deleteHubMutation, { loading: deleteHubLoading }] = useDeleteInnovationHubMutation({
+    onCompleted: () => {
+      clearDeleteState();
+      notify('Innovation Hub deleted successfully!', 'success');
+    },
+    refetchQueries: ['AccountInformation'],
+  });
+
+  const deleteHub = () => {
+    if (!selectedId) {
+      return;
+    }
+
+    deleteHubMutation({
+      variables: {
+        innovationHubId: selectedId,
+      },
+    });
+  };
+
+  const onDeleteHubClick = (id: string) => {
+    setSelectedEntity(Entities.InnovationHub);
+    setSelectedId(id);
+    setDeleteDialogOpen(true);
+  };
+
   const deleteEntity = () => {
     switch (entity) {
       case Entities.Space:
@@ -255,7 +284,7 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
         deletePack();
         break;
       case Entities.InnovationHub:
-        // deleteInnovationHub();
+        deleteHub();
         break;
     }
   };
@@ -286,6 +315,18 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
       </MenuItemWithIcon>
     );
 
+  const getVCActions = (id: string) =>
+    canDeleteEntities && (
+      <MenuItemWithIcon
+        key="delete"
+        disabled={deleteVCLoading}
+        iconComponent={DeleteOutline}
+        onClick={() => onDeleteVCClick(id)}
+      >
+        {t('buttons.delete')}
+      </MenuItemWithIcon>
+    );
+
   const getPackActions = (id: string) =>
     canDeleteEntities && (
       <MenuItemWithIcon
@@ -298,13 +339,13 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
       </MenuItemWithIcon>
     );
 
-  const getVCActions = (id: string) =>
+  const getHubActions = (id: string) =>
     canDeleteEntities && (
       <MenuItemWithIcon
         key="delete"
-        disabled={deleteVCLoading}
+        disabled={deleteHubLoading}
         iconComponent={DeleteOutline}
-        onClick={() => onDeleteVCClick(id)}
+        onClick={() => onDeleteHubClick(id)}
       >
         {t('buttons.delete')}
       </MenuItemWithIcon>
@@ -400,7 +441,10 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
         <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
         <Gutters disablePadding className={styles.gutters}>
           {loading && <InnovationHubCardHorizontalSkeleton />}
-          {!loading && innovationHubs?.map(hub => <InnovationHubCardHorizontal {...hub} />)}
+          {!loading &&
+            innovationHubs?.map(hub => (
+              <InnovationHubCardHorizontal key={hub.id} {...hub} actions={getHubActions(hub.id)} />
+            ))}
           <Actions>
             {canCreateInnovationHub && account?.id && (
               <CreateInnovationHubDialog accountId={account?.id} accountHostName={accountHostName} />

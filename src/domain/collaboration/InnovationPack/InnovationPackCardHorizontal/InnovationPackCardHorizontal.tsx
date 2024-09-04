@@ -70,67 +70,65 @@ const InnovationPackCardHorizontal = ({
       to={url ?? ''}
       actions={actions && <ActionsMenu>{actions}</ActionsMenu>}
     >
-      <Box>
-        <Box display="flex" flexDirection="row" justifyContent="space-between">
-          <Box display="flex" flexDirection="column">
-            <CardTitle>{displayName}</CardTitle>
-            <OneLineMarkdown>{description ?? ''}</OneLineMarkdown>
-          </Box>
+      <Box display="flex" flexDirection="row" justifyContent="space-between">
+        <Box display="flex" flexDirection="column">
+          <CardTitle>{displayName}</CardTitle>
+          <OneLineMarkdown>{description ?? ''}</OneLineMarkdown>
         </Box>
-        <Box display="flex" gap={gutters(0.5)} height={gutters(2)} alignItems="center" justifyContent="start">
-          {!!calloutTemplatesCount && (
-            <CardFooterCountWithBadge
-              iconComponent={DesignServicesIcon}
-              tooltip={t('common.enums.templateTypes.CollaborationToolTemplate_plural')}
-            >
-              <Caption>{calloutTemplatesCount}</Caption>
-            </CardFooterCountWithBadge>
-          )}
-          {!!whiteboardTemplatesCount && (
-            <CardFooterCountWithBadge
-              iconComponent={WhiteboardIcon}
-              tooltip={t('common.enums.templateTypes.WhiteboardTemplate_plural')}
-            >
-              <Caption>{whiteboardTemplatesCount}</Caption>
-            </CardFooterCountWithBadge>
-          )}
-          {!!communityGuidelinesTemplatesCount && (
-            <CardFooterCountWithBadge
-              iconComponent={CommunityGuidelinesIcon}
-              tooltip={t('common.enums.templateTypes.CommunityGuidelinesTemplate_plural')}
-            >
-              <Caption>{communityGuidelinesTemplatesCount}</Caption>
-            </CardFooterCountWithBadge>
-          )}
-          {!!postTemplatesCount && (
-            <CardFooterCountWithBadge
-              iconComponent={PostIcon}
-              tooltip={t('common.enums.templateTypes.PostTemplate_plural')}
-            >
-              <Caption>{postTemplatesCount}</Caption>
-            </CardFooterCountWithBadge>
-          )}
-          {!!innovationFlowTemplatesCount && (
-            <CardFooterCountWithBadge
-              tooltip={t('common.enums.templateTypes.InnovationFlowTemplate_plural')}
-              icon={
-                // TODO Try to redraw InnovationFlowIcon in the same way as MUI icons are done
-                <Box
-                  width={theme => theme.spacing(1.5)}
-                  sx={{ svg: { width: '100%' } }}
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <InnovationFlowIcon />
-                </Box>
-              }
-            >
-              <Caption>{innovationFlowTemplatesCount}</Caption>
-            </CardFooterCountWithBadge>
-          )}
-          {totalTemplatesCount === 0 && <Caption>{t('pages.admin.generic.sections.account.noTemplates')}</Caption>}
-        </Box>
+      </Box>
+      <Box display="flex" gap={gutters(0.5)} height={gutters(2)} alignItems="center" justifyContent="start">
+        {!!calloutTemplatesCount && (
+          <CardFooterCountWithBadge
+            iconComponent={DesignServicesIcon}
+            tooltip={t('common.enums.templateTypes.CollaborationToolTemplate_plural')}
+          >
+            <Caption>{calloutTemplatesCount}</Caption>
+          </CardFooterCountWithBadge>
+        )}
+        {!!whiteboardTemplatesCount && (
+          <CardFooterCountWithBadge
+            iconComponent={WhiteboardIcon}
+            tooltip={t('common.enums.templateTypes.WhiteboardTemplate_plural')}
+          >
+            <Caption>{whiteboardTemplatesCount}</Caption>
+          </CardFooterCountWithBadge>
+        )}
+        {!!communityGuidelinesTemplatesCount && (
+          <CardFooterCountWithBadge
+            iconComponent={CommunityGuidelinesIcon}
+            tooltip={t('common.enums.templateTypes.CommunityGuidelinesTemplate_plural')}
+          >
+            <Caption>{communityGuidelinesTemplatesCount}</Caption>
+          </CardFooterCountWithBadge>
+        )}
+        {!!postTemplatesCount && (
+          <CardFooterCountWithBadge
+            iconComponent={PostIcon}
+            tooltip={t('common.enums.templateTypes.PostTemplate_plural')}
+          >
+            <Caption>{postTemplatesCount}</Caption>
+          </CardFooterCountWithBadge>
+        )}
+        {!!innovationFlowTemplatesCount && (
+          <CardFooterCountWithBadge
+            tooltip={t('common.enums.templateTypes.InnovationFlowTemplate_plural')}
+            icon={
+              // TODO Try to redraw InnovationFlowIcon in the same way as MUI icons are done
+              <Box
+                width={theme => theme.spacing(1.5)}
+                sx={{ svg: { width: '100%' } }}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <InnovationFlowIcon />
+              </Box>
+            }
+          >
+            <Caption>{innovationFlowTemplatesCount}</Caption>
+          </CardFooterCountWithBadge>
+        )}
+        {totalTemplatesCount === 0 && <Caption>{t('pages.admin.generic.sections.account.noTemplates')}</Caption>}
       </Box>
     </BadgeCardView>
   );

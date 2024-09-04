@@ -14,7 +14,6 @@ import { useTranslation } from 'react-i18next';
 import { intersection } from 'lodash';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import JourneyAvatar from '../JourneyAvatar/JourneyAvatar';
-import Gutters from '../../../../core/ui/grid/Gutters';
 import ActionsMenu from '../../../../core/ui/card/ActionsMenu';
 
 export const JourneyCardHorizontalSkeleton = () => (
@@ -85,23 +84,21 @@ const JourneyCardHorizontal = ({
         to={journey.profile.url}
         actions={actions && <ActionsMenu>{actions}</ActionsMenu>}
       >
-        <Gutters disableGap disablePadding>
-          <BlockTitleWithIcon title={journey.profile.displayName} icon={<Icon />} sx={{ height: gutters(1.5) }}>
-            <FlexSpacer />
-            {communityRole && (
-              <Chip
-                variant="filled"
-                color="primary"
-                label={
-                  <Typography variant="button">{t(`common.enums.communityRole.${communityRole}` as const)}</Typography>
-                }
-              />
-            )}
-          </BlockTitleWithIcon>
-          <Caption noWrap component="div" lineHeight={gutters(1.5)}>
-            {journey.profile.tagline}
-          </Caption>
-        </Gutters>
+        <BlockTitleWithIcon title={journey.profile.displayName} icon={<Icon />} sx={{ height: gutters(1.5) }}>
+          <FlexSpacer />
+          {communityRole && (
+            <Chip
+              variant="filled"
+              color="primary"
+              label={
+                <Typography variant="button">{t(`common.enums.communityRole.${communityRole}` as const)}</Typography>
+              }
+            />
+          )}
+        </BlockTitleWithIcon>
+        <Caption noWrap component="div" lineHeight={gutters(1.5)}>
+          {journey.profile.tagline}
+        </Caption>
       </BadgeCardView>
     </ElevatedPaper>
   );
