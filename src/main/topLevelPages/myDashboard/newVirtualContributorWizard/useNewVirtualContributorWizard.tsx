@@ -414,7 +414,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const [addVirtualContributorToCommunity] = useAddVirtualContributorToCommunityMutation();
   const [createVirtualContributor] = useCreateVirtualContributorOnAccountMutation({
-    refetchQueries: ['MyAccount'],
+    refetchQueries: ['MyAccount', 'AccountInformation'],
   });
 
   const handleCreateVirtualContributor = async (

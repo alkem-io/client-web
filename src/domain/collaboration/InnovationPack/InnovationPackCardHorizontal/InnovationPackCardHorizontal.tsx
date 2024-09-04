@@ -1,6 +1,5 @@
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
-import { Box, IconButton, Menu, Skeleton, useTheme } from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Box, Skeleton, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import CardFooterCountWithBadge from '../../../../core/ui/card/CardFooterCountWithBadge';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -14,7 +13,7 @@ import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
 import InnovationPackIcon from '../InnovationPackIcon';
 import OneLineMarkdown from '../../../../core/ui/markdown/OneLineMarkdown';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
-import { useState } from 'react';
+import ActionsMenu from '../../../../core/ui/card/ActionsMenu';
 
 export interface InnovationPackCardHorizontalProps {
   profile: {
@@ -49,11 +48,6 @@ const InnovationPackCardHorizontal = ({
 }: InnovationPackCardHorizontalProps) => {
   const { t } = useTranslation();
 
-  const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
-  const settingsOpened = Boolean(settingsAnchorEl);
-  const handleSettingsOpened = (event: React.MouseEvent<HTMLElement>) => setSettingsAnchorEl(event.currentTarget);
-  const handleSettingsClose = () => setSettingsAnchorEl(null);
-
   const {
     calloutTemplatesCount,
     communityGuidelinesTemplatesCount,
@@ -72,35 +66,11 @@ const InnovationPackCardHorizontal = ({
   return (
     <BadgeCardView
       visual={<RoundedIcon size="medium" component={InnovationPackIcon} />}
-      actions={
-        actions && (
-          <>
-            <IconButton
-              aria-label={t('common.settings')}
-              aria-haspopup="true"
-              aria-controls={settingsOpened ? 'settings-menu' : undefined}
-              aria-expanded={settingsOpened ? 'true' : undefined}
-              onClick={handleSettingsOpened}
-            >
-              <MoreVertIcon color="primary" />
-            </IconButton>
-            <Menu
-              aria-labelledby="settings-button"
-              anchorEl={settingsAnchorEl}
-              open={settingsOpened}
-              onClose={handleSettingsClose}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-            >
-              {actions}
-            </Menu>
-          </>
-        )
-      }
+      component={RouterLink}
+      to={url ?? ''}
+      actions={actions && <ActionsMenu>{actions}</ActionsMenu>}
     >
-      <Box component={RouterLink} to={url ?? ''}>
+      <Box>
         <Box display="flex" flexDirection="row" justifyContent="space-between">
           <Box display="flex" flexDirection="column">
             <CardTitle>{displayName}</CardTitle>

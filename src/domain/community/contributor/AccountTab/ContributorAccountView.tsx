@@ -30,6 +30,7 @@ import { DeleteOutline } from '@mui/icons-material';
 import {
   useDeleteInnovationPackMutation,
   useDeleteSpaceMutation,
+  useDeleteVirtualContributorOnAccountMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import EntityConfirmDeleteDialog from '../../../journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
@@ -77,6 +78,7 @@ export interface ContributorAccountViewProps {
       }[];
     }[];
     virtualContributors: {
+      id: string;
       profile: AccountProfile & {
         tagline: string;
       };
@@ -148,13 +150,18 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
   // TODO: Move to server logic
   const canCreateVirtualContributor =
     privileges.includes(AuthorizationPrivilege.CreateVirtualContributor) && (!isVCLimitReached || isPlatformAdmin);
+  const canDeleteEntities = privileges.includes(AuthorizationPrivilege.Delete);
 
+  const clearDeleteState = () => {
+    setDeleteDialogOpen(false);
+    setSelectedEntity(undefined);
+    setSelectedId(undefined);
+    setDeleteDialogOpen(false);
+  };
   // Space deletion
   const [deleteSpaceMutation, { loading: deleteSpaceLoading }] = useDeleteSpaceMutation({
     onCompleted: () => {
-      setSelectedEntity(undefined);
-      setSelectedId(undefined);
-      setDeleteDialogOpen(false);
+      clearDeleteState();
       notify('Space deleted successfully!', 'success');
     },
     refetchQueries: ['AccountInformation'],
@@ -183,9 +190,7 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
   // Pack Deletion
   const [deletePackMutation, { loading: deletePackLoading }] = useDeleteInnovationPackMutation({
     onCompleted: () => {
-      setSelectedEntity(undefined);
-      setSelectedId(undefined);
-      setDeleteDialogOpen(false);
+      clearDeleteState();
       notify('Innovation Pack deleted successfully!', 'success');
     },
     refetchQueries: ['AccountInformation'],
@@ -203,9 +208,38 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
     });
   };
 
-  const onDeletePackClick = (spaceId: string) => {
+  const onDeletePackClick = (id: string) => {
     setSelectedEntity(Entities.InnovationPack);
-    setSelectedId(spaceId);
+    setSelectedId(id);
+    setDeleteDialogOpen(true);
+  };
+
+  // VC Deletion
+  const [deleteVCMutation, { loading: deleteVCLoading }] = useDeleteVirtualContributorOnAccountMutation({
+    onCompleted: () => {
+      clearDeleteState();
+      notify('Virtual Contributor deleted successfully!', 'success');
+    },
+    refetchQueries: ['AccountInformation'],
+  });
+
+  const deleteVC = () => {
+    if (!selectedId) {
+      return;
+    }
+
+    deleteVCMutation({
+      variables: {
+        virtualContributorData: {
+          ID: selectedId,
+        },
+      },
+    });
+  };
+
+  const onDeleteVCClick = (id: string) => {
+    setSelectedEntity(Entities.VirtualContributor);
+    setSelectedId(id);
     setDeleteDialogOpen(true);
   };
 
@@ -215,7 +249,7 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
         deleteSpace();
         break;
       case Entities.VirtualContributor:
-        // deleteVirtualContributor();
+        deleteVC();
         break;
       case Entities.InnovationPack:
         deletePack();
@@ -240,27 +274,41 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
     }
   };
 
-  const getSpaceActions = (spaceId: string) => (
-    <MenuItemWithIcon
-      key="delete"
-      disabled={deleteSpaceLoading}
-      iconComponent={DeleteOutline}
-      onClick={() => onDeleteSpaceClick(spaceId)}
-    >
-      {t('buttons.delete')}
-    </MenuItemWithIcon>
-  );
+  const getSpaceActions = (id: string) =>
+    canDeleteEntities && (
+      <MenuItemWithIcon
+        key="delete"
+        disabled={deleteSpaceLoading}
+        iconComponent={DeleteOutline}
+        onClick={() => onDeleteSpaceClick(id)}
+      >
+        {t('buttons.delete')}
+      </MenuItemWithIcon>
+    );
 
-  const getPackActions = (spaceId: string) => (
-    <MenuItemWithIcon
-      key="delete"
-      disabled={deleteSpaceLoading}
-      iconComponent={DeleteOutline}
-      onClick={() => onDeletePackClick(spaceId)}
-    >
-      {t('buttons.delete')}
-    </MenuItemWithIcon>
-  );
+  const getPackActions = (id: string) =>
+    canDeleteEntities && (
+      <MenuItemWithIcon
+        key="delete"
+        disabled={deletePackLoading}
+        iconComponent={DeleteOutline}
+        onClick={() => onDeletePackClick(id)}
+      >
+        {t('buttons.delete')}
+      </MenuItemWithIcon>
+    );
+
+  const getVCActions = (id: string) =>
+    canDeleteEntities && (
+      <MenuItemWithIcon
+        key="delete"
+        disabled={deleteVCLoading}
+        iconComponent={DeleteOutline}
+        onClick={() => onDeleteVCClick(id)}
+      >
+        {t('buttons.delete')}
+      </MenuItemWithIcon>
+    );
 
   return (
     <PageContentColumn columns={12}>
@@ -268,18 +316,20 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
         <BlockTitle>{t('pages.admin.generic.sections.account.hostedSpaces')}</BlockTitle>
         <Gutters disablePadding disableGap className={styles.gutters}>
           {loading && <JourneyCardHorizontalSkeleton />}
-          {!loading &&
-            account?.spaces.map(space => (
-              <JourneyCardHorizontal
-                key={space.id}
-                journeyTypeName="space"
-                journey={{ profile: space.profile, community: {} }}
-                deepness={0}
-                seamless
-                sx={{ display: 'inline-block', maxWidth: '100%' }}
-                actions={getSpaceActions(space.id)}
-              />
-            ))}
+          <Gutters>
+            {!loading &&
+              account?.spaces.map(space => (
+                <JourneyCardHorizontal
+                  key={space.id}
+                  journeyTypeName="space"
+                  journey={{ profile: space.profile, community: {} }}
+                  deepness={0}
+                  seamless
+                  sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}
+                  actions={getSpaceActions(space.id)}
+                />
+              ))}
+          </Gutters>
         </Gutters>
         <Actions>
           {canCreateSpace && (
@@ -307,7 +357,17 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
         <BlockTitle>{t('pages.admin.generic.sections.account.virtualContributors')}</BlockTitle>
         <Gutters disablePadding className={styles.gutters}>
           {loading && <JourneyCardHorizontalSkeleton />}
-          {!loading && virtualContributors?.map(vc => <ContributorCardHorizontal profile={vc.profile} seamless />)}
+          <Gutters disablePadding>
+            {!loading &&
+              virtualContributors?.map(vc => (
+                <ContributorCardHorizontal
+                  key={vc.id}
+                  profile={vc.profile}
+                  seamless
+                  menuActions={getVCActions(vc.id)}
+                />
+              ))}
+          </Gutters>
           <Actions>
             {canCreateVirtualContributor && (
               <IconButton
@@ -351,9 +411,9 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
           <EntityConfirmDeleteDialog
             entity={getEntityName(entity)}
             open={deleteDialogOpen}
-            onClose={() => setDeleteDialogOpen(false)}
+            onClose={clearDeleteState}
             onDelete={deleteEntity}
-            submitting={deleteSpaceLoading || deletePackLoading}
+            submitting={deleteSpaceLoading || deletePackLoading || deleteVCLoading}
             description={entity === Entities.Space ? undefined : SHORT_NON_SPACE_DESCRIPTION}
           />
         )}

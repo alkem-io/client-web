@@ -9,6 +9,7 @@ import SwapColors from '../palette/SwapColors';
 import RouterLink from '../link/RouterLink';
 import { BlockSectionTitle, Caption } from '../typography';
 import ContributorTooltip from './ContributorTooltip';
+import ActionsMenu from './ActionsMenu';
 
 export interface ContributorCardHorizontalProps {
   profile:
@@ -27,6 +28,7 @@ export interface ContributorCardHorizontalProps {
   seamless?: boolean;
   actions?: ReactNode;
   titleEndAmendment?: ReactNode;
+  menuActions?: ReactNode;
 }
 
 const ContributorCardHorizontal = ({
@@ -34,6 +36,7 @@ const ContributorCardHorizontal = ({
   onContact,
   seamless = false,
   actions,
+  menuActions,
   titleEndAmendment,
 }: ContributorCardHorizontalProps) => {
   const { t } = useTranslation();
@@ -75,6 +78,7 @@ const ContributorCardHorizontal = ({
             }
             component={RouterLink}
             to={profile?.url ?? ''}
+            actions={menuActions && <ActionsMenu>{menuActions}</ActionsMenu>}
           >
             <Box display="flex" flexDirection="row" justifyContent="space-between">
               <Box display="flex" flexDirection="column">
