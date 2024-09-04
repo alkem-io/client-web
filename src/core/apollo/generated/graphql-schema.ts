@@ -30344,6 +30344,9 @@ export type MyAccountQuery = {
             | {
                 __typename?: 'Account';
                 id: string;
+                authorization?:
+                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                  | undefined;
                 virtualContributors: Array<{
                   __typename?: 'VirtualContributor';
                   id: string;

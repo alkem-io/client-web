@@ -11,6 +11,9 @@ query MyAccount {
       }
       account {
         id
+        authorization {
+          myPrivileges
+        }
         virtualContributors {
           id
           profile {
