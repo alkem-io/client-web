@@ -1,6 +1,7 @@
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import SpaceTemplatesAdminPage from './SpaceTemplatesAdminPage';
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
+import { nameOfUrl } from '../../../../main/routing/urlParams';
 
 interface SpaceTemplatesAdminRoutesProps extends SettingsPageProps {
   spaceId: string;
@@ -21,44 +22,44 @@ const SpaceTemplatesAdminRoutes = (props: SpaceTemplatesAdminRoutesProps) => {
     <Routes>
       <Route index element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />} />
       <Route
-        path={`${RoutePaths.calloutTemplatesRoutePath}/:calloutTemplateId`}
+        path={`${RoutePaths.calloutTemplatesRoutePath}/:${nameOfUrl.calloutTemplateId}`}
         element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
       />
       <Route
-        path={`${RoutePaths.calloutTemplatesRoutePath}/:calloutTemplateId/edit`}
-        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} edit />}
+        path={`${RoutePaths.calloutTemplatesRoutePath}/:${nameOfUrl.calloutTemplateId}/edit`}
+        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} editTemplateMode />}
       />
       <Route
-        path={`${RoutePaths.postTemplatesRoutePath}/:postTemplateId`}
+        path={`${RoutePaths.postTemplatesRoutePath}/:${nameOfUrl.postNameId}`}
         element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
       />
       <Route
-        path={`${RoutePaths.postTemplatesRoutePath}/:postTemplateId/edit`}
-        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} edit />}
+        path={`${RoutePaths.postTemplatesRoutePath}/:${nameOfUrl.postNameId}/edit`}
+        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} editTemplateMode />}
       />
       <Route
-        path={`${RoutePaths.whiteboardTemplatesRoutePath}/:whiteboardTemplateId`}
+        path={`${RoutePaths.whiteboardTemplatesRoutePath}/:${nameOfUrl.whiteboardNameId}`}
         element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
       />
       <Route
-        path={`${RoutePaths.whiteboardTemplatesRoutePath}/:whiteboardTemplateId/edit`}
-        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} edit />}
+        path={`${RoutePaths.whiteboardTemplatesRoutePath}/:${nameOfUrl.whiteboardNameId}/edit`}
+        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} editTemplateMode />}
       />
       <Route
-        path={`${RoutePaths.innovationTemplatesRoutePath}/:innovationTemplateId`}
+        path={`${RoutePaths.innovationTemplatesRoutePath}/:${nameOfUrl.innovationTemplateId}`}
         element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
       />
       <Route
-        path={`${RoutePaths.innovationTemplatesRoutePath}/:innovationTemplateId/edit`}
-        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} edit />}
+        path={`${RoutePaths.innovationTemplatesRoutePath}/:${nameOfUrl.innovationTemplateId}/edit`}
+        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} editTemplateMode />}
       />
       <Route
-        path={`${RoutePaths.communityGuidelinesTemplatesRoutePath}/:communityGuidelinesTemplateId`}
+        path={`${RoutePaths.communityGuidelinesTemplatesRoutePath}/:${nameOfUrl.communityGuidelinesNameId}`}
         element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
       />
       <Route
-        path={`${RoutePaths.communityGuidelinesTemplatesRoutePath}/:communityGuidelinesTemplateId/edit`}
-        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} edit />}
+        path={`${RoutePaths.communityGuidelinesTemplatesRoutePath}/:${nameOfUrl.communityGuidelinesNameId}/edit`}
+        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} editTemplateMode />}
       />
     </Routes>
   );

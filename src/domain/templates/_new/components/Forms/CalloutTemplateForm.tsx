@@ -112,7 +112,6 @@ const validator = {
 const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFormProps) => {
   const { t } = useTranslation();
   const createMode = !template?.id;
-  console.log({ createMode, template });
 
   const calloutTypeOptions = useMemo<RadioButtonOption<CalloutType>[]>(() => {
     return [
@@ -174,8 +173,7 @@ const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFor
       actions={actions}
       validator={validator}
     >
-      {({ values, errors }) => {
-        console.log({ values, errors });
+      {({ values }) => {
         return (
           <>
             {loading && <Loading />}

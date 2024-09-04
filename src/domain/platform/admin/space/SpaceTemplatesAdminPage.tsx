@@ -1,191 +1,57 @@
-import React, { FC, useMemo } from 'react';
-import SpaceSettingsLayout from './SpaceSettingsLayout';
+import { FC } from 'react';
+import {
+  useSpaceTemplatesAdminQuery
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import Loading from '../../../../core/ui/loading/Loading';
+import { buildSettingsUrl } from '../../../../main/routing/urlBuilders';
+import TemplatesAdmin from '../../../templates/_new/components/TemplatesAdmin/TemplatesAdmin';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
-import {
-  refetchAllTemplatesFromSpaceQuery,
-  useAllTemplatesFromSpaceQuery,
-  useInnovationPacksLazyQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { useParams } from 'react-router-dom';
-import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
-import AdminPostTemplatesSection from '../../../templates/admin/PostTemplates/AdminPostTemplatesSection';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
-import AdminWhiteboardTemplatesSection from '../../../templates/admin/WhiteboardTemplates/AdminWhiteboardTemplatesSection';
-import AdminCommunityGuidelinesTemplatesSection from '../../../templates/admin/CommunityGuidelines/AdminCommunityGuidelinesTemplatesSection';
-import AdminCalloutTemplatesSection from '../../../templates/admin/CalloutTemplates/AdminCalloutTemplatesSection';
-import AdminInnovationTemplatesSection from '../../../templates/admin/InnovationTemplates/AdminInnovationTemplatesSection';
+import SpaceSettingsLayout from './SpaceSettingsLayout';
 
 interface SpaceTemplatesAdminPageProps extends SettingsPageProps {
   spaceId: string;
   routePrefix: string;
-  calloutTemplatesRoutePath: string;
-  postTemplatesRoutePath: string;
-  whiteboardTemplatesRoutePath: string;
-  innovationTemplatesRoutePath: string;
-  communityGuidelinesTemplatesRoutePath: string;
-  edit?: boolean;
+  editTemplateMode?: boolean;
 }
 
 const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
   spaceId,
   routePrefix,
-  calloutTemplatesRoutePath,
-  postTemplatesRoutePath,
-  whiteboardTemplatesRoutePath,
-  innovationTemplatesRoutePath,
-  communityGuidelinesTemplatesRoutePath,
-  edit = false,
+  editTemplateMode
 }) => {
+
   const {
-    calloutTemplateId,
-    postTemplateId,
-    whiteboardTemplateId,
+    postNameId,
+    whiteboardNameId,
     innovationTemplateId,
-    communityGuidelinesTemplateId,
-  } = useParams();
+    calloutTemplateId,
+    communityGuidelinesNameId,
+  } = useUrlParams();
+  const templateSelected = communityGuidelinesNameId || calloutTemplateId || innovationTemplateId || postNameId || whiteboardNameId;
 
-  const [backFromTemplateDialog, buildLink] = useBackToParentPage(routePrefix);
-
-  const { data: spaceTemplatesData } = useAllTemplatesFromSpaceQuery({
+  const { data, loading } = useSpaceTemplatesAdminQuery({
     variables: { spaceId },
-    skip: !spaceId, // space id can be an empty string due to some `|| ''` happening above in the tree
+    skip: !spaceId,
   });
-
-  const [loadInnovationPacks, { data: innovationPacks, loading: loadingInnovationPacks }] =
-    useInnovationPacksLazyQuery();
-
-  const {
-    calloutTemplates,
-    postTemplates,
-    whiteboardTemplates,
-    innovationFlowTemplates,
-    communityGuidelinesTemplates,
-    id: templatesSetID,
-    authorization: templateSetAuth,
-  } = spaceTemplatesData?.lookup.space?.library ?? {};
-  const canImportTemplates = templateSetAuth?.myPrivileges?.includes(AuthorizationPrivilege.Create) ?? false;
-
-  const postInnovationPacks = useMemo(() => {
-    if (!innovationPacks) return [];
-    return innovationPacks.platform.library.innovationPacks
-      .filter(pack => pack.templates && pack.templates?.postTemplates.length > 0)
-      .map(pack => ({
-        ...pack,
-        templates: pack.templates?.postTemplates || [],
-      }));
-  }, [innovationPacks]);
-
-  const whiteboardInnovationPacks = useMemo(() => {
-    if (!innovationPacks) return [];
-    return innovationPacks.platform.library.innovationPacks
-      .filter(pack => pack.templates && pack.templates?.whiteboardTemplates.length > 0)
-      .map(pack => ({
-        ...pack,
-        templates: pack.templates?.whiteboardTemplates || [],
-      }));
-  }, [innovationPacks]);
-
-  const innovationFlowInnovationPacks = useMemo(() => {
-    if (!innovationPacks) return [];
-    return innovationPacks.platform.library.innovationPacks
-      .filter(pack => pack.templates && pack.templates?.innovationFlowTemplates.length > 0)
-      .map(pack => ({
-        ...pack,
-        templates: pack.templates?.innovationFlowTemplates || [],
-      }));
-  }, [innovationPacks]);
-
-  const calloutInnovationPacks = useMemo(() => {
-    if (!innovationPacks) return [];
-    return innovationPacks.platform.library.innovationPacks
-      .filter(pack => pack.templates && pack.templates?.calloutTemplates.length > 0)
-      .map(pack => ({
-        ...pack,
-        templates: pack.templates?.calloutTemplates || [],
-      }));
-  }, [innovationPacks]);
-
-  const communityGuidelinesInnovationPacks = useMemo(() => {
-    if (!innovationPacks) return [];
-    return innovationPacks.platform.library.innovationPacks
-      .filter(pack => pack.templates && pack.templates?.communityGuidelinesTemplates.length > 0)
-      .map(pack => ({
-        ...pack,
-        templates: pack.templates?.communityGuidelinesTemplates ?? [],
-      }));
-  }, [innovationPacks]);
+  const templatesSetId = data?.lookup.space?.library?.id;
+  const baseUrl = `${buildSettingsUrl(data?.lookup.space?.profile.url ?? '')}/templates`;
 
   return (
     <SpaceSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>
-      <Gutters>
-        <AdminCalloutTemplatesSection
-          templateId={calloutTemplateId}
-          templatesSetId={templatesSetID}
-          templates={calloutTemplates}
-          onCloseTemplateDialog={backFromTemplateDialog}
-          refetchQueries={[refetchAllTemplatesFromSpaceQuery({ spaceId })]}
-          buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${calloutTemplatesRoutePath}/${id}`)}
-          edit={edit}
-          loadInnovationPacks={loadInnovationPacks}
-          loadingInnovationPacks={loadingInnovationPacks}
-          innovationPacks={calloutInnovationPacks}
-          canImportTemplates={canImportTemplates}
+      {loading && <Loading />}
+      {spaceId && !loading && templatesSetId && (
+        <TemplatesAdmin
+          templatesSetId={templatesSetId}
+          templateId={templateSelected}
+          baseUrl={baseUrl}
+          indexUrl={baseUrl}
+          editTemplates={editTemplateMode}
+          canDeleteTemplates
+          canCreateTemplates
         />
-        <AdminPostTemplatesSection
-          templateId={postTemplateId}
-          templatesSetId={templatesSetID}
-          templates={postTemplates}
-          onCloseTemplateDialog={backFromTemplateDialog}
-          refetchQueries={[refetchAllTemplatesFromSpaceQuery({ spaceId })]}
-          buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${postTemplatesRoutePath}/${id}`)}
-          edit={edit}
-          loadInnovationPacks={loadInnovationPacks}
-          loadingInnovationPacks={loadingInnovationPacks}
-          innovationPacks={postInnovationPacks}
-          canImportTemplates={canImportTemplates}
-        />
-        <AdminWhiteboardTemplatesSection
-          templateId={whiteboardTemplateId}
-          templatesSetId={templatesSetID}
-          templates={whiteboardTemplates}
-          onCloseTemplateDialog={backFromTemplateDialog}
-          refetchQueries={[refetchAllTemplatesFromSpaceQuery({ spaceId })]}
-          buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${whiteboardTemplatesRoutePath}/${id}`)}
-          edit={edit}
-          loadInnovationPacks={loadInnovationPacks}
-          loadingInnovationPacks={loadingInnovationPacks}
-          innovationPacks={whiteboardInnovationPacks}
-          canImportTemplates={canImportTemplates}
-        />
-        <AdminInnovationTemplatesSection
-          templateId={innovationTemplateId}
-          templatesSetId={templatesSetID}
-          templates={innovationFlowTemplates}
-          onCloseTemplateDialog={backFromTemplateDialog}
-          refetchQueries={[refetchAllTemplatesFromSpaceQuery({ spaceId })]}
-          buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${innovationTemplatesRoutePath}/${id}`)}
-          edit={edit}
-          loadInnovationPacks={loadInnovationPacks}
-          loadingInnovationPacks={loadingInnovationPacks}
-          innovationPacks={innovationFlowInnovationPacks}
-          canImportTemplates={canImportTemplates}
-        />
-        <AdminCommunityGuidelinesTemplatesSection
-          templateId={communityGuidelinesTemplateId}
-          templatesSetId={templatesSetID}
-          templates={communityGuidelinesTemplates}
-          onCloseTemplateDialog={backFromTemplateDialog}
-          refetchQueries={[refetchAllTemplatesFromSpaceQuery({ spaceId })]}
-          buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${communityGuidelinesTemplatesRoutePath}/${id}`)}
-          edit={edit}
-          loadInnovationPacks={loadInnovationPacks}
-          loadingInnovationPacks={loadingInnovationPacks}
-          innovationPacks={communityGuidelinesInnovationPacks}
-          canImportTemplates={canImportTemplates}
-        />
-      </Gutters>
+      )}
     </SpaceSettingsLayout>
   );
 };

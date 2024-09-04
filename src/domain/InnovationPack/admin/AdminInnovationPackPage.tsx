@@ -1,31 +1,21 @@
-import { sortBy } from 'lodash';
-import React, { FC, useMemo } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  refetchAdminInnovationPackQuery,
   useAdminInnovationPackQuery,
-  useAllTemplatesInTemplatesSetQuery,
   useInnovationPackResolveIdQuery,
-  useOrganizationsListQuery,
-  useUpdateInnovationPackMutation,
+  useUpdateInnovationPackMutation
 } from '../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
-import { useNotification } from '../../../core/ui/notifications/useNotification';
-import useBackToParentPage from '../../../core/routing/deprecated/useBackToParentPage';
-import AdminPostTemplatesSection from '../../templates/admin/PostTemplates/AdminPostTemplatesSection';
-import AdminWhiteboardTemplatesSection from '../../templates/admin/WhiteboardTemplates/AdminWhiteboardTemplatesSection';
-import { StorageConfigContextProvider } from '../../storage/StorageBucket/StorageConfigContext';
-import InnovationPackProfileLayout from '../InnovationPackProfilePage/InnovationPackProfileLayout';
-import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import PageContent from '../../../core/ui/content/PageContent';
-import PageContentBlockSeamless from '../../../core/ui/content/PageContentBlockSeamless';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
-import AdminCommunityGuidelinesTemplatesSection from '../../templates/admin/CommunityGuidelines/AdminCommunityGuidelinesTemplatesSection';
-import InnovationPackForm, { InnovationPackFormValues } from '../../platform/admin/InnovationPacks/InnovationPackForm';
-import AdminCalloutTemplatesSection from '../../templates/admin/CalloutTemplates/AdminCalloutTemplatesSection';
-import AdminInnovationTemplatesSection from '../../templates/admin/InnovationTemplates/AdminInnovationTemplatesSection';
-import TemplatesAdmin from '../../templates/_new/components/TemplatesAdmin/TemplatesAdmin';
+import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import Loading from '../../../core/ui/loading/Loading';
+import { useNotification } from '../../../core/ui/notifications/useNotification';
+import InnovationPackForm, { InnovationPackFormValues } from '../../platform/admin/InnovationPacks/InnovationPackForm';
+import { StorageConfigContextProvider } from '../../storage/StorageBucket/StorageConfigContext';
+import TemplatesAdmin from '../../templates/_new/components/TemplatesAdmin/TemplatesAdmin';
+import InnovationPackProfileLayout from '../InnovationPackProfilePage/InnovationPackProfileLayout';
+import { buildInnovationPackSettingsUrl } from '../../../main/routing/urlBuilders';
 
 export enum RoutePaths {
   postTemplatesRoutePath = 'post-templates',
@@ -134,97 +124,10 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = () => {
                   templatesSetId={innovationPack.templates.id}
                   templateId={templateSelected}
                   baseUrl={innovationPack.profile.url}
+                  indexUrl={buildInnovationPackSettingsUrl(innovationPack.profile.url)}
                   canDeleteTemplates
                   canCreateTemplates
                 />
-
-                {/*
-                <AdminPostTemplatesSection
-                   - templateId={postNameId}
-                   - templatesSetId={templatesSetID}
-                   - templates={postTemplates}
-                   - onCloseTemplateDialog={backFromTemplateDialog}
-                   - refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId })]}
-                   - buildTemplateLink={({ id }) =>
-                   -   buildLink(`${innovationPackRoute}/${RoutePaths.postTemplatesRoutePath}/${id}`)
-                   - }
-                   - edit={editTemplates}
-                   - loadInnovationPacks={() => {}}
-                   - loadingInnovationPacks={isLoading}
-                   - innovationPacks={[]}
-                   - canImportTemplates={false}
-                  />
-
-
-                <PageContentBlockSeamless disablePadding>
-                  <AdminWhiteboardTemplatesSection
-                    templateId={whiteboardNameId}
-                    templatesSetId={templatesSetID}
-                    templates={whiteboardTemplates}
-                    onCloseTemplateDialog={backFromTemplateDialog}
-                    refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId })]}
-                    buildTemplateLink={({ id }) =>
-                      buildLink(`${innovationPackRoute}/${RoutePaths.whiteboardTemplatesRoutePath}/${id}`)
-                    }
-                    edit={editTemplates}
-                    loadInnovationPacks={() => {}}
-                    loadingInnovationPacks={isLoading}
-                    innovationPacks={[]}
-                    canImportTemplates={false}
-                  />
-                </PageContentBlockSeamless>
-                <PageContentBlockSeamless disablePadding>
-                  <AdminCalloutTemplatesSection
-                    templateId={calloutTemplateId}
-                    templatesSetId={templatesSetID}
-                    templates={calloutTemplates}
-                    onCloseTemplateDialog={backFromTemplateDialog}
-                    refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId })]}
-                    buildTemplateLink={({ id }) =>
-                      buildLink(`${innovationPackRoute}/${RoutePaths.calloutTemplatesRoutePath}/${id}`)
-                    }
-                    edit={editTemplates}
-                    loadInnovationPacks={() => {}}
-                    loadingInnovationPacks={isLoading}
-                    innovationPacks={[]}
-                    canImportTemplates={false}
-                  />
-                </PageContentBlockSeamless>
-                <PageContentBlockSeamless disablePadding>
-                  <AdminInnovationTemplatesSection
-                    templateId={innovationTemplateId}
-                    templatesSetId={templatesSetID}
-                    templates={innovationFlowTemplates}
-                    onCloseTemplateDialog={backFromTemplateDialog}
-                    refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId })]}
-                    buildTemplateLink={({ id }) =>
-                      buildLink(`${innovationPackRoute}/${RoutePaths.innovationTemplatesRoutePath}/${id}`)
-                    }
-                    edit={editTemplates}
-                    loadInnovationPacks={() => {}}
-                    loadingInnovationPacks={isLoading}
-                    innovationPacks={[]}
-                    canImportTemplates={false}
-                  />
-                </PageContentBlockSeamless>
-                <PageContentBlockSeamless disablePadding>
-                  <AdminCommunityGuidelinesTemplatesSection
-                    templateId={communityGuidelinesNameId}
-                    templatesSetId={templatesSetID}
-                    templates={communityGuidelinesTemplates}
-                    onCloseTemplateDialog={backFromTemplateDialog}
-                    refetchQueries={[refetchAdminInnovationPackQuery({ innovationPackId })]}
-                    buildTemplateLink={({ id }) =>
-                      buildLink(`${innovationPackRoute}/${RoutePaths.communityGuidelinesTemplatesRoutePath}/${id}`)
-                    }
-                    edit={editTemplates}
-                    loadInnovationPacks={() => {}}
-                    loadingInnovationPacks={isLoading}
-                    innovationPacks={[]}
-                    canImportTemplates={false}
-                  />
-                </PageContentBlockSeamless>
-                */}
               </PageContentColumn>
             </PageContent>
           </StorageConfigContextProvider>

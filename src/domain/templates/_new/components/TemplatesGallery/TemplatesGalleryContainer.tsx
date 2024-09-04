@@ -7,6 +7,7 @@ import { AnyTemplate } from '../../models/TemplateBase';
 
 interface TemplatesGalleryContainerProvided {
   templates: AnyTemplate[] | undefined;
+  templatesCount: number;
   loading?: boolean;
   buildTemplateLink: (template: AnyTemplate) => LinkWithState;
 
@@ -38,6 +39,7 @@ const TemplatesGalleryContainer = ({ templates, templatesSetId, baseUrl, loading
   }
   const provided = {
     templates,
+    templatesCount: templates?.length ?? 0,
     loading,
     buildTemplateLink,
   }

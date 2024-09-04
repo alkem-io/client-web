@@ -75,7 +75,7 @@ const InnovationPackCardHorizontal = ({
         {!!calloutTemplatesCount && (
           <CardFooterCountWithBadge
             iconComponent={DesignServicesIcon}
-            tooltip={t('common.enums.templateTypes.CollaborationTool_plural')}
+            tooltip={t('common.enums.templateTypes.Callout_plural')}
           >
             <Caption>{calloutTemplatesCount}</Caption>
           </CardFooterCountWithBadge>

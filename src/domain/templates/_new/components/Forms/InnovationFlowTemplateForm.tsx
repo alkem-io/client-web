@@ -10,7 +10,6 @@ import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.
 import { BlockSectionTitle } from '../../../../../core/ui/typography';
 import InnovationFlowDragNDropEditor from '../../../../collaboration/InnovationFlow/InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
 import { InnovationFlowTemplate, MAX_INNOVATIONFLOW_STATES } from '../../models/InnovationFlowTemplate';
-import { displayNameValidator } from '../../../../../core/ui/forms/validator';
 
 export interface InnovationFlowTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   innovationFlow: {
@@ -33,7 +32,7 @@ const validator = {
         yup
           .object()
           .shape({
-            displayName: displayNameValidator,
+            displayName: yup.string().required(),
             description: yup.string().max(MARKDOWN_TEXT_LENGTH),
           })
           .required()

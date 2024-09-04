@@ -21,9 +21,11 @@ interface TemplatesAdminProps {
   templatesSetId: string;
   templateId?: string;  // Template selected, if any
   baseUrl: string | undefined;
+  indexUrl?: string;
   canImportTemplates?: boolean;
   canCreateTemplates?: boolean;
   canDeleteTemplates?: boolean;
+  editTemplates?: boolean;  // If true, the templates are editable, if false they are in preview mode
 }
 
 const CreateTemplateButton = (props: ButtonProps) => {
@@ -35,7 +37,9 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   templatesSetId,
   templateId,
   baseUrl = '',
+  indexUrl, // Normally baseUrl + '/settings'. Defaults to baseUrl
   canImportTemplates = false,
+  editTemplates = false,
   canCreateTemplates = false,
   canDeleteTemplates = false,
 }) => {
@@ -142,7 +146,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
         >
           {provided => (
             <TemplatesGallery
-              headerText={t('common.enums.templateTypes.Callout')}
+              headerText={t('common.entitiesWithCount', { entityType: t('common.enums.templateTypes.Callout_plural'), count: provided.templatesCount })}
               actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(TemplateType.Callout)} /> : undefined}
               {...provided}
             />
@@ -158,7 +162,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
         >
           {provided => (
             <TemplatesGallery
-              headerText={t('common.enums.templateTypes.CommunityGuidelines')}
+              headerText={t('common.entitiesWithCount', { entityType: t('common.enums.templateTypes.CommunityGuidelines_plural'), count: provided.templatesCount })}
               actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(TemplateType.CommunityGuidelines)} /> : undefined}
               {...provided}
             />
@@ -174,7 +178,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
         >
           {provided => (
             <TemplatesGallery
-              headerText={t('common.enums.templateTypes.InnovationFlow')}
+              headerText={t('common.entitiesWithCount', { entityType: t('common.enums.templateTypes.InnovationFlow_plural'), count: provided.templatesCount })}
               actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(TemplateType.InnovationFlow)} /> : undefined}
               {...provided}
             />
@@ -190,7 +194,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
         >
           {provided => (
             <TemplatesGallery
-              headerText={t('common.enums.templateTypes.Post')}
+              headerText={t('common.entitiesWithCount', { entityType: t('common.enums.templateTypes.Post_plural'), count: provided.templatesCount })}
               actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(TemplateType.Post)} /> : undefined}
               {...provided}
             />
@@ -206,7 +210,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
         >
           {provided => (
             <TemplatesGallery
-              headerText={t('common.enums.templateTypes.Whiteboard')}
+              headerText={t('common.entitiesWithCount', { entityType: t('common.enums.templateTypes.Whiteboard_plural'), count: provided.templatesCount })}
               actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(TemplateType.Whiteboard)} /> : undefined}
               {...provided}
             />
@@ -216,7 +220,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
       {creatingTemplateType && (
         <CreateTemplateDialog
           open
-          onClose={() => backToTemplates(`${baseUrl}/settings`)}
+          onClose={() => setCreatingTemplateType(undefined)}
           templateType={creatingTemplateType}
           onSubmit={handleTemplateCreate}
         />
@@ -224,7 +228,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
       {selectedTemplate && (
         <EditTemplateDialog
           open
-          onClose={() => backToTemplates(`${baseUrl}/settings`)}
+          onClose={() => backToTemplates(indexUrl ?? baseUrl)}
           template={selectedTemplate}
           templateType={selectedTemplate.type}
           onSubmit={handleTemplateUpdate}
