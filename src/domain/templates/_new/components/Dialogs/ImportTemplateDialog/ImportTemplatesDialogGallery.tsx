@@ -33,14 +33,19 @@ const ImportTemplatesDialogGallery = ({
       </Grid>
       <Grid item xs={12} md={9}>
 */
-
+  console.log({ loading });
   return (
     <GridProvider columns={12}>
       {templates.length > 0 && (
         <ScrollableCardsLayoutContainer>
-          {loading ? times(3, () => <ContributeCardSkeleton />) : null}
+          {loading ? times(3, i => <ContributeCardSkeleton key={i} />) : null}
           {templates.map(({ template, innovationPack }) => (
-            <TemplateCard key={template.id} template={template} innovationPack={innovationPack} onClick={() => onClickTemplate(template)} />
+            <TemplateCard
+              key={template.id}
+              template={template}
+              innovationPack={innovationPack}
+              onClick={() => onClickTemplate(template)}
+            />
           ))}
         </ScrollableCardsLayoutContainer>
       )}

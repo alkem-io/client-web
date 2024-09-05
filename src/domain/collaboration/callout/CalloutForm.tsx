@@ -34,8 +34,8 @@ import CalloutWhiteboardField, {
 import { JourneyTypeName } from '../../journey/JourneyTypeName';
 import { JourneyCalloutGroupNameOptions } from './CalloutsInContext/CalloutsGroup';
 import { DEFAULT_TAGSET } from '../../common/tags/tagset.constants';
-import PostTemplatesChooser from '../../templates/TemplateChooser/PostTemplateChooser';
-import WhiteboardTemplatesChooser from './creationDialog/CalloutTemplate/WhiteboardTemplateChooser';
+import PostTemplateSelector from '../../templates/_new/components/CalloutForm/PostTemplateSelector';
+import WhiteboardTemplatesChooser from '../../templates/_new/components/CalloutForm/WhiteboardTemplateSelector';
 
 type FormValueType = {
   displayName: string;
@@ -239,7 +239,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
             {!editMode && formConfiguration.linkCollectionAdd && (
               <Caption>{t('callout.link-collection.save-to-add')}</Caption>
             )}
-            {formConfiguration.postTemplate && <PostTemplatesChooser name="postDescription" />}
+            {formConfiguration.postTemplate && <PostTemplateSelector name="postDescription" />}
             {formConfiguration.whiteboardTemplate && <WhiteboardTemplatesChooser name="whiteboardContent" />}
             {formConfiguration.newResponses && <FormikSwitch name="opened" title={t('callout.state-permission')} />}
             {formConfiguration.locationChange && journeyTypeName === 'space' && (

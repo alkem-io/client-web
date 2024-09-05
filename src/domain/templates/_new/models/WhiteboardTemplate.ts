@@ -7,3 +7,9 @@ export interface WhiteboardTemplate extends NewTemplateBase {
     id: string;
   };
 }
+
+export interface WhiteboardTemplateContent {
+  whiteboard: {
+    content: string;
+  };
+}

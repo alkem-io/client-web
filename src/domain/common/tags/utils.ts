@@ -1,4 +1,3 @@
-
 interface Tagset {
   id?: string;
   name: string;
@@ -7,5 +6,10 @@ interface Tagset {
 
 export const findDefaultTagset = <T extends Tagset[]>(tagsets: T | undefined) => {
   if (!tagsets) return undefined;
-  return tagsets.find(tagset => tagset.name === 'default');
-}
+  const defaultTagset = tagsets.find(tagset => tagset.name === 'default');
+  if (defaultTagset) {
+    return defaultTagset;
+  } else if (tagsets.length > 0) {
+    return tagsets[0];
+  }
+};

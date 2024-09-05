@@ -25,10 +25,12 @@ export interface ImportTemplatesOptions {
   templateType?: TemplateType;
 
   /**
-   * The origin of the templates, may be a space or an innovation pack, or the platform library
-   * If not set only the platform library will be browsed
+   * The origin of the templates: May be a space or an innovation pack, or the platform library
+   * If browseTemplatesSetTemplates is false: only the platform library will be browsed
+   * If browseTemplatesSetTemplates is true and templatesSetId is undefined, the form will do nothing (expecting to be loading the templatesSetId later)
    */
   templatesSetId?: string;
+  browseTemplatesSetTemplates?: boolean;
   /**
    * Enables the option to search the entire platform library when templatesSetId is set,
    * first the templates from the templatesSetId will be shown and the user can click a link to load the platform templates
@@ -51,6 +53,7 @@ const ImportTemplatesDialog = ({
   open,
   onClose,
   templatesSetId,
+  browseTemplatesSetTemplates = true,
   allowBrowsePlatformTemplates,
   onSelectTemplate,
   actionButton,
@@ -58,8 +61,7 @@ const ImportTemplatesDialog = ({
 }: ImportTemplatesDialogProps) => {
   const { t } = useTranslation();
 
-  const loadTemplatesSetTemplates = !!templatesSetId;
-  const [loadPlatformTemplates, setLoadPlatformTemplates] = useState(!loadTemplatesSetTemplates);
+  const [loadPlatformTemplates, setLoadPlatformTemplates] = useState(!browseTemplatesSetTemplates);
 
   const [previewTemplate, setPreviewTemplate] = useState<AnyTemplate>();
   const [handleImportTemplate, loadingImport] = useLoadingState(async () => {
@@ -84,7 +86,7 @@ const ImportTemplatesDialog = ({
       includeCallout: templateType === TemplateType.Callout,
       includeInnovationFlow: templateType === TemplateType.InnovationFlow,
     },
-    skip: !open || !templatesSetId,
+    skip: !open || !templatesSetId || !browseTemplatesSetTemplates,
   });
 
   const templates = useMemo(() => {
@@ -110,14 +112,14 @@ const ImportTemplatesDialog = ({
         <DialogHeader title={headerText} onClose={handleClose} icon={<LibraryIcon />} />
         <DialogContent>
           {subtitle && <Caption marginBottom={gutters()}>{subtitle}</Caption>}
-          {loadTemplatesSetTemplates && (
+          {browseTemplatesSetTemplates && (
             <ImportTemplatesDialogGallery
               templates={templates}
               onClickTemplate={template => setPreviewTemplate(template)}
               loading={loadingTemplates}
             />
           )}
-          {loadTemplatesSetTemplates && allowBrowsePlatformTemplates && !loadPlatformTemplates && (
+          {browseTemplatesSetTemplates && allowBrowsePlatformTemplates && !loadPlatformTemplates && (
             <Link
               component={Caption}
               onClick={() => setLoadPlatformTemplates(true)}

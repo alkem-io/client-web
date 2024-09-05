@@ -19,7 +19,7 @@ import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import whiteboardSchema from '../validation/whiteboardSchema';
 import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import WhiteboardDialogTemplatesLibrary from '../../../templates/TemplateChooser/WhiteboardDialogTemplatesLibrary';
+import WhiteboardDialogTemplatesLibrary from '../../../templates/_new/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import { error as logError, TagCategoryValues } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
@@ -29,7 +29,7 @@ import {
   WhiteboardPreviewImage,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import { WhiteboardTemplate } from '../../../templates/_new/models/WhiteboardTemplate';
+import { WhiteboardTemplateContent } from '../../../templates/_new/models/WhiteboardTemplate';
 
 interface SingleUserWhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {
@@ -174,14 +174,14 @@ const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     actions.onCancel(whiteboard!);
   };
 
-  const handleImportTemplate = async (template: WhiteboardTemplate) => {
+  const handleImportTemplate = async (template: WhiteboardTemplateContent) => {
     if (excalidrawAPI && options.canEdit) {
       try {
-        mergeWhiteboard(excalidrawAPI, template.content);
+        mergeWhiteboard(excalidrawAPI, template.whiteboard.content);
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
 
-        logError(new Error(`Error importing whiteboard template ${template.id}: '${err}'`), {
+        logError(new Error(`Error importing whiteboard template: '${err}'`), {
           category: TagCategoryValues.WHITEBOARD,
         });
       }

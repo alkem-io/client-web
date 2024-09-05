@@ -11,7 +11,7 @@ import CollaborativeExcalidrawWrapper from '../../../common/whiteboard/excalidra
 import type { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import whiteboardSchema from '../validation/whiteboardSchema';
-import { WhiteboardTemplate } from '../../../templates/_new/models/WhiteboardTemplate';
+import { WhiteboardTemplateContent } from '../../../templates/_new/models/WhiteboardTemplate';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import { error as logError, TagCategoryValues } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
@@ -30,7 +30,7 @@ import WhiteboardDisplayName from './WhiteboardDisplayName';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
-import WhiteboardDialogTemplatesLibrary from '../../../templates/TemplateChooser/WhiteboardDialogTemplatesLibrary';
+import WhiteboardDialogTemplatesLibrary from '../../../templates/_new/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {
@@ -228,13 +228,13 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     actions.onCancel();
   };
 
-  const handleImportTemplate = async (template: WhiteboardTemplate) => {
+  const handleImportTemplate = async (template: WhiteboardTemplateContent) => {
     if (excalidrawAPI) {
       try {
-        mergeWhiteboard(excalidrawAPI, template.content);
+        mergeWhiteboard(excalidrawAPI, template.whiteboard.content);
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
-        logError(new Error(`Error importing whiteboard template ${template.id}: '${err}'`), {
+        logError(new Error(`Error importing whiteboard template: '${err}'`), {
           category: TagCategoryValues.WHITEBOARD,
         });
       }

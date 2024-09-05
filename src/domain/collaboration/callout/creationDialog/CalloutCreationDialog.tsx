@@ -31,6 +31,7 @@ import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/Innovat
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import CalloutTemplatesLibrary from '../../../templates/library/CalloutTemplatesLibrary/CalloutTemplatesLibrary';
 import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
+import { findDefaultTagset } from '../../../common/tags/utils';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -196,7 +197,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     setCallout({
       displayName: templateCallout.framing.profile.displayName,
       description: templateCallout.framing.profile.description,
-      tags: templateCallout.framing.profile.tagset?.tags,
+      tags: findDefaultTagset(templateCallout.framing.profile.tagsets)?.tags,
       references,
       type: templateCallout.type,
       postDescription: templateCallout.contributionDefaults?.postDescription,
