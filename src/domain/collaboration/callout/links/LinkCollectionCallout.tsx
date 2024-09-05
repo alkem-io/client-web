@@ -20,7 +20,7 @@ import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { nanoid } from 'nanoid';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
-import { compact } from 'lodash';
+import { compact, sortBy } from 'lodash';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 
 const MAX_LINKS_NORMALVIEW = 3;
@@ -35,6 +35,21 @@ export interface LinkDetails {
   authorization?: {
     myPrivileges: AuthorizationPrivilege[];
   };
+  sortOrder?: number;
+}
+
+export interface FormatedLink {
+  id: string;
+  uri: string;
+  name: string;
+  description: string | undefined;
+  authorization:
+    | {
+        myPrivileges: AuthorizationPrivilege[];
+      }
+    | undefined;
+  sortOrder: number;
+  contributionId: string;
 }
 
 interface LinkCollectionCalloutProps extends BaseCalloutViewProps {
@@ -171,18 +186,31 @@ const LinkCollectionCallout = ({
     closeEditDialog();
   }, [deletingLinkId, closeEditDialog, setDeletingLinkId, onCalloutUpdate, deleteLink, callout]);
 
-  const formatedLinks = useMemo(
+  const formatedLinks: FormatedLink[] = useMemo(
     () =>
-      compact(callout.contributions?.map(contribution => contribution.link)).map(link => ({
+      compact(
+        callout.contributions?.map(
+          contribution =>
+            contribution.link &&
+            contribution.id && {
+              ...contribution.link,
+              sortOrder: contribution.sortOrder ?? 0,
+              contributionId: contribution.id,
+            }
+        )
+      ).map(link => ({
         id: link.id,
         uri: link.uri,
-        name: link.profile.displayName,
-        description: link.profile.description,
+        name: link.profile?.displayName,
+        description: link.profile?.description,
         authorization: link.authorization,
+        sortOrder: link.sortOrder ?? 0,
+        contributionId: link.contributionId,
       })),
     [callout]
   );
-  const limitedLinks = useMemo(() => formatedLinks?.slice(0, MAX_LINKS_NORMALVIEW), [callout]);
+  const sortedFormatedLinks = useMemo(() => sortBy(formatedLinks, 'sortOrder'), [formatedLinks]);
+  const limitedLinks = useMemo(() => sortedFormatedLinks?.slice(0, MAX_LINKS_NORMALVIEW), [callout]);
   const isListTruncated = useMemo(
     () => (compact(callout.contributions?.map(contribution => contribution.link))?.length ?? 0) > MAX_LINKS_NORMALVIEW,
     [callout]
@@ -196,6 +224,7 @@ const LinkCollectionCallout = ({
     >
       <CalloutSettingsContainer
         callout={callout}
+        items={{ links: sortedFormatedLinks }}
         journeyTypeName={journeyTypeName}
         expanded={expanded}
         onExpand={onExpand}
@@ -213,7 +242,7 @@ const LinkCollectionCallout = ({
             disableMarginal
           >
             <References
-              references={expanded ? formatedLinks : limitedLinks}
+              references={expanded ? sortedFormatedLinks : limitedLinks}
               noItemsView={<CaptionSmall>{t('callout.link-collection.no-links-yet')}</CaptionSmall>}
               onEdit={ref => setEditLink(ref)}
             />
