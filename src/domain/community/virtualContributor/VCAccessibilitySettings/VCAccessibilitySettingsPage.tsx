@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
   useUpdateVirtualContributorMutation,
@@ -78,6 +78,11 @@ export const VCAccessibilitySettingsPage = () => {
     });
   };
 
+  useEffect(() => {
+    // TODO: Use the status wehere needed when defined
+    console.info(data?.virtualContributor.status);
+  }, [data]);
+
   if (!data?.virtualContributor) {
     return null;
   }
@@ -142,7 +147,6 @@ export const VCAccessibilitySettingsPage = () => {
                   {t('pages.virtualContributorProfile.settings.ingestion.refreshBtn')}
                 </LoadingButton>
               </Actions>
-              {data.virtualContributor.status}
             </PageContentBlock>
           </PageContentColumn>
         </PageContent>
