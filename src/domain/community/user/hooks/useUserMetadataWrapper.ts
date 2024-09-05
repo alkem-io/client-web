@@ -12,7 +12,7 @@ export interface PendingApplication extends Identifiable {
     level: JourneyLevel | number;
     profile: {
       displayName: string;
-      tagline: string;
+      tagline?: string;
       url: string;
     };
   };

@@ -16,7 +16,7 @@ import { useAuthenticationContext } from '../../../core/auth/authentication/hook
 export interface JourneyDetails {
   profile: {
     displayName: string;
-    tagline: string;
+    tagline?: string;
     url: string;
     tagset?: {
       tags: string[];
