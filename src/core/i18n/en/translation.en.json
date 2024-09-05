@@ -789,12 +789,12 @@
       },
       "impact": {
         "title": "Impact",
-        "description": "What will this Space change? How will people and organizations be affected?",
+        "description": "What is the impact you want to make with this Space? How will people and organizations be affected?",
         "placeholder": ""
       },
       "vision": {
         "title": "What is this community about?",
-        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Space",
+        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Space and on the public profile of this Space",
         "placeholder": ""
       },
       "who": {
@@ -810,27 +810,27 @@
         "placeholder": ""
       },
       "tagline": {
-        "title": "Subspace Statement",
+        "title": "Subspace Tagline",
         "description": "Explain in one sentence what this Subspace is about. It is also possible to frame it as a question, starting with 'How might we...'",
         "placeholder": ""
       },
       "background": {
-        "title": "Current Reality",
-        "description": "Give a brief impression of the current state of the Subspace. Think of the 'What, where, when and who'.",
+        "title": "Background",
+        "description": "Give a brief description of this Subspace and why is it part of the Space'.",
         "placeholder": ""
       },
       "impact": {
         "title": "Additional context",
-        "description": "Give a brief overview of how this Subspace is embedded in the wider picture. What is its impact? Why is it here?",
+        "description": "What is the goal of this Subspace",
         "placeholder": ""
       },
       "vision": {
-        "title": "Future Vision",
+        "title": "What is this Subspace about?",
         "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace",
         "placeholder": ""
       },
       "who": {
-        "title": "Who should contribute",
+        "title": "Who should contribute?",
         "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
         "placeholder": ""
       },
@@ -853,28 +853,28 @@
         "placeholder": ""
       },
       "tagline": {
-        "title": "Tagline",
-        "description": "In one sentence, explain what this Subspace is about.",
+        "title": "Subspace Tagline",
+        "description": "Explain in one sentence what this Subspace is about. It is also possible to frame it as a question, starting with 'How might we...",
         "placeholder": ""
       },
       "background": {
         "title": "Background",
-        "description": "Give a brief overview of how this Subspace was identified and how it is embedded in the wider picture.",
+        "description": "Give a brief description of this Subspace and why is it part of the Space",
         "placeholder": ""
       },
       "impact": {
-        "title": "Impact",
-        "description": "What will this Subspace change? How will people and organizations be affected, for good or bad?",
+        "title": "Additional context",
+        "description": "What is the goal of this Subspace",
         "placeholder": ""
       },
       "vision": {
-        "title": "Description",
-        "description": "Describe the idea and the impact it will have on the Subspace. Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace.",
+        "title": "What is this Subspace about?",
+        "description": "Please note that this information will also be shown as a standalone description on the Dashboard of this Subspace.",
         "placeholder": ""
       },
       "who": {
-        "title": "Who is involved?",
-        "description": "Describe the people and organizations who are currently working on this Subspace.",
+        "title": "Who should contribute?",
+        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
         "placeholder": ""
       },
       "tags": {
