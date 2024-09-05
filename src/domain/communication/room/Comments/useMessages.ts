@@ -15,7 +15,7 @@ interface FetchedMessage {
       type?: ProfileType;
       visual?: { id: string; uri: string };
       tagsets?: { id: string; name: string; tags: string[] }[];
-      location?: { id: string; city: string; country: string };
+      location?: { id: string; city?: string; country?: string };
     };
   };
   timestamp: number;

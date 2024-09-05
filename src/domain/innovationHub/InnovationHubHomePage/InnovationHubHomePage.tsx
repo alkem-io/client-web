@@ -45,7 +45,7 @@ const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) =>
         <InnovationHubBanner
           banner={innovationHub.banner}
           displayName={innovationHub.displayName}
-          tagline={innovationHub.tagline}
+          tagline={innovationHub.tagline ?? ''}
         />
       }
       breadcrumbs={<TopLevelPageBreadcrumbs />}
