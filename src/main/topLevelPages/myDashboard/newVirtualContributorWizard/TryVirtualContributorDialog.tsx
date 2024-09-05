@@ -17,24 +17,30 @@ import {
   CalloutState,
   CalloutType,
   CalloutVisibility,
+  VirtualContributorStatus,
 } from '../../../../core/apollo/generated/graphql-schema';
 import Loading from '../../../../core/ui/loading/Loading';
 import CalloutView from '../../../../domain/collaboration/callout/CalloutView/CalloutView';
-import { useCalloutDetailsQuery, useDeleteCalloutMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useCalloutDetailsQuery,
+  useDeleteCalloutMutation,
+  useVirtualContributorQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { TypedCalloutDetails } from '../../../../domain/collaboration/callout/useCallouts/useCallouts';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { removeVCCreationCache } from './vcCreationUtil';
+import { useSubscribeOnVirtualContributorEvents } from '../../../../domain/community/virtualContributor/useSubscribeOnVirtualContributorEvents';
 
 interface TryVirtualContributorDialogProps {
   spaceId: string;
-  vcName: string;
+  vcNameId: string;
   open: boolean;
   onClose: () => void;
 }
 
 const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = ({
   spaceId,
-  vcName,
+  vcNameId,
   open,
   onClose,
 }) => {
@@ -132,11 +138,35 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     }
   };
 
-  useEffect(() => {
-    spaceId && open && canCreateCallout && createCallout();
-  }, [spaceId, open, canCreateCallout]);
+  const {
+    data: vcData,
+    loading: vcDataLoading,
+    error: vcError,
+  } = useVirtualContributorQuery({
+    variables: {
+      id: vcNameId,
+    },
+  });
 
-  if (calloutError || hasError) {
+  useSubscribeOnVirtualContributorEvents(vcNameId);
+
+  useEffect(() => {
+    if (
+      spaceId &&
+      open &&
+      canCreateCallout &&
+      vcData &&
+      vcData.virtualContributor.status === VirtualContributorStatus.Ready
+    ) {
+      createCallout();
+    }
+  }, [spaceId, open, canCreateCallout, vcData]);
+
+  useEffect(() => {
+    console.info(vcData?.virtualContributor.status);
+  }, [vcData]);
+
+  if (calloutError || hasError || vcError) {
     setDemoCalloutCreationLoading(false);
     removeVCCreationCache();
     return null;
@@ -146,7 +176,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     <DialogWithGrid open={open} onClose={handleClose} columns={8}>
       <DialogHeader title={t('createVirtualContributorWizard.trySection.title')} onClose={handleClose} />
       <DialogContent>
-        {demoCalloutCreationLoading && isCalloutLoading ? (
+        {vcDataLoading && demoCalloutCreationLoading && isCalloutLoading ? (
           <Loading />
         ) : (
           <Gutters disablePadding>
@@ -154,7 +184,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
               <Caption alignSelf="center">
                 <Trans
                   i18nKey="createVirtualContributorWizard.trySection.subTitle"
-                  values={{ vcName: vcName }}
+                  values={{ vcName: vcData?.virtualContributor.profile.displayName ?? '' }}
                   components={{
                     b: <strong />,
                     i: <em />,
