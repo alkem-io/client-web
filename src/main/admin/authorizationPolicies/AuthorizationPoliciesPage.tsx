@@ -97,7 +97,12 @@ const AuthorizationPoliciesPage = () => {
                   <>
                     <Gutters row disablePadding>
                       <BlockTitle>Anonymous Read Access</BlockTitle>
-                      <Chip label={authorizationPolicy?.anonymousReadAccess ? 'TRUE' : 'FALSE'} />
+                      <Chip label={authorizationPolicy.anonymousReadAccess ? 'TRUE' : 'FALSE'} />
+                      <Divider />
+                    </Gutters>
+                    <Gutters row disablePadding>
+                      <BlockTitle>Type</BlockTitle>
+                      <Chip label={authorizationPolicy.type} />
                       <Divider />
                     </Gutters>
                     <Gutters disablePadding>
@@ -119,7 +124,7 @@ const AuthorizationPoliciesPage = () => {
                                   ))}
                                 </Gutters>
                                 <Gutters row disablePadding>
-                                  <Caption>Criterias (type, resourceID)</Caption>
+                                  <Caption>Criteria</Caption>
                                   {rule.criterias.map((criteria, i) => (
                                     <Gutters row disablePadding key={i}>
                                       <Chip label={criteria.type} />
