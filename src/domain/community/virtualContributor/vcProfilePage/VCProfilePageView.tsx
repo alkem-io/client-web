@@ -24,8 +24,8 @@ interface VCProfilePageViewProps {
       displayName: string;
       description?: string;
       location?: {
-        city: string;
-        country: string;
+        city?: string;
+        country?: string;
       };
     };
     provider: {
