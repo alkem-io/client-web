@@ -18536,6 +18536,7 @@ export type VirtualContributorQuery = {
     nameID: string;
     searchVisibility: SearchVisibility;
     listedInStore: boolean;
+    status: VirtualContributorStatus;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
@@ -18680,6 +18681,7 @@ export type UpdateVirtualContributorMutation = {
     __typename?: 'VirtualContributor';
     id: string;
     listedInStore: boolean;
+    status: VirtualContributorStatus;
     searchVisibility: SearchVisibility;
     profile: {
       __typename?: 'Profile';
@@ -18758,6 +18760,18 @@ export type VcMembershipsQuery = {
           | { __typename?: 'VirtualContributor'; id: string };
       };
     }>;
+  };
+};
+
+export type VirtualContributorUpdatesSubscriptionVariables = Exact<{
+  virtualContributorID: Scalars['UUID_NAMEID'];
+}>;
+
+export type VirtualContributorUpdatesSubscription = {
+  __typename?: 'Subscription';
+  virtualContributorUpdated: {
+    __typename?: 'VirtualContributorUpdatedSubscriptionResult';
+    virtualContributor: { __typename?: 'VirtualContributor'; id: string; status: VirtualContributorStatus };
   };
 };
 
