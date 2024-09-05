@@ -6,24 +6,9 @@ import PostTemplateCard from './PostTemplateCard';
 import InnovationFlowTemplateCard from './InnovationFlowTemplateCard';
 import WhiteboardTemplateCard from './WhiteboardTemplateCard';
 import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
-import { AnyTemplate } from '../../models/TemplateBase';
+import { AnyTemplateWithInnovationPack } from '../../models/TemplateBase';
 
-export interface TemplateCardProps extends ContributeCardProps {
-  template: AnyTemplate;
-  // Common things for all the cards
-  innovationPack?: {
-    profile: {
-      displayName: string;
-    };
-    provider?: {
-      profile: {
-        displayName: string;
-        avatar?: {
-          uri: string;
-        };
-      };
-    };
-  };
+export interface TemplateCardProps extends AnyTemplateWithInnovationPack, ContributeCardProps {
   link?: {
     to?: string;
     state?: Record<string, unknown>;

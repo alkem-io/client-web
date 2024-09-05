@@ -6,7 +6,7 @@ import WhiteboardTemplateForm, {
 import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
 import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
-import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase';
+import CreateEditTemplateDialogBase from '../../_new/components/Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
 
 export interface CreateWhiteboardTemplateDialogProps {
   open: boolean;
@@ -25,9 +25,9 @@ const CreateWhiteboardTemplateDialog = ({ open, onClose, onSubmit }: CreateWhite
   };
 
   return (
-    <TemplateDialogBase open={open} onClose={onClose} templateTypeName={t('templateLibrary.whiteboardTemplates.name')}>
+    <CreateEditTemplateDialogBase open={open} onClose={onClose} templateTypeName={t('templateLibrary.whiteboardTemplates.name')}>
       {({ actions }) => <WhiteboardTemplateForm initialValues={initialValues} onSubmit={onSubmit} actions={actions} />}
-    </TemplateDialogBase>
+    </CreateEditTemplateDialogBase>
   );
 };
 

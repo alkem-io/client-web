@@ -7,7 +7,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import PostTemplateCard from '../../../templates/_new/components/cards/PostTemplateCard';
-import { TemplateWithInnovationPack } from '../../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
+import { TemplateWithInnovationPack } from '../../../templates/_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialogGallery';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { PostTemplate, PostTemplateWithValue } from '../../../templates/_new/models/PostTemplate';
 import CollaborationTemplatesLibraryButton from '../../../templates/library/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';

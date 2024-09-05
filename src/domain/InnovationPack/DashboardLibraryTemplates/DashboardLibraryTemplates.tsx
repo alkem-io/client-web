@@ -6,9 +6,9 @@ import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import { compact } from 'lodash';
 import LibraryTemplatesView, { LibraryTemplatesFilter } from './LibraryTemplatesView';
 import { useWhiteboardTemplateContentQuery } from '../../../core/apollo/generated/apollo-hooks';
-import TemplatePreviewDialog, {
+import PreviewTemplateDialog, {
   TemplatePreview,
-} from '../../templates/_new/components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
+} from '../../templates/_new/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
 import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
 
 interface DashboardLibraryTemplatesProps {
@@ -101,7 +101,7 @@ const DashboardLibraryTemplates = ({ headerTitle, dialogTitle, templates }: Dash
           sx={{ flexShrink: 1 }}
         />
       </DialogWithGrid>
-      <TemplatePreviewDialog
+      <PreviewTemplateDialog
         open={!!selectedTemplate}
         onClose={() => setSelectedTemplate(undefined)}
         templatePreview={templatePreview}

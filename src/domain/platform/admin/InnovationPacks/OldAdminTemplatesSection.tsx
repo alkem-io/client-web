@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { InnovationPack } from './InnovationPack';
-import ImportTemplatesDialog from './ImportTemplatesDialog';
-import { TemplateImportCardComponentProps, TemplateWithInnovationPack } from './ImportTemplatesDialogGalleryStep';
+import ImportTemplatesDialog from '../../../templates/_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import { TemplateImportCardComponentProps, TemplateWithInnovationPack } from '../../../templates/_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialogGallery';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { TemplateType, UpdateProfileInput } from '../../../../core/apollo/generated/graphql-schema';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
@@ -18,9 +18,9 @@ import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import { TemplateBase } from '../../../templates/library/CollaborationTemplatesLibrary/TemplateBase';
-import TemplatePreviewDialog, {
-  TemplatePreviewDialogProps,
-} from '../../../templates/_new/components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
+import PreviewTemplateDialog, {
+  PreviewTemplateDialogProps,
+} from '../../../templates/_new/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
 import { LibraryIcon } from '../../../templates/LibraryIcon';
 import { CARLOS_BORDER_RED } from '../../../templates/_new/borders';
 
@@ -311,7 +311,7 @@ const AdminTemplatesSection = <
     return {
       template: templateWithValue,
       templateType,
-    } as TemplatePreviewDialogProps['templatePreview'];
+    } as PreviewTemplateDialogProps['templatePreview'];
   }, [templateWithValue]);
 
   useEffect(() => {
@@ -387,7 +387,7 @@ const AdminTemplatesSection = <
         />
       )}
       {selectedTemplate && !edit && (
-        <TemplatePreviewDialog
+        <PreviewTemplateDialog
           open
           onClose={onCloseTemplateDialog}
           templatePreview={templatePreview}

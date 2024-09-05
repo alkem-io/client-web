@@ -43,8 +43,6 @@ interface InnovationPackFormProps {
   provider: { id: string; profile: { displayName: string } } | undefined;
   listedInStore?: boolean;
   searchVisibility?: SearchVisibility;
-
-
   loading?: boolean;
   onSubmit: (formData: InnovationPackFormValues) => void;
 }

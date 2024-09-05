@@ -47,7 +47,7 @@ import SortDialog from './sort/SortDialog';
 import { useUpdateContributionsSortOrderMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import { WhiteboardCardWhiteboard } from '../whiteboard/WhiteboardCard';
 import { PostCardPost } from '../post/PostCard';
-import { useCreateCalloutTemplate } from '../../../templates/admin/CalloutTemplates/useCreateCalloutTemplate';
+import { useCreateCalloutTemplate } from '../../../templates/_new/hooks/useCreateCalloutTemplate';
 import { CalloutTemplateFormSubmittedValues } from '../../../templates/_new/components/Forms/CalloutTemplateForm';
 import CreateCalloutTemplateDialog from '../../../templates/admin/CalloutTemplates/CreateCalloutTemplateDialog';
 
@@ -181,7 +181,7 @@ const CalloutSettingsContainer = ({
 
   const { handleCreateCalloutTemplate } = useCreateCalloutTemplate();
   const handleSaveAsTemplate = async (values: CalloutTemplateFormSubmittedValues) => {
-    await handleCreateCalloutTemplate(values, callout, spaceNameId);
+    await handleCreateCalloutTemplate(values, spaceNameId);
     setSaveAsTemplateDialogOpen(false);
   };
   const [editDialogOpened, setEditDialogOpened] = useState(false);

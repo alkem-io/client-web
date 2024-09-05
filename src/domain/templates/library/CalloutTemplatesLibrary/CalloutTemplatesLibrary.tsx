@@ -3,7 +3,7 @@ import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { TemplateWithInnovationPack } from '../../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
+import { TemplateWithInnovationPack } from '../../_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialogGallery';
 import {
   usePlatformCalloutTemplatesLibraryLazyQuery,
   useSpaceCalloutTemplatesLibraryLazyQuery,

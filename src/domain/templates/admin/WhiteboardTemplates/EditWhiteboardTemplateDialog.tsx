@@ -6,7 +6,7 @@ import WhiteboardTemplateForm, {
 } from '../../_new/components/Forms/WhiteboardTemplateForm';
 import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import { WhiteboardTemplateFragment } from '../../../../core/apollo/generated/graphql-schema';
-import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase';
+import CreateEditTemplateDialogBase from '../../_new/components/Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
 
 export interface EditWhiteboardTemplateDialogProps {
   open: boolean;
@@ -56,7 +56,7 @@ const EditWhiteboardTemplateDialog = ({
   };
 
   return (
-    <TemplateDialogBase
+    <CreateEditTemplateDialogBase
       open={open}
       onClose={onClose}
       templateTypeName={t('templateLibrary.whiteboardTemplates.name')}
@@ -71,7 +71,7 @@ const EditWhiteboardTemplateDialog = ({
           actions={actions}
         />
       )}
-    </TemplateDialogBase>
+    </CreateEditTemplateDialogBase>
   );
 };
 

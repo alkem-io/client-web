@@ -19614,6 +19614,81 @@ export function refetchPlatformStorageConfigQuery(variables?: SchemaTypes.Platfo
   return { query: PlatformStorageConfigDocument, variables: variables };
 }
 
+export const ImportTemplateDialogDocument = gql`
+  query ImportTemplateDialog($templateTypes: [TemplateType!]) {
+    platform {
+      library {
+        templates(filter: { types: $templateTypes }) {
+          template {
+            ...TemplateProfileInfo
+          }
+          innovationPack {
+            id
+            profile {
+              id
+              displayName
+              url
+            }
+          }
+        }
+      }
+    }
+  }
+  ${TemplateProfileInfoFragmentDoc}
+`;
+
+/**
+ * __useImportTemplateDialogQuery__
+ *
+ * To run a query within a React component, call `useImportTemplateDialogQuery` and pass it any options that fit your needs.
+ * When your component renders, `useImportTemplateDialogQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useImportTemplateDialogQuery({
+ *   variables: {
+ *      templateTypes: // value for 'templateTypes'
+ *   },
+ * });
+ */
+export function useImportTemplateDialogQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.ImportTemplateDialogQuery,
+    SchemaTypes.ImportTemplateDialogQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ImportTemplateDialogQuery, SchemaTypes.ImportTemplateDialogQueryVariables>(
+    ImportTemplateDialogDocument,
+    options
+  );
+}
+
+export function useImportTemplateDialogLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ImportTemplateDialogQuery,
+    SchemaTypes.ImportTemplateDialogQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ImportTemplateDialogQuery, SchemaTypes.ImportTemplateDialogQueryVariables>(
+    ImportTemplateDialogDocument,
+    options
+  );
+}
+
+export type ImportTemplateDialogQueryHookResult = ReturnType<typeof useImportTemplateDialogQuery>;
+export type ImportTemplateDialogLazyQueryHookResult = ReturnType<typeof useImportTemplateDialogLazyQuery>;
+export type ImportTemplateDialogQueryResult = Apollo.QueryResult<
+  SchemaTypes.ImportTemplateDialogQuery,
+  SchemaTypes.ImportTemplateDialogQueryVariables
+>;
+export function refetchImportTemplateDialogQuery(variables?: SchemaTypes.ImportTemplateDialogQueryVariables) {
+  return { query: ImportTemplateDialogDocument, variables: variables };
+}
+
 export const AllTemplatesInTemplatesSetDocument = gql`
   query AllTemplatesInTemplatesSet($templatesSetId: UUID!) {
     lookup {
@@ -19682,6 +19757,69 @@ export function refetchAllTemplatesInTemplatesSetQuery(
   variables: SchemaTypes.AllTemplatesInTemplatesSetQueryVariables
 ) {
   return { query: AllTemplatesInTemplatesSetDocument, variables: variables };
+}
+
+export const SpaceTemplatesSetIdDocument = gql`
+  query SpaceTemplatesSetId($spaceNameId: UUID_NAMEID!) {
+    space(ID: $spaceNameId) {
+      id
+      library {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceTemplatesSetIdQuery__
+ *
+ * To run a query within a React component, call `useSpaceTemplatesSetIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceTemplatesSetIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceTemplatesSetIdQuery({
+ *   variables: {
+ *      spaceNameId: // value for 'spaceNameId'
+ *   },
+ * });
+ */
+export function useSpaceTemplatesSetIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceTemplatesSetIdQuery,
+    SchemaTypes.SpaceTemplatesSetIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceTemplatesSetIdQuery, SchemaTypes.SpaceTemplatesSetIdQueryVariables>(
+    SpaceTemplatesSetIdDocument,
+    options
+  );
+}
+
+export function useSpaceTemplatesSetIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceTemplatesSetIdQuery,
+    SchemaTypes.SpaceTemplatesSetIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceTemplatesSetIdQuery, SchemaTypes.SpaceTemplatesSetIdQueryVariables>(
+    SpaceTemplatesSetIdDocument,
+    options
+  );
+}
+
+export type SpaceTemplatesSetIdQueryHookResult = ReturnType<typeof useSpaceTemplatesSetIdQuery>;
+export type SpaceTemplatesSetIdLazyQueryHookResult = ReturnType<typeof useSpaceTemplatesSetIdLazyQuery>;
+export type SpaceTemplatesSetIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceTemplatesSetIdQuery,
+  SchemaTypes.SpaceTemplatesSetIdQueryVariables
+>;
+export function refetchSpaceTemplatesSetIdQuery(variables: SchemaTypes.SpaceTemplatesSetIdQueryVariables) {
+  return { query: SpaceTemplatesSetIdDocument, variables: variables };
 }
 
 export const CreateTemplateDocument = gql`
@@ -19904,69 +20042,6 @@ export type DeleteTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteTemplateMutation,
   SchemaTypes.DeleteTemplateMutationVariables
 >;
-export const SpaceTemplatesSetIdDocument = gql`
-  query SpaceTemplatesSetId($spaceNameId: UUID_NAMEID!) {
-    space(ID: $spaceNameId) {
-      id
-      library {
-        id
-      }
-    }
-  }
-`;
-
-/**
- * __useSpaceTemplatesSetIdQuery__
- *
- * To run a query within a React component, call `useSpaceTemplatesSetIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceTemplatesSetIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceTemplatesSetIdQuery({
- *   variables: {
- *      spaceNameId: // value for 'spaceNameId'
- *   },
- * });
- */
-export function useSpaceTemplatesSetIdQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceTemplatesSetIdQuery,
-    SchemaTypes.SpaceTemplatesSetIdQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceTemplatesSetIdQuery, SchemaTypes.SpaceTemplatesSetIdQueryVariables>(
-    SpaceTemplatesSetIdDocument,
-    options
-  );
-}
-
-export function useSpaceTemplatesSetIdLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceTemplatesSetIdQuery,
-    SchemaTypes.SpaceTemplatesSetIdQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SpaceTemplatesSetIdQuery, SchemaTypes.SpaceTemplatesSetIdQueryVariables>(
-    SpaceTemplatesSetIdDocument,
-    options
-  );
-}
-
-export type SpaceTemplatesSetIdQueryHookResult = ReturnType<typeof useSpaceTemplatesSetIdQuery>;
-export type SpaceTemplatesSetIdLazyQueryHookResult = ReturnType<typeof useSpaceTemplatesSetIdLazyQuery>;
-export type SpaceTemplatesSetIdQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceTemplatesSetIdQuery,
-  SchemaTypes.SpaceTemplatesSetIdQueryVariables
->;
-export function refetchSpaceTemplatesSetIdQuery(variables: SchemaTypes.SpaceTemplatesSetIdQueryVariables) {
-  return { query: SpaceTemplatesSetIdDocument, variables: variables };
-}
-
 export const CalloutTemplateContentDocument = gql`
   query CalloutTemplateContent($calloutTemplateId: UUID!) {
     lookup {

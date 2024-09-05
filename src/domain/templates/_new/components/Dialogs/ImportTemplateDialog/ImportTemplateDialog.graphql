@@ -1,0 +1,19 @@
+query ImportTemplateDialog($templateTypes: [TemplateType!]) {
+  platform {
+    library {
+      templates(filter: { types: $templateTypes }) {
+        template {
+          ...TemplateProfileInfo
+        }
+        innovationPack {
+          id
+          profile {
+            id
+            displayName
+            url
+          }
+        }
+      }
+    }
+  }
+}

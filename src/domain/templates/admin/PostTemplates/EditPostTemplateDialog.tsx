@@ -3,7 +3,7 @@ import PostTemplateForm, { PostTemplateFormSubmittedValues, PostTemplateFormValu
 import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
 import { PostTemplateFragment } from '../../../../core/apollo/generated/graphql-schema';
-import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase';
+import CreateEditTemplateDialogBase from '../../_new/components/Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
 
 interface EditPostTemplateDialogProps {
   open: boolean;
@@ -35,7 +35,7 @@ const EditPostTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }:
   };
 
   return (
-    <TemplateDialogBase
+    <CreateEditTemplateDialogBase
       open={open}
       onClose={onClose}
       templateTypeName={t('templateLibrary.postTemplates.name')}
@@ -50,7 +50,7 @@ const EditPostTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }:
           actions={actions}
         />
       )}
-    </TemplateDialogBase>
+    </CreateEditTemplateDialogBase>
   );
 };
 

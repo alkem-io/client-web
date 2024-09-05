@@ -1,7 +1,7 @@
 import React from 'react';
 import { DialogHeaderProps } from '../../../../../../core/ui/dialog/DialogHeader';
 
-import TemplateDialogBase from '../TemplateDialogBase';
+import CreateEditTemplateDialogBase from './CreateEditTemplateDialogBase';
 import { TemplateType } from '../../../../../../core/apollo/generated/graphql-schema';
 import { AnyTemplate } from '../../../models/TemplateBase';
 import TemplateForm, { AnyTemplateFormSubmittedValues } from '../../Forms/TemplateForm';
@@ -21,7 +21,7 @@ const EditTemplateDialog = ({ template, templateType, open, onClose, onSubmit, o
   }
 
   return (
-    <TemplateDialogBase
+    <CreateEditTemplateDialogBase
       open={open}
       onClose={onClose}
       templateType={templateType}
@@ -35,7 +35,7 @@ const EditTemplateDialog = ({ template, templateType, open, onClose, onSubmit, o
           actions={actions}
         />
       )}
-    </TemplateDialogBase>
+    </CreateEditTemplateDialogBase>
   );
 };
 

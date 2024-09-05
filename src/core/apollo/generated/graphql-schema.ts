@@ -1801,6 +1801,11 @@ export type CreateCollaborationOnSpaceInput = {
   innovationFlowTemplateID?: InputMaybe<Scalars['UUID']>;
 };
 
+export type CreateCommunityGuidelinesData = {
+  __typename?: 'CreateCommunityGuidelinesData';
+  profile: CreateProfileData;
+};
+
 export type CreateCommunityGuidelinesInput = {
   profile: CreateProfileInput;
 };
@@ -1897,6 +1902,16 @@ export type CreateLinkInput = {
   uri?: InputMaybe<Scalars['String']>;
 };
 
+export type CreateLocationData = {
+  __typename?: 'CreateLocationData';
+  addressLine1?: Maybe<Scalars['String']>;
+  addressLine2?: Maybe<Scalars['String']>;
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  postalCode?: Maybe<Scalars['String']>;
+  stateOrProvince?: Maybe<Scalars['String']>;
+};
+
 export type CreateLocationInput = {
   addressLine1?: InputMaybe<Scalars['String']>;
   addressLine2?: InputMaybe<Scalars['String']>;
@@ -1946,6 +1961,20 @@ export type CreatePostInput = {
   visualUri?: InputMaybe<Scalars['String']>;
 };
 
+export type CreateProfileData = {
+  __typename?: 'CreateProfileData';
+  /** The URL of the avatar of the user */
+  avatarURL?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['Markdown']>;
+  /** The display name for the entity. */
+  displayName: Scalars['String'];
+  location?: Maybe<CreateLocationData>;
+  referencesData?: Maybe<Array<CreateReferenceData>>;
+  /** A memorable short description for this entity. */
+  tagline?: Maybe<Scalars['String']>;
+  tagsets?: Maybe<Array<CreateTagsetData>>;
+};
+
 export type CreateProfileInput = {
   /** The URL of the avatar of the user */
   avatarURL?: InputMaybe<Scalars['String']>;
@@ -1957,6 +1986,13 @@ export type CreateProfileInput = {
   /** A memorable short description for this entity. */
   tagline?: InputMaybe<Scalars['String']>;
   tagsets?: InputMaybe<Array<CreateTagsetInput>>;
+};
+
+export type CreateReferenceData = {
+  __typename?: 'CreateReferenceData';
+  description?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  uri?: Maybe<Scalars['String']>;
 };
 
 export type CreateReferenceInput = {
@@ -1995,6 +2031,13 @@ export type CreateSubspaceInput = {
   spaceID: Scalars['UUID_NAMEID'];
   tags?: InputMaybe<Array<Scalars['String']>>;
   type?: InputMaybe<SpaceType>;
+};
+
+export type CreateTagsetData = {
+  __typename?: 'CreateTagsetData';
+  name: Scalars['String'];
+  tags?: Maybe<Array<Scalars['String']>>;
+  type?: Maybe<TagsetType>;
 };
 
 export type CreateTagsetInput = {
@@ -2600,6 +2643,8 @@ export type Library = {
   innovationHubs: Array<InnovationHub>;
   /** The Innovation Packs in the platform Innovation Library. */
   innovationPacks: Array<InnovationPack>;
+  /** The Templates in the Innovation Library, together with information about the InnovationPack. */
+  templates: Array<TemplateResult>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** The VirtualContributors listed on this platform */
@@ -2608,6 +2653,15 @@ export type Library = {
 
 export type LibraryInnovationPacksArgs = {
   queryData?: InputMaybe<InnovationPacksInput>;
+};
+
+export type LibraryTemplatesArgs = {
+  filter?: InputMaybe<LibraryTemplatesFilterInput>;
+};
+
+export type LibraryTemplatesFilterInput = {
+  /** Return Templates within the Library matching the specified Template Types. */
+  types?: InputMaybe<Array<TemplateType>>;
 };
 
 export enum LicenseCredential {
@@ -5561,6 +5615,8 @@ export type Template = {
   callout?: Maybe<Callout>;
   /** The Community Guidelines for this Template. */
   communityGuidelines?: Maybe<CommunityGuidelines>;
+  /** Build the input for a new Community Guidelins using the Community Guidelines for this Template. */
+  communityGuidelinesInput?: Maybe<CreateCommunityGuidelinesData>;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
@@ -5579,6 +5635,14 @@ export type Template = {
   whiteboard?: Maybe<Whiteboard>;
 };
 
+export type TemplateResult = {
+  __typename?: 'TemplateResult';
+  /** The InnovationPack where this Template is being returned from. */
+  innovationPack: InnovationPack;
+  /** The Template that is being returned. */
+  template: Template;
+};
+
 export enum TemplateType {
   Callout = 'CALLOUT',
   CommunityGuidelines = 'COMMUNITY_GUIDELINES',
@@ -5589,10 +5653,6 @@ export enum TemplateType {
 
 export type TemplatesSet = {
   __typename?: 'TemplatesSet';
-  /** The Templates in this TemplatesSet. */
-  allTemplates: Array<Template>;
-  /** The total number of Templates in this TemplatesSet. */
-  allTemplatesCount: Scalars['Float'];
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The CalloutTemplates in this TemplatesSet. */
@@ -5615,6 +5675,10 @@ export type TemplatesSet = {
   postTemplates: Array<Template>;
   /** The total number of Post Templates in this TemplatesSet. */
   postTemplatesCount: Scalars['Float'];
+  /** The Templates in this TemplatesSet. */
+  templates: Array<Template>;
+  /** The total number of Templates in this TemplatesSet. */
+  templatesCount: Scalars['Float'];
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** The WhiteboardTemplates in this TemplatesSet. */
@@ -24137,6 +24201,64 @@ export type CalloutOnCollaborationWithStorageConfigFragment = {
   }>;
 };
 
+export type ImportTemplateDialogQueryVariables = Exact<{
+  templateTypes?: InputMaybe<Array<TemplateType> | TemplateType>;
+}>;
+
+export type ImportTemplateDialogQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    library: {
+      __typename?: 'Library';
+      templates: Array<{
+        __typename?: 'TemplateResult';
+        template: {
+          __typename?: 'Template';
+          id: string;
+          type: TemplateType;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            defaultTagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            visual?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+          };
+        };
+        innovationPack: {
+          __typename?: 'InnovationPack';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+        };
+      }>;
+    };
+  };
+};
+
 export type AllTemplatesInTemplatesSetQueryVariables = Exact<{
   templatesSetId: Scalars['UUID'];
 }>;
@@ -24378,6 +24500,15 @@ export type AllTemplatesInTemplatesSetQuery = {
         }
       | undefined;
   };
+};
+
+export type SpaceTemplatesSetIdQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type SpaceTemplatesSetIdQuery = {
+  __typename?: 'Query';
+  space: { __typename?: 'Space'; id: string; library?: { __typename?: 'TemplatesSet'; id: string } | undefined };
 };
 
 export type TemplateProfileInfoFragment = {
@@ -24704,15 +24835,6 @@ export type DeleteTemplateMutationVariables = Exact<{
 export type DeleteTemplateMutation = {
   __typename?: 'Mutation';
   deleteTemplate: { __typename?: 'Template'; id: string };
-};
-
-export type SpaceTemplatesSetIdQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
-}>;
-
-export type SpaceTemplatesSetIdQuery = {
-  __typename?: 'Query';
-  space: { __typename?: 'Space'; id: string; library?: { __typename?: 'TemplatesSet'; id: string } | undefined };
 };
 
 export type CalloutTemplateContentQueryVariables = Exact<{

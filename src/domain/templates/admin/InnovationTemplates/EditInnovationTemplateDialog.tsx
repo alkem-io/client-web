@@ -6,7 +6,7 @@ import InnovationFlowTemplateForm, {
 import React from 'react';
 import { InnovationFlowTemplateFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
-import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase';
+import CreateEditTemplateDialogBase from '../../_new/components/Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
 
 interface EditInnovationTemplateDialogProps {
   open: boolean;
@@ -44,7 +44,7 @@ const EditInnovationTemplateDialog = ({
   };
 
   return (
-    <TemplateDialogBase
+    <CreateEditTemplateDialogBase
       open={open}
       onClose={onClose}
       templateTypeName={t('templateLibrary.innovationFlowTemplates.name')}
@@ -52,7 +52,7 @@ const EditInnovationTemplateDialog = ({
       editMode
     >
       {({ actions }) => <InnovationFlowTemplateForm initialValues={values} onSubmit={handleSubmit} actions={actions} />}
-    </TemplateDialogBase>
+    </CreateEditTemplateDialogBase>
   );
 };
 

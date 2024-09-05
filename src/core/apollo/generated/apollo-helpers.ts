@@ -1183,6 +1183,58 @@ export type ContributorRolesFieldPolicy = {
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CreateCommunityGuidelinesDataKeySpecifier = ('profile' | CreateCommunityGuidelinesDataKeySpecifier)[];
+export type CreateCommunityGuidelinesDataFieldPolicy = {
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateLocationDataKeySpecifier = (
+  | 'addressLine1'
+  | 'addressLine2'
+  | 'city'
+  | 'country'
+  | 'postalCode'
+  | 'stateOrProvince'
+  | CreateLocationDataKeySpecifier
+)[];
+export type CreateLocationDataFieldPolicy = {
+  addressLine1?: FieldPolicy<any> | FieldReadFunction<any>;
+  addressLine2?: FieldPolicy<any> | FieldReadFunction<any>;
+  city?: FieldPolicy<any> | FieldReadFunction<any>;
+  country?: FieldPolicy<any> | FieldReadFunction<any>;
+  postalCode?: FieldPolicy<any> | FieldReadFunction<any>;
+  stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateProfileDataKeySpecifier = (
+  | 'avatarURL'
+  | 'description'
+  | 'displayName'
+  | 'location'
+  | 'referencesData'
+  | 'tagline'
+  | 'tagsets'
+  | CreateProfileDataKeySpecifier
+)[];
+export type CreateProfileDataFieldPolicy = {
+  avatarURL?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  location?: FieldPolicy<any> | FieldReadFunction<any>;
+  referencesData?: FieldPolicy<any> | FieldReadFunction<any>;
+  tagline?: FieldPolicy<any> | FieldReadFunction<any>;
+  tagsets?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateReferenceDataKeySpecifier = ('description' | 'name' | 'uri' | CreateReferenceDataKeySpecifier)[];
+export type CreateReferenceDataFieldPolicy = {
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  uri?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateTagsetDataKeySpecifier = ('name' | 'tags' | 'type' | CreateTagsetDataKeySpecifier)[];
+export type CreateTagsetDataFieldPolicy = {
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  tags?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CredentialKeySpecifier = (
   | 'createdDate'
   | 'expires'
@@ -1504,6 +1556,7 @@ export type LibraryKeySpecifier = (
   | 'id'
   | 'innovationHubs'
   | 'innovationPacks'
+  | 'templates'
   | 'updatedDate'
   | 'virtualContributors'
   | LibraryKeySpecifier
@@ -1514,6 +1567,7 @@ export type LibraryFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
+  templates?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -3143,6 +3197,7 @@ export type TemplateKeySpecifier = (
   | 'authorization'
   | 'callout'
   | 'communityGuidelines'
+  | 'communityGuidelinesInput'
   | 'createdDate'
   | 'id'
   | 'innovationFlow'
@@ -3157,6 +3212,7 @@ export type TemplateFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
   communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelinesInput?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3166,9 +3222,12 @@ export type TemplateFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type TemplateResultKeySpecifier = ('innovationPack' | 'template' | TemplateResultKeySpecifier)[];
+export type TemplateResultFieldPolicy = {
+  innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
+  template?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type TemplatesSetKeySpecifier = (
-  | 'allTemplates'
-  | 'allTemplatesCount'
   | 'authorization'
   | 'calloutTemplates'
   | 'calloutTemplatesCount'
@@ -3180,14 +3239,14 @@ export type TemplatesSetKeySpecifier = (
   | 'innovationFlowTemplatesCount'
   | 'postTemplates'
   | 'postTemplatesCount'
+  | 'templates'
+  | 'templatesCount'
   | 'updatedDate'
   | 'whiteboardTemplates'
   | 'whiteboardTemplatesCount'
   | TemplatesSetKeySpecifier
 )[];
 export type TemplatesSetFieldPolicy = {
-  allTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
-  allTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3199,6 +3258,8 @@ export type TemplatesSetFieldPolicy = {
   innovationFlowTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  templates?: FieldPolicy<any> | FieldReadFunction<any>;
+  templatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3757,6 +3818,29 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ContributorRolesKeySpecifier | (() => undefined | ContributorRolesKeySpecifier);
     fields?: ContributorRolesFieldPolicy;
   };
+  CreateCommunityGuidelinesData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCommunityGuidelinesDataKeySpecifier
+      | (() => undefined | CreateCommunityGuidelinesDataKeySpecifier);
+    fields?: CreateCommunityGuidelinesDataFieldPolicy;
+  };
+  CreateLocationData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreateLocationDataKeySpecifier | (() => undefined | CreateLocationDataKeySpecifier);
+    fields?: CreateLocationDataFieldPolicy;
+  };
+  CreateProfileData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreateProfileDataKeySpecifier | (() => undefined | CreateProfileDataKeySpecifier);
+    fields?: CreateProfileDataFieldPolicy;
+  };
+  CreateReferenceData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreateReferenceDataKeySpecifier | (() => undefined | CreateReferenceDataKeySpecifier);
+    fields?: CreateReferenceDataFieldPolicy;
+  };
+  CreateTagsetData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreateTagsetDataKeySpecifier | (() => undefined | CreateTagsetDataKeySpecifier);
+    fields?: CreateTagsetDataFieldPolicy;
+  };
   Credential?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CredentialKeySpecifier | (() => undefined | CredentialKeySpecifier);
     fields?: CredentialFieldPolicy;
@@ -4168,6 +4252,10 @@ export type StrictTypedTypePolicies = {
   Template?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TemplateKeySpecifier | (() => undefined | TemplateKeySpecifier);
     fields?: TemplateFieldPolicy;
+  };
+  TemplateResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | TemplateResultKeySpecifier | (() => undefined | TemplateResultKeySpecifier);
+    fields?: TemplateResultFieldPolicy;
   };
   TemplatesSet?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TemplatesSetKeySpecifier | (() => undefined | TemplatesSetKeySpecifier);

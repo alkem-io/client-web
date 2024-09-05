@@ -13,13 +13,13 @@ import SpaceSettingsLayout from './SpaceSettingsLayout';
 interface SpaceTemplatesAdminPageProps extends SettingsPageProps {
   spaceId: string;
   routePrefix: string;
-  editTemplateMode?: boolean;
+  editTemplate?: boolean;
 }
 
 const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
   spaceId,
   routePrefix,
-  editTemplateMode
+  editTemplate
 }) => {
 
   const {
@@ -45,11 +45,12 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
         <TemplatesAdmin
           templatesSetId={templatesSetId}
           templateId={templateSelected}
+          editTemplate={editTemplate}
           baseUrl={baseUrl}
           indexUrl={baseUrl}
-          editTemplates={editTemplateMode}
           canDeleteTemplates
           canCreateTemplates
+          canImportTemplates
         />
       )}
     </SpaceSettingsLayout>

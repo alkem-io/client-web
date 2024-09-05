@@ -5,7 +5,7 @@ import { UpdateTemplateInput } from '../../../../core/apollo/generated/graphql-s
 import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { useCalloutTemplateEditableAttributesQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase';
+import CreateEditTemplateDialogBase from '../../_new/components/Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
 
 export interface EditCalloutTemplateDialogProps {
   open: boolean;
@@ -26,7 +26,7 @@ const EditCalloutTemplateDialog = ({ template, open, onClose, onSubmit, onDelete
   });
 
   return (
-    <TemplateDialogBase
+    <CreateEditTemplateDialogBase
       open={open}
       onClose={onClose}
       templateTypeName={t('templateLibrary.calloutTemplates.name')}
@@ -36,7 +36,7 @@ const EditCalloutTemplateDialog = ({ template, open, onClose, onSubmit, onDelete
       {({ actions }) => (
         <EditCalloutTemplateForm template={data?.lookup.template} onSubmit={onSubmit} actions={actions} />
       )}
-    </TemplateDialogBase>
+    </CreateEditTemplateDialogBase>
   );
 };
 

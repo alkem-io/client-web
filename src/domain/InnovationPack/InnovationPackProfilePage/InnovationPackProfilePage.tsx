@@ -24,9 +24,9 @@ import WhiteboardTemplateCard from '../../templates/_new/components/cards/Whiteb
 import InnovationFlowTemplateCard from '../../templates/_new/components/cards/InnovationFlowTemplateCard';
 import InnovationPackProfileLayout from './InnovationPackProfileLayout';
 import TemplatesBlock from './TemplatesBlock';
-import TemplatePreviewDialog, {
+import PreviewTemplateDialog, {
   TemplatePreview,
-} from '../../templates/_new/components/Dialogs/TemplatePreviewDialog/TemplatePreviewDialog';
+} from '../../templates/_new/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
 import CalloutTemplateCard from '../../templates/_new/components/cards/CalloutTemplateCard';
 import CommunityGuidelinesTemplateCard from '../../templates/_new/components/cards/CommunityGuidelinesTemplateCard';
 
@@ -176,7 +176,7 @@ const InnovationPackProfilePage = () => {
           </PageContentColumn>
         </PageContent>
       </InnovationPackProfileLayout>
-      <TemplatePreviewDialog
+      <PreviewTemplateDialog
         open={!!selectedTemplate}
         onClose={() => setSelectedTemplate(undefined)}
         templatePreview={previewedTemplate}

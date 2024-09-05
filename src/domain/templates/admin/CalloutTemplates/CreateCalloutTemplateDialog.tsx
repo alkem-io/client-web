@@ -10,7 +10,7 @@ import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import { useWhiteboardWithContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
 import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
-import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase';
+import CreateEditTemplateDialogBase from '../../_new/components/Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
 
 export interface CreateCalloutTemplateDialogProps {
   open: boolean;
@@ -78,9 +78,9 @@ const CreateCalloutTemplateDialog = ({ open, onClose, onSubmit, callout }: Creat
   };
 
   return (
-    <TemplateDialogBase open={open} onClose={onClose} templateTypeName={t('templateLibrary.calloutTemplates.name')}>
+    <CreateEditTemplateDialogBase open={open} onClose={onClose} templateTypeName={t('templateLibrary.calloutTemplates.name')}>
       {({ actions }) => <CalloutTemplateForm initialValues={initialValues} onSubmit={onSubmit} actions={actions} />}
-    </TemplateDialogBase>
+    </CreateEditTemplateDialogBase>
   );
 };
 

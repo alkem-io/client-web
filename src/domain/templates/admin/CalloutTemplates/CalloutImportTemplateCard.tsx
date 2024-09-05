@@ -1,5 +1,5 @@
 import React from 'react';
-import { TemplateImportCardComponentProps } from '../../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
+import { TemplateImportCardComponentProps } from '../../_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialogGallery';
 import CalloutTemplateCard, { CalloutTemplate } from '../../_new/components/cards/CalloutTemplateCard';
 
 interface CalloutImportTemplateCardProps extends TemplateImportCardComponentProps<CalloutTemplate> {}

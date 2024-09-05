@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { DialogHeaderProps } from '../../../../../../core/ui/dialog/DialogHeader';
-import TemplateDialogBase from '../TemplateDialogBase';
+import CreateEditTemplateDialogBase from './CreateEditTemplateDialogBase';
 import { TemplateType } from '../../../../../../core/apollo/generated/graphql-schema';
 import TemplateForm, { AnyTemplateFormSubmittedValues } from '../../Forms/TemplateForm';
 import { getNewTemplate } from '../../../models/common';
@@ -16,9 +16,9 @@ const CreateTemplateDialog = ({ templateType, open, onClose, onSubmit }: CreateT
   const template = useMemo(() => getNewTemplate(templateType), [templateType]);
 
   return (
-    <TemplateDialogBase open={open} onClose={onClose} templateType={templateType}>
+    <CreateEditTemplateDialogBase open={open} onClose={onClose} templateType={templateType}>
       {({ actions }) => <TemplateForm template={template} onSubmit={onSubmit} actions={actions} />}
-    </TemplateDialogBase>
+    </CreateEditTemplateDialogBase>
   );
 };
 

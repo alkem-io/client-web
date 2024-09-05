@@ -7,7 +7,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import CommunityGuidelinesTemplatePreview from './CommunityGuidelinesTemplatePreview';
-import { TemplateWithInnovationPack } from '../../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
+import { TemplateWithInnovationPack } from '../../_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialogGallery';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import CommunityGuidelinesConfirmationDialog from './CommunityGuidelinesConfirmationDialog';
 import { TemplateBase } from '../CollaborationTemplatesLibrary/TemplateBase';

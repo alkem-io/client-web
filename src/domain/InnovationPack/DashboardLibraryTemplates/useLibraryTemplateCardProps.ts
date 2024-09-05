@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { Identifiable } from '../../../core/utils/Identifiable';
 import { LibraryTemplateCardProps } from './LibraryTemplateCard';
 import { sortBy } from 'lodash';
-import { TemplateWithInnovationPack } from '../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
+import { TemplateWithInnovationPack } from '../../templates/_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialogGallery';
 import { TemplateBase } from '../../templates/library/CollaborationTemplatesLibrary/TemplateBase';
 
 const templateInnovationPackHydrator =

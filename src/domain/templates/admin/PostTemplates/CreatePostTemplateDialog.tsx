@@ -2,7 +2,7 @@ import PostTemplateForm, { PostTemplateFormSubmittedValues, PostTemplateFormValu
 import { useTranslation } from 'react-i18next';
 import { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import React from 'react';
-import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase';
+import CreateEditTemplateDialogBase from '../../_new/components/Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
 
 interface CreatePostTemplateDialogProps {
   open: boolean;
@@ -16,9 +16,9 @@ const CreatePostTemplateDialog = ({ open, onClose, onSubmit }: CreatePostTemplat
   const values: Partial<PostTemplateFormValues> = {};
 
   return (
-    <TemplateDialogBase open={open} onClose={onClose} templateTypeName={t('templateLibrary.postTemplates.name')}>
+    <CreateEditTemplateDialogBase open={open} onClose={onClose} templateTypeName={t('templateLibrary.postTemplates.name')}>
       {({ actions }) => <PostTemplateForm initialValues={values} onSubmit={onSubmit} actions={actions} />}
-    </TemplateDialogBase>
+    </CreateEditTemplateDialogBase>
   );
 };
 

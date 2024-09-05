@@ -1,6 +1,6 @@
 import { ContributeCardProps } from '../../../core/ui/card/ContributeCard';
 import { Identifiable } from '../../../core/utils/Identifiable';
-import { TemplateWithInnovationPack } from '../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
+import { TemplateWithInnovationPack } from '../../templates/_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialogGallery';
 import PostTemplateCard from '../../templates/_new/components/cards/PostTemplateCard';
 import WhiteboardTemplateCard from '../../templates/_new/components/cards/WhiteboardTemplateCard';
 import InnovationFlowTemplateCard from '../../templates/_new/components/cards/InnovationFlowTemplateCard';

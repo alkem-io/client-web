@@ -2,11 +2,11 @@ import React, { ReactNode } from 'react';
 import { DialogActions, DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { FormikProps } from 'formik/dist/types';
-import DialogHeader, { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
-import DialogWithGrid, { DialogFooter } from '../../../../../core/ui/dialog/DialogWithGrid';
-import { FormikSubmitButtonPure } from '../../../../shared/components/forms/FormikSubmitButton';
-import DeleteButton from '../../../../shared/components/DeleteButton';
-import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
+import DialogHeader, { DialogHeaderProps } from '../../../../../../core/ui/dialog/DialogHeader';
+import DialogWithGrid, { DialogFooter } from '../../../../../../core/ui/dialog/DialogWithGrid';
+import { FormikSubmitButtonPure } from '../../../../../shared/components/forms/FormikSubmitButton';
+import DeleteButton from '../../../../../shared/components/DeleteButton';
+import { TemplateType } from '../../../../../../core/apollo/generated/graphql-schema';
 
 interface TemplateDialogBaseProps<Values extends {}> {
   open: boolean;
@@ -17,7 +17,7 @@ interface TemplateDialogBaseProps<Values extends {}> {
   children?: (props: { actions: (formik: FormikProps<Values>) => ReactNode }) => ReactNode;
 }
 
-const TemplateDialogBase = <InitialValues extends {}>({
+const CreateEditTemplateDialogBase = <InitialValues extends {}>({
   open,
   onClose,
   children,
@@ -50,4 +50,4 @@ const TemplateDialogBase = <InitialValues extends {}>({
   );
 };
 
-export default TemplateDialogBase;
+export default CreateEditTemplateDialogBase;

@@ -8,7 +8,7 @@ import {
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { InnovationFlowTemplate } from '../../../templates/_new/components/cards/InnovationFlowTemplateCard';
 import { Autorenew } from '@mui/icons-material';
-import { TemplateWithInnovationPack } from '../../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
+import { TemplateWithInnovationPack } from '../../../templates/_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialogGallery';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { TemplateBase } from '../../../templates/library/CollaborationTemplatesLibrary/TemplateBase';
 import CollaborationTemplatesLibraryButton from '../../../templates/library/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';

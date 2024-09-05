@@ -1,10 +1,10 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 import TemplatesGalleryContainer from '../TemplatesGallery/TemplatesGalleryContainer';
 import TemplatesGallery from '../TemplatesGallery/TemplatesGallery';
 import { useAllTemplatesInTemplatesSetQuery, useCreateTemplateMutation, useDeleteTemplateMutation, useUpdateTemplateMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 import { useTranslation } from 'react-i18next';
-import EditTemplateDialog from '../Dialogs/EditTemplateDialog/EditTemplateDialog';
+import EditTemplateDialog from '../Dialogs/CreateEditTemplateDialog/EditTemplateDialog';
 import { AnyTemplate } from '../../models/TemplateBase';
 import useLoadingState from '../../../../shared/utils/useLoadingState';
 import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
@@ -12,20 +12,25 @@ import { AnyTemplateFormSubmittedValues } from '../Forms/TemplateForm';
 import useBackToPath from '../../../../../core/routing/useBackToPath';
 import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
 import { Button, ButtonProps } from '@mui/material';
-import CreateTemplateDialog from '../Dialogs/CreateTemplateDialog/CreateTemplateDialog';
+import CreateTemplateDialog from '../Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { toCreateTemplateMutationVariables, toUpdateTemplateMutationVariables } from '../Forms/common/mappings';
 import { WhiteboardTemplateFormSubmittedValues } from '../Forms/WhiteboardTemplateForm';
 import { useUploadWhiteboardVisuals } from '../../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import PreviewTemplateDialog from '../Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
+import { LibraryIcon } from '../../../LibraryIcon';
+import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import { LoadingButton } from '@mui/lab';
 
 interface TemplatesAdminProps {
   templatesSetId: string;
   templateId?: string;  // Template selected, if any
+  editTemplate?: boolean;  // If true, the selected template is editable, if false preview dialog is shown
   baseUrl: string | undefined;
   indexUrl?: string;
   canImportTemplates?: boolean;
   canCreateTemplates?: boolean;
   canDeleteTemplates?: boolean;
-  editTemplates?: boolean;  // If true, the templates are editable, if false they are in preview mode
 }
 
 const CreateTemplateButton = (props: ButtonProps) => {
@@ -33,13 +38,22 @@ const CreateTemplateButton = (props: ButtonProps) => {
   return <Button variant="outlined" {...props}>{t('common.create-new')} </Button>
 }
 
+const ImportTemplateButton = (props: ButtonProps) => {
+  const { t } = useTranslation();
+  const defaults = {
+    children: <>{t('common.library')}</>,
+    startIcon: <LibraryIcon />,
+  };
+  return <Button {...defaults} {...props} />;
+}
+
 const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   templatesSetId,
   templateId,
+  editTemplate = false,
   baseUrl = '',
   indexUrl, // Normally baseUrl + '/settings'. Defaults to baseUrl
   canImportTemplates = false,
-  editTemplates = false,
   canCreateTemplates = false,
   canDeleteTemplates = false,
 }) => {
@@ -135,6 +149,18 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
     setDeletingTemplate(undefined);
   });
 
+  // Import Template
+  const [importTemplateType, setImportTemplateType] = useState<TemplateType>();
+
+  // Actions (buttons for gallery)
+  const GalleryActions = useCallback(({ templateType }: { templateType: TemplateType }) => (
+    <>
+      {canImportTemplates ? <ImportTemplateButton onClick={() => setImportTemplateType(templateType)} /> : null}
+      {canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(templateType)} /> : null}
+    </>
+  ), [canCreateTemplates, canImportTemplates, setCreatingTemplateType, setImportTemplateType]);
+
+
   return (
     <>
       <PageContentBlockSeamless disablePadding>
@@ -147,7 +173,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           {provided => (
             <TemplatesGallery
               headerText={t('common.entitiesWithCount', { entityType: t('common.enums.templateTypes.Callout_plural'), count: provided.templatesCount })}
-              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(TemplateType.Callout)} /> : undefined}
+              actions={<GalleryActions templateType={TemplateType.Callout} />}
               {...provided}
             />
           )}
@@ -163,7 +189,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           {provided => (
             <TemplatesGallery
               headerText={t('common.entitiesWithCount', { entityType: t('common.enums.templateTypes.CommunityGuidelines_plural'), count: provided.templatesCount })}
-              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(TemplateType.CommunityGuidelines)} /> : undefined}
+              actions={<GalleryActions templateType={TemplateType.Callout} />}
               {...provided}
             />
           )}
@@ -179,7 +205,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           {provided => (
             <TemplatesGallery
               headerText={t('common.entitiesWithCount', { entityType: t('common.enums.templateTypes.InnovationFlow_plural'), count: provided.templatesCount })}
-              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(TemplateType.InnovationFlow)} /> : undefined}
+              actions={<GalleryActions templateType={TemplateType.Callout} />}
               {...provided}
             />
           )}
@@ -195,7 +221,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           {provided => (
             <TemplatesGallery
               headerText={t('common.entitiesWithCount', { entityType: t('common.enums.templateTypes.Post_plural'), count: provided.templatesCount })}
-              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(TemplateType.Post)} /> : undefined}
+              actions={<GalleryActions templateType={TemplateType.Callout} />}
               {...provided}
             />
           )}
@@ -211,7 +237,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           {provided => (
             <TemplatesGallery
               headerText={t('common.entitiesWithCount', { entityType: t('common.enums.templateTypes.Whiteboard_plural'), count: provided.templatesCount })}
-              actions={canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(TemplateType.Whiteboard)} /> : undefined}
+              actions={<GalleryActions templateType={TemplateType.Callout} />}
               {...provided}
             />
           )}
@@ -225,7 +251,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           onSubmit={handleTemplateCreate}
         />
       )}
-      {selectedTemplate && (
+      {selectedTemplate && editTemplate && (
         <EditTemplateDialog
           open
           onClose={() => backToTemplates(indexUrl ?? baseUrl)}
@@ -233,6 +259,13 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           templateType={selectedTemplate.type}
           onSubmit={handleTemplateUpdate}
           onDelete={canDeleteTemplates ? () => setDeletingTemplate(selectedTemplate) : undefined}
+        />
+      )}
+      {selectedTemplate && !editTemplate && (
+        <PreviewTemplateDialog
+          open
+          onClose={() => backToTemplates(indexUrl ?? baseUrl)}
+          template={selectedTemplate}
         />
       )}
       {deletingTemplate && (
@@ -254,6 +287,27 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           state={{
             isLoading: isDeletingTemplate,
           }}
+        />
+      )}
+      {importTemplateType && (
+        <ImportTemplatesDialog
+          open
+          onClose={() => setImportTemplateType(undefined)}
+          templateType={importTemplateType}
+          headerText={''}
+          onImportTemplate={(template: AnyTemplate) => {
+            alert('Function not implemented.');//!!
+            throw new Error('Function not implemented.');
+          }}
+          actionButton={
+            <LoadingButton
+              startIcon={<SystemUpdateAltIcon />}
+              variant="contained"
+              sx={{ marginLeft: theme => theme.spacing(1) }}
+            >
+              {t('common.library')}
+            </LoadingButton>
+          }
         />
       )}
 

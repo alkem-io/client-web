@@ -8,7 +8,7 @@ import {
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import PostTemplateCard from '../../_new/components/cards/PostTemplateCard';
 import PostTemplatePreview from './PostTemplatePreview';
-import { TemplateWithInnovationPack } from '../../../platform/admin/InnovationPacks/ImportTemplatesDialogGalleryStep';
+import { TemplateWithInnovationPack } from '../../_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialogGallery';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { PostTemplate, PostTemplateWithValue } from '../../_new/models/PostTemplate';
 import { TemplateCardBaseProps } from '../CollaborationTemplatesLibrary/TemplateBase';

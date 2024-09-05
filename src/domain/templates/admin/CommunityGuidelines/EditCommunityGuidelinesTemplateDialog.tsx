@@ -9,7 +9,7 @@ import CommunityGuidelinesTemplateForm, {
   CommunityGuidelinesTemplateFormValues,
 } from '../../_new/components/Forms/CommunityGuidelinesTemplateForm';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase';
+import CreateEditTemplateDialogBase from '../../_new/components/Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
 
 interface EditCommunityGuidelinesTemplateDialogProps {
   open: boolean;
@@ -75,7 +75,7 @@ const EditCommunityGuidelinesTemplateDialog = ({
   };
 
   return (
-    <TemplateDialogBase
+    <CreateEditTemplateDialogBase
       open={open}
       onClose={onClose}
       templateType={TemplateType.CommunityGuidelines}
@@ -93,7 +93,7 @@ const EditCommunityGuidelinesTemplateDialog = ({
           />
         </StorageConfigContextProvider>
       )}
-    </TemplateDialogBase>
+    </CreateEditTemplateDialogBase>
   );
 };
 

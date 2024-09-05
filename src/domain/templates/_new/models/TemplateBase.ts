@@ -13,6 +13,11 @@ export type AnyTemplate =
   | PostTemplate
   | WhiteboardTemplate;
 
+export interface AnyTemplateWithInnovationPack {
+  template: AnyTemplate;
+  innovationPack?: NewTemplateInnovationPack;
+}
+
 export interface NewTemplateBase extends Identifiable {
   type: TemplateType;
   profile: {

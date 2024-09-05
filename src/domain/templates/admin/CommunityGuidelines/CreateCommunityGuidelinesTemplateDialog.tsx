@@ -5,7 +5,7 @@ import CommunityGuidelinesTemplateForm, {
   CommunityGuidelinesTemplateFormSubmittedValues,
   CommunityGuidelinesTemplateFormValues,
 } from '../../_new/components/Forms/CommunityGuidelinesTemplateForm';
-import TemplateDialogBase from '../../_new/components/Dialogs/TemplateDialogBase';
+import CreateEditTemplateDialogBase from '../../_new/components/Dialogs/CreateEditTemplateDialog/CreateEditTemplateDialogBase';
 
 export interface CommunityGuidelinesFormValues {
   displayName: string;
@@ -51,7 +51,7 @@ const CreateCommunityGuidelinesTemplateDialog = ({
   };
 
   return (
-    <TemplateDialogBase
+    <CreateEditTemplateDialogBase
       open={open}
       onClose={onClose}
       templateTypeName={t('templateLibrary.communityGuidelinesTemplates.name')}
@@ -59,7 +59,7 @@ const CreateCommunityGuidelinesTemplateDialog = ({
       {({ actions }) => (
         <CommunityGuidelinesTemplateForm initialValues={values} onSubmit={onSubmit} actions={actions} />
       )}
-    </TemplateDialogBase>
+    </CreateEditTemplateDialogBase>
   );
 };
 

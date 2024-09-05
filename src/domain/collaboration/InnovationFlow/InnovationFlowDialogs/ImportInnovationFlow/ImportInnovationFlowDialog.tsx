@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import ImportTemplatesDialog from '../../../../platform/admin/InnovationPacks/ImportTemplatesDialog';
+import ImportTemplatesDialog from '../../../../templates/_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { useSpaceInnovationFlowTemplatesQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { Button } from '@mui/material';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
@@ -14,6 +14,11 @@ interface ImportInnovationFlowDialogProps {
   handleImportTemplate: (templateId: string) => Promise<unknown>;
 }
 
+/**
+ * @deprecated Maybe use directly ImportTemplatesDialog
+ * //!!
+ * //!! Careful I think this component is meant to import from the Space IF templates, not from the global templates
+ */
 const ImportInnovationFlowDialog = ({
   open,
   templatesSetId,
@@ -23,33 +28,15 @@ const ImportInnovationFlowDialog = ({
 }: ImportInnovationFlowDialogProps) => {
   const { t } = useTranslation();
 
-  const { data: templatesData, loading: loadingTemplates } = useSpaceInnovationFlowTemplatesQuery({
-    variables: {
-      templatesSetId: templatesSetId!,
-    },
-    skip: !templatesSetId || !open,
-  });
-
-  const innovationPacks = [
-    {
-      profile: { id: '', displayName: originDisplayName ?? '' },
-      nameID: '',
-      id: '',
-      templates: templatesData?.lookup.templatesSet?.innovationFlowTemplates ?? [],
-    },
-  ];
 
   return (
     <ImportTemplatesDialog
       headerText={t('templateLibrary.innovationFlowTemplates.title')}
-      dialogSubtitle={t('pages.admin.generic.sections.templates.import.subtitle')}
-      templateImportCardComponent={InnovationImportTemplateCard}
+      subtitle={t('pages.admin.generic.sections.templates.import.subtitle')}
       templateType={TemplateType.InnovationFlow}
       open={open}
       onClose={onClose}
       onImportTemplate={template => handleImportTemplate(template.id)}
-      innovationPacks={innovationPacks}
-      loading={loadingTemplates}
       actionButton={
         <Button startIcon={<SystemUpdateAltIcon />} variant="contained" sx={{ marginLeft: theme => theme.spacing(1) }}>
           {t('buttons.use')}

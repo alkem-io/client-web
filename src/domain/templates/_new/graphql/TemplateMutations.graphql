@@ -74,12 +74,3 @@ mutation deleteTemplate($templateId: UUID!) {
     id
   }
 }
-##//!! move this to somewhere else
-query SpaceTemplatesSetId($spaceNameId: UUID_NAMEID!) {
-  space(ID: $spaceNameId) {
-    id
-    library {
-      id
-    }
-  }
-}
