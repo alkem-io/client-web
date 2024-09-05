@@ -31,7 +31,7 @@ export interface JourneyCardHorizontalProps {
     profile: {
       url: string;
       displayName: string;
-      tagline: string;
+      tagline?: string;
       avatar?: Visual;
       cardBanner?: Visual;
     };

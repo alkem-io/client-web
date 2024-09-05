@@ -50,7 +50,7 @@ export interface ContributorAccountViewProps {
       level: number;
       profile: AccountProfile & {
         cardBanner?: { uri: string };
-        tagline: string;
+        tagline?: string;
       };
       community: { id: string };
       subspaces: {
@@ -64,7 +64,7 @@ export interface ContributorAccountViewProps {
     }[];
     virtualContributors: {
       profile: AccountProfile & {
-        tagline: string;
+        tagline?: string;
       };
     }[];
     innovationPacks: {

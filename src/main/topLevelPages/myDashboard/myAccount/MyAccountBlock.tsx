@@ -25,7 +25,7 @@ export interface MyAccountVirtualContributor extends Pick<VirtualContributor, 'i
   profile: {
     id: string;
     displayName: string;
-    tagline: string;
+    tagline?: string;
     url: string;
     avatar?: {
       id: string;
@@ -39,7 +39,7 @@ export interface MyAccountSpace extends Pick<Space, 'id' | 'level'> {
   profile: {
     id: string;
     displayName: string;
-    tagline: string;
+    tagline?: string;
     url: string;
     avatar?: {
       id: string;

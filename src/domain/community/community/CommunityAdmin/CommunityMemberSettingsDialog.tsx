@@ -21,8 +21,8 @@ interface CommunityMemberSettingsDialogProps {
         uri: string;
       };
       location?: {
-        city: string;
-        country: string;
+        city?: string;
+        country?: string;
       };
     };
     firstName?: string;
