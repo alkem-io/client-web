@@ -125,12 +125,14 @@ const AuthorizationPoliciesPage = () => {
                                 </Gutters>
                                 <Gutters row disablePadding>
                                   <Caption>Criteria</Caption>
-                                  {rule.criterias.map((criteria, i) => (
-                                    <Gutters row disablePadding key={i}>
-                                      <Chip label={criteria.type} />
-                                      {criteria.resourceID && <Chip label={criteria.resourceID} />}
-                                    </Gutters>
-                                  ))}
+                                  <div>
+                                    {rule.criterias.map((criteria, i) => (
+                                      <Gutters row disablePadding paddingBottom={gutters(0.5)} key={i}>
+                                        <Chip label={criteria.type} />
+                                        {criteria.resourceID && <Chip label={criteria.resourceID} />}
+                                      </Gutters>
+                                    ))}
+                                  </div>
                                 </Gutters>
                               </Gutters>
                             )),
