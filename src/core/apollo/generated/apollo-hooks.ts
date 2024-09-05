@@ -19898,6 +19898,7 @@ export const ImportTemplateDataDocument = gql`
           displayName
           description
           tagsets {
+            ID: id
             tags
           }
         }
@@ -19905,8 +19906,10 @@ export const ImportTemplateDataDocument = gql`
           profile {
             displayName
             description
-            tagsets {
-              tags
+            referencesData {
+              name
+              uri
+              description
             }
           }
         }

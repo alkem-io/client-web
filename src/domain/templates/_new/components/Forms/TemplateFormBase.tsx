@@ -36,7 +36,7 @@ export interface TemplateFormProfileSubmittedValues {
     // On CreateProfileInput tags need to be one level higher, and tagsets need to be removed from here.
     // On UpdateProfileInput tagsets need to be here and the id needs to be passed
     tagsets?: {
-      ID?: string;
+      ID: string;
       tags: string[];
     }[];
     // On CreateProfileInput is called referencesData and id needs to be removed

@@ -13,6 +13,7 @@ query ImportTemplateData(
         displayName
         description
         tagsets {
+          ID: id # Renamed to match the UpdateProfileInput
           tags
         }
       }
@@ -21,8 +22,10 @@ query ImportTemplateData(
         profile {
           displayName
           description
-          tagsets {
-            tags
+          referencesData {
+            name
+            uri
+            description
           }
         }
         # tags ??

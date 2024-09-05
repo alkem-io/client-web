@@ -17,6 +17,8 @@ import { InnovationFlowTemplateFormSubmittedValues } from '../InnovationFlowTemp
 import { WhiteboardTemplateFormSubmittedValues } from '../WhiteboardTemplateForm';
 import { CalloutTemplateFormSubmittedValues } from '../CalloutTemplateForm';
 
+// TODO MAYBE: Create the mappings mannually instead of using produce,
+// maybe that's the best way to keep the Typescript integrity
 interface TemplateTagset {
   id?: string;
   name?: string;
@@ -73,7 +75,7 @@ export const mapTemplateProfileToUpdateProfile = (profile?: TemplateProfile): Up
 interface ProfileWithTags {
   profile: {
     tagsets?: {
-      ID: string;
+      ID?: string;
       tags: string[];
     }[];
   };
@@ -82,7 +84,7 @@ interface ProfileWithTags {
 interface ProfileWithReferences {
   profile: {
     references?: {
-      ID: string;
+      ID?: string;
       name?: string;
       uri?: string;
       description?: string;

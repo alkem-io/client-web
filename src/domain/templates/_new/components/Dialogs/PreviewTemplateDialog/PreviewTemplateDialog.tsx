@@ -18,7 +18,6 @@ import BadgeCardView from '../../../../../../core/ui/list/BadgeCardView';
 import LinkNoUnderline from '../../../../../shared/components/LinkNoUnderline';
 import PageContentBlockGrid from '../../../../../../core/ui/content/PageContentBlockGrid';
 
-
 export interface PreviewTemplateDialogProps extends AnyTemplateWithInnovationPack {
   open?: boolean;
   onClose: () => void;
@@ -50,7 +49,12 @@ const PreviewTemplateDialog: FC<PreviewTemplateDialogProps> = ({
             {templateInfo}
             <PageContentBlockSeamless disablePadding>
               <Actions justifyContent="end">
-                <Button startIcon={<ArrowBackIcon />} variant="text" onClick={() => onClose()}>
+                <Button
+                  startIcon={<ArrowBackIcon />}
+                  variant="text"
+                  onClick={() => onClose()}
+                  sx={{ marginRight: gutters() }}
+                >
                   {t('buttons.back')}
                 </Button>
                 {actions}
@@ -91,9 +95,7 @@ const PreviewTemplateDialog: FC<PreviewTemplateDialogProps> = ({
           </PageContentColumn>
           <PageContentColumn columns={9} alignSelf="stretch" flexDirection="column">
             <BlockSectionTitle>{t('common.preview')}</BlockSectionTitle>
-            <TemplatePreview
-              template={template}
-            />
+            <TemplatePreview template={template} />
           </PageContentColumn>
         </PageContentBlockGrid>
       </DialogContent>

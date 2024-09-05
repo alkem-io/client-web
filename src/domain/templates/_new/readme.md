@@ -1,5 +1,3 @@
-
-
 - In Models folder, models are as similar as possible to graphql Classes from queries,
   - nullable fields match nullable fields of Graphql Template)
   - Names are exactly the same as they come
@@ -15,22 +13,18 @@
 
 - Avoid any casting or any ts-ignore, try to keep the types consistent!! Apart from the mappings file there shouldn't be any need for castings.
 
-
-
 - List of places where templeates are used:
 
 - List the things that remain undone
 
 - leave the borders
 
-
-
 Ask Neil
+
 - Why don't we make more similar Update and CreateInputs
 - UpdateTagset ID in uppercase
--communityGuidelinesID: String
-
-
+  -communityGuidelinesID: String
 
 A few comments for bobby
+
 - ugly stuff in mappings

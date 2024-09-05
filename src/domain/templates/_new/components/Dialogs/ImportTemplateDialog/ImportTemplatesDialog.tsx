@@ -11,24 +11,36 @@ import { LoadingButtonProps } from '@mui/lab';
 import { BlockTitle, Caption } from '../../../../../../core/ui/typography';
 import PreviewTemplateDialog from '../PreviewTemplateDialog/PreviewTemplateDialog';
 import { TemplateType } from '../../../../../../core/apollo/generated/graphql-schema';
-import { useImportTemplateDialogPlatformTemplatesQuery, useImportTemplateDialogQuery } from '../../../../../../core/apollo/generated/apollo-hooks';
+import {
+  useImportTemplateDialogPlatformTemplatesQuery,
+  useImportTemplateDialogQuery,
+} from '../../../../../../core/apollo/generated/apollo-hooks';
 import { gutters } from '../../../../../../core/ui/grid/utils';
 import SearchIcon from '@mui/icons-material/Search';
 
 export interface ImportTemplatesOptions {
+  /**
+   * Filter templates by templateType
+   */
+  templateType?: TemplateType;
+
+  /**
+   * The origin of the templates, may be a space or an innovation pack, or the platform library
+   * If not set only the platform library will be browsed
+   */
   templatesSetId?: string;
-  enableImportFromTemplatesSet?: boolean;
+  /**
+   * Enables the option to search the entire platform library when templatesSetId is set,
+   * first the templates from the templatesSetId will be shown and the user can click a link to load the platform templates
+   */
   allowBrowsePlatformTemplates?: boolean;
 }
-export interface ImportTemplatesDialogProps {
+
+interface ImportTemplatesDialogProps extends ImportTemplatesOptions {
   headerText: string;
   subtitle?: string;
   open: boolean;
   onClose?: () => void;
-  templatesSetId?: string;  // The origin of the templates
-  allowBrowsePlatformTemplates?: boolean;
-  onlyBrowsePlatformTemplates?: boolean;
-  templateType: TemplateType | undefined;
   onSelectTemplate: (template: AnyTemplate) => Promise<unknown>;
   actionButton: ReactElement<LoadingButtonProps>;
 }
@@ -40,13 +52,14 @@ const ImportTemplatesDialog = ({
   onClose,
   templatesSetId,
   allowBrowsePlatformTemplates,
-  onlyBrowsePlatformTemplates,
   onSelectTemplate,
   actionButton,
   templateType,
 }: ImportTemplatesDialogProps) => {
   const { t } = useTranslation();
-  const [platformTemplatesLoaded, setPlatformTemplatesLoaded] = useState(!!onlyBrowsePlatformTemplates);
+
+  const loadTemplatesSetTemplates = !!templatesSetId;
+  const [loadPlatformTemplates, setLoadPlatformTemplates] = useState(!loadTemplatesSetTemplates);
 
   const [previewTemplate, setPreviewTemplate] = useState<AnyTemplate>();
   const [handleImportTemplate, loadingImport] = useLoadingState(async () => {
@@ -71,12 +84,13 @@ const ImportTemplatesDialog = ({
       includeCallout: templateType === TemplateType.Callout,
       includeInnovationFlow: templateType === TemplateType.InnovationFlow,
     },
-    skip: !open || onlyBrowsePlatformTemplates || !templatesSetId,
+    skip: !open || !templatesSetId,
   });
 
   const templates = useMemo(() => {
-    return templatesData?.lookup.templatesSet?.templates.filter(template => template.type === templateType)
-      .map((template) => ({ template, innovationPack: undefined }));
+    return templatesData?.lookup.templatesSet?.templates
+      .filter(template => template.type === templateType)
+      .map(template => ({ template, innovationPack: undefined }));
   }, [templatesData, templateType]);
 
   const { data: platformTemplatesData, loading: loadingPlatform } = useImportTemplateDialogPlatformTemplatesQuery({
@@ -85,7 +99,7 @@ const ImportTemplatesDialog = ({
       includeCallout: templateType === TemplateType.Callout,
       includeInnovationFlow: templateType === TemplateType.InnovationFlow,
     },
-    skip: !open || !platformTemplatesLoaded,
+    skip: !open || !loadPlatformTemplates,
   });
 
   const platformTemplates = platformTemplatesData?.platform.library.templates;
@@ -96,17 +110,17 @@ const ImportTemplatesDialog = ({
         <DialogHeader title={headerText} onClose={handleClose} icon={<LibraryIcon />} />
         <DialogContent>
           {subtitle && <Caption marginBottom={gutters()}>{subtitle}</Caption>}
-          {!onlyBrowsePlatformTemplates && (
+          {loadTemplatesSetTemplates && (
             <ImportTemplatesDialogGallery
               templates={templates}
-              onClickTemplate={(template) => setPreviewTemplate(template)}
+              onClickTemplate={template => setPreviewTemplate(template)}
               loading={loadingTemplates}
             />
           )}
-          {!onlyBrowsePlatformTemplates && allowBrowsePlatformTemplates && !platformTemplatesLoaded && (
+          {loadTemplatesSetTemplates && allowBrowsePlatformTemplates && !loadPlatformTemplates && (
             <Link
               component={Caption}
-              onClick={() => setPlatformTemplatesLoaded(true)}
+              onClick={() => setLoadPlatformTemplates(true)}
               display="flex"
               alignItems="center"
               gap={1}
@@ -116,12 +130,12 @@ const ImportTemplatesDialog = ({
               <SearchIcon /> {t('templateLibrary.loadPlatformTemplates')}
             </Link>
           )}
-          {platformTemplatesLoaded && (
+          {loadPlatformTemplates && (
             <>
               <BlockTitle marginY={gutters()}>{t('templateLibrary.platformTemplates')}</BlockTitle>
               <ImportTemplatesDialogGallery
                 templates={platformTemplates}
-                onClickTemplate={(template) => setPreviewTemplate(template)}
+                onClickTemplate={template => setPreviewTemplate(template)}
                 loading={loadingPlatform}
               />
             </>

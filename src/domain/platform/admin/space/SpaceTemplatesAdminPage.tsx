@@ -1,7 +1,5 @@
 import { FC } from 'react';
-import {
-  useSpaceTemplatesAdminQuery
-} from '../../../../core/apollo/generated/apollo-hooks';
+import { useSpaceTemplatesAdminQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import Loading from '../../../../core/ui/loading/Loading';
 import { buildSettingsUrl } from '../../../../main/routing/urlBuilders';
@@ -15,18 +13,11 @@ interface SpaceTemplatesAdminPageProps extends SettingsPageProps {
   routePrefix: string;
 }
 
-const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
-  spaceId,
-  routePrefix,
-}) => {
-  const {
-    postNameId,
-    whiteboardNameId,
-    innovationTemplateId,
-    calloutTemplateId,
-    communityGuidelinesNameId,
-  } = useUrlParams();
-  const templateSelected = communityGuidelinesNameId || calloutTemplateId || innovationTemplateId || postNameId || whiteboardNameId;
+const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({ spaceId, routePrefix }) => {
+  const { postNameId, whiteboardNameId, innovationTemplateId, calloutTemplateId, communityGuidelinesNameId } =
+    useUrlParams();
+  const templateSelected =
+    communityGuidelinesNameId || calloutTemplateId || innovationTemplateId || postNameId || whiteboardNameId;
 
   const { data, loading } = useSpaceTemplatesAdminQuery({
     variables: { spaceId },
@@ -48,6 +39,12 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({
           canCreateTemplates
           canEditTemplates
           canImportTemplates
+          importTemplateOptions={{
+            // Indicated here for clarity, but these parameters are not really needed
+            // Do not import from any templateSet, just allow importing from the platform library
+            templatesSetId: undefined,
+            allowBrowsePlatformTemplates: true,
+          }}
         />
       )}
     </SpaceSettingsLayout>

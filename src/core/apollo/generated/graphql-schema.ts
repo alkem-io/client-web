@@ -3106,7 +3106,7 @@ export type Mutation = {
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
   adminSearchIngestFromScratch: Scalars['String'];
   /** Update the Avatar on the Profile with the spedified profileID to be stored as a Document. */
-  adminUpdateContributorAvatars: Scalars['String'];
+  adminUpdateContributorAvatars: Profile;
   /** Reset the Authorization Policy on the specified AiServer. */
   aiServerAuthorizationPolicyReset: AiServer;
   /** Creates a new AiPersonaService on the aiServer. */
@@ -24401,7 +24401,7 @@ export type ImportTemplateDataQuery = {
             __typename?: 'Profile';
             displayName: string;
             description?: string | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string>; ID: string }> | undefined;
           };
           communityGuidelines?:
             | {
@@ -24410,7 +24410,14 @@ export type ImportTemplateDataQuery = {
                   __typename?: 'CreateProfileData';
                   displayName: string;
                   description?: string | undefined;
-                  tagsets?: Array<{ __typename?: 'CreateTagsetData'; tags?: Array<string> | undefined }> | undefined;
+                  referencesData?:
+                    | Array<{
+                        __typename?: 'CreateReferenceData';
+                        name: string;
+                        uri?: string | undefined;
+                        description?: string | undefined;
+                      }>
+                    | undefined;
                 };
               }
             | undefined;
