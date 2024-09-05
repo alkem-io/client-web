@@ -16,6 +16,7 @@ query VirtualContributor($id: UUID_NAMEID!) {
     }
     searchVisibility
     listedInStore
+    status
     aiPersona {
       id
       bodyOfKnowledgeID
@@ -82,6 +83,7 @@ mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContribu
   updateVirtualContributor(virtualContributorData: $virtualContributorData) {
     id
     listedInStore
+    status
     searchVisibility
     profile {
       id
