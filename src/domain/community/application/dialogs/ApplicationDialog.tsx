@@ -95,8 +95,8 @@ export type ApplicationDialogDataType = {
         uri: string;
       };
       location?: {
-        city: string;
-        country: string;
+        city?: string;
+        country?: string;
       };
       url: string;
     };

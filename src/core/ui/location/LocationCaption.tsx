@@ -3,8 +3,8 @@ import { Caption } from '../typography';
 import { LocationIcon } from '../../../domain/timeline/calendar/icons/LocationIcon';
 
 interface LocationCaptionProps {
-  city: string | undefined;
-  country: string | undefined;
+  city?: string | undefined;
+  country?: string | undefined;
 }
 
 const LocationCaption: FC<LocationCaptionProps> = ({ city, country }: LocationCaptionProps) => {
