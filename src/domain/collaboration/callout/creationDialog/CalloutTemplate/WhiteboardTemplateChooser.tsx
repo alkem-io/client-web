@@ -14,6 +14,10 @@ interface WhiteboardTemplatesChooserProps {
   name: string;
 }
 
+/**
+ * // Is this used?
+ * @deprecated
+ */
 export const WhiteboardTemplatesChooser: FC<WhiteboardTemplatesChooserProps> = ({ name }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);

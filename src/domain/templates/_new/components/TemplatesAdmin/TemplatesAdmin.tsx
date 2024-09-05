@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 import TemplatesGalleryContainer from '../TemplatesGallery/TemplatesGalleryContainer';
 import TemplatesGallery from '../TemplatesGallery/TemplatesGallery';
-import { useAllTemplatesInTemplatesSetQuery, useCreateTemplateMutation, useDeleteTemplateMutation, useUpdateTemplateMutation } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useAllTemplatesInTemplatesSetQuery, useCreateTemplateMutation, useDeleteTemplateMutation, useImportTemplateDataLazyQuery, useUpdateTemplateMutation } from '../../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 import { useTranslation } from 'react-i18next';
 import EditTemplateDialog from '../Dialogs/CreateEditTemplateDialog/EditTemplateDialog';
@@ -25,11 +25,12 @@ import { LoadingButton } from '@mui/lab';
 interface TemplatesAdminProps {
   templatesSetId: string;
   templateId?: string;  // Template selected, if any
-  editTemplate?: boolean;  // If true, the selected template is editable, if false preview dialog is shown
+  alwaysEditTemplate?: boolean;  // If true, the selected template is editable, if false preview dialog is shown
   baseUrl: string | undefined;
   indexUrl?: string;
   canImportTemplates?: boolean;
   canCreateTemplates?: boolean;
+  canEditTemplates?: boolean;
   canDeleteTemplates?: boolean;
 }
 
@@ -50,16 +51,16 @@ const ImportTemplateButton = (props: ButtonProps) => {
 const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   templatesSetId,
   templateId,
-  editTemplate = false,
+  alwaysEditTemplate = false,
   baseUrl = '',
   indexUrl, // Normally baseUrl + '/settings'. Defaults to baseUrl
   canImportTemplates = false,
   canCreateTemplates = false,
+  canEditTemplates = false,
   canDeleteTemplates = false,
 }) => {
   const { t } = useTranslation();
   const backToTemplates = useBackToPath();
-
 
   // Visuals management (for whiteboards)
   const { uploadVisuals } = useUploadWhiteboardVisuals();
@@ -100,6 +101,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   }, [templateId, data?.lookup.templatesSet])
 
   // Update Template
+  const [editTemplateMode, setEditTemplateMode] = useState(alwaysEditTemplate);
   const [updateTemplate] = useUpdateTemplateMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet']
   });
@@ -112,6 +114,9 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
     if (selectedTemplate?.type === TemplateType.Whiteboard) {
       // Handle the visual in a special way with the preview images
       handlePreviewTemplates(values, result.data?.updateTemplate.profile);
+    }
+    if (!alwaysEditTemplate) {
+      setEditTemplateMode(false);
     }
   };
 
@@ -151,6 +156,27 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
 
   // Import Template
   const [importTemplateType, setImportTemplateType] = useState<TemplateType>();
+  const [getImportData] = useImportTemplateDataLazyQuery();
+  const handleImportTemplate = async ({ id, type: templateType }: AnyTemplate) => {
+    const { data } = await getImportData({
+      variables: {
+        templateId: id,
+        includeCallout: templateType === TemplateType.Callout,
+        includeCommunityGuidelines: templateType === TemplateType.CommunityGuidelines,
+        includeInnovationFlow: templateType === TemplateType.InnovationFlow,
+        includePost: templateType === TemplateType.Post,
+        includeWhiteboard: templateType === TemplateType.Whiteboard,
+      }
+    });
+    const template = data?.lookup.template;
+    if (template) {
+      const variables = toCreateTemplateMutationVariables(templatesSetId, templateType, template);
+      await createTemplate({
+        variables,
+      });
+      setImportTemplateType(undefined);
+    }
+  }
 
   // Actions (buttons for gallery)
   const GalleryActions = useCallback(({ templateType }: { templateType: TemplateType }) => (
@@ -189,7 +215,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           {provided => (
             <TemplatesGallery
               headerText={t('common.entitiesWithCount', { entityType: t('common.enums.templateTypes.CommunityGuidelines_plural'), count: provided.templatesCount })}
-              actions={<GalleryActions templateType={TemplateType.Callout} />}
+              actions={<GalleryActions templateType={TemplateType.CommunityGuidelines} />}
               {...provided}
             />
           )}
@@ -205,7 +231,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           {provided => (
             <TemplatesGallery
               headerText={t('common.entitiesWithCount', { entityType: t('common.enums.templateTypes.InnovationFlow_plural'), count: provided.templatesCount })}
-              actions={<GalleryActions templateType={TemplateType.Callout} />}
+              actions={<GalleryActions templateType={TemplateType.InnovationFlow} />}
               {...provided}
             />
           )}
@@ -221,7 +247,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           {provided => (
             <TemplatesGallery
               headerText={t('common.entitiesWithCount', { entityType: t('common.enums.templateTypes.Post_plural'), count: provided.templatesCount })}
-              actions={<GalleryActions templateType={TemplateType.Callout} />}
+              actions={<GalleryActions templateType={TemplateType.Post} />}
               {...provided}
             />
           )}
@@ -237,7 +263,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           {provided => (
             <TemplatesGallery
               headerText={t('common.entitiesWithCount', { entityType: t('common.enums.templateTypes.Whiteboard_plural'), count: provided.templatesCount })}
-              actions={<GalleryActions templateType={TemplateType.Callout} />}
+              actions={<GalleryActions templateType={TemplateType.Whiteboard} />}
               {...provided}
             />
           )}
@@ -251,7 +277,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           onSubmit={handleTemplateCreate}
         />
       )}
-      {selectedTemplate && editTemplate && (
+      {selectedTemplate && editTemplateMode && (
         <EditTemplateDialog
           open
           onClose={() => backToTemplates(indexUrl ?? baseUrl)}
@@ -261,11 +287,14 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           onDelete={canDeleteTemplates ? () => setDeletingTemplate(selectedTemplate) : undefined}
         />
       )}
-      {selectedTemplate && !editTemplate && (
+      {selectedTemplate && !editTemplateMode && (
         <PreviewTemplateDialog
           open
           onClose={() => backToTemplates(indexUrl ?? baseUrl)}
           template={selectedTemplate}
+          actions={canEditTemplates ?
+            <Button variant="contained" onClick={() => setEditTemplateMode(true)}>{t('buttons.edit')}</Button> : undefined
+          }
         />
       )}
       {deletingTemplate && (
@@ -294,18 +323,18 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           open
           onClose={() => setImportTemplateType(undefined)}
           templateType={importTemplateType}
-          headerText={''}
-          onImportTemplate={(template: AnyTemplate) => {
-            alert('Function not implemented.');//!!
-            throw new Error('Function not implemented.');
-          }}
+          headerText={t('pages.admin.generic.sections.templates.import.title', { templateType: t(`common.enums.templateType.${importTemplateType}` as const) })}
+          subtitle={t('pages.admin.generic.sections.templates.import.subtitle')}
+          onSelectTemplate={handleImportTemplate}
+          allowBrowsePlatformTemplates
+          templatesSetId={templatesSetId}
           actionButton={
             <LoadingButton
               startIcon={<SystemUpdateAltIcon />}
               variant="contained"
               sx={{ marginLeft: theme => theme.spacing(1) }}
             >
-              {t('common.library')}
+              {t('buttons.import')}
             </LoadingButton>
           }
         />

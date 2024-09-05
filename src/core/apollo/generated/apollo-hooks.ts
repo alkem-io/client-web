@@ -2833,40 +2833,71 @@ export const CalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
   ${ProfileStorageConfigFragmentDoc}
 `;
 export const CalloutTemplatePreviewFragmentDoc = gql`
-  fragment CalloutTemplatePreview on Template {
+  fragment CalloutTemplatePreview on Callout {
     id
-    callout {
-      type
-      framing {
+    type
+    framing {
+      id
+      profile {
         id
-        profile {
+        displayName
+        description
+        tagsets {
+          ...TagsetDetails
+        }
+        storageBucket {
           id
-          displayName
-          description
-          tagsets {
-            ...TagsetDetails
-          }
-          storageBucket {
-            id
-          }
-        }
-        whiteboard {
-          ...WhiteboardDetails
         }
       }
-      contributionPolicy {
-        id
-        state
+      whiteboard {
+        ...WhiteboardDetails
       }
-      contributionDefaults {
-        id
-        postDescription
-        whiteboardContent
-      }
+    }
+    contributionPolicy {
+      id
+      state
+    }
+    contributionDefaults {
+      id
+      postDescription
+      whiteboardContent
     }
   }
   ${TagsetDetailsFragmentDoc}
   ${WhiteboardDetailsFragmentDoc}
+`;
+export const CommunityGuidelinesTemplatePreviewFragmentDoc = gql`
+  fragment CommunityGuidelinesTemplatePreview on CommunityGuidelines {
+    id
+    profile {
+      id
+      displayName
+      description
+      references {
+        ...ReferenceDetails
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+  ${ReferenceDetailsFragmentDoc}
+`;
+export const InnovationFlowTemplatePreviewFragmentDoc = gql`
+  fragment InnovationFlowTemplatePreview on InnovationFlow {
+    id
+    states {
+      displayName
+      description
+    }
+  }
+`;
+export const WhiteboardTemplatePreviewFragmentDoc = gql`
+  fragment WhiteboardTemplatePreview on Whiteboard {
+    id
+    content
+  }
 `;
 export const TemplateCardProfileInfoFragmentDoc = gql`
   fragment TemplateCardProfileInfo on Profile {
@@ -19662,19 +19693,23 @@ export function refetchPlatformStorageConfigQuery(variables?: SchemaTypes.Platfo
 }
 
 export const ImportTemplateDialogDocument = gql`
-  query ImportTemplateDialog($templateTypes: [TemplateType!]) {
-    platform {
-      library {
-        templates(filter: { types: $templateTypes }) {
-          template {
-            ...TemplateProfileInfo
-          }
-          innovationPack {
+  query ImportTemplateDialog(
+    $templatesSetId: UUID!
+    $includeInnovationFlow: Boolean = false
+    $includeCallout: Boolean = false
+  ) {
+    lookup {
+      templatesSet(ID: $templatesSetId) {
+        templates {
+          ...TemplateProfileInfo
+          callout @include(if: $includeCallout) {
             id
-            profile {
-              id
+            type
+          }
+          innovationFlow @include(if: $includeInnovationFlow) {
+            id
+            states {
               displayName
-              url
             }
           }
         }
@@ -19696,12 +19731,14 @@ export const ImportTemplateDialogDocument = gql`
  * @example
  * const { data, loading, error } = useImportTemplateDialogQuery({
  *   variables: {
- *      templateTypes: // value for 'templateTypes'
+ *      templatesSetId: // value for 'templatesSetId'
+ *      includeInnovationFlow: // value for 'includeInnovationFlow'
+ *      includeCallout: // value for 'includeCallout'
  *   },
  * });
  */
 export function useImportTemplateDialogQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     SchemaTypes.ImportTemplateDialogQuery,
     SchemaTypes.ImportTemplateDialogQueryVariables
   >
@@ -19732,8 +19769,327 @@ export type ImportTemplateDialogQueryResult = Apollo.QueryResult<
   SchemaTypes.ImportTemplateDialogQuery,
   SchemaTypes.ImportTemplateDialogQueryVariables
 >;
-export function refetchImportTemplateDialogQuery(variables?: SchemaTypes.ImportTemplateDialogQueryVariables) {
+export function refetchImportTemplateDialogQuery(variables: SchemaTypes.ImportTemplateDialogQueryVariables) {
   return { query: ImportTemplateDialogDocument, variables: variables };
+}
+
+export const ImportTemplateDialogPlatformTemplatesDocument = gql`
+  query ImportTemplateDialogPlatformTemplates(
+    $templateTypes: [TemplateType!]
+    $includeInnovationFlow: Boolean = false
+    $includeCallout: Boolean = false
+  ) {
+    platform {
+      library {
+        templates(filter: { types: $templateTypes }) {
+          template {
+            ...TemplateProfileInfo
+            callout @include(if: $includeCallout) {
+              id
+              type
+            }
+            innovationFlow @include(if: $includeInnovationFlow) {
+              id
+              states {
+                displayName
+              }
+            }
+          }
+          innovationPack {
+            id
+            profile {
+              id
+              displayName
+              url
+            }
+            provider {
+              id
+              profile {
+                id
+                displayName
+                avatar: visual(type: AVATAR) {
+                  id
+                  uri
+                }
+                url
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  ${TemplateProfileInfoFragmentDoc}
+`;
+
+/**
+ * __useImportTemplateDialogPlatformTemplatesQuery__
+ *
+ * To run a query within a React component, call `useImportTemplateDialogPlatformTemplatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useImportTemplateDialogPlatformTemplatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useImportTemplateDialogPlatformTemplatesQuery({
+ *   variables: {
+ *      templateTypes: // value for 'templateTypes'
+ *      includeInnovationFlow: // value for 'includeInnovationFlow'
+ *      includeCallout: // value for 'includeCallout'
+ *   },
+ * });
+ */
+export function useImportTemplateDialogPlatformTemplatesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.ImportTemplateDialogPlatformTemplatesQuery,
+    SchemaTypes.ImportTemplateDialogPlatformTemplatesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ImportTemplateDialogPlatformTemplatesQuery,
+    SchemaTypes.ImportTemplateDialogPlatformTemplatesQueryVariables
+  >(ImportTemplateDialogPlatformTemplatesDocument, options);
+}
+
+export function useImportTemplateDialogPlatformTemplatesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ImportTemplateDialogPlatformTemplatesQuery,
+    SchemaTypes.ImportTemplateDialogPlatformTemplatesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ImportTemplateDialogPlatformTemplatesQuery,
+    SchemaTypes.ImportTemplateDialogPlatformTemplatesQueryVariables
+  >(ImportTemplateDialogPlatformTemplatesDocument, options);
+}
+
+export type ImportTemplateDialogPlatformTemplatesQueryHookResult = ReturnType<
+  typeof useImportTemplateDialogPlatformTemplatesQuery
+>;
+export type ImportTemplateDialogPlatformTemplatesLazyQueryHookResult = ReturnType<
+  typeof useImportTemplateDialogPlatformTemplatesLazyQuery
+>;
+export type ImportTemplateDialogPlatformTemplatesQueryResult = Apollo.QueryResult<
+  SchemaTypes.ImportTemplateDialogPlatformTemplatesQuery,
+  SchemaTypes.ImportTemplateDialogPlatformTemplatesQueryVariables
+>;
+export function refetchImportTemplateDialogPlatformTemplatesQuery(
+  variables?: SchemaTypes.ImportTemplateDialogPlatformTemplatesQueryVariables
+) {
+  return { query: ImportTemplateDialogPlatformTemplatesDocument, variables: variables };
+}
+
+export const ImportTemplateDataDocument = gql`
+  query ImportTemplateData(
+    $templateId: UUID!
+    $includeCallout: Boolean = false
+    $includeCommunityGuidelines: Boolean = false
+    $includeInnovationFlow: Boolean = false
+    $includePost: Boolean = false
+    $includeWhiteboard: Boolean = false
+  ) {
+    lookup {
+      template(ID: $templateId) {
+        id
+        profile {
+          displayName
+          description
+          tagsets {
+            tags
+          }
+        }
+        communityGuidelines: communityGuidelinesInput @include(if: $includeCommunityGuidelines) {
+          profile {
+            displayName
+            description
+            tagsets {
+              tags
+            }
+          }
+        }
+        callout @include(if: $includeCallout) {
+          type
+          framing {
+            profile {
+              displayName
+              description
+              tagsets {
+                tags
+              }
+            }
+            whiteboard {
+              content
+            }
+          }
+          contributionDefaults {
+            postDescription
+            whiteboardContent
+          }
+        }
+        innovationFlow @include(if: $includeInnovationFlow) {
+          profile {
+            displayName
+            description
+            tagsets {
+              tags
+            }
+          }
+          states {
+            displayName
+            description
+          }
+        }
+        postDefaultDescription @include(if: $includePost)
+        whiteboard @include(if: $includeWhiteboard) {
+          content
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useImportTemplateDataQuery__
+ *
+ * To run a query within a React component, call `useImportTemplateDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useImportTemplateDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useImportTemplateDataQuery({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *      includeCallout: // value for 'includeCallout'
+ *      includeCommunityGuidelines: // value for 'includeCommunityGuidelines'
+ *      includeInnovationFlow: // value for 'includeInnovationFlow'
+ *      includePost: // value for 'includePost'
+ *      includeWhiteboard: // value for 'includeWhiteboard'
+ *   },
+ * });
+ */
+export function useImportTemplateDataQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ImportTemplateDataQuery,
+    SchemaTypes.ImportTemplateDataQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ImportTemplateDataQuery, SchemaTypes.ImportTemplateDataQueryVariables>(
+    ImportTemplateDataDocument,
+    options
+  );
+}
+
+export function useImportTemplateDataLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ImportTemplateDataQuery,
+    SchemaTypes.ImportTemplateDataQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ImportTemplateDataQuery, SchemaTypes.ImportTemplateDataQueryVariables>(
+    ImportTemplateDataDocument,
+    options
+  );
+}
+
+export type ImportTemplateDataQueryHookResult = ReturnType<typeof useImportTemplateDataQuery>;
+export type ImportTemplateDataLazyQueryHookResult = ReturnType<typeof useImportTemplateDataLazyQuery>;
+export type ImportTemplateDataQueryResult = Apollo.QueryResult<
+  SchemaTypes.ImportTemplateDataQuery,
+  SchemaTypes.ImportTemplateDataQueryVariables
+>;
+export function refetchImportTemplateDataQuery(variables: SchemaTypes.ImportTemplateDataQueryVariables) {
+  return { query: ImportTemplateDataDocument, variables: variables };
+}
+
+export const TemplatePreviewDocument = gql`
+  query TemplatePreview(
+    $templateId: UUID!
+    $includeCallout: Boolean = false
+    $includeCommunityGuidelines: Boolean = false
+    $includeInnovationFlow: Boolean = false
+    $includePost: Boolean = false
+    $includeWhiteboard: Boolean = false
+  ) {
+    lookup {
+      template(ID: $templateId) {
+        callout @include(if: $includeCallout) {
+          ...CalloutTemplatePreview
+        }
+        communityGuidelines @include(if: $includeCommunityGuidelines) {
+          ...CommunityGuidelinesTemplatePreview
+        }
+        innovationFlow @include(if: $includeInnovationFlow) {
+          ...InnovationFlowTemplatePreview
+        }
+        postDefaultDescription @include(if: $includePost)
+        whiteboard @include(if: $includeWhiteboard) {
+          ...WhiteboardTemplatePreview
+        }
+      }
+    }
+  }
+  ${CalloutTemplatePreviewFragmentDoc}
+  ${CommunityGuidelinesTemplatePreviewFragmentDoc}
+  ${InnovationFlowTemplatePreviewFragmentDoc}
+  ${WhiteboardTemplatePreviewFragmentDoc}
+`;
+
+/**
+ * __useTemplatePreviewQuery__
+ *
+ * To run a query within a React component, call `useTemplatePreviewQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTemplatePreviewQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTemplatePreviewQuery({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *      includeCallout: // value for 'includeCallout'
+ *      includeCommunityGuidelines: // value for 'includeCommunityGuidelines'
+ *      includeInnovationFlow: // value for 'includeInnovationFlow'
+ *      includePost: // value for 'includePost'
+ *      includeWhiteboard: // value for 'includeWhiteboard'
+ *   },
+ * });
+ */
+export function useTemplatePreviewQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.TemplatePreviewQuery, SchemaTypes.TemplatePreviewQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.TemplatePreviewQuery, SchemaTypes.TemplatePreviewQueryVariables>(
+    TemplatePreviewDocument,
+    options
+  );
+}
+
+export function useTemplatePreviewLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.TemplatePreviewQuery, SchemaTypes.TemplatePreviewQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.TemplatePreviewQuery, SchemaTypes.TemplatePreviewQueryVariables>(
+    TemplatePreviewDocument,
+    options
+  );
+}
+
+export type TemplatePreviewQueryHookResult = ReturnType<typeof useTemplatePreviewQuery>;
+export type TemplatePreviewLazyQueryHookResult = ReturnType<typeof useTemplatePreviewLazyQuery>;
+export type TemplatePreviewQueryResult = Apollo.QueryResult<
+  SchemaTypes.TemplatePreviewQuery,
+  SchemaTypes.TemplatePreviewQueryVariables
+>;
+export function refetchTemplatePreviewQuery(variables: SchemaTypes.TemplatePreviewQueryVariables) {
+  return { query: TemplatePreviewDocument, variables: variables };
 }
 
 export const AllTemplatesInTemplatesSetDocument = gql`
@@ -20258,69 +20614,6 @@ export type WhiteboardTemplateContentQueryResult = Apollo.QueryResult<
 >;
 export function refetchWhiteboardTemplateContentQuery(variables: SchemaTypes.WhiteboardTemplateContentQueryVariables) {
   return { query: WhiteboardTemplateContentDocument, variables: variables };
-}
-
-export const CalloutTemplatePreviewDocument = gql`
-  query CalloutTemplatePreview($calloutTemplateId: UUID!) {
-    lookup {
-      template(ID: $calloutTemplateId) {
-        ...CalloutTemplatePreview
-      }
-    }
-  }
-  ${CalloutTemplatePreviewFragmentDoc}
-`;
-
-/**
- * __useCalloutTemplatePreviewQuery__
- *
- * To run a query within a React component, call `useCalloutTemplatePreviewQuery` and pass it any options that fit your needs.
- * When your component renders, `useCalloutTemplatePreviewQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCalloutTemplatePreviewQuery({
- *   variables: {
- *      calloutTemplateId: // value for 'calloutTemplateId'
- *   },
- * });
- */
-export function useCalloutTemplatePreviewQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CalloutTemplatePreviewQuery,
-    SchemaTypes.CalloutTemplatePreviewQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CalloutTemplatePreviewQuery, SchemaTypes.CalloutTemplatePreviewQueryVariables>(
-    CalloutTemplatePreviewDocument,
-    options
-  );
-}
-
-export function useCalloutTemplatePreviewLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CalloutTemplatePreviewQuery,
-    SchemaTypes.CalloutTemplatePreviewQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.CalloutTemplatePreviewQuery, SchemaTypes.CalloutTemplatePreviewQueryVariables>(
-    CalloutTemplatePreviewDocument,
-    options
-  );
-}
-
-export type CalloutTemplatePreviewQueryHookResult = ReturnType<typeof useCalloutTemplatePreviewQuery>;
-export type CalloutTemplatePreviewLazyQueryHookResult = ReturnType<typeof useCalloutTemplatePreviewLazyQuery>;
-export type CalloutTemplatePreviewQueryResult = Apollo.QueryResult<
-  SchemaTypes.CalloutTemplatePreviewQuery,
-  SchemaTypes.CalloutTemplatePreviewQueryVariables
->;
-export function refetchCalloutTemplatePreviewQuery(variables: SchemaTypes.CalloutTemplatePreviewQueryVariables) {
-  return { query: CalloutTemplatePreviewDocument, variables: variables };
 }
 
 export const CalloutTemplateEditableAttributesDocument = gql`

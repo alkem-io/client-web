@@ -8,6 +8,7 @@ import GridProvider from '../../../../core/ui/grid/GridProvider';
 import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import { Caption } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { CARLOS_BORDER_RED } from '../../_new/borders';
 
 const GallerySkeleton: FC<BoxProps> = props => {
   return (
@@ -25,7 +26,11 @@ export interface CollaborationTemplatesLibraryGalleryProps<Template extends Temp
   onPreviewTemplate: (template: Template & Identifiable) => void;
   loading?: boolean;
 }
-
+/**
+ * //!! delete this file
+ * @deprecated
+ * @returns
+ */
 const CollaborationTemplatesLibraryGallery = <Template extends TemplateBase>({
   templates,
   templateCardComponent: TemplateCard,
@@ -35,6 +40,7 @@ const CollaborationTemplatesLibraryGallery = <Template extends TemplateBase>({
   const { t } = useTranslation();
 
   return (
+    <Box sx={{ border: CARLOS_BORDER_RED }}>
     <GridProvider columns={12}>
       {(loading || !templates) && <GallerySkeleton />}
       {!loading && templates && templates.length > 0 && (
@@ -48,6 +54,7 @@ const CollaborationTemplatesLibraryGallery = <Template extends TemplateBase>({
         <Caption>{t('pages.admin.generic.sections.templates.import.no-templates')}</Caption>
       )}
     </GridProvider>
+    </Box>
   );
 };
 

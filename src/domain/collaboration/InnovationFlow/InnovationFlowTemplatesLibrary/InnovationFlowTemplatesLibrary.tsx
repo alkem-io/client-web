@@ -14,7 +14,7 @@ import { TemplateBase } from '../../../templates/library/CollaborationTemplatesL
 import CollaborationTemplatesLibraryButton from '../../../templates/library/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
 import CollaborationTemplatesLibrary from '../../../templates/library/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
 import InnovationFlowTemplateCard from '../../../templates/_new/components/cards/InnovationFlowTemplateCard';
-import InnovationFlowTemplatePreview from '../../../templates/library/InnovationFlowTemplatesLibrary/InnovationFlowTemplatePreview';
+import InnovationFlowTemplatePreview from '../../../templates/_new/components/Previews/InnovationFlowTemplatePreview';
 
 export interface InnovationFlowTemplatesLibraryProps {
   onImportTemplate: (template: Identifiable) => void;

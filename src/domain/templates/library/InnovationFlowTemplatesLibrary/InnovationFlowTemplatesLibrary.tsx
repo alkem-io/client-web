@@ -9,7 +9,7 @@ import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import InnovationFlowTemplateCard, {
   InnovationFlowTemplate,
 } from '../../_new/components/cards/InnovationFlowTemplateCard';
-import InnovationFlowTemplatePreview from './InnovationFlowTemplatePreview';
+import InnovationFlowTemplatePreview from '../../_new/components/Previews/InnovationFlowTemplatePreview';
 import { Autorenew } from '@mui/icons-material';
 import { TemplateWithInnovationPack } from '../../_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialogGallery';
 import { Identifiable } from '../../../../core/utils/Identifiable';

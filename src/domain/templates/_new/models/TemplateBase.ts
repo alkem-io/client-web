@@ -39,13 +39,13 @@ export interface NewTemplateInnovationPack extends Identifiable {
     displayName: string;
   };
   provider?: {
-    nameID: string;
     profile: {
       displayName: string;
       avatar?: {
         id: string;
         uri: string;
       };
+      url?: string;
     };
   };
 }

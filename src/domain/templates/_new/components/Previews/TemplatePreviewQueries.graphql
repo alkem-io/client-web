@@ -1,0 +1,86 @@
+query TemplatePreview(
+  $templateId: UUID!
+  $includeCallout: Boolean = false
+  $includeCommunityGuidelines: Boolean = false
+  $includeInnovationFlow: Boolean = false
+  $includePost: Boolean = false
+  $includeWhiteboard: Boolean = false
+) {
+  lookup {
+    template(ID: $templateId) {
+      callout @include(if: $includeCallout) {
+        ...CalloutTemplatePreview
+      }
+      communityGuidelines @include(if: $includeCommunityGuidelines) {
+        ...CommunityGuidelinesTemplatePreview
+      }
+      innovationFlow @include(if: $includeInnovationFlow) {
+        ...InnovationFlowTemplatePreview
+      }
+      postDefaultDescription @include(if: $includePost)
+      whiteboard @include(if: $includeWhiteboard) {
+        ...WhiteboardTemplatePreview
+      }
+    }
+  }
+}
+
+fragment CalloutTemplatePreview on Callout {
+  id
+  type
+  framing {
+    id
+    profile {
+      id
+      displayName
+      description
+      tagsets {
+        ...TagsetDetails
+      }
+      storageBucket {
+        id
+      }
+    }
+    whiteboard {
+      ...WhiteboardDetails
+    }
+  }
+  contributionPolicy {
+    id
+    state
+  }
+  contributionDefaults {
+    id
+    postDescription
+    whiteboardContent
+  }
+}
+
+fragment CommunityGuidelinesTemplatePreview on CommunityGuidelines {
+  id
+  profile {
+    id
+    displayName
+    description
+    references {
+      ...ReferenceDetails
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+}
+
+fragment InnovationFlowTemplatePreview on InnovationFlow {
+  id
+  states {
+    displayName
+    description
+  }
+}
+
+fragment WhiteboardTemplatePreview on Whiteboard {
+  id
+  content
+}

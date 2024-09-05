@@ -8,7 +8,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import WhiteboardTemplateCard from '../../_new/components/cards/WhiteboardTemplateCard';
-import WhiteboardTemplatePreview from './WhiteboardTemplatePreview';
+import WhiteboardTemplatePreview from '../../_new/components/Previews/WhiteboardTemplatePreview';
 import { TemplateWithInnovationPack } from '../../_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialogGallery';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { WhiteboardTemplate } from '../../_new/models/WhiteboardTemplate';

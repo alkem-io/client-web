@@ -13,7 +13,7 @@ import { PostTemplate, PostTemplateWithValue } from '../../../templates/_new/mod
 import CollaborationTemplatesLibraryButton from '../../../templates/library/CollaborationTemplatesLibrary/CollaborationTemplatesLibraryButton';
 import CollaborationTemplatesLibrary from '../../../templates/library/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
 import { TemplateCardBaseProps } from '../../../templates/library/CollaborationTemplatesLibrary/TemplateBase';
-import PostTemplatePreview from '../../../templates/library/PostTemplatesLibrary/PostTemplatePreview';
+import PostTemplatePreview from '../../../templates/_new/components/Previews/PostTemplatePreview';
 
 export interface PostTemplatesLibraryProps {
   onSelectTemplate: (template: PostTemplateWithValue) => void;

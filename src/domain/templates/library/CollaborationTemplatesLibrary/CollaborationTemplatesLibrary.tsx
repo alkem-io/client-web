@@ -1,36 +1,26 @@
-import { Box, Button, DialogContent, Link } from '@mui/material';
+import { Button, DialogContent, Link } from '@mui/material';
 import React, { ComponentType, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import CollaborationTemplatesLibraryGallery from './CollaborationTemplatesLibraryGallery';
 import CollaborationTemplatesLibraryPreview from './CollaborationTemplatesLibraryPreview';
 import SearchIcon from '@mui/icons-material/ImageSearch';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { TemplateBase, TemplateCardBaseProps } from './TemplateBase';
 import { identity } from 'lodash';
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
-import { gutters } from '../../../../core/ui/grid/utils';
 import { Identifiable, Identifiables } from '../../../../core/utils/Identifiable';
 import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import Spacer from '../../../../core/ui/content/Spacer';
+import { CARLOS_BORDER_RED } from '../../_new/borders';
+import DisabledTemplateInfo from '../../_new/components/Dialogs/PreviewTemplateDialog/DisabledTemplateInfo';
 
 enum TemplateSource {
   Space,
   Platform,
 }
-
-const DisabledTemplateInfo = () => {
-  const { t } = useTranslation();
-  return (
-    <Box display="flex" gap={gutters(0.5)}>
-      <InfoOutlinedIcon />
-      <Caption>{t('templateLibrary.disabledTemplateInfo')}</Caption>
-    </Box>
-  );
-};
 
 export interface CollaborationTemplatesLibraryProps<
   Template extends TemplateBase,
@@ -72,7 +62,10 @@ export interface CollaborationTemplatesLibraryProps<
   disableUsePlatformTemplates?: boolean;
   confirmationDialog?: ComponentType<{ open: boolean; onClose: () => void; onConfirm: () => void }>;
 }
-
+/**
+ * @deprecated
+ * //!! REMOVE THIS FILE
+ */
 const CollaborationTemplatesLibrary = <
   Template extends TemplateBase,
   TemplateWithContent extends {},
@@ -159,7 +152,7 @@ const CollaborationTemplatesLibrary = <
           />
         )}
       </DialogHeader>
-      <DialogContent>
+      <DialogContent sx={{ border: CARLOS_BORDER_RED }}>
         {!previewTemplate && !loadingPreview ? (
           <Gutters>
             {templatesFromSpace && (

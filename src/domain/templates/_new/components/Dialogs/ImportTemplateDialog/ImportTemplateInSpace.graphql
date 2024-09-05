@@ -1,0 +1,69 @@
+query ImportTemplateData(
+  $templateId: UUID!
+  $includeCallout: Boolean = false
+  $includeCommunityGuidelines: Boolean = false
+  $includeInnovationFlow: Boolean = false
+  $includePost: Boolean = false
+  $includeWhiteboard: Boolean = false
+) {
+  lookup {
+    template(ID: $templateId) {
+      id
+      profile {
+        displayName
+        description
+        tagsets {
+          tags
+        }
+      }
+      # All of them should be like this: //!!
+      communityGuidelines: communityGuidelinesInput @include(if: $includeCommunityGuidelines) {
+        profile {
+          displayName
+          description
+          tagsets {
+            tags
+          }
+        }
+        # tags ??
+      }
+      # ... will be changed to calloutInput
+      callout @include(if: $includeCallout) {
+        type
+        framing {
+          profile {
+            displayName
+            description
+            tagsets {
+              tags
+            }
+          }
+          whiteboard {
+            content
+          }
+        }
+        contributionDefaults {
+          postDescription
+          whiteboardContent
+        }
+      }
+      innovationFlow @include(if: $includeInnovationFlow) {
+        profile {
+          displayName
+          description
+          tagsets {
+            tags
+          }
+        }
+        states {
+          displayName
+          description
+        }
+      }
+      postDefaultDescription @include(if: $includePost)
+      whiteboard @include(if: $includeWhiteboard) {
+        content
+      }
+    }
+  }
+}

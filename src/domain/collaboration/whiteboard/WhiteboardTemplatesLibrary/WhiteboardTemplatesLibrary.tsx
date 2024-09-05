@@ -13,7 +13,7 @@ import { Identifiable } from '../../../../core/utils/Identifiable';
 import { WhiteboardTemplate } from '../../../templates/_new/models/WhiteboardTemplate';
 import { TemplateBase } from '../../../templates/library/CollaborationTemplatesLibrary/TemplateBase';
 import CollaborationTemplatesLibrary from '../../../templates/library/CollaborationTemplatesLibrary/CollaborationTemplatesLibrary';
-import WhiteboardTemplatePreview from '../../../templates/library/WhiteboardTemplatesLibrary/WhiteboardTemplatePreview';
+import WhiteboardTemplatePreview from '../../../templates/_new/components/Previews/WhiteboardTemplatePreview';
 
 export interface WhiteboardTemplatesLibraryProps {
   open: boolean;

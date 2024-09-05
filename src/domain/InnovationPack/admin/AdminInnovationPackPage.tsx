@@ -125,6 +125,7 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = () => {
                   templateId={templateSelected}
                   baseUrl={innovationPack.profile.url}
                   indexUrl={buildInnovationPackSettingsUrl(innovationPack.profile.url)}
+                  alwaysEditTemplate  // When editing an Innovation pack, we don't want to see template preview, just go to Edit mode always
                   canDeleteTemplates
                   canCreateTemplates
                 />

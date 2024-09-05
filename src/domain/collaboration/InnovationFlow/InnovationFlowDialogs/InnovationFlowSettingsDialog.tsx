@@ -9,9 +9,10 @@ import useInnovationFlowSettings from './useInnovationFlowSettings';
 import InnovationFlowCollaborationToolsBlock from './InnovationFlowCollaborationToolsBlock';
 import PageContentBlockContextualMenu from '../../../../core/ui/content/PageContentBlockContextualMenu';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
-import ImportInnovationFlowDialog from './ImportInnovationFlow/ImportInnovationFlowDialog';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { CalloutGroupNameValuesMap } from '../../callout/CalloutsInContext/CalloutsGroup';
+import ImportTemplatesDialog from '../../../templates/_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 
 interface InnovationFlowSettingsDialogProps {
   open?: boolean;
@@ -115,11 +116,15 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
           confirmButtonTextId: 'buttons.continue',
         }}
       />
-      <ImportInnovationFlowDialog
+      <ImportTemplatesDialog
+        headerText="Import Innovation Flow"
         open={importInnovationFlowDialogOpen}
-        templatesSetId={templatesSetId}
+        templateType={TemplateType.InnovationFlow}
         onClose={() => setImportInnovationFlowDialogOpen(false)}
-        handleImportTemplate={handleImportTemplate}
+        onSelectTemplate={(template) => handleImportTemplate(template.id)}
+        templatesSetId={templatesSetId}
+        allowBrowsePlatformTemplates
+        actionButton={undefined}
       />
     </>
   );

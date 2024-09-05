@@ -26,40 +26,20 @@ const SpaceTemplatesAdminRoutes = (props: SpaceTemplatesAdminRoutesProps) => {
         element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
       />
       <Route
-        path={`${RoutePaths.calloutTemplatesRoutePath}/:${nameOfUrl.calloutTemplateId}/edit`}
-        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} editTemplateMode />}
-      />
-      <Route
         path={`${RoutePaths.postTemplatesRoutePath}/:${nameOfUrl.postNameId}`}
         element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
-      />
-      <Route
-        path={`${RoutePaths.postTemplatesRoutePath}/:${nameOfUrl.postNameId}/edit`}
-        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} editTemplateMode />}
       />
       <Route
         path={`${RoutePaths.whiteboardTemplatesRoutePath}/:${nameOfUrl.whiteboardNameId}`}
         element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
       />
       <Route
-        path={`${RoutePaths.whiteboardTemplatesRoutePath}/:${nameOfUrl.whiteboardNameId}/edit`}
-        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} editTemplateMode />}
-      />
-      <Route
         path={`${RoutePaths.innovationTemplatesRoutePath}/:${nameOfUrl.innovationTemplateId}`}
         element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
       />
       <Route
-        path={`${RoutePaths.innovationTemplatesRoutePath}/:${nameOfUrl.innovationTemplateId}/edit`}
-        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} editTemplateMode />}
-      />
-      <Route
         path={`${RoutePaths.communityGuidelinesTemplatesRoutePath}/:${nameOfUrl.communityGuidelinesNameId}`}
         element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
-      />
-      <Route
-        path={`${RoutePaths.communityGuidelinesTemplatesRoutePath}/:${nameOfUrl.communityGuidelinesNameId}/edit`}
-        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} editTemplateMode />}
       />
     </Routes>
   );

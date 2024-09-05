@@ -34,7 +34,10 @@ export interface CollaborationTemplatesLibraryPreviewProps<Template extends Temp
     };
   };
 }
-
+/**
+ * @deprecated
+ * //!! DELETE THIS FILE
+ */
 const CollaborationTemplatesLibraryPreview = <Template extends TemplateBase, TemplateValue extends {}>({
   template,
   templateCardComponent: TemplateCard,

@@ -36,7 +36,7 @@ const ImportInnovationFlowDialog = ({
       templateType={TemplateType.InnovationFlow}
       open={open}
       onClose={onClose}
-      onImportTemplate={template => handleImportTemplate(template.id)}
+      onSelectTemplate={template => handleImportTemplate(template.id)}
       actionButton={
         <Button startIcon={<SystemUpdateAltIcon />} variant="contained" sx={{ marginLeft: theme => theme.spacing(1) }}>
           {t('buttons.use')}

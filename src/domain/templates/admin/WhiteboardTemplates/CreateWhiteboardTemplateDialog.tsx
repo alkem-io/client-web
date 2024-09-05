@@ -13,7 +13,10 @@ export interface CreateWhiteboardTemplateDialogProps {
   onClose: DialogHeaderProps['onClose'];
   onSubmit: (values: WhiteboardTemplateFormSubmittedValuesWithPreviewImages) => void;
 }
-
+/**
+ * @deprecated
+ * //!! delete this folder
+ */
 const CreateWhiteboardTemplateDialog = ({ open, onClose, onSubmit }: CreateWhiteboardTemplateDialogProps) => {
   const { t } = useTranslation();
 

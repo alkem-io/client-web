@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import ScrollableCardsLayoutContainer from '../../../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import { Caption } from '../../../../../../core/ui/typography';
 import GridProvider from '../../../../../../core/ui/grid/GridProvider';
-import { Skeleton } from '@mui/material';
 import { AnyTemplate, AnyTemplateWithInnovationPack } from '../../../models/TemplateBase';
 import TemplateCard from '../../cards/TemplateCard';
-
+import ContributeCardSkeleton from '../../../../../../core/ui/card/ContributeCardSkeleton';
+import { times } from 'lodash';
 
 export interface ImportTemplatesDialogGalleryProps {
   templates: AnyTemplateWithInnovationPack[] | undefined;
@@ -36,9 +36,9 @@ const ImportTemplatesDialogGallery = ({
 
   return (
     <GridProvider columns={12}>
-      {loading && <Skeleton />}
       {templates.length > 0 && (
         <ScrollableCardsLayoutContainer>
+          {loading ? times(3, () => <ContributeCardSkeleton />) : null}
           {templates.map(({ template, innovationPack }) => (
             <TemplateCard key={template.id} template={template} innovationPack={innovationPack} onClick={() => onClickTemplate(template)} />
           ))}
