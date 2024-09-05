@@ -162,10 +162,6 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     }
   }, [spaceId, open, canCreateCallout, vcData]);
 
-  useEffect(() => {
-    console.info(vcData?.virtualContributor.status);
-  }, [vcData]);
-
   if (calloutError || hasError || vcError) {
     setDemoCalloutCreationLoading(false);
     removeVCCreationCache();
