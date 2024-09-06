@@ -23813,145 +23813,6 @@ export type CalloutOnCollaborationWithStorageConfigFragment = {
   }>;
 };
 
-export type CreateCommunityGuidelinesInputQueryVariables = Exact<{
-  communityGuidelinesId: Scalars['UUID'];
-}>;
-
-export type CreateCommunityGuidelinesInputQuery = {
-  __typename?: 'Query';
-  inputCreator: {
-    __typename?: 'InputCreatorQueryResults';
-    communityGuidelines?:
-      | {
-          __typename?: 'CreateCommunityGuidelinesData';
-          profile: {
-            __typename?: 'CreateProfileData';
-            displayName: string;
-            description?: string | undefined;
-            referencesData?:
-              | Array<{
-                  __typename?: 'CreateReferenceData';
-                  name: string;
-                  uri?: string | undefined;
-                  description?: string | undefined;
-                }>
-              | undefined;
-          };
-        }
-      | undefined;
-  };
-};
-
-export type CreateCalloutInputQueryVariables = Exact<{
-  calloutId: Scalars['UUID'];
-}>;
-
-export type CreateCalloutInputQuery = {
-  __typename?: 'Query';
-  inputCreator: {
-    __typename?: 'InputCreatorQueryResults';
-    callout?:
-      | {
-          __typename?: 'CreateCalloutData';
-          type: CalloutType;
-          framing: {
-            __typename?: 'CreateCalloutFramingData';
-            profile: {
-              __typename?: 'CreateProfileData';
-              displayName: string;
-              description?: string | undefined;
-              tagsets?: Array<{ __typename?: 'CreateTagsetData'; tags?: Array<string> | undefined }> | undefined;
-            };
-            whiteboard?: { __typename?: 'CreateWhiteboardData'; content?: string | undefined } | undefined;
-          };
-          contributionDefaults?:
-            | {
-                __typename?: 'CreateCalloutContributionDefaultsData';
-                postDescription?: string | undefined;
-                whiteboardContent?: string | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type CreateCollaborationInputQueryVariables = Exact<{
-  collaborationId: Scalars['UUID'];
-}>;
-
-export type CreateCollaborationInputQuery = {
-  __typename?: 'Query';
-  inputCreator: {
-    __typename?: 'InputCreatorQueryResults';
-    collaboration?:
-      | {
-          __typename?: 'CreateCollaborationData';
-          calloutsData?:
-            | Array<{
-                __typename?: 'CreateCalloutData';
-                framing: {
-                  __typename?: 'CreateCalloutFramingData';
-                  profile: { __typename?: 'CreateProfileData'; displayName: string };
-                };
-              }>
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type CreateInnovationFlowInputQueryVariables = Exact<{
-  innovationFlowId: Scalars['UUID'];
-}>;
-
-export type CreateInnovationFlowInputQuery = {
-  __typename?: 'Query';
-  inputCreator: {
-    __typename?: 'InputCreatorQueryResults';
-    innovationFlow?:
-      | {
-          __typename?: 'CreateInnovationFlowData';
-          profile: {
-            __typename?: 'CreateProfileData';
-            displayName: string;
-            description?: string | undefined;
-            tagsets?: Array<{ __typename?: 'CreateTagsetData'; tags?: Array<string> | undefined }> | undefined;
-          };
-          states: Array<{
-            __typename?: 'CreateInnovationFlowStateData';
-            displayName: string;
-            description?: string | undefined;
-          }>;
-        }
-      | undefined;
-  };
-};
-
-export type CreateWhiteboardInputQueryVariables = Exact<{
-  whiteboardId: Scalars['UUID'];
-}>;
-
-export type CreateWhiteboardInputQuery = {
-  __typename?: 'Query';
-  inputCreator: {
-    __typename?: 'InputCreatorQueryResults';
-    whiteboard?: { __typename?: 'CreateWhiteboardData'; content?: string | undefined } | undefined;
-  };
-};
-
-export type CreatePostInputQueryVariables = Exact<{
-  templateId: Scalars['UUID'];
-}>;
-
-export type CreatePostInputQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    template?: { __typename?: 'Template'; id: string; postDefaultDescription?: string | undefined } | undefined;
-  };
-};
-
 export type ImportTemplateDialogQueryVariables = Exact<{
   templatesSetId: Scalars['UUID'];
   includeInnovationFlow?: InputMaybe<Scalars['Boolean']>;
@@ -25581,6 +25442,167 @@ export type SpaceLibraryQuery = {
     space?:
       | { __typename?: 'Space'; id: string; library?: { __typename?: 'TemplatesSet'; id: string } | undefined }
       | undefined;
+  };
+};
+
+export type CreateTemplateInputQueryVariables = Exact<{
+  templateId: Scalars['UUID'];
+}>;
+
+export type CreateTemplateInputQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    template?:
+      | {
+          __typename?: 'Template';
+          profile: {
+            __typename?: 'Profile';
+            displayName: string;
+            description?: string | undefined;
+            tagset?: { __typename?: 'Tagset'; tags: Array<string> } | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type CreateCommunityGuidelinesInputQueryVariables = Exact<{
+  communityGuidelinesId: Scalars['UUID'];
+}>;
+
+export type CreateCommunityGuidelinesInputQuery = {
+  __typename?: 'Query';
+  inputCreator: {
+    __typename?: 'InputCreatorQueryResults';
+    communityGuidelines?:
+      | {
+          __typename?: 'CreateCommunityGuidelinesData';
+          profile: {
+            __typename?: 'CreateProfileData';
+            displayName: string;
+            description?: string | undefined;
+            referencesData?:
+              | Array<{
+                  __typename?: 'CreateReferenceData';
+                  name: string;
+                  uri?: string | undefined;
+                  description?: string | undefined;
+                }>
+              | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type CreateCalloutInputQueryVariables = Exact<{
+  calloutId: Scalars['UUID'];
+}>;
+
+export type CreateCalloutInputQuery = {
+  __typename?: 'Query';
+  inputCreator: {
+    __typename?: 'InputCreatorQueryResults';
+    callout?:
+      | {
+          __typename?: 'CreateCalloutData';
+          type: CalloutType;
+          framing: {
+            __typename?: 'CreateCalloutFramingData';
+            profile: {
+              __typename?: 'CreateProfileData';
+              displayName: string;
+              description?: string | undefined;
+              tagsets?: Array<{ __typename?: 'CreateTagsetData'; tags?: Array<string> | undefined }> | undefined;
+            };
+            whiteboard?: { __typename?: 'CreateWhiteboardData'; content?: string | undefined } | undefined;
+          };
+          contributionDefaults?:
+            | {
+                __typename?: 'CreateCalloutContributionDefaultsData';
+                postDescription?: string | undefined;
+                whiteboardContent?: string | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CreateCollaborationInputQueryVariables = Exact<{
+  collaborationId: Scalars['UUID'];
+}>;
+
+export type CreateCollaborationInputQuery = {
+  __typename?: 'Query';
+  inputCreator: {
+    __typename?: 'InputCreatorQueryResults';
+    collaboration?:
+      | {
+          __typename?: 'CreateCollaborationData';
+          calloutsData?:
+            | Array<{
+                __typename?: 'CreateCalloutData';
+                framing: {
+                  __typename?: 'CreateCalloutFramingData';
+                  profile: { __typename?: 'CreateProfileData'; displayName: string };
+                };
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CreateInnovationFlowInputQueryVariables = Exact<{
+  innovationFlowId: Scalars['UUID'];
+}>;
+
+export type CreateInnovationFlowInputQuery = {
+  __typename?: 'Query';
+  inputCreator: {
+    __typename?: 'InputCreatorQueryResults';
+    innovationFlow?:
+      | {
+          __typename?: 'CreateInnovationFlowData';
+          profile: {
+            __typename?: 'CreateProfileData';
+            displayName: string;
+            description?: string | undefined;
+            tagsets?: Array<{ __typename?: 'CreateTagsetData'; tags?: Array<string> | undefined }> | undefined;
+          };
+          states: Array<{
+            __typename?: 'CreateInnovationFlowStateData';
+            displayName: string;
+            description?: string | undefined;
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type CreateWhiteboardInputQueryVariables = Exact<{
+  whiteboardId: Scalars['UUID'];
+}>;
+
+export type CreateWhiteboardInputQuery = {
+  __typename?: 'Query';
+  inputCreator: {
+    __typename?: 'InputCreatorQueryResults';
+    whiteboard?: { __typename?: 'CreateWhiteboardData'; content?: string | undefined } | undefined;
+  };
+};
+
+export type CreatePostInputQueryVariables = Exact<{
+  templateId: Scalars['UUID'];
+}>;
+
+export type CreatePostInputQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    template?: { __typename?: 'Template'; id: string; postDefaultDescription?: string | undefined } | undefined;
   };
 };
 

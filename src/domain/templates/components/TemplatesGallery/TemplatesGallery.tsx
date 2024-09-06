@@ -5,7 +5,6 @@ import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout
 import TemplateCard from '../cards/TemplateCard';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { AnyTemplate } from '../../models/TemplateBase';
-import { CARLOS_BORDER_GREEN } from '../../borders';
 import ContributeCardSkeleton from '../../../../core/ui/card/ContributeCardSkeleton';
 import { times } from 'lodash';
 
@@ -29,7 +28,7 @@ const TemplatesGallery: FC<TemplatesGalleryProps> = ({
 }) => {
   return (
     <>
-      <PageContentBlock sx={{ border: CARLOS_BORDER_GREEN }}>
+      <PageContentBlock>
         <PageContentBlockHeader title={headerText} actions={actions} />
         <ScrollableCardsLayoutContainer>
           {loading && !templates ? times(3, () => <ContributeCardSkeleton />) : null}

@@ -1,18 +1,16 @@
-# query ImportTemplateData($templateId: UUID!) {
-#   lookup {
-#     template(ID: $templateId) {
-#       id
-#       profile {
-#         displayName
-#         description
-#         tagsets {
-#           ID: id # Renamed to match the UpdateProfileInput
-#           tags
-#         }
-#       }
-#     }
-#   }
-# }
+query CreateTemplateInput($templateId: UUID!) {
+  lookup {
+    template(ID: $templateId) {
+      profile {
+        displayName
+        description
+        tagset {
+          tags
+        }
+      }
+    }
+  }
+}
 
 query CreateCommunityGuidelinesInput($communityGuidelinesId: UUID!) {
   inputCreator {

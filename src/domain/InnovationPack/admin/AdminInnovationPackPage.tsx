@@ -23,6 +23,7 @@ export enum RoutePaths {
   innovationTemplatesRoutePath = 'innovation-templates',
   calloutTemplatesRoutePath = 'callout-templates',
   communityGuidelinesTemplatesRoutePath = 'community-guidelines-templates',
+  collaborationTemplatesRoutePath = 'collaboration-templates',
 }
 
 interface AdminInnovationPackPageProps {}
@@ -37,9 +38,10 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = () => {
     innovationTemplateId,
     calloutTemplateId,
     communityGuidelinesNameId,
+    collaborationTemplateId,
   } = useUrlParams();
   const templateSelected =
-    communityGuidelinesNameId || calloutTemplateId || innovationTemplateId || postNameId || whiteboardNameId;
+    communityGuidelinesNameId || calloutTemplateId || innovationTemplateId || postNameId || whiteboardNameId || collaborationTemplateId;
 
   if (!innovationPackNameId) {
     throw new Error('Must be within Innovation Pack');

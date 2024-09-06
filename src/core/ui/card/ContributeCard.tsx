@@ -5,7 +5,6 @@ import withElevationOnHover from '../../../domain/shared/components/withElevatio
 import GridItem from '../grid/GridItem';
 import RouterLink from '../link/RouterLink';
 import ButtonBaseAlignReset from '../button/ButtonBaseAlignReset';
-import { CARLOS_BORDER_GREEN } from '../../../domain/templates/borders';
 
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
@@ -16,13 +15,12 @@ export interface ContributeCardProps {
   columns?: number;
   to?: string;
   state?: Record<string, unknown>;
-  good?: boolean; //!! Remove this!
 }
 
 export const CONTRIBUTE_CARD_COLUMNS = 3;
 
 const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCardProps>>(
-  ({ columns = CONTRIBUTE_CARD_COLUMNS, to, state, onClick, sx, highlighted, good, children }, ref) => {
+  ({ columns = CONTRIBUTE_CARD_COLUMNS, to, state, onClick, sx, highlighted, children }, ref) => {
     const getBaseComponentProps = () => {
       if (onClick) {
         return {
@@ -50,7 +48,6 @@ const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCa
             flexDirection: 'column',
             alignItems: 'stretch',
             cursor: onClick || to ? 'pointer' : 'default',
-            border: good ? CARLOS_BORDER_GREEN : undefined,
             ...sx,
           }}
           ref={ref}
