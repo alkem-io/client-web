@@ -1065,8 +1065,8 @@
       "inviteExistingUser": "Invite Alkemio users",
       "inviteExternalUser": "Send email invitation",
       "inviteOrganizations": "Invite Organizations",
-      "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Click on the link below to have a look or directly accept the invitation.",
-      "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Click on the link below to have a look or directly accept the invitation.",
+      "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Click on the card on the left to have a look or click on the button below to directly accept the invitation.",
+      "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Click on the card on the left to have a look or click on the button below to directly accept the invitation.",
       "inviteExistingUserDialog": {
         "title": "Invite other Alkemio users to join this Space",
         "subtitle": "You can search for Alkemio users below and attach a personalized message.",
