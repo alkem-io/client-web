@@ -4,6 +4,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Caption } from '../../../../../../core/ui/typography';
 import { Box } from '@mui/material';
 
+//!! not used, but probably should
 const DisabledTemplateInfo = () => {
   const { t } = useTranslation();
   return (

@@ -80,3 +80,16 @@ mutation updateInnovationPack($packData: UpdateInnovationPackInput!) {
     nameID
   }
 }
+
+fragment InnovationPackProviderProfileWithAvatar on Contributor {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+    url
+  }
+}

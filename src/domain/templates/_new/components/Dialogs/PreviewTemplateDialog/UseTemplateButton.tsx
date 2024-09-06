@@ -10,10 +10,8 @@ interface UseTemplateButtonProps {
   disabled?: boolean;
 }
 
-const UseTemplateButton = ({
-  onClick,
-  disabled,
-}: UseTemplateButtonProps) => {
+//!! not used, but probably should
+const UseTemplateButton = ({ onClick, disabled }: UseTemplateButtonProps) => {
   const { t } = useTranslation();
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [handleClick, loading] = useLoadingState(async () => {
