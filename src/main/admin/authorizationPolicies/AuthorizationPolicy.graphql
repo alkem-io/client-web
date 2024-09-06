@@ -4,6 +4,7 @@ query AuthorizationPolicy($authorizationPolicyId: UUID!) {
       ID: $authorizationPolicyId
     ) {
       id
+      type
       anonymousReadAccess
       credentialRules {
         name

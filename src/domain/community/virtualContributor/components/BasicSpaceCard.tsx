@@ -12,7 +12,7 @@ export interface BasicSpaceProps {
     uri: string;
   };
   displayName: string;
-  tagline: string;
+  tagline?: string;
   url: string;
 }
 
