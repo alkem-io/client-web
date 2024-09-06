@@ -6,6 +6,7 @@ import { AnyTemplate, NewTemplateBase } from './TemplateBase';
 import { PostTemplate } from './PostTemplate';
 import { WhiteboardTemplate } from './WhiteboardTemplate';
 import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
+import { CollaborationTemplate } from './CollaborationTemplate';
 
 export const getNewTemplate = (templateType: TemplateType, defaultValues?: Partial<AnyTemplate>): AnyTemplate => {
   const common: NewTemplateBase = {
@@ -44,6 +45,15 @@ export const getNewTemplate = (templateType: TemplateType, defaultValues?: Parti
               data?.callout?.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
           },
         },
+      };
+      return template;
+    }
+    case TemplateType.Collaboration: {
+      const data = defaultValues as Partial<CollaborationTemplate>;
+      const template: CollaborationTemplate = {
+        ...common,
+        type: TemplateType.Collaboration,
+
       };
       return template;
     }

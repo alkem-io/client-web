@@ -35,6 +35,8 @@ const TemplatesGalleryContainer = ({ templates, templatesSetId, baseUrl, loading
         return buildLink(`${baseUrl}/${RoutePaths.postTemplatesRoutePath}/${template.id}`);
       case TemplateType.Whiteboard:
         return buildLink(`${baseUrl}/${RoutePaths.whiteboardTemplatesRoutePath}/${template.id}`);
+      case TemplateType.Collaboration:
+        return buildLink(`${baseUrl}/${RoutePaths.whiteboardTemplatesRoutePath}/${template.id}`); //!!
     }
   }
   const provided = {

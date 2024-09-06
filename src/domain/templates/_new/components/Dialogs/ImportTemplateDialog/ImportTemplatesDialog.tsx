@@ -39,7 +39,6 @@ export interface ImportTemplatesOptions {
 }
 
 interface ImportTemplatesDialogProps extends ImportTemplatesOptions {
-  headerText: string;
   subtitle?: string;
   open: boolean;
   onClose?: () => void;
@@ -48,7 +47,6 @@ interface ImportTemplatesDialogProps extends ImportTemplatesOptions {
 }
 
 const ImportTemplatesDialog = ({
-  headerText,
   subtitle,
   open,
   onClose,
@@ -109,7 +107,14 @@ const ImportTemplatesDialog = ({
   return (
     <>
       <DialogWithGrid open={open} columns={12} onClose={handleClose}>
-        <DialogHeader title={headerText} onClose={handleClose} icon={<LibraryIcon />} />
+        <DialogHeader title={
+          templateType ?
+            t('pages.admin.generic.sections.templates.import.title', {
+              templateType: t(`common.enums.templateType.${templateType!}`)
+            }) :
+            t('pages.admin.generic.sections.templates.import.defaultTitle')
+        } onClose={handleClose} icon={<LibraryIcon />}
+        />
         <DialogContent>
           {subtitle && <Caption marginBottom={gutters()}>{subtitle}</Caption>}
           {browseTemplatesSetTemplates && (

@@ -1734,15 +1734,56 @@ export type CreateCalendarEventOnCalendarInput = {
   wholeDay: Scalars['Boolean'];
 };
 
+export type CreateCalloutContributionDefaultsData = {
+  __typename?: 'CreateCalloutContributionDefaultsData';
+  /** The default description to use for new Post contributions. */
+  postDescription?: Maybe<Scalars['Markdown']>;
+  whiteboardContent?: Maybe<Scalars['WhiteboardContent']>;
+};
+
 export type CreateCalloutContributionDefaultsInput = {
   /** The default description to use for new Post contributions. */
   postDescription?: InputMaybe<Scalars['Markdown']>;
   whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']>;
 };
 
+export type CreateCalloutContributionPolicyData = {
+  __typename?: 'CreateCalloutContributionPolicyData';
+  /** State of the callout. */
+  state?: Maybe<CalloutState>;
+};
+
 export type CreateCalloutContributionPolicyInput = {
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
+};
+
+export type CreateCalloutData = {
+  __typename?: 'CreateCalloutData';
+  contributionDefaults?: Maybe<CreateCalloutContributionDefaultsData>;
+  contributionPolicy?: Maybe<CreateCalloutContributionPolicyData>;
+  /** Controls if the comments are enabled for this Callout. Defaults to false. */
+  enableComments?: Maybe<Scalars['Boolean']>;
+  framing: CreateCalloutFramingData;
+  /** Set Callout Group for this Callout. */
+  groupName?: Maybe<Scalars['String']>;
+  /** A readable identifier, unique within the containing scope. */
+  nameID?: Maybe<Scalars['NameID']>;
+  /** Send notification if this flag is true and visibility is PUBLISHED. Defaults to false. */
+  sendNotification?: Maybe<Scalars['Boolean']>;
+  /** The sort order to assign to this Callout. */
+  sortOrder?: Maybe<Scalars['Float']>;
+  /** Callout type. */
+  type: CalloutType;
+  /** Visibility of the Callout. Defaults to DRAFT. */
+  visibility?: Maybe<CalloutVisibility>;
+};
+
+export type CreateCalloutFramingData = {
+  __typename?: 'CreateCalloutFramingData';
+  profile: CreateProfileData;
+  tags?: Maybe<Array<Scalars['String']>>;
+  whiteboard?: Maybe<CreateWhiteboardData>;
 };
 
 export type CreateCalloutFramingInput = {
@@ -1792,13 +1833,28 @@ export type CreateCalloutOnCollaborationInput = {
   visibility?: InputMaybe<CalloutVisibility>;
 };
 
+export type CreateCollaborationData = {
+  __typename?: 'CreateCollaborationData';
+  /** The Callouts to add to this Collaboration. */
+  calloutsData?: Maybe<Array<CreateCalloutData>>;
+  /** The InnovationFlow Template to use for this Collaboration. */
+  innovationFlowData?: Maybe<CreateInnovationFlowData>;
+};
+
+export type CreateCollaborationInput = {
+  /** The Callouts to add to this Collaboration. */
+  calloutsData?: InputMaybe<Array<CreateCalloutInput>>;
+  /** The InnovationFlow Template to use for this Collaboration. */
+  innovationFlowData?: InputMaybe<CreateInnovationFlowInput>;
+};
+
 export type CreateCollaborationOnSpaceInput = {
   /** Add default callouts to the Collaboration; defaults to true. */
   addDefaultCallouts?: InputMaybe<Scalars['Boolean']>;
-  /** The ID of the Collaboration to use for setting up the collaboration of the Collaboration. */
-  collaborationTemplateID?: InputMaybe<Scalars['UUID']>;
-  /** The Innovation Flow template to use for the Collaboration. */
-  innovationFlowTemplateID?: InputMaybe<Scalars['UUID']>;
+  /** The Callouts to add to this Collaboration. */
+  calloutsData?: InputMaybe<Array<CreateCalloutInput>>;
+  /** The InnovationFlow Template to use for this Collaboration. */
+  innovationFlowData?: InputMaybe<CreateInnovationFlowInput>;
 };
 
 export type CreateCommunityGuidelinesData = {
@@ -1825,9 +1881,23 @@ export type CreateContributionOnCalloutInput = {
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
 
+export type CreateInnovationFlowData = {
+  __typename?: 'CreateInnovationFlowData';
+  profile: CreateProfileData;
+  states: Array<CreateInnovationFlowStateData>;
+};
+
 export type CreateInnovationFlowInput = {
   profile: CreateProfileInput;
   states: Array<CreateInnovationFlowStateInput>;
+};
+
+export type CreateInnovationFlowStateData = {
+  __typename?: 'CreateInnovationFlowStateData';
+  /** The explation text to clarify the State. */
+  description?: Maybe<Scalars['Markdown']>;
+  /** The display name for the State */
+  displayName: Scalars['String'];
 };
 
 export type CreateInnovationFlowStateInput = {
@@ -2011,7 +2081,7 @@ export type CreateReferenceOnProfileInput = {
 export type CreateSpaceOnAccountInput = {
   /** The Account where the Space is to be created. */
   accountID: Scalars['UUID'];
-  collaborationData?: InputMaybe<CreateCollaborationOnSpaceInput>;
+  collaborationData: CreateCollaborationOnSpaceInput;
   context?: InputMaybe<CreateContextInput>;
   /** The license plan the user wishes to use when creating the space. */
   licensePlanID?: InputMaybe<Scalars['UUID']>;
@@ -2023,7 +2093,7 @@ export type CreateSpaceOnAccountInput = {
 };
 
 export type CreateSubspaceInput = {
-  collaborationData?: InputMaybe<CreateCollaborationOnSpaceInput>;
+  collaborationData: CreateCollaborationOnSpaceInput;
   context?: InputMaybe<CreateContextInput>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
@@ -2056,10 +2126,10 @@ export type CreateTagsetOnProfileInput = {
 export type CreateTemplateOnTemplatesSetInput = {
   /** The Callout to associate with this template. */
   calloutData?: InputMaybe<CreateCalloutInput>;
+  /** The Collaboration to associate with this template. */
+  collaborationData?: InputMaybe<CreateCollaborationInput>;
   /** The Community guidelines to associate with this template. */
   communityGuidelinesData?: InputMaybe<CreateCommunityGuidelinesInput>;
-  /** The ID of the Community guidelines to associate with this template. */
-  communityGuidelinesID?: InputMaybe<Scalars['String']>;
   innovationFlowData?: InputMaybe<CreateInnovationFlowInput>;
   /** Post Template: The default description to be pre-filled. */
   postDefaultDescription?: InputMaybe<Scalars['Markdown']>;
@@ -2098,6 +2168,11 @@ export type CreateVirtualContributorOnAccountInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
+};
+
+export type CreateWhiteboardData = {
+  __typename?: 'CreateWhiteboardData';
+  content?: Maybe<Scalars['WhiteboardContent']>;
 };
 
 export type CreateWhiteboardInput = {
@@ -2597,6 +2672,40 @@ export enum InnovationPacksOrderBy {
   NumberOfTemplatesDesc = 'NUMBER_OF_TEMPLATES_DESC',
   Random = 'RANDOM',
 }
+
+export type InputCreatorQueryResults = {
+  __typename?: 'InputCreatorQueryResults';
+  /** Create an input based on the provided Callout */
+  callout?: Maybe<CreateCalloutData>;
+  /** Create an input based on the provided Collaboration */
+  collaboration?: Maybe<CreateCollaborationData>;
+  /** Create an input based on the provided Community Guidelines */
+  communityGuidelines?: Maybe<CreateCommunityGuidelinesData>;
+  /** Create an input based on the provided InnovationFlow */
+  innovationFlow?: Maybe<CreateInnovationFlowData>;
+  /** Create an input based on the provided Whiteboard */
+  whiteboard?: Maybe<CreateWhiteboardData>;
+};
+
+export type InputCreatorQueryResultsCalloutArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type InputCreatorQueryResultsCollaborationArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type InputCreatorQueryResultsCommunityGuidelinesArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type InputCreatorQueryResultsInnovationFlowArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type InputCreatorQueryResultsWhiteboardArgs = {
+  ID: Scalars['UUID'];
+};
 
 export type Invitation = {
   __typename?: 'Invitation';
@@ -4508,6 +4617,8 @@ export type Query = {
   askVirtualContributorQuestion: MessageAnswerQuestion;
   /** Get supported credential metadata */
   getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
+  /** Allow creation of inputs based on existing entities in the domain model */
+  inputCreator: InputCreatorQueryResults;
   /** Allow direct lookup of entities from the domain model */
   lookup: LookupQueryResults;
   /** Allow direct lookup of entities using their NameIDs */
@@ -5613,10 +5724,10 @@ export type Template = {
   authorization?: Maybe<Authorization>;
   /** The Callout for this Template. */
   callout?: Maybe<Callout>;
+  /** The Collaboration for this Template. */
+  collaboration?: Maybe<Collaboration>;
   /** The Community Guidelines for this Template. */
   communityGuidelines?: Maybe<CommunityGuidelines>;
-  /** Build the input for a new Community Guidelins using the Community Guidelines for this Template. */
-  communityGuidelinesInput?: Maybe<CreateCommunityGuidelinesData>;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
@@ -5645,6 +5756,7 @@ export type TemplateResult = {
 
 export enum TemplateType {
   Callout = 'CALLOUT',
+  Collaboration = 'COLLABORATION',
   CommunityGuidelines = 'COMMUNITY_GUIDELINES',
   InnovationFlow = 'INNOVATION_FLOW',
   Post = 'POST',
@@ -23701,6 +23813,145 @@ export type CalloutOnCollaborationWithStorageConfigFragment = {
   }>;
 };
 
+export type CreateCommunityGuidelinesInputQueryVariables = Exact<{
+  communityGuidelinesId: Scalars['UUID'];
+}>;
+
+export type CreateCommunityGuidelinesInputQuery = {
+  __typename?: 'Query';
+  inputCreator: {
+    __typename?: 'InputCreatorQueryResults';
+    communityGuidelines?:
+      | {
+          __typename?: 'CreateCommunityGuidelinesData';
+          profile: {
+            __typename?: 'CreateProfileData';
+            displayName: string;
+            description?: string | undefined;
+            referencesData?:
+              | Array<{
+                  __typename?: 'CreateReferenceData';
+                  name: string;
+                  uri?: string | undefined;
+                  description?: string | undefined;
+                }>
+              | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type CreateCalloutInputQueryVariables = Exact<{
+  calloutId: Scalars['UUID'];
+}>;
+
+export type CreateCalloutInputQuery = {
+  __typename?: 'Query';
+  inputCreator: {
+    __typename?: 'InputCreatorQueryResults';
+    callout?:
+      | {
+          __typename?: 'CreateCalloutData';
+          type: CalloutType;
+          framing: {
+            __typename?: 'CreateCalloutFramingData';
+            profile: {
+              __typename?: 'CreateProfileData';
+              displayName: string;
+              description?: string | undefined;
+              tagsets?: Array<{ __typename?: 'CreateTagsetData'; tags?: Array<string> | undefined }> | undefined;
+            };
+            whiteboard?: { __typename?: 'CreateWhiteboardData'; content?: string | undefined } | undefined;
+          };
+          contributionDefaults?:
+            | {
+                __typename?: 'CreateCalloutContributionDefaultsData';
+                postDescription?: string | undefined;
+                whiteboardContent?: string | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CreateCollaborationInputQueryVariables = Exact<{
+  collaborationId: Scalars['UUID'];
+}>;
+
+export type CreateCollaborationInputQuery = {
+  __typename?: 'Query';
+  inputCreator: {
+    __typename?: 'InputCreatorQueryResults';
+    collaboration?:
+      | {
+          __typename?: 'CreateCollaborationData';
+          calloutsData?:
+            | Array<{
+                __typename?: 'CreateCalloutData';
+                framing: {
+                  __typename?: 'CreateCalloutFramingData';
+                  profile: { __typename?: 'CreateProfileData'; displayName: string };
+                };
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CreateInnovationFlowInputQueryVariables = Exact<{
+  innovationFlowId: Scalars['UUID'];
+}>;
+
+export type CreateInnovationFlowInputQuery = {
+  __typename?: 'Query';
+  inputCreator: {
+    __typename?: 'InputCreatorQueryResults';
+    innovationFlow?:
+      | {
+          __typename?: 'CreateInnovationFlowData';
+          profile: {
+            __typename?: 'CreateProfileData';
+            displayName: string;
+            description?: string | undefined;
+            tagsets?: Array<{ __typename?: 'CreateTagsetData'; tags?: Array<string> | undefined }> | undefined;
+          };
+          states: Array<{
+            __typename?: 'CreateInnovationFlowStateData';
+            displayName: string;
+            description?: string | undefined;
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type CreateWhiteboardInputQueryVariables = Exact<{
+  whiteboardId: Scalars['UUID'];
+}>;
+
+export type CreateWhiteboardInputQuery = {
+  __typename?: 'Query';
+  inputCreator: {
+    __typename?: 'InputCreatorQueryResults';
+    whiteboard?: { __typename?: 'CreateWhiteboardData'; content?: string | undefined } | undefined;
+  };
+};
+
+export type CreatePostInputQueryVariables = Exact<{
+  templateId: Scalars['UUID'];
+}>;
+
+export type CreatePostInputQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    template?: { __typename?: 'Template'; id: string; postDefaultDescription?: string | undefined } | undefined;
+  };
+};
+
 export type ImportTemplateDialogQueryVariables = Exact<{
   templatesSetId: Scalars['UUID'];
   includeInnovationFlow?: InputMaybe<Scalars['Boolean']>;
@@ -23891,18 +24142,13 @@ export type ImportTemplateDataQuery = {
           };
           communityGuidelines?:
             | {
-                __typename?: 'CreateCommunityGuidelinesData';
+                __typename?: 'CommunityGuidelines';
                 profile: {
-                  __typename?: 'CreateProfileData';
+                  __typename?: 'Profile';
                   displayName: string;
                   description?: string | undefined;
-                  referencesData?:
-                    | Array<{
-                        __typename?: 'CreateReferenceData';
-                        name: string;
-                        uri?: string | undefined;
-                        description?: string | undefined;
-                      }>
+                  references?:
+                    | Array<{ __typename?: 'Reference'; name: string; uri: string; description?: string | undefined }>
                     | undefined;
                 };
               }

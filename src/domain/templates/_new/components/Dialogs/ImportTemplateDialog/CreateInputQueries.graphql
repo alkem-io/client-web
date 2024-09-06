@@ -1,0 +1,105 @@
+# query ImportTemplateData($templateId: UUID!) {
+#   lookup {
+#     template(ID: $templateId) {
+#       id
+#       profile {
+#         displayName
+#         description
+#         tagsets {
+#           ID: id # Renamed to match the UpdateProfileInput
+#           tags
+#         }
+#       }
+#     }
+#   }
+# }
+
+query CreateCommunityGuidelinesInput($communityGuidelinesId: UUID!) {
+  inputCreator {
+    communityGuidelines(ID: $communityGuidelinesId) {
+      profile {
+        displayName
+        description
+        referencesData {
+          name
+          uri
+          description
+        }
+      }
+    }
+  }
+}
+
+query CreateCalloutInput($calloutId: UUID!) {
+  inputCreator {
+    callout(ID: $calloutId) {
+      type
+      framing {
+        profile {
+          displayName
+          description
+          tagsets {
+            tags
+          }
+        }
+        whiteboard {
+          content
+        }
+      }
+      contributionDefaults {
+        postDescription
+        whiteboardContent
+      }
+    }
+  }
+}
+
+query CreateCollaborationInput($collaborationId: UUID!) {
+  inputCreator {
+    collaboration(ID: $collaborationId) {
+      calloutsData {
+        framing {
+          profile {
+            displayName
+            ##...
+          }
+        }
+      }
+    }
+  }
+}
+
+query CreateInnovationFlowInput($innovationFlowId: UUID!) {
+  inputCreator {
+    innovationFlow(ID: $innovationFlowId) {
+      profile {
+        displayName
+        description
+        tagsets {
+          tags
+        }
+      }
+      states {
+        displayName
+        description
+      }
+    }
+  }
+}
+
+query CreateWhiteboardInput($whiteboardId: UUID!) {
+  inputCreator {
+    whiteboard(ID: $whiteboardId) {
+      content
+    }
+  }
+}
+
+query CreatePostInput($templateId: UUID!) {
+  lookup {
+    template(ID: $templateId) {
+      id
+      postDefaultDescription
+    }
+  }
+}

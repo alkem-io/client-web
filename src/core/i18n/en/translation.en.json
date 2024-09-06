@@ -521,14 +521,23 @@
         "Callout": "Collaboration Tool Template",
         "Callout_plural": "Collaboration Tool Templates",
         "CommunityGuidelines": "Community Guidelines Template",
-        "CommunityGuidelines_plural": "Community Guidelines Templates"
+        "CommunityGuidelines_plural": "Community Guidelines Templates",
+        "Collaboration": "Collaboration Template",
+        "Collaboration_plural": "Collaboration Template"
       },
       "templateType": {
-        "CALLOUT": "$t(common.enums.templateTypes.Callout)",
-        "COMMUNITY_GUIDELINES": "$t(common.enums.templateTypes.CommunityGuidelines)",
-        "INNOVATION_FLOW": "$t(common.enums.templateTypes.InnovationFlow)",
-        "POST": "$t(common.enums.templateTypes.Post)",
-        "WHITEBOARD": "$t(common.enums.templateTypes.Whiteboard)"
+        "CALLOUT": "Collaboration Tool Template",
+        "CALLOUT_plural": "Collaboration Tool Templates",
+        "COLLABORATION": "Collaboration Template",
+        "COLLABORATION_plural": "Collaboration Templates",
+        "COMMUNITY_GUIDELINES": "Community Guidelines Template",
+        "COMMUNITY_GUIDELINES_plural": "Community Guidelines Templates",
+        "INNOVATION_FLOW": "Innovation Flow",
+        "INNOVATION_FLOW_plural": "Innovation Flow Templates",
+        "POST": "Post Template",
+        "POST_plural": "Post Templates",
+        "WHITEBOARD": "Whiteboard Template",
+        "WHITEBOARD_plural": "Whiteboard Templates"
       },
       "calloutType": {
         "LINK_COLLECTION": "Link Collection",
@@ -1807,6 +1816,7 @@
             "description": "Here you can create and edit templates for this {{entity}}.",
             "delete-confirmation": "Are you sure you want to delete the template '{{template}}'?",
             "import": {
+              "defaultTitle": "Templates Library",
               "title": "Template Library: {{templateType}}",
               "subtitle": "Find templates to use in your Space or Subspace. Select the template and click `Import` to add it to your Template set.",
               "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",

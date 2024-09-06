@@ -64,7 +64,6 @@ export const PostTemplateSelector: FC<PostTemplatesSelectorProps> = ({ name }) =
                 {t('buttons.use')}
               </LoadingButton>
             }
-            headerText={t('templateLibrary.postTemplates.title')}
             open={isDialogOpen}
             onSelectTemplate={handleSelectTemplate}
             onClose={() => setDialogOpen(false)}

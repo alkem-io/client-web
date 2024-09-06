@@ -60,7 +60,7 @@ export interface CalloutCreationDialogProps {
   flowState?: string;
   journeyTypeName: JourneyTypeName;
 }
-//!! review
+
 const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   open,
   onClose,
@@ -252,7 +252,6 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             </Gutters>
           </DialogContent>
           <ImportTemplatesDialog
-            headerText="Import Innovation Flow"
             open={importCalloutTemplateDialogOpen}
             templateType={TemplateType.Callout}
             onClose={() => setImportCalloutDialogOpen(false)}

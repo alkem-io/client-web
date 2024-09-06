@@ -18,11 +18,11 @@ query ImportTemplateData(
         }
       }
       # All of them should be like this: //!!
-      communityGuidelines: communityGuidelinesInput @include(if: $includeCommunityGuidelines) {
+      communityGuidelines @include(if: $includeCommunityGuidelines) {
         profile {
           displayName
           description
-          referencesData {
+          references {
             name
             uri
             description

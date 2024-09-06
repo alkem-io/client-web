@@ -20,18 +20,18 @@ const TemplateTypeFilter: FC<TemplateTypeFilterProps> = ({ value, onChange }) =>
     }
   };
 
-  const templateTypeNames = Object.keys(TemplateType) as (keyof typeof TemplateType)[];
+  const templateTypeValues = Object.values(TemplateType) as (typeof TemplateType[keyof typeof TemplateType])[];
 
   return (
     <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-      {templateTypeNames.map(key => {
+      {templateTypeValues.map(key => {
         const isSelected = value.includes(TemplateType[key]);
         return (
           <Chip
             key={key}
             label={
               <>
-                {isSelected ? <CheckIcon /> : undefined} {t(`common.enums.templateTypes.${key}` as const)}
+                {isSelected ? <CheckIcon /> : undefined} {t(`common.enums.templateType.${key}` as const)}
               </>
             }
             variant={isSelected ? 'filled' : 'outlined'}

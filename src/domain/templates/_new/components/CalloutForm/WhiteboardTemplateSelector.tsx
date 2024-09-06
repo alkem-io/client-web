@@ -71,7 +71,6 @@ export const WhiteboardTemplateSelector: FC<WhiteboardTemplatesSelectorProps> = 
                 {t('buttons.use')}
               </LoadingButton>
             }
-            headerText={t('templateLibrary.whiteboardTemplates.title')}
             open={isDialogOpen}
             onSelectTemplate={handleSelectTemplate}
             onClose={() => setDialogOpen(false)}

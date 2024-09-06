@@ -33,7 +33,7 @@ const ImportTemplatesDialogGallery = ({
       </Grid>
       <Grid item xs={12} md={9}>
 */
-  console.log({ loading });
+
   return (
     <GridProvider columns={12}>
       {templates.length > 0 && (

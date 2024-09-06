@@ -19544,6 +19544,417 @@ export function refetchPlatformStorageConfigQuery(variables?: SchemaTypes.Platfo
   return { query: PlatformStorageConfigDocument, variables: variables };
 }
 
+export const CreateCommunityGuidelinesInputDocument = gql`
+  query CreateCommunityGuidelinesInput($communityGuidelinesId: UUID!) {
+    inputCreator {
+      communityGuidelines(ID: $communityGuidelinesId) {
+        profile {
+          displayName
+          description
+          referencesData {
+            name
+            uri
+            description
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCreateCommunityGuidelinesInputQuery__
+ *
+ * To run a query within a React component, call `useCreateCommunityGuidelinesInputQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCreateCommunityGuidelinesInputQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCreateCommunityGuidelinesInputQuery({
+ *   variables: {
+ *      communityGuidelinesId: // value for 'communityGuidelinesId'
+ *   },
+ * });
+ */
+export function useCreateCommunityGuidelinesInputQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CreateCommunityGuidelinesInputQuery,
+    SchemaTypes.CreateCommunityGuidelinesInputQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CreateCommunityGuidelinesInputQuery,
+    SchemaTypes.CreateCommunityGuidelinesInputQueryVariables
+  >(CreateCommunityGuidelinesInputDocument, options);
+}
+
+export function useCreateCommunityGuidelinesInputLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CreateCommunityGuidelinesInputQuery,
+    SchemaTypes.CreateCommunityGuidelinesInputQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CreateCommunityGuidelinesInputQuery,
+    SchemaTypes.CreateCommunityGuidelinesInputQueryVariables
+  >(CreateCommunityGuidelinesInputDocument, options);
+}
+
+export type CreateCommunityGuidelinesInputQueryHookResult = ReturnType<typeof useCreateCommunityGuidelinesInputQuery>;
+export type CreateCommunityGuidelinesInputLazyQueryHookResult = ReturnType<
+  typeof useCreateCommunityGuidelinesInputLazyQuery
+>;
+export type CreateCommunityGuidelinesInputQueryResult = Apollo.QueryResult<
+  SchemaTypes.CreateCommunityGuidelinesInputQuery,
+  SchemaTypes.CreateCommunityGuidelinesInputQueryVariables
+>;
+export function refetchCreateCommunityGuidelinesInputQuery(
+  variables: SchemaTypes.CreateCommunityGuidelinesInputQueryVariables
+) {
+  return { query: CreateCommunityGuidelinesInputDocument, variables: variables };
+}
+
+export const CreateCalloutInputDocument = gql`
+  query CreateCalloutInput($calloutId: UUID!) {
+    inputCreator {
+      callout(ID: $calloutId) {
+        type
+        framing {
+          profile {
+            displayName
+            description
+            tagsets {
+              tags
+            }
+          }
+          whiteboard {
+            content
+          }
+        }
+        contributionDefaults {
+          postDescription
+          whiteboardContent
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCreateCalloutInputQuery__
+ *
+ * To run a query within a React component, call `useCreateCalloutInputQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCreateCalloutInputQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCreateCalloutInputQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useCreateCalloutInputQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CreateCalloutInputQuery,
+    SchemaTypes.CreateCalloutInputQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CreateCalloutInputQuery, SchemaTypes.CreateCalloutInputQueryVariables>(
+    CreateCalloutInputDocument,
+    options
+  );
+}
+
+export function useCreateCalloutInputLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CreateCalloutInputQuery,
+    SchemaTypes.CreateCalloutInputQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CreateCalloutInputQuery, SchemaTypes.CreateCalloutInputQueryVariables>(
+    CreateCalloutInputDocument,
+    options
+  );
+}
+
+export type CreateCalloutInputQueryHookResult = ReturnType<typeof useCreateCalloutInputQuery>;
+export type CreateCalloutInputLazyQueryHookResult = ReturnType<typeof useCreateCalloutInputLazyQuery>;
+export type CreateCalloutInputQueryResult = Apollo.QueryResult<
+  SchemaTypes.CreateCalloutInputQuery,
+  SchemaTypes.CreateCalloutInputQueryVariables
+>;
+export function refetchCreateCalloutInputQuery(variables: SchemaTypes.CreateCalloutInputQueryVariables) {
+  return { query: CreateCalloutInputDocument, variables: variables };
+}
+
+export const CreateCollaborationInputDocument = gql`
+  query CreateCollaborationInput($collaborationId: UUID!) {
+    inputCreator {
+      collaboration(ID: $collaborationId) {
+        calloutsData {
+          framing {
+            profile {
+              displayName
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCreateCollaborationInputQuery__
+ *
+ * To run a query within a React component, call `useCreateCollaborationInputQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCreateCollaborationInputQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCreateCollaborationInputQuery({
+ *   variables: {
+ *      collaborationId: // value for 'collaborationId'
+ *   },
+ * });
+ */
+export function useCreateCollaborationInputQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CreateCollaborationInputQuery,
+    SchemaTypes.CreateCollaborationInputQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CreateCollaborationInputQuery, SchemaTypes.CreateCollaborationInputQueryVariables>(
+    CreateCollaborationInputDocument,
+    options
+  );
+}
+
+export function useCreateCollaborationInputLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CreateCollaborationInputQuery,
+    SchemaTypes.CreateCollaborationInputQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CreateCollaborationInputQuery,
+    SchemaTypes.CreateCollaborationInputQueryVariables
+  >(CreateCollaborationInputDocument, options);
+}
+
+export type CreateCollaborationInputQueryHookResult = ReturnType<typeof useCreateCollaborationInputQuery>;
+export type CreateCollaborationInputLazyQueryHookResult = ReturnType<typeof useCreateCollaborationInputLazyQuery>;
+export type CreateCollaborationInputQueryResult = Apollo.QueryResult<
+  SchemaTypes.CreateCollaborationInputQuery,
+  SchemaTypes.CreateCollaborationInputQueryVariables
+>;
+export function refetchCreateCollaborationInputQuery(variables: SchemaTypes.CreateCollaborationInputQueryVariables) {
+  return { query: CreateCollaborationInputDocument, variables: variables };
+}
+
+export const CreateInnovationFlowInputDocument = gql`
+  query CreateInnovationFlowInput($innovationFlowId: UUID!) {
+    inputCreator {
+      innovationFlow(ID: $innovationFlowId) {
+        profile {
+          displayName
+          description
+          tagsets {
+            tags
+          }
+        }
+        states {
+          displayName
+          description
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCreateInnovationFlowInputQuery__
+ *
+ * To run a query within a React component, call `useCreateInnovationFlowInputQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCreateInnovationFlowInputQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCreateInnovationFlowInputQuery({
+ *   variables: {
+ *      innovationFlowId: // value for 'innovationFlowId'
+ *   },
+ * });
+ */
+export function useCreateInnovationFlowInputQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CreateInnovationFlowInputQuery,
+    SchemaTypes.CreateInnovationFlowInputQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CreateInnovationFlowInputQuery,
+    SchemaTypes.CreateInnovationFlowInputQueryVariables
+  >(CreateInnovationFlowInputDocument, options);
+}
+
+export function useCreateInnovationFlowInputLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CreateInnovationFlowInputQuery,
+    SchemaTypes.CreateInnovationFlowInputQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CreateInnovationFlowInputQuery,
+    SchemaTypes.CreateInnovationFlowInputQueryVariables
+  >(CreateInnovationFlowInputDocument, options);
+}
+
+export type CreateInnovationFlowInputQueryHookResult = ReturnType<typeof useCreateInnovationFlowInputQuery>;
+export type CreateInnovationFlowInputLazyQueryHookResult = ReturnType<typeof useCreateInnovationFlowInputLazyQuery>;
+export type CreateInnovationFlowInputQueryResult = Apollo.QueryResult<
+  SchemaTypes.CreateInnovationFlowInputQuery,
+  SchemaTypes.CreateInnovationFlowInputQueryVariables
+>;
+export function refetchCreateInnovationFlowInputQuery(variables: SchemaTypes.CreateInnovationFlowInputQueryVariables) {
+  return { query: CreateInnovationFlowInputDocument, variables: variables };
+}
+
+export const CreateWhiteboardInputDocument = gql`
+  query CreateWhiteboardInput($whiteboardId: UUID!) {
+    inputCreator {
+      whiteboard(ID: $whiteboardId) {
+        content
+      }
+    }
+  }
+`;
+
+/**
+ * __useCreateWhiteboardInputQuery__
+ *
+ * To run a query within a React component, call `useCreateWhiteboardInputQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCreateWhiteboardInputQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCreateWhiteboardInputQuery({
+ *   variables: {
+ *      whiteboardId: // value for 'whiteboardId'
+ *   },
+ * });
+ */
+export function useCreateWhiteboardInputQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CreateWhiteboardInputQuery,
+    SchemaTypes.CreateWhiteboardInputQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CreateWhiteboardInputQuery, SchemaTypes.CreateWhiteboardInputQueryVariables>(
+    CreateWhiteboardInputDocument,
+    options
+  );
+}
+
+export function useCreateWhiteboardInputLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CreateWhiteboardInputQuery,
+    SchemaTypes.CreateWhiteboardInputQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CreateWhiteboardInputQuery, SchemaTypes.CreateWhiteboardInputQueryVariables>(
+    CreateWhiteboardInputDocument,
+    options
+  );
+}
+
+export type CreateWhiteboardInputQueryHookResult = ReturnType<typeof useCreateWhiteboardInputQuery>;
+export type CreateWhiteboardInputLazyQueryHookResult = ReturnType<typeof useCreateWhiteboardInputLazyQuery>;
+export type CreateWhiteboardInputQueryResult = Apollo.QueryResult<
+  SchemaTypes.CreateWhiteboardInputQuery,
+  SchemaTypes.CreateWhiteboardInputQueryVariables
+>;
+export function refetchCreateWhiteboardInputQuery(variables: SchemaTypes.CreateWhiteboardInputQueryVariables) {
+  return { query: CreateWhiteboardInputDocument, variables: variables };
+}
+
+export const CreatePostInputDocument = gql`
+  query CreatePostInput($templateId: UUID!) {
+    lookup {
+      template(ID: $templateId) {
+        id
+        postDefaultDescription
+      }
+    }
+  }
+`;
+
+/**
+ * __useCreatePostInputQuery__
+ *
+ * To run a query within a React component, call `useCreatePostInputQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCreatePostInputQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCreatePostInputQuery({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *   },
+ * });
+ */
+export function useCreatePostInputQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CreatePostInputQuery, SchemaTypes.CreatePostInputQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CreatePostInputQuery, SchemaTypes.CreatePostInputQueryVariables>(
+    CreatePostInputDocument,
+    options
+  );
+}
+
+export function useCreatePostInputLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CreatePostInputQuery, SchemaTypes.CreatePostInputQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CreatePostInputQuery, SchemaTypes.CreatePostInputQueryVariables>(
+    CreatePostInputDocument,
+    options
+  );
+}
+
+export type CreatePostInputQueryHookResult = ReturnType<typeof useCreatePostInputQuery>;
+export type CreatePostInputLazyQueryHookResult = ReturnType<typeof useCreatePostInputLazyQuery>;
+export type CreatePostInputQueryResult = Apollo.QueryResult<
+  SchemaTypes.CreatePostInputQuery,
+  SchemaTypes.CreatePostInputQueryVariables
+>;
+export function refetchCreatePostInputQuery(variables: SchemaTypes.CreatePostInputQueryVariables) {
+  return { query: CreatePostInputDocument, variables: variables };
+}
+
 export const ImportTemplateDialogDocument = gql`
   query ImportTemplateDialog(
     $templatesSetId: UUID!
@@ -19754,11 +20165,11 @@ export const ImportTemplateDataDocument = gql`
             tags
           }
         }
-        communityGuidelines: communityGuidelinesInput @include(if: $includeCommunityGuidelines) {
+        communityGuidelines @include(if: $includeCommunityGuidelines) {
           profile {
             displayName
             description
-            referencesData {
+            references {
               name
               uri
               description

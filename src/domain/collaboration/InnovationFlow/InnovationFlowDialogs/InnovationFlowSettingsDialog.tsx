@@ -119,7 +119,6 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
         }}
       />
       <ImportTemplatesDialog
-        headerText="Import Innovation Flow"
         open={importInnovationFlowDialogOpen}
         templateType={TemplateType.InnovationFlow}
         onClose={() => setImportInnovationFlowDialogOpen(false)}

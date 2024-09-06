@@ -201,7 +201,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
     ),
     [canCreateTemplates, canImportTemplates, setCreatingTemplateType, setImportTemplateType]
   );
-  console.log({ templateId, selectedTemplate, editTemplateMode });
+
   return (
     <>
       <PageContentBlockSeamless disablePadding>
@@ -357,9 +357,6 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           open
           onClose={() => setImportTemplateType(undefined)}
           templateType={importTemplateType}
-          headerText={t('pages.admin.generic.sections.templates.import.title', {
-            templateType: t(`common.enums.templateType.${importTemplateType}` as const),
-          })}
           subtitle={t('pages.admin.generic.sections.templates.import.subtitle')}
           onSelectTemplate={handleImportTemplate}
           {...importTemplateOptions}

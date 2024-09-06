@@ -1183,9 +1183,84 @@ export type ContributorRolesFieldPolicy = {
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CreateCalloutContributionDefaultsDataKeySpecifier = (
+  | 'postDescription'
+  | 'whiteboardContent'
+  | CreateCalloutContributionDefaultsDataKeySpecifier
+)[];
+export type CreateCalloutContributionDefaultsDataFieldPolicy = {
+  postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateCalloutContributionPolicyDataKeySpecifier = (
+  | 'state'
+  | CreateCalloutContributionPolicyDataKeySpecifier
+)[];
+export type CreateCalloutContributionPolicyDataFieldPolicy = {
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateCalloutDataKeySpecifier = (
+  | 'contributionDefaults'
+  | 'contributionPolicy'
+  | 'enableComments'
+  | 'framing'
+  | 'groupName'
+  | 'nameID'
+  | 'sendNotification'
+  | 'sortOrder'
+  | 'type'
+  | 'visibility'
+  | CreateCalloutDataKeySpecifier
+)[];
+export type CreateCalloutDataFieldPolicy = {
+  contributionDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributionPolicy?: FieldPolicy<any> | FieldReadFunction<any>;
+  enableComments?: FieldPolicy<any> | FieldReadFunction<any>;
+  framing?: FieldPolicy<any> | FieldReadFunction<any>;
+  groupName?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  sendNotification?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  visibility?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateCalloutFramingDataKeySpecifier = (
+  | 'profile'
+  | 'tags'
+  | 'whiteboard'
+  | CreateCalloutFramingDataKeySpecifier
+)[];
+export type CreateCalloutFramingDataFieldPolicy = {
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  tags?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateCollaborationDataKeySpecifier = (
+  | 'calloutsData'
+  | 'innovationFlowData'
+  | CreateCollaborationDataKeySpecifier
+)[];
+export type CreateCollaborationDataFieldPolicy = {
+  calloutsData?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationFlowData?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CreateCommunityGuidelinesDataKeySpecifier = ('profile' | CreateCommunityGuidelinesDataKeySpecifier)[];
 export type CreateCommunityGuidelinesDataFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateInnovationFlowDataKeySpecifier = ('profile' | 'states' | CreateInnovationFlowDataKeySpecifier)[];
+export type CreateInnovationFlowDataFieldPolicy = {
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  states?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateInnovationFlowStateDataKeySpecifier = (
+  | 'description'
+  | 'displayName'
+  | CreateInnovationFlowStateDataKeySpecifier
+)[];
+export type CreateInnovationFlowStateDataFieldPolicy = {
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateLocationDataKeySpecifier = (
   | 'addressLine1'
@@ -1234,6 +1309,10 @@ export type CreateTagsetDataFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   tags?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateWhiteboardDataKeySpecifier = ('content' | CreateWhiteboardDataKeySpecifier)[];
+export type CreateWhiteboardDataFieldPolicy = {
+  content?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CredentialKeySpecifier = (
   | 'createdDate'
@@ -1519,6 +1598,21 @@ export type InnovationPackFieldPolicy = {
   searchVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type InputCreatorQueryResultsKeySpecifier = (
+  | 'callout'
+  | 'collaboration'
+  | 'communityGuidelines'
+  | 'innovationFlow'
+  | 'whiteboard'
+  | InputCreatorQueryResultsKeySpecifier
+)[];
+export type InputCreatorQueryResultsFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InvitationKeySpecifier = (
   | 'authorization'
@@ -2505,6 +2599,7 @@ export type QueryKeySpecifier = (
   | 'askChatGuidanceQuestion'
   | 'askVirtualContributorQuestion'
   | 'getSupportedVerifiedCredentialMetadata'
+  | 'inputCreator'
   | 'lookup'
   | 'lookupByName'
   | 'me'
@@ -2542,6 +2637,7 @@ export type QueryFieldPolicy = {
   askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   askVirtualContributorQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
+  inputCreator?: FieldPolicy<any> | FieldReadFunction<any>;
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
   lookupByName?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3196,8 +3292,8 @@ export type TaskFieldPolicy = {
 export type TemplateKeySpecifier = (
   | 'authorization'
   | 'callout'
+  | 'collaboration'
   | 'communityGuidelines'
-  | 'communityGuidelinesInput'
   | 'createdDate'
   | 'id'
   | 'innovationFlow'
@@ -3211,8 +3307,8 @@ export type TemplateKeySpecifier = (
 export type TemplateFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityGuidelinesInput?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3818,12 +3914,49 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ContributorRolesKeySpecifier | (() => undefined | ContributorRolesKeySpecifier);
     fields?: ContributorRolesFieldPolicy;
   };
+  CreateCalloutContributionDefaultsData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCalloutContributionDefaultsDataKeySpecifier
+      | (() => undefined | CreateCalloutContributionDefaultsDataKeySpecifier);
+    fields?: CreateCalloutContributionDefaultsDataFieldPolicy;
+  };
+  CreateCalloutContributionPolicyData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCalloutContributionPolicyDataKeySpecifier
+      | (() => undefined | CreateCalloutContributionPolicyDataKeySpecifier);
+    fields?: CreateCalloutContributionPolicyDataFieldPolicy;
+  };
+  CreateCalloutData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreateCalloutDataKeySpecifier | (() => undefined | CreateCalloutDataKeySpecifier);
+    fields?: CreateCalloutDataFieldPolicy;
+  };
+  CreateCalloutFramingData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreateCalloutFramingDataKeySpecifier | (() => undefined | CreateCalloutFramingDataKeySpecifier);
+    fields?: CreateCalloutFramingDataFieldPolicy;
+  };
+  CreateCollaborationData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreateCollaborationDataKeySpecifier | (() => undefined | CreateCollaborationDataKeySpecifier);
+    fields?: CreateCollaborationDataFieldPolicy;
+  };
   CreateCommunityGuidelinesData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
       | CreateCommunityGuidelinesDataKeySpecifier
       | (() => undefined | CreateCommunityGuidelinesDataKeySpecifier);
     fields?: CreateCommunityGuidelinesDataFieldPolicy;
+  };
+  CreateInnovationFlowData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreateInnovationFlowDataKeySpecifier | (() => undefined | CreateInnovationFlowDataKeySpecifier);
+    fields?: CreateInnovationFlowDataFieldPolicy;
+  };
+  CreateInnovationFlowStateData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateInnovationFlowStateDataKeySpecifier
+      | (() => undefined | CreateInnovationFlowStateDataKeySpecifier);
+    fields?: CreateInnovationFlowStateDataFieldPolicy;
   };
   CreateLocationData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateLocationDataKeySpecifier | (() => undefined | CreateLocationDataKeySpecifier);
@@ -3840,6 +3973,10 @@ export type StrictTypedTypePolicies = {
   CreateTagsetData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateTagsetDataKeySpecifier | (() => undefined | CreateTagsetDataKeySpecifier);
     fields?: CreateTagsetDataFieldPolicy;
+  };
+  CreateWhiteboardData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CreateWhiteboardDataKeySpecifier | (() => undefined | CreateWhiteboardDataKeySpecifier);
+    fields?: CreateWhiteboardDataFieldPolicy;
   };
   Credential?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CredentialKeySpecifier | (() => undefined | CredentialKeySpecifier);
@@ -3912,6 +4049,10 @@ export type StrictTypedTypePolicies = {
   InnovationPack?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InnovationPackKeySpecifier | (() => undefined | InnovationPackKeySpecifier);
     fields?: InnovationPackFieldPolicy;
+  };
+  InputCreatorQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | InputCreatorQueryResultsKeySpecifier | (() => undefined | InputCreatorQueryResultsKeySpecifier);
+    fields?: InputCreatorQueryResultsFieldPolicy;
   };
   Invitation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InvitationKeySpecifier | (() => undefined | InvitationKeySpecifier);

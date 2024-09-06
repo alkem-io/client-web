@@ -158,7 +158,6 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
                 />
               </PageContentBlockCollapsible>
               <ImportTemplatesDialog
-                headerText="Import Community Guidelines"
                 open={communityGuidelinesTemplatesDialogOpen}
                 templateType={TemplateType.CommunityGuidelines}
                 onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}

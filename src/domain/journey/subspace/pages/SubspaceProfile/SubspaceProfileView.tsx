@@ -77,7 +77,6 @@ const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
               spaceID: spaceNameId,
               tags: tagsets.flatMap(x => x.tags),
               collaborationData: {
-                innovationFlowTemplateID: '',
               },
             },
           },
