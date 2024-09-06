@@ -3,20 +3,20 @@ import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Reference, SearchVisibility, Tagset, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
-import SaveButton from '../../../../core/ui/actions/SaveButton';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { BlockSectionTitle } from '../../../../core/ui/typography';
-import ContextReferenceSegment from '../components/Common/ContextReferenceSegment';
-import { NameSegment, nameSegmentSchema } from '../components/Common/NameSegment';
-import { referenceSegmentSchema } from '../components/Common/ReferenceSegment';
-import { TagsetSegment, tagsetsSegmentSchema } from '../components/Common/TagsetSegment';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
-import FormikCheckboxField from '../../../../core/ui/forms/FormikCheckboxField';
-import FormikSelect from '../../../../core/ui/forms/FormikSelect';
+import { Reference, SearchVisibility, Tagset, TagsetType } from '../../../core/apollo/generated/graphql-schema';
+import SaveButton from '../../../core/ui/actions/SaveButton';
+import { MARKDOWN_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
+import FormikMarkdownField from '../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
+import { BlockSectionTitle } from '../../../core/ui/typography';
+import ContextReferenceSegment from '../../platform/admin/components/Common/ContextReferenceSegment';
+import { NameSegment, nameSegmentSchema } from '../../platform/admin/components/Common/NameSegment';
+import { referenceSegmentSchema } from '../../platform/admin/components/Common/ReferenceSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '../../platform/admin/components/Common/TagsetSegment';
+import Gutters from '../../../core/ui/grid/Gutters';
+import MarkdownValidator from '../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import { DEFAULT_TAGSET } from '../../common/tags/tagset.constants';
+import FormikCheckboxField from '../../../core/ui/forms/FormikCheckboxField';
+import FormikSelect from '../../../core/ui/forms/FormikSelect';
 
 export interface InnovationPackFormValues {
   nameID: string;
@@ -32,15 +32,15 @@ export interface InnovationPackFormValues {
 
 interface InnovationPackFormProps {
   isNew?: boolean;
-  nameID: string | undefined;
-  profile: {
+  nameID?: string;
+  profile?: {
     id?: string;
     displayName?: string;
     description?: string;
     tagset?: { id: string; name: string; tags: string[]; allowedValues: string[]; type: TagsetType };
     references?: Pick<Reference, 'id' | 'name' | 'description' | 'uri'>[];
-  } | undefined;
-  provider: { id: string; profile: { displayName: string } } | undefined;
+  };
+  provider?: { id: string; profile: { displayName: string } };
   listedInStore?: boolean;
   searchVisibility?: SearchVisibility;
   loading?: boolean;

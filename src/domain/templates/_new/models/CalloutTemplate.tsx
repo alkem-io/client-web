@@ -17,7 +17,7 @@ export interface CalloutTemplate extends NewTemplateBase {
       whiteboard?: {
         // For Whiteboard Callout templates
         nameID?: string;
-        profileData: {
+        profile: {
           displayName: string;
           description?: string;
         };

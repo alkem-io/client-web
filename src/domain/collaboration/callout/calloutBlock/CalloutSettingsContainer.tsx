@@ -10,6 +10,7 @@ import {
   CalloutVisibility,
   ContributeTabPostFragment,
   MessageDetailsFragment,
+  TemplateType,
   WhiteboardDetailsFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutSummary } from '../CalloutSummary';
@@ -49,7 +50,7 @@ import { WhiteboardCardWhiteboard } from '../whiteboard/WhiteboardCard';
 import { PostCardPost } from '../post/PostCard';
 import { useCreateCalloutTemplate } from '../../../templates/_new/hooks/useCreateCalloutTemplate';
 import { CalloutTemplateFormSubmittedValues } from '../../../templates/_new/components/Forms/CalloutTemplateForm';
-import CreateCalloutTemplateDialog from '../../../templates/admin/CalloutTemplates/CreateCalloutTemplateDialog';
+import CreateTemplateDialog from '../../../templates/_new/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;
@@ -357,11 +358,15 @@ const CalloutSettingsContainer = ({
       >
         <CalloutSummary callout={callout} />
       </CalloutVisibilityChangeDialog>
-      <CreateCalloutTemplateDialog
-        callout={callout}
+      <CreateTemplateDialog
         open={saveAsTemplateDialogOpen}
         onClose={() => setSaveAsTemplateDialogOpen(false)}
+        templateType={TemplateType.Callout}
         onSubmit={handleSaveAsTemplate}
+        defaultValues={{
+          type: TemplateType.Callout,
+          callout: callout,
+        }}
       />
       <Collapse in={positionDialogOpen} timeout="auto" unmountOnExit>
         <Menu

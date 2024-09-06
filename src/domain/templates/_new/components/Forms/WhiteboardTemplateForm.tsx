@@ -5,7 +5,7 @@ import TemplateFormBase, {
   TemplateFormProfileSubmittedValues,
   TemplateFormWithPreviewImages,
 } from './TemplateFormBase';
-import FormikWhiteboardPreview from '../../../admin/WhiteboardTemplates/FormikWhiteboardPreview';
+import FormikWhiteboardPreview from '../../../../collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import { useTranslation } from 'react-i18next';
 import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfile } from './common/mappings';

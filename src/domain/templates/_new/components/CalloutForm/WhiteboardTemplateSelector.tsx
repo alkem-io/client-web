@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useField } from 'formik';
 import { Box, Button } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import FormikWhiteboardPreview from '../../../admin/WhiteboardTemplates/FormikWhiteboardPreview';
+import FormikWhiteboardPreview from '../../../../collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import {

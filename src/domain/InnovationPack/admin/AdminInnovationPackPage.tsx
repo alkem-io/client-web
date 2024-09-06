@@ -11,7 +11,7 @@ import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import Loading from '../../../core/ui/loading/Loading';
 import { useNotification } from '../../../core/ui/notifications/useNotification';
-import InnovationPackForm, { InnovationPackFormValues } from '../../platform/admin/InnovationPacks/InnovationPackForm';
+import InnovationPackForm, { InnovationPackFormValues } from './InnovationPackForm';
 import { StorageConfigContextProvider } from '../../storage/StorageBucket/StorageConfigContext';
 import TemplatesAdmin from '../../templates/_new/components/TemplatesAdmin/TemplatesAdmin';
 import InnovationPackProfileLayout from '../InnovationPackProfilePage/InnovationPackProfileLayout';

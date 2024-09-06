@@ -9,7 +9,7 @@ import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutF
 import { CalloutType, TagsetType } from '../../../../../core/apollo/generated/graphql-schema';
 import { useWhiteboardTemplateContentLazyQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { CalloutLayoutProps } from '../../calloutBlock/CalloutLayout';
-import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
+import { EmptyWhiteboardString } from '../../../../common/whiteboard/EmptyWhiteboard';
 import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 import { DEFAULT_TAGSET } from '../../../../common/tags/tagset.constants';
@@ -49,7 +49,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     profileId: callout.framing.profile.id,
     tags: callout.framing.profile.tagset?.tags,
     postDescription: callout.contributionDefaults.postDescription ?? '',
-    whiteboardContent: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
+    whiteboardContent: callout.contributionDefaults?.whiteboardContent ?? EmptyWhiteboardString,
     groupName: callout.groupName,
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);

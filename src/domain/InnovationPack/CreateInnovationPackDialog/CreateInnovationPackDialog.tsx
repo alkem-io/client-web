@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import InnovationPackForm, { InnovationPackFormValues } from '../../platform/admin/InnovationPacks/InnovationPackForm'; // Assuming InnovationPackForm is in the same directory
+import InnovationPackForm, { InnovationPackFormValues } from '../admin/InnovationPackForm'; // Assuming InnovationPackForm is in the same directory
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import { useTranslation } from 'react-i18next';
 import { DialogContent, IconButton } from '@mui/material';

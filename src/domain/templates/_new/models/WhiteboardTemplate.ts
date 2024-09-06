@@ -5,6 +5,7 @@ export interface WhiteboardTemplate extends NewTemplateBase {
   type: TemplateType; // TemplateType.Whiteboard;
   whiteboard?: {
     id: string;
+    content?: string;
   };
 }
 

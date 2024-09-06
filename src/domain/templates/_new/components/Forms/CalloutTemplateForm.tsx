@@ -16,7 +16,7 @@ import { Box } from '@mui/material';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import { TagsetField } from '../../../../platform/admin/components/Common/TagsetSegment';
 import FormikRadioButtonsGroup from '../../../../../core/ui/forms/radioButtons/FormikRadioButtonsGroup';
-import FormikWhiteboardPreview from '../../../admin/WhiteboardTemplates/FormikWhiteboardPreview';
+import FormikWhiteboardPreview from '../../../../collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import EmptyWhiteboard from '../../../../common/whiteboard/EmptyWhiteboard';
 import {
   mapReferencesToUpdateReferences,
@@ -45,7 +45,7 @@ export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileS
         }[];
       };
       whiteboard?: {
-        profileData: {
+        profile: {
           displayName: string;
           description?: string;
         };
@@ -147,7 +147,7 @@ const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFor
           tagsets: mapTagsetsToUpdateTagsets(calloutTemplateData?.lookup.template?.callout?.framing?.profile?.tagsets),
         },
         whiteboard: {
-          profileData: {
+          profile: {
             displayName: calloutTemplateData?.lookup.template?.callout?.framing?.whiteboard?.profile.displayName ?? '',
             description: calloutTemplateData?.lookup.template?.callout?.framing?.whiteboard?.profile.description ?? '',
           },

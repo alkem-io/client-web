@@ -163,7 +163,7 @@ export const toCreateTemplateMutationVariables = (
           case CalloutType.Whiteboard: {
             delete calloutDraft.callout.contributionDefaults;
             if (calloutDraft.callout.framing.whiteboard) {
-              calloutDraft.callout.framing.whiteboard.profileData = {
+              calloutDraft.callout.framing.whiteboard.profile = {
                 displayName: 'Whiteboard Template',
               };
             }

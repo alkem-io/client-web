@@ -7,7 +7,7 @@ import { PostTemplate } from './PostTemplate';
 import { WhiteboardTemplate } from './WhiteboardTemplate';
 import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
 
-export const getNewTemplate = (templateType: TemplateType): AnyTemplate => {
+export const getNewTemplate = (templateType: TemplateType, defaultValues?: Partial<AnyTemplate>): AnyTemplate => {
   const common: NewTemplateBase = {
     id: '',
     type: templateType,
@@ -22,69 +22,76 @@ export const getNewTemplate = (templateType: TemplateType): AnyTemplate => {
 
   switch (templateType) {
     case TemplateType.Callout: {
+      const data = defaultValues as Partial<CalloutTemplate>;
       const template: CalloutTemplate = {
         ...common,
         type: TemplateType.Callout,
         callout: {
           id: '',
-          type: CalloutType.Post,
+          type: data?.callout?.type ?? CalloutType.Post,
           framing: {
             profile: {
-              displayName: '',
-              description: '',
-              references: [],
-              tagsets: [],
+              displayName: data?.callout?.framing.profile.displayName ?? '',
+              description: data?.callout?.framing.profile.description ?? '',
+              references: data?.callout?.framing.profile.references ?? [],
+              tagsets: data?.callout?.framing.profile.tagsets ?? [],
             },
-            whiteboard: undefined,
+            whiteboard: data?.callout?.framing.whiteboard ?? undefined,
           },
           contributionDefaults: {
-            postDescription: '',
-            whiteboardContent: JSON.stringify(EmptyWhiteboard),
+            postDescription: data?.callout?.contributionDefaults?.postDescription ?? '',
+            whiteboardContent:
+              data?.callout?.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
           },
         },
       };
       return template;
     }
     case TemplateType.CommunityGuidelines: {
+      const data = defaultValues as Partial<CommunityGuidelinesTemplate>;
       const template: CommunityGuidelinesTemplate = {
         ...common,
         type: TemplateType.CommunityGuidelines,
         communityGuidelines: {
           id: '',
           profile: {
-            displayName: '',
-            description: '',
-            references: [],
+            displayName: data?.communityGuidelines?.profile.displayName ?? '',
+            description: data?.communityGuidelines?.profile.description ?? '',
+            references: data?.communityGuidelines?.profile.references ?? [],
           },
         },
       };
       return template;
     }
     case TemplateType.InnovationFlow: {
+      const data = defaultValues as Partial<InnovationFlowTemplate>;
       const template: InnovationFlowTemplate = {
         ...common,
         type: TemplateType.InnovationFlow,
         innovationFlow: {
           id: '',
-          states: [],
+          states: data?.innovationFlow?.states ?? [],
         },
       };
       return template;
     }
     case TemplateType.Post: {
+      const data = defaultValues as Partial<PostTemplate>;
       const template: PostTemplate = {
         ...common,
         type: TemplateType.Post,
-        postDefaultDescription: '',
+        postDefaultDescription: data?.postDefaultDescription ?? '',
       };
       return template;
     }
     case TemplateType.Whiteboard: {
+      const data = defaultValues as Partial<WhiteboardTemplate>;
       const template: WhiteboardTemplate = {
         ...common,
         type: TemplateType.Whiteboard,
         whiteboard: {
           id: '',
+          content: data?.whiteboard?.content ?? '',
         },
       };
       return template;

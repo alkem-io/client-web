@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
+import React, { FC, useMemo, useRef, useState } from 'react';
 import { Button, Icon, IconButton, Tooltip } from '@mui/material';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
 import InnovationLibraryIcon from '../../../../main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
@@ -22,14 +22,18 @@ import { Trans, useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CommunityGuidelinesForm from '../../../community/community/CommunityGuidelines/CommunityGuidelinesForm';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
-import CommunityGuidelinesTemplatesLibrary from '../../../templates/library/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatesLibrary';
-import CommunityGuidelinesContainer from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
-import CreateCommunityGuidelinesTemplateDialog, {
-  CommunityGuidelinesFormValues,
-} from '../../../templates/admin/CommunityGuidelines/CreateCommunityGuidelinesTemplateDialog';
-import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../../templates/_new/components/Forms/CommunityGuidelinesTemplateForm';
-import { useCreateCommunityGuidelinesTemplate } from '../../../templates/admin/CommunityGuidelines/useCreateCommunityGuidelinesTemplate';
+import CommunityGuidelinesContainer, {
+  CommunityGuidelines,
+} from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import ImportTemplatesDialog from '../../../templates/_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
+import { LoadingButton } from '@mui/lab';
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import { useCreateTemplateMutation, useSpaceTemplatesSetIdQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import CreateTemplateDialog from '../../../templates/_new/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
+import { toCreateTemplateMutationVariables } from '../../../templates/_new/components/Forms/common/mappings';
+import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../../templates/_new/components/Forms/CommunityGuidelinesTemplateForm';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
@@ -66,6 +70,14 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     inviteExistingUser,
   } = useCommunityAdmin({ communityId, spaceId, journeyLevel: 0 });
 
+  const { data: templatesSetData } = useSpaceTemplatesSetIdQuery({
+    variables: {
+      spaceNameId: spaceId!,
+    },
+    skip: !spaceId,
+  });
+  const templatesSetId = templatesSetData?.space.library?.id;
+
   const currentApplicationsUserIds = useMemo(
     () =>
       applications
@@ -84,25 +96,24 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
 
   const currentMembersIds = useMemo(() => users.map(user => user.id), [users]);
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const openTemplateDialog = useCallback(() => setDialogOpen(true), []);
-  const closeTemplatesDialog = useCallback(() => setDialogOpen(false), []);
+  const currentCommunityGuidelines = useRef<CommunityGuidelines>();
+  const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
-  const currentGuidelines = useRef<CommunityGuidelinesFormValues>();
   const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState(false);
-  const handleSaveAsTemplateDialogOpen = () => {
-    setSaveAsTemplateDialogOpen(true);
-  };
 
   const { spaceNameId } = useUrlParams();
   if (!spaceNameId) {
     throw new Error('Must be within a Space');
   }
 
-  const { handleCreateCommunityGuidelinesTemplate } = useCreateCommunityGuidelinesTemplate();
+  const [createTemplate] = useCreateTemplateMutation();
   const handleSaveAsTemplate = async (values: CommunityGuidelinesTemplateFormSubmittedValues) => {
-    await handleCreateCommunityGuidelinesTemplate(values, spaceNameId);
-    setSaveAsTemplateDialogOpen(false);
+    if (templatesSetId) {
+      await createTemplate({
+        variables: toCreateTemplateMutationVariables(templatesSetId, TemplateType.CommunityGuidelines, values),
+      });
+      setSaveAsTemplateDialogOpen(false);
+    }
   };
 
   if (!spaceId || isLoadingSpace) {
@@ -159,7 +170,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
                   <>
                     <Button
                       variant="outlined"
-                      onClick={() => openTemplateDialog()}
+                      onClick={() => setCommunityGuidelinesTemplatesDialogOpen(true)}
                       startIcon={<InnovationLibraryIcon />}
                     >
                       {t('common.library')}
@@ -168,8 +179,8 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
                       <IconButton
                         aria-label={t('buttons.saveAsTemplate')}
                         onClick={() => {
-                          handleSaveAsTemplateDialogOpen();
-                          currentGuidelines.current = communityGuidelines;
+                          currentCommunityGuidelines.current = communityGuidelines;
+                          setSaveAsTemplateDialogOpen(true);
                         }}
                         sx={{ marginLeft: gutters(0.5) }}
                       >
@@ -186,19 +197,35 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
                   profileId={profileId}
                 />
               </PageContentBlockCollapsible>
-              <CommunityGuidelinesTemplatesLibrary
-                open={dialogOpen}
-                onClose={closeTemplatesDialog}
+              <ImportTemplatesDialog
+                headerText="Import Community Guidelines Template" //!!
+                open={communityGuidelinesTemplatesDialogOpen}
+                templateType={TemplateType.CommunityGuidelines}
+                onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
                 onSelectTemplate={onSelectCommunityGuidelinesTemplate}
+                templatesSetId={templatesSetId}
+                allowBrowsePlatformTemplates
+                actionButton={
+                  <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+                    {t('buttons.use')}
+                  </LoadingButton>
+                }
               />
             </>
           )}
         </CommunityGuidelinesContainer>
-        <CreateCommunityGuidelinesTemplateDialog
-          guidelines={currentGuidelines.current}
+        <CreateTemplateDialog
           open={saveAsTemplateDialogOpen}
           onClose={() => setSaveAsTemplateDialogOpen(false)}
+          templateType={TemplateType.CommunityGuidelines}
           onSubmit={handleSaveAsTemplate}
+          defaultValues={{
+            type: TemplateType.CommunityGuidelines,
+            communityGuidelines: {
+              id: '',
+              profile: currentCommunityGuidelines.current!,
+            },
+          }}
         />
         <PageContentColumn columns={6}>
           <PageContentBlock>

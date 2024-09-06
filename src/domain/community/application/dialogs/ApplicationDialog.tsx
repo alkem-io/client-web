@@ -2,13 +2,13 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
 import { makeStyles } from '@mui/styles';
-import WrapperTypography from '../../../../core/ui/typography/deprecated/WrapperTypography';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { ProfileChip } from '../../contributor/ProfileChip/ProfileChip';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
-import LifecycleButton from '../../../templates/admin/InnovationTemplates/LifecycleButton';
+import { Button } from '@mui/material';
+import { Caption, CaptionSmall } from '../../../../core/ui/typography';
 
 const appStyles = makeStyles(theme => ({
   minHeight: {
@@ -146,9 +146,7 @@ export const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onClose, on
               {questions.map(x => (
                 <div key={x.id} className={styles.question}>
                   <label aria-label="Questions">{x.name}</label>
-                  <WrapperTypography weight={'boldLight'} aria-label="Answer">
-                    {x.value}
-                  </WrapperTypography>
+                  <CaptionSmall aria-label="Answer">{x.value}</CaptionSmall>
                 </div>
               ))}
             </div>
@@ -156,28 +154,31 @@ export const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onClose, on
           {(createdDate || updatedDate) && (
             <div className={styles.date}>
               {createdDate && (
-                <WrapperTypography variant="caption" color="neutralMedium" aria-label="Date created">
+                <Caption color="neutralMedium" aria-label="Date created">
                   {t('components.application-dialog.created', { date: createdDate })}
-                </WrapperTypography>
+                </Caption>
               )}
               {updatedDate && (
-                <WrapperTypography variant="caption" color="neutralMedium" aria-label="Date updated">
+                <Caption color="neutralMedium" aria-label="Date updated">
                   {t('components.application-dialog.updated', { date: updatedDate })}
-                </WrapperTypography>
+                </Caption>
               )}
             </div>
           )}
           {nextEvents.length > 0 && (
             <Actions justifyContent="end" flexDirection="row-reverse">
-              {nextEvents.map((x, i) => (
-                <LifecycleButton
-                  key={i}
-                  stateName={x}
+              {nextEvents.map(stateName => (
+                <Button
+                  key={stateName}
+                  variant="contained"
+                  color="primary"
                   onClick={() => {
-                    onSetNewState && onSetNewState(appId, x);
+                    onSetNewState && onSetNewState(appId, stateName);
                     onClose();
                   }}
-                />
+                >
+                  {stateName}
+                </Button>
               ))}
             </Actions>
           )}

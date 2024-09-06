@@ -6,6 +6,7 @@ import {
   CalloutType,
   CalloutVisibility,
   CalloutGroupName,
+  TemplateType,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutCreationTypeWithPreviewImages } from './useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
@@ -15,6 +16,7 @@ import calloutIcons from '../utils/calloutIcons';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
 import {
   useCalloutTemplateContentLazyQuery,
+  useSpaceTemplatesSetIdQuery,
   useWhiteboardTemplateContentLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
@@ -29,9 +31,11 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import CalloutTemplatesLibrary from '../../../templates/library/CalloutTemplatesLibrary/CalloutTemplatesLibrary';
-import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
+import { EmptyWhiteboardString } from '../../../common/whiteboard/EmptyWhiteboard';
 import { findDefaultTagset } from '../../../common/tags/utils';
+import ImportTemplatesDialog from '../../../templates/_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -56,7 +60,7 @@ export interface CalloutCreationDialogProps {
   flowState?: string;
   journeyTypeName: JourneyTypeName;
 }
-
+//!! review
 const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   open,
   onClose,
@@ -74,6 +78,13 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const [isPublishDialogOpen, setIsConfirmPublishDialogOpen] = useState(false);
   const [isConfirmCloseDialogOpen, setIsConfirmCloseDialogOpen] = useState(false);
   const [sendNotification, setSendNotification] = useState(true);
+  const [importCalloutTemplateDialogOpen, setImportCalloutDialogOpen] = useState(false);
+
+  const { data: templatesSetData } = useSpaceTemplatesSetIdQuery({
+    variables: { spaceNameId: spaceNameId! },
+    skip: !spaceNameId,
+  });
+  const templatesSetId = templatesSetData?.space.library?.id;
 
   useLayoutEffect(() => {
     if (open) {
@@ -105,8 +116,8 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       callout.postDescription ||
       callout.references?.length !== 0 ||
       callout.tags?.length !== 0 ||
-      callout.whiteboard?.content !== JSON.stringify(EmptyWhiteboard) ||
-      callout.whiteboardContent !== JSON.stringify(EmptyWhiteboard)
+      callout.whiteboard?.content !== EmptyWhiteboardString ||
+      callout.whiteboardContent !== EmptyWhiteboardString
     );
   };
 
@@ -226,10 +237,34 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             <Gutters>
               <CalloutTypeSelect
                 onSelect={handleSelectCalloutType}
-                extraButtons={<CalloutTemplatesLibrary onImportTemplate={handleSelectTemplate} />}
+                extraButtons={
+                  <Button
+                    size="large"
+                    startIcon={<TipsAndUpdatesOutlinedIcon />}
+                    variant="outlined"
+                    sx={{ textTransform: 'none', justifyContent: 'start' }}
+                    onClick={() => setImportCalloutDialogOpen(true)}
+                  >
+                    {t('components.calloutTypeSelect.callout-templates-library')}
+                  </Button>
+                }
               />
             </Gutters>
           </DialogContent>
+          <ImportTemplatesDialog
+            headerText="Import Innovation Flow"
+            open={importCalloutTemplateDialogOpen}
+            templateType={TemplateType.Callout}
+            onClose={() => setImportCalloutDialogOpen(false)}
+            onSelectTemplate={handleSelectTemplate}
+            templatesSetId={templatesSetId}
+            allowBrowsePlatformTemplates
+            actionButton={
+              <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+                {t('buttons.use')}
+              </LoadingButton>
+            }
+          />
         </>
       )}
       {selectedCalloutType && (

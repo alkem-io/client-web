@@ -22,7 +22,7 @@ import { Reference } from '../../common/profile/Profile';
 import { ProfileReferenceSegment } from '../../platform/admin/components/Common/ProfileReferenceSegment';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { gutters } from '../../../core/ui/grid/utils';
-import EmptyWhiteboard from '../../common/whiteboard/EmptyWhiteboard';
+import { EmptyWhiteboardString } from '../../common/whiteboard/EmptyWhiteboard';
 import FormikSelect from '../../../core/ui/forms/FormikSelect';
 import { FormikSelectValue } from '../../../core/ui/forms/FormikAutocomplete';
 import { FormControlLabel } from '@mui/material';
@@ -126,7 +126,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
       groupName: callout?.groupName ?? CalloutGroupName.Knowledge,
       postDescription: callout.postDescription ?? '',
-      whiteboardContent: callout.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
+      whiteboardContent: callout.whiteboardContent ?? EmptyWhiteboardString,
       whiteboard: callout?.whiteboard
         ? {
             ...callout.whiteboard,
@@ -136,7 +136,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
             profileData: {
               displayName: t('common.whiteboard'),
             },
-            content: JSON.stringify(EmptyWhiteboard),
+            content: EmptyWhiteboardString,
             previewImages: undefined,
           },
     }),

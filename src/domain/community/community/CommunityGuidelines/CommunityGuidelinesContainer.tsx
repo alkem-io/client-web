@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { compact } from 'lodash';
 import { CommunityGuidelinesTemplate } from '../../../templates/_new/models/CommunityGuidelinesTemplate';
 
-interface CommunityGuidelines {
+export interface CommunityGuidelines {
   displayName: string;
   description: string | undefined;
   references: {
@@ -96,8 +96,8 @@ const CommunityGuidelinesContainer = ({ communityId, children }: CommunityGuidel
   const [createReference, { loading: addingReference }] = useCreateReferenceOnProfileMutation();
   const onSelectCommunityGuidelinesTemplate = async (template: CommunityGuidelinesTemplate) => {
     const currentReferences = communityGuidelines?.references ?? [];
-    const templateReferences = template.guidelines?.profile.references ?? [];
-    const guidelines = template.guidelines;
+    const templateReferences = template.communityGuidelines?.profile.references ?? [];
+    const guidelines = template.communityGuidelines;
     if (!guidelines || !profileId) {
       return;
     }
