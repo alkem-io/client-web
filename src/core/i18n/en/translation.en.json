@@ -816,7 +816,7 @@
       },
       "background": {
         "title": "Background",
-        "description": "Give a brief description of this Subspace and why is it part of the Space'.",
+        "description": "Give a brief description of this Subspace and why is it part of the Space.",
         "placeholder": ""
       },
       "impact": {
@@ -854,7 +854,7 @@
       },
       "tagline": {
         "title": "Subspace Tagline",
-        "description": "Explain in one sentence what this Subspace is about. It is also possible to frame it as a question, starting with 'How might we...",
+        "description": "Explain in one sentence what this Subspace is about. It is also possible to frame it as a question, starting with 'How might we...'",
         "placeholder": ""
       },
       "background": {
