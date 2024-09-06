@@ -26523,6 +26523,7 @@ export type AuthorizationPolicyQuery = {
       | {
           __typename?: 'Authorization';
           id: string;
+          type?: AuthorizationPolicyType | undefined;
           anonymousReadAccess: boolean;
           credentialRules?:
             | Array<{
