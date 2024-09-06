@@ -2,9 +2,9 @@ import { ReactNode, useMemo, useState } from 'react';
 import filterFn, { ValueType } from '../../../core/utils/filtering/filterFn';
 import { compact } from 'lodash';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
-import PreviewTemplateDialog from '../../templates/_new/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
+import PreviewTemplateDialog from '../../templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
 import LibraryTemplatesView, { LibraryTemplatesFilter } from './LibraryTemplatesView';
-import { AnyTemplate, AnyTemplateWithInnovationPack } from '../../templates/_new/models/TemplateBase';
+import { AnyTemplate, AnyTemplateWithInnovationPack } from '../../templates/models/TemplateBase';
 
 interface DashboardLibraryTemplatesProps {
   headerTitle: ReactNode;

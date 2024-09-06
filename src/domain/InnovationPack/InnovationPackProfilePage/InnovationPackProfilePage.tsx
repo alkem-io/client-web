@@ -18,8 +18,8 @@ import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
 import { BlockSectionTitle, Text } from '../../../core/ui/typography';
 import ReferencesListSmallItem from '../../profile/Reference/ReferencesListSmallItem/ReferencesListSmallItem';
 import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
-import {} from '../../templates/_new/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
-import TemplatesAdmin from '../../templates/_new/components/TemplatesAdmin/TemplatesAdmin';
+import { } from '../../templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
+import TemplatesAdmin from '../../templates/components/TemplatesAdmin/TemplatesAdmin';
 import InnovationPackProfileLayout from './InnovationPackProfileLayout';
 
 const InnovationPackProfilePage = () => {

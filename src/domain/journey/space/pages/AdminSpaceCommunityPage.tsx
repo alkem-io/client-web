@@ -26,14 +26,14 @@ import CommunityGuidelinesContainer, {
   CommunityGuidelines,
 } from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import ImportTemplatesDialog from '../../../templates/_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import ImportTemplatesDialog from '../../../templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { useCreateTemplateMutation, useSpaceTemplatesSetIdQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import CreateTemplateDialog from '../../../templates/_new/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { toCreateTemplateMutationVariables } from '../../../templates/_new/components/Forms/common/mappings';
-import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../../templates/_new/components/Forms/CommunityGuidelinesTemplateForm';
+import CreateTemplateDialog from '../../../templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
+import { toCreateTemplateMutationVariables } from '../../../templates/components/Forms/common/mappings';
+import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../../templates/components/Forms/CommunityGuidelinesTemplateForm';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();

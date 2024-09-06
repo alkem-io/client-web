@@ -48,9 +48,9 @@ import SortDialog from './sort/SortDialog';
 import { useUpdateContributionsSortOrderMutation } from '../../../../core/apollo/generated/apollo-hooks';
 import { WhiteboardCardWhiteboard } from '../whiteboard/WhiteboardCard';
 import { PostCardPost } from '../post/PostCard';
-import { useCreateCalloutTemplate } from '../../../templates/_new/hooks/useCreateCalloutTemplate';
-import { CalloutTemplateFormSubmittedValues } from '../../../templates/_new/components/Forms/CalloutTemplateForm';
-import CreateTemplateDialog from '../../../templates/_new/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
+import { useCreateCalloutTemplate } from '../../../templates/hooks/useCreateCalloutTemplate';
+import { CalloutTemplateFormSubmittedValues } from '../../../templates/components/Forms/CalloutTemplateForm';
+import CreateTemplateDialog from '../../../templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;

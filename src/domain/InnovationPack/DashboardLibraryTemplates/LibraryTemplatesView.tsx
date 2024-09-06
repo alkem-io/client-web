@@ -11,8 +11,8 @@ import GridItem from '../../../core/ui/grid/GridItem';
 import TemplateTypeFilter from './TemplateTypeFilter';
 import TemplateTypeFilterMobile from './TemplateTypeFilterMobile';
 import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
-import TemplateCard from '../../templates/_new/components/cards/TemplateCard';
-import { AnyTemplate, AnyTemplateWithInnovationPack } from '../../templates/_new/models/TemplateBase';
+import TemplateCard from '../../templates/components/cards/TemplateCard';
+import { AnyTemplate, AnyTemplateWithInnovationPack } from '../../templates/models/TemplateBase';
 
 export interface LibraryTemplatesFilter {
   templateTypes: TemplateType[];

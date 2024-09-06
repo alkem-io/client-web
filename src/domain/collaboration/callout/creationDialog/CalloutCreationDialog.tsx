@@ -33,7 +33,7 @@ import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/Innovat
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { EmptyWhiteboardString } from '../../../common/whiteboard/EmptyWhiteboard';
 import { findDefaultTagset } from '../../../common/tags/utils';
-import ImportTemplatesDialog from '../../../templates/_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import ImportTemplatesDialog from '../../../templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 

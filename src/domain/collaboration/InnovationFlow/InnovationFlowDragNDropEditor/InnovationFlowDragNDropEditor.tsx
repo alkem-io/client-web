@@ -19,7 +19,7 @@ import { EditOutlined } from '@mui/icons-material';
 import InnovationFlowStateForm from './InnovationFlowStateForm';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
-import { MAX_INNOVATIONFLOW_STATES } from '../../../templates/_new/models/InnovationFlowTemplate';
+import { MAX_INNOVATIONFLOW_STATES } from '../../../templates/models/InnovationFlowTemplate';
 
 const STATES_DROPPABLE_ID = '__states';
 

@@ -3,7 +3,7 @@ import { useSpaceTemplatesAdminQuery } from '../../../../core/apollo/generated/a
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import Loading from '../../../../core/ui/loading/Loading';
 import { buildSettingsUrl } from '../../../../main/routing/urlBuilders';
-import TemplatesAdmin from '../../../templates/_new/components/TemplatesAdmin/TemplatesAdmin';
+import TemplatesAdmin from '../../../templates/components/TemplatesAdmin/TemplatesAdmin';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
 import SpaceSettingsLayout from './SpaceSettingsLayout';

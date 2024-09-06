@@ -9,7 +9,7 @@ import { useNotification } from '../../../../core/ui/notifications/useNotificati
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
 import { useTranslation } from 'react-i18next';
 import { compact } from 'lodash';
-import { CommunityGuidelinesTemplate } from '../../../templates/_new/models/CommunityGuidelinesTemplate';
+import { CommunityGuidelinesTemplate } from '../../../templates/models/CommunityGuidelinesTemplate';
 
 export interface CommunityGuidelines {
   displayName: string;

@@ -13,7 +13,7 @@ import Loading from '../../../core/ui/loading/Loading';
 import { useNotification } from '../../../core/ui/notifications/useNotification';
 import InnovationPackForm, { InnovationPackFormValues } from './InnovationPackForm';
 import { StorageConfigContextProvider } from '../../storage/StorageBucket/StorageConfigContext';
-import TemplatesAdmin from '../../templates/_new/components/TemplatesAdmin/TemplatesAdmin';
+import TemplatesAdmin from '../../templates/components/TemplatesAdmin/TemplatesAdmin';
 import InnovationPackProfileLayout from '../InnovationPackProfilePage/InnovationPackProfileLayout';
 import { buildInnovationPackSettingsUrl } from '../../../main/routing/urlBuilders';
 

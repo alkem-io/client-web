@@ -11,7 +11,7 @@ import PageContentBlockContextualMenu from '../../../../core/ui/content/PageCont
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { CalloutGroupNameValuesMap } from '../../callout/CalloutsInContext/CalloutsGroup';
-import ImportTemplatesDialog from '../../../templates/_new/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import ImportTemplatesDialog from '../../../templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';

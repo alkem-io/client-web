@@ -5,7 +5,7 @@ import withElevationOnHover from '../../../domain/shared/components/withElevatio
 import GridItem from '../grid/GridItem';
 import RouterLink from '../link/RouterLink';
 import ButtonBaseAlignReset from '../button/ButtonBaseAlignReset';
-import { CARLOS_BORDER_GREEN } from '../../../domain/templates/_new/borders';
+import { CARLOS_BORDER_GREEN } from '../../../domain/templates/borders';
 
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
