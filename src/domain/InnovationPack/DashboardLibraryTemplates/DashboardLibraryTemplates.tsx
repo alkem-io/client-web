@@ -1,29 +1,24 @@
-import React, { ReactNode, useMemo, useState } from 'react';
-import { LibraryTemplateCardProps } from './LibraryTemplateCard';
+import { ReactNode, useMemo, useState } from 'react';
 import filterFn, { ValueType } from '../../../core/utils/filtering/filterFn';
-
-import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import { compact } from 'lodash';
+import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
+import PreviewTemplateDialog from '../../templates/_new/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
 import LibraryTemplatesView, { LibraryTemplatesFilter } from './LibraryTemplatesView';
-import { useWhiteboardTemplateContentQuery } from '../../../core/apollo/generated/apollo-hooks';
-import PreviewTemplateDialog, {
-  TemplatePreview,
-} from '../../templates/_new/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
-import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
+import { AnyTemplate, AnyTemplateWithInnovationPack } from '../../templates/_new/models/TemplateBase';
 
 interface DashboardLibraryTemplatesProps {
   headerTitle: ReactNode;
   dialogTitle: ReactNode;
-  templates: LibraryTemplateCardProps[] | undefined;
+  templates: AnyTemplateWithInnovationPack[] | undefined;
 }
 
-const templatesValueGetter = (template: LibraryTemplateCardProps): ValueType => ({
-  id: template.id,
+const templatesValueGetter = (template: AnyTemplateWithInnovationPack): ValueType => ({
+  id: template.template.id,
   values: compact([
-    template.profile.displayName,
+    template.template.profile.displayName,
     template.innovationPack?.profile.displayName,
     template.innovationPack?.provider?.profile.displayName,
-    ...(template.profile.tagset?.tags ?? []),
+    ...(template.template.profile.defaultTagset?.tags ?? []),
   ]),
 });
 
@@ -36,44 +31,25 @@ const DashboardLibraryTemplates = ({ headerTitle, dialogTitle, templates }: Dash
   });
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<LibraryTemplateCardProps>();
-
-  const { data: whiteboardTemplateContentData, loading: loadingWhiteboardTemplateContent } =
-    useWhiteboardTemplateContentQuery({
-      variables: {
-        whiteboardTemplateId: selectedTemplate?.id!,
-      },
-      skip: !selectedTemplate || selectedTemplate.templateType !== TemplateType.Whiteboard,
-    });
+  const [selectedTemplate, setSelectedTemplate] = useState<AnyTemplate>();
 
   const filteredLibraryTemplates = useMemo(() => {
+    const templatesWithIds =
+      templates?.map(template => ({
+        id: template.template.id,
+        ...template,
+      })) ?? [];
+
     return filterFn(
       // Filter templates by type:
-      (templates ?? []).filter(
-        template => filter.templateTypes.length === 0 || filter.templateTypes.includes(template.templateType)
+      templatesWithIds.filter(
+        template => filter.templateTypes.length === 0 || filter.templateTypes.includes(template.template.type)
       ),
       // Filter by search terms:
       filter.searchTerms,
       templatesValueGetter
     );
   }, [templates, filter]);
-
-  const templatePreview = useMemo(() => {
-    if (!selectedTemplate) {
-      return undefined;
-    }
-    const template =
-      selectedTemplate.templateType !== TemplateType.Whiteboard
-        ? selectedTemplate
-        : {
-            ...selectedTemplate,
-            ...whiteboardTemplateContentData?.lookup?.template,
-          };
-    return {
-      template,
-      templateType: selectedTemplate?.templateType,
-    } as TemplatePreview;
-  }, [selectedTemplate, whiteboardTemplateContentData]);
 
   return (
     <>
@@ -101,13 +77,9 @@ const DashboardLibraryTemplates = ({ headerTitle, dialogTitle, templates }: Dash
           sx={{ flexShrink: 1 }}
         />
       </DialogWithGrid>
-      <PreviewTemplateDialog
-        open={!!selectedTemplate}
-        onClose={() => setSelectedTemplate(undefined)}
-        templatePreview={templatePreview}
-        innovationPack={selectedTemplate?.innovationPack}
-        loadingTemplateContent={loadingWhiteboardTemplateContent}
-      />
+      {selectedTemplate && (
+        <PreviewTemplateDialog open template={selectedTemplate} onClose={() => setSelectedTemplate(undefined)} />
+      )}
     </>
   );
 };

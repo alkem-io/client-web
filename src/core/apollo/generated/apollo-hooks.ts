@@ -3515,31 +3515,6 @@ export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const InnovationPackDataFragmentDoc = gql`
-  fragment InnovationPackData on InnovationPack {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      description
-      tagset {
-        ...TagsetDetails
-      }
-      url
-    }
-    templates {
-      id
-      ...LibraryTemplates
-    }
-    provider {
-      ...InnovationPackProviderProfileWithAvatar
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${LibraryTemplatesFragmentDoc}
-  ${InnovationPackProviderProfileWithAvatarFragmentDoc}
-`;
 export const InnovationPackCardFragmentDoc = gql`
   fragment InnovationPackCard on InnovationPack {
     id
@@ -22762,18 +22737,76 @@ export function refetchSearchScopeDetailsSpaceQuery(variables: SchemaTypes.Searc
 }
 
 export const InnovationLibraryDocument = gql`
-  query InnovationLibrary {
+  query InnovationLibrary($filterTemplateType: [TemplateType!]) {
     platform {
       id
       library {
         id
+        templates(filter: { types: $filterTemplateType }) {
+          template {
+            ...TemplateProfileInfo
+            callout {
+              id
+              type
+            }
+            innovationFlow {
+              id
+              states {
+                displayName
+              }
+            }
+          }
+          innovationPack {
+            id
+            profile {
+              id
+              displayName
+              url
+            }
+            provider {
+              id
+              profile {
+                id
+                displayName
+                avatar: visual(type: AVATAR) {
+                  id
+                  uri
+                }
+                url
+              }
+            }
+          }
+        }
         innovationPacks {
-          ...InnovationPackData
+          id
+          nameID
+          profile {
+            id
+            displayName
+            description
+            tagset {
+              ...TagsetDetails
+            }
+            url
+          }
+          templates {
+            id
+            calloutTemplatesCount
+            communityGuidelinesTemplatesCount
+            innovationFlowTemplatesCount
+            postTemplatesCount
+            whiteboardTemplatesCount
+          }
+          provider {
+            ...InnovationPackProviderProfileWithAvatar
+          }
         }
       }
     }
   }
-  ${InnovationPackDataFragmentDoc}
+  ${TemplateProfileInfoFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+  ${InnovationPackProviderProfileWithAvatarFragmentDoc}
 `;
 
 /**
@@ -22788,6 +22821,7 @@ export const InnovationLibraryDocument = gql`
  * @example
  * const { data, loading, error } = useInnovationLibraryQuery({
  *   variables: {
+ *      filterTemplateType: // value for 'filterTemplateType'
  *   },
  * });
  */

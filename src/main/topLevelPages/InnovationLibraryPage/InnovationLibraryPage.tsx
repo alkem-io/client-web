@@ -6,7 +6,6 @@ import { useInnovationLibraryQuery } from '../../../core/apollo/generated/apollo
 import DashboardInnovationPacks from '../../../domain/InnovationPack/DashboardInnovationPacks/DashboardInnovationPacks';
 import DashboardLibraryTemplates from '../../../domain/InnovationPack/DashboardLibraryTemplates/DashboardLibraryTemplates';
 import useInnovationPackCardProps from '../../../domain/InnovationPack/DashboardInnovationPacks/useInnovationPackCardProps';
-import useLibraryTemplateCardProps from '../../../domain/InnovationPack/DashboardLibraryTemplates/useLibraryTemplateCardProps';
 import { useTranslation } from 'react-i18next';
 import { TranslateWithElements } from '../../../domain/shared/i18n/TranslateWithElements';
 import { useConfig } from '../../../domain/platform/config/useConfig';
@@ -18,7 +17,7 @@ const InnovationLibraryPage = () => {
   const { data: innovationLibraryData } = useInnovationLibraryQuery();
 
   const innovationPacks = useInnovationPackCardProps(innovationLibraryData?.platform.library.innovationPacks);
-  const templates = useLibraryTemplateCardProps(innovationLibraryData?.platform.library.innovationPacks);
+  const templates = innovationLibraryData?.platform.library.templates;
 
   const { t } = useTranslation();
   const { locations } = useConfig();

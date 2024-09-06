@@ -2,9 +2,7 @@ import React, { Dispatch, ReactNode } from 'react';
 import { Box, Button, Theme, useMediaQuery } from '@mui/material';
 import PageContentBlockHeaderWithDialogAction from '../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
 import MultipleSelect from '../../../core/ui/search/MultipleSelect';
-import LibraryTemplateCard, { LibraryTemplateCardProps } from './LibraryTemplateCard';
 import PageContentBlock, { PageContentBlockProps } from '../../../core/ui/content/PageContentBlock';
-import { Identifiable } from '../../../core/utils/Identifiable';
 import SeeMore from '../../../core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
 import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
@@ -13,6 +11,8 @@ import GridItem from '../../../core/ui/grid/GridItem';
 import TemplateTypeFilter from './TemplateTypeFilter';
 import TemplateTypeFilterMobile from './TemplateTypeFilterMobile';
 import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
+import TemplateCard from '../../templates/_new/components/cards/TemplateCard';
+import { AnyTemplate, AnyTemplateWithInnovationPack } from '../../templates/_new/models/TemplateBase';
 
 export interface LibraryTemplatesFilter {
   templateTypes: TemplateType[];
@@ -22,8 +22,8 @@ export interface LibraryTemplatesFilter {
 interface LibraryTemplatesViewProps {
   filter: LibraryTemplatesFilter;
   headerTitle: ReactNode;
-  templates: (Identifiable & LibraryTemplateCardProps)[] | undefined;
-  onClick: (card: LibraryTemplateCardProps) => void;
+  templates: AnyTemplateWithInnovationPack[] | undefined;
+  onClick: (template: AnyTemplate) => void;
   expanded?: boolean;
   onFilterChange: Dispatch<LibraryTemplatesFilter>;
   onDialogOpen?: () => void;
@@ -87,8 +87,13 @@ const LibraryTemplatesView = ({
       </Box>
       {templates && (
         <ScrollableCardsLayoutContainer minHeight={0} orientation={expanded ? 'vertical' : undefined} sameHeight>
-          {templates.map(template => (
-            <LibraryTemplateCard key={template.id} {...template} onClick={() => onClick(template)} />
+          {templates.map(({ template, innovationPack }) => (
+            <TemplateCard
+              key={template.id}
+              template={template}
+              innovationPack={innovationPack}
+              onClick={() => onClick(template)}
+            />
           ))}
           {isMobile && hasMore && (
             <GridItem columns={CONTRIBUTE_CARD_COLUMNS}>
