@@ -4124,14 +4124,12 @@ export const InnovationPackProfilePageDocument = gql`
         }
         templates {
           id
-          ...TemplatesSetTemplates
         }
       }
     }
   }
   ${InnovationPackProviderProfileWithAvatarFragmentDoc}
   ${InnovationPackProfileFragmentDoc}
-  ${TemplatesSetTemplatesFragmentDoc}
 `;
 
 /**

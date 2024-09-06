@@ -1,12 +1,10 @@
 import { Box } from '@mui/material';
-import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useInnovationPackProfilePageQuery,
   useInnovationPackResolveIdQuery,
-  useWhiteboardTemplateContentQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, TemplateType } from '../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '../../../core/apollo/generated/graphql-schema';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import PageContent from '../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
@@ -15,23 +13,26 @@ import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import GridItem from '../../../core/ui/grid/GridItem';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { gutters } from '../../../core/ui/grid/utils';
+import Loading from '../../../core/ui/loading/Loading';
 import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
 import { BlockSectionTitle, Text } from '../../../core/ui/typography';
 import ReferencesListSmallItem from '../../profile/Reference/ReferencesListSmallItem/ReferencesListSmallItem';
 import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
-import PostTemplateCard from '../../templates/_new/components/cards/PostTemplateCard';
-import WhiteboardTemplateCard from '../../templates/_new/components/cards/WhiteboardTemplateCard';
-import InnovationFlowTemplateCard from '../../templates/_new/components/cards/InnovationFlowTemplateCard';
+import {} from '../../templates/_new/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
+import TemplatesAdmin from '../../templates/_new/components/TemplatesAdmin/TemplatesAdmin';
 import InnovationPackProfileLayout from './InnovationPackProfileLayout';
-import TemplatesBlock from './TemplatesBlock';
-import PreviewTemplateDialog, {
-  TemplatePreview,
-} from '../../templates/_new/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
-import CalloutTemplateCard from '../../templates/_new/components/cards/CalloutTemplateCard';
-import CommunityGuidelinesTemplateCard from '../../templates/_new/components/cards/CommunityGuidelinesTemplateCard';
 
 const InnovationPackProfilePage = () => {
-  const { innovationPackNameId } = useUrlParams();
+  const {
+    innovationPackNameId,
+    communityGuidelinesTemplateId,
+    postNameId,
+    calloutTemplateId,
+    whiteboardNameId,
+    innovationTemplateId,
+  } = useUrlParams();
+  const selectedTemplateId =
+    communityGuidelinesTemplateId ?? postNameId ?? calloutTemplateId ?? whiteboardNameId ?? innovationTemplateId;
 
   if (!innovationPackNameId) {
     throw new Error('Must be within Innovation Pack');
@@ -54,44 +55,12 @@ const InnovationPackProfilePage = () => {
     skip: !innovationPackId,
   });
 
-  const { displayName, description, tagset, references } = data?.lookup.innovationPack?.profile ?? {};
-
-  const {
-    whiteboardTemplates,
-    postTemplates,
-    innovationFlowTemplates,
-    calloutTemplates,
-    communityGuidelinesTemplates,
-  } = data?.lookup.innovationPack?.templates ?? {};
-
-  const { innovationPack } = data?.lookup ?? {};
-
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplatePreview | undefined>();
+  const innovationPack = data?.lookup.innovationPack;
+  const { displayName, description, tagset, references, url: baseUrl } = innovationPack?.profile ?? {};
+  const canUpdate = innovationPack?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+  const templatesSetId = innovationPack?.templates?.id;
 
   const { t } = useTranslation();
-
-  const { data: whiteboardTemplateContentData, loading: loadingWhiteboardTemplateContent } =
-    useWhiteboardTemplateContentQuery({
-      variables: {
-        whiteboardTemplateId: selectedTemplate?.template['id']!,
-      },
-      skip: !selectedTemplate || selectedTemplate.templateType !== TemplateType.Whiteboard,
-    });
-
-  const previewedTemplate = useMemo<TemplatePreview | undefined>(() => {
-    if (!selectedTemplate || selectedTemplate.templateType !== TemplateType.Whiteboard) {
-      return selectedTemplate;
-    }
-    return {
-      ...selectedTemplate,
-      template: {
-        ...selectedTemplate.template,
-        ...whiteboardTemplateContentData?.lookup.template,
-      },
-    };
-  }, [selectedTemplate, whiteboardTemplateContentData]);
-
-  const canUpdate = innovationPack?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
   return (
     <>
@@ -133,56 +102,13 @@ const InnovationPackProfilePage = () => {
                 </Box>
               </GridItem>
             </PageContentBlock>
-            <TemplatesBlock
-              title={t('common.enums.templateTypes.Whiteboard')}
-              templates={whiteboardTemplates}
-              cardComponent={WhiteboardTemplateCard}
-              templateType={TemplateType.Whiteboard}
-              onClickCard={setSelectedTemplate}
-              innovationPack={innovationPack}
-            />
-            <TemplatesBlock
-              title={t('common.enums.templateTypes.Callout')}
-              templates={calloutTemplates}
-              cardComponent={CalloutTemplateCard}
-              templateType={TemplateType.Callout}
-              onClickCard={setSelectedTemplate}
-              innovationPack={innovationPack}
-            />
-            <TemplatesBlock
-              title={t('common.enums.templateTypes.InnovationFlow')}
-              templates={innovationFlowTemplates}
-              cardComponent={InnovationFlowTemplateCard}
-              templateType={TemplateType.InnovationFlow}
-              onClickCard={setSelectedTemplate}
-              innovationPack={innovationPack}
-            />
-            <TemplatesBlock
-              title={t('common.enums.templateTypes.CommunityGuidelines')}
-              templates={communityGuidelinesTemplates}
-              cardComponent={CommunityGuidelinesTemplateCard}
-              templateType={TemplateType.CommunityGuidelines}
-              onClickCard={setSelectedTemplate}
-              innovationPack={innovationPack}
-            />
-            <TemplatesBlock
-              title={t('common.enums.templateTypes.Post')}
-              templates={postTemplates}
-              cardComponent={PostTemplateCard}
-              templateType={TemplateType.Post}
-              onClickCard={setSelectedTemplate}
-              innovationPack={innovationPack}
-            />
+            {loading && <Loading />}
+            {!loading && templatesSetId && (
+              <TemplatesAdmin templatesSetId={templatesSetId} templateId={selectedTemplateId} baseUrl={baseUrl} />
+            )}
           </PageContentColumn>
         </PageContent>
       </InnovationPackProfileLayout>
-      <PreviewTemplateDialog
-        open={!!selectedTemplate}
-        onClose={() => setSelectedTemplate(undefined)}
-        templatePreview={previewedTemplate}
-        innovationPack={innovationPack}
-        loadingTemplateContent={loadingWhiteboardTemplateContent}
-      />
     </>
   );
 };

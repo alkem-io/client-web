@@ -33,7 +33,6 @@ interface TemplatesAdminProps {
   templateId?: string; // Template selected, if any
   alwaysEditTemplate?: boolean; // If true, the selected template is editable, if false preview dialog is shown
   baseUrl: string | undefined;
-  indexUrl?: string;
   canCreateTemplates?: boolean;
   canEditTemplates?: boolean;
   canDeleteTemplates?: boolean;
@@ -64,7 +63,6 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   templateId,
   alwaysEditTemplate = false,
   baseUrl = '',
-  indexUrl, // Normally baseUrl + '/settings'. Defaults to baseUrl
   canImportTemplates = false,
   importTemplateOptions = {},
   canCreateTemplates = false,
@@ -203,7 +201,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
     ),
     [canCreateTemplates, canImportTemplates, setCreatingTemplateType, setImportTemplateType]
   );
-
+  console.log({ templateId, selectedTemplate, editTemplateMode });
   return (
     <>
       <PageContentBlockSeamless disablePadding>
@@ -312,7 +310,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
       {selectedTemplate && editTemplateMode && (
         <EditTemplateDialog
           open
-          onClose={() => backToTemplates(indexUrl ?? baseUrl)}
+          onClose={() => backToTemplates(baseUrl)}
           template={selectedTemplate}
           templateType={selectedTemplate.type}
           onSubmit={handleTemplateUpdate}
@@ -322,7 +320,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
       {selectedTemplate && !editTemplateMode && (
         <PreviewTemplateDialog
           open
-          onClose={() => backToTemplates(indexUrl ?? baseUrl)}
+          onClose={() => backToTemplates(baseUrl)}
           template={selectedTemplate}
           actions={
             canEditTemplates ? (

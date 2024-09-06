@@ -18,6 +18,7 @@ export default interface UrlParams extends Record<string, string | undefined> {
   postNameId?: string;
   whiteboardNameId?: string;
   innovationTemplateId?: string;
+  communityGuidelinesTemplateId?: string;
   calendarEventNameId?: string;
   innovationPackNameId?: string;
   innovationHubNameId?: string;

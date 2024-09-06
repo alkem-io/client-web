@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
   useAdminInnovationPackQuery,
   useInnovationPackResolveIdQuery,
-  useUpdateInnovationPackMutation
+  useUpdateInnovationPackMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
 import PageContent from '../../../core/ui/content/PageContent';
@@ -25,8 +25,7 @@ export enum RoutePaths {
   communityGuidelinesTemplatesRoutePath = 'community-guidelines-templates',
 }
 
-interface AdminInnovationPackPageProps {
-}
+interface AdminInnovationPackPageProps {}
 
 const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = () => {
   const { t } = useTranslation();
@@ -39,7 +38,8 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = () => {
     calloutTemplateId,
     communityGuidelinesNameId,
   } = useUrlParams();
-  const templateSelected = communityGuidelinesNameId || calloutTemplateId || innovationTemplateId || postNameId || whiteboardNameId;
+  const templateSelected =
+    communityGuidelinesNameId || calloutTemplateId || innovationTemplateId || postNameId || whiteboardNameId;
 
   if (!innovationPackNameId) {
     throw new Error('Must be within Innovation Pack');
@@ -123,9 +123,8 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = () => {
                 <TemplatesAdmin
                   templatesSetId={innovationPack.templates.id}
                   templateId={templateSelected}
-                  baseUrl={innovationPack.profile.url}
-                  indexUrl={buildInnovationPackSettingsUrl(innovationPack.profile.url)}
-                  alwaysEditTemplate  // When editing an Innovation pack, we don't want to see template preview, just go to Edit mode always
+                  baseUrl={buildInnovationPackSettingsUrl(innovationPack.profile.url)}
+                  alwaysEditTemplate // When editing an Innovation pack, we don't want to see template preview, just go to Edit mode always
                   canDeleteTemplates
                   canCreateTemplates
                 />

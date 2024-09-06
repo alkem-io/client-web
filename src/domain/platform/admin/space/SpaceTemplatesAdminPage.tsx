@@ -34,16 +34,14 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({ spaceId, ro
           templatesSetId={templatesSetId}
           templateId={templateSelected}
           baseUrl={baseUrl}
-          indexUrl={baseUrl}
           canDeleteTemplates
           canCreateTemplates
           canEditTemplates
           canImportTemplates
           importTemplateOptions={{
-            // Indicated here for clarity, but these parameters are not really needed
-            // Do not import from any templateSet, just allow importing from the platform library
             templatesSetId: undefined,
             allowBrowsePlatformTemplates: true,
+            browseTemplatesSetTemplates: false,
           }}
         />
       )}
