@@ -22298,6 +22298,7 @@ export const AuthorizationPolicyDocument = gql`
     lookup {
       authorizationPolicy(ID: $authorizationPolicyId) {
         id
+        type
         anonymousReadAccess
         credentialRules {
           name
