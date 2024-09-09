@@ -406,7 +406,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         bokCommunityId,
         boKParentCommunityId
       );
-      addVCCreationCache(virtualContributorInput.name);
+
       const { data } = await getNewSpaceUrl();
       navigate(data?.space.profile.url ?? '');
     }
@@ -469,6 +469,11 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         },
       });
 
+      // add vc's nameId to the cache for the TryVC dialog
+      if (data?.createVirtualContributor.nameID) {
+        addVCCreationCache(data?.createVirtualContributor.nameID);
+      }
+
       notify(
         t('createVirtualContributorWizard.createdVirtualContributor.successMessage', { name: values.name }),
         'success'
@@ -485,7 +490,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         selectedKnowledge.communityId,
         selectedKnowledge.parentCommunityId
       );
-      addVCCreationCache(virtualContributorInput.name);
+
       navigate(selectedKnowledge.url ?? '');
     }
   };
