@@ -3008,7 +3008,7 @@
     },
     "trySection": {
       "title": "🎉 Try it out!",
-      "subTitle": "Your Virtual Contributor is being created and added it to your personal Space <tooltip><icon /></tooltip>. This process may take a couple of minutes, after which you can interact with it by typing <b>@{{vcName}}</b> in a comment on any post in your Space.",
+      "subTitle": "Your Virtual Contributor is successfully created and we added it to your Personal Space <tooltip><icon /></tooltip>. You can interact with it by typing <b>@{{vcName}}</b> in a comment on any post in your Space. Give it a try in the preview below!",
       "subTitleInfo": "When you create your first VC, we automatically generate a Space for you. This Space functions like any other Space on Alkemio, and you can customize the settings according to your preferences.",
       "postTitle": "Example post",
       "postDescription": "At Alkemio, we utilize Posts to facilitate collaborative interactions with AI. Unlike private chats, other members within a Space can learn from and contribute to these interactions.\n\nSimilar to mentioning a human contributor, you can use the \"@\" symbol followed by the Virtual Contributor's name.",
