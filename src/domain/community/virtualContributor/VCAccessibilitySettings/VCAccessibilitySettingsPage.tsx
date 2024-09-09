@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
   useUpdateVirtualContributorMutation,
@@ -19,7 +19,6 @@ import { SearchVisibility } from '../../../../core/apollo/generated/graphql-sche
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
-import { useSubscribeOnVirtualContributorEvents } from '../useSubscribeOnVirtualContributorEvents';
 
 interface VCAccessibilityProps {
   listedInStore?: boolean;
@@ -38,8 +37,6 @@ export const VCAccessibilitySettingsPage = () => {
       id: vcNameId,
     },
   });
-
-  useSubscribeOnVirtualContributorEvents(vcNameId);
 
   const [updateContributorMutation] = useUpdateVirtualContributorMutation();
   const handleUpdate = (props: VCAccessibilityProps) => {
@@ -77,11 +74,6 @@ export const VCAccessibilitySettingsPage = () => {
       },
     });
   };
-
-  useEffect(() => {
-    // TODO: Use the status wehere needed when defined
-    console.info(data?.virtualContributor.status);
-  }, [data]);
 
   if (!data?.virtualContributor) {
     return null;
