@@ -32,10 +32,10 @@ export const getNewTemplate = (templateType: TemplateType, defaultValues?: Parti
           type: data?.callout?.type ?? CalloutType.Post,
           framing: {
             profile: {
-              displayName: data?.callout?.framing.profile.displayName ?? '',
-              description: data?.callout?.framing.profile.description ?? '',
-              references: data?.callout?.framing.profile.references ?? [],
-              tagsets: data?.callout?.framing.profile.tagsets ?? [],
+              displayName: data?.callout?.framing.profile?.displayName ?? '',
+              description: data?.callout?.framing.profile?.description ?? '',
+              references: data?.callout?.framing.profile?.references ?? [],
+              tagsets: data?.callout?.framing.profile?.tagsets ?? [],
             },
             whiteboard: data?.callout?.framing.whiteboard ?? undefined,
           },
@@ -49,11 +49,9 @@ export const getNewTemplate = (templateType: TemplateType, defaultValues?: Parti
       return template;
     }
     case TemplateType.Collaboration: {
-      const data = defaultValues as Partial<CollaborationTemplate>;
       const template: CollaborationTemplate = {
         ...common,
         type: TemplateType.Collaboration,
-
       };
       return template;
     }
@@ -65,9 +63,9 @@ export const getNewTemplate = (templateType: TemplateType, defaultValues?: Parti
         communityGuidelines: {
           id: '',
           profile: {
-            displayName: data?.communityGuidelines?.profile.displayName ?? '',
-            description: data?.communityGuidelines?.profile.description ?? '',
-            references: data?.communityGuidelines?.profile.references ?? [],
+            displayName: data?.communityGuidelines?.profile?.displayName ?? '',
+            description: data?.communityGuidelines?.profile?.description ?? '',
+            references: data?.communityGuidelines?.profile?.references ?? [],
           },
         },
       };
