@@ -3,7 +3,7 @@ import { useAccountInformationQuery, useUserAccountQuery } from '../../../../cor
 import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettingsLayout';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import ContributorAccountView from '../../../platform/admin/components/Common/ContributorAccountView';
+import ContributorAccountView from '../../contributor/AccountTab/ContributorAccountView';
 
 interface UserAccountPageProps {}
 

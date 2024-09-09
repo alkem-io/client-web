@@ -23,7 +23,7 @@ import { getPlanTranslations } from '../../../../license/plans/utils/getPlanTran
 import { ROUTE_HOME } from '../../../../platform/routes/constants';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CachedIcon from '@mui/icons-material/Cached';
-import SpaceProfileDeleteDialog from '../SpaceSettings/SpaceProfileDeleteDialog';
+import EntityConfirmDeleteDialog from '../SpaceSettings/EntityConfirmDeleteDialog';
 import { SvgIconComponent } from '@mui/icons-material';
 import { useUserContext } from '../../../../community/user';
 import translateWithElements from '../../../../shared/i18n/TranslateWithElements/TranslateWithElements';
@@ -283,7 +283,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
                     onClick={() => setDeleteDialogOpen(true)}
                   >
                     <Caption color={theme => theme.palette.error.dark} textAlign="right">
-                      {t('components.deleteSpace.title')}
+                      {t('components.deleteEntity.title')}
                     </Caption>
                   </LicenseActionBlock>
                 </Gutters>
@@ -298,7 +298,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
             </Gutters>
           </PageContentBlock>
           {deleteDialogOpen && (
-            <SpaceProfileDeleteDialog
+            <EntityConfirmDeleteDialog
               entity={t('common.space')}
               open={deleteDialogOpen}
               onClose={() => setDeleteDialogOpen(false)}

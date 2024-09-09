@@ -31,7 +31,7 @@ import { Box, CircularProgress } from '@mui/material';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import DeleteIcon from './icon/DeleteIcon';
-import SpaceProfileDeleteDialog from './SpaceProfileDeleteDialog';
+import EntityConfirmDeleteDialog from './EntityConfirmDeleteDialog';
 import { useSubSpace } from '../../../subspace/hooks/useSubSpace';
 import { useSpace } from '../../SpaceContext/useSpace';
 
@@ -373,15 +373,15 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
 
           {isSubspace && canDelete && (
             <PageContentBlock sx={{ borderColor: errorColor }}>
-              <PageContentBlockHeader sx={{ color: errorColor }} title={t('components.deleteSpace.title')} />
+              <PageContentBlockHeader sx={{ color: errorColor }} title={t('components.deleteEntity.title')} />
               <Box display="flex" gap={1} alignItems="center" sx={{ cursor: 'pointer' }} onClick={openDialog}>
                 <DeleteIcon />
-                <Caption>{t('components.deleteSpace.description', { entity: t('common.subspace') })}</Caption>
+                <Caption>{t('components.deleteEntity.description', { entity: t('common.subspace') })}</Caption>
               </Box>
             </PageContentBlock>
           )}
           {openDeleteDialog && (
-            <SpaceProfileDeleteDialog
+            <EntityConfirmDeleteDialog
               entity={t('common.subspace')}
               open={openDeleteDialog}
               onClose={closeDialog}
