@@ -2117,7 +2117,7 @@
       "fullName": "Explore Spaces",
       "shortName": "$t(common.spaces)",
       "subtitle": "All activity on Alkemio happens inside Spaces and their corresponding Subspaces. Explore both to find topics where you can contribute!",
-      "caption": "Discover a diverse range of Spaces awaiting your exploration. Whether you’re an experienced member or a curious newcomer, there’s something here for everyone. Let’s delve into the details:\n1. Member Spaces: These are the ones you’re already a part of. Dive deeper into this familiar territory to continue your journey.\n2. Public Spaces: Immerse yourself in content directly accessible from these Spaces. From captivating stories to insightful discussions, there’s plenty to explore. You’ll also find Subspaces that are part of the Public Spaces.\n3. All Spaces: This category encompasses both public and private Spaces. While public content is readily available, private Spaces require membership. Join to unlock exclusive content and connect with like-minded enthusiasts. Remember that Subspaces within Private Spaces are accessible only to members of those private groups.",
+      "caption": "Discover a diverse range of Spaces awaiting your exploration. Whether you’re an experienced member or a curious newcomer, there’s something here for everyone. Let’s delve into the details:\n1. Member Spaces: These are spaces where you already hold membership.\n2. Public Spaces: These spaces have visible content, and you can request to join them.\n3. All Spaces: This category includes both public and private spaces. In private spaces, only limited content is visible, but you can still apply for membership.",
       "membershipFilter": {
         "all": "All Spaces",
         "member": "Member Spaces",
@@ -2500,7 +2500,7 @@
     },
     "registration": {
       "header": "Create an account to start using Alkemio",
-      "introduction": "<p>Welcome at Alkemio! Alkemio makes it easy to manage Subspaces and have contributors, from anywhere, working together on solutions. Subspaces take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
+      "introduction": "<p>Welcome to Alkemio! Safe spaces for collaboration, education and professionals.</p><p>Alkemio is designed to benefit society. Please read and accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy> before you continue.</p>",
       "terms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
       "login": "Have an account?",
       "reset-password": "Reset password"
