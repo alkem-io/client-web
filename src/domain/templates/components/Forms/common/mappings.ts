@@ -163,9 +163,15 @@ export const toCreateTemplateMutationVariables = (
           case CalloutType.Whiteboard: {
             delete calloutDraft.callout.contributionDefaults;
             if (calloutDraft.callout.framing.whiteboard) {
-              calloutDraft.callout.framing.whiteboard.profile = {
+              // TODO: instead of deleting the profile, we should use profile for WB templates
+              // calloutDraft.callout.framing.whiteboard.profile = {
+              //   displayName: 'Whiteboard Template',
+              // };
+              calloutDraft.callout.framing.whiteboard['profileData'] = {
                 displayName: 'Whiteboard Template',
               };
+
+              delete calloutDraft.callout.framing.whiteboard.profile;
             }
             break;
           }
