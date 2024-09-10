@@ -67,7 +67,12 @@ const MyAccountBlock = () => {
   const virtualContributors: MyAccountVirtualContributor[] = data?.me.user?.account?.virtualContributors ?? [];
 
   const userRoles: CredentialType[] | undefined = data?.me.user?.agent.credentials?.map(credential => credential.type);
-  const globalRoles = [CredentialType.GlobalAdmin, CredentialType.GlobalLicenseManager, CredentialType.GlobalSupport];
+  const globalRoles = [
+    CredentialType.GlobalAdmin,
+    CredentialType.GlobalLicenseManager,
+    CredentialType.GlobalSupport,
+    CredentialType.BetaTester,
+  ];
 
   let userRole = UserRoles.noGlobalRoleUser;
   if (userRoles?.includes(CredentialType.VcCampaign)) {
