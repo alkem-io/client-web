@@ -9,7 +9,7 @@ import { Caption } from '../../../../../core/ui/typography';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import TranslationKey from '../../../../../core/i18n/utils/TranslationKey';
 
-interface SpaceProfileDeleteDialogProps {
+interface EntityConfirmDeleteDialogProps {
   entity: string;
   description?: TranslationKey;
   open: boolean;
@@ -18,7 +18,7 @@ interface SpaceProfileDeleteDialogProps {
   submitting: boolean;
 }
 
-const SpaceProfileDeleteDialog: FC<SpaceProfileDeleteDialogProps> = ({
+const EntityConfirmDeleteDialog: FC<EntityConfirmDeleteDialogProps> = ({
   entity,
   description,
   open,
@@ -31,16 +31,16 @@ const SpaceProfileDeleteDialog: FC<SpaceProfileDeleteDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogHeader onClose={onClose} title={t('components.deleteSpace.confirmDialog.title', { entity: entity })} />
+      <DialogHeader onClose={onClose} title={t('components.deleteEntity.confirmDialog.title', { entity: entity })} />
       <DialogContent>
         <Gutters disablePadding>
           <Box sx={{ wordWrap: 'break-word' }}>
             <Caption>
-              {t(description ?? 'components.deleteSpace.confirmDialog.description', { entity: entity })}{' '}
+              {t(description ?? 'components.deleteEntity.confirmDialog.description', { entity: entity })}{' '}
             </Caption>
             <FormControlLabel
               control={<Checkbox checked={checked} onChange={() => setChecked(!checked)} />}
-              label={<Caption>{t('components.deleteSpace.confirmDialog.checkbox', { entity: entity })}</Caption>}
+              label={<Caption>{t('components.deleteEntity.confirmDialog.checkbox', { entity: entity })}</Caption>}
             />
             <Actions justifyContent="flex-end" paddingTop={gutters()}>
               <Button onClick={onClose}>{t('buttons.cancel')}</Button>
@@ -49,11 +49,11 @@ const SpaceProfileDeleteDialog: FC<SpaceProfileDeleteDialogProps> = ({
                 value={'SPACE'}
                 disabled={!checked}
                 loading={submitting}
-                loadingIndicator={`${t('components.deleteSpace.confirmDialog.confirm')}...`}
+                loadingIndicator={`${t('components.deleteEntity.confirmDialog.confirm')}...`}
                 onClick={onDelete}
                 sx={{ textWrap: 'nowrap' }}
               >
-                {t('components.deleteSpace.confirmDialog.confirm')}
+                {t('components.deleteEntity.confirmDialog.confirm')}
               </LoadingButton>
             </Actions>
           </Box>
@@ -63,4 +63,4 @@ const SpaceProfileDeleteDialog: FC<SpaceProfileDeleteDialogProps> = ({
   );
 };
 
-export default SpaceProfileDeleteDialog;
+export default EntityConfirmDeleteDialog;

@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import OrganizationAdminLayout from './OrganizationAdminLayout';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
-import ContributorAccountView from '../components/Common/ContributorAccountView';
+import ContributorAccountView from '../../../community/contributor/AccountTab/ContributorAccountView';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import {
   useAccountInformationQuery,

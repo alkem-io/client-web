@@ -13,12 +13,14 @@ import { LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
 
 export interface WhiteboardCardWhiteboard {
+  id: string;
   profile: {
     displayName: string;
     visual?: Visual;
     url: string;
   };
   createdDate?: Date | string;
+  contributionId: string;
 }
 
 interface WhiteboardCardProps {

@@ -70,7 +70,15 @@ const MyAccountBlockGlobalRoleUser = ({
               variant="contained"
               component={RouterLink}
               to={createLink}
-              sx={{ padding: gutters(0.5), textTransform: 'none', flex: 1 }}
+              sx={{
+                textTransform: 'none',
+                paddingTop: gutters(0.5),
+                paddingBottom: gutters(0.5),
+                flex: 1,
+                '&:hover': {
+                  color: 'common.white',
+                },
+              }}
             >
               {t('pages.home.sections.myAccount.globalRoleUser.createSpaceButton')}
             </Button>

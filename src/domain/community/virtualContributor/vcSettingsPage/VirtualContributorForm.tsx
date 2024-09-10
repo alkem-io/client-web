@@ -37,7 +37,7 @@ interface VirtualContributorProps {
     id: string;
     displayName: string;
     description?: string;
-    tagline: string;
+    tagline?: string;
     tagsets?: Tagset[] | undefined;
     url: string;
     avatar?: Visual | undefined;
@@ -48,7 +48,7 @@ interface VirtualContributorFromProps {
   name: string;
   nameID: string;
   description: string;
-  tagline: string;
+  tagline?: string;
   tagsets?: Tagset[];
   hostDisplayName: string;
   subSpaceName: string;

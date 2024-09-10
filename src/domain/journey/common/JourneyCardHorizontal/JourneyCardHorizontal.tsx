@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { gutters } from '../../../../core/ui/grid/utils';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { Chip, Paper, PaperProps, Skeleton, Typography } from '@mui/material';
@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { intersection } from 'lodash';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import JourneyAvatar from '../JourneyAvatar/JourneyAvatar';
+import ActionsMenu from '../../../../core/ui/card/ActionsMenu';
 
 export const JourneyCardHorizontalSkeleton = () => (
   <ElevatedPaper sx={{ padding: gutters() }}>
@@ -31,7 +32,7 @@ export interface JourneyCardHorizontalProps {
     profile: {
       url: string;
       displayName: string;
-      tagline: string;
+      tagline?: string;
       avatar?: Visual;
       cardBanner?: Visual;
     };
@@ -43,6 +44,7 @@ export interface JourneyCardHorizontalProps {
   seamless?: boolean;
   journeyTypeName: JourneyTypeName;
   sx?: PaperProps['sx'];
+  actions?: ReactNode;
 }
 
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
@@ -55,6 +57,7 @@ const JourneyCardHorizontal = ({
   deepness = journeyTypeName === 'subspace' ? 0 : 1,
   seamless,
   sx,
+  actions,
 }: JourneyCardHorizontalProps) => {
   const Icon = JourneyIcon[journeyTypeName];
 
@@ -69,7 +72,7 @@ const JourneyCardHorizontal = ({
   };
 
   return (
-    <ElevatedPaper component={RouterLink} to={journey.profile.url} sx={mergedSx} elevation={seamless ? 0 : undefined}>
+    <ElevatedPaper sx={mergedSx} elevation={seamless ? 0 : undefined}>
       <BadgeCardView
         visual={
           <JourneyAvatar
@@ -77,6 +80,9 @@ const JourneyCardHorizontal = ({
             sx={{ width: gutters(3), height: gutters(3) }}
           />
         }
+        component={RouterLink}
+        to={journey.profile.url}
+        actions={actions && <ActionsMenu>{actions}</ActionsMenu>}
       >
         <BlockTitleWithIcon title={journey.profile.displayName} icon={<Icon />} sx={{ height: gutters(1.5) }}>
           <FlexSpacer />
