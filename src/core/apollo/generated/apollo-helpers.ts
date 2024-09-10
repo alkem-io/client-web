@@ -1307,6 +1307,7 @@ export type DocumentKeySpecifier = (
   | 'mimeType'
   | 'size'
   | 'tagset'
+  | 'temporaryLocation'
   | 'updatedDate'
   | 'uploadedDate'
   | 'url'
@@ -1321,6 +1322,7 @@ export type DocumentFieldPolicy = {
   mimeType?: FieldPolicy<any> | FieldReadFunction<any>;
   size?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
+  temporaryLocation?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   url?: FieldPolicy<any> | FieldReadFunction<any>;

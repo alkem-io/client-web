@@ -2357,6 +2357,8 @@ export type Document = {
   size: Scalars['Float'];
   /** The tagset in use on this Document. */
   tagset: Tagset;
+  /** Whether this Document is in its end location or not. */
+  temporaryLocation: Scalars['Boolean'];
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** The uploaded date of this Document */
@@ -5576,6 +5578,8 @@ export type StorageBucketParent = {
 
 export type StorageBucketUploadFileInput = {
   storageBucketId: Scalars['String'];
+  /** Is this a temporary Document that will be moved later to another StorageBucket. */
+  temporaryLocation?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type StorageBucketUploadFileOnLinkInput = {
