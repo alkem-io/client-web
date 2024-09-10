@@ -100,6 +100,15 @@ class Portal {
         });
       });
 
+      setInterval(async () => {
+        return this._broadcastEvent(WS_EVENTS.SERVER, {
+          type: 'sync-check',
+          payload: {
+            elements: this.getSceneElements(),
+          },
+        } as never);
+      }, 10000);
+
       this.socket.on('room-user-change', (clients: string[]) => {
         this.onRoomUserChange(clients);
       });
