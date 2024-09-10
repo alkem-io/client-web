@@ -7,15 +7,17 @@ import { useLocation } from 'react-router-dom';
 import Gutters from '../../core/ui/grid/Gutters';
 
 // todo: use locations from useConfig()
-const locations = {
-  docs: 'http://localhost:3002', // nextra docs project, self-hosted
+const getDocumentationUrl = () => {
+  const { protocol, hostname, port } = window.location;
+
+  return `${protocol}//${hostname}${port ? ':3010' : ''}/documentation`;
 };
 
 const DocumentationPage = () => {
   const { pathname } = useLocation();
   const pathAfterDocs = pathname.split('/docs/')[1] ?? '';
 
-  let src = `${locations.docs}/${pathAfterDocs}`;
+  let src = `${getDocumentationUrl()}/${pathAfterDocs}`;
 
   return (
     <TopLevelLayout
