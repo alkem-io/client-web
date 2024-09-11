@@ -8,6 +8,8 @@ import LoadingListItem from '../../../shared/components/SearchableList/LoadingLi
 import ListItemLink, { ListItemLinkProps } from '../../../shared/components/SearchableList/ListItemLink';
 import { omit } from 'lodash';
 
+const MAX_ITEMS_LIMIT = 1000;
+
 export interface SearchableListProps<
   ItemViewProps extends {},
   Item extends SearchableListItem & Omit<ItemViewProps, keyof ListItemLinkProps>
@@ -132,8 +134,12 @@ export const SearchableList = <
         onConfirm={handleRemoveItem}
         text={`Are you sure you want to remove: ${itemToRemove?.value}`}
       />
-      {filteredData.length > limit && limit < 50 && (
-        <Button onClick={() => setLimit(x => (x >= 50 ? x : x + 10))} variant="outlined" sx={{ alignSelf: 'start' }}>
+      {filteredData.length > limit && limit < MAX_ITEMS_LIMIT && (
+        <Button
+          onClick={() => setLimit(x => (x >= MAX_ITEMS_LIMIT ? x : x + 10))}
+          variant="outlined"
+          sx={{ alignSelf: 'start' }}
+        >
           {t('components.searchableList.load-more')}
         </Button>
       )}

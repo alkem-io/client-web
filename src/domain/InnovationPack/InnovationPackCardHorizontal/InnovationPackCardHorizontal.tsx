@@ -11,9 +11,9 @@ import { InnovationFlowIcon } from '../../collaboration/InnovationFlow/Innovatio
 import { PostIcon } from '../../collaboration/post/icon/PostIcon';
 import { WhiteboardIcon } from '../../collaboration/whiteboard/icon/WhiteboardIcon';
 import InnovationPackIcon from '../InnovationPackIcon';
-import OneLineMarkdown from '../../../core/ui/markdown/OneLineMarkdown';
 import RoundedIcon from '../../../core/ui/icon/RoundedIcon';
 import ActionsMenu from '../../../core/ui/card/ActionsMenu';
+import OneLineMarkdown from '../../../core/ui/markdown/OneLineMarkdown';
 import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
 
 export interface InnovationPackCardHorizontalProps {
