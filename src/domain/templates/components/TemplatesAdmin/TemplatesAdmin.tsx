@@ -5,7 +5,7 @@ import {
   useAllTemplatesInTemplatesSetQuery,
   useCreateTemplateMutation,
   useDeleteTemplateMutation,
-  useImportTemplateDataLazyQuery,
+  useTemplateContentLazyQuery,
   useUpdateTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
@@ -169,9 +169,9 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
 
   // Import Template
   const [importTemplateType, setImportTemplateType] = useState<TemplateType>();
-  const [getImportData] = useImportTemplateDataLazyQuery();
+  const [getTemplateContent] = useTemplateContentLazyQuery();
   const handleImportTemplate = async ({ id, type: templateType }: AnyTemplate) => {
-    const { data } = await getImportData({
+    const { data } = await getTemplateContent({
       variables: {
         templateId: id,
         includeCallout: templateType === TemplateType.Callout,

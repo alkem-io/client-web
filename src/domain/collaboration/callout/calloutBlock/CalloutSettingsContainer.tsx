@@ -45,7 +45,10 @@ import ExpandContentIcon from '../../../../core/ui/content/ExpandContent/ExpandC
 import { ShareDialog } from '../../../shared/components/ShareDialog/ShareDialog';
 import { gutters } from '../../../../core/ui/grid/utils';
 import SortDialog from './sort/SortDialog';
-import { useUpdateContributionsSortOrderMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useCalloutContentLazyQuery,
+  useUpdateContributionsSortOrderMutation,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { WhiteboardCardWhiteboard } from '../whiteboard/WhiteboardCard';
 import { PostCardPost } from '../post/PostCard';
 import { useCreateCalloutTemplate } from '../../../templates/hooks/useCreateCalloutTemplate';
@@ -252,6 +255,8 @@ const CalloutSettingsContainer = ({
     });
   };
 
+  const [fetchCalloutContent] = useCalloutContentLazyQuery();
+
   if (dontShow) {
     return null;
   }
@@ -313,7 +318,7 @@ const CalloutSettingsContainer = ({
             iconComponent={DownloadForOfflineOutlinedIcon}
             onClick={handleSaveAsTemplateDialogOpen}
           >
-            {t('callout.saveAsCallout')}
+            {t('callout.saveAsTemplate')}
           </MenuItemWithIcon>
         )}
         {callout.movable && (
@@ -363,9 +368,16 @@ const CalloutSettingsContainer = ({
         onClose={() => setSaveAsTemplateDialogOpen(false)}
         templateType={TemplateType.Callout}
         onSubmit={handleSaveAsTemplate}
-        defaultValues={{
-          type: TemplateType.Callout,
-          callout: callout,
+        getDefaultValues={async () => {
+          const { data } = await fetchCalloutContent({
+            variables: {
+              calloutId: callout.id,
+            },
+          });
+          return {
+            type: TemplateType.Callout,
+            callout: data?.lookup.callout,
+          };
         }}
       />
       <Collapse in={positionDialogOpen} timeout="auto" unmountOnExit>

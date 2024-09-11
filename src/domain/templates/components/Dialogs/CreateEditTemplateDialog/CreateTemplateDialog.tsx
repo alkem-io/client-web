@@ -1,25 +1,48 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import CreateEditTemplateDialogBase from './CreateEditTemplateDialogBase';
 import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
 import TemplateForm, { AnyTemplateFormSubmittedValues } from '../../Forms/TemplateForm';
 import { getNewTemplate } from '../../../models/common';
 import { AnyTemplate } from '../../../models/TemplateBase';
+import { CircularProgress } from '@mui/material';
 
 interface CreateTemplateDialogProps {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
   onSubmit: (values: AnyTemplateFormSubmittedValues) => void;
   templateType: TemplateType;
-  defaultValues?: Partial<AnyTemplate>;
+  getDefaultValues?: () => Promise<Partial<AnyTemplate>>;
 }
 
-const CreateTemplateDialog = ({ templateType, open, onClose, defaultValues, onSubmit }: CreateTemplateDialogProps) => {
-  const template = useMemo(() => getNewTemplate(templateType, defaultValues), [templateType, defaultValues]);
+const CreateTemplateDialog = ({
+  templateType,
+  open,
+  onClose,
+  getDefaultValues,
+  onSubmit,
+}: CreateTemplateDialogProps) => {
+  const [defaultValues, setDefaultValues] = useState<AnyTemplate | undefined>();
+  useEffect(() => {
+    (async () => {
+      if (open) {
+        if (getDefaultValues) {
+          setDefaultValues(getNewTemplate(templateType, await getDefaultValues()));
+        } else {
+          setDefaultValues(getNewTemplate(templateType));
+        }
+      }
+    })();
+  }, [open]);
 
   return (
     <CreateEditTemplateDialogBase open={open} onClose={onClose} templateType={templateType}>
-      {({ actions }) => <TemplateForm template={template} onSubmit={onSubmit} actions={actions} />}
+      {({ actions }) => (
+        <>
+          {!defaultValues && <CircularProgress />}
+          {defaultValues && <TemplateForm template={defaultValues} onSubmit={onSubmit} actions={actions} />}
+        </>
+      )}
     </CreateEditTemplateDialogBase>
   );
 };

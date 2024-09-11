@@ -8,6 +8,18 @@ query TemplateContent(
 ) {
   lookup {
     template(ID: $templateId) {
+      id
+      type
+      profile {
+        id
+        displayName
+        description
+        tagsets {
+          ID: id # Renamed to match the UpdateProfileInput
+          name
+          tags
+        }
+      }
       callout @include(if: $includeCallout) {
         ...CalloutTemplateContent
       }
@@ -86,5 +98,9 @@ fragment InnovationFlowTemplateContent on InnovationFlow {
 
 fragment WhiteboardTemplateContent on Whiteboard {
   id
+  profile {
+    id
+    displayName
+  }
   content
 }

@@ -11,7 +11,6 @@ import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfile } from './common/mappings';
 import { WhiteboardTemplate } from '../../models/WhiteboardTemplate';
 import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
-import { useTemplateContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 export interface WhiteboardTemplateFormSubmittedValues
   extends TemplateFormProfileSubmittedValues,
@@ -35,15 +34,11 @@ const validator = {
 
 const WhiteboardTemplateForm = ({ template, onSubmit, actions }: WhiteboardTemplateFormProps) => {
   const { t } = useTranslation();
-  const { data: whiteboardData, loading } = useTemplateContentQuery({
-    variables: { templateId: template?.id!, includeWhiteboard: true },
-    skip: !template?.id,
-  });
 
   const initialValues: WhiteboardTemplateFormSubmittedValues = {
     profile: mapTemplateProfileToUpdateProfile(template?.profile),
     whiteboard: {
-      content: whiteboardData?.lookup.template?.whiteboard?.content ?? JSON.stringify(EmptyWhiteboard),
+      content: template?.whiteboard?.content ?? JSON.stringify(EmptyWhiteboard),
     },
   };
 
@@ -60,7 +55,6 @@ const WhiteboardTemplateForm = ({ template, onSubmit, actions }: WhiteboardTempl
         name="whiteboard.content"
         previewImagesName="whiteboardPreviewImages"
         canEdit
-        loading={loading}
         dialogProps={{ title: t('templateLibrary.whiteboardTemplates.editDialogTitle') }}
       />
     </TemplateFormBase>

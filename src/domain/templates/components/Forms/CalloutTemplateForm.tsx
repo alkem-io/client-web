@@ -23,8 +23,6 @@ import {
   mapTagsetsToUpdateTagsets,
   mapTemplateProfileToUpdateProfile,
 } from './common/mappings';
-import { useTemplateContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import Loading from '../../../../core/ui/loading/Loading';
 import { Caption } from '../../../../core/ui/typography';
 
 export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
@@ -128,37 +126,27 @@ const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFor
     }));
   }, [t]);
 
-  const { data: calloutTemplateData, loading } = useTemplateContentQuery({
-    variables: { templateId: template?.id!, includeCallout: true },
-    skip: !template?.id,
-  });
-
   const initialValues: CalloutTemplateFormSubmittedValues = {
     profile: mapTemplateProfileToUpdateProfile(template?.profile),
     callout: {
       framing: {
         profile: {
-          displayName: calloutTemplateData?.lookup.template?.callout?.framing?.profile?.displayName ?? '',
-          description: calloutTemplateData?.lookup.template?.callout?.framing?.profile?.description ?? '',
-          references:
-            mapReferencesToUpdateReferences(
-              calloutTemplateData?.lookup.template?.callout?.framing?.profile?.references
-            ) ?? [],
-          tagsets: mapTagsetsToUpdateTagsets(calloutTemplateData?.lookup.template?.callout?.framing?.profile?.tagsets),
+          displayName: template?.callout?.framing?.profile?.displayName ?? '',
+          description: template?.callout?.framing?.profile?.description ?? '',
+          references: mapReferencesToUpdateReferences(template?.callout?.framing?.profile?.references) ?? [],
+          tagsets: mapTagsetsToUpdateTagsets(template?.callout?.framing?.profile?.tagsets),
         },
         whiteboard: {
           profile: {
-            displayName: calloutTemplateData?.lookup.template?.callout?.framing?.whiteboard?.profile.displayName ?? '',
-            description: calloutTemplateData?.lookup.template?.callout?.framing?.whiteboard?.profile.description ?? '',
+            displayName: template?.callout?.framing?.whiteboard?.profile.displayName ?? '',
+            description: template?.callout?.framing?.whiteboard?.profile.description ?? '',
           },
-          content:
-            calloutTemplateData?.lookup.template?.callout?.framing?.whiteboard?.content ??
-            JSON.stringify(EmptyWhiteboard),
+          content: template?.callout?.framing?.whiteboard?.content ?? JSON.stringify(EmptyWhiteboard),
         },
       },
       contributionDefaults: {
-        postDescription: calloutTemplateData?.lookup.template?.callout?.contributionDefaults?.postDescription ?? '',
-        whiteboardContent: calloutTemplateData?.lookup.template?.callout?.contributionDefaults?.whiteboardContent ?? '',
+        postDescription: template?.callout?.contributionDefaults?.postDescription ?? '',
+        whiteboardContent: template?.callout?.contributionDefaults?.whiteboardContent ?? '',
       },
       type: template?.callout?.type ?? CalloutType.Post,
     },
@@ -176,40 +164,35 @@ const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFor
       {({ values }) => {
         return (
           <>
-            {loading && <Loading />}
-            {!loading && (
-              <>
-                <FormikInputField name="callout.framing.profile.displayName" title={t('common.title')} />
-                <Box marginBottom={gutters(-1)}>
-                  <FormikMarkdownField
-                    name="callout.framing.profile.description"
-                    title={t('common.description')}
-                    maxLength={MARKDOWN_TEXT_LENGTH}
-                  />
-                </Box>
-                <TagsetField name="callout.framing.profile.tagsets[0].tags" title={t('common.tags')} />
-                <FormikRadioButtonsGroup
-                  name="callout.type"
-                  options={calloutTypeOptions}
-                  readOnly={!createMode}
-                  tooltipProps={{ PopperProps: { sx: { pointerEvents: 'none' } } }}
+            <FormikInputField name="callout.framing.profile.displayName" title={t('common.title')} />
+            <Box marginBottom={gutters(-1)}>
+              <FormikMarkdownField
+                name="callout.framing.profile.description"
+                title={t('common.description')}
+                maxLength={MARKDOWN_TEXT_LENGTH}
+              />
+            </Box>
+            <TagsetField name="callout.framing.profile.tagsets[0].tags" title={t('common.tags')} />
+            <FormikRadioButtonsGroup
+              name="callout.type"
+              options={calloutTypeOptions}
+              readOnly={!createMode}
+              tooltipProps={{ PopperProps: { sx: { pointerEvents: 'none' } } }}
+            />
+            {values.callout?.type === CalloutType.Whiteboard && (
+              <FormikWhiteboardPreview name="callout.framing.whiteboard.content" canEdit />
+            )}
+            {values.callout?.type === CalloutType.WhiteboardCollection && (
+              <FormikWhiteboardPreview name="callout.contributionDefaults.whiteboardContent" canEdit />
+            )}
+            {values.callout?.type === CalloutType.PostCollection && (
+              <Box marginBottom={gutters(-1)}>
+                <FormikMarkdownField
+                  name="callout.contributionDefaults.postDescription"
+                  title={t('common.description')}
+                  maxLength={MARKDOWN_TEXT_LENGTH}
                 />
-                {values.callout?.type === CalloutType.Whiteboard && (
-                  <FormikWhiteboardPreview name="callout.framing.whiteboard.content" canEdit />
-                )}
-                {values.callout?.type === CalloutType.WhiteboardCollection && (
-                  <FormikWhiteboardPreview name="callout.contributionDefaults.whiteboardContent" canEdit />
-                )}
-                {values.callout?.type === CalloutType.PostCollection && (
-                  <Box marginBottom={gutters(-1)}>
-                    <FormikMarkdownField
-                      name="callout.contributionDefaults.postDescription"
-                      title={t('common.description')}
-                      maxLength={MARKDOWN_TEXT_LENGTH}
-                    />
-                  </Box>
-                )}
-              </>
+              </Box>
             )}
           </>
         );

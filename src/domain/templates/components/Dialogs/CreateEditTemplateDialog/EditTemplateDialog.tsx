@@ -5,6 +5,8 @@ import CreateEditTemplateDialogBase from './CreateEditTemplateDialogBase';
 import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
 import { AnyTemplate } from '../../../models/TemplateBase';
 import TemplateForm, { AnyTemplateFormSubmittedValues } from '../../Forms/TemplateForm';
+import { useTemplateContentQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { CircularProgress } from '@mui/material';
 
 interface EditTemplateDialogProps {
   open: boolean;
@@ -16,9 +18,18 @@ interface EditTemplateDialogProps {
 }
 
 const EditTemplateDialog = ({ template, templateType, open, onClose, onSubmit, onDelete }: EditTemplateDialogProps) => {
-  if (!template) {
-    return null;
-  }
+  const { data, loading } = useTemplateContentQuery({
+    variables: {
+      templateId: template?.id!,
+      includeCallout: templateType === TemplateType.Callout,
+      includeCommunityGuidelines: templateType === TemplateType.CommunityGuidelines,
+      includeInnovationFlow: templateType === TemplateType.InnovationFlow,
+      includePost: templateType === TemplateType.Post,
+      includeWhiteboard: templateType === TemplateType.Whiteboard,
+    },
+    skip: !open || !template?.id,
+  });
+  const fullTemplate = data?.lookup.template;
 
   return (
     <CreateEditTemplateDialogBase
@@ -29,11 +40,10 @@ const EditTemplateDialog = ({ template, templateType, open, onClose, onSubmit, o
       editMode
     >
       {({ actions }) => (
-        <TemplateForm
-          template={template}
-          onSubmit={onSubmit}
-          actions={actions}
-        />
+        <>
+          {loading && <CircularProgress />}
+          {!loading && fullTemplate && <TemplateForm template={fullTemplate} onSubmit={onSubmit} actions={actions} />}
+        </>
       )}
     </CreateEditTemplateDialogBase>
   );

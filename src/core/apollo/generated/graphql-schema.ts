@@ -10982,6 +10982,67 @@ export type CalloutDetailsFragment = {
     | undefined;
 };
 
+export type CalloutContentQueryVariables = Exact<{
+  calloutId: Scalars['UUID'];
+}>;
+
+export type CalloutContentQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          type: CalloutType;
+          framing: {
+            __typename?: 'CalloutFraming';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              references?:
+                | Array<{
+                    __typename?: 'Reference';
+                    id: string;
+                    name: string;
+                    uri: string;
+                    description?: string | undefined;
+                  }>
+                | undefined;
+            };
+            whiteboard?:
+              | {
+                  __typename?: 'Whiteboard';
+                  id: string;
+                  content: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }
+              | undefined;
+          };
+          contributionDefaults: {
+            __typename?: 'CalloutContributionDefaults';
+            id: string;
+            postDescription?: string | undefined;
+            whiteboardContent?: string | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
 export type CalloutWhiteboardsQueryVariables = Exact<{
   calloutId: Scalars['UUID'];
 }>;
@@ -23977,82 +24038,6 @@ export type ImportTemplateDialogPlatformTemplatesQuery = {
   };
 };
 
-export type ImportTemplateDataQueryVariables = Exact<{
-  templateId: Scalars['UUID'];
-  includeCallout?: InputMaybe<Scalars['Boolean']>;
-  includeCommunityGuidelines?: InputMaybe<Scalars['Boolean']>;
-  includeInnovationFlow?: InputMaybe<Scalars['Boolean']>;
-  includePost?: InputMaybe<Scalars['Boolean']>;
-  includeWhiteboard?: InputMaybe<Scalars['Boolean']>;
-}>;
-
-export type ImportTemplateDataQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    template?:
-      | {
-          __typename?: 'Template';
-          id: string;
-          postDefaultDescription?: string | undefined;
-          profile: {
-            __typename?: 'Profile';
-            displayName: string;
-            description?: string | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string>; ID: string }> | undefined;
-          };
-          communityGuidelines?:
-            | {
-                __typename?: 'CommunityGuidelines';
-                profile: {
-                  __typename?: 'Profile';
-                  displayName: string;
-                  description?: string | undefined;
-                  references?:
-                    | Array<{ __typename?: 'Reference'; name: string; uri: string; description?: string | undefined }>
-                    | undefined;
-                };
-              }
-            | undefined;
-          callout?:
-            | {
-                __typename?: 'Callout';
-                type: CalloutType;
-                framing: {
-                  __typename?: 'CalloutFraming';
-                  profile: {
-                    __typename?: 'Profile';
-                    displayName: string;
-                    description?: string | undefined;
-                    tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
-                  };
-                  whiteboard?: { __typename?: 'Whiteboard'; content: string } | undefined;
-                };
-                contributionDefaults: {
-                  __typename?: 'CalloutContributionDefaults';
-                  postDescription?: string | undefined;
-                  whiteboardContent?: string | undefined;
-                };
-              }
-            | undefined;
-          innovationFlow?:
-            | {
-                __typename?: 'InnovationFlow';
-                profile: {
-                  __typename?: 'Profile';
-                  displayName: string;
-                  description?: string | undefined;
-                  tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
-                };
-                states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-              }
-            | undefined;
-          whiteboard?: { __typename?: 'Whiteboard'; content: string } | undefined;
-        }
-      | undefined;
-  };
-};
-
 export type AllTemplatesInTemplatesSetQueryVariables = Exact<{
   templatesSetId: Scalars['UUID'];
 }>;
@@ -24339,7 +24324,16 @@ export type TemplateContentQuery = {
     template?:
       | {
           __typename?: 'Template';
+          id: string;
+          type: TemplateType;
           postDefaultDescription?: string | undefined;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; name: string; tags: Array<string>; ID: string }> | undefined;
+          };
           callout?:
             | {
                 __typename?: 'Callout';
@@ -24506,7 +24500,14 @@ export type TemplateContentQuery = {
                 states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
               }
             | undefined;
-          whiteboard?: { __typename?: 'Whiteboard'; id: string; content: string } | undefined;
+          whiteboard?:
+            | {
+                __typename?: 'Whiteboard';
+                id: string;
+                content: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string };
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -24660,7 +24661,12 @@ export type InnovationFlowTemplateContentFragment = {
   states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
 };
 
-export type WhiteboardTemplateContentFragment = { __typename?: 'Whiteboard'; id: string; content: string };
+export type WhiteboardTemplateContentFragment = {
+  __typename?: 'Whiteboard';
+  id: string;
+  content: string;
+  profile: { __typename?: 'Profile'; id: string; displayName: string };
+};
 
 export type TemplateProfileInfoFragment = {
   __typename?: 'Template';

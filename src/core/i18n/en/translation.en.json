@@ -693,7 +693,7 @@
     "permission-helptext": "Use the switch below to close this callout for new entries.",
     "callout-location": "Location: ",
     "sortContributions": "Sort contributions",
-    "saveAsCallout": "Save as callout",
+    "saveAsTemplate": "Save as Template",
     "alkemio-link": "Click here to read more about Alkemio's collaboration tools",
     "link-collection": {
       "add-link": "Add link to {{title}}",

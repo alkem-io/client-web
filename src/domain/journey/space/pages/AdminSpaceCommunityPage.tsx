@@ -215,13 +215,15 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
           onClose={() => setSaveAsTemplateDialogOpen(false)}
           templateType={TemplateType.CommunityGuidelines}
           onSubmit={handleSaveAsTemplate}
-          defaultValues={{
-            type: TemplateType.CommunityGuidelines,
-            communityGuidelines: {
-              id: '',
-              profile: currentCommunityGuidelines.current!,
-            },
-          }}
+          getDefaultValues={() =>
+            Promise.resolve({
+              type: TemplateType.CommunityGuidelines,
+              communityGuidelines: {
+                id: '',
+                profile: currentCommunityGuidelines.current!,
+              },
+            })
+          }
         />
         <PageContentColumn columns={6}>
           <PageContentBlock>

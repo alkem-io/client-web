@@ -7,7 +7,7 @@ import { LibraryIcon } from '../../LibraryIcon';
 import { WhiteboardTemplateContent } from '../../models/WhiteboardTemplate';
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
-import { useImportTemplateDataLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useTemplateContentLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { Identifiable } from '../../../../core/utils/Identifiable';
@@ -24,9 +24,9 @@ const WhiteboardDialogTemplatesLibrary: FC<WhiteboardDialogTemplatesLibraryProps
   const [isDialogOpen, setDialogOpen] = useState(false);
   const columns = useGlobalGridColumns();
 
-  const [getTemplateData] = useImportTemplateDataLazyQuery();
+  const [getTemplateContent] = useTemplateContentLazyQuery();
   const handleSelectTemplate = async ({ id: templateId }: Identifiable): Promise<void> => {
-    const { data } = await getTemplateData({ variables: { templateId, includeWhiteboard: true } });
+    const { data } = await getTemplateContent({ variables: { templateId, includeWhiteboard: true } });
     if (data?.lookup.template?.whiteboard?.content) {
       const templateData = {
         whiteboard: {
