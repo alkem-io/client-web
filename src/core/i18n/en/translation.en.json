@@ -1883,6 +1883,20 @@
         "notifications": {
           "organization-created": "Organization created successfully.",
           "organization-removed": "Organization removed successfully."
+        },
+        "verification": {
+          "confirm": {
+            "title": "{{action}} {{name}}",
+            "description": "This organization is currently {{status}}. Do you want to {{action}} it?",
+            "status": {
+              "verified": "verified",
+              "notVerified": "not verified"
+            },
+            "action": {
+              "verify": "Verify",
+              "unverify": "Unverify"
+            }
+          }
         }
       },
       "subsubspace": {

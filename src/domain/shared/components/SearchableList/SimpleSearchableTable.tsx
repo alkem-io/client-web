@@ -10,7 +10,7 @@ import {
   TableContainer,
   TableRow,
 } from '@mui/material';
-import Delete from '@mui/icons-material/Delete';
+import DeleteOutline from '@mui/icons-material/DeleteOutline';
 import React, { forwardRef, ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import RemoveModal from '../../../../core/ui/dialogs/RemoveModal';
@@ -40,6 +40,7 @@ export interface SearchableListItem {
   id: string;
   value: string;
   url: string;
+  verified?: boolean;
 }
 
 const SimpleSearchableList = <Item extends SearchableListItem>({
@@ -53,6 +54,7 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
   onSearchTermChange,
   totalCount,
   hasMore = false,
+  itemActions,
 }: SearchableListProps<Item>) => {
   const { t } = useTranslation();
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
@@ -100,6 +102,8 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
     setItemToRemove(null);
   };
 
+  const renderItemActions = typeof itemActions === 'function' ? itemActions : () => itemActions;
+
   return (
     <TableContainer component={Paper}>
       <FormControl fullWidth size="small">
@@ -135,9 +139,10 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
                   </TableCell>
                   <TableCell component="th" scope="row" sx={{ paddingY: 0 }}>
                     <Actions>
+                      {renderItemActions(item)}
                       {onDelete && (
                         <IconButton onClick={e => openModal(e, item)} size="large" aria-label={t('buttons.delete')}>
-                          <Delete color="error" fontSize="large" />
+                          <DeleteOutline color="error" />
                         </IconButton>
                       )}
                     </Actions>

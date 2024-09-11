@@ -17733,12 +17733,35 @@ export type AdminGlobalOrganizationsListQuery = {
       __typename?: 'Organization';
       id: string;
       profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+      verification: {
+        __typename?: 'OrganizationVerification';
+        id: string;
+        lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
+      };
     }>;
     pageInfo: {
       __typename?: 'PageInfo';
       startCursor?: string | undefined;
       endCursor?: string | undefined;
       hasNextPage: boolean;
+    };
+  };
+};
+
+export type AdminOrganizationVerifyMutationVariables = Exact<{
+  input: OrganizationVerificationEventInput;
+}>;
+
+export type AdminOrganizationVerifyMutation = {
+  __typename?: 'Mutation';
+  eventOnOrganizationVerification: {
+    __typename?: 'OrganizationVerification';
+    id: string;
+    lifecycle: {
+      __typename?: 'Lifecycle';
+      id: string;
+      nextEvents?: Array<string> | undefined;
+      state?: string | undefined;
     };
   };
 };

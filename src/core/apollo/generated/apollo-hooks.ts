@@ -12265,6 +12265,13 @@ export const AdminGlobalOrganizationsListDocument = gql`
           url
           displayName
         }
+        verification {
+          id
+          lifecycle {
+            id
+            state
+          }
+        }
       }
       pageInfo {
         ...PageInfo
@@ -12332,6 +12339,59 @@ export function refetchAdminGlobalOrganizationsListQuery(
   return { query: AdminGlobalOrganizationsListDocument, variables: variables };
 }
 
+export const AdminOrganizationVerifyDocument = gql`
+  mutation adminOrganizationVerify($input: OrganizationVerificationEventInput!) {
+    eventOnOrganizationVerification(organizationVerificationEventData: $input) {
+      id
+      lifecycle {
+        id
+        nextEvents
+        state
+      }
+    }
+  }
+`;
+export type AdminOrganizationVerifyMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AdminOrganizationVerifyMutation,
+  SchemaTypes.AdminOrganizationVerifyMutationVariables
+>;
+
+/**
+ * __useAdminOrganizationVerifyMutation__
+ *
+ * To run a mutation, you first call `useAdminOrganizationVerifyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminOrganizationVerifyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminOrganizationVerifyMutation, { data, loading, error }] = useAdminOrganizationVerifyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAdminOrganizationVerifyMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AdminOrganizationVerifyMutation,
+    SchemaTypes.AdminOrganizationVerifyMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AdminOrganizationVerifyMutation,
+    SchemaTypes.AdminOrganizationVerifyMutationVariables
+  >(AdminOrganizationVerifyDocument, options);
+}
+
+export type AdminOrganizationVerifyMutationHookResult = ReturnType<typeof useAdminOrganizationVerifyMutation>;
+export type AdminOrganizationVerifyMutationResult = Apollo.MutationResult<SchemaTypes.AdminOrganizationVerifyMutation>;
+export type AdminOrganizationVerifyMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AdminOrganizationVerifyMutation,
+  SchemaTypes.AdminOrganizationVerifyMutationVariables
+>;
 export const OrganizationInfoDocument = gql`
   query organizationInfo($organizationId: UUID_NAMEID!, $includeAssociates: Boolean = false) {
     organization(ID: $organizationId) {
