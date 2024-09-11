@@ -45,7 +45,7 @@ export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileS
         }[];
       };
       whiteboard?: {
-        profile: {
+        profile?: {
           displayName: string;
           description?: string;
         };

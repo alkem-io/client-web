@@ -13,6 +13,7 @@ import { WhiteboardIcon } from '../../collaboration/whiteboard/icon/WhiteboardIc
 import InnovationPackIcon from '../InnovationPackIcon';
 import OneLineMarkdown from '../../../core/ui/markdown/OneLineMarkdown';
 import RoundedIcon from '../../../core/ui/icon/RoundedIcon';
+import ActionsMenu from '../../../core/ui/card/ActionsMenu';
 import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
 
 export interface InnovationPackCardHorizontalProps {
@@ -28,6 +29,7 @@ export interface InnovationPackCardHorizontalProps {
     postTemplatesCount?: number;
     whiteboardTemplatesCount?: number;
   };
+  actions?: React.ReactNode;
 }
 
 export const InnovationPackCardHorizontalSkeleton = () => {
@@ -43,8 +45,10 @@ export const InnovationPackCardHorizontalSkeleton = () => {
 const InnovationPackCardHorizontal = ({
   profile: { displayName, description, url },
   templates,
+  actions = undefined,
 }: InnovationPackCardHorizontalProps) => {
   const { t } = useTranslation();
+
   const {
     calloutTemplatesCount,
     communityGuidelinesTemplatesCount,
@@ -65,6 +69,7 @@ const InnovationPackCardHorizontal = ({
       visual={<RoundedIcon size="medium" component={InnovationPackIcon} />}
       component={RouterLink}
       to={url ?? ''}
+      actions={actions && <ActionsMenu>{actions}</ActionsMenu>}
     >
       <Box display="flex" flexDirection="row" justifyContent="space-between">
         <Box display="flex" flexDirection="column">

@@ -10,19 +10,17 @@ interface TemplatesGalleryContainerProvided {
   templatesCount: number;
   loading?: boolean;
   buildTemplateLink: (template: AnyTemplate) => LinkWithState;
-
 }
 
 interface TemplatesGalleryContainerProps extends SimpleContainerProps<TemplatesGalleryContainerProvided> {
   templates: AnyTemplate[] | undefined;
-  baseUrl: string;  // Url to go back after closing dialogs: InnovationPack settings url or Space settings url.
+  baseUrl: string; // Url to go back after closing dialogs: InnovationPack settings url or Space settings url.
   loading?: boolean;
 }
 
 const TemplatesGalleryContainer = ({ templates, baseUrl, loading, children }: TemplatesGalleryContainerProps) => {
   const [, buildLink] = useBackToParentPage(baseUrl);
   const buildTemplateLink = (template: AnyTemplate) => {
-
     switch (template.type) {
       case TemplateType.Callout:
         return buildLink(`${baseUrl}/${RoutePaths.calloutTemplatesRoutePath}/${template.id}`);
@@ -37,13 +35,13 @@ const TemplatesGalleryContainer = ({ templates, baseUrl, loading, children }: Te
       case TemplateType.Collaboration:
         return buildLink(`${baseUrl}/${RoutePaths.collaborationTemplatesRoutePath}/${template.id}`);
     }
-  }
+  };
   const provided = {
     templates,
     templatesCount: templates?.length ?? 0,
     loading,
     buildTemplateLink,
-  }
+  };
   return <>{children(provided)}</>;
 };
 

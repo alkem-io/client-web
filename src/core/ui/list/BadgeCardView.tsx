@@ -5,6 +5,7 @@ import { gutters } from '../grid/utils';
 
 interface BadgeCardViewProps {
   visual?: ReactElement<{ sx: { flexShrink: number } }>;
+  actions?: ReactElement<{ sx: { flexShrink: number } }>;
   visualRight?: ReactElement<{ sx: { flexShrink: number } }>;
   contentProps?: BoxProps;
   outlined?: boolean;
@@ -37,6 +38,7 @@ const BadgeCardView = forwardRef(
       outlined = false,
       square = false,
       padding = outlined,
+      actions = undefined,
       ...containerProps
     }: PropsWithChildren<BadgeCardViewProps> & Omit<BoxProps<D, P>, 'padding'>,
     ref
@@ -59,6 +61,7 @@ const BadgeCardView = forwardRef(
           </Box>
         )}
         {cloneVisual(visualRight)}
+        {actions && cloneVisual(actions)}
       </Box>
     );
   }
