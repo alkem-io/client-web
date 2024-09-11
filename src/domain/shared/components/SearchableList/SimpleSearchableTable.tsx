@@ -1,13 +1,25 @@
-import { FormControl, InputLabel, List, OutlinedInput } from '@mui/material';
+import {
+  FormControl,
+  IconButton,
+  InputLabel,
+  OutlinedInput,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from '@mui/material';
 import Delete from '@mui/icons-material/Delete';
 import React, { forwardRef, ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import SearchableListIconButton from './SearchableListIconButton';
 import RemoveModal from '../../../../core/ui/dialogs/RemoveModal';
 import useLazyLoading from '../../pagination/useLazyLoading';
 import LoadingListItem from './LoadingListItem';
-import ListItemLink from './ListItemLink';
 import { times } from 'lodash';
+import RouterLink from '../../../../core/ui/link/RouterLink';
+import { BlockTitle } from '../../../../core/ui/typography';
+import { Actions } from '../../../../core/ui/actions/Actions';
 
 export interface SearchableListProps<Item extends SearchableListItem> {
   data: Item[] | undefined;
@@ -41,7 +53,6 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
   onSearchTermChange,
   totalCount,
   hasMore = false,
-  itemActions = () => null,
 }: SearchableListProps<Item>) => {
   const { t } = useTranslation();
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
@@ -78,7 +89,7 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
     }
   };
 
-  const openModal = (e: Event, item: SearchableListItem): void => {
+  const openModal = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: SearchableListItem): void => {
     e.preventDefault();
     setModalOpened(true);
     setItemToRemove(item);
@@ -89,10 +100,8 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
     setItemToRemove(null);
   };
 
-  const renderItemActions = typeof itemActions === 'function' ? itemActions : () => itemActions;
-
   return (
-    <>
+    <TableContainer component={Paper}>
       <FormControl fullWidth size="small">
         <OutlinedInput
           value={searchTerm}
@@ -104,38 +113,47 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
       {typeof totalCount === 'undefined' ? null : (
         <InputLabel> {t('components.searchableList.info', { count: data.length, total: totalCount })}</InputLabel>
       )}
-      <hr />
-      <List>
-        {loading && !data
-          ? times(firstPageSize, i => <LoadingListItem key={`__loading_${i}`} />)
-          : data.map(item => (
-              <ListItemLink
-                key={item.id}
-                to={item.url}
-                primary={item.value}
-                icon={
-                  onDelete && (
-                    <SearchableListIconButton
-                      onClick={e => openModal(e, item)}
-                      size="large"
-                      aria-label={t('buttons.delete')}
-                    >
-                      <Delete color="error" fontSize="large" />
-                    </SearchableListIconButton>
-                  )
-                }
-                actions={renderItemActions(item)}
-              />
-            ))}
-        {loader}
-      </List>
+      <Table sx={{ minWidth: 700 }} aria-label="customized table">
+        <TableBody>
+          {loading && !data
+            ? times(firstPageSize, i => <LoadingListItem key={`__loading_${i}`} />)
+            : data.map((item, index) => (
+                <TableRow
+                  key={item.id}
+                  sx={{
+                    backgroundColor: index % 2 === 0 ? 'inherit' : 'action.hover',
+                    '&:last-child td, &:last-child th': { border: 0 },
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <TableCell component="th" scope="row" sx={{ paddingY: 0 }}>
+                    <BlockTitle component={RouterLink} to={item.url}>
+                      {item.value}
+                    </BlockTitle>
+                  </TableCell>
+                  <TableCell component="th" scope="row" sx={{ paddingY: 0 }}>
+                    <Actions>
+                      {onDelete && (
+                        <IconButton onClick={e => openModal(e, item)} size="large" aria-label={t('buttons.delete')}>
+                          <Delete color="error" fontSize="large" />
+                        </IconButton>
+                      )}
+                    </Actions>
+                  </TableCell>
+                </TableRow>
+              ))}
+        </TableBody>
+      </Table>
+      {loader}
       <RemoveModal
         show={isModalOpened}
         onCancel={closeModal}
         onConfirm={handleRemoveItem}
         text={`Are you sure you want to remove: ${itemToRemove?.value}`}
       />
-    </>
+    </TableContainer>
   );
 };
 

@@ -4,7 +4,7 @@ import { AdminSection } from '../../../../platform/admin/layout/toplevel/constan
 import useAdminGlobalOrganizationsList from './useAdminGlobalOrganizationsList';
 import SearchableListLayout from '../../../../shared/components/SearchableList/SearchableListLayout';
 import { useResolvedPath } from 'react-router-dom';
-import SimpleSearchableList from '../../../../shared/components/SearchableList/SimpleSearchableList';
+import SimpleSearchableTable from '../../../../shared/components/SearchableList/SimpleSearchableTable';
 
 const AdminOrganizationsPage: FC = () => {
   const { organizations, ...listProps } = useAdminGlobalOrganizationsList();
@@ -14,7 +14,7 @@ const AdminOrganizationsPage: FC = () => {
   return (
     <AdminLayout currentTab={AdminSection.Organization}>
       <SearchableListLayout newLink={`${url}/new`}>
-        <SimpleSearchableList data={organizations} {...listProps} />
+        <SimpleSearchableTable data={organizations} {...listProps} />
       </SearchableListLayout>
     </AdminLayout>
   );
