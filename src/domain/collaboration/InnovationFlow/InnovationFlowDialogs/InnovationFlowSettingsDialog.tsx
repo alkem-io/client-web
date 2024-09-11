@@ -15,6 +15,7 @@ import ImportTemplatesDialog from '../../../templates/components/Dialogs/ImportT
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
 interface InnovationFlowSettingsDialogProps {
   open?: boolean;
@@ -41,8 +42,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
 
   const [importInnovationFlowConfirmDialogOpen, setImportInnovationFlowConfirmDialogOpen] = useState(false);
   const [importInnovationFlowDialogOpen, setImportInnovationFlowDialogOpen] = useState(false);
-
-  const handleImportTemplate = async (templateId: string) => {
+  const handleImportTemplate = async ({ id: templateId }: Identifiable) => {
     await actions.importInnovationFlow(templateId);
     setImportInnovationFlowDialogOpen(false);
   };
@@ -120,7 +120,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
         open={importInnovationFlowDialogOpen}
         templateType={TemplateType.InnovationFlow}
         onClose={() => setImportInnovationFlowDialogOpen(false)}
-        onSelectTemplate={template => handleImportTemplate(template.id)}
+        onSelectTemplate={handleImportTemplate}
         enablePlatformTemplates
         actionButton={
           <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">

@@ -23,8 +23,8 @@ export const PostTemplateSelector: FC<PostTemplatesSelectorProps> = ({ name }) =
   const [, , helpers] = useField<String>(name);
 
   const [getTemplateContent] = useTemplateContentLazyQuery();
-  const handleSelectTemplate = async (template: Identifiable): Promise<void> => {
-    const { data } = await getTemplateContent({ variables: { templateId: template.id, includePost: true } });
+  const handleSelectTemplate = async ({ id: templateId }: Identifiable): Promise<void> => {
+    const { data } = await getTemplateContent({ variables: { templateId, includePost: true } });
     if (data?.lookup.template?.postDefaultDescription) {
       helpers.setValue(data?.lookup.template?.postDefaultDescription);
     }

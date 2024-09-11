@@ -25,8 +25,8 @@ const WhiteboardDialogTemplatesLibrary: FC<WhiteboardDialogTemplatesLibraryProps
   const columns = useGlobalGridColumns();
 
   const [getTemplateData] = useImportTemplateDataLazyQuery();
-  const handleSelectTemplate = async (template: Identifiable): Promise<void> => {
-    const { data } = await getTemplateData({ variables: { templateId: template.id, includeWhiteboard: true } });
+  const handleSelectTemplate = async ({ id: templateId }: Identifiable): Promise<void> => {
+    const { data } = await getTemplateData({ variables: { templateId, includeWhiteboard: true } });
     if (data?.lookup.template?.whiteboard?.content) {
       const templateData = {
         whiteboard: {

@@ -169,10 +169,10 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   }, [onClose]);
 
   const [fetchTemplateContent] = useTemplateContentLazyQuery();
-  const handleSelectTemplate = async ({ id: calloutTemplateId }: Identifiable) => {
+  const handleSelectTemplate = async ({ id: templateId }: Identifiable) => {
     const { data } = await fetchTemplateContent({
       variables: {
-        templateId: calloutTemplateId,
+        templateId,
         includeCallout: true,
       },
     });

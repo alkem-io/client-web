@@ -31,8 +31,8 @@ export const WhiteboardTemplateSelector: FC<WhiteboardTemplatesSelectorProps> = 
   };
 
   const [getTemplateContent] = useTemplateContentLazyQuery();
-  const handleSelectTemplate = async (template: Identifiable): Promise<void> => {
-    const { data } = await getTemplateContent({ variables: { templateId: template.id, includeWhiteboard: true } });
+  const handleSelectTemplate = async ({ id: templateId }: Identifiable): Promise<void> => {
+    const { data } = await getTemplateContent({ variables: { templateId, includeWhiteboard: true } });
     if (data?.lookup.template?.whiteboard?.content) {
       helpers.setValue(data?.lookup.template?.whiteboard?.content);
     }
