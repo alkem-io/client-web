@@ -16,7 +16,6 @@ interface TemplatesGalleryContainerProps extends SimpleContainerProps<TemplatesG
   templates: AnyTemplate[] | undefined;
   baseUrl: string; // Url to go back after closing dialogs: InnovationPack settings url or Space settings url.
   loading?: boolean;
-  templatesSetId: string | undefined;
 }
 
 const TemplatesGalleryContainer = ({ templates, baseUrl, loading, children }: TemplatesGalleryContainerProps) => {
