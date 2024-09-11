@@ -8,6 +8,7 @@ import { WhiteboardTemplate } from './WhiteboardTemplate';
 import EmptyWhiteboard from '../../common/whiteboard/EmptyWhiteboard';
 import { CollaborationTemplate } from './CollaborationTemplate';
 
+//!! review this file
 export const getNewTemplate = (templateType: TemplateType, defaultValues?: Partial<AnyTemplate>): AnyTemplate => {
   const common: TemplateBase = {
     id: '',
