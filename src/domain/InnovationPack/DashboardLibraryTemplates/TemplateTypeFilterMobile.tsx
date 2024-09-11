@@ -26,7 +26,7 @@ const TemplateTypeFilterMobile: FC<TemplateTypeFilterMobileProps> = ({ value, on
     }
   };
 
-  const templateTypeNames = Object.keys(TemplateType) as (keyof typeof TemplateType)[];
+  const templateTypeNames = Object.values(TemplateType) as typeof TemplateType[keyof typeof TemplateType][];
 
   return (
     <>
@@ -61,7 +61,7 @@ const TemplateTypeFilterMobile: FC<TemplateTypeFilterMobileProps> = ({ value, on
                       sx={{ paddingY: 0 }}
                     />
                   }
-                  label={<Caption>{t(`common.enums.templateTypes.${key}` as const)}</Caption>}
+                  label={<Caption>{t(`common.enums.templateType.${key}` as const)}</Caption>}
                 />
               );
             })}

@@ -1,8 +1,8 @@
 import { Box, Chip } from '@mui/material';
+import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import CheckIcon from '@mui/icons-material/Check';
-import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
 
 interface TemplateTypeFilterProps {
   value: TemplateType[];
@@ -20,7 +20,7 @@ const TemplateTypeFilter: FC<TemplateTypeFilterProps> = ({ value, onChange }) =>
     }
   };
 
-  const templateTypeValues = Object.values(TemplateType) as (typeof TemplateType[keyof typeof TemplateType])[];
+  const templateTypeValues = Object.values(TemplateType) as typeof TemplateType[keyof typeof TemplateType][];
 
   return (
     <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>

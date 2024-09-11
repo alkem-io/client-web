@@ -14,6 +14,7 @@ import InnovationPackIcon from '../InnovationPackIcon';
 import OneLineMarkdown from '../../../core/ui/markdown/OneLineMarkdown';
 import RoundedIcon from '../../../core/ui/icon/RoundedIcon';
 import ActionsMenu from '../../../core/ui/card/ActionsMenu';
+import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
 
 export interface InnovationPackCardHorizontalProps {
   profile: {
@@ -80,7 +81,7 @@ const InnovationPackCardHorizontal = ({
         {!!calloutTemplatesCount && (
           <CardFooterCountWithBadge
             iconComponent={DesignServicesIcon}
-            tooltip={t('common.enums.templateTypes.Callout_plural')}
+            tooltip={t(`common.enums.templateType.${TemplateType.Callout}_plural`)}
           >
             <Caption>{calloutTemplatesCount}</Caption>
           </CardFooterCountWithBadge>
@@ -88,7 +89,7 @@ const InnovationPackCardHorizontal = ({
         {!!whiteboardTemplatesCount && (
           <CardFooterCountWithBadge
             iconComponent={WhiteboardIcon}
-            tooltip={t('common.enums.templateTypes.Whiteboard_plural')}
+            tooltip={t(`common.enums.templateType.${TemplateType.Whiteboard}_plural`)}
           >
             <Caption>{whiteboardTemplatesCount}</Caption>
           </CardFooterCountWithBadge>
@@ -96,19 +97,22 @@ const InnovationPackCardHorizontal = ({
         {!!communityGuidelinesTemplatesCount && (
           <CardFooterCountWithBadge
             iconComponent={CommunityGuidelinesIcon}
-            tooltip={t('common.enums.templateTypes.CommunityGuidelines_plural')}
+            tooltip={t(`common.enums.templateType.${TemplateType.CommunityGuidelines}_plural`)}
           >
             <Caption>{communityGuidelinesTemplatesCount}</Caption>
           </CardFooterCountWithBadge>
         )}
         {!!postTemplatesCount && (
-          <CardFooterCountWithBadge iconComponent={PostIcon} tooltip={t('common.enums.templateTypes.Post_plural')}>
+          <CardFooterCountWithBadge
+            iconComponent={PostIcon}
+            tooltip={t(`common.enums.templateType.${TemplateType.Post}_plural`)}
+          >
             <Caption>{postTemplatesCount}</Caption>
           </CardFooterCountWithBadge>
         )}
         {!!innovationFlowTemplatesCount && (
           <CardFooterCountWithBadge
-            tooltip={t('common.enums.templateTypes.InnovationFlow_plural')}
+            tooltip={t(`common.enums.templateType.${TemplateType.InnovationFlow}_plural`)}
             icon={
               // TODO Try to redraw InnovationFlowIcon in the same way as MUI icons are done
               <Box
