@@ -30,7 +30,10 @@ import ImportTemplatesDialog from '../../../templates/components/Dialogs/ImportT
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { useCreateTemplateMutation, useSpaceTemplatesSetIdQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useCreateTemplateMutation,
+  useSpaceTemplatesSetIdLazyQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import CreateTemplateDialog from '../../../templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { toCreateTemplateMutationVariables } from '../../../templates/components/Forms/common/mappings';
 import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../../templates/components/Forms/CommunityGuidelinesTemplateForm';
@@ -70,14 +73,6 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     inviteExistingUser,
   } = useCommunityAdmin({ communityId, spaceId, journeyLevel: 0 });
 
-  const { data: templatesSetData } = useSpaceTemplatesSetIdQuery({
-    variables: {
-      spaceNameId: spaceId!,
-    },
-    skip: !spaceId,
-  });
-  const templatesSetId = templatesSetData?.space.library?.id;
-
   const currentApplicationsUserIds = useMemo(
     () =>
       applications
@@ -106,8 +101,11 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     throw new Error('Must be within a Space');
   }
 
+  const [fetchSpaceTemplatesSetId] = useSpaceTemplatesSetIdLazyQuery();
   const [createTemplate] = useCreateTemplateMutation();
   const handleSaveAsTemplate = async (values: CommunityGuidelinesTemplateFormSubmittedValues) => {
+    const { data: templatesSetData } = await fetchSpaceTemplatesSetId({ variables: { spaceNameId: spaceId } });
+    const templatesSetId = templatesSetData?.space.library?.id;
     if (templatesSetId) {
       await createTemplate({
         variables: toCreateTemplateMutationVariables(templatesSetId, TemplateType.CommunityGuidelines, values),
@@ -202,8 +200,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
                 templateType={TemplateType.CommunityGuidelines}
                 onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
                 onSelectTemplate={onSelectCommunityGuidelinesTemplate}
-                templatesSetId={templatesSetId}
-                allowBrowsePlatformTemplates
+                enablePlatformTemplates
                 actionButton={
                   <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
                     {t('buttons.use')}

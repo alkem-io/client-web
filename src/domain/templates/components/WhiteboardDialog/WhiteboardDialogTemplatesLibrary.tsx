@@ -7,11 +7,7 @@ import { LibraryIcon } from '../../LibraryIcon';
 import { WhiteboardTemplateContent } from '../../models/WhiteboardTemplate';
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
-import {
-  useImportTemplateDataLazyQuery,
-  useSpaceTemplatesSetIdQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useImportTemplateDataLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { Identifiable } from '../../../../core/utils/Identifiable';
@@ -24,16 +20,6 @@ const WhiteboardDialogTemplatesLibrary: FC<WhiteboardDialogTemplatesLibraryProps
   editModeEnabled = false,
   onImportTemplate,
 }) => {
-  // This could be better... and maybe it doesn't work on subspaces properly
-  const { spaceNameId } = useUrlParams();
-  const { data } = useSpaceTemplatesSetIdQuery({
-    variables: {
-      spaceNameId: spaceNameId!,
-    },
-    skip: !spaceNameId,
-  });
-  const templatesSetId = data?.space.library?.id;
-
   const { t } = useTranslation();
   const [isDialogOpen, setDialogOpen] = useState(false);
   const columns = useGlobalGridColumns();
@@ -67,8 +53,7 @@ const WhiteboardDialogTemplatesLibrary: FC<WhiteboardDialogTemplatesLibraryProps
           )}
           <ImportTemplatesDialog
             templateType={TemplateType.Whiteboard}
-            templatesSetId={templatesSetId}
-            allowBrowsePlatformTemplates
+            enablePlatformTemplates
             actionButton={
               <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
                 {t('buttons.use')}

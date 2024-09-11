@@ -16,10 +16,8 @@ import calloutIcons from '../utils/calloutIcons';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
 import {
   useCalloutTemplateContentLazyQuery,
-  useSpaceTemplatesSetIdQuery,
   useWhiteboardTemplateContentLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -71,7 +69,6 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   journeyTypeName,
 }) => {
   const { t } = useTranslation();
-  const { spaceNameId } = useUrlParams();
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
   const [selectedCalloutType, setSelectedCalloutType] = useState<CalloutType | undefined>(undefined);
@@ -79,12 +76,6 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   const [isConfirmCloseDialogOpen, setIsConfirmCloseDialogOpen] = useState(false);
   const [sendNotification, setSendNotification] = useState(true);
   const [importCalloutTemplateDialogOpen, setImportCalloutDialogOpen] = useState(false);
-
-  const { data: templatesSetData } = useSpaceTemplatesSetIdQuery({
-    variables: { spaceNameId: spaceNameId! },
-    skip: !spaceNameId,
-  });
-  const templatesSetId = templatesSetData?.space.library?.id;
 
   useLayoutEffect(() => {
     if (open) {
@@ -175,7 +166,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
         return result;
       }
     },
-    [callout, onCreateCallout, spaceNameId, fetchWhiteboardTemplateContent]
+    [callout, onCreateCallout, fetchWhiteboardTemplateContent]
   );
 
   const handleClose = useCallback(() => {
@@ -256,8 +247,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             templateType={TemplateType.Callout}
             onClose={() => setImportCalloutDialogOpen(false)}
             onSelectTemplate={handleSelectTemplate}
-            templatesSetId={templatesSetId}
-            allowBrowsePlatformTemplates
+            enablePlatformTemplates
             actionButton={
               <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
                 {t('buttons.use')}

@@ -14,9 +14,11 @@ import { TemplateType } from '../../../../../core/apollo/generated/graphql-schem
 import {
   useImportTemplateDialogPlatformTemplatesQuery,
   useImportTemplateDialogQuery,
+  useSpaceTemplatesSetIdQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import SearchIcon from '@mui/icons-material/Search';
+import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 
 export interface ImportTemplatesOptions {
   /**
@@ -24,18 +26,13 @@ export interface ImportTemplatesOptions {
    */
   templateType?: TemplateType;
 
+  disableSpaceTemplates?: boolean;
   /**
-   * The origin of the templates: May be a space or an innovation pack, or the platform library
-   * If browseTemplatesSetTemplates is false: only the platform library will be browsed
-   * If browseTemplatesSetTemplates is true and templatesSetId is undefined, the form will do nothing (expecting to be loading the templatesSetId later)
+   * Enables the option to search the entire platform library.
+   * first the templates from the space will be shown and the user can click a link to load the platform templates
+   * Is forced to true when disableSpaceTemplate is true, or when no spaceId is found in the url
    */
-  templatesSetId?: string;
-  browseTemplatesSetTemplates?: boolean;
-  /**
-   * Enables the option to search the entire platform library when templatesSetId is set,
-   * first the templates from the templatesSetId will be shown and the user can click a link to load the platform templates
-   */
-  allowBrowsePlatformTemplates?: boolean;
+  enablePlatformTemplates?: boolean;
 }
 
 interface ImportTemplatesDialogProps extends ImportTemplatesOptions {
@@ -50,16 +47,17 @@ const ImportTemplatesDialog = ({
   subtitle,
   open,
   onClose,
-  templatesSetId,
-  browseTemplatesSetTemplates = true,
-  allowBrowsePlatformTemplates,
+  disableSpaceTemplates = false,
+  enablePlatformTemplates = false,
   onSelectTemplate,
   actionButton,
   templateType,
 }: ImportTemplatesDialogProps) => {
   const { t } = useTranslation();
+  const { spaceNameId } = useUrlParams();
 
-  const [loadPlatformTemplates, setLoadPlatformTemplates] = useState(!browseTemplatesSetTemplates);
+  const canUseSpaceTemplates = !disableSpaceTemplates && !!spaceNameId;
+  const [loadPlatformTemplates, setLoadPlatformTemplates] = useState(!canUseSpaceTemplates);
 
   const [previewTemplate, setPreviewTemplate] = useState<AnyTemplate>();
   const [handleImportTemplate, loadingImport] = useLoadingState(async () => {
@@ -78,13 +76,19 @@ const ImportTemplatesDialog = ({
     handleClosePreview();
   };
 
+  const { data: templatesSetData } = useSpaceTemplatesSetIdQuery({
+    variables: { spaceNameId: spaceNameId! },
+    skip: !open || disableSpaceTemplates || !spaceNameId,
+  });
+  const templatesSetId = templatesSetData?.space.library?.id;
+
   const { data: templatesData, loading: loadingTemplates } = useImportTemplateDialogQuery({
     variables: {
       templatesSetId: templatesSetId!,
       includeCallout: templateType === TemplateType.Callout,
       includeInnovationFlow: templateType === TemplateType.InnovationFlow,
     },
-    skip: !open || !templatesSetId || !browseTemplatesSetTemplates,
+    skip: !open || disableSpaceTemplates || !templatesSetId,
   });
 
   const templates = useMemo(() => {
@@ -107,24 +111,27 @@ const ImportTemplatesDialog = ({
   return (
     <>
       <DialogWithGrid open={open} columns={12} onClose={handleClose}>
-        <DialogHeader title={
-          templateType ?
-            t('pages.admin.generic.sections.templates.import.title', {
-              templateType: t(`common.enums.templateType.${templateType!}`)
-            }) :
-            t('pages.admin.generic.sections.templates.import.defaultTitle')
-        } onClose={handleClose} icon={<LibraryIcon />}
+        <DialogHeader
+          title={
+            templateType
+              ? t('pages.admin.generic.sections.templates.import.title', {
+                  templateType: t(`common.enums.templateType.${templateType!}`),
+                })
+              : t('pages.admin.generic.sections.templates.import.defaultTitle')
+          }
+          onClose={handleClose}
+          icon={<LibraryIcon />}
         />
         <DialogContent>
           {subtitle && <Caption marginBottom={gutters()}>{subtitle}</Caption>}
-          {browseTemplatesSetTemplates && (
+          {canUseSpaceTemplates && (
             <ImportTemplatesDialogGallery
               templates={templates}
               onClickTemplate={template => setPreviewTemplate(template)}
               loading={loadingTemplates}
             />
           )}
-          {browseTemplatesSetTemplates && allowBrowsePlatformTemplates && !loadPlatformTemplates && (
+          {canUseSpaceTemplates && enablePlatformTemplates && !loadPlatformTemplates && (
             <Link
               component={Caption}
               onClick={() => setLoadPlatformTemplates(true)}

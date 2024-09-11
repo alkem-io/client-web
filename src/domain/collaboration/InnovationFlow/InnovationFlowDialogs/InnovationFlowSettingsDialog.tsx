@@ -20,7 +20,6 @@ interface InnovationFlowSettingsDialogProps {
   open?: boolean;
   onClose: () => void;
   collaborationId: string | undefined;
-  templatesSetId: string | undefined;
   filterCalloutGroups?: CalloutGroupNameValuesMap[];
 }
 
@@ -28,7 +27,6 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
   open = false,
   onClose,
   collaborationId,
-  templatesSetId,
   filterCalloutGroups = undefined,
 }) => {
   const { t } = useTranslation();
@@ -123,8 +121,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
         templateType={TemplateType.InnovationFlow}
         onClose={() => setImportInnovationFlowDialogOpen(false)}
         onSelectTemplate={template => handleImportTemplate(template.id)}
-        templatesSetId={templatesSetId}
-        allowBrowsePlatformTemplates
+        enablePlatformTemplates
         actionButton={
           <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
             {t('buttons.use')}

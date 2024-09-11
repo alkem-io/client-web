@@ -7,6 +7,7 @@ import { AnyTemplate, AnyTemplateWithInnovationPack } from '../../../models/Temp
 import TemplateCard from '../../cards/TemplateCard';
 import ContributeCardSkeleton from '../../../../../core/ui/card/ContributeCardSkeleton';
 import { times } from 'lodash';
+import { gutters } from '../../../../../core/ui/grid/utils';
 
 export interface ImportTemplatesDialogGalleryProps {
   templates: AnyTemplateWithInnovationPack[] | undefined;
@@ -36,21 +37,19 @@ const ImportTemplatesDialogGallery = ({
 
   return (
     <GridProvider columns={12}>
-      {templates.length > 0 && (
-        <ScrollableCardsLayoutContainer>
-          {loading ? times(3, i => <ContributeCardSkeleton key={i} />) : null}
-          {templates.map(({ template, innovationPack }) => (
-            <TemplateCard
-              key={template.id}
-              template={template}
-              innovationPack={innovationPack}
-              onClick={() => onClickTemplate(template)}
-            />
-          ))}
-        </ScrollableCardsLayoutContainer>
-      )}
+      <ScrollableCardsLayoutContainer>
+        {loading ? times(5, i => <ContributeCardSkeleton key={i} />) : null}
+        {templates.map(({ template, innovationPack }) => (
+          <TemplateCard
+            key={template.id}
+            template={template}
+            innovationPack={innovationPack}
+            onClick={() => onClickTemplate(template)}
+          />
+        ))}
+      </ScrollableCardsLayoutContainer>
       {!loading && templates.length === 0 && (
-        <Caption>{t('pages.admin.generic.sections.templates.import.no-templates')}</Caption>
+        <Caption marginY={gutters()}>{t('pages.admin.generic.sections.templates.import.noTemplates')}</Caption>
       )}
     </GridProvider>
   );

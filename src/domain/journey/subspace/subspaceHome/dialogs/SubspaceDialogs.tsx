@@ -20,7 +20,6 @@ import { Theme, useMediaQuery } from '@mui/material';
 import { DashboardNavigationItem } from '../../../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import CommunityUpdatesDialog from '../../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import { buildUpdatesUrl } from '../../../../../main/routing/urlBuilders';
-import { useSpaceLibraryQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 
 export interface SubspaceDialogsProps {
   dialogOpen: SubspaceDialog | undefined;
@@ -47,11 +46,6 @@ const SubspaceDialogs = ({
   const handleClose = useBackToStaticPath(journeyUrl ?? '');
 
   const { collaborationId } = useCollaborationAuthorization({ journeyId });
-  const { data } = useSpaceLibraryQuery({
-    variables: { spaceId: journeyId! },
-    skip: !journeyId,
-  });
-  const templatesSetId = data?.lookup.space?.library?.id;
 
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
@@ -105,7 +99,6 @@ const SubspaceDialogs = ({
       />
       <InnovationFlowSettingsDialog
         collaborationId={collaborationId}
-        templatesSetId={templatesSetId}
         open={dialogOpen === SubspaceDialog.ManageFlow}
         onClose={handleClose}
       />

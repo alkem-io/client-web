@@ -6,33 +6,19 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import FormikWhiteboardPreview from '../../../collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
 import { gutters } from '../../../../core/ui/grid/utils';
-import {
-  useImportTemplateDataLazyQuery,
-  useSpaceTemplatesSetIdQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import { useImportTemplateDataLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { LoadingButton } from '@mui/lab';
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LibraryIcon } from '../../LibraryIcon';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 interface WhiteboardTemplatesSelectorProps {
   name: string;
 }
 
 export const WhiteboardTemplateSelector: FC<WhiteboardTemplatesSelectorProps> = ({ name }) => {
-  //!! This could be better... and maybe it doesn't work on subspaces properly
-  const { spaceNameId } = useUrlParams();
-  const { data } = useSpaceTemplatesSetIdQuery({
-    variables: {
-      spaceNameId: spaceNameId!,
-    },
-    skip: !spaceNameId,
-  });
-  const templatesSetId = data?.space.library?.id;
-
   const { t } = useTranslation();
   const [, , helpers] = useField<String>(name);
   const [isDialogOpen, setDialogOpen] = useState(false);
@@ -65,7 +51,6 @@ export const WhiteboardTemplateSelector: FC<WhiteboardTemplatesSelectorProps> = 
           </Button>
           <ImportTemplatesDialog
             templateType={TemplateType.Whiteboard}
-            templatesSetId={templatesSetId}
             actionButton={
               <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
                 {t('buttons.use')}
@@ -74,8 +59,7 @@ export const WhiteboardTemplateSelector: FC<WhiteboardTemplatesSelectorProps> = 
             open={isDialogOpen}
             onSelectTemplate={handleSelectTemplate}
             onClose={() => setDialogOpen(false)}
-            allowBrowsePlatformTemplates
-            browseTemplatesSetTemplates
+            enablePlatformTemplates
           />
         </Box>
       </Box>

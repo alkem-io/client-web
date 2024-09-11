@@ -38,7 +38,6 @@ const InnovationFlowSettingsButton = ({
         open={isSettingsDialogOpen}
         onClose={() => setSettingsDialogOpen(false)}
         collaborationId={collaborationId}
-        templatesSetId={templatesSetId}
         filterCalloutGroups={filterCalloutGroups}
       />
     </>

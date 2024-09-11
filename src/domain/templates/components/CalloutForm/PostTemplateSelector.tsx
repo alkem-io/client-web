@@ -10,28 +10,14 @@ import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LibraryIcon } from '../../LibraryIcon';
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
-import {
-  useImportTemplateDataLazyQuery,
-  useSpaceTemplatesSetIdQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import { useImportTemplateDataLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { Identifiable } from '../../../../core/utils/Identifiable';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 
 interface PostTemplatesSelectorProps {
   name: string;
 }
 
 export const PostTemplateSelector: FC<PostTemplatesSelectorProps> = ({ name }) => {
-  //!! This could be better... and maybe it doesn't work on subspaces properly
-  const { spaceNameId } = useUrlParams();
-  const { data } = useSpaceTemplatesSetIdQuery({
-    variables: {
-      spaceNameId: spaceNameId!,
-    },
-    skip: !spaceNameId,
-  });
-  const templatesSetId = data?.space.library?.id;
-
   const { t } = useTranslation();
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [, , helpers] = useField<String>(name);
@@ -58,7 +44,6 @@ export const PostTemplateSelector: FC<PostTemplatesSelectorProps> = ({ name }) =
           </Button>
           <ImportTemplatesDialog
             templateType={TemplateType.Post}
-            templatesSetId={templatesSetId}
             actionButton={
               <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
                 {t('buttons.use')}

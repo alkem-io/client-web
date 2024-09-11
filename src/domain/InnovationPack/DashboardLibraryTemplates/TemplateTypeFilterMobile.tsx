@@ -26,7 +26,7 @@ const TemplateTypeFilterMobile: FC<TemplateTypeFilterMobileProps> = ({ value, on
     }
   };
 
-  const templateTypeNames = Object.values(TemplateType) as typeof TemplateType[keyof typeof TemplateType][];
+  const templateTypeNames = Object.values(TemplateType);
 
   return (
     <>
@@ -50,13 +50,13 @@ const TemplateTypeFilterMobile: FC<TemplateTypeFilterMobileProps> = ({ value, on
             }}
           >
             {templateTypeNames.map(key => {
-              const isSelected = value.includes(TemplateType[key]);
+              const isSelected = value.includes(key);
               return (
                 <FormControlLabel
                   control={
                     <Checkbox
                       checked={isSelected}
-                      onChange={(_, isChecked) => onCheckboxChange(TemplateType[key], isChecked)}
+                      onChange={(_, isChecked) => onCheckboxChange(key, isChecked)}
                       name="filters"
                       sx={{ paddingY: 0 }}
                     />

@@ -20,12 +20,12 @@ const TemplateTypeFilter: FC<TemplateTypeFilterProps> = ({ value, onChange }) =>
     }
   };
 
-  const templateTypeValues = Object.values(TemplateType) as typeof TemplateType[keyof typeof TemplateType][];
+  const templateTypeValues = Object.values(TemplateType);
 
   return (
     <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
       {templateTypeValues.map(key => {
-        const isSelected = value.includes(TemplateType[key]);
+        const isSelected = value.includes(key);
         return (
           <Chip
             key={key}
@@ -37,7 +37,7 @@ const TemplateTypeFilter: FC<TemplateTypeFilterProps> = ({ value, onChange }) =>
             variant={isSelected ? 'filled' : 'outlined'}
             color="primary"
             size="medium"
-            onClick={() => onClick(TemplateType[key])}
+            onClick={() => onClick(key)}
             sx={{
               paddingX: theme => theme.spacing(1.5),
               svg: {

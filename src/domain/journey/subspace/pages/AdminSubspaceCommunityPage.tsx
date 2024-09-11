@@ -26,7 +26,6 @@ import ImportTemplatesDialog from '../../../templates/components/Dialogs/ImportT
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
-import { useSpaceTemplatesSetIdQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
@@ -67,14 +66,6 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     inviteExternalUser,
     inviteExistingUser,
   } = useCommunityAdmin({ communityId, spaceId, challengeId, journeyLevel });
-
-  const { data: templatesSetData } = useSpaceTemplatesSetIdQuery({
-    variables: {
-      spaceNameId: spaceId!,
-    },
-    skip: !spaceId,
-  });
-  const templatesSetId = templatesSetData?.space.library?.id;
 
   const currentApplicationsUserIds = useMemo(
     () =>
@@ -162,8 +153,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
                 templateType={TemplateType.CommunityGuidelines}
                 onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
                 onSelectTemplate={onSelectCommunityGuidelinesTemplate}
-                templatesSetId={templatesSetId}
-                allowBrowsePlatformTemplates
+                enablePlatformTemplates
                 actionButton={
                   <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
                     {t('buttons.use')}

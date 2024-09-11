@@ -39,9 +39,8 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({ spaceId, ro
           canEditTemplates
           canImportTemplates
           importTemplateOptions={{
-            templatesSetId: undefined,
-            allowBrowsePlatformTemplates: true,
-            browseTemplatesSetTemplates: false,
+            enablePlatformTemplates: true,
+            disableSpaceTemplates: true,
           }}
         />
       )}
