@@ -23,7 +23,7 @@ import {
   mapTagsetsToUpdateTagsets,
   mapTemplateProfileToUpdateProfile,
 } from './common/mappings';
-import { useCalloutTemplateContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useTemplateContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../../core/ui/loading/Loading';
 import { Caption } from '../../../../core/ui/typography';
 
@@ -128,8 +128,8 @@ const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFor
     }));
   }, [t]);
 
-  const { data: calloutTemplateData, loading } = useCalloutTemplateContentQuery({
-    variables: { calloutTemplateId: template?.id! },
+  const { data: calloutTemplateData, loading } = useTemplateContentQuery({
+    variables: { templateId: template?.id!, includeCallout: true },
     skip: !template?.id,
   });
 

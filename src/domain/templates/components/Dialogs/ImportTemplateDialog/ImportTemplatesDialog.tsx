@@ -1,6 +1,6 @@
-import { Button, DialogActions, DialogContent, Link } from '@mui/material';
+import { Button, CircularProgress, DialogActions, DialogContent, Link } from '@mui/material';
 import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
-import React, { cloneElement, ReactElement, useMemo, useState } from 'react';
+import React, { cloneElement, ReactElement, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ImportTemplatesDialogGallery from './ImportTemplatesDialogGallery';
 import { LibraryIcon } from '../../../LibraryIcon';
@@ -57,7 +57,7 @@ const ImportTemplatesDialog = ({
   const { spaceNameId } = useUrlParams();
 
   const canUseSpaceTemplates = !disableSpaceTemplates && !!spaceNameId;
-  const [loadPlatformTemplates, setLoadPlatformTemplates] = useState(!canUseSpaceTemplates);
+  const [loadPlatformTemplates, setLoadPlatformTemplates] = useState(false);
 
   const [previewTemplate, setPreviewTemplate] = useState<AnyTemplate>();
   const [handleImportTemplate, loadingImport] = useLoadingState(async () => {
@@ -105,8 +105,20 @@ const ImportTemplatesDialog = ({
     },
     skip: !open || !loadPlatformTemplates,
   });
-
   const platformTemplates = platformTemplatesData?.platform.library.templates;
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    if (disableSpaceTemplates) {
+      setLoadPlatformTemplates(true);
+      return;
+    }
+    if (canUseSpaceTemplates && !loadingTemplates && templates?.length === 0) {
+      setLoadPlatformTemplates(true);
+    }
+  }, [open, disableSpaceTemplates, loadingTemplates, templates]);
 
   return (
     <>
@@ -146,7 +158,10 @@ const ImportTemplatesDialog = ({
           )}
           {loadPlatformTemplates && (
             <>
-              <BlockTitle marginY={gutters()}>{t('templateLibrary.platformTemplates')}</BlockTitle>
+              <BlockTitle marginY={gutters()}>
+                {loadingPlatform && <CircularProgress size={15} sx={{ marginRight: gutters() }} />}
+                {t('templateLibrary.platformTemplates')}
+              </BlockTitle>
               <ImportTemplatesDialogGallery
                 templates={platformTemplates}
                 onClickTemplate={template => setPreviewTemplate(template)}

@@ -6,7 +6,7 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import FormikWhiteboardPreview from '../../../collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
 import { gutters } from '../../../../core/ui/grid/utils';
-import { useImportTemplateDataLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useTemplateContentLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { LoadingButton } from '@mui/lab';
@@ -30,9 +30,9 @@ export const WhiteboardTemplateSelector: FC<WhiteboardTemplatesSelectorProps> = 
     helpers.setValue(newContent);
   };
 
-  const [getTemplateData] = useImportTemplateDataLazyQuery();
+  const [getTemplateContent] = useTemplateContentLazyQuery();
   const handleSelectTemplate = async (template: Identifiable): Promise<void> => {
-    const { data } = await getTemplateData({ variables: { templateId: template.id, includeWhiteboard: true } });
+    const { data } = await getTemplateContent({ variables: { templateId: template.id, includeWhiteboard: true } });
     if (data?.lookup.template?.whiteboard?.content) {
       helpers.setValue(data?.lookup.template?.whiteboard?.content);
     }

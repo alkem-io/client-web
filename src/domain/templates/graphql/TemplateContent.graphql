@@ -1,4 +1,4 @@
-query TemplatePreview(
+query TemplateContent(
   $templateId: UUID!
   $includeCallout: Boolean = false
   $includeCommunityGuidelines: Boolean = false
@@ -9,23 +9,23 @@ query TemplatePreview(
   lookup {
     template(ID: $templateId) {
       callout @include(if: $includeCallout) {
-        ...CalloutTemplatePreview
+        ...CalloutTemplateContent
       }
       communityGuidelines @include(if: $includeCommunityGuidelines) {
-        ...CommunityGuidelinesTemplatePreview
+        ...CommunityGuidelinesTemplateContent
       }
       innovationFlow @include(if: $includeInnovationFlow) {
-        ...InnovationFlowTemplatePreview
+        ...InnovationFlowTemplateContent
       }
       postDefaultDescription @include(if: $includePost)
       whiteboard @include(if: $includeWhiteboard) {
-        ...WhiteboardTemplatePreview
+        ...WhiteboardTemplateContent
       }
     }
   }
 }
 
-fragment CalloutTemplatePreview on Callout {
+fragment CalloutTemplateContent on Callout {
   id
   type
   framing {
@@ -37,12 +37,16 @@ fragment CalloutTemplatePreview on Callout {
       tagsets {
         ...TagsetDetails
       }
+      references {
+        ...ReferenceDetails
+      }
       storageBucket {
         id
       }
     }
     whiteboard {
       ...WhiteboardDetails
+      content
     }
   }
   contributionPolicy {
@@ -56,7 +60,7 @@ fragment CalloutTemplatePreview on Callout {
   }
 }
 
-fragment CommunityGuidelinesTemplatePreview on CommunityGuidelines {
+fragment CommunityGuidelinesTemplateContent on CommunityGuidelines {
   id
   profile {
     id
@@ -72,7 +76,7 @@ fragment CommunityGuidelinesTemplatePreview on CommunityGuidelines {
   }
 }
 
-fragment InnovationFlowTemplatePreview on InnovationFlow {
+fragment InnovationFlowTemplateContent on InnovationFlow {
   id
   states {
     displayName
@@ -80,7 +84,7 @@ fragment InnovationFlowTemplatePreview on InnovationFlow {
   }
 }
 
-fragment WhiteboardTemplatePreview on Whiteboard {
+fragment WhiteboardTemplateContent on Whiteboard {
   id
   content
 }

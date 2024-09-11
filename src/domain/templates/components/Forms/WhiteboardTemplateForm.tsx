@@ -11,11 +11,11 @@ import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfile } from './common/mappings';
 import { WhiteboardTemplate } from '../../models/WhiteboardTemplate';
 import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
-import { useWhiteboardTemplateContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useTemplateContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 export interface WhiteboardTemplateFormSubmittedValues
   extends TemplateFormProfileSubmittedValues,
-  TemplateFormWithPreviewImages {
+    TemplateFormWithPreviewImages {
   whiteboard?: {
     content: string;
   };
@@ -35,8 +35,8 @@ const validator = {
 
 const WhiteboardTemplateForm = ({ template, onSubmit, actions }: WhiteboardTemplateFormProps) => {
   const { t } = useTranslation();
-  const { data: whiteboardData, loading } = useWhiteboardTemplateContentQuery({
-    variables: { whiteboardTemplateId: template?.id! },
+  const { data: whiteboardData, loading } = useTemplateContentQuery({
+    variables: { templateId: template?.id!, includeWhiteboard: true },
     skip: !template?.id,
   });
 

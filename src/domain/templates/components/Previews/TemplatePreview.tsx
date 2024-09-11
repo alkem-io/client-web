@@ -1,4 +1,4 @@
-import { useTemplatePreviewQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useTemplateContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import CalloutTemplatePreview from './CalloutTemplatePreview';
@@ -15,7 +15,7 @@ interface TemplatePreviewProps {
 }
 
 const TemplatePreview = ({ template }: TemplatePreviewProps) => {
-  const { data } = useTemplatePreviewQuery({
+  const { data } = useTemplateContentQuery({
     variables: {
       templateId: template?.id!,
       includeCallout: template?.type === TemplateType.Callout,
@@ -31,15 +31,15 @@ const TemplatePreview = ({ template }: TemplatePreviewProps) => {
 
   switch (template?.type) {
     case TemplateType.Callout:
-      return <CalloutTemplatePreview template={templateData} />
+      return <CalloutTemplatePreview template={templateData} />;
     case TemplateType.CommunityGuidelines:
-      return <CommunityGuidelinesTemplatePreview template={templateData} />
+      return <CommunityGuidelinesTemplatePreview template={templateData} />;
     case TemplateType.Post:
-      return <PostTemplatePreview template={templateData} />
+      return <PostTemplatePreview template={templateData} />;
     case TemplateType.InnovationFlow:
-      return <InnovationFlowTemplatePreview template={templateData} />
+      return <InnovationFlowTemplatePreview template={templateData} />;
     case TemplateType.Whiteboard:
-      return <WhiteboardTemplatePreview template={templateData} />
+      return <WhiteboardTemplatePreview template={templateData} />;
   }
   throw new Error('Template type not supported');
 };

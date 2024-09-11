@@ -14,10 +14,7 @@ import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import { LoadingButton } from '@mui/lab';
 import calloutIcons from '../utils/calloutIcons';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
-import {
-  useCalloutTemplateContentLazyQuery,
-  useWhiteboardTemplateContentLazyQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import { useTemplateContentLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -82,10 +79,6 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       setSelectedCalloutType(undefined);
     }
   }, [open]);
-
-  const [fetchWhiteboardTemplateContent] = useWhiteboardTemplateContentLazyQuery({
-    fetchPolicy: 'cache-and-network',
-  });
 
   const handleValueChange = useCallback(
     (calloutValues: CalloutFormOutput) => {
@@ -166,7 +159,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
         return result;
       }
     },
-    [callout, onCreateCallout, fetchWhiteboardTemplateContent]
+    [callout, onCreateCallout]
   );
 
   const handleClose = useCallback(() => {
@@ -175,12 +168,12 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     closeConfirmCloseDialog();
   }, [onClose]);
 
-  const [fetchCalloutTemplateContent] = useCalloutTemplateContentLazyQuery();
-
+  const [fetchTemplateContent] = useTemplateContentLazyQuery();
   const handleSelectTemplate = async ({ id: calloutTemplateId }: Identifiable) => {
-    const { data } = await fetchCalloutTemplateContent({
+    const { data } = await fetchTemplateContent({
       variables: {
-        calloutTemplateId,
+        templateId: calloutTemplateId,
+        includeCallout: true,
       },
     });
 

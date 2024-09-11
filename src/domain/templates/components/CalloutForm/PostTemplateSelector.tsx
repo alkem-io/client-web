@@ -10,7 +10,7 @@ import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LibraryIcon } from '../../LibraryIcon';
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
-import { useImportTemplateDataLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useTemplateContentLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 
 interface PostTemplatesSelectorProps {
@@ -22,9 +22,9 @@ export const PostTemplateSelector: FC<PostTemplatesSelectorProps> = ({ name }) =
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [, , helpers] = useField<String>(name);
 
-  const [getTemplateData] = useImportTemplateDataLazyQuery();
+  const [getTemplateContent] = useTemplateContentLazyQuery();
   const handleSelectTemplate = async (template: Identifiable): Promise<void> => {
-    const { data } = await getTemplateData({ variables: { templateId: template.id, includePost: true } });
+    const { data } = await getTemplateContent({ variables: { templateId: template.id, includePost: true } });
     if (data?.lookup.template?.postDefaultDescription) {
       helpers.setValue(data?.lookup.template?.postDefaultDescription);
     }

@@ -7,7 +7,6 @@ import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
 import { CalloutType, TagsetType } from '../../../../../core/apollo/generated/graphql-schema';
-import { useWhiteboardTemplateContentLazyQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { CalloutLayoutProps } from '../../calloutBlock/CalloutLayout';
 import { EmptyWhiteboardString } from '../../../../common/whiteboard/EmptyWhiteboard';
 import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
@@ -53,9 +52,6 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
     groupName: callout.groupName,
   };
   const [newCallout, setNewCallout] = useState<CalloutFormInput>(initialValues);
-  const [fetchWhiteboardTemplateContent] = useWhiteboardTemplateContentLazyQuery({
-    fetchPolicy: 'cache-and-network',
-  });
 
   const handleStatusChanged = (valid: boolean) => setValid(valid);
 
@@ -88,7 +84,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
       groupName: newCallout.groupName,
     });
     setLoading(false);
-  }, [callout, fetchWhiteboardTemplateContent, newCallout, onCalloutEdit]);
+  }, [callout, newCallout, onCalloutEdit]);
 
   const CalloutIcon = calloutType ? calloutIcons[calloutType] : undefined;
 
