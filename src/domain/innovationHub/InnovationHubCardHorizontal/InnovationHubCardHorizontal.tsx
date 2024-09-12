@@ -8,6 +8,7 @@ import { SpaceVisibility } from '../../../core/apollo/generated/graphql-schema';
 import { gutters } from '../../../core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
 import { buildInnovationHubUrl } from '../../../main/routing/urlBuilders';
+import ActionsMenu from '../../../core/ui/card/ActionsMenu';
 
 export const InnovationHubCardHorizontalSkeleton = () => (
   <BadgeCardView
@@ -42,6 +43,7 @@ interface InnovationHubSpacesProps {
       displayName: string;
     };
   }[];
+  actions?: React.ReactNode;
 }
 
 const InnovationHubSpaces = ({ spaceVisibilityFilter, spaceListFilter }: InnovationHubSpacesProps) => {
@@ -63,6 +65,7 @@ const InnovationHubSpaces = ({ spaceVisibilityFilter, spaceListFilter }: Innovat
 const InnovationHubCardHorizontal = ({
   profile: { displayName, description, banner },
   subdomain,
+  actions = undefined,
   ...spaces
 }: InnovationHubCardHorizontalProps) => {
   return (
@@ -72,6 +75,7 @@ const InnovationHubCardHorizontal = ({
       to={buildInnovationHubUrl(subdomain)}
       target="_blank"
       strict
+      actions={actions && <ActionsMenu>{actions}</ActionsMenu>}
     >
       <Box display="flex" flexDirection="row" justifyContent="space-between">
         <Box display="flex" flexDirection="column">

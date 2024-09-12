@@ -30,11 +30,11 @@ import ContentColumn from '../../../../core/ui/content/ContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
-import TryVCInfoDialog from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVCInfoDialog';
 import {
   getVCCreationCache,
   removeVCCreationCache,
 } from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/vcCreationUtil';
+import TryVirtualContributorDialog from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVirtualContributorDialog';
 
 interface SpaceWelcomeBlockContributor {
   profile: SpaceWelcomeBlockContributorProfileFragment;
@@ -89,7 +89,7 @@ const SpaceDashboardView = ({
   const { t } = useTranslation();
 
   const [tryVirtualContributorOpen, setTryVirtualContributorOpen] = useState(false);
-  const [vcName, setVcName] = useState<string>('');
+  const [vcNameId, setVcNameId] = useState<string>('');
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
@@ -111,7 +111,7 @@ const SpaceDashboardView = ({
     const cachedVC = getVCCreationCache();
 
     if (cachedVC) {
-      setVcName(cachedVC);
+      setVcNameId(cachedVC);
       setTryVirtualContributorOpen(true);
     }
 
@@ -185,11 +185,11 @@ const SpaceDashboardView = ({
           />
         </ContentColumn>
         {spaceId && tryVirtualContributorOpen && (
-          <TryVCInfoDialog
+          <TryVirtualContributorDialog
             open={tryVirtualContributorOpen}
             onClose={onCloseTryVirtualContributor}
             spaceId={spaceId}
-            vcName={vcName}
+            vcNameId={vcNameId}
           />
         )}
       </PageContent>

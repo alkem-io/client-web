@@ -7,16 +7,16 @@ export interface UserModel {
   firstName: string;
   lastName: string;
   email: string;
-  phone: string;
+  phone?: string;
   agent?: {};
   profile: {
     id?: string;
     displayName: string;
     description?: string;
-    tagline: string;
+    tagline?: string;
     location?: {
-      city: string;
-      country: string;
+      city?: string;
+      country?: string;
     };
     tagsets?: Tagset[];
     references?: Reference[];

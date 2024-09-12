@@ -1,10 +1,5 @@
-import { useCalloutPosts } from './useCalloutPosts';
-import {
-  AuthorizationPrivilege,
-  ContributeTabPostFragment,
-  CreatePostInput,
-  TagsetType,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { PostContributionProps, useCalloutPosts } from './useCalloutPosts';
+import { AuthorizationPrivilege, CreatePostInput, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
 import {
   PostCardFragmentDoc,
   useCreatePostFromContributeTabMutation,
@@ -17,7 +12,7 @@ import { StorageConfigContextProvider } from '../../../storage/StorageBucket/Sto
 
 interface PostCalloutContainerProvided {
   ref: Ref<Element>;
-  posts: ContributeTabPostFragment[];
+  posts: PostContributionProps[];
   loading: boolean;
   onCreatePost: (post: CreatePostInput) => Promise<{ nameID: string } | undefined>;
   creatingPost: boolean;

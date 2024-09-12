@@ -106,7 +106,7 @@ const InvitationDialog = ({
                       banner={invitation.space.profile.visual}
                       journeyUri={invitation.space.profile.url}
                     >
-                      <JourneyCardTagline>{invitation.space.profile.tagline}</JourneyCardTagline>
+                      <JourneyCardTagline>{invitation.space.profile.tagline ?? ''}</JourneyCardTagline>
                     </JourneyCard>
                     <Gutters disablePadding>
                       <Caption>

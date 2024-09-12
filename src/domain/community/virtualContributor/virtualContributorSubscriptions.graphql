@@ -1,0 +1,8 @@
+subscription virtualContributorUpdates($virtualContributorID: UUID_NAMEID!) {
+  virtualContributorUpdated(virtualContributorID: $virtualContributorID) {
+    virtualContributor {
+      id
+      status
+    }
+  }
+}

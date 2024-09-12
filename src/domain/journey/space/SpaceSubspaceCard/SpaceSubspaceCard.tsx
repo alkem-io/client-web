@@ -13,7 +13,7 @@ import StackedAvatar from './StackedAvatar';
 import { ReactNode } from 'react';
 
 interface SpaceSubspaceCardProps extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'expansion'> {
-  tagline: string;
+  tagline?: string;
   displayName: string;
   vision: string;
   member?: boolean;
@@ -85,7 +85,7 @@ const SpaceSubspaceCard = ({
       }
       {...props}
     >
-      <JourneyCardTagline>{tagline}</JourneyCardTagline>
+      <JourneyCardTagline>{tagline ?? ''}</JourneyCardTagline>
     </JourneyCard>
   );
 };

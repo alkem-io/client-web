@@ -721,6 +721,8 @@ export const CalloutDetailsFragmentDoc = gql`
     sortOrder
     activity
     contributions {
+      id
+      sortOrder
       link {
         ...LinkDetailsWithAuthorization
       }
@@ -6172,6 +6174,57 @@ export type UpdateCalloutsSortOrderMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutsSortOrderMutation,
   SchemaTypes.UpdateCalloutsSortOrderMutationVariables
 >;
+export const UpdateContributionsSortOrderDocument = gql`
+  mutation UpdateContributionsSortOrder($calloutID: UUID!, $contributionIds: [UUID!]!) {
+    updateContributionsSortOrder(sortOrderData: { calloutID: $calloutID, contributionIDs: $contributionIds }) {
+      id
+      sortOrder
+    }
+  }
+`;
+export type UpdateContributionsSortOrderMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateContributionsSortOrderMutation,
+  SchemaTypes.UpdateContributionsSortOrderMutationVariables
+>;
+
+/**
+ * __useUpdateContributionsSortOrderMutation__
+ *
+ * To run a mutation, you first call `useUpdateContributionsSortOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateContributionsSortOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateContributionsSortOrderMutation, { data, loading, error }] = useUpdateContributionsSortOrderMutation({
+ *   variables: {
+ *      calloutID: // value for 'calloutID'
+ *      contributionIds: // value for 'contributionIds'
+ *   },
+ * });
+ */
+export function useUpdateContributionsSortOrderMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateContributionsSortOrderMutation,
+    SchemaTypes.UpdateContributionsSortOrderMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateContributionsSortOrderMutation,
+    SchemaTypes.UpdateContributionsSortOrderMutationVariables
+  >(UpdateContributionsSortOrderDocument, options);
+}
+
+export type UpdateContributionsSortOrderMutationHookResult = ReturnType<typeof useUpdateContributionsSortOrderMutation>;
+export type UpdateContributionsSortOrderMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateContributionsSortOrderMutation>;
+export type UpdateContributionsSortOrderMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateContributionsSortOrderMutation,
+  SchemaTypes.UpdateContributionsSortOrderMutationVariables
+>;
 export const CreateCalloutDocument = gql`
   mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
     createCalloutOnCollaboration(calloutData: $calloutData) {
@@ -6713,6 +6766,8 @@ export type UpdateLinkMutationOptions = Apollo.BaseMutationOptions<
 export const CalloutPostCreatedDocument = gql`
   subscription CalloutPostCreated($calloutId: UUID!) {
     calloutPostCreated(calloutID: $calloutId) {
+      contributionID
+      sortOrder
       post {
         ...ContributeTabPost
       }
@@ -6759,6 +6814,8 @@ export const CalloutPostsDocument = gql`
       callout(ID: $calloutId) {
         id
         contributions {
+          id
+          sortOrder
           post {
             ...ContributeTabPost
           }
@@ -6929,6 +6986,7 @@ export const CalloutWhiteboardsDocument = gql`
         id
         contributions {
           id
+          sortOrder
           whiteboard {
             ...WhiteboardCollectionCalloutCard
           }
@@ -11186,60 +11244,6 @@ export function refetchAvailableVirtualContributorsInLibraryQuery(
   return { query: AvailableVirtualContributorsInLibraryDocument, variables: variables };
 }
 
-export const AddVirtualContributorToCommunityDocument = gql`
-  mutation AddVirtualContributorToCommunity($communityId: UUID!, $virtualContributorId: UUID_NAMEID!) {
-    assignCommunityRoleToVirtual(
-      roleData: { communityID: $communityId, role: MEMBER, virtualContributorID: $virtualContributorId }
-    ) {
-      id
-    }
-  }
-`;
-export type AddVirtualContributorToCommunityMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AddVirtualContributorToCommunityMutation,
-  SchemaTypes.AddVirtualContributorToCommunityMutationVariables
->;
-
-/**
- * __useAddVirtualContributorToCommunityMutation__
- *
- * To run a mutation, you first call `useAddVirtualContributorToCommunityMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddVirtualContributorToCommunityMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addVirtualContributorToCommunityMutation, { data, loading, error }] = useAddVirtualContributorToCommunityMutation({
- *   variables: {
- *      communityId: // value for 'communityId'
- *      virtualContributorId: // value for 'virtualContributorId'
- *   },
- * });
- */
-export function useAddVirtualContributorToCommunityMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AddVirtualContributorToCommunityMutation,
-    SchemaTypes.AddVirtualContributorToCommunityMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AddVirtualContributorToCommunityMutation,
-    SchemaTypes.AddVirtualContributorToCommunityMutationVariables
-  >(AddVirtualContributorToCommunityDocument, options);
-}
-
-export type AddVirtualContributorToCommunityMutationHookResult = ReturnType<
-  typeof useAddVirtualContributorToCommunityMutation
->;
-export type AddVirtualContributorToCommunityMutationResult =
-  Apollo.MutationResult<SchemaTypes.AddVirtualContributorToCommunityMutation>;
-export type AddVirtualContributorToCommunityMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AddVirtualContributorToCommunityMutation,
-  SchemaTypes.AddVirtualContributorToCommunityMutationVariables
->;
 export const RemoveVirtualContributorFromCommunityDocument = gql`
   mutation RemoveVirtualContributorFromCommunity($communityId: UUID!, $virtualContributorId: UUID_NAMEID!) {
     removeCommunityRoleFromVirtual(
@@ -11298,7 +11302,7 @@ export const AssignCommunityRoleToVirtualContributorDocument = gql`
   mutation AssignCommunityRoleToVirtualContributor(
     $communityId: UUID!
     $virtualContributorId: UUID_NAMEID!
-    $role: CommunityRole!
+    $role: CommunityRole! = MEMBER
   ) {
     assignCommunityRoleToVirtual(
       roleData: { communityID: $communityId, role: $role, virtualContributorID: $virtualContributorId }
@@ -15029,6 +15033,7 @@ export const VirtualContributorDocument = gql`
       }
       searchVisibility
       listedInStore
+      status
       aiPersona {
         id
         bodyOfKnowledgeID
@@ -15261,6 +15266,7 @@ export const UpdateVirtualContributorDocument = gql`
     updateVirtualContributor(virtualContributorData: $virtualContributorData) {
       id
       listedInStore
+      status
       searchVisibility
       profile {
         id
@@ -15439,6 +15445,51 @@ export function refetchVcMembershipsQuery(variables: SchemaTypes.VcMembershipsQu
   return { query: VcMembershipsDocument, variables: variables };
 }
 
+export const VirtualContributorUpdatesDocument = gql`
+  subscription virtualContributorUpdates($virtualContributorID: UUID_NAMEID!) {
+    virtualContributorUpdated(virtualContributorID: $virtualContributorID) {
+      virtualContributor {
+        id
+        status
+      }
+    }
+  }
+`;
+
+/**
+ * __useVirtualContributorUpdatesSubscription__
+ *
+ * To run a query within a React component, call `useVirtualContributorUpdatesSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useVirtualContributorUpdatesSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVirtualContributorUpdatesSubscription({
+ *   variables: {
+ *      virtualContributorID: // value for 'virtualContributorID'
+ *   },
+ * });
+ */
+export function useVirtualContributorUpdatesSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.VirtualContributorUpdatesSubscription,
+    SchemaTypes.VirtualContributorUpdatesSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.VirtualContributorUpdatesSubscription,
+    SchemaTypes.VirtualContributorUpdatesSubscriptionVariables
+  >(VirtualContributorUpdatesDocument, options);
+}
+
+export type VirtualContributorUpdatesSubscriptionHookResult = ReturnType<
+  typeof useVirtualContributorUpdatesSubscription
+>;
+export type VirtualContributorUpdatesSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.VirtualContributorUpdatesSubscription>;
 export const AccountsListDocument = gql`
   query AccountsList {
     accounts {
@@ -22310,6 +22361,7 @@ export const AuthorizationPolicyDocument = gql`
     lookup {
       authorizationPolicy(ID: $authorizationPolicyId) {
         id
+        type
         anonymousReadAccess
         credentialRules {
           name
@@ -23597,6 +23649,9 @@ export const MyAccountDocument = gql`
         }
         account {
           id
+          authorization {
+            myPrivileges
+          }
           virtualContributors {
             id
             profile {

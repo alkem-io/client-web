@@ -4,7 +4,7 @@ import { Visual } from '../../common/visual/Visual';
 
 export interface InnovationHubAttrs {
   displayName: string;
-  tagline: string;
+  tagline?: string;
   description: string | undefined;
   banner: Visual | undefined;
 }
