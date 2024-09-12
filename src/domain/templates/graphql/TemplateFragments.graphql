@@ -11,6 +11,7 @@ fragment TemplateProfileInfo on Template {
     visual(type: CARD) {
       ...VisualFull
     }
+    url
   }
   type
 }

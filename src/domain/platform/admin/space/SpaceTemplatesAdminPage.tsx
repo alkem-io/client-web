@@ -1,5 +1,8 @@
 import { FC } from 'react';
-import { useSpaceTemplatesAdminQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useSpaceTemplatesAdminQuery,
+  useTemplateUrlResolverQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import Loading from '../../../../core/ui/loading/Loading';
 import { buildSettingsUrl } from '../../../../main/routing/urlBuilders';
@@ -14,25 +17,29 @@ interface SpaceTemplatesAdminPageProps extends SettingsPageProps {
 }
 
 const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({ spaceId, routePrefix }) => {
-  const { postNameId, whiteboardNameId, innovationTemplateId, calloutTemplateId, communityGuidelinesNameId } =
-    useUrlParams();
-  const templateSelected =
-    communityGuidelinesNameId || calloutTemplateId || innovationTemplateId || postNameId || whiteboardNameId;
+  const { templateNameId } = useUrlParams();
 
-  const { data, loading } = useSpaceTemplatesAdminQuery({
+  const { data, loading: loadingSpace } = useSpaceTemplatesAdminQuery({
     variables: { spaceId },
     skip: !spaceId,
   });
   const templatesSetId = data?.lookup.space?.library?.id;
   const baseUrl = `${buildSettingsUrl(data?.lookup.space?.profile.url ?? '')}/templates`;
 
+  const { data: templateResolverData, loading: resolvingTemplate } = useTemplateUrlResolverQuery({
+    variables: { templatesSetId: templatesSetId!, templateNameId: templateNameId! },
+    skip: !templatesSetId || !templateNameId,
+  });
+  const selectedTemplateId = templateResolverData?.lookupByName.template?.id;
+
+  const loading = loadingSpace || resolvingTemplate;
   return (
     <SpaceSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>
       {loading && <Loading />}
       {spaceId && !loading && templatesSetId && (
         <TemplatesAdmin
           templatesSetId={templatesSetId}
-          templateId={templateSelected}
+          templateId={selectedTemplateId}
           baseUrl={baseUrl}
           canDeleteTemplates
           canCreateTemplates

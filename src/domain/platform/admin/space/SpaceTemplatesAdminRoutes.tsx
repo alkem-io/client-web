@@ -22,23 +22,7 @@ const SpaceTemplatesAdminRoutes = (props: SpaceTemplatesAdminRoutesProps) => {
     <Routes>
       <Route index element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />} />
       <Route
-        path={`${RoutePaths.calloutTemplatesRoutePath}/:${nameOfUrl.calloutTemplateId}`}
-        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
-      />
-      <Route
-        path={`${RoutePaths.postTemplatesRoutePath}/:${nameOfUrl.postNameId}`}
-        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
-      />
-      <Route
-        path={`${RoutePaths.whiteboardTemplatesRoutePath}/:${nameOfUrl.whiteboardNameId}`}
-        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
-      />
-      <Route
-        path={`${RoutePaths.innovationTemplatesRoutePath}/:${nameOfUrl.innovationTemplateId}`}
-        element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
-      />
-      <Route
-        path={`${RoutePaths.communityGuidelinesTemplatesRoutePath}/:${nameOfUrl.communityGuidelinesNameId}`}
+        path={`:${nameOfUrl.templateNameId}`}
         element={<SpaceTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}
       />
     </Routes>

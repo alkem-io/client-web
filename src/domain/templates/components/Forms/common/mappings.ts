@@ -245,6 +245,12 @@ export const toCreateTemplateMutationVariables = (
     }
   }
 
+  newValues = produce(newValues, draft => {
+    draft['profileData'] = draft.profile;
+    //@ts-ignore
+    delete draft.profile;
+  });
+
   // After those productions TypeScript is completely clueless of what's in newValues.
   //@ts-ignore
   return {

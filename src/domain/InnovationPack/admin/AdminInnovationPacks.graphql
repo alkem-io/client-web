@@ -58,7 +58,7 @@ query AdminInnovationPack($innovationPackId: UUID!) {
       profile {
         ...InnovationPackProfile
       }
-      templates {
+      templatesSet {
         id
       }
       listedInStore

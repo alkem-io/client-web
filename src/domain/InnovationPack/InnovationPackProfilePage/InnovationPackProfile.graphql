@@ -14,7 +14,7 @@ query InnovationPackProfilePage($innovationPackId: UUID!) {
         ...InnovationPackProfile
         tagline
       }
-      templates {
+      templatesSet {
         id
       }
     }

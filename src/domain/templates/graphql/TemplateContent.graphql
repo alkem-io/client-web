@@ -14,10 +14,8 @@ query TemplateContent(
         id
         displayName
         description
-        tagsets {
-          ID: id # Renamed to match the UpdateProfileInput
-          name
-          tags
+        defaultTagset: tagset {
+          ...TagsetDetails
         }
       }
       callout @include(if: $includeCallout) {

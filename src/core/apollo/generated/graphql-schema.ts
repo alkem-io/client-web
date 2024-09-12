@@ -2131,10 +2131,11 @@ export type CreateTemplateOnTemplatesSetInput = {
   /** The Community guidelines to associate with this template. */
   communityGuidelinesData?: InputMaybe<CreateCommunityGuidelinesInput>;
   innovationFlowData?: InputMaybe<CreateInnovationFlowInput>;
+  /** A readable identifier, unique within the containing scope. */
+  nameID?: InputMaybe<Scalars['NameID']>;
   /** Post Template: The default description to be pre-filled. */
   postDefaultDescription?: InputMaybe<Scalars['Markdown']>;
-  /** The profile of the template. */
-  profile: CreateProfileInput;
+  profileData: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
   /** The type of the Template to be created. */
@@ -2654,8 +2655,8 @@ export type InnovationPack = {
   provider: Contributor;
   /** Visibility of the InnovationPack in searches. */
   searchVisibility: SearchVisibility;
-  /** The templates in use by this InnovationPack */
-  templates?: Maybe<TemplatesSet>;
+  /** The templatesSet in use by this InnovationPack */
+  templatesSet?: Maybe<TemplatesSet>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
@@ -2928,10 +2929,17 @@ export type LookupByNameQueryResults = {
   __typename?: 'LookupByNameQueryResults';
   /** Lookup the specified InnovationPack using a NameID */
   innovationPack?: Maybe<InnovationPack>;
+  /** Lookup the specified Template using a templatesSetId and NameID */
+  template?: Maybe<Template>;
 };
 
 export type LookupByNameQueryResultsInnovationPackArgs = {
   NAMEID: Scalars['NameID'];
+};
+
+export type LookupByNameQueryResultsTemplateArgs = {
+  NAMEID: Scalars['NameID'];
+  templatesSetID: Scalars['UUID'];
 };
 
 export type LookupQueryResults = {
@@ -5734,9 +5742,11 @@ export type Template = {
   id: Scalars['UUID'];
   /** The Innovation Flow. */
   innovationFlow?: Maybe<InnovationFlow>;
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID'];
   /** The description for Post Templates to users filling out a new Post based on this Template. */
   postDefaultDescription?: Maybe<Scalars['Markdown']>;
-  /** The Profile for this template. */
+  /** The Profile for this InnovationFlow. */
   profile: Profile;
   /** The type for this Template. */
   type: TemplateType;
@@ -6809,7 +6819,7 @@ export type InnovationPackProfilePageQuery = {
                 }>
               | undefined;
           };
-          templates?: { __typename?: 'TemplatesSet'; id: string } | undefined;
+          templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
         }
       | undefined;
   };
@@ -6957,7 +6967,7 @@ export type AdminInnovationPackQuery = {
                 }>
               | undefined;
           };
-          templates?: { __typename?: 'TemplatesSet'; id: string } | undefined;
+          templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
         }
       | undefined;
   };
@@ -7099,7 +7109,7 @@ export type AccountInformationQuery = {
               url: string;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
-            templates?:
+            templatesSet?:
               | {
                   __typename?: 'TemplatesSet';
                   id: string;
@@ -23904,6 +23914,7 @@ export type ImportTemplateDialogQuery = {
               id: string;
               displayName: string;
               description?: string | undefined;
+              url: string;
               defaultTagset?:
                 | {
                     __typename?: 'Tagset';
@@ -23967,6 +23978,7 @@ export type ImportTemplateDialogPlatformTemplatesQuery = {
             id: string;
             displayName: string;
             description?: string | undefined;
+            url: string;
             defaultTagset?:
               | {
                   __typename?: 'Tagset';
@@ -24075,6 +24087,7 @@ export type AllTemplatesInTemplatesSetQuery = {
               id: string;
               displayName: string;
               description?: string | undefined;
+              url: string;
               defaultTagset?:
                 | {
                     __typename?: 'Tagset';
@@ -24112,6 +24125,7 @@ export type AllTemplatesInTemplatesSetQuery = {
               id: string;
               displayName: string;
               description?: string | undefined;
+              url: string;
               defaultTagset?:
                 | {
                     __typename?: 'Tagset';
@@ -24149,6 +24163,7 @@ export type AllTemplatesInTemplatesSetQuery = {
               id: string;
               displayName: string;
               description?: string | undefined;
+              url: string;
               defaultTagset?:
                 | {
                     __typename?: 'Tagset';
@@ -24192,6 +24207,7 @@ export type AllTemplatesInTemplatesSetQuery = {
               id: string;
               displayName: string;
               description?: string | undefined;
+              url: string;
               defaultTagset?:
                 | {
                     __typename?: 'Tagset';
@@ -24249,6 +24265,7 @@ export type AllTemplatesInTemplatesSetQuery = {
               id: string;
               displayName: string;
               description?: string | undefined;
+              url: string;
               defaultTagset?:
                 | {
                     __typename?: 'Tagset';
@@ -24332,7 +24349,16 @@ export type TemplateContentQuery = {
             id: string;
             displayName: string;
             description?: string | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; name: string; tags: Array<string>; ID: string }> | undefined;
+            defaultTagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
           };
           callout?:
             | {
@@ -24677,6 +24703,7 @@ export type TemplateProfileInfoFragment = {
     id: string;
     displayName: string;
     description?: string | undefined;
+    url: string;
     defaultTagset?:
       | {
           __typename?: 'Tagset';
@@ -24727,6 +24754,7 @@ export type CalloutTemplateFragment = {
     id: string;
     displayName: string;
     description?: string | undefined;
+    url: string;
     defaultTagset?:
       | {
           __typename?: 'Tagset';
@@ -24765,6 +24793,7 @@ export type PostTemplateFragment = {
     id: string;
     displayName: string;
     description?: string | undefined;
+    url: string;
     defaultTagset?:
       | {
           __typename?: 'Tagset';
@@ -24803,6 +24832,7 @@ export type WhiteboardTemplateFragment = {
     id: string;
     displayName: string;
     description?: string | undefined;
+    url: string;
     defaultTagset?:
       | {
           __typename?: 'Tagset';
@@ -24847,6 +24877,7 @@ export type InnovationFlowTemplateFragment = {
     id: string;
     displayName: string;
     description?: string | undefined;
+    url: string;
     defaultTagset?:
       | {
           __typename?: 'Tagset';
@@ -24905,6 +24936,7 @@ export type CommunityGuidelinesTemplateFragment = {
     id: string;
     displayName: string;
     description?: string | undefined;
+    url: string;
     defaultTagset?:
       | {
           __typename?: 'Tagset';
@@ -24935,7 +24967,7 @@ export type CommunityGuidelinesTemplateFragment = {
 
 export type CreateTemplateMutationVariables = Exact<{
   templatesSetId: Scalars['UUID'];
-  profile: CreateProfileInput;
+  profileData: CreateProfileInput;
   type: TemplateType;
   tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
   calloutData?: InputMaybe<CreateCalloutInput>;
@@ -24994,6 +25026,19 @@ export type DeleteTemplateMutation = {
   deleteTemplate: { __typename?: 'Template'; id: string };
 };
 
+export type TemplateUrlResolverQueryVariables = Exact<{
+  templatesSetId: Scalars['UUID'];
+  templateNameId: Scalars['NameID'];
+}>;
+
+export type TemplateUrlResolverQuery = {
+  __typename?: 'Query';
+  lookupByName: {
+    __typename?: 'LookupByNameQueryResults';
+    template?: { __typename?: 'Template'; id: string } | undefined;
+  };
+};
+
 export type TemplatesSetTemplatesFragment = {
   __typename?: 'TemplatesSet';
   calloutTemplates: Array<{
@@ -25018,6 +25063,7 @@ export type TemplatesSetTemplatesFragment = {
       id: string;
       displayName: string;
       description?: string | undefined;
+      url: string;
       defaultTagset?:
         | {
             __typename?: 'Tagset';
@@ -25055,6 +25101,7 @@ export type TemplatesSetTemplatesFragment = {
       id: string;
       displayName: string;
       description?: string | undefined;
+      url: string;
       defaultTagset?:
         | {
             __typename?: 'Tagset';
@@ -25092,6 +25139,7 @@ export type TemplatesSetTemplatesFragment = {
       id: string;
       displayName: string;
       description?: string | undefined;
+      url: string;
       defaultTagset?:
         | {
             __typename?: 'Tagset';
@@ -25135,6 +25183,7 @@ export type TemplatesSetTemplatesFragment = {
       id: string;
       displayName: string;
       description?: string | undefined;
+      url: string;
       defaultTagset?:
         | {
             __typename?: 'Tagset';
@@ -25192,6 +25241,7 @@ export type TemplatesSetTemplatesFragment = {
       id: string;
       displayName: string;
       description?: string | undefined;
+      url: string;
       defaultTagset?:
         | {
             __typename?: 'Tagset';
@@ -27077,6 +27127,7 @@ export type InnovationLibraryQuery = {
             id: string;
             displayName: string;
             description?: string | undefined;
+            url: string;
             defaultTagset?:
               | {
                   __typename?: 'Tagset';
@@ -27165,7 +27216,7 @@ export type InnovationLibraryQuery = {
               }
             | undefined;
         };
-        templates?:
+        templatesSet?:
           | {
               __typename?: 'TemplatesSet';
               id: string;
@@ -27611,7 +27662,7 @@ export type InnovationLibraryBlockQuery = {
               }
             | undefined;
         };
-        templates?:
+        templatesSet?:
           | {
               __typename?: 'TemplatesSet';
               id: string;
@@ -27685,7 +27736,7 @@ export type InnovationPackCardFragment = {
         }
       | undefined;
   };
-  templates?:
+  templatesSet?:
     | {
         __typename?: 'TemplatesSet';
         id: string;

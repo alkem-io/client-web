@@ -50,7 +50,7 @@ query InnovationLibrary($filterTemplateType: [TemplateType!]) {
           }
           url
         }
-        templates {
+        templatesSet {
           id
           calloutTemplatesCount
           communityGuidelinesTemplatesCount

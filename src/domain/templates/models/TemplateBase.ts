@@ -30,6 +30,7 @@ export interface TemplateBase extends Identifiable {
       id: string;
       uri: string;
     };
+    url?: string;
   };
 }
 

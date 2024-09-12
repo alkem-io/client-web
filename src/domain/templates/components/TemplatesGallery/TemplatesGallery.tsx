@@ -8,7 +8,6 @@ import { AnyTemplate } from '../../models/TemplateBase';
 import ContributeCardSkeleton from '../../../../core/ui/card/ContributeCardSkeleton';
 import { times } from 'lodash';
 
-
 interface TemplatesGalleryProps {
   headerText: string;
   actions?: ReactNode;
@@ -16,7 +15,7 @@ interface TemplatesGalleryProps {
   // Provided by the container
   templates: AnyTemplate[] | undefined;
   loading?: boolean;
-  buildTemplateLink: (template: AnyTemplate) => LinkWithState;
+  buildTemplateLink: (template: AnyTemplate) => LinkWithState | undefined;
 }
 
 const TemplatesGallery: FC<TemplatesGalleryProps> = ({

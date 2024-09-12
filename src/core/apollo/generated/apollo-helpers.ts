@@ -1583,7 +1583,7 @@ export type InnovationPackKeySpecifier = (
   | 'profile'
   | 'provider'
   | 'searchVisibility'
-  | 'templates'
+  | 'templatesSet'
   | 'updatedDate'
   | InnovationPackKeySpecifier
 )[];
@@ -1596,7 +1596,7 @@ export type InnovationPackFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
   searchVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
-  templates?: FieldPolicy<any> | FieldReadFunction<any>;
+  templatesSet?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InputCreatorQueryResultsKeySpecifier = (
@@ -1804,9 +1804,14 @@ export type LocationFieldPolicy = {
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LookupByNameQueryResultsKeySpecifier = ('innovationPack' | LookupByNameQueryResultsKeySpecifier)[];
+export type LookupByNameQueryResultsKeySpecifier = (
+  | 'innovationPack'
+  | 'template'
+  | LookupByNameQueryResultsKeySpecifier
+)[];
 export type LookupByNameQueryResultsFieldPolicy = {
   innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
+  template?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LookupQueryResultsKeySpecifier = (
   | 'account'
@@ -3297,6 +3302,7 @@ export type TemplateKeySpecifier = (
   | 'createdDate'
   | 'id'
   | 'innovationFlow'
+  | 'nameID'
   | 'postDefaultDescription'
   | 'profile'
   | 'type'
@@ -3312,6 +3318,7 @@ export type TemplateFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   postDefaultDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;

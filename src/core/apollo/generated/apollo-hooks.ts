@@ -2921,6 +2921,7 @@ export const TemplateProfileInfoFragmentDoc = gql`
       visual(type: CARD) {
         ...VisualFull
       }
+      url
     }
     type
   }
@@ -3489,7 +3490,7 @@ export const InnovationPackCardFragmentDoc = gql`
       }
       url
     }
-    templates {
+    templatesSet {
       id
       postTemplatesCount
       whiteboardTemplatesCount
@@ -4058,7 +4059,7 @@ export const InnovationPackProfilePageDocument = gql`
           ...InnovationPackProfile
           tagline
         }
-        templates {
+        templatesSet {
           id
         }
       }
@@ -4313,7 +4314,7 @@ export const AdminInnovationPackDocument = gql`
         profile {
           ...InnovationPackProfile
         }
-        templates {
+        templatesSet {
           id
         }
         listedInStore
@@ -4523,7 +4524,7 @@ export const AccountInformationDocument = gql`
           profile {
             ...AccountItemProfile
           }
-          templates {
+          templatesSet {
             id
             calloutTemplatesCount
             communityGuidelinesTemplatesCount
@@ -19979,10 +19980,8 @@ export const TemplateContentDocument = gql`
           id
           displayName
           description
-          tagsets {
-            ID: id
-            name
-            tags
+          defaultTagset: tagset {
+            ...TagsetDetails
           }
         }
         callout @include(if: $includeCallout) {
@@ -20001,6 +20000,7 @@ export const TemplateContentDocument = gql`
       }
     }
   }
+  ${TagsetDetailsFragmentDoc}
   ${CalloutTemplateContentFragmentDoc}
   ${CommunityGuidelinesTemplateContentFragmentDoc}
   ${InnovationFlowTemplateContentFragmentDoc}
@@ -20061,7 +20061,7 @@ export function refetchTemplateContentQuery(variables: SchemaTypes.TemplateConte
 export const CreateTemplateDocument = gql`
   mutation createTemplate(
     $templatesSetId: UUID!
-    $profile: CreateProfileInput!
+    $profileData: CreateProfileInput!
     $type: TemplateType!
     $tags: [String!]
     $calloutData: CreateCalloutInput
@@ -20074,7 +20074,7 @@ export const CreateTemplateDocument = gql`
     createTemplate(
       templateData: {
         templatesSetID: $templatesSetId
-        profile: $profile
+        profileData: $profileData
         tags: $tags
         type: $type
         calloutData: $calloutData
@@ -20116,7 +20116,7 @@ export type CreateTemplateMutationFn = Apollo.MutationFunction<
  * const [createTemplateMutation, { data, loading, error }] = useCreateTemplateMutation({
  *   variables: {
  *      templatesSetId: // value for 'templatesSetId'
- *      profile: // value for 'profile'
+ *      profileData: // value for 'profileData'
  *      type: // value for 'type'
  *      tags: // value for 'tags'
  *      calloutData: // value for 'calloutData'
@@ -20278,6 +20278,69 @@ export type DeleteTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteTemplateMutation,
   SchemaTypes.DeleteTemplateMutationVariables
 >;
+export const TemplateUrlResolverDocument = gql`
+  query TemplateUrlResolver($templatesSetId: UUID!, $templateNameId: NameID!) {
+    lookupByName {
+      template(templatesSetID: $templatesSetId, NAMEID: $templateNameId) {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useTemplateUrlResolverQuery__
+ *
+ * To run a query within a React component, call `useTemplateUrlResolverQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTemplateUrlResolverQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTemplateUrlResolverQuery({
+ *   variables: {
+ *      templatesSetId: // value for 'templatesSetId'
+ *      templateNameId: // value for 'templateNameId'
+ *   },
+ * });
+ */
+export function useTemplateUrlResolverQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.TemplateUrlResolverQuery,
+    SchemaTypes.TemplateUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.TemplateUrlResolverQuery, SchemaTypes.TemplateUrlResolverQueryVariables>(
+    TemplateUrlResolverDocument,
+    options
+  );
+}
+
+export function useTemplateUrlResolverLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.TemplateUrlResolverQuery,
+    SchemaTypes.TemplateUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.TemplateUrlResolverQuery, SchemaTypes.TemplateUrlResolverQueryVariables>(
+    TemplateUrlResolverDocument,
+    options
+  );
+}
+
+export type TemplateUrlResolverQueryHookResult = ReturnType<typeof useTemplateUrlResolverQuery>;
+export type TemplateUrlResolverLazyQueryHookResult = ReturnType<typeof useTemplateUrlResolverLazyQuery>;
+export type TemplateUrlResolverQueryResult = Apollo.QueryResult<
+  SchemaTypes.TemplateUrlResolverQuery,
+  SchemaTypes.TemplateUrlResolverQueryVariables
+>;
+export function refetchTemplateUrlResolverQuery(variables: SchemaTypes.TemplateUrlResolverQueryVariables) {
+  return { query: TemplateUrlResolverDocument, variables: variables };
+}
+
 export const SpaceLibraryDocument = gql`
   query SpaceLibrary($spaceId: UUID!) {
     lookup {
@@ -21755,7 +21818,7 @@ export const InnovationLibraryDocument = gql`
             }
             url
           }
-          templates {
+          templatesSet {
             id
             calloutTemplatesCount
             communityGuidelinesTemplatesCount

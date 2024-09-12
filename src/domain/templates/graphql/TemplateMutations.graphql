@@ -1,6 +1,6 @@
 mutation createTemplate(
   $templatesSetId: UUID!
-  $profile: CreateProfileInput!
+  $profileData: CreateProfileInput!
   $type: TemplateType!
   $tags: [String!]
   $calloutData: CreateCalloutInput
@@ -13,7 +13,7 @@ mutation createTemplate(
   createTemplate(
     templateData: {
       templatesSetID: $templatesSetId
-      profile: $profile
+      profileData: $profileData
       tags: $tags
       type: $type
       calloutData: $calloutData

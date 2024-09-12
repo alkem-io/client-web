@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
   useInnovationPackProfilePageQuery,
   useInnovationPackResolveIdQuery,
+  useTemplateUrlResolverQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '../../../core/apollo/generated/graphql-schema';
 import { useUrlParams } from '../../../core/routing/useUrlParams';
@@ -18,37 +19,29 @@ import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
 import { BlockSectionTitle, Text } from '../../../core/ui/typography';
 import ReferencesListSmallItem from '../../profile/Reference/ReferencesListSmallItem/ReferencesListSmallItem';
 import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
-import { } from '../../templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
+import {} from '../../templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
 import TemplatesAdmin from '../../templates/components/TemplatesAdmin/TemplatesAdmin';
 import InnovationPackProfileLayout from './InnovationPackProfileLayout';
 
 const InnovationPackProfilePage = () => {
-  const {
-    innovationPackNameId,
-    communityGuidelinesTemplateId,
-    postNameId,
-    calloutTemplateId,
-    whiteboardNameId,
-    innovationTemplateId,
-  } = useUrlParams();
-  const selectedTemplateId =
-    communityGuidelinesTemplateId ?? postNameId ?? calloutTemplateId ?? whiteboardNameId ?? innovationTemplateId;
+  const { t } = useTranslation();
+  const { templateNameId, innovationPackNameId } = useUrlParams();
 
   if (!innovationPackNameId) {
     throw new Error('Must be within Innovation Pack');
   }
 
-  const { data: innovationPackResolverData, loading: resolving } = useInnovationPackResolveIdQuery({
+  const { data: innovationPackResolverData, loading: resolvingInnovationPack } = useInnovationPackResolveIdQuery({
     variables: { innovationPackNameId },
     skip: !innovationPackNameId,
   });
 
   const innovationPackId = innovationPackResolverData?.lookupByName.innovationPack?.id;
-  if (innovationPackNameId && !resolving && !innovationPackId) {
+  if (innovationPackNameId && !resolvingInnovationPack && !innovationPackId) {
     throw new Error('Innovation pack not found.');
   }
 
-  const { data, loading } = useInnovationPackProfilePageQuery({
+  const { data, loading: loadingInnovationPack } = useInnovationPackProfilePageQuery({
     variables: {
       innovationPackId: innovationPackId!,
     },
@@ -58,17 +51,19 @@ const InnovationPackProfilePage = () => {
   const innovationPack = data?.lookup.innovationPack;
   const { displayName, description, tagset, references, url: baseUrl } = innovationPack?.profile ?? {};
   const canUpdate = innovationPack?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
-  const templatesSetId = innovationPack?.templates?.id;
+  const templatesSetId = innovationPack?.templatesSet?.id;
 
-  const { t } = useTranslation();
+  const { data: templateResolverData, loading: resolvingTemplate } = useTemplateUrlResolverQuery({
+    variables: { templatesSetId: templatesSetId!, templateNameId: templateNameId! },
+    skip: !templatesSetId || !templateNameId,
+  });
+  const selectedTemplateId = templateResolverData?.lookupByName.template?.id;
+
+  const loading = resolvingInnovationPack || resolvingTemplate || loadingInnovationPack;
 
   return (
     <>
-      <InnovationPackProfileLayout
-        innovationPack={innovationPack}
-        showSettings={canUpdate}
-        loading={loading || resolving}
-      >
+      <InnovationPackProfileLayout innovationPack={innovationPack} showSettings={canUpdate} loading={loading}>
         <PageContent>
           <PageContentColumn columns={12}>
             <PageContentBlock sx={{ flexDirection: 'row' }}>
