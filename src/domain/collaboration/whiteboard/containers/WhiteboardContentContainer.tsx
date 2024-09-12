@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import {
   useWhiteboardSavedSubscription,
-  useWhiteboardWithContentQuery,
+  useWhiteboardWithoutContentQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
@@ -11,6 +11,7 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { useApolloErrorHandler } from '../../../../core/apollo/hooks/useApolloErrorHandler';
 import { useConfig } from '../../../platform/config/useConfig';
+import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
 
 export interface WhiteboardWithContent
   extends Omit<WhiteboardContentFragment, 'id'>,
@@ -19,7 +20,7 @@ export interface WhiteboardWithContent
 export type WhiteboardWithoutContent<Whiteboard extends WhiteboardWithContent> = Omit<Whiteboard, 'content'>;
 
 export interface IWhiteboardContentEntities {
-  whiteboard?: WhiteboardWithContent;
+  whiteboard?: Partial<WhiteboardWithContent>;
 }
 
 export interface WhiteboardContentContainerState {
@@ -39,7 +40,7 @@ const WhiteboardContentContainer: FC<WhiteboardContentContainerProps> = ({ child
   const { isFeatureEnabled } = useConfig();
   const areSubscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);
 
-  const { data: whiteboardWithContentData, loading: loadingWhiteboardWithContent } = useWhiteboardWithContentQuery({
+  const { data: whiteboardWithContentData, loading: loadingWhiteboardWithContent } = useWhiteboardWithoutContentQuery({
     errorPolicy: 'all',
     // Disable cache, we really want to make sure that the latest content is fetched, in case there is no one else editing at the moment
     fetchPolicy: 'network-only',
@@ -86,7 +87,10 @@ const WhiteboardContentContainer: FC<WhiteboardContentContainerProps> = ({ child
     },
   });
 
-  const whiteboard = whiteboardWithContentData?.lookup.whiteboard;
+  const whiteboard = {
+    ...whiteboardWithContentData?.lookup.whiteboard,
+    content: JSON.stringify(EmptyWhiteboard),
+  };
 
   return (
     <>

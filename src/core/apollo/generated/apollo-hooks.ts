@@ -8100,6 +8100,69 @@ export function refetchWhiteboardWithContentQuery(variables: SchemaTypes.Whitebo
   return { query: WhiteboardWithContentDocument, variables: variables };
 }
 
+export const WhiteboardWithoutContentDocument = gql`
+  query WhiteboardWithoutContent($whiteboardId: UUID!) {
+    lookup {
+      whiteboard(ID: $whiteboardId) {
+        ...WhiteboardDetails
+      }
+    }
+  }
+  ${WhiteboardDetailsFragmentDoc}
+`;
+
+/**
+ * __useWhiteboardWithoutContentQuery__
+ *
+ * To run a query within a React component, call `useWhiteboardWithoutContentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardWithoutContentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWhiteboardWithoutContentQuery({
+ *   variables: {
+ *      whiteboardId: // value for 'whiteboardId'
+ *   },
+ * });
+ */
+export function useWhiteboardWithoutContentQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.WhiteboardWithoutContentQuery,
+    SchemaTypes.WhiteboardWithoutContentQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.WhiteboardWithoutContentQuery, SchemaTypes.WhiteboardWithoutContentQueryVariables>(
+    WhiteboardWithoutContentDocument,
+    options
+  );
+}
+
+export function useWhiteboardWithoutContentLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.WhiteboardWithoutContentQuery,
+    SchemaTypes.WhiteboardWithoutContentQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.WhiteboardWithoutContentQuery,
+    SchemaTypes.WhiteboardWithoutContentQueryVariables
+  >(WhiteboardWithoutContentDocument, options);
+}
+
+export type WhiteboardWithoutContentQueryHookResult = ReturnType<typeof useWhiteboardWithoutContentQuery>;
+export type WhiteboardWithoutContentLazyQueryHookResult = ReturnType<typeof useWhiteboardWithoutContentLazyQuery>;
+export type WhiteboardWithoutContentQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardWithoutContentQuery,
+  SchemaTypes.WhiteboardWithoutContentQueryVariables
+>;
+export function refetchWhiteboardWithoutContentQuery(variables: SchemaTypes.WhiteboardWithoutContentQueryVariables) {
+  return { query: WhiteboardWithoutContentDocument, variables: variables };
+}
+
 export const WhiteboardLastUpdatedDateDocument = gql`
   query whiteboardLastUpdatedDate($whiteboardId: UUID!) {
     lookup {

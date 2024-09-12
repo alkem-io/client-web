@@ -167,6 +167,16 @@ class Collab {
             roomId,
           },
           {
+            'scene-init': async (payload: Record<string, unknown> /* todo: better type */) => {
+              if (!this.portal.socketInitialized) {
+                this.initializeRoom({ fetchScene: false });
+                const remoteElements = payload.elements;
+                const remoteFiles = payload.files;
+                this.handleRemoteSceneUpdate(await this.reconcileElements(remoteElements, remoteFiles), {
+                  init: true,
+                });
+              }
+            },
             'client-broadcast': async (encryptedData: ArrayBuffer) => {
               const decodedData = new TextDecoder().decode(encryptedData);
               const decryptedData = JSON.parse(decodedData);
@@ -175,15 +185,7 @@ class Collab {
                 case 'INVALID_RESPONSE':
                   return;
                 case WS_SCENE_EVENT_TYPES.INIT: {
-                  if (!this.portal.socketInitialized) {
-                    this.initializeRoom({ fetchScene: false });
-                    const remoteElements = decryptedData.payload.elements;
-                    const remoteFiles = decryptedData.payload.files;
-                    this.handleRemoteSceneUpdate(await this.reconcileElements(remoteElements, remoteFiles), {
-                      init: true,
-                    });
-                  }
-                  break;
+                  break; //todo remove
                 }
                 case WS_SCENE_EVENT_TYPES.SCENE_UPDATE: {
                   const remoteElements = decryptedData.payload.elements;
@@ -214,10 +216,10 @@ class Collab {
               }
             },
             'first-in-room': async () => {
-              await this.initializeRoom({
-                fetchScene: true,
-                roomLinkData: existingRoomLinkData,
-              });
+              // await this.initializeRoom({
+              //   fetchScene: true,
+              //   roomLinkData: existingRoomLinkData,
+              // });
             },
             saved: () => {
               this.onSavedToDatabase?.();

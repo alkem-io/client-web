@@ -38,6 +38,7 @@ interface SocketEventHandlers {
   'client-broadcast': (encryptedData: ArrayBuffer) => void;
   'first-in-room': () => void;
   'collaborator-mode': (event: CollaboratorModeEvent) => void;
+  'scene-init': (data: SocketUpdateDataSource['SCENE_INIT']['payload']) => void;
   saved: () => void;
   'idle-state': (payload: SocketUpdateDataSource['IDLE_STATUS']['payload']) => void;
 }
@@ -70,9 +71,10 @@ class Portal {
     return new Promise(async (resolve, reject) => {
       const { default: socketIOClient } = await import('socket.io-client');
 
-      const socket = socketIOClient(connectionOptions.url, {
+      const socket = socketIOClient('localhost:4002' /*connectionOptions.url*/, {
         transports: connectionOptions.polling ? ['websocket', 'polling'] : ['websocket'],
-        path: '/api/private/ws/socket.io',
+        // path: '/api/private/ws/socket.io',
+        path: '/socket.io',
         retries: 0,
         reconnection: false,
       });
@@ -87,6 +89,12 @@ class Portal {
         }
       });
 
+      this.socket.on('scene-init', (data: ArrayBuffer) => {
+        const decodedData = new TextDecoder().decode(data);
+        const parsedData = JSON.parse(decodedData);
+        eventHandlers['scene-init'](parsedData.payload);
+      });
+
       this.socket.on('first-in-room', () => {
         socket.off('first-in-room');
         eventHandlers['first-in-room']();
@@ -94,20 +102,20 @@ class Portal {
 
       this.socket.on('collaborator-mode', eventHandlers['collaborator-mode']);
 
-      this.socket.on('new-user', async (_socketId: string) => {
-        this.broadcastScene(WS_SCENE_EVENT_TYPES.INIT, this.getSceneElements(), await this.getFiles(), {
-          syncAll: true,
-        });
-      });
+      // this.socket.on('new-user', async (_socketId: string) => {
+      //   this.broadcastScene(WS_SCENE_EVENT_TYPES.INIT, this.getSceneElements(), await this.getFiles(), {
+      //     syncAll: true,
+      //   });
+      // });
 
-      setInterval(async () => {
-        return this._broadcastEvent(WS_EVENTS.SERVER, {
-          type: 'sync-check',
-          payload: {
-            elements: this.getSceneElements(),
-          },
-        } as never);
-      }, 10000);
+      // setInterval(async () => {
+      //   return this._broadcastEvent(WS_EVENTS.SERVER, {
+      //     type: 'sync-check',
+      //     payload: {
+      //       elements: this.getSceneElements(),
+      //     },
+      //   } as never);
+      // }, 10000);
 
       this.socket.on('room-user-change', (clients: string[]) => {
         this.onRoomUserChange(clients);

@@ -135,18 +135,18 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
           whiteboard.nameID
         );
       }
-      const result = await updateWhiteboardContent({
-        variables: {
-          input: {
-            ID: whiteboard.id,
-            content: whiteboard.content,
-          },
-        },
-        refetchQueries: ['CalloutWhiteboards'],
-      });
+      // const result = await updateWhiteboardContent({
+      //   variables: {
+      //     input: {
+      //       ID: whiteboard.id,
+      //       content: whiteboard.content,
+      //     },
+      //   },
+      //   refetchQueries: ['CalloutWhiteboards'],
+      // });
       return {
-        success: !result.errors || result.errors.length === 0,
-        errors: result.errors?.map(({ message }) => message),
+        success: true,
+        errors: undefined,
       };
     },
     [updateWhiteboardContent]
