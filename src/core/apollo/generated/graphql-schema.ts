@@ -4175,6 +4175,8 @@ export type Organization = Contributor &
     profile: Profile;
     /** The StorageAggregator for managing storage buckets in use by this Organization */
     storageAggregator?: Maybe<StorageAggregator>;
+    /** The subscriptions active for this Organization. */
+    subscriptions: Array<OrganizationSubscription>;
     /** The date at which the entity was last updated. */
     updatedDate?: Maybe<Scalars['DateTime']>;
     verification: OrganizationVerification;
@@ -4208,6 +4210,14 @@ export enum OrganizationRole {
   Associate = 'ASSOCIATE',
   Owner = 'OWNER',
 }
+
+export type OrganizationSubscription = {
+  __typename?: 'OrganizationSubscription';
+  /** The expiry date of this subscription, null if it does never expire. */
+  expires?: Maybe<Scalars['DateTime']>;
+  /** The name of the Subscription. */
+  name: LicenseCredential;
+};
 
 export type OrganizationVerification = {
   __typename?: 'OrganizationVerification';
@@ -17719,6 +17729,28 @@ export type RolesOrganizationQuery = {
   };
 };
 
+export type AssignLicensePlanToAccountMutationVariables = Exact<{
+  licensePlanId: Scalars['UUID'];
+  accountID: Scalars['UUID'];
+  licensingID: Scalars['UUID'];
+}>;
+
+export type AssignLicensePlanToAccountMutation = {
+  __typename?: 'Mutation';
+  assignLicensePlanToAccount: { __typename?: 'Account'; id: string };
+};
+
+export type RevokeLicensePlanFromAccountMutationVariables = Exact<{
+  licensePlanId: Scalars['UUID'];
+  accountID: Scalars['UUID'];
+  licensingID: Scalars['UUID'];
+}>;
+
+export type RevokeLicensePlanFromAccountMutation = {
+  __typename?: 'Mutation';
+  revokeLicensePlanFromAccount: { __typename?: 'Account'; id: string };
+};
+
 export type AdminGlobalOrganizationsListQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
@@ -17738,6 +17770,7 @@ export type AdminGlobalOrganizationsListQuery = {
         id: string;
         lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
       };
+      subscriptions: Array<{ __typename?: 'OrganizationSubscription'; name: LicenseCredential }>;
     }>;
     pageInfo: {
       __typename?: 'PageInfo';
@@ -17745,6 +17778,34 @@ export type AdminGlobalOrganizationsListQuery = {
       endCursor?: string | undefined;
       hasNextPage: boolean;
     };
+  };
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    licensing: {
+      __typename?: 'Licensing';
+      id: string;
+      plans: Array<{
+        __typename?: 'LicensePlan';
+        id: string;
+        name: string;
+        type: LicensePlanType;
+        licenseCredential: LicenseCredential;
+      }>;
+    };
+  };
+};
+
+export type AccountOnOrganizationQueryVariables = Exact<{
+  organizationId: Scalars['UUID_NAMEID'];
+}>;
+
+export type AccountOnOrganizationQuery = {
+  __typename?: 'Query';
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    account?: { __typename?: 'Account'; id: string } | undefined;
   };
 };
 

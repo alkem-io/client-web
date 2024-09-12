@@ -41,6 +41,7 @@ export interface SearchableListItem {
   value: string;
   url: string;
   verified?: boolean;
+  activeLicensePlanIds?: string[];
 }
 
 const SimpleSearchableList = <Item extends SearchableListItem>({

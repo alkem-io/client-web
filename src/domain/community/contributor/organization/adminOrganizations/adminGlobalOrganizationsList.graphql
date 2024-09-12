@@ -14,9 +14,33 @@ query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: Organiza
           state
         }
       }
+      subscriptions {
+        name
+      }
     }
     pageInfo {
       ...PageInfo
+    }
+  }
+  platform {
+    id
+    licensing {
+      id
+      plans {
+        id
+        name
+        type
+        licenseCredential
+      }
+    }
+  }
+}
+
+query AccountOnOrganization($organizationId: UUID_NAMEID!) {
+  organization(ID: $organizationId) {
+    id
+    account {
+      id
     }
   }
 }

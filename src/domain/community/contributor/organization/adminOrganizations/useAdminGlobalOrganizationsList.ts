@@ -1,9 +1,13 @@
 import { useMemo, useState } from 'react';
 
 import {
+  refetchAdminGlobalOrganizationsListQuery,
+  useAccountOnOrganizationLazyQuery,
   useAdminGlobalOrganizationsListQuery,
   useAdminOrganizationVerifyMutation,
+  useAssignLicensePlanToAccountMutation,
   useDeleteOrganizationMutation,
+  useRevokeLicensePlanFromAccountMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import usePaginatedQuery from '../../../../shared/pagination/usePaginatedQuery';
@@ -11,6 +15,7 @@ import { SearchableListItem } from '../../../../shared/components/SearchableList
 import clearCacheForQuery from '../../../../../core/apollo/utils/clearCacheForQuery';
 import { useTranslation } from 'react-i18next';
 import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
+import { LicensePlanType } from '../../../../../core/apollo/generated/graphql-schema';
 
 const PAGE_SIZE = 10;
 
@@ -22,6 +27,11 @@ enum OrgVerificationLifecycleEvents {
   VERIFICATION_REQUEST = 'VERIFICATION_REQUEST',
   MANUALLY_VERIFY = 'MANUALLY_VERIFY',
   RESET = 'RESET',
+}
+
+export interface OrgLicensePlan {
+  id: string;
+  name: string;
 }
 
 export const useAdminGlobalOrganizationsList = () => {
@@ -97,6 +107,69 @@ export const useAdminGlobalOrganizationsList = () => {
     }
   };
 
+  const [getAccountOrg] = useAccountOnOrganizationLazyQuery();
+  const getAccountId = async (entityId: string) => {
+    if (!entityId) {
+      return undefined;
+    }
+
+    const accountData = await getAccountOrg({
+      variables: {
+        organizationId: entityId,
+      },
+    });
+
+    return accountData?.data?.organization.account?.id;
+  };
+
+  const [assignLicense] = useAssignLicensePlanToAccountMutation();
+  const assignLicensePlan = async (entityId: string, planId: string) => {
+    const accountId = await getAccountId(entityId);
+
+    if (!accountId) {
+      return;
+    }
+
+    await assignLicense({
+      variables: {
+        accountID: accountId,
+        licensePlanId: planId,
+        licensingID: data?.platform.licensing.id ?? '',
+      },
+      refetchQueries: [
+        refetchAdminGlobalOrganizationsListQuery({
+          first: PAGE_SIZE,
+          filter: { displayName: searchTerm },
+        }),
+      ],
+      onCompleted: () => notify(t('pages.admin.generic.sections.account.licenseUpdated'), 'success'),
+    });
+  };
+
+  const [revokeLicense] = useRevokeLicensePlanFromAccountMutation();
+  const revokeLicensePlan = async (entityId: string, planId: string) => {
+    const accountId = await getAccountId(entityId);
+
+    if (!accountId) {
+      return;
+    }
+
+    await revokeLicense({
+      variables: {
+        accountID: accountId,
+        licensePlanId: planId,
+        licensingID: data?.platform.licensing.id ?? '',
+      },
+      refetchQueries: [
+        refetchAdminGlobalOrganizationsListQuery({
+          first: PAGE_SIZE,
+          filter: { displayName: searchTerm },
+        }),
+      ],
+      onCompleted: () => notify(t('pages.admin.generic.sections.account.licenseUpdated'), 'success'),
+    });
+  };
+
   const organizations = useMemo<SearchableListItem[]>(
     () =>
       data?.organizationsPaginated.organization.map(org => ({
@@ -104,7 +177,23 @@ export const useAdminGlobalOrganizationsList = () => {
         value: org.profile.displayName,
         url: buildSettingsUrl(org.profile.url),
         verified: org.verification.lifecycle.state === OrgVerificationLifecycleStates.manuallyVerified,
+        activeLicensePlanIds: data?.platform.licensing.plans
+          .filter(({ licenseCredential }) =>
+            org.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
+          )
+          .map(({ id }) => id),
       })) || [],
+    [data]
+  );
+
+  const licensePlans = useMemo<OrgLicensePlan[]>(
+    () =>
+      data?.platform.licensing.plans
+        .filter(plan => plan.type === LicensePlanType.AccountPlan)
+        .map(licensePlan => ({
+          id: licensePlan.id,
+          name: licensePlan.name,
+        })) || [],
     [data]
   );
 
@@ -114,6 +203,9 @@ export const useAdminGlobalOrganizationsList = () => {
     onSearchTermChange: setSearchTerm,
     onDelete: handleDelete,
     handleVerification: handleVerification,
+    licensePlans,
+    assignLicensePlan,
+    revokeLicensePlan,
     ...paginationProvided,
   };
 };

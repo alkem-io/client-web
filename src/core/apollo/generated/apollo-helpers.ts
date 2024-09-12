@@ -2216,6 +2216,7 @@ export type OrganizationKeySpecifier = (
   | 'preferences'
   | 'profile'
   | 'storageAggregator'
+  | 'subscriptions'
   | 'updatedDate'
   | 'verification'
   | 'website'
@@ -2241,9 +2242,15 @@ export type OrganizationFieldPolicy = {
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   verification?: FieldPolicy<any> | FieldReadFunction<any>;
   website?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type OrganizationSubscriptionKeySpecifier = ('expires' | 'name' | OrganizationSubscriptionKeySpecifier)[];
+export type OrganizationSubscriptionFieldPolicy = {
+  expires?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganizationVerificationKeySpecifier = (
   | 'authorization'
@@ -4037,6 +4044,10 @@ export type StrictTypedTypePolicies = {
   Organization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OrganizationKeySpecifier | (() => undefined | OrganizationKeySpecifier);
     fields?: OrganizationFieldPolicy;
+  };
+  OrganizationSubscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | OrganizationSubscriptionKeySpecifier | (() => undefined | OrganizationSubscriptionKeySpecifier);
+    fields?: OrganizationSubscriptionFieldPolicy;
   };
   OrganizationVerification?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OrganizationVerificationKeySpecifier | (() => undefined | OrganizationVerificationKeySpecifier);
