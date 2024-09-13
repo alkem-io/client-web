@@ -1,10 +1,10 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
 import { Caption, CaptionSmall } from '../../../core/ui/typography';
 import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
-import { Box, Button } from '@mui/material';
+import { Box, Button, DialogContent, IconButton } from '@mui/material';
 import SearchTagsInput from '../../../domain/shared/components/SearchTagsInput/SearchTagsInput';
 import Gutters from '../../../core/ui/grid/Gutters';
 import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
@@ -22,6 +22,8 @@ import SpaceSubspaceCardLabel from '../../../domain/journey/space/SpaceSubspaceC
 import SeeMoreExpandable from '../../../core/ui/content/SeeMoreExpandable';
 import { buildLoginUrl } from '../../routing/urlBuilders';
 import RouterLink from '../../../core/ui/link/RouterLink';
+import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
+import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 
 export interface SpaceExplorerViewProps {
   spaces: SpaceWithParent[] | undefined;
@@ -45,12 +47,6 @@ export enum SpacesExplorerMembershipFilter {
   Member = 'member',
   Public = 'public',
 }
-
-const SPACES_EXPLORER_MEMBERSHIP_FILTERS: SpacesExplorerMembershipFilter[] = [
-  SpacesExplorerMembershipFilter.All,
-  SpacesExplorerMembershipFilter.Member,
-  SpacesExplorerMembershipFilter.Public,
-];
 
 export type SpaceWithParent = Space & WithParent<ParentSpace>;
 
@@ -128,6 +124,11 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
   const { t } = useTranslation();
 
   const [hasExpanded, setHasExpanded] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
+  const [activeFilters, setActiveFilters] = useState<SpacesExplorerMembershipFilter[]>([
+    SpacesExplorerMembershipFilter.All,
+    SpacesExplorerMembershipFilter.Public,
+  ]);
 
   const isCollapsed = !hasExpanded && membershipFilter !== SpacesExplorerMembershipFilter.Member;
 
@@ -152,13 +153,22 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
     }
   }, [hasNoMemberSpaces]);
 
+  // if the current user is authenticated, then show the member filter #6852
+  useEffect(() => {
+    if (authenticated) {
+      setActiveFilters([
+        SpacesExplorerMembershipFilter.All,
+        SpacesExplorerMembershipFilter.Member,
+        SpacesExplorerMembershipFilter.Public,
+      ]);
+    }
+  }, [authenticated]);
+
   const getGridItemStyle = useGridItem();
 
   return (
     <PageContentBlock>
-      <PageContentBlockHeader title={t('pages.exploreSpaces.fullName')} />
-      <WrapperMarkdown caption>{t('pages.exploreSpaces.caption')}</WrapperMarkdown>
-      <Gutters row disablePadding flexWrap="wrap" justifyContent="center">
+      <Gutters row disablePadding flexWrap="wrap" justifyContent="center" paddingTop={gutters(0.2)}>
         <SearchTagsInput
           value={searchTerms}
           placeholder={t('pages.exploreSpaces.search.placeholder')}
@@ -166,8 +176,8 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
           fullWidth={false}
           sx={{ flexGrow: 1, flexBasis: getGridItemStyle(4).width }}
         />
-        <Gutters row disablePadding maxWidth="100%">
-          {SPACES_EXPLORER_MEMBERSHIP_FILTERS.map(filter => (
+        <Gutters row disablePadding maxWidth="100%" alignItems="center">
+          {activeFilters.map(filter => (
             <Button
               key={filter}
               variant={filter === membershipFilter ? 'contained' : 'outlined'}
@@ -177,6 +187,13 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
               <Caption noWrap>{t(`pages.exploreSpaces.membershipFilter.${filter}` as const)}</Caption>
             </Button>
           ))}
+          <IconButton
+            onClick={() => {
+              setInfoOpen(true);
+            }}
+          >
+            <InfoOutlinedIcon color="primary" fontSize="small" />
+          </IconButton>
         </Gutters>
       </Gutters>
       {hasNoMemberSpaces && (
@@ -233,6 +250,14 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
           onExpand={() => onMembershipFilterChange?.(SpacesExplorerMembershipFilter.All)}
           label={t('pages.exploreSpaces.seeAll')}
         />
+      )}
+      {infoOpen && (
+        <DialogWithGrid open={infoOpen} onClose={() => setInfoOpen(false)} columns={4}>
+          <DialogHeader title={t('pages.exploreSpaces.fullName')} onClose={() => setInfoOpen(false)} />
+          <DialogContent sx={{ paddingTop: 0 }}>
+            <WrapperMarkdown caption>{t('pages.exploreSpaces.caption')}</WrapperMarkdown>
+          </DialogContent>
+        </DialogWithGrid>
       )}
     </PageContentBlock>
   );
