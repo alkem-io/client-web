@@ -133,6 +133,11 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
         },
       },
       refetchQueries: ['AccountInformation'],
+      onError: () => {
+        setDialogOpen(true);
+        setPlansTableDialogOpen(false);
+        setCreatingDialogOpen(false);
+      },
     });
 
     const spaceID = newSpace?.createSpace.id;
