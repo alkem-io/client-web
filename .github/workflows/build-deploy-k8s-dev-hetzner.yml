@@ -2,7 +2,7 @@ name: Build & Deploy to Dev on Hetzner
 
 on:
   push:
-    branches: [develop]
+    branches: [crowdin]
 
 jobs:
   build-and-deploy:
