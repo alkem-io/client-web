@@ -1,9 +1,10 @@
-import { Grid } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import WrapperTypography from '../../../../core/ui/typography/deprecated/WrapperTypography';
-import WrapperButton from '../../../../core/ui/button/deprecated/WrapperButton';
+import RouterLink from '../../../../core/ui/link/RouterLink';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 interface ListPageProps {
   title?: string;
@@ -16,12 +17,16 @@ export const SearchableListLayout: FC<ListPageProps> = ({ title, newLink, childr
   return (
     <Grid container spacing={2} justifyContent="center">
       {(title || newLink) && (
-        <Grid container item xs={10}>
+        <Grid container item xs={10} paddingX={gutters(1)}>
           <Grid item xs={10}>
             {title && <WrapperTypography variant="h3">{title}</WrapperTypography>}
           </Grid>
           <Grid container item justifyContent="flex-end" xs={2}>
-            {newLink && <WrapperButton as={Link} to={newLink} text={t('buttons.new')} />}
+            {newLink && (
+              <Button startIcon={<AddOutlinedIcon />} variant="contained" component={RouterLink} to={newLink}>
+                {t('buttons.create')}
+              </Button>
+            )}
           </Grid>
         </Grid>
       )}
