@@ -12,14 +12,14 @@ jobs:
         uses: actions/checkout@v4.1.7
 
       - name: 'Download and extract translations'
-        uses: crowdin/github-action@v1.13.1
+        uses: crowdin/github-action@v2.1.2
         with:
           command: 'download'
           command_args: '--all --verbose'
           source: ./src/core/i18n/en/translation.en.json
           translation: ./src/core/i18n/%two_letters_code%/translation.%two_letters_code%.json
 
-          download_translations: false
+          download_translations: true
           upload_sources: false
           upload_translations: false
           push_translations: false
