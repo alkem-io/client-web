@@ -181,10 +181,3 @@ mutation updateWhiteboard($input: UpdateWhiteboardInput!) {
     }
   }
 }
-
-mutation updateWhiteboardContent($input: UpdateWhiteboardContentInput!) {
-  updateWhiteboardContent(whiteboardData: $input) {
-    id
-    content
-  }
-}

@@ -2004,7 +2004,6 @@ export type MutationKeySpecifier = (
   | 'updateVirtualContributor'
   | 'updateVisual'
   | 'updateWhiteboard'
-  | 'updateWhiteboardContent'
   | 'updateWhiteboardTemplate'
   | 'uploadFileOnLink'
   | 'uploadFileOnReference'
@@ -2176,7 +2175,6 @@ export type MutationFieldPolicy = {
   updateVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateWhiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboardTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnLink?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnReference?: FieldPolicy<any> | FieldReadFunction<any>;

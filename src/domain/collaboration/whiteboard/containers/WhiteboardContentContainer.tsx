@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import {
   useWhiteboardSavedSubscription,
   useWhiteboardWithoutContentQuery,
@@ -87,10 +87,15 @@ const WhiteboardContentContainer: FC<WhiteboardContentContainerProps> = ({ child
     },
   });
 
-  const whiteboard = {
-    ...whiteboardWithContentData?.lookup.whiteboard,
-    content: JSON.stringify(EmptyWhiteboard),
-  };
+  const whiteboard = useMemo(() => {
+    if (whiteboardWithContentData?.lookup.whiteboard) {
+      return {
+        ...whiteboardWithContentData.lookup.whiteboard,
+        content: JSON.stringify(EmptyWhiteboard),
+      };
+    }
+    return undefined;
+  }, [whiteboardWithContentData]);
 
   return (
     <>

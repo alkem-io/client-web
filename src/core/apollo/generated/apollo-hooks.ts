@@ -8439,55 +8439,6 @@ export type UpdateWhiteboardMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateWhiteboardMutation,
   SchemaTypes.UpdateWhiteboardMutationVariables
 >;
-export const UpdateWhiteboardContentDocument = gql`
-  mutation updateWhiteboardContent($input: UpdateWhiteboardContentInput!) {
-    updateWhiteboardContent(whiteboardData: $input) {
-      id
-      content
-    }
-  }
-`;
-export type UpdateWhiteboardContentMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateWhiteboardContentMutation,
-  SchemaTypes.UpdateWhiteboardContentMutationVariables
->;
-
-/**
- * __useUpdateWhiteboardContentMutation__
- *
- * To run a mutation, you first call `useUpdateWhiteboardContentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateWhiteboardContentMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateWhiteboardContentMutation, { data, loading, error }] = useUpdateWhiteboardContentMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateWhiteboardContentMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateWhiteboardContentMutation,
-    SchemaTypes.UpdateWhiteboardContentMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateWhiteboardContentMutation,
-    SchemaTypes.UpdateWhiteboardContentMutationVariables
-  >(UpdateWhiteboardContentDocument, options);
-}
-
-export type UpdateWhiteboardContentMutationHookResult = ReturnType<typeof useUpdateWhiteboardContentMutation>;
-export type UpdateWhiteboardContentMutationResult = Apollo.MutationResult<SchemaTypes.UpdateWhiteboardContentMutation>;
-export type UpdateWhiteboardContentMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateWhiteboardContentMutation,
-  SchemaTypes.UpdateWhiteboardContentMutationVariables
->;
 export const WhiteboardSavedDocument = gql`
   subscription WhiteboardSaved($whiteboardId: UUID!) {
     whiteboardSaved(whiteboardID: $whiteboardId) {

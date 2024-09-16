@@ -3,7 +3,6 @@ import {
   WhiteboardDetailsFragmentDoc,
   useCreateWhiteboardOnCalloutMutation,
   useDeleteWhiteboardMutation,
-  useUpdateWhiteboardContentMutation,
   useUpdateWhiteboardMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
@@ -121,8 +120,6 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
     [deleteWhiteboard]
   );
 
-  const [updateWhiteboardContent, { loading: updatingWhiteboardContent }] = useUpdateWhiteboardContentMutation({});
-
   const handleUpdateWhiteboardContent = useCallback(
     async (
       whiteboard: WhiteboardContentFragment & WhiteboardDetailsFragment,
@@ -149,7 +146,7 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
         errors: undefined,
       };
     },
-    [updateWhiteboardContent]
+    []
   );
 
   const [updateWhiteboard, { loading: updatingWhiteboard }] = useUpdateWhiteboardMutation({});
@@ -189,7 +186,7 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
         {
           creatingWhiteboard,
           deletingWhiteboard,
-          updatingWhiteboardContent,
+          updatingWhiteboardContent: false,
           updatingWhiteboard,
           uploadingVisuals,
         },

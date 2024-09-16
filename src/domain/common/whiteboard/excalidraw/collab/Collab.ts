@@ -170,8 +170,8 @@ class Collab {
             'scene-init': async (payload: Record<string, unknown> /* todo: better type */) => {
               if (!this.portal.socketInitialized) {
                 this.initializeRoom({ fetchScene: false });
-                const remoteElements = payload.elements;
-                const remoteFiles = payload.files;
+                const remoteElements = payload.elements as ExcalidrawElement[];
+                const remoteFiles = payload.files as BinaryFilesWithUrl;
                 this.handleRemoteSceneUpdate(await this.reconcileElements(remoteElements, remoteFiles), {
                   init: true,
                 });
