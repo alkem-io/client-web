@@ -12255,6 +12255,112 @@ export function refetchRolesOrganizationQuery(variables: SchemaTypes.RolesOrgani
   return { query: RolesOrganizationDocument, variables: variables };
 }
 
+export const AssignLicensePlanToAccountDocument = gql`
+  mutation AssignLicensePlanToAccount($licensePlanId: UUID!, $accountID: UUID!, $licensingID: UUID!) {
+    assignLicensePlanToAccount(
+      planData: { accountID: $accountID, licensePlanID: $licensePlanId, licensingID: $licensingID }
+    ) {
+      id
+    }
+  }
+`;
+export type AssignLicensePlanToAccountMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignLicensePlanToAccountMutation,
+  SchemaTypes.AssignLicensePlanToAccountMutationVariables
+>;
+
+/**
+ * __useAssignLicensePlanToAccountMutation__
+ *
+ * To run a mutation, you first call `useAssignLicensePlanToAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignLicensePlanToAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignLicensePlanToAccountMutation, { data, loading, error }] = useAssignLicensePlanToAccountMutation({
+ *   variables: {
+ *      licensePlanId: // value for 'licensePlanId'
+ *      accountID: // value for 'accountID'
+ *      licensingID: // value for 'licensingID'
+ *   },
+ * });
+ */
+export function useAssignLicensePlanToAccountMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignLicensePlanToAccountMutation,
+    SchemaTypes.AssignLicensePlanToAccountMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AssignLicensePlanToAccountMutation,
+    SchemaTypes.AssignLicensePlanToAccountMutationVariables
+  >(AssignLicensePlanToAccountDocument, options);
+}
+
+export type AssignLicensePlanToAccountMutationHookResult = ReturnType<typeof useAssignLicensePlanToAccountMutation>;
+export type AssignLicensePlanToAccountMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignLicensePlanToAccountMutation>;
+export type AssignLicensePlanToAccountMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignLicensePlanToAccountMutation,
+  SchemaTypes.AssignLicensePlanToAccountMutationVariables
+>;
+export const RevokeLicensePlanFromAccountDocument = gql`
+  mutation RevokeLicensePlanFromAccount($licensePlanId: UUID!, $accountID: UUID!, $licensingID: UUID!) {
+    revokeLicensePlanFromAccount(
+      planData: { accountID: $accountID, licensePlanID: $licensePlanId, licensingID: $licensingID }
+    ) {
+      id
+    }
+  }
+`;
+export type RevokeLicensePlanFromAccountMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RevokeLicensePlanFromAccountMutation,
+  SchemaTypes.RevokeLicensePlanFromAccountMutationVariables
+>;
+
+/**
+ * __useRevokeLicensePlanFromAccountMutation__
+ *
+ * To run a mutation, you first call `useRevokeLicensePlanFromAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRevokeLicensePlanFromAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [revokeLicensePlanFromAccountMutation, { data, loading, error }] = useRevokeLicensePlanFromAccountMutation({
+ *   variables: {
+ *      licensePlanId: // value for 'licensePlanId'
+ *      accountID: // value for 'accountID'
+ *      licensingID: // value for 'licensingID'
+ *   },
+ * });
+ */
+export function useRevokeLicensePlanFromAccountMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RevokeLicensePlanFromAccountMutation,
+    SchemaTypes.RevokeLicensePlanFromAccountMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RevokeLicensePlanFromAccountMutation,
+    SchemaTypes.RevokeLicensePlanFromAccountMutationVariables
+  >(RevokeLicensePlanFromAccountDocument, options);
+}
+
+export type RevokeLicensePlanFromAccountMutationHookResult = ReturnType<typeof useRevokeLicensePlanFromAccountMutation>;
+export type RevokeLicensePlanFromAccountMutationResult =
+  Apollo.MutationResult<SchemaTypes.RevokeLicensePlanFromAccountMutation>;
+export type RevokeLicensePlanFromAccountMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RevokeLicensePlanFromAccountMutation,
+  SchemaTypes.RevokeLicensePlanFromAccountMutationVariables
+>;
 export const AdminGlobalOrganizationsListDocument = gql`
   query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
     organizationsPaginated(first: $first, after: $after, filter: $filter) {
@@ -12265,9 +12371,31 @@ export const AdminGlobalOrganizationsListDocument = gql`
           url
           displayName
         }
+        verification {
+          id
+          lifecycle {
+            id
+            state
+          }
+        }
+        subscriptions {
+          name
+        }
       }
       pageInfo {
         ...PageInfo
+      }
+    }
+    platform {
+      id
+      licensing {
+        id
+        plans {
+          id
+          name
+          type
+          licenseCredential
+        }
       }
     }
   }
@@ -12332,6 +12460,122 @@ export function refetchAdminGlobalOrganizationsListQuery(
   return { query: AdminGlobalOrganizationsListDocument, variables: variables };
 }
 
+export const AccountOnOrganizationDocument = gql`
+  query AccountOnOrganization($organizationId: UUID_NAMEID!) {
+    organization(ID: $organizationId) {
+      id
+      account {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useAccountOnOrganizationQuery__
+ *
+ * To run a query within a React component, call `useAccountOnOrganizationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountOnOrganizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountOnOrganizationQuery({
+ *   variables: {
+ *      organizationId: // value for 'organizationId'
+ *   },
+ * });
+ */
+export function useAccountOnOrganizationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AccountOnOrganizationQuery,
+    SchemaTypes.AccountOnOrganizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AccountOnOrganizationQuery, SchemaTypes.AccountOnOrganizationQueryVariables>(
+    AccountOnOrganizationDocument,
+    options
+  );
+}
+
+export function useAccountOnOrganizationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AccountOnOrganizationQuery,
+    SchemaTypes.AccountOnOrganizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AccountOnOrganizationQuery, SchemaTypes.AccountOnOrganizationQueryVariables>(
+    AccountOnOrganizationDocument,
+    options
+  );
+}
+
+export type AccountOnOrganizationQueryHookResult = ReturnType<typeof useAccountOnOrganizationQuery>;
+export type AccountOnOrganizationLazyQueryHookResult = ReturnType<typeof useAccountOnOrganizationLazyQuery>;
+export type AccountOnOrganizationQueryResult = Apollo.QueryResult<
+  SchemaTypes.AccountOnOrganizationQuery,
+  SchemaTypes.AccountOnOrganizationQueryVariables
+>;
+export function refetchAccountOnOrganizationQuery(variables: SchemaTypes.AccountOnOrganizationQueryVariables) {
+  return { query: AccountOnOrganizationDocument, variables: variables };
+}
+
+export const AdminOrganizationVerifyDocument = gql`
+  mutation adminOrganizationVerify($input: OrganizationVerificationEventInput!) {
+    eventOnOrganizationVerification(organizationVerificationEventData: $input) {
+      id
+      lifecycle {
+        id
+        nextEvents
+        state
+      }
+    }
+  }
+`;
+export type AdminOrganizationVerifyMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AdminOrganizationVerifyMutation,
+  SchemaTypes.AdminOrganizationVerifyMutationVariables
+>;
+
+/**
+ * __useAdminOrganizationVerifyMutation__
+ *
+ * To run a mutation, you first call `useAdminOrganizationVerifyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAdminOrganizationVerifyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [adminOrganizationVerifyMutation, { data, loading, error }] = useAdminOrganizationVerifyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAdminOrganizationVerifyMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AdminOrganizationVerifyMutation,
+    SchemaTypes.AdminOrganizationVerifyMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AdminOrganizationVerifyMutation,
+    SchemaTypes.AdminOrganizationVerifyMutationVariables
+  >(AdminOrganizationVerifyDocument, options);
+}
+
+export type AdminOrganizationVerifyMutationHookResult = ReturnType<typeof useAdminOrganizationVerifyMutation>;
+export type AdminOrganizationVerifyMutationResult = Apollo.MutationResult<SchemaTypes.AdminOrganizationVerifyMutation>;
+export type AdminOrganizationVerifyMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AdminOrganizationVerifyMutation,
+  SchemaTypes.AdminOrganizationVerifyMutationVariables
+>;
 export const OrganizationInfoDocument = gql`
   query organizationInfo($organizationId: UUID_NAMEID!, $includeAssociates: Boolean = false) {
     organization(ID: $organizationId) {

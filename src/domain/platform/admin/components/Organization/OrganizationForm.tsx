@@ -71,6 +71,7 @@ const EmptyOrganization: Omit<Organization, 'authorization' | 'agent'> = {
     },
   },
   preferences: [],
+  subscriptions: [],
   account: undefined,
 };
 

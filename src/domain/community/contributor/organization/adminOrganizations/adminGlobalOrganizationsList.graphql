@@ -7,9 +7,51 @@ query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: Organiza
         url
         displayName
       }
+      verification {
+        id
+        lifecycle {
+          id
+          state
+        }
+      }
+      subscriptions {
+        name
+      }
     }
     pageInfo {
       ...PageInfo
+    }
+  }
+  platform {
+    id
+    licensing {
+      id
+      plans {
+        id
+        name
+        type
+        licenseCredential
+      }
+    }
+  }
+}
+
+query AccountOnOrganization($organizationId: UUID_NAMEID!) {
+  organization(ID: $organizationId) {
+    id
+    account {
+      id
+    }
+  }
+}
+
+mutation adminOrganizationVerify($input: OrganizationVerificationEventInput!) {
+  eventOnOrganizationVerification(organizationVerificationEventData: $input) {
+    id
+    lifecycle {
+      id
+      nextEvents
+      state
     }
   }
 }
