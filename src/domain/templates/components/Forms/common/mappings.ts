@@ -247,6 +247,8 @@ export const toCreateTemplateMutationVariables = (
 
   newValues = produce(newValues, draft => {
     draft['profileData'] = draft.profile;
+    delete draft['profileData'].id;
+    delete draft['profileData'].defaultTagset;
     //@ts-ignore
     delete draft.profile;
   });
