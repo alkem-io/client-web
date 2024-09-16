@@ -25,7 +25,7 @@ import { BlockSectionTitle, Caption } from '../../../../../core/ui/typography';
 import InnovationFlowProfileView from '../../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowProfileView';
 import InnovationFlowStates from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import { Actions } from '../../../../../core/ui/actions/Actions';
-import { Cached, DeleteOutline } from '@mui/icons-material';
+import { Cached, ContentCopyOutlined, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
 import SelectDefaultInnovationFlowDialog from '../../../../collaboration/InnovationFlow/InnovationFlowDialogs/SelectDefaultInnovationFlow/SelectDefaultInnovationFlowDialog';
 import MenuItemWithIcon from '../../../../../core/ui/menu/MenuItemWithIcon';
 import Gutters from '../../../../../core/ui/grid/Gutters';
@@ -49,7 +49,7 @@ export const SubspaceListView: FC = () => {
   const spaceDefaultsID = data?.space.defaults?.id || ''; // How to handle when IDs are not found?
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
-  const [itemToRemove, setItemToRemove] = useState<SearchableListItem | undefined>(undefined);
+  const [selectedItem, setSelectedItem] = useState<SearchableListItem | undefined>(undefined);
 
   useEffect(() => {
     setSelectedState(defaultInnovationFlow?.states[0].displayName);
@@ -146,25 +146,47 @@ export const SubspaceListView: FC = () => {
 
   const onDeleteClick = (item: SearchableListItem) => {
     setDeleteDialogOpen(true);
-    setItemToRemove(item);
+    setSelectedItem(item);
   };
 
   const clearDeleteState = () => {
     setDeleteDialogOpen(false);
-    setItemToRemove(undefined);
+    setSelectedItem(undefined);
   };
 
   const onDeleteConfirmation = () => {
-    if (itemToRemove) {
-      handleDelete(itemToRemove);
+    if (selectedItem) {
+      handleDelete(selectedItem);
       setDeleteDialogOpen(false);
     }
   };
 
+  const onDuplicateClick = (item: SearchableListItem) => {
+    // todo: implement
+    setSelectedItem(item);
+  };
+
+  const onSaveAsTemplateClick = (item: SearchableListItem) => {
+    // todo: implement
+    setSelectedItem(item);
+  };
+
   const getSubSpaceActions = (item: SearchableListItem) => (
-    <MenuItemWithIcon key="delete" disabled={false} iconComponent={DeleteOutline} onClick={() => onDeleteClick(item)}>
-      {t('buttons.delete')}
-    </MenuItemWithIcon>
+    <>
+      <MenuItemWithIcon disabled={false} iconComponent={ContentCopyOutlined} onClick={() => onDuplicateClick(item)}>
+        Duplicate Subspace
+      </MenuItemWithIcon>
+      <MenuItemWithIcon
+        disabled={false}
+        iconComponent={DownloadForOfflineOutlined}
+        onClick={() => onSaveAsTemplateClick(item)}
+      >
+        Save As Template
+      </MenuItemWithIcon>
+      <MenuItemWithIcon disabled={false} iconComponent={DeleteOutline} onClick={() => onDeleteClick(item)}>
+        {t('buttons.delete')}
+      </MenuItemWithIcon>
+    </>
   );
 
   if (loading) return <Loading text={'Loading Subspaces'} />;
