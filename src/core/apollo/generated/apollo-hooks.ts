@@ -18061,8 +18061,8 @@ export function refetchSpaceAccountQuery(variables: SchemaTypes.SpaceAccountQuer
   return { query: SpaceAccountDocument, variables: variables };
 }
 
-export const AdminSpaceChallengesPageDocument = gql`
-  query AdminSpaceChallengesPage($spaceId: UUID_NAMEID!) {
+export const AdminSpaceSubspacesPageDocument = gql`
+  query AdminSpaceSubspacesPage($spaceId: UUID_NAMEID!) {
     space(ID: $spaceId) {
       id
       subspaces {
@@ -18071,6 +18071,9 @@ export const AdminSpaceChallengesPageDocument = gql`
           id
           displayName
           url
+          cardBanner: visual(type: CARD) {
+            ...VisualUri
+          }
         }
       }
       defaults {
@@ -18088,59 +18091,60 @@ export const AdminSpaceChallengesPageDocument = gql`
       }
     }
   }
+  ${VisualUriFragmentDoc}
   ${InnovationFlowProfileFragmentDoc}
 `;
 
 /**
- * __useAdminSpaceChallengesPageQuery__
+ * __useAdminSpaceSubspacesPageQuery__
  *
- * To run a query within a React component, call `useAdminSpaceChallengesPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useAdminSpaceChallengesPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useAdminSpaceSubspacesPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAdminSpaceSubspacesPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAdminSpaceChallengesPageQuery({
+ * const { data, loading, error } = useAdminSpaceSubspacesPageQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useAdminSpaceChallengesPageQuery(
+export function useAdminSpaceSubspacesPageQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.AdminSpaceChallengesPageQuery,
-    SchemaTypes.AdminSpaceChallengesPageQueryVariables
+    SchemaTypes.AdminSpaceSubspacesPageQuery,
+    SchemaTypes.AdminSpaceSubspacesPageQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AdminSpaceChallengesPageQuery, SchemaTypes.AdminSpaceChallengesPageQueryVariables>(
-    AdminSpaceChallengesPageDocument,
+  return Apollo.useQuery<SchemaTypes.AdminSpaceSubspacesPageQuery, SchemaTypes.AdminSpaceSubspacesPageQueryVariables>(
+    AdminSpaceSubspacesPageDocument,
     options
   );
 }
 
-export function useAdminSpaceChallengesPageLazyQuery(
+export function useAdminSpaceSubspacesPageLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AdminSpaceChallengesPageQuery,
-    SchemaTypes.AdminSpaceChallengesPageQueryVariables
+    SchemaTypes.AdminSpaceSubspacesPageQuery,
+    SchemaTypes.AdminSpaceSubspacesPageQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.AdminSpaceChallengesPageQuery,
-    SchemaTypes.AdminSpaceChallengesPageQueryVariables
-  >(AdminSpaceChallengesPageDocument, options);
+    SchemaTypes.AdminSpaceSubspacesPageQuery,
+    SchemaTypes.AdminSpaceSubspacesPageQueryVariables
+  >(AdminSpaceSubspacesPageDocument, options);
 }
 
-export type AdminSpaceChallengesPageQueryHookResult = ReturnType<typeof useAdminSpaceChallengesPageQuery>;
-export type AdminSpaceChallengesPageLazyQueryHookResult = ReturnType<typeof useAdminSpaceChallengesPageLazyQuery>;
-export type AdminSpaceChallengesPageQueryResult = Apollo.QueryResult<
-  SchemaTypes.AdminSpaceChallengesPageQuery,
-  SchemaTypes.AdminSpaceChallengesPageQueryVariables
+export type AdminSpaceSubspacesPageQueryHookResult = ReturnType<typeof useAdminSpaceSubspacesPageQuery>;
+export type AdminSpaceSubspacesPageLazyQueryHookResult = ReturnType<typeof useAdminSpaceSubspacesPageLazyQuery>;
+export type AdminSpaceSubspacesPageQueryResult = Apollo.QueryResult<
+  SchemaTypes.AdminSpaceSubspacesPageQuery,
+  SchemaTypes.AdminSpaceSubspacesPageQueryVariables
 >;
-export function refetchAdminSpaceChallengesPageQuery(variables: SchemaTypes.AdminSpaceChallengesPageQueryVariables) {
-  return { query: AdminSpaceChallengesPageDocument, variables: variables };
+export function refetchAdminSpaceSubspacesPageQuery(variables: SchemaTypes.AdminSpaceSubspacesPageQueryVariables) {
+  return { query: AdminSpaceSubspacesPageDocument, variables: variables };
 }
 
 export const UpdateSpaceDefaultInnovationFlowTemplateDocument = gql`

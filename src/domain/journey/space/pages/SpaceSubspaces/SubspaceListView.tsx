@@ -4,11 +4,10 @@ import useNavigate from '../../../../../core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
 import Button from '@mui/material/Button';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import SearchableList, { SearchableListItem } from '../../../../platform/admin/components/SearchableList';
 import Loading from '../../../../../core/ui/loading/Loading';
 import {
-  refetchAdminSpaceChallengesPageQuery,
-  useAdminSpaceChallengesPageQuery,
+  refetchAdminSpaceSubspacesPageQuery,
+  useAdminSpaceSubspacesPageQuery,
   useCreateSubspaceMutation,
   useDeleteSpaceMutation,
   useUpdateSpaceDefaultInnovationFlowTemplateMutation,
@@ -16,20 +15,23 @@ import {
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useSpace } from '../../SpaceContext/useSpace';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
-import { ChallengeIcon } from '../../../subspace/icon/ChallengeIcon';
+import { SubspaceIcon } from '../../../subspace/icon/SubspaceIcon';
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
-import { CreateChallengeForm } from '../../../subspace/forms/CreateChallengeForm';
+import { CreateSubspaceForm } from '../../../subspace/forms/CreateSubspaceForm';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import { BlockSectionTitle, Caption } from '../../../../../core/ui/typography';
 import InnovationFlowProfileView from '../../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowProfileView';
 import InnovationFlowStates from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import { Actions } from '../../../../../core/ui/actions/Actions';
-import { Cached } from '@mui/icons-material';
+import { Cached, DeleteOutline } from '@mui/icons-material';
 import SelectDefaultInnovationFlowDialog from '../../../../collaboration/InnovationFlow/InnovationFlowDialogs/SelectDefaultInnovationFlow/SelectDefaultInnovationFlowDialog';
+import JourneyCardHorizontal from '../../../common/JourneyCardHorizontal/JourneyCardHorizontal';
+import MenuItemWithIcon from '../../../../../core/ui/menu/MenuItemWithIcon';
+import Gutters from '../../../../../core/ui/grid/Gutters';
 
-export const ChallengeListView: FC = () => {
+export const SubspaceListView: FC = () => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { spaceNameId, spaceId } = useSpace();
@@ -37,7 +39,7 @@ export const ChallengeListView: FC = () => {
   const [journeyCreationDialogOpen, setJourneyCreationDialogOpen] = useState(false);
   const [innovationFlowDialogOpen, setInnovationFlowDialogOpen] = useState(false);
 
-  const { data, loading } = useAdminSpaceChallengesPageQuery({
+  const { data, loading } = useAdminSpaceSubspacesPageQuery({
     variables: {
       spaceId: spaceNameId,
     },
@@ -49,16 +51,22 @@ export const ChallengeListView: FC = () => {
     setSelectedState(defaultInnovationFlow?.states[0].displayName);
   }, [defaultInnovationFlow?.states?.[0]?.displayName]);
 
-  const challengeList =
+  const subspaces =
     data?.space?.subspaces?.map(c => ({
       id: c.id,
-      value: c.profile.displayName,
-      url: buildSettingsUrl(c.profile.url),
+      profile: {
+        displayName: c.profile.displayName,
+        url: buildSettingsUrl(c.profile.url),
+
+        avatar: {
+          uri: c.profile.cardBanner?.uri ?? '',
+        },
+      },
     })) || [];
 
-  const [deleteChallenge] = useDeleteSpaceMutation({
+  const [deleteSubspace] = useDeleteSpaceMutation({
     refetchQueries: [
-      refetchAdminSpaceChallengesPageQuery({
+      refetchAdminSpaceSubspacesPageQuery({
         spaceId: spaceNameId,
       }),
     ],
@@ -66,8 +74,8 @@ export const ChallengeListView: FC = () => {
     onCompleted: () => notify(t('pages.admin.subspace.notifications.subspace-removed'), 'success'),
   });
 
-  const handleDelete = (item: SearchableListItem) => {
-    deleteChallenge({
+  const handleDelete = (item: { id: string }) => {
+    deleteSubspace({
       variables: {
         input: {
           ID: item.id,
@@ -76,17 +84,17 @@ export const ChallengeListView: FC = () => {
     });
   };
 
-  const [createChallenge] = useCreateSubspaceMutation({
+  const [createSubspace] = useCreateSubspaceMutation({
     onCompleted: () => {
       notify(t('pages.admin.subspace.notifications.subspace-created'), 'success');
     },
-    refetchQueries: [refetchAdminSpaceChallengesPageQuery({ spaceId: spaceNameId })],
+    refetchQueries: [refetchAdminSpaceSubspacesPageQuery({ spaceId: spaceNameId })],
     awaitRefetchQueries: true,
   });
 
   const handleCreate = useCallback(
     async (value: JourneyFormValues) => {
-      const { data } = await createChallenge({
+      const { data } = await createSubspace({
         variables: {
           input: {
             spaceID: spaceNameId,
@@ -113,7 +121,7 @@ export const ChallengeListView: FC = () => {
         navigate(buildSettingsUrl(data?.createSubspace.profile.url));
       }
     },
-    [navigate, createChallenge, spaceNameId]
+    [navigate, createSubspace, spaceNameId]
   );
 
   const [updateInnovationFlow] = useUpdateSpaceDefaultInnovationFlowTemplateMutation();
@@ -124,7 +132,7 @@ export const ChallengeListView: FC = () => {
         innovationFlowTemplateId,
       },
       refetchQueries: [
-        refetchAdminSpaceChallengesPageQuery({
+        refetchAdminSpaceSubspacesPageQuery({
           spaceId: spaceNameId,
         }),
       ],
@@ -133,7 +141,13 @@ export const ChallengeListView: FC = () => {
     setInnovationFlowDialogOpen(false);
   };
 
-  if (loading) return <Loading text={'Loading challenges'} />;
+  const getSubSpaceActions = (id: string) => (
+    <MenuItemWithIcon key="delete" disabled={false} iconComponent={DeleteOutline} onClick={() => handleDelete({ id })}>
+      {t('buttons.delete')}
+    </MenuItemWithIcon>
+  );
+
+  if (loading) return <Loading text={'Loading Subspaces'} />;
 
   return (
     <>
@@ -167,7 +181,20 @@ export const ChallengeListView: FC = () => {
           >
             {t('buttons.create')}
           </Button>
-          <SearchableList data={challengeList} onDelete={handleDelete} />
+          <Gutters disablePadding>
+            {subspaces.map(s => (
+              <JourneyCardHorizontal
+                key={s.id}
+                size="medium"
+                journeyTypeName="subspace"
+                journey={{ profile: s.profile, community: {} }}
+                deepness={0}
+                seamless
+                sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}
+                actions={getSubSpaceActions(s.id)}
+              />
+            ))}
+          </Gutters>
         </Box>
       </PageContentBlock>
       <SelectDefaultInnovationFlowDialog
@@ -179,14 +206,14 @@ export const ChallengeListView: FC = () => {
       />
       <JourneyCreationDialog
         open={journeyCreationDialogOpen}
-        icon={<ChallengeIcon />}
+        icon={<SubspaceIcon />}
         journeyName={t('common.subspace')}
         onClose={() => setJourneyCreationDialogOpen(false)}
         onCreate={handleCreate}
-        formComponent={CreateChallengeForm}
+        formComponent={CreateSubspaceForm}
       />
     </>
   );
 };
 
-export default ChallengeListView;
+export default SubspaceListView;

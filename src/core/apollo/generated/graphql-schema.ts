@@ -23278,11 +23278,11 @@ export type SpaceAccountQuery = {
   };
 };
 
-export type AdminSpaceChallengesPageQueryVariables = Exact<{
+export type AdminSpaceSubspacesPageQueryVariables = Exact<{
   spaceId: Scalars['UUID_NAMEID'];
 }>;
 
-export type AdminSpaceChallengesPageQuery = {
+export type AdminSpaceSubspacesPageQuery = {
   __typename?: 'Query';
   space: {
     __typename?: 'Space';
@@ -23290,7 +23290,13 @@ export type AdminSpaceChallengesPageQuery = {
     subspaces: Array<{
       __typename?: 'Space';
       id: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
+        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      };
     }>;
     defaults?:
       | {

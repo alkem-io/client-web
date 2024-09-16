@@ -357,13 +357,14 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
         <BlockTitle>{t('pages.admin.generic.sections.account.hostedSpaces')}</BlockTitle>
         <Gutters disablePadding disableGap className={styles.gutters}>
           {loading && <JourneyCardHorizontalSkeleton />}
-          <Gutters>
+          <Gutters disablePadding>
             {!loading &&
               account?.spaces.map(space => (
                 <JourneyCardHorizontal
                   key={space.id}
                   journeyTypeName="space"
                   journey={{ profile: space.profile, community: {} }}
+                  size="medium"
                   deepness={0}
                   seamless
                   sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}

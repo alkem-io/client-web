@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
-  refetchAdminSpaceChallengesPageQuery,
+  refetchAdminSpaceSubspacesPageQuery,
   refetchSubspaceProfileInfoQuery,
   useCreateSubspaceMutation,
   useSubspaceProfileInfoQuery,
@@ -41,7 +41,7 @@ const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
       onSuccess('Successfully created');
       navigate(buildSettingsUrl(data.createSubspace.profile.url), { replace: true });
     },
-    refetchQueries: [refetchAdminSpaceChallengesPageQuery({ spaceId: spaceNameId })],
+    refetchQueries: [refetchAdminSpaceSubspacesPageQuery({ spaceId: spaceNameId })],
     awaitRefetchQueries: true,
   });
 

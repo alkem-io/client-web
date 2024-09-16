@@ -3,7 +3,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import scrollToTop from '../../../../../core/ui/utils/scrollToTop';
 import {
-  refetchAdminSpaceChallengesPageQuery,
+  refetchAdminSpaceSubspacesPageQuery,
   useDeleteSpaceMutation,
   useSpaceHostQuery,
   useSpacePrivilegesQuery,
@@ -75,7 +75,7 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
 
   const [deleteSpace, { loading: deletingSpace }] = useDeleteSpaceMutation({
     refetchQueries: [
-      refetchAdminSpaceChallengesPageQuery({
+      refetchAdminSpaceSubspacesPageQuery({
         spaceId: spaceNameId,
       }),
     ],
