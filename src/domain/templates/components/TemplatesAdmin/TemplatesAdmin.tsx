@@ -1,5 +1,4 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
-import TemplatesGalleryContainer from '../TemplatesGallery/TemplatesGalleryContainer';
 import TemplatesGallery from '../TemplatesGallery/TemplatesGallery';
 import {
   useAllTemplatesInTemplatesSetQuery,
@@ -27,6 +26,7 @@ import { LibraryIcon } from '../../LibraryIcon';
 import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LoadingButton } from '@mui/lab';
+import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
 
 interface TemplatesAdminProps {
   templatesSetId: string;
@@ -202,77 +202,79 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
     [canCreateTemplates, canImportTemplates, setCreatingTemplateType, setImportTemplateType]
   );
 
+  const [, buildLink] = useBackToParentPage(baseUrl);
+  const buildTemplateLink = (template: AnyTemplate) => {
+    if (template.profile.url) {
+      if (alwaysEditTemplate && baseUrl && !template.profile.url.startsWith(baseUrl)) {
+        const templateId = template.profile.url.split('/').pop();
+        return buildLink(`${baseUrl}/${templateId}`);
+      } else {
+        return buildLink(template.profile.url);
+      }
+    }
+  };
+
   return (
     <>
       <PageContentBlockSeamless disablePadding>
-        <TemplatesGalleryContainer templates={calloutTemplates} loading={loading} baseUrl={baseUrl}>
-          {provided => (
-            <TemplatesGallery
-              headerText={t('common.entitiesWithCount', {
-                entityType: t(`common.enums.templateType.${TemplateType.Callout}_plural`),
-                count: provided.templatesCount,
-              })}
-              actions={<GalleryActions templateType={TemplateType.Callout} />}
-              {...provided}
-            />
-          )}
-        </TemplatesGalleryContainer>
+        <TemplatesGallery
+          headerText={t('common.entitiesWithCount', {
+            entityType: t(`common.enums.templateType.${TemplateType.Callout}_plural`),
+            count: calloutTemplates?.length ?? 0,
+          })}
+          actions={<GalleryActions templateType={TemplateType.Callout} />}
+          templates={calloutTemplates}
+          loading={loading}
+          buildTemplateLink={buildTemplateLink}
+        />
       </PageContentBlockSeamless>
       <PageContentBlockSeamless disablePadding>
-        <TemplatesGalleryContainer templates={communityGuidelinesTemplates} loading={loading} baseUrl={baseUrl}>
-          {provided => (
-            <TemplatesGallery
-              headerText={t('common.entitiesWithCount', {
-                entityType: t(`common.enums.templateType.${TemplateType.CommunityGuidelines}_plural`),
-                count: provided.templatesCount,
-              })}
-              actions={<GalleryActions templateType={TemplateType.CommunityGuidelines} />}
-              {...provided}
-            />
-          )}
-        </TemplatesGalleryContainer>
+        <TemplatesGallery
+          headerText={t('common.entitiesWithCount', {
+            entityType: t(`common.enums.templateType.${TemplateType.CommunityGuidelines}_plural`),
+            count: communityGuidelinesTemplates?.length ?? 0,
+          })}
+          actions={<GalleryActions templateType={TemplateType.CommunityGuidelines} />}
+          templates={communityGuidelinesTemplates}
+          loading={loading}
+          buildTemplateLink={buildTemplateLink}
+        />
       </PageContentBlockSeamless>
       <PageContentBlockSeamless disablePadding>
-        <TemplatesGalleryContainer templates={innovationFlowTemplates} loading={loading} baseUrl={baseUrl}>
-          {provided => (
-            <TemplatesGallery
-              headerText={t('common.entitiesWithCount', {
-                entityType: t(`common.enums.templateType.${TemplateType.InnovationFlow}_plural`),
-                count: provided.templatesCount,
-              })}
-              actions={<GalleryActions templateType={TemplateType.InnovationFlow} />}
-              {...provided}
-            />
-          )}
-        </TemplatesGalleryContainer>
+        <TemplatesGallery
+          headerText={t('common.entitiesWithCount', {
+            entityType: t(`common.enums.templateType.${TemplateType.InnovationFlow}_plural`),
+            count: innovationFlowTemplates?.length ?? 0,
+          })}
+          actions={<GalleryActions templateType={TemplateType.InnovationFlow} />}
+          templates={innovationFlowTemplates}
+          loading={loading}
+          buildTemplateLink={buildTemplateLink}
+        />
       </PageContentBlockSeamless>
       <PageContentBlockSeamless disablePadding>
-        <TemplatesGalleryContainer templates={postTemplates} loading={loading} baseUrl={baseUrl}>
-          {provided => (
-            <TemplatesGallery
-              headerText={t('common.entitiesWithCount', {
-                entityType: t(`common.enums.templateType.${TemplateType.Post}_plural`),
-                count: provided.templatesCount,
-              })}
-              actions={<GalleryActions templateType={TemplateType.Post} />}
-              {...provided}
-            />
-          )}
-        </TemplatesGalleryContainer>
+        <TemplatesGallery
+          headerText={t('common.entitiesWithCount', {
+            entityType: t(`common.enums.templateType.${TemplateType.Post}_plural`),
+            count: postTemplates?.length ?? 0,
+          })}
+          actions={<GalleryActions templateType={TemplateType.Post} />}
+          templates={postTemplates}
+          loading={loading}
+          buildTemplateLink={buildTemplateLink}
+        />
       </PageContentBlockSeamless>
       <PageContentBlockSeamless disablePadding>
-        <TemplatesGalleryContainer templates={whiteboardTemplates} loading={loading} baseUrl={baseUrl}>
-          {provided => (
-            <TemplatesGallery
-              headerText={t('common.entitiesWithCount', {
-                entityType: t(`common.enums.templateType.${TemplateType.Whiteboard}_plural`),
-                count: provided.templatesCount,
-              })}
-              actions={<GalleryActions templateType={TemplateType.Whiteboard} />}
-              {...provided}
-            />
-          )}
-        </TemplatesGalleryContainer>
+        <TemplatesGallery
+          headerText={t('common.entitiesWithCount', {
+            entityType: t(`common.enums.templateType.${TemplateType.Whiteboard}_plural`),
+            count: whiteboardTemplates?.length ?? 0,
+          })}
+          actions={<GalleryActions templateType={TemplateType.Whiteboard} />}
+          templates={whiteboardTemplates}
+          loading={loading}
+          buildTemplateLink={buildTemplateLink}
+        />
       </PageContentBlockSeamless>
       {creatingTemplateType && (
         <CreateTemplateDialog
