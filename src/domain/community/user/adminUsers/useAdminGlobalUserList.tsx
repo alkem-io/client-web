@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ApolloError } from '@apollo/client';
-import { SearchableListItem } from '../../../platform/admin/components/SearchableList';
+import { SearchableTableItem } from '../../../platform/admin/components/SearchableTable';
 import { useDeleteUserMutation, useUserListQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
@@ -13,8 +13,8 @@ interface Provided {
   loading: boolean;
   deleting: boolean;
   error?: ApolloError;
-  userList: SearchableListItem[];
-  onDelete: (item: SearchableListItem) => void;
+  userList: SearchableTableItem[];
+  onDelete: (item: SearchableTableItem) => void;
   fetchMore: (itemsNumber?: number) => Promise<void>;
   hasMore: boolean | undefined;
   pageSize: number;
@@ -63,7 +63,7 @@ const useAdminGlobalUserList = ({
 
   const userList = useMemo(
     () =>
-      (data?.usersPaginated.users ?? []).map<SearchableListItem>(({ id, profile, email }) => ({
+      (data?.usersPaginated.users ?? []).map<SearchableTableItem>(({ id, profile, email }) => ({
         id,
         value: `${profile.displayName} (${email})`,
         url: buildSettingsUrl(profile.url),
@@ -76,7 +76,7 @@ const useAdminGlobalUserList = ({
     onCompleted: () => notify(t('pages.admin.users.notifications.user-removed'), 'success'),
   });
 
-  const onDelete = (item: SearchableListItem) => {
+  const onDelete = (item: SearchableTableItem) => {
     deleteUser({
       variables: {
         input: {

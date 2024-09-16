@@ -27,9 +27,10 @@ import InnovationFlowStates from '../../../../collaboration/InnovationFlow/Innov
 import { Actions } from '../../../../../core/ui/actions/Actions';
 import { Cached, DeleteOutline } from '@mui/icons-material';
 import SelectDefaultInnovationFlowDialog from '../../../../collaboration/InnovationFlow/InnovationFlowDialogs/SelectDefaultInnovationFlow/SelectDefaultInnovationFlowDialog';
-import JourneyCardHorizontal from '../../../common/JourneyCardHorizontal/JourneyCardHorizontal';
 import MenuItemWithIcon from '../../../../../core/ui/menu/MenuItemWithIcon';
 import Gutters from '../../../../../core/ui/grid/Gutters';
+import SearchableList, { SearchableListItem } from '../../../../platform/admin/components/SearchableList';
+import EntityConfirmDeleteDialog from '../SpaceSettings/EntityConfirmDeleteDialog';
 
 export const SubspaceListView: FC = () => {
   const { t } = useTranslation();
@@ -47,6 +48,9 @@ export const SubspaceListView: FC = () => {
   const defaultInnovationFlow = data?.space.defaults?.innovationFlowTemplate;
   const spaceDefaultsID = data?.space.defaults?.id || ''; // How to handle when IDs are not found?
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+  const [itemToRemove, setItemToRemove] = useState<SearchableListItem | undefined>(undefined);
+
   useEffect(() => {
     setSelectedState(defaultInnovationFlow?.states[0].displayName);
   }, [defaultInnovationFlow?.states?.[0]?.displayName]);
@@ -57,14 +61,13 @@ export const SubspaceListView: FC = () => {
       profile: {
         displayName: c.profile.displayName,
         url: buildSettingsUrl(c.profile.url),
-
         avatar: {
           uri: c.profile.cardBanner?.uri ?? '',
         },
       },
     })) || [];
 
-  const [deleteSubspace] = useDeleteSpaceMutation({
+  const [deleteSubspace, { loading: deleteLoading }] = useDeleteSpaceMutation({
     refetchQueries: [
       refetchAdminSpaceSubspacesPageQuery({
         spaceId: spaceNameId,
@@ -141,8 +144,25 @@ export const SubspaceListView: FC = () => {
     setInnovationFlowDialogOpen(false);
   };
 
-  const getSubSpaceActions = (id: string) => (
-    <MenuItemWithIcon key="delete" disabled={false} iconComponent={DeleteOutline} onClick={() => handleDelete({ id })}>
+  const onDeleteClick = (item: SearchableListItem) => {
+    setDeleteDialogOpen(true);
+    setItemToRemove(item);
+  };
+
+  const clearDeleteState = () => {
+    setDeleteDialogOpen(false);
+    setItemToRemove(undefined);
+  };
+
+  const onDeleteConfirmation = () => {
+    if (itemToRemove) {
+      handleDelete(itemToRemove);
+      setDeleteDialogOpen(false);
+    }
+  };
+
+  const getSubSpaceActions = (item: SearchableListItem) => (
+    <MenuItemWithIcon key="delete" disabled={false} iconComponent={DeleteOutline} onClick={() => onDeleteClick(item)}>
       {t('buttons.delete')}
     </MenuItemWithIcon>
   );
@@ -182,18 +202,7 @@ export const SubspaceListView: FC = () => {
             {t('buttons.create')}
           </Button>
           <Gutters disablePadding>
-            {subspaces.map(s => (
-              <JourneyCardHorizontal
-                key={s.id}
-                size="medium"
-                journeyTypeName="subspace"
-                journey={{ profile: s.profile, community: {} }}
-                deepness={0}
-                seamless
-                sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}
-                actions={getSubSpaceActions(s.id)}
-              />
-            ))}
+            <SearchableList data={subspaces} getActions={getSubSpaceActions} />
           </Gutters>
         </Box>
       </PageContentBlock>
@@ -211,6 +220,14 @@ export const SubspaceListView: FC = () => {
         onClose={() => setJourneyCreationDialogOpen(false)}
         onCreate={handleCreate}
         formComponent={CreateSubspaceForm}
+      />
+      <EntityConfirmDeleteDialog
+        entity={t('common.subspace')}
+        open={deleteDialogOpen}
+        onClose={clearDeleteState}
+        onDelete={onDeleteConfirmation}
+        submitting={deleteLoading}
+        description={'components.deleteEntity.confirmDialog.descriptionShort'}
       />
     </>
   );

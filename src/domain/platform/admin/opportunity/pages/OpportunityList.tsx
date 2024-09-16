@@ -4,7 +4,7 @@ import useNavigate from '../../../../../core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import SearchableList, { SearchableListItem } from '../../components/SearchableList';
+import SearchableTable, { SearchableTableItem } from '../../components/SearchableTable';
 import Loading from '../../../../../core/ui/loading/Loading';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
@@ -53,7 +53,7 @@ export const OpportunityList: FC = () => {
     onCompleted: () => notify(t('pages.admin.subsubspace.notifications.subsubspace-removed'), 'success'),
   });
 
-  const handleDelete = (item: SearchableListItem) => {
+  const handleDelete = (item: SearchableTableItem) => {
     deleteOpportunity({
       variables: {
         input: {
@@ -115,7 +115,7 @@ export const OpportunityList: FC = () => {
         >
           {t('buttons.create')}
         </Button>
-        <SearchableList data={opportunityList} onDelete={handleDelete} />
+        <SearchableTable data={opportunityList} onDelete={handleDelete} />
       </Box>
       <JourneyCreationDialog
         open={open}
