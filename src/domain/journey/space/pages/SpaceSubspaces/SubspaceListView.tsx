@@ -56,13 +56,13 @@ export const SubspaceListView: FC = () => {
   }, [defaultInnovationFlow?.states?.[0]?.displayName]);
 
   const subspaces =
-    data?.space?.subspaces?.map(c => ({
-      id: c.id,
+    data?.space?.subspaces?.map(s => ({
+      id: s.id,
       profile: {
-        displayName: c.profile.displayName,
-        url: buildSettingsUrl(c.profile.url),
+        displayName: s.profile.displayName,
+        url: buildSettingsUrl(s.profile.url),
         avatar: {
-          uri: c.profile.cardBanner?.uri ?? '',
+          uri: s.profile.cardBanner?.uri ?? '',
         },
       },
     })) || [];

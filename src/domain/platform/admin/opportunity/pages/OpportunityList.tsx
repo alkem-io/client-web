@@ -4,7 +4,7 @@ import useNavigate from '../../../../../core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import SearchableTable, { SearchableTableItem } from '../../components/SearchableTable';
+import SearchableList, { SearchableListItem } from '../../components/SearchableList';
 import Loading from '../../../../../core/ui/loading/Loading';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
@@ -21,6 +21,10 @@ import {
   useDeleteSpaceMutation,
   useSubspacesInSpaceQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
+import { ContentCopyOutlined, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
+import MenuItemWithIcon from '../../../../../core/ui/menu/MenuItemWithIcon';
+import EntityConfirmDeleteDialog from '../../../../journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
+import Gutters from '../../../../../core/ui/grid/Gutters';
 
 export const OpportunityList: FC = () => {
   const { t } = useTranslation();
@@ -30,20 +34,27 @@ export const OpportunityList: FC = () => {
   const { challengeNameId = '' } = useUrlParams();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState<SearchableListItem | undefined>(undefined);
 
   const { data: subspacesListQuery, loading } = useSubspacesInSpaceQuery({
     variables: { spaceId: subspaceId },
     skip: !subspaceId,
   });
 
-  const opportunityList =
-    subspacesListQuery?.lookup.space?.subspaces?.map(o => ({
-      id: o.id,
-      value: o.profile.displayName,
-      url: buildSettingsUrl(o.profile.url),
+  const subsubspaces =
+    subspacesListQuery?.lookup.space?.subspaces?.map(s => ({
+      id: s.id,
+      profile: {
+        displayName: s.profile.displayName,
+        url: buildSettingsUrl(s.profile.url),
+        avatar: {
+          uri: '',
+        },
+      },
     })) || [];
 
-  const [deleteOpportunity] = useDeleteSpaceMutation({
+  const [deleteOpportunity, { loading: deleteLoading }] = useDeleteSpaceMutation({
     refetchQueries: [
       refetchSubspacesInSpaceQuery({
         spaceId: subspaceId,
@@ -53,7 +64,7 @@ export const OpportunityList: FC = () => {
     onCompleted: () => notify(t('pages.admin.subsubspace.notifications.subsubspace-removed'), 'success'),
   });
 
-  const handleDelete = (item: SearchableTableItem) => {
+  const handleDelete = (item: SearchableListItem) => {
     deleteOpportunity({
       variables: {
         input: {
@@ -102,6 +113,51 @@ export const OpportunityList: FC = () => {
     [navigate, createSubspace, spaceNameId, subspaceId, challengeNameId]
   );
 
+  const onDeleteClick = (item: SearchableListItem) => {
+    setDeleteDialogOpen(true);
+    setSelectedItem(item);
+  };
+
+  const clearDeleteState = () => {
+    setDeleteDialogOpen(false);
+    setSelectedItem(undefined);
+  };
+
+  const onDeleteConfirmation = () => {
+    if (selectedItem) {
+      handleDelete(selectedItem);
+      setDeleteDialogOpen(false);
+    }
+  };
+
+  const onDuplicateClick = (item: SearchableListItem) => {
+    // todo: implement
+    setSelectedItem(item);
+  };
+
+  const onSaveAsTemplateClick = (item: SearchableListItem) => {
+    // todo: implement
+    setSelectedItem(item);
+  };
+
+  const getActions = (item: SearchableListItem) => (
+    <>
+      <MenuItemWithIcon disabled={false} iconComponent={ContentCopyOutlined} onClick={() => onDuplicateClick(item)}>
+        Duplicate Subspace
+      </MenuItemWithIcon>
+      <MenuItemWithIcon
+        disabled={false}
+        iconComponent={DownloadForOfflineOutlined}
+        onClick={() => onSaveAsTemplateClick(item)}
+      >
+        Save As Template
+      </MenuItemWithIcon>
+      <MenuItemWithIcon disabled={false} iconComponent={DeleteOutline} onClick={() => onDeleteClick(item)}>
+        {t('buttons.delete')}
+      </MenuItemWithIcon>
+    </>
+  );
+
   if (loading) return <Loading text={'Loading spaces'} />;
 
   return (
@@ -115,7 +171,9 @@ export const OpportunityList: FC = () => {
         >
           {t('buttons.create')}
         </Button>
-        <SearchableTable data={opportunityList} onDelete={handleDelete} />
+        <Gutters disablePadding>
+          <SearchableList data={subsubspaces} getActions={getActions} journeyTypeName="subsubspace" />
+        </Gutters>
       </Box>
       <JourneyCreationDialog
         open={open}
@@ -124,6 +182,14 @@ export const OpportunityList: FC = () => {
         onClose={() => setOpen(false)}
         onCreate={handleCreate}
         formComponent={CreateOpportunityForm}
+      />
+      <EntityConfirmDeleteDialog
+        entity={t('common.subsubspace')}
+        open={deleteDialogOpen}
+        onClose={clearDeleteState}
+        onDelete={onDeleteConfirmation}
+        submitting={deleteLoading}
+        description={'components.deleteEntity.confirmDialog.descriptionShort'}
       />
     </>
   );
