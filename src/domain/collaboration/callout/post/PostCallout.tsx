@@ -14,6 +14,7 @@ import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../..
 import { TypedCalloutDetails } from '../useCallouts/useCallouts';
 import { buildPostDashboardUrl } from './urlBuilders';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
+import { sortBy } from 'lodash';
 
 interface PostCalloutProps extends BaseCalloutViewProps {
   callout: TypedCalloutDetails;
@@ -47,6 +48,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
     const navigate = useNavigate();
 
     const postNames = useMemo(() => posts?.map(x => x.profile.displayName) ?? [], [posts]);
+    const sortedPosts = useMemo(() => sortBy(posts, 'sortOrder'), [posts]);
 
     const createButton = canCreate && callout.contributionPolicy.state !== CalloutState.Closed && (
       <CreateCalloutItemButton onClick={openCreateDialog} />
@@ -65,7 +67,13 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
     const isMobile = breakpoint === 'xs';
 
     return (
-      <CalloutSettingsContainer callout={callout} expanded={expanded} onExpand={onExpand} {...calloutSettingsProps}>
+      <CalloutSettingsContainer
+        callout={callout}
+        items={{ posts: sortedPosts }}
+        expanded={expanded}
+        onExpand={onExpand}
+        {...calloutSettingsProps}
+      >
         {calloutSettingsProvided => (
           <>
             <CalloutLayout
@@ -78,7 +86,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
               {...calloutSettingsProvided}
             >
               <ScrollableCardsLayout
-                items={loading ? [undefined, undefined] : posts ?? []}
+                items={loading ? [undefined, undefined] : sortedPosts ?? []}
                 createButton={!isMobile && createButton}
                 maxHeight={gutters(22)}
               >

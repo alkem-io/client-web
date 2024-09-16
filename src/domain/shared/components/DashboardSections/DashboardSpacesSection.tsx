@@ -17,7 +17,7 @@ export interface SpaceAttrs extends Identifiable {
   profile: {
     url: string;
     displayName: string;
-    tagline: string;
+    tagline?: string;
     tagset?: {
       id: string;
       tags?: string[];

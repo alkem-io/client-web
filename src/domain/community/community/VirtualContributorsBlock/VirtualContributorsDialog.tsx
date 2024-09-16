@@ -17,7 +17,7 @@ export interface VirtualContributorProps {
   searchVisibility?: SearchVisibility;
   profile: {
     displayName: string;
-    tagline: string;
+    tagline?: string;
     avatar?: {
       uri: string;
     };

@@ -8,7 +8,7 @@ export interface InvitationItem extends Identifiable {
     profile: {
       url: string;
       displayName: string;
-      tagline: string;
+      tagline?: string;
     };
   };
   invitation: {

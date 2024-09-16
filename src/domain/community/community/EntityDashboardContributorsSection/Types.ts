@@ -20,8 +20,8 @@ export interface ContributorViewProps extends Identifiable {
       uri: string;
     };
     location?: {
-      country: string;
-      city: string;
+      city?: string;
+      country?: string;
     };
     tagline?: string;
     tagsets?: {

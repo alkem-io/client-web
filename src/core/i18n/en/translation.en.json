@@ -1065,8 +1065,8 @@
       "inviteExistingUser": "Invite Alkemio users",
       "inviteExternalUser": "Send email invitation",
       "inviteOrganizations": "Invite Organizations",
-      "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Click on the link below to have a look or directly accept the invitation.",
-      "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Click on the link below to have a look or directly accept the invitation.",
+      "defaultInvitationMessage": "Hi, I would like to invite you to {{space}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
+      "defaultVCInvitationMessage": "Hi, I would like to invite your Virtual Contributor {{name}} to {{space}}. Have a look at the Space or click on the button below to directly accept or decline the invitation.",
       "inviteExistingUserDialog": {
         "title": "Invite other Alkemio users to join this Space",
         "subtitle": "You can search for Alkemio users below and attach a personalized message.",
@@ -1416,12 +1416,13 @@
       "visibility": "This Space is currently in <strong>{{visibility}}</strong> mode",
       "readOnly": "If you want to change any of this information, please contact the Alkemio team here."
     },
-    "deleteSpace": {
+    "deleteEntity": {
       "title": "Danger Zone",
       "description": "Click here to delete this {{entity}}. Be careful, this action cannot be undone.",
       "confirmDialog": {
         "title": "Confirm {{entity}} Deletion",
         "description": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible. You can only delete a {{entity}} if there are no underlying Subspaces associated with it. If there are any Subspaces within this page, please delete them first (you can do so from the {{entity}} settings > Subspaces page).",
+        "descriptionShort": "Are you certain you want to delete this {{entity}}? Keep in mind that this action is irreversible.",
         "checkbox": "Please check this box if you are certain about deleting this {{entity}}",
         "confirm": "Yes, delete"
       }
@@ -2116,7 +2117,7 @@
       "fullName": "Explore Spaces",
       "shortName": "$t(common.spaces)",
       "subtitle": "All activity on Alkemio happens inside Spaces and their corresponding Subspaces. Explore both to find topics where you can contribute!",
-      "caption": "Discover a diverse range of Spaces awaiting your exploration. Whether you’re an experienced member or a curious newcomer, there’s something here for everyone. Let’s delve into the details:\n1. Member Spaces: These are the ones you’re already a part of. Dive deeper into this familiar territory to continue your journey.\n2. Public Spaces: Immerse yourself in content directly accessible from these Spaces. From captivating stories to insightful discussions, there’s plenty to explore. You’ll also find Subspaces that are part of the Public Spaces.\n3. All Spaces: This category encompasses both public and private Spaces. While public content is readily available, private Spaces require membership. Join to unlock exclusive content and connect with like-minded enthusiasts. Remember that Subspaces within Private Spaces are accessible only to members of those private groups.",
+      "caption": "Discover a diverse range of Spaces awaiting your exploration. Whether you’re an experienced member or a curious newcomer, there’s something here for everyone. Let’s delve into the details:\n1. Member Spaces: These are spaces where you already hold membership.\n2. Public Spaces: These spaces have visible content, and you can request to join them.\n3. All Spaces: This category includes both public and private spaces. In private spaces, only limited content is visible, but you can still apply for membership.",
       "membershipFilter": {
         "all": "All Spaces",
         "member": "Member Spaces",
@@ -2499,7 +2500,7 @@
     },
     "registration": {
       "header": "Create an account to start using Alkemio",
-      "introduction": "<p>Welcome at Alkemio! Alkemio makes it easy to manage Subspaces and have contributors, from anywhere, working together on solutions. Subspaces take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
+      "introduction": "<p>Welcome to Alkemio! Safe spaces for collaboration, education and professionals.</p><p>Alkemio is designed to benefit society. Please read and accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy> before you continue.</p>",
       "terms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
       "login": "Have an account?",
       "reset-password": "Reset password"
@@ -3008,7 +3009,7 @@
     },
     "trySection": {
       "title": "🎉 Try it out!",
-      "subTitle": "Your Virtual Contributor is being created and added it to your personal Space <tooltip><icon /></tooltip>. This process may take a couple of minutes, after which you can interact with it by typing <b>@{{vcName}}</b> in a comment on any post in your Space.",
+      "subTitle": "Your Virtual Contributor is successfully created and we added it to your Personal Space <tooltip><icon /></tooltip>. You can interact with it by typing <b>@{{vcName}}</b> in a comment on any post in your Space. Give it a try in the preview below!",
       "subTitleInfo": "When you create your first VC, we automatically generate a Space for you. This Space functions like any other Space on Alkemio, and you can customize the settings according to your preferences.",
       "postTitle": "Example post",
       "postDescription": "At Alkemio, we utilize Posts to facilitate collaborative interactions with AI. Unlike private chats, other members within a Space can learn from and contribute to these interactions.\n\nSimilar to mentioning a human contributor, you can use the \"@\" symbol followed by the Virtual Contributor's name.",

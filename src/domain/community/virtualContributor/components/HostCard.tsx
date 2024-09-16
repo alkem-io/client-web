@@ -16,8 +16,8 @@ interface HostProps {
     };
     displayName: string;
     location?: {
-      city: string;
-      country: string;
+      city?: string;
+      country?: string;
     };
   };
 }

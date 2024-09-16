@@ -52,6 +52,8 @@ export interface CalloutLayoutProps {
       whiteboardContent?: string;
     };
     contributions?: {
+      id?: string;
+      sortOrder?: number;
       link?: LinkDetails;
       post?: ContributeTabPostFragment;
       whiteboard?: WhiteboardDetailsFragment;

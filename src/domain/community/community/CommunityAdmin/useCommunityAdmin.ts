@@ -20,9 +20,9 @@ import {
   useAssignCommunityRoleToUserMutation,
   useRemoveCommunityRoleFromUserMutation,
   useAvailableVirtualContributorsLazyQuery,
-  useAddVirtualContributorToCommunityMutation,
   useRemoveVirtualContributorFromCommunityMutation,
   useAvailableVirtualContributorsInLibraryLazyQuery,
+  useAssignCommunityRoleToVirtualContributorMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationCredential,
@@ -427,7 +427,7 @@ const useCommunityAdmin = ({
     return refetchCommunityMembers();
   };
 
-  const [addVirtualContributor] = useAddVirtualContributorToCommunityMutation();
+  const [addVirtualContributor] = useAssignCommunityRoleToVirtualContributorMutation();
   const handleAddVirtualContributor = async (virtualContributorId: string) => {
     if (!communityId) {
       return;

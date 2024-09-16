@@ -1,4 +1,5 @@
 import React, { forwardRef, useMemo } from 'react';
+import { sortBy } from 'lodash';
 import useNavigate from '../../../../core/routing/useNavigate';
 import CalloutLayout, { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
 import ScrollableCardsLayout from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayout';
@@ -59,13 +60,20 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
       () => (!loading && whiteboards.length > 0) || callout.contributionPolicy.state !== CalloutState.Closed,
       [loading, whiteboards.length, callout.contributionPolicy.state]
     );
+    const sortedWhiteboards = useMemo(() => sortBy(whiteboards, 'sortOrder'), [whiteboards]);
 
     const breakpoint = useCurrentBreakpoint();
 
     const isMobile = breakpoint === 'xs';
 
     return (
-      <CalloutSettingsContainer callout={callout} expanded={expanded} onExpand={onExpand} {...calloutSettingsProps}>
+      <CalloutSettingsContainer
+        callout={callout}
+        items={{ whiteboards: sortedWhiteboards }}
+        expanded={expanded}
+        onExpand={onExpand}
+        {...calloutSettingsProps}
+      >
         {calloutSettingsProvided => (
           <CalloutLayout
             contentRef={ref}
@@ -79,7 +87,7 @@ const WhiteboardCollectionCallout = forwardRef<Element, WhiteboardCollectionCall
           >
             {showCards && (
               <ScrollableCardsLayout
-                items={loading ? [undefined, undefined] : whiteboards}
+                items={loading ? [undefined, undefined] : sortedWhiteboards}
                 createButton={!isMobile && createButton}
                 maxHeight={gutters(22)}
               >
