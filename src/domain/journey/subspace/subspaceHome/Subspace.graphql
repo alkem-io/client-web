@@ -32,4 +32,7 @@ fragment SubspacePageSpace on Space {
   collaboration {
     id
   }
+  library {
+    id
+  }
 }

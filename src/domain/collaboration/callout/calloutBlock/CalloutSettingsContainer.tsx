@@ -10,6 +10,7 @@ import {
   CalloutVisibility,
   ContributeTabPostFragment,
   MessageDetailsFragment,
+  TemplateType,
   WhiteboardDetailsFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutSummary } from '../CalloutSummary';
@@ -36,9 +37,6 @@ import {
 import { Reference, Tagset } from '../../../common/profile/Profile';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { WhiteboardFragmentWithCallout } from '../useCallouts/useCallouts';
-import CreateCalloutTemplateDialog from '../../../platform/admin/templates/CalloutTemplates/CreateCalloutTemplateDialog';
-import { CalloutTemplateFormSubmittedValues } from '../../../platform/admin/templates/CalloutTemplates/CalloutTemplateForm';
-import { useCreateCalloutTemplate } from '../../../platform/admin/templates/CalloutTemplates/useCreateCalloutTemplate';
 import { FormatedLink, LinkDetails } from '../links/LinkCollectionCallout';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '../../../shared/utils/useLoadingState';
@@ -46,10 +44,16 @@ import { SimpleContainerProps } from '../../../../core/container/SimpleContainer
 import ExpandContentIcon from '../../../../core/ui/content/ExpandContent/ExpandContentIcon';
 import { ShareDialog } from '../../../shared/components/ShareDialog/ShareDialog';
 import { gutters } from '../../../../core/ui/grid/utils';
-import { PostCardPost } from '../post/PostCard';
-import { WhiteboardCardWhiteboard } from '../whiteboard/WhiteboardCard';
 import SortDialog from './sort/SortDialog';
-import { useUpdateContributionsSortOrderMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  useCalloutContentLazyQuery,
+  useUpdateContributionsSortOrderMutation,
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { WhiteboardCardWhiteboard } from '../whiteboard/WhiteboardCard';
+import { PostCardPost } from '../post/PostCard';
+import { useCreateCalloutTemplate } from '../../../templates/hooks/useCreateCalloutTemplate';
+import { CalloutTemplateFormSubmittedValues } from '../../../templates/components/Forms/CalloutTemplateForm';
+import CreateTemplateDialog from '../../../templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;
@@ -181,7 +185,7 @@ const CalloutSettingsContainer = ({
 
   const { handleCreateCalloutTemplate } = useCreateCalloutTemplate();
   const handleSaveAsTemplate = async (values: CalloutTemplateFormSubmittedValues) => {
-    await handleCreateCalloutTemplate(values, callout, spaceNameId);
+    await handleCreateCalloutTemplate(values, spaceNameId);
     setSaveAsTemplateDialogOpen(false);
   };
   const [editDialogOpened, setEditDialogOpened] = useState(false);
@@ -251,6 +255,8 @@ const CalloutSettingsContainer = ({
     });
   };
 
+  const [fetchCalloutContent] = useCalloutContentLazyQuery();
+
   if (dontShow) {
     return null;
   }
@@ -312,7 +318,7 @@ const CalloutSettingsContainer = ({
             iconComponent={DownloadForOfflineOutlinedIcon}
             onClick={handleSaveAsTemplateDialogOpen}
           >
-            {t('callout.saveAsCallout')}
+            {t('callout.saveAsTemplate')}
           </MenuItemWithIcon>
         )}
         {callout.movable && (
@@ -357,11 +363,22 @@ const CalloutSettingsContainer = ({
       >
         <CalloutSummary callout={callout} />
       </CalloutVisibilityChangeDialog>
-      <CreateCalloutTemplateDialog
-        callout={callout}
+      <CreateTemplateDialog
         open={saveAsTemplateDialogOpen}
         onClose={() => setSaveAsTemplateDialogOpen(false)}
+        templateType={TemplateType.Callout}
         onSubmit={handleSaveAsTemplate}
+        getDefaultValues={async () => {
+          const { data } = await fetchCalloutContent({
+            variables: {
+              calloutId: callout.id,
+            },
+          });
+          return {
+            type: TemplateType.Callout,
+            callout: data?.lookup.callout,
+          };
+        }}
       />
       <Collapse in={positionDialogOpen} timeout="auto" unmountOnExit>
         <Menu

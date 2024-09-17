@@ -36,6 +36,7 @@ export interface PostDashboardViewProps {
   banner?: string;
   displayName?: string;
   description?: string;
+  // TODO: Posts don't have `type` anymore, but don't remove this because CalendarEvents still have type and we use this view to display them
   type?: string;
   messages?: Message[];
   vcInteractions?: MessagesThreadProps['vcInteractions'];

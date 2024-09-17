@@ -14,17 +14,15 @@ import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInpu
 import FormikEffectFactory from '../../../core/ui/forms/FormikEffect';
 import { FormikSwitch } from '../../../core/ui/forms/FormikSwitch';
 import { displayNameValidator } from '../../../core/ui/forms/validator/displayNameValidator';
-import WhiteboardTemplatesChooser from './creationDialog/CalloutTemplate/WhiteboardTemplateChooser';
 import MarkdownValidator from '../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import FormikMarkdownField from '../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { TagsetSegment } from '../../platform/admin/components/Common/TagsetSegment';
 import ReferenceSegment, { referenceSegmentSchema } from '../../platform/admin/components/Common/ReferenceSegment';
 import { Reference } from '../../common/profile/Profile';
 import { ProfileReferenceSegment } from '../../platform/admin/components/Common/ProfileReferenceSegment';
-import PostTemplatesChooser from './creationDialog/CalloutTemplate/PostTemplateChooser';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { gutters } from '../../../core/ui/grid/utils';
-import EmptyWhiteboard from '../../common/whiteboard/EmptyWhiteboard';
+import { EmptyWhiteboardString } from '../../common/whiteboard/EmptyWhiteboard';
 import FormikSelect from '../../../core/ui/forms/FormikSelect';
 import { FormikSelectValue } from '../../../core/ui/forms/FormikAutocomplete';
 import { FormControlLabel } from '@mui/material';
@@ -36,6 +34,8 @@ import CalloutWhiteboardField, {
 import { JourneyTypeName } from '../../journey/JourneyTypeName';
 import { JourneyCalloutGroupNameOptions } from './CalloutsInContext/CalloutsGroup';
 import { DEFAULT_TAGSET } from '../../common/tags/tagset.constants';
+import PostTemplateSelector from '../../templates/components/CalloutForm/PostTemplateSelector';
+import WhiteboardTemplateSelector from '../../templates/components/CalloutForm/WhiteboardTemplateSelector';
 
 type FormValueType = {
   displayName: string;
@@ -126,7 +126,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
       groupName: callout?.groupName ?? CalloutGroupName.Knowledge,
       postDescription: callout.postDescription ?? '',
-      whiteboardContent: callout.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),
+      whiteboardContent: callout.whiteboardContent ?? EmptyWhiteboardString,
       whiteboard: callout?.whiteboard
         ? {
             ...callout.whiteboard,
@@ -136,7 +136,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
             profileData: {
               displayName: t('common.whiteboard'),
             },
-            content: JSON.stringify(EmptyWhiteboard),
+            content: EmptyWhiteboardString,
             previewImages: undefined,
           },
     }),
@@ -239,8 +239,8 @@ const CalloutForm: FC<CalloutFormProps> = ({
             {!editMode && formConfiguration.linkCollectionAdd && (
               <Caption>{t('callout.link-collection.save-to-add')}</Caption>
             )}
-            {formConfiguration.postTemplate && <PostTemplatesChooser name="postDescription" />}
-            {formConfiguration.whiteboardTemplate && <WhiteboardTemplatesChooser name="whiteboardContent" />}
+            {formConfiguration.postTemplate && <PostTemplateSelector name="postDescription" />}
+            {formConfiguration.whiteboardTemplate && <WhiteboardTemplateSelector name="whiteboardContent" />}
             {formConfiguration.newResponses && <FormikSwitch name="opened" title={t('callout.state-permission')} />}
             {formConfiguration.locationChange && journeyTypeName === 'space' && (
               <FormControlLabel

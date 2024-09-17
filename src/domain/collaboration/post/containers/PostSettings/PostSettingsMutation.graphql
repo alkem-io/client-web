@@ -1,7 +1,6 @@
 mutation updatePost($input: UpdatePostInput!) {
   updatePost(postData: $input) {
     id
-    type
     profile {
       id
       displayName
