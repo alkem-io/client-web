@@ -1,32 +1,68 @@
-query InnovationLibrary {
+query InnovationLibrary($filterTemplateType: [TemplateType!]) {
   platform {
     id
     library {
       id
+      templates(filter: { types: $filterTemplateType }) {
+        template {
+          ...TemplateProfileInfo
+          callout {
+            id
+            type
+          }
+          innovationFlow {
+            id
+            states {
+              displayName
+            }
+          }
+        }
+        innovationPack {
+          id
+          profile {
+            id
+            displayName
+            url
+          }
+          provider {
+            id
+            profile {
+              id
+              displayName
+              avatar: visual(type: AVATAR) {
+                id
+                uri
+              }
+              url
+            }
+          }
+        }
+      }
       innovationPacks {
-        ...InnovationPackData
+        id
+        nameID
+        profile {
+          id
+          displayName
+          description
+          tagset {
+            ...TagsetDetails
+          }
+          url
+        }
+        templatesSet {
+          id
+          calloutTemplatesCount
+          communityGuidelinesTemplatesCount
+          innovationFlowTemplatesCount
+          postTemplatesCount
+          whiteboardTemplatesCount
+        }
+        provider {
+          ...InnovationPackProviderProfileWithAvatar
+        }
       }
     }
-  }
-}
-
-fragment InnovationPackData on InnovationPack {
-  id
-  nameID
-  profile {
-    id
-    displayName
-    description
-    tagset {
-      ...TagsetDetails
-    }
-    url
-  }
-  templates {
-    ...LibraryTemplates
-  }
-  provider {
-    ...InnovationPackProviderProfileWithAvatar
   }
 }
 
@@ -45,8 +81,7 @@ fragment LibraryTemplates on TemplatesSet {
         ...TagsetDetails
       }
     }
-    type
-    defaultDescription
+    postDefaultDescription
   }
   postTemplatesCount
   whiteboardTemplates {
@@ -77,9 +112,12 @@ fragment LibraryTemplates on TemplatesSet {
         ...TagsetDetails
       }
     }
-    states {
-      displayName
-      description
+    innovationFlow {
+      id
+      states {
+        displayName
+        description
+      }
     }
   }
   innovationFlowTemplatesCount
@@ -89,28 +127,30 @@ fragment LibraryTemplates on TemplatesSet {
     profile {
       ...TemplateCardProfileInfo
     }
-    framing {
-      id
-      profile {
+    callout {
+      framing {
         id
-        displayName
-        description
-        tagset {
-          ...TagsetDetails
-        }
-        tagsets {
-          ...TagsetDetails
-        }
-        storageBucket {
+        profile {
           id
+          displayName
+          description
+          tagset {
+            ...TagsetDetails
+          }
+          tagsets {
+            ...TagsetDetails
+          }
+          storageBucket {
+            id
+          }
+          references {
+            ...ReferenceDetails
+          }
         }
-        references {
-          ...ReferenceDetails
+        whiteboard {
+          ...WhiteboardDetails
+          ...WhiteboardContent
         }
-      }
-      whiteboard {
-        ...WhiteboardDetails
-        ...WhiteboardContent
       }
     }
   }
@@ -125,7 +165,7 @@ fragment LibraryTemplates on TemplatesSet {
         ...TagsetDetails
       }
     }
-    guidelines {
+    communityGuidelines {
       id
       profile {
         displayName

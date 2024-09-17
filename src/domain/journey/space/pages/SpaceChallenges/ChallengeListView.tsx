@@ -46,8 +46,8 @@ export const ChallengeListView: FC = () => {
   const spaceDefaultsID = data?.space.defaults?.id || ''; // How to handle when IDs are not found?
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   useEffect(() => {
-    setSelectedState(defaultInnovationFlow?.states[0].displayName);
-  }, [defaultInnovationFlow?.states?.[0]?.displayName]);
+    setSelectedState(defaultInnovationFlow?.innovationFlow?.states?.[0].displayName);
+  }, [defaultInnovationFlow?.innovationFlow?.states?.[0]?.displayName]);
 
   const challengeList =
     data?.space?.subspaces?.map(c => ({
@@ -145,7 +145,7 @@ export const ChallengeListView: FC = () => {
           <BlockSectionTitle>{defaultInnovationFlow?.profile.displayName}</BlockSectionTitle>
           <InnovationFlowProfileView innovationFlow={defaultInnovationFlow} />
           <InnovationFlowStates
-            states={defaultInnovationFlow?.states}
+            states={defaultInnovationFlow?.innovationFlow?.states}
             selectedState={selectedState}
             onSelectState={state => setSelectedState(state.displayName)}
           />

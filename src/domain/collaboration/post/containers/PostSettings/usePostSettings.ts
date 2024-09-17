@@ -18,9 +18,9 @@ import removeFromCache from '../../../../../core/apollo/utils/removeFromCache';
 import { compact } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-type PostUpdateData = Pick<Post, 'id' | 'type'> & {
+type PostUpdateData = Pick<Post, 'id'> & {
   displayName: Profile['displayName'];
-  description: string;
+  description: Profile['description'];
   tags: string[];
   references?: Reference[];
 };
@@ -104,7 +104,6 @@ const usePostSettings = ({
                 },
               ],
             },
-            type: newPost.type,
           },
         },
       });

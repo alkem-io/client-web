@@ -159,7 +159,7 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
         variables: {
           input: {
             ID: whiteboardId,
-            profileData: {
+            profile: {
               displayName,
             },
           },

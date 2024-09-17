@@ -11,7 +11,7 @@ import { defaultUser, UserFormGenerated, UserModel } from '../models/User';
 import ProfileReferenceSegment from '../../../platform/admin/components/Common/ProfileReferenceSegment';
 import { referenceSegmentValidationObject } from '../../../platform/admin/components/Common/ReferenceSegment';
 import SocialSegment from '../../../platform/admin/components/Common/SocialSegment';
-import { TagsetSegment, tagsetSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
 import VisualUpload from '../../../../core/ui/upload/VisualUpload/VisualUpload';
 import { FormikInputField } from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
@@ -124,7 +124,7 @@ export const UserForm: FC<UserProps> = ({
     linkedin: yup.string().url('Linkedin url must be a valid URL'),
     twitter: yup.string().url('Twitter url must be a valid URL'),
     github: yup.string().url('github url must be a valid URL'),
-    tagsets: tagsetSegmentSchema,
+    tagsets: tagsetsSegmentSchema,
     references: referenceSegmentWithSocialSchema,
     bio: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     tagline: yup.string().max(ALT_TEXT_LENGTH),
@@ -271,7 +271,7 @@ export const UserForm: FC<UserProps> = ({
                     disabled={isSubmitting}
                     maxLength={MARKDOWN_TEXT_LENGTH}
                   />
-                  <TagsetSegment tagsets={tagsets} template={[]} readOnly={isReadOnlyMode} disabled={isSubmitting} />
+                  <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} disabled={isSubmitting} />
 
                   <SocialSegment isNew={editMode === EditMode.new} readOnly={isReadOnlyMode} disabled={isSubmitting} />
 

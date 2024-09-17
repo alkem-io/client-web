@@ -11,5 +11,6 @@ const EmptyWhiteboard: ImportedDataState = {
   },
   files: {},
 };
+export const EmptyWhiteboardString = JSON.stringify(EmptyWhiteboard);
 
 export default EmptyWhiteboard;

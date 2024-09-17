@@ -1,19 +1,19 @@
-query SpaceInnovationFlowTemplates($spaceId: UUID!) {
+query SpaceInnovationFlowTemplates($templatesSetId: UUID!) {
   lookup {
-    space(ID: $spaceId) {
+    templatesSet(ID: $templatesSetId) {
       id
-      library {
+      innovationFlowTemplates {
         id
-        innovationFlowTemplates {
+        innovationFlow {
           id
           states {
             displayName
             description
           }
-          profile {
-            id
-            displayName
-          }
+        }
+        profile {
+          id
+          displayName
         }
       }
     }
