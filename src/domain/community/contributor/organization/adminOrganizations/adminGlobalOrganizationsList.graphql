@@ -2,6 +2,12 @@ query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: Organiza
   organizationsPaginated(first: $first, after: $after, filter: $filter) {
     organization {
       id
+      account {
+        id
+        subscriptions {
+          name
+        }
+      }
       profile {
         id
         url
@@ -13,9 +19,6 @@ query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: Organiza
           id
           state
         }
-      }
-      subscriptions {
-        name
       }
     }
     pageInfo {
@@ -32,15 +35,6 @@ query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: Organiza
         type
         licenseCredential
       }
-    }
-  }
-}
-
-query AccountOnOrganization($organizationId: UUID_NAMEID!) {
-  organization(ID: $organizationId) {
-    id
-    account {
-      id
     }
   }
 }

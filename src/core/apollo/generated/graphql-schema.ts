@@ -54,6 +54,8 @@ export type Account = {
   spaces: Array<Space>;
   /** The StorageAggregator in use by this Account */
   storageAggregator: StorageAggregator;
+  /** The subscriptions active for this Account. */
+  subscriptions: Array<AccountSubscription>;
   /** A type of entity that this Account is being used with. */
   type?: Maybe<AccountType>;
   /** The date at which the entity was last updated. */
@@ -65,6 +67,14 @@ export type Account = {
 export type AccountAuthorizationResetInput = {
   /** The identifier of the Account whose Authorization Policy should be reset. */
   accountID: Scalars['UUID_NAMEID'];
+};
+
+export type AccountSubscription = {
+  __typename?: 'AccountSubscription';
+  /** The expiry date of this subscription, null if it does never expire. */
+  expires?: Maybe<Scalars['DateTime']>;
+  /** The name of the Subscription. */
+  name: LicenseCredential;
 };
 
 export enum AccountType {
@@ -2357,6 +2367,8 @@ export type Document = {
   size: Scalars['Float'];
   /** The tagset in use on this Document. */
   tagset: Tagset;
+  /** Whether this Document is in its end location or not. */
+  temporaryLocation: Scalars['Boolean'];
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** The uploaded date of this Document */
@@ -4175,8 +4187,6 @@ export type Organization = Contributor &
     profile: Profile;
     /** The StorageAggregator for managing storage buckets in use by this Organization */
     storageAggregator?: Maybe<StorageAggregator>;
-    /** The subscriptions active for this Organization. */
-    subscriptions: Array<OrganizationSubscription>;
     /** The date at which the entity was last updated. */
     updatedDate?: Maybe<Scalars['DateTime']>;
     verification: OrganizationVerification;
@@ -4210,14 +4220,6 @@ export enum OrganizationRole {
   Associate = 'ASSOCIATE',
   Owner = 'OWNER',
 }
-
-export type OrganizationSubscription = {
-  __typename?: 'OrganizationSubscription';
-  /** The expiry date of this subscription, null if it does never expire. */
-  expires?: Maybe<Scalars['DateTime']>;
-  /** The name of the Subscription. */
-  name: LicenseCredential;
-};
 
 export type OrganizationVerification = {
   __typename?: 'OrganizationVerification';
@@ -5586,6 +5588,8 @@ export type StorageBucketParent = {
 
 export type StorageBucketUploadFileInput = {
   storageBucketId: Scalars['String'];
+  /** Is this a temporary Document that will be moved later to another StorageBucket. */
+  temporaryLocation?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type StorageBucketUploadFileOnLinkInput = {
@@ -17764,13 +17768,19 @@ export type AdminGlobalOrganizationsListQuery = {
     organization: Array<{
       __typename?: 'Organization';
       id: string;
+      account?:
+        | {
+            __typename?: 'Account';
+            id: string;
+            subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
+          }
+        | undefined;
       profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
       verification: {
         __typename?: 'OrganizationVerification';
         id: string;
         lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
       };
-      subscriptions: Array<{ __typename?: 'OrganizationSubscription'; name: LicenseCredential }>;
     }>;
     pageInfo: {
       __typename?: 'PageInfo';

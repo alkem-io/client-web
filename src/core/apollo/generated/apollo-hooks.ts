@@ -12366,6 +12366,12 @@ export const AdminGlobalOrganizationsListDocument = gql`
     organizationsPaginated(first: $first, after: $after, filter: $filter) {
       organization {
         id
+        account {
+          id
+          subscriptions {
+            name
+          }
+        }
         profile {
           id
           url
@@ -12377,9 +12383,6 @@ export const AdminGlobalOrganizationsListDocument = gql`
             id
             state
           }
-        }
-        subscriptions {
-          name
         }
       }
       pageInfo {

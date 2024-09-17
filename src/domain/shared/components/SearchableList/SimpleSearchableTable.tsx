@@ -40,6 +40,7 @@ export interface SearchableListProps<Item extends SearchableListItem> {
 
 export interface SearchableListItem {
   id: string;
+  accountId?: string;
   value: string;
   url: string;
   verified?: boolean;

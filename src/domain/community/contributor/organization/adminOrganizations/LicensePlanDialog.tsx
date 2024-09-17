@@ -8,7 +8,7 @@ import PlansTable from '../../../../platform/admin/space/AdminSpaceListPage/Plan
 import AssignPlan from '../../../../platform/admin/space/AdminSpaceListPage/AssignPlan';
 
 interface LicensePlanDialogProps {
-  entityId: string;
+  accountId: string;
   activeLicensePlanIds: string[] | undefined;
   licensePlans:
     | {
@@ -16,14 +16,14 @@ interface LicensePlanDialogProps {
         name: string;
       }[]
     | undefined;
-  assignLicensePlan: (entityId: string, planId: string) => Promise<unknown>;
-  revokeLicensePlan: (entityId: string, planId: string) => void;
+  assignLicensePlan: (accountId: string, planId: string) => Promise<unknown>;
+  revokeLicensePlan: (accountId: string, planId: string) => void;
   open: boolean;
   onClose: () => void;
 }
 
 const LicensePlanDialog = ({
-  entityId,
+  accountId,
   activeLicensePlanIds,
   licensePlans,
   assignLicensePlan,
@@ -41,12 +41,12 @@ const LicensePlanDialog = ({
           <PlansTable
             activeLicensePlanIds={activeLicensePlanIds}
             licensePlans={licensePlans}
-            onDelete={plan => revokeLicensePlan(entityId, plan.id)}
+            onDelete={plan => revokeLicensePlan(accountId, plan.id)}
           />
         )}
         {licensePlans && (
           <AssignPlan
-            onAssignPlan={licensePlanId => assignLicensePlan(entityId, licensePlanId)}
+            onAssignPlan={licensePlanId => assignLicensePlan(accountId, licensePlanId)}
             licensePlans={licensePlans}
           />
         )}

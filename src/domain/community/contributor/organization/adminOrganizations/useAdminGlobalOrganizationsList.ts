@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 
 import {
   refetchAdminGlobalOrganizationsListQuery,
-  useAccountOnOrganizationLazyQuery,
   useAdminGlobalOrganizationsListQuery,
   useAdminOrganizationVerifyMutation,
   useAssignLicensePlanToAccountMutation,
@@ -107,29 +106,8 @@ export const useAdminGlobalOrganizationsList = () => {
     }
   };
 
-  const [getAccountOrg] = useAccountOnOrganizationLazyQuery();
-  const getAccountId = async (entityId: string) => {
-    if (!entityId) {
-      return undefined;
-    }
-
-    const accountData = await getAccountOrg({
-      variables: {
-        organizationId: entityId,
-      },
-    });
-
-    return accountData?.data?.organization.account?.id;
-  };
-
   const [assignLicense] = useAssignLicensePlanToAccountMutation();
-  const assignLicensePlan = async (entityId: string, planId: string) => {
-    const accountId = await getAccountId(entityId);
-
-    if (!accountId) {
-      return;
-    }
-
+  const assignLicensePlan = async (accountId: string, planId: string) => {
     await assignLicense({
       variables: {
         accountID: accountId,
@@ -147,13 +125,7 @@ export const useAdminGlobalOrganizationsList = () => {
   };
 
   const [revokeLicense] = useRevokeLicensePlanFromAccountMutation();
-  const revokeLicensePlan = async (entityId: string, planId: string) => {
-    const accountId = await getAccountId(entityId);
-
-    if (!accountId) {
-      return;
-    }
-
+  const revokeLicensePlan = async (accountId: string, planId: string) => {
     await revokeLicense({
       variables: {
         accountID: accountId,
@@ -174,12 +146,13 @@ export const useAdminGlobalOrganizationsList = () => {
     () =>
       data?.organizationsPaginated.organization.map(org => ({
         id: org.id,
+        accountId: org.account?.id,
         value: org.profile.displayName,
         url: buildSettingsUrl(org.profile.url),
         verified: org.verification.lifecycle.state === OrgVerificationLifecycleStates.manuallyVerified,
         activeLicensePlanIds: data?.platform.licensing.plans
           .filter(({ licenseCredential }) =>
-            org.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
+            org.account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
           )
           .map(({ id }) => id),
       })) || [],

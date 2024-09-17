@@ -14,6 +14,7 @@ export type AccountKeySpecifier = (
   | 'innovationPacks'
   | 'spaces'
   | 'storageAggregator'
+  | 'subscriptions'
   | 'type'
   | 'updatedDate'
   | 'virtualContributors'
@@ -29,9 +30,15 @@ export type AccountFieldPolicy = {
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AccountSubscriptionKeySpecifier = ('expires' | 'name' | AccountSubscriptionKeySpecifier)[];
+export type AccountSubscriptionFieldPolicy = {
+  expires?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ActivityCreatedSubscriptionResultKeySpecifier = (
   | 'activity'
@@ -1307,6 +1314,7 @@ export type DocumentKeySpecifier = (
   | 'mimeType'
   | 'size'
   | 'tagset'
+  | 'temporaryLocation'
   | 'updatedDate'
   | 'uploadedDate'
   | 'url'
@@ -1321,6 +1329,7 @@ export type DocumentFieldPolicy = {
   mimeType?: FieldPolicy<any> | FieldReadFunction<any>;
   size?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
+  temporaryLocation?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   url?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2216,7 +2225,6 @@ export type OrganizationKeySpecifier = (
   | 'preferences'
   | 'profile'
   | 'storageAggregator'
-  | 'subscriptions'
   | 'updatedDate'
   | 'verification'
   | 'website'
@@ -2242,15 +2250,9 @@ export type OrganizationFieldPolicy = {
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
-  subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   verification?: FieldPolicy<any> | FieldReadFunction<any>;
   website?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type OrganizationSubscriptionKeySpecifier = ('expires' | 'name' | OrganizationSubscriptionKeySpecifier)[];
-export type OrganizationSubscriptionFieldPolicy = {
-  expires?: FieldPolicy<any> | FieldReadFunction<any>;
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganizationVerificationKeySpecifier = (
   | 'authorization'
@@ -3538,6 +3540,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | AccountKeySpecifier | (() => undefined | AccountKeySpecifier);
     fields?: AccountFieldPolicy;
   };
+  AccountSubscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AccountSubscriptionKeySpecifier | (() => undefined | AccountSubscriptionKeySpecifier);
+    fields?: AccountSubscriptionFieldPolicy;
+  };
   ActivityCreatedSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -4044,10 +4050,6 @@ export type StrictTypedTypePolicies = {
   Organization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OrganizationKeySpecifier | (() => undefined | OrganizationKeySpecifier);
     fields?: OrganizationFieldPolicy;
-  };
-  OrganizationSubscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | OrganizationSubscriptionKeySpecifier | (() => undefined | OrganizationSubscriptionKeySpecifier);
-    fields?: OrganizationSubscriptionFieldPolicy;
   };
   OrganizationVerification?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OrganizationVerificationKeySpecifier | (() => undefined | OrganizationVerificationKeySpecifier);

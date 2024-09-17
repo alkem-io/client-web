@@ -44,6 +44,7 @@ const EmptyOrganization: Omit<Organization, 'authorization' | 'agent'> = {
       machineDef: '',
     },
   },
+  account: undefined,
   profile: {
     id: '',
     displayName: '',
@@ -71,8 +72,6 @@ const EmptyOrganization: Omit<Organization, 'authorization' | 'agent'> = {
     },
   },
   preferences: [],
-  subscriptions: [],
-  account: undefined,
 };
 
 interface Props {

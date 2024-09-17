@@ -117,10 +117,10 @@ const AdminOrganizationsPage: FC = () => {
           confirmButtonText: getActionTranslation(selectedItem),
         }}
       />
-      {selectedItem?.id && (
+      {selectedItem?.accountId && (
         <LicensePlanDialog
           open={licenseDialogOpen}
-          entityId={selectedItem?.id}
+          accountId={selectedItem?.accountId}
           onClose={() => setLicenseDialogOpen(false)}
           licensePlans={licensePlans}
           assignLicensePlan={assignLicense}
