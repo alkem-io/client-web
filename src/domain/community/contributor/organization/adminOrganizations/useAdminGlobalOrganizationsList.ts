@@ -28,7 +28,7 @@ enum OrgVerificationLifecycleEvents {
   RESET = 'RESET',
 }
 
-export interface OrgLicensePlan {
+export interface ContributorLicensePlan {
   id: string;
   name: string;
 }
@@ -159,7 +159,7 @@ export const useAdminGlobalOrganizationsList = () => {
     [data]
   );
 
-  const licensePlans = useMemo<OrgLicensePlan[]>(
+  const licensePlans = useMemo<ContributorLicensePlan[]>(
     () =>
       data?.platform.licensing.plans
         .filter(plan => plan.type === LicensePlanType.AccountPlan)

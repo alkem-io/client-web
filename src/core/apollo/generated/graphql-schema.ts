@@ -17806,19 +17806,6 @@ export type AdminGlobalOrganizationsListQuery = {
   };
 };
 
-export type AccountOnOrganizationQueryVariables = Exact<{
-  organizationId: Scalars['UUID_NAMEID'];
-}>;
-
-export type AccountOnOrganizationQuery = {
-  __typename?: 'Query';
-  organization: {
-    __typename?: 'Organization';
-    id: string;
-    account?: { __typename?: 'Account'; id: string } | undefined;
-  };
-};
-
 export type AdminOrganizationVerifyMutationVariables = Exact<{
   input: OrganizationVerificationEventInput;
 }>;
@@ -18636,9 +18623,31 @@ export type UserListQuery = {
       __typename?: 'User';
       id: string;
       email: string;
+      account?:
+        | {
+            __typename?: 'Account';
+            id: string;
+            subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
+          }
+        | undefined;
       profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
     }>;
     pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
+  };
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    licensing: {
+      __typename?: 'Licensing';
+      id: string;
+      plans: Array<{
+        __typename?: 'LicensePlan';
+        id: string;
+        name: string;
+        type: LicensePlanType;
+        licenseCredential: LicenseCredential;
+      }>;
+    };
   };
 };
 

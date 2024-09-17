@@ -12463,69 +12463,6 @@ export function refetchAdminGlobalOrganizationsListQuery(
   return { query: AdminGlobalOrganizationsListDocument, variables: variables };
 }
 
-export const AccountOnOrganizationDocument = gql`
-  query AccountOnOrganization($organizationId: UUID_NAMEID!) {
-    organization(ID: $organizationId) {
-      id
-      account {
-        id
-      }
-    }
-  }
-`;
-
-/**
- * __useAccountOnOrganizationQuery__
- *
- * To run a query within a React component, call `useAccountOnOrganizationQuery` and pass it any options that fit your needs.
- * When your component renders, `useAccountOnOrganizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAccountOnOrganizationQuery({
- *   variables: {
- *      organizationId: // value for 'organizationId'
- *   },
- * });
- */
-export function useAccountOnOrganizationQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.AccountOnOrganizationQuery,
-    SchemaTypes.AccountOnOrganizationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AccountOnOrganizationQuery, SchemaTypes.AccountOnOrganizationQueryVariables>(
-    AccountOnOrganizationDocument,
-    options
-  );
-}
-
-export function useAccountOnOrganizationLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AccountOnOrganizationQuery,
-    SchemaTypes.AccountOnOrganizationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AccountOnOrganizationQuery, SchemaTypes.AccountOnOrganizationQueryVariables>(
-    AccountOnOrganizationDocument,
-    options
-  );
-}
-
-export type AccountOnOrganizationQueryHookResult = ReturnType<typeof useAccountOnOrganizationQuery>;
-export type AccountOnOrganizationLazyQueryHookResult = ReturnType<typeof useAccountOnOrganizationLazyQuery>;
-export type AccountOnOrganizationQueryResult = Apollo.QueryResult<
-  SchemaTypes.AccountOnOrganizationQuery,
-  SchemaTypes.AccountOnOrganizationQueryVariables
->;
-export function refetchAccountOnOrganizationQuery(variables: SchemaTypes.AccountOnOrganizationQueryVariables) {
-  return { query: AccountOnOrganizationDocument, variables: variables };
-}
-
 export const AdminOrganizationVerifyDocument = gql`
   mutation adminOrganizationVerify($input: OrganizationVerificationEventInput!) {
     eventOnOrganizationVerification(organizationVerificationEventData: $input) {
@@ -13777,6 +13714,12 @@ export const UserListDocument = gql`
     usersPaginated(first: $first, after: $after, filter: $filter) {
       users {
         id
+        account {
+          id
+          subscriptions {
+            name
+          }
+        }
         profile {
           id
           url
@@ -13787,6 +13730,18 @@ export const UserListDocument = gql`
       pageInfo {
         endCursor
         hasNextPage
+      }
+    }
+    platform {
+      id
+      licensing {
+        id
+        plans {
+          id
+          name
+          type
+          licenseCredential
+        }
       }
     }
   }

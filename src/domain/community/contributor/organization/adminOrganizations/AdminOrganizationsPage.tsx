@@ -58,7 +58,7 @@ const AdminOrganizationsPage: FC = () => {
     setLicenseDialogOpen(false);
   };
 
-  const orgActions = (item: SearchableListItem) => {
+  const getActions = (item: SearchableListItem) => {
     return (
       <>
         <IconButton onClick={() => onSettingsClick(item)} size="large" aria-label={'License'}>
@@ -92,7 +92,7 @@ const AdminOrganizationsPage: FC = () => {
   return (
     <AdminLayout currentTab={AdminSection.Organization}>
       <SearchableListLayout newLink={`${url}/new`}>
-        <SimpleSearchableTable data={organizations} {...listProps} itemActions={orgActions} />
+        <SimpleSearchableTable data={organizations} {...listProps} itemActions={getActions} />
       </SearchableListLayout>
       <ConfirmationDialog
         actions={{
