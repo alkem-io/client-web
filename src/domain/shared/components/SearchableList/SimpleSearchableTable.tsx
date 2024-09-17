@@ -8,6 +8,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
+  TableHead,
   TableRow,
 } from '@mui/material';
 import DeleteOutline from '@mui/icons-material/DeleteOutline';
@@ -18,8 +19,9 @@ import useLazyLoading from '../../pagination/useLazyLoading';
 import LoadingListItem from './LoadingListItem';
 import { times } from 'lodash';
 import RouterLink from '../../../../core/ui/link/RouterLink';
-import { BlockTitle } from '../../../../core/ui/typography';
+import { BlockTitle, CardTitle } from '../../../../core/ui/typography';
 import { Actions } from '../../../../core/ui/actions/Actions';
+import PageContent from '../../../../core/ui/content/PageContent';
 
 export interface SearchableListProps<Item extends SearchableListItem> {
   data: Item[] | undefined;
@@ -38,9 +40,11 @@ export interface SearchableListProps<Item extends SearchableListItem> {
 
 export interface SearchableListItem {
   id: string;
+  accountId?: string;
   value: string;
   url: string;
   verified?: boolean;
+  activeLicensePlanIds?: string[];
 }
 
 const SimpleSearchableList = <Item extends SearchableListItem>({
@@ -105,7 +109,7 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
   const renderItemActions = typeof itemActions === 'function' ? itemActions : () => itemActions;
 
   return (
-    <TableContainer component={Paper}>
+    <PageContent>
       <FormControl fullWidth size="small">
         <OutlinedInput
           value={searchTerm}
@@ -117,40 +121,62 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
       {typeof totalCount === 'undefined' ? null : (
         <InputLabel> {t('components.searchableList.info', { count: data.length, total: totalCount })}</InputLabel>
       )}
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
-        <TableBody>
-          {loading && !data
-            ? times(firstPageSize, i => <LoadingListItem key={`__loading_${i}`} />)
-            : data.map((item, index) => (
-                <TableRow
-                  key={item.id}
-                  sx={{
-                    backgroundColor: index % 2 === 0 ? 'inherit' : 'action.hover',
-                    '&:last-child td, &:last-child th': { border: 0 },
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <TableCell component="th" scope="row" sx={{ paddingY: 0 }}>
-                    <BlockTitle component={RouterLink} to={item.url}>
-                      {item.value}
-                    </BlockTitle>
-                  </TableCell>
-                  <TableCell component="th" scope="row" sx={{ paddingY: 0 }}>
-                    <Actions>
-                      {renderItemActions(item)}
-                      {onDelete && (
-                        <IconButton onClick={e => openModal(e, item)} size="large" aria-label={t('buttons.delete')}>
-                          <DeleteOutline color="error" />
-                        </IconButton>
-                      )}
-                    </Actions>
-                  </TableCell>
-                </TableRow>
-              ))}
-        </TableBody>
-      </Table>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow
+              sx={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'flex-end',
+                background: theme => theme.palette.primary.main,
+              }}
+            >
+              <TableCell component="th" scope="row">
+                <CardTitle color="primary.contrastText">Name</CardTitle>
+              </TableCell>
+              <TableCell component="th" scope="row" sx={{ flex: 1 }}>
+                &nbsp;
+              </TableCell>
+              <TableCell component="th" scope="row">
+                <CardTitle color="primary.contrastText">Actions</CardTitle>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {loading && !data
+              ? times(firstPageSize, i => <LoadingListItem key={`__loading_${i}`} />)
+              : data.map((item, index) => (
+                  <TableRow
+                    key={item.id}
+                    sx={{
+                      backgroundColor: index % 2 === 0 ? 'inherit' : 'action.hover',
+                      '&:last-child td, &:last-child th': { border: 0 },
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <TableCell component="th" scope="row" sx={{ paddingY: 0 }}>
+                      <BlockTitle component={RouterLink} to={item.url}>
+                        {item.value}
+                      </BlockTitle>
+                    </TableCell>
+                    <TableCell component="th" scope="row" sx={{ paddingY: 0 }}>
+                      <Actions>
+                        {renderItemActions(item)}
+                        {onDelete && (
+                          <IconButton onClick={e => openModal(e, item)} size="large" aria-label={t('buttons.delete')}>
+                            <DeleteOutline color="error" />
+                          </IconButton>
+                        )}
+                      </Actions>
+                    </TableCell>
+                  </TableRow>
+                ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
       {loader}
       <RemoveModal
         show={isModalOpened}
@@ -158,7 +184,7 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
         onConfirm={handleRemoveItem}
         text={`Are you sure you want to remove: ${itemToRemove?.value}`}
       />
-    </TableContainer>
+    </PageContent>
   );
 };
 

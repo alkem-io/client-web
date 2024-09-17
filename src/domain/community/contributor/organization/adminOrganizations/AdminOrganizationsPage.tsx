@@ -11,14 +11,16 @@ import SimpleSearchableTable, {
 import { IconButton } from '@mui/material';
 import { TuneOutlined, VerifiedUserOutlined } from '@mui/icons-material';
 import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
+import LicensePlanDialog from './LicensePlanDialog';
 
 const AdminOrganizationsPage: FC = () => {
   const { t } = useTranslation();
-  const { organizations, ...listProps } = useAdminGlobalOrganizationsList();
+  const { organizations, licensePlans, ...listProps } = useAdminGlobalOrganizationsList();
 
   const { pathname: url } = useResolvedPath('.');
 
   const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const [licenseDialogOpen, setLicenseDialogOpen] = useState(false);
   const [verificationLoading, setVerificationLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState<SearchableListItem | undefined>(undefined);
 
@@ -43,13 +45,23 @@ const AdminOrganizationsPage: FC = () => {
 
   const onSettingsClick = (item: SearchableListItem) => {
     setSelectedItem(item);
-    // todo: implement assign license
+    setLicenseDialogOpen(true);
   };
 
-  const orgActions = (item: SearchableListItem) => {
+  const assignLicense = async (entityId: string, planId: string) => {
+    await listProps.assignLicensePlan(entityId, planId);
+    setLicenseDialogOpen(false);
+  };
+
+  const revokeLicense = async (entityId: string, planId: string) => {
+    await listProps.revokeLicensePlan(entityId, planId);
+    setLicenseDialogOpen(false);
+  };
+
+  const getActions = (item: SearchableListItem) => {
     return (
       <>
-        <IconButton onClick={() => onSettingsClick(item)} size="large" disabled aria-label={'License'}>
+        <IconButton onClick={() => onSettingsClick(item)} size="large" aria-label={'License'}>
           <TuneOutlined />
         </IconButton>
         <IconButton onClick={() => onVerificationClick(item)} size="large" aria-label={'Verify'}>
@@ -80,7 +92,7 @@ const AdminOrganizationsPage: FC = () => {
   return (
     <AdminLayout currentTab={AdminSection.Organization}>
       <SearchableListLayout newLink={`${url}/new`}>
-        <SimpleSearchableTable data={organizations} {...listProps} itemActions={orgActions} />
+        <SimpleSearchableTable data={organizations} {...listProps} itemActions={getActions} />
       </SearchableListLayout>
       <ConfirmationDialog
         actions={{
@@ -105,6 +117,17 @@ const AdminOrganizationsPage: FC = () => {
           confirmButtonText: getActionTranslation(selectedItem),
         }}
       />
+      {selectedItem?.accountId && (
+        <LicensePlanDialog
+          open={licenseDialogOpen}
+          accountId={selectedItem?.accountId}
+          onClose={() => setLicenseDialogOpen(false)}
+          licensePlans={licensePlans}
+          assignLicensePlan={assignLicense}
+          revokeLicensePlan={revokeLicense}
+          activeLicensePlanIds={selectedItem.activeLicensePlanIds}
+        />
+      )}
     </AdminLayout>
   );
 };

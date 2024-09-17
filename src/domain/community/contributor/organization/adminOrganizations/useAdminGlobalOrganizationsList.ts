@@ -1,9 +1,12 @@
 import { useMemo, useState } from 'react';
 
 import {
+  refetchAdminGlobalOrganizationsListQuery,
   useAdminGlobalOrganizationsListQuery,
   useAdminOrganizationVerifyMutation,
+  useAssignLicensePlanToAccountMutation,
   useDeleteOrganizationMutation,
+  useRevokeLicensePlanFromAccountMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import usePaginatedQuery from '../../../../shared/pagination/usePaginatedQuery';
@@ -11,6 +14,7 @@ import { SearchableListItem } from '../../../../shared/components/SearchableList
 import clearCacheForQuery from '../../../../../core/apollo/utils/clearCacheForQuery';
 import { useTranslation } from 'react-i18next';
 import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
+import { LicensePlanType } from '../../../../../core/apollo/generated/graphql-schema';
 
 const PAGE_SIZE = 10;
 
@@ -22,6 +26,11 @@ enum OrgVerificationLifecycleEvents {
   VERIFICATION_REQUEST = 'VERIFICATION_REQUEST',
   MANUALLY_VERIFY = 'MANUALLY_VERIFY',
   RESET = 'RESET',
+}
+
+export interface ContributorLicensePlan {
+  id: string;
+  name: string;
 }
 
 export const useAdminGlobalOrganizationsList = () => {
@@ -97,14 +106,67 @@ export const useAdminGlobalOrganizationsList = () => {
     }
   };
 
+  const [assignLicense] = useAssignLicensePlanToAccountMutation();
+  const assignLicensePlan = async (accountId: string, planId: string) => {
+    await assignLicense({
+      variables: {
+        accountID: accountId,
+        licensePlanId: planId,
+        licensingID: data?.platform.licensing.id ?? '',
+      },
+      refetchQueries: [
+        refetchAdminGlobalOrganizationsListQuery({
+          first: PAGE_SIZE,
+          filter: { displayName: searchTerm },
+        }),
+      ],
+      onCompleted: () => notify(t('pages.admin.generic.sections.account.licenseUpdated'), 'success'),
+    });
+  };
+
+  const [revokeLicense] = useRevokeLicensePlanFromAccountMutation();
+  const revokeLicensePlan = async (accountId: string, planId: string) => {
+    await revokeLicense({
+      variables: {
+        accountID: accountId,
+        licensePlanId: planId,
+        licensingID: data?.platform.licensing.id ?? '',
+      },
+      refetchQueries: [
+        refetchAdminGlobalOrganizationsListQuery({
+          first: PAGE_SIZE,
+          filter: { displayName: searchTerm },
+        }),
+      ],
+      onCompleted: () => notify(t('pages.admin.generic.sections.account.licenseUpdated'), 'success'),
+    });
+  };
+
   const organizations = useMemo<SearchableListItem[]>(
     () =>
       data?.organizationsPaginated.organization.map(org => ({
         id: org.id,
+        accountId: org.account?.id,
         value: org.profile.displayName,
         url: buildSettingsUrl(org.profile.url),
         verified: org.verification.lifecycle.state === OrgVerificationLifecycleStates.manuallyVerified,
+        activeLicensePlanIds: data?.platform.licensing.plans
+          .filter(({ licenseCredential }) =>
+            org.account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
+          )
+          .map(({ id }) => id),
       })) || [],
+    [data]
+  );
+
+  const licensePlans = useMemo<ContributorLicensePlan[]>(
+    () =>
+      data?.platform.licensing.plans
+        .filter(plan => plan.type === LicensePlanType.AccountPlan)
+        .map(licensePlan => ({
+          id: licensePlan.id,
+          name: licensePlan.name,
+        })) || [],
     [data]
   );
 
@@ -114,6 +176,9 @@ export const useAdminGlobalOrganizationsList = () => {
     onSearchTermChange: setSearchTerm,
     onDelete: handleDelete,
     handleVerification: handleVerification,
+    licensePlans,
+    assignLicensePlan,
+    revokeLicensePlan,
     ...paginationProvided,
   };
 };

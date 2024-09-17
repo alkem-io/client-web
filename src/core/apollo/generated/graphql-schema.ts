@@ -54,6 +54,8 @@ export type Account = {
   spaces: Array<Space>;
   /** The StorageAggregator in use by this Account */
   storageAggregator: StorageAggregator;
+  /** The subscriptions active for this Account. */
+  subscriptions: Array<AccountSubscription>;
   /** A type of entity that this Account is being used with. */
   type?: Maybe<AccountType>;
   /** The date at which the entity was last updated. */
@@ -65,6 +67,14 @@ export type Account = {
 export type AccountAuthorizationResetInput = {
   /** The identifier of the Account whose Authorization Policy should be reset. */
   accountID: Scalars['UUID_NAMEID'];
+};
+
+export type AccountSubscription = {
+  __typename?: 'AccountSubscription';
+  /** The expiry date of this subscription, null if it does never expire. */
+  expires?: Maybe<Scalars['DateTime']>;
+  /** The name of the Subscription. */
+  name: LicenseCredential;
 };
 
 export enum AccountType {
@@ -2357,6 +2367,8 @@ export type Document = {
   size: Scalars['Float'];
   /** The tagset in use on this Document. */
   tagset: Tagset;
+  /** Whether this Document is in its end location or not. */
+  temporaryLocation: Scalars['Boolean'];
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** The uploaded date of this Document */
@@ -5576,6 +5588,8 @@ export type StorageBucketParent = {
 
 export type StorageBucketUploadFileInput = {
   storageBucketId: Scalars['String'];
+  /** Is this a temporary Document that will be moved later to another StorageBucket. */
+  temporaryLocation?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type StorageBucketUploadFileOnLinkInput = {
@@ -17719,6 +17733,28 @@ export type RolesOrganizationQuery = {
   };
 };
 
+export type AssignLicensePlanToAccountMutationVariables = Exact<{
+  licensePlanId: Scalars['UUID'];
+  accountID: Scalars['UUID'];
+  licensingID: Scalars['UUID'];
+}>;
+
+export type AssignLicensePlanToAccountMutation = {
+  __typename?: 'Mutation';
+  assignLicensePlanToAccount: { __typename?: 'Account'; id: string };
+};
+
+export type RevokeLicensePlanFromAccountMutationVariables = Exact<{
+  licensePlanId: Scalars['UUID'];
+  accountID: Scalars['UUID'];
+  licensingID: Scalars['UUID'];
+}>;
+
+export type RevokeLicensePlanFromAccountMutation = {
+  __typename?: 'Mutation';
+  revokeLicensePlanFromAccount: { __typename?: 'Account'; id: string };
+};
+
 export type AdminGlobalOrganizationsListQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
@@ -17732,6 +17768,13 @@ export type AdminGlobalOrganizationsListQuery = {
     organization: Array<{
       __typename?: 'Organization';
       id: string;
+      account?:
+        | {
+            __typename?: 'Account';
+            id: string;
+            subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
+          }
+        | undefined;
       profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
       verification: {
         __typename?: 'OrganizationVerification';
@@ -17744,6 +17787,21 @@ export type AdminGlobalOrganizationsListQuery = {
       startCursor?: string | undefined;
       endCursor?: string | undefined;
       hasNextPage: boolean;
+    };
+  };
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    licensing: {
+      __typename?: 'Licensing';
+      id: string;
+      plans: Array<{
+        __typename?: 'LicensePlan';
+        id: string;
+        name: string;
+        type: LicensePlanType;
+        licenseCredential: LicenseCredential;
+      }>;
     };
   };
 };
@@ -18565,9 +18623,31 @@ export type UserListQuery = {
       __typename?: 'User';
       id: string;
       email: string;
+      account?:
+        | {
+            __typename?: 'Account';
+            id: string;
+            subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
+          }
+        | undefined;
       profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
     }>;
     pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
+  };
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    licensing: {
+      __typename?: 'Licensing';
+      id: string;
+      plans: Array<{
+        __typename?: 'LicensePlan';
+        id: string;
+        name: string;
+        type: LicensePlanType;
+        licenseCredential: LicenseCredential;
+      }>;
+    };
   };
 };
 
