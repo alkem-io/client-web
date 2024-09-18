@@ -53,6 +53,9 @@ export interface CalloutCreationUtils {
   canCreateCallout: boolean;
 }
 
+// Only Posts have comments for now.
+const CALLOUTS_WITH_COMMENTS = [CalloutType.Post];
+
 export const useCalloutCreation = ({
   journeyId,
   collabId,
@@ -112,6 +115,7 @@ export const useCalloutCreation = ({
           variables: {
             calloutData: {
               collaborationID: collabId ?? collaborationId ?? '',
+              enableComments: CALLOUTS_WITH_COMMENTS.includes(callout.type),
               ...callout,
             },
           },
