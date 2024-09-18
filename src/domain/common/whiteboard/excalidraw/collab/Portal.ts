@@ -37,7 +37,7 @@ interface ConnectionOptions {
 interface SocketEventHandlers {
   'client-broadcast': (encryptedData: ArrayBuffer) => void;
   'collaborator-mode': (event: CollaboratorModeEvent) => void;
-  'scene-init': (data: SocketUpdateDataSource['SCENE_INIT']['payload']) => void;
+  'scene-init': (payload: SocketUpdateDataSource['SCENE_INIT']['payload']) => void;
   'idle-state': (payload: SocketUpdateDataSource['IDLE_STATUS']['payload']) => void;
 }
 
