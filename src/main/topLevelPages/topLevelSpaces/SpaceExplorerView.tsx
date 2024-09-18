@@ -217,7 +217,7 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
             {visibleSpaces!.map(space => (
               <SpaceSubspaceCard
                 key={space.id}
-                tagline={space.profile.tagline}
+                tagline={space.profile.tagline ?? ''}
                 displayName={space.profile.displayName}
                 vision={space.context?.vision ?? ''}
                 journeyUri={space.profile.url}

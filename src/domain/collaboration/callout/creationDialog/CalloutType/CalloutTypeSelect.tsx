@@ -9,7 +9,6 @@ import { useConfig } from '../../../../platform/config/useConfig';
 import { Button } from '@mui/material';
 
 interface CalloutTypeSelectProps {
-  onOpenCalloutTemplatesLibrary?: () => void;
   onSelect: (value: CalloutType | undefined) => void;
   disabled?: boolean;
   extraButtons?: React.ReactNode;

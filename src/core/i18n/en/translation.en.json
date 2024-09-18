@@ -511,17 +511,19 @@
         "HELP": "Need Help?",
         "OTHER": "Other"
       },
-      "templateTypes": {
-        "WhiteboardTemplate": "Whiteboard Template",
-        "WhiteboardTemplate_plural": "Whiteboard Templates",
-        "PostTemplate": "Post Template",
-        "PostTemplate_plural": "Post Templates",
-        "InnovationFlowTemplate": "Innovation Flow",
-        "InnovationFlowTemplate_plural": "Innovation Flow Templates",
-        "CalloutTemplate": "Collaboration Tool Template",
-        "CollaborationToolTemplate_plural": "Collaboration Tool Templates",
-        "CommunityGuidelinesTemplate": "Community Guidelines Template",
-        "CommunityGuidelinesTemplate_plural": "Community Guidelines Templates"
+      "templateType": {
+        "CALLOUT": "Collaboration Tool Template",
+        "CALLOUT_plural": "Collaboration Tool Templates",
+        "COLLABORATION": "Collaboration Template",
+        "COLLABORATION_plural": "Collaboration Templates",
+        "COMMUNITY_GUIDELINES": "Community Guidelines Template",
+        "COMMUNITY_GUIDELINES_plural": "Community Guidelines Templates",
+        "INNOVATION_FLOW": "Innovation Flow",
+        "INNOVATION_FLOW_plural": "Innovation Flow Templates",
+        "POST": "Post Template",
+        "POST_plural": "Post Templates",
+        "WHITEBOARD": "Whiteboard Template",
+        "WHITEBOARD_plural": "Whiteboard Templates"
       },
       "calloutType": {
         "LINK_COLLECTION": "Link Collection",
@@ -691,7 +693,7 @@
     "permission-helptext": "Use the switch below to close this callout for new entries.",
     "callout-location": "Location: ",
     "sortContributions": "Sort contributions",
-    "saveAsCallout": "Save as callout",
+    "saveAsTemplate": "Save as Template",
     "alkemio-link": "Click here to read more about Alkemio's collaboration tools",
     "link-collection": {
       "add-link": "Add link to {{title}}",
@@ -1223,7 +1225,6 @@
       },
       "template-step": {
         "title": "Templates",
-        "no-templates": "No templates available",
         "post-template-label": "Default text:",
         "post-template-text": "Add default text to the posts, for example questions that you like people to answer.",
         "post-template-default-description": "Default description",
@@ -1799,12 +1800,13 @@
           },
           "templates": {
             "description": "Here you can create and edit templates for this {{entity}}.",
-            "delete-confirmation": "Are you sure you want to delete {{template}} from the Space? You can also edit the information of this template.",
+            "delete-confirmation": "Are you sure you want to delete the template '{{template}}'?",
             "import": {
+              "defaultTitle": "Templates Library",
               "title": "Template Library: {{templateType}}",
               "subtitle": "Find templates to use in your Space or Subspace. Select the template and click `Import` to add it to your Template set.",
               "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",
-              "no-templates": "No templates found in this Space, find further platform templates below",
+              "noTemplates": "No templates found.",
               "imported-successfully-notification": "Template imported successfully"
             }
           },
@@ -2435,7 +2437,6 @@
       },
       "template": {
         "header": "Templates defined in Alkemio",
-        "no-templates": "There are no templates defined here yet. Be the first to add one.",
         "how-to": "To create a template create a new whiteboard or use an existing one and save it as a template."
       },
       "space": {

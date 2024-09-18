@@ -16,9 +16,12 @@ query AdminSpaceChallengesPage($spaceId: UUID_NAMEID!) {
         profile {
           ...InnovationFlowProfile
         }
-        states {
-          displayName
-          description
+        innovationFlow {
+          id
+          states {
+            displayName
+            description
+          }
         }
       }
     }
