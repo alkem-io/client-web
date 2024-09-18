@@ -1,0 +1,18 @@
+fragment TemplatesSetTemplates on TemplatesSet {
+  calloutTemplates {
+    ...CalloutTemplate
+  }
+  postTemplates {
+    ...PostTemplate
+  }
+  whiteboardTemplates {
+    ...WhiteboardTemplate
+  }
+  innovationFlowTemplates {
+    ...InnovationFlowTemplate
+  }
+  communityGuidelinesTemplates {
+    ...CommunityGuidelinesTemplate
+  }
+}
+

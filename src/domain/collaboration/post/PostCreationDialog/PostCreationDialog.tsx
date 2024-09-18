@@ -45,7 +45,6 @@ const PostCreationDialog: FC<PostCreationDialogProps> = ({
         displayName: post.profileData?.displayName ?? '',
         description: post.profileData?.description ?? '',
       },
-      type: post.type ?? '',
       tags: post.tags,
     });
     handleClose();

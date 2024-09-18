@@ -49,7 +49,6 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
     post && {
       id: post.id,
       nameID: post.nameID,
-      type: post.type,
       profileData: {
         displayName: post.profile.displayName,
         description: post.profile.description!,
@@ -110,7 +109,6 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
       await postSettings.handleUpdate({
         id: postSettings.post.id,
         displayName: post.displayName,
-        type: post.type,
         description: post.description,
         tags: post.tags,
         references: post.references,

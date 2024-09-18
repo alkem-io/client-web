@@ -45,7 +45,7 @@ query AccountInformation($accountId: UUID!) {
         profile {
           ...AccountItemProfile
         }
-        templates {
+        templatesSet {
           id
           calloutTemplatesCount
           communityGuidelinesTemplatesCount

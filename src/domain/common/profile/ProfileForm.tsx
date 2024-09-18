@@ -7,7 +7,7 @@ import ContextReferenceSegment from '../../platform/admin/components/Common/Cont
 import { contextSegmentSchema } from '../../platform/admin/components/Common/ContextSegment';
 import { NameSegment, nameSegmentSchema } from '../../platform/admin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '../../platform/admin/components/Common/ReferenceSegment';
-import { TagsetSegment, tagsetSegmentSchema } from '../../platform/admin/components/Common/TagsetSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '../../platform/admin/components/Common/TagsetSegment';
 import { LocationSegment } from '../location/LocationSegment';
 import { EmptyLocation, Location } from '../location/Location';
 import { formatLocation } from '../location/LocationUtils';
@@ -78,7 +78,7 @@ const ProfileForm: FC<ProfileFormProps> = ({
     nameID: contextOnly ? yup.string() : nameSegmentSchema.fields?.nameID || yup.string(),
     tagline: contextSegmentSchema.fields?.tagline || yup.string(),
     references: referenceSegmentSchema,
-    tagsets: tagsetSegmentSchema,
+    tagsets: tagsetsSegmentSchema,
   });
 
   let isSubmitWired = false;

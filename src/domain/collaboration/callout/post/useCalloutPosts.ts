@@ -5,7 +5,6 @@ import { compact } from 'lodash';
 
 export interface PostContributionProps {
   id: string;
-  type: string; // This will be removed soon
   createdDate: Date;
   profile: {
     id: string;

@@ -335,12 +335,12 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     skip: !bokId,
   });
 
-  const callabId = subspaceProfile?.lookup.space?.collaboration?.id;
+  const collaborationId = subspaceProfile?.lookup.space?.collaboration?.id;
 
   // load the following hook either with bokId (created subspace) or spaceId (created/existing space)
   const { handleCreateCallout, canCreateCallout } = useCalloutCreation({
     journeyId: bokId,
-    collabId: callabId,
+    overrideCollaborationId: collaborationId,
   });
 
   const calloutDetails: CalloutCreationType = {
@@ -373,7 +373,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
               displayName: post.title,
               description: post.description,
             },
-            type: CalloutType.Post,
           },
         },
       },
