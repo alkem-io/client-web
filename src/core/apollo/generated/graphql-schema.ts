@@ -6772,6 +6772,9 @@ export type AccountInformationQuery = {
             __typename?: 'Space';
             id: string;
             level: number;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             profile: {
               __typename?: 'Profile';
               tagline?: string | undefined;
@@ -6782,7 +6785,13 @@ export type AccountInformationQuery = {
               cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
-            community: { __typename?: 'Community'; id: string };
+            community: {
+              __typename?: 'Community';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            };
             subspaces: Array<{
               __typename?: 'Space';
               id: string;
@@ -31207,8 +31216,25 @@ export type NewVirtualContributorMySpacesQuery = {
                 spaces: Array<{
                   __typename?: 'Space';
                   id: string;
-                  community: { __typename?: 'Community'; id: string };
+                  community: {
+                    __typename?: 'Community';
+                    id: string;
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
+                  };
                   profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
                   subspaces: Array<{
                     __typename?: 'Space';
                     id: string;

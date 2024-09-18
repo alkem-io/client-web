@@ -4141,6 +4141,10 @@ export const AccountInformationDocument = gql`
         spaces {
           id
           level
+          authorization {
+            id
+            myPrivileges
+          }
           profile {
             ...AccountItemProfile
             cardBanner: visual(type: CARD) {
@@ -4150,6 +4154,10 @@ export const AccountInformationDocument = gql`
           }
           community {
             id
+            authorization {
+              id
+              myPrivileges
+            }
           }
           subspaces {
             id
@@ -24037,11 +24045,19 @@ export const NewVirtualContributorMySpacesDocument = gql`
             id
             community {
               id
+              authorization {
+                id
+                myPrivileges
+              }
             }
             profile {
               id
               displayName
               url
+            }
+            authorization {
+              id
+              myPrivileges
             }
             subspaces {
               id
