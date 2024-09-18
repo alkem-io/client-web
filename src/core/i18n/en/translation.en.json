@@ -2119,7 +2119,7 @@
       "fullName": "Explore Spaces",
       "shortName": "$t(common.spaces)",
       "subtitle": "All activity on Alkemio happens inside Spaces and their corresponding Subspaces. Explore both to find topics where you can contribute!",
-      "caption": "Discover a diverse range of Spaces awaiting your exploration. Whether you’re an experienced member or a curious newcomer, there’s something here for everyone. Let’s delve into the details:\n1. Member Spaces: These are spaces where you already hold membership.\n2. Public Spaces: These spaces have visible content, and you can request to join them.\n3. All Spaces: This category includes both public and private spaces. In private spaces, only limited content is visible, but you can still apply for membership.",
+      "caption": "Discover a diverse range of Spaces awaiting your exploration. Whether you're an experienced member or a curious newcomer, there's something here for everyone. Let's delve into the details:<ol><li><strong>Member Spaces:</strong> These are spaces where you already hold membership.</li><li><strong>Public Spaces:</strong> These spaces have visible content, and you can request to join them.</li><li><strong>All Spaces:</strong> This category includes both public and private spaces. In private spaces, only limited content is visible, but you can still apply for membership.</li></ol>",
       "membershipFilter": {
         "all": "All Spaces",
         "member": "Member Spaces",
