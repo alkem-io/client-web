@@ -3037,6 +3037,10 @@
       "description": "Which Space or Subspace do you want to bring to life with the Virtual Contributor? Below you'll be able to choose from all Spaces and Subspaces that you are host of.",
       "label": "(Sub)Space",
       "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor, please go back and follow the Written Knowledge flow."
+    },
+    "insufficientPrivileges": {
+      "title": "Insufficient Privileges",
+      "description": "You don't have the necessary privileges to complete the creation. Please contact the owners of this account."
     }
   }
 }
