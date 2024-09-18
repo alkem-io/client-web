@@ -2419,6 +2419,8 @@ export type Document = {
   size: Scalars['Float'];
   /** The tagset in use on this Document. */
   tagset: Tagset;
+  /** Whether this Document is in its end location or not. */
+  temporaryLocation: Scalars['Boolean'];
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** The uploaded date of this Document */
@@ -3516,8 +3518,6 @@ export type Mutation = {
   updateVisual: Visual;
   /** Updates the specified Whiteboard. */
   updateWhiteboard: Whiteboard;
-  /** Updates the specified Whiteboard content. */
-  updateWhiteboardContent: Whiteboard;
   /** Create a new Document on the Storage and return the value as part of the returned Link. */
   uploadFileOnLink: Link;
   /** Create a new Document on the Storage and return the value as part of the returned Reference. */
@@ -4098,10 +4098,6 @@ export type MutationUpdateVisualArgs = {
 
 export type MutationUpdateWhiteboardArgs = {
   whiteboardData: UpdateWhiteboardEntityInput;
-};
-
-export type MutationUpdateWhiteboardContentArgs = {
-  whiteboardData: UpdateWhiteboardContentInput;
 };
 
 export type MutationUploadFileOnLinkArgs = {
@@ -5568,6 +5564,8 @@ export type StorageBucketParent = {
 
 export type StorageBucketUploadFileInput = {
   storageBucketId: Scalars['String'];
+  /** Is this a temporary Document that will be moved later to another StorageBucket. */
+  temporaryLocation?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type StorageBucketUploadFileOnLinkInput = {
@@ -5599,8 +5597,6 @@ export type Subscription = {
   subspaceCreated: SubspaceCreated;
   /** Receive updates on virtual contributors */
   virtualContributorUpdated: VirtualContributorUpdatedSubscriptionResult;
-  /** Receive Whiteboard Saved event */
-  whiteboardSaved: WhiteboardSavedSubscriptionResult;
 };
 
 export type SubscriptionActivityCreatedArgs = {
@@ -5625,10 +5621,6 @@ export type SubscriptionSubspaceCreatedArgs = {
 
 export type SubscriptionVirtualContributorUpdatedArgs = {
   virtualContributorID: Scalars['UUID_NAMEID'];
-};
-
-export type SubscriptionWhiteboardSavedArgs = {
-  whiteboardID: Scalars['UUID'];
 };
 
 export type SubspaceCreated = {
@@ -6342,15 +6334,8 @@ export type UpdateVisualInput = {
   visualID: Scalars['String'];
 };
 
-export type UpdateWhiteboardContentInput = {
-  ID: Scalars['UUID'];
-  content: Scalars['WhiteboardContent'];
-};
-
 export type UpdateWhiteboardEntityInput = {
   ID: Scalars['UUID'];
-  /** The new content to be used. */
-  content?: InputMaybe<Scalars['WhiteboardContent']>;
   contentUpdatePolicy?: InputMaybe<ContentUpdatePolicy>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
@@ -6644,15 +6629,6 @@ export type Whiteboard = {
   profile: Profile;
   /** The date at which the Whiteboard was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
-};
-
-/** The save event happened in the subscribed whiteboard. */
-export type WhiteboardSavedSubscriptionResult = {
-  __typename?: 'WhiteboardSavedSubscriptionResult';
-  /** The date at which the Whiteboard was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']>;
-  /** The identifier for the Whiteboard on which the save event happened. */
-  whiteboardID: Scalars['String'];
 };
 
 export type MyPrivilegesFragment = {
@@ -12578,6 +12554,98 @@ export type WhiteboardWithContentQuery = {
   };
 };
 
+export type WhiteboardWithoutContentQueryVariables = Exact<{
+  whiteboardId: Scalars['UUID'];
+}>;
+
+export type WhiteboardWithoutContentQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          nameID: string;
+          createdDate: Date;
+          contentUpdatePolicy: ContentUpdatePolicy;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            url: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            preview?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            storageBucket: { __typename?: 'StorageBucket'; id: string };
+          };
+          authorization?:
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                anonymousReadAccess: boolean;
+              }
+            | undefined;
+          createdBy?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                    | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type WhiteboardLastUpdatedDateQueryVariables = Exact<{
   whiteboardId: Scalars['UUID'];
 }>;
@@ -12701,28 +12769,6 @@ export type UpdateWhiteboardMutation = {
     __typename?: 'Whiteboard';
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type UpdateWhiteboardContentMutationVariables = Exact<{
-  input: UpdateWhiteboardContentInput;
-}>;
-
-export type UpdateWhiteboardContentMutation = {
-  __typename?: 'Mutation';
-  updateWhiteboardContent: { __typename?: 'Whiteboard'; id: string; content: string };
-};
-
-export type WhiteboardSavedSubscriptionVariables = Exact<{
-  whiteboardId: Scalars['UUID'];
-}>;
-
-export type WhiteboardSavedSubscription = {
-  __typename?: 'Subscription';
-  whiteboardSaved: {
-    __typename?: 'WhiteboardSavedSubscriptionResult';
-    whiteboardID: string;
-    updatedDate?: Date | undefined;
   };
 };
 

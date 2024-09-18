@@ -120,7 +120,7 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
     [deleteWhiteboard]
   );
 
-  const handleUpdateWhiteboardContent = useCallback(
+  const handleUploadWhiteboardVisuals = useCallback(
     async (
       whiteboard: WhiteboardContentFragment & WhiteboardDetailsFragment,
       previewImages?: WhiteboardPreviewImage[]
@@ -132,15 +132,6 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
           whiteboard.nameID
         );
       }
-      // const result = await updateWhiteboardContent({
-      //   variables: {
-      //     input: {
-      //       ID: whiteboard.id,
-      //       content: whiteboard.content,
-      //     },
-      //   },
-      //   refetchQueries: ['CalloutWhiteboards'],
-      // });
       return {
         success: true,
         errors: undefined,
@@ -173,10 +164,10 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
     () => ({
       onCreate: handleCreateWhiteboard,
       onDelete: handleDeleteWhiteboard,
-      onUpdate: handleUpdateWhiteboardContent,
+      onUpdate: handleUploadWhiteboardVisuals,
       onChangeDisplayName: handleChangeDisplayName,
     }),
-    [handleUpdateWhiteboardContent]
+    [handleUploadWhiteboardVisuals]
   );
 
   return (

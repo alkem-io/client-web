@@ -7628,46 +7628,6 @@ export type UpdateWhiteboardMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateWhiteboardMutation,
   SchemaTypes.UpdateWhiteboardMutationVariables
 >;
-export const WhiteboardSavedDocument = gql`
-  subscription WhiteboardSaved($whiteboardId: UUID!) {
-    whiteboardSaved(whiteboardID: $whiteboardId) {
-      whiteboardID
-      updatedDate
-    }
-  }
-`;
-
-/**
- * __useWhiteboardSavedSubscription__
- *
- * To run a query within a React component, call `useWhiteboardSavedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useWhiteboardSavedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useWhiteboardSavedSubscription({
- *   variables: {
- *      whiteboardId: // value for 'whiteboardId'
- *   },
- * });
- */
-export function useWhiteboardSavedSubscription(
-  baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.WhiteboardSavedSubscription,
-    SchemaTypes.WhiteboardSavedSubscriptionVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.WhiteboardSavedSubscription,
-    SchemaTypes.WhiteboardSavedSubscriptionVariables
-  >(WhiteboardSavedDocument, options);
-}
-
-export type WhiteboardSavedSubscriptionHookResult = ReturnType<typeof useWhiteboardSavedSubscription>;
-export type WhiteboardSavedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.WhiteboardSavedSubscription>;
 export const WhiteboardContentUpdatePolicyDocument = gql`
   query WhiteboardContentUpdatePolicy($whiteboardId: UUID!) {
     lookup {
