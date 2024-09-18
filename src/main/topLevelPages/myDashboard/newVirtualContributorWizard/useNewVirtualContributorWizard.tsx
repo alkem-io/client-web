@@ -66,24 +66,20 @@ export interface UserAccountProps {
     community: {
       id: string;
       authorization?: {
-        id: string;
         myPrivileges?: AuthorizationPrivilege[] | undefined;
       };
     };
     profile: {
-      id: string;
       displayName: string;
       url: string;
     };
     authorization?: {
-      id: string;
       myPrivileges?: AuthorizationPrivilege[] | undefined;
     };
     subspaces: Array<{
       id: string;
       type: SpaceType;
       profile: {
-        id: string;
         displayName: string;
         url: string;
       };
