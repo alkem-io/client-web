@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
@@ -24,6 +24,7 @@ import { buildLoginUrl } from '../../routing/urlBuilders';
 import RouterLink from '../../../core/ui/link/RouterLink';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import DialogHeader from '../../../core/ui/dialog/DialogHeader';
+import { compact } from 'lodash';
 
 export interface SpaceExplorerViewProps {
   spaces: SpaceWithParent[] | undefined;
@@ -125,10 +126,15 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
 
   const [hasExpanded, setHasExpanded] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<SpacesExplorerMembershipFilter[]>([
-    SpacesExplorerMembershipFilter.All,
-    SpacesExplorerMembershipFilter.Public,
-  ]);
+  const enabledFilters = useMemo(
+    () =>
+      compact([
+        SpacesExplorerMembershipFilter.All,
+        authenticated ? SpacesExplorerMembershipFilter.Member : undefined,
+        SpacesExplorerMembershipFilter.Public,
+      ]),
+    [authenticated]
+  );
 
   const isCollapsed = !hasExpanded && membershipFilter !== SpacesExplorerMembershipFilter.Member;
 
@@ -153,17 +159,6 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
     }
   }, [hasNoMemberSpaces]);
 
-  // if the current user is authenticated, then show the member filter #6852
-  useEffect(() => {
-    if (authenticated) {
-      setActiveFilters([
-        SpacesExplorerMembershipFilter.All,
-        SpacesExplorerMembershipFilter.Member,
-        SpacesExplorerMembershipFilter.Public,
-      ]);
-    }
-  }, [authenticated]);
-
   const getGridItemStyle = useGridItem();
 
   return (
@@ -177,7 +172,7 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
           sx={{ flexGrow: 1, flexBasis: getGridItemStyle(4).width }}
         />
         <Gutters row disablePadding maxWidth="100%" alignItems="center">
-          {activeFilters.map(filter => (
+          {enabledFilters.map(filter => (
             <Button
               key={filter}
               variant={filter === membershipFilter ? 'contained' : 'outlined'}
