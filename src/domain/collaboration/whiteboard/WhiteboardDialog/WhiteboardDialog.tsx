@@ -29,6 +29,7 @@ import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
 import WhiteboardDialogTemplatesLibrary from '../../../templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
+import { useWhiteboardLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {
@@ -106,7 +107,16 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   const styles = useStyles();
   const columns = useGlobalGridColumns();
 
-  const lastSavedDate = new Date(0); // todo: DO
+  const [lastSavedDate, setLastSavedDate] = useState<Date | undefined>(undefined);
+
+  const { data: lastSaved } = useWhiteboardLastUpdatedDateQuery({
+    variables: { whiteboardId: whiteboard?.id! },
+    skip: !whiteboard?.id,
+  });
+
+  if (!lastSavedDate && lastSaved?.lookup.whiteboard?.updatedDate) {
+    setLastSavedDate(new Date(lastSaved?.lookup.whiteboard?.updatedDate));
+  }
 
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
@@ -236,6 +246,9 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
         }}
         actions={{
           onInitApi: setExcalidrawAPI,
+          onRemoteSave: () => {
+            setLastSavedDate(new Date());
+          },
           onUpdate: async state => {
             const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
               whiteboard,

@@ -43,6 +43,7 @@ export type SocketUpdateDataSource = {
     payload: {
       elements: readonly ExcalidrawElement[];
       files: BinaryFilesWithUrl;
+      lastModified: number;
     };
   };
   SCENE_UPDATE: {
