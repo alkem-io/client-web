@@ -145,7 +145,7 @@ const CollaborativeExcalidrawWrapper = ({
   const [collabApi, initializeCollab, { connecting, collaborating, mode, modeReason }] = useCollab({
     username,
     filesManager,
-    onRemoteSave: actions.onRemoteSave,
+    onRemoteSave: () => actions.onRemoteSave?.(),
     onCloseConnection: () => {
       setCollaborationStoppedNoticeOpen(true);
       if (isOnline) {

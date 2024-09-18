@@ -11,7 +11,7 @@ export interface WhiteboardWithContent
 export type WhiteboardWithoutContent<Whiteboard extends WhiteboardWithContent> = Omit<Whiteboard, 'content'>;
 
 export interface IWhiteboardContentEntities {
-  whiteboard?: Partial<WhiteboardWithContent>;
+  whiteboard?: WhiteboardWithContent;
 }
 
 export interface WhiteboardContentContainerState {

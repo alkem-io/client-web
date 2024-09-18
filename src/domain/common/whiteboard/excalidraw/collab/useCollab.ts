@@ -15,7 +15,6 @@ type UseCollabProvided = [CollabAPI | null, (initProps: InitProps) => void, Coll
 
 interface UseCollabProps extends Omit<CollabProps, 'excalidrawApi' | 'onCollaboratorModeChange'> {
   onInitialize?: (collabApi: CollabAPI) => void;
-  onRemoteSave?: () => void;
 }
 
 interface InitProps extends Pick<CollabProps, 'excalidrawApi'> {
@@ -56,7 +55,7 @@ const useCollab = ({
   };
 
   const handleRemoteSave = () => {
-    onRemoteSave();
+    onRemoteSave?.();
   };
 
   const initialize = ({ excalidrawApi, roomId }: InitProps) => {
