@@ -1,6 +1,6 @@
 query ImportTemplateDialog(
   $templatesSetId: UUID!
-  # $templateTypes: [TemplateType!] ##//!! Needs filter by templateTypes
+  # $templateTypes: [TemplateType!] # todo:  Needs filter by templateTypes server-side
   $includeInnovationFlow: Boolean = false
   $includeCallout: Boolean = false
 ) {

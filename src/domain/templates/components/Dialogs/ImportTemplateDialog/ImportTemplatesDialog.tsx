@@ -83,6 +83,7 @@ const ImportTemplatesDialog = ({
   const templatesSetId = templatesSetData?.space.library?.id;
 
   const { data: templatesData, loading: loadingTemplates } = useImportTemplateDialogQuery({
+    fetchPolicy: 'network-only',
     variables: {
       templatesSetId: templatesSetId!,
       includeCallout: templateType === TemplateType.Callout,
