@@ -140,10 +140,17 @@ export const toCreateTemplateMutationVariables = (
         if (!calloutDraft.callout) {
           throw new Error('Callout template must have a callout object');
         }
+
+        delete calloutDraft.callout['id'];
+
         if (calloutDraft.callout?.framing) {
           handleTags(calloutDraft.callout.framing);
           handleReferences(calloutDraft.callout.framing);
+          delete calloutDraft.callout.framing['id'];
         }
+
+        delete calloutDraft.callout.contributionDefaults?.['id'];
+
         switch (calloutDraft.callout?.type) {
           case CalloutType.Post: {
             delete calloutDraft.callout.contributionDefaults?.whiteboardContent;
@@ -163,15 +170,13 @@ export const toCreateTemplateMutationVariables = (
           case CalloutType.Whiteboard: {
             delete calloutDraft.callout.contributionDefaults;
             if (calloutDraft.callout.framing.whiteboard) {
-              // TODO: instead of deleting the profile, we should use profile for WB templates
-              // calloutDraft.callout.framing.whiteboard.profile = {
-              //   displayName: 'Whiteboard Template',
-              // };
+              const content = calloutDraft.callout.framing.whiteboard.content;
+              calloutDraft.callout.framing.whiteboard = {
+                content,
+              };
               calloutDraft.callout.framing.whiteboard['profileData'] = {
                 displayName: 'Whiteboard Template',
               };
-
-              delete calloutDraft.callout.framing.whiteboard.profile;
             }
             break;
           }
@@ -182,6 +187,8 @@ export const toCreateTemplateMutationVariables = (
           }
         }
         calloutDraft.callout['contributionPolicy'] = { state: 'OPEN' };
+        delete calloutDraft.callout.framing.profile['id'];
+        delete calloutDraft.callout.framing.profile['storageBucket'];
 
         calloutDraft['calloutData'] = calloutDraft.callout;
         delete draft['callout'];
@@ -208,6 +215,10 @@ export const toCreateTemplateMutationVariables = (
         if (communityGuidelinesDraft.communityGuidelines?.profile.references) {
           handleReferences(communityGuidelinesDraft.communityGuidelines);
         }
+
+        delete communityGuidelinesDraft['communityGuidelinesData']['id'];
+        delete communityGuidelinesDraft.communityGuidelines?.profile?.['id'];
+
         delete draft['callout'];
         delete draft['communityGuidelines'];
         delete draft['innovationFlow'];
@@ -222,6 +233,8 @@ export const toCreateTemplateMutationVariables = (
         innovationFlowDraft['innovationFlowData']['profile'] = {
           displayName: 'Innovation Flow Template',
         };
+        delete innovationFlowDraft['innovationFlowData']['id'];
+
         delete draft['callout'];
         delete draft['communityGuidelines'];
         delete draft['innovationFlow'];
@@ -233,6 +246,8 @@ export const toCreateTemplateMutationVariables = (
       newValues = produce(newValues, draft => {
         const whiteboardDraft = draft as WhiteboardTemplateFormSubmittedValues;
         if (whiteboardDraft.whiteboard) {
+          delete whiteboardDraft.whiteboard['profile'];
+          delete whiteboardDraft.whiteboard['id'];
           whiteboardDraft.whiteboard['profileData'] = {
             // This shoudln't be required by the server but for now can stay
             displayName: 'Whiteboard Template',

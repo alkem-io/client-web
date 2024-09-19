@@ -116,7 +116,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   // Update Template
   const [editTemplateMode, setEditTemplateMode] = useState(alwaysEditTemplate);
   const [updateTemplate] = useUpdateTemplateMutation({
-    refetchQueries: ['AllTemplatesInTemplatesSet'],
+    refetchQueries: ['AllTemplatesInTemplatesSet', 'TemplateContent'],
   });
   const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
     const variables = toUpdateTemplateMutationVariables(templateId!, values);
