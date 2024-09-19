@@ -57,7 +57,7 @@ const ImportTemplatesDialog = ({
   const { spaceNameId } = useUrlParams();
 
   const canUseSpaceTemplates = !disableSpaceTemplates && !!spaceNameId;
-  const [loadPlatformTemplates, setLoadPlatformTemplates] = useState(false);
+  const [loadPlatformTemplates, setLoadPlatformTemplates] = useState(!canUseSpaceTemplates);
 
   const [previewTemplate, setPreviewTemplate] = useState<AnyTemplate>();
   const [handleImportTemplate, loadingImport] = useLoadingState(async () => {
@@ -78,11 +78,12 @@ const ImportTemplatesDialog = ({
 
   const { data: templatesSetData } = useSpaceTemplatesSetIdQuery({
     variables: { spaceNameId: spaceNameId! },
-    skip: !open || disableSpaceTemplates || !spaceNameId,
+    skip: !open || !canUseSpaceTemplates,
   });
   const templatesSetId = templatesSetData?.space.library?.id;
 
   const { data: templatesData, loading: loadingTemplates } = useImportTemplateDialogQuery({
+    fetchPolicy: 'network-only',
     variables: {
       templatesSetId: templatesSetId!,
       includeCallout: templateType === TemplateType.Callout,
