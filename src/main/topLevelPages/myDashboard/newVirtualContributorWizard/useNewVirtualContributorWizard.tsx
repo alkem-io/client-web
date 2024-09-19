@@ -490,16 +490,16 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         },
       });
 
-      const vcId = data?.createVirtualContributor.id;
+      const virtualContributorId = data?.createVirtualContributor.id;
 
-      if (vcId) {
+      if (virtualContributorId) {
         if (parentCommunityId) {
           // the VC cannot be added to the BoK community
           // if it's not part of the parent community
           await addVirtualContributorToCommunity({
             variables: {
               communityId: parentCommunityId,
-              virtualContributorId: vcId,
+              virtualContributorId,
             },
           });
         }
@@ -508,7 +508,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         await addVirtualContributorToCommunity({
           variables: {
             communityId: communityId,
-            virtualContributorId: vcId,
+            virtualContributorId,
           },
         });
 
@@ -527,6 +527,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
       return false;
     } catch (error) {
+      // TODO: log this to Sentry
       return false;
     }
   };
@@ -583,9 +584,9 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             entities={{
               title: t('createVirtualContributorWizard.insufficientPrivileges.title'),
               content: t('createVirtualContributorWizard.insufficientPrivileges.description'),
-              confirmButtonText: t('buttons.ok'),
+              buttonCaption: t('buttons.ok'),
             }}
-            actions={{ onConfirm: onDialogClose }}
+            actions={{ onButtonClick: onDialogClose }}
             options={{ show: true }}
           />
         )}

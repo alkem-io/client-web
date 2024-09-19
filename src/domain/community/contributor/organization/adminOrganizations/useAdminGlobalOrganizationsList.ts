@@ -107,12 +107,12 @@ export const useAdminGlobalOrganizationsList = () => {
   };
 
   const [assignLicense] = useAssignLicensePlanToAccountMutation();
-  const assignLicensePlan = async (accountId: string, planId: string) => {
+  const assignLicensePlan = async (accountId: string, licensePlanId: string) => {
     await assignLicense({
       variables: {
-        accountID: accountId,
-        licensePlanId: planId,
-        licensingID: data?.platform.licensing.id ?? '',
+        accountId,
+        licensePlanId,
+        licensingId: data?.platform.licensing.id ?? '',
       },
       refetchQueries: [
         refetchAdminGlobalOrganizationsListQuery({
@@ -125,12 +125,12 @@ export const useAdminGlobalOrganizationsList = () => {
   };
 
   const [revokeLicense] = useRevokeLicensePlanFromAccountMutation();
-  const revokeLicensePlan = async (accountId: string, planId: string) => {
+  const revokeLicensePlan = async (accountId: string, licensePlanId: string) => {
     await revokeLicense({
       variables: {
-        accountID: accountId,
-        licensePlanId: planId,
-        licensingID: data?.platform.licensing.id ?? '',
+        accountId,
+        licensePlanId,
+        licensingId: data?.platform.licensing.id ?? '',
       },
       refetchQueries: [
         refetchAdminGlobalOrganizationsListQuery({

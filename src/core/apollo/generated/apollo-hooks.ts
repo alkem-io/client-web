@@ -11453,9 +11453,9 @@ export function refetchRolesOrganizationQuery(variables: SchemaTypes.RolesOrgani
 }
 
 export const AssignLicensePlanToAccountDocument = gql`
-  mutation AssignLicensePlanToAccount($licensePlanId: UUID!, $accountID: UUID!, $licensingID: UUID!) {
+  mutation AssignLicensePlanToAccount($licensePlanId: UUID!, $accountId: UUID!, $licensingId: UUID!) {
     assignLicensePlanToAccount(
-      planData: { accountID: $accountID, licensePlanID: $licensePlanId, licensingID: $licensingID }
+      planData: { accountID: $accountId, licensePlanID: $licensePlanId, licensingID: $licensingId }
     ) {
       id
     }
@@ -11480,8 +11480,8 @@ export type AssignLicensePlanToAccountMutationFn = Apollo.MutationFunction<
  * const [assignLicensePlanToAccountMutation, { data, loading, error }] = useAssignLicensePlanToAccountMutation({
  *   variables: {
  *      licensePlanId: // value for 'licensePlanId'
- *      accountID: // value for 'accountID'
- *      licensingID: // value for 'licensingID'
+ *      accountId: // value for 'accountId'
+ *      licensingId: // value for 'licensingId'
  *   },
  * });
  */
@@ -11506,9 +11506,9 @@ export type AssignLicensePlanToAccountMutationOptions = Apollo.BaseMutationOptio
   SchemaTypes.AssignLicensePlanToAccountMutationVariables
 >;
 export const RevokeLicensePlanFromAccountDocument = gql`
-  mutation RevokeLicensePlanFromAccount($licensePlanId: UUID!, $accountID: UUID!, $licensingID: UUID!) {
+  mutation RevokeLicensePlanFromAccount($licensePlanId: UUID!, $accountId: UUID!, $licensingId: UUID!) {
     revokeLicensePlanFromAccount(
-      planData: { accountID: $accountID, licensePlanID: $licensePlanId, licensingID: $licensingID }
+      planData: { accountID: $accountId, licensePlanID: $licensePlanId, licensingID: $licensingId }
     ) {
       id
     }
@@ -11533,8 +11533,8 @@ export type RevokeLicensePlanFromAccountMutationFn = Apollo.MutationFunction<
  * const [revokeLicensePlanFromAccountMutation, { data, loading, error }] = useRevokeLicensePlanFromAccountMutation({
  *   variables: {
  *      licensePlanId: // value for 'licensePlanId'
- *      accountID: // value for 'accountID'
- *      licensingID: // value for 'licensingID'
+ *      accountId: // value for 'accountId'
+ *      licensingId: // value for 'licensingId'
  *   },
  * });
  */

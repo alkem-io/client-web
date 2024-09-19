@@ -11,12 +11,12 @@ import { gutters } from '../grid/utils';
 // however there's no need of this entities, actions, etc. structure
 interface InfoDialogProps {
   entities: {
-    title?: string | React.ReactNode;
-    content?: ReactNode;
-    confirmButtonText?: string;
+    title: string | React.ReactNode;
+    content: ReactNode;
+    buttonCaption: string;
   };
   actions: {
-    onConfirm: () => void;
+    onButtonClick: () => void;
   };
   options: {
     show: boolean;
@@ -27,22 +27,11 @@ interface InfoDialogProps {
 }
 
 const InfoDialog: FC<InfoDialogProps> = ({ entities, actions, options, state }) => {
-  const title = entities.title;
-  if (!title) {
-    throw new Error('The confirmation dialog needs a title provided');
-  }
-  const content = entities.content;
-  if (!content) {
-    throw new Error('The confirmation dialog needs text content provided');
-  }
-  const confirmButtonText = entities.confirmButtonText;
-  if (!confirmButtonText) {
-    throw new Error('The confirmation dialog needs button text content provided');
-  }
+  const { title, content, buttonCaption } = entities;
 
   return (
-    <Dialog open={options.show} aria-labelledby="confirmation-dialog" onClose={actions.onConfirm}>
-      <DialogHeader onClose={actions.onConfirm}>
+    <Dialog open={options.show} aria-labelledby="confirmation-dialog" onClose={actions.onButtonClick}>
+      <DialogHeader onClose={actions.onButtonClick}>
         <BlockTitle>{title}</BlockTitle>
       </DialogHeader>
       <DialogContent>{content}</DialogContent>
@@ -51,9 +40,9 @@ const InfoDialog: FC<InfoDialogProps> = ({ entities, actions, options, state }) 
           variant="text"
           loading={state?.isLoading}
           disabled={state?.isLoading}
-          onClick={actions.onConfirm}
+          onClick={actions.onButtonClick}
         >
-          {confirmButtonText}
+          {buttonCaption}
         </LoadingButton>
       </Actions>
     </Dialog>

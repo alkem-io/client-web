@@ -16269,8 +16269,8 @@ export type RolesOrganizationQuery = {
 
 export type AssignLicensePlanToAccountMutationVariables = Exact<{
   licensePlanId: Scalars['UUID'];
-  accountID: Scalars['UUID'];
-  licensingID: Scalars['UUID'];
+  accountId: Scalars['UUID'];
+  licensingId: Scalars['UUID'];
 }>;
 
 export type AssignLicensePlanToAccountMutation = {
@@ -16280,8 +16280,8 @@ export type AssignLicensePlanToAccountMutation = {
 
 export type RevokeLicensePlanFromAccountMutationVariables = Exact<{
   licensePlanId: Scalars['UUID'];
-  accountID: Scalars['UUID'];
-  licensingID: Scalars['UUID'];
+  accountId: Scalars['UUID'];
+  licensingId: Scalars['UUID'];
 }>;
 
 export type RevokeLicensePlanFromAccountMutation = {
