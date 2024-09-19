@@ -179,9 +179,6 @@ class Collab {
               switch (decryptedData.type) {
                 case 'INVALID_RESPONSE':
                   return;
-                case WS_SCENE_EVENT_TYPES.INIT: {
-                  break; //todo remove
-                }
                 case WS_SCENE_EVENT_TYPES.SCENE_UPDATE: {
                   const remoteElements = decryptedData.payload.elements;
                   const remoteFiles = decryptedData.payload.files;

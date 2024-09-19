@@ -166,15 +166,11 @@ class Portal {
   }
 
   broadcastScene = async (
-    updateType: WS_SCENE_EVENT_TYPES.INIT | WS_SCENE_EVENT_TYPES.SCENE_UPDATE,
+    updateType: WS_SCENE_EVENT_TYPES.SCENE_UPDATE,
     allElements: readonly ExcalidrawElement[],
     allFiles: BinaryFilesWithUrl,
     { syncAll = false }: BroadcastSceneOptions = {}
   ) => {
-    if (updateType === WS_SCENE_EVENT_TYPES.INIT && !syncAll) {
-      throw new Error('syncAll must be true when sending SCENE.INIT');
-    }
-
     const { isInvisiblySmallElement } = await import('@alkemio/excalidraw');
 
     const isSyncableElement = IsSyncableElement({ isInvisiblySmallElement });
@@ -219,10 +215,6 @@ class Portal {
 
     for (const syncableElement of syncableElements) {
       this.broadcastedElementVersions.set(syncableElement.id, syncableElement.version);
-    }
-
-    if (updateType === WS_SCENE_EVENT_TYPES.INIT) {
-      return this._broadcastEvent(WS_EVENTS.SCENE_INIT, data as SocketUpdateData);
     }
 
     this._broadcastSocketData(data as SocketUpdateData);
