@@ -247,6 +247,7 @@ export const toCreateTemplateMutationVariables = (
         const whiteboardDraft = draft as WhiteboardTemplateFormSubmittedValues;
         if (whiteboardDraft.whiteboard) {
           delete whiteboardDraft.whiteboard['profile'];
+          delete whiteboardDraft.whiteboard['id'];
           whiteboardDraft.whiteboard['profileData'] = {
             // This shoudln't be required by the server but for now can stay
             displayName: 'Whiteboard Template',
