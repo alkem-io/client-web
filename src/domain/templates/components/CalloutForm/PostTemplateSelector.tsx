@@ -52,6 +52,7 @@ export const PostTemplateSelector: FC<PostTemplatesSelectorProps> = ({ name }) =
             open={isDialogOpen}
             onSelectTemplate={handleSelectTemplate}
             onClose={() => setDialogOpen(false)}
+            enablePlatformTemplates
           />
         </Box>
       </Box>

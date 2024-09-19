@@ -78,6 +78,9 @@ interface ProfileWithTags {
       ID?: string;
       tags: string[];
     }[];
+    defaultTagset?: {
+      tags: string[];
+    };
   };
 }
 
@@ -94,10 +97,14 @@ interface ProfileWithReferences {
 
 // For creation, instead of tagsets, we want tags at the parent level
 const handleTags = (draft: WritableDraft<ProfileWithTags>) => {
+  if (draft.profile.defaultTagset) {
+    draft['tags'] = draft.profile.defaultTagset.tags;
+  }
   const tags = draft.profile.tagsets?.[0]?.tags ?? [];
   if (tags.length > 0) {
     draft['tags'] = tags;
   }
+  delete draft.profile.defaultTagset;
   delete draft.profile.tagsets;
 };
 
