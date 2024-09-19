@@ -7,6 +7,7 @@ import { PostTemplate } from './PostTemplate';
 import { WhiteboardTemplate } from './WhiteboardTemplate';
 import EmptyWhiteboard from '../../common/whiteboard/EmptyWhiteboard';
 import { CollaborationTemplate } from './CollaborationTemplate';
+import { findDefaultTagset } from '../../common/tags/utils';
 
 export const getNewTemplate = (templateType: TemplateType, defaultValues?: Partial<AnyTemplate>): AnyTemplate => {
   const common: TemplateBase = {
@@ -24,6 +25,7 @@ export const getNewTemplate = (templateType: TemplateType, defaultValues?: Parti
   switch (templateType) {
     case TemplateType.Callout: {
       const data = defaultValues as Partial<CalloutTemplate>;
+      const defaultTagset = findDefaultTagset(data?.callout?.framing.profile?.tagsets);
       const template: CalloutTemplate = {
         ...common,
         type: TemplateType.Callout,
@@ -35,7 +37,7 @@ export const getNewTemplate = (templateType: TemplateType, defaultValues?: Parti
               displayName: data?.callout?.framing.profile?.displayName ?? '',
               description: data?.callout?.framing.profile?.description ?? '',
               references: data?.callout?.framing.profile?.references ?? [],
-              tagsets: data?.callout?.framing.profile?.tagsets ?? [],
+              tagsets: defaultTagset ? [defaultTagset] : [],
             },
             whiteboard: data?.callout?.framing.whiteboard ?? undefined,
           },
