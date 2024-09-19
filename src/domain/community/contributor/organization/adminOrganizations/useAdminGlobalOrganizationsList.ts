@@ -92,7 +92,7 @@ export const useAdminGlobalOrganizationsList = () => {
           },
         });
       } catch (e) {
-        console.log('VERIFICATION_REQUEST event failed: ', e);
+        // ignore errors if the verification_request fails we still try to manually verify
       }
 
       await verifyOrg({
@@ -175,7 +175,7 @@ export const useAdminGlobalOrganizationsList = () => {
     searchTerm,
     onSearchTermChange: setSearchTerm,
     onDelete: handleDelete,
-    handleVerification: handleVerification,
+    handleVerification,
     licensePlans,
     assignLicensePlan,
     revokeLicensePlan,

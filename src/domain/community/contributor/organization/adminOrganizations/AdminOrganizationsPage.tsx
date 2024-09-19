@@ -9,7 +9,7 @@ import SimpleSearchableTable, {
   SearchableListItem,
 } from '../../../../shared/components/SearchableList/SimpleSearchableTable';
 import { IconButton } from '@mui/material';
-import { TuneOutlined, VerifiedUserOutlined } from '@mui/icons-material';
+import { TuneOutlined, VerifiedUser, VerifiedUserOutlined } from '@mui/icons-material';
 import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
 import LicensePlanDialog from './LicensePlanDialog';
 
@@ -65,7 +65,7 @@ const AdminOrganizationsPage: FC = () => {
           <TuneOutlined />
         </IconButton>
         <IconButton onClick={() => onVerificationClick(item)} size="large" aria-label={'Verify'}>
-          <VerifiedUserOutlined sx={{ color: item?.verified ? 'green' : '' }} />
+          {item?.verified ? <VerifiedUser color="success" /> : <VerifiedUserOutlined />}
         </IconButton>
       </>
     );

@@ -159,6 +159,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     const account = targetAccount ?? data?.me.user?.account;
     const accountId = account?.id;
     const mySpaces = compact(account?.spaces);
+    const mySpace = mySpaces?.[0]; // TODO: auto-selecting the first space, not ideal
     let selectableSpaces: SelectableKnowledgeProps[] = [];
 
     if (accountId) {
@@ -186,12 +187,12 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
 
     return {
-      selectedExistingSpaceId: mySpaces?.[0]?.id, // TODO: auto-selecting the first space, not ideal
+      selectedExistingSpaceId: mySpace?.id,
       myAccountId: accountId,
       spacePrivileges: {
-        myPrivileges: account?.spaces?.[0]?.authorization?.myPrivileges,
+        myPrivileges: mySpace?.authorization?.myPrivileges,
         collaboration: {
-          myPrivileges: account?.spaces?.[0]?.community?.authorization?.myPrivileges,
+          myPrivileges: mySpace?.community?.authorization?.myPrivileges,
         },
       },
       selectableSpaces,
@@ -527,7 +528,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
       return false;
     } catch (error) {
-      // TODO: log this to Sentry
       return false;
     }
   };
