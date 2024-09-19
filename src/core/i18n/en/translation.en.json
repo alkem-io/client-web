@@ -1867,7 +1867,8 @@
             "deleteSpace_description": "Click here to delete this Space. Be careful, this action cannot be undone.",
             "deleteSpace_disallowed": "The Space can only be deleted by the host of this Space.",
             "moreInfo": "More about Alkemio licenses can be found <moreinfo>here</moreinfo>.",
-            "moreInfoUrl": "$t(plansTable.seeMoreUrl)"
+            "moreInfoUrl": "$t(plansTable.seeMoreUrl)",
+            "licenseUpdated": "License updated successfully"
           },
           "settings": {
             "description": "Here you can edit the visibility settings of your {{entity}}."
@@ -1885,6 +1886,20 @@
         "notifications": {
           "organization-created": "Organization created successfully.",
           "organization-removed": "Organization removed successfully."
+        },
+        "verification": {
+          "confirm": {
+            "title": "{{action}} {{name}}",
+            "description": "This organization is currently {{status}}. Do you want to {{action}} it?",
+            "status": {
+              "verified": "verified",
+              "notVerified": "not verified"
+            },
+            "action": {
+              "verify": "Verify",
+              "unverify": "Unverify"
+            }
+          }
         }
       },
       "subsubspace": {
@@ -2236,7 +2251,7 @@
           }
         },
         "welcome": {
-          "welcomeUnauthenticated": "Welcome at Alkemio!",
+          "welcomeUnauthenticated": "Welcome to Alkemio!",
           "welcome-back": "Welcome back {{username}}!",
           "join": "Want to join the community and see more?",
           "existing-user": {
@@ -2508,7 +2523,7 @@
     },
     "accept-terms": {
       "introduction": "<p>Alkemio makes it easy to manage Subspaces and have contributors, from anywhere, working together on solutions. Subspaces take center-stage. Focus is on the destination.</p><p>To keep the platform safe, open, and constructive, every user must accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>. Please read the these documents and accept them below before you continue.</p>",
-      "greeting": "Hi {{user}}, welcome at Alkemio!",
+      "greeting": "Hi {{user}}, welcome to Alkemio!",
       "continue": "Continue to the platform",
       "tooltip": "Please read and accept the Terms of Use and Privacy Policy before you continue"
     },
@@ -3010,7 +3025,7 @@
     },
     "trySection": {
       "title": "🎉 Try it out!",
-      "subTitle": "Your Virtual Contributor is successfully created and we added it to your Personal Space <tooltip><icon /></tooltip>. You can interact with it by typing <b>@{{vcName}}</b> in a comment on any post in your Space. Give it a try in the preview below!",
+      "subTitle": "Your Virtual Contributor is successfully created and we added it to your Personal Space <tooltip><icon /></tooltip>.<br/>You can interact with it by typing <b>@{{vcName}}</b> in a comment on any post in your Space. Give it a try in the preview below!",
       "subTitleInfo": "When you create your first VC, we automatically generate a Space for you. This Space functions like any other Space on Alkemio, and you can customize the settings according to your preferences.",
       "postTitle": "Example post",
       "postDescription": "At Alkemio, we utilize Posts to facilitate collaborative interactions with AI. Unlike private chats, other members within a Space can learn from and contribute to these interactions.\n\nSimilar to mentioning a human contributor, you can use the \"@\" symbol followed by the Virtual Contributor's name.",
@@ -3022,6 +3037,10 @@
       "description": "Which Space or Subspace do you want to bring to life with the Virtual Contributor? Below you'll be able to choose from all Spaces and Subspaces that you are host of.",
       "label": "(Sub)Space",
       "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor, please go back and follow the Written Knowledge flow."
+    },
+    "insufficientPrivileges": {
+      "title": "Insufficient Privileges",
+      "description": "You don't have the necessary privileges to complete the creation. Please contact the owners of this account."
     }
   }
 }

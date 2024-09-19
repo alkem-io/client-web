@@ -12,11 +12,19 @@ query NewVirtualContributorMySpaces {
           id
           community {
             id
+            authorization {
+              id
+              myPrivileges
+            }
           }
           profile {
             id
             displayName
             url
+          }
+          authorization {
+            id
+            myPrivileges
           }
           subspaces {
             id

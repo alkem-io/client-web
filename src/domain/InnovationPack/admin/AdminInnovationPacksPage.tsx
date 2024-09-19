@@ -6,7 +6,7 @@ import {
   useDeleteInnovationPackMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
 import SearchableListLayout from '../../shared/components/SearchableList/SearchableListLayout';
-import SimpleSearchableList from '../../shared/components/SearchableList/SimpleSearchableList';
+import SimpleSearchableTable from '../../shared/components/SearchableList/SimpleSearchableTable';
 import AdminLayout from '../../platform/admin/layout/toplevel/AdminLayout';
 import { AdminSection } from '../../platform/admin/layout/toplevel/constants';
 import { buildInnovationPackSettingsUrl } from '../../../main/routing/urlBuilders';
@@ -46,7 +46,7 @@ const AdminInnovationPacksPage: FC<AdminInnovationPacksPageProps> = () => {
   return (
     <AdminLayout currentTab={AdminSection.InnovationPacks}>
       <SearchableListLayout>
-        <SimpleSearchableList
+        <SimpleSearchableTable
           data={innovationPacks}
           onDelete={item => handleDelete(item.id)}
           loading={loading}

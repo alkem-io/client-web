@@ -12,6 +12,10 @@ query AccountInformation($accountId: UUID!) {
       spaces {
         id
         level
+        authorization {
+          id
+          myPrivileges
+        }
         profile {
           ...AccountItemProfile
           cardBanner: visual(type: CARD) {
@@ -21,6 +25,10 @@ query AccountInformation($accountId: UUID!) {
         }
         community {
           id
+          authorization {
+            id
+            myPrivileges
+          }
         }
         subspaces {
           id

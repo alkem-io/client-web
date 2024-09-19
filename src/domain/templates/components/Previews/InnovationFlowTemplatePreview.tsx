@@ -10,7 +10,7 @@ interface InnovationFlowTemplatePreviewProps {
   template?: {
     innovationFlow?: {
       states: InnovationFlowState[];
-    }
+    };
   };
 }
 

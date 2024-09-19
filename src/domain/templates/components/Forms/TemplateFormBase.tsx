@@ -84,7 +84,8 @@ const TemplateFormBase = <T extends TemplateFormProfileSubmittedValues>({
     ...validator,
   });
 
-  const visual = template?.profile.visual as Visual | undefined; //!!
+  // todo: review this as some Visuals come without aspectRatio and other expected props
+  const visual = template?.profile.visual as Visual | undefined;
 
   const renderActions = typeof actions === 'function' ? actions : () => actions;
   const renderChildren = typeof children === 'function' ? children : () => children;

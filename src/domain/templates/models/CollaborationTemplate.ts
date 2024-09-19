@@ -7,7 +7,7 @@ export interface CollaborationTemplate extends TemplateBase {
     framing: {
       profile: {
         displayName: string;
-      }
-    }
+      };
+    };
   }[];
 }
