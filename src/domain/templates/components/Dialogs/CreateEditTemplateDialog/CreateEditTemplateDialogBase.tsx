@@ -31,7 +31,10 @@ const CreateEditTemplateDialogBase = <InitialValues extends {}>({
 
   return (
     <DialogWithGrid columns={12} open={open} onClose={onClose}>
-      <DialogHeader title={t(titleLabel, { entity: t(`common.enums.templateType.${templateType}` as const) })} onClose={onClose} />
+      <DialogHeader
+        title={t(titleLabel, { entity: t(`common.enums.templateType.${templateType}` as const) })}
+        onClose={onClose}
+      />
       <DialogContent sx={{ paddingTop: 0 }}>
         {children?.({
           actions: formik => (

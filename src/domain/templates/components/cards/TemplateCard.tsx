@@ -28,7 +28,7 @@ const TemplateCard: FC<TemplateCardProps> = ({ template, link, ...rest }) => {
     case TemplateType.Post:
       return <PostTemplateCard template={template} {...link} {...rest} />;
     case TemplateType.Whiteboard:
-      return <WhiteboardTemplateCard template={template} {...link}{...rest} />;
+      return <WhiteboardTemplateCard template={template} {...link} {...rest} />;
   }
   return null;
 };

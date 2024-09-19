@@ -6,7 +6,7 @@ import Loading from '../../../core/ui/loading/Loading';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { BlockTitle } from '../../../core/ui/typography';
 import useAdminGlobalUserList from '../../../domain/community/user/adminUsers/useAdminGlobalUserList';
-import { SearchableListItem } from '../../../domain/shared/components/SearchableList/SimpleSearchableList';
+import { SearchableListItem } from '../../../domain/platform/admin/components/SearchableList';
 
 interface AuthorizationDialogProps {
   authorizationPolicyId: string;

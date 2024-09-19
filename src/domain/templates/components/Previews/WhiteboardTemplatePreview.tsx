@@ -11,7 +11,7 @@ interface WhiteboardTemplatePreviewProps {
   template?: {
     whiteboard?: {
       content: string;
-    }
+    };
   };
 }
 
@@ -21,9 +21,13 @@ const WhiteboardTemplatePreview: FC<WhiteboardTemplatePreviewProps> = ({ templat
 
   return (
     <>
-      {loading && <Box textAlign="center"><Loading /></Box>}
+      {loading && (
+        <Box textAlign="center">
+          <Loading />
+        </Box>
+      )}
       {!loading && (
-        <PageContentBlock disablePadding sx={{ flexGrow: 1 }} >
+        <PageContentBlock disablePadding sx={{ flexGrow: 1 }}>
           <ExcalidrawWrapper
             entities={{
               whiteboard: template?.whiteboard,
