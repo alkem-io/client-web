@@ -48,7 +48,7 @@ const RadioButtonsGroup = <Value,>({
                     sx={{
                       justifyContent: 'center',
                       alignItems: 'center',
-                      backgroundColor: 'background.paper',
+                      backgroundColor: value === optionValue ? 'background.paper' : undefined,
                       borderRadius: gutters(),
                       width: gutters(2),
                       height: gutters(2),

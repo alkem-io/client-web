@@ -53,7 +53,6 @@ const WhiteboardDialogTemplatesLibrary: FC<WhiteboardDialogTemplatesLibraryProps
           )}
           <ImportTemplatesDialog
             templateType={TemplateType.Whiteboard}
-            enablePlatformTemplates
             actionButton={
               <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
                 {t('buttons.use')}
@@ -62,6 +61,7 @@ const WhiteboardDialogTemplatesLibrary: FC<WhiteboardDialogTemplatesLibraryProps
             open={isDialogOpen}
             onSelectTemplate={handleSelectTemplate}
             onClose={() => setDialogOpen(false)}
+            enablePlatformTemplates
           />
         </Box>
       )}
