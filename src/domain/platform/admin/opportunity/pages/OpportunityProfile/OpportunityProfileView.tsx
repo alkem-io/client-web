@@ -78,8 +78,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
               },
               spaceID: challengeId,
               tags: tagsets.flatMap(x => x.tags),
-              collaborationData: {
-              },
+              collaborationData: {},
             },
           },
         });

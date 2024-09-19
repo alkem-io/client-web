@@ -12,5 +12,3 @@
   - In the query we retrieve `defaultTagset`, on update is turned into `tagsets` to send it as an UpdateTagsetInput, and on Create is sent as just `tags` at the parent level
 
 - Avoid any casting or any ts-ignore, try to keep the types consistent!! Apart from the mappings file there shouldn't be any need for castings.
-
-

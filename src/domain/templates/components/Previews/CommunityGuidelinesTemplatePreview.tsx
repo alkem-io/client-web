@@ -16,8 +16,8 @@ interface CommunityGuidelinesTemplatePreviewProps {
         description?: string;
         references?: ReferenceWithAuthorization[];
       };
-    }
-  }
+    };
+  };
 }
 
 const CommunityGuidelinesTemplatePreview: FC<CommunityGuidelinesTemplatePreviewProps> = ({ template, loading }) => {

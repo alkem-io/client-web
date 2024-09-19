@@ -7,7 +7,7 @@ export interface CommunityGuidelinesTemplate extends TemplateBase {
   communityGuidelines?: {
     id: string;
     profile: {
-      id?: string;  // it is set if editing a template. Is not sent to the server on update. It is used to update the References
+      id?: string; // it is set if editing a template. Is not sent to the server on update. It is used to update the References
       displayName: string;
       description?: string;
       references?: Reference[];
