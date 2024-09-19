@@ -1,8 +1,0 @@
-fragment PostTemplateCard on PostTemplate {
-  id
-  defaultDescription
-  type
-  profile {
-    ...TemplateCardProfileInfo
-  }
-}

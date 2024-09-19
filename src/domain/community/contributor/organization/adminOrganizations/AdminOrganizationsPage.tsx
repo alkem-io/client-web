@@ -9,7 +9,7 @@ import SimpleSearchableTable, {
   SearchableListItem,
 } from '../../../../shared/components/SearchableList/SimpleSearchableTable';
 import { IconButton } from '@mui/material';
-import { TuneOutlined, VerifiedUserOutlined } from '@mui/icons-material';
+import { TuneOutlined, VerifiedUser, VerifiedUserOutlined } from '@mui/icons-material';
 import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
 import LicensePlanDialog from './LicensePlanDialog';
 
@@ -58,14 +58,14 @@ const AdminOrganizationsPage: FC = () => {
     setLicenseDialogOpen(false);
   };
 
-  const orgActions = (item: SearchableListItem) => {
+  const getActions = (item: SearchableListItem) => {
     return (
       <>
         <IconButton onClick={() => onSettingsClick(item)} size="large" aria-label={'License'}>
           <TuneOutlined />
         </IconButton>
         <IconButton onClick={() => onVerificationClick(item)} size="large" aria-label={'Verify'}>
-          <VerifiedUserOutlined sx={{ color: item?.verified ? 'green' : '' }} />
+          {item?.verified ? <VerifiedUser color="success" /> : <VerifiedUserOutlined />}
         </IconButton>
       </>
     );
@@ -92,7 +92,7 @@ const AdminOrganizationsPage: FC = () => {
   return (
     <AdminLayout currentTab={AdminSection.Organization}>
       <SearchableListLayout newLink={`${url}/new`}>
-        <SimpleSearchableTable data={organizations} {...listProps} itemActions={orgActions} />
+        <SimpleSearchableTable data={organizations} {...listProps} itemActions={getActions} />
       </SearchableListLayout>
       <ConfirmationDialog
         actions={{
@@ -117,10 +117,10 @@ const AdminOrganizationsPage: FC = () => {
           confirmButtonText: getActionTranslation(selectedItem),
         }}
       />
-      {selectedItem?.id && (
+      {selectedItem?.accountId && (
         <LicensePlanDialog
           open={licenseDialogOpen}
-          entityId={selectedItem?.id}
+          accountId={selectedItem?.accountId}
           onClose={() => setLicenseDialogOpen(false)}
           licensePlans={licensePlans}
           assignLicensePlan={assignLicense}

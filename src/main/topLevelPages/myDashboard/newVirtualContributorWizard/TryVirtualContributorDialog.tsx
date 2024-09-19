@@ -183,6 +183,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
                   values={{ vcName: vcData?.virtualContributor.profile.displayName ?? '' }}
                   components={{
                     b: <strong />,
+                    br: <br />,
                     i: <em />,
                     icon: <InfoOutlinedIcon fontSize="small" color="primary" style={{ verticalAlign: 'bottom' }} />,
                     tooltip: (

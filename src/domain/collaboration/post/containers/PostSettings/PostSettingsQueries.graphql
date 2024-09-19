@@ -9,12 +9,10 @@ query PostSettings($postNameId: UUID_NAMEID!, $calloutId: UUID!) {
 fragment PostSettings on Post {
   id
   nameID
-  type
   authorization {
     id
     myPrivileges
   }
-
   profile {
     id
     displayName

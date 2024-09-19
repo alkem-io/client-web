@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 
 import {
   refetchAdminGlobalOrganizationsListQuery,
-  useAccountOnOrganizationLazyQuery,
   useAdminGlobalOrganizationsListQuery,
   useAdminOrganizationVerifyMutation,
   useAssignLicensePlanToAccountMutation,
@@ -29,7 +28,7 @@ enum OrgVerificationLifecycleEvents {
   RESET = 'RESET',
 }
 
-export interface OrgLicensePlan {
+export interface ContributorLicensePlan {
   id: string;
   name: string;
 }
@@ -93,7 +92,7 @@ export const useAdminGlobalOrganizationsList = () => {
           },
         });
       } catch (e) {
-        console.log('VERIFICATION_REQUEST event failed: ', e);
+        // ignore errors if the verification_request fails we still try to manually verify
       }
 
       await verifyOrg({
@@ -107,34 +106,13 @@ export const useAdminGlobalOrganizationsList = () => {
     }
   };
 
-  const [getAccountOrg] = useAccountOnOrganizationLazyQuery();
-  const getAccountId = async (entityId: string) => {
-    if (!entityId) {
-      return undefined;
-    }
-
-    const accountData = await getAccountOrg({
-      variables: {
-        organizationId: entityId,
-      },
-    });
-
-    return accountData?.data?.organization.account?.id;
-  };
-
   const [assignLicense] = useAssignLicensePlanToAccountMutation();
-  const assignLicensePlan = async (entityId: string, planId: string) => {
-    const accountId = await getAccountId(entityId);
-
-    if (!accountId) {
-      return;
-    }
-
+  const assignLicensePlan = async (accountId: string, licensePlanId: string) => {
     await assignLicense({
       variables: {
-        accountID: accountId,
-        licensePlanId: planId,
-        licensingID: data?.platform.licensing.id ?? '',
+        accountId,
+        licensePlanId,
+        licensingId: data?.platform.licensing.id ?? '',
       },
       refetchQueries: [
         refetchAdminGlobalOrganizationsListQuery({
@@ -147,18 +125,12 @@ export const useAdminGlobalOrganizationsList = () => {
   };
 
   const [revokeLicense] = useRevokeLicensePlanFromAccountMutation();
-  const revokeLicensePlan = async (entityId: string, planId: string) => {
-    const accountId = await getAccountId(entityId);
-
-    if (!accountId) {
-      return;
-    }
-
+  const revokeLicensePlan = async (accountId: string, licensePlanId: string) => {
     await revokeLicense({
       variables: {
-        accountID: accountId,
-        licensePlanId: planId,
-        licensingID: data?.platform.licensing.id ?? '',
+        accountId,
+        licensePlanId,
+        licensingId: data?.platform.licensing.id ?? '',
       },
       refetchQueries: [
         refetchAdminGlobalOrganizationsListQuery({
@@ -174,19 +146,20 @@ export const useAdminGlobalOrganizationsList = () => {
     () =>
       data?.organizationsPaginated.organization.map(org => ({
         id: org.id,
+        accountId: org.account?.id,
         value: org.profile.displayName,
         url: buildSettingsUrl(org.profile.url),
         verified: org.verification.lifecycle.state === OrgVerificationLifecycleStates.manuallyVerified,
         activeLicensePlanIds: data?.platform.licensing.plans
           .filter(({ licenseCredential }) =>
-            org.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
+            org.account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
           )
           .map(({ id }) => id),
       })) || [],
     [data]
   );
 
-  const licensePlans = useMemo<OrgLicensePlan[]>(
+  const licensePlans = useMemo<ContributorLicensePlan[]>(
     () =>
       data?.platform.licensing.plans
         .filter(plan => plan.type === LicensePlanType.AccountPlan)
@@ -202,7 +175,7 @@ export const useAdminGlobalOrganizationsList = () => {
     searchTerm,
     onSearchTermChange: setSearchTerm,
     onDelete: handleDelete,
-    handleVerification: handleVerification,
+    handleVerification,
     licensePlans,
     assignLicensePlan,
     revokeLicensePlan,

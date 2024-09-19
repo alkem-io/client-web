@@ -11,9 +11,6 @@ import JourneyCardHorizontal, {
 } from '../../../journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
-import InnovationPackCardHorizontal, {
-  InnovationPackCardHorizontalSkeleton,
-} from '../../../collaboration/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
 import InnovationHubCardHorizontal, {
   InnovationHubCardHorizontalSkeleton,
 } from '../../../innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
@@ -21,7 +18,6 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDialog';
 import useNewVirtualContributorWizard from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
-import CreateInnovationPackDialog from '../../../platform/admin/templates/InnovationPacks/admin/CreateInnovationPackDialog';
 import CreateInnovationHubDialog from '../../../innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
 import { AuthorizationPrivilege, SpaceType, SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import { VIRTUAL_CONTRIBUTORS_LIMIT } from '../../../../main/topLevelPages/myDashboard/myAccount/MyAccountBlockVCCampaignUser';
@@ -35,6 +31,10 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import EntityConfirmDeleteDialog from '../../../journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
+import InnovationPackCardHorizontal, {
+  InnovationPackCardHorizontalSkeleton,
+} from '../../../InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
+import CreateInnovationPackDialog from '../../../InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
 
 export const SPACE_COUNT_LIMIT = 3;
 

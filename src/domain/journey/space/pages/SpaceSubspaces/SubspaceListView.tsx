@@ -52,8 +52,8 @@ export const SubspaceListView: FC = () => {
   const [selectedItem, setSelectedItem] = useState<SearchableListItem | undefined>(undefined);
 
   useEffect(() => {
-    setSelectedState(defaultInnovationFlow?.states[0].displayName);
-  }, [defaultInnovationFlow?.states?.[0]?.displayName]);
+    setSelectedState(defaultInnovationFlow?.innovationFlow?.states?.[0].displayName);
+  }, [defaultInnovationFlow?.innovationFlow?.states?.[0]?.displayName]);
 
   const subspaces =
     data?.space?.subspaces?.map(s => ({
@@ -201,7 +201,7 @@ export const SubspaceListView: FC = () => {
           <BlockSectionTitle>{defaultInnovationFlow?.profile.displayName}</BlockSectionTitle>
           <InnovationFlowProfileView innovationFlow={defaultInnovationFlow} />
           <InnovationFlowStates
-            states={defaultInnovationFlow?.states}
+            states={defaultInnovationFlow?.innovationFlow?.states}
             selectedState={selectedState}
             onSelectState={state => setSelectedState(state.displayName)}
           />

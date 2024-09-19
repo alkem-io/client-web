@@ -1,0 +1,70 @@
+
+fragment TemplateProfileInfo on Template {
+  id
+  profile {
+    id
+    displayName
+    description
+    defaultTagset: tagset {
+      ...TagsetDetails
+    }
+    visual(type: CARD) {
+      ...VisualFull
+    }
+    url
+  }
+  type
+}
+
+fragment CalloutTemplate on Template {
+  ...TemplateProfileInfo
+  callout {
+    id
+    type
+    contributionPolicy {
+      id
+      allowedContributionTypes
+      state
+    }
+  }
+}
+
+fragment PostTemplate on Template {
+  ...TemplateProfileInfo
+  postDefaultDescription
+}
+
+fragment WhiteboardTemplate on Template {
+  ...TemplateProfileInfo
+  whiteboard {
+    id
+  }
+}
+
+fragment InnovationFlowTemplate on Template {
+  ...TemplateProfileInfo
+  innovationFlow {
+    id
+    states {
+      displayName
+      description
+    }
+  }
+}
+
+fragment CommunityGuidelinesTemplate on Template {
+  ...TemplateProfileInfo
+  communityGuidelines {
+    id
+    profile {
+      id
+      displayName
+      description
+      references {
+        ...ReferenceDetails
+      }
+    }
+  }
+}
+
+

@@ -18,7 +18,7 @@ import Section, { Header } from '../../../../../core/ui/content/deprecated/Secti
 import VisualUpload from '../../../../../core/ui/upload/VisualUpload/VisualUpload';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
-import { TagsetSegment, tagsetSegmentSchema } from '../Common/TagsetSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '../Common/TagsetSegment';
 import { ProfileSegment, profileSegmentSchema } from '../Common/ProfileSegment';
 import { organizationSegmentSchema, OrganizationSegment } from '../Common/OrganizationSegment';
 import { NameSegment, nameSegmentSchema } from '../Common/NameSegment';
@@ -44,6 +44,7 @@ const EmptyOrganization: Omit<Organization, 'authorization' | 'agent'> = {
       machineDef: '',
     },
   },
+  account: undefined,
   profile: {
     id: '',
     displayName: '',
@@ -71,8 +72,6 @@ const EmptyOrganization: Omit<Organization, 'authorization' | 'agent'> = {
     },
   },
   preferences: [],
-  subscriptions: [],
-  account: undefined,
 };
 
 interface Props {
@@ -145,7 +144,7 @@ export const OrganizationForm: FC<Props> = ({
     legalEntityName: organizationSegmentSchema.fields?.legalEntityName || yup.string(),
     website: organizationSegmentSchema.fields?.website || yup.string(),
     verified: organizationSegmentSchema.fields?.verified || yup.string(),
-    tagsets: tagsetSegmentSchema,
+    tagsets: tagsetsSegmentSchema,
     references: referenceSegmentSchema,
   });
 
