@@ -206,6 +206,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       },
     });
     setSelectedCalloutType(templateCallout.type);
+    setImportCalloutDialogOpen(false);
   };
 
   const CalloutIcon = selectedCalloutType ? calloutIcons[selectedCalloutType] : undefined;
