@@ -142,17 +142,13 @@ export const OpportunityList: FC = () => {
 
   const getActions = (item: SearchableListItem) => (
     <>
-      <MenuItemWithIcon disabled={false} iconComponent={ContentCopyOutlined} onClick={() => onDuplicateClick(item)}>
+      <MenuItemWithIcon disabled iconComponent={ContentCopyOutlined} onClick={() => onDuplicateClick(item)}>
         Duplicate Subspace
       </MenuItemWithIcon>
-      <MenuItemWithIcon
-        disabled={false}
-        iconComponent={DownloadForOfflineOutlined}
-        onClick={() => onSaveAsTemplateClick(item)}
-      >
+      <MenuItemWithIcon disabled iconComponent={DownloadForOfflineOutlined} onClick={() => onSaveAsTemplateClick(item)}>
         Save As Template
       </MenuItemWithIcon>
-      <MenuItemWithIcon disabled={false} iconComponent={DeleteOutline} onClick={() => onDeleteClick(item)}>
+      <MenuItemWithIcon iconComponent={DeleteOutline} onClick={() => onDeleteClick(item)}>
         {t('buttons.delete')}
       </MenuItemWithIcon>
     </>
