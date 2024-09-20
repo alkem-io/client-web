@@ -150,6 +150,7 @@ export const useAdminGlobalOrganizationsList = () => {
         value: org.profile.displayName,
         url: buildSettingsUrl(org.profile.url),
         verified: org.verification.lifecycle.state === OrgVerificationLifecycleStates.manuallyVerified,
+        avatar: org.profile.visual,
         activeLicensePlanIds: data?.platform.licensing.plans
           .filter(({ licenseCredential }) =>
             org.account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)

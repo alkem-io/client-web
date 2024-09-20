@@ -82,6 +82,7 @@ const useAdminGlobalUserList = ({
         accountId: account?.id,
         value: `${profile.displayName} (${email})`,
         url: buildSettingsUrl(profile.url),
+        avatar: profile.visual,
         activeLicensePlanIds: data?.platform.licensing.plans
           .filter(({ licenseCredential }) =>
             account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)

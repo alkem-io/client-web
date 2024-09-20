@@ -1,11 +1,20 @@
 import React, { ReactNode } from 'react';
 import { gutters } from '../../../../core/ui/grid/utils';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import { Chip, Paper, PaperProps, Skeleton, Typography } from '@mui/material';
+import {
+  Chip,
+  ListItemButton,
+  ListItemButtonProps,
+  ListItemButtonTypeMap,
+  Paper,
+  PaperProps,
+  Skeleton,
+  Typography,
+} from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
 import { Visual } from '../../../common/visual/Visual';
 import withElevationOnHover from '../../../shared/components/withElevationOnHover';
-import RouterLink from '../../../../core/ui/link/RouterLink';
+import RouterLink, { RouterLinkProps } from '../../../../core/ui/link/RouterLink';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import JourneyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import BlockTitleWithIcon from '../../../../core/ui/content/BlockTitleWithIcon';
@@ -53,6 +62,10 @@ const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
 const VISIBLE_COMMUNITY_ROLES = [CommunityRole.Admin, CommunityRole.Lead] as const;
 
+const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultComponent'], P = {}>(
+  props: ListItemButtonProps<D, P> & RouterLinkProps
+) => <ListItemButton component={RouterLink} {...props} />;
+
 const JourneyCardHorizontal = ({
   journey,
   journeyTypeName,
@@ -79,7 +92,7 @@ const JourneyCardHorizontal = ({
     <ElevatedPaper sx={mergedSx} elevation={seamless ? 0 : undefined}>
       <BadgeCardView
         visual={<JourneyAvatar size={size} src={journey.profile.avatar?.uri || journey.profile.cardBanner?.uri} />}
-        component={RouterLink}
+        component={Wrapper}
         to={journey.profile.url}
         actions={actions && <ActionsMenu>{actions}</ActionsMenu>}
       >
