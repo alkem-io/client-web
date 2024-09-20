@@ -69,17 +69,12 @@ class Portal {
     return new Promise(async (resolve, reject) => {
       const { default: socketIOClient } = await import('socket.io-client');
 
-      const socket = socketIOClient(
-        'localhost:4002',
-        // connectionOptions.url,
-        {
-          transports: connectionOptions.polling ? ['websocket', 'polling'] : ['websocket'],
-          // path: '/api/private/ws/socket.io',
-          path: '/socket.io',
-          retries: 0,
-          reconnection: false,
-        }
-      );
+      const socket = socketIOClient(connectionOptions.url, {
+        transports: connectionOptions.polling ? ['websocket', 'polling'] : ['websocket'],
+        path: '/api/private/ws/socket.io',
+        retries: 0,
+        reconnection: false,
+      });
 
       this.socket = socket;
       this.roomId = connectionOptions.roomId;
