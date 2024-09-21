@@ -40,7 +40,7 @@ import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../../templat
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
-  const { spaceId, loading: isLoadingSpace, communityId, profile: spaceProfile } = useSpace();
+  const { spaceId, loading: isLoadingSpace, communityId, roleSetId, profile: spaceProfile } = useSpace();
 
   const {
     users,

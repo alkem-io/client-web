@@ -12,7 +12,7 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { EntityDashboardContributors } from '../EntityDashboardContributorsSection/Types';
 
-interface CommunityMembers {
+export interface RoleSetMembers {
   memberUsers?: DashboardContributingUserFragment[];
   memberOrganizations?: DashboardContributingOrganizationFragment[];
 }
@@ -75,7 +75,7 @@ const applyLimit = <Item>(items: Item[] | undefined, limit?: number): Item[] | u
   limit && items ? items.slice(0, limit) : items;
 
 const useCommunityMembersAsCardProps = (
-  community: CommunityMembers | undefined,
+  community: RoleSetMembers | undefined,
   options: Options = {}
 ): EntityDashboardContributors => {
   const {

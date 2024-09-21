@@ -2031,6 +2031,9 @@ export const SubspaceProviderFragmentDoc = gql`
         id
         myPrivileges
       }
+      roleSet {
+        id
+      }
     }
   }
   ${VisualFullFragmentDoc}
@@ -2221,6 +2224,9 @@ export const SpaceInfoFragmentDoc = gql`
       authorization {
         id
         myPrivileges
+      }
+      roleSet {
+        id
       }
     }
     context {
@@ -14975,6 +14981,19 @@ export const AboutPageNonMembersDocument = gql`
             id
             myPrivileges
           }
+          roleSet {
+            id
+            authorization {
+              id
+              myPrivileges
+            }
+            memberUsers: usersInRole(role: MEMBER, limit: 8) {
+              ...DashboardContributingUser
+            }
+            memberOrganizations: organizationsInRole(role: MEMBER) {
+              ...DashboardContributingOrganization
+            }
+          }
         }
         context {
           ...ContextTab
@@ -14999,6 +15018,8 @@ export const AboutPageNonMembersDocument = gql`
   ${VisualFullFragmentDoc}
   ${ContributorDetailsFragmentDoc}
   ${MetricsItemFragmentDoc}
+  ${DashboardContributingUserFragmentDoc}
+  ${DashboardContributingOrganizationFragmentDoc}
   ${ContextTabFragmentDoc}
 `;
 
@@ -15079,7 +15100,13 @@ export const AboutPageMembersDocument = gql`
           id
           roleSet {
             id
-            virtualContributors: virtualContributorsInRole(role: MEMBER) {
+            memberUsers: usersInRole(role: MEMBER, limit: 8) {
+              ...DashboardContributingUser
+            }
+            memberOrganizations: organizationsInRole(role: MEMBER) {
+              ...DashboardContributingOrganization
+            }
+            memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
               id
               searchVisibility
               profile {
@@ -15099,6 +15126,8 @@ export const AboutPageMembersDocument = gql`
   }
   ${RoleSetContributorRolesFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
+  ${DashboardContributingUserFragmentDoc}
+  ${DashboardContributingOrganizationFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 

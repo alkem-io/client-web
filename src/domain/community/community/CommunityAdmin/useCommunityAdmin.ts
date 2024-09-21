@@ -50,7 +50,7 @@ const buildOrganizationFilterObject = (filter: string | undefined) =>
 // TODO: Inherit from CoreEntityIds when they are not NameIds
 interface useCommunityAdminParams {
   communityId: string;
-  roleSetId;
+  roleSetId: string;
   spaceId?: string;
   challengeId?: string;
   opportunityId?: string;

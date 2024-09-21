@@ -3,7 +3,6 @@ import { ApolloError } from '@apollo/client';
 import {
   AssociatedOrganizationDetailsFragment,
   AuthorizationPrivilege,
-  Community,
   ContextTabFragment,
   DashboardLeadUserFragment,
   MetricsItemFragment,
@@ -14,7 +13,9 @@ import {
 } from '../../../../core/apollo/generated/graphql-schema';
 import { ContributorCardSquareProps } from '../../../community/contributor/ContributorCardSquare/ContributorCardSquare';
 import { WithId } from '../../../../core/utils/WithId';
-import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
+import useCommunityMembersAsCardProps, {
+  RoleSetMembers,
+} from '../../../community/community/utils/useCommunityMembersAsCardProps';
 import { ContainerChildProps } from '../../../../core/container/container';
 import { useAboutPageMembersQuery, useAboutPageNonMembersQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
@@ -89,7 +90,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }
   });
 
   const memberProfile = membersData?.lookup.space?.profile;
-  const virtualContributors = membersData?.lookup.space?.community.roleSet.virtualContributors.filter(
+  const virtualContributors = membersData?.lookup.space?.community.roleSet.memberVirtualContributors.filter(
     vc => vc.searchVisibility === SearchVisibility.Public
   );
   const hasReadPrivilege = membersData?.lookup.space?.authorization?.myPrivileges?.includes(
@@ -99,17 +100,19 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }
   const context = nonMemberContext;
 
   const nonMemberJourney = nonMembersData?.lookup.space;
+  const nonMemberRoleSet = nonMemberJourney?.community.roleSet;
   const memberJourney = membersData?.lookup.space;
+  const memberRoleset = memberJourney?.community.roleSet;
 
   const tagset = nonMemberJourney?.profile?.tagset;
   // TODO looks like space is missing
   const collaboration = nonMembersData?.lookup.space?.collaboration;
 
   const provider = nonMembersData?.lookup.space?.provider;
-  const community = {
-    ...nonMemberJourney?.community,
-    ...memberJourney?.community,
-  } as Community;
+  const communityRoleSet: RoleSetMembers = {
+    ...nonMemberRoleSet,
+    ...memberRoleset,
+  };
   const leadUsers = memberJourney?.community?.roleSet.leadUsers;
   const leadOrganizations = memberJourney?.community?.roleSet.leadOrganizations;
   const leadVirtualContributors = memberJourney?.community?.roleSet.leadVirtualContributors;
@@ -118,8 +121,8 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }
   const metrics = nonMemberJourney?.metrics;
 
   const membersCount = getMetricCount(metrics, MetricType.Member);
-  const memberUsersCount = membersCount - (community.roleSet.organizationsInRole?.length ?? 0); // Todo: may not be safe, better to simply report out metrics on member users + member orgs
-  const contributors = useCommunityMembersAsCardProps(community, { memberUsersCount });
+  const memberUsersCount = membersCount - (communityRoleSet.memberOrganizations?.length ?? 0); // Todo: may not be safe, better to simply report out metrics on member users + member orgs
+  const contributors = useCommunityMembersAsCardProps(communityRoleSet, { memberUsersCount });
 
   const permissions: AboutPagePermissions = {
     communityReadAccess,

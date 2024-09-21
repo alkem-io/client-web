@@ -45,6 +45,19 @@ query AboutPageNonMembers($spaceId: UUID!) {
           id
           myPrivileges
         }
+        roleSet {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+          memberUsers: usersInRole(role: MEMBER, limit: 8) {
+            ...DashboardContributingUser
+          }
+          memberOrganizations: organizationsInRole(role: MEMBER) {
+            ...DashboardContributingOrganization
+          }
+        }
       }
       context {
         ...ContextTab
@@ -90,7 +103,13 @@ query AboutPageMembers($spaceId: UUID!) {
         id
         roleSet {
           id
-          virtualContributors: virtualContributorsInRole(role: MEMBER) {
+          memberUsers: usersInRole(role: MEMBER, limit: 8) {
+            ...DashboardContributingUser
+          }
+          memberOrganizations: organizationsInRole(role: MEMBER) {
+            ...DashboardContributingOrganization
+          }
+          memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
             id
             searchVisibility
             profile {

@@ -19184,6 +19184,59 @@ export type AboutPageNonMembersQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
+            roleSet: {
+              __typename?: 'RoleSet';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+              memberUsers: Array<{
+                __typename?: 'User';
+                id: string;
+                isContactable: boolean;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                };
+              }>;
+              memberOrganizations: Array<{
+                __typename?: 'Organization';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                };
+              }>;
+            };
           };
           context: {
             __typename?: 'Context';
@@ -19228,19 +19281,6 @@ export type AboutPageMembersQuery = {
             roleSet: {
               __typename?: 'RoleSet';
               id: string;
-              virtualContributors: Array<{
-                __typename?: 'VirtualContributor';
-                id: string;
-                searchVisibility: SearchVisibility;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  tagline?: string | undefined;
-                  url: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                };
-              }>;
               memberUsers: Array<{
                 __typename?: 'User';
                 id: string;
@@ -19266,18 +19306,15 @@ export type AboutPageMembersQuery = {
                     | undefined;
                 };
               }>;
-              leadUsers: Array<{
-                __typename?: 'User';
+              memberOrganizations: Array<{
+                __typename?: 'Organization';
                 id: string;
                 nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  location?:
-                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-                    | undefined;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagsets?:
                     | Array<{
                         __typename?: 'Tagset';
@@ -19290,15 +19327,31 @@ export type AboutPageMembersQuery = {
                     | undefined;
                 };
               }>;
-              memberOrganizations: Array<{
-                __typename?: 'Organization';
+              memberVirtualContributors: Array<{
+                __typename?: 'VirtualContributor';
+                id: string;
+                searchVisibility: SearchVisibility;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  tagline?: string | undefined;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+              }>;
+              leadUsers: Array<{
+                __typename?: 'User';
                 id: string;
                 nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                    | undefined;
                   tagsets?:
                     | Array<{
                         __typename?: 'Tagset';
@@ -19883,6 +19936,7 @@ export type SubspaceProviderQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
+            roleSet: { __typename?: 'RoleSet'; id: string };
           };
         }
       | undefined;
@@ -19949,6 +20003,7 @@ export type SubspaceProviderFragment = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
+    roleSet: { __typename?: 'RoleSet'; id: string };
   };
 };
 
@@ -20410,6 +20465,7 @@ export type SpaceProviderQuery = {
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
+      roleSet: { __typename?: 'RoleSet'; id: string };
     };
     context: {
       __typename?: 'Context';
@@ -20504,6 +20560,7 @@ export type SpaceInfoFragment = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
+    roleSet: { __typename?: 'RoleSet'; id: string };
   };
   context: {
     __typename?: 'Context';

@@ -17,6 +17,7 @@ export interface OpportunityContextProps {
   opportunity?: SubspaceProviderFragment;
   opportunityId: string;
   communityId: string;
+  roleSetId: string;
   loading: boolean;
   permissions: OpportunityViewerPermissions;
   myMembershipStatus: CommunityMembershipStatus | undefined;
@@ -28,6 +29,7 @@ const DEFAULT_CONTEXT = {
   opportunityId: '',
   opportunityNameId: '',
   communityId: '',
+  roleSetId: '',
   challengeId: '',
   challengeNameId: '',
   spaceId: '',
@@ -69,6 +71,7 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
   const opportunity = data?.lookup.space;
 
   const communityId = opportunity?.community?.id ?? '';
+  const roleSetId = opportunity?.community?.roleSet?.id ?? '';
 
   const permissions = useMemo<OpportunityViewerPermissions>(
     () => ({
@@ -87,6 +90,7 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
         opportunity,
         opportunityId: opportunityId ?? '',
         communityId,
+        roleSetId,
         permissions,
         loading,
         profile: opportunity?.profile ?? DEFAULT_CONTEXT.profile,

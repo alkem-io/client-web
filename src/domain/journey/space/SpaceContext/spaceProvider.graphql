@@ -27,6 +27,9 @@ fragment SpaceInfo on Space {
       id
       myPrivileges
     }
+    roleSet {
+      id
+    }
   }
   context {
     id
