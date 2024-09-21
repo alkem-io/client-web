@@ -1,0 +1,58 @@
+
+
+fragment RoleSetDetails on RoleSet {
+  id
+  memberUsers: usersInRole(role: MEMBER) {
+    ...CommunityMemberUser
+  }
+  leadUsers: usersInRole(role: LEAD) {
+    ...CommunityMemberUser
+  }
+
+  memberOrganizations: organizationsInRole(role: MEMBER) {
+    ...OrganizationDetails
+  }
+  leadOrganizations: organizationsInRole(role: LEAD) {
+    ...OrganizationDetails
+  }
+
+  memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
+    ...CommunityMemberVirtualContributor
+  }
+
+  memberRoleDefinition: roleDefinition(role: MEMBER) {
+    ...RoleDefinitionPolicy
+  }
+  leadRoleDefinition: roleDefinition(role: LEAD) {
+    ...RoleDefinitionPolicy
+  }
+
+  authorization {
+    id
+    myPrivileges
+  }
+}
+
+fragment RoleSetAvailableLeadUsers on RoleSet {
+  id
+  availableUsersForLeadRole(first: $first, after: $after, filter: $filter) {
+    users {
+      ...AvailableUser
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}
+
+fragment RoleSetAvailableMemberUsers on RoleSet {
+  id
+  availableUsersForMemberRole(first: $first, after: $after, filter: $filter) {
+    users {
+      ...AvailableUser
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}

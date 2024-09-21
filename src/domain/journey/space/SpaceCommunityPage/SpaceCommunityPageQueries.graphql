@@ -17,42 +17,13 @@ query SpaceCommunityPage($spaceNameId: UUID_NAMEID!, $includeCommunity: Boolean!
       myPrivileges
     }
     community @include(if: $includeCommunity) {
-      ...CommunityPageCommunity
+      id
+      roleSet {
+        ...RoleSetDetails
+      }
     }
     collaboration {
       id
-    }
-  }
-}
-
-fragment CommunityPageCommunity on Community {
-  id
-  roleSet {
-    id
-    leadUsers: usersInRole(role: LEAD) {
-      ...DashboardLeadUser
-    }
-    memberUsers: usersInRole(role: MEMBER) {
-      ...DashboardContributingUser
-    }
-    leadOrganizations: organizationsInRole(role: LEAD) {
-      ...AssociatedOrganizationDetails
-    }
-    memberOrganizations: organizationsInRole(role: MEMBER) {
-      ...DashboardContributingOrganization
-    }
-    virtualContributors: virtualContributorsInRole(role: MEMBER) {
-      id
-      searchVisibility
-      profile {
-        id
-        displayName
-        tagline
-        url
-        avatar: visual(type: AVATAR) {
-          ...VisualUri
-        }
-      }
     }
   }
 }

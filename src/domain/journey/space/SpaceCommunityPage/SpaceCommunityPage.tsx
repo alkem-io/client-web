@@ -106,7 +106,7 @@ const SpaceCommunityPage = () => {
   let virtualContributors: VirtualContributorProps[] = [];
   if (hasReadPrivilege) {
     virtualContributors =
-      data?.space.community?.roleSet?.virtualContributors?.filter(
+      data?.space.community?.roleSet?.memberVirtualContributors?.filter(
         vc => vc?.searchVisibility !== SearchVisibility.Hidden
       ) ?? [];
   }

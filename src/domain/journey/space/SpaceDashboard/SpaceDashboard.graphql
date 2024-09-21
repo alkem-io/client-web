@@ -81,24 +81,8 @@ fragment SpacePage on Space {
     roleSet {
       id
       leadUsers: usersInRole(role: LEAD) {
-        profile {
-          ...SpaceWelcomeBlockContributorProfile
-        }
+        ...DashboardLeadUser
       }
     }
-  }
-}
-
-fragment SpaceWelcomeBlockContributorProfile on Profile {
-  id
-  displayName
-  location {
-    id
-    city
-    country
-  }
-  tagsets {
-    id
-    tags
   }
 }

@@ -127,8 +127,8 @@ const useCommunityAdmin = ({
     loading: loadingApplications,
     refetch: refetchApplicationsAndInvitations,
   } = useCommunityApplicationsInvitationsQuery({
-    variables: { communityId },
-    skip: !communityId,
+    variables: { roleSetId },
+    skip: !roleSetId,
   });
 
   // Members:
@@ -211,7 +211,7 @@ const useCommunityAdmin = ({
 
   const virtualContributors = useMemo(() => {
     const roleSet = data?.lookup.community?.roleSet;
-    return roleSet?.virtualContributorsInRole ?? [];
+    return roleSet?.memberVirtualContributors ?? [];
   }, [data]);
 
   // Available new members:
@@ -508,6 +508,7 @@ const useCommunityAdmin = ({
     });
     await refetchApplicationsAndInvitations();
   };
+  const roleSet = dataApplications?.lookup.roleSet;
 
   return {
     users,
@@ -516,9 +517,9 @@ const useCommunityAdmin = ({
     memberRoleDefinition,
     leadRoleDefinition,
     permissions,
-    applications: dataApplications?.lookup.community?.roleSet.applications,
-    invitations: dataApplications?.lookup.community?.roleSet.invitations,
-    platformInvitations: dataApplications?.lookup.community?.roleSet.platformInvitations,
+    applications: roleSet?.applications,
+    invitations: roleSet?.invitations,
+    platformInvitations: roleSet?.platformInvitations,
     onApplicationStateChange: handleApplicationStateChange,
     onInvitationStateChange: handleInvitationStateChange,
     onUserLeadChange: handleUserLeadChange,

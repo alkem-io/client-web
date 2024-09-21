@@ -43,6 +43,237 @@ export const VisualUriFragmentDoc = gql`
     name
   }
 `;
+export const AdminCommunityCandidateMemberFragmentDoc = gql`
+  fragment AdminCommunityCandidateMember on Contributor {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      location {
+        id
+        city
+        country
+      }
+      url
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const AdminCommunityApplicationFragmentDoc = gql`
+  fragment AdminCommunityApplication on Application {
+    id
+    createdDate
+    updatedDate
+    lifecycle {
+      id
+      state
+      nextEvents
+    }
+    contributor {
+      ...AdminCommunityCandidateMember
+      ... on User {
+        email
+      }
+    }
+    questions {
+      id
+      name
+      value
+    }
+  }
+  ${AdminCommunityCandidateMemberFragmentDoc}
+`;
+export const AdminCommunityInvitationFragmentDoc = gql`
+  fragment AdminCommunityInvitation on Invitation {
+    id
+    createdDate
+    updatedDate
+    lifecycle {
+      id
+      state
+      nextEvents
+    }
+    contributorType
+    contributor {
+      ...AdminCommunityCandidateMember
+      ... on User {
+        email
+      }
+    }
+  }
+  ${AdminCommunityCandidateMemberFragmentDoc}
+`;
+export const AdminPlatformInvitationCommunityFragmentDoc = gql`
+  fragment AdminPlatformInvitationCommunity on PlatformInvitation {
+    id
+    createdDate
+    email
+  }
+`;
+export const CommunityMemberUserFragmentDoc = gql`
+  fragment CommunityMemberUser on User {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      location {
+        id
+        city
+        country
+      }
+    }
+    email
+    firstName
+    lastName
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const OrganizationDetailsFragmentDoc = gql`
+  fragment OrganizationDetails on Organization {
+    id
+    nameID
+    profile {
+      id
+      url
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      description
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        country
+        city
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
+export const CommunityMemberVirtualContributorFragmentDoc = gql`
+  fragment CommunityMemberVirtualContributor on VirtualContributor {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      url
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      location {
+        id
+        city
+        country
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const RoleDefinitionPolicyFragmentDoc = gql`
+  fragment RoleDefinitionPolicy on Role {
+    id
+    organizationPolicy {
+      minimum
+      maximum
+    }
+    userPolicy {
+      minimum
+      maximum
+    }
+  }
+`;
+export const RoleSetDetailsFragmentDoc = gql`
+  fragment RoleSetDetails on RoleSet {
+    id
+    memberUsers: usersInRole(role: MEMBER) {
+      ...CommunityMemberUser
+    }
+    leadUsers: usersInRole(role: LEAD) {
+      ...CommunityMemberUser
+    }
+    memberOrganizations: organizationsInRole(role: MEMBER) {
+      ...OrganizationDetails
+    }
+    leadOrganizations: organizationsInRole(role: LEAD) {
+      ...OrganizationDetails
+    }
+    memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
+      ...CommunityMemberVirtualContributor
+    }
+    memberRoleDefinition: roleDefinition(role: MEMBER) {
+      ...RoleDefinitionPolicy
+    }
+    leadRoleDefinition: roleDefinition(role: LEAD) {
+      ...RoleDefinitionPolicy
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${CommunityMemberUserFragmentDoc}
+  ${OrganizationDetailsFragmentDoc}
+  ${CommunityMemberVirtualContributorFragmentDoc}
+  ${RoleDefinitionPolicyFragmentDoc}
+`;
+export const AvailableUserFragmentDoc = gql`
+  fragment AvailableUser on User {
+    id
+    profile {
+      id
+      displayName
+    }
+    email
+  }
+`;
+export const PageInfoFragmentDoc = gql`
+  fragment PageInfo on PageInfo {
+    startCursor
+    endCursor
+    hasNextPage
+  }
+`;
+export const RoleSetAvailableLeadUsersFragmentDoc = gql`
+  fragment RoleSetAvailableLeadUsers on RoleSet {
+    id
+    availableUsersForLeadRole(first: $first, after: $after, filter: $filter) {
+      users {
+        ...AvailableUser
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+  ${AvailableUserFragmentDoc}
+  ${PageInfoFragmentDoc}
+`;
+export const RoleSetAvailableMemberUsersFragmentDoc = gql`
+  fragment RoleSetAvailableMemberUsers on RoleSet {
+    id
+    availableUsersForMemberRole(first: $first, after: $after, filter: $filter) {
+      users {
+        ...AvailableUser
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+  ${AvailableUserFragmentDoc}
+  ${PageInfoFragmentDoc}
+`;
 export const AccountItemProfileFragmentDoc = gql`
   fragment AccountItemProfile on Profile {
     id
@@ -976,77 +1207,6 @@ export const DiscussionCardFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-export const AdminCommunityCandidateMemberFragmentDoc = gql`
-  fragment AdminCommunityCandidateMember on Contributor {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      location {
-        id
-        city
-        country
-      }
-      url
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const AdminCommunityApplicationFragmentDoc = gql`
-  fragment AdminCommunityApplication on Application {
-    id
-    createdDate
-    updatedDate
-    lifecycle {
-      id
-      state
-      nextEvents
-    }
-    contributor {
-      ...AdminCommunityCandidateMember
-      ... on User {
-        email
-      }
-    }
-    questions {
-      id
-      name
-      value
-    }
-  }
-  ${AdminCommunityCandidateMemberFragmentDoc}
-`;
-export const AdminCommunityInvitationFragmentDoc = gql`
-  fragment AdminCommunityInvitation on Invitation {
-    id
-    createdDate
-    updatedDate
-    lifecycle {
-      id
-      state
-      nextEvents
-    }
-    contributorType
-    contributor {
-      ...AdminCommunityCandidateMember
-      ... on User {
-        email
-      }
-    }
-  }
-  ${AdminCommunityCandidateMemberFragmentDoc}
-`;
-export const AdminPlatformInvitationCommunityFragmentDoc = gql`
-  fragment AdminPlatformInvitationCommunity on PlatformInvitation {
-    id
-    createdDate
-    email
-  }
-`;
 export const ApplicationFormFragmentDoc = gql`
   fragment ApplicationForm on Form {
     id
@@ -1131,166 +1291,6 @@ export const BasicOrganizationDetailsFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
-`;
-export const CommunityMemberUserFragmentDoc = gql`
-  fragment CommunityMemberUser on User {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      location {
-        id
-        city
-        country
-      }
-    }
-    email
-    firstName
-    lastName
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const OrganizationDetailsFragmentDoc = gql`
-  fragment OrganizationDetails on Organization {
-    id
-    nameID
-    profile {
-      id
-      url
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      description
-      tagsets {
-        ...TagsetDetails
-      }
-      location {
-        country
-        city
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export const CommunityMemberVirtualContributorFragmentDoc = gql`
-  fragment CommunityMemberVirtualContributor on VirtualContributor {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      url
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      location {
-        id
-        city
-        country
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const RoleDefinitionPolicyFragmentDoc = gql`
-  fragment RoleDefinitionPolicy on Role {
-    id
-    organizationPolicy {
-      minimum
-      maximum
-    }
-    userPolicy {
-      minimum
-      maximum
-    }
-  }
-`;
-export const RoleSetDetailsFragmentDoc = gql`
-  fragment RoleSetDetails on RoleSet {
-    id
-    memberUsers: usersInRole(role: MEMBER) {
-      ...CommunityMemberUser
-    }
-    leadUsers: usersInRole(role: LEAD) {
-      ...CommunityMemberUser
-    }
-    memberOrganizations: organizationsInRole(role: MEMBER) {
-      ...OrganizationDetails
-    }
-    leadOrganizations: organizationsInRole(role: LEAD) {
-      ...OrganizationDetails
-    }
-    virtualContributorsInRole(role: MEMBER) {
-      ...CommunityMemberVirtualContributor
-    }
-    memberRoleDefinition: roleDefinition(role: MEMBER) {
-      ...RoleDefinitionPolicy
-    }
-    leadRoleDefinition: roleDefinition(role: LEAD) {
-      ...RoleDefinitionPolicy
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-  ${CommunityMemberUserFragmentDoc}
-  ${OrganizationDetailsFragmentDoc}
-  ${CommunityMemberVirtualContributorFragmentDoc}
-  ${RoleDefinitionPolicyFragmentDoc}
-`;
-export const AvailableUserFragmentDoc = gql`
-  fragment AvailableUser on User {
-    id
-    profile {
-      id
-      displayName
-    }
-    email
-  }
-`;
-export const PageInfoFragmentDoc = gql`
-  fragment PageInfo on PageInfo {
-    startCursor
-    endCursor
-    hasNextPage
-  }
-`;
-export const RoleSetAvailableLeadUsersFragmentDoc = gql`
-  fragment RoleSetAvailableLeadUsers on RoleSet {
-    id
-    availableUsersForLeadRole(first: $first, after: $after, filter: $filter) {
-      users {
-        ...AvailableUser
-      }
-      pageInfo {
-        ...PageInfo
-      }
-    }
-  }
-  ${AvailableUserFragmentDoc}
-  ${PageInfoFragmentDoc}
-`;
-export const RoleSetAvailableMemberUsersFragmentDoc = gql`
-  fragment RoleSetAvailableMemberUsers on RoleSet {
-    id
-    availableUsersForMemberRole(first: $first, after: $after, filter: $filter) {
-      users {
-        ...AvailableUser
-      }
-      pageInfo {
-        ...PageInfo
-      }
-    }
-  }
-  ${AvailableUserFragmentDoc}
-  ${PageInfoFragmentDoc}
 `;
 export const VirtualContributorNameFragmentDoc = gql`
   fragment VirtualContributorName on VirtualContributor {
@@ -2076,87 +2076,6 @@ export const SpaceCardFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
-export const DashboardContributingUserFragmentDoc = gql`
-  fragment DashboardContributingUser on User {
-    id
-    isContactable
-    nameID
-    profile {
-      id
-      displayName
-      location {
-        id
-        city
-        country
-      }
-      visual(type: AVATAR) {
-        id
-        uri
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-`;
-export const DashboardContributingOrganizationFragmentDoc = gql`
-  fragment DashboardContributingOrganization on Organization {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      visual(type: AVATAR) {
-        id
-        uri
-        name
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-`;
-export const CommunityPageCommunityFragmentDoc = gql`
-  fragment CommunityPageCommunity on Community {
-    id
-    roleSet {
-      id
-      leadUsers: usersInRole(role: LEAD) {
-        ...DashboardLeadUser
-      }
-      memberUsers: usersInRole(role: MEMBER) {
-        ...DashboardContributingUser
-      }
-      leadOrganizations: organizationsInRole(role: LEAD) {
-        ...AssociatedOrganizationDetails
-      }
-      memberOrganizations: organizationsInRole(role: MEMBER) {
-        ...DashboardContributingOrganization
-      }
-      virtualContributors: virtualContributorsInRole(role: MEMBER) {
-        id
-        searchVisibility
-        profile {
-          id
-          displayName
-          tagline
-          url
-          avatar: visual(type: AVATAR) {
-            ...VisualUri
-          }
-        }
-      }
-    }
-  }
-  ${DashboardLeadUserFragmentDoc}
-  ${DashboardContributingUserFragmentDoc}
-  ${AssociatedOrganizationDetailsFragmentDoc}
-  ${DashboardContributingOrganizationFragmentDoc}
-  ${VisualUriFragmentDoc}
-`;
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
     id
@@ -2277,21 +2196,6 @@ export const DashboardTimelineAuthorizationFragmentDoc = gql`
     }
   }
 `;
-export const SpaceWelcomeBlockContributorProfileFragmentDoc = gql`
-  fragment SpaceWelcomeBlockContributorProfile on Profile {
-    id
-    displayName
-    location {
-      id
-      city
-      country
-    }
-    tagsets {
-      id
-      tags
-    }
-  }
-`;
 export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
     id
@@ -2347,9 +2251,7 @@ export const SpacePageFragmentDoc = gql`
       roleSet {
         id
         leadUsers: usersInRole(role: LEAD) {
-          profile {
-            ...SpaceWelcomeBlockContributorProfile
-          }
+          ...DashboardLeadUser
         }
       }
     }
@@ -2359,7 +2261,7 @@ export const SpacePageFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
-  ${SpaceWelcomeBlockContributorProfileFragmentDoc}
+  ${DashboardLeadUserFragmentDoc}
 `;
 export const SubspaceCardFragmentDoc = gql`
   fragment SubspaceCard on Space {
@@ -2408,6 +2310,49 @@ export const SubspacesOnSpaceFragmentDoc = gql`
     }
   }
   ${SubspaceCardFragmentDoc}
+`;
+export const DashboardContributingUserFragmentDoc = gql`
+  fragment DashboardContributingUser on User {
+    id
+    isContactable
+    nameID
+    profile {
+      id
+      displayName
+      location {
+        id
+        city
+        country
+      }
+      visual(type: AVATAR) {
+        id
+        uri
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+`;
+export const DashboardContributingOrganizationFragmentDoc = gql`
+  fragment DashboardContributingOrganization on Organization {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      visual(type: AVATAR) {
+        id
+        uri
+        name
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
 `;
 export const DashboardContributingVirtualContributorFragmentDoc = gql`
   fragment DashboardContributingVirtualContributor on VirtualContributor {
@@ -4491,6 +4436,211 @@ export type UpdateInnovationPackMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationPackMutation,
   SchemaTypes.UpdateInnovationPackMutationVariables
 >;
+export const CommunityApplicationsInvitationsDocument = gql`
+  query CommunityApplicationsInvitations($roleSetId: UUID!) {
+    lookup {
+      roleSet(ID: $roleSetId) {
+        applications {
+          ...AdminCommunityApplication
+        }
+        invitations {
+          ...AdminCommunityInvitation
+        }
+        platformInvitations {
+          ...AdminPlatformInvitationCommunity
+        }
+      }
+    }
+  }
+  ${AdminCommunityApplicationFragmentDoc}
+  ${AdminCommunityInvitationFragmentDoc}
+  ${AdminPlatformInvitationCommunityFragmentDoc}
+`;
+
+/**
+ * __useCommunityApplicationsInvitationsQuery__
+ *
+ * To run a query within a React component, call `useCommunityApplicationsInvitationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityApplicationsInvitationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityApplicationsInvitationsQuery({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *   },
+ * });
+ */
+export function useCommunityApplicationsInvitationsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityApplicationsInvitationsQuery,
+    SchemaTypes.CommunityApplicationsInvitationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CommunityApplicationsInvitationsQuery,
+    SchemaTypes.CommunityApplicationsInvitationsQueryVariables
+  >(CommunityApplicationsInvitationsDocument, options);
+}
+
+export function useCommunityApplicationsInvitationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityApplicationsInvitationsQuery,
+    SchemaTypes.CommunityApplicationsInvitationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CommunityApplicationsInvitationsQuery,
+    SchemaTypes.CommunityApplicationsInvitationsQueryVariables
+  >(CommunityApplicationsInvitationsDocument, options);
+}
+
+export type CommunityApplicationsInvitationsQueryHookResult = ReturnType<
+  typeof useCommunityApplicationsInvitationsQuery
+>;
+export type CommunityApplicationsInvitationsLazyQueryHookResult = ReturnType<
+  typeof useCommunityApplicationsInvitationsLazyQuery
+>;
+export type CommunityApplicationsInvitationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityApplicationsInvitationsQuery,
+  SchemaTypes.CommunityApplicationsInvitationsQueryVariables
+>;
+export function refetchCommunityApplicationsInvitationsQuery(
+  variables: SchemaTypes.CommunityApplicationsInvitationsQueryVariables
+) {
+  return { query: CommunityApplicationsInvitationsDocument, variables: variables };
+}
+
+export const RoleSetMembersDocument = gql`
+  query roleSetMembers($roleSetId: UUID!) {
+    lookup {
+      roleSet(ID: $roleSetId) {
+        id
+        memberUsers: usersInRole(role: MEMBER) {
+          ...UserDisplayName
+        }
+      }
+    }
+  }
+  ${UserDisplayNameFragmentDoc}
+`;
+
+/**
+ * __useRoleSetMembersQuery__
+ *
+ * To run a query within a React component, call `useRoleSetMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRoleSetMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRoleSetMembersQuery({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *   },
+ * });
+ */
+export function useRoleSetMembersQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.RoleSetMembersQuery, SchemaTypes.RoleSetMembersQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.RoleSetMembersQuery, SchemaTypes.RoleSetMembersQueryVariables>(
+    RoleSetMembersDocument,
+    options
+  );
+}
+
+export function useRoleSetMembersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.RoleSetMembersQuery, SchemaTypes.RoleSetMembersQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.RoleSetMembersQuery, SchemaTypes.RoleSetMembersQueryVariables>(
+    RoleSetMembersDocument,
+    options
+  );
+}
+
+export type RoleSetMembersQueryHookResult = ReturnType<typeof useRoleSetMembersQuery>;
+export type RoleSetMembersLazyQueryHookResult = ReturnType<typeof useRoleSetMembersLazyQuery>;
+export type RoleSetMembersQueryResult = Apollo.QueryResult<
+  SchemaTypes.RoleSetMembersQuery,
+  SchemaTypes.RoleSetMembersQueryVariables
+>;
+export function refetchRoleSetMembersQuery(variables: SchemaTypes.RoleSetMembersQueryVariables) {
+  return { query: RoleSetMembersDocument, variables: variables };
+}
+
+export const RoleSetAvailableMembersDocument = gql`
+  query RoleSetAvailableMembers($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
+    lookup {
+      availableMembers: roleSet(ID: $roleSetId) {
+        ...RoleSetAvailableMemberUsers
+      }
+    }
+  }
+  ${RoleSetAvailableMemberUsersFragmentDoc}
+`;
+
+/**
+ * __useRoleSetAvailableMembersQuery__
+ *
+ * To run a query within a React component, call `useRoleSetAvailableMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRoleSetAvailableMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRoleSetAvailableMembersQuery({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useRoleSetAvailableMembersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.RoleSetAvailableMembersQuery,
+    SchemaTypes.RoleSetAvailableMembersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.RoleSetAvailableMembersQuery, SchemaTypes.RoleSetAvailableMembersQueryVariables>(
+    RoleSetAvailableMembersDocument,
+    options
+  );
+}
+
+export function useRoleSetAvailableMembersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.RoleSetAvailableMembersQuery,
+    SchemaTypes.RoleSetAvailableMembersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.RoleSetAvailableMembersQuery,
+    SchemaTypes.RoleSetAvailableMembersQueryVariables
+  >(RoleSetAvailableMembersDocument, options);
+}
+
+export type RoleSetAvailableMembersQueryHookResult = ReturnType<typeof useRoleSetAvailableMembersQuery>;
+export type RoleSetAvailableMembersLazyQueryHookResult = ReturnType<typeof useRoleSetAvailableMembersLazyQuery>;
+export type RoleSetAvailableMembersQueryResult = Apollo.QueryResult<
+  SchemaTypes.RoleSetAvailableMembersQuery,
+  SchemaTypes.RoleSetAvailableMembersQueryVariables
+>;
+export function refetchRoleSetAvailableMembersQuery(variables: SchemaTypes.RoleSetAvailableMembersQueryVariables) {
+  return { query: RoleSetAvailableMembersDocument, variables: variables };
+}
+
 export const AccountInformationDocument = gql`
   query AccountInformation($accountId: UUID!) {
     lookup {
@@ -9545,88 +9695,6 @@ export type EventOnApplicationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.EventOnApplicationMutation,
   SchemaTypes.EventOnApplicationMutationVariables
 >;
-export const CommunityApplicationsInvitationsDocument = gql`
-  query CommunityApplicationsInvitations($communityId: UUID!) {
-    lookup {
-      community(ID: $communityId) {
-        id
-        roleSet {
-          applications {
-            ...AdminCommunityApplication
-          }
-          invitations {
-            ...AdminCommunityInvitation
-          }
-          platformInvitations {
-            ...AdminPlatformInvitationCommunity
-          }
-        }
-      }
-    }
-  }
-  ${AdminCommunityApplicationFragmentDoc}
-  ${AdminCommunityInvitationFragmentDoc}
-  ${AdminPlatformInvitationCommunityFragmentDoc}
-`;
-
-/**
- * __useCommunityApplicationsInvitationsQuery__
- *
- * To run a query within a React component, call `useCommunityApplicationsInvitationsQuery` and pass it any options that fit your needs.
- * When your component renders, `useCommunityApplicationsInvitationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCommunityApplicationsInvitationsQuery({
- *   variables: {
- *      communityId: // value for 'communityId'
- *   },
- * });
- */
-export function useCommunityApplicationsInvitationsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CommunityApplicationsInvitationsQuery,
-    SchemaTypes.CommunityApplicationsInvitationsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.CommunityApplicationsInvitationsQuery,
-    SchemaTypes.CommunityApplicationsInvitationsQueryVariables
-  >(CommunityApplicationsInvitationsDocument, options);
-}
-
-export function useCommunityApplicationsInvitationsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CommunityApplicationsInvitationsQuery,
-    SchemaTypes.CommunityApplicationsInvitationsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.CommunityApplicationsInvitationsQuery,
-    SchemaTypes.CommunityApplicationsInvitationsQueryVariables
-  >(CommunityApplicationsInvitationsDocument, options);
-}
-
-export type CommunityApplicationsInvitationsQueryHookResult = ReturnType<
-  typeof useCommunityApplicationsInvitationsQuery
->;
-export type CommunityApplicationsInvitationsLazyQueryHookResult = ReturnType<
-  typeof useCommunityApplicationsInvitationsLazyQuery
->;
-export type CommunityApplicationsInvitationsQueryResult = Apollo.QueryResult<
-  SchemaTypes.CommunityApplicationsInvitationsQuery,
-  SchemaTypes.CommunityApplicationsInvitationsQueryVariables
->;
-export function refetchCommunityApplicationsInvitationsQuery(
-  variables: SchemaTypes.CommunityApplicationsInvitationsQueryVariables
-) {
-  return { query: CommunityApplicationsInvitationsDocument, variables: variables };
-}
-
 export const RoleSetApplicationFormDocument = gql`
   query RoleSetApplicationForm($roleSetId: UUID!) {
     lookup {
@@ -9979,66 +10047,6 @@ export type CreateGroupOnCommunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateGroupOnCommunityMutation,
   SchemaTypes.CreateGroupOnCommunityMutationVariables
 >;
-export const RoleSetMembersDocument = gql`
-  query roleSetMembers($roleSetId: UUID!) {
-    lookup {
-      roleSet(ID: $roleSetId) {
-        id
-        memberUsers: usersInRole(role: MEMBER) {
-          ...UserDisplayName
-        }
-      }
-    }
-  }
-  ${UserDisplayNameFragmentDoc}
-`;
-
-/**
- * __useRoleSetMembersQuery__
- *
- * To run a query within a React component, call `useRoleSetMembersQuery` and pass it any options that fit your needs.
- * When your component renders, `useRoleSetMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useRoleSetMembersQuery({
- *   variables: {
- *      roleSetId: // value for 'roleSetId'
- *   },
- * });
- */
-export function useRoleSetMembersQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.RoleSetMembersQuery, SchemaTypes.RoleSetMembersQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.RoleSetMembersQuery, SchemaTypes.RoleSetMembersQueryVariables>(
-    RoleSetMembersDocument,
-    options
-  );
-}
-
-export function useRoleSetMembersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.RoleSetMembersQuery, SchemaTypes.RoleSetMembersQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.RoleSetMembersQuery, SchemaTypes.RoleSetMembersQueryVariables>(
-    RoleSetMembersDocument,
-    options
-  );
-}
-
-export type RoleSetMembersQueryHookResult = ReturnType<typeof useRoleSetMembersQuery>;
-export type RoleSetMembersLazyQueryHookResult = ReturnType<typeof useRoleSetMembersLazyQuery>;
-export type RoleSetMembersQueryResult = Apollo.QueryResult<
-  SchemaTypes.RoleSetMembersQuery,
-  SchemaTypes.RoleSetMembersQueryVariables
->;
-export function refetchRoleSetMembersQuery(variables: SchemaTypes.RoleSetMembersQueryVariables) {
-  return { query: RoleSetMembersDocument, variables: variables };
-}
-
 export const AvailableUsersDocument = gql`
   query availableUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
     usersPaginated(first: $first, after: $after, filter: $filter) {
@@ -10185,72 +10193,6 @@ export type CommunityMembersListQueryResult = Apollo.QueryResult<
 >;
 export function refetchCommunityMembersListQuery(variables: SchemaTypes.CommunityMembersListQueryVariables) {
   return { query: CommunityMembersListDocument, variables: variables };
-}
-
-export const RoleSetAvailableMembersDocument = gql`
-  query RoleSetAvailableMembers($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
-    lookup {
-      availableMembers: roleSet(ID: $roleSetId) {
-        ...RoleSetAvailableMemberUsers
-      }
-    }
-  }
-  ${RoleSetAvailableMemberUsersFragmentDoc}
-`;
-
-/**
- * __useRoleSetAvailableMembersQuery__
- *
- * To run a query within a React component, call `useRoleSetAvailableMembersQuery` and pass it any options that fit your needs.
- * When your component renders, `useRoleSetAvailableMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useRoleSetAvailableMembersQuery({
- *   variables: {
- *      roleSetId: // value for 'roleSetId'
- *      first: // value for 'first'
- *      after: // value for 'after'
- *      filter: // value for 'filter'
- *   },
- * });
- */
-export function useRoleSetAvailableMembersQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.RoleSetAvailableMembersQuery,
-    SchemaTypes.RoleSetAvailableMembersQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.RoleSetAvailableMembersQuery, SchemaTypes.RoleSetAvailableMembersQueryVariables>(
-    RoleSetAvailableMembersDocument,
-    options
-  );
-}
-
-export function useRoleSetAvailableMembersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.RoleSetAvailableMembersQuery,
-    SchemaTypes.RoleSetAvailableMembersQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.RoleSetAvailableMembersQuery,
-    SchemaTypes.RoleSetAvailableMembersQueryVariables
-  >(RoleSetAvailableMembersDocument, options);
-}
-
-export type RoleSetAvailableMembersQueryHookResult = ReturnType<typeof useRoleSetAvailableMembersQuery>;
-export type RoleSetAvailableMembersLazyQueryHookResult = ReturnType<typeof useRoleSetAvailableMembersLazyQuery>;
-export type RoleSetAvailableMembersQueryResult = Apollo.QueryResult<
-  SchemaTypes.RoleSetAvailableMembersQuery,
-  SchemaTypes.RoleSetAvailableMembersQueryVariables
->;
-export function refetchRoleSetAvailableMembersQuery(variables: SchemaTypes.RoleSetAvailableMembersQueryVariables) {
-  return { query: RoleSetAvailableMembersDocument, variables: variables };
 }
 
 export const AvailableVirtualContributorsDocument = gql`
@@ -15779,7 +15721,10 @@ export const SpaceCommunityPageDocument = gql`
         myPrivileges
       }
       community @include(if: $includeCommunity) {
-        ...CommunityPageCommunity
+        id
+        roleSet {
+          ...RoleSetDetails
+        }
       }
       collaboration {
         id
@@ -15787,7 +15732,7 @@ export const SpaceCommunityPageDocument = gql`
     }
   }
   ${ContributorDetailsFragmentDoc}
-  ${CommunityPageCommunityFragmentDoc}
+  ${RoleSetDetailsFragmentDoc}
 `;
 
 /**

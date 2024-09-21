@@ -1,17 +1,14 @@
-query CommunityApplicationsInvitations($communityId: UUID!) {
+query CommunityApplicationsInvitations($roleSetId: UUID!) {
   lookup {
-    community(ID: $communityId) {
-      id
-      roleSet {
-        applications {
-          ...AdminCommunityApplication
-        }
-        invitations {
-          ...AdminCommunityInvitation
-        }
-        platformInvitations {
-          ...AdminPlatformInvitationCommunity
-        }
+    roleSet(ID: $roleSetId) {
+      applications {
+        ...AdminCommunityApplication
+      }
+      invitations {
+        ...AdminCommunityInvitation
+      }
+      platformInvitations {
+        ...AdminPlatformInvitationCommunity
       }
     }
   }
