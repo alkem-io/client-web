@@ -1,38 +1,38 @@
-mutation assignRoleToUser($roleSetId: UUID!, $role: CommunityRoleType!, $memberId: UUID_NAMEID_EMAIL!) {
-  assignRoleToUser(roleData: { roleSetID: $roleSetId, userID: $memberId, role: $role }) {
+mutation assignRoleToUser($roleSetId: UUID!, $role: CommunityRoleType!, $contributorId: UUID!) {
+  assignRoleToUser(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
     id
   }
 }
 
-mutation removeRoleFromUser($roleSetId: UUID!, $role: CommunityRoleType!, $memberId: UUID_NAMEID_EMAIL!) {
-  removeRoleFromUser(roleData: { roleSetID: $roleSetId, userID: $memberId, role: $role }) {
+mutation removeRoleFromUser($roleSetId: UUID!, $role: CommunityRoleType!, $contributorId: UUID!) {
+  removeRoleFromUser(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
     id
   }
 }
 
-mutation assignRoleToOrganization($roleSetId: UUID!, $role: CommunityRoleType!, $memberId: UUID_NAMEID!) {
-  assignRoleToOrganization(roleData: { roleSetID: $roleSetId, organizationID: $memberId, role: $role }) {
+mutation assignRoleToOrganization($roleSetId: UUID!, $role: CommunityRoleType!, $contributorId: UUID!) {
+  assignRoleToOrganization(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
     id
   }
 }
 
-mutation removeRoleFromOrganization($roleSetId: UUID!, $role: CommunityRoleType!, $memberId: UUID_NAMEID!) {
+mutation removeRoleFromOrganization($roleSetId: UUID!, $role: CommunityRoleType!, $contributorId: UUID!) {
   removeRoleFromOrganization(
-    roleData: { roleSetID: $roleSetId, organizationID: $memberId, role: $role }
+    roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }
   ) {
     id
   }
 }
 
-mutation assignRoleToVirtualContributor($roleSetId: UUID!, $role: CommunityRoleType!, $memberId: UUID_NAMEID!) {
-  assignRoleToVirtualContributor(roleData: { roleSetID: $roleSetId, virtualContributorID: $memberId, role: $role }) {
+mutation assignRoleToVirtualContributor($roleSetId: UUID!, $role: CommunityRoleType!, $contributorId: UUID!) {
+  assignRoleToVirtualContributor(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
     id
   }
 }
 
-mutation removeRoleFromVirtualContributor($roleSetId: UUID!, $role: CommunityRoleType!, $memberId: UUID_NAMEID!) {
+mutation removeRoleFromVirtualContributor($roleSetId: UUID!, $role: CommunityRoleType!, $contributorId: UUID!) {
   removeRoleFromVirtualContributor(
-    roleData: { roleSetID: $roleSetId, virtualContributorID: $memberId, role: $role }
+    roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }
   ) {
     id
   }

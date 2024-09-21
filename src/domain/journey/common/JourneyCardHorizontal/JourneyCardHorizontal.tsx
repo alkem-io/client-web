@@ -9,7 +9,7 @@ import RouterLink from '../../../../core/ui/link/RouterLink';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import JourneyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import BlockTitleWithIcon from '../../../../core/ui/content/BlockTitleWithIcon';
-import { CommunityRole } from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityRoleType } from '../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import { intersection } from 'lodash';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
@@ -37,7 +37,7 @@ export interface JourneyCardHorizontalProps {
       cardBanner?: Visual;
     };
     community?: {
-      myRoles?: CommunityRole[];
+      myRoles?: CommunityRoleType[];
     };
   };
   deepness?: number;
@@ -49,7 +49,7 @@ export interface JourneyCardHorizontalProps {
 
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
-const VISIBLE_COMMUNITY_ROLES = [CommunityRole.Admin, CommunityRole.Lead] as const;
+const VISIBLE_COMMUNITY_ROLES = [CommunityRoleType.Admin, CommunityRoleType.Lead] as const;
 
 const JourneyCardHorizontal = ({
   journey,

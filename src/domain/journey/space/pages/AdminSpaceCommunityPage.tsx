@@ -49,7 +49,8 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     applications,
     invitations,
     platformInvitations,
-    communityPolicy,
+    memberRoleDefinition,
+    leadRoleDefinition,
     permissions,
     onApplicationStateChange,
     onInvitationStateChange,
@@ -71,7 +72,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useCommunityAdmin({ communityId, spaceId, journeyLevel: 0 });
+  } = useCommunityAdmin({ communityId, roleSetId, spaceId, journeyLevel: 0 });
 
   const currentApplicationsUserIds = useMemo(
     () =>
@@ -235,7 +236,8 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
               onAddMember={onAddUser}
               onRemoveMember={onRemoveUser}
               fetchAvailableUsers={getAvailableUsers}
-              communityPolicy={communityPolicy}
+              memberRoleDefinition={memberRoleDefinition}
+              leadRoleDefinition={leadRoleDefinition}
               loading={loading}
             />
           </PageContentBlock>
@@ -249,7 +251,8 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
               onAddMember={onAddOrganization}
               onRemoveMember={onRemoveOrganization}
               fetchAvailableOrganizations={getAvailableOrganizations}
-              communityPolicy={communityPolicy}
+              memberRoleDefinition={memberRoleDefinition}
+              leadRoleDefinition={leadRoleDefinition}
               loading={loading}
             />
           </PageContentBlock>

@@ -29,6 +29,9 @@ fragment SubspaceInfo on Space {
       id
       myPrivileges
     }
+    roleSet {
+      id
+    }
   }
   authorization {
     id

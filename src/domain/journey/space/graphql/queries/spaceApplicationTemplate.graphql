@@ -5,7 +5,9 @@ query SpaceApplicationTemplate($spaceId: UUID!) {
       community {
         id
         roleSet {
+          id
           applicationForm {
+            id
             description
             questions {
               required

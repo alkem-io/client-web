@@ -6,7 +6,7 @@ import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikI
 import { useApplicationCommunityQuery } from '../containers/useApplicationCommunityQuery';
 import {
   refetchUserProviderQuery,
-  useApplyForCommunityMembershipMutation,
+  useApplyForBaseRoleOnRoleSetMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { CreateNvpInput } from '../../../../core/apollo/generated/graphql-schema';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
@@ -45,9 +45,9 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({
   const [isValid, setIsValid] = useState(false);
 
   const { data } = useApplicationCommunityQuery(journeyId, canJoinCommunity);
-  const { description, questions = [], communityId = '', displayName: communityName, communityGuidelines } = data || {};
+  const { description, questions = [], roleSetId = '', displayName: communityName, communityGuidelines } = data || {};
 
-  const [createApplication, { loading: isCreationLoading }] = useApplyForCommunityMembershipMutation({
+  const [createApplication, { loading: isCreationLoading }] = useApplyForBaseRoleOnRoleSetMutation({
     // refetch user applications
     refetchQueries: [refetchUserProviderQuery()],
   });
@@ -97,7 +97,7 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({
     await createApplication({
       variables: {
         input: {
-          communityID: communityId,
+          roleSetID: roleSetId,
           questions: applicationQuestions,
         },
       },

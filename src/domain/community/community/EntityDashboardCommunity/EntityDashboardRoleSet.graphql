@@ -12,6 +12,9 @@ fragment RoleSetContributorRoles on RoleSet {
   leadOrganizations: organizationsInRole(role: LEAD) {
     ...AssociatedOrganizationDetails
   }
+  memberirtualContributors: virtualContributorsInRole(role: MEMBER) {
+    ...DashboardContributingVirtualContributor
+  }
   leadVirtualContributors: virtualContributorsInRole(role: LEAD) {
     ...DashboardContributingVirtualContributor
   }

@@ -11,7 +11,7 @@ import {
   useSpaceUrlLazyQuery,
   useSubspaceProfileInfoQuery,
   useSubspaceCommunityIdLazyQuery,
-  useAssignCommunityRoleToVirtualContributorMutation,
+  useAssignRoleToVirtualContributorMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -19,6 +19,7 @@ import {
   CalloutState,
   CalloutType,
   CalloutVisibility,
+  CommunityRoleType,
   LicensePlanType,
   SpaceType,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -456,7 +457,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
   };
 
-  const [addVirtualContributorToCommunity] = useAssignCommunityRoleToVirtualContributorMutation();
+  const [addVirtualContributorToRole] = useAssignRoleToVirtualContributorMutation();
   const [createVirtualContributor] = useCreateVirtualContributorOnAccountMutation({
     refetchQueries: ['MyAccount', 'AccountInformation'],
   });
@@ -465,8 +466,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     values: VirtualContributorFromProps,
     accountId: string,
     vcBoKId: string,
-    communityId: string,
-    parentCommunityId?: string
+    roleSetId: string,
+    parentRoleSetId?: string
   ) => {
     if (!accountId || !vcBoKId || !virtualContributorInput) {
       return;
@@ -500,22 +501,24 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       const virtualContributorId = data?.createVirtualContributor.id;
 
       if (virtualContributorId) {
-        if (parentCommunityId) {
+        if (parentRoleSetId) {
           // the VC cannot be added to the BoK community
           // if it's not part of the parent community
-          await addVirtualContributorToCommunity({
+          await addVirtualContributorToRole({
             variables: {
-              communityId: parentCommunityId,
-              virtualContributorId,
+              roleSetId: parentRoleSetId,
+              contributorId: virtualContributorId,
+              role: CommunityRoleType.Member,
             },
           });
         }
 
         // add the VC to the BoK community
-        await addVirtualContributorToCommunity({
+        await addVirtualContributorToRole({
           variables: {
-            communityId: communityId,
-            virtualContributorId,
+            roleSetId: roleSetId,
+            contributorId: virtualContributorId,
+            role: CommunityRoleType.Member,
           },
         });
 

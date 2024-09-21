@@ -151,12 +151,12 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     loadingParams || membershipLoading || communityPrivilegesLoading || joiningCommunity || gettingUserProfile;
 
   const handleJoin = async () => {
-    const communityId = space?.community.id;
-    if (!communityId) {
+    const roleSetId = space?.community.roleSet.id;
+    if (!roleSetId) {
       throw new Error('Community is not loaded');
     }
     await joinCommunity({
-      variables: { joiningData: { communityID: communityId } },
+      variables: { joiningData: { roleSetID: roleSetId } },
     });
     if (userId) {
       getUserProfile({
@@ -165,7 +165,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
         },
       });
     }
-    onJoin?.({ communityId });
+    onJoin?.({ communityId: roleSetId });
     notify(t('components.application-button.dialogApplicationSuccessful.join.body'), 'success');
   };
 

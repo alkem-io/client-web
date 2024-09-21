@@ -1,33 +1,27 @@
 import { useMemo } from 'react';
 import {
   useAllOrganizationsLazyQuery,
-  useAssignOrganizationAsCommunityLeadMutation,
-  useAssignOrganizationAsCommunityMemberMutation,
-  useAssignUserAsCommunityLeadMutation,
-  useAssignUserAsCommunityMemberMutation,
   useEventOnApplicationMutation,
   useCommunityApplicationsInvitationsQuery,
-  useRemoveOrganizationAsCommunityLeadMutation,
-  useRemoveOrganizationAsCommunityMemberMutation,
-  useRemoveUserAsCommunityLeadMutation,
-  useRemoveUserAsCommunityMemberMutation,
   useUsersWithCredentialsQuery,
   useInvitationStateEventMutation,
   useDeleteInvitationMutation,
   useDeletePlatformInvitationMutation,
   useCommunityMembersListQuery,
-  useCommunityAvailableMembersLazyQuery,
-  useAssignCommunityRoleToUserMutation,
-  useRemoveCommunityRoleFromUserMutation,
+  useAssignRoleToUserMutation,
+  useAssignRoleToOrganizationMutation,
+  useAssignRoleToVirtualContributorMutation,
+  useRemoveRoleFromUserMutation,
+  useRemoveRoleFromOrganizationMutation,
+  useRemoveRoleFromVirtualContributorMutation,
   useAvailableVirtualContributorsLazyQuery,
-  useRemoveVirtualContributorFromCommunityMutation,
   useAvailableVirtualContributorsInLibraryLazyQuery,
-  useAssignCommunityRoleToVirtualContributorMutation,
+  useRoleSetAvailableMembersLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationCredential,
   AuthorizationPrivilege,
-  CommunityRole,
+  CommunityRoleType,
   SearchVisibility,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { OrganizationDetailsFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityOrganizations';
@@ -56,6 +50,7 @@ const buildOrganizationFilterObject = (filter: string | undefined) =>
 // TODO: Inherit from CoreEntityIds when they are not NameIds
 interface useCommunityAdminParams {
   communityId: string;
+  roleSetId;
   spaceId?: string;
   challengeId?: string;
   opportunityId?: string;
@@ -71,6 +66,7 @@ interface VirtualContributorNameProps extends Identifiable {
 
 const useCommunityAdmin = ({
   communityId,
+  roleSetId,
   spaceId,
   challengeId,
   opportunityId,
@@ -95,7 +91,8 @@ const useCommunityAdmin = ({
     skip: !communityId || !spaceId,
   });
 
-  const communityPolicy = data?.lookup.community?.policy;
+  const memberRoleDefinition = data?.lookup.community?.roleSet.memberRoleDefinition;
+  const leadRoleDefinition = data?.lookup.community?.roleSet.leadRoleDefinition;
 
   const permissions = {
     virtualContributorsEnabled: (data?.lookup.community?.authorization?.myPrivileges ?? []).some(
@@ -136,8 +133,9 @@ const useCommunityAdmin = ({
 
   // Members:
   const users = useMemo(() => {
-    const members = data?.lookup.community?.memberUsers ?? [];
-    const leads = data?.lookup.community?.leadUsers ?? [];
+    const roleSet = data?.lookup.community?.roleSet;
+    const members = roleSet?.memberUsers ?? [];
+    const leads = roleSet?.leadUsers ?? [];
     const admins = dataAdmins?.usersWithAuthorizationCredential ?? [];
 
     const result = members.map<CommunityMemberUserFragmentWithRoles>(user => ({
@@ -177,8 +175,9 @@ const useCommunityAdmin = ({
   }, [data, dataAdmins]);
 
   const organizations = useMemo(() => {
-    const members = data?.lookup.community?.memberOrganizations ?? [];
-    const leads = data?.lookup.community?.leadOrganizations ?? [];
+    const roleSet = data?.lookup.community?.roleSet;
+    const members = roleSet?.memberOrganizations ?? [];
+    const leads = roleSet?.leadOrganizations ?? [];
 
     const result = members.map<OrganizationDetailsFragmentWithRoles>(member => ({
       ...member,
@@ -211,20 +210,21 @@ const useCommunityAdmin = ({
   }, [data, dataAdmins]);
 
   const virtualContributors = useMemo(() => {
-    return data?.lookup.community?.virtualContributorsInRole ?? [];
+    const roleSet = data?.lookup.community?.roleSet;
+    return roleSet?.virtualContributorsInRole ?? [];
   }, [data]);
 
   // Available new members:
-  const [fetchAvailableUsers, { refetch: refetchAvailableMemberUsers }] = useCommunityAvailableMembersLazyQuery();
+  const [fetchAvailableUsers, { refetch: refetchAvailableMemberUsers }] = useRoleSetAvailableMembersLazyQuery();
   const getAvailableUsers = async (filter: string | undefined) => {
     const { data } = await fetchAvailableUsers({
       variables: {
-        communityId,
+        roleSetId,
         first: MAX_AVAILABLE_MEMBERS,
         filter: buildUserFilterObject(filter),
       },
     });
-    return data?.lookup.availableMembers?.availableMemberUsers?.users;
+    return data?.lookup.availableMembers?.availableUsersForMemberRole?.users;
   };
 
   const [fetchAllOrganizations, { refetch: refetchAvailableMemberOrganizations }] = useAllOrganizationsLazyQuery();
@@ -267,6 +267,7 @@ const useCommunityAdmin = ({
         filterSpaceId: spaceId,
       },
     });
+    const roleSet = data?.lookup?.space?.community?.roleSet;
 
     // Results for Space Level - on Account if !all (filter in the query)
     if (journeyLevel === 0) {
@@ -277,13 +278,13 @@ const useCommunityAdmin = ({
 
     // Results for Subspaces - Community Members including External VCs (filter in the query)
     if (all) {
-      return (data?.lookup?.space?.community.virtualContributorsInRole ?? []).filter(
+      return (roleSet?.virtualContributorsInRole ?? []).filter(
         vc => filterExisting(vc, virtualContributors) && filterByName(vc, filter)
       );
     }
 
     // Results for Subspaces - Only Community Members On Account (filter in the query)
-    return (data?.lookup?.space?.community.virtualContributorsInRole ?? []).filter(
+    return (roleSet?.virtualContributorsInRole ?? []).filter(
       vc =>
         data?.lookup?.space?.account.virtualContributors.some(member => member.id === vc.id) &&
         filterExisting(vc, virtualContributors) &&
@@ -292,30 +293,32 @@ const useCommunityAdmin = ({
   };
 
   // Adding new members:
-  const [addUserToCommunity] = useAssignUserAsCommunityMemberMutation();
+  const [addUserToCommunity] = useAssignRoleToUserMutation();
   const handleAddUser = async (memberId: string) => {
-    if (!communityId) {
+    if (!roleSetId) {
       return;
     }
     await addUserToCommunity({
       variables: {
-        communityId,
-        memberId,
+        roleSetId,
+        contributorId: memberId,
+        role: CommunityRoleType.Member,
       },
     });
     await refetchAvailableMemberUsers();
     return refetchCommunityMembers();
   };
 
-  const [addOrganizationToCommunity] = useAssignOrganizationAsCommunityMemberMutation();
+  const [addOrganizationToCommunity] = useAssignRoleToOrganizationMutation();
   const handleAddOrganization = async (memberId: string) => {
-    if (!communityId) {
+    if (!roleSetId) {
       return;
     }
     await addOrganizationToCommunity({
       variables: {
-        communityId,
-        memberId,
+        roleSetId,
+        contributorId: memberId,
+        role: CommunityRoleType.Member,
       },
     });
     await refetchAvailableMemberOrganizations();
@@ -336,119 +339,127 @@ const useCommunityAdmin = ({
     return refetchCommunityMembers();
   };
 
-  const [assignUserAsCommunityLead] = useAssignUserAsCommunityLeadMutation();
-  const [removeUserAsCommunityLead] = useRemoveUserAsCommunityLeadMutation();
+  const [assignUserAsCommunityLead] = useAssignRoleToUserMutation();
+  const [removeUserAsCommunityLead] = useRemoveRoleFromUserMutation();
   const handleUserLeadChange = async (memberId: string, isLead: boolean) => {
-    if (!communityId) {
+    if (!roleSetId) {
       return;
     }
     if (isLead) {
       await assignUserAsCommunityLead({
         variables: {
-          memberId,
-          communityId,
+          contributorId: memberId,
+          roleSetId,
+          role: CommunityRoleType.Lead,
         },
       });
     } else {
       await removeUserAsCommunityLead({
         variables: {
-          memberId,
-          communityId,
+          contributorId: memberId,
+          roleSetId,
+          role: CommunityRoleType.Lead,
         },
       });
     }
     return refetchCommunityMembers();
   };
 
-  const [assignCommunityRole] = useAssignCommunityRoleToUserMutation();
-  const [removeCommunityRole] = useRemoveCommunityRoleFromUserMutation();
+  const [assignCommunityRole] = useAssignRoleToUserMutation();
+  const [removeCommunityRole] = useRemoveRoleFromUserMutation();
   const handleUserAuthorizationChange = async (memberId: string, isAdmin: boolean) => {
     if (isAdmin) {
       await assignCommunityRole({
-        variables: { communityID: communityId, role: CommunityRole.Admin, userID: memberId },
+        variables: { roleSetId: roleSetId, role: CommunityRoleType.Admin, contributorId: memberId },
       });
     } else {
       await removeCommunityRole({
-        variables: { communityID: communityId, role: CommunityRole.Admin, userID: memberId },
+        variables: { roleSetId: roleSetId, role: CommunityRoleType.Admin, contributorId: memberId },
       });
     }
     return refetchAuthorization();
   };
 
-  const [removeUserAsCommunityMember] = useRemoveUserAsCommunityMemberMutation();
+  const [removeUserAsCommunityMember] = useRemoveRoleFromUserMutation();
   const handleRemoveUser = async (memberId: string) => {
-    if (!communityId) {
+    if (!roleSetId) {
       return;
     }
     await removeUserAsCommunityMember({
       variables: {
-        memberId,
-        communityId,
+        contributorId: memberId,
+        roleSetId,
+        role: CommunityRoleType.Member,
       },
     });
     return refetchCommunityMembers();
   };
 
-  const [assignOrganizationAsCommunityLead] = useAssignOrganizationAsCommunityLeadMutation();
-  const [removeOrganizationAsCommunityLeadMutation] = useRemoveOrganizationAsCommunityLeadMutation();
+  const [assignOrganizationAsCommunityLead] = useAssignRoleToOrganizationMutation();
+  const [removeOrganizationAsCommunityLeadMutation] = useRemoveRoleFromOrganizationMutation();
   const onOrganizationLeadChange = async (memberId: string, isLead: boolean) => {
-    if (!communityId) {
+    if (!roleSetId) {
       return;
     }
     if (isLead) {
       await assignOrganizationAsCommunityLead({
         variables: {
-          memberId,
-          communityId,
+          contributorId: memberId,
+          roleSetId,
+          role: CommunityRoleType.Lead,
         },
       });
     } else {
       await removeOrganizationAsCommunityLeadMutation({
         variables: {
-          memberId,
-          communityId,
+          contributorId: memberId,
+          roleSetId,
+          role: CommunityRoleType.Lead,
         },
       });
     }
     return refetchCommunityMembers();
   };
 
-  const [removeOrganizationAsCommunityMember] = useRemoveOrganizationAsCommunityMemberMutation();
+  const [removeOrganizationAsCommunityMember] = useRemoveRoleFromOrganizationMutation();
   const handleRemoveOrganization = async (memberId: string) => {
     if (!communityId) {
       return;
     }
     await removeOrganizationAsCommunityMember({
       variables: {
-        memberId,
-        communityId,
+        contributorId: memberId,
+        roleSetId,
+        role: CommunityRoleType.Member,
       },
     });
     return refetchCommunityMembers();
   };
 
-  const [addVirtualContributor] = useAssignCommunityRoleToVirtualContributorMutation();
+  const [addVirtualContributor] = useAssignRoleToVirtualContributorMutation();
   const handleAddVirtualContributor = async (virtualContributorId: string) => {
-    if (!communityId) {
+    if (!roleSetId) {
       return;
     }
     await addVirtualContributor({
       variables: {
-        communityId,
-        virtualContributorId,
+        roleSetId,
+        contributorId: virtualContributorId,
+        role: CommunityRoleType.Member,
       },
     });
     return refetchCommunityMembers();
   };
-  const [removeVirtualContributor] = useRemoveVirtualContributorFromCommunityMutation();
+  const [removeVirtualContributor] = useRemoveRoleFromVirtualContributorMutation();
   const handleRemoveVirtualContributor = async (virtualContributorId: string) => {
-    if (!communityId) {
+    if (!roleSetId) {
       return;
     }
     await removeVirtualContributor({
       variables: {
-        communityId,
-        virtualContributorId,
+        roleSetId,
+        contributorId: virtualContributorId,
+        role: CommunityRoleType.Member,
       },
     });
     return refetchCommunityMembers();
@@ -502,11 +513,12 @@ const useCommunityAdmin = ({
     users,
     organizations,
     virtualContributors,
-    communityPolicy,
+    memberRoleDefinition,
+    leadRoleDefinition,
     permissions,
-    applications: dataApplications?.lookup.community?.applications,
-    invitations: dataApplications?.lookup.community?.invitations,
-    platformInvitations: dataApplications?.lookup.community?.platformInvitations,
+    applications: dataApplications?.lookup.community?.roleSet.applications,
+    invitations: dataApplications?.lookup.community?.roleSet.invitations,
+    platformInvitations: dataApplications?.lookup.community?.roleSet.platformInvitations,
     onApplicationStateChange: handleApplicationStateChange,
     onInvitationStateChange: handleInvitationStateChange,
     onUserLeadChange: handleUserLeadChange,

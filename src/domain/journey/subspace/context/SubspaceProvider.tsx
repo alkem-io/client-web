@@ -20,6 +20,7 @@ interface SubspaceContextProps {
   subspaceId: string;
   subspaceNameId: string;
   communityId: string;
+  roleSetId: string;
   loading: boolean;
   permissions: SubspacePermissions;
   profile: SubspaceInfoFragment['profile'];
@@ -31,6 +32,7 @@ export const SubspaceContext = React.createContext<SubspaceContextProps>({
   subspaceId: '',
   subspaceNameId: '',
   communityId: '',
+  roleSetId: '',
   permissions: {
     canUpdate: false,
     canCreate: false,
@@ -61,6 +63,7 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
 
   const subspace = data?.lookup.space;
   const communityId = subspace?.community?.id ?? '';
+  const roleSetId = subspace?.community?.roleSet?.id ?? '';
   const subspaceNameId = data?.lookup.space?.profile.displayName ?? '';
 
   const myPrivileges = useMemo(
@@ -104,6 +107,7 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
         subspaceId: journeyId ?? '',
         subspaceNameId,
         communityId,
+        roleSetId,
         permissions,
         profile,
         loading,

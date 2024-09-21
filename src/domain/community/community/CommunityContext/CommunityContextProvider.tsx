@@ -59,6 +59,7 @@ const CommunityContextProvider: FC = ({ children }) => {
   const providedValue = useMemo<CommunityContextValue>(
     () => ({
       communityId: community?.id ?? '',
+      roleSetId: community?.roleSet?.id ?? '',
       communityName: communityName ?? '',
       communicationId: community?.communication?.id ?? '',
       communicationPrivileges: community?.communication?.authorization?.myPrivileges ?? [],

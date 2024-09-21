@@ -74,6 +74,10 @@ fragment SpacePage on Space {
   community @include(if: $authorizedReadAccessCommunity) {
     id
     myMembershipStatus
+    authorization {
+      id
+      myPrivileges
+    }
     roleSet {
       id
       leadUsers: usersInRole(role: LEAD) {

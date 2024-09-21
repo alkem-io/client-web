@@ -13,7 +13,7 @@ import CommunityVirtualContributors from '../../../community/community/Community
 import { useSpace } from '../../space/SpaceContext/useSpace';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { loading: isLoadingChallenge, communityId, opportunityId } = useOpportunity();
+  const { loading: isLoadingChallenge, communityId, roleSetId, opportunityId } = useOpportunity();
 
   const { spaceId } = useSpace();
 
@@ -21,7 +21,8 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     users,
     organizations,
     virtualContributors,
-    communityPolicy,
+    memberRoleDefinition,
+    leadRoleDefinition,
     permissions,
     onUserLeadChange,
     onUserAuthorizationChange,
@@ -38,7 +39,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     getAvailableVirtualContributors,
     getAvailableVirtualContributorsInLibrary,
     loading,
-  } = useCommunityAdmin({ spaceId, opportunityId, communityId, journeyLevel: 2 });
+  } = useCommunityAdmin({ spaceId, opportunityId, communityId, roleSetId, journeyLevel: 2 });
 
   if (!spaceId || isLoadingChallenge) {
     return null;
@@ -57,7 +58,8 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
               onAddMember={onAddUser}
               onRemoveMember={onRemoveUser}
               fetchAvailableUsers={getAvailableUsers}
-              communityPolicy={communityPolicy}
+              memberRoleDefinition={memberRoleDefinition}
+              leadRoleDefinition={leadRoleDefinition}
               loading={loading}
             />
           </PageContentBlock>
@@ -71,7 +73,8 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
               onAddMember={onAddOrganization}
               onRemoveMember={onRemoveOrganization}
               fetchAvailableOrganizations={getAvailableOrganizations}
-              communityPolicy={communityPolicy}
+              memberRoleDefinition={memberRoleDefinition}
+              leadRoleDefinition={leadRoleDefinition}
               loading={loading}
             />
           </PageContentBlock>

@@ -10,7 +10,7 @@ import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import Avatar from '../../../../core/ui/avatar/Avatar';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { BlockSectionTitle, BlockTitle, Caption } from '../../../../core/ui/typography';
-import { CommunityRole } from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityRoleType } from '../../../../core/apollo/generated/graphql-schema';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
@@ -27,7 +27,7 @@ interface MembershipProps {
       };
     };
     community?: {
-      myRoles?: CommunityRole[] | undefined;
+      myRoles?: CommunityRoleType[] | undefined;
     };
     level: number;
   };
@@ -38,7 +38,7 @@ interface ExpandableSpaceTreeProps {
   membership: MembershipProps;
 }
 
-const VISIBLE_COMMUNITY_ROLES = [CommunityRole.Admin, CommunityRole.Lead];
+const VISIBLE_COMMUNITY_ROLES = [CommunityRoleType.Admin, CommunityRoleType.Lead];
 
 const ExpandableSpaceTree = ({
   membership: {

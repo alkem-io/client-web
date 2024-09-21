@@ -2334,6 +2334,10 @@ export const SpacePageFragmentDoc = gql`
     community @include(if: $authorizedReadAccessCommunity) {
       id
       myMembershipStatus
+      authorization {
+        id
+        myPrivileges
+      }
       roleSet {
         id
         leadUsers: usersInRole(role: LEAD) {
@@ -2432,6 +2436,9 @@ export const RoleSetContributorRolesFragmentDoc = gql`
     }
     leadOrganizations: organizationsInRole(role: LEAD) {
       ...AssociatedOrganizationDetails
+    }
+    memberirtualContributors: virtualContributorsInRole(role: MEMBER) {
+      ...DashboardContributingVirtualContributor
     }
     leadVirtualContributors: virtualContributorsInRole(role: LEAD) {
       ...DashboardContributingVirtualContributor
@@ -2578,6 +2585,9 @@ export const SubspaceInfoFragmentDoc = gql`
         id
         myPrivileges
       }
+      roleSet {
+        id
+      }
     }
     authorization {
       id
@@ -2618,6 +2628,10 @@ export const SubspacePageSpaceFragmentDoc = gql`
     community @include(if: $authorizedReadAccessCommunity) {
       id
       myMembershipStatus
+      authorization {
+        id
+        myPrivileges
+      }
       roleSet {
         id
         ...RoleSetContributorRoles
@@ -9216,6 +9230,13 @@ export const CommunityUserPrivilegesDocument = gql`
             id
             myPrivileges
           }
+          roleSet {
+            id
+            authorization {
+              id
+              myPrivileges
+            }
+          }
         }
       }
     }
@@ -9354,6 +9375,9 @@ export const SpaceApplicationDocument = gql`
         }
         community {
           id
+          roleSet {
+            id
+          }
           guidelines {
             ...CommunityGuidelinesDetails
           }
@@ -9597,15 +9621,13 @@ export function refetchCommunityApplicationsInvitationsQuery(
   return { query: CommunityApplicationsInvitationsDocument, variables: variables };
 }
 
-export const CommunityApplicationFormDocument = gql`
-  query CommunityApplicationForm($communityId: UUID!) {
+export const RoleSetApplicationFormDocument = gql`
+  query RoleSetApplicationForm($roleSetId: UUID!) {
     lookup {
-      community(ID: $communityId) {
+      roleSet(ID: $roleSetId) {
         id
-        roleSet {
-          applicationForm {
-            ...ApplicationForm
-          }
+        applicationForm {
+          ...ApplicationForm
         }
       }
     }
@@ -9614,55 +9636,55 @@ export const CommunityApplicationFormDocument = gql`
 `;
 
 /**
- * __useCommunityApplicationFormQuery__
+ * __useRoleSetApplicationFormQuery__
  *
- * To run a query within a React component, call `useCommunityApplicationFormQuery` and pass it any options that fit your needs.
- * When your component renders, `useCommunityApplicationFormQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useRoleSetApplicationFormQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRoleSetApplicationFormQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCommunityApplicationFormQuery({
+ * const { data, loading, error } = useRoleSetApplicationFormQuery({
  *   variables: {
- *      communityId: // value for 'communityId'
+ *      roleSetId: // value for 'roleSetId'
  *   },
  * });
  */
-export function useCommunityApplicationFormQuery(
+export function useRoleSetApplicationFormQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CommunityApplicationFormQuery,
-    SchemaTypes.CommunityApplicationFormQueryVariables
+    SchemaTypes.RoleSetApplicationFormQuery,
+    SchemaTypes.RoleSetApplicationFormQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CommunityApplicationFormQuery, SchemaTypes.CommunityApplicationFormQueryVariables>(
-    CommunityApplicationFormDocument,
+  return Apollo.useQuery<SchemaTypes.RoleSetApplicationFormQuery, SchemaTypes.RoleSetApplicationFormQueryVariables>(
+    RoleSetApplicationFormDocument,
     options
   );
 }
 
-export function useCommunityApplicationFormLazyQuery(
+export function useRoleSetApplicationFormLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CommunityApplicationFormQuery,
-    SchemaTypes.CommunityApplicationFormQueryVariables
+    SchemaTypes.RoleSetApplicationFormQuery,
+    SchemaTypes.RoleSetApplicationFormQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.CommunityApplicationFormQuery,
-    SchemaTypes.CommunityApplicationFormQueryVariables
-  >(CommunityApplicationFormDocument, options);
+  return Apollo.useLazyQuery<SchemaTypes.RoleSetApplicationFormQuery, SchemaTypes.RoleSetApplicationFormQueryVariables>(
+    RoleSetApplicationFormDocument,
+    options
+  );
 }
 
-export type CommunityApplicationFormQueryHookResult = ReturnType<typeof useCommunityApplicationFormQuery>;
-export type CommunityApplicationFormLazyQueryHookResult = ReturnType<typeof useCommunityApplicationFormLazyQuery>;
-export type CommunityApplicationFormQueryResult = Apollo.QueryResult<
-  SchemaTypes.CommunityApplicationFormQuery,
-  SchemaTypes.CommunityApplicationFormQueryVariables
+export type RoleSetApplicationFormQueryHookResult = ReturnType<typeof useRoleSetApplicationFormQuery>;
+export type RoleSetApplicationFormLazyQueryHookResult = ReturnType<typeof useRoleSetApplicationFormLazyQuery>;
+export type RoleSetApplicationFormQueryResult = Apollo.QueryResult<
+  SchemaTypes.RoleSetApplicationFormQuery,
+  SchemaTypes.RoleSetApplicationFormQueryVariables
 >;
-export function refetchCommunityApplicationFormQuery(variables: SchemaTypes.CommunityApplicationFormQueryVariables) {
-  return { query: CommunityApplicationFormDocument, variables: variables };
+export function refetchRoleSetApplicationFormQuery(variables: SchemaTypes.RoleSetApplicationFormQueryVariables) {
+  return { query: RoleSetApplicationFormDocument, variables: variables };
 }
 
 export const UpdateApplicationFormOnRoleSetDocument = gql`
@@ -9729,6 +9751,9 @@ export const SpaceCommunityDocument = gql`
         community {
           id
           ...CommunityDetails @include(if: $includeDetails)
+          roleSet {
+            id
+          }
         }
       }
     }
@@ -10451,8 +10476,8 @@ export function refetchAllOrganizationsQuery(variables: SchemaTypes.AllOrganizat
 }
 
 export const AssignRoleToUserDocument = gql`
-  mutation assignRoleToUser($roleSetId: UUID!, $role: CommunityRoleType!, $memberId: UUID_NAMEID_EMAIL!) {
-    assignRoleToUser(roleData: { roleSetID: $roleSetId, userID: $memberId, role: $role }) {
+  mutation assignRoleToUser($roleSetId: UUID!, $role: CommunityRoleType!, $contributorId: UUID!) {
+    assignRoleToUser(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
       id
     }
   }
@@ -10477,7 +10502,7 @@ export type AssignRoleToUserMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      roleSetId: // value for 'roleSetId'
  *      role: // value for 'role'
- *      memberId: // value for 'memberId'
+ *      contributorId: // value for 'contributorId'
  *   },
  * });
  */
@@ -10501,8 +10526,8 @@ export type AssignRoleToUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignRoleToUserMutationVariables
 >;
 export const RemoveRoleFromUserDocument = gql`
-  mutation removeRoleFromUser($roleSetId: UUID!, $role: CommunityRoleType!, $memberId: UUID_NAMEID_EMAIL!) {
-    removeRoleFromUser(roleData: { roleSetID: $roleSetId, userID: $memberId, role: $role }) {
+  mutation removeRoleFromUser($roleSetId: UUID!, $role: CommunityRoleType!, $contributorId: UUID!) {
+    removeRoleFromUser(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
       id
     }
   }
@@ -10527,7 +10552,7 @@ export type RemoveRoleFromUserMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      roleSetId: // value for 'roleSetId'
  *      role: // value for 'role'
- *      memberId: // value for 'memberId'
+ *      contributorId: // value for 'contributorId'
  *   },
  * });
  */
@@ -10551,8 +10576,8 @@ export type RemoveRoleFromUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveRoleFromUserMutationVariables
 >;
 export const AssignRoleToOrganizationDocument = gql`
-  mutation assignRoleToOrganization($roleSetId: UUID!, $role: CommunityRoleType!, $memberId: UUID_NAMEID!) {
-    assignRoleToOrganization(roleData: { roleSetID: $roleSetId, organizationID: $memberId, role: $role }) {
+  mutation assignRoleToOrganization($roleSetId: UUID!, $role: CommunityRoleType!, $contributorId: UUID!) {
+    assignRoleToOrganization(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
       id
     }
   }
@@ -10577,7 +10602,7 @@ export type AssignRoleToOrganizationMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      roleSetId: // value for 'roleSetId'
  *      role: // value for 'role'
- *      memberId: // value for 'memberId'
+ *      contributorId: // value for 'contributorId'
  *   },
  * });
  */
@@ -10602,8 +10627,8 @@ export type AssignRoleToOrganizationMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.AssignRoleToOrganizationMutationVariables
 >;
 export const RemoveRoleFromOrganizationDocument = gql`
-  mutation removeRoleFromOrganization($roleSetId: UUID!, $role: CommunityRoleType!, $memberId: UUID_NAMEID!) {
-    removeRoleFromOrganization(roleData: { roleSetID: $roleSetId, organizationID: $memberId, role: $role }) {
+  mutation removeRoleFromOrganization($roleSetId: UUID!, $role: CommunityRoleType!, $contributorId: UUID!) {
+    removeRoleFromOrganization(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
       id
     }
   }
@@ -10628,7 +10653,7 @@ export type RemoveRoleFromOrganizationMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      roleSetId: // value for 'roleSetId'
  *      role: // value for 'role'
- *      memberId: // value for 'memberId'
+ *      contributorId: // value for 'contributorId'
  *   },
  * });
  */
@@ -10653,8 +10678,8 @@ export type RemoveRoleFromOrganizationMutationOptions = Apollo.BaseMutationOptio
   SchemaTypes.RemoveRoleFromOrganizationMutationVariables
 >;
 export const AssignRoleToVirtualContributorDocument = gql`
-  mutation assignRoleToVirtualContributor($roleSetId: UUID!, $role: CommunityRoleType!, $memberId: UUID_NAMEID!) {
-    assignRoleToVirtualContributor(roleData: { roleSetID: $roleSetId, virtualContributorID: $memberId, role: $role }) {
+  mutation assignRoleToVirtualContributor($roleSetId: UUID!, $role: CommunityRoleType!, $contributorId: UUID!) {
+    assignRoleToVirtualContributor(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
       id
     }
   }
@@ -10679,7 +10704,7 @@ export type AssignRoleToVirtualContributorMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      roleSetId: // value for 'roleSetId'
  *      role: // value for 'role'
- *      memberId: // value for 'memberId'
+ *      contributorId: // value for 'contributorId'
  *   },
  * });
  */
@@ -10706,10 +10731,8 @@ export type AssignRoleToVirtualContributorMutationOptions = Apollo.BaseMutationO
   SchemaTypes.AssignRoleToVirtualContributorMutationVariables
 >;
 export const RemoveRoleFromVirtualContributorDocument = gql`
-  mutation removeRoleFromVirtualContributor($roleSetId: UUID!, $role: CommunityRoleType!, $memberId: UUID_NAMEID!) {
-    removeRoleFromVirtualContributor(
-      roleData: { roleSetID: $roleSetId, virtualContributorID: $memberId, role: $role }
-    ) {
+  mutation removeRoleFromVirtualContributor($roleSetId: UUID!, $role: CommunityRoleType!, $contributorId: UUID!) {
+    removeRoleFromVirtualContributor(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
       id
     }
   }
@@ -10734,7 +10757,7 @@ export type RemoveRoleFromVirtualContributorMutationFn = Apollo.MutationFunction
  *   variables: {
  *      roleSetId: // value for 'roleSetId'
  *      role: // value for 'role'
- *      memberId: // value for 'memberId'
+ *      contributorId: // value for 'contributorId'
  *   },
  * });
  */
@@ -16503,7 +16526,9 @@ export const SpaceApplicationTemplateDocument = gql`
         community {
           id
           roleSet {
+            id
             applicationForm {
+              id
               description
               questions {
                 required

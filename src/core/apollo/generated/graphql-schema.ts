@@ -762,21 +762,21 @@ export type AssignPlatformRoleToUserInput = {
 };
 
 export type AssignRoleOnRoleSetToOrganizationInput = {
-  organizationID: Scalars['UUID_NAMEID'];
+  contributorID: Scalars['UUID'];
   role: CommunityRoleType;
   roleSetID: Scalars['UUID'];
 };
 
 export type AssignRoleOnRoleSetToUserInput = {
+  contributorID: Scalars['UUID'];
   role: CommunityRoleType;
   roleSetID: Scalars['UUID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 export type AssignRoleOnRoleSetToVirtualContributorInput = {
+  contributorID: Scalars['UUID'];
   role: CommunityRoleType;
   roleSetID: Scalars['UUID'];
-  virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
 export type AssignUserGroupMemberInput = {
@@ -4889,21 +4889,21 @@ export type RemovePlatformRoleFromUserInput = {
 };
 
 export type RemoveRoleOnRoleSetFromOrganizationInput = {
-  organizationID: Scalars['UUID_NAMEID'];
+  contributorID: Scalars['UUID'];
   role: CommunityRoleType;
   roleSetID: Scalars['UUID'];
 };
 
 export type RemoveRoleOnRoleSetFromUserInput = {
+  contributorID: Scalars['UUID'];
   role: CommunityRoleType;
   roleSetID: Scalars['UUID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 export type RemoveRoleOnRoleSetFromVirtualContributorInput = {
+  contributorID: Scalars['UUID'];
   role: CommunityRoleType;
   roleSetID: Scalars['UUID'];
-  virtualContributorID: Scalars['UUID_NAMEID'];
 };
 
 export type RemoveUserGroupMemberInput = {
@@ -14326,6 +14326,13 @@ export type CommunityUserPrivilegesQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
+            roleSet: {
+              __typename?: 'RoleSet';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            };
           };
         }
       | undefined;
@@ -14372,6 +14379,7 @@ export type SpaceApplicationQuery = {
           community: {
             __typename?: 'Community';
             id: string;
+            roleSet: { __typename?: 'RoleSet'; id: string };
             guidelines: {
               __typename?: 'CommunityGuidelines';
               id: string;
@@ -14785,33 +14793,30 @@ export type AdminCommunityCandidateMemberFragment =
   | AdminCommunityCandidateMember_User_Fragment
   | AdminCommunityCandidateMember_VirtualContributor_Fragment;
 
-export type CommunityApplicationFormQueryVariables = Exact<{
-  communityId: Scalars['UUID'];
+export type RoleSetApplicationFormQueryVariables = Exact<{
+  roleSetId: Scalars['UUID'];
 }>;
 
-export type CommunityApplicationFormQuery = {
+export type RoleSetApplicationFormQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
-    community?:
+    roleSet?:
       | {
-          __typename?: 'Community';
+          __typename?: 'RoleSet';
           id: string;
-          roleSet: {
-            __typename?: 'RoleSet';
-            applicationForm: {
-              __typename?: 'Form';
-              id: string;
-              description?: string | undefined;
-              questions: Array<{
-                __typename?: 'FormQuestion';
-                question: string;
-                explanation: string;
-                maxLength: number;
-                required: boolean;
-                sortOrder: number;
-              }>;
-            };
+          applicationForm: {
+            __typename?: 'Form';
+            id: string;
+            description?: string | undefined;
+            questions: Array<{
+              __typename?: 'FormQuestion';
+              question: string;
+              explanation: string;
+              maxLength: number;
+              required: boolean;
+              sortOrder: number;
+            }>;
           };
         }
       | undefined;
@@ -14873,6 +14878,7 @@ export type SpaceCommunityQuery = {
             __typename?: 'Community';
             id: string;
             myMembershipStatus?: CommunityMembershipStatus | undefined;
+            roleSet: { __typename?: 'RoleSet'; id: string };
             communication: {
               __typename?: 'Communication';
               id: string;
@@ -15058,6 +15064,28 @@ export type RoleSetContributorRolesFragment = {
     };
     verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  }>;
+  memberirtualContributors: Array<{
+    __typename?: 'VirtualContributor';
+    id: string;
+    nameID: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+    };
   }>;
   leadVirtualContributors: Array<{
     __typename?: 'VirtualContributor';
@@ -15850,7 +15878,7 @@ export type AllOrganizationsQuery = {
 export type AssignRoleToUserMutationVariables = Exact<{
   roleSetId: Scalars['UUID'];
   role: CommunityRoleType;
-  memberId: Scalars['UUID_NAMEID_EMAIL'];
+  contributorId: Scalars['UUID'];
 }>;
 
 export type AssignRoleToUserMutation = {
@@ -15861,7 +15889,7 @@ export type AssignRoleToUserMutation = {
 export type RemoveRoleFromUserMutationVariables = Exact<{
   roleSetId: Scalars['UUID'];
   role: CommunityRoleType;
-  memberId: Scalars['UUID_NAMEID_EMAIL'];
+  contributorId: Scalars['UUID'];
 }>;
 
 export type RemoveRoleFromUserMutation = {
@@ -15872,7 +15900,7 @@ export type RemoveRoleFromUserMutation = {
 export type AssignRoleToOrganizationMutationVariables = Exact<{
   roleSetId: Scalars['UUID'];
   role: CommunityRoleType;
-  memberId: Scalars['UUID_NAMEID'];
+  contributorId: Scalars['UUID'];
 }>;
 
 export type AssignRoleToOrganizationMutation = {
@@ -15883,7 +15911,7 @@ export type AssignRoleToOrganizationMutation = {
 export type RemoveRoleFromOrganizationMutationVariables = Exact<{
   roleSetId: Scalars['UUID'];
   role: CommunityRoleType;
-  memberId: Scalars['UUID_NAMEID'];
+  contributorId: Scalars['UUID'];
 }>;
 
 export type RemoveRoleFromOrganizationMutation = {
@@ -15894,7 +15922,7 @@ export type RemoveRoleFromOrganizationMutation = {
 export type AssignRoleToVirtualContributorMutationVariables = Exact<{
   roleSetId: Scalars['UUID'];
   role: CommunityRoleType;
-  memberId: Scalars['UUID_NAMEID'];
+  contributorId: Scalars['UUID'];
 }>;
 
 export type AssignRoleToVirtualContributorMutation = {
@@ -15905,7 +15933,7 @@ export type AssignRoleToVirtualContributorMutation = {
 export type RemoveRoleFromVirtualContributorMutationVariables = Exact<{
   roleSetId: Scalars['UUID'];
   role: CommunityRoleType;
-  memberId: Scalars['UUID_NAMEID'];
+  contributorId: Scalars['UUID'];
 }>;
 
 export type RemoveRoleFromVirtualContributorMutation = {
@@ -19307,6 +19335,28 @@ export type AboutPageMembersQuery = {
                 };
                 metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
               }>;
+              memberirtualContributors: Array<{
+                __typename?: 'VirtualContributor';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                };
+              }>;
               leadVirtualContributors: Array<{
                 __typename?: 'VirtualContributor';
                 id: string;
@@ -20743,6 +20793,9 @@ export type SpacePageQuery = {
             __typename?: 'Community';
             id: string;
             myMembershipStatus?: CommunityMembershipStatus | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             roleSet: {
               __typename?: 'RoleSet';
               id: string;
@@ -20949,6 +21002,9 @@ export type SpacePageFragment = {
     __typename?: 'Community';
     id: string;
     myMembershipStatus?: CommunityMembershipStatus | undefined;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
     roleSet: {
       __typename?: 'RoleSet';
       id: string;
@@ -21269,8 +21325,10 @@ export type SpaceApplicationTemplateQuery = {
             id: string;
             roleSet: {
               __typename?: 'RoleSet';
+              id: string;
               applicationForm: {
                 __typename?: 'Form';
+                id: string;
                 description?: string | undefined;
                 questions: Array<{
                   __typename?: 'FormQuestion';
@@ -21923,6 +21981,28 @@ export type SpaceProfileFragment = {
         verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       }>;
+      memberirtualContributors: Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+        };
+      }>;
       leadVirtualContributors: Array<{
         __typename?: 'VirtualContributor';
         id: string;
@@ -22295,6 +22375,7 @@ export type SubspaceInfoQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
+            roleSet: { __typename?: 'RoleSet'; id: string };
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -22366,6 +22447,7 @@ export type SubspaceInfoFragment = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
+    roleSet: { __typename?: 'RoleSet'; id: string };
   };
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -22414,6 +22496,9 @@ export type SubspacePageQuery = {
             __typename?: 'Community';
             id: string;
             myMembershipStatus?: CommunityMembershipStatus | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             roleSet: {
               __typename?: 'RoleSet';
               id: string;
@@ -22511,6 +22596,28 @@ export type SubspacePageQuery = {
                 };
                 metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
               }>;
+              memberirtualContributors: Array<{
+                __typename?: 'VirtualContributor';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                };
+              }>;
               leadVirtualContributors: Array<{
                 __typename?: 'VirtualContributor';
                 id: string;
@@ -22558,6 +22665,9 @@ export type SubspacePageSpaceFragment = {
     __typename?: 'Community';
     id: string;
     myMembershipStatus?: CommunityMembershipStatus | undefined;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
     roleSet: {
       __typename?: 'RoleSet';
       id: string;
@@ -22650,6 +22760,28 @@ export type SubspacePageSpaceFragment = {
         };
         verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
         metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      }>;
+      memberirtualContributors: Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+        };
       }>;
       leadVirtualContributors: Array<{
         __typename?: 'VirtualContributor';

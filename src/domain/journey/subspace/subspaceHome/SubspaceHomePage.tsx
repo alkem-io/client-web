@@ -95,10 +95,10 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
             welcome={
               <JourneyDashboardWelcomeBlock
                 vision={subspace?.context?.vision ?? ''}
-                leadUsers={subspace?.community?.leadUsers}
+                leadUsers={subspace?.community?.roleSet?.leadUsers}
                 onContactLeadUser={receiver => sendMessage('user', receiver)}
-                leadOrganizations={subspace?.community?.leadOrganizations}
-                leadVirtualContributors={subspace?.community?.leadVirtualContributors}
+                leadOrganizations={subspace?.community?.roleSet?.leadOrganizations}
+                leadVirtualContributors={subspace?.community?.roleSet?.leadVirtualContributors}
                 onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
                 journeyTypeName="subspace"
                 member={subspace?.community?.myMembershipStatus === CommunityMembershipStatus.Member}

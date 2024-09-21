@@ -64,7 +64,7 @@ const SpaceCommunityPage = () => {
     variables: { spaceNameId, includeCommunity: isAuthenticated },
   });
 
-  const leadUsers = data?.space.community?.leadUsers;
+  const leadUsers = data?.space.community?.roleSet?.leadUsers;
 
   const messageReceivers = useMemo(
     () =>
@@ -93,7 +93,7 @@ const SpaceCommunityPage = () => {
     skip: !permissions.readAccess || !permissions.readUsers,
   });
 
-  const { memberUsers, memberOrganizations } = useCommunityMembersAsCardProps(data?.space.community, {
+  const { memberUsers, memberOrganizations } = useCommunityMembersAsCardProps(data?.space.community?.roleSet, {
     memberUsersLimit: 0,
     memberOrganizationsLimit: 0,
   });
@@ -106,7 +106,9 @@ const SpaceCommunityPage = () => {
   let virtualContributors: VirtualContributorProps[] = [];
   if (hasReadPrivilege) {
     virtualContributors =
-      data?.space.community?.virtualContributors?.filter(vc => vc?.searchVisibility !== SearchVisibility.Hidden) ?? [];
+      data?.space.community?.roleSet?.virtualContributors?.filter(
+        vc => vc?.searchVisibility !== SearchVisibility.Hidden
+      ) ?? [];
   }
 
   useEffect(() => {

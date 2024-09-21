@@ -18,6 +18,13 @@ query CommunityUserPrivileges(
           id
           myPrivileges
         }
+        roleSet {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
       }
     }
   }

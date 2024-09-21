@@ -89,7 +89,7 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }
   });
 
   const memberProfile = membersData?.lookup.space?.profile;
-  const virtualContributors = membersData?.lookup.space?.community.virtualContributors.filter(
+  const virtualContributors = membersData?.lookup.space?.community.roleSet.virtualContributors.filter(
     vc => vc.searchVisibility === SearchVisibility.Public
   );
   const hasReadPrivilege = membersData?.lookup.space?.authorization?.myPrivileges?.includes(
@@ -110,15 +110,15 @@ const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }
     ...nonMemberJourney?.community,
     ...memberJourney?.community,
   } as Community;
-  const leadUsers = memberJourney?.community?.leadUsers;
-  const leadOrganizations = memberJourney?.community?.leadOrganizations;
-  const leadVirtualContributors = memberJourney?.community?.leadVirtualContributors;
+  const leadUsers = memberJourney?.community?.roleSet.leadUsers;
+  const leadOrganizations = memberJourney?.community?.roleSet.leadOrganizations;
+  const leadVirtualContributors = memberJourney?.community?.roleSet.leadVirtualContributors;
   const references = memberProfile?.references;
 
   const metrics = nonMemberJourney?.metrics;
 
   const membersCount = getMetricCount(metrics, MetricType.Member);
-  const memberUsersCount = membersCount - (community.organizationsInRole?.length ?? 0); // Todo: may not be safe, better to simply report out metrics on member users + member orgs
+  const memberUsersCount = membersCount - (community.roleSet.organizationsInRole?.length ?? 0); // Todo: may not be safe, better to simply report out metrics on member users + member orgs
   const contributors = useCommunityMembersAsCardProps(community, { memberUsersCount });
 
   const permissions: AboutPagePermissions = {

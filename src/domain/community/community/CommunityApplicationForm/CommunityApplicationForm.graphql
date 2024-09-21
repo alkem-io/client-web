@@ -1,11 +1,9 @@
-query CommunityApplicationForm($communityId: UUID!) {
+query RoleSetApplicationForm($roleSetId: UUID!) {
   lookup {
-    community(ID: $communityId) {
+    roleSet(ID: $roleSetId) {
       id
-      roleSet {
-        applicationForm {
-          ...ApplicationForm
-        }
+      applicationForm {
+        ...ApplicationForm
       }
     }
   }
