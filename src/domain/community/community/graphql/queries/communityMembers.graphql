@@ -1,8 +1,8 @@
-query communityMembers($communityId: UUID!) {
+query roleSetMembers($roleSetId: UUID!) {
   lookup {
-    community(ID: $communityId) {
+    roleSet(ID: $roleSetId) {
       id
-      memberUsers {
+      memberUsers: usersInRole(role: MEMBER) {
         ...UserDisplayName
       }
     }

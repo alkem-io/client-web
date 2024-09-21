@@ -1,4 +1,4 @@
-mutation joinCommunity($joiningData: CommunityJoinInput!) {
+mutation joinCommunity($joiningData: JoinAsBaseRoleOnRoleSetInput!) {
   joinCommunity(joinCommunityData: $joiningData){
     id
   }

@@ -2,8 +2,10 @@ query CommunityApplicationForm($communityId: UUID!) {
   lookup {
     community(ID: $communityId) {
       id
-      applicationForm {
-        ...ApplicationForm
+      roleSet {
+        applicationForm {
+          ...ApplicationForm
+        }
       }
     }
   }
@@ -21,8 +23,8 @@ fragment ApplicationForm on Form {
   }
 }
 
-mutation updateCommunityApplicationQuestions($communityId: UUID!, $formData: UpdateFormInput!) {
-  updateCommunityApplicationForm(applicationFormData: { communityID: $communityId, formData: $formData }) {
+mutation updateApplicationFormOnRoleSet($roleSetId: UUID!, $formData: UpdateFormInput!) {
+  updateApplicationFormOnRoleSet(applicationFormData: { roleSetID: $roleSetId, formData: $formData }) {
     id
   }
 }

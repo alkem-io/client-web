@@ -1198,27 +1198,23 @@ export const CommunityMemberVirtualContributorFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const CommunityPolicyFragmentDoc = gql`
-  fragment CommunityPolicy on CommunityPolicy {
+export const RoleDefinitionPolicyFragmentDoc = gql`
+  fragment RoleDefinitionPolicy on Role {
     id
-    lead {
-      maxOrg
-      maxUser
-      minOrg
-      minUser
+    organizationPolicy {
+      minimum
+      maximum
     }
-    member {
-      maxOrg
-      maxUser
-      minOrg
-      minUser
+    userPolicy {
+      minimum
+      maximum
     }
   }
 `;
-export const CommunityMembersDetailsFragmentDoc = gql`
-  fragment CommunityMembersDetails on Community {
+export const RoleSetDetailsFragmentDoc = gql`
+  fragment RoleSetDetails on RoleSet {
     id
-    memberUsers {
+    memberUsers: usersInRole(role: MEMBER) {
       ...CommunityMemberUser
     }
     leadUsers: usersInRole(role: LEAD) {
@@ -1233,8 +1229,11 @@ export const CommunityMembersDetailsFragmentDoc = gql`
     virtualContributorsInRole(role: MEMBER) {
       ...CommunityMemberVirtualContributor
     }
-    policy {
-      ...CommunityPolicy
+    memberRoleDefinition: roleDefinition(role: MEMBER) {
+      ...RoleDefinitionPolicy
+    }
+    leadRoleDefinition: roleDefinition(role: LEAD) {
+      ...RoleDefinitionPolicy
     }
     authorization {
       id
@@ -1244,7 +1243,7 @@ export const CommunityMembersDetailsFragmentDoc = gql`
   ${CommunityMemberUserFragmentDoc}
   ${OrganizationDetailsFragmentDoc}
   ${CommunityMemberVirtualContributorFragmentDoc}
-  ${CommunityPolicyFragmentDoc}
+  ${RoleDefinitionPolicyFragmentDoc}
 `;
 export const AvailableUserFragmentDoc = gql`
   fragment AvailableUser on User {
@@ -1263,10 +1262,10 @@ export const PageInfoFragmentDoc = gql`
     hasNextPage
   }
 `;
-export const CommunityAvailableLeadUsersFragmentDoc = gql`
-  fragment CommunityAvailableLeadUsers on Community {
+export const RoleSetAvailableLeadUsersFragmentDoc = gql`
+  fragment RoleSetAvailableLeadUsers on RoleSet {
     id
-    availableLeadUsers(first: $first, after: $after, filter: $filter) {
+    availableUsersForLeadRole(first: $first, after: $after, filter: $filter) {
       users {
         ...AvailableUser
       }
@@ -1278,10 +1277,10 @@ export const CommunityAvailableLeadUsersFragmentDoc = gql`
   ${AvailableUserFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
-export const CommunityAvailableMemberUsersFragmentDoc = gql`
-  fragment CommunityAvailableMemberUsers on Community {
+export const RoleSetAvailableMemberUsersFragmentDoc = gql`
+  fragment RoleSetAvailableMemberUsers on RoleSet {
     id
-    availableMemberUsers(first: $first, after: $after, filter: $filter) {
+    availableUsersForMemberRole(first: $first, after: $after, filter: $filter) {
       users {
         ...AvailableUser
       }
@@ -1458,6 +1457,36 @@ export const OrganizationInfoFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${FullLocationFragmentDoc}
 `;
+export const OrganizationCardFragmentDoc = gql`
+  fragment OrganizationCard on Organization {
+    id
+    nameID
+    metrics {
+      id
+      name
+      value
+    }
+    profile {
+      id
+      displayName
+      url
+      visual(type: AVATAR) {
+        ...VisualUri
+      }
+      location {
+        id
+        city
+        country
+      }
+      description
+    }
+    verification {
+      id
+      status
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const OrganizationProfileInfoFragmentDoc = gql`
   fragment OrganizationProfileInfo on Organization {
     id
@@ -1531,11 +1560,13 @@ export const PendingMembershipInvitationFragmentDoc = gql`
 export const PendingMembershipsMembershipsFragmentDoc = gql`
   fragment PendingMembershipsMemberships on Community {
     id
-    applications {
-      id
-    }
-    invitations {
-      ...PendingMembershipInvitation
+    roleSet {
+      applications {
+        id
+      }
+      invitations {
+        ...PendingMembershipInvitation
+      }
     }
   }
   ${PendingMembershipInvitationFragmentDoc}
@@ -1573,6 +1604,30 @@ export const UserSelectorUserInformationFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+`;
+export const UserCardFragmentDoc = gql`
+  fragment UserCard on User {
+    id
+    nameID
+    isContactable
+    profile {
+      id
+      url
+      displayName
+      location {
+        country
+        city
+      }
+      visual(type: AVATAR) {
+        ...VisualUri
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const UserDetailsFragmentDoc = gql`
   fragment UserDetails on User {
@@ -1722,78 +1777,6 @@ export const InvitationDataFragmentDoc = gql`
       contributorType
     }
   }
-`;
-export const UserCardFragmentDoc = gql`
-  fragment UserCard on User {
-    id
-    nameID
-    isContactable
-    profile {
-      id
-      url
-      displayName
-      location {
-        country
-        city
-      }
-      visual(type: AVATAR) {
-        ...VisualUri
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export const OrganizationCardFragmentDoc = gql`
-  fragment OrganizationCard on Organization {
-    id
-    nameID
-    metrics {
-      id
-      name
-      value
-    }
-    profile {
-      id
-      displayName
-      url
-      visual(type: AVATAR) {
-        ...VisualUri
-      }
-      location {
-        id
-        city
-        country
-      }
-      description
-    }
-    verification {
-      id
-      status
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const CommunityMembersFragmentDoc = gql`
-  fragment CommunityMembers on Community {
-    leadUsers: usersInRole(role: LEAD) {
-      ...UserCard
-    }
-    memberUsers {
-      ...UserCard
-    }
-    leadOrganizations: organizationsInRole(role: LEAD) {
-      ...OrganizationCard
-    }
-    memberOrganizations: organizationsInRole(role: MEMBER) {
-      ...OrganizationCard
-    }
-  }
-  ${UserCardFragmentDoc}
-  ${OrganizationCardFragmentDoc}
 `;
 export const ContextDetailsProviderFragmentDoc = gql`
   fragment ContextDetailsProvider on Context {
@@ -1979,15 +1962,17 @@ export const AssociatedOrganizationDetailsFragmentDoc = gql`
 export const JourneyCommunityFragmentDoc = gql`
   fragment JourneyCommunity on Community {
     id
-    leadUsers: usersInRole(role: LEAD) {
-      ...DashboardLeadUser
-    }
-    leadOrganizations: organizationsInRole(role: LEAD) {
-      ...AssociatedOrganizationDetails
-    }
-    authorization {
-      id
-      myPrivileges
+    roleSet {
+      leadUsers: usersInRole(role: LEAD) {
+        ...DashboardLeadUser
+      }
+      leadOrganizations: organizationsInRole(role: LEAD) {
+        ...AssociatedOrganizationDetails
+      }
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
   ${DashboardLeadUserFragmentDoc}
@@ -2134,28 +2119,31 @@ export const DashboardContributingOrganizationFragmentDoc = gql`
 export const CommunityPageCommunityFragmentDoc = gql`
   fragment CommunityPageCommunity on Community {
     id
-    leadUsers: usersInRole(role: LEAD) {
-      ...DashboardLeadUser
-    }
-    memberUsers {
-      ...DashboardContributingUser
-    }
-    leadOrganizations: organizationsInRole(role: LEAD) {
-      ...AssociatedOrganizationDetails
-    }
-    memberOrganizations: organizationsInRole(role: MEMBER) {
-      ...DashboardContributingOrganization
-    }
-    virtualContributors: virtualContributorsInRole(role: MEMBER) {
+    roleSet {
       id
-      searchVisibility
-      profile {
+      leadUsers: usersInRole(role: LEAD) {
+        ...DashboardLeadUser
+      }
+      memberUsers: usersInRole(role: MEMBER) {
+        ...DashboardContributingUser
+      }
+      leadOrganizations: organizationsInRole(role: LEAD) {
+        ...AssociatedOrganizationDetails
+      }
+      memberOrganizations: organizationsInRole(role: MEMBER) {
+        ...DashboardContributingOrganization
+      }
+      virtualContributors: virtualContributorsInRole(role: MEMBER) {
         id
-        displayName
-        tagline
-        url
-        avatar: visual(type: AVATAR) {
-          ...VisualUri
+        searchVisibility
+        profile {
+          id
+          displayName
+          tagline
+          url
+          avatar: visual(type: AVATAR) {
+            ...VisualUri
+          }
         }
       }
     }
@@ -2283,54 +2271,6 @@ export const DashboardTimelineAuthorizationFragmentDoc = gql`
     }
   }
 `;
-export const DashboardContributingVirtualContributorFragmentDoc = gql`
-  fragment DashboardContributingVirtualContributor on VirtualContributor {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      url
-      avatar: visual(type: AVATAR) {
-        id
-        uri
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-`;
-export const EntityDashboardCommunityFragmentDoc = gql`
-  fragment EntityDashboardCommunity on Community {
-    id
-    leadUsers: usersInRole(role: LEAD) {
-      ...DashboardLeadUser
-    }
-    memberUsers(limit: 8) {
-      ...DashboardContributingUser
-    }
-    leadVirtualContributors: virtualContributorsInRole(role: LEAD) {
-      ...DashboardContributingVirtualContributor
-    }
-    leadOrganizations: organizationsInRole(role: LEAD) {
-      ...AssociatedOrganizationDetails
-    }
-    memberOrganizations: organizationsInRole(role: MEMBER) {
-      ...DashboardContributingOrganization
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-  ${DashboardLeadUserFragmentDoc}
-  ${DashboardContributingUserFragmentDoc}
-  ${DashboardContributingVirtualContributorFragmentDoc}
-  ${AssociatedOrganizationDetailsFragmentDoc}
-  ${DashboardContributingOrganizationFragmentDoc}
-`;
 export const SpaceWelcomeBlockContributorProfileFragmentDoc = gql`
   fragment SpaceWelcomeBlockContributorProfile on Profile {
     id
@@ -2394,10 +2334,12 @@ export const SpacePageFragmentDoc = gql`
     community @include(if: $authorizedReadAccessCommunity) {
       id
       myMembershipStatus
-      ...EntityDashboardCommunity
-      leadUsers: usersInRole(role: LEAD) {
-        profile {
-          ...SpaceWelcomeBlockContributorProfile
+      roleSet {
+        id
+        leadUsers: usersInRole(role: LEAD) {
+          profile {
+            ...SpaceWelcomeBlockContributorProfile
+          }
         }
       }
     }
@@ -2407,7 +2349,6 @@ export const SpacePageFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
-  ${EntityDashboardCommunityFragmentDoc}
   ${SpaceWelcomeBlockContributorProfileFragmentDoc}
 `;
 export const SubspaceCardFragmentDoc = gql`
@@ -2457,6 +2398,54 @@ export const SubspacesOnSpaceFragmentDoc = gql`
     }
   }
   ${SubspaceCardFragmentDoc}
+`;
+export const DashboardContributingVirtualContributorFragmentDoc = gql`
+  fragment DashboardContributingVirtualContributor on VirtualContributor {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      url
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+`;
+export const RoleSetContributorRolesFragmentDoc = gql`
+  fragment RoleSetContributorRoles on RoleSet {
+    id
+    memberUsers: usersInRole(role: MEMBER, limit: 8) {
+      ...DashboardContributingUser
+    }
+    leadUsers: usersInRole(role: LEAD) {
+      ...DashboardLeadUser
+    }
+    memberOrganizations: organizationsInRole(role: MEMBER) {
+      ...DashboardContributingOrganization
+    }
+    leadOrganizations: organizationsInRole(role: LEAD) {
+      ...AssociatedOrganizationDetails
+    }
+    leadVirtualContributors: virtualContributorsInRole(role: LEAD) {
+      ...DashboardContributingVirtualContributor
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${DashboardContributingUserFragmentDoc}
+  ${DashboardLeadUserFragmentDoc}
+  ${DashboardContributingOrganizationFragmentDoc}
+  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${DashboardContributingVirtualContributorFragmentDoc}
 `;
 export const SpaceProfileFragmentDoc = gql`
   fragment SpaceProfile on Space {
@@ -2510,14 +2499,16 @@ export const SpaceProfileFragmentDoc = gql`
     community {
       id
       myMembershipStatus
-      ...EntityDashboardCommunity
+      roleSet {
+        ...RoleSetContributorRoles
+      }
     }
   }
   ${VisualFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
-  ${EntityDashboardCommunityFragmentDoc}
+  ${RoleSetContributorRolesFragmentDoc}
 `;
 export const SpaceSettingsFragmentDoc = gql`
   fragment SpaceSettings on SpaceSettings {
@@ -2625,8 +2616,12 @@ export const SubspacePageSpaceFragmentDoc = gql`
       vision
     }
     community @include(if: $authorizedReadAccessCommunity) {
-      ...EntityDashboardCommunity
+      id
       myMembershipStatus
+      roleSet {
+        id
+        ...RoleSetContributorRoles
+      }
     }
     collaboration {
       id
@@ -2635,7 +2630,7 @@ export const SubspacePageSpaceFragmentDoc = gql`
       id
     }
   }
-  ${EntityDashboardCommunityFragmentDoc}
+  ${RoleSetContributorRolesFragmentDoc}
 `;
 export const AdminSpaceFragmentDoc = gql`
   fragment AdminSpace on Space {
@@ -8873,7 +8868,7 @@ export const MentionableUsersDocument = gql`
   query MentionableUsers(
     $filter: UserFilterInput
     $first: Int
-    $communityId: UUID! = "00000000-0000-0000-0000-000000000000"
+    $roleSetId: UUID! = "00000000-0000-0000-0000-000000000000"
     $includeVirtualContributors: Boolean!
   ) {
     usersPaginated(filter: $filter, first: $first) {
@@ -8895,7 +8890,7 @@ export const MentionableUsersDocument = gql`
       }
     }
     lookup @include(if: $includeVirtualContributors) {
-      community(ID: $communityId) {
+      roleSet(ID: $roleSetId) {
         virtualContributorsInRole(role: MEMBER) {
           id
           profile {
@@ -8927,7 +8922,7 @@ export const MentionableUsersDocument = gql`
  *   variables: {
  *      filter: // value for 'filter'
  *      first: // value for 'first'
- *      communityId: // value for 'communityId'
+ *      roleSetId: // value for 'roleSetId'
  *      includeVirtualContributors: // value for 'includeVirtualContributors'
  *   },
  * });
@@ -9300,7 +9295,7 @@ export function refetchCommunityUserPrivilegesQuery(variables: SchemaTypes.Commu
 }
 
 export const JoinCommunityDocument = gql`
-  mutation joinCommunity($joiningData: CommunityJoinInput!) {
+  mutation joinCommunity($joiningData: JoinAsBaseRoleOnRoleSetInput!) {
     joinCommunity(joinCommunityData: $joiningData) {
       id
     }
@@ -9418,54 +9413,54 @@ export function refetchSpaceApplicationQuery(variables: SchemaTypes.SpaceApplica
   return { query: SpaceApplicationDocument, variables: variables };
 }
 
-export const ApplyForCommunityMembershipDocument = gql`
-  mutation applyForCommunityMembership($input: CommunityRoleApplyInput!) {
-    applyForCommunityMembership(applicationData: $input) {
+export const ApplyForBaseRoleOnRoleSetDocument = gql`
+  mutation applyForBaseRoleOnRoleSet($input: ApplyForBaseRoleOnRoleSetInput!) {
+    applyForBaseRoleOnRoleSet(applicationData: $input) {
       id
     }
   }
 `;
-export type ApplyForCommunityMembershipMutationFn = Apollo.MutationFunction<
-  SchemaTypes.ApplyForCommunityMembershipMutation,
-  SchemaTypes.ApplyForCommunityMembershipMutationVariables
+export type ApplyForBaseRoleOnRoleSetMutationFn = Apollo.MutationFunction<
+  SchemaTypes.ApplyForBaseRoleOnRoleSetMutation,
+  SchemaTypes.ApplyForBaseRoleOnRoleSetMutationVariables
 >;
 
 /**
- * __useApplyForCommunityMembershipMutation__
+ * __useApplyForBaseRoleOnRoleSetMutation__
  *
- * To run a mutation, you first call `useApplyForCommunityMembershipMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useApplyForCommunityMembershipMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useApplyForBaseRoleOnRoleSetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useApplyForBaseRoleOnRoleSetMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [applyForCommunityMembershipMutation, { data, loading, error }] = useApplyForCommunityMembershipMutation({
+ * const [applyForBaseRoleOnRoleSetMutation, { data, loading, error }] = useApplyForBaseRoleOnRoleSetMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useApplyForCommunityMembershipMutation(
+export function useApplyForBaseRoleOnRoleSetMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.ApplyForCommunityMembershipMutation,
-    SchemaTypes.ApplyForCommunityMembershipMutationVariables
+    SchemaTypes.ApplyForBaseRoleOnRoleSetMutation,
+    SchemaTypes.ApplyForBaseRoleOnRoleSetMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.ApplyForCommunityMembershipMutation,
-    SchemaTypes.ApplyForCommunityMembershipMutationVariables
-  >(ApplyForCommunityMembershipDocument, options);
+    SchemaTypes.ApplyForBaseRoleOnRoleSetMutation,
+    SchemaTypes.ApplyForBaseRoleOnRoleSetMutationVariables
+  >(ApplyForBaseRoleOnRoleSetDocument, options);
 }
 
-export type ApplyForCommunityMembershipMutationHookResult = ReturnType<typeof useApplyForCommunityMembershipMutation>;
-export type ApplyForCommunityMembershipMutationResult =
-  Apollo.MutationResult<SchemaTypes.ApplyForCommunityMembershipMutation>;
-export type ApplyForCommunityMembershipMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.ApplyForCommunityMembershipMutation,
-  SchemaTypes.ApplyForCommunityMembershipMutationVariables
+export type ApplyForBaseRoleOnRoleSetMutationHookResult = ReturnType<typeof useApplyForBaseRoleOnRoleSetMutation>;
+export type ApplyForBaseRoleOnRoleSetMutationResult =
+  Apollo.MutationResult<SchemaTypes.ApplyForBaseRoleOnRoleSetMutation>;
+export type ApplyForBaseRoleOnRoleSetMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.ApplyForBaseRoleOnRoleSetMutation,
+  SchemaTypes.ApplyForBaseRoleOnRoleSetMutationVariables
 >;
 export const EventOnApplicationDocument = gql`
   mutation eventOnApplication($input: ApplicationEventInput!) {
@@ -9525,14 +9520,16 @@ export const CommunityApplicationsInvitationsDocument = gql`
     lookup {
       community(ID: $communityId) {
         id
-        applications {
-          ...AdminCommunityApplication
-        }
-        invitations {
-          ...AdminCommunityInvitation
-        }
-        platformInvitations {
-          ...AdminPlatformInvitationCommunity
+        roleSet {
+          applications {
+            ...AdminCommunityApplication
+          }
+          invitations {
+            ...AdminCommunityInvitation
+          }
+          platformInvitations {
+            ...AdminPlatformInvitationCommunity
+          }
         }
       }
     }
@@ -9605,8 +9602,10 @@ export const CommunityApplicationFormDocument = gql`
     lookup {
       community(ID: $communityId) {
         id
-        applicationForm {
-          ...ApplicationForm
+        roleSet {
+          applicationForm {
+            ...ApplicationForm
+          }
         }
       }
     }
@@ -9666,57 +9665,57 @@ export function refetchCommunityApplicationFormQuery(variables: SchemaTypes.Comm
   return { query: CommunityApplicationFormDocument, variables: variables };
 }
 
-export const UpdateCommunityApplicationQuestionsDocument = gql`
-  mutation updateCommunityApplicationQuestions($communityId: UUID!, $formData: UpdateFormInput!) {
-    updateCommunityApplicationForm(applicationFormData: { communityID: $communityId, formData: $formData }) {
+export const UpdateApplicationFormOnRoleSetDocument = gql`
+  mutation updateApplicationFormOnRoleSet($roleSetId: UUID!, $formData: UpdateFormInput!) {
+    updateApplicationFormOnRoleSet(applicationFormData: { roleSetID: $roleSetId, formData: $formData }) {
       id
     }
   }
 `;
-export type UpdateCommunityApplicationQuestionsMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateCommunityApplicationQuestionsMutation,
-  SchemaTypes.UpdateCommunityApplicationQuestionsMutationVariables
+export type UpdateApplicationFormOnRoleSetMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateApplicationFormOnRoleSetMutation,
+  SchemaTypes.UpdateApplicationFormOnRoleSetMutationVariables
 >;
 
 /**
- * __useUpdateCommunityApplicationQuestionsMutation__
+ * __useUpdateApplicationFormOnRoleSetMutation__
  *
- * To run a mutation, you first call `useUpdateCommunityApplicationQuestionsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateCommunityApplicationQuestionsMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateApplicationFormOnRoleSetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateApplicationFormOnRoleSetMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateCommunityApplicationQuestionsMutation, { data, loading, error }] = useUpdateCommunityApplicationQuestionsMutation({
+ * const [updateApplicationFormOnRoleSetMutation, { data, loading, error }] = useUpdateApplicationFormOnRoleSetMutation({
  *   variables: {
- *      communityId: // value for 'communityId'
+ *      roleSetId: // value for 'roleSetId'
  *      formData: // value for 'formData'
  *   },
  * });
  */
-export function useUpdateCommunityApplicationQuestionsMutation(
+export function useUpdateApplicationFormOnRoleSetMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateCommunityApplicationQuestionsMutation,
-    SchemaTypes.UpdateCommunityApplicationQuestionsMutationVariables
+    SchemaTypes.UpdateApplicationFormOnRoleSetMutation,
+    SchemaTypes.UpdateApplicationFormOnRoleSetMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.UpdateCommunityApplicationQuestionsMutation,
-    SchemaTypes.UpdateCommunityApplicationQuestionsMutationVariables
-  >(UpdateCommunityApplicationQuestionsDocument, options);
+    SchemaTypes.UpdateApplicationFormOnRoleSetMutation,
+    SchemaTypes.UpdateApplicationFormOnRoleSetMutationVariables
+  >(UpdateApplicationFormOnRoleSetDocument, options);
 }
 
-export type UpdateCommunityApplicationQuestionsMutationHookResult = ReturnType<
-  typeof useUpdateCommunityApplicationQuestionsMutation
+export type UpdateApplicationFormOnRoleSetMutationHookResult = ReturnType<
+  typeof useUpdateApplicationFormOnRoleSetMutation
 >;
-export type UpdateCommunityApplicationQuestionsMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateCommunityApplicationQuestionsMutation>;
-export type UpdateCommunityApplicationQuestionsMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateCommunityApplicationQuestionsMutation,
-  SchemaTypes.UpdateCommunityApplicationQuestionsMutationVariables
+export type UpdateApplicationFormOnRoleSetMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateApplicationFormOnRoleSetMutation>;
+export type UpdateApplicationFormOnRoleSetMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateApplicationFormOnRoleSetMutation,
+  SchemaTypes.UpdateApplicationFormOnRoleSetMutationVariables
 >;
 export const SpaceCommunityDocument = gql`
   query SpaceCommunity($spaceId: UUID!, $includeDetails: Boolean = false) {
@@ -9949,12 +9948,12 @@ export type CreateGroupOnCommunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateGroupOnCommunityMutation,
   SchemaTypes.CreateGroupOnCommunityMutationVariables
 >;
-export const CommunityMembersDocument = gql`
-  query communityMembers($communityId: UUID!) {
+export const RoleSetMembersDocument = gql`
+  query roleSetMembers($roleSetId: UUID!) {
     lookup {
-      community(ID: $communityId) {
+      roleSet(ID: $roleSetId) {
         id
-        memberUsers {
+        memberUsers: usersInRole(role: MEMBER) {
           ...UserDisplayName
         }
       }
@@ -9964,52 +9963,49 @@ export const CommunityMembersDocument = gql`
 `;
 
 /**
- * __useCommunityMembersQuery__
+ * __useRoleSetMembersQuery__
  *
- * To run a query within a React component, call `useCommunityMembersQuery` and pass it any options that fit your needs.
- * When your component renders, `useCommunityMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useRoleSetMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRoleSetMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCommunityMembersQuery({
+ * const { data, loading, error } = useRoleSetMembersQuery({
  *   variables: {
- *      communityId: // value for 'communityId'
+ *      roleSetId: // value for 'roleSetId'
  *   },
  * });
  */
-export function useCommunityMembersQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CommunityMembersQuery, SchemaTypes.CommunityMembersQueryVariables>
+export function useRoleSetMembersQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.RoleSetMembersQuery, SchemaTypes.RoleSetMembersQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CommunityMembersQuery, SchemaTypes.CommunityMembersQueryVariables>(
-    CommunityMembersDocument,
+  return Apollo.useQuery<SchemaTypes.RoleSetMembersQuery, SchemaTypes.RoleSetMembersQueryVariables>(
+    RoleSetMembersDocument,
     options
   );
 }
 
-export function useCommunityMembersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CommunityMembersQuery,
-    SchemaTypes.CommunityMembersQueryVariables
-  >
+export function useRoleSetMembersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.RoleSetMembersQuery, SchemaTypes.RoleSetMembersQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.CommunityMembersQuery, SchemaTypes.CommunityMembersQueryVariables>(
-    CommunityMembersDocument,
+  return Apollo.useLazyQuery<SchemaTypes.RoleSetMembersQuery, SchemaTypes.RoleSetMembersQueryVariables>(
+    RoleSetMembersDocument,
     options
   );
 }
 
-export type CommunityMembersQueryHookResult = ReturnType<typeof useCommunityMembersQuery>;
-export type CommunityMembersLazyQueryHookResult = ReturnType<typeof useCommunityMembersLazyQuery>;
-export type CommunityMembersQueryResult = Apollo.QueryResult<
-  SchemaTypes.CommunityMembersQuery,
-  SchemaTypes.CommunityMembersQueryVariables
+export type RoleSetMembersQueryHookResult = ReturnType<typeof useRoleSetMembersQuery>;
+export type RoleSetMembersLazyQueryHookResult = ReturnType<typeof useRoleSetMembersLazyQuery>;
+export type RoleSetMembersQueryResult = Apollo.QueryResult<
+  SchemaTypes.RoleSetMembersQuery,
+  SchemaTypes.RoleSetMembersQueryVariables
 >;
-export function refetchCommunityMembersQuery(variables: SchemaTypes.CommunityMembersQueryVariables) {
-  return { query: CommunityMembersDocument, variables: variables };
+export function refetchRoleSetMembersQuery(variables: SchemaTypes.RoleSetMembersQueryVariables) {
+  return { query: RoleSetMembersDocument, variables: variables };
 }
 
 export const AvailableUsersDocument = gql`
@@ -10091,12 +10087,19 @@ export const CommunityMembersListDocument = gql`
         }
       }
       community(ID: $communityId) {
-        ...CommunityMembersDetails
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        roleSet {
+          ...RoleSetDetails
+        }
       }
     }
   }
   ${ContributorDetailsFragmentDoc}
-  ${CommunityMembersDetailsFragmentDoc}
+  ${RoleSetDetailsFragmentDoc}
 `;
 
 /**
@@ -10153,70 +10156,70 @@ export function refetchCommunityMembersListQuery(variables: SchemaTypes.Communit
   return { query: CommunityMembersListDocument, variables: variables };
 }
 
-export const CommunityAvailableMembersDocument = gql`
-  query CommunityAvailableMembers($communityId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
+export const RoleSetAvailableMembersDocument = gql`
+  query RoleSetAvailableMembers($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
     lookup {
-      availableMembers: community(ID: $communityId) {
-        ...CommunityAvailableMemberUsers
+      availableMembers: roleSet(ID: $roleSetId) {
+        ...RoleSetAvailableMemberUsers
       }
     }
   }
-  ${CommunityAvailableMemberUsersFragmentDoc}
+  ${RoleSetAvailableMemberUsersFragmentDoc}
 `;
 
 /**
- * __useCommunityAvailableMembersQuery__
+ * __useRoleSetAvailableMembersQuery__
  *
- * To run a query within a React component, call `useCommunityAvailableMembersQuery` and pass it any options that fit your needs.
- * When your component renders, `useCommunityAvailableMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useRoleSetAvailableMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRoleSetAvailableMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCommunityAvailableMembersQuery({
+ * const { data, loading, error } = useRoleSetAvailableMembersQuery({
  *   variables: {
- *      communityId: // value for 'communityId'
+ *      roleSetId: // value for 'roleSetId'
  *      first: // value for 'first'
  *      after: // value for 'after'
  *      filter: // value for 'filter'
  *   },
  * });
  */
-export function useCommunityAvailableMembersQuery(
+export function useRoleSetAvailableMembersQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CommunityAvailableMembersQuery,
-    SchemaTypes.CommunityAvailableMembersQueryVariables
+    SchemaTypes.RoleSetAvailableMembersQuery,
+    SchemaTypes.RoleSetAvailableMembersQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.CommunityAvailableMembersQuery,
-    SchemaTypes.CommunityAvailableMembersQueryVariables
-  >(CommunityAvailableMembersDocument, options);
+  return Apollo.useQuery<SchemaTypes.RoleSetAvailableMembersQuery, SchemaTypes.RoleSetAvailableMembersQueryVariables>(
+    RoleSetAvailableMembersDocument,
+    options
+  );
 }
 
-export function useCommunityAvailableMembersLazyQuery(
+export function useRoleSetAvailableMembersLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CommunityAvailableMembersQuery,
-    SchemaTypes.CommunityAvailableMembersQueryVariables
+    SchemaTypes.RoleSetAvailableMembersQuery,
+    SchemaTypes.RoleSetAvailableMembersQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.CommunityAvailableMembersQuery,
-    SchemaTypes.CommunityAvailableMembersQueryVariables
-  >(CommunityAvailableMembersDocument, options);
+    SchemaTypes.RoleSetAvailableMembersQuery,
+    SchemaTypes.RoleSetAvailableMembersQueryVariables
+  >(RoleSetAvailableMembersDocument, options);
 }
 
-export type CommunityAvailableMembersQueryHookResult = ReturnType<typeof useCommunityAvailableMembersQuery>;
-export type CommunityAvailableMembersLazyQueryHookResult = ReturnType<typeof useCommunityAvailableMembersLazyQuery>;
-export type CommunityAvailableMembersQueryResult = Apollo.QueryResult<
-  SchemaTypes.CommunityAvailableMembersQuery,
-  SchemaTypes.CommunityAvailableMembersQueryVariables
+export type RoleSetAvailableMembersQueryHookResult = ReturnType<typeof useRoleSetAvailableMembersQuery>;
+export type RoleSetAvailableMembersLazyQueryHookResult = ReturnType<typeof useRoleSetAvailableMembersLazyQuery>;
+export type RoleSetAvailableMembersQueryResult = Apollo.QueryResult<
+  SchemaTypes.RoleSetAvailableMembersQuery,
+  SchemaTypes.RoleSetAvailableMembersQueryVariables
 >;
-export function refetchCommunityAvailableMembersQuery(variables: SchemaTypes.CommunityAvailableMembersQueryVariables) {
-  return { query: CommunityAvailableMembersDocument, variables: variables };
+export function refetchRoleSetAvailableMembersQuery(variables: SchemaTypes.RoleSetAvailableMembersQueryVariables) {
+  return { query: RoleSetAvailableMembersDocument, variables: variables };
 }
 
 export const AvailableVirtualContributorsDocument = gql`
@@ -10229,8 +10232,11 @@ export const AvailableVirtualContributorsDocument = gql`
         id
         community {
           id
-          virtualContributorsInRole(role: MEMBER) {
-            ...VirtualContributorName
+          roleSet {
+            id
+            virtualContributorsInRole(role: MEMBER) {
+              ...VirtualContributorName
+            }
           }
         }
         account {
@@ -10378,119 +10384,6 @@ export function refetchAvailableVirtualContributorsInLibraryQuery(
   return { query: AvailableVirtualContributorsInLibraryDocument, variables: variables };
 }
 
-export const RemoveVirtualContributorFromCommunityDocument = gql`
-  mutation RemoveVirtualContributorFromCommunity($communityId: UUID!, $virtualContributorId: UUID_NAMEID!) {
-    removeCommunityRoleFromVirtual(
-      roleData: { communityID: $communityId, role: MEMBER, virtualContributorID: $virtualContributorId }
-    ) {
-      id
-    }
-  }
-`;
-export type RemoveVirtualContributorFromCommunityMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveVirtualContributorFromCommunityMutation,
-  SchemaTypes.RemoveVirtualContributorFromCommunityMutationVariables
->;
-
-/**
- * __useRemoveVirtualContributorFromCommunityMutation__
- *
- * To run a mutation, you first call `useRemoveVirtualContributorFromCommunityMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveVirtualContributorFromCommunityMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeVirtualContributorFromCommunityMutation, { data, loading, error }] = useRemoveVirtualContributorFromCommunityMutation({
- *   variables: {
- *      communityId: // value for 'communityId'
- *      virtualContributorId: // value for 'virtualContributorId'
- *   },
- * });
- */
-export function useRemoveVirtualContributorFromCommunityMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveVirtualContributorFromCommunityMutation,
-    SchemaTypes.RemoveVirtualContributorFromCommunityMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveVirtualContributorFromCommunityMutation,
-    SchemaTypes.RemoveVirtualContributorFromCommunityMutationVariables
-  >(RemoveVirtualContributorFromCommunityDocument, options);
-}
-
-export type RemoveVirtualContributorFromCommunityMutationHookResult = ReturnType<
-  typeof useRemoveVirtualContributorFromCommunityMutation
->;
-export type RemoveVirtualContributorFromCommunityMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveVirtualContributorFromCommunityMutation>;
-export type RemoveVirtualContributorFromCommunityMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveVirtualContributorFromCommunityMutation,
-  SchemaTypes.RemoveVirtualContributorFromCommunityMutationVariables
->;
-export const AssignCommunityRoleToVirtualContributorDocument = gql`
-  mutation AssignCommunityRoleToVirtualContributor(
-    $communityId: UUID!
-    $virtualContributorId: UUID_NAMEID!
-    $role: CommunityRole! = MEMBER
-  ) {
-    assignCommunityRoleToVirtual(
-      roleData: { communityID: $communityId, role: $role, virtualContributorID: $virtualContributorId }
-    ) {
-      id
-    }
-  }
-`;
-export type AssignCommunityRoleToVirtualContributorMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignCommunityRoleToVirtualContributorMutation,
-  SchemaTypes.AssignCommunityRoleToVirtualContributorMutationVariables
->;
-
-/**
- * __useAssignCommunityRoleToVirtualContributorMutation__
- *
- * To run a mutation, you first call `useAssignCommunityRoleToVirtualContributorMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignCommunityRoleToVirtualContributorMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [assignCommunityRoleToVirtualContributorMutation, { data, loading, error }] = useAssignCommunityRoleToVirtualContributorMutation({
- *   variables: {
- *      communityId: // value for 'communityId'
- *      virtualContributorId: // value for 'virtualContributorId'
- *      role: // value for 'role'
- *   },
- * });
- */
-export function useAssignCommunityRoleToVirtualContributorMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignCommunityRoleToVirtualContributorMutation,
-    SchemaTypes.AssignCommunityRoleToVirtualContributorMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AssignCommunityRoleToVirtualContributorMutation,
-    SchemaTypes.AssignCommunityRoleToVirtualContributorMutationVariables
-  >(AssignCommunityRoleToVirtualContributorDocument, options);
-}
-
-export type AssignCommunityRoleToVirtualContributorMutationHookResult = ReturnType<
-  typeof useAssignCommunityRoleToVirtualContributorMutation
->;
-export type AssignCommunityRoleToVirtualContributorMutationResult =
-  Apollo.MutationResult<SchemaTypes.AssignCommunityRoleToVirtualContributorMutation>;
-export type AssignCommunityRoleToVirtualContributorMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignCommunityRoleToVirtualContributorMutation,
-  SchemaTypes.AssignCommunityRoleToVirtualContributorMutationVariables
->;
 export const AllOrganizationsDocument = gql`
   query AllOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
     organizationsPaginated(first: $first, after: $after, filter: $filter) {
@@ -10557,575 +10450,315 @@ export function refetchAllOrganizationsQuery(variables: SchemaTypes.AllOrganizat
   return { query: AllOrganizationsDocument, variables: variables };
 }
 
-export const AssignUserAsCommunityMemberDocument = gql`
-  mutation assignUserAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
-    assignCommunityRoleToUser(roleData: { communityID: $communityId, userID: $memberId, role: MEMBER }) {
+export const AssignRoleToUserDocument = gql`
+  mutation assignRoleToUser($roleSetId: UUID!, $role: CommunityRoleType!, $memberId: UUID_NAMEID_EMAIL!) {
+    assignRoleToUser(roleData: { roleSetID: $roleSetId, userID: $memberId, role: $role }) {
       id
     }
   }
 `;
-export type AssignUserAsCommunityMemberMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignUserAsCommunityMemberMutation,
-  SchemaTypes.AssignUserAsCommunityMemberMutationVariables
+export type AssignRoleToUserMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignRoleToUserMutation,
+  SchemaTypes.AssignRoleToUserMutationVariables
 >;
 
 /**
- * __useAssignUserAsCommunityMemberMutation__
+ * __useAssignRoleToUserMutation__
  *
- * To run a mutation, you first call `useAssignUserAsCommunityMemberMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignUserAsCommunityMemberMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useAssignRoleToUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignRoleToUserMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [assignUserAsCommunityMemberMutation, { data, loading, error }] = useAssignUserAsCommunityMemberMutation({
+ * const [assignRoleToUserMutation, { data, loading, error }] = useAssignRoleToUserMutation({
  *   variables: {
- *      communityId: // value for 'communityId'
- *      memberId: // value for 'memberId'
- *   },
- * });
- */
-export function useAssignUserAsCommunityMemberMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignUserAsCommunityMemberMutation,
-    SchemaTypes.AssignUserAsCommunityMemberMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AssignUserAsCommunityMemberMutation,
-    SchemaTypes.AssignUserAsCommunityMemberMutationVariables
-  >(AssignUserAsCommunityMemberDocument, options);
-}
-
-export type AssignUserAsCommunityMemberMutationHookResult = ReturnType<typeof useAssignUserAsCommunityMemberMutation>;
-export type AssignUserAsCommunityMemberMutationResult =
-  Apollo.MutationResult<SchemaTypes.AssignUserAsCommunityMemberMutation>;
-export type AssignUserAsCommunityMemberMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignUserAsCommunityMemberMutation,
-  SchemaTypes.AssignUserAsCommunityMemberMutationVariables
->;
-export const AssignUserAsCommunityLeadDocument = gql`
-  mutation assignUserAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
-    assignCommunityRoleToUser(roleData: { communityID: $communityId, userID: $memberId, role: LEAD }) {
-      id
-    }
-  }
-`;
-export type AssignUserAsCommunityLeadMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignUserAsCommunityLeadMutation,
-  SchemaTypes.AssignUserAsCommunityLeadMutationVariables
->;
-
-/**
- * __useAssignUserAsCommunityLeadMutation__
- *
- * To run a mutation, you first call `useAssignUserAsCommunityLeadMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignUserAsCommunityLeadMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [assignUserAsCommunityLeadMutation, { data, loading, error }] = useAssignUserAsCommunityLeadMutation({
- *   variables: {
- *      communityId: // value for 'communityId'
- *      memberId: // value for 'memberId'
- *   },
- * });
- */
-export function useAssignUserAsCommunityLeadMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignUserAsCommunityLeadMutation,
-    SchemaTypes.AssignUserAsCommunityLeadMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AssignUserAsCommunityLeadMutation,
-    SchemaTypes.AssignUserAsCommunityLeadMutationVariables
-  >(AssignUserAsCommunityLeadDocument, options);
-}
-
-export type AssignUserAsCommunityLeadMutationHookResult = ReturnType<typeof useAssignUserAsCommunityLeadMutation>;
-export type AssignUserAsCommunityLeadMutationResult =
-  Apollo.MutationResult<SchemaTypes.AssignUserAsCommunityLeadMutation>;
-export type AssignUserAsCommunityLeadMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignUserAsCommunityLeadMutation,
-  SchemaTypes.AssignUserAsCommunityLeadMutationVariables
->;
-export const RemoveUserAsCommunityMemberDocument = gql`
-  mutation removeUserAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
-    removeCommunityRoleFromUser(roleData: { communityID: $communityId, userID: $memberId, role: MEMBER }) {
-      id
-    }
-  }
-`;
-export type RemoveUserAsCommunityMemberMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUserAsCommunityMemberMutation,
-  SchemaTypes.RemoveUserAsCommunityMemberMutationVariables
->;
-
-/**
- * __useRemoveUserAsCommunityMemberMutation__
- *
- * To run a mutation, you first call `useRemoveUserAsCommunityMemberMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserAsCommunityMemberMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserAsCommunityMemberMutation, { data, loading, error }] = useRemoveUserAsCommunityMemberMutation({
- *   variables: {
- *      communityId: // value for 'communityId'
- *      memberId: // value for 'memberId'
- *   },
- * });
- */
-export function useRemoveUserAsCommunityMemberMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUserAsCommunityMemberMutation,
-    SchemaTypes.RemoveUserAsCommunityMemberMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveUserAsCommunityMemberMutation,
-    SchemaTypes.RemoveUserAsCommunityMemberMutationVariables
-  >(RemoveUserAsCommunityMemberDocument, options);
-}
-
-export type RemoveUserAsCommunityMemberMutationHookResult = ReturnType<typeof useRemoveUserAsCommunityMemberMutation>;
-export type RemoveUserAsCommunityMemberMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveUserAsCommunityMemberMutation>;
-export type RemoveUserAsCommunityMemberMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUserAsCommunityMemberMutation,
-  SchemaTypes.RemoveUserAsCommunityMemberMutationVariables
->;
-export const RemoveUserAsCommunityLeadDocument = gql`
-  mutation removeUserAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
-    removeCommunityRoleFromUser(roleData: { communityID: $communityId, userID: $memberId, role: LEAD }) {
-      id
-    }
-  }
-`;
-export type RemoveUserAsCommunityLeadMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUserAsCommunityLeadMutation,
-  SchemaTypes.RemoveUserAsCommunityLeadMutationVariables
->;
-
-/**
- * __useRemoveUserAsCommunityLeadMutation__
- *
- * To run a mutation, you first call `useRemoveUserAsCommunityLeadMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserAsCommunityLeadMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserAsCommunityLeadMutation, { data, loading, error }] = useRemoveUserAsCommunityLeadMutation({
- *   variables: {
- *      communityId: // value for 'communityId'
- *      memberId: // value for 'memberId'
- *   },
- * });
- */
-export function useRemoveUserAsCommunityLeadMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUserAsCommunityLeadMutation,
-    SchemaTypes.RemoveUserAsCommunityLeadMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveUserAsCommunityLeadMutation,
-    SchemaTypes.RemoveUserAsCommunityLeadMutationVariables
-  >(RemoveUserAsCommunityLeadDocument, options);
-}
-
-export type RemoveUserAsCommunityLeadMutationHookResult = ReturnType<typeof useRemoveUserAsCommunityLeadMutation>;
-export type RemoveUserAsCommunityLeadMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveUserAsCommunityLeadMutation>;
-export type RemoveUserAsCommunityLeadMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUserAsCommunityLeadMutation,
-  SchemaTypes.RemoveUserAsCommunityLeadMutationVariables
->;
-export const AssignOrganizationAsCommunityMemberDocument = gql`
-  mutation assignOrganizationAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID!) {
-    assignCommunityRoleToOrganization(
-      roleData: { communityID: $communityId, organizationID: $memberId, role: MEMBER }
-    ) {
-      id
-    }
-  }
-`;
-export type AssignOrganizationAsCommunityMemberMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignOrganizationAsCommunityMemberMutation,
-  SchemaTypes.AssignOrganizationAsCommunityMemberMutationVariables
->;
-
-/**
- * __useAssignOrganizationAsCommunityMemberMutation__
- *
- * To run a mutation, you first call `useAssignOrganizationAsCommunityMemberMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignOrganizationAsCommunityMemberMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [assignOrganizationAsCommunityMemberMutation, { data, loading, error }] = useAssignOrganizationAsCommunityMemberMutation({
- *   variables: {
- *      communityId: // value for 'communityId'
- *      memberId: // value for 'memberId'
- *   },
- * });
- */
-export function useAssignOrganizationAsCommunityMemberMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignOrganizationAsCommunityMemberMutation,
-    SchemaTypes.AssignOrganizationAsCommunityMemberMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AssignOrganizationAsCommunityMemberMutation,
-    SchemaTypes.AssignOrganizationAsCommunityMemberMutationVariables
-  >(AssignOrganizationAsCommunityMemberDocument, options);
-}
-
-export type AssignOrganizationAsCommunityMemberMutationHookResult = ReturnType<
-  typeof useAssignOrganizationAsCommunityMemberMutation
->;
-export type AssignOrganizationAsCommunityMemberMutationResult =
-  Apollo.MutationResult<SchemaTypes.AssignOrganizationAsCommunityMemberMutation>;
-export type AssignOrganizationAsCommunityMemberMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignOrganizationAsCommunityMemberMutation,
-  SchemaTypes.AssignOrganizationAsCommunityMemberMutationVariables
->;
-export const AssignOrganizationAsCommunityLeadDocument = gql`
-  mutation assignOrganizationAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID!) {
-    assignCommunityRoleToOrganization(roleData: { communityID: $communityId, organizationID: $memberId, role: LEAD }) {
-      id
-    }
-  }
-`;
-export type AssignOrganizationAsCommunityLeadMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignOrganizationAsCommunityLeadMutation,
-  SchemaTypes.AssignOrganizationAsCommunityLeadMutationVariables
->;
-
-/**
- * __useAssignOrganizationAsCommunityLeadMutation__
- *
- * To run a mutation, you first call `useAssignOrganizationAsCommunityLeadMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignOrganizationAsCommunityLeadMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [assignOrganizationAsCommunityLeadMutation, { data, loading, error }] = useAssignOrganizationAsCommunityLeadMutation({
- *   variables: {
- *      communityId: // value for 'communityId'
- *      memberId: // value for 'memberId'
- *   },
- * });
- */
-export function useAssignOrganizationAsCommunityLeadMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignOrganizationAsCommunityLeadMutation,
-    SchemaTypes.AssignOrganizationAsCommunityLeadMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AssignOrganizationAsCommunityLeadMutation,
-    SchemaTypes.AssignOrganizationAsCommunityLeadMutationVariables
-  >(AssignOrganizationAsCommunityLeadDocument, options);
-}
-
-export type AssignOrganizationAsCommunityLeadMutationHookResult = ReturnType<
-  typeof useAssignOrganizationAsCommunityLeadMutation
->;
-export type AssignOrganizationAsCommunityLeadMutationResult =
-  Apollo.MutationResult<SchemaTypes.AssignOrganizationAsCommunityLeadMutation>;
-export type AssignOrganizationAsCommunityLeadMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignOrganizationAsCommunityLeadMutation,
-  SchemaTypes.AssignOrganizationAsCommunityLeadMutationVariables
->;
-export const RemoveOrganizationAsCommunityMemberDocument = gql`
-  mutation removeOrganizationAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID!) {
-    removeCommunityRoleFromOrganization(
-      roleData: { communityID: $communityId, organizationID: $memberId, role: MEMBER }
-    ) {
-      id
-    }
-  }
-`;
-export type RemoveOrganizationAsCommunityMemberMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveOrganizationAsCommunityMemberMutation,
-  SchemaTypes.RemoveOrganizationAsCommunityMemberMutationVariables
->;
-
-/**
- * __useRemoveOrganizationAsCommunityMemberMutation__
- *
- * To run a mutation, you first call `useRemoveOrganizationAsCommunityMemberMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveOrganizationAsCommunityMemberMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeOrganizationAsCommunityMemberMutation, { data, loading, error }] = useRemoveOrganizationAsCommunityMemberMutation({
- *   variables: {
- *      communityId: // value for 'communityId'
- *      memberId: // value for 'memberId'
- *   },
- * });
- */
-export function useRemoveOrganizationAsCommunityMemberMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveOrganizationAsCommunityMemberMutation,
-    SchemaTypes.RemoveOrganizationAsCommunityMemberMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveOrganizationAsCommunityMemberMutation,
-    SchemaTypes.RemoveOrganizationAsCommunityMemberMutationVariables
-  >(RemoveOrganizationAsCommunityMemberDocument, options);
-}
-
-export type RemoveOrganizationAsCommunityMemberMutationHookResult = ReturnType<
-  typeof useRemoveOrganizationAsCommunityMemberMutation
->;
-export type RemoveOrganizationAsCommunityMemberMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveOrganizationAsCommunityMemberMutation>;
-export type RemoveOrganizationAsCommunityMemberMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveOrganizationAsCommunityMemberMutation,
-  SchemaTypes.RemoveOrganizationAsCommunityMemberMutationVariables
->;
-export const RemoveOrganizationAsCommunityLeadDocument = gql`
-  mutation removeOrganizationAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID!) {
-    removeCommunityRoleFromOrganization(
-      roleData: { communityID: $communityId, organizationID: $memberId, role: LEAD }
-    ) {
-      id
-    }
-  }
-`;
-export type RemoveOrganizationAsCommunityLeadMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveOrganizationAsCommunityLeadMutation,
-  SchemaTypes.RemoveOrganizationAsCommunityLeadMutationVariables
->;
-
-/**
- * __useRemoveOrganizationAsCommunityLeadMutation__
- *
- * To run a mutation, you first call `useRemoveOrganizationAsCommunityLeadMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveOrganizationAsCommunityLeadMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeOrganizationAsCommunityLeadMutation, { data, loading, error }] = useRemoveOrganizationAsCommunityLeadMutation({
- *   variables: {
- *      communityId: // value for 'communityId'
- *      memberId: // value for 'memberId'
- *   },
- * });
- */
-export function useRemoveOrganizationAsCommunityLeadMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveOrganizationAsCommunityLeadMutation,
-    SchemaTypes.RemoveOrganizationAsCommunityLeadMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveOrganizationAsCommunityLeadMutation,
-    SchemaTypes.RemoveOrganizationAsCommunityLeadMutationVariables
-  >(RemoveOrganizationAsCommunityLeadDocument, options);
-}
-
-export type RemoveOrganizationAsCommunityLeadMutationHookResult = ReturnType<
-  typeof useRemoveOrganizationAsCommunityLeadMutation
->;
-export type RemoveOrganizationAsCommunityLeadMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveOrganizationAsCommunityLeadMutation>;
-export type RemoveOrganizationAsCommunityLeadMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveOrganizationAsCommunityLeadMutation,
-  SchemaTypes.RemoveOrganizationAsCommunityLeadMutationVariables
->;
-export const AssignCommunityRoleToUserDocument = gql`
-  mutation AssignCommunityRoleToUser($communityID: UUID!, $role: CommunityRole!, $userID: UUID_NAMEID_EMAIL!) {
-    assignCommunityRoleToUser(roleData: { communityID: $communityID, role: $role, userID: $userID }) {
-      id
-    }
-  }
-`;
-export type AssignCommunityRoleToUserMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignCommunityRoleToUserMutation,
-  SchemaTypes.AssignCommunityRoleToUserMutationVariables
->;
-
-/**
- * __useAssignCommunityRoleToUserMutation__
- *
- * To run a mutation, you first call `useAssignCommunityRoleToUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignCommunityRoleToUserMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [assignCommunityRoleToUserMutation, { data, loading, error }] = useAssignCommunityRoleToUserMutation({
- *   variables: {
- *      communityID: // value for 'communityID'
+ *      roleSetId: // value for 'roleSetId'
  *      role: // value for 'role'
- *      userID: // value for 'userID'
+ *      memberId: // value for 'memberId'
  *   },
  * });
  */
-export function useAssignCommunityRoleToUserMutation(
+export function useAssignRoleToUserMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignCommunityRoleToUserMutation,
-    SchemaTypes.AssignCommunityRoleToUserMutationVariables
+    SchemaTypes.AssignRoleToUserMutation,
+    SchemaTypes.AssignRoleToUserMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AssignCommunityRoleToUserMutation,
-    SchemaTypes.AssignCommunityRoleToUserMutationVariables
-  >(AssignCommunityRoleToUserDocument, options);
+  return Apollo.useMutation<SchemaTypes.AssignRoleToUserMutation, SchemaTypes.AssignRoleToUserMutationVariables>(
+    AssignRoleToUserDocument,
+    options
+  );
 }
 
-export type AssignCommunityRoleToUserMutationHookResult = ReturnType<typeof useAssignCommunityRoleToUserMutation>;
-export type AssignCommunityRoleToUserMutationResult =
-  Apollo.MutationResult<SchemaTypes.AssignCommunityRoleToUserMutation>;
-export type AssignCommunityRoleToUserMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignCommunityRoleToUserMutation,
-  SchemaTypes.AssignCommunityRoleToUserMutationVariables
+export type AssignRoleToUserMutationHookResult = ReturnType<typeof useAssignRoleToUserMutation>;
+export type AssignRoleToUserMutationResult = Apollo.MutationResult<SchemaTypes.AssignRoleToUserMutation>;
+export type AssignRoleToUserMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignRoleToUserMutation,
+  SchemaTypes.AssignRoleToUserMutationVariables
 >;
-export const RemoveCommunityRoleFromUserDocument = gql`
-  mutation RemoveCommunityRoleFromUser($communityID: UUID!, $role: CommunityRole!, $userID: UUID_NAMEID_EMAIL!) {
-    removeCommunityRoleFromUser(roleData: { communityID: $communityID, role: $role, userID: $userID }) {
+export const RemoveRoleFromUserDocument = gql`
+  mutation removeRoleFromUser($roleSetId: UUID!, $role: CommunityRoleType!, $memberId: UUID_NAMEID_EMAIL!) {
+    removeRoleFromUser(roleData: { roleSetID: $roleSetId, userID: $memberId, role: $role }) {
       id
     }
   }
 `;
-export type RemoveCommunityRoleFromUserMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveCommunityRoleFromUserMutation,
-  SchemaTypes.RemoveCommunityRoleFromUserMutationVariables
+export type RemoveRoleFromUserMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveRoleFromUserMutation,
+  SchemaTypes.RemoveRoleFromUserMutationVariables
 >;
 
 /**
- * __useRemoveCommunityRoleFromUserMutation__
+ * __useRemoveRoleFromUserMutation__
  *
- * To run a mutation, you first call `useRemoveCommunityRoleFromUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveCommunityRoleFromUserMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useRemoveRoleFromUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveRoleFromUserMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [removeCommunityRoleFromUserMutation, { data, loading, error }] = useRemoveCommunityRoleFromUserMutation({
+ * const [removeRoleFromUserMutation, { data, loading, error }] = useRemoveRoleFromUserMutation({
  *   variables: {
- *      communityID: // value for 'communityID'
+ *      roleSetId: // value for 'roleSetId'
  *      role: // value for 'role'
- *      userID: // value for 'userID'
+ *      memberId: // value for 'memberId'
  *   },
  * });
  */
-export function useRemoveCommunityRoleFromUserMutation(
+export function useRemoveRoleFromUserMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveCommunityRoleFromUserMutation,
-    SchemaTypes.RemoveCommunityRoleFromUserMutationVariables
+    SchemaTypes.RemoveRoleFromUserMutation,
+    SchemaTypes.RemoveRoleFromUserMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.RemoveRoleFromUserMutation, SchemaTypes.RemoveRoleFromUserMutationVariables>(
+    RemoveRoleFromUserDocument,
+    options
+  );
+}
+
+export type RemoveRoleFromUserMutationHookResult = ReturnType<typeof useRemoveRoleFromUserMutation>;
+export type RemoveRoleFromUserMutationResult = Apollo.MutationResult<SchemaTypes.RemoveRoleFromUserMutation>;
+export type RemoveRoleFromUserMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveRoleFromUserMutation,
+  SchemaTypes.RemoveRoleFromUserMutationVariables
+>;
+export const AssignRoleToOrganizationDocument = gql`
+  mutation assignRoleToOrganization($roleSetId: UUID!, $role: CommunityRoleType!, $memberId: UUID_NAMEID!) {
+    assignRoleToOrganization(roleData: { roleSetID: $roleSetId, organizationID: $memberId, role: $role }) {
+      id
+    }
+  }
+`;
+export type AssignRoleToOrganizationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignRoleToOrganizationMutation,
+  SchemaTypes.AssignRoleToOrganizationMutationVariables
+>;
+
+/**
+ * __useAssignRoleToOrganizationMutation__
+ *
+ * To run a mutation, you first call `useAssignRoleToOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignRoleToOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignRoleToOrganizationMutation, { data, loading, error }] = useAssignRoleToOrganizationMutation({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *      role: // value for 'role'
+ *      memberId: // value for 'memberId'
+ *   },
+ * });
+ */
+export function useAssignRoleToOrganizationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignRoleToOrganizationMutation,
+    SchemaTypes.AssignRoleToOrganizationMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.RemoveCommunityRoleFromUserMutation,
-    SchemaTypes.RemoveCommunityRoleFromUserMutationVariables
-  >(RemoveCommunityRoleFromUserDocument, options);
+    SchemaTypes.AssignRoleToOrganizationMutation,
+    SchemaTypes.AssignRoleToOrganizationMutationVariables
+  >(AssignRoleToOrganizationDocument, options);
 }
 
-export type RemoveCommunityRoleFromUserMutationHookResult = ReturnType<typeof useRemoveCommunityRoleFromUserMutation>;
-export type RemoveCommunityRoleFromUserMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveCommunityRoleFromUserMutation>;
-export type RemoveCommunityRoleFromUserMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveCommunityRoleFromUserMutation,
-  SchemaTypes.RemoveCommunityRoleFromUserMutationVariables
+export type AssignRoleToOrganizationMutationHookResult = ReturnType<typeof useAssignRoleToOrganizationMutation>;
+export type AssignRoleToOrganizationMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignRoleToOrganizationMutation>;
+export type AssignRoleToOrganizationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignRoleToOrganizationMutation,
+  SchemaTypes.AssignRoleToOrganizationMutationVariables
 >;
-export const RemoveVirtualContributorAsCommunityMemberDocument = gql`
-  mutation RemoveVirtualContributorAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID!) {
-    removeCommunityRoleFromVirtual(
-      roleData: { communityID: $communityId, virtualContributorID: $memberId, role: MEMBER }
+export const RemoveRoleFromOrganizationDocument = gql`
+  mutation removeRoleFromOrganization($roleSetId: UUID!, $role: CommunityRoleType!, $memberId: UUID_NAMEID!) {
+    removeRoleFromOrganization(roleData: { roleSetID: $roleSetId, organizationID: $memberId, role: $role }) {
+      id
+    }
+  }
+`;
+export type RemoveRoleFromOrganizationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveRoleFromOrganizationMutation,
+  SchemaTypes.RemoveRoleFromOrganizationMutationVariables
+>;
+
+/**
+ * __useRemoveRoleFromOrganizationMutation__
+ *
+ * To run a mutation, you first call `useRemoveRoleFromOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveRoleFromOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeRoleFromOrganizationMutation, { data, loading, error }] = useRemoveRoleFromOrganizationMutation({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *      role: // value for 'role'
+ *      memberId: // value for 'memberId'
+ *   },
+ * });
+ */
+export function useRemoveRoleFromOrganizationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveRoleFromOrganizationMutation,
+    SchemaTypes.RemoveRoleFromOrganizationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveRoleFromOrganizationMutation,
+    SchemaTypes.RemoveRoleFromOrganizationMutationVariables
+  >(RemoveRoleFromOrganizationDocument, options);
+}
+
+export type RemoveRoleFromOrganizationMutationHookResult = ReturnType<typeof useRemoveRoleFromOrganizationMutation>;
+export type RemoveRoleFromOrganizationMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveRoleFromOrganizationMutation>;
+export type RemoveRoleFromOrganizationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveRoleFromOrganizationMutation,
+  SchemaTypes.RemoveRoleFromOrganizationMutationVariables
+>;
+export const AssignRoleToVirtualContributorDocument = gql`
+  mutation assignRoleToVirtualContributor($roleSetId: UUID!, $role: CommunityRoleType!, $memberId: UUID_NAMEID!) {
+    assignRoleToVirtualContributor(roleData: { roleSetID: $roleSetId, virtualContributorID: $memberId, role: $role }) {
+      id
+    }
+  }
+`;
+export type AssignRoleToVirtualContributorMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignRoleToVirtualContributorMutation,
+  SchemaTypes.AssignRoleToVirtualContributorMutationVariables
+>;
+
+/**
+ * __useAssignRoleToVirtualContributorMutation__
+ *
+ * To run a mutation, you first call `useAssignRoleToVirtualContributorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignRoleToVirtualContributorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignRoleToVirtualContributorMutation, { data, loading, error }] = useAssignRoleToVirtualContributorMutation({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *      role: // value for 'role'
+ *      memberId: // value for 'memberId'
+ *   },
+ * });
+ */
+export function useAssignRoleToVirtualContributorMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignRoleToVirtualContributorMutation,
+    SchemaTypes.AssignRoleToVirtualContributorMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AssignRoleToVirtualContributorMutation,
+    SchemaTypes.AssignRoleToVirtualContributorMutationVariables
+  >(AssignRoleToVirtualContributorDocument, options);
+}
+
+export type AssignRoleToVirtualContributorMutationHookResult = ReturnType<
+  typeof useAssignRoleToVirtualContributorMutation
+>;
+export type AssignRoleToVirtualContributorMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignRoleToVirtualContributorMutation>;
+export type AssignRoleToVirtualContributorMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignRoleToVirtualContributorMutation,
+  SchemaTypes.AssignRoleToVirtualContributorMutationVariables
+>;
+export const RemoveRoleFromVirtualContributorDocument = gql`
+  mutation removeRoleFromVirtualContributor($roleSetId: UUID!, $role: CommunityRoleType!, $memberId: UUID_NAMEID!) {
+    removeRoleFromVirtualContributor(
+      roleData: { roleSetID: $roleSetId, virtualContributorID: $memberId, role: $role }
     ) {
       id
     }
   }
 `;
-export type RemoveVirtualContributorAsCommunityMemberMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveVirtualContributorAsCommunityMemberMutation,
-  SchemaTypes.RemoveVirtualContributorAsCommunityMemberMutationVariables
+export type RemoveRoleFromVirtualContributorMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveRoleFromVirtualContributorMutation,
+  SchemaTypes.RemoveRoleFromVirtualContributorMutationVariables
 >;
 
 /**
- * __useRemoveVirtualContributorAsCommunityMemberMutation__
+ * __useRemoveRoleFromVirtualContributorMutation__
  *
- * To run a mutation, you first call `useRemoveVirtualContributorAsCommunityMemberMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveVirtualContributorAsCommunityMemberMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useRemoveRoleFromVirtualContributorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveRoleFromVirtualContributorMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [removeVirtualContributorAsCommunityMemberMutation, { data, loading, error }] = useRemoveVirtualContributorAsCommunityMemberMutation({
+ * const [removeRoleFromVirtualContributorMutation, { data, loading, error }] = useRemoveRoleFromVirtualContributorMutation({
  *   variables: {
- *      communityId: // value for 'communityId'
+ *      roleSetId: // value for 'roleSetId'
+ *      role: // value for 'role'
  *      memberId: // value for 'memberId'
  *   },
  * });
  */
-export function useRemoveVirtualContributorAsCommunityMemberMutation(
+export function useRemoveRoleFromVirtualContributorMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveVirtualContributorAsCommunityMemberMutation,
-    SchemaTypes.RemoveVirtualContributorAsCommunityMemberMutationVariables
+    SchemaTypes.RemoveRoleFromVirtualContributorMutation,
+    SchemaTypes.RemoveRoleFromVirtualContributorMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.RemoveVirtualContributorAsCommunityMemberMutation,
-    SchemaTypes.RemoveVirtualContributorAsCommunityMemberMutationVariables
-  >(RemoveVirtualContributorAsCommunityMemberDocument, options);
+    SchemaTypes.RemoveRoleFromVirtualContributorMutation,
+    SchemaTypes.RemoveRoleFromVirtualContributorMutationVariables
+  >(RemoveRoleFromVirtualContributorDocument, options);
 }
 
-export type RemoveVirtualContributorAsCommunityMemberMutationHookResult = ReturnType<
-  typeof useRemoveVirtualContributorAsCommunityMemberMutation
+export type RemoveRoleFromVirtualContributorMutationHookResult = ReturnType<
+  typeof useRemoveRoleFromVirtualContributorMutation
 >;
-export type RemoveVirtualContributorAsCommunityMemberMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveVirtualContributorAsCommunityMemberMutation>;
-export type RemoveVirtualContributorAsCommunityMemberMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveVirtualContributorAsCommunityMemberMutation,
-  SchemaTypes.RemoveVirtualContributorAsCommunityMemberMutationVariables
+export type RemoveRoleFromVirtualContributorMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveRoleFromVirtualContributorMutation>;
+export type RemoveRoleFromVirtualContributorMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveRoleFromVirtualContributorMutation,
+  SchemaTypes.RemoveRoleFromVirtualContributorMutationVariables
 >;
 export const ContributorsPageOrganizationsDocument = gql`
   query ContributorsPageOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
@@ -12448,117 +12081,115 @@ export type InvitationStateEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InvitationStateEventMutation,
   SchemaTypes.InvitationStateEventMutationVariables
 >;
-export const InviteContributorsToCommunityDocument = gql`
-  mutation inviteContributorsToCommunity($contributorIds: [UUID!]!, $communityId: UUID!, $message: String) {
-    inviteContributorsForCommunityMembership(
-      invitationData: { invitedContributors: $contributorIds, communityID: $communityId, welcomeMessage: $message }
+export const InviteContributorsForRoleSetMembershipDocument = gql`
+  mutation inviteContributorsForRoleSetMembership($contributorIds: [UUID!]!, $roleSetId: UUID!, $message: String) {
+    inviteContributorsForRoleSetMembership(
+      invitationData: { invitedContributors: $contributorIds, roleSetID: $roleSetId, welcomeMessage: $message }
     ) {
       id
     }
   }
 `;
-export type InviteContributorsToCommunityMutationFn = Apollo.MutationFunction<
-  SchemaTypes.InviteContributorsToCommunityMutation,
-  SchemaTypes.InviteContributorsToCommunityMutationVariables
+export type InviteContributorsForRoleSetMembershipMutationFn = Apollo.MutationFunction<
+  SchemaTypes.InviteContributorsForRoleSetMembershipMutation,
+  SchemaTypes.InviteContributorsForRoleSetMembershipMutationVariables
 >;
 
 /**
- * __useInviteContributorsToCommunityMutation__
+ * __useInviteContributorsForRoleSetMembershipMutation__
  *
- * To run a mutation, you first call `useInviteContributorsToCommunityMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useInviteContributorsToCommunityMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useInviteContributorsForRoleSetMembershipMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInviteContributorsForRoleSetMembershipMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [inviteContributorsToCommunityMutation, { data, loading, error }] = useInviteContributorsToCommunityMutation({
+ * const [inviteContributorsForRoleSetMembershipMutation, { data, loading, error }] = useInviteContributorsForRoleSetMembershipMutation({
  *   variables: {
  *      contributorIds: // value for 'contributorIds'
- *      communityId: // value for 'communityId'
+ *      roleSetId: // value for 'roleSetId'
  *      message: // value for 'message'
  *   },
  * });
  */
-export function useInviteContributorsToCommunityMutation(
+export function useInviteContributorsForRoleSetMembershipMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.InviteContributorsToCommunityMutation,
-    SchemaTypes.InviteContributorsToCommunityMutationVariables
+    SchemaTypes.InviteContributorsForRoleSetMembershipMutation,
+    SchemaTypes.InviteContributorsForRoleSetMembershipMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.InviteContributorsToCommunityMutation,
-    SchemaTypes.InviteContributorsToCommunityMutationVariables
-  >(InviteContributorsToCommunityDocument, options);
+    SchemaTypes.InviteContributorsForRoleSetMembershipMutation,
+    SchemaTypes.InviteContributorsForRoleSetMembershipMutationVariables
+  >(InviteContributorsForRoleSetMembershipDocument, options);
 }
 
-export type InviteContributorsToCommunityMutationHookResult = ReturnType<
-  typeof useInviteContributorsToCommunityMutation
+export type InviteContributorsForRoleSetMembershipMutationHookResult = ReturnType<
+  typeof useInviteContributorsForRoleSetMembershipMutation
 >;
-export type InviteContributorsToCommunityMutationResult =
-  Apollo.MutationResult<SchemaTypes.InviteContributorsToCommunityMutation>;
-export type InviteContributorsToCommunityMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.InviteContributorsToCommunityMutation,
-  SchemaTypes.InviteContributorsToCommunityMutationVariables
+export type InviteContributorsForRoleSetMembershipMutationResult =
+  Apollo.MutationResult<SchemaTypes.InviteContributorsForRoleSetMembershipMutation>;
+export type InviteContributorsForRoleSetMembershipMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.InviteContributorsForRoleSetMembershipMutation,
+  SchemaTypes.InviteContributorsForRoleSetMembershipMutationVariables
 >;
-export const InviteUserToPlatformAndCommunityDocument = gql`
-  mutation inviteUserToPlatformAndCommunity($email: String!, $communityId: UUID!, $message: String) {
-    inviteUserToPlatformAndCommunity(
-      invitationData: { email: $email, communityID: $communityId, welcomeMessage: $message }
-    ) {
+export const InviteUserToPlatformAndRoleSetDocument = gql`
+  mutation inviteUserToPlatformAndRoleSet($email: String!, $roleSetId: UUID!, $message: String) {
+    inviteUserToPlatformAndRoleSet(invitationData: { email: $email, roleSetID: $roleSetId, welcomeMessage: $message }) {
       ... on PlatformInvitation {
         id
       }
     }
   }
 `;
-export type InviteUserToPlatformAndCommunityMutationFn = Apollo.MutationFunction<
-  SchemaTypes.InviteUserToPlatformAndCommunityMutation,
-  SchemaTypes.InviteUserToPlatformAndCommunityMutationVariables
+export type InviteUserToPlatformAndRoleSetMutationFn = Apollo.MutationFunction<
+  SchemaTypes.InviteUserToPlatformAndRoleSetMutation,
+  SchemaTypes.InviteUserToPlatformAndRoleSetMutationVariables
 >;
 
 /**
- * __useInviteUserToPlatformAndCommunityMutation__
+ * __useInviteUserToPlatformAndRoleSetMutation__
  *
- * To run a mutation, you first call `useInviteUserToPlatformAndCommunityMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useInviteUserToPlatformAndCommunityMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useInviteUserToPlatformAndRoleSetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInviteUserToPlatformAndRoleSetMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [inviteUserToPlatformAndCommunityMutation, { data, loading, error }] = useInviteUserToPlatformAndCommunityMutation({
+ * const [inviteUserToPlatformAndRoleSetMutation, { data, loading, error }] = useInviteUserToPlatformAndRoleSetMutation({
  *   variables: {
  *      email: // value for 'email'
- *      communityId: // value for 'communityId'
+ *      roleSetId: // value for 'roleSetId'
  *      message: // value for 'message'
  *   },
  * });
  */
-export function useInviteUserToPlatformAndCommunityMutation(
+export function useInviteUserToPlatformAndRoleSetMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.InviteUserToPlatformAndCommunityMutation,
-    SchemaTypes.InviteUserToPlatformAndCommunityMutationVariables
+    SchemaTypes.InviteUserToPlatformAndRoleSetMutation,
+    SchemaTypes.InviteUserToPlatformAndRoleSetMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.InviteUserToPlatformAndCommunityMutation,
-    SchemaTypes.InviteUserToPlatformAndCommunityMutationVariables
-  >(InviteUserToPlatformAndCommunityDocument, options);
+    SchemaTypes.InviteUserToPlatformAndRoleSetMutation,
+    SchemaTypes.InviteUserToPlatformAndRoleSetMutationVariables
+  >(InviteUserToPlatformAndRoleSetDocument, options);
 }
 
-export type InviteUserToPlatformAndCommunityMutationHookResult = ReturnType<
-  typeof useInviteUserToPlatformAndCommunityMutation
+export type InviteUserToPlatformAndRoleSetMutationHookResult = ReturnType<
+  typeof useInviteUserToPlatformAndRoleSetMutation
 >;
-export type InviteUserToPlatformAndCommunityMutationResult =
-  Apollo.MutationResult<SchemaTypes.InviteUserToPlatformAndCommunityMutation>;
-export type InviteUserToPlatformAndCommunityMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.InviteUserToPlatformAndCommunityMutation,
-  SchemaTypes.InviteUserToPlatformAndCommunityMutationVariables
+export type InviteUserToPlatformAndRoleSetMutationResult =
+  Apollo.MutationResult<SchemaTypes.InviteUserToPlatformAndRoleSetMutation>;
+export type InviteUserToPlatformAndRoleSetMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.InviteUserToPlatformAndRoleSetMutation,
+  SchemaTypes.InviteUserToPlatformAndRoleSetMutationVariables
 >;
 export const PendingMembershipsSpaceDocument = gql`
   query PendingMembershipsSpace(
@@ -14060,25 +13691,28 @@ export const SpaceCommunityContributorsDocument = gql`
         id
         community {
           id
-          leadUsers: usersInRole(role: LEAD) {
-            ...UserCard
-          }
-          memberUsers {
-            ...UserCard
-          }
-          memberOrganizations: organizationsInRole(role: MEMBER) {
-            ...OrganizationCard
-          }
-          virtualContributors: virtualContributorsInRole(role: MEMBER) {
+          roleSet {
             id
-            searchVisibility
-            profile {
+            leadUsers: usersInRole(role: LEAD) {
+              ...UserCard
+            }
+            memberUsers: usersInRole(role: MEMBER) {
+              ...UserCard
+            }
+            memberOrganizations: organizationsInRole(role: MEMBER) {
+              ...OrganizationCard
+            }
+            virtualContributors: virtualContributorsInRole(role: MEMBER) {
               id
-              displayName
-              tagline
-              url
-              avatar: visual(type: AVATAR) {
-                ...VisualUri
+              searchVisibility
+              profile {
+                id
+                displayName
+                tagline
+                url
+                avatar: visual(type: AVATAR) {
+                  ...VisualUri
+                }
               }
             }
           }
@@ -15403,7 +15037,10 @@ export const AboutPageMembersDocument = gql`
       space(ID: $spaceId) {
         id
         community {
-          ...EntityDashboardCommunity
+          id
+          roleSet {
+            ...RoleSetContributorRoles
+          }
         }
         profile {
           id
@@ -15417,16 +15054,19 @@ export const AboutPageMembersDocument = gql`
         }
         community {
           id
-          virtualContributors: virtualContributorsInRole(role: MEMBER) {
+          roleSet {
             id
-            searchVisibility
-            profile {
+            virtualContributors: virtualContributorsInRole(role: MEMBER) {
               id
-              displayName
-              tagline
-              url
-              avatar: visual(type: AVATAR) {
-                ...VisualUri
+              searchVisibility
+              profile {
+                id
+                displayName
+                tagline
+                url
+                avatar: visual(type: AVATAR) {
+                  ...VisualUri
+                }
               }
             }
           }
@@ -15434,7 +15074,7 @@ export const AboutPageMembersDocument = gql`
       }
     }
   }
-  ${EntityDashboardCommunityFragmentDoc}
+  ${RoleSetContributorRolesFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
@@ -16862,14 +16502,16 @@ export const SpaceApplicationTemplateDocument = gql`
         id
         community {
           id
-          applicationForm {
-            description
-            questions {
-              required
-              question
-              sortOrder
-              explanation
-              maxLength
+          roleSet {
+            applicationForm {
+              description
+              questions {
+                required
+                question
+                sortOrder
+                explanation
+                maxLength
+              }
             }
           }
         }

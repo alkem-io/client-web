@@ -2,14 +2,16 @@ query CommunityApplicationsInvitations($communityId: UUID!) {
   lookup {
     community(ID: $communityId) {
       id
-      applications {
-        ...AdminCommunityApplication
-      }
-      invitations {
-        ...AdminCommunityInvitation
-      }
-      platformInvitations {
-        ...AdminPlatformInvitationCommunity
+      roleSet {
+        applications {
+          ...AdminCommunityApplication
+        }
+        invitations {
+          ...AdminCommunityInvitation
+        }
+        platformInvitations {
+          ...AdminPlatformInvitationCommunity
+        }
       }
     }
   }

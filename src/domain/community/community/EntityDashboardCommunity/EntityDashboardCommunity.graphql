@@ -1,19 +1,19 @@
-fragment EntityDashboardCommunity on Community {
+fragment RoleSetContributorRoles on RoleSet {
   id
+  memberUsers: usersInRole(role: MEMBER, limit: 8) {
+    ...DashboardContributingUser
+  }
   leadUsers: usersInRole(role: LEAD) {
     ...DashboardLeadUser
   }
-  memberUsers(limit: 8) {
-    ...DashboardContributingUser
-  }
-  leadVirtualContributors: virtualContributorsInRole(role: LEAD) {
-    ...DashboardContributingVirtualContributor
+  memberOrganizations: organizationsInRole(role: MEMBER) {
+    ...DashboardContributingOrganization
   }
   leadOrganizations: organizationsInRole(role: LEAD) {
     ...AssociatedOrganizationDetails
   }
-  memberOrganizations: organizationsInRole(role: MEMBER)  {
-    ...DashboardContributingOrganization
+  leadVirtualContributors: virtualContributorsInRole(role: LEAD) {
+    ...DashboardContributingVirtualContributor
   }
   authorization {
     id

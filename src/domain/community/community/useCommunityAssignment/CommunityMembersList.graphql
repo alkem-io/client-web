@@ -10,22 +10,29 @@ query CommunityMembersList(
       }
     }
     community(ID: $communityId) {
-      ...CommunityMembersDetails
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      roleSet {
+        ...RoleSetDetails
+      }
     }
   }
 }
 
-query CommunityAvailableMembers($communityId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
+query RoleSetAvailableMembers($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
   lookup {
-    availableMembers: community(ID: $communityId) {
-      ...CommunityAvailableMemberUsers
+    availableMembers: roleSet(ID: $roleSetId) {
+      ...RoleSetAvailableMemberUsers
     }
   }
 }
 
-fragment CommunityMembersDetails on Community {
+fragment RoleSetDetails on RoleSet {
   id
-  memberUsers {
+  memberUsers: usersInRole(role: MEMBER) {
     ...CommunityMemberUser
   }
   leadUsers: usersInRole(role: LEAD) {
@@ -40,34 +47,35 @@ fragment CommunityMembersDetails on Community {
   virtualContributorsInRole(role: MEMBER) {
     ...CommunityMemberVirtualContributor
   }
-  policy {
-    ...CommunityPolicy
+
+  memberRoleDefinition: roleDefinition(role: MEMBER) {
+    ...RoleDefinitionPolicy
   }
+  leadRoleDefinition: roleDefinition(role: LEAD) {
+    ...RoleDefinitionPolicy
+  }
+
   authorization {
     id
     myPrivileges
   }
 }
 
-fragment CommunityPolicy on CommunityPolicy {
+fragment RoleDefinitionPolicy on Role {
   id
-  lead {
-    maxOrg
-    maxUser
-    minOrg
-    minUser
+  organizationPolicy {
+    minimum
+    maximum
   }
-  member {
-    maxOrg
-    maxUser
-    minOrg
-    minUser
+  userPolicy {
+    minimum
+    maximum
   }
 }
 
-fragment CommunityAvailableLeadUsers on Community {
+fragment RoleSetAvailableLeadUsers on RoleSet {
   id
-  availableLeadUsers(first: $first, after: $after, filter: $filter) {
+  availableUsersForLeadRole(first: $first, after: $after, filter: $filter) {
     users {
       ...AvailableUser
     }
@@ -77,9 +85,9 @@ fragment CommunityAvailableLeadUsers on Community {
   }
 }
 
-fragment CommunityAvailableMemberUsers on Community {
+fragment RoleSetAvailableMemberUsers on RoleSet {
   id
-  availableMemberUsers(first: $first, after: $after, filter: $filter) {
+  availableUsersForMemberRole(first: $first, after: $after, filter: $filter) {
     users {
       ...AvailableUser
     }

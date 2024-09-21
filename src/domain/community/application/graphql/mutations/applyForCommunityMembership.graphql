@@ -1,5 +1,5 @@
-mutation applyForCommunityMembership($input: CommunityRoleApplyInput!) {
-  applyForCommunityMembership(applicationData: $input) {
+mutation applyForBaseRoleOnRoleSet($input: ApplyForBaseRoleOnRoleSetInput!) {
+  applyForBaseRoleOnRoleSet(applicationData: $input) {
     id
   }
 }

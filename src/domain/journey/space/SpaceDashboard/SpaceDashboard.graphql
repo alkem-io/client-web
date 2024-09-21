@@ -74,10 +74,12 @@ fragment SpacePage on Space {
   community @include(if: $authorizedReadAccessCommunity) {
     id
     myMembershipStatus
-    ...EntityDashboardCommunity
-    leadUsers: usersInRole(role: LEAD) {
-      profile {
-        ...SpaceWelcomeBlockContributorProfile
+    roleSet {
+      id
+      leadUsers: usersInRole(role: LEAD) {
+        profile {
+          ...SpaceWelcomeBlockContributorProfile
+        }
       }
     }
   }
