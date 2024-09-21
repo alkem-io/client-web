@@ -5,7 +5,6 @@ import {
   CalloutsQueryVariables,
   CommunityMembershipStatus,
   DashboardLeadUserFragment,
-  SpaceWelcomeBlockContributorProfileFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import PageContent from '../../../../core/ui/content/PageContent';
@@ -36,10 +35,6 @@ import {
 } from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/vcCreationUtil';
 import TryVirtualContributorDialog from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVirtualContributorDialog';
 
-interface SpaceWelcomeBlockContributor {
-  profile: SpaceWelcomeBlockContributorProfileFragment;
-}
-
 interface SpaceDashboardViewProps {
   spaceId: string | undefined;
   dashboardNavigation: DashboardNavigationItem | undefined;
@@ -48,7 +43,7 @@ interface SpaceDashboardViewProps {
   communityId?: string;
   organization?: unknown;
   host: ContributorViewProps | undefined;
-  leadUsers: (SpaceWelcomeBlockContributor & DashboardLeadUserFragment)[] | undefined;
+  leadUsers: DashboardLeadUserFragment[] | undefined;
   leadVirtualContributors: ContributorViewProps[] | undefined;
   communityReadAccess: boolean;
   timelineReadAccess?: boolean;

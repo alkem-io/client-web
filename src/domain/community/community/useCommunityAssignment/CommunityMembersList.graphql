@@ -42,9 +42,10 @@ fragment CommunityMemberUser on User {
   lastName
 }
 
-fragment CommunityMemberVirtualContributor on VirtualContributor {
+fragment RoleSetVirtualContributor on VirtualContributor {
   id
   nameID
+  searchVisibility
   profile {
     id
     displayName

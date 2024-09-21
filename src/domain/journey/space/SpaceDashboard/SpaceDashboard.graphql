@@ -83,6 +83,12 @@ fragment SpacePage on Space {
       leadUsers: usersInRole(role: LEAD) {
         ...DashboardLeadUser
       }
+      leadOrganizations: organizationsInRole(role: LEAD) {
+        ...OrganizationDetails
+      }
+      leadUVirtualContributors: virtualContributorsInRole(role: LEAD) {
+        ...RoleSetVirtualContributor
+      }
     }
   }
 }

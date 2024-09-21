@@ -160,10 +160,11 @@ export const OrganizationDetailsFragmentDoc = gql`
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
-export const CommunityMemberVirtualContributorFragmentDoc = gql`
-  fragment CommunityMemberVirtualContributor on VirtualContributor {
+export const RoleSetVirtualContributorFragmentDoc = gql`
+  fragment RoleSetVirtualContributor on VirtualContributor {
     id
     nameID
+    searchVisibility
     profile {
       id
       displayName
@@ -209,7 +210,10 @@ export const RoleSetDetailsFragmentDoc = gql`
       ...OrganizationDetails
     }
     memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
-      ...CommunityMemberVirtualContributor
+      ...RoleSetVirtualContributor
+    }
+    leadVirtualContributors: virtualContributorsInRole(role: MEMBER) {
+      ...RoleSetVirtualContributor
     }
     memberRoleDefinition: roleDefinition(role: MEMBER) {
       ...RoleDefinitionPolicy
@@ -224,7 +228,7 @@ export const RoleSetDetailsFragmentDoc = gql`
   }
   ${CommunityMemberUserFragmentDoc}
   ${OrganizationDetailsFragmentDoc}
-  ${CommunityMemberVirtualContributorFragmentDoc}
+  ${RoleSetVirtualContributorFragmentDoc}
   ${RoleDefinitionPolicyFragmentDoc}
 `;
 export const AvailableUserFragmentDoc = gql`
@@ -2253,6 +2257,12 @@ export const SpacePageFragmentDoc = gql`
         leadUsers: usersInRole(role: LEAD) {
           ...DashboardLeadUser
         }
+        leadOrganizations: organizationsInRole(role: LEAD) {
+          ...OrganizationDetails
+        }
+        leadUVirtualContributors: virtualContributorsInRole(role: LEAD) {
+          ...RoleSetVirtualContributor
+        }
       }
     }
   }
@@ -2262,6 +2272,8 @@ export const SpacePageFragmentDoc = gql`
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
   ${DashboardLeadUserFragmentDoc}
+  ${OrganizationDetailsFragmentDoc}
+  ${RoleSetVirtualContributorFragmentDoc}
 `;
 export const SubspaceCardFragmentDoc = gql`
   fragment SubspaceCard on Space {
