@@ -7553,6 +7553,7 @@ export type RoleSetDetailsFragment = {
     __typename?: 'User';
     id: string;
     nameID: string;
+    isContactable: boolean;
     email: string;
     firstName: string;
     lastName: string;
@@ -7570,6 +7571,7 @@ export type RoleSetDetailsFragment = {
     __typename?: 'User';
     id: string;
     nameID: string;
+    isContactable: boolean;
     email: string;
     firstName: string;
     lastName: string;
@@ -15592,6 +15594,7 @@ export type CommunityMembersListQuery = {
               __typename?: 'User';
               id: string;
               nameID: string;
+              isContactable: boolean;
               email: string;
               firstName: string;
               lastName: string;
@@ -15609,6 +15612,7 @@ export type CommunityMembersListQuery = {
               __typename?: 'User';
               id: string;
               nameID: string;
+              isContactable: boolean;
               email: string;
               firstName: string;
               lastName: string;
@@ -15731,6 +15735,7 @@ export type CommunityMemberUserFragment = {
   __typename?: 'User';
   id: string;
   nameID: string;
+  isContactable: boolean;
   email: string;
   firstName: string;
   lastName: string;
@@ -20159,6 +20164,7 @@ export type SpaceCommunityPageQuery = {
           __typename?: 'User';
           id: string;
           nameID: string;
+          isContactable: boolean;
           email: string;
           firstName: string;
           lastName: string;
@@ -20176,6 +20182,7 @@ export type SpaceCommunityPageQuery = {
           __typename?: 'User';
           id: string;
           nameID: string;
+          isContactable: boolean;
           email: string;
           firstName: string;
           lastName: string;
@@ -20821,7 +20828,7 @@ export type SpacePageQuery = {
                     | undefined;
                 };
               }>;
-              leadUVirtualContributors: Array<{
+              leadVirtualContributors: Array<{
                 __typename?: 'VirtualContributor';
                 id: string;
                 nameID: string;
@@ -21082,7 +21089,7 @@ export type SpacePageFragment = {
           location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
         };
       }>;
-      leadUVirtualContributors: Array<{
+      leadVirtualContributors: Array<{
         __typename?: 'VirtualContributor';
         id: string;
         nameID: string;

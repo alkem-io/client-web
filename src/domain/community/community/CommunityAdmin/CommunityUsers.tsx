@@ -28,6 +28,7 @@ export interface CommunityMemberUserFragmentWithRoles extends CommunityMemberUse
   isMember: boolean;
   isLead: boolean;
   isAdmin: boolean;
+  isContactable: boolean;
 }
 
 type RenderParams = GridRenderCellParams<string, CommunityMemberUserFragmentWithRoles>;

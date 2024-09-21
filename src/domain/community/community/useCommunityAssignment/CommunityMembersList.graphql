@@ -25,6 +25,7 @@ query CommunityMembersList(
 fragment CommunityMemberUser on User {
   id
   nameID
+  isContactable
   profile {
     id
     displayName

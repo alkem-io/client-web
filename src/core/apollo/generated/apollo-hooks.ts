@@ -118,6 +118,7 @@ export const CommunityMemberUserFragmentDoc = gql`
   fragment CommunityMemberUser on User {
     id
     nameID
+    isContactable
     profile {
       id
       displayName
@@ -2260,7 +2261,7 @@ export const SpacePageFragmentDoc = gql`
         leadOrganizations: organizationsInRole(role: LEAD) {
           ...OrganizationDetails
         }
-        leadUVirtualContributors: virtualContributorsInRole(role: LEAD) {
+        leadVirtualContributors: virtualContributorsInRole(role: LEAD) {
           ...RoleSetVirtualContributor
         }
       }

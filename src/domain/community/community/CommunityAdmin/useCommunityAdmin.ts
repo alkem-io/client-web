@@ -167,6 +167,7 @@ const useCommunityAdmin = ({
           isMember: false,
           isLead: false,
           isAdmin: true,
+          isContactable: true, // TODO fix me
         });
       }
     });
