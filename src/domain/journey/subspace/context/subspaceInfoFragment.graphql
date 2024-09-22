@@ -29,7 +29,7 @@ fragment SubspaceInfo on Space {
       myPrivileges
     }
     roleSet {
-      ...
+      ...MyMembershipsRoleSet
     }
   }
   authorization {

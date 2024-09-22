@@ -2520,6 +2520,13 @@ export const SpaceDashboardNavigationProfileFragmentDoc = gql`
     }
   }
 `;
+export const MyMembershipsRoleSetFragmentDoc = gql`
+  fragment MyMembershipsRoleSet on RoleSet {
+    id
+    myMembershipStatus
+    myRoles
+  }
+`;
 export const SubspaceInfoFragmentDoc = gql`
   fragment SubspaceInfo on Space {
     id
@@ -2552,8 +2559,7 @@ export const SubspaceInfoFragmentDoc = gql`
         myPrivileges
       }
       roleSet {
-        myMembershipStatus
-        id
+        ...MyMembershipsRoleSet
       }
     }
     authorization {
@@ -2571,6 +2577,7 @@ export const SubspaceInfoFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
   ${FullLocationFragmentDoc}
+  ${MyMembershipsRoleSetFragmentDoc}
 `;
 export const SubspacePageSpaceFragmentDoc = gql`
   fragment SubspacePageSpace on Space {
@@ -3511,13 +3518,6 @@ export const RecentContributionsChildJourneyProfileFragmentDoc = gql`
     }
   }
   ${RecentContributionsJourneyProfileFragmentDoc}
-`;
-export const MyMembershipsRoleSetFragmentDoc = gql`
-  fragment MyMembershipsRoleSet on RoleSet {
-    id
-    myMembershipStatus
-    myRoles
-  }
 `;
 export const SpaceMembershipFragmentDoc = gql`
   fragment SpaceMembership on Space {

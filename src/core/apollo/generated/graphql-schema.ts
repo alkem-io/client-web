@@ -22477,7 +22477,12 @@ export type SubspaceInfoQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
-            roleSet: { __typename?: 'RoleSet'; myMembershipStatus?: CommunityMembershipStatus | undefined; id: string };
+            roleSet: {
+              __typename?: 'RoleSet';
+              id: string;
+              myMembershipStatus?: CommunityMembershipStatus | undefined;
+              myRoles: Array<CommunityRoleType>;
+            };
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -22548,7 +22553,12 @@ export type SubspaceInfoFragment = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
-    roleSet: { __typename?: 'RoleSet'; myMembershipStatus?: CommunityMembershipStatus | undefined; id: string };
+    roleSet: {
+      __typename?: 'RoleSet';
+      id: string;
+      myMembershipStatus?: CommunityMembershipStatus | undefined;
+      myRoles: Array<CommunityRoleType>;
+    };
   };
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
