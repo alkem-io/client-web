@@ -94,7 +94,7 @@ const hydrateSpaceCard = (
   const tags = data.terms; // TODO: add terms field to journey card
   const vision = space.context?.vision ?? '';
 
-  const isMember = space.community?.myMembershipStatus === CommunityMembershipStatus.Member;
+  const isMember = space.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
 
   const parentSegment = (
     data: TypedSearchResult<

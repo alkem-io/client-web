@@ -101,7 +101,7 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
                 leadVirtualContributors={subspace?.community?.roleSet?.leadVirtualContributors}
                 onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
                 journeyTypeName="subspace"
-                member={subspace?.community?.myMembershipStatus === CommunityMembershipStatus.Member}
+                member={subspace?.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
               />
             }
             actions={

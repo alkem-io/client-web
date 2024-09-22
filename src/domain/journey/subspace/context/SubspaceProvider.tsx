@@ -111,7 +111,7 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
         permissions,
         profile,
         loading,
-        myMembershipStatus: subspace?.community?.myMembershipStatus,
+        myMembershipStatus: subspace?.community?.roleSet?.myMembershipStatus,
       }}
     >
       {children}

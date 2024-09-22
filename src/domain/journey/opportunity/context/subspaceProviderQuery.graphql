@@ -41,13 +41,13 @@ fragment SubspaceProvider on Space {
   }
   community {
     id
-    myMembershipStatus
     authorization {
       id
       myPrivileges
     }
     roleSet {
       id
+      myMembershipStatus
     }
   }
 }

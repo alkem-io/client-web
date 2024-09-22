@@ -24,13 +24,12 @@ fragment SubspaceInfo on Space {
   }
   community {
     id
-    myMembershipStatus
     authorization {
       id
       myPrivileges
     }
     roleSet {
-      id
+      ...
     }
   }
   authorization {

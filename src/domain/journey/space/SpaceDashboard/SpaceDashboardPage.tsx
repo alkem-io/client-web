@@ -51,7 +51,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               host={entities.provider}
               callouts={callouts}
               journeyTypeName="space"
-              myMembershipStatus={entities.space?.community?.myMembershipStatus}
+              myMembershipStatus={entities.space?.community?.roleSet?.myMembershipStatus}
               shareUpdatesUrl={buildUpdatesUrl(entities.space?.profile.url ?? '')}
             />
             <CommunityUpdatesDialog

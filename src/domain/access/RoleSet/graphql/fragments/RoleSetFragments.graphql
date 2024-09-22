@@ -59,3 +59,9 @@ fragment RoleSetAvailableMemberUsers on RoleSet {
     }
   }
 }
+
+fragment MyMembershipsRoleSet on RoleSet {
+  id
+  myMembershipStatus
+  myRoles
+}

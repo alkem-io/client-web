@@ -64,7 +64,7 @@ const CommunityContextProvider: FC = ({ children }) => {
       communicationId: community?.communication?.id ?? '',
       communicationPrivileges: community?.communication?.authorization?.myPrivileges ?? [],
       loading: isLoading,
-      myMembershipStatus: community?.myMembershipStatus,
+      myMembershipStatus: community?.roleSet?.myMembershipStatus,
     }),
     [community, isLoading]
   );

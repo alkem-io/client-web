@@ -94,7 +94,7 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
         permissions,
         loading,
         profile: opportunity?.profile ?? DEFAULT_CONTEXT.profile,
-        myMembershipStatus: opportunity?.community?.myMembershipStatus,
+        myMembershipStatus: opportunity?.community?.roleSet?.myMembershipStatus,
       }}
     >
       {children}

@@ -83,7 +83,7 @@ const SpaceSubspacesPage: FC<SpaceSubspacesPageProps> = () => {
                 journeyUri={challenge.profile.url}
                 locked={challenge.settings.privacy?.mode === SpacePrivacyMode.Private}
                 spaceVisibility={visibility}
-                member={challenge.community?.myMembershipStatus === CommunityMembershipStatus.Member}
+                member={challenge.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
               />
             )}
             onClickCreate={() => setCreateDialogOpen(true)}

@@ -150,7 +150,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
         profile,
         context: space?.context,
         visibility,
-        myMembershipStatus: space?.community?.myMembershipStatus,
+        myMembershipStatus: space?.community?.roleSet?.myMembershipStatus,
       }}
     >
       {children}

@@ -25,7 +25,10 @@ fragment SubspaceCard on Space {
   }
   community {
     id
-    myMembershipStatus
+    roleSet {
+      id
+        myMembershipStatus
+    }
   }
   settings {
     privacy {

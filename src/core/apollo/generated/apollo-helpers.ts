@@ -947,9 +947,6 @@ export type CommunityKeySpecifier = (
   | 'groups'
   | 'guidelines'
   | 'id'
-  | 'myMembershipStatus'
-  | 'myRoles'
-  | 'myRolesImplicit'
   | 'roleSet'
   | 'updatedDate'
   | CommunityKeySpecifier
@@ -962,9 +959,6 @@ export type CommunityFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   guidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  myMembershipStatus?: FieldPolicy<any> | FieldReadFunction<any>;
-  myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
-  myRolesImplicit?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2774,9 +2768,13 @@ export type RoleSetKeySpecifier = (
   | 'authorization'
   | 'availableUsersForLeadRole'
   | 'availableUsersForMemberRole'
+  | 'baseRoleType'
   | 'createdDate'
   | 'id'
   | 'invitations'
+  | 'myMembershipStatus'
+  | 'myRoles'
+  | 'myRolesImplicit'
   | 'organizationsInRole'
   | 'platformInvitations'
   | 'roleDefinition'
@@ -2792,9 +2790,13 @@ export type RoleSetFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   availableUsersForLeadRole?: FieldPolicy<any> | FieldReadFunction<any>;
   availableUsersForMemberRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  baseRoleType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
+  myMembershipStatus?: FieldPolicy<any> | FieldReadFunction<any>;
+  myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
+  myRolesImplicit?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
   platformInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
   roleDefinition?: FieldPolicy<any> | FieldReadFunction<any>;

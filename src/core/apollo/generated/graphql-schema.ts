@@ -1379,12 +1379,6 @@ export type Community = Groupable & {
   guidelines: CommunityGuidelines;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The membership status of the currently logged in user. */
-  myMembershipStatus?: Maybe<CommunityMembershipStatus>;
-  /** The roles on this community for the currently logged in user. */
-  myRoles: Array<CommunityRoleType>;
-  /** The implicit roles on this community for the currently logged in user. */
-  myRolesImplicit: Array<CommunityRoleImplicit>;
   /** The RoleSet for this Community. */
   roleSet: RoleSet;
   /** The date at which the entity was last updated. */
@@ -4983,12 +4977,20 @@ export type RoleSet = {
   availableUsersForLeadRole: PaginatedUsers;
   /** All available users that are potential Community members. */
   availableUsersForMemberRole: PaginatedUsers;
+  /** The CommunityRole that acts as the base for the RoleSet, so other roles potentially require it. */
+  baseRoleType: CommunityRoleType;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Invitations for this roleSet. */
   invitations: Array<Invitation>;
+  /** The membership status of the currently logged in user. */
+  myMembershipStatus?: Maybe<CommunityMembershipStatus>;
+  /** The roles on this community for the currently logged in user. */
+  myRoles: Array<CommunityRoleType>;
+  /** The implicit roles on this community for the currently logged in user. */
+  myRolesImplicit: Array<CommunityRoleImplicit>;
   /** All Organizations that have the specified Role in this Community. */
   organizationsInRole: Array<Organization>;
   /** Invitations to join this Community for users not yet on the Alkemio platform. */
@@ -7720,6 +7722,13 @@ export type RoleSetAvailableMemberUsersFragment = {
       hasNextPage: boolean;
     };
   };
+};
+
+export type MyMembershipsRoleSetFragment = {
+  __typename?: 'RoleSet';
+  id: string;
+  myMembershipStatus?: CommunityMembershipStatus | undefined;
+  myRoles: Array<CommunityRoleType>;
 };
 
 export type RoleSetMembersQueryVariables = Exact<{
@@ -15028,13 +15037,13 @@ export type CommunityUserPrivilegesQuery = {
           community: {
             __typename?: 'Community';
             id: string;
-            myMembershipStatus?: CommunityMembershipStatus | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
             roleSet: {
               __typename?: 'RoleSet';
               id: string;
+              myMembershipStatus?: CommunityMembershipStatus | undefined;
               authorization?:
                 | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
                 | undefined;
@@ -15053,10 +15062,10 @@ export type CommunityUserPrivilegesQuery = {
           community: {
             __typename?: 'Community';
             id: string;
-            myMembershipStatus?: CommunityMembershipStatus | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
+            roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
           };
         }
       | undefined;
@@ -15198,7 +15207,7 @@ export type UpdateApplicationFormOnRoleSetMutation = {
 export type CommunityDetailsFragment = {
   __typename?: 'Community';
   id: string;
-  myMembershipStatus?: CommunityMembershipStatus | undefined;
+  roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
   communication: {
     __typename?: 'Communication';
     id: string;
@@ -15225,8 +15234,7 @@ export type SpaceCommunityQuery = {
           community: {
             __typename?: 'Community';
             id: string;
-            myMembershipStatus?: CommunityMembershipStatus | undefined;
-            roleSet: { __typename?: 'RoleSet'; id: string };
+            roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
             communication: {
               __typename?: 'Communication';
               id: string;
@@ -19791,7 +19799,7 @@ export type ChildJourneyPageBannerQuery = {
           community: {
             __typename?: 'Community';
             id: string;
-            myMembershipStatus?: CommunityMembershipStatus | undefined;
+            roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
           };
         }
       | undefined;
@@ -19938,11 +19946,10 @@ export type SubspaceProviderQuery = {
           community: {
             __typename?: 'Community';
             id: string;
-            myMembershipStatus?: CommunityMembershipStatus | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
-            roleSet: { __typename?: 'RoleSet'; id: string };
+            roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
           };
         }
       | undefined;
@@ -20005,11 +20012,10 @@ export type SubspaceProviderFragment = {
   community: {
     __typename?: 'Community';
     id: string;
-    myMembershipStatus?: CommunityMembershipStatus | undefined;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
-    roleSet: { __typename?: 'RoleSet'; id: string };
+    roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
   };
 };
 
@@ -20056,7 +20062,11 @@ export type SpaceCardFragment = {
     cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
   metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-  community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+  community: {
+    __typename?: 'Community';
+    id: string;
+    roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+  };
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
   settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };
 };
@@ -20383,11 +20393,10 @@ export type SpaceProviderQuery = {
     community: {
       __typename?: 'Community';
       id: string;
-      myMembershipStatus?: CommunityMembershipStatus | undefined;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
-      roleSet: { __typename?: 'RoleSet'; id: string };
+      roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
     };
     context: {
       __typename?: 'Context';
@@ -20478,11 +20487,10 @@ export type SpaceInfoFragment = {
   community: {
     __typename?: 'Community';
     id: string;
-    myMembershipStatus?: CommunityMembershipStatus | undefined;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
-    roleSet: { __typename?: 'RoleSet'; id: string };
+    roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
   };
   context: {
     __typename?: 'Context';
@@ -20771,13 +20779,13 @@ export type SpacePageQuery = {
           community?: {
             __typename?: 'Community';
             id: string;
-            myMembershipStatus?: CommunityMembershipStatus | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
             roleSet: {
               __typename?: 'RoleSet';
               id: string;
+              myMembershipStatus?: CommunityMembershipStatus | undefined;
               leadUsers: Array<{
                 __typename?: 'User';
                 id: string;
@@ -21034,13 +21042,13 @@ export type SpacePageFragment = {
   community?: {
     __typename?: 'Community';
     id: string;
-    myMembershipStatus?: CommunityMembershipStatus | undefined;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
     roleSet: {
       __typename?: 'RoleSet';
       id: string;
+      myMembershipStatus?: CommunityMembershipStatus | undefined;
       leadUsers: Array<{
         __typename?: 'User';
         id: string;
@@ -21148,7 +21156,11 @@ export type SpaceSubspaceCardsQuery = {
             community: {
               __typename?: 'Community';
               id: string;
-              myMembershipStatus?: CommunityMembershipStatus | undefined;
+              roleSet: {
+                __typename?: 'RoleSet';
+                id: string;
+                myMembershipStatus?: CommunityMembershipStatus | undefined;
+              };
             };
             settings: {
               __typename?: 'SpaceSettings';
@@ -21256,7 +21268,11 @@ export type SubspaceCardFragment = {
       | undefined;
   };
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-  community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+  community: {
+    __typename?: 'Community';
+    id: string;
+    roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+  };
   settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };
 };
 
@@ -21287,7 +21303,11 @@ export type SubspacesOnSpaceFragment = {
         | undefined;
     };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-    community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    community: {
+      __typename?: 'Community';
+      id: string;
+      roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    };
     settings: {
       __typename?: 'SpaceSettings';
       privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
@@ -21657,7 +21677,11 @@ export type SubspaceCreatedSubscription = {
         cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
       metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-      community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      community: {
+        __typename?: 'Community';
+        id: string;
+        roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
       settings: {
         __typename?: 'SpaceSettings';
@@ -21962,9 +21986,9 @@ export type SpaceProfileFragment = {
   community: {
     __typename?: 'Community';
     id: string;
-    myMembershipStatus?: CommunityMembershipStatus | undefined;
     roleSet: {
       __typename?: 'RoleSet';
+      myMembershipStatus?: CommunityMembershipStatus | undefined;
       id: string;
       memberUsers: Array<{
         __typename?: 'User';
@@ -22321,7 +22345,12 @@ export type SpaceDashboardNavigationChallengesQuery = {
             community: {
               __typename?: 'Community';
               id: string;
-              myMembershipStatus?: CommunityMembershipStatus | undefined;
+              roleSet: {
+                __typename?: 'RoleSet';
+                id: string;
+                myMembershipStatus?: CommunityMembershipStatus | undefined;
+                myRoles: Array<CommunityRoleType>;
+              };
             };
           }>;
         }
@@ -22363,7 +22392,12 @@ export type SpaceDashboardNavigationOpportunitiesQuery = {
               community: {
                 __typename?: 'Community';
                 id: string;
-                myMembershipStatus?: CommunityMembershipStatus | undefined;
+                roleSet: {
+                  __typename?: 'RoleSet';
+                  id: string;
+                  myMembershipStatus?: CommunityMembershipStatus | undefined;
+                  myRoles: Array<CommunityRoleType>;
+                };
               };
             }>;
           }>;
@@ -22378,12 +22412,6 @@ export type SpaceDashboardNavigationProfileFragment = {
   url: string;
   displayName: string;
   avatar?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
-};
-
-export type SpaceDashboardNavigationCommunityFragment = {
-  __typename?: 'Community';
-  id: string;
-  myMembershipStatus?: CommunityMembershipStatus | undefined;
 };
 
 export type SubspaceInfoQueryVariables = Exact<{
@@ -22446,11 +22474,10 @@ export type SubspaceInfoQuery = {
           community: {
             __typename?: 'Community';
             id: string;
-            myMembershipStatus?: CommunityMembershipStatus | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
-            roleSet: { __typename?: 'RoleSet'; id: string };
+            roleSet: { __typename?: 'RoleSet'; myMembershipStatus?: CommunityMembershipStatus | undefined; id: string };
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -22518,11 +22545,10 @@ export type SubspaceInfoFragment = {
   community: {
     __typename?: 'Community';
     id: string;
-    myMembershipStatus?: CommunityMembershipStatus | undefined;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
-    roleSet: { __typename?: 'RoleSet'; id: string };
+    roleSet: { __typename?: 'RoleSet'; myMembershipStatus?: CommunityMembershipStatus | undefined; id: string };
   };
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -22570,13 +22596,13 @@ export type SubspacePageQuery = {
           community?: {
             __typename?: 'Community';
             id: string;
-            myMembershipStatus?: CommunityMembershipStatus | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
             roleSet: {
               __typename?: 'RoleSet';
               id: string;
+              myMembershipStatus?: CommunityMembershipStatus | undefined;
               memberUsers: Array<{
                 __typename?: 'User';
                 id: string;
@@ -22739,13 +22765,13 @@ export type SubspacePageSpaceFragment = {
   community?: {
     __typename?: 'Community';
     id: string;
-    myMembershipStatus?: CommunityMembershipStatus | undefined;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
     roleSet: {
       __typename?: 'RoleSet';
       id: string;
+      myMembershipStatus?: CommunityMembershipStatus | undefined;
       memberUsers: Array<{
         __typename?: 'User';
         id: string;
@@ -23603,7 +23629,11 @@ export type CreateSubspaceMutation = {
         | undefined;
     };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-    community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    community: {
+      __typename?: 'Community';
+      id: string;
+      roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    };
     settings: {
       __typename?: 'SpaceSettings';
       privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
@@ -26603,7 +26633,11 @@ export type SearchQuery = {
             community: {
               __typename?: 'Community';
               id: string;
-              myMembershipStatus?: CommunityMembershipStatus | undefined;
+              roleSet: {
+                __typename?: 'RoleSet';
+                id: string;
+                myMembershipStatus?: CommunityMembershipStatus | undefined;
+              };
             };
             settings: {
               __typename?: 'SpaceSettings';
@@ -27120,7 +27154,11 @@ export type SearchResultSpaceFragment = {
       visuals: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }>;
     };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-    community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    community: {
+      __typename?: 'Community';
+      id: string;
+      roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    };
     settings: {
       __typename?: 'SpaceSettings';
       privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
@@ -27643,7 +27681,11 @@ export type DashboardSpacesQuery = {
       cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
     metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-    community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    community: {
+      __typename?: 'Community';
+      id: string;
+      roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
     settings: {
       __typename?: 'SpaceSettings';
@@ -27685,7 +27727,11 @@ export type DashboardSpacesPaginatedQuery = {
         cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
       metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-      community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      community: {
+        __typename?: 'Community';
+        id: string;
+        roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
       settings: {
         __typename?: 'SpaceSettings';
@@ -28922,7 +28968,11 @@ export type MembershipSuggestionSpaceQuery = {
       url: string;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
-    community: { __typename?: 'Community'; id: string; myRoles: Array<CommunityRoleType> };
+    community: {
+      __typename?: 'Community';
+      id: string;
+      roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<CommunityRoleType> };
+    };
   };
 };
 
@@ -28999,9 +29049,12 @@ export type MyMembershipsQuery = {
           | undefined;
         community: {
           __typename?: 'Community';
-          id: string;
-          myMembershipStatus?: CommunityMembershipStatus | undefined;
-          myRoles: Array<CommunityRoleType>;
+          roleSet: {
+            __typename?: 'RoleSet';
+            id: string;
+            myMembershipStatus?: CommunityMembershipStatus | undefined;
+            myRoles: Array<CommunityRoleType>;
+          };
         };
         profile: {
           __typename?: 'Profile';
@@ -29024,9 +29077,12 @@ export type MyMembershipsQuery = {
             | undefined;
           community: {
             __typename?: 'Community';
-            id: string;
-            myMembershipStatus?: CommunityMembershipStatus | undefined;
-            myRoles: Array<CommunityRoleType>;
+            roleSet: {
+              __typename?: 'RoleSet';
+              id: string;
+              myMembershipStatus?: CommunityMembershipStatus | undefined;
+              myRoles: Array<CommunityRoleType>;
+            };
           };
           profile: {
             __typename?: 'Profile';
@@ -29049,9 +29105,12 @@ export type MyMembershipsQuery = {
               | undefined;
             community: {
               __typename?: 'Community';
-              id: string;
-              myMembershipStatus?: CommunityMembershipStatus | undefined;
-              myRoles: Array<CommunityRoleType>;
+              roleSet: {
+                __typename?: 'RoleSet';
+                id: string;
+                myMembershipStatus?: CommunityMembershipStatus | undefined;
+                myRoles: Array<CommunityRoleType>;
+              };
             };
             profile: {
               __typename?: 'Profile';
@@ -29077,9 +29136,12 @@ export type SpaceMembershipFragment = {
     | undefined;
   community: {
     __typename?: 'Community';
-    id: string;
-    myMembershipStatus?: CommunityMembershipStatus | undefined;
-    myRoles: Array<CommunityRoleType>;
+    roleSet: {
+      __typename?: 'RoleSet';
+      id: string;
+      myMembershipStatus?: CommunityMembershipStatus | undefined;
+      myRoles: Array<CommunityRoleType>;
+    };
   };
   profile: {
     __typename?: 'Profile';
@@ -29089,13 +29151,6 @@ export type SpaceMembershipFragment = {
     tagline?: string | undefined;
     cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
-};
-
-export type MyMembershipsChildJourneyCommunityFragment = {
-  __typename?: 'Community';
-  id: string;
-  myMembershipStatus?: CommunityMembershipStatus | undefined;
-  myRoles: Array<CommunityRoleType>;
 };
 
 export type MyMembershipsChildJourneyProfileFragment = {
@@ -29385,7 +29440,11 @@ export type SpaceExplorerSearchQuery = {
             community: {
               __typename?: 'Community';
               id: string;
-              myMembershipStatus?: CommunityMembershipStatus | undefined;
+              roleSet: {
+                __typename?: 'RoleSet';
+                id: string;
+                myMembershipStatus?: CommunityMembershipStatus | undefined;
+              };
             };
             settings: {
               __typename?: 'SpaceSettings';
@@ -29420,7 +29479,11 @@ export type SpaceExplorerSearchSpaceFragment = {
       cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-    community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    community: {
+      __typename?: 'Community';
+      id: string;
+      roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    };
     settings: {
       __typename?: 'SpaceSettings';
       privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
@@ -29456,7 +29519,11 @@ export type SpaceExplorerMemberSpacesQuery = {
         avatar2?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-      community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      community: {
+        __typename?: 'Community';
+        id: string;
+        roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      };
       settings: {
         __typename?: 'SpaceSettings';
         privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
@@ -29476,7 +29543,11 @@ export type SpaceExplorerMemberSpacesQuery = {
       cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
     context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-    community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    community: {
+      __typename?: 'Community';
+      id: string;
+      roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+    };
     settings: {
       __typename?: 'SpaceSettings';
       privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
@@ -29513,7 +29584,11 @@ export type SpaceExplorerAllSpacesQuery = {
         cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-      community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      community: {
+        __typename?: 'Community';
+        id: string;
+        roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      };
       settings: {
         __typename?: 'SpaceSettings';
         privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
@@ -29554,7 +29629,11 @@ export type SpaceExplorerSubspacesQuery = {
         avatar2?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
       context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-      community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      community: {
+        __typename?: 'Community';
+        id: string;
+        roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+      };
       settings: {
         __typename?: 'SpaceSettings';
         privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
@@ -29582,7 +29661,11 @@ export type SpaceExplorerSpaceFragment = {
     cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-  community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+  community: {
+    __typename?: 'Community';
+    id: string;
+    roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+  };
   settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };
 };
 
@@ -29603,7 +29686,11 @@ export type SpaceExplorerSubspaceFragment = {
     avatar2?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
   context: { __typename?: 'Context'; id: string; vision?: string | undefined };
-  community: { __typename?: 'Community'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+  community: {
+    __typename?: 'Community';
+    id: string;
+    roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+  };
   settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };
 };
 

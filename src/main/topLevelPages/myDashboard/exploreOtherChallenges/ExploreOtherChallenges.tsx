@@ -72,8 +72,9 @@ const ExploreOtherChallenges = () => {
 
   const spaceItems = useMemo(
     () =>
-      (spaces.items ?? []).filter(space => space.community?.myMembershipStatus !== CommunityMembershipStatus.Member) ??
-      [],
+      (spaces.items ?? []).filter(
+        space => space.community?.roleSet?.myMembershipStatus !== CommunityMembershipStatus.Member
+      ) ?? [],
     [spaces.items?.length]
   );
 

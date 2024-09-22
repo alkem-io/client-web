@@ -122,10 +122,10 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   // but you are at least at challenge level to have a parent application
   const parentApplication = pendingApplications?.find(x => x.space.id === parentSpaceId);
 
-  const isMember = space?.community.myMembershipStatus === CommunityMembershipStatus.Member;
+  const isMember = space?.community.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
 
   const isChildJourney = !!parentSpaceId;
-  const isParentMember = parentSpace?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
+  const isParentMember = parentSpace?.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
 
   const parentUrl = parentSpace?.profile.url;
 
@@ -136,7 +136,8 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     (!isChildJourney && communityPrivileges.includes(AuthorizationPrivilege.CommunityJoin));
 
   // Changed from parent to current space
-  const canAcceptInvitation = space?.community?.myMembershipStatus === CommunityMembershipStatus.InvitationPending;
+  const canAcceptInvitation =
+    space?.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.InvitationPending;
 
   const canApplyToCommunity =
     (isChildJourney && isParentMember && communityPrivileges.includes(AuthorizationPrivilege.CommunityApply)) ||

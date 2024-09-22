@@ -37,7 +37,9 @@ export interface JourneyCardHorizontalProps {
       cardBanner?: Visual;
     };
     community?: {
-      myRoles?: CommunityRoleType[];
+      roleSet?: {
+        myRoles?: CommunityRoleType[];
+      };
     };
   };
   deepness?: number;
@@ -63,7 +65,7 @@ const JourneyCardHorizontal = ({
 
   const { t } = useTranslation();
 
-  const [communityRole] = intersection(VISIBLE_COMMUNITY_ROLES, journey.community?.myRoles);
+  const [communityRole] = intersection(VISIBLE_COMMUNITY_ROLES, journey.community?.roleSet?.myRoles);
 
   const mergedSx: PaperProps['sx'] = {
     padding: gutters(),

@@ -1228,7 +1228,10 @@ export const ApplicationFormFragmentDoc = gql`
 export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
     id
-    myMembershipStatus
+    roleSet {
+      id
+      myMembershipStatus
+    }
     communication {
       id
       authorization {
@@ -2031,13 +2034,13 @@ export const SubspaceProviderFragmentDoc = gql`
     }
     community {
       id
-      myMembershipStatus
       authorization {
         id
         myPrivileges
       }
       roleSet {
         id
+        myMembershipStatus
       }
     }
   }
@@ -2065,7 +2068,10 @@ export const SpaceCardFragmentDoc = gql`
     }
     community {
       id
-      myMembershipStatus
+      roleSet {
+        id
+        myMembershipStatus
+      }
     }
     context {
       id
@@ -2144,13 +2150,13 @@ export const SpaceInfoFragmentDoc = gql`
     }
     community {
       id
-      myMembershipStatus
       authorization {
         id
         myPrivileges
       }
       roleSet {
         id
+        myMembershipStatus
       }
     }
     context {
@@ -2248,13 +2254,13 @@ export const SpacePageFragmentDoc = gql`
     }
     community @include(if: $authorizedReadAccessCommunity) {
       id
-      myMembershipStatus
       authorization {
         id
         myPrivileges
       }
       roleSet {
         id
+        myMembershipStatus
         leadUsers: usersInRole(role: LEAD) {
           ...DashboardLeadUser
         }
@@ -2304,7 +2310,10 @@ export const SubspaceCardFragmentDoc = gql`
     }
     community {
       id
-      myMembershipStatus
+      roleSet {
+        id
+        myMembershipStatus
+      }
     }
     settings {
       privacy {
@@ -2469,9 +2478,9 @@ export const SpaceProfileFragmentDoc = gql`
     }
     community {
       id
-      myMembershipStatus
       roleSet {
         ...RoleSetContributorRoles
+        myMembershipStatus
       }
     }
   }
@@ -2511,12 +2520,6 @@ export const SpaceDashboardNavigationProfileFragmentDoc = gql`
     }
   }
 `;
-export const SpaceDashboardNavigationCommunityFragmentDoc = gql`
-  fragment SpaceDashboardNavigationCommunity on Community {
-    id
-    myMembershipStatus
-  }
-`;
 export const SubspaceInfoFragmentDoc = gql`
   fragment SubspaceInfo on Space {
     id
@@ -2544,12 +2547,12 @@ export const SubspaceInfoFragmentDoc = gql`
     }
     community {
       id
-      myMembershipStatus
       authorization {
         id
         myPrivileges
       }
       roleSet {
+        myMembershipStatus
         id
       }
     }
@@ -2591,13 +2594,13 @@ export const SubspacePageSpaceFragmentDoc = gql`
     }
     community @include(if: $authorizedReadAccessCommunity) {
       id
-      myMembershipStatus
       authorization {
         id
         myPrivileges
       }
       roleSet {
         id
+        myMembershipStatus
         ...RoleSetContributorRoles
       }
     }
@@ -3281,7 +3284,10 @@ export const SearchResultSpaceFragmentDoc = gql`
       }
       community {
         id
-        myMembershipStatus
+        roleSet {
+          id
+          myMembershipStatus
+        }
       }
       settings {
         privacy {
@@ -3506,8 +3512,8 @@ export const RecentContributionsChildJourneyProfileFragmentDoc = gql`
   }
   ${RecentContributionsJourneyProfileFragmentDoc}
 `;
-export const MyMembershipsChildJourneyCommunityFragmentDoc = gql`
-  fragment MyMembershipsChildJourneyCommunity on Community {
+export const MyMembershipsRoleSetFragmentDoc = gql`
+  fragment MyMembershipsRoleSet on RoleSet {
     id
     myMembershipStatus
     myRoles
@@ -3522,7 +3528,10 @@ export const SpaceMembershipFragmentDoc = gql`
       myPrivileges
     }
     community {
-      ...MyMembershipsChildJourneyCommunity
+      roleSet {
+        id
+        ...MyMembershipsRoleSet
+      }
     }
     profile {
       id
@@ -3534,7 +3543,7 @@ export const SpaceMembershipFragmentDoc = gql`
       }
     }
   }
-  ${MyMembershipsChildJourneyCommunityFragmentDoc}
+  ${MyMembershipsRoleSetFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
@@ -3601,7 +3610,10 @@ export const SpaceExplorerSpaceFragmentDoc = gql`
     visibility
     community {
       id
-      myMembershipStatus
+      roleSet {
+        id
+        myMembershipStatus
+      }
     }
     settings {
       privacy {
@@ -3647,7 +3659,10 @@ export const SpaceExplorerSubspaceFragmentDoc = gql`
     }
     community {
       id
-      myMembershipStatus
+      roleSet {
+        id
+        myMembershipStatus
+      }
     }
     settings {
       privacy {
@@ -9394,13 +9409,13 @@ export const CommunityUserPrivilegesDocument = gql`
         }
         community {
           id
-          myMembershipStatus
           authorization {
             id
             myPrivileges
           }
           roleSet {
             id
+            myMembershipStatus
             authorization {
               id
               myPrivileges
@@ -9419,10 +9434,13 @@ export const CommunityUserPrivilegesDocument = gql`
         }
         community {
           id
-          myMembershipStatus
           authorization {
             id
             myPrivileges
+          }
+          roleSet {
+            id
+            myMembershipStatus
           }
         }
       }
@@ -15373,7 +15391,10 @@ export const ChildJourneyPageBannerDocument = gql`
         }
         community {
           id
-          myMembershipStatus
+          roleSet {
+            id
+            myMembershipStatus
+          }
         }
       }
     }
@@ -17607,14 +17628,17 @@ export const SpaceDashboardNavigationChallengesDocument = gql`
             myPrivileges
           }
           community {
-            ...SpaceDashboardNavigationCommunity
+            id
+            roleSet {
+              ...MyMembershipsRoleSet
+            }
           }
         }
       }
     }
   }
   ${SpaceDashboardNavigationProfileFragmentDoc}
-  ${SpaceDashboardNavigationCommunityFragmentDoc}
+  ${MyMembershipsRoleSetFragmentDoc}
 `;
 
 /**
@@ -17692,7 +17716,10 @@ export const SpaceDashboardNavigationOpportunitiesDocument = gql`
               ...SpaceDashboardNavigationProfile
             }
             community {
-              ...SpaceDashboardNavigationCommunity
+              id
+              roleSet {
+                ...MyMembershipsRoleSet
+              }
             }
           }
         }
@@ -17700,7 +17727,7 @@ export const SpaceDashboardNavigationOpportunitiesDocument = gql`
     }
   }
   ${SpaceDashboardNavigationProfileFragmentDoc}
-  ${SpaceDashboardNavigationCommunityFragmentDoc}
+  ${MyMembershipsRoleSetFragmentDoc}
 `;
 
 /**
@@ -22298,7 +22325,10 @@ export const MembershipSuggestionSpaceDocument = gql`
       }
       community {
         id
-        myRoles
+        roleSet {
+          id
+          myRoles
+        }
       }
     }
   }

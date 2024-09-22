@@ -1,6 +1,9 @@
 fragment CommunityDetails on Community {
   id
-  myMembershipStatus
+  roleSet {
+    id
+    myMembershipStatus
+  }
   communication {
     id
     authorization {

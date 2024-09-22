@@ -84,7 +84,10 @@ fragment SpaceExplorerSpace on Space {
   visibility
   community {
     id
-    myMembershipStatus
+    roleSet {
+      id
+      myMembershipStatus
+    }
   }
   settings {
     privacy {
@@ -120,7 +123,10 @@ fragment SpaceExplorerSubspace on Space {
   }
   community {
     id
-    myMembershipStatus
+    roleSet {
+      id
+      myMembershipStatus
+    }
   }
   settings {
     privacy {
