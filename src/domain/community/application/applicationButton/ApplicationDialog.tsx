@@ -6,7 +6,7 @@ import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikI
 import { useApplicationCommunityQuery } from '../containers/useApplicationCommunityQuery';
 import {
   refetchUserProviderQuery,
-  useApplyForBaseRoleOnRoleSetMutation,
+  useApplyForEntryRoleOnRoleSetMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { CreateNvpInput } from '../../../../core/apollo/generated/graphql-schema';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
@@ -47,7 +47,7 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({
   const { data } = useApplicationCommunityQuery(journeyId, canJoinCommunity);
   const { description, questions = [], roleSetId = '', displayName: communityName, communityGuidelines } = data || {};
 
-  const [createApplication, { loading: isCreationLoading }] = useApplyForBaseRoleOnRoleSetMutation({
+  const [createApplication, { loading: isCreationLoading }] = useApplyForEntryRoleOnRoleSetMutation({
     // refetch user applications
     refetchQueries: [refetchUserProviderQuery()],
   });

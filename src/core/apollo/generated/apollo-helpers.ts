@@ -1904,7 +1904,7 @@ export type MutationKeySpecifier = (
   | 'aiServerDeleteAiPersonaService'
   | 'aiServerPersonaServiceIngest'
   | 'aiServerUpdateAiPersonaService'
-  | 'applyForBaseRoleOnRoleSet'
+  | 'applyForEntryRoleOnRoleSet'
   | 'assignLicensePlanToAccount'
   | 'assignLicensePlanToSpace'
   | 'assignOrganizationRoleToUser'
@@ -1978,7 +1978,7 @@ export type MutationKeySpecifier = (
   | 'inviteContributorsForRoleSetMembership'
   | 'inviteUserToPlatformAndRoleSet'
   | 'inviteUserToPlatformWithRole'
-  | 'joinCommunity'
+  | 'joinRoleSet'
   | 'messageUser'
   | 'moveContributionToCallout'
   | 'refreshVirtualContributorBodyOfKnowledge'
@@ -2064,7 +2064,7 @@ export type MutationFieldPolicy = {
   aiServerDeleteAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerPersonaServiceIngest?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerUpdateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
-  applyForBaseRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  applyForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   assignOrganizationRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2138,7 +2138,7 @@ export type MutationFieldPolicy = {
   inviteContributorsForRoleSetMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteUserToPlatformAndRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteUserToPlatformWithRole?: FieldPolicy<any> | FieldReadFunction<any>;
-  joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
+  joinRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2768,8 +2768,8 @@ export type RoleSetKeySpecifier = (
   | 'authorization'
   | 'availableUsersForLeadRole'
   | 'availableUsersForMemberRole'
-  | 'baseRoleType'
   | 'createdDate'
+  | 'entryRoleType'
   | 'id'
   | 'invitations'
   | 'myMembershipStatus'
@@ -2790,8 +2790,8 @@ export type RoleSetFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   availableUsersForLeadRole?: FieldPolicy<any> | FieldReadFunction<any>;
   availableUsersForMemberRole?: FieldPolicy<any> | FieldReadFunction<any>;
-  baseRoleType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  entryRoleType?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
   myMembershipStatus?: FieldPolicy<any> | FieldReadFunction<any>;

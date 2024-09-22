@@ -1,5 +1,0 @@
-mutation applyForBaseRoleOnRoleSet($input: ApplyForBaseRoleOnRoleSetInput!) {
-  applyForBaseRoleOnRoleSet(applicationData: $input) {
-    id
-  }
-}

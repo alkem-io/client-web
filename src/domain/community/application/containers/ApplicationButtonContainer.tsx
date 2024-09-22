@@ -3,7 +3,7 @@ import { ApplicationButtonProps } from '../applicationButton/ApplicationButton';
 import { useUserContext } from '../../user';
 import {
   useCommunityUserPrivilegesQuery,
-  useJoinCommunityMutation,
+  useJoinRoleSetMutation,
   useSpacePageLazyQuery,
   useSubspacePageLazyQuery,
   useUserPendingMembershipsQuery,
@@ -110,7 +110,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
   const challengeName = space?.profile.displayName;
   const spaceName = parentSpace?.profile.displayName;
 
-  const [joinCommunity, { loading: joiningCommunity }] = useJoinCommunityMutation({
+  const [joinCommunity, { loading: joiningCommunity }] = useJoinRoleSetMutation({
     update: cache => clearCacheForType(cache, 'Authorization'),
   });
 
