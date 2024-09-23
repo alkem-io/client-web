@@ -3319,7 +3319,7 @@ export type Mutation = {
   inviteUserToPlatformAndRoleSet: PlatformInvitation;
   /** Invite a User to join the platform in a particular Platform role e.g. BetaTester */
   inviteUserToPlatformWithRole: PlatformInvitation;
-  /** Join the specified RoleSet using the base role, without going through an approval process. */
+  /** Join the specified RoleSet using the entry Role, without going through an approval process. */
   joinRoleSet: RoleSet;
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
@@ -4951,10 +4951,10 @@ export type Role = {
   organizationPolicy: ContributorRolePolicy;
   /** The Credential associated with this Role. */
   parentCredentials: Array<CredentialDefinition>;
-  /** Flag to indicate if this Role requires the Base role to be held. */
-  requiresBaseRole: Scalars['Boolean'];
+  /** Flag to indicate if this Role requires the entry level role to be held. */
+  requiresEntryRole: Scalars['Boolean'];
   /** Flag to indicate if this Role requires having the same role in the Parent RoleSet. */
-  requiresParentRole: Scalars['Boolean'];
+  requiresSameRoleInParentRoleSet: Scalars['Boolean'];
   /** The CommunityRole that this role definition is for. */
   type: CommunityRoleType;
   /** The date at which the entity was last updated. */

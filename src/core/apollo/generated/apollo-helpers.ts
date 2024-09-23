@@ -2741,8 +2741,8 @@ export type RoleKeySpecifier = (
   | 'id'
   | 'organizationPolicy'
   | 'parentCredentials'
-  | 'requiresBaseRole'
-  | 'requiresParentRole'
+  | 'requiresEntryRole'
+  | 'requiresSameRoleInParentRoleSet'
   | 'type'
   | 'updatedDate'
   | 'userPolicy'
@@ -2755,8 +2755,8 @@ export type RoleFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationPolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   parentCredentials?: FieldPolicy<any> | FieldReadFunction<any>;
-  requiresBaseRole?: FieldPolicy<any> | FieldReadFunction<any>;
-  requiresParentRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  requiresEntryRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  requiresSameRoleInParentRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   userPolicy?: FieldPolicy<any> | FieldReadFunction<any>;

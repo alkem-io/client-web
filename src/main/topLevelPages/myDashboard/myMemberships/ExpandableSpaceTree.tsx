@@ -26,8 +26,10 @@ interface MembershipProps {
         uri: string;
       };
     };
-    community?: {
-      myRoles?: CommunityRoleType[] | undefined;
+    community: {
+      roleSet?: {
+        myRoles?: CommunityRoleType[] | undefined;
+      };
     };
     level: number;
   };
@@ -45,7 +47,7 @@ const ExpandableSpaceTree = ({
     space: {
       profile: { displayName, tagline, cardBanner: { uri: avatar } = { uri: '' }, url },
       level,
-      community: { myRoles: roles } = { myRoles: [] },
+      community: { roleSet: { myRoles: roles } = { myRoles: [] } },
     },
     childMemberships = [],
   },
