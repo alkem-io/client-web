@@ -56,6 +56,7 @@ export interface JourneyCardHorizontalProps {
   sx?: PaperProps['sx'];
   actions?: ReactNode;
   size?: Size;
+  whitHoverState?: boolean;
 }
 
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
@@ -74,6 +75,7 @@ const JourneyCardHorizontal = ({
   sx,
   actions,
   size,
+  whitHoverState = true,
 }: JourneyCardHorizontalProps) => {
   const Icon = JourneyIcon[journeyTypeName];
 
@@ -92,7 +94,7 @@ const JourneyCardHorizontal = ({
     <ElevatedPaper sx={mergedSx} elevation={seamless ? 0 : undefined}>
       <BadgeCardView
         visual={<JourneyAvatar size={size} src={journey.profile.avatar?.uri || journey.profile.cardBanner?.uri} />}
-        component={Wrapper}
+        component={whitHoverState ? Wrapper : RouterLink}
         to={journey.profile.url}
         actions={actions && <ActionsMenu>{actions}</ActionsMenu>}
       >

@@ -50,10 +50,10 @@ const VirtualContributorsPage: FC = () => {
                       justifyContent: 'space-between',
                     }}
                   >
-                    <TableCell component="th" scope="row" sx={{ width: '100%', paddingY: 1 }}>
+                    <TableCell component="td" scope="row" sx={{ width: '100%', paddingY: 1 }}>
                       <BadgeCardView
                         key={virtualContributor.id}
-                        flex={1}
+                        sx={{ flex: 1 }}
                         visual={
                           <Avatar
                             src={virtualContributor.profile.avatar?.uri}

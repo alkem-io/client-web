@@ -369,6 +369,7 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
                   seamless
                   sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}
                   actions={getSpaceActions(space.id)}
+                  whitHoverState={false}
                 />
               ))}
           </Gutters>
