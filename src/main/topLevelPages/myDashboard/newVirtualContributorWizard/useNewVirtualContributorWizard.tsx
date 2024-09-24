@@ -242,6 +242,12 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   );
 
   const hasPrivilegesOnSpaceAndCommunity = () => {
+    // in case of clean creation, the user is an admin of the space
+    // no way and need to check the privileges
+    if (!selectedExistingSpaceId) {
+      return true;
+    }
+
     // todo: check create callout privilege (community) if needed
     const { myPrivileges: spaceMyPrivileges } = spacePrivileges;
     const { myPrivileges: collaborationMyPrivileges } = spacePrivileges.collaboration;
