@@ -53,7 +53,7 @@ export interface WhiteboardWhiteboardEntities {
 export interface WhiteboardWhiteboardActions {
   onUpdate?: (state: ExportedDataState) => Promise<{ success: boolean; errors?: string[] }>;
   onInitApi?: (excalidrawApi: ExcalidrawImperativeAPI) => void;
-  onRemoteSave?: () => void;
+  onSavedToDatabase?: () => void;
 }
 
 export interface WhiteboardWhiteboardEvents {}
@@ -144,8 +144,21 @@ const CollaborativeExcalidrawWrapper = ({
 
   const [collabApi, initializeCollab, { connecting, collaborating, mode, modeReason }] = useCollab({
     username,
+    onSavedToDatabase: actions.onSavedToDatabase,
     filesManager,
-    onRemoteSave: () => actions.onRemoteSave?.(),
+    onSaveRequest: async () => {
+      if (excalidrawApi) {
+        const state = {
+          ...(data as ExportedDataState),
+          elements: excalidrawApi.getSceneElements(),
+          files: excalidrawApi.getFiles(),
+          appState: excalidrawApi.getAppState(),
+        };
+        const result = await actions.onUpdate?.(state);
+        return result ?? { success: false, errors: ['Update handler not defined'] };
+      }
+      return { success: false, errors: ['ExcalidrawAPI not yet ready'] };
+    },
     onCloseConnection: () => {
       setCollaborationStoppedNoticeOpen(true);
       if (isOnline) {

@@ -53,9 +53,11 @@ export const WS_EVENTS = {
   SERVER_VOLATILE: 'server-volatile-broadcast',
   SERVER: 'server-broadcast',
   IDLE_STATE: 'idle-state',
+  SCENE_INIT: 'scene-init',
 } as const;
 
 export enum WS_SCENE_EVENT_TYPES {
+  INIT = 'SCENE_INIT',
   SCENE_UPDATE = 'SCENE_UPDATE',
   MOUSE_LOCATION = 'MOUSE_LOCATION',
 }

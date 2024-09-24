@@ -128,14 +128,6 @@ query WhiteboardWithContent($whiteboardId: UUID!) {
   }
 }
 
-query WhiteboardWithoutContent($whiteboardId: UUID!) {
-  lookup {
-    whiteboard(ID: $whiteboardId) {
-      ...WhiteboardDetails
-    }
-  }
-}
-
 query whiteboardLastUpdatedDate($whiteboardId: UUID!) {
   lookup {
     whiteboard(ID: $whiteboardId) {
@@ -169,5 +161,12 @@ mutation updateWhiteboard($input: UpdateWhiteboardEntityInput!) {
       id
       displayName
     }
+  }
+}
+
+mutation updateWhiteboardContent($input: UpdateWhiteboardContentInput!) {
+  updateWhiteboardContent(whiteboardData: $input) {
+    id
+    content
   }
 }

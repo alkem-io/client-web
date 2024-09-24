@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
+import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import Loading from '../../../../core/ui/loading/Loading';
@@ -20,16 +20,17 @@ import {
   generateWhiteboardPreviewImages,
   WhiteboardPreviewImage,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { useWhiteboardLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/useCollab';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import { useLocation } from 'react-router-dom';
+import type { ExcalidrawElement, ExcalidrawImageElement } from '@alkemio/excalidraw/types/element/types';
 import WhiteboardDisplayName from './WhiteboardDisplayName';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
 import WhiteboardDialogTemplatesLibrary from '../../../templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
-import { useWhiteboardLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
   entities: {
@@ -80,6 +81,28 @@ const useStyles = makeStyles(theme => ({
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
+const checkWhiteboardConsistency = (
+  whiteboardId: string | undefined,
+  elements: readonly ExcalidrawElement[],
+  files: Record<BinaryFileData['id'], BinaryFileData & { url?: string }>
+) => {
+  const missingImages = elements.filter(
+    element =>
+      element.type === 'image' && (!element.fileId || !files || !files[element.fileId] || !files[element.fileId].url)
+  ) as ExcalidrawImageElement[];
+
+  if (missingImages.length > 0) {
+    logError(
+      new Error(
+        `Whiteboard is missing images '${whiteboardId}':[${missingImages.map(image => image.fileId).join(', ')}]`
+      ),
+      { category: TagCategoryValues.WHITEBOARD }
+    );
+    return false;
+  }
+  return true;
+};
+
 const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   entities,
   actions,
@@ -107,16 +130,15 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   const styles = useStyles();
   const columns = useGlobalGridColumns();
 
-  const [lastSavedDate, setLastSavedDate] = useState<Date | undefined>(undefined);
-
-  const { data: lastSaved } = useWhiteboardLastUpdatedDateQuery({
+  const { data: lastSaved, refetch: refetchLastSaved } = useWhiteboardLastUpdatedDateQuery({
     variables: { whiteboardId: whiteboard?.id! },
     skip: !whiteboard?.id,
   });
 
-  if (!lastSavedDate && lastSaved?.lookup.whiteboard?.updatedDate) {
-    setLastSavedDate(new Date(lastSaved?.lookup.whiteboard?.updatedDate));
-  }
+  const lastSavedDate = useMemo(
+    () => lastSaved?.lookup.whiteboard?.updatedDate && new Date(lastSaved.lookup.whiteboard.updatedDate),
+    [lastSaved?.lookup.whiteboard?.updatedDate]
+  );
 
   const filesManager = useWhiteboardFilesManager({
     excalidrawAPI,
@@ -131,19 +153,23 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   ): Promise<{
     whiteboard: Whiteboard;
     previewImages?: WhiteboardPreviewImage[];
+    whiteboardIsConsistent: boolean;
   }> => {
     if (!state) {
       throw new Error('Excalidraw state not defined');
     }
 
-    if (!whiteboard?.profile?.id) {
-      throw new Error('Whiteboard profile not defined');
-    }
+    const { appState, elements, files } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
 
     const previewImages =
       shouldUploadPreviewImages && !filesManager.loading.downloadingFiles
         ? await generateWhiteboardPreviewImages(whiteboard, state)
         : undefined;
+
+    const { serializeAsJSON } = await import('@alkemio/excalidraw');
+
+    const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
+    const whiteboardIsConsistent = checkWhiteboardConsistency(whiteboard.id, elements, files ?? {});
 
     if (!formikRef.current?.isValid) {
       throw new Error('Form not valid');
@@ -153,12 +179,15 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
 
     return {
       whiteboard: {
+        ...whiteboard,
         profile: {
-          id: whiteboard.profile.id,
+          ...whiteboard.profile,
           displayName,
         },
+        content,
       } as Whiteboard,
       previewImages,
+      whiteboardIsConsistent,
     };
   };
 
@@ -173,6 +202,18 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
       appState: excalidrawAPI.getAppState(),
       files: excalidrawAPI.getFiles(),
     };
+  };
+
+  const handleManualSave = async () => {
+    if (!whiteboard) {
+      throw new Error('Whiteboard not defined');
+    }
+    const whiteboardState = await getWhiteboardState();
+    const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
+      whiteboard,
+      whiteboardState
+    );
+    return actions.onUpdate(updatedWhiteboard, previewImages);
   };
 
   const onClose = async () => {
@@ -246,9 +287,6 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
         }}
         actions={{
           onInitApi: setExcalidrawAPI,
-          onRemoteSave: () => {
-            setLastSavedDate(new Date());
-          },
           onUpdate: async state => {
             const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
               whiteboard,
@@ -256,6 +294,11 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
               false
             );
             return actions.onUpdate(updatedWhiteboard, previewImages);
+          },
+          onSavedToDatabase: () => {
+            refetchLastSaved({
+              whiteboardId: whiteboard.id,
+            });
           },
         }}
       >
@@ -299,6 +342,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                   collaboratorMode={mode}
                   collaboratorModeReason={modeReason}
                   lastSavedDate={lastSavedDate}
+                  onSave={handleManualSave}
                   onDelete={() => setDeleteDialogOpen(true)}
                   canDelete={options.canDelete}
                   onRestart={restartCollaboration}

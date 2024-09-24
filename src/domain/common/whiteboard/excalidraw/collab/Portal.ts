@@ -13,7 +13,7 @@ import { Socket } from 'socket.io-client';
 import { BinaryFileDataWithUrl, BinaryFilesWithUrl } from '../useWhiteboardFilesManager';
 
 interface PortalProps {
-  onRemoteSave: () => void;
+  onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
   onCloseConnection: () => void;
   onRoomUserChange: (clients: string[]) => void;
   getSceneElements: () => readonly ExcalidrawElement[];
@@ -36,13 +36,14 @@ interface ConnectionOptions {
 
 interface SocketEventHandlers {
   'client-broadcast': (encryptedData: ArrayBuffer) => void;
+  'first-in-room': () => void;
   'collaborator-mode': (event: CollaboratorModeEvent) => void;
-  'scene-init': (payload: SocketUpdateDataSource['SCENE_INIT']['payload']) => void;
+  saved: () => void;
   'idle-state': (payload: SocketUpdateDataSource['IDLE_STATUS']['payload']) => void;
 }
 
 class Portal {
-  onRemoteSave: () => void;
+  onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
   onCloseConnection: () => void;
   onRoomUserChange: (clients: string[]) => void;
   getSceneElements: () => readonly ExcalidrawElement[];
@@ -53,8 +54,8 @@ class Portal {
   broadcastedElementVersions: Map<string, number> = new Map();
   broadcastedFiles: Set<string> = new Set();
 
-  constructor({ onRemoteSave, onRoomUserChange, getSceneElements, getFiles, onCloseConnection }: PortalProps) {
-    this.onRemoteSave = onRemoteSave;
+  constructor({ onSaveRequest, onRoomUserChange, getSceneElements, getFiles, onCloseConnection }: PortalProps) {
+    this.onSaveRequest = onSaveRequest;
     this.onRoomUserChange = onRoomUserChange;
     this.getSceneElements = getSceneElements;
     this.getFiles = getFiles;
@@ -86,15 +87,18 @@ class Portal {
         }
       });
 
-      this.socket.on('scene-init', (data: ArrayBuffer) => {
-        const decodedData = new TextDecoder().decode(data);
-        const parsedData = JSON.parse(decodedData);
-        eventHandlers['scene-init'](parsedData.payload);
+      this.socket.on('first-in-room', () => {
+        socket.off('first-in-room');
+        eventHandlers['first-in-room']();
       });
 
-      this.socket.on('room-saved', () => this.onRemoteSave());
-
       this.socket.on('collaborator-mode', eventHandlers['collaborator-mode']);
+
+      this.socket.on('new-user', async (_socketId: string) => {
+        this.broadcastScene(WS_SCENE_EVENT_TYPES.INIT, this.getSceneElements(), await this.getFiles(), {
+          syncAll: true,
+        });
+      });
 
       this.socket.on('room-user-change', (clients: string[]) => {
         this.onRoomUserChange(clients);
@@ -106,7 +110,15 @@ class Portal {
         eventHandlers['idle-state'](decryptedData.payload);
       });
 
-      this.socket.on('room-saved', eventHandlers['room-saved']);
+      this.socket.on('save-request', async callback => {
+        try {
+          callback(await this.onSaveRequest());
+        } catch (ex) {
+          callback({ success: false, errors: [(ex as { message?: string })?.message ?? ex] });
+        }
+      });
+
+      this.socket.on('saved', eventHandlers.saved);
 
       this.socket.on('client-broadcast', eventHandlers['client-broadcast']);
 
@@ -161,11 +173,15 @@ class Portal {
   }
 
   broadcastScene = async (
-    updateType: WS_SCENE_EVENT_TYPES.SCENE_UPDATE,
+    updateType: WS_SCENE_EVENT_TYPES.INIT | WS_SCENE_EVENT_TYPES.SCENE_UPDATE,
     allElements: readonly ExcalidrawElement[],
     allFiles: BinaryFilesWithUrl,
     { syncAll = false }: BroadcastSceneOptions = {}
   ) => {
+    if (updateType === WS_SCENE_EVENT_TYPES.INIT && !syncAll) {
+      throw new Error('syncAll must be true when sending SCENE.INIT');
+    }
+
     const { isInvisiblySmallElement } = await import('@alkemio/excalidraw');
 
     const isSyncableElement = IsSyncableElement({ isInvisiblySmallElement });
@@ -210,6 +226,10 @@ class Portal {
 
     for (const syncableElement of syncableElements) {
       this.broadcastedElementVersions.set(syncableElement.id, syncableElement.version);
+    }
+
+    if (updateType === WS_SCENE_EVENT_TYPES.INIT) {
+      return this._broadcastEvent(WS_EVENTS.SCENE_INIT, data as SocketUpdateData);
     }
 
     this._broadcastSocketData(data as SocketUpdateData);
