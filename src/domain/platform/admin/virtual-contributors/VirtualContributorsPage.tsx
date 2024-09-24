@@ -25,16 +25,12 @@ const VirtualContributorsPage: FC = () => {
                 <TableRow
                   sx={{
                     width: '100%',
-                    display: 'flex',
-                    alignItems: 'flex-end',
                     background: theme => theme.palette.primary.main,
+                    verticalAlign: 'middle',
                   }}
                 >
                   <TableCell component="th" scope="row">
                     <CardTitle color="primary.contrastText">Name</CardTitle>
-                  </TableCell>
-                  <TableCell component="th" scope="row" sx={{ flex: 1 }}>
-                    &nbsp;
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -45,12 +41,9 @@ const VirtualContributorsPage: FC = () => {
                     sx={{
                       backgroundColor: i % 2 === 0 ? 'inherit' : 'action.hover',
                       '&:last-child td, &:last-child th': { border: 0 },
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
                     }}
                   >
-                    <TableCell component="td" scope="row" sx={{ width: '100%', paddingY: 1 }}>
+                    <TableCell component="td" scope="row" sx={{ width: '100%', paddingY: 1, verticalAlign: 'middle' }}>
                       <BadgeCardView
                         key={virtualContributor.id}
                         sx={{ flex: 1 }}
