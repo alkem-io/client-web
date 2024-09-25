@@ -91,19 +91,20 @@ const useCommunityAdmin = ({
     skip: !communityId || !spaceId,
   });
 
-  const memberRoleDefinition = data?.lookup.community?.roleSet.memberRoleDefinition;
-  const leadRoleDefinition = data?.lookup.community?.roleSet.leadRoleDefinition;
+  const roleSet = data?.lookup.community?.roleSet;
+
+  const memberRoleDefinition = roleSet?.memberRoleDefinition;
+  const leadRoleDefinition = roleSet?.leadRoleDefinition;
+  const roleSetMyPrivileges = roleSet?.authorization?.myPrivileges ?? [];
 
   const permissions = {
-    virtualContributorsEnabled: (data?.lookup.community?.authorization?.myPrivileges ?? []).some(
+    virtualContributorsEnabled: roleSetMyPrivileges.some(
       priv => priv === AuthorizationPrivilege.AccessVirtualContributor
     ),
-    canAddMembers: (data?.lookup.community?.authorization?.myPrivileges ?? []).some(
-      priv => priv === AuthorizationPrivilege.CommunityAddMember
-    ),
+    canAddMembers: roleSetMyPrivileges.some(priv => priv === AuthorizationPrivilege.CommunityAddMember),
     // the following privilege allows Admins of a space without CommunityAddMember privilege, to
     // be able to add VC from the account; CommunityAddMember overrides this privilege as it's not granted to PAs
-    canAddVirtualContributorsFromAccount: (data?.lookup.community?.authorization?.myPrivileges ?? []).some(
+    canAddVirtualContributorsFromAccount: roleSetMyPrivileges.some(
       priv => priv === AuthorizationPrivilege.CommunityAddMemberVcFromAccount
     ),
   };
@@ -509,7 +510,7 @@ const useCommunityAdmin = ({
     });
     await refetchApplicationsAndInvitations();
   };
-  const roleSet = dataApplications?.lookup.roleSet;
+  const roleSetPending = dataApplications?.lookup.roleSet;
 
   return {
     users,
@@ -518,9 +519,9 @@ const useCommunityAdmin = ({
     memberRoleDefinition,
     leadRoleDefinition,
     permissions,
-    applications: roleSet?.applications,
-    invitations: roleSet?.invitations,
-    platformInvitations: roleSet?.platformInvitations,
+    applications: roleSetPending?.applications,
+    invitations: roleSetPending?.invitations,
+    platformInvitations: roleSetPending?.platformInvitations,
     onApplicationStateChange: handleApplicationStateChange,
     onInvitationStateChange: handleInvitationStateChange,
     onUserLeadChange: handleUserLeadChange,
