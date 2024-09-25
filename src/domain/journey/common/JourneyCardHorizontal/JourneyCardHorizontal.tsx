@@ -69,6 +69,10 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
   props: ListItemButtonProps<D, P> & RouterLinkProps
 ) => <ListItemButton component={RouterLink} {...props} />;
 
+const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultComponent'], P = Record<string, unknown>>(
+  props: ListItemButtonProps<D, P> & RouterLinkProps
+) => <ListItemButton component={RouterLink} {...props} />;
+
 const JourneyCardHorizontal = ({
   journey,
   journeyTypeName,
