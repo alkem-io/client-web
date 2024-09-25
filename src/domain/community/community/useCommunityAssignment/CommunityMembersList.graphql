@@ -1,5 +1,5 @@
 query CommunityMembersList(
-  $communityId: UUID!
+  $roleSetId: UUID!
   $spaceId: UUID = "00000000-0000-0000-0000-000000000000"
   $includeSpaceHost: Boolean = false
 ) {
@@ -9,15 +9,8 @@ query CommunityMembersList(
         ...ContributorDetails
       }
     }
-    community(ID: $communityId) {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-      roleSet {
-        ...RoleSetDetails
-      }
+    roleSet(ID: $roleSetId) {
+      ...RoleSetDetails
     }
   }
 }

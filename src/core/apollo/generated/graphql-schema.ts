@@ -15535,7 +15535,7 @@ export type BasicOrganizationDetailsFragment = {
 };
 
 export type CommunityMembersListQueryVariables = Exact<{
-  communityId: Scalars['UUID'];
+  roleSetId: Scalars['UUID'];
   spaceId?: InputMaybe<Scalars['UUID']>;
   includeSpaceHost?: InputMaybe<Scalars['Boolean']>;
 }>;
@@ -15628,152 +15628,145 @@ export type CommunityMembersListQuery = {
               };
         }
       | undefined;
-    community?:
+    roleSet?:
       | {
-          __typename?: 'Community';
+          __typename?: 'RoleSet';
           id: string;
+          memberUsers: Array<{
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            isContactable: boolean;
+            email: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              location?:
+                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
+            };
+          }>;
+          leadUsers: Array<{
+            __typename?: 'User';
+            id: string;
+            nameID: string;
+            isContactable: boolean;
+            email: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              location?:
+                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
+            };
+          }>;
+          memberOrganizations: Array<{
+            __typename?: 'Organization';
+            id: string;
+            nameID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              url: string;
+              displayName: string;
+              description?: string | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?:
+                | { __typename?: 'Location'; country?: string | undefined; city?: string | undefined }
+                | undefined;
+            };
+          }>;
+          leadOrganizations: Array<{
+            __typename?: 'Organization';
+            id: string;
+            nameID: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              url: string;
+              displayName: string;
+              description?: string | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?:
+                | { __typename?: 'Location'; country?: string | undefined; city?: string | undefined }
+                | undefined;
+            };
+          }>;
+          memberVirtualContributors: Array<{
+            __typename?: 'VirtualContributor';
+            id: string;
+            nameID: string;
+            searchVisibility: SearchVisibility;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              location?:
+                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
+            };
+          }>;
+          leadVirtualContributors: Array<{
+            __typename?: 'VirtualContributor';
+            id: string;
+            nameID: string;
+            searchVisibility: SearchVisibility;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              location?:
+                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
+            };
+          }>;
+          memberRoleDefinition: {
+            __typename?: 'Role';
+            id: string;
+            organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
+            userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
+          };
+          leadRoleDefinition: {
+            __typename?: 'Role';
+            id: string;
+            organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
+            userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
+          };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
-          roleSet: {
-            __typename?: 'RoleSet';
-            id: string;
-            memberUsers: Array<{
-              __typename?: 'User';
-              id: string;
-              nameID: string;
-              isContactable: boolean;
-              email: string;
-              firstName: string;
-              lastName: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                location?:
-                  | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                  | undefined;
-              };
-            }>;
-            leadUsers: Array<{
-              __typename?: 'User';
-              id: string;
-              nameID: string;
-              isContactable: boolean;
-              email: string;
-              firstName: string;
-              lastName: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                location?:
-                  | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                  | undefined;
-              };
-            }>;
-            memberOrganizations: Array<{
-              __typename?: 'Organization';
-              id: string;
-              nameID: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                url: string;
-                displayName: string;
-                description?: string | undefined;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                tagsets?:
-                  | Array<{
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }>
-                  | undefined;
-                location?:
-                  | { __typename?: 'Location'; country?: string | undefined; city?: string | undefined }
-                  | undefined;
-              };
-            }>;
-            leadOrganizations: Array<{
-              __typename?: 'Organization';
-              id: string;
-              nameID: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                url: string;
-                displayName: string;
-                description?: string | undefined;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                tagsets?:
-                  | Array<{
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }>
-                  | undefined;
-                location?:
-                  | { __typename?: 'Location'; country?: string | undefined; city?: string | undefined }
-                  | undefined;
-              };
-            }>;
-            memberVirtualContributors: Array<{
-              __typename?: 'VirtualContributor';
-              id: string;
-              nameID: string;
-              searchVisibility: SearchVisibility;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                location?:
-                  | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                  | undefined;
-              };
-            }>;
-            leadVirtualContributors: Array<{
-              __typename?: 'VirtualContributor';
-              id: string;
-              nameID: string;
-              searchVisibility: SearchVisibility;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                location?:
-                  | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                  | undefined;
-              };
-            }>;
-            memberRoleDefinition: {
-              __typename?: 'Role';
-              id: string;
-              organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
-              userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
-            };
-            leadRoleDefinition: {
-              __typename?: 'Role';
-              id: string;
-              organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
-              userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
-            };
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-          };
         }
       | undefined;
   };

@@ -7,7 +7,7 @@ import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import CommunityApplications from '../../../community/community/CommunityAdmin/CommunityApplications';
 import CommunityOrganizations from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import CommunityUsers from '../../../community/community/CommunityAdmin/CommunityUsers';
-import useCommunityAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
+import useRoleSetAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
 import { useSubSpace } from '../hooks/useSubSpace';
@@ -72,7 +72,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useCommunityAdmin({ communityId, roleSetId, spaceId, challengeId, journeyLevel });
+  } = useRoleSetAdmin({ communityId, roleSetId, spaceId, challengeId, journeyLevel });
 
   const currentApplicationsUserIds = useMemo(
     () =>

@@ -48,8 +48,7 @@ const buildOrganizationFilterObject = (filter: string | undefined) =>
     : undefined;
 
 // TODO: Inherit from CoreEntityIds when they are not NameIds
-interface useCommunityAdminParams {
-  communityId: string;
+interface useRoleSetAdminParams {
   roleSetId: string;
   spaceId?: string;
   challengeId?: string;
@@ -64,14 +63,7 @@ interface VirtualContributorNameProps extends Identifiable {
   };
 }
 
-const useCommunityAdmin = ({
-  communityId,
-  roleSetId,
-  spaceId,
-  challengeId,
-  opportunityId,
-  journeyLevel,
-}: useCommunityAdminParams) => {
+const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journeyLevel }: useRoleSetAdminParams) => {
   const journeyTypeName = getJourneyTypeName({
     spaceNameId: spaceId,
     challengeNameId: challengeId,
@@ -84,14 +76,14 @@ const useCommunityAdmin = ({
     refetch: refetchCommunityMembers,
   } = useCommunityMembersListQuery({
     variables: {
-      communityId,
+      roleSetId,
       spaceId,
       includeSpaceHost: journeyTypeName === 'space',
     },
-    skip: !communityId || !spaceId,
+    skip: !roleSetId || !spaceId,
   });
 
-  const roleSet = data?.lookup.community?.roleSet;
+  const roleSet = data?.lookup.roleSet;
 
   const memberRoleDefinition = roleSet?.memberRoleDefinition;
   const leadRoleDefinition = roleSet?.leadRoleDefinition;
@@ -134,7 +126,7 @@ const useCommunityAdmin = ({
 
   // Members:
   const users = useMemo(() => {
-    const roleSet = data?.lookup.community?.roleSet;
+    const roleSet = data?.lookup.roleSet;
     const members = roleSet?.memberUsers ?? [];
     const leads = roleSet?.leadUsers ?? [];
     const admins = dataAdmins?.usersWithAuthorizationCredential ?? [];
@@ -177,7 +169,7 @@ const useCommunityAdmin = ({
   }, [data, dataAdmins]);
 
   const organizations = useMemo(() => {
-    const roleSet = data?.lookup.community?.roleSet;
+    const roleSet = data?.lookup.roleSet;
     const members = roleSet?.memberOrganizations ?? [];
     const leads = roleSet?.leadOrganizations ?? [];
 
@@ -212,7 +204,7 @@ const useCommunityAdmin = ({
   }, [data, dataAdmins]);
 
   const virtualContributors = useMemo(() => {
-    const roleSet = data?.lookup.community?.roleSet;
+    const roleSet = data?.lookup.roleSet;
     return roleSet?.memberVirtualContributors ?? [];
   }, [data]);
 
@@ -425,7 +417,7 @@ const useCommunityAdmin = ({
 
   const [removeOrganizationAsCommunityMember] = useRemoveRoleFromOrganizationMutation();
   const handleRemoveOrganization = async (memberId: string) => {
-    if (!communityId) {
+    if (!roleSetId) {
       return;
     }
     await removeOrganizationAsCommunityMember({
@@ -472,7 +464,7 @@ const useCommunityAdmin = ({
   };
 
   const { inviteContributor: inviteExistingUser, platformInviteToCommunity: inviteExternalUser } = useInviteUsers(
-    communityId,
+    roleSetId,
     {
       onInviteContributor: onInviteUser,
       onInviteExternalUser: onInviteUser,
@@ -545,4 +537,4 @@ const useCommunityAdmin = ({
   };
 };
 
-export default useCommunityAdmin;
+export default useRoleSetAdmin;

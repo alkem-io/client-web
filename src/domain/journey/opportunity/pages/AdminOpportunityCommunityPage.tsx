@@ -4,7 +4,7 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import CommunityOrganizations from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import CommunityUsers from '../../../community/community/CommunityAdmin/CommunityUsers';
-import useCommunityAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
+import useRoleSetAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
 import { useOpportunity } from '../hooks/useOpportunity';
@@ -39,7 +39,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     getAvailableVirtualContributors,
     getAvailableVirtualContributorsInLibrary,
     loading,
-  } = useCommunityAdmin({ spaceId, opportunityId, communityId, roleSetId, journeyLevel: 2 });
+  } = useRoleSetAdmin({ spaceId, opportunityId, communityId, roleSetId, journeyLevel: 2 });
 
   if (!spaceId || isLoadingChallenge) {
     return null;

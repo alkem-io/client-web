@@ -31,7 +31,7 @@ const useInviteUsers = (
   { onInviteContributor, onInviteExternalUser }: UseInviteUsersCallbacks = {}
 ): UseInviteUsersProvided => {
   const [inviteExistingUser] = useInviteContributorsForRoleSetMembershipMutation();
-  const [invitePlatformCommunity] = useInviteUserToPlatformAndRoleSetMutation();
+  const [inviteUserForRoleSetAndPlatform] = useInviteUserToPlatformAndRoleSetMutation();
 
   return {
     inviteContributor: async ({ contributorIds, message }) => {
@@ -45,7 +45,7 @@ const useInviteUsers = (
       await onInviteContributor?.(ensurePresence(roleSetId));
     },
     platformInviteToCommunity: async ({ email, message }) => {
-      await invitePlatformCommunity({
+      await inviteUserForRoleSetAndPlatform({
         variables: {
           email,
           message,

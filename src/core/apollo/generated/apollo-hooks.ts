@@ -10117,7 +10117,7 @@ export function refetchAvailableUsersQuery(variables: SchemaTypes.AvailableUsers
 
 export const CommunityMembersListDocument = gql`
   query CommunityMembersList(
-    $communityId: UUID!
+    $roleSetId: UUID!
     $spaceId: UUID = "00000000-0000-0000-0000-000000000000"
     $includeSpaceHost: Boolean = false
   ) {
@@ -10127,15 +10127,8 @@ export const CommunityMembersListDocument = gql`
           ...ContributorDetails
         }
       }
-      community(ID: $communityId) {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-        roleSet {
-          ...RoleSetDetails
-        }
+      roleSet(ID: $roleSetId) {
+        ...RoleSetDetails
       }
     }
   }
@@ -10155,7 +10148,7 @@ export const CommunityMembersListDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityMembersListQuery({
  *   variables: {
- *      communityId: // value for 'communityId'
+ *      roleSetId: // value for 'roleSetId'
  *      spaceId: // value for 'spaceId'
  *      includeSpaceHost: // value for 'includeSpaceHost'
  *   },
