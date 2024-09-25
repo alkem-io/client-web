@@ -54,7 +54,7 @@ export const OpportunityList: FC = () => {
       },
     })) || [];
 
-  const [deleteOpportunity, { loading: deleteLoading }] = useDeleteSpaceMutation({
+  const [deleteOpportunity] = useDeleteSpaceMutation({
     refetchQueries: [
       refetchSubspacesInSpaceQuery({
         spaceId: subspaceId,
@@ -65,7 +65,7 @@ export const OpportunityList: FC = () => {
   });
 
   const handleDelete = (item: SearchableListItem) => {
-    deleteOpportunity({
+    return deleteOpportunity({
       variables: {
         input: {
           ID: item.id,
@@ -184,7 +184,6 @@ export const OpportunityList: FC = () => {
         open={deleteDialogOpen}
         onClose={clearDeleteState}
         onDelete={onDeleteConfirmation}
-        submitting={deleteLoading}
         description={'components.deleteEntity.confirmDialog.descriptionShort'}
       />
     </>

@@ -67,7 +67,7 @@ export const SubspaceListView: FC = () => {
       },
     })) || [];
 
-  const [deleteSubspace, { loading: deleteLoading }] = useDeleteSpaceMutation({
+  const [deleteSubspace] = useDeleteSpaceMutation({
     refetchQueries: [
       refetchAdminSpaceSubspacesPageQuery({
         spaceId: spaceNameId,
@@ -78,7 +78,7 @@ export const SubspaceListView: FC = () => {
   });
 
   const handleDelete = (item: { id: string }) => {
-    deleteSubspace({
+    return deleteSubspace({
       variables: {
         input: {
           ID: item.id,
@@ -154,9 +154,9 @@ export const SubspaceListView: FC = () => {
     setSelectedItem(undefined);
   };
 
-  const onDeleteConfirmation = () => {
+  const onDeleteConfirmation = async () => {
     if (selectedItem) {
-      handleDelete(selectedItem);
+      await handleDelete(selectedItem);
       setDeleteDialogOpen(false);
     }
   };
@@ -244,7 +244,6 @@ export const SubspaceListView: FC = () => {
         open={deleteDialogOpen}
         onClose={clearDeleteState}
         onDelete={onDeleteConfirmation}
-        submitting={deleteLoading}
         description={'components.deleteEntity.confirmDialog.descriptionShort'}
       />
     </>

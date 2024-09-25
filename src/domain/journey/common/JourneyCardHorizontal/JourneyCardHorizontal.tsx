@@ -24,7 +24,7 @@ import { intersection } from 'lodash';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import JourneyAvatar from '../JourneyAvatar/JourneyAvatar';
 import ActionsMenu from '../../../../core/ui/card/ActionsMenu';
-import { Size } from '../../../../core/ui/avatar/Avatar';
+import { AvatarSize } from '../../../../core/ui/avatar/Avatar';
 
 export const JourneyCardHorizontalSkeleton = () => (
   <ElevatedPaper sx={{ padding: gutters() }}>
@@ -55,15 +55,15 @@ export interface JourneyCardHorizontalProps {
   journeyTypeName: JourneyTypeName;
   sx?: PaperProps['sx'];
   actions?: ReactNode;
-  size?: Size;
-  whitHoverState?: boolean;
+  size?: AvatarSize;
+  disableHoverState?: boolean;
 }
 
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
 const VISIBLE_COMMUNITY_ROLES = [CommunityRole.Admin, CommunityRole.Lead] as const;
 
-const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultComponent'], P = {}>(
+const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultComponent'], P = Record<string, unknown>>(
   props: ListItemButtonProps<D, P> & RouterLinkProps
 ) => <ListItemButton component={RouterLink} {...props} />;
 
@@ -75,7 +75,7 @@ const JourneyCardHorizontal = ({
   sx,
   actions,
   size,
-  whitHoverState = true,
+  disableHoverState = false,
 }: JourneyCardHorizontalProps) => {
   const Icon = JourneyIcon[journeyTypeName];
 
@@ -94,7 +94,7 @@ const JourneyCardHorizontal = ({
     <ElevatedPaper sx={mergedSx} elevation={seamless ? 0 : undefined}>
       <BadgeCardView
         visual={<JourneyAvatar size={size} src={journey.profile.avatar?.uri || journey.profile.cardBanner?.uri} />}
-        component={whitHoverState ? Wrapper : RouterLink}
+        component={disableHoverState ? RouterLink : Wrapper}
         to={journey.profile.url}
         actions={actions && <ActionsMenu>{actions}</ActionsMenu>}
       >
