@@ -17124,6 +17124,9 @@ export const SpaceSettingsDocument = gql`
         }
         community {
           id
+          roleSet {
+            id
+          }
         }
       }
     }

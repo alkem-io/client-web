@@ -1572,8 +1572,6 @@ export type ContributorFilterInput = {
 
 export type ContributorRolePolicy = {
   __typename?: 'ContributorRolePolicy';
-  /** Is this role enabled for this Contributor */
-  enabled: Scalars['Boolean'];
   /** Maximum number of Contributors in this role */
   maximum: Scalars['Float'];
   /** Minimum number of Contributors in this role */
@@ -22131,7 +22129,7 @@ export type SpaceSettingsQuery = {
               inheritMembershipRights: boolean;
             };
           };
-          community: { __typename?: 'Community'; id: string };
+          community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
         }
       | undefined;
   };

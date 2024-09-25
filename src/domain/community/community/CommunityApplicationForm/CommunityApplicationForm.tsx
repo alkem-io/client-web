@@ -20,7 +20,7 @@ import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownV
 import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 
 interface CommunityApplicationFormProps {
-  communityId: string | undefined;
+  roleSetId: string;
   disabled?: boolean;
 }
 
@@ -45,13 +45,13 @@ const newQuestion = (currentQuestions: FormValues['questions']) => ({
   sortOrder: (max(currentQuestions.map(q => q.sortOrder)) ?? 0) + 1,
 });
 
-const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ communityId: roleSetId, disabled }) => {
+const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ roleSetId, disabled }) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
   const { data: rawData, loading: loadingQuestions } = useRoleSetApplicationFormQuery({
     variables: {
-      roleSetId: roleSetId!,
+      roleSetId,
     },
     skip: !roleSetId,
   });

@@ -152,7 +152,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
           <Text marginBottom={gutters(2)}>
             <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
           </Text>
-          <CommunityApplicationForm communityId={communityId} />
+          <CommunityApplicationForm roleSetId={roleSetId} />
         </PageContentBlockCollapsible>
         <CommunityGuidelinesContainer communityId={communityId}>
           {({

@@ -1113,14 +1113,8 @@ export type ContributorFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ContributorRolePolicyKeySpecifier = (
-  | 'enabled'
-  | 'maximum'
-  | 'minimum'
-  | ContributorRolePolicyKeySpecifier
-)[];
+export type ContributorRolePolicyKeySpecifier = ('maximum' | 'minimum' | ContributorRolePolicyKeySpecifier)[];
 export type ContributorRolePolicyFieldPolicy = {
-  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   maximum?: FieldPolicy<any> | FieldReadFunction<any>;
   minimum?: FieldPolicy<any> | FieldReadFunction<any>;
 };
