@@ -24,9 +24,9 @@ interface FormValues {
   addDefaultCallouts: boolean;
 }
 
-interface CreateChallengeFormProps extends JourneyCreationForm {}
+interface CreateSubspaceFormProps extends JourneyCreationForm {}
 
-export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting, onValidChanged, onChanged }) => {
+export const CreateSubspaceForm: FC<CreateSubspaceFormProps> = ({ isSubmitting, onValidChanged, onChanged }) => {
   const { t } = useTranslation();
 
   const validationRequiredString = t('forms.validations.required');

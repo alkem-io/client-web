@@ -17,9 +17,9 @@ import {
   SpacePrivacyMode,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
-import { ChallengeIcon } from '../../subspace/icon/ChallengeIcon';
+import { SubspaceIcon } from '../../subspace/icon/SubspaceIcon';
 import SubspaceCard from '../../subspace/subspaceCard/SubspaceCard';
-import { CreateChallengeForm } from '../../subspace/forms/CreateChallengeForm';
+import { CreateSubspaceForm } from '../../subspace/forms/CreateSubspaceForm';
 import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
 
 export interface SpaceSubspacesPageProps {}
@@ -67,36 +67,36 @@ const SpaceSubspacesPage: FC<SpaceSubspacesPageProps> = () => {
         {({ subspaces }, state) => (
           <ChildJourneyView
             childEntities={subspaces}
-            childEntitiesIcon={<ChallengeIcon />}
-            childEntityReadAccess={permissions.canReadChallenges}
+            childEntitiesIcon={<SubspaceIcon />}
+            childEntityReadAccess={permissions.canReadSubspaces}
             childEntityValueGetter={journeyCardValueGetter}
             childEntityTagsGetter={journeyCardTagsGetter}
             journeyTypeName="space"
             state={{ loading: state.loading, error: state.error }}
-            renderChildEntityCard={challenge => (
+            renderChildEntityCard={item => (
               <SubspaceCard
-                displayName={challenge.profile.displayName}
-                banner={challenge.profile.cardBanner}
-                tags={challenge.profile.tagset?.tags!}
-                tagline={challenge.profile.tagline!}
-                vision={challenge.context?.vision!}
-                journeyUri={challenge.profile.url}
-                locked={challenge.settings.privacy?.mode === SpacePrivacyMode.Private}
+                displayName={item.profile.displayName}
+                banner={item.profile.cardBanner}
+                tags={item.profile.tagset?.tags!}
+                tagline={item.profile.tagline!}
+                vision={item.context?.vision!}
+                journeyUri={item.profile.url}
+                locked={item.settings.privacy?.mode === SpacePrivacyMode.Private}
                 spaceVisibility={visibility}
-                member={challenge.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
+                member={item.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
               />
             )}
             onClickCreate={() => setCreateDialogOpen(true)}
-            childEntityCreateAccess={permissions.canCreateChallenges}
+            childEntityCreateAccess={permissions.canCreateSubspaces}
             childEntityOnCreate={() => setCreateDialogOpen(true)}
             createSubentityDialog={
               <JourneyCreationDialog
                 open={isCreateDialogOpen}
-                icon={<ChallengeIcon />}
+                icon={<SubspaceIcon />}
                 journeyName={t('common.subspace')}
                 onClose={() => setCreateDialogOpen(false)}
                 onCreate={handleCreate}
-                formComponent={CreateChallengeForm}
+                formComponent={CreateSubspaceForm}
               />
             }
             children={

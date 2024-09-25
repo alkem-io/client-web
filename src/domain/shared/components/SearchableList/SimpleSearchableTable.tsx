@@ -18,10 +18,11 @@ import RemoveModal from '../../../../core/ui/dialogs/RemoveModal';
 import useLazyLoading from '../../pagination/useLazyLoading';
 import LoadingListItem from './LoadingListItem';
 import { times } from 'lodash';
-import RouterLink from '../../../../core/ui/link/RouterLink';
-import { BlockTitle, CardTitle } from '../../../../core/ui/typography';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import PageContent from '../../../../core/ui/content/PageContent';
+import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
+import { BlockTitle, CardTitle } from '../../../../core/ui/typography';
+import RouterLink from '../../../../core/ui/link/RouterLink';
 
 export interface SearchableListProps<Item extends SearchableListItem> {
   data: Item[] | undefined;
@@ -45,6 +46,9 @@ export interface SearchableListItem {
   url: string;
   verified?: boolean;
   activeLicensePlanIds?: string[];
+  avatar?: {
+    uri: string;
+  };
 }
 
 const SimpleSearchableList = <Item extends SearchableListItem>({
@@ -157,12 +161,23 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
                       justifyContent: 'space-between',
                     }}
                   >
-                    <TableCell component="th" scope="row" sx={{ paddingY: 0 }}>
-                      <BlockTitle component={RouterLink} to={item.url}>
-                        {item.value}
-                      </BlockTitle>
+                    <TableCell component="th" scope="row" sx={{ paddingY: 1 }}>
+                      {item.avatar ? (
+                        <ContributorCardHorizontal
+                          profile={{
+                            displayName: item.value,
+                            url: item.url,
+                            avatar: item.avatar,
+                          }}
+                          seamless
+                        />
+                      ) : (
+                        <BlockTitle component={RouterLink} to={item.url}>
+                          {item.value}
+                        </BlockTitle>
+                      )}
                     </TableCell>
-                    <TableCell component="th" scope="row" sx={{ paddingY: 0 }}>
+                    <TableCell component="th" scope="row" sx={{ paddingY: 1 }}>
                       <Actions>
                         {renderItemActions(item)}
                         {onDelete && (

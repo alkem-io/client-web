@@ -151,7 +151,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     };
   }, [data]);
 
-  const [deleteSpace, { loading: deletingSpace }] = useDeleteSpaceMutation({
+  const [deleteSpace] = useDeleteSpaceMutation({
     refetchQueries: [refetchAdminSpacesListQuery()],
     awaitRefetchQueries: true,
     onCompleted: data => {
@@ -165,7 +165,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
   });
 
   const handleDelete = (id: string) => {
-    deleteSpace({
+    return deleteSpace({
       variables: {
         input: {
           ID: id,
@@ -303,7 +303,6 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
               open={deleteDialogOpen}
               onClose={() => setDeleteDialogOpen(false)}
               onDelete={() => handleDelete(journeyId)}
-              submitting={deletingSpace}
             />
           )}
         </>

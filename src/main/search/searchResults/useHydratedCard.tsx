@@ -19,7 +19,7 @@ import { useUserContext } from '../../../domain/community/user/hooks/useUserCont
 import { TypedSearchResult } from '../SearchView';
 import { SearchContributionCardCard } from '../../../domain/shared/components/search-cards/SearchContributionPostCard';
 import { OpportunityIcon } from '../../../domain/journey/opportunity/icon/OpportunityIcon';
-import { ChallengeIcon } from '../../../domain/journey/subspace/icon/ChallengeIcon';
+import { SubspaceIcon } from '../../../domain/journey/subspace/icon/SubspaceIcon';
 import { SpaceIcon } from '../../../domain/journey/space/icon/SpaceIcon';
 import ContributingUserCard from '../../../domain/community/user/ContributingUserCard/ContributingUserCard';
 import CardContent from '../../../core/ui/card/CardContent';
@@ -106,7 +106,7 @@ const hydrateSpaceCard = (
       return null;
     }
 
-    const parentIcon = data.parentSpace.type === SpaceType.Space ? SpaceIcon : ChallengeIcon;
+    const parentIcon = data.parentSpace.type === SpaceType.Space ? SpaceIcon : SubspaceIcon;
 
     return (
       <CardParentJourneySegment
@@ -148,7 +148,7 @@ const getContributionParentInformation = (data: TypedSearchResult<SearchResultTy
   if (data.space.type === SpaceType.Opportunity) {
     info.icon = OpportunityIcon;
   } else if (data.space.type === SpaceType.Challenge) {
-    info.icon = ChallengeIcon as SvgIconComponent;
+    info.icon = SubspaceIcon as SvgIconComponent;
   } else if (data.space.type === SpaceType.Space) {
     info.icon = SpaceIcon;
   }

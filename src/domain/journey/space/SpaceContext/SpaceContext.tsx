@@ -15,8 +15,8 @@ export interface SpacePermissions {
   canRead: boolean;
   viewerCanUpdate: boolean;
   canReadPosts: boolean;
-  canReadChallenges: boolean;
-  canCreateChallenges: boolean;
+  canReadSubspaces: boolean;
+  canCreateSubspaces: boolean;
   canCreate: boolean;
   communityReadAccess: boolean;
   contextPrivileges: AuthorizationPrivilege[];
@@ -51,9 +51,9 @@ const SpaceContext = React.createContext<SpaceContextProps>({
     canRead: false,
     viewerCanUpdate: false,
     canCreate: false,
-    canCreateChallenges: false,
+    canCreateSubspaces: false,
     canReadPosts: false,
-    canReadChallenges: false,
+    canReadSubspaces: false,
     communityReadAccess: false,
     contextPrivileges: [],
   },
@@ -101,7 +101,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const contextPrivileges = space?.context?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const spacePrivileges = space?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
-  const canReadChallenges = spacePrivileges.includes(AuthorizationPrivilege.Read);
+  const canReadSubspaces = spacePrivileges.includes(AuthorizationPrivilege.Read);
   const canCreateSubspaces = spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace);
   const canCreate = spacePrivileges.includes(AuthorizationPrivilege.Create);
 
@@ -111,14 +111,14 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
     return {
       canRead: spacePrivileges.includes(AuthorizationPrivilege.Read),
       viewerCanUpdate: spacePrivileges.includes(AuthorizationPrivilege.Update),
-      canReadChallenges,
-      canCreateChallenges: canCreateSubspaces,
+      canReadSubspaces,
+      canCreateSubspaces: canCreateSubspaces,
       canCreate,
       communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
       canReadPosts: contextPrivileges.includes(AuthorizationPrivilege.Read),
       contextPrivileges,
     };
-  }, [spacePrivileges, contextPrivileges, canReadChallenges, communityPrivileges, canCreate, canCreateSubspaces]);
+  }, [spacePrivileges, contextPrivileges, canReadSubspaces, communityPrivileges, canCreate, canCreateSubspaces]);
 
   const profile = useMemo(() => {
     return {
