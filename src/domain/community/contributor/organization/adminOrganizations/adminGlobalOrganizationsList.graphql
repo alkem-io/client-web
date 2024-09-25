@@ -12,6 +12,10 @@ query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: Organiza
         id
         url
         displayName
+        visual(type: AVATAR) {
+          id
+          uri
+        }
       }
       verification {
         id

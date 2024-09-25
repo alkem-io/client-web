@@ -6,7 +6,7 @@ import Loading from '../../../core/ui/loading/Loading';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { BlockTitle } from '../../../core/ui/typography';
 import useAdminGlobalUserList from '../../../domain/community/user/adminUsers/useAdminGlobalUserList';
-import { SearchableListItem } from '../../../domain/platform/admin/components/SearchableList';
+import { SearchableTableItem } from '../../../domain/platform/admin/components/SearchableTable';
 
 interface AuthorizationDialogProps {
   authorizationPolicyId: string;
@@ -36,7 +36,7 @@ const AuthorizationPrivilegesForUser = ({ authorizationPolicyId }: Authorization
     skip: !authorizationPolicyId || !userId,
   });
 
-  const handleUserInputChange = (_event: unknown, value: string | SearchableListItem | null) => {
+  const handleUserInputChange = (_event: unknown, value: string | SearchableTableItem | null) => {
     if (value === null) {
       return;
     }

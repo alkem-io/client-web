@@ -174,7 +174,7 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
       return;
     }
 
-    deleteSpaceMutation({
+    return deleteSpaceMutation({
       variables: {
         input: {
           ID: selectedId,
@@ -203,7 +203,7 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
       return;
     }
 
-    deleteVCMutation({
+    return deleteVCMutation({
       variables: {
         virtualContributorData: {
           ID: selectedId,
@@ -232,7 +232,7 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
       return;
     }
 
-    deletePackMutation({
+    return deletePackMutation({
       variables: {
         innovationPackId: selectedId,
       },
@@ -259,7 +259,7 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
       return;
     }
 
-    deleteHubMutation({
+    return deleteHubMutation({
       variables: {
         innovationHubId: selectedId,
       },
@@ -275,17 +275,13 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
   const deleteEntity = () => {
     switch (entity) {
       case Entities.Space:
-        deleteSpace();
-        break;
+        return deleteSpace();
       case Entities.VirtualContributor:
-        deleteVC();
-        break;
+        return deleteVC();
       case Entities.InnovationPack:
-        deletePack();
-        break;
+        return deletePack();
       case Entities.InnovationHub:
-        deleteHub();
-        break;
+        return deleteHub();
     }
   };
 
@@ -357,17 +353,19 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
         <BlockTitle>{t('pages.admin.generic.sections.account.hostedSpaces')}</BlockTitle>
         <Gutters disablePadding disableGap className={styles.gutters}>
           {loading && <JourneyCardHorizontalSkeleton />}
-          <Gutters>
+          <Gutters disablePadding>
             {!loading &&
               account?.spaces.map(space => (
                 <JourneyCardHorizontal
                   key={space.id}
                   journeyTypeName="space"
                   journey={{ profile: space.profile, community: {} }}
+                  size="medium"
                   deepness={0}
                   seamless
                   sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}
                   actions={getSpaceActions(space.id)}
+                  disableHoverState
                 />
               ))}
           </Gutters>
@@ -457,7 +455,6 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
             open={deleteDialogOpen}
             onClose={clearDeleteState}
             onDelete={deleteEntity}
-            submitting={deleteSpaceLoading || deletePackLoading || deleteVCLoading}
             description={entity === Entities.Space ? undefined : SHORT_NON_SPACE_DESCRIPTION}
           />
         )}

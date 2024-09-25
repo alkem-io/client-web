@@ -3,7 +3,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import scrollToTop from '../../../../../core/ui/utils/scrollToTop';
 import {
-  refetchAdminSpaceChallengesPageQuery,
+  refetchAdminSpaceSubspacesPageQuery,
   useDeleteSpaceMutation,
   useSpaceHostQuery,
   useSpacePrivilegesQuery,
@@ -73,9 +73,9 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
   const openDialog = () => setOpenDeleteDialog(true);
   const closeDialog = () => setOpenDeleteDialog(false);
 
-  const [deleteSpace, { loading: deletingSpace }] = useDeleteSpaceMutation({
+  const [deleteSpace] = useDeleteSpaceMutation({
     refetchQueries: [
-      refetchAdminSpaceChallengesPageQuery({
+      refetchAdminSpaceSubspacesPageQuery({
         spaceId: spaceNameId,
       }),
     ],
@@ -97,7 +97,7 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
   const canDelete = privileges?.includes(AuthorizationPrivilege.Delete);
 
   const handleDelete = (id: string) => {
-    deleteSpace({
+    return deleteSpace({
       variables: {
         input: {
           ID: id,
@@ -386,7 +386,6 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
               open={openDeleteDialog}
               onClose={closeDialog}
               onDelete={() => handleDelete(subspaceId)}
-              submitting={deletingSpace}
             />
           )}
         </>
