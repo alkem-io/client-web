@@ -12,7 +12,6 @@ import { Visual } from '../../../domain/common/visual/Visual';
 import { gutters, useGridItem } from '../../../core/ui/grid/utils';
 import useLazyLoading from '../../../domain/shared/pagination/useLazyLoading';
 import SeeMoreExpandable from '../../../core/ui/content/SeeMoreExpandable';
-import { compact } from 'lodash';
 import { Link } from 'react-router-dom';
 import { AUTH_SIGN_UP_PATH } from '../../../core/auth/authentication/constants/authentication.constants';
 import { Actions } from '../../../core/ui/actions/Actions';
@@ -21,21 +20,21 @@ import JourneyHoverCard from '../myDashboard/recentSpaces/JourneyHoverCard';
 export interface SpaceExplorerUnauthenticatedViewProps {
   spaces: SpaceWithParent[] | undefined;
   setSearchTerms: React.Dispatch<React.SetStateAction<string[]>>;
-  setSelectedFilter: React.Dispatch<React.SetStateAction<SpacesExplorerMembershipFilter>>;
-  selectedFilter: SpacesExplorerMembershipFilter;
+  setSelectedFilter: React.Dispatch<React.SetStateAction<string>>;
+  selectedFilter: string;
   searchTerms: string[];
   loading: boolean;
   hasMore: boolean | undefined;
   fetchMore: () => Promise<void>;
+  filtersConfig: {
+    key: string;
+    name: string;
+  }[];
 }
 
+// Default option not a filer
 export enum SpacesExplorerMembershipFilter {
   All = 'all',
-  Energy = 'energy',
-  Society = 'society',
-  Services = 'services',
-  Innovation = 'innovation',
-  Digitalization = 'digitalization',
 }
 
 export type SpaceWithParent = Space & WithParent<ParentSpace>;
@@ -73,18 +72,13 @@ export const SpaceExplorerUnauthenticatedView: FC<SpaceExplorerUnauthenticatedVi
   loading,
   fetchMore,
   hasMore,
+  filtersConfig,
 }) => {
   const { t } = useTranslation();
 
   const [hasExpanded, setHasExpanded] = useState(false);
-  const enabledFilters = compact([
-    SpacesExplorerMembershipFilter.All,
-    SpacesExplorerMembershipFilter.Energy,
-    SpacesExplorerMembershipFilter.Society,
-    SpacesExplorerMembershipFilter.Services,
-    SpacesExplorerMembershipFilter.Innovation,
-    SpacesExplorerMembershipFilter.Digitalization,
-  ]);
+  const enabledFilters = filtersConfig.flatMap(category => category.key);
+  const filterNames = filtersConfig.flatMap(category => category.name);
 
   const isCollapsed = !hasExpanded;
 
@@ -98,7 +92,7 @@ export const SpaceExplorerUnauthenticatedView: FC<SpaceExplorerUnauthenticatedVi
 
   const getGridItemStyle = useGridItem();
 
-  const onFilterChange = (filter: SpacesExplorerMembershipFilter) => {
+  const onFilterChange = (filter: string) => {
     setSelectedFilter(filter);
   };
 
@@ -116,18 +110,24 @@ export const SpaceExplorerUnauthenticatedView: FC<SpaceExplorerUnauthenticatedVi
           placeholder={t('pages.exploreSpaces.search.placeholder')}
           onChange={(_event: unknown, newValue: string[]) => setSearchTerms(newValue)}
           fullWidth={false}
-          sx={{ flexGrow: 1, flexBasis: getGridItemStyle(4).width }}
+          sx={{ flexGrow: 1, flexBasis: getGridItemStyle(3).width }}
         />
         <Gutters row disablePadding maxWidth="100%" alignItems="center">
-          {enabledFilters.map(filter => (
+          <Button
+            variant={SpacesExplorerMembershipFilter.All === selectedFilter ? 'contained' : 'outlined'}
+            sx={{ textTransform: 'none', flexShrink: 1 }}
+            onClick={() => onFilterChange(SpacesExplorerMembershipFilter.All)}
+          >
+            <Caption noWrap>{t('common.all')}</Caption>
+          </Button>
+          {enabledFilters.map((filter, i) => (
             <Button
               key={filter}
               variant={filter === selectedFilter ? 'contained' : 'outlined'}
               sx={{ textTransform: 'none', flexShrink: 1 }}
               onClick={() => onFilterChange(filter)}
             >
-              <Caption noWrap>{filter}</Caption>
-              {/* <Caption noWrap>{t(`pages.exploreSpaces.membershipFilter.${filter}` as const)}</Caption> */}
+              <Caption noWrap>{filterNames[i]}</Caption>
             </Button>
           ))}
         </Gutters>

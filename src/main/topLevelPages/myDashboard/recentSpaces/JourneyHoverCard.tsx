@@ -10,7 +10,6 @@ import { JourneyTypeName } from '../../../../domain/journey/JourneyTypeName';
 import { alpha } from '@mui/material/styles';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import { BlockTitle } from '../../../../core/ui/typography';
-import { useColumns } from '../../../../core/ui/grid/GridContext';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import defaultJourneyCardBanner from '../../../../domain/journey/defaultVisuals/Card.jpg';
 
@@ -34,10 +33,6 @@ const JOURNEY_TITLE_CLASS_NAME = 'JourneyTitle';
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
 const JourneyHoverCard = ({ journey }: JourneyHoverCardProps) => {
-  const columns = useColumns();
-
-  const isMobile = columns <= 4;
-
   return (
     <GridItem columns={3}>
       <ElevatedPaper
@@ -62,7 +57,7 @@ const JourneyHoverCard = ({ journey }: JourneyHoverCardProps) => {
         {journey && (
           <BadgeCardView
             gap={1}
-            height={gutters(3)}
+            height={gutters(2.5)}
             paddingY={1}
             paddingX={1.5}
             position="absolute"
@@ -73,9 +68,10 @@ const JourneyHoverCard = ({ journey }: JourneyHoverCardProps) => {
             className={JOURNEY_TITLE_CLASS_NAME}
             sx={{
               backgroundColor: theme => alpha(theme.palette.background.paper, 0.7),
-              opacity: isMobile ? 1 : 0,
+              opacity: 1,
               transition: 'opacity 200ms',
               backdropFilter: 'blur(10px)',
+              borderRadius: theme => ` 0 0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px`,
             }}
           >
             <BlockTitle component="div" sx={webkitLineClamp(2)}>

@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useSpaceExplorerAllSpacesQuery,
   useSpaceExplorerSearchQuery,
@@ -12,28 +13,41 @@ import { SimpleContainerProps } from '../../../core/container/SimpleContainer';
 export interface ChallengeExplorerContainerEntities {
   spaces: SpaceWithParent[] | undefined;
   searchTerms: string[];
-  selectedFilter: SpacesExplorerMembershipFilter;
+  selectedFilter: string;
   fetchMore: () => Promise<void>;
   loading: boolean;
   hasMore: boolean | undefined;
+  filtersConfig: {
+    key: string;
+    name: string;
+    tags: string[];
+  }[];
 }
 
 interface SpaceExplorerUnauthenticatedContainerProps extends SimpleContainerProps<ChallengeExplorerContainerEntities> {
   searchTerms: string[];
-  selectedFilter: SpacesExplorerMembershipFilter;
+  selectedFilter: string;
 }
-
-const getTerms = (searchTerms: string[], selectedFilter: SpacesExplorerMembershipFilter) => {
-  const filterArray = selectedFilter !== SpacesExplorerMembershipFilter.All ? [selectedFilter] : [];
-  return [...filterArray, ...searchTerms];
-};
 
 const SpaceExplorerUnauthenticatedContainer = ({
   searchTerms,
   selectedFilter,
   children,
 }: SpaceExplorerUnauthenticatedContainerProps) => {
+  const { t } = useTranslation();
+  const filtersConfig = t('spaces-filter.config', { returnObjects: true });
   const shouldSearch = searchTerms.length > 0 || selectedFilter !== SpacesExplorerMembershipFilter.All;
+
+  // get translated tags based on the selected filter
+  const getTerms = (searchTerms: string[], selectedFilter: string) => {
+    if (selectedFilter !== SpacesExplorerMembershipFilter.All) {
+      const filterData = filtersConfig.filter(data => data.key === selectedFilter);
+
+      return [...filterData[0].tags, ...searchTerms];
+    }
+
+    return [...searchTerms];
+  };
 
   // PUBLIC: Search for spaces and subspaces
   const { data: rawSearchResults, loading: loadingSearchResults } = useSpaceExplorerSearchQuery({
@@ -101,6 +115,7 @@ const SpaceExplorerUnauthenticatedContainer = ({
     fetchMore,
     loading,
     hasMore,
+    filtersConfig,
   };
 
   return <>{children(provided)}</>;

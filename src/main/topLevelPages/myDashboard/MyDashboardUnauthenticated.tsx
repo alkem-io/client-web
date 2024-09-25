@@ -9,9 +9,7 @@ interface MyDashboardUnauthenticatedProps {}
 
 const MyDashboardUnauthenticated: FC<MyDashboardUnauthenticatedProps> = () => {
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
-  const [selectedFilter, setSelectedFilter] = useState<SpacesExplorerMembershipFilter>(
-    SpacesExplorerMembershipFilter.All
-  );
+  const [selectedFilter, setSelectedFilter] = useState<string>(SpacesExplorerMembershipFilter.All);
 
   return (
     <SpaceExplorerUnauthenticatedContainer searchTerms={searchTerms} selectedFilter={selectedFilter}>
