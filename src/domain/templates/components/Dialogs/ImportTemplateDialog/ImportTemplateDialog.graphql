@@ -1,0 +1,70 @@
+query ImportTemplateDialog(
+  $templatesSetId: UUID!
+  # $templateTypes: [TemplateType!] # todo:  Needs filter by templateTypes server-side
+  $includeInnovationFlow: Boolean = false
+  $includeCallout: Boolean = false
+) {
+  lookup {
+    templatesSet(ID: $templatesSetId) {
+      templates {
+        ...TemplateProfileInfo
+        callout @include(if: $includeCallout) {
+          id
+          type
+        }
+        innovationFlow @include(if: $includeInnovationFlow) {
+          id
+          states {
+            displayName
+          }
+        }
+      }
+    }
+  }
+}
+
+query ImportTemplateDialogPlatformTemplates(
+  $templateTypes: [TemplateType!]
+  $includeInnovationFlow: Boolean = false
+  $includeCallout: Boolean = false
+) {
+  platform {
+    library {
+      templates(filter: { types: $templateTypes }) {
+        template {
+          ...TemplateProfileInfo
+          callout @include(if: $includeCallout) {
+            id
+            type
+          }
+          innovationFlow @include(if: $includeInnovationFlow) {
+            id
+            states {
+              displayName
+            }
+          }
+        }
+        innovationPack {
+          id
+          profile {
+            id
+            displayName
+            url
+          }
+          provider {
+            id
+            profile {
+              id
+              displayName
+              avatar: visual(type: AVATAR) {
+                id
+                uri
+              }
+              url
+            }
+          }
+        }
+      }
+    }
+  }
+}

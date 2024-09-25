@@ -1,4 +1,4 @@
-mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
+mutation UpdateCallout($calloutData: UpdateCalloutEntityInput!) {
   updateCallout(calloutData: $calloutData) {
     id
     framing {

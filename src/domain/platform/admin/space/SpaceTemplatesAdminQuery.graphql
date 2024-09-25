@@ -1,0 +1,13 @@
+query SpaceTemplatesAdmin($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      profile {
+        id
+        url
+      }
+      library {
+        id
+      }
+    }
+  }
+}

@@ -29,7 +29,6 @@ const PostSharePage: FC<PostSharePageProps> = ({ onClose }) => {
             banner={post?.profile.visual?.uri}
             displayName={post?.profile.displayName}
             description={post?.profile.description}
-            type={post?.type}
             tags={post?.profile.tagset?.tags}
             references={post?.profile.references}
             messages={messages}

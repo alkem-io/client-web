@@ -107,3 +107,39 @@ fragment CalloutDetails on Callout {
   }
   visibility
 }
+
+query CalloutContent($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      type
+      framing {
+        id
+        profile {
+          id
+          displayName
+          description
+          tagsets {
+            ...TagsetDetails
+          }
+          references {
+            ...ReferenceDetails
+          }
+        }
+        whiteboard {
+          id
+          profile {
+            id
+            displayName
+          }
+          content
+        }
+      }
+      contributionDefaults {
+        id
+        postDescription
+        whiteboardContent
+      }
+    }
+  }
+}

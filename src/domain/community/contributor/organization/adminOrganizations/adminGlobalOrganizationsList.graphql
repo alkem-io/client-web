@@ -2,14 +2,50 @@ query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: Organiza
   organizationsPaginated(first: $first, after: $after, filter: $filter) {
     organization {
       id
+      account {
+        id
+        subscriptions {
+          name
+        }
+      }
       profile {
         id
         url
         displayName
       }
+      verification {
+        id
+        lifecycle {
+          id
+          state
+        }
+      }
     }
     pageInfo {
       ...PageInfo
+    }
+  }
+  platform {
+    id
+    licensing {
+      id
+      plans {
+        id
+        name
+        type
+        licenseCredential
+      }
+    }
+  }
+}
+
+mutation adminOrganizationVerify($input: OrganizationVerificationEventInput!) {
+  eventOnOrganizationVerification(organizationVerificationEventData: $input) {
+    id
+    lifecycle {
+      id
+      nextEvents
+      state
     }
   }
 }
