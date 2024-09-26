@@ -1,13 +1,13 @@
 fragment RoleSetContributorRoles on RoleSet {
   id
   memberUsers: usersInRole(role: MEMBER, limit: 8) {
-    ...DashboardContributingUser
+    ...CommunityMemberUser
   }
   leadUsers: usersInRole(role: LEAD) {
-    ...DashboardLeadUser
+    ...CommunityMemberUser
   }
   memberOrganizations: organizationsInRole(role: MEMBER) {
-    ...DashboardContributingOrganization
+    ...CommunityMemberOrganization
   }
   leadOrganizations: organizationsInRole(role: LEAD) {
     ...AssociatedOrganizationDetails

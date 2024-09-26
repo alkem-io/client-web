@@ -81,10 +81,10 @@ fragment SpacePage on Space {
       id
       myMembershipStatus
       leadUsers: usersInRole(role: LEAD) {
-        ...DashboardLeadUser
+        ...CommunityMemberUser
       }
       leadOrganizations: organizationsInRole(role: LEAD) {
-        ...OrganizationDetails
+        ...CommunityMemberOrganization
       }
       leadVirtualContributors: virtualContributorsInRole(role: LEAD) {
         ...RoleSetVirtualContributor

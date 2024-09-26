@@ -10,16 +10,16 @@ fragment RoleSetDetails on RoleSet {
   }
 
   memberOrganizations: organizationsInRole(role: MEMBER) {
-    ...OrganizationDetails
+    ...CommunityMemberOrganization
   }
   leadOrganizations: organizationsInRole(role: LEAD) {
-    ...OrganizationDetails
+    ...CommunityMemberOrganization
   }
 
   memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
     ...RoleSetVirtualContributor
   }
-    leadVirtualContributors: virtualContributorsInRole(role: MEMBER) {
+  leadVirtualContributors: virtualContributorsInRole(role: MEMBER) {
     ...RoleSetVirtualContributor
   }
 

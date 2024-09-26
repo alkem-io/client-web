@@ -46,7 +46,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               timelineReadAccess={entities.permissions.timelineReadAccess}
               entityReadAccess={entities.permissions.spaceReadAccess}
               readUsersAccess={entities.permissions.readUsers}
-              leadUsers={entities.space?.community?.roleSet?.leadUsers}
+              leadUsers={entities.space?.community?.roleSet?.leadUsers ?? []}
               leadVirtualContributors={entities.space?.community?.roleSet?.leadVirtualContributors}
               host={entities.provider}
               callouts={callouts}

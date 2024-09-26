@@ -32,6 +32,7 @@ query AboutPageNonMembers($spaceId: UUID!) {
         visuals {
           ...VisualFull
         }
+        url
       }
       provider {
         ...ContributorDetails
@@ -52,10 +53,10 @@ query AboutPageNonMembers($spaceId: UUID!) {
             myPrivileges
           }
           memberUsers: usersInRole(role: MEMBER, limit: 8) {
-            ...DashboardContributingUser
+            ...CommunityMemberUser
           }
           memberOrganizations: organizationsInRole(role: MEMBER) {
-            ...DashboardContributingOrganization
+            ...CommunityMemberOrganization
           }
         }
       }
@@ -94,6 +95,7 @@ query AboutPageMembers($spaceId: UUID!) {
         references {
           ...ReferenceDetails
         }
+        url
       }
       authorization {
         id
@@ -104,10 +106,10 @@ query AboutPageMembers($spaceId: UUID!) {
         roleSet {
           id
           memberUsers: usersInRole(role: MEMBER, limit: 8) {
-            ...DashboardContributingUser
+            ...CommunityMemberUser
           }
           memberOrganizations: organizationsInRole(role: MEMBER) {
-            ...DashboardContributingOrganization
+            ...CommunityMemberOrganization
           }
           memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
             id

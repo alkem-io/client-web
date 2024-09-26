@@ -4,7 +4,6 @@ import {
   CalloutGroupName,
   CalloutsQueryVariables,
   CommunityMembershipStatus,
-  DashboardLeadUserFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import PageContent from '../../../../core/ui/content/PageContent';
@@ -21,7 +20,9 @@ import useDirectMessageDialog from '../../../communication/messaging/DirectMessa
 import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
-import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
+import JourneyDashboardWelcomeBlock, {
+  JourneyDashboardWelcomeBlockProps,
+} from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import InfoColumn from '../../../../core/ui/content/InfoColumn';
@@ -43,7 +44,7 @@ interface SpaceDashboardViewProps {
   communityId?: string;
   organization?: unknown;
   host: ContributorViewProps | undefined;
-  leadUsers: DashboardLeadUserFragment[] | undefined;
+  leadUsers: JourneyDashboardWelcomeBlockProps['leadUsers'];
   leadVirtualContributors: ContributorViewProps[] | undefined;
   communityReadAccess: boolean;
   timelineReadAccess?: boolean;

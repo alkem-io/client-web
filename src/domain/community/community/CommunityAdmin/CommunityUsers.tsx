@@ -11,7 +11,6 @@ import {
 } from '@mui/x-data-grid';
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
 import {
   CommunityMemberUserFragment,
   RoleDefinitionPolicyFragment,
@@ -89,7 +88,7 @@ const CommunityUsers: FC<CommunityUsersProps> = ({
       headerName: t('common.name'),
       renderHeader: () => <>{t('common.name')}</>,
       renderCell: ({ row }: RenderParams) => (
-        <Link href={buildUserProfileUrl(row.nameID)} target="_blank">
+        <Link href={row.profile.url} target="_blank">
           {row.profile.displayName}
         </Link>
       ),

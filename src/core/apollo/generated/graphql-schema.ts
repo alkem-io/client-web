@@ -7059,15 +7059,18 @@ export type RoleSetContributorRolesFragment = {
     __typename?: 'User';
     id: string;
     isContactable: boolean;
-    nameID: string;
+    email: string;
+    firstName: string;
+    lastName: string;
     profile: {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       location?:
         | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
         | undefined;
-      visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       tagsets?:
         | Array<{
             __typename?: 'Tagset';
@@ -7083,14 +7086,18 @@ export type RoleSetContributorRolesFragment = {
   leadUsers: Array<{
     __typename?: 'User';
     id: string;
-    nameID: string;
+    isContactable: boolean;
+    email: string;
+    firstName: string;
+    lastName: string;
     profile: {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      url: string;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       location?:
-        | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+        | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
         | undefined;
       tagsets?:
         | Array<{
@@ -7107,12 +7114,13 @@ export type RoleSetContributorRolesFragment = {
   memberOrganizations: Array<{
     __typename?: 'Organization';
     id: string;
-    nameID: string;
     profile: {
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      description?: string | undefined;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagsets?:
         | Array<{
             __typename?: 'Tagset';
@@ -7122,6 +7130,9 @@ export type RoleSetContributorRolesFragment = {
             allowedValues: Array<string>;
             type: TagsetType;
           }>
+        | undefined;
+      location?:
+        | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
         | undefined;
     };
   }>;
@@ -7200,7 +7211,6 @@ export type RoleSetDetailsFragment = {
   memberUsers: Array<{
     __typename?: 'User';
     id: string;
-    nameID: string;
     isContactable: boolean;
     email: string;
     firstName: string;
@@ -7209,16 +7219,26 @@ export type RoleSetDetailsFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      url: string;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       location?:
         | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+        | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
         | undefined;
     };
   }>;
   leadUsers: Array<{
     __typename?: 'User';
     id: string;
-    nameID: string;
     isContactable: boolean;
     email: string;
     firstName: string;
@@ -7227,22 +7247,32 @@ export type RoleSetDetailsFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      url: string;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       location?:
         | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+        | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
         | undefined;
     };
   }>;
   memberOrganizations: Array<{
     __typename?: 'Organization';
     id: string;
-    nameID: string;
     profile: {
       __typename?: 'Profile';
       id: string;
-      url: string;
       displayName: string;
       description?: string | undefined;
+      url: string;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagsets?:
         | Array<{
@@ -7254,19 +7284,20 @@ export type RoleSetDetailsFragment = {
             type: TagsetType;
           }>
         | undefined;
-      location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+      location?:
+        | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+        | undefined;
     };
   }>;
   leadOrganizations: Array<{
     __typename?: 'Organization';
     id: string;
-    nameID: string;
     profile: {
       __typename?: 'Profile';
       id: string;
-      url: string;
       displayName: string;
       description?: string | undefined;
+      url: string;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagsets?:
         | Array<{
@@ -7278,7 +7309,9 @@ export type RoleSetDetailsFragment = {
             type: TagsetType;
           }>
         | undefined;
-      location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+      location?:
+        | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+        | undefined;
     };
   }>;
   memberVirtualContributors: Array<{
@@ -15368,54 +15401,6 @@ export type UpdateCommunityGuidelinesMutation = {
   };
 };
 
-export type DashboardContributingUserFragment = {
-  __typename?: 'User';
-  id: string;
-  isContactable: boolean;
-  nameID: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    location?:
-      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-      | undefined;
-    visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-    tagsets?:
-      | Array<{
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }>
-      | undefined;
-  };
-};
-
-export type DashboardContributingOrganizationFragment = {
-  __typename?: 'Organization';
-  id: string;
-  nameID: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    tagsets?:
-      | Array<{
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }>
-      | undefined;
-  };
-};
-
 export type DashboardContributingVirtualContributorFragment = {
   __typename?: 'VirtualContributor';
   id: string;
@@ -15426,31 +15411,6 @@ export type DashboardContributingVirtualContributorFragment = {
     displayName: string;
     url: string;
     avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-    tagsets?:
-      | Array<{
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }>
-      | undefined;
-  };
-};
-
-export type DashboardLeadUserFragment = {
-  __typename?: 'User';
-  id: string;
-  nameID: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    location?:
-      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-      | undefined;
     tagsets?:
       | Array<{
           __typename?: 'Tagset';
@@ -15635,7 +15595,6 @@ export type CommunityMembersListQuery = {
           memberUsers: Array<{
             __typename?: 'User';
             id: string;
-            nameID: string;
             isContactable: boolean;
             email: string;
             firstName: string;
@@ -15644,16 +15603,26 @@ export type CommunityMembersListQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              url: string;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               location?:
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
                 | undefined;
             };
           }>;
           leadUsers: Array<{
             __typename?: 'User';
             id: string;
-            nameID: string;
             isContactable: boolean;
             email: string;
             firstName: string;
@@ -15662,22 +15631,32 @@ export type CommunityMembersListQuery = {
               __typename?: 'Profile';
               id: string;
               displayName: string;
+              url: string;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               location?:
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
                 | undefined;
             };
           }>;
           memberOrganizations: Array<{
             __typename?: 'Organization';
             id: string;
-            nameID: string;
             profile: {
               __typename?: 'Profile';
               id: string;
-              url: string;
               displayName: string;
               description?: string | undefined;
+              url: string;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               tagsets?:
                 | Array<{
@@ -15690,20 +15669,19 @@ export type CommunityMembersListQuery = {
                   }>
                 | undefined;
               location?:
-                | { __typename?: 'Location'; country?: string | undefined; city?: string | undefined }
+                | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
                 | undefined;
             };
           }>;
           leadOrganizations: Array<{
             __typename?: 'Organization';
             id: string;
-            nameID: string;
             profile: {
               __typename?: 'Profile';
               id: string;
-              url: string;
               displayName: string;
               description?: string | undefined;
+              url: string;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               tagsets?:
                 | Array<{
@@ -15716,7 +15694,7 @@ export type CommunityMembersListQuery = {
                   }>
                 | undefined;
               location?:
-                | { __typename?: 'Location'; country?: string | undefined; city?: string | undefined }
+                | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
                 | undefined;
             };
           }>;
@@ -15775,7 +15753,6 @@ export type CommunityMembersListQuery = {
 export type CommunityMemberUserFragment = {
   __typename?: 'User';
   id: string;
-  nameID: string;
   isContactable: boolean;
   email: string;
   firstName: string;
@@ -15784,9 +15761,46 @@ export type CommunityMemberUserFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    url: string;
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     location?:
       | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+      | undefined;
+    tagsets?:
+      | Array<{
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }>
+      | undefined;
+  };
+};
+
+export type CommunityMemberOrganizationFragment = {
+  __typename?: 'Organization';
+  id: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    url: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    tagsets?:
+      | Array<{
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }>
+      | undefined;
+    location?:
+      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
       | undefined;
   };
 };
@@ -16619,31 +16633,6 @@ export type OrganizationCardFragment = {
       | undefined;
   };
   verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-};
-
-export type OrganizationDetailsFragment = {
-  __typename?: 'Organization';
-  id: string;
-  nameID: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    url: string;
-    displayName: string;
-    description?: string | undefined;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    tagsets?:
-      | Array<{
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }>
-      | undefined;
-    location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
-  };
 };
 
 export type OrganizationProfileInfoFragment = {
@@ -17931,7 +17920,6 @@ export type UsersWithCredentialsQuery = {
   usersWithAuthorizationCredential: Array<{
     __typename?: 'User';
     id: string;
-    nameID: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -17939,7 +17927,8 @@ export type UsersWithCredentialsQuery = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
   }>;
 };
@@ -19253,15 +19242,18 @@ export type AboutPageNonMembersQuery = {
                 __typename?: 'User';
                 id: string;
                 isContactable: boolean;
-                nameID: string;
+                email: string;
+                firstName: string;
+                lastName: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   location?:
                     | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                     | undefined;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   tagsets?:
                     | Array<{
                         __typename?: 'Tagset';
@@ -19277,12 +19269,13 @@ export type AboutPageNonMembersQuery = {
               memberOrganizations: Array<{
                 __typename?: 'Organization';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  description?: string | undefined;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagsets?:
                     | Array<{
                         __typename?: 'Tagset';
@@ -19292,6 +19285,9 @@ export type AboutPageNonMembersQuery = {
                         allowedValues: Array<string>;
                         type: TagsetType;
                       }>
+                    | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
                     | undefined;
                 };
               }>;
@@ -19344,15 +19340,18 @@ export type AboutPageMembersQuery = {
                 __typename?: 'User';
                 id: string;
                 isContactable: boolean;
-                nameID: string;
+                email: string;
+                firstName: string;
+                lastName: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   location?:
                     | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                     | undefined;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   tagsets?:
                     | Array<{
                         __typename?: 'Tagset';
@@ -19368,12 +19367,13 @@ export type AboutPageMembersQuery = {
               memberOrganizations: Array<{
                 __typename?: 'Organization';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  description?: string | undefined;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagsets?:
                     | Array<{
                         __typename?: 'Tagset';
@@ -19383,6 +19383,9 @@ export type AboutPageMembersQuery = {
                         allowedValues: Array<string>;
                         type: TagsetType;
                       }>
+                    | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
                     | undefined;
                 };
               }>;
@@ -19402,14 +19405,18 @@ export type AboutPageMembersQuery = {
               leadUsers: Array<{
                 __typename?: 'User';
                 id: string;
-                nameID: string;
+                isContactable: boolean;
+                email: string;
+                firstName: string;
+                lastName: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
+                  url: string;
                   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   location?:
-                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                     | undefined;
                   tagsets?:
                     | Array<{
@@ -19499,6 +19506,7 @@ export type AboutPageMembersQuery = {
           profile: {
             __typename?: 'Profile';
             id: string;
+            url: string;
             references?:
               | Array<{
                   __typename?: 'Reference';
@@ -19585,14 +19593,18 @@ export type JourneyDataQuery = {
               leadUsers: Array<{
                 __typename?: 'User';
                 id: string;
-                nameID: string;
+                isContactable: boolean;
+                email: string;
+                firstName: string;
+                lastName: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
+                  url: string;
                   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   location?:
-                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                     | undefined;
                   tagsets?:
                     | Array<{
@@ -19747,14 +19759,18 @@ export type JourneyCommunityFragment = {
     leadUsers: Array<{
       __typename?: 'User';
       id: string;
-      nameID: string;
+      isContactable: boolean;
+      email: string;
+      firstName: string;
+      lastName: string;
       profile: {
         __typename?: 'Profile';
         id: string;
         displayName: string;
+        url: string;
         avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         location?:
-          | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+          | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
           | undefined;
         tagsets?:
           | Array<{
@@ -20218,7 +20234,6 @@ export type SpaceCommunityPageQuery = {
         memberUsers: Array<{
           __typename?: 'User';
           id: string;
-          nameID: string;
           isContactable: boolean;
           email: string;
           firstName: string;
@@ -20227,16 +20242,26 @@ export type SpaceCommunityPageQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
+            url: string;
             avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             location?:
               | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?:
+              | Array<{
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }>
               | undefined;
           };
         }>;
         leadUsers: Array<{
           __typename?: 'User';
           id: string;
-          nameID: string;
           isContactable: boolean;
           email: string;
           firstName: string;
@@ -20245,22 +20270,32 @@ export type SpaceCommunityPageQuery = {
             __typename?: 'Profile';
             id: string;
             displayName: string;
+            url: string;
             avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             location?:
               | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?:
+              | Array<{
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }>
               | undefined;
           };
         }>;
         memberOrganizations: Array<{
           __typename?: 'Organization';
           id: string;
-          nameID: string;
           profile: {
             __typename?: 'Profile';
             id: string;
-            url: string;
             displayName: string;
             description?: string | undefined;
+            url: string;
             avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             tagsets?:
               | Array<{
@@ -20272,19 +20307,20 @@ export type SpaceCommunityPageQuery = {
                   type: TagsetType;
                 }>
               | undefined;
-            location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+              | undefined;
           };
         }>;
         leadOrganizations: Array<{
           __typename?: 'Organization';
           id: string;
-          nameID: string;
           profile: {
             __typename?: 'Profile';
             id: string;
-            url: string;
             displayName: string;
             description?: string | undefined;
+            url: string;
             avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             tagsets?:
               | Array<{
@@ -20296,7 +20332,9 @@ export type SpaceCommunityPageQuery = {
                   type: TagsetType;
                 }>
               | undefined;
-            location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+              | undefined;
           };
         }>;
         memberVirtualContributors: Array<{
@@ -20834,14 +20872,18 @@ export type SpacePageQuery = {
               leadUsers: Array<{
                 __typename?: 'User';
                 id: string;
-                nameID: string;
+                isContactable: boolean;
+                email: string;
+                firstName: string;
+                lastName: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
+                  url: string;
                   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   location?:
-                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                     | undefined;
                   tagsets?:
                     | Array<{
@@ -20858,13 +20900,12 @@ export type SpacePageQuery = {
               leadOrganizations: Array<{
                 __typename?: 'Organization';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
-                  url: string;
                   displayName: string;
                   description?: string | undefined;
+                  url: string;
                   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagsets?:
                     | Array<{
@@ -20877,7 +20918,7 @@ export type SpacePageQuery = {
                       }>
                     | undefined;
                   location?:
-                    | { __typename?: 'Location'; country?: string | undefined; city?: string | undefined }
+                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
                     | undefined;
                 };
               }>;
@@ -21097,14 +21138,18 @@ export type SpacePageFragment = {
       leadUsers: Array<{
         __typename?: 'User';
         id: string;
-        nameID: string;
+        isContactable: boolean;
+        email: string;
+        firstName: string;
+        lastName: string;
         profile: {
           __typename?: 'Profile';
           id: string;
           displayName: string;
+          url: string;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           location?:
-            | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
             | undefined;
           tagsets?:
             | Array<{
@@ -21121,13 +21166,12 @@ export type SpacePageFragment = {
       leadOrganizations: Array<{
         __typename?: 'Organization';
         id: string;
-        nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;
-          url: string;
           displayName: string;
           description?: string | undefined;
+          url: string;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagsets?:
             | Array<{
@@ -21139,7 +21183,9 @@ export type SpacePageFragment = {
                 type: TagsetType;
               }>
             | undefined;
-          location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+            | undefined;
         };
       }>;
       leadVirtualContributors: Array<{
@@ -21953,15 +21999,18 @@ export type SpaceProfileFragment = {
         __typename?: 'User';
         id: string;
         isContactable: boolean;
-        nameID: string;
+        email: string;
+        firstName: string;
+        lastName: string;
         profile: {
           __typename?: 'Profile';
           id: string;
           displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           location?:
             | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
             | undefined;
-          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           tagsets?:
             | Array<{
                 __typename?: 'Tagset';
@@ -21977,14 +22026,18 @@ export type SpaceProfileFragment = {
       leadUsers: Array<{
         __typename?: 'User';
         id: string;
-        nameID: string;
+        isContactable: boolean;
+        email: string;
+        firstName: string;
+        lastName: string;
         profile: {
           __typename?: 'Profile';
           id: string;
           displayName: string;
+          url: string;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           location?:
-            | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
             | undefined;
           tagsets?:
             | Array<{
@@ -22001,12 +22054,13 @@ export type SpaceProfileFragment = {
       memberOrganizations: Array<{
         __typename?: 'Organization';
         id: string;
-        nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          description?: string | undefined;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagsets?:
             | Array<{
                 __typename?: 'Tagset';
@@ -22016,6 +22070,9 @@ export type SpaceProfileFragment = {
                 allowedValues: Array<string>;
                 type: TagsetType;
               }>
+            | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
             | undefined;
         };
       }>;
@@ -22668,15 +22725,18 @@ export type SubspacePageQuery = {
                 __typename?: 'User';
                 id: string;
                 isContactable: boolean;
-                nameID: string;
+                email: string;
+                firstName: string;
+                lastName: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   location?:
                     | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                     | undefined;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
                   tagsets?:
                     | Array<{
                         __typename?: 'Tagset';
@@ -22692,14 +22752,18 @@ export type SubspacePageQuery = {
               leadUsers: Array<{
                 __typename?: 'User';
                 id: string;
-                nameID: string;
+                isContactable: boolean;
+                email: string;
+                firstName: string;
+                lastName: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
+                  url: string;
                   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   location?:
-                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                     | undefined;
                   tagsets?:
                     | Array<{
@@ -22716,12 +22780,13 @@ export type SubspacePageQuery = {
               memberOrganizations: Array<{
                 __typename?: 'Organization';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  description?: string | undefined;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagsets?:
                     | Array<{
                         __typename?: 'Tagset';
@@ -22731,6 +22796,9 @@ export type SubspacePageQuery = {
                         allowedValues: Array<string>;
                         type: TagsetType;
                       }>
+                    | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
                     | undefined;
                 };
               }>;
@@ -22837,15 +22905,18 @@ export type SubspacePageSpaceFragment = {
         __typename?: 'User';
         id: string;
         isContactable: boolean;
-        nameID: string;
+        email: string;
+        firstName: string;
+        lastName: string;
         profile: {
           __typename?: 'Profile';
           id: string;
           displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           location?:
             | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
             | undefined;
-          visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
           tagsets?:
             | Array<{
                 __typename?: 'Tagset';
@@ -22861,14 +22932,18 @@ export type SubspacePageSpaceFragment = {
       leadUsers: Array<{
         __typename?: 'User';
         id: string;
-        nameID: string;
+        isContactable: boolean;
+        email: string;
+        firstName: string;
+        lastName: string;
         profile: {
           __typename?: 'Profile';
           id: string;
           displayName: string;
+          url: string;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           location?:
-            | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
             | undefined;
           tagsets?:
             | Array<{
@@ -22885,12 +22960,13 @@ export type SubspacePageSpaceFragment = {
       memberOrganizations: Array<{
         __typename?: 'Organization';
         id: string;
-        nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;
           displayName: string;
-          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          description?: string | undefined;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagsets?:
             | Array<{
                 __typename?: 'Tagset';
@@ -22900,6 +22976,9 @@ export type SubspacePageSpaceFragment = {
                 allowedValues: Array<string>;
                 type: TagsetType;
               }>
+            | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
             | undefined;
         };
       }>;

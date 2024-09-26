@@ -4,7 +4,6 @@ import {
   AssociatedOrganizationDetailsFragment,
   AuthorizationPrivilege,
   ContextTabFragment,
-  DashboardLeadUserFragment,
   MetricsItemFragment,
   Profile,
   ReferenceDetailsFragment,
@@ -39,7 +38,7 @@ export interface AboutPageContainerEntities {
   memberUsersCount: number | undefined;
   memberOrganizations: WithId<ContributorCardSquareProps>[] | undefined;
   memberOrganizationsCount: number | undefined;
-  leadUsers: DashboardLeadUserFragment[] | undefined;
+  leadUsers: ContributorViewProps[] | undefined;
   leadVirtualContributors: ContributorViewProps[] | undefined;
   leadOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
   provider: ContributorViewProps | undefined;
