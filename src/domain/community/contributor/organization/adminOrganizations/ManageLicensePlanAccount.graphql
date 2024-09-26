@@ -1,0 +1,19 @@
+mutation AssignLicensePlanToAccount($licensePlanId: UUID!, $accountId: UUID!, $licensingId: UUID!) {
+  assignLicensePlanToAccount(planData: {
+    accountID: $accountId
+    licensePlanID: $licensePlanId
+    licensingID: $licensingId
+  }) {
+    id
+  }
+}
+
+mutation RevokeLicensePlanFromAccount($licensePlanId: UUID!, $accountId: UUID!, $licensingId: UUID!) {
+  revokeLicensePlanFromAccount(planData: {
+    accountID: $accountId
+    licensePlanID: $licensePlanId
+    licensingID: $licensingId
+  }) {
+    id
+  }
+}

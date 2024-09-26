@@ -1,0 +1,38 @@
+query AdminSpaceSubspacesPage($spaceId: UUID_NAMEID!) {
+  space(ID: $spaceId) {
+    id
+    subspaces {
+      id
+      profile {
+        id
+        displayName
+        url
+        cardBanner: visual(type: CARD) {
+          ...VisualUri
+        }
+      }
+    }
+    defaults {
+      id
+      innovationFlowTemplate {
+        id
+        profile {
+          ...InnovationFlowProfile
+        }
+        innovationFlow {
+          id
+          states {
+            displayName
+            description
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation UpdateSpaceDefaultInnovationFlowTemplate($spaceDefaultsID: UUID!, $innovationFlowTemplateId: UUID!) {
+  updateSpaceDefaults(spaceDefaultsData: { spaceDefaultsID: $spaceDefaultsID, flowTemplateID: $innovationFlowTemplateId }) {
+    id
+  }
+}

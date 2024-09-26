@@ -66,8 +66,14 @@ const ReferenceView: FC<ReferenceViewProps> = ({ reference, canEdit, onClickEdit
         </Tooltip>
         <ReferenceDescription>{reference.description}</ReferenceDescription>
       </BadgeCardView>
-      {canEdit && (
-        <IconButton size="small" onClick={onClickEdit} className="only-on-hover" aria-label={t('buttons.edit')}>
+      {onClickEdit && (
+        <IconButton
+          size="small"
+          onClick={onClickEdit}
+          disabled={!canEdit}
+          className="only-on-hover"
+          aria-label={t('buttons.edit')}
+        >
           <EditIcon />
         </IconButton>
       )}

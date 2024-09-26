@@ -9,7 +9,7 @@ import FormikAutocomplete from '../../../core/ui/forms/FormikAutocomplete';
 import FormikMarkdownField from '../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MID_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
 import { BlockSectionTitle } from '../../../core/ui/typography';
-import { TagsetSegment, tagsetSegmentSchema } from '../../platform/admin/components/Common/TagsetSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '../../platform/admin/components/Common/TagsetSegment';
 import SaveButton from '../../../core/ui/actions/SaveButton';
 import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInputField';
 import { nameIdValidator } from '../../../core/ui/forms/validator';
@@ -83,7 +83,7 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
       displayName: nameSegmentSchema.fields?.name ?? yup.string(),
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
       tagline: yup.string().max(MID_TEXT_LENGTH),
-      tagsets: tagsetSegmentSchema,
+      tagsets: tagsetsSegmentSchema,
     }),
     accountId: yup.string().required(),
   });

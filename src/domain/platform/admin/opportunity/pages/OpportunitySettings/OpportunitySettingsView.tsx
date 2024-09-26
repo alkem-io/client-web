@@ -14,7 +14,7 @@ import {
 } from '../../../../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '../../../../../../core/apollo/generated/graphql-schema';
 import DeleteIcon from '../../../../../journey/space/pages/SpaceSettings/icon/DeleteIcon';
-import SpaceProfileDeleteDialog from '../../../../../journey/space/pages/SpaceSettings/SpaceProfileDeleteDialog';
+import EntityConfirmDeleteDialog from '../../../../../journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
 import { useSubSpace } from '../../../../../journey/subspace/hooks/useSubSpace';
 import PageContent from '../../../../../../core/ui/content/PageContent';
 import { useSpace } from '../../../../../journey/space/SpaceContext/useSpace';
@@ -32,7 +32,7 @@ const OpportunitySettingsView: FC = () => {
   const openDialog = () => setOpenDeleteDialog(true);
   const closeDialog = () => setOpenDeleteDialog(false);
 
-  const [deleteOpportunity, { loading }] = useDeleteSpaceMutation({
+  const [deleteOpportunity] = useDeleteSpaceMutation({
     refetchQueries: [
       refetchSubspacesInSpaceQuery({
         spaceId: spaceId,
@@ -57,7 +57,7 @@ const OpportunitySettingsView: FC = () => {
   const subspacePriviledges = data?.lookup.space?.authorization?.myPrivileges ?? [];
   const canDelete = subspacePriviledges.includes(AuthorizationPrivilege.Delete);
   const handleDelete = () => {
-    deleteOpportunity({
+    return deleteOpportunity({
       variables: {
         input: {
           ID: subspaceId,
@@ -70,20 +70,19 @@ const OpportunitySettingsView: FC = () => {
     <PageContent background="transparent">
       {canDelete && (
         <PageContentBlock sx={{ borderColor: errorColor }}>
-          <PageContentBlockHeader sx={{ color: errorColor }} title={t('components.deleteSpace.title')} />
+          <PageContentBlockHeader sx={{ color: errorColor }} title={t('components.deleteEntity.title')} />
           <Box display="flex" gap={1} alignItems="center" sx={{ cursor: 'pointer' }} onClick={openDialog}>
             <DeleteIcon />
-            <Caption>{t('components.deleteSpace.description', { entity: t('common.subspace') })}</Caption>
+            <Caption>{t('components.deleteEntity.description', { entity: t('common.subspace') })}</Caption>
           </Box>
         </PageContentBlock>
       )}
       {openDeleteDialog && (
-        <SpaceProfileDeleteDialog
+        <EntityConfirmDeleteDialog
           entity={'Subspace'}
           open={openDeleteDialog}
           onClose={closeDialog}
           onDelete={handleDelete}
-          submitting={loading}
         />
       )}
     </PageContent>

@@ -1,8 +1,8 @@
 import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { gutters } from '../../../../core/ui/grid/utils';
-import { Button, CircularProgress, DialogContent, IconButton, Tooltip, useTheme } from '@mui/material';
+import { Button, DialogContent } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
-import { DeleteOutline, EditOffOutlined, LockOutlined, SaveOutlined } from '@mui/icons-material';
+import { DeleteOutline } from '@mui/icons-material';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { Trans, useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
@@ -27,7 +27,6 @@ import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 
 interface WhiteboardDialogFooterProps {
-  onSave: () => void;
   lastSavedDate: Date | undefined;
   canUpdateContent: boolean;
   onDelete: () => void;
@@ -57,7 +56,6 @@ enum ReadonlyReason {
 
 const WhiteboardDialogFooter = ({
   lastSavedDate,
-  onSave,
   canUpdateContent,
   onDelete,
   canDelete,
@@ -173,20 +171,6 @@ const WhiteboardDialogFooter = ({
             <Caption>{t('buttons.delete')}</Caption>
           </Button>
         )}
-        <Tooltip placement="right" arrow title={<Caption>{t('pages.whiteboard.saveTooltip')}</Caption>}>
-          <span>
-            <IconButton
-              color="primary"
-              size="small"
-              onClick={onSave}
-              disabled={!canUpdateContent || collaboratorMode !== 'write' || updating}
-            >
-              {!readonlyReason && <SaveOutlined />}
-              {readonlyReason === ReadonlyReason.Readonly && <EditOffOutlined />}
-              {readonlyReason && readonlyReason !== ReadonlyReason.Readonly && <LockOutlined />}
-            </IconButton>
-          </span>
-        </Tooltip>
         {readonlyReason && (
           <Caption>
             <Trans
@@ -213,7 +197,7 @@ const WhiteboardDialogFooter = ({
             {t('pages.whiteboard.restartCollaboration')}
           </Button>
         )}
-        {!readonlyReason && <LastSavedCaption saving={updating} date={lastSavedDate} />}
+        {!readonlyReason && <LastSavedCaption date={lastSavedDate} />}
         {directMessageDialog}
       </Actions>
       <DialogWithGrid open={isLearnWhyDialogOpen} onClose={() => setIsLearnWhyDialogOpen(false)}>
@@ -233,9 +217,8 @@ const WhiteboardDialogFooter = ({
 
 export default WhiteboardDialogFooter;
 
-const LastSavedCaption = ({ date, saving }: { date: Date | undefined; saving: boolean | undefined }) => {
+const LastSavedCaption = ({ date }: { date: Date | undefined }) => {
   const { t } = useTranslation();
-  const theme = useTheme();
 
   // Re-rendering every second
   const [formattedTime, setFormattedTime] = useState<string>();
@@ -253,18 +236,5 @@ const LastSavedCaption = ({ date, saving }: { date: Date | undefined; saving: bo
     return null;
   }
 
-  return (
-    <Caption>
-      {saving ? (
-        <>
-          <CircularProgress size={gutters(0.5)(theme)} sx={{ marginRight: gutters(0.5) }} />
-          {t('pages.whiteboard.savingWhiteboard')}
-        </>
-      ) : (
-        t('common.last-saved', {
-          datetime: formattedTime,
-        })
-      )}
-    </Caption>
-  );
+  return <Caption>{t('common.last-saved', { datetime: formattedTime })}</Caption>;
 };

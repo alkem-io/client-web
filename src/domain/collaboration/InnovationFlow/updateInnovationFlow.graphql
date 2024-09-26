@@ -1,4 +1,4 @@
-mutation updateInnovationFlow($input: UpdateInnovationFlowInput!) {
+mutation updateInnovationFlow($input: UpdateInnovationFlowEntityInput!) {
   updateInnovationFlow(innovationFlowData: $input) {
     id
     profile {

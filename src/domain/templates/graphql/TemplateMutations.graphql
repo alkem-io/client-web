@@ -1,0 +1,76 @@
+mutation createTemplate(
+  $templatesSetId: UUID!
+  $profileData: CreateProfileInput!
+  $type: TemplateType!
+  $tags: [String!]
+  $calloutData: CreateCalloutInput
+  $communityGuidelinesData: CreateCommunityGuidelinesInput
+  $innovationFlowData: CreateInnovationFlowInput
+  $postDefaultDescription: Markdown
+  $whiteboard: CreateWhiteboardInput
+  $includeProfileVisuals: Boolean = false
+) {
+  createTemplate(
+    templateData: {
+      templatesSetID: $templatesSetId
+      profileData: $profileData
+      tags: $tags
+      type: $type
+      calloutData: $calloutData
+      communityGuidelinesData: $communityGuidelinesData
+      innovationFlowData: $innovationFlowData
+      postDefaultDescription: $postDefaultDescription
+      whiteboard: $whiteboard
+    }
+  ) {
+    id
+    profile @include(if: $includeProfileVisuals) {
+      id
+      cardVisual: visual(type: CARD) {
+        id
+      }
+      previewVisual: visual(type: BANNER) {
+        id
+      }
+    }
+  }
+}
+mutation UpdateTemplate(
+  $templateId: UUID!
+  $profile: UpdateProfileInput!
+  $callout: UpdateCalloutInput
+  $communityGuidelines: UpdateCommunityGuidelinesInput
+  $innovationFlow: UpdateInnovationFlowInput
+  $postDefaultDescription: Markdown
+  $whiteboard: UpdateWhiteboardInput
+  $includeProfileVisuals: Boolean = false
+) {
+  updateTemplate(
+    updateData: {
+      ID: $templateId
+      profile: $profile
+      callout: $callout
+      communityGuidelines: $communityGuidelines
+      innovationFlow: $innovationFlow
+      postDefaultDescription: $postDefaultDescription
+      whiteboard: $whiteboard
+    }
+  ) {
+    id
+    profile @include(if: $includeProfileVisuals) {
+      id
+      cardVisual: visual(type: CARD) {
+        id
+      }
+      previewVisual: visual(type: BANNER) {
+        id
+      }
+    }
+  }
+}
+
+mutation deleteTemplate($templateId: UUID!) {
+  deleteTemplate(deleteData: { ID: $templateId }) {
+    id
+  }
+}

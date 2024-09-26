@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import SpaceChildJourneyCard, {
   SpaceChildJourneyCardProps,
 } from '../../common/SpaceChildJourneyCard/SpaceChildJourneyCard';
-import { ChallengeIcon } from '../icon/ChallengeIcon';
+import { SubspaceIcon } from '../icon/SubspaceIcon';
 import CardParentJourneySegment from '../../common/SpaceChildJourneyCard/CardParentJourneySegment';
 import { SpaceIcon } from '../../space/icon/SpaceIcon';
 import CardActions from '../../../../core/ui/card/CardActions';
@@ -35,7 +35,7 @@ const SubspaceCard = ({ spaceDisplayName, spaceUri, spaceVisibility, ...props }:
 
   return (
     <SpaceChildJourneyCard
-      iconComponent={ChallengeIcon}
+      iconComponent={SubspaceIcon}
       parentSegment={
         spaceUri &&
         spaceDisplayName && (
