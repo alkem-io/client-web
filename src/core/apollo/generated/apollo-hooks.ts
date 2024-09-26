@@ -2784,6 +2784,7 @@ export const ConfigurationFragmentDoc = gql`
       newuser
       tips
       aup
+      documentation
     }
     featureFlags {
       enabled
