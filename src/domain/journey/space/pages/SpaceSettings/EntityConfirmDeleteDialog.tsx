@@ -8,14 +8,14 @@ import { Actions } from '../../../../../core/ui/actions/Actions';
 import { Caption } from '../../../../../core/ui/typography';
 import { gutters } from '../../../../../core/ui/grid/utils';
 import TranslationKey from '../../../../../core/i18n/utils/TranslationKey';
+import useLoadingState from '../../../../shared/utils/useLoadingState';
 
 interface EntityConfirmDeleteDialogProps {
   entity: string;
   description?: TranslationKey;
   open: boolean;
   onClose: () => void;
-  onDelete: () => void;
-  submitting: boolean;
+  onDelete: () => Promise<unknown> | void;
 }
 
 const EntityConfirmDeleteDialog: FC<EntityConfirmDeleteDialogProps> = ({
@@ -24,14 +24,24 @@ const EntityConfirmDeleteDialog: FC<EntityConfirmDeleteDialogProps> = ({
   open,
   onClose,
   onDelete,
-  submitting,
 }) => {
   const { t } = useTranslation();
   const [checked, setChecked] = useState(false);
+  const handleClose = () => {
+    setChecked(false);
+    onClose();
+  };
+  const [handleDelete, loading] = useLoadingState(async () => {
+    await onDelete();
+    setChecked(false);
+  });
 
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogHeader onClose={onClose} title={t('components.deleteEntity.confirmDialog.title', { entity: entity })} />
+    <Dialog open={open} onClose={handleClose}>
+      <DialogHeader
+        onClose={handleClose}
+        title={t('components.deleteEntity.confirmDialog.title', { entity: entity })}
+      />
       <DialogContent>
         <Gutters disablePadding>
           <Box sx={{ wordWrap: 'break-word' }}>
@@ -43,14 +53,12 @@ const EntityConfirmDeleteDialog: FC<EntityConfirmDeleteDialogProps> = ({
               label={<Caption>{t('components.deleteEntity.confirmDialog.checkbox', { entity: entity })}</Caption>}
             />
             <Actions justifyContent="flex-end" paddingTop={gutters()}>
-              <Button onClick={onClose}>{t('buttons.cancel')}</Button>
+              <Button onClick={handleClose}>{t('buttons.cancel')}</Button>
               <LoadingButton
                 variant="contained"
-                value={'SPACE'}
                 disabled={!checked}
-                loading={submitting}
-                loadingIndicator={`${t('components.deleteEntity.confirmDialog.confirm')}...`}
-                onClick={onDelete}
+                loading={loading}
+                onClick={handleDelete}
                 sx={{ textWrap: 'nowrap' }}
               >
                 {t('components.deleteEntity.confirmDialog.confirm')}

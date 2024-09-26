@@ -9,7 +9,7 @@ import {
   NotesOutlined,
   PersonOutlined,
 } from '@mui/icons-material';
-import { ChallengeIcon } from '../../../../journey/subspace/icon/ChallengeIcon';
+import { SubspaceIcon } from '../../../../journey/subspace/icon/SubspaceIcon';
 import { OpportunityIcon } from '../../../../journey/opportunity/icon/OpportunityIcon';
 import calloutIcons from '../../../callout/utils/calloutIcons';
 import { WhiteboardIcon } from '../../../whiteboard/icon/WhiteboardIcon';
@@ -24,7 +24,7 @@ const ActivityIcon: Record<
   [ActivityEventType.CalloutPostCreated]: NotesOutlined,
   [ActivityEventType.CalloutPostComment]: ChatBubbleOutlineOutlined,
   [ActivityEventType.CalloutLinkCreated]: LinkOutlined,
-  [ActivityEventType.ChallengeCreated]: ChallengeIcon,
+  [ActivityEventType.ChallengeCreated]: SubspaceIcon,
   [ActivityEventType.OpportunityCreated]: OpportunityIcon,
   [ActivityEventType.UpdateSent]: MicOutlined,
   [ActivityEventType.CalendarEventCreated]: CalendarMonthOutlined,

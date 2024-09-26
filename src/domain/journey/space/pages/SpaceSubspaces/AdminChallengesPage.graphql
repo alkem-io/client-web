@@ -1,4 +1,4 @@
-query AdminSpaceChallengesPage($spaceId: UUID_NAMEID!) {
+query AdminSpaceSubspacesPage($spaceId: UUID_NAMEID!) {
   space(ID: $spaceId) {
     id
     subspaces {
@@ -7,6 +7,9 @@ query AdminSpaceChallengesPage($spaceId: UUID_NAMEID!) {
         id
         displayName
         url
+        cardBanner: visual(type: CARD) {
+          ...VisualUri
+        }
       }
     }
     defaults {

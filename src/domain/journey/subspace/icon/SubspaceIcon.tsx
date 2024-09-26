@@ -1,7 +1,7 @@
 import { SvgIcon, SvgIconProps } from '@mui/material';
 import React, { FC } from 'react';
 
-export const ChallengeIcon: FC<SvgIconProps> = props => {
+export const SubspaceIcon: FC<SvgIconProps> = props => {
   return (
     <SvgIcon {...props}>
       <g transform="translate(0,-290.65)" style={{ strokeWidth: '0.24995035' }}>

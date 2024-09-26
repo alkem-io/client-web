@@ -12,6 +12,10 @@ query userList($first: Int!, $after: UUID, $filter: UserFilterInput) {
         id
         url
         displayName
+        visual(type: AVATAR) {
+          id
+          uri
+        }
       }
       email
     }
