@@ -155,7 +155,7 @@ export const TopLevelRoutes: FC = () => {
           }
         />
         <Route
-          path="/docs/*"
+          path={`${TopLevelRoutePath.Docs}/*`}
           element={
             <Suspense fallback={<Loading />}>
               <DocumentationPage />
