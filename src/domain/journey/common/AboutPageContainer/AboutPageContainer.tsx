@@ -1,7 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
 import {
-  AssociatedOrganizationDetailsFragment,
   AuthorizationPrivilege,
   ContextTabFragment,
   MetricsItemFragment,
@@ -40,7 +39,7 @@ export interface AboutPageContainerEntities {
   memberOrganizationsCount: number | undefined;
   leadUsers: ContributorViewProps[] | undefined;
   leadVirtualContributors: ContributorViewProps[] | undefined;
-  leadOrganizations: AssociatedOrganizationDetailsFragment[] | undefined;
+  leadOrganizations: ContributorViewProps[] | undefined;
   provider: ContributorViewProps | undefined;
   references: ReferenceDetailsFragment[] | undefined;
   virtualContributors?: VirtualContributorProps[];

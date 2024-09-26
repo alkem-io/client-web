@@ -21,10 +21,10 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import InviteVirtualContributorDialog from '../../invitations/InviteVirtualContributorDialog';
 import { InviteContributorsData } from '../../invitations/useInviteUsers';
-import { RoleSetVirtualContributorFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { ContributorViewProps } from '../EntityDashboardContributorsSection/Types';
 
-type RenderParams = GridRenderCellParams<string, RoleSetVirtualContributorFragment>;
-type GetterParams = GridValueGetterParams<string, RoleSetVirtualContributorFragment>;
+type RenderParams = GridRenderCellParams<string, ContributorViewProps>;
+type GetterParams = GridValueGetterParams<string, ContributorViewProps>;
 
 const EmptyFilter = { items: [], linkOperator: GridLinkOperator.Or };
 
@@ -51,7 +51,7 @@ interface Entity extends Identifiable {
 }
 
 interface CommunityVirtualContributorsProps {
-  virtualContributors: RoleSetVirtualContributorFragment[] | undefined;
+  virtualContributors: ContributorViewProps[] | undefined;
   onRemoveMember: (memberId: string) => Promise<unknown> | void;
   canAddVirtualContributors: boolean;
   fetchAvailableVirtualContributorsOnAccount: (filter?: string, all?: boolean) => Promise<Entity[] | undefined>;
@@ -176,7 +176,7 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
             actions={[
               {
                 name: 'remove',
-                render: ({ row }: { row: RoleSetVirtualContributorFragment }) => {
+                render: ({ row }: { row: ContributorViewProps }) => {
                   return (
                     <IconButton onClick={() => setDeletingMemberId(row.id)} aria-label={t('buttons.remove')}>
                       <Remove color="primary" />

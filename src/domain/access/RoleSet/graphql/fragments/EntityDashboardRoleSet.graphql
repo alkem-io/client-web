@@ -10,13 +10,13 @@ fragment RoleSetContributorRoles on RoleSet {
     ...CommunityMemberOrganization
   }
   leadOrganizations: organizationsInRole(role: LEAD) {
-    ...AssociatedOrganizationDetails
+    ...CommunityMemberOrganization
   }
   memberirtualContributors: virtualContributorsInRole(role: MEMBER) {
-    ...DashboardContributingVirtualContributor
+    ...CommunityMemberVirtualContributor
   }
   leadVirtualContributors: virtualContributorsInRole(role: LEAD) {
-    ...DashboardContributingVirtualContributor
+    ...CommunityMemberVirtualContributor
   }
   authorization {
     id

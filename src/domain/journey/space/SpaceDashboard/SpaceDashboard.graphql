@@ -87,7 +87,7 @@ fragment SpacePage on Space {
         ...CommunityMemberOrganization
       }
       leadVirtualContributors: virtualContributorsInRole(role: LEAD) {
-        ...RoleSetVirtualContributor
+        ...CommunityMemberVirtualContributor
       }
     }
   }

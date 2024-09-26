@@ -17,10 +17,10 @@ fragment RoleSetDetails on RoleSet {
   }
 
   memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
-    ...RoleSetVirtualContributor
+    ...CommunityMemberVirtualContributor
   }
   leadVirtualContributors: virtualContributorsInRole(role: MEMBER) {
-    ...RoleSetVirtualContributor
+    ...CommunityMemberVirtualContributor
   }
 
   memberRoleDefinition: roleDefinition(role: MEMBER) {

@@ -60,15 +60,17 @@ fragment CommunityMemberOrganization on Organization {
   }
 }
 
-fragment RoleSetVirtualContributor on VirtualContributor {
+fragment CommunityMemberVirtualContributor on VirtualContributor {
   id
-  nameID
   searchVisibility
   profile {
     id
     displayName
     avatar: visual(type: AVATAR) {
       ...VisualUri
+    }
+    tagsets {
+      ...TagsetDetails
     }
     location {
       id

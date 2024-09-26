@@ -7139,33 +7139,13 @@ export type RoleSetContributorRolesFragment = {
   leadOrganizations: Array<{
     __typename?: 'Organization';
     id: string;
-    nameID: string;
     profile: {
       __typename?: 'Profile';
       id: string;
-      url: string;
-      tagline?: string | undefined;
       displayName: string;
       description?: string | undefined;
-      location?:
-        | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-        | undefined;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-    };
-    verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-  }>;
-  memberirtualContributors: Array<{
-    __typename?: 'VirtualContributor';
-    id: string;
-    nameID: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
       url: string;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagsets?:
         | Array<{
             __typename?: 'Tagset';
@@ -7175,19 +7155,47 @@ export type RoleSetContributorRolesFragment = {
             allowedValues: Array<string>;
             type: TagsetType;
           }>
+        | undefined;
+      location?:
+        | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+        | undefined;
+    };
+  }>;
+  memberirtualContributors: Array<{
+    __typename?: 'VirtualContributor';
+    id: string;
+    searchVisibility: SearchVisibility;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+      location?:
+        | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
         | undefined;
     };
   }>;
   leadVirtualContributors: Array<{
     __typename?: 'VirtualContributor';
     id: string;
-    nameID: string;
+    searchVisibility: SearchVisibility;
     profile: {
       __typename?: 'Profile';
       id: string;
       displayName: string;
       url: string;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagsets?:
         | Array<{
             __typename?: 'Tagset';
@@ -7197,6 +7205,9 @@ export type RoleSetContributorRolesFragment = {
             allowedValues: Array<string>;
             type: TagsetType;
           }>
+        | undefined;
+      location?:
+        | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
         | undefined;
     };
   }>;
@@ -7317,7 +7328,6 @@ export type RoleSetDetailsFragment = {
   memberVirtualContributors: Array<{
     __typename?: 'VirtualContributor';
     id: string;
-    nameID: string;
     searchVisibility: SearchVisibility;
     profile: {
       __typename?: 'Profile';
@@ -7325,6 +7335,16 @@ export type RoleSetDetailsFragment = {
       displayName: string;
       url: string;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
       location?:
         | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
         | undefined;
@@ -7333,7 +7353,6 @@ export type RoleSetDetailsFragment = {
   leadVirtualContributors: Array<{
     __typename?: 'VirtualContributor';
     id: string;
-    nameID: string;
     searchVisibility: SearchVisibility;
     profile: {
       __typename?: 'Profile';
@@ -7341,6 +7360,16 @@ export type RoleSetDetailsFragment = {
       displayName: string;
       url: string;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
       location?:
         | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
         | undefined;
@@ -15401,29 +15430,6 @@ export type UpdateCommunityGuidelinesMutation = {
   };
 };
 
-export type DashboardContributingVirtualContributorFragment = {
-  __typename?: 'VirtualContributor';
-  id: string;
-  nameID: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    url: string;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-    tagsets?:
-      | Array<{
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }>
-      | undefined;
-  };
-};
-
 export type CommunityPageMembersFragment = {
   __typename?: 'User';
   id: string;
@@ -15701,7 +15707,6 @@ export type CommunityMembersListQuery = {
           memberVirtualContributors: Array<{
             __typename?: 'VirtualContributor';
             id: string;
-            nameID: string;
             searchVisibility: SearchVisibility;
             profile: {
               __typename?: 'Profile';
@@ -15709,6 +15714,16 @@ export type CommunityMembersListQuery = {
               displayName: string;
               url: string;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
               location?:
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                 | undefined;
@@ -15717,7 +15732,6 @@ export type CommunityMembersListQuery = {
           leadVirtualContributors: Array<{
             __typename?: 'VirtualContributor';
             id: string;
-            nameID: string;
             searchVisibility: SearchVisibility;
             profile: {
               __typename?: 'Profile';
@@ -15725,6 +15739,16 @@ export type CommunityMembersListQuery = {
               displayName: string;
               url: string;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
               location?:
                 | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                 | undefined;
@@ -15805,10 +15829,9 @@ export type CommunityMemberOrganizationFragment = {
   };
 };
 
-export type RoleSetVirtualContributorFragment = {
+export type CommunityMemberVirtualContributorFragment = {
   __typename?: 'VirtualContributor';
   id: string;
-  nameID: string;
   searchVisibility: SearchVisibility;
   profile: {
     __typename?: 'Profile';
@@ -15816,6 +15839,16 @@ export type RoleSetVirtualContributorFragment = {
     displayName: string;
     url: string;
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    tagsets?:
+      | Array<{
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }>
+      | undefined;
     location?:
       | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
       | undefined;
@@ -19433,37 +19466,13 @@ export type AboutPageMembersQuery = {
               leadOrganizations: Array<{
                 __typename?: 'Organization';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
-                  url: string;
-                  tagline?: string | undefined;
                   displayName: string;
                   description?: string | undefined;
-                  location?:
-                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                    | undefined;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                };
-                verification: {
-                  __typename?: 'OrganizationVerification';
-                  id: string;
-                  status: OrganizationVerificationEnum;
-                };
-                metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-              }>;
-              memberirtualContributors: Array<{
-                __typename?: 'VirtualContributor';
-                id: string;
-                nameID: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
                   url: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagsets?:
                     | Array<{
                         __typename?: 'Tagset';
@@ -19473,19 +19482,47 @@ export type AboutPageMembersQuery = {
                         allowedValues: Array<string>;
                         type: TagsetType;
                       }>
+                    | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                    | undefined;
+                };
+              }>;
+              memberirtualContributors: Array<{
+                __typename?: 'VirtualContributor';
+                id: string;
+                searchVisibility: SearchVisibility;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                     | undefined;
                 };
               }>;
               leadVirtualContributors: Array<{
                 __typename?: 'VirtualContributor';
                 id: string;
-                nameID: string;
+                searchVisibility: SearchVisibility;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
                   url: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagsets?:
                     | Array<{
                         __typename?: 'Tagset';
@@ -19495,6 +19532,9 @@ export type AboutPageMembersQuery = {
                         allowedValues: Array<string>;
                         type: TagsetType;
                       }>
+                    | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                     | undefined;
                 };
               }>;
@@ -19621,26 +19661,27 @@ export type JourneyDataQuery = {
               leadOrganizations: Array<{
                 __typename?: 'Organization';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
-                  url: string;
-                  tagline?: string | undefined;
                   displayName: string;
                   description?: string | undefined;
-                  location?:
-                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                    | undefined;
+                  url: string;
                   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                    | undefined;
                 };
-                verification: {
-                  __typename?: 'OrganizationVerification';
-                  id: string;
-                  status: OrganizationVerificationEnum;
-                };
-                metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
               }>;
               authorization?:
                 | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -19787,22 +19828,27 @@ export type JourneyCommunityFragment = {
     leadOrganizations: Array<{
       __typename?: 'Organization';
       id: string;
-      nameID: string;
       profile: {
         __typename?: 'Profile';
         id: string;
-        url: string;
-        tagline?: string | undefined;
         displayName: string;
         description?: string | undefined;
-        location?:
-          | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-          | undefined;
+        url: string;
         avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+        tagsets?:
+          | Array<{
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }>
+          | undefined;
+        location?:
+          | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+          | undefined;
       };
-      verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     }>;
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -20340,7 +20386,6 @@ export type SpaceCommunityPageQuery = {
         memberVirtualContributors: Array<{
           __typename?: 'VirtualContributor';
           id: string;
-          nameID: string;
           searchVisibility: SearchVisibility;
           profile: {
             __typename?: 'Profile';
@@ -20348,6 +20393,16 @@ export type SpaceCommunityPageQuery = {
             displayName: string;
             url: string;
             avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            tagsets?:
+              | Array<{
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }>
+              | undefined;
             location?:
               | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
               | undefined;
@@ -20356,7 +20411,6 @@ export type SpaceCommunityPageQuery = {
         leadVirtualContributors: Array<{
           __typename?: 'VirtualContributor';
           id: string;
-          nameID: string;
           searchVisibility: SearchVisibility;
           profile: {
             __typename?: 'Profile';
@@ -20364,6 +20418,16 @@ export type SpaceCommunityPageQuery = {
             displayName: string;
             url: string;
             avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            tagsets?:
+              | Array<{
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }>
+              | undefined;
             location?:
               | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
               | undefined;
@@ -20925,7 +20989,6 @@ export type SpacePageQuery = {
               leadVirtualContributors: Array<{
                 __typename?: 'VirtualContributor';
                 id: string;
-                nameID: string;
                 searchVisibility: SearchVisibility;
                 profile: {
                   __typename?: 'Profile';
@@ -20933,6 +20996,16 @@ export type SpacePageQuery = {
                   displayName: string;
                   url: string;
                   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
                   location?:
                     | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                     | undefined;
@@ -21191,7 +21264,6 @@ export type SpacePageFragment = {
       leadVirtualContributors: Array<{
         __typename?: 'VirtualContributor';
         id: string;
-        nameID: string;
         searchVisibility: SearchVisibility;
         profile: {
           __typename?: 'Profile';
@@ -21199,6 +21271,16 @@ export type SpacePageFragment = {
           displayName: string;
           url: string;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
           location?:
             | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
             | undefined;
@@ -22079,33 +22161,13 @@ export type SpaceProfileFragment = {
       leadOrganizations: Array<{
         __typename?: 'Organization';
         id: string;
-        nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;
-          url: string;
-          tagline?: string | undefined;
           displayName: string;
           description?: string | undefined;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-            | undefined;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-        };
-        verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-        metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-      }>;
-      memberirtualContributors: Array<{
-        __typename?: 'VirtualContributor';
-        id: string;
-        nameID: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
           url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagsets?:
             | Array<{
                 __typename?: 'Tagset';
@@ -22115,19 +22177,47 @@ export type SpaceProfileFragment = {
                 allowedValues: Array<string>;
                 type: TagsetType;
               }>
+            | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+            | undefined;
+        };
+      }>;
+      memberirtualContributors: Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        searchVisibility: SearchVisibility;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
             | undefined;
         };
       }>;
       leadVirtualContributors: Array<{
         __typename?: 'VirtualContributor';
         id: string;
-        nameID: string;
+        searchVisibility: SearchVisibility;
         profile: {
           __typename?: 'Profile';
           id: string;
           displayName: string;
           url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagsets?:
             | Array<{
                 __typename?: 'Tagset';
@@ -22137,6 +22227,9 @@ export type SpaceProfileFragment = {
                 allowedValues: Array<string>;
                 type: TagsetType;
               }>
+            | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
             | undefined;
         };
       }>;
@@ -22805,37 +22898,13 @@ export type SubspacePageQuery = {
               leadOrganizations: Array<{
                 __typename?: 'Organization';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
-                  url: string;
-                  tagline?: string | undefined;
                   displayName: string;
                   description?: string | undefined;
-                  location?:
-                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                    | undefined;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                };
-                verification: {
-                  __typename?: 'OrganizationVerification';
-                  id: string;
-                  status: OrganizationVerificationEnum;
-                };
-                metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-              }>;
-              memberirtualContributors: Array<{
-                __typename?: 'VirtualContributor';
-                id: string;
-                nameID: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
                   url: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagsets?:
                     | Array<{
                         __typename?: 'Tagset';
@@ -22845,19 +22914,47 @@ export type SubspacePageQuery = {
                         allowedValues: Array<string>;
                         type: TagsetType;
                       }>
+                    | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                    | undefined;
+                };
+              }>;
+              memberirtualContributors: Array<{
+                __typename?: 'VirtualContributor';
+                id: string;
+                searchVisibility: SearchVisibility;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                     | undefined;
                 };
               }>;
               leadVirtualContributors: Array<{
                 __typename?: 'VirtualContributor';
                 id: string;
-                nameID: string;
+                searchVisibility: SearchVisibility;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
                   url: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagsets?:
                     | Array<{
                         __typename?: 'Tagset';
@@ -22867,6 +22964,9 @@ export type SubspacePageQuery = {
                         allowedValues: Array<string>;
                         type: TagsetType;
                       }>
+                    | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                     | undefined;
                 };
               }>;
@@ -22985,33 +23085,13 @@ export type SubspacePageSpaceFragment = {
       leadOrganizations: Array<{
         __typename?: 'Organization';
         id: string;
-        nameID: string;
         profile: {
           __typename?: 'Profile';
           id: string;
-          url: string;
-          tagline?: string | undefined;
           displayName: string;
           description?: string | undefined;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-            | undefined;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-        };
-        verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-        metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-      }>;
-      memberirtualContributors: Array<{
-        __typename?: 'VirtualContributor';
-        id: string;
-        nameID: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
           url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagsets?:
             | Array<{
                 __typename?: 'Tagset';
@@ -23021,19 +23101,47 @@ export type SubspacePageSpaceFragment = {
                 allowedValues: Array<string>;
                 type: TagsetType;
               }>
+            | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+            | undefined;
+        };
+      }>;
+      memberirtualContributors: Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        searchVisibility: SearchVisibility;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
             | undefined;
         };
       }>;
       leadVirtualContributors: Array<{
         __typename?: 'VirtualContributor';
         id: string;
-        nameID: string;
+        searchVisibility: SearchVisibility;
         profile: {
           __typename?: 'Profile';
           id: string;
           displayName: string;
           url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagsets?:
             | Array<{
                 __typename?: 'Tagset';
@@ -23043,6 +23151,9 @@ export type SubspacePageSpaceFragment = {
                 allowedValues: Array<string>;
                 type: TagsetType;
               }>
+            | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
             | undefined;
         };
       }>;

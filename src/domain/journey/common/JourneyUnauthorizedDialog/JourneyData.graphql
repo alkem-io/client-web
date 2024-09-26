@@ -45,7 +45,7 @@ fragment JourneyCommunity on Community {
       ...CommunityMemberUser
     }
     leadOrganizations: organizationsInRole(role: LEAD) {
-      ...AssociatedOrganizationDetails
+      ...CommunityMemberOrganization
     }
     authorization {
       id
