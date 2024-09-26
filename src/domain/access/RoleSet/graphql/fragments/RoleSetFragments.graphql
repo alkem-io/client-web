@@ -1,5 +1,3 @@
-
-
 fragment RoleSetDetails on RoleSet {
   id
   memberUsers: usersInRole(role: MEMBER) {

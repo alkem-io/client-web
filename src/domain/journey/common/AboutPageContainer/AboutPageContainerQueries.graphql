@@ -87,7 +87,7 @@ query AboutPageMembers($spaceId: UUID!) {
       community {
         id
         roleSet {
-          ...RoleSetContributorRoles
+          ...RoleSetDetails
         }
       }
       profile {
@@ -100,31 +100,6 @@ query AboutPageMembers($spaceId: UUID!) {
       authorization {
         id
         myPrivileges
-      }
-      community {
-        id
-        roleSet {
-          id
-          memberUsers: usersInRole(role: MEMBER, limit: 8) {
-            ...CommunityMemberUser
-          }
-          memberOrganizations: organizationsInRole(role: MEMBER) {
-            ...CommunityMemberOrganization
-          }
-          memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
-            id
-            searchVisibility
-            profile {
-              id
-              displayName
-              tagline
-              url
-              avatar: visual(type: AVATAR) {
-                ...VisualUri
-              }
-            }
-          }
-        }
       }
     }
   }

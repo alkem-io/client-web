@@ -50,7 +50,7 @@ fragment SpaceProfile on Space {
   community {
     id
     roleSet {
-      ...RoleSetContributorRoles
+      ...RoleSetDetails
       myMembershipStatus
     }
   }

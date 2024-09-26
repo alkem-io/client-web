@@ -36,138 +36,6 @@ export const InnovationPackProfileFragmentDoc = gql`
   }
   ${TagsetDetailsFragmentDoc}
 `;
-export const VisualUriFragmentDoc = gql`
-  fragment VisualUri on Visual {
-    id
-    uri
-    name
-  }
-`;
-export const CommunityMemberUserFragmentDoc = gql`
-  fragment CommunityMemberUser on User {
-    id
-    isContactable
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      location {
-        id
-        city
-        country
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      url
-    }
-    email
-    firstName
-    lastName
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export const CommunityMemberOrganizationFragmentDoc = gql`
-  fragment CommunityMemberOrganization on Organization {
-    id
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      description
-      tagsets {
-        ...TagsetDetails
-      }
-      location {
-        id
-        country
-        city
-      }
-      url
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export const CommunityMemberVirtualContributorFragmentDoc = gql`
-  fragment CommunityMemberVirtualContributor on VirtualContributor {
-    id
-    searchVisibility
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      location {
-        id
-        city
-        country
-      }
-      url
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export const RoleDefinitionPolicyFragmentDoc = gql`
-  fragment RoleDefinitionPolicy on Role {
-    id
-    organizationPolicy {
-      minimum
-      maximum
-    }
-    userPolicy {
-      minimum
-      maximum
-    }
-  }
-`;
-export const RoleSetDetailsFragmentDoc = gql`
-  fragment RoleSetDetails on RoleSet {
-    id
-    memberUsers: usersInRole(role: MEMBER) {
-      ...CommunityMemberUser
-    }
-    leadUsers: usersInRole(role: LEAD) {
-      ...CommunityMemberUser
-    }
-    memberOrganizations: organizationsInRole(role: MEMBER) {
-      ...CommunityMemberOrganization
-    }
-    leadOrganizations: organizationsInRole(role: LEAD) {
-      ...CommunityMemberOrganization
-    }
-    memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
-      ...CommunityMemberVirtualContributor
-    }
-    leadVirtualContributors: virtualContributorsInRole(role: MEMBER) {
-      ...CommunityMemberVirtualContributor
-    }
-    memberRoleDefinition: roleDefinition(role: MEMBER) {
-      ...RoleDefinitionPolicy
-    }
-    leadRoleDefinition: roleDefinition(role: LEAD) {
-      ...RoleDefinitionPolicy
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-  ${CommunityMemberUserFragmentDoc}
-  ${CommunityMemberOrganizationFragmentDoc}
-  ${CommunityMemberVirtualContributorFragmentDoc}
-  ${RoleDefinitionPolicyFragmentDoc}
-`;
 export const AvailableUserFragmentDoc = gql`
   fragment AvailableUser on User {
     id
@@ -214,6 +82,13 @@ export const RoleSetAvailableMemberUsersFragmentDoc = gql`
   }
   ${AvailableUserFragmentDoc}
   ${PageInfoFragmentDoc}
+`;
+export const VisualUriFragmentDoc = gql`
+  fragment VisualUri on Visual {
+    id
+    uri
+    name
+  }
 `;
 export const AdminCommunityCandidateMemberFragmentDoc = gql`
   fragment AdminCommunityCandidateMember on Contributor {
@@ -1951,6 +1826,57 @@ export const ContextJourneyDataFragmentDoc = gql`
     impact
   }
 `;
+export const CommunityMemberUserFragmentDoc = gql`
+  fragment CommunityMemberUser on User {
+    id
+    isContactable
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      location {
+        id
+        city
+        country
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      url
+    }
+    email
+    firstName
+    lastName
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
+export const CommunityMemberOrganizationFragmentDoc = gql`
+  fragment CommunityMemberOrganization on Organization {
+    id
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      description
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        id
+        country
+        city
+      }
+      url
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
 export const JourneyCommunityFragmentDoc = gql`
   fragment JourneyCommunity on Community {
     id
@@ -2191,6 +2117,30 @@ export const DashboardTimelineAuthorizationFragmentDoc = gql`
     }
   }
 `;
+export const CommunityMemberVirtualContributorFragmentDoc = gql`
+  fragment CommunityMemberVirtualContributor on VirtualContributor {
+    id
+    searchVisibility
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        id
+        city
+        country
+      }
+      url
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
 export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
     id
@@ -2317,10 +2267,23 @@ export const SubspacesOnSpaceFragmentDoc = gql`
   }
   ${SubspaceCardFragmentDoc}
 `;
-export const RoleSetContributorRolesFragmentDoc = gql`
-  fragment RoleSetContributorRoles on RoleSet {
+export const RoleDefinitionPolicyFragmentDoc = gql`
+  fragment RoleDefinitionPolicy on Role {
     id
-    memberUsers: usersInRole(role: MEMBER, limit: 8) {
+    organizationPolicy {
+      minimum
+      maximum
+    }
+    userPolicy {
+      minimum
+      maximum
+    }
+  }
+`;
+export const RoleSetDetailsFragmentDoc = gql`
+  fragment RoleSetDetails on RoleSet {
+    id
+    memberUsers: usersInRole(role: MEMBER) {
       ...CommunityMemberUser
     }
     leadUsers: usersInRole(role: LEAD) {
@@ -2332,11 +2295,17 @@ export const RoleSetContributorRolesFragmentDoc = gql`
     leadOrganizations: organizationsInRole(role: LEAD) {
       ...CommunityMemberOrganization
     }
-    memberirtualContributors: virtualContributorsInRole(role: MEMBER) {
+    memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
       ...CommunityMemberVirtualContributor
     }
-    leadVirtualContributors: virtualContributorsInRole(role: LEAD) {
+    leadVirtualContributors: virtualContributorsInRole(role: MEMBER) {
       ...CommunityMemberVirtualContributor
+    }
+    memberRoleDefinition: roleDefinition(role: MEMBER) {
+      ...RoleDefinitionPolicy
+    }
+    leadRoleDefinition: roleDefinition(role: LEAD) {
+      ...RoleDefinitionPolicy
     }
     authorization {
       id
@@ -2346,6 +2315,7 @@ export const RoleSetContributorRolesFragmentDoc = gql`
   ${CommunityMemberUserFragmentDoc}
   ${CommunityMemberOrganizationFragmentDoc}
   ${CommunityMemberVirtualContributorFragmentDoc}
+  ${RoleDefinitionPolicyFragmentDoc}
 `;
 export const SpaceProfileFragmentDoc = gql`
   fragment SpaceProfile on Space {
@@ -2399,7 +2369,7 @@ export const SpaceProfileFragmentDoc = gql`
     community {
       id
       roleSet {
-        ...RoleSetContributorRoles
+        ...RoleSetDetails
         myMembershipStatus
       }
     }
@@ -2408,7 +2378,7 @@ export const SpaceProfileFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${DashboardTopCalloutsFragmentDoc}
   ${DashboardTimelineAuthorizationFragmentDoc}
-  ${RoleSetContributorRolesFragmentDoc}
+  ${RoleSetDetailsFragmentDoc}
 `;
 export const SpaceSettingsFragmentDoc = gql`
   fragment SpaceSettings on SpaceSettings {
@@ -2526,9 +2496,8 @@ export const SubspacePageSpaceFragmentDoc = gql`
         myPrivileges
       }
       roleSet {
-        id
+        ...RoleSetDetails
         myMembershipStatus
-        ...RoleSetContributorRoles
       }
     }
     collaboration {
@@ -2538,7 +2507,7 @@ export const SubspacePageSpaceFragmentDoc = gql`
       id
     }
   }
-  ${RoleSetContributorRolesFragmentDoc}
+  ${RoleSetDetailsFragmentDoc}
 `;
 export const AdminSpaceFragmentDoc = gql`
   fragment AdminSpace on Space {
@@ -14949,7 +14918,7 @@ export const AboutPageMembersDocument = gql`
         community {
           id
           roleSet {
-            ...RoleSetContributorRoles
+            ...RoleSetDetails
           }
         }
         profile {
@@ -14963,39 +14932,11 @@ export const AboutPageMembersDocument = gql`
           id
           myPrivileges
         }
-        community {
-          id
-          roleSet {
-            id
-            memberUsers: usersInRole(role: MEMBER, limit: 8) {
-              ...CommunityMemberUser
-            }
-            memberOrganizations: organizationsInRole(role: MEMBER) {
-              ...CommunityMemberOrganization
-            }
-            memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
-              id
-              searchVisibility
-              profile {
-                id
-                displayName
-                tagline
-                url
-                avatar: visual(type: AVATAR) {
-                  ...VisualUri
-                }
-              }
-            }
-          }
-        }
       }
     }
   }
-  ${RoleSetContributorRolesFragmentDoc}
+  ${RoleSetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
-  ${CommunityMemberUserFragmentDoc}
-  ${CommunityMemberOrganizationFragmentDoc}
-  ${VisualUriFragmentDoc}
 `;
 
 /**

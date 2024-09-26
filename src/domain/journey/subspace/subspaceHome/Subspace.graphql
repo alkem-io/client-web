@@ -32,9 +32,8 @@ fragment SubspacePageSpace on Space {
       myPrivileges
     }
     roleSet {
-      id
+      ...RoleSetDetails
       myMembershipStatus
-      ...RoleSetContributorRoles
     }
   }
   collaboration {
