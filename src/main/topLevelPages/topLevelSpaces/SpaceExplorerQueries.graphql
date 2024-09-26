@@ -136,9 +136,6 @@ query SpaceExplorerWelcomeSpace($spaceNameId: UUID_NAMEID!) {
       id
       url
       displayName
-      cardBanner: visual(type: CARD) {
-        ...VisualUri
-      }
     }
   }
 }

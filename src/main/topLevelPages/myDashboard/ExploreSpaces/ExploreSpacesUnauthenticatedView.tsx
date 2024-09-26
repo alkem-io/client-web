@@ -1,24 +1,24 @@
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import PageContentBlock from '../../../core/ui/content/PageContentBlock';
-import { Caption, CaptionSmall } from '../../../core/ui/typography';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import { Caption, CaptionSmall } from '../../../../core/ui/typography';
 import { Box, Button } from '@mui/material';
 import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import SearchTagsInput from '../../../domain/shared/components/SearchTagsInput/SearchTagsInput';
-import Gutters from '../../../core/ui/grid/Gutters';
-import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import { Identifiable } from '../../../core/utils/Identifiable';
-import { Visual } from '../../../domain/common/visual/Visual';
-import { gutters, useGridItem } from '../../../core/ui/grid/utils';
-import useLazyLoading from '../../../domain/shared/pagination/useLazyLoading';
-import SeeMoreExpandable from '../../../core/ui/content/SeeMoreExpandable';
+import SearchTagsInput from '../../../../domain/shared/components/SearchTagsInput/SearchTagsInput';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import { Identifiable } from '../../../../core/utils/Identifiable';
+import { Visual } from '../../../../domain/common/visual/Visual';
+import { gutters, useGridItem } from '../../../../core/ui/grid/utils';
+import useLazyLoading from '../../../../domain/shared/pagination/useLazyLoading';
+import SeeMoreExpandable from '../../../../core/ui/content/SeeMoreExpandable';
 import { Link } from 'react-router-dom';
-import { AUTH_SIGN_UP_PATH } from '../../../core/auth/authentication/constants/authentication.constants';
-import { Actions } from '../../../core/ui/actions/Actions';
-import JourneyHoverCard from '../myDashboard/recentSpaces/JourneyHoverCard';
+import { AUTH_SIGN_UP_PATH } from '../../../../core/auth/authentication/constants/authentication.constants';
+import { Actions } from '../../../../core/ui/actions/Actions';
+import JourneyTile from './JourneyTile';
 
-export interface SpaceExplorerUnauthenticatedViewProps {
+export interface ExploreSpacesUnauthenticatedViewProps {
   spaces: SpaceWithParent[] | undefined;
   setSearchTerms: React.Dispatch<React.SetStateAction<string[]>>;
   setSelectedFilter: React.Dispatch<React.SetStateAction<string>>;
@@ -72,7 +72,7 @@ interface Space extends Identifiable {
 
 export const ITEMS_LIMIT = 14; // 3 rows of 5 but without the welcome space
 
-export const SpaceExplorerUnauthenticatedView: FC<SpaceExplorerUnauthenticatedViewProps> = ({
+export const ExploreSpacesUnauthenticatedView: FC<ExploreSpacesUnauthenticatedViewProps> = ({
   spaces,
   searchTerms,
   setSearchTerms,
@@ -106,9 +106,15 @@ export const SpaceExplorerUnauthenticatedView: FC<SpaceExplorerUnauthenticatedVi
     setSelectedFilter(filter);
   };
 
+  const renderSkeleton = (size: number) =>
+    Array.from({ length: size }).map((_, index) => (
+      <JourneyTile key={index} journey={undefined} journeyTypeName="space" />
+    ));
+
+  const isSearching = searchTerms.length > 0 || selectedFilter !== SpacesExplorerMembershipFilter.All;
+
   // show the welcome space first in the results if no search terms or filters applied
-  const visibleFirstWelcomeSpace =
-    searchTerms.length === 0 && selectedFilter === SpacesExplorerMembershipFilter.All && welcomeSpace;
+  const visibleFirstWelcomeSpace = !isSearching && welcomeSpace;
 
   return (
     <PageContentBlock>
@@ -151,21 +157,22 @@ export const SpaceExplorerUnauthenticatedView: FC<SpaceExplorerUnauthenticatedVi
           {t('pages.exploreSpaces.search.noResults')}
         </CaptionSmall>
       )}
-      {spaces && spaces.length > 0 && (
-        <>
-          <ScrollableCardsLayoutContainer>
-            {visibleFirstWelcomeSpace && <JourneyHoverCard journey={welcomeSpace} journeyTypeName="space" />}
+      <ScrollableCardsLayoutContainer>
+        {visibleFirstWelcomeSpace && <JourneyTile journey={welcomeSpace} journeyTypeName="space" />}
+        {spaces && spaces.length > 0 && (
+          <>
             {visibleSpaces!.map(space =>
               visibleFirstWelcomeSpace && space.id === welcomeSpace?.id ? null : (
-                <JourneyHoverCard key={space.id} journey={space} journeyTypeName="space" />
+                <JourneyTile key={space.id} journey={space} journeyTypeName="space" />
               )
             )}
             {enableLazyLoading && loader}
-          </ScrollableCardsLayoutContainer>
-          {enableShowAll && (
-            <SeeMoreExpandable onExpand={() => setHasExpanded(true)} label={t('pages.exploreSpaces.seeAll')} />
-          )}
-        </>
+          </>
+        )}
+        {loading && renderSkeleton(5)}
+      </ScrollableCardsLayoutContainer>
+      {enableShowAll && (
+        <SeeMoreExpandable onExpand={() => setHasExpanded(true)} label={t('pages.exploreSpaces.seeAll')} />
       )}
       <Actions justifyContent={'center'}>
         <Button

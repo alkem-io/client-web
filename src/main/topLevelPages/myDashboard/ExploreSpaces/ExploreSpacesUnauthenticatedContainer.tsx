@@ -1,17 +1,17 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  useSpaceExplorerAllSpacesQuery,
-  useSpaceExplorerSearchQuery,
-  useSpaceExplorerWelcomeSpaceQuery,
-} from '../../../core/apollo/generated/apollo-hooks';
-import { SearchResultType, SpaceExplorerSearchSpaceFragment } from '../../../core/apollo/generated/graphql-schema';
-import { TypedSearchResult } from '../../search/SearchView';
-import { ITEMS_LIMIT, SpacesExplorerMembershipFilter, SpaceWithParent } from './SpaceExplorerUnauthenticatedView';
-import usePaginatedQuery from '../../../domain/shared/pagination/usePaginatedQuery';
-import { SimpleContainerProps } from '../../../core/container/SimpleContainer';
+  useExploreAllSpacesQuery,
+  useExploreSpacesSearchQuery,
+  useWelcomeSpaceQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
+import { ExploreSpacesSearchFragment, SearchResultType } from '../../../../core/apollo/generated/graphql-schema';
+import { TypedSearchResult } from '../../../search/SearchView';
+import { ITEMS_LIMIT, SpacesExplorerMembershipFilter, SpaceWithParent } from './ExploreSpacesUnauthenticatedView';
+import usePaginatedQuery from '../../../../domain/shared/pagination/usePaginatedQuery';
+import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
 
-export interface ChallengeExplorerContainerEntities {
+export interface ExploreSpacesContainerEntities {
   spaces: SpaceWithParent[] | undefined;
   searchTerms: string[];
   selectedFilter: string;
@@ -25,22 +25,22 @@ export interface ChallengeExplorerContainerEntities {
   }[];
 }
 
-interface SpaceExplorerUnauthenticatedContainerProps extends SimpleContainerProps<ChallengeExplorerContainerEntities> {
+interface ExploreSpacesUnauthenticatedContainerProps extends SimpleContainerProps<ExploreSpacesContainerEntities> {
   searchTerms: string[];
   selectedFilter: string;
 }
 
-const SpaceExplorerUnauthenticatedContainer = ({
+const ExploreSpacesUnauthenticatedContainer = ({
   searchTerms,
   selectedFilter,
   children,
-}: SpaceExplorerUnauthenticatedContainerProps) => {
+}: ExploreSpacesUnauthenticatedContainerProps) => {
   const { t } = useTranslation();
   const filtersConfig = t('spaces-filter.config', { returnObjects: true });
   const shouldSearch = searchTerms.length > 0 || selectedFilter !== SpacesExplorerMembershipFilter.All;
 
   // the following query will return errors if the suggestedSpace is missing on the ENV (welcome-space)
-  const { data: welcomeSpaceData } = useSpaceExplorerWelcomeSpaceQuery({
+  const { data: welcomeSpaceData } = useWelcomeSpaceQuery({
     variables: {
       spaceNameId: t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId'),
     },
@@ -59,7 +59,7 @@ const SpaceExplorerUnauthenticatedContainer = ({
   };
 
   // PUBLIC: Search for spaces and subspaces
-  const { data: rawSearchResults, loading: loadingSearchResults } = useSpaceExplorerSearchQuery({
+  const { data: rawSearchResults, loading: loadingSearchResults } = useExploreSpacesSearchQuery({
     variables: {
       searchData: {
         terms: getTerms(searchTerms, selectedFilter),
@@ -77,7 +77,7 @@ const SpaceExplorerUnauthenticatedContainer = ({
     loading: isLoadingSpaces,
     hasMore: hasMoreSpaces,
   } = usePaginatedQuery({
-    useQuery: useSpaceExplorerAllSpacesQuery,
+    useQuery: useExploreAllSpacesQuery,
     pageSize: ITEMS_LIMIT,
     variables: {},
     getPageInfo: result => result.spacesPaginated.pageInfo,
@@ -91,16 +91,12 @@ const SpaceExplorerUnauthenticatedContainer = ({
 
   const hasMore = !shouldSearch ? hasMoreSpaces : false;
 
-  const fetchedSpaces = useMemo(() => {
-    return spacesData?.spacesPaginated.spaces;
-  }, [spacesData, selectedFilter]);
-
   const loading = isLoadingSpaces || loadingSearchResults;
 
   const flattenedSpaces = useMemo<SpaceWithParent[] | undefined>(() => {
-    if (shouldSearch) {
+    if (shouldSearch && rawSearchResults?.search?.journeyResults) {
       return rawSearchResults?.search?.journeyResults.map(result => {
-        const entry = result as TypedSearchResult<SearchResultType.Space, SpaceExplorerSearchSpaceFragment>;
+        const entry = result as TypedSearchResult<SearchResultType.Space, ExploreSpacesSearchFragment>;
 
         if (entry.type === SearchResultType.Space) {
           return {
@@ -114,7 +110,7 @@ const SpaceExplorerUnauthenticatedContainer = ({
       });
     }
 
-    return fetchedSpaces;
+    return spacesData?.spacesPaginated.spaces;
   }, [spacesData, selectedFilter, rawSearchResults]);
 
   const provided = {
@@ -131,4 +127,4 @@ const SpaceExplorerUnauthenticatedContainer = ({
   return <>{children(provided)}</>;
 };
 
-export default SpaceExplorerUnauthenticatedContainer;
+export default ExploreSpacesUnauthenticatedContainer;

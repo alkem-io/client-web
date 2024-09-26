@@ -1,9 +1,9 @@
 import React, { FC, useState } from 'react';
-import SpaceExplorerUnauthenticatedContainer from '../topLevelSpaces/SpaceExplorerUnauthenticatedContainer';
+import ExploreSpacesUnauthenticatedContainer from './ExploreSpaces/ExploreSpacesUnauthenticatedContainer';
 import {
-  SpaceExplorerUnauthenticatedView,
+  ExploreSpacesUnauthenticatedView,
   SpacesExplorerMembershipFilter,
-} from '../topLevelSpaces/SpaceExplorerUnauthenticatedView';
+} from './ExploreSpaces/ExploreSpacesUnauthenticatedView';
 
 interface MyDashboardUnauthenticatedProps {}
 
@@ -12,17 +12,17 @@ const MyDashboardUnauthenticated: FC<MyDashboardUnauthenticatedProps> = () => {
   const [selectedFilter, setSelectedFilter] = useState<string>(SpacesExplorerMembershipFilter.All);
 
   return (
-    <SpaceExplorerUnauthenticatedContainer searchTerms={searchTerms} selectedFilter={selectedFilter}>
+    <ExploreSpacesUnauthenticatedContainer searchTerms={searchTerms} selectedFilter={selectedFilter}>
       {provided => {
         return (
-          <SpaceExplorerUnauthenticatedView
+          <ExploreSpacesUnauthenticatedView
             {...provided}
             setSearchTerms={setSearchTerms}
             setSelectedFilter={setSelectedFilter}
           />
         );
       }}
-    </SpaceExplorerUnauthenticatedContainer>
+    </ExploreSpacesUnauthenticatedContainer>
   );
 };
 

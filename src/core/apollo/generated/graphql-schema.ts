@@ -27716,6 +27716,122 @@ export type LibraryTemplatesFragment = {
   }>;
 };
 
+export type ExploreSpacesSearchQueryVariables = Exact<{
+  searchData: SearchInput;
+}>;
+
+export type ExploreSpacesSearchQuery = {
+  __typename?: 'Query';
+  search: {
+    __typename?: 'ISearchResults';
+    journeyResults: Array<
+      | { __typename?: 'SearchResultCallout'; id: string; type: SearchResultType; terms: Array<string> }
+      | { __typename?: 'SearchResultOrganization'; id: string; type: SearchResultType; terms: Array<string> }
+      | { __typename?: 'SearchResultPost'; id: string; type: SearchResultType; terms: Array<string> }
+      | {
+          __typename?: 'SearchResultSpace';
+          id: string;
+          type: SearchResultType;
+          terms: Array<string>;
+          space: {
+            __typename?: 'Space';
+            id: string;
+            type: SpaceType;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              url: string;
+              displayName: string;
+              cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          };
+        }
+      | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType; terms: Array<string> }
+      | { __typename?: 'SearchResultUserGroup'; id: string; type: SearchResultType; terms: Array<string> }
+    >;
+  };
+};
+
+export type ExploreSpacesSearchFragment = {
+  __typename?: 'SearchResultSpace';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    type: SpaceType;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      url: string;
+      displayName: string;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    };
+  };
+};
+
+export type ExploreAllSpacesQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  visibilities?: InputMaybe<Array<SpaceVisibility> | SpaceVisibility>;
+}>;
+
+export type ExploreAllSpacesQuery = {
+  __typename?: 'Query';
+  spacesPaginated: {
+    __typename?: 'PaginatedSpaces';
+    spaces: Array<{
+      __typename?: 'Space';
+      id: string;
+      type: SpaceType;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        url: string;
+        displayName: string;
+        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      };
+    }>;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      startCursor?: string | undefined;
+      endCursor?: string | undefined;
+      hasNextPage: boolean;
+    };
+  };
+};
+
+export type WelcomeSpaceQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type WelcomeSpaceQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    type: SpaceType;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      url: string;
+      displayName: string;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    };
+  };
+};
+
+export type ExploreSpacesFragment = {
+  __typename?: 'Space';
+  id: string;
+  type: SpaceType;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    url: string;
+    displayName: string;
+    cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  };
+};
+
 export type DashboardSpacesQueryVariables = Exact<{
   visibilities?: InputMaybe<Array<SpaceVisibility> | SpaceVisibility>;
 }>;
@@ -29718,12 +29834,6 @@ export type SpaceExplorerWelcomeSpaceQuery = {
   space: {
     __typename?: 'Space';
     id: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      url: string;
-      displayName: string;
-      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    };
+    profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   };
 };

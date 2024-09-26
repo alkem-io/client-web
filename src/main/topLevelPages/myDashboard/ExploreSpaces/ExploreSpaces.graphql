@@ -1,0 +1,48 @@
+query ExploreSpacesSearch($searchData: SearchInput!) {
+  search(searchData: $searchData) {
+    journeyResults {
+      id
+      type
+      terms
+      ... on SearchResultSpace {
+        ...ExploreSpacesSearch
+      }
+    }
+  }
+}
+
+fragment ExploreSpacesSearch on SearchResultSpace {
+  space {
+    ...ExploreSpaces
+  }
+}
+
+query ExploreAllSpaces($first: Int!, $after: UUID, $visibilities: [SpaceVisibility!] = [ACTIVE]) {
+  spacesPaginated(first: $first, after: $after, filter: { visibilities: $visibilities }) {
+    spaces {
+      ...ExploreSpaces
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}
+
+query WelcomeSpace($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    ...ExploreSpaces
+  }
+}
+
+fragment ExploreSpaces on Space {
+  id
+  type
+  profile {
+    id
+    url
+    displayName
+    cardBanner: visual(type: CARD) {
+      ...VisualUri
+    }
+  }
+}
