@@ -70,7 +70,7 @@ interface Space extends Identifiable {
   matchedTerms?: string[];
 }
 
-export const ITEMS_LIMIT = 15;
+export const ITEMS_LIMIT = 14; // 3 rows of 5 but without the welcome space
 
 export const SpaceExplorerUnauthenticatedView: FC<SpaceExplorerUnauthenticatedViewProps> = ({
   spaces,
@@ -155,10 +155,10 @@ export const SpaceExplorerUnauthenticatedView: FC<SpaceExplorerUnauthenticatedVi
         <>
           <ScrollableCardsLayoutContainer>
             {visibleFirstWelcomeSpace && <JourneyHoverCard journey={welcomeSpace} journeyTypeName="space" />}
-            {visibleSpaces!.map(
-              space =>
-                !visibleFirstWelcomeSpace ||
-                (space.id !== welcomeSpace?.id && <JourneyHoverCard journey={space} journeyTypeName="space" />)
+            {visibleSpaces!.map(space =>
+              visibleFirstWelcomeSpace && space.id === welcomeSpace?.id ? null : (
+                <JourneyHoverCard key={space.id} journey={space} journeyTypeName="space" />
+              )
             )}
             {enableLazyLoading && loader}
           </ScrollableCardsLayoutContainer>
