@@ -72,7 +72,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useRoleSetAdmin({ communityId, roleSetId, spaceId, challengeId, journeyLevel });
+  } = useRoleSetAdmin({ roleSetId, spaceId, challengeId, journeyLevel });
 
   const currentApplicationsUserIds = useMemo(
     () =>

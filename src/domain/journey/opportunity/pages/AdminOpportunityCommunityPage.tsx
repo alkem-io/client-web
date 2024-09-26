@@ -13,7 +13,7 @@ import CommunityVirtualContributors from '../../../community/community/Community
 import { useSpace } from '../../space/SpaceContext/useSpace';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { loading: isLoadingChallenge, communityId, roleSetId, opportunityId } = useOpportunity();
+  const { loading: isLoadingChallenge, roleSetId, opportunityId } = useOpportunity();
 
   const { spaceId } = useSpace();
 
@@ -39,7 +39,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     getAvailableVirtualContributors,
     getAvailableVirtualContributorsInLibrary,
     loading,
-  } = useRoleSetAdmin({ spaceId, opportunityId, communityId, roleSetId, journeyLevel: 2 });
+  } = useRoleSetAdmin({ spaceId, opportunityId, roleSetId, journeyLevel: 2 });
 
   if (!spaceId || isLoadingChallenge) {
     return null;
