@@ -4,6 +4,7 @@ import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import { Caption, CaptionSmall } from '../../../core/ui/typography';
 import { Box, Button } from '@mui/material';
 import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import SearchTagsInput from '../../../domain/shared/components/SearchTagsInput/SearchTagsInput';
 import Gutters from '../../../core/ui/grid/Gutters';
 import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
@@ -173,6 +174,7 @@ export const SpaceExplorerUnauthenticatedView: FC<SpaceExplorerUnauthenticatedVi
           variant="contained"
           size="large"
           sx={{ width: 'auto', textTransform: 'none', a: { textDecoration: 'underline' } }}
+          startIcon={<AccountCircleOutlinedIcon />}
         >
           {t('authentication.sign-up')}
         </Button>
