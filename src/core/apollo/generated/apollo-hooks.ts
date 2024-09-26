@@ -3656,7 +3656,7 @@ export const SpaceExplorerSubspaceFragmentDoc = gql`
       tagline
       displayName
       description
-      cardBanner2: visual(type: CARD) {
+      cardBanner: visual(type: CARD) {
         ...VisualUri
       }
       type
@@ -3664,7 +3664,7 @@ export const SpaceExplorerSubspaceFragmentDoc = gql`
         id
         tags
       }
-      avatar2: visual(type: AVATAR) {
+      avatar: visual(type: AVATAR) {
         ...VisualUri
       }
     }
