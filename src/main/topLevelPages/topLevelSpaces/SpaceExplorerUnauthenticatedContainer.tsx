@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
   useSpaceExplorerAllSpacesQuery,
   useSpaceExplorerSearchQuery,
+  useSpaceExplorerWelcomeSpaceQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
 import { SearchResultType, SpaceExplorerSearchSpaceFragment } from '../../../core/apollo/generated/graphql-schema';
 import { TypedSearchResult } from '../../search/SearchView';
@@ -37,6 +38,14 @@ const SpaceExplorerUnauthenticatedContainer = ({
   const { t } = useTranslation();
   const filtersConfig = t('spaces-filter.config', { returnObjects: true });
   const shouldSearch = searchTerms.length > 0 || selectedFilter !== SpacesExplorerMembershipFilter.All;
+
+  // the following query will return errors if the suggestedSpace is missing on the ENV (welcome-space)
+  const { data: welcomeSpaceData } = useSpaceExplorerWelcomeSpaceQuery({
+    variables: {
+      spaceNameId: t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId'),
+    },
+    skip: !!shouldSearch,
+  });
 
   // get translated tags based on the selected filter
   const getTerms = (searchTerms: string[], selectedFilter: string) => {
@@ -116,6 +125,7 @@ const SpaceExplorerUnauthenticatedContainer = ({
     loading,
     hasMore,
     filtersConfig,
+    welcomeSpace: welcomeSpaceData?.space,
   };
 
   return <>{children(provided)}</>;

@@ -23558,9 +23558,13 @@ export const SpaceExplorerWelcomeSpaceDocument = gql`
         id
         url
         displayName
+        cardBanner: visual(type: CARD) {
+          ...VisualUri
+        }
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**

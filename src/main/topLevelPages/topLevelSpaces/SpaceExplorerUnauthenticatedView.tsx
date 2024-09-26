@@ -30,6 +30,14 @@ export interface SpaceExplorerUnauthenticatedViewProps {
     key: string;
     name: string;
   }[];
+  welcomeSpace?: {
+    id: string;
+    profile: {
+      displayName: string;
+      url: string;
+      cardBanner?: Visual;
+    };
+  };
 }
 
 // Default option not a filer
@@ -73,6 +81,7 @@ export const SpaceExplorerUnauthenticatedView: FC<SpaceExplorerUnauthenticatedVi
   fetchMore,
   hasMore,
   filtersConfig,
+  welcomeSpace,
 }) => {
   const { t } = useTranslation();
 
@@ -95,6 +104,10 @@ export const SpaceExplorerUnauthenticatedView: FC<SpaceExplorerUnauthenticatedVi
   const onFilterChange = (filter: string) => {
     setSelectedFilter(filter);
   };
+
+  // show the welcome space first in the results if no search terms or filters applied
+  const visibleFirstWelcomeSpace =
+    searchTerms.length === 0 && selectedFilter === SpacesExplorerMembershipFilter.All && welcomeSpace;
 
   return (
     <PageContentBlock>
@@ -140,9 +153,12 @@ export const SpaceExplorerUnauthenticatedView: FC<SpaceExplorerUnauthenticatedVi
       {spaces && spaces.length > 0 && (
         <>
           <ScrollableCardsLayoutContainer>
-            {visibleSpaces!.map(space => (
-              <JourneyHoverCard journey={space} journeyTypeName="space" />
-            ))}
+            {visibleFirstWelcomeSpace && <JourneyHoverCard journey={welcomeSpace} journeyTypeName="space" />}
+            {visibleSpaces!.map(
+              space =>
+                !visibleFirstWelcomeSpace ||
+                (space.id !== welcomeSpace?.id && <JourneyHoverCard journey={space} journeyTypeName="space" />)
+            )}
             {enableLazyLoading && loader}
           </ScrollableCardsLayoutContainer>
           {enableShowAll && (

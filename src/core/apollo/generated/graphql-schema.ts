@@ -29700,6 +29700,12 @@ export type SpaceExplorerWelcomeSpaceQuery = {
   space: {
     __typename?: 'Space';
     id: string;
-    profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      url: string;
+      displayName: string;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    };
   };
 };
