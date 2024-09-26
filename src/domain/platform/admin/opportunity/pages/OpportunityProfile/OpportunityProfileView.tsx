@@ -23,6 +23,10 @@ interface Props {
   mode: FormMode;
 }
 
+// TODO: Probably this file should be removed (subspace?)
+/**
+ * @deprecated
+ */
 const OpportunityProfileView: FC<Props> = ({ mode }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -61,7 +65,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
     if (!challengeId) {
       throw new Error('Challenge ID is required');
     }
-
+    // TODO: We need to select the template for the user if they want and put it in the collaborationData passing what we get using the createInput service
     switch (mode) {
       case FormMode.create:
         createSubspace({
@@ -74,9 +78,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
               },
               spaceID: challengeId,
               tags: tagsets.flatMap(x => x.tags),
-              collaborationData: {
-                innovationFlowTemplateID: '',
-              },
+              collaborationData: {},
             },
           },
         });

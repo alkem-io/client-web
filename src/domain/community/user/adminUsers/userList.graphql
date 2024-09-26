@@ -2,16 +2,38 @@ query userList($first: Int!, $after: UUID, $filter: UserFilterInput) {
   usersPaginated(first: $first, after: $after, filter: $filter) {
     users {
       id
+      account {
+        id
+        subscriptions {
+          name
+        }
+      }
       profile {
         id
         url
         displayName
+        visual(type: AVATAR) {
+          id
+          uri
+        }
       }
       email
     }
     pageInfo {
       endCursor
       hasNextPage
+    }
+  }
+  platform {
+    id
+    licensing {
+      id
+      plans {
+        id
+        name
+        type
+        licenseCredential
+      }
     }
   }
 }

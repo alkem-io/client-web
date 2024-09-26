@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@mui/material';
 import PageContent from '../../../../core/ui/content/PageContent';
@@ -21,17 +21,18 @@ import PageContentBlockCollapsible from '../../../../core/ui/content/PageContent
 import { BlockTitle } from '../../../../core/ui/typography';
 import CommunityGuidelinesContainer from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import CommunityGuidelinesForm from '../../../community/community/CommunityGuidelines/CommunityGuidelinesForm';
-import CommunityGuidelinesTemplatesLibrary from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatesLibrary';
 import { useSpace } from '../../space/SpaceContext/useSpace';
+import ImportTemplatesDialog from '../../../templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import { LoadingButton } from '@mui/lab';
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
   const { loading: isLoadingChallenge, communityId, subspaceId: challengeId, subspaceNameId } = useSubSpace();
   const { isPrivate, loading: isLoadingSpace } = useSpace();
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const openTemplateDialog = useCallback(() => setIsDialogOpen(true), []);
-  const closeTemplatesDialog = useCallback(() => setIsDialogOpen(false), []);
+  const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
   const { spaceId, journeyLevel } = useRouteResolver();
 
@@ -131,7 +132,11 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
               <PageContentBlockCollapsible
                 header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
                 primaryAction={
-                  <Button variant="outlined" onClick={() => openTemplateDialog()} startIcon={<InnovationLibraryIcon />}>
+                  <Button
+                    variant="outlined"
+                    onClick={() => setCommunityGuidelinesTemplatesDialogOpen(true)}
+                    startIcon={<InnovationLibraryIcon />}
+                  >
                     {t('common.library')}
                   </Button>
                 }
@@ -143,10 +148,17 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
                   profileId={profileId}
                 />
               </PageContentBlockCollapsible>
-              <CommunityGuidelinesTemplatesLibrary
-                open={isDialogOpen}
-                onClose={closeTemplatesDialog}
+              <ImportTemplatesDialog
+                open={communityGuidelinesTemplatesDialogOpen}
+                templateType={TemplateType.CommunityGuidelines}
+                onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
                 onSelectTemplate={onSelectCommunityGuidelinesTemplate}
+                enablePlatformTemplates
+                actionButton={
+                  <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+                    {t('buttons.use')}
+                  </LoadingButton>
+                }
               />
             </>
           )}

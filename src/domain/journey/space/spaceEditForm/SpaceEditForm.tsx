@@ -7,7 +7,7 @@ import ContextReferenceSegment from '../../../platform/admin/components/Common/C
 import { contextSegmentSchema } from '../../../platform/admin/components/Common/ContextSegment';
 import { nameSegmentSchema } from '../../../platform/admin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
-import { TagsetSegment, tagsetSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
 import { EmptyLocation, Location } from '../../../common/location/Location';
 import { formatLocation } from '../../../common/location/LocationUtils';
 import { LocationSegment } from '../../../common/location/LocationSegment';
@@ -74,7 +74,7 @@ const SpaceEditForm: FC<SpaceEditFormProps> = ({ profile, name, nameID, tagset, 
     nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
     tagline: contextSegmentSchema.fields?.tagline ?? yup.string(),
     references: referenceSegmentSchema,
-    tagsets: tagsetSegmentSchema,
+    tagsets: tagsetsSegmentSchema,
   });
 
   return (

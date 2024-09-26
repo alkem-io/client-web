@@ -38,7 +38,7 @@ export interface CalloutCreationType {
 
 export interface CalloutCreationParams {
   journeyId: string | undefined;
-  collabId?: string;
+  overrideCollaborationId?: string;
   initialOpened?: boolean;
 }
 
@@ -53,25 +53,30 @@ export interface CalloutCreationUtils {
   canCreateCallout: boolean;
 }
 
+// Only Posts have comments for now.
+const CALLOUTS_WITH_COMMENTS = [CalloutType.Post];
+
 export const useCalloutCreation = ({
   journeyId,
-  collabId,
+  overrideCollaborationId,
   initialOpened = false,
 }: CalloutCreationParams): CalloutCreationUtils => {
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
   const [isCreating, setIsCreating] = useState(false);
   const { collaborationId, canCreateCallout, loading } = useCollaborationAuthorization({ journeyId });
 
+  const collaborationID = overrideCollaborationId ?? collaborationId;
+
   const [createCallout] = useCreateCalloutMutation({
     update: (cache, { data }) => {
-      if (!data || !(collabId || collaborationId)) {
+      if (!data || !collaborationID) {
         return;
       }
       const { createCalloutOnCollaboration } = data;
 
       const collabRefId = cache.identify({
         __typename: 'Collaboration',
-        id: collabId ?? collaborationId,
+        id: collaborationID,
       });
 
       if (!collabRefId) {
@@ -101,7 +106,7 @@ export const useCalloutCreation = ({
 
   const handleCreateCallout = useCallback(
     async (callout: CalloutCreationType) => {
-      if (!collaborationId && !collabId) {
+      if (!collaborationID) {
         return;
       }
 
@@ -111,7 +116,8 @@ export const useCalloutCreation = ({
         const result = await createCallout({
           variables: {
             calloutData: {
-              collaborationID: collabId ?? collaborationId ?? '',
+              collaborationID,
+              enableComments: CALLOUTS_WITH_COMMENTS.includes(callout.type),
               ...callout,
             },
           },
@@ -124,7 +130,7 @@ export const useCalloutCreation = ({
         setIsCreating(false);
       }
     },
-    [collabId, collaborationId, createCallout]
+    [collaborationID, createCallout]
   );
 
   return {

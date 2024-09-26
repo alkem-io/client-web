@@ -1,0 +1,10 @@
+query SpaceLibrary($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      library {
+        id
+      }
+    }
+  }
+}

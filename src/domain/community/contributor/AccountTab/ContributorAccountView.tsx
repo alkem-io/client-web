@@ -11,9 +11,6 @@ import JourneyCardHorizontal, {
 } from '../../../journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
-import InnovationPackCardHorizontal, {
-  InnovationPackCardHorizontalSkeleton,
-} from '../../../collaboration/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
 import InnovationHubCardHorizontal, {
   InnovationHubCardHorizontalSkeleton,
 } from '../../../innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
@@ -21,7 +18,6 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDialog';
 import useNewVirtualContributorWizard from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
-import CreateInnovationPackDialog from '../../../platform/admin/templates/InnovationPacks/admin/CreateInnovationPackDialog';
 import CreateInnovationHubDialog from '../../../innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
 import { AuthorizationPrivilege, SpaceType, SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import { VIRTUAL_CONTRIBUTORS_LIMIT } from '../../../../main/topLevelPages/myDashboard/myAccount/MyAccountBlockVCCampaignUser';
@@ -35,6 +31,10 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import EntityConfirmDeleteDialog from '../../../journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
+import InnovationPackCardHorizontal, {
+  InnovationPackCardHorizontalSkeleton,
+} from '../../../InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
+import CreateInnovationPackDialog from '../../../InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
 
 export const SPACE_COUNT_LIMIT = 3;
 
@@ -174,7 +174,7 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
       return;
     }
 
-    deleteSpaceMutation({
+    return deleteSpaceMutation({
       variables: {
         input: {
           ID: selectedId,
@@ -203,7 +203,7 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
       return;
     }
 
-    deleteVCMutation({
+    return deleteVCMutation({
       variables: {
         virtualContributorData: {
           ID: selectedId,
@@ -232,7 +232,7 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
       return;
     }
 
-    deletePackMutation({
+    return deletePackMutation({
       variables: {
         innovationPackId: selectedId,
       },
@@ -259,7 +259,7 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
       return;
     }
 
-    deleteHubMutation({
+    return deleteHubMutation({
       variables: {
         innovationHubId: selectedId,
       },
@@ -275,17 +275,13 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
   const deleteEntity = () => {
     switch (entity) {
       case Entities.Space:
-        deleteSpace();
-        break;
+        return deleteSpace();
       case Entities.VirtualContributor:
-        deleteVC();
-        break;
+        return deleteVC();
       case Entities.InnovationPack:
-        deletePack();
-        break;
+        return deletePack();
       case Entities.InnovationHub:
-        deleteHub();
-        break;
+        return deleteHub();
     }
   };
 
@@ -357,17 +353,19 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
         <BlockTitle>{t('pages.admin.generic.sections.account.hostedSpaces')}</BlockTitle>
         <Gutters disablePadding disableGap className={styles.gutters}>
           {loading && <JourneyCardHorizontalSkeleton />}
-          <Gutters>
+          <Gutters disablePadding>
             {!loading &&
               account?.spaces.map(space => (
                 <JourneyCardHorizontal
                   key={space.id}
                   journeyTypeName="space"
                   journey={{ profile: space.profile, community: {} }}
+                  size="medium"
                   deepness={0}
                   seamless
                   sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}
                   actions={getSpaceActions(space.id)}
+                  disableHoverState
                 />
               ))}
           </Gutters>
@@ -457,7 +455,6 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
             open={deleteDialogOpen}
             onClose={clearDeleteState}
             onDelete={deleteEntity}
-            submitting={deleteSpaceLoading || deletePackLoading || deleteVCLoading}
             description={entity === Entities.Space ? undefined : SHORT_NON_SPACE_DESCRIPTION}
           />
         )}

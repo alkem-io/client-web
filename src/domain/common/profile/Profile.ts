@@ -9,7 +9,7 @@ export interface Tagset {
 }
 export interface UpdateTagset {
   id: string;
-  name: string;
+  name?: string;
   tags?: string[];
 }
 

@@ -22,7 +22,7 @@ import devRoute from '../../dev/routes';
 import RedirectToLanding from '../../domain/platform/routes/RedirectToLanding';
 import ForumRoute from '../../domain/communication/discussion/routing/ForumRoute';
 import InnovationLibraryPage from '../topLevelPages/InnovationLibraryPage/InnovationLibraryPage';
-import InnovationPackRoute from '../../domain/collaboration/InnovationPack/InnovationPackRoute';
+import InnovationPackRoute from '../../domain/InnovationPack/InnovationPackRoute';
 import NonIdentity from '../../domain/platform/routes/NonIdentity';
 import useRedirectToIdentityDomain from '../../core/auth/authentication/routing/useRedirectToIdentityDomain';
 import { EntityPageLayoutHolder, NotFoundPageLayout, RenderPoint } from '../../domain/journey/common/EntityPageLayout';

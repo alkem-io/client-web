@@ -3,7 +3,6 @@ mutation CreatePostFromContributeTab($postData: CreateContributionOnCalloutInput
     post {
       id
       nameID
-      type
       profile {
         id
         displayName

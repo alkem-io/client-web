@@ -3,7 +3,6 @@ import {
   WhiteboardDetailsFragmentDoc,
   useCreateWhiteboardOnCalloutMutation,
   useDeleteWhiteboardMutation,
-  useUpdateWhiteboardContentMutation,
   useUpdateWhiteboardMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
@@ -121,9 +120,7 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
     [deleteWhiteboard]
   );
 
-  const [updateWhiteboardContent, { loading: updatingWhiteboardContent }] = useUpdateWhiteboardContentMutation({});
-
-  const handleUpdateWhiteboardContent = useCallback(
+  const handleUploadWhiteboardVisuals = useCallback(
     async (
       whiteboard: WhiteboardContentFragment & WhiteboardDetailsFragment,
       previewImages?: WhiteboardPreviewImage[]
@@ -135,21 +132,12 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
           whiteboard.nameID
         );
       }
-      const result = await updateWhiteboardContent({
-        variables: {
-          input: {
-            ID: whiteboard.id,
-            content: whiteboard.content,
-          },
-        },
-        refetchQueries: ['CalloutWhiteboards'],
-      });
       return {
-        success: !result.errors || result.errors.length === 0,
-        errors: result.errors?.map(({ message }) => message),
+        success: true,
+        errors: undefined,
       };
     },
-    [updateWhiteboardContent]
+    []
   );
 
   const [updateWhiteboard, { loading: updatingWhiteboard }] = useUpdateWhiteboardMutation({});
@@ -162,7 +150,7 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
         variables: {
           input: {
             ID: whiteboardId,
-            profileData: {
+            profile: {
               displayName,
             },
           },
@@ -176,10 +164,10 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
     () => ({
       onCreate: handleCreateWhiteboard,
       onDelete: handleDeleteWhiteboard,
-      onUpdate: handleUpdateWhiteboardContent,
+      onUpdate: handleUploadWhiteboardVisuals,
       onChangeDisplayName: handleChangeDisplayName,
     }),
-    [handleUpdateWhiteboardContent]
+    [handleUploadWhiteboardVisuals]
   );
 
   return (
@@ -189,7 +177,7 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
         {
           creatingWhiteboard,
           deletingWhiteboard,
-          updatingWhiteboardContent,
+          updatingWhiteboardContent: false,
           updatingWhiteboard,
           uploadingVisuals,
         },
