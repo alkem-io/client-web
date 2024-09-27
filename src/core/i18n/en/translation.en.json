@@ -2687,6 +2687,9 @@
       "shortName": "$t(common.forum)",
       "new-title": "Alkemio Forum - Initiate Discussion",
       "back": "See all discussions"
+    },
+    "documentation": {
+      "title": "Documentation"
     }
   },
   "operations": {

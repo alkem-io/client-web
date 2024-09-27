@@ -23598,6 +23598,7 @@ export type ConfigurationQuery = {
         newuser: string;
         tips: string;
         aup: string;
+        documentation: string;
       };
       featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
       sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
@@ -23644,6 +23645,7 @@ export type ConfigurationFragment = {
     newuser: string;
     tips: string;
     aup: string;
+    documentation: string;
   };
   featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
