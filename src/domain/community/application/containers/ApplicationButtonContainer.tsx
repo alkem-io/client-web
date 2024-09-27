@@ -129,7 +129,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
 
   const parentUrl = parentSpace?.profile.url;
 
-  const communityPrivileges = space?.community?.authorization?.myPrivileges ?? [];
+  const communityPrivileges = space?.community?.roleSet?.authorization?.myPrivileges ?? [];
 
   const canJoinCommunity =
     (isChildJourney && isParentMember && communityPrivileges.includes(AuthorizationPrivilege.CommunityJoin)) ||

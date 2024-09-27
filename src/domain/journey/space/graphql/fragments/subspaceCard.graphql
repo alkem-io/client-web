@@ -27,12 +27,12 @@ fragment SubspaceCard on Space {
     id
     roleSet {
       id
-        myMembershipStatus
+      myMembershipStatus
     }
   }
   settings {
     privacy {
-        mode
+      mode
     }
   }
 }
