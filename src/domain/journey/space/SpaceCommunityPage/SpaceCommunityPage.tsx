@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box } from '@mui/material';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import PageContent from '../../../../core/ui/content/PageContent';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
@@ -11,26 +10,17 @@ import {
   DirectMessageDialog,
   MessageReceiverChipData,
 } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import { ActivityComponent } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import CommunityContributorsBlockWide from '../../../community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWide';
 import { useSpaceCommunityPageQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
 import {
-  ActivityEventType,
   AuthorizationPrivilege,
   CalloutGroupName,
   SearchVisibility,
 } from '../../../../core/apollo/generated/graphql-schema';
 import SpaceCommunityContainer from './SpaceCommunityContainer';
 import SpacePageLayout from '../layout/SpacePageLayout';
-import { RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../../common/journeyDashboard/constants';
-import SeeMore from '../../../../core/ui/content/SeeMore';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { useSpace } from '../SpaceContext/useSpace';
@@ -42,7 +32,7 @@ import { useUserContext } from '../../../community/user';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
-  const { user, isAuthenticated } = useUserContext();
+  const { isAuthenticated } = useUserContext();
   const { spaceId, journeyPath } = useRouteResolver();
   const { communityId } = useSpace();
 
@@ -80,19 +70,6 @@ const SpaceCommunityPage = () => {
 
   const hostOrganizations = useMemo(() => data?.space.provider && [data.space.provider], [data?.space.provider]);
 
-  const spacePrivileges = data?.space.authorization?.myPrivileges ?? [];
-
-  const permissions = {
-    readAccess: spacePrivileges.includes(AuthorizationPrivilege.Read),
-    readUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
-  };
-
-  const { activities, fetchMoreActivities } = useActivityOnCollaboration(data?.space.collaboration?.id, {
-    types: [ActivityEventType.MemberJoined],
-    limit: 5,
-    skip: !permissions.readAccess || !permissions.readUsers,
-  });
-
   const { memberUsers, memberOrganizations } = useCommunityMembersAsCardProps(data?.space.community, {
     memberUsersLimit: 0,
     memberOrganizationsLimit: 0,
@@ -100,20 +77,12 @@ const SpaceCommunityPage = () => {
 
   const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(data?.space.community?.id);
 
-  const [isActivitiesDialogOpen, setIsActivitiesDialogOpen] = useState(false);
-
   const hasReadPrivilege = data?.space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
   let virtualContributors: VirtualContributorProps[] = [];
   if (hasReadPrivilege) {
     virtualContributors =
       data?.space.community?.virtualContributors?.filter(vc => vc?.searchVisibility !== SearchVisibility.Hidden) ?? [];
   }
-
-  useEffect(() => {
-    if (isActivitiesDialogOpen) {
-      fetchMoreActivities(RECENT_ACTIVITIES_LIMIT_EXPANDED);
-    }
-  }, [isActivitiesDialogOpen]);
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Community}>
@@ -145,28 +114,6 @@ const SpaceCommunityPage = () => {
             </InfoColumn>
             <ContentColumn>
               <CommunityContributorsBlockWide users={memberUsers} organizations={memberOrganizations} />
-              {permissions.readAccess && permissions.readUsers && (
-                <PageContentBlock>
-                  <PageContentBlockHeader title={t('common.activity')} />
-                  <Box margin={-1}>
-                    <ActivityComponent activities={activities} limit={5} />
-                  </Box>
-                  <SeeMore subject={t('common.contributions')} onClick={() => setIsActivitiesDialogOpen(true)} />
-                  <DialogWithGrid
-                    columns={8}
-                    open={isActivitiesDialogOpen}
-                    onClose={() => setIsActivitiesDialogOpen(false)}
-                  >
-                    <DialogHeader
-                      title={t('components.activity-log-section.title')}
-                      onClose={() => setIsActivitiesDialogOpen(false)}
-                    />
-                    <Box padding={1}>
-                      <ActivityComponent activities={activities} />
-                    </Box>
-                  </DialogWithGrid>
-                </PageContentBlock>
-              )}
               <CalloutsGroupView
                 journeyId={spaceId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Community]}
