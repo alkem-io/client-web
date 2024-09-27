@@ -52,7 +52,11 @@ const ExploreSpacesUnauthenticatedContainer = ({
     if (selectedFilter !== SpacesExplorerMembershipFilter.All) {
       const filterData = filtersConfig.filter(data => data.key === selectedFilter);
 
-      return [...filterData[0].tags, ...searchTerms];
+      if (filterData.length > 0) {
+        return [...filterData[0].tags, ...searchTerms];
+      } else {
+        return [...searchTerms];
+      }
     }
 
     return [...searchTerms];
@@ -95,19 +99,15 @@ const ExploreSpacesUnauthenticatedContainer = ({
 
   const flattenedSpaces = useMemo<SpaceWithParent[] | undefined>(() => {
     if (shouldSearch && rawSearchResults?.search?.journeyResults) {
-      return rawSearchResults?.search?.journeyResults.map(result => {
-        const entry = result as TypedSearchResult<SearchResultType.Space, ExploreSpacesSearchFragment>;
-
-        if (entry.type === SearchResultType.Space) {
-          return {
-            ...entry.space,
-            parent: undefined,
-            matchedTerms: entry.terms,
-          };
-        }
-
-        return null as never;
-      });
+      return rawSearchResults.search.journeyResults
+        .filter(
+          (journey): journey is TypedSearchResult<SearchResultType.Space, ExploreSpacesSearchFragment> =>
+            journey.type === SearchResultType.Space
+        )
+        .map(entry => ({
+          ...entry.space,
+          parent: undefined,
+        }));
     }
 
     return spacesData?.spacesPaginated.spaces;

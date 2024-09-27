@@ -67,7 +67,6 @@ interface Space extends Identifiable {
     avatar?: Visual;
     cardBanner?: Visual;
   };
-  matchedTerms?: string[];
 }
 
 export const ITEMS_LIMIT = 14; // 3 rows of 5 but without the welcome space
@@ -121,7 +120,7 @@ export const ExploreSpacesUnauthenticatedView: FC<ExploreSpacesUnauthenticatedVi
       <Gutters row disablePadding maxWidth="100%" alignItems="center">
         <Caption gap={gutters(0.5)} display={'flex'} justifyContent={'center'}>
           <RocketLaunchOutlinedIcon fontSize="small" />
-          <span>Explore the spaces on Alkemio</span>
+          <span>{t('pages.exploreSpaces.title')}</span>
         </Caption>
       </Gutters>
       <Gutters row disablePadding flexWrap="wrap" justifyContent="center" paddingTop={gutters(0.2)}>

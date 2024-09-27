@@ -22112,7 +22112,6 @@ export const ExploreSpacesSearchDocument = gql`
       journeyResults {
         id
         type
-        terms
         ... on SearchResultSpace {
           ...ExploreSpacesSearch
         }

@@ -4388,6 +4388,8 @@ export type PlatformLocations = {
   community: Scalars['String'];
   /** URL for the link Contact in the HomePage and to create a new space with Enterprise plan */
   contactsupport: Scalars['String'];
+  /** URL for the documentation site */
+  documentation: Scalars['String'];
   /** Main domain of the environment */
   domain: Scalars['String'];
   /** Name of the environment */
@@ -27725,14 +27727,13 @@ export type ExploreSpacesSearchQuery = {
   search: {
     __typename?: 'ISearchResults';
     journeyResults: Array<
-      | { __typename?: 'SearchResultCallout'; id: string; type: SearchResultType; terms: Array<string> }
-      | { __typename?: 'SearchResultOrganization'; id: string; type: SearchResultType; terms: Array<string> }
-      | { __typename?: 'SearchResultPost'; id: string; type: SearchResultType; terms: Array<string> }
+      | { __typename?: 'SearchResultCallout'; id: string; type: SearchResultType }
+      | { __typename?: 'SearchResultOrganization'; id: string; type: SearchResultType }
+      | { __typename?: 'SearchResultPost'; id: string; type: SearchResultType }
       | {
           __typename?: 'SearchResultSpace';
           id: string;
           type: SearchResultType;
-          terms: Array<string>;
           space: {
             __typename?: 'Space';
             id: string;
@@ -27746,8 +27747,8 @@ export type ExploreSpacesSearchQuery = {
             };
           };
         }
-      | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType; terms: Array<string> }
-      | { __typename?: 'SearchResultUserGroup'; id: string; type: SearchResultType; terms: Array<string> }
+      | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType }
+      | { __typename?: 'SearchResultUserGroup'; id: string; type: SearchResultType }
     >;
   };
 };
