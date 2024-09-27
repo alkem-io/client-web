@@ -2396,6 +2396,7 @@ export type PlatformLocationsKeySpecifier = (
   | 'blog'
   | 'community'
   | 'contactsupport'
+  | 'documentation'
   | 'domain'
   | 'environment'
   | 'feedback'
@@ -2423,6 +2424,7 @@ export type PlatformLocationsFieldPolicy = {
   blog?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   contactsupport?: FieldPolicy<any> | FieldReadFunction<any>;
+  documentation?: FieldPolicy<any> | FieldReadFunction<any>;
   domain?: FieldPolicy<any> | FieldReadFunction<any>;
   environment?: FieldPolicy<any> | FieldReadFunction<any>;
   feedback?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -4311,6 +4311,8 @@ export type PlatformLocations = {
   community: Scalars['String'];
   /** URL for the link Contact in the HomePage and to create a new space with Enterprise plan */
   contactsupport: Scalars['String'];
+  /** URL for the documentation site */
+  documentation: Scalars['String'];
   /** Main domain of the environment */
   domain: Scalars['String'];
   /** Name of the environment */
@@ -23642,6 +23644,7 @@ export type ConfigurationQuery = {
         newuser: string;
         tips: string;
         aup: string;
+        documentation: string;
       };
       featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
       sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
@@ -23688,6 +23691,7 @@ export type ConfigurationFragment = {
     newuser: string;
     tips: string;
     aup: string;
+    documentation: string;
   };
   featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
