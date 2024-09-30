@@ -3,7 +3,7 @@ import { ListPage } from '../../components/ListPage';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import { useDeleteGroupMutation, useOrganizationGroupsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
-import { SearchableListItem } from '../../components/SearchableList';
+import { SearchableTableItem } from '../../components/SearchableTable';
 import removeFromCache from '../../../../../core/apollo/utils/removeFromCache';
 import { useResolvedPath } from 'react-router-dom';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
@@ -29,7 +29,7 @@ export const OrganizationGroupsView: FC = () => {
   });
 
   const handleDeleteGroup = useCallback(
-    ({ id }: SearchableListItem) => {
+    ({ id }: SearchableTableItem) => {
       deleteGroup({
         variables: { input: { ID: id } },
         update: removeFromCache,

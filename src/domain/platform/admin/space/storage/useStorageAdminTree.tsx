@@ -17,7 +17,7 @@ import {
 import ImageIcon from '@mui/icons-material/Image';
 import { getProfileIcon } from '../../../../shared/icons/profileIcons';
 import { SpaceIcon } from '../../../../journey/space/icon/SpaceIcon';
-import { ChallengeIcon } from '../../../../journey/subspace/icon/ChallengeIcon';
+import { SubspaceIcon } from '../../../../journey/subspace/icon/SubspaceIcon';
 import { OpportunityIcon } from '../../../../journey/opportunity/icon/OpportunityIcon';
 import { FolderCopyOutlined } from '@mui/icons-material';
 
@@ -57,7 +57,7 @@ interface Provided {
 export const getStorageAggregatorParentIcon = (level: SpaceLevel | undefined) => {
   switch (level) {
     case SpaceLevel.Challenge:
-      return ChallengeIcon;
+      return SubspaceIcon;
     case SpaceLevel.Opportunity:
       return OpportunityIcon;
     case SpaceLevel.Space:

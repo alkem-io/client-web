@@ -1,11 +1,20 @@
 import React, { ReactNode } from 'react';
 import { gutters } from '../../../../core/ui/grid/utils';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import { Chip, Paper, PaperProps, Skeleton, Typography } from '@mui/material';
+import {
+  Chip,
+  ListItemButton,
+  ListItemButtonProps,
+  ListItemButtonTypeMap,
+  Paper,
+  PaperProps,
+  Skeleton,
+  Typography,
+} from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
 import { Visual } from '../../../common/visual/Visual';
 import withElevationOnHover from '../../../shared/components/withElevationOnHover';
-import RouterLink from '../../../../core/ui/link/RouterLink';
+import RouterLink, { RouterLinkProps } from '../../../../core/ui/link/RouterLink';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import JourneyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import BlockTitleWithIcon from '../../../../core/ui/content/BlockTitleWithIcon';
@@ -15,6 +24,7 @@ import { intersection } from 'lodash';
 import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import JourneyAvatar from '../JourneyAvatar/JourneyAvatar';
 import ActionsMenu from '../../../../core/ui/card/ActionsMenu';
+import { AvatarSize } from '../../../../core/ui/avatar/Avatar';
 
 export const JourneyCardHorizontalSkeleton = () => (
   <ElevatedPaper sx={{ padding: gutters() }}>
@@ -45,11 +55,17 @@ export interface JourneyCardHorizontalProps {
   journeyTypeName: JourneyTypeName;
   sx?: PaperProps['sx'];
   actions?: ReactNode;
+  size?: AvatarSize;
+  disableHoverState?: boolean;
 }
 
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
 const VISIBLE_COMMUNITY_ROLES = [CommunityRole.Admin, CommunityRole.Lead] as const;
+
+const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultComponent'], P = Record<string, unknown>>(
+  props: ListItemButtonProps<D, P> & RouterLinkProps
+) => <ListItemButton component={RouterLink} {...props} />;
 
 const JourneyCardHorizontal = ({
   journey,
@@ -58,6 +74,8 @@ const JourneyCardHorizontal = ({
   seamless,
   sx,
   actions,
+  size,
+  disableHoverState = false,
 }: JourneyCardHorizontalProps) => {
   const Icon = JourneyIcon[journeyTypeName];
 
@@ -68,19 +86,15 @@ const JourneyCardHorizontal = ({
   const mergedSx: PaperProps['sx'] = {
     padding: gutters(),
     marginLeft: gutters(deepness * 2),
+    borderRadius: 'unset',
     ...sx,
   };
 
   return (
     <ElevatedPaper sx={mergedSx} elevation={seamless ? 0 : undefined}>
       <BadgeCardView
-        visual={
-          <JourneyAvatar
-            src={journey.profile.avatar?.uri || journey.profile.cardBanner?.uri}
-            sx={{ width: gutters(3), height: gutters(3) }}
-          />
-        }
-        component={RouterLink}
+        visual={<JourneyAvatar size={size} src={journey.profile.avatar?.uri || journey.profile.cardBanner?.uri} />}
+        component={disableHoverState ? RouterLink : Wrapper}
         to={journey.profile.url}
         actions={actions && <ActionsMenu>{actions}</ActionsMenu>}
       >

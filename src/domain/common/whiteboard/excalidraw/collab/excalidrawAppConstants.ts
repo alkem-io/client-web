@@ -41,7 +41,7 @@ export const ACTIVE_THRESHOLD = 3_000;
 export const SAVE_TO_LOCAL_STORAGE_TIMEOUT = 300;
 export const FILE_UPLOAD_TIMEOUT = 300;
 export const LOAD_IMAGES_TIMEOUT = 500;
-export const SYNC_FULL_SCENE_INTERVAL_MS = 20000;
+export const SYNC_FULL_SCENE_INTERVAL_MS = 5000;
 export const SYNC_BROWSER_TABS_TIMEOUT = 50;
 export const CURSOR_SYNC_TIMEOUT = 33; // ~30fps
 export const DELETED_ELEMENT_TIMEOUT = 24 * 60 * 60 * 1000; // 1 day
@@ -53,11 +53,9 @@ export const WS_EVENTS = {
   SERVER_VOLATILE: 'server-volatile-broadcast',
   SERVER: 'server-broadcast',
   IDLE_STATE: 'idle-state',
-  SCENE_INIT: 'scene-init',
 } as const;
 
 export enum WS_SCENE_EVENT_TYPES {
-  INIT = 'SCENE_INIT',
   SCENE_UPDATE = 'SCENE_UPDATE',
   MOUSE_LOCATION = 'MOUSE_LOCATION',
 }

@@ -3,9 +3,9 @@ import { AvatarProps, Box } from '@mui/material';
 import ErrorHandlingAvatar from './ErrorHandlingAvatar';
 import { gutters } from '../grid/utils';
 
-type Size = 'small' | 'medium' | 'regular' | 'large';
+export type AvatarSize = 'small' | 'medium' | 'regular' | 'large';
 
-const AvatarSize: Record<Size, number> = {
+const AvatarSizes: Record<AvatarSize, number> = {
   small: 1.5,
   medium: 2,
   regular: 3,
@@ -13,12 +13,12 @@ const AvatarSize: Record<Size, number> = {
 };
 
 export interface SizeableAvatarProps {
-  size?: Size;
+  size?: AvatarSize;
   overlay?: ReactNode;
 }
 
 const Avatar = forwardRef<HTMLDivElement, AvatarProps & SizeableAvatarProps>(({ size, sx, overlay, ...props }, ref) => {
-  const avatarSize = size && AvatarSize[size];
+  const avatarSize = size && AvatarSizes[size];
 
   if (overlay) {
     return (

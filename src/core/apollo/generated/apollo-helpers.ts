@@ -2094,7 +2094,6 @@ export type MutationKeySpecifier = (
   | 'updateVirtualContributor'
   | 'updateVisual'
   | 'updateWhiteboard'
-  | 'updateWhiteboardContent'
   | 'uploadFileOnLink'
   | 'uploadFileOnReference'
   | 'uploadFileOnStorageBucket'
@@ -2254,7 +2253,6 @@ export type MutationFieldPolicy = {
   updateVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateWhiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnLink?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnReference?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2453,6 +2451,7 @@ export type PlatformLocationsKeySpecifier = (
   | 'blog'
   | 'community'
   | 'contactsupport'
+  | 'documentation'
   | 'domain'
   | 'environment'
   | 'feedback'
@@ -2480,6 +2479,7 @@ export type PlatformLocationsFieldPolicy = {
   blog?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   contactsupport?: FieldPolicy<any> | FieldReadFunction<any>;
+  documentation?: FieldPolicy<any> | FieldReadFunction<any>;
   domain?: FieldPolicy<any> | FieldReadFunction<any>;
   environment?: FieldPolicy<any> | FieldReadFunction<any>;
   feedback?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3218,7 +3218,6 @@ export type SubscriptionKeySpecifier = (
   | 'roomEvents'
   | 'subspaceCreated'
   | 'virtualContributorUpdated'
-  | 'whiteboardSaved'
   | SubscriptionKeySpecifier
 )[];
 export type SubscriptionFieldPolicy = {
@@ -3229,7 +3228,6 @@ export type SubscriptionFieldPolicy = {
   roomEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardSaved?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SubspaceCreatedKeySpecifier = ('spaceID' | 'subspace' | SubspaceCreatedKeySpecifier)[];
 export type SubspaceCreatedFieldPolicy = {
@@ -3585,15 +3583,6 @@ export type WhiteboardFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type WhiteboardSavedSubscriptionResultKeySpecifier = (
-  | 'updatedDate'
-  | 'whiteboardID'
-  | WhiteboardSavedSubscriptionResultKeySpecifier
-)[];
-export type WhiteboardSavedSubscriptionResultFieldPolicy = {
-  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StrictTypedTypePolicies = {
   APM?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
@@ -4464,13 +4453,6 @@ export type StrictTypedTypePolicies = {
   Whiteboard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | WhiteboardKeySpecifier | (() => undefined | WhiteboardKeySpecifier);
     fields?: WhiteboardFieldPolicy;
-  };
-  WhiteboardSavedSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | WhiteboardSavedSubscriptionResultKeySpecifier
-      | (() => undefined | WhiteboardSavedSubscriptionResultKeySpecifier);
-    fields?: WhiteboardSavedSubscriptionResultFieldPolicy;
   };
 };
 export type TypedTypePolicies = StrictTypedTypePolicies & TypePolicies;

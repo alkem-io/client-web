@@ -132,7 +132,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
                         const key = item ? item.id : `__loading_${index}`;
                         return cloneElement(renderChildEntityCard(item), { key });
                       })}
-                      {permissions.canCreateChallenges && (
+                      {permissions.canCreateSubspaces && (
                         <Actions sx={{ justifyContent: 'flex-end', width: '100%' }}>
                           <IconButton aria-label={t('common.add')} size="small" onClick={() => onClickCreate?.(true)}>
                             <RoundedIcon component={AddIcon} size="medium" iconSize="small" />

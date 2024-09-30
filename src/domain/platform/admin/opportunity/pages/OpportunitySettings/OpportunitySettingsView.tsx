@@ -32,7 +32,7 @@ const OpportunitySettingsView: FC = () => {
   const openDialog = () => setOpenDeleteDialog(true);
   const closeDialog = () => setOpenDeleteDialog(false);
 
-  const [deleteOpportunity, { loading }] = useDeleteSpaceMutation({
+  const [deleteOpportunity] = useDeleteSpaceMutation({
     refetchQueries: [
       refetchSubspacesInSpaceQuery({
         spaceId: spaceId,
@@ -57,7 +57,7 @@ const OpportunitySettingsView: FC = () => {
   const subspacePriviledges = data?.lookup.space?.authorization?.myPrivileges ?? [];
   const canDelete = subspacePriviledges.includes(AuthorizationPrivilege.Delete);
   const handleDelete = () => {
-    deleteOpportunity({
+    return deleteOpportunity({
       variables: {
         input: {
           ID: subspaceId,
@@ -83,7 +83,6 @@ const OpportunitySettingsView: FC = () => {
           open={openDeleteDialog}
           onClose={closeDialog}
           onDelete={handleDelete}
-          submitting={loading}
         />
       )}
     </PageContent>

@@ -2,7 +2,7 @@ import { ComponentType } from 'react';
 import { ProfileType } from '../../../core/apollo/generated/graphql-schema';
 import { SvgIconProps } from '@mui/material';
 import { CalendarIcon } from '../../timeline/calendar/icons/CalendarIcon';
-import { ChallengeIcon } from '../../journey/subspace/icon/ChallengeIcon';
+import { SubspaceIcon } from '../../journey/subspace/icon/SubspaceIcon';
 import { OpportunityIcon } from '../../journey/opportunity/icon/OpportunityIcon';
 import { InnovationFlowIcon } from '../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import { CalloutIcon } from '../../collaboration/callout/icon/CalloutIcon';
@@ -32,7 +32,7 @@ export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconP
     case ProfileType.Template:
       return Campaign;
     case ProfileType.Challenge:
-      return ChallengeIcon;
+      return SubspaceIcon;
     case ProfileType.Discussion:
       return ChatBubbleOutline;
     case ProfileType.InnovationFlow:
