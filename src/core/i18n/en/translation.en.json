@@ -291,7 +291,7 @@
     "field-required": "This field is required",
     "field-min-length": "This field must be minimum of {{min}} characters",
     "field-max-length": "This field must be maximum of {{max}} characters",
-    "last-saved": "Last saved: {{datetime}}",
+    "last-saved": "Auto-saved last changes: {{datetime}}",
     "membership": "Membership",
     "owner": "Owner",
     "admin": "Admin",
@@ -2438,8 +2438,6 @@
       "editDisplayName": "Edit title",
       "no-whiteboards": "No whiteboards have been created yet. Be the first to add one.",
       "locked-by": "{{user}} is currently editing this Whiteboard",
-      "savingWhiteboard": "Saving whiteboard...",
-      "saveTooltip": "Please note that the whiteboards are also automatically saved",
       "state-actions": {
         "save-as-template": "Save as template",
         "save-and-check-in": "Save & stop editing",

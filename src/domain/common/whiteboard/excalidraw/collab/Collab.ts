@@ -26,9 +26,8 @@ interface CollabState {
 export interface CollabProps {
   excalidrawApi: ExcalidrawImperativeAPI;
   username: string;
-  onSavedToDatabase?: () => void; // Someone in your room saved the whiteboard to the database
+  onRemoteSave: () => void; // The client has received a room saved event
   filesManager: WhiteboardFilesManager;
-  onSaveRequest: () => Promise<{ success: boolean; errors?: string[] }>;
   onCloseConnection: () => void;
   onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
 }
@@ -46,7 +45,6 @@ class Collab {
   private socketInitializationTimer?: number;
   private lastBroadcastedOrReceivedSceneVersion: number = -1;
   private collaborators = new Map<string, Collaborator>();
-  private onSavedToDatabase: (() => void) | undefined;
   private onCloseConnection: () => void;
   private onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
   private excalidrawUtils: Promise<{
@@ -74,7 +72,7 @@ class Collab {
       activeRoomLink: '',
     };
     this.portal = new Portal({
-      onSaveRequest: props.onSaveRequest,
+      onRemoteSave: props.onRemoteSave,
       onRoomUserChange: this.setCollaborators,
       getSceneElements: this.getSceneElementsIncludingDeleted,
       getFiles: this.getFiles,
@@ -83,7 +81,6 @@ class Collab {
     this.onCloseConnection = props.onCloseConnection;
     this.excalidrawAPI = props.excalidrawApi;
     this.filesManager = props.filesManager;
-    this.onSavedToDatabase = props.onSavedToDatabase;
     this.onCollaboratorModeChange = props.onCollaboratorModeChange;
     this.excalidrawUtils = import('@alkemio/excalidraw');
   }
@@ -190,17 +187,6 @@ class Collab {
               switch (decryptedData.type) {
                 case 'INVALID_RESPONSE':
                   return;
-                case WS_SCENE_EVENT_TYPES.INIT: {
-                  if (!this.portal.socketInitialized) {
-                    this.initializeRoom({ fetchScene: false });
-                    const remoteElements = decryptedData.payload.elements;
-                    const remoteFiles = decryptedData.payload.files;
-                    this.handleRemoteSceneUpdate(await this.reconcileElements(remoteElements, remoteFiles), {
-                      init: true,
-                    });
-                  }
-                  break;
-                }
                 case WS_SCENE_EVENT_TYPES.SCENE_UPDATE: {
                   const remoteElements = decryptedData.payload.elements;
                   const remoteFiles = decryptedData.payload.files;
@@ -228,15 +214,6 @@ class Collab {
                   break;
                 }
               }
-            },
-            'first-in-room': async () => {
-              await this.initializeRoom({
-                fetchScene: true,
-                roomLinkData: existingRoomLinkData,
-              });
-            },
-            saved: () => {
-              this.onSavedToDatabase?.();
             },
             'collaborator-mode': event => {
               resolve();
