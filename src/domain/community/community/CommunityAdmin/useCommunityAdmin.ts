@@ -136,6 +136,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
       isMember: true,
       isLead: leads.find(lead => lead.id === user.id) !== undefined,
       isAdmin: admins.find(admins => admins.id === user.id) !== undefined,
+      isContactable: user.isContactable,
     }));
 
     // Push the rest of the leads that are not yet in the list of members
@@ -147,6 +148,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
           isMember: false,
           isLead: true,
           isAdmin: admins.find(admins => admins.id === lead.id) !== undefined,
+          isContactable: lead.isContactable,
         });
       }
     });
@@ -160,7 +162,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
           isMember: false,
           isLead: false,
           isAdmin: true,
-          isContactable: true, // TODO fix me
+          isContactable: admin.isContactable,
         });
       }
     });
@@ -178,6 +180,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
       isMember: true,
       isLead: leads.find(lead => lead.id === member.id) !== undefined,
       isFacilitating: data?.lookup.space?.provider.id === member.id,
+      isContactable: false, // TODO: Implement contactable for organizations
     }));
 
     // Push the rest of the leads that are not yet in the list of members
@@ -189,6 +192,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
           isMember: false,
           isLead: true,
           isFacilitating: data?.lookup.space?.provider.id === lead.id,
+          isContactable: false, // TODO: Implement contactable for organizations
         });
       }
     });
@@ -197,7 +201,13 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
     if (data?.lookup.space?.provider) {
       const member = result.find(organization => organization.id === data.lookup.space?.provider?.id);
       if (!member) {
-        result.push({ ...data.lookup.space.provider, isMember: false, isLead: false, isFacilitating: true });
+        result.push({
+          ...data.lookup.space.provider,
+          isMember: false,
+          isLead: false,
+          isFacilitating: true,
+          isContactable: false,
+        });
       }
     }
     return result;

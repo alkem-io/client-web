@@ -45,6 +45,10 @@ query CommunityUserPrivileges(
         roleSet {
           id
           myMembershipStatus
+          authorization {
+            id
+            myPrivileges
+          }
         }
       }
     }

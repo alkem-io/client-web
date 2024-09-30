@@ -26,6 +26,7 @@ export interface ContributorViewProps extends Identifiable {
     }[];
     url: string;
   };
+  isContactable?: boolean;
 }
 
 export interface EntityDashboardLeads {

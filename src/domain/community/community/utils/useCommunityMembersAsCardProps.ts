@@ -30,7 +30,7 @@ const mapUserToContributorCardProps = (user: ContributorViewProps): ContributorC
     city: user.profile.location?.city,
     country: user.profile.location?.country ? COUNTRIES_BY_CODE[user.profile.location.country] : undefined,
   },
-  isContactable: true, //!! TODO
+  isContactable: user.isContactable,
   contributorType: CommunityContributorType.User,
 });
 

@@ -4734,9 +4734,8 @@ export const AccountInformationDocument = gql`
           }
           community {
             id
-            authorization {
+            roleSet {
               id
-              myPrivileges
             }
           }
           subspaces {
@@ -4747,6 +4746,9 @@ export const AccountInformationDocument = gql`
             type
             community {
               id
+              roleSet {
+                id
+              }
             }
           }
         }
@@ -9452,6 +9454,10 @@ export const CommunityUserPrivilegesDocument = gql`
           roleSet {
             id
             myMembershipStatus
+            authorization {
+              id
+              myPrivileges
+            }
           }
         }
       }
@@ -12218,6 +12224,9 @@ export const SpaceContributionDetailsDocument = gql`
         }
         community {
           id
+          roleSet {
+            id
+          }
         }
       }
     }
@@ -13274,6 +13283,7 @@ export const UsersWithCredentialsDocument = gql`
         }
         url
       }
+      isContactable
     }
   }
   ${VisualUriFragmentDoc}
@@ -22493,9 +22503,12 @@ export const NewVirtualContributorMySpacesDocument = gql`
             id
             community {
               id
-              authorization {
+              roleSet {
                 id
-                myPrivileges
+                authorization {
+                  id
+                  myPrivileges
+                }
               }
             }
             profile {
@@ -22517,6 +22530,9 @@ export const NewVirtualContributorMySpacesDocument = gql`
               }
               community {
                 id
+                roleSet {
+                  id
+                }
               }
             }
           }

@@ -7728,13 +7728,7 @@ export type AccountInformationQuery = {
               cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
-            community: {
-              __typename?: 'Community';
-              id: string;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-            };
+            community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
             subspaces: Array<{
               __typename?: 'Space';
               id: string;
@@ -7747,7 +7741,7 @@ export type AccountInformationQuery = {
                 url: string;
                 avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
-              community: { __typename?: 'Community'; id: string };
+              community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
             }>;
           }>;
           virtualContributors: Array<{
@@ -15038,7 +15032,14 @@ export type CommunityUserPrivilegesQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
-            roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+            roleSet: {
+              __typename?: 'RoleSet';
+              id: string;
+              myMembershipStatus?: CommunityMembershipStatus | undefined;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            };
           };
         }
       | undefined;
@@ -17022,7 +17023,7 @@ export type SpaceContributionDetailsQuery = {
               | undefined;
           };
           context: { __typename?: 'Context'; id: string };
-          community: { __typename?: 'Community'; id: string };
+          community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
         }
       | undefined;
   };
@@ -17794,6 +17795,7 @@ export type UsersWithCredentialsQuery = {
     firstName: string;
     lastName: string;
     email: string;
+    isContactable: boolean;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -29365,13 +29367,17 @@ export type NewVirtualContributorMySpacesQuery = {
                   community: {
                     __typename?: 'Community';
                     id: string;
-                    authorization?:
-                      | {
-                          __typename?: 'Authorization';
-                          id: string;
-                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                        }
-                      | undefined;
+                    roleSet: {
+                      __typename?: 'RoleSet';
+                      id: string;
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          }
+                        | undefined;
+                    };
                   };
                   profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                   authorization?:
@@ -29386,7 +29392,11 @@ export type NewVirtualContributorMySpacesQuery = {
                     id: string;
                     type: SpaceType;
                     profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-                    community: { __typename?: 'Community'; id: string };
+                    community: {
+                      __typename?: 'Community';
+                      id: string;
+                      roleSet: { __typename?: 'RoleSet'; id: string };
+                    };
                   }>;
                 }>;
               }

@@ -70,6 +70,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         tags: space.profile.tagset?.tags ?? [],
         journeyUri: space.profile.url,
         communityId: space.community?.id,
+        roleSetId: space.community?.roleSet.id,
         tagline: space.profile.tagline ?? '',
       };
     }

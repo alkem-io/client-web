@@ -129,24 +129,24 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
 
   const parentUrl = parentSpace?.profile.url;
 
-  const communityPrivileges = space?.community?.roleSet?.authorization?.myPrivileges ?? [];
+  const rolesetPrivileges = space?.community?.roleSet?.authorization?.myPrivileges ?? [];
 
   const canJoinCommunity =
-    (isChildJourney && isParentMember && communityPrivileges.includes(AuthorizationPrivilege.CommunityJoin)) ||
-    (!isChildJourney && communityPrivileges.includes(AuthorizationPrivilege.CommunityJoin));
+    (isChildJourney && isParentMember && rolesetPrivileges.includes(AuthorizationPrivilege.CommunityJoin)) ||
+    (!isChildJourney && rolesetPrivileges.includes(AuthorizationPrivilege.CommunityJoin));
 
   // Changed from parent to current space
   const canAcceptInvitation =
     space?.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.InvitationPending;
 
   const canApplyToCommunity =
-    (isChildJourney && isParentMember && communityPrivileges.includes(AuthorizationPrivilege.CommunityApply)) ||
-    (!isChildJourney && communityPrivileges.includes(AuthorizationPrivilege.CommunityApply));
+    (isChildJourney && isParentMember && rolesetPrivileges.includes(AuthorizationPrivilege.CommunityApply)) ||
+    (!isChildJourney && rolesetPrivileges.includes(AuthorizationPrivilege.CommunityApply));
 
-  const parentCommunityPrivileges = parentSpace?.community?.authorization?.myPrivileges ?? [];
+  const parentRoleSetPrivileges = parentSpace?.community.roleSet?.authorization?.myPrivileges ?? [];
 
-  const canJoinParentCommunity = parentCommunityPrivileges.includes(AuthorizationPrivilege.CommunityJoin);
-  const canApplyToParentCommunity = parentCommunityPrivileges.includes(AuthorizationPrivilege.CommunityApply);
+  const canJoinParentCommunity = parentRoleSetPrivileges.includes(AuthorizationPrivilege.CommunityJoin);
+  const canApplyToParentCommunity = parentRoleSetPrivileges.includes(AuthorizationPrivilege.CommunityApply);
 
   const loading =
     loadingParams || membershipLoading || communityPrivilegesLoading || joiningCommunity || gettingUserProfile;

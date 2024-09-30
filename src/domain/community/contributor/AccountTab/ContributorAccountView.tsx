@@ -68,13 +68,23 @@ export interface ContributorAccountViewProps {
         cardBanner?: { uri: string };
         tagline?: string;
       };
-      community: { id: string };
+      community: {
+        id: string;
+        roleSet: {
+          id: string;
+        };
+      };
       subspaces: {
         id: string;
         profile: AccountProfile & {
           cardBanner?: { uri: string };
         };
-        community: { id: string };
+        community: {
+          id: string;
+          roleSet: {
+            id: string;
+          };
+        };
         type: SpaceType;
       }[];
     }[];
