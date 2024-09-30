@@ -3,6 +3,7 @@ import {
   WhiteboardDetailsFragmentDoc,
   useCreateWhiteboardOnCalloutMutation,
   useDeleteWhiteboardMutation,
+  useUpdateWhiteboardContentMutation,
   useUpdateWhiteboardMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
@@ -120,7 +121,9 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
     [deleteWhiteboard]
   );
 
-  const handleUploadWhiteboardVisuals = useCallback(
+  const [updateWhiteboardContent, { loading: updatingWhiteboardContent }] = useUpdateWhiteboardContentMutation({});
+
+  const handleUpdateWhiteboardContent = useCallback(
     async (
       whiteboard: WhiteboardContentFragment & WhiteboardDetailsFragment,
       previewImages?: WhiteboardPreviewImage[]
@@ -132,12 +135,21 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
           whiteboard.nameID
         );
       }
+      const result = await updateWhiteboardContent({
+        variables: {
+          input: {
+            ID: whiteboard.id,
+            content: whiteboard.content,
+          },
+        },
+        refetchQueries: ['CalloutWhiteboards'],
+      });
       return {
-        success: true,
-        errors: undefined,
+        success: !result.errors || result.errors.length === 0,
+        errors: result.errors?.map(({ message }) => message),
       };
     },
-    []
+    [updateWhiteboardContent]
   );
 
   const [updateWhiteboard, { loading: updatingWhiteboard }] = useUpdateWhiteboardMutation({});
@@ -164,10 +176,10 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
     () => ({
       onCreate: handleCreateWhiteboard,
       onDelete: handleDeleteWhiteboard,
-      onUpdate: handleUploadWhiteboardVisuals,
+      onUpdate: handleUpdateWhiteboardContent,
       onChangeDisplayName: handleChangeDisplayName,
     }),
-    [handleUploadWhiteboardVisuals]
+    [handleUpdateWhiteboardContent]
   );
 
   return (
@@ -177,7 +189,7 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
         {
           creatingWhiteboard,
           deletingWhiteboard,
-          updatingWhiteboardContent: false,
+          updatingWhiteboardContent,
           updatingWhiteboard,
           uploadingVisuals,
         },

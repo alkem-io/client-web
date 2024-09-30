@@ -70,6 +70,13 @@ export type SocketUpdateDataSource = {
       username: string;
     };
   };
+  SAVED: {
+    type: 'SAVED';
+    payload: {
+      socketId: string;
+      username: string;
+    };
+  };
 };
 
 export type SocketUpdateData = SocketUpdateDataSource[keyof SocketUpdateDataSource] & {
