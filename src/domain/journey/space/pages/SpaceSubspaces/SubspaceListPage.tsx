@@ -1,15 +1,15 @@
 import React, { FC } from 'react';
 import SpaceSettingsLayout from '../../../../platform/admin/space/SpaceSettingsLayout';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
-import ChallengeListView from './ChallengeListView';
+import SubspaceListView from './SubspaceListView';
 import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
 
-const ChallengeListPage: FC<SettingsPageProps> = ({ routePrefix }) => {
+const SubspaceListPage: FC<SettingsPageProps> = ({ routePrefix }) => {
   return (
     <SpaceSettingsLayout currentTab={SettingsSection.Subspaces} tabRoutePrefix={routePrefix}>
-      <ChallengeListView />
+      <SubspaceListView />
     </SpaceSettingsLayout>
   );
 };
 
-export default ChallengeListPage;
+export default SubspaceListPage;
