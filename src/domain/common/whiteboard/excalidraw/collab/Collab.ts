@@ -167,9 +167,17 @@ class Collab {
             'scene-init': async (payload: { elements: readonly ExcalidrawElement[]; files: BinaryFilesWithUrl }) => {
               if (!this.portal.socketInitialized) {
                 this.initializeRoom({ fetchScene: false });
-                this.handleRemoteSceneUpdate(await this.reconcileElements(payload.elements, payload.files), {
-                  init: true,
-                });
+                this.handleRemoteSceneUpdate(
+                  await this.reconcileElementsAndLoadFiles(payload.elements, payload.files),
+                  {
+                    init: true,
+                  }
+                );
+                const convertedFilesWithUrl = await this.filesManager.loadAndTryConvertEmbeddedFiles(payload.files);
+                // broadcast only the converted files
+                if (Object.entries(convertedFilesWithUrl).length) {
+                  await this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, [], convertedFilesWithUrl);
+                }
               }
             },
             'client-broadcast': async (encryptedData: ArrayBuffer) => {
@@ -182,7 +190,7 @@ class Collab {
                 case WS_SCENE_EVENT_TYPES.SCENE_UPDATE: {
                   const remoteElements = decryptedData.payload.elements;
                   const remoteFiles = decryptedData.payload.files;
-                  this.handleRemoteSceneUpdate(await this.reconcileElements(remoteElements, remoteFiles));
+                  this.handleRemoteSceneUpdate(await this.reconcileElementsAndLoadFiles(remoteElements, remoteFiles));
                   break;
                 }
 
@@ -234,7 +242,7 @@ class Collab {
       this.state.activeRoomLink = window.location.href;
     });
 
-  private initializeRoom = async ({
+  private initializeRoom = ({
     fetchScene,
     roomLinkData,
   }:
@@ -260,7 +268,7 @@ class Collab {
     }
   };
 
-  private reconcileElements = async (
+  private reconcileElementsAndLoadFiles = async (
     remoteElements: readonly ExcalidrawElement[],
     remoteFiles: BinaryFilesWithUrl
   ): Promise<ReconciledElements> => {
@@ -274,7 +282,7 @@ class Collab {
     const reconciledElements = _reconcileElements(localElements, remoteElements, appState);
 
     // Download the files that this instance is missing:
-    this.filesManager.loadFiles({ files: remoteFiles });
+    await this.filesManager.loadFiles({ files: remoteFiles });
 
     const { getSceneVersion } = await this.excalidrawUtils;
 

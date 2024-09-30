@@ -112,6 +112,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   const { data: lastSaved } = useWhiteboardLastUpdatedDateQuery({
     variables: { whiteboardId: whiteboard?.id! },
     skip: !whiteboard?.id,
+    fetchPolicy: 'network-only',
   });
 
   if (!lastSavedDate && lastSaved?.lookup.whiteboard?.updatedDate) {
@@ -153,8 +154,9 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
 
     return {
       whiteboard: {
+        ...whiteboard,
         profile: {
-          id: whiteboard.profile.id,
+          ...whiteboard.profile,
           displayName,
         },
       } as Whiteboard,
