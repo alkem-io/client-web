@@ -1,0 +1,5 @@
+mutation joinRoleSet($joiningData: JoinAsEntryRoleOnRoleSetInput!) {
+  joinRoleSet(joinData: $joiningData){
+    id
+  }
+}

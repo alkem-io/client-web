@@ -17,7 +17,7 @@ const SubspaceContributorsDialogContent: FC<ContributorsDialogContentProps> = ({
     skip: !dialogOpen || !journeyId,
   });
 
-  const { memberUsers, memberOrganizations } = data?.lookup.space?.community ?? {};
+  const { memberUsers, memberOrganizations } = data?.lookup.space?.community.roleSet ?? {};
 
   return (
     <CommunityContributorsView

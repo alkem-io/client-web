@@ -70,7 +70,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
 
   const space = spaceData?.lookup.space;
 
-  const isMember = space?.community?.myMembershipStatus === CommunityMembershipStatus.Member;
+  const isMember = space?.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
 
   // don't load references without READ privilege on Context
   const { data: referencesData } = useSpaceDashboardReferencesQuery({

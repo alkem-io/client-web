@@ -7,8 +7,11 @@ query AvailableVirtualContributors(
       id
       community {
         id
-        virtualContributorsInRole(role: MEMBER) {
-          ...VirtualContributorName
+        roleSet {
+          id
+          virtualContributorsInRole(role: MEMBER) {
+            ...VirtualContributorName
+          }
         }
       }
       account {
@@ -46,22 +49,5 @@ fragment VirtualContributorName on VirtualContributor {
   }
 }
 
-mutation RemoveVirtualContributorFromCommunity($communityId: UUID!, $virtualContributorId: UUID_NAMEID!) {
-  removeCommunityRoleFromVirtual(
-    roleData: { communityID: $communityId, role: MEMBER, virtualContributorID: $virtualContributorId }
-  ) {
-    id
-  }
-}
 
-mutation AssignCommunityRoleToVirtualContributor(
-  $communityId: UUID!
-  $virtualContributorId: UUID_NAMEID!
-  $role: CommunityRole! = MEMBER
-) {
-  assignCommunityRoleToVirtual(
-    roleData: { communityID: $communityId, role: $role, virtualContributorID: $virtualContributorId }
-  ) {
-    id
-  }
-}
+

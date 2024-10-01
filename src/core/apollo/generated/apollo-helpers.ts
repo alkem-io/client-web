@@ -940,53 +940,27 @@ export type CommunicationRoomFieldPolicy = {
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityKeySpecifier = (
-  | 'applicationForm'
-  | 'applications'
   | 'authorization'
-  | 'availableLeadUsers'
-  | 'availableMemberUsers'
   | 'communication'
   | 'createdDate'
   | 'group'
   | 'groups'
   | 'guidelines'
   | 'id'
-  | 'invitations'
-  | 'memberUsers'
-  | 'myMembershipStatus'
-  | 'myRoles'
-  | 'myRolesImplicit'
-  | 'organizationsInRole'
-  | 'platformInvitations'
-  | 'policy'
+  | 'roleSet'
   | 'updatedDate'
-  | 'usersInRole'
-  | 'virtualContributorsInRole'
   | CommunityKeySpecifier
 )[];
 export type CommunityFieldPolicy = {
-  applicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
-  applications?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  availableLeadUsers?: FieldPolicy<any> | FieldReadFunction<any>;
-  availableMemberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   group?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   guidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  invitations?: FieldPolicy<any> | FieldReadFunction<any>;
-  memberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
-  myMembershipStatus?: FieldPolicy<any> | FieldReadFunction<any>;
-  myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
-  myRolesImplicit?: FieldPolicy<any> | FieldReadFunction<any>;
-  organizationsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
-  platformInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
-  policy?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  usersInRole?: FieldPolicy<any> | FieldReadFunction<any>;
-  virtualContributorsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityApplicationForRoleResultKeySpecifier = (
   | 'communityID'
@@ -1086,42 +1060,6 @@ export type CommunityMembershipResultFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CommunityPolicyKeySpecifier = (
-  | 'admin'
-  | 'createdDate'
-  | 'id'
-  | 'lead'
-  | 'member'
-  | 'updatedDate'
-  | CommunityPolicyKeySpecifier
-)[];
-export type CommunityPolicyFieldPolicy = {
-  admin?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  lead?: FieldPolicy<any> | FieldReadFunction<any>;
-  member?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type CommunityRolePolicyKeySpecifier = (
-  | 'credential'
-  | 'enabled'
-  | 'maxOrg'
-  | 'maxUser'
-  | 'minOrg'
-  | 'minUser'
-  | 'parentCredentials'
-  | CommunityRolePolicyKeySpecifier
-)[];
-export type CommunityRolePolicyFieldPolicy = {
-  credential?: FieldPolicy<any> | FieldReadFunction<any>;
-  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
-  maxOrg?: FieldPolicy<any> | FieldReadFunction<any>;
-  maxUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  minOrg?: FieldPolicy<any> | FieldReadFunction<any>;
-  minUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  parentCredentials?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type ConfigKeySpecifier = (
   | 'apm'
   | 'authentication'
@@ -1174,6 +1112,11 @@ export type ContributorFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ContributorRolePolicyKeySpecifier = ('maximum' | 'minimum' | ContributorRolePolicyKeySpecifier)[];
+export type ContributorRolePolicyFieldPolicy = {
+  maximum?: FieldPolicy<any> | FieldReadFunction<any>;
+  minimum?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ContributorRolesKeySpecifier = (
   | 'applications'
@@ -1841,6 +1784,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'invitation'
   | 'post'
   | 'profile'
+  | 'roleSet'
   | 'room'
   | 'space'
   | 'storageAggregator'
@@ -1870,6 +1814,7 @@ export type LookupQueryResultsFieldPolicy = {
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   room?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1953,14 +1898,14 @@ export type MutationKeySpecifier = (
   | 'aiServerDeleteAiPersonaService'
   | 'aiServerPersonaServiceIngest'
   | 'aiServerUpdateAiPersonaService'
-  | 'applyForCommunityMembership'
-  | 'assignCommunityRoleToOrganization'
-  | 'assignCommunityRoleToUser'
-  | 'assignCommunityRoleToVirtual'
+  | 'applyForEntryRoleOnRoleSet'
   | 'assignLicensePlanToAccount'
   | 'assignLicensePlanToSpace'
   | 'assignOrganizationRoleToUser'
   | 'assignPlatformRoleToUser'
+  | 'assignRoleToOrganization'
+  | 'assignRoleToUser'
+  | 'assignRoleToVirtualContributor'
   | 'assignUserToGroup'
   | 'authorizationPolicyResetAll'
   | 'authorizationPolicyResetOnAccount'
@@ -2024,20 +1969,20 @@ export type MutationKeySpecifier = (
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
   | 'ingest'
-  | 'inviteContributorsForCommunityMembership'
-  | 'inviteUserToPlatformAndCommunity'
+  | 'inviteContributorsForRoleSetMembership'
+  | 'inviteUserToPlatformAndRoleSet'
   | 'inviteUserToPlatformWithRole'
-  | 'joinCommunity'
+  | 'joinRoleSet'
   | 'messageUser'
   | 'moveContributionToCallout'
   | 'refreshVirtualContributorBodyOfKnowledge'
-  | 'removeCommunityRoleFromOrganization'
-  | 'removeCommunityRoleFromUser'
-  | 'removeCommunityRoleFromVirtual'
   | 'removeMessageOnRoom'
   | 'removeOrganizationRoleFromUser'
   | 'removePlatformRoleFromUser'
   | 'removeReactionToMessageInRoom'
+  | 'removeRoleFromOrganization'
+  | 'removeRoleFromUser'
+  | 'removeRoleFromVirtualContributor'
   | 'removeUserFromGroup'
   | 'resetChatGuidance'
   | 'revokeCredentialFromOrganization'
@@ -2056,12 +2001,12 @@ export type MutationKeySpecifier = (
   | 'updateActor'
   | 'updateAiPersona'
   | 'updateAnswerRelevance'
+  | 'updateApplicationFormOnRoleSet'
   | 'updateCalendarEvent'
   | 'updateCallout'
   | 'updateCalloutPublishInfo'
   | 'updateCalloutVisibility'
   | 'updateCalloutsSortOrder'
-  | 'updateCommunityApplicationForm'
   | 'updateCommunityGuidelines'
   | 'updateContributionsSortOrder'
   | 'updateDiscussion'
@@ -2112,14 +2057,14 @@ export type MutationFieldPolicy = {
   aiServerDeleteAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerPersonaServiceIngest?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerUpdateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
-  applyForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignCommunityRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignCommunityRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignCommunityRoleToVirtual?: FieldPolicy<any> | FieldReadFunction<any>;
+  applyForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   assignOrganizationRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignPlatformRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignRoleToVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetAll?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2183,20 +2128,20 @@ export type MutationFieldPolicy = {
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   ingest?: FieldPolicy<any> | FieldReadFunction<any>;
-  inviteContributorsForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
-  inviteUserToPlatformAndCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
+  inviteContributorsForRoleSetMembership?: FieldPolicy<any> | FieldReadFunction<any>;
+  inviteUserToPlatformAndRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteUserToPlatformWithRole?: FieldPolicy<any> | FieldReadFunction<any>;
-  joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
+  joinRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeCommunityRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeCommunityRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeCommunityRoleFromVirtual?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeOrganizationRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeRoleFromVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   resetChatGuidance?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2215,12 +2160,12 @@ export type MutationFieldPolicy = {
   updateActor?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAiPersona?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAnswerRelevance?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateApplicationFormOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutPublishInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateCommunityApplicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   updateContributionsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2783,6 +2728,76 @@ export type RelayPaginatedSpacePageInfoFieldPolicy = {
   hasNextPage?: FieldPolicy<any> | FieldReadFunction<any>;
   hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
   startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type RoleKeySpecifier = (
+  | 'createdDate'
+  | 'credential'
+  | 'id'
+  | 'organizationPolicy'
+  | 'parentCredentials'
+  | 'requiresEntryRole'
+  | 'requiresSameRoleInParentRoleSet'
+  | 'type'
+  | 'updatedDate'
+  | 'userPolicy'
+  | 'virtualContributorPolicy'
+  | RoleKeySpecifier
+)[];
+export type RoleFieldPolicy = {
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  credential?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizationPolicy?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentCredentials?: FieldPolicy<any> | FieldReadFunction<any>;
+  requiresEntryRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  requiresSameRoleInParentRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  userPolicy?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributorPolicy?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type RoleSetKeySpecifier = (
+  | 'applicationForm'
+  | 'applications'
+  | 'authorization'
+  | 'availableUsersForLeadRole'
+  | 'availableUsersForMemberRole'
+  | 'createdDate'
+  | 'entryRoleType'
+  | 'id'
+  | 'invitations'
+  | 'myMembershipStatus'
+  | 'myRoles'
+  | 'myRolesImplicit'
+  | 'organizationsInRole'
+  | 'platformInvitations'
+  | 'roleDefinition'
+  | 'roleDefinitions'
+  | 'updatedDate'
+  | 'usersInRole'
+  | 'virtualContributorsInRole'
+  | RoleSetKeySpecifier
+)[];
+export type RoleSetFieldPolicy = {
+  applicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
+  applications?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  availableUsersForLeadRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  availableUsersForMemberRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  entryRoleType?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  invitations?: FieldPolicy<any> | FieldReadFunction<any>;
+  myMembershipStatus?: FieldPolicy<any> | FieldReadFunction<any>;
+  myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
+  myRolesImplicit?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizationsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  platformInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleDefinition?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleDefinitions?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  usersInRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributorsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RolesResultKeySpecifier = ('displayName' | 'id' | 'nameID' | 'roles' | RolesResultKeySpecifier)[];
 export type RolesResultFieldPolicy = {
@@ -3899,14 +3914,6 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | CommunityMembershipResultKeySpecifier);
     fields?: CommunityMembershipResultFieldPolicy;
   };
-  CommunityPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CommunityPolicyKeySpecifier | (() => undefined | CommunityPolicyKeySpecifier);
-    fields?: CommunityPolicyFieldPolicy;
-  };
-  CommunityRolePolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CommunityRolePolicyKeySpecifier | (() => undefined | CommunityRolePolicyKeySpecifier);
-    fields?: CommunityRolePolicyFieldPolicy;
-  };
   Config?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ConfigKeySpecifier | (() => undefined | ConfigKeySpecifier);
     fields?: ConfigFieldPolicy;
@@ -3918,6 +3925,10 @@ export type StrictTypedTypePolicies = {
   Contributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ContributorKeySpecifier | (() => undefined | ContributorKeySpecifier);
     fields?: ContributorFieldPolicy;
+  };
+  ContributorRolePolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ContributorRolePolicyKeySpecifier | (() => undefined | ContributorRolePolicyKeySpecifier);
+    fields?: ContributorRolePolicyFieldPolicy;
   };
   ContributorRoles?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ContributorRolesKeySpecifier | (() => undefined | ContributorRolesKeySpecifier);
@@ -4250,6 +4261,14 @@ export type StrictTypedTypePolicies = {
       | RelayPaginatedSpacePageInfoKeySpecifier
       | (() => undefined | RelayPaginatedSpacePageInfoKeySpecifier);
     fields?: RelayPaginatedSpacePageInfoFieldPolicy;
+  };
+  Role?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | RoleKeySpecifier | (() => undefined | RoleKeySpecifier);
+    fields?: RoleFieldPolicy;
+  };
+  RoleSet?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | RoleSetKeySpecifier | (() => undefined | RoleSetKeySpecifier);
+    fields?: RoleSetFieldPolicy;
   };
   RolesResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RolesResultKeySpecifier | (() => undefined | RolesResultKeySpecifier);

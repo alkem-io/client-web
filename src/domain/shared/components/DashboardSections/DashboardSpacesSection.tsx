@@ -5,7 +5,7 @@ import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlock
 import SpaceCard, { SpaceCardProps } from '../../../journey/space/SpaceCard/SpaceCard';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
-import { Nvp, SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityMembershipStatus, Nvp, SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import { Visual } from '../../../common/visual/Visual';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { Link } from '@mui/material';
@@ -28,6 +28,11 @@ export interface SpaceAttrs extends Identifiable {
   provider?: {
     profile: {
       displayName: string;
+    };
+  };
+  community?: {
+    roleSet?: {
+      myMembershipStatus?: CommunityMembershipStatus;
     };
   };
   metrics?: Pick<Nvp, 'name' | 'value'>[];

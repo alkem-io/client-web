@@ -7,9 +7,9 @@ import AddIcon from '@mui/icons-material/Add';
 import { max, pullAt, slice, sortBy } from 'lodash';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
 import {
-  refetchCommunityApplicationFormQuery,
-  useCommunityApplicationFormQuery,
-  useUpdateCommunityApplicationQuestionsMutation,
+  refetchRoleSetApplicationFormQuery,
+  useRoleSetApplicationFormQuery,
+  useUpdateApplicationFormOnRoleSetMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import FormQuestionField, { questionSchema } from './views/FormQuestionField';
@@ -20,7 +20,7 @@ import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownV
 import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 
 interface CommunityApplicationFormProps {
-  communityId: string | undefined;
+  roleSetId: string;
   disabled?: boolean;
 }
 
@@ -45,26 +45,26 @@ const newQuestion = (currentQuestions: FormValues['questions']) => ({
   sortOrder: (max(currentQuestions.map(q => q.sortOrder)) ?? 0) + 1,
 });
 
-const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ communityId, disabled }) => {
+const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ roleSetId, disabled }) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
-  const { data: rawData, loading: loadingQuestions } = useCommunityApplicationFormQuery({
+  const { data: rawData, loading: loadingQuestions } = useRoleSetApplicationFormQuery({
     variables: {
-      communityId: communityId!,
+      roleSetId,
     },
-    skip: !communityId,
+    skip: !roleSetId,
   });
 
   const data = useMemo(
     () => ({
-      description: rawData?.lookup?.community?.applicationForm?.description,
-      questions: sortBy(rawData?.lookup?.community?.applicationForm?.questions, q => q.sortOrder),
+      description: rawData?.lookup?.roleSet?.applicationForm?.description,
+      questions: sortBy(rawData?.lookup?.roleSet?.applicationForm?.questions, q => q.sortOrder),
     }),
-    [communityId, rawData]
+    [roleSetId, rawData]
   );
 
-  const [updateQuestions, { loading: submittingQuestions }] = useUpdateCommunityApplicationQuestionsMutation();
+  const [updateQuestions, { loading: submittingQuestions }] = useUpdateApplicationFormOnRoleSetMutation();
 
   const loading = loadingQuestions || submittingQuestions;
   const initialValues: FormValues = {
@@ -83,7 +83,7 @@ const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ community
 
     updateQuestions({
       variables: {
-        communityId: communityId!,
+        roleSetId: roleSetId!,
         formData: {
           description: values.description,
           questions,
@@ -92,8 +92,8 @@ const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ community
       onCompleted: () => notify(t('community.application-form.updated-successfully'), 'success'),
       awaitRefetchQueries: true,
       refetchQueries: [
-        refetchCommunityApplicationFormQuery({
-          communityId: communityId!,
+        refetchRoleSetApplicationFormQuery({
+          roleSetId: roleSetId!,
         }),
       ],
     });

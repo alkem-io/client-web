@@ -53,7 +53,9 @@ const SubspacesListDialog = ({ open = false, journeyId, onClose }: SubspacesList
                             journeyUri={subspace.profile.url}
                             locked={subspace.settings.privacy?.mode === SpacePrivacyMode.Private}
                             spaceVisibility={visibility}
-                            member={subspace.community?.myMembershipStatus === CommunityMembershipStatus.Member}
+                            member={
+                              subspace.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member
+                            }
                           />
                         );
                       })}

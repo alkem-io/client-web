@@ -196,7 +196,9 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
         // already filtered by the query
         return flattenedSpaces;
       }
-      return flattenedSpaces?.filter(space => space.community?.myMembershipStatus === CommunityMembershipStatus.Member);
+      return flattenedSpaces?.filter(
+        space => space.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member
+      );
     }
     if (membershipFilter === SpacesExplorerMembershipFilter.Public) {
       return flattenedSpaces?.filter(space => space.settings.privacy?.mode === SpacePrivacyMode.Public);

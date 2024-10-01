@@ -7,6 +7,9 @@ query SpaceSettings($spaceId: UUID!) {
       }
       community {
         id
+        roleSet {
+          id
+        }
       }
     }
   }

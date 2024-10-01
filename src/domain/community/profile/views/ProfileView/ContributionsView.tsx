@@ -56,7 +56,7 @@ export const ContributionsView = ({
   onContributionClick,
   cards,
 }: ContributionViewProps) => {
-  const [leavingCommunityId, setLeavingCommunityId] = useState<string>();
+  const [leavingRoleSetId, setLeavingRoleSetId] = useState<string>();
 
   return (
     <PageContentBlock>
@@ -89,9 +89,9 @@ export const ContributionsView = ({
                       enableLeave={enableLeave}
                       leavingCommunity={isLeavingCommunity}
                       handleLeaveCommunity={handleLeaveCommunity}
-                      leavingCommunityDialogOpen={leavingCommunityId === details?.communityId}
+                      leavingCommunityDialogOpen={!!leavingRoleSetId && leavingRoleSetId === details?.roleSetId} //!! there is a problem here
                       onLeaveCommunityDialogOpen={isOpen =>
-                        setLeavingCommunityId(isOpen ? details?.communityId : undefined)
+                        setLeavingRoleSetId(isOpen ? details?.roleSetId : undefined)
                       }
                       onClick={onContributionClick ? event => onContributionClick(event, details) : undefined}
                     />

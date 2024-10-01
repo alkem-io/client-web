@@ -1,3 +1,4 @@
+// TODO: Implement template creation from createInput service
 // import { t } from 'xstate';
 // import { CreateTemplateMutationVariables, TemplateType } from '../../../core/apollo/generated/graphql-schema';
 // import { AnyTemplate } from '../models/TemplateBase';
@@ -43,5 +44,3 @@
 // }
 
 // export default useCreateInputFromTemplate;
-
-//!! review this file

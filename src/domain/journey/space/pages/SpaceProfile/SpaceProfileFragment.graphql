@@ -49,7 +49,9 @@ fragment SpaceProfile on Space {
   }
   community {
     id
-    myMembershipStatus
-    ...EntityDashboardCommunity
+    roleSet {
+      ...RoleSetDetails
+      myMembershipStatus
+    }
   }
 }
