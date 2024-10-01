@@ -5,19 +5,15 @@ import DashboardMemberIcon from '../../../community/membership/DashboardMemberIc
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
-import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
-import {
-  ContributorViewProps,
-  EntityDashboardLeads,
-} from '../../../community/community/EntityDashboardContributorsSection/Types';
+import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import { MessageReceiverChipData } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 
-interface JourneyDashboardWelcomeBlockProps {
+export interface JourneyDashboardWelcomeBlockProps {
   journeyTypeName: 'space' | 'subspace';
   vision: string;
-  leadUsers: EntityDashboardLeads['leadUsers'];
+  leadUsers: ContributorViewProps[];
   onContactLeadUser: (receiver: MessageReceiverChipData) => void;
   leadOrganizations: ContributorViewProps[] | undefined;
   leadVirtualContributors: ContributorViewProps[] | undefined;
@@ -54,14 +50,14 @@ const JourneyDashboardWelcomeBlock = ({
           {leadUsers.slice(0, 2).map(user => (
             <ContributorCardHorizontal
               key={user.id}
-              profile={{ ...user.profile, url: buildUserProfileUrl(user.nameID) }}
+              profile={user.profile}
               onContact={() => {
                 onContactLeadUser({
                   id: user.id,
-                  displayName: user.profile.displayName,
-                  avatarUri: user.profile.avatar?.uri,
-                  country: user.profile.location?.country,
-                  city: user.profile.location?.city,
+                  displayName: user.profile?.displayName,
+                  avatarUri: user.profile?.avatar?.uri,
+                  country: user.profile?.location?.country,
+                  city: user.profile?.location?.city,
                 });
               }}
               seamless
@@ -74,7 +70,7 @@ const JourneyDashboardWelcomeBlock = ({
           {leadOrganizationsUnique.slice(0, 2).map(org => (
             <ContributorCardHorizontal
               key={org.id}
-              profile={{ ...org.profile, url: buildOrganizationUrl(org.nameID) }}
+              profile={org.profile}
               onContact={() => {
                 onContactLeadOrganization({
                   id: org.id,

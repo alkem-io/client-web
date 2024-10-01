@@ -83,7 +83,7 @@ const SpaceSubspacesPage: FC<SpaceSubspacesPageProps> = () => {
                 journeyUri={item.profile.url}
                 locked={item.settings.privacy?.mode === SpacePrivacyMode.Private}
                 spaceVisibility={visibility}
-                member={item.community?.myMembershipStatus === CommunityMembershipStatus.Member}
+                member={item.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
               />
             )}
             onClickCreate={() => setCreateDialogOpen(true)}

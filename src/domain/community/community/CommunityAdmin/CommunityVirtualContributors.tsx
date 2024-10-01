@@ -10,7 +10,6 @@ import {
 } from '@mui/x-data-grid';
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CommunityMemberVirtualContributorFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { gutters } from '../../../../core/ui/grid/utils';
 import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
 import DataGridTable from '../../../../core/ui/table/DataGridTable';
@@ -22,9 +21,10 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import InviteVirtualContributorDialog from '../../invitations/InviteVirtualContributorDialog';
 import { InviteContributorsData } from '../../invitations/useInviteUsers';
+import { ContributorViewProps } from '../EntityDashboardContributorsSection/Types';
 
-type RenderParams = GridRenderCellParams<string, CommunityMemberVirtualContributorFragment>;
-type GetterParams = GridValueGetterParams<string, CommunityMemberVirtualContributorFragment>;
+type RenderParams = GridRenderCellParams<string, ContributorViewProps>;
+type GetterParams = GridValueGetterParams<string, ContributorViewProps>;
 
 const EmptyFilter = { items: [], linkOperator: GridLinkOperator.Or };
 
@@ -51,7 +51,7 @@ interface Entity extends Identifiable {
 }
 
 interface CommunityVirtualContributorsProps {
-  virtualContributors: CommunityMemberVirtualContributorFragment[] | undefined;
+  virtualContributors: ContributorViewProps[] | undefined;
   onRemoveMember: (memberId: string) => Promise<unknown> | void;
   canAddVirtualContributors: boolean;
   fetchAvailableVirtualContributorsOnAccount: (filter?: string, all?: boolean) => Promise<Entity[] | undefined>;
@@ -176,7 +176,7 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
             actions={[
               {
                 name: 'remove',
-                render: ({ row }: { row: CommunityMemberVirtualContributorFragment }) => {
+                render: ({ row }: { row: ContributorViewProps }) => {
                   return (
                     <IconButton onClick={() => setDeletingMemberId(row.id)} aria-label={t('buttons.remove')}>
                       <Remove color="primary" />

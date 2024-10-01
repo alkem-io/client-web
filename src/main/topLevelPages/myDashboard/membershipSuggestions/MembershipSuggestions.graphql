@@ -13,7 +13,10 @@ query MembershipSuggestionSpace($spaceNameId: UUID_NAMEID!) {
     }
     community {
       id
-      myRoles
+      roleSet {
+        id
+        myRoles
+      }
     }
   }
 }
