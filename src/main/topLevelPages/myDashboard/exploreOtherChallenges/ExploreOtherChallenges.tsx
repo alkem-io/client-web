@@ -61,12 +61,14 @@ const ExploreOtherChallenges = () => {
       };
     };
     community?: {
-      myMembershipStatus?: CommunityMembershipStatus;
+      roleSet?: {
+        myMembershipStatus?: CommunityMembershipStatus;
+      };
     };
   }>['getSpaceCardProps'] = space => {
     return {
       locked: space.settings?.privacy?.mode === SpacePrivacyMode.Private,
-      member: space.community?.myMembershipStatus === CommunityMembershipStatus.Member,
+      member: space.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member,
     };
   };
 
