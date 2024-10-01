@@ -87,7 +87,6 @@ const ExploreSpacesUnauthenticatedContainer = ({
     getPageInfo: result => result.spacesPaginated.pageInfo,
     options: {
       skip: !!shouldSearch,
-      errorPolicy: 'ignore',
     },
   });
 
