@@ -1,0 +1,13 @@
+query SubspaceCommunityAndRoleSetId($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      community {
+        id
+        roleSet {
+          id
+        }
+      }
+    }
+  }
+}

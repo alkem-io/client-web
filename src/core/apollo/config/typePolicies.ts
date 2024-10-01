@@ -31,10 +31,10 @@ export const typePolicies: TypedTypePolicies = {
   Metadata: {
     merge: true,
   },
-  Community: {
+  RoleSet: {
     fields: {
-      availableLeadUsers: paginationFieldPolicy(['filter'], 'User'),
-      availableMemberUsers: paginationFieldPolicy(['filter'], 'User'),
+      availableUsersForLeadRole: paginationFieldPolicy(['filter'], 'User'),
+      availableUsersForMemberRole: paginationFieldPolicy(['filter'], 'User'),
     },
   },
   Post: {

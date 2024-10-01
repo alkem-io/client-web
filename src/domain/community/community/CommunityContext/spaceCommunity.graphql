@@ -9,6 +9,9 @@ query SpaceCommunity($spaceId: UUID!, $includeDetails: Boolean = false) {
       community {
         id
         ...CommunityDetails @include(if: $includeDetails)
+        roleSet {
+          id
+        }
       }
     }
   }

@@ -19,6 +19,9 @@ query SpaceContributionDetails($spaceId: UUID!) {
       }
       community {
         id
+        roleSet {
+          id
+        }
       }
     }
   }

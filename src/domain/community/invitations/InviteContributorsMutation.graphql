@@ -1,7 +1,7 @@
-mutation inviteContributorsToCommunity($contributorIds: [UUID!]!, $communityId: UUID!, $message: String) {
-  inviteContributorsForCommunityMembership(invitationData: {
+mutation inviteContributorsForRoleSetMembership($contributorIds: [UUID!]!, $roleSetId: UUID!, $message: String) {
+  inviteContributorsForRoleSetMembership(invitationData: {
     invitedContributors: $contributorIds
-    communityID: $communityId
+    roleSetID: $roleSetId
     welcomeMessage: $message
   }) {
     id
