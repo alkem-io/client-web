@@ -80,7 +80,7 @@ const ImportTemplatesDialog = ({
     variables: { spaceNameId: spaceNameId! },
     skip: !open || !canUseSpaceTemplates,
   });
-  const templatesSetId = templatesSetData?.space.library?.id;
+  const templatesSetId = templatesSetData?.space.templatesManager?.templatesSet?.id;
 
   const { data: templatesData, loading: loadingTemplates } = useImportTemplateDialogQuery({
     fetchPolicy: 'network-only',

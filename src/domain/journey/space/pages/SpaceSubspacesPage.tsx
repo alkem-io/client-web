@@ -43,7 +43,7 @@ const SpaceSubspacesPage: FC<SpaceSubspacesPageProps> = () => {
         background: value.background ?? '',
         vision: value.vision,
         tags: value.tags,
-        addDefaultCallouts: value.addDefaultCallouts,
+        addTutorialCallouts: value.addTutorialCallouts,
       });
 
       if (!result) {

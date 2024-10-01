@@ -38,7 +38,7 @@ export const CreateSubspaceForm: FC<CreateSubspaceFormProps> = ({ isSubmitting, 
       background: value.background,
       vision: value.vision,
       tags: value.tags,
-      addDefaultCallouts: value.addDefaultCallouts,
+      addTutorialCallouts: value.addDefaultCallouts,
     });
 
   const initialValues: FormValues = {
