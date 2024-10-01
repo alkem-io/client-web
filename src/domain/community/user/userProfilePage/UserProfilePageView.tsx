@@ -11,6 +11,7 @@ import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
 import { PlatformFeatureFlagName } from '../../../../core/apollo/generated/graphql-schema';
 import ContributionsView from '../../contributor/Contributions/ContributionsView';
 import { CaptionSmall } from '../../../../core/ui/typography';
+import { RoleType } from '../constants/RoleType';
 
 export interface UserProfileViewPageProps extends UserProfileViewProps {
   contributions: SpaceHostedItem[] | undefined;
@@ -27,7 +28,7 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ contribution
   const subspaceILead = useMemo(
     () =>
       contributions?.filter(
-        contribution => contribution.roles?.includes('admin') || contribution.roles?.includes('lead')
+        contribution => contribution.roles?.includes(RoleType.Lead) || contribution.roles?.includes('admin')
       ),
     [contributions]
   );

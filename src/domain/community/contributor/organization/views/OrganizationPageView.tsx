@@ -8,7 +8,6 @@ import { OrganizationVerificationEnum } from '../../../../../core/apollo/generat
 import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
 import {
   AssociatesView,
-  ContributionsView,
   OrganizationProfileView,
   OrganizationProfileViewEntity,
 } from '../../../profile/views/ProfileView';
@@ -16,6 +15,7 @@ import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 import getMetricCount from '../../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../../platform/metrics/MetricType';
+import ContributionsView from '../../Contributions/ContributionsView';
 
 interface OrganizationPageViewProps {
   entities: OrganizationContainerEntities;
@@ -58,9 +58,9 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
     <PageContent>
       <PageContentColumn columns={4}>
         <OrganizationProfileView entity={entity} permissions={permissions} />
+        <AssociatesView associates={associates} totalCount={associatesCount} canReadUsers={permissions.canReadUsers} />
       </PageContentColumn>
       <PageContentColumn columns={8}>
-        <AssociatesView associates={associates} totalCount={associatesCount} canReadUsers={permissions.canReadUsers} />
         <ContributionsView title={t('components.contributions.title')} contributions={contributions} />
       </PageContentColumn>
     </PageContent>
