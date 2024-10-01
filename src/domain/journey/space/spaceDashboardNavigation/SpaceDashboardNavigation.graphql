@@ -22,7 +22,10 @@ query SpaceDashboardNavigationChallenges($spaceId: UUID!) {
           myPrivileges
         }
         community {
-          ...SpaceDashboardNavigationCommunity
+          id
+          roleSet {
+            ...MyMembershipsRoleSet
+          }
         }
       }
     }
@@ -45,7 +48,10 @@ query SpaceDashboardNavigationOpportunities($spaceId: UUID!, $challengeIds: [UUI
             ...SpaceDashboardNavigationProfile
           }
           community {
-            ...SpaceDashboardNavigationCommunity
+            id
+            roleSet {
+              ...MyMembershipsRoleSet
+            }
           }
         }
       }
@@ -62,9 +68,4 @@ fragment SpaceDashboardNavigationProfile on Profile {
     uri
     alternativeText
   }
-}
-
-fragment SpaceDashboardNavigationCommunity on Community {
-  id
-  myMembershipStatus
 }

@@ -49,11 +49,13 @@ fragment PendingMembershipsJourneyProfile on Profile {
 
 fragment PendingMembershipsMemberships on Community {
   id
-  applications {
-    id
-  }
-  invitations {
-    ...PendingMembershipInvitation
+  roleSet {
+    applications {
+      id
+    }
+    invitations {
+      ...PendingMembershipInvitation
+    }
   }
 }
 
