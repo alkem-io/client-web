@@ -16,7 +16,7 @@ import SeeMoreExpandable from '../../../../core/ui/content/SeeMoreExpandable';
 import { Link } from 'react-router-dom';
 import { AUTH_SIGN_UP_PATH } from '../../../../core/auth/authentication/constants/authentication.constants';
 import { Actions } from '../../../../core/ui/actions/Actions';
-import JourneyTile from './JourneyTile';
+import JourneyTile from '../../../../domain/journey/common/JourneyTile/JourneyTile';
 
 export interface ExploreSpacesUnauthenticatedViewProps {
   spaces: SpaceWithParent[] | undefined;
