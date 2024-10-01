@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Visual } from '../../../common/visual/Visual';
 import { Avatar, Box, Paper, Skeleton } from '@mui/material';
 import RouterLink from '../../../../core/ui/link/RouterLink';
@@ -86,4 +86,4 @@ const JourneyTile = ({ journey }: JourneyTileProps) => {
   );
 };
 
-export default JourneyTile;
+export default memo(JourneyTile);
