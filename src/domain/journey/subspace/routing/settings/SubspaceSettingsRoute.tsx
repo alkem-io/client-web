@@ -1,14 +1,14 @@
 import React from 'react';
 import { useRouteResolver } from '../../../../../main/routing/resolvers/RouteResolver';
 import { ChallengeRoute } from '../../../settings/routes/ChallengeRoute';
-import { useSubspaceCommunityIdQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useSubspaceCommunityAndRoleSetIdQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { OpportunityRoute } from '../../../settings/routes/OpportunityRoute';
 import { OpportunityProvider } from '../../../opportunity/context/OpportunityProvider';
 
 const SubspaceSettingsRoute = () => {
   const { journeyLevel, parentJourneyId } = useRouteResolver();
 
-  const { data } = useSubspaceCommunityIdQuery({
+  const { data } = useSubspaceCommunityAndRoleSetIdQuery({
     variables: {
       spaceId: parentJourneyId!,
     },

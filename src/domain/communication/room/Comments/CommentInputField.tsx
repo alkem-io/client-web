@@ -158,7 +158,7 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
 
   const [queryUsers] = useMentionableUsersLazyQuery();
 
-  const { communityId } = useCommunityContext();
+  const { roleSetId } = useCommunityContext();
 
   const isAlreadyMentioned = ({ profile }: { profile: { url: string } }) =>
     currentMentionedUsersRef.current.some(mention => mention.id === profile.url);
@@ -182,15 +182,15 @@ export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
       variables: {
         filter,
         first: MAX_USERS_LISTED,
-        communityId: communityId ? communityId : undefined,
-        includeVirtualContributors: communityId !== '',
+        roleSetId: roleSetId ? roleSetId : undefined,
+        includeVirtualContributors: roleSetId !== '',
       },
     });
 
     const mentionableContributors: EnrichedSuggestionDataItem[] = [];
 
     if (!hasVcInteraction && vcEnabled) {
-      data?.lookup?.community?.virtualContributorsInRole?.forEach(vc => {
+      data?.lookup?.roleSet?.virtualContributorsInRole?.forEach(vc => {
         if (!isAlreadyMentioned(vc) && vc.profile.displayName.toLowerCase().includes(search.toLowerCase())) {
           mentionableContributors.push({
             id: vc.profile.url,

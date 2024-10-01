@@ -3,6 +3,7 @@ import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../c
 
 export interface CommunityContextValue {
   communityId: string;
+  roleSetId: string;
   communicationId: string;
   communityName: string;
   communicationPrivileges: AuthorizationPrivilege[];
@@ -13,6 +14,7 @@ export interface CommunityContextValue {
 const CommunityContext = React.createContext<CommunityContextValue>({
   loading: false,
   communityId: '',
+  roleSetId: '',
   communicationId: '',
   communityName: '',
   communicationPrivileges: [],

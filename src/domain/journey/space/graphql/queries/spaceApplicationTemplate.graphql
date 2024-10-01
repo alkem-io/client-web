@@ -4,14 +4,18 @@ query SpaceApplicationTemplate($spaceId: UUID!) {
       id
       community {
         id
-        applicationForm {
-          description
-          questions {
-            required
-            question
-            sortOrder
-            explanation
-            maxLength
+        roleSet {
+          id
+          applicationForm {
+            id
+            description
+            questions {
+              required
+              question
+              sortOrder
+              explanation
+              maxLength
+            }
           }
         }
       }

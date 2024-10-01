@@ -1,6 +1,6 @@
 import {
-  useInviteContributorsToCommunityMutation,
-  useInviteUserToPlatformAndCommunityMutation,
+  useInviteContributorsForRoleSetMembershipMutation,
+  useInviteUserToPlatformAndRoleSetMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
 import ensurePresence from '../../../core/utils/ensurePresence';
 
@@ -22,16 +22,16 @@ interface UseInviteUsersProvided {
 }
 
 interface UseInviteUsersCallbacks {
-  onInviteContributor?: (communityId: string) => void | Promise<void>;
-  onInviteExternalUser?: (communityId: string) => void | Promise<void>;
+  onInviteContributor?: (roleSetId: string) => void | Promise<void>;
+  onInviteExternalUser?: (roleSetId: string) => void | Promise<void>;
 }
 
 const useInviteUsers = (
-  communityId: string | undefined,
+  roleSetId: string | undefined,
   { onInviteContributor, onInviteExternalUser }: UseInviteUsersCallbacks = {}
 ): UseInviteUsersProvided => {
-  const [inviteExistingUser] = useInviteContributorsToCommunityMutation();
-  const [invitePlatformCommunity] = useInviteUserToPlatformAndCommunityMutation();
+  const [inviteExistingUser] = useInviteContributorsForRoleSetMembershipMutation();
+  const [inviteUserForRoleSetAndPlatform] = useInviteUserToPlatformAndRoleSetMutation();
 
   return {
     inviteContributor: async ({ contributorIds, message }) => {
@@ -39,20 +39,20 @@ const useInviteUsers = (
         variables: {
           contributorIds,
           message,
-          communityId: ensurePresence(communityId),
+          roleSetId: ensurePresence(roleSetId),
         },
       });
-      await onInviteContributor?.(ensurePresence(communityId));
+      await onInviteContributor?.(ensurePresence(roleSetId));
     },
     platformInviteToCommunity: async ({ email, message }) => {
-      await invitePlatformCommunity({
+      await inviteUserForRoleSetAndPlatform({
         variables: {
           email,
           message,
-          communityId: ensurePresence(communityId),
+          roleSetId: ensurePresence(roleSetId),
         },
       });
-      await onInviteExternalUser?.(ensurePresence(communityId));
+      await onInviteExternalUser?.(ensurePresence(roleSetId));
     },
   };
 };
