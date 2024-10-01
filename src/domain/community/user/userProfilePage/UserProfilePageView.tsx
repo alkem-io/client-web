@@ -1,14 +1,16 @@
 import { Grid } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useConfig } from '../../../platform/config/useConfig';
-import { ContributionsView, CredentialsView } from '../../profile/views/ProfileView';
+import { CredentialsView } from '../../profile/views/ProfileView';
 import UserProfileView, { UserProfileViewProps } from '../../profile/views/ProfileView/UserProfileView';
 import AssociatedOrganizationsLazilyFetched from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
 import { PlatformFeatureFlagName } from '../../../../core/apollo/generated/graphql-schema';
+import ContributionsView from '../../contributor/Contributions/ContributionsView';
+import { CaptionSmall } from '../../../../core/ui/typography';
 
 export interface UserProfileViewPageProps extends UserProfileViewProps {
   contributions: SpaceHostedItem[] | undefined;
@@ -21,6 +23,14 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ contribution
   const { id } = user;
 
   const { isFeatureEnabled } = useConfig();
+
+  const subspaceILead = useMemo(
+    () =>
+      contributions?.filter(
+        contribution => contribution.roles?.includes('admin') || contribution.roles?.includes('lead')
+      ),
+    [contributions]
+  );
 
   return (
     <PageContent>
@@ -42,7 +52,19 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ contribution
         )}
       </PageContentColumn>
       <PageContentColumn columns={8}>
-        <ContributionsView title={t('pages.user-profile.communities.title')} contributions={contributions} cards />
+        {subspaceILead && subspaceILead.length > 0 && (
+          <ContributionsView
+            title={t('pages.user-profile.communities.leadSpacesTitle')}
+            contributions={subspaceILead}
+          />
+        )}
+        <ContributionsView
+          title={t('pages.user-profile.communities.allMembershipsTitle')}
+          contributions={contributions}
+        />
+        {contributions && contributions.length === 0 && (
+          <CaptionSmall>{t('pages.user-profile.communities.noMembership')}</CaptionSmall>
+        )}
       </PageContentColumn>
     </PageContent>
   );

@@ -13759,10 +13759,13 @@ export const UserContributionsDocument = gql`
       spaces {
         id
         nameID
+        roles
         subspaces {
           id
           nameID
           type
+          level
+          roles
         }
       }
     }
