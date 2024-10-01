@@ -294,7 +294,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
       const subspace = await handleSubspaceCreation(selectedExistingSpaceId, values.name);
       setbokId(subspace?.data?.createSubspace.id);
-      setBokRoleSetId(subspace?.data?.createSubspace.community.id);
+      setBokRoleSetId(subspace?.data?.createSubspace.community.roleSet.id);
       const parentCommunityId = selectableSpaces.filter(space => space.id === selectedExistingSpaceId)[0]?.roleSetId;
 
       if (parentCommunityId) {
@@ -328,7 +328,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
         const subspace = await handleSubspaceCreation(newlyCreatedSpaceId, values.name);
         setbokId(subspace?.data?.createSubspace.id);
-        setBokRoleSetId(subspace?.data?.createSubspace.community.id);
+        setBokRoleSetId(subspace?.data?.createSubspace.community.roleSet.id);
 
         const parentCommunityData = await getSpaceCommunity();
         setBoKParentRoleSetId(parentCommunityData.data?.lookup.space?.community.id);
