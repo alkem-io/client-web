@@ -22624,15 +22624,21 @@ export type SubspaceInfoFragment = {
   };
 };
 
-export type SubspaceCommunityIdQueryVariables = Exact<{
+export type SubspaceCommunityAndRoleSetIdQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
 
-export type SubspaceCommunityIdQuery = {
+export type SubspaceCommunityAndRoleSetIdQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
-    space?: { __typename?: 'Space'; id: string; community: { __typename?: 'Community'; id: string } } | undefined;
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
+        }
+      | undefined;
   };
 };
 

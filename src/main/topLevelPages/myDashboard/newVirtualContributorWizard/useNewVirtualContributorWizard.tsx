@@ -10,7 +10,7 @@ import {
   usePlansTableQuery,
   useSpaceUrlLazyQuery,
   useSubspaceProfileInfoQuery,
-  useSubspaceCommunityIdLazyQuery,
+  useSubspaceCommunityAndRoleSetIdLazyQuery,
   useAssignRoleToVirtualContributorMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
@@ -331,7 +331,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         setBokRoleSetId(subspace?.data?.createSubspace.community.roleSet.id);
 
         const parentCommunityData = await getSpaceCommunity();
-        setBoKParentRoleSetId(parentCommunityData.data?.lookup.space?.community.id);
+        setBoKParentRoleSetId(parentCommunityData.data?.lookup.space?.community.roleSet.id);
       }
     }
 
@@ -381,7 +381,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     },
   });
 
-  const [getSpaceCommunity] = useSubspaceCommunityIdLazyQuery({
+  const [getSpaceCommunity] = useSubspaceCommunityAndRoleSetIdLazyQuery({
     variables: {
       spaceId: createdSpaceId!,
     },

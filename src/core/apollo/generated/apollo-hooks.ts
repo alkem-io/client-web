@@ -17699,13 +17699,16 @@ export function refetchSubspaceInfoQuery(variables: SchemaTypes.SubspaceInfoQuer
   return { query: SubspaceInfoDocument, variables: variables };
 }
 
-export const SubspaceCommunityIdDocument = gql`
-  query SubspaceCommunityId($spaceId: UUID!) {
+export const SubspaceCommunityAndRoleSetIdDocument = gql`
+  query SubspaceCommunityAndRoleSetId($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
         id
         community {
           id
+          roleSet {
+            id
+          }
         }
       }
     }
@@ -17713,55 +17716,59 @@ export const SubspaceCommunityIdDocument = gql`
 `;
 
 /**
- * __useSubspaceCommunityIdQuery__
+ * __useSubspaceCommunityAndRoleSetIdQuery__
  *
- * To run a query within a React component, call `useSubspaceCommunityIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useSubspaceCommunityIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSubspaceCommunityAndRoleSetIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSubspaceCommunityAndRoleSetIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSubspaceCommunityIdQuery({
+ * const { data, loading, error } = useSubspaceCommunityAndRoleSetIdQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useSubspaceCommunityIdQuery(
+export function useSubspaceCommunityAndRoleSetIdQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SubspaceCommunityIdQuery,
-    SchemaTypes.SubspaceCommunityIdQueryVariables
+    SchemaTypes.SubspaceCommunityAndRoleSetIdQuery,
+    SchemaTypes.SubspaceCommunityAndRoleSetIdQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SubspaceCommunityIdQuery, SchemaTypes.SubspaceCommunityIdQueryVariables>(
-    SubspaceCommunityIdDocument,
-    options
-  );
+  return Apollo.useQuery<
+    SchemaTypes.SubspaceCommunityAndRoleSetIdQuery,
+    SchemaTypes.SubspaceCommunityAndRoleSetIdQueryVariables
+  >(SubspaceCommunityAndRoleSetIdDocument, options);
 }
 
-export function useSubspaceCommunityIdLazyQuery(
+export function useSubspaceCommunityAndRoleSetIdLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SubspaceCommunityIdQuery,
-    SchemaTypes.SubspaceCommunityIdQueryVariables
+    SchemaTypes.SubspaceCommunityAndRoleSetIdQuery,
+    SchemaTypes.SubspaceCommunityAndRoleSetIdQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SubspaceCommunityIdQuery, SchemaTypes.SubspaceCommunityIdQueryVariables>(
-    SubspaceCommunityIdDocument,
-    options
-  );
+  return Apollo.useLazyQuery<
+    SchemaTypes.SubspaceCommunityAndRoleSetIdQuery,
+    SchemaTypes.SubspaceCommunityAndRoleSetIdQueryVariables
+  >(SubspaceCommunityAndRoleSetIdDocument, options);
 }
 
-export type SubspaceCommunityIdQueryHookResult = ReturnType<typeof useSubspaceCommunityIdQuery>;
-export type SubspaceCommunityIdLazyQueryHookResult = ReturnType<typeof useSubspaceCommunityIdLazyQuery>;
-export type SubspaceCommunityIdQueryResult = Apollo.QueryResult<
-  SchemaTypes.SubspaceCommunityIdQuery,
-  SchemaTypes.SubspaceCommunityIdQueryVariables
+export type SubspaceCommunityAndRoleSetIdQueryHookResult = ReturnType<typeof useSubspaceCommunityAndRoleSetIdQuery>;
+export type SubspaceCommunityAndRoleSetIdLazyQueryHookResult = ReturnType<
+  typeof useSubspaceCommunityAndRoleSetIdLazyQuery
 >;
-export function refetchSubspaceCommunityIdQuery(variables: SchemaTypes.SubspaceCommunityIdQueryVariables) {
-  return { query: SubspaceCommunityIdDocument, variables: variables };
+export type SubspaceCommunityAndRoleSetIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.SubspaceCommunityAndRoleSetIdQuery,
+  SchemaTypes.SubspaceCommunityAndRoleSetIdQueryVariables
+>;
+export function refetchSubspaceCommunityAndRoleSetIdQuery(
+  variables: SchemaTypes.SubspaceCommunityAndRoleSetIdQueryVariables
+) {
+  return { query: SubspaceCommunityAndRoleSetIdDocument, variables: variables };
 }
 
 export const SubspacePageDocument = gql`
