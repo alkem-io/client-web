@@ -1,32 +1,28 @@
-import React, { FC } from 'react';
-import PageContentColumn from '../../../core/ui/content/PageContentColumn';
-import CreateAccountBanner from '../Home/CreateAccountBanner';
-import MoreAboutAlkemio from './moreAboutAlkemio/MoreAboutAlkemio';
-import RecentForumMessages from './recentForumMessages/RecentForumMessages';
-import InnovationLibraryBlock from './innovationLibraryBlock/InnovationLibraryBlock';
-import TipsAndTricks from './tipsAndTricks/TipsAndTricks';
-import ExploreOtherChallenges from './exploreOtherChallenges/ExploreOtherChallenges';
-import { useColumns } from '../../../core/ui/grid/GridContext';
+import React, { FC, useState } from 'react';
+import ExploreSpacesUnauthenticatedContainer from './ExploreSpaces/ExploreSpacesUnauthenticatedContainer';
+import {
+  ExploreSpacesUnauthenticatedView,
+  SpacesExplorerMembershipFilter,
+} from './ExploreSpaces/ExploreSpacesUnauthenticatedView';
 
 interface MyDashboardUnauthenticatedProps {}
 
 const MyDashboardUnauthenticated: FC<MyDashboardUnauthenticatedProps> = () => {
-  const columns = useColumns();
+  const [searchTerms, setSearchTerms] = useState<string[]>([]);
+  const [selectedFilter, setSelectedFilter] = useState<string>(SpacesExplorerMembershipFilter.All);
+
   return (
-    <>
-      <PageContentColumn columns={columns}>
-        <CreateAccountBanner />
-      </PageContentColumn>
-      <PageContentColumn columns={columns === 12 ? 4 : 8} flexDirection="column" alignSelf="stretch">
-        <TipsAndTricks />
-        <InnovationLibraryBlock />
-        <RecentForumMessages />
-      </PageContentColumn>
-      <PageContentColumn columns={8}>
-        <ExploreOtherChallenges />
-        <MoreAboutAlkemio />
-      </PageContentColumn>
-    </>
+    <ExploreSpacesUnauthenticatedContainer searchTerms={searchTerms} selectedFilter={selectedFilter}>
+      {provided => {
+        return (
+          <ExploreSpacesUnauthenticatedView
+            {...provided}
+            setSearchTerms={setSearchTerms}
+            setSelectedFilter={setSelectedFilter}
+          />
+        );
+      }}
+    </ExploreSpacesUnauthenticatedContainer>
   );
 };
 
