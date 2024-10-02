@@ -21729,18 +21729,12 @@ export function refetchExploreSpacesSearchQuery(variables: SchemaTypes.ExploreSp
 }
 
 export const ExploreAllSpacesDocument = gql`
-  query ExploreAllSpaces($first: Int!, $after: UUID, $visibilities: [SpaceVisibility!] = [ACTIVE]) {
-    spacesPaginated(first: $first, after: $after, filter: { visibilities: $visibilities }) {
-      spaces {
-        ...ExploreSpaces
-      }
-      pageInfo {
-        ...PageInfo
-      }
+  query ExploreAllSpaces {
+    exploreSpaces {
+      ...ExploreSpaces
     }
   }
   ${ExploreSpacesFragmentDoc}
-  ${PageInfoFragmentDoc}
 `;
 
 /**
@@ -21755,14 +21749,11 @@ export const ExploreAllSpacesDocument = gql`
  * @example
  * const { data, loading, error } = useExploreAllSpacesQuery({
  *   variables: {
- *      first: // value for 'first'
- *      after: // value for 'after'
- *      visibilities: // value for 'visibilities'
  *   },
  * });
  */
 export function useExploreAllSpacesQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ExploreAllSpacesQuery, SchemaTypes.ExploreAllSpacesQueryVariables>
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.ExploreAllSpacesQuery, SchemaTypes.ExploreAllSpacesQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ExploreAllSpacesQuery, SchemaTypes.ExploreAllSpacesQueryVariables>(
@@ -21790,7 +21781,7 @@ export type ExploreAllSpacesQueryResult = Apollo.QueryResult<
   SchemaTypes.ExploreAllSpacesQuery,
   SchemaTypes.ExploreAllSpacesQueryVariables
 >;
-export function refetchExploreAllSpacesQuery(variables: SchemaTypes.ExploreAllSpacesQueryVariables) {
+export function refetchExploreAllSpacesQuery(variables?: SchemaTypes.ExploreAllSpacesQueryVariables) {
   return { query: ExploreAllSpacesDocument, variables: variables };
 }
 
