@@ -106,8 +106,6 @@ class Portal {
         eventHandlers['idle-state'](decryptedData.payload);
       });
 
-      this.socket.on('room-saved', eventHandlers['room-saved']);
-
       this.socket.on('client-broadcast', eventHandlers['client-broadcast']);
 
       this.socket.on('connect', () => {
