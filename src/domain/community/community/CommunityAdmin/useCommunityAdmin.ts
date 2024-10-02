@@ -183,7 +183,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
 
     // Add Facilitating if it's not yet in the result
     if (roleSetData?.lookup.space?.provider) {
-      const member = result.find(organization => organization.id === roleSetData.lookup.space?.provider?.id);
+      const member = result.find(organization => organization.id === roleSetData.lookup.space?.provider.id);
       if (!member) {
         result.push({
           ...roleSetData.lookup.space.provider,
