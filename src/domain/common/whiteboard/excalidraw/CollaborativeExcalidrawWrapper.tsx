@@ -130,6 +130,7 @@ const CollaborativeExcalidrawWrapper = ({
   const UIOptions: ExcalidrawProps['UIOptions'] = useMemo(
     () => ({
       canvasActions: {
+        loadScene: false,
         export: {
           saveFileToDisk: true,
         },
