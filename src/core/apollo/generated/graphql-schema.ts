@@ -7719,6 +7719,29 @@ export type RoleSetAvailableMembersQuery = {
   };
 };
 
+export type UsersWithCredentialsQueryVariables = Exact<{
+  input: UsersWithAuthorizationCredentialInput;
+}>;
+
+export type UsersWithCredentialsQuery = {
+  __typename?: 'Query';
+  usersWithAuthorizationCredential: Array<{
+    __typename?: 'User';
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    isContactable: boolean;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    };
+  }>;
+};
+
 export type AccountInformationQueryVariables = Exact<{
   accountId: Scalars['UUID'];
 }>;
@@ -17837,45 +17860,6 @@ export type UserProfileQuery = {
       | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
   };
-};
-
-export type UsersWithCredentialsQueryVariables = Exact<{
-  input: UsersWithAuthorizationCredentialInput;
-}>;
-
-export type UsersWithCredentialsQuery = {
-  __typename?: 'Query';
-  usersWithAuthorizationCredential: Array<{
-    __typename?: 'User';
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    isContactable: boolean;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      url: string;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    };
-  }>;
-};
-
-export type UsersWithCredentialsSimpleListQueryVariables = Exact<{
-  input: UsersWithAuthorizationCredentialInput;
-}>;
-
-export type UsersWithCredentialsSimpleListQuery = {
-  __typename?: 'Query';
-  usersWithAuthorizationCredential: Array<{
-    __typename?: 'User';
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  }>;
 };
 
 export type UserProviderQueryVariables = Exact<{ [key: string]: never }>;
