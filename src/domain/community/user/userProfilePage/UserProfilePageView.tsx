@@ -12,6 +12,8 @@ import { PlatformFeatureFlagName } from '../../../../core/apollo/generated/graph
 import ContributionsView from '../../contributor/Contributions/ContributionsView';
 import { CaptionSmall } from '../../../../core/ui/typography';
 import { RoleType } from '../constants/RoleType';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 
 export interface UserProfileViewPageProps extends UserProfileViewProps {
   contributions: SpaceHostedItem[] | undefined;
@@ -59,12 +61,17 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ contribution
             contributions={subspaceILead}
           />
         )}
-        <ContributionsView
-          title={t('pages.user-profile.communities.allMembershipsTitle')}
-          contributions={contributions}
-        />
+        {contributions && contributions.length > 0 && (
+          <ContributionsView
+            title={t('pages.user-profile.communities.allMembershipsTitle')}
+            contributions={contributions}
+          />
+        )}
         {contributions && contributions.length === 0 && (
-          <CaptionSmall>{t('pages.user-profile.communities.noMembership')}</CaptionSmall>
+          <PageContentBlock>
+            <PageContentBlockHeader title={t('pages.user-profile.communities.allMembershipsTitle')} />
+            <CaptionSmall>{t('pages.user-profile.communities.noMembership')}</CaptionSmall>
+          </PageContentBlock>
         )}
       </PageContentColumn>
     </PageContent>

@@ -16224,6 +16224,7 @@ export type RolesOrganizationQuery = {
         id: string;
         displayName: string;
         roles: Array<string>;
+        level: number;
       }>;
     }>;
   };

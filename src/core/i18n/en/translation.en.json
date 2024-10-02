@@ -1595,6 +1595,8 @@
     },
     "contributions": {
       "title": "Contributions",
+      "leadSpacesTitle": "(Sub)Spaces we lead",
+      "allMembershipsTitle": "(Sub)Spaces we're in",
       "help": "The Spaces and Subspaces that this organization is contributing to"
     },
     "discussions-list": {

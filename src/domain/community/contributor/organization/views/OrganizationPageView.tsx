@@ -16,6 +16,10 @@ import PageContentColumn from '../../../../../core/ui/content/PageContentColumn'
 import getMetricCount from '../../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../../platform/metrics/MetricType';
 import ContributionsView from '../../Contributions/ContributionsView';
+import { RoleType } from '../../../user/constants/RoleType';
+import { CaptionSmall } from '../../../../../core/ui/typography';
+import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 
 interface OrganizationPageViewProps {
   entities: OrganizationContainerEntities;
@@ -54,6 +58,8 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
 
   const associatesCount = getMetricCount(organization?.metrics, MetricType.Associate);
 
+  const contributionsOrgLead = contributions.filter(contribution => contribution.roles?.includes(RoleType.Lead)) || [];
+
   return (
     <PageContent>
       <PageContentColumn columns={4}>
@@ -61,7 +67,21 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
         <AssociatesView associates={associates} totalCount={associatesCount} canReadUsers={permissions.canReadUsers} />
       </PageContentColumn>
       <PageContentColumn columns={8}>
-        <ContributionsView title={t('components.contributions.title')} contributions={contributions} />
+        {contributionsOrgLead && contributionsOrgLead.length > 0 && (
+          <ContributionsView
+            title={t('components.contributions.leadSpacesTitle')}
+            contributions={contributionsOrgLead}
+          />
+        )}
+        {contributions && contributions.length > 0 && (
+          <ContributionsView title={t('components.contributions.allMembershipsTitle')} contributions={contributions} />
+        )}
+        {contributions && contributions.length === 0 && (
+          <PageContentBlock>
+            <PageContentBlockHeader title={t('components.contributions.allMembershipsTitle')} />
+            <CaptionSmall>{t('pages.user-profile.communities.noMembership')}</CaptionSmall>
+          </PageContentBlock>
+        )}
       </PageContentColumn>
     </PageContent>
   );
