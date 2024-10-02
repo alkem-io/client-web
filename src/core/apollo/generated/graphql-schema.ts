@@ -7113,6 +7113,34 @@ export type RoleSetDetailsFragment = {
         | undefined;
     };
   }>;
+  adminUsers: Array<{
+    __typename?: 'User';
+    id: string;
+    isContactable: boolean;
+    email: string;
+    firstName: string;
+    lastName: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      location?:
+        | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+        | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+    };
+  }>;
   memberOrganizations: Array<{
     __typename?: 'Organization';
     id: string;
@@ -15493,6 +15521,34 @@ export type CommunityMembersListQuery = {
                 | undefined;
             };
           }>;
+          adminUsers: Array<{
+            __typename?: 'User';
+            id: string;
+            isContactable: boolean;
+            email: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              location?:
+                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+            };
+          }>;
           memberOrganizations: Array<{
             __typename?: 'Organization';
             id: string;
@@ -19265,6 +19321,34 @@ export type AboutPageMembersQuery = {
                     | undefined;
                 };
               }>;
+              adminUsers: Array<{
+                __typename?: 'User';
+                id: string;
+                isContactable: boolean;
+                email: string;
+                firstName: string;
+                lastName: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                };
+              }>;
               memberOrganizations: Array<{
                 __typename?: 'Organization';
                 id: string;
@@ -20145,6 +20229,34 @@ export type SpaceCommunityPageQuery = {
           };
         }>;
         leadUsers: Array<{
+          __typename?: 'User';
+          id: string;
+          isContactable: boolean;
+          email: string;
+          firstName: string;
+          lastName: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?:
+              | Array<{
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }>
+              | undefined;
+          };
+        }>;
+        adminUsers: Array<{
           __typename?: 'User';
           id: string;
           isContactable: boolean;
@@ -21972,6 +22084,34 @@ export type SpaceProfileFragment = {
             | undefined;
         };
       }>;
+      adminUsers: Array<{
+        __typename?: 'User';
+        id: string;
+        isContactable: boolean;
+        email: string;
+        firstName: string;
+        lastName: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+        };
+      }>;
       memberOrganizations: Array<{
         __typename?: 'Organization';
         id: string;
@@ -22727,6 +22867,34 @@ export type SubspacePageQuery = {
                     | undefined;
                 };
               }>;
+              adminUsers: Array<{
+                __typename?: 'User';
+                id: string;
+                isContactable: boolean;
+                email: string;
+                firstName: string;
+                lastName: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                };
+              }>;
               memberOrganizations: Array<{
                 __typename?: 'Organization';
                 id: string;
@@ -22899,6 +23067,34 @@ export type SubspacePageSpaceFragment = {
         };
       }>;
       leadUsers: Array<{
+        __typename?: 'User';
+        id: string;
+        isContactable: boolean;
+        email: string;
+        firstName: string;
+        lastName: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+        };
+      }>;
+      adminUsers: Array<{
         __typename?: 'User';
         id: string;
         isContactable: boolean;

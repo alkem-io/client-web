@@ -2289,6 +2289,9 @@ export const RoleSetDetailsFragmentDoc = gql`
     leadUsers: usersInRole(role: LEAD) {
       ...CommunityMemberUser
     }
+    adminUsers: usersInRole(role: ADMIN) {
+      ...CommunityMemberUser
+    }
     memberOrganizations: organizationsInRole(role: MEMBER) {
       ...CommunityMemberOrganization
     }

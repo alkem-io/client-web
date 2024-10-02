@@ -3,7 +3,6 @@ import {
   useAllOrganizationsLazyQuery,
   useEventOnApplicationMutation,
   useCommunityApplicationsInvitationsQuery,
-  useUsersWithCredentialsQuery,
   useInvitationStateEventMutation,
   useDeleteInvitationMutation,
   useDeletePlatformInvitationMutation,
@@ -19,7 +18,6 @@ import {
   useRoleSetAvailableMembersLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
-  AuthorizationCredential,
   AuthorizationPrivilege,
   CommunityRoleType,
   SearchVisibility,
@@ -71,7 +69,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
   })!;
 
   const {
-    data,
+    data: roleSetData,
     loading: loadingMembers,
     refetch: refetchCommunityMembers,
   } = useCommunityMembersListQuery({
@@ -83,7 +81,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
     skip: !roleSetId || !spaceId,
   });
 
-  const roleSet = data?.lookup.roleSet;
+  const roleSet = roleSetData?.lookup.roleSet;
 
   const memberRoleDefinition = roleSet?.memberRoleDefinition;
   const leadRoleDefinition = roleSet?.leadRoleDefinition;
@@ -102,20 +100,6 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
   };
 
   const {
-    data: dataAdmins,
-    loading: loadingAdmins,
-    refetch: refetchAuthorization,
-  } = useUsersWithCredentialsQuery({
-    variables: {
-      input: {
-        type: AuthorizationCredential.SpaceAdmin,
-        resourceID: [spaceId, challengeId, opportunityId][journeyLevel],
-      },
-    },
-    skip: ![spaceId, challengeId, opportunityId][journeyLevel],
-  });
-
-  const {
     data: dataApplications,
     loading: loadingApplications,
     refetch: refetchApplicationsAndInvitations,
@@ -126,10 +110,10 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
 
   // Members:
   const users = useMemo(() => {
-    const roleSet = data?.lookup.roleSet;
+    const roleSet = roleSetData?.lookup.roleSet;
     const members = roleSet?.memberUsers ?? [];
     const leads = roleSet?.leadUsers ?? [];
-    const admins = dataAdmins?.usersWithAuthorizationCredential ?? [];
+    const admins = roleSet?.adminUsers ?? [];
 
     const result = members.map<CommunityMemberUserFragmentWithRoles>(user => ({
       ...user,
@@ -168,10 +152,10 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
     });
 
     return result;
-  }, [data, dataAdmins]);
+  }, [roleSetData]);
 
   const organizations = useMemo(() => {
-    const roleSet = data?.lookup.roleSet;
+    const roleSet = roleSetData?.lookup.roleSet;
     const members = roleSet?.memberOrganizations ?? [];
     const leads = roleSet?.leadOrganizations ?? [];
 
@@ -179,7 +163,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
       ...member,
       isMember: true,
       isLead: leads.find(lead => lead.id === member.id) !== undefined,
-      isFacilitating: data?.lookup.space?.provider.id === member.id,
+      isFacilitating: roleSetData?.lookup.space?.provider.id === member.id,
       isContactable: false, // TODO: Implement contactable for organizations
     }));
 
@@ -191,18 +175,18 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
           ...lead,
           isMember: false,
           isLead: true,
-          isFacilitating: data?.lookup.space?.provider.id === lead.id,
+          isFacilitating: roleSetData?.lookup.space?.provider.id === lead.id,
           isContactable: false, // TODO: Implement contactable for organizations
         });
       }
     });
 
     // Add Facilitating if it's not yet in the result
-    if (data?.lookup.space?.provider) {
-      const member = result.find(organization => organization.id === data.lookup.space?.provider?.id);
+    if (roleSetData?.lookup.space?.provider) {
+      const member = result.find(organization => organization.id === roleSetData.lookup.space?.provider?.id);
       if (!member) {
         result.push({
-          ...data.lookup.space.provider,
+          ...roleSetData.lookup.space.provider,
           isMember: false,
           isLead: false,
           isFacilitating: true,
@@ -211,12 +195,12 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
       }
     }
     return result;
-  }, [data, dataAdmins]);
+  }, [roleSetData]);
 
   const virtualContributors = useMemo(() => {
-    const roleSet = data?.lookup.roleSet;
+    const roleSet = roleSetData?.lookup.roleSet;
     return roleSet?.memberVirtualContributors ?? [];
-  }, [data]);
+  }, [roleSetData]);
 
   // Available new members:
   const [fetchAvailableUsers, { refetch: refetchAvailableMemberUsers }] = useRoleSetAvailableMembersLazyQuery();
@@ -369,19 +353,22 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
     return refetchCommunityMembers();
   };
 
-  const [assignCommunityRole] = useAssignRoleToUserMutation();
-  const [removeCommunityRole] = useRemoveRoleFromUserMutation();
+  const [assignAdminRole] = useAssignRoleToUserMutation();
+  const [removeAdminRole] = useRemoveRoleFromUserMutation();
   const handleUserAuthorizationChange = async (memberId: string, isAdmin: boolean) => {
+    if (!roleSetId) {
+      return;
+    }
     if (isAdmin) {
-      await assignCommunityRole({
+      await assignAdminRole({
         variables: { roleSetId: roleSetId, role: CommunityRoleType.Admin, contributorId: memberId },
       });
     } else {
-      await removeCommunityRole({
+      await removeAdminRole({
         variables: { roleSetId: roleSetId, role: CommunityRoleType.Admin, contributorId: memberId },
       });
     }
-    return refetchAuthorization();
+    return refetchCommunityMembers();
   };
 
   const [removeUserAsCommunityMember] = useRemoveRoleFromUserMutation();
@@ -543,7 +530,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
     getAvailableVirtualContributorsInLibrary,
     inviteExistingUser,
     inviteExternalUser,
-    loading: loadingAdmins || loadingMembers || loadingApplications,
+    loading: loadingMembers || loadingApplications,
   };
 };
 
