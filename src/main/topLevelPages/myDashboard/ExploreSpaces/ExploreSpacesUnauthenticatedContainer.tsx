@@ -43,7 +43,7 @@ const ExploreSpacesUnauthenticatedContainer = ({
     variables: {
       spaceNameId: t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId'),
     },
-    skip: !!shouldSearch,
+    skip: shouldSearch,
   });
 
   // get translated tags based on the selected filter
@@ -74,26 +74,26 @@ const ExploreSpacesUnauthenticatedContainer = ({
     skip: !shouldSearch,
   });
 
-  // const {
-  //   data: spacesData,
-  //   fetchMore: fetchMoreSpaces,
-  //   loading: isLoadingSpaces,
-  //   hasMore: hasMoreSpaces,
-  // } = usePaginatedQuery({
-  //   useQuery: useExploreAllSpacesQuery,
-  //   pageSize: ITEMS_LIMIT,
-  //   variables: {},
-  //   getPageInfo: result => result.spacesPaginated.pageInfo,
-  //   options: {
-  //     skip: !!shouldSearch,
-  //   },
-  // });
+  /*const {
+    data: spacesData,
+    fetchMore: fetchMoreSpaces,
+    loading: isLoadingSpaces,
+    hasMore: hasMoreSpaces,
+  } = usePaginatedQuery({
+    useQuery: useExploreAllSpacesQuery,
+    pageSize: ITEMS_LIMIT,
+    variables: {},
+    getPageInfo: result => result.spacesPaginated.pageInfo,
+    options: {
+      skip: !!shouldSearch,
+    },
+  });*/
   const { data: spacesData, loading: isLoadingSpaces } = useExploreAllSpacesQuery();
 
   // const fetchMore = !shouldSearch ? fetchMoreSpaces : () => Promise.resolve();
-  //
+
   // const hasMore = !shouldSearch ? hasMoreSpaces : false;
-  //
+
   const loading = isLoadingSpaces || loadingSearchResults;
 
   const fetchMore = () => Promise.resolve();
