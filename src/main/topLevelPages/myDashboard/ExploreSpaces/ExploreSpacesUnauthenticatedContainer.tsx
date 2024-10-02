@@ -88,7 +88,9 @@ const ExploreSpacesUnauthenticatedContainer = ({
       skip: !!shouldSearch,
     },
   });*/
-  const { data: spacesData, loading: isLoadingSpaces } = useExploreAllSpacesQuery();
+  const { data: spacesData, loading: isLoadingSpaces } = useExploreAllSpacesQuery({
+    skip: shouldSearch,
+  });
 
   // const fetchMore = !shouldSearch ? fetchMoreSpaces : () => Promise.resolve();
 
