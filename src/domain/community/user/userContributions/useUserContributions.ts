@@ -36,7 +36,7 @@ const useUserContributions = (userId: string | undefined) => {
           spaceLevel: ss.level as JourneyLevel,
           contributorId: userId!,
           contributorType: CommunityContributorType.User,
-          roles: e.roles,
+          roles: ss.roles,
         });
       });
     });

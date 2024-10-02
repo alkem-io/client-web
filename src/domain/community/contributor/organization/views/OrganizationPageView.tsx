@@ -67,16 +67,15 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
         <AssociatesView associates={associates} totalCount={associatesCount} canReadUsers={permissions.canReadUsers} />
       </PageContentColumn>
       <PageContentColumn columns={8}>
-        {contributionsOrgLead && contributionsOrgLead.length > 0 && (
+        {contributionsOrgLead.length > 0 && (
           <ContributionsView
             title={t('components.contributions.leadSpacesTitle')}
             contributions={contributionsOrgLead}
           />
         )}
-        {contributions && contributions.length > 0 && (
+        {contributions.length > 0 ? (
           <ContributionsView title={t('components.contributions.allMembershipsTitle')} contributions={contributions} />
-        )}
-        {contributions && contributions.length === 0 && (
+        ) : (
           <PageContentBlock>
             <PageContentBlockHeader title={t('components.contributions.allMembershipsTitle')} />
             <CaptionSmall>{t('pages.user-profile.communities.noMembership')}</CaptionSmall>

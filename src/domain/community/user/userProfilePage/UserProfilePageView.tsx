@@ -20,7 +20,11 @@ export interface UserProfileViewPageProps extends UserProfileViewProps {
   organizationIds: string[] | undefined;
 }
 
-export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ contributions, organizationIds, entities }) => {
+export const UserProfilePageView: FC<UserProfileViewPageProps> = ({
+  contributions = [],
+  organizationIds,
+  entities,
+}) => {
   const { t } = useTranslation();
   const { user } = entities.userMetadata;
   const { id } = user;
@@ -30,8 +34,8 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ contribution
   const subspaceILead = useMemo(
     () =>
       contributions?.filter(
-        contribution => contribution.roles?.includes(RoleType.Lead) || contribution.roles?.includes('admin')
-      ),
+        contribution => contribution.roles?.includes(RoleType.Lead) || contribution.roles?.includes(RoleType.Admin)
+      ) || [],
     [contributions]
   );
 
@@ -55,19 +59,18 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ contribution
         )}
       </PageContentColumn>
       <PageContentColumn columns={8}>
-        {subspaceILead && subspaceILead.length > 0 && (
+        {subspaceILead.length > 0 && (
           <ContributionsView
             title={t('pages.user-profile.communities.leadSpacesTitle')}
             contributions={subspaceILead}
           />
         )}
-        {contributions && contributions.length > 0 && (
+        {contributions.length > 0 ? (
           <ContributionsView
             title={t('pages.user-profile.communities.allMembershipsTitle')}
             contributions={contributions}
           />
-        )}
-        {contributions && contributions.length === 0 && (
+        ) : (
           <PageContentBlock>
             <PageContentBlockHeader title={t('pages.user-profile.communities.allMembershipsTitle')} />
             <CaptionSmall>{t('pages.user-profile.communities.noMembership')}</CaptionSmall>

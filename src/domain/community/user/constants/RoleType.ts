@@ -3,4 +3,5 @@ export enum RoleType {
   Member = 'member',
   Host = 'host',
   Associate = 'associate',
+  Admin = 'admin',
 }
