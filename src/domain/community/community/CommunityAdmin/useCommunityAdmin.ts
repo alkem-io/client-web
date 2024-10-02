@@ -327,14 +327,14 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
     return refetchCommunityMembers();
   };
 
-  const [assignUserAsCommunityLead] = useAssignRoleToUserMutation();
-  const [removeUserAsCommunityLead] = useRemoveRoleFromUserMutation();
+  const [assignRoleToUser] = useAssignRoleToUserMutation();
+  const [removeRoleFromUser] = useRemoveRoleFromUserMutation();
   const handleUserLeadChange = async (memberId: string, isLead: boolean) => {
     if (!roleSetId) {
       return;
     }
     if (isLead) {
-      await assignUserAsCommunityLead({
+      await assignRoleToUser({
         variables: {
           contributorId: memberId,
           roleSetId,
@@ -342,7 +342,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
         },
       });
     } else {
-      await removeUserAsCommunityLead({
+      await removeRoleFromUser({
         variables: {
           contributorId: memberId,
           roleSetId,
@@ -353,18 +353,16 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
     return refetchCommunityMembers();
   };
 
-  const [assignAdminRole] = useAssignRoleToUserMutation();
-  const [removeAdminRole] = useRemoveRoleFromUserMutation();
   const handleUserAuthorizationChange = async (memberId: string, isAdmin: boolean) => {
     if (!roleSetId) {
       return;
     }
     if (isAdmin) {
-      await assignAdminRole({
+      await assignRoleToUser({
         variables: { roleSetId: roleSetId, role: CommunityRoleType.Admin, contributorId: memberId },
       });
     } else {
-      await removeAdminRole({
+      await removeRoleFromUser({
         variables: { roleSetId: roleSetId, role: CommunityRoleType.Admin, contributorId: memberId },
       });
     }
