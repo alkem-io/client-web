@@ -192,7 +192,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   const handleImportTemplate = async (template: WhiteboardTemplateContent) => {
     if (excalidrawAPI) {
       try {
-        mergeWhiteboard(excalidrawAPI, template.whiteboard.content);
+        await mergeWhiteboard(excalidrawAPI, template.whiteboard.content);
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
         logError(new Error(`Error importing whiteboard template: '${err}'`), {
