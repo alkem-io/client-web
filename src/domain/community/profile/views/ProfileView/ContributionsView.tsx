@@ -45,6 +45,10 @@ const SkeletonItem = () => (
   </Grid>
 );
 
+/**
+ * @deprecated This component is deprecated
+ * Please use and extned the ContributionsView component in domain/community/contributor
+ */
 export const ContributionsView = ({
   title,
   subtitle,

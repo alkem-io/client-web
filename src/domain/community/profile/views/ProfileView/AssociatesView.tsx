@@ -37,7 +37,7 @@ export const AssociatesView: FC<AssociatesViewProps> = ({
     <PageContentBlock>
       <PageContentBlockHeader title={t('components.associates.title', { count: totalCount })} />
 
-      <Grid container spacing={2} columns={{ xs: 6, sm: 12 }}>
+      <Grid container spacing={2} columns={{ xs: 4, sm: 8 }}>
         {canReadUsers ? (
           <>
             {associatesToShow.map(associate => (
