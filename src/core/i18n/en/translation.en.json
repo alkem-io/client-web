@@ -1595,6 +1595,8 @@
     },
     "contributions": {
       "title": "Contributions",
+      "leadSpacesTitle": "(Sub)Spaces we lead",
+      "allMembershipsTitle": "(Sub)Spaces we're in",
       "help": "The Spaces and Subspaces that this organization is contributing to"
     },
     "discussions-list": {
@@ -2565,7 +2567,10 @@
       },
       "communities": {
         "title": "Communities",
-        "help": "Communities the user is a part of"
+        "help": "Communities the user is a part of",
+        "leadSpacesTitle": "(Sub)Spaces I lead",
+        "allMembershipsTitle": "(Sub)Spaces I'm in",
+        "noMembership": "Not a member of any Space or SubSpace yet."
       },
       "pending-applications": {
         "title": "Pending Applications",

@@ -8,7 +8,6 @@ import { OrganizationVerificationEnum } from '../../../../../core/apollo/generat
 import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
 import {
   AssociatesView,
-  ContributionsView,
   OrganizationProfileView,
   OrganizationProfileViewEntity,
 } from '../../../profile/views/ProfileView';
@@ -16,6 +15,11 @@ import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
 import getMetricCount from '../../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../../platform/metrics/MetricType';
+import ContributionsView from '../../Contributions/ContributionsView';
+import { RoleType } from '../../../user/constants/RoleType';
+import { CaptionSmall } from '../../../../../core/ui/typography';
+import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 
 interface OrganizationPageViewProps {
   entities: OrganizationContainerEntities;
@@ -54,14 +58,29 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
 
   const associatesCount = getMetricCount(organization?.metrics, MetricType.Associate);
 
+  const contributionsOrgLead = contributions.filter(contribution => contribution.roles?.includes(RoleType.Lead)) || [];
+
   return (
     <PageContent>
       <PageContentColumn columns={4}>
         <OrganizationProfileView entity={entity} permissions={permissions} />
+        <AssociatesView associates={associates} totalCount={associatesCount} canReadUsers={permissions.canReadUsers} />
       </PageContentColumn>
       <PageContentColumn columns={8}>
-        <AssociatesView associates={associates} totalCount={associatesCount} canReadUsers={permissions.canReadUsers} />
-        <ContributionsView title={t('components.contributions.title')} contributions={contributions} />
+        {contributionsOrgLead.length > 0 && (
+          <ContributionsView
+            title={t('components.contributions.leadSpacesTitle')}
+            contributions={contributionsOrgLead}
+          />
+        )}
+        {contributions.length > 0 ? (
+          <ContributionsView title={t('components.contributions.allMembershipsTitle')} contributions={contributions} />
+        ) : (
+          <PageContentBlock>
+            <PageContentBlockHeader title={t('components.contributions.allMembershipsTitle')} />
+            <CaptionSmall>{t('pages.user-profile.communities.noMembership')}</CaptionSmall>
+          </PageContentBlock>
+        )}
       </PageContentColumn>
     </PageContent>
   );

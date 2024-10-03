@@ -12,6 +12,7 @@ query rolesOrganization($input: UUID_NAMEID!) {
         id
         displayName
         roles
+        level
       }
     }
   }

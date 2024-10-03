@@ -16330,6 +16330,7 @@ export type RolesOrganizationQuery = {
         id: string;
         displayName: string;
         roles: Array<string>;
+        level: number;
       }>;
     }>;
   };
@@ -18223,7 +18224,15 @@ export type UserContributionsQuery = {
       __typename?: 'RolesResultSpace';
       id: string;
       nameID: string;
-      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string; type: SpaceType }>;
+      roles: Array<string>;
+      subspaces: Array<{
+        __typename?: 'RolesResultCommunity';
+        id: string;
+        nameID: string;
+        type: SpaceType;
+        level: number;
+        roles: Array<string>;
+      }>;
     }>;
   };
 };
