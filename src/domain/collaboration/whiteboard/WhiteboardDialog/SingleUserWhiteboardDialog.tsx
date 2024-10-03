@@ -177,7 +177,7 @@ const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   const handleImportTemplate = async (template: WhiteboardTemplateContent) => {
     if (excalidrawAPI && options.canEdit) {
       try {
-        mergeWhiteboard(excalidrawAPI, template.whiteboard.content);
+        await mergeWhiteboard(excalidrawAPI, template.whiteboard.content);
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
 

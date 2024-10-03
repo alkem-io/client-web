@@ -2557,6 +2557,7 @@ export type QueryKeySpecifier = (
   | 'aiServer'
   | 'askChatGuidanceQuestion'
   | 'askVirtualContributorQuestion'
+  | 'exploreSpaces'
   | 'getSupportedVerifiedCredentialMetadata'
   | 'inputCreator'
   | 'lookup'
@@ -2595,6 +2596,7 @@ export type QueryFieldPolicy = {
   aiServer?: FieldPolicy<any> | FieldReadFunction<any>;
   askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   askVirtualContributorQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
+  exploreSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   inputCreator?: FieldPolicy<any> | FieldReadFunction<any>;
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
