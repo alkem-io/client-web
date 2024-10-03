@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { AuthorizationCredential, UserDisplayNameFragment } from '../../../../core/apollo/generated/graphql-schema';
-import { useUsersWithCredentialsSimpleListQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useUsersWithCredentialsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { Member } from '../../user/models/User';
 import { UseUsersSearchResult } from './useUsersSearch';
 import useAllPossibleMemberUsers from '../useCommunityAssignment/useAllPossibleMemberUsers';
@@ -54,7 +54,7 @@ export const useAvailableMembersWithCredential = (options: UseAvailableMembersOp
     data: existingMembers,
     loading: loadingMembers,
     error: membersError,
-  } = useUsersWithCredentialsSimpleListQuery({
+  } = useUsersWithCredentialsQuery({
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',
     variables: {
