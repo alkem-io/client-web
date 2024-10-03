@@ -7792,7 +7792,21 @@ export type AccountInformationQuery = {
               cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
-            community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
+            community: {
+              __typename?: 'Community';
+              id: string;
+              roleSet: {
+                __typename?: 'RoleSet';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              };
+            };
             subspaces: Array<{
               __typename?: 'Space';
               id: string;

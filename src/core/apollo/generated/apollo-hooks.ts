@@ -4835,6 +4835,10 @@ export const AccountInformationDocument = gql`
             id
             roleSet {
               id
+              authorization {
+                id
+                myPrivileges
+              }
             }
           }
           subspaces {
