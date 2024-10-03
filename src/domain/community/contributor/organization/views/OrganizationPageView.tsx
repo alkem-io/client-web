@@ -21,6 +21,7 @@ import { CaptionSmall } from '../../../../../core/ui/typography';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import AccountResourcesView, { AccountResourcesProps } from '../../Account/AccountResourcesView';
+import { SpaceHostedItem } from '../../../../journey/utils/SpaceHostedItem';
 
 interface OrganizationPageViewProps {
   entities: OrganizationContainerEntities;
@@ -58,9 +59,24 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities, 
     [organization, tagsets, socialLinks, links, t]
   );
 
-  const associatesCount = getMetricCount(organization?.metrics, MetricType.Associate);
+  const hasLeadershipRole = (contribution: SpaceHostedItem) => contribution.roles?.includes(RoleType.Lead);
 
-  const contributionsOrgLead = contributions.filter(contribution => contribution.roles?.includes(RoleType.Lead)) || [];
+  const [membershipsLeading, remainingMemberships] = useMemo(() => {
+    const membershipsLeading: SpaceHostedItem[] = [];
+    const remainingMemberships: SpaceHostedItem[] = [];
+
+    contributions.forEach((contribution: SpaceHostedItem) => {
+      if (hasLeadershipRole(contribution)) {
+        membershipsLeading.push(contribution);
+      } else {
+        remainingMemberships.push(contribution);
+      }
+    });
+
+    return [membershipsLeading, remainingMemberships];
+  }, [contributions]);
+
+  const associatesCount = getMetricCount(organization?.metrics, MetricType.Associate);
 
   const hasAccountResources = accountResources && accountResources.spaces && accountResources.spaces.length > 0;
 
@@ -72,14 +88,14 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities, 
       </PageContentColumn>
       <PageContentColumn columns={8}>
         {hasAccountResources && <AccountResourcesView title="Resources we host" accountResources={accountResources} />}
-        {contributionsOrgLead.length > 0 && (
-          <ContributionsView
-            title={t('components.contributions.leadSpacesTitle')}
-            contributions={contributionsOrgLead}
-          />
+        {membershipsLeading.length > 0 && (
+          <ContributionsView title={t('components.contributions.leadSpacesTitle')} contributions={membershipsLeading} />
         )}
-        {contributions.length > 0 ? (
-          <ContributionsView title={t('components.contributions.allMembershipsTitle')} contributions={contributions} />
+        {remainingMemberships.length > 0 ? (
+          <ContributionsView
+            title={t('components.contributions.allMembershipsTitle')}
+            contributions={remainingMemberships}
+          />
         ) : (
           <PageContentBlock>
             <PageContentBlockHeader title={t('components.contributions.allMembershipsTitle')} />

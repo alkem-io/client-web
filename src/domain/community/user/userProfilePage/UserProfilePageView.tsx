@@ -34,13 +34,23 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({
 
   const { isFeatureEnabled } = useConfig();
 
-  const subspaceILead = useMemo(
-    () =>
-      contributions?.filter(
-        contribution => contribution.roles?.includes(RoleType.Lead) || contribution.roles?.includes(RoleType.Admin)
-      ) || [],
-    [contributions]
-  );
+  const hasLeadershipRole = (contribution: SpaceHostedItem) =>
+    contribution.roles?.includes(RoleType.Lead) || contribution.roles?.includes(RoleType.Admin);
+
+  const [membershipsLeading, remainingMemberships] = useMemo(() => {
+    const membershipsLeading: SpaceHostedItem[] = [];
+    const remainingMemberships: SpaceHostedItem[] = [];
+
+    contributions.forEach((contribution: SpaceHostedItem) => {
+      if (hasLeadershipRole(contribution)) {
+        membershipsLeading.push(contribution);
+      } else {
+        remainingMemberships.push(contribution);
+      }
+    });
+
+    return [membershipsLeading, remainingMemberships];
+  }, [contributions]);
 
   const hasAccountResources = accountResources && accountResources.spaces && accountResources.spaces.length > 0;
 
@@ -65,16 +75,16 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({
       </PageContentColumn>
       <PageContentColumn columns={8}>
         {hasAccountResources && <AccountResourcesView title="Resources I host" accountResources={accountResources} />}
-        {subspaceILead.length > 0 && (
+        {membershipsLeading.length > 0 && (
           <ContributionsView
             title={t('pages.user-profile.communities.leadSpacesTitle')}
-            contributions={subspaceILead}
+            contributions={membershipsLeading}
           />
         )}
-        {contributions.length > 0 ? (
+        {remainingMemberships.length > 0 ? (
           <ContributionsView
             title={t('pages.user-profile.communities.allMembershipsTitle')}
-            contributions={contributions}
+            contributions={remainingMemberships}
           />
         ) : (
           <PageContentBlock>
