@@ -20,13 +20,15 @@ import { RoleType } from '../../../user/constants/RoleType';
 import { CaptionSmall } from '../../../../../core/ui/typography';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
+import AccountResourcesView, { AccountResourcesProps } from '../../Account/AccountResourcesView';
 
 interface OrganizationPageViewProps {
   entities: OrganizationContainerEntities;
+  accountResources: AccountResourcesProps | undefined;
   state: OrganizationContainerState;
 }
 
-export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }) => {
+export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities, accountResources }) => {
   const { t } = useTranslation();
 
   const { permissions, socialLinks, links, organization, capabilities, keywords, associates, contributions } = entities;
@@ -60,6 +62,8 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
 
   const contributionsOrgLead = contributions.filter(contribution => contribution.roles?.includes(RoleType.Lead)) || [];
 
+  const hasAccountResources = accountResources && accountResources.spaces && accountResources.spaces.length > 0;
+
   return (
     <PageContent>
       <PageContentColumn columns={4}>
@@ -67,6 +71,7 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
         <AssociatesView associates={associates} totalCount={associatesCount} canReadUsers={permissions.canReadUsers} />
       </PageContentColumn>
       <PageContentColumn columns={8}>
+        {hasAccountResources && <AccountResourcesView title="Resources we host" accountResources={accountResources} />}
         {contributionsOrgLead.length > 0 && (
           <ContributionsView
             title={t('components.contributions.leadSpacesTitle')}

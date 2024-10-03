@@ -14,16 +14,19 @@ import { CaptionSmall } from '../../../../core/ui/typography';
 import { RoleType } from '../constants/RoleType';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import AccountResourcesView, { AccountResourcesProps } from '../../contributor/Account/AccountResourcesView';
 
 export interface UserProfileViewPageProps extends UserProfileViewProps {
   contributions: SpaceHostedItem[] | undefined;
   organizationIds: string[] | undefined;
+  accountResources: AccountResourcesProps | undefined;
 }
 
 export const UserProfilePageView: FC<UserProfileViewPageProps> = ({
   contributions = [],
   organizationIds,
   entities,
+  accountResources,
 }) => {
   const { t } = useTranslation();
   const { user } = entities.userMetadata;
@@ -38,6 +41,8 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({
       ) || [],
     [contributions]
   );
+
+  const hasAccountResources = accountResources && accountResources.spaces && accountResources.spaces.length > 0;
 
   return (
     <PageContent>
@@ -59,6 +64,7 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({
         )}
       </PageContentColumn>
       <PageContentColumn columns={8}>
+        {hasAccountResources && <AccountResourcesView title="Resources I host" accountResources={accountResources} />}
         {subspaceILead.length > 0 && (
           <ContributionsView
             title={t('pages.user-profile.communities.leadSpacesTitle')}

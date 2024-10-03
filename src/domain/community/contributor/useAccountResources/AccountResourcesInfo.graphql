@@ -1,0 +1,64 @@
+query AccountResourcesInfo($accountId: UUID!) {
+  lookup {
+    account(ID: $accountId) {
+      id
+      spaces {
+        id
+        profile {
+          ...AccountResourceProfile
+          cardBanner: visual(type: CARD) {
+            ...VisualUri
+          }
+        }
+      }
+      virtualContributors {
+        id
+        profile {
+          ...AccountResourceProfile
+          tagline
+        }
+      }
+      innovationPacks {
+        id
+        profile {
+          ...AccountResourceProfile
+        }
+        templatesSet {
+          id
+          calloutTemplatesCount
+          communityGuidelinesTemplatesCount
+          innovationFlowTemplatesCount
+          postTemplatesCount
+          whiteboardTemplatesCount
+        }
+      }
+      innovationHubs {
+        id
+        profile {
+          ...AccountResourceProfile
+          banner: visual(type: BANNER_WIDE) {
+            ...VisualUri
+          }
+        }
+        spaceVisibilityFilter
+        spaceListFilter {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+        subdomain
+      }
+    }
+  }
+}
+
+fragment AccountResourceProfile on Profile {
+  id
+  displayName
+  url
+  avatar: visual(type: AVATAR) {
+    ...VisualUri
+  }
+}
