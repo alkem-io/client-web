@@ -7,8 +7,7 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ExploreSpacesSearchFragment, SearchResultType } from '../../../../core/apollo/generated/graphql-schema';
 import { TypedSearchResult } from '../../../search/SearchView';
-import { ITEMS_LIMIT, SpacesExplorerMembershipFilter, SpaceWithParent } from './ExploreSpacesUnauthenticatedView';
-import usePaginatedQuery from '../../../../domain/shared/pagination/usePaginatedQuery';
+import { SpacesExplorerMembershipFilter, SpaceWithParent } from './ExploreSpacesUnauthenticatedView';
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
 
 export interface ExploreSpacesContainerEntities {
@@ -44,7 +43,7 @@ const ExploreSpacesUnauthenticatedContainer = ({
     variables: {
       spaceNameId: t('pages.home.sections.membershipSuggestions.suggestedSpace.nameId'),
     },
-    skip: !!shouldSearch,
+    skip: shouldSearch,
   });
 
   // get translated tags based on the selected filter
@@ -75,7 +74,7 @@ const ExploreSpacesUnauthenticatedContainer = ({
     skip: !shouldSearch,
   });
 
-  const {
+  /*const {
     data: spacesData,
     fetchMore: fetchMoreSpaces,
     loading: isLoadingSpaces,
@@ -88,13 +87,19 @@ const ExploreSpacesUnauthenticatedContainer = ({
     options: {
       skip: !!shouldSearch,
     },
+  });*/
+  const { data: spacesData, loading: isLoadingSpaces } = useExploreAllSpacesQuery({
+    skip: shouldSearch,
   });
 
-  const fetchMore = !shouldSearch ? fetchMoreSpaces : () => Promise.resolve();
+  // const fetchMore = !shouldSearch ? fetchMoreSpaces : () => Promise.resolve();
 
-  const hasMore = !shouldSearch ? hasMoreSpaces : false;
+  // const hasMore = !shouldSearch ? hasMoreSpaces : false;
 
   const loading = isLoadingSpaces || loadingSearchResults;
+
+  const fetchMore = () => Promise.resolve();
+  const hasMore = false;
 
   const flattenedSpaces = useMemo<SpaceWithParent[] | undefined>(() => {
     if (shouldSearch && rawSearchResults?.search?.journeyResults) {
@@ -109,7 +114,7 @@ const ExploreSpacesUnauthenticatedContainer = ({
         }));
     }
 
-    return spacesData?.spacesPaginated.spaces;
+    return spacesData?.exploreSpaces;
   }, [spacesData, selectedFilter, rawSearchResults]);
 
   const provided = {

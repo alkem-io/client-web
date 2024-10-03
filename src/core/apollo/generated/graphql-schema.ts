@@ -2353,6 +2353,13 @@ export type EcosystemModel = {
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
+export type ExploreSpacesInput = {
+  /** Take into account only the activity in the past X days. */
+  daysOld?: InputMaybe<Scalars['Float']>;
+  /** Amount of Spaces returned. */
+  limit?: InputMaybe<Scalars['Float']>;
+};
+
 export type FileStorageConfig = {
   __typename?: 'FileStorageConfig';
   /** Max file size, in bytes. */
@@ -4554,6 +4561,8 @@ export type Query = {
   askChatGuidanceQuestion: MessageAnswerQuestion;
   /** Ask the virtual contributor a question directly. */
   askVirtualContributorQuestion: MessageAnswerQuestion;
+  /** Active Spaces only, order by most active in the past X days. */
+  exploreSpaces: Array<Space>;
   /** Get supported credential metadata */
   getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** Allow creation of inputs based on existing entities in the domain model */
@@ -4636,6 +4645,10 @@ export type QueryAskChatGuidanceQuestionArgs = {
 
 export type QueryAskVirtualContributorQuestionArgs = {
   virtualContributorQuestionInput: VirtualContributorQuestionInput;
+};
+
+export type QueryExploreSpacesArgs = {
+  options?: InputMaybe<ExploreSpacesInput>;
 };
 
 export type QueryOrganizationArgs = {
@@ -28017,35 +28030,22 @@ export type ExploreSpacesSearchFragment = {
   };
 };
 
-export type ExploreAllSpacesQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['UUID']>;
-  visibilities?: InputMaybe<Array<SpaceVisibility> | SpaceVisibility>;
-}>;
+export type ExploreAllSpacesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ExploreAllSpacesQuery = {
   __typename?: 'Query';
-  spacesPaginated: {
-    __typename?: 'PaginatedSpaces';
-    spaces: Array<{
-      __typename?: 'Space';
+  exploreSpaces: Array<{
+    __typename?: 'Space';
+    id: string;
+    type: SpaceType;
+    profile: {
+      __typename?: 'Profile';
       id: string;
-      type: SpaceType;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        url: string;
-        displayName: string;
-        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      };
-    }>;
-    pageInfo: {
-      __typename?: 'PageInfo';
-      startCursor?: string | undefined;
-      endCursor?: string | undefined;
-      hasNextPage: boolean;
+      url: string;
+      displayName: string;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
-  };
+  }>;
 };
 
 export type WelcomeSpaceQueryVariables = Exact<{
