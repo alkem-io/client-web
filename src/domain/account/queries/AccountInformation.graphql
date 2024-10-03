@@ -27,6 +27,10 @@ query AccountInformation($accountId: UUID!) {
           id
           roleSet {
             id
+            authorization {
+              id
+              myPrivileges
+            }
           }
         }
         subspaces {
