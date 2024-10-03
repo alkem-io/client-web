@@ -16,14 +16,9 @@ fragment ExploreSpacesSearch on SearchResultSpace {
   }
 }
 
-query ExploreAllSpaces($first: Int!, $after: UUID, $visibilities: [SpaceVisibility!] = [ACTIVE]) {
-  spacesPaginated(first: $first, after: $after, filter: { visibilities: $visibilities }) {
-    spaces {
-      ...ExploreSpaces
-    }
-    pageInfo {
-      ...PageInfo
-    }
+query ExploreAllSpaces {
+  exploreSpaces {
+    ...ExploreSpaces
   }
 }
 
