@@ -24,6 +24,9 @@ import { useTick } from '../../../../core/utils/time/tick';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
 import Loading from '../../../../core/ui/loading/Loading';
 
+const FILE_IMPORT_ENABLED = false;
+const SAVE_FILE_TO_DISK = true;
+
 const Excalidraw = React.lazy(async () => {
   const { Excalidraw } = await import('@alkemio/excalidraw');
   return { default: Excalidraw };
@@ -130,9 +133,9 @@ const CollaborativeExcalidrawWrapper = ({
   const UIOptions: ExcalidrawProps['UIOptions'] = useMemo(
     () => ({
       canvasActions: {
-        loadScene: false,
+        loadScene: FILE_IMPORT_ENABLED,
         export: {
-          saveFileToDisk: true,
+          saveFileToDisk: SAVE_FILE_TO_DISK,
         },
       },
     }),
