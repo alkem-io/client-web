@@ -76,7 +76,12 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities, 
         <AssociatesView associates={associates} totalCount={associatesCount} canReadUsers={permissions.canReadUsers} />
       </PageContentColumn>
       <PageContentColumn columns={8}>
-        {hasAccountResources && <AccountResourcesView title="Resources we host" accountResources={accountResources} />}
+        {hasAccountResources && (
+          <AccountResourcesView
+            title={t('pages.organization.profile.accountResources.sectionTitle')}
+            accountResources={accountResources}
+          />
+        )}
         {filteredMemberships.length > 0 && (
           <ContributionsView
             title={t('components.contributions.leadSpacesTitle')}

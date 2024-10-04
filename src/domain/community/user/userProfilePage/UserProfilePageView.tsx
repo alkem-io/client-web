@@ -62,7 +62,12 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({
         )}
       </PageContentColumn>
       <PageContentColumn columns={8}>
-        {hasAccountResources && <AccountResourcesView title="Resources I host" accountResources={accountResources} />}
+        {hasAccountResources && (
+          <AccountResourcesView
+            title={t('pages.user-profile.accountResources.sectionTitle')}
+            accountResources={accountResources}
+          />
+        )}
         {filteredMemberships.length > 0 && (
           <ContributionsView
             title={t('pages.user-profile.communities.leadSpacesTitle')}

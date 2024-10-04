@@ -2352,6 +2352,11 @@
       }
     },
     "organization": {
+      "profile": {
+        "accountResources": {
+          "sectionTitle": "Resources we host"
+        }
+      },
       "settings": {
         "tooltip": "Organization settings"
       },
@@ -2564,6 +2569,9 @@
       "member-of": "Member of",
       "applications": {
         "title": "Pending applications"
+      },
+      "accountResources": {
+        "sectionTitle": "Resources I host"
       },
       "communities": {
         "title": "Communities",
