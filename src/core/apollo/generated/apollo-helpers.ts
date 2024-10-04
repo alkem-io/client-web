@@ -1572,6 +1572,7 @@ export type InvitationKeySpecifier = (
   | 'contributorType'
   | 'createdBy'
   | 'createdDate'
+  | 'extraRole'
   | 'id'
   | 'invitedToParent'
   | 'lifecycle'
@@ -1585,6 +1586,7 @@ export type InvitationFieldPolicy = {
   contributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  extraRole?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;

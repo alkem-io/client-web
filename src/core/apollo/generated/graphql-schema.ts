@@ -2636,6 +2636,8 @@ export type Invitation = {
   /** The User who triggered the invitation. */
   createdBy: User;
   createdDate: Scalars['DateTime'];
+  /** An additional role to assign to the Contributor, in addition to the entry Role. */
+  extraRole?: Maybe<CommunityRoleType>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Whether to also add the invited contributor to the parent community. */
@@ -2651,6 +2653,8 @@ export type InvitationEventInput = {
 };
 
 export type InviteForEntryRoleOnRoleSetInput = {
+  /** An additional role to assign to the Contributors, in addition to the entry Role. */
+  extraRole?: InputMaybe<CommunityRoleType>;
   /** The identifiers for the contributors being invited. */
   invitedContributors: Array<Scalars['UUID']>;
   roleSetID: Scalars['UUID'];
@@ -2865,7 +2869,7 @@ export type LookupByNameQueryResults = {
   __typename?: 'LookupByNameQueryResults';
   /** Lookup the specified InnovationPack using a NameID */
   innovationPack?: Maybe<InnovationPack>;
-  /** Lookup the specified Template using a templatesSetId and NameID */
+  /** Lookup the specified Template using a templatesSetId and the template NameID */
   template?: Maybe<Template>;
 };
 
@@ -4731,6 +4735,7 @@ export type QueryUsersPaginatedArgs = {
   filter?: InputMaybe<UserFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  withTags?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QueryUsersWithAuthorizationCredentialArgs = {
@@ -16017,6 +16022,7 @@ export type ContributorsPageUsersQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<UserFilterInput>;
+  withTags?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type ContributorsPageUsersQuery = {
