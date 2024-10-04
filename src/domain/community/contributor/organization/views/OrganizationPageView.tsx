@@ -63,7 +63,11 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities, 
 
   const associatesCount = getMetricCount(organization?.metrics, MetricType.Associate);
 
-  const hasAccountResources = accountResources && accountResources.spaces && accountResources.spaces.length > 0;
+  const hasAccountResources =
+    accountResources &&
+    ((accountResources.spaces && accountResources.spaces.length > 0) ||
+      (accountResources.innovationPacks && accountResources.innovationPacks.length > 0) ||
+      (accountResources.innovationHubs && accountResources.innovationHubs.length > 0));
 
   return (
     <PageContent>

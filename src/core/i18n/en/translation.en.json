@@ -1853,7 +1853,7 @@
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
             "noTemplates": "This Innovation Pack doesn't have any template yet",
-            "customHomepages": "Your Custom Homepages",
+            "customHomepages": "Custom Homepages",
             "hostTitle": "Host",
             "contactsLink": "If you want to change any of these settings, please contact the Alkemio team here.",
             "freeTrialNotice": {
