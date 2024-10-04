@@ -2353,6 +2353,13 @@ export type EcosystemModel = {
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
+export type ExploreSpacesInput = {
+  /** Take into account only the activity in the past X days. */
+  daysOld?: InputMaybe<Scalars['Float']>;
+  /** Amount of Spaces returned. */
+  limit?: InputMaybe<Scalars['Float']>;
+};
+
 export type FileStorageConfig = {
   __typename?: 'FileStorageConfig';
   /** Max file size, in bytes. */
@@ -4554,6 +4561,8 @@ export type Query = {
   askChatGuidanceQuestion: MessageAnswerQuestion;
   /** Ask the virtual contributor a question directly. */
   askVirtualContributorQuestion: MessageAnswerQuestion;
+  /** Active Spaces only, order by most active in the past X days. */
+  exploreSpaces: Array<Space>;
   /** Get supported credential metadata */
   getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** Allow creation of inputs based on existing entities in the domain model */
@@ -4636,6 +4645,10 @@ export type QueryAskChatGuidanceQuestionArgs = {
 
 export type QueryAskVirtualContributorQuestionArgs = {
   virtualContributorQuestionInput: VirtualContributorQuestionInput;
+};
+
+export type QueryExploreSpacesArgs = {
+  options?: InputMaybe<ExploreSpacesInput>;
 };
 
 export type QueryOrganizationArgs = {
@@ -7114,6 +7127,34 @@ export type RoleSetDetailsFragment = {
         | undefined;
     };
   }>;
+  adminUsers: Array<{
+    __typename?: 'User';
+    id: string;
+    isContactable: boolean;
+    email: string;
+    firstName: string;
+    lastName: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      location?:
+        | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+        | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+    };
+  }>;
   memberOrganizations: Array<{
     __typename?: 'Organization';
     id: string;
@@ -7692,6 +7733,29 @@ export type RoleSetAvailableMembersQuery = {
   };
 };
 
+export type UsersWithCredentialsQueryVariables = Exact<{
+  input: UsersWithAuthorizationCredentialInput;
+}>;
+
+export type UsersWithCredentialsQuery = {
+  __typename?: 'Query';
+  usersWithAuthorizationCredential: Array<{
+    __typename?: 'User';
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    isContactable: boolean;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    };
+  }>;
+};
+
 export type AccountInformationQueryVariables = Exact<{
   accountId: Scalars['UUID'];
 }>;
@@ -7729,7 +7793,21 @@ export type AccountInformationQuery = {
               cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
-            community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
+            community: {
+              __typename?: 'Community';
+              id: string;
+              roleSet: {
+                __typename?: 'RoleSet';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              };
+            };
             subspaces: Array<{
               __typename?: 'Space';
               id: string;
@@ -15494,6 +15572,34 @@ export type CommunityMembersListQuery = {
                 | undefined;
             };
           }>;
+          adminUsers: Array<{
+            __typename?: 'User';
+            id: string;
+            isContactable: boolean;
+            email: string;
+            firstName: string;
+            lastName: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              location?:
+                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+            };
+          }>;
           memberOrganizations: Array<{
             __typename?: 'Organization';
             id: string;
@@ -16226,6 +16332,7 @@ export type RolesOrganizationQuery = {
         id: string;
         displayName: string;
         roles: Array<string>;
+        level: number;
       }>;
     }>;
   };
@@ -17785,45 +17892,6 @@ export type UserProfileQuery = {
   };
 };
 
-export type UsersWithCredentialsQueryVariables = Exact<{
-  input: UsersWithAuthorizationCredentialInput;
-}>;
-
-export type UsersWithCredentialsQuery = {
-  __typename?: 'Query';
-  usersWithAuthorizationCredential: Array<{
-    __typename?: 'User';
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    isContactable: boolean;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      url: string;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    };
-  }>;
-};
-
-export type UsersWithCredentialsSimpleListQueryVariables = Exact<{
-  input: UsersWithAuthorizationCredentialInput;
-}>;
-
-export type UsersWithCredentialsSimpleListQuery = {
-  __typename?: 'Query';
-  usersWithAuthorizationCredential: Array<{
-    __typename?: 'User';
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  }>;
-};
-
 export type UserProviderQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserProviderQuery = {
@@ -18158,7 +18226,15 @@ export type UserContributionsQuery = {
       __typename?: 'RolesResultSpace';
       id: string;
       nameID: string;
-      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string; type: SpaceType }>;
+      roles: Array<string>;
+      subspaces: Array<{
+        __typename?: 'RolesResultCommunity';
+        id: string;
+        nameID: string;
+        type: SpaceType;
+        level: number;
+        roles: Array<string>;
+      }>;
     }>;
   };
 };
@@ -19267,6 +19343,34 @@ export type AboutPageMembersQuery = {
                     | undefined;
                 };
               }>;
+              adminUsers: Array<{
+                __typename?: 'User';
+                id: string;
+                isContactable: boolean;
+                email: string;
+                firstName: string;
+                lastName: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                };
+              }>;
               memberOrganizations: Array<{
                 __typename?: 'Organization';
                 id: string;
@@ -20147,6 +20251,34 @@ export type SpaceCommunityPageQuery = {
           };
         }>;
         leadUsers: Array<{
+          __typename?: 'User';
+          id: string;
+          isContactable: boolean;
+          email: string;
+          firstName: string;
+          lastName: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+              | undefined;
+            tagsets?:
+              | Array<{
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }>
+              | undefined;
+          };
+        }>;
+        adminUsers: Array<{
           __typename?: 'User';
           id: string;
           isContactable: boolean;
@@ -21974,6 +22106,34 @@ export type SpaceProfileFragment = {
             | undefined;
         };
       }>;
+      adminUsers: Array<{
+        __typename?: 'User';
+        id: string;
+        isContactable: boolean;
+        email: string;
+        firstName: string;
+        lastName: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+        };
+      }>;
       memberOrganizations: Array<{
         __typename?: 'Organization';
         id: string;
@@ -22729,6 +22889,34 @@ export type SubspacePageQuery = {
                     | undefined;
                 };
               }>;
+              adminUsers: Array<{
+                __typename?: 'User';
+                id: string;
+                isContactable: boolean;
+                email: string;
+                firstName: string;
+                lastName: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                };
+              }>;
               memberOrganizations: Array<{
                 __typename?: 'Organization';
                 id: string;
@@ -22901,6 +23089,34 @@ export type SubspacePageSpaceFragment = {
         };
       }>;
       leadUsers: Array<{
+        __typename?: 'User';
+        id: string;
+        isContactable: boolean;
+        email: string;
+        firstName: string;
+        lastName: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+        };
+      }>;
+      adminUsers: Array<{
         __typename?: 'User';
         id: string;
         isContactable: boolean;
@@ -27839,35 +28055,22 @@ export type ExploreSpacesSearchFragment = {
   };
 };
 
-export type ExploreAllSpacesQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['UUID']>;
-  visibilities?: InputMaybe<Array<SpaceVisibility> | SpaceVisibility>;
-}>;
+export type ExploreAllSpacesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ExploreAllSpacesQuery = {
   __typename?: 'Query';
-  spacesPaginated: {
-    __typename?: 'PaginatedSpaces';
-    spaces: Array<{
-      __typename?: 'Space';
+  exploreSpaces: Array<{
+    __typename?: 'Space';
+    id: string;
+    type: SpaceType;
+    profile: {
+      __typename?: 'Profile';
       id: string;
-      type: SpaceType;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        url: string;
-        displayName: string;
-        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      };
-    }>;
-    pageInfo: {
-      __typename?: 'PageInfo';
-      startCursor?: string | undefined;
-      endCursor?: string | undefined;
-      hasNextPage: boolean;
+      url: string;
+      displayName: string;
+      cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
-  };
+  }>;
 };
 
 export type WelcomeSpaceQueryVariables = Exact<{

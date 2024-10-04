@@ -4,10 +4,13 @@ query UserContributions($userId: UUID_NAMEID_EMAIL!) {
     spaces {
       id
       nameID
+      roles
       subspaces {
         id
         nameID
         type
+        level
+        roles
       }
     }
   }
