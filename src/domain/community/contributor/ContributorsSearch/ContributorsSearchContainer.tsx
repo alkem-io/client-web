@@ -2,17 +2,18 @@ import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../../../core/container/container';
 import {
-  useContributorsPageUsersQuery,
   useContributorsPageOrganizationsQuery,
+  useContributorsPageUsersQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../user';
 import {
-  ContributorsPageUsersQuery,
-  ContributorsPageUsersQueryVariables,
-  UserContributorFragment,
   ContributorsPageOrganizationsQuery,
   ContributorsPageOrganizationsQueryVariables,
+  ContributorsPageUsersQuery,
+  ContributorsPageUsersQueryVariables,
   OrganizationContributorFragment,
+  OrganizationVerificationEnum,
+  UserContributorFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
 
@@ -85,6 +86,7 @@ const ContributorsSearchContainer: FC<ContributorsSearchContainerProps> = ({ sea
       nextFetchPolicy: 'cache-first',
     },
     variables: {
+      status: OrganizationVerificationEnum.VerifiedManualAttestation,
       filter: {
         contactEmail: searchTerms,
         displayName: searchTerms,
