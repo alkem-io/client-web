@@ -1,7 +1,7 @@
 import { UserDisplayNameFragment } from '../../../../core/apollo/generated/graphql-schema';
 import useUsersSearch, { UseUsersSearchResult } from '../useAvailableMembersWithCredential/useUsersSearch';
 import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
-import { useAvailableUsersQuery, useCommunityMembersQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useAvailableUsersQuery, useRoleSetMembersQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import useLocalSearch from '../../../shared/utils/useLocalSearch';
 
@@ -55,17 +55,17 @@ const useAllPossibleMemberUsers = (
     data: _parentCommunityMembers,
     loading: loadingParentCommunityMembers,
     error: parentCommunityMembersError,
-  } = useCommunityMembersQuery({
+  } = useRoleSetMembersQuery({
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',
     skip: !parentCommunityId,
     variables: {
-      communityId: parentCommunityId!, // presence checked by skip condition
+      roleSetId: parentCommunityId!, // presence checked by skip condition
     },
   });
 
   const { data: filteredParentCommunityMembers, setSearchTerm: setParentCommunityMembersSearchTerm } = useLocalSearch({
-    data: _parentCommunityMembers?.lookup.community?.memberUsers,
+    data: _parentCommunityMembers?.lookup?.roleSet?.memberUsers,
     isMatch: (user, searchTerm) => user.profile.displayName.toLowerCase().includes(searchTerm.toLowerCase()),
   });
 

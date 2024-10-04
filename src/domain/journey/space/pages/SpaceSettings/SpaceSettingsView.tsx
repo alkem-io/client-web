@@ -117,7 +117,7 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
       spaceId: journeyId,
     },
   });
-  const communityId = settingsData?.lookup.space?.community?.id;
+  const roleSetId = settingsData?.lookup.space?.community?.roleSet.id;
 
   const currentSettings = useMemo(() => {
     const settings = settingsData?.lookup.space?.settings;
@@ -327,7 +327,7 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
             <Text marginBottom={gutters(2)}>
               <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
             </Text>
-            <CommunityApplicationForm communityId={communityId} />
+            <CommunityApplicationForm roleSetId={roleSetId!} />
           </PageContentBlockCollapsible>
 
           <PageContentBlock disableGap>

@@ -9,6 +9,9 @@ query SpaceApplication($spaceId: UUID!) {
       }
       community {
         id
+        roleSet {
+          id
+        }
         guidelines {
           ...CommunityGuidelinesDetails
         }

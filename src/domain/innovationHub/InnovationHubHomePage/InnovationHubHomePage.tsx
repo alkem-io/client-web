@@ -25,8 +25,8 @@ interface InnovationHubHomePageProps {
   innovationHub: InnovationHubAttrs;
 }
 
-const isMember = (journey: { community?: { myMembershipStatus?: CommunityMembershipStatus } }) =>
-  journey.community?.myMembershipStatus === CommunityMembershipStatus.Member;
+const isMember = (journey: { community?: { roleSet?: { myMembershipStatus?: CommunityMembershipStatus } } }) =>
+  journey.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
 
 const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) => {
   const { t } = useTranslation();

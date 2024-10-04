@@ -13,7 +13,7 @@ import { Visual } from '../../../../domain/common/visual/Visual';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
-  CommunityRole,
+  CommunityRoleType,
 } from '../../../../core/apollo/generated/graphql-schema';
 import Loading from '../../../../core/ui/loading/Loading';
 import ExpandableSpaceTree from './ExpandableSpaceTree';
@@ -38,7 +38,7 @@ export interface MembershipProps {
     myPrivileges?: AuthorizationPrivilege[];
   };
   community?: {
-    myRoles?: CommunityRole[];
+    myRoles?: CommunityRoleType[];
     myMembershipStatus?: CommunityMembershipStatus;
   };
   childMemberships?: MembershipProps[];

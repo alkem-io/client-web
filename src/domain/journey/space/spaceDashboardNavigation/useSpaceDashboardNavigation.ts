@@ -6,7 +6,7 @@ import {
   Authorization,
   AuthorizationPrivilege,
   CommunityMembershipStatus,
-  SpaceDashboardNavigationCommunityFragment,
+  MyMembershipsRoleSetFragment,
   SpaceDashboardNavigationProfileFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { keyBy } from 'lodash';
@@ -42,7 +42,7 @@ const getDashboardNavigationItemProps = (
   journey: {
     id: string;
     profile: SpaceDashboardNavigationProfileFragment;
-    community?: SpaceDashboardNavigationCommunityFragment;
+    roleSet?: MyMembershipsRoleSetFragment;
     authorization?: {
       myPrivileges?: AuthorizationPrivilege[];
     };
@@ -55,7 +55,7 @@ const getDashboardNavigationItemProps = (
     displayName: journey.profile.displayName,
     avatar: journey.profile.avatar,
     private: disabled,
-    member: journey.community?.myMembershipStatus === CommunityMembershipStatus.Member,
+    member: journey.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member,
     canCreateSubspace: journey.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateSubspace),
   };
 };

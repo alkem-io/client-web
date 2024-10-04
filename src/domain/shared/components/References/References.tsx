@@ -46,7 +46,7 @@ const References: FC<ReferencesProps> = ({ references, onEdit, noItemsView, icon
                 key={reference.id}
                 reference={reference}
                 icon={icon}
-                canEdit={true || reference.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update)}
+                canEdit={reference.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update)}
                 onClickEdit={onEdit ? () => onEdit?.(reference) : undefined}
               />
             ))}

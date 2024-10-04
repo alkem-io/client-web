@@ -73,26 +73,22 @@ fragment SpacePage on Space {
   }
   community @include(if: $authorizedReadAccessCommunity) {
     id
-    myMembershipStatus
-    ...EntityDashboardCommunity
-    leadUsers: usersInRole(role: LEAD) {
-      profile {
-        ...SpaceWelcomeBlockContributorProfile
+    authorization {
+      id
+      myPrivileges
+    }
+    roleSet {
+      id
+      myMembershipStatus
+      leadUsers: usersInRole(role: LEAD) {
+        ...CommunityMemberUser
+      }
+      leadOrganizations: organizationsInRole(role: LEAD) {
+        ...CommunityMemberOrganization
+      }
+      leadVirtualContributors: virtualContributorsInRole(role: LEAD) {
+        ...CommunityMemberVirtualContributor
       }
     }
-  }
-}
-
-fragment SpaceWelcomeBlockContributorProfile on Profile {
-  id
-  displayName
-  location {
-    id
-    city
-    country
-  }
-  tagsets {
-    id
-    tags
   }
 }

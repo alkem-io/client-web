@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 import Footer from '../../ui/platformFooter/PlatformFooter';
 import FloatingActionButtons from '../../../core/ui/button/FloatingActionButtons';
 import PlatformHelpButton from '../../ui/helpButton/PlatformHelpButton';
@@ -12,14 +12,17 @@ import SearchDialog from '../../search/SearchDialog';
 
 const HomePageLayout = ({ children }: PropsWithChildren<{}>) => {
   const { t } = useTranslation();
+  const [title, setTitle] = useState(t('pages.home.sections.welcome.welcomeUnauthenticated'));
+  const [subTitle, setSubTitle] = useState(t('pages.home.sections.welcome.welcomeUnauthenticatedSubtitle'));
 
   const { user: { user } = {}, isAuthenticated } = useUserContext();
 
-  const title = isAuthenticated
-    ? t('pages.home.sections.welcome.welcome-back', {
-        username: user?.firstName,
-      })
-    : t('pages.home.sections.welcome.welcomeUnauthenticated');
+  useEffect(() => {
+    if (isAuthenticated) {
+      setTitle(t('pages.home.sections.welcome.welcome-back', { username: user?.firstName }));
+      setSubTitle(t('pages.home.subtitle'));
+    }
+  }, [isAuthenticated]);
 
   return (
     <>
@@ -30,7 +33,7 @@ const HomePageLayout = ({ children }: PropsWithChildren<{}>) => {
           </Breadcrumbs>
         }
       />
-      <TopLevelPageBanner title={title} subtitle={t('pages.home.subtitle')} />
+      <TopLevelPageBanner title={title} subtitle={subTitle} />
       {children}
       <Footer />
       <FloatingActionButtons floatingActions={<PlatformHelpButton />} />

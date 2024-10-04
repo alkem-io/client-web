@@ -240,7 +240,10 @@ fragment SearchResultSpace on SearchResultSpace {
     }
     community {
       id
-      myMembershipStatus
+      roleSet {
+        id
+        myMembershipStatus
+      }
     }
     settings {
       privacy {

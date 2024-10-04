@@ -29,7 +29,10 @@ fragment SpaceMembership on Space {
     myPrivileges
   }
   community {
-    ...MyMembershipsChildJourneyCommunity
+    roleSet {
+      id
+    ...MyMembershipsRoleSet
+    }
   }
   profile {
     id

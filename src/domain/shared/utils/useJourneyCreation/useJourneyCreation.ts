@@ -116,7 +116,10 @@ export const useSubspaceCreation = () => {
             },
             community: {
               id: '',
-              myMembershipStatus: CommunityMembershipStatus.Member,
+              roleSet: {
+                id: '',
+                myMembershipStatus: CommunityMembershipStatus.Member,
+              },
             },
             context: {
               id: '',

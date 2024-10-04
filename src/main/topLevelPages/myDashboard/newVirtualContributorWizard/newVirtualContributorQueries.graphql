@@ -12,9 +12,12 @@ query NewVirtualContributorMySpaces {
           id
           community {
             id
-            authorization {
+            roleSet {
               id
-              myPrivileges
+              authorization {
+                id
+                myPrivileges
+              }
             }
           }
           profile {
@@ -36,6 +39,9 @@ query NewVirtualContributorMySpaces {
             }
             community {
               id
+              roleSet {
+                id
+              }
             }
           }
         }

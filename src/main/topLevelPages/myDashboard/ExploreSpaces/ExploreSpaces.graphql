@@ -1,0 +1,42 @@
+query ExploreSpacesSearch($searchData: SearchInput!) {
+  search(searchData: $searchData) {
+    journeyResults {
+      id
+      type
+      ... on SearchResultSpace {
+        ...ExploreSpacesSearch
+      }
+    }
+  }
+}
+
+fragment ExploreSpacesSearch on SearchResultSpace {
+  space {
+    ...ExploreSpaces
+  }
+}
+
+query ExploreAllSpaces {
+  exploreSpaces {
+    ...ExploreSpaces
+  }
+}
+
+query WelcomeSpace($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    ...ExploreSpaces
+  }
+}
+
+fragment ExploreSpaces on Space {
+  id
+  type
+  profile {
+    id
+    url
+    displayName
+    cardBanner: visual(type: CARD) {
+      ...VisualUri
+    }
+  }
+}

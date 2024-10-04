@@ -4,44 +4,32 @@ query SpaceCommunityContributors($spaceId: UUID!) {
       id
       community {
         id
-        leadUsers: usersInRole(role: LEAD) {
-          ...UserCard
-        }
-        memberUsers {
-          ...UserCard
-        }
-        memberOrganizations: organizationsInRole(role: MEMBER) {
-          ...OrganizationCard
-        }
-        virtualContributors: virtualContributorsInRole(role: MEMBER) {
+        roleSet {
           id
-          searchVisibility
-          profile {
+          leadUsers: usersInRole(role: LEAD) {
+            ...UserCard
+          }
+          memberUsers: usersInRole(role: MEMBER) {
+            ...UserCard
+          }
+          memberOrganizations: organizationsInRole(role: MEMBER) {
+            ...OrganizationCard
+          }
+          virtualContributors: virtualContributorsInRole(role: MEMBER) {
             id
-            displayName
-            tagline
-            url
-            avatar: visual(type: AVATAR) {
-              ...VisualUri
+            searchVisibility
+            profile {
+              id
+              displayName
+              tagline
+              url
+              avatar: visual(type: AVATAR) {
+                ...VisualUri
+              }
             }
           }
         }
       }
     }
-  }
-}
-
-fragment CommunityMembers on Community {
-  leadUsers: usersInRole(role: LEAD) {
-    ...UserCard
-  }
-  memberUsers {
-    ...UserCard
-  }
-  leadOrganizations: organizationsInRole(role: LEAD) {
-    ...OrganizationCard
-  }
-  memberOrganizations: organizationsInRole(role: MEMBER) {
-    ...OrganizationCard
   }
 }

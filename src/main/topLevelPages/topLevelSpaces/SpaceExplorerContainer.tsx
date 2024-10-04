@@ -63,7 +63,6 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
       spaceIDs: mySpaceIds,
     },
     skip: !mySpaceIds || shouldSearch,
-    errorPolicy: 'ignore',
   });
 
   // PUBLIC: Search for spaces and subspaces
@@ -96,7 +95,6 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
     getPageInfo: result => result.spacesPaginated.pageInfo,
     options: {
       skip: !usesPagination,
-      errorPolicy: 'ignore',
     },
   });
 
@@ -196,7 +194,9 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
         // already filtered by the query
         return flattenedSpaces;
       }
-      return flattenedSpaces?.filter(space => space.community?.myMembershipStatus === CommunityMembershipStatus.Member);
+      return flattenedSpaces?.filter(
+        space => space.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member
+      );
     }
     if (membershipFilter === SpacesExplorerMembershipFilter.Public) {
       return flattenedSpaces?.filter(space => space.settings.privacy?.mode === SpacePrivacyMode.Public);

@@ -1,0 +1,48 @@
+language: en
+early_access: false
+reviews:
+  high_level_summary: true
+  sequence_diagrams: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  changed_files_summary: true
+  path_filters:
+    - "!**/.github/**"
+    - "!**/node_modules/**"  # Exclude dependencies
+  path_instructions:
+    - path: "src/**/*.{ts,tsx,js}"
+      instructions: |
+        Review the React.js/TypeScript/JavaScript code for best practices and potential bugs.
+        Ensure that the code adheres to TypeScript's typing system and modern standards.
+        Ensure sufficient error handling and logging is present.
+        Check for common security vulnerabilities such as:
+        - SQL Injection
+        - XSS (Cross-Site Scripting)
+        - CSRF (Cross-Site Request Forgery)
+        - Insecure dependencies
+        - Sensitive data exposure
+    - path: "src/**/*.{graphql,gql}"
+      instructions: |
+        Review the GraphQL schema and queries for best practices, potential bugs, and adherence to the project's GraphQL standards.
+        Ensure that the schema is well-defined and queries are optimized.
+        Check for security vulnerabilities.
+    - path: "src/**/*.json"
+      instructions: |
+        Review the JSON files for correct syntax and structure.
+        Ensure that the configuration and data are accurate and follow the project's standards.
+        Check for sensitive data exposure and ensure that the data is properly validated.
+    - path: "public/**/*.html"
+      instructions: |
+        Review the HTML files for correct syntax and structure.
+        Ensure that the content is accessible, semantic, and follows the project's standards.
+    - path: "src/**/*.yaml"
+      instructions: |
+        Review the YAML files for correct syntax and structure.
+        Ensure that the configuration is accurate and follows the project's standards.
+        Check for potential security issues and ensure that the data is properly validated.
+    - path: "**/*.md"
+      instructions: "Ensure the documentation is clear, concise, and up-to-date, with accurate instructions."
+chat:
+  auto_reply: true
+
