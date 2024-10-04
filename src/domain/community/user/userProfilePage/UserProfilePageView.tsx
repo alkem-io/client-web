@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material';
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useConfig } from '../../../platform/config/useConfig';
 import { CredentialsView } from '../../profile/views/ProfileView';
@@ -11,10 +11,11 @@ import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
 import { PlatformFeatureFlagName } from '../../../../core/apollo/generated/graphql-schema';
 import ContributionsView from '../../contributor/Contributions/ContributionsView';
 import { CaptionSmall } from '../../../../core/ui/typography';
-import { RoleType } from '../constants/RoleType';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import AccountResourcesView, { AccountResourcesProps } from '../../contributor/Account/AccountResourcesView';
+import useFilteredMemberships from '../hooks/useFilteredMemberships';
+import { RoleType } from '../constants/RoleType';
 
 export interface UserProfileViewPageProps extends UserProfileViewProps {
   contributions: SpaceHostedItem[] | undefined;
@@ -34,23 +35,10 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({
 
   const { isFeatureEnabled } = useConfig();
 
-  const hasLeadershipRole = (contribution: SpaceHostedItem) =>
-    contribution.roles?.includes(RoleType.Lead) || contribution.roles?.includes(RoleType.Admin);
-
-  const [membershipsLeading, remainingMemberships] = useMemo(() => {
-    const membershipsLeading: SpaceHostedItem[] = [];
-    const remainingMemberships: SpaceHostedItem[] = [];
-
-    contributions.forEach((contribution: SpaceHostedItem) => {
-      if (hasLeadershipRole(contribution)) {
-        membershipsLeading.push(contribution);
-      } else {
-        remainingMemberships.push(contribution);
-      }
-    });
-
-    return [membershipsLeading, remainingMemberships];
-  }, [contributions]);
+  const [filteredMemberships, remainingMemberships] = useFilteredMemberships(contributions, [
+    RoleType.Lead,
+    RoleType.Admin,
+  ]);
 
   const hasAccountResources = accountResources && accountResources.spaces && accountResources.spaces.length > 0;
 
@@ -75,10 +63,10 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({
       </PageContentColumn>
       <PageContentColumn columns={8}>
         {hasAccountResources && <AccountResourcesView title="Resources I host" accountResources={accountResources} />}
-        {membershipsLeading.length > 0 && (
+        {filteredMemberships.length > 0 && (
           <ContributionsView
             title={t('pages.user-profile.communities.leadSpacesTitle')}
-            contributions={membershipsLeading}
+            contributions={filteredMemberships}
           />
         )}
         {remainingMemberships.length > 0 ? (

@@ -16,12 +16,12 @@ import PageContentColumn from '../../../../../core/ui/content/PageContentColumn'
 import getMetricCount from '../../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../../platform/metrics/MetricType';
 import ContributionsView from '../../Contributions/ContributionsView';
-import { RoleType } from '../../../user/constants/RoleType';
 import { CaptionSmall } from '../../../../../core/ui/typography';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import AccountResourcesView, { AccountResourcesProps } from '../../Account/AccountResourcesView';
-import { SpaceHostedItem } from '../../../../journey/utils/SpaceHostedItem';
+import useFilteredMemberships from '../../../user/hooks/useFilteredMemberships';
+import { RoleType } from '../../../user/constants/RoleType';
 
 interface OrganizationPageViewProps {
   entities: OrganizationContainerEntities;
@@ -59,22 +59,7 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities, 
     [organization, tagsets, socialLinks, links, t]
   );
 
-  const hasLeadershipRole = (contribution: SpaceHostedItem) => contribution.roles?.includes(RoleType.Lead);
-
-  const [membershipsLeading, remainingMemberships] = useMemo(() => {
-    const membershipsLeading: SpaceHostedItem[] = [];
-    const remainingMemberships: SpaceHostedItem[] = [];
-
-    contributions.forEach((contribution: SpaceHostedItem) => {
-      if (hasLeadershipRole(contribution)) {
-        membershipsLeading.push(contribution);
-      } else {
-        remainingMemberships.push(contribution);
-      }
-    });
-
-    return [membershipsLeading, remainingMemberships];
-  }, [contributions]);
+  const [filteredMemberships, remainingMemberships] = useFilteredMemberships(contributions, [RoleType.Lead]);
 
   const associatesCount = getMetricCount(organization?.metrics, MetricType.Associate);
 
@@ -88,8 +73,11 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities, 
       </PageContentColumn>
       <PageContentColumn columns={8}>
         {hasAccountResources && <AccountResourcesView title="Resources we host" accountResources={accountResources} />}
-        {membershipsLeading.length > 0 && (
-          <ContributionsView title={t('components.contributions.leadSpacesTitle')} contributions={membershipsLeading} />
+        {filteredMemberships.length > 0 && (
+          <ContributionsView
+            title={t('components.contributions.leadSpacesTitle')}
+            contributions={filteredMemberships}
+          />
         )}
         {remainingMemberships.length > 0 ? (
           <ContributionsView
