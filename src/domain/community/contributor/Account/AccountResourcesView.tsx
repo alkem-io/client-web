@@ -96,6 +96,7 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
           <ScrollableCardsLayoutContainer containerProps={{ flex: 1 }}>
             {accountResources.spaces?.slice(0, visibleSpacesCount).map(contributionItem => (
               <JourneyTile
+                key={contributionItem.id}
                 journey={{
                   profile: {
                     displayName: contributionItem.profile.displayName,
