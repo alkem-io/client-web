@@ -39,7 +39,7 @@ query SpaceAccount($spaceId: UUID!) {
   }
   platform {
     id
-    licensing {
+    licensingFramework {
       id
       plans {
         id

@@ -50,6 +50,8 @@ export type Account = {
   innovationHubs: Array<InnovationHub>;
   /** The InnovationPacks for this Account. */
   innovationPacks: Array<InnovationPack>;
+  /** The License operating on this Account. */
+  license: License;
   /** The Spaces within this Account. */
   spaces: Array<Space>;
   /** The StorageAggregator in use by this Account */
@@ -66,7 +68,12 @@ export type Account = {
 
 export type AccountAuthorizationResetInput = {
   /** The identifier of the Account whose Authorization Policy should be reset. */
-  accountID: Scalars['UUID_NAMEID'];
+  accountID: Scalars['UUID'];
+};
+
+export type AccountLicenseResetInput = {
+  /** The identifier of the Account whose License and Entitlements should be reset. */
+  accountID: Scalars['UUID'];
 };
 
 export type AccountSubscription = {
@@ -806,6 +813,13 @@ export type AuthenticationProviderConfig = {
 
 export type AuthenticationProviderConfigUnion = OryConfig;
 
+export enum AuthenticationType {
+  Email = 'EMAIL',
+  Linkedin = 'LINKEDIN',
+  Microsoft = 'MICROSOFT',
+  Unknown = 'UNKNOWN',
+}
+
 export type Authorization = {
   __typename?: 'Authorization';
   anonymousReadAccess: Scalars['Boolean'];
@@ -896,6 +910,7 @@ export enum AuthorizationPolicyType {
   InnovationPack = 'INNOVATION_PACK',
   Invitation = 'INVITATION',
   InMemory = 'IN_MEMORY',
+  License = 'LICENSE',
   Licensing = 'LICENSING',
   Link = 'LINK',
   Organization = 'ORGANIZATION',
@@ -957,6 +972,7 @@ export enum AuthorizationPrivilege {
   FileUpload = 'FILE_UPLOAD',
   Grant = 'GRANT',
   GrantGlobalAdmins = 'GRANT_GLOBAL_ADMINS',
+  LicenseReset = 'LICENSE_RESET',
   MoveContribution = 'MOVE_CONTRIBUTION',
   MovePost = 'MOVE_POST',
   PlatformAdmin = 'PLATFORM_ADMIN',
@@ -1858,7 +1874,7 @@ export type CreateInnovationPackOnAccountInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
-export type CreateLicensePlanOnLicensingInput = {
+export type CreateLicensePlanOnLicensingFrameworkInput = {
   /** Assign this plan to all new Organization accounts */
   assignToNewOrganizationAccounts: Scalars['Boolean'];
   /** Assign this plan to all new User accounts */
@@ -1869,7 +1885,7 @@ export type CreateLicensePlanOnLicensingInput = {
   isFree: Scalars['Boolean'];
   /** The credential to represent this plan */
   licenseCredential: LicenseCredential;
-  licensingID: Scalars['UUID'];
+  licensingFrameworkID: Scalars['UUID'];
   /** The name of the License Plan */
   name: Scalars['String'];
   /** The price per month of this plan. */
@@ -1989,16 +2005,6 @@ export type CreateReferenceOnProfileInput = {
   uri?: InputMaybe<Scalars['String']>;
 };
 
-export type CreateSpaceInput = {
-  collaborationData: CreateCollaborationOnSpaceInput;
-  context?: InputMaybe<CreateContextInput>;
-  /** A readable identifier, unique within the containing scope. */
-  nameID?: InputMaybe<Scalars['NameID']>;
-  profileData: CreateProfileInput;
-  tags?: InputMaybe<Array<Scalars['String']>>;
-  type?: InputMaybe<SpaceType>;
-};
-
 export type CreateSpaceOnAccountInput = {
   /** The Account where the Space is to be created. */
   accountID: Scalars['UUID'];
@@ -2044,6 +2050,19 @@ export type CreateTagsetOnProfileInput = {
   type?: InputMaybe<TagsetType>;
 };
 
+export type CreateTemplateFromCollaborationOnTemplatesSetInput = {
+  /** The Collaboration to use as the content for the Template. */
+  collaborationID: Scalars['UUID'];
+  /** A readable identifier, unique within the containing scope. */
+  nameID?: InputMaybe<Scalars['NameID']>;
+  profileData: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  templatesSetID: Scalars['UUID'];
+  /** The type of the Template to be created. */
+  type: TemplateType;
+  visualUri?: InputMaybe<Scalars['String']>;
+};
+
 export type CreateTemplateOnTemplatesSetInput = {
   /** The Callout to associate with this template. */
   calloutData?: InputMaybe<CreateCalloutInput>;
@@ -2056,8 +2075,6 @@ export type CreateTemplateOnTemplatesSetInput = {
   /** Post Template: The default description to be pre-filled. */
   postDefaultDescription?: InputMaybe<Scalars['Markdown']>;
   profileData: CreateProfileInput;
-  /** The Space to associate with this template. */
-  spaceData?: InputMaybe<CreateSpaceInput>;
   tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
   /** The type of the Template to be created. */
@@ -2650,6 +2667,8 @@ export type Invitation = {
   /** The User who triggered the invitation. */
   createdBy: User;
   createdDate: Scalars['DateTime'];
+  /** An additional role to assign to the Contributor, in addition to the entry Role. */
+  extraRole?: Maybe<CommunityRoleType>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Whether to also add the invited contributor to the parent community. */
@@ -2665,6 +2684,8 @@ export type InvitationEventInput = {
 };
 
 export type InviteForEntryRoleOnRoleSetInput = {
+  /** An additional role to assign to the Contributors, in addition to the entry Role. */
+  extraRole?: InputMaybe<CommunityRoleType>;
   /** The identifiers for the contributors being invited. */
   invitedContributors: Array<Scalars['UUID']>;
   roleSetID: Scalars['UUID'];
@@ -2724,6 +2745,22 @@ export type LibraryTemplatesFilterInput = {
   types?: InputMaybe<Array<TemplateType>>;
 };
 
+export type License = {
+  __typename?: 'License';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The date at which the entity was created. */
+  createdDate?: Maybe<Scalars['DateTime']>;
+  /** The set of Entitlements associated with the License applicable to this entity. */
+  entitlements: Array<LicenseEntitlement>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The type of entity that this License is being used with. */
+  type?: Maybe<LicenseType>;
+  /** The date at which the entity was last updated. */
+  updatedDate?: Maybe<Scalars['DateTime']>;
+};
+
 export enum LicenseCredential {
   AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
   SpaceFeatureSaveAsTemplate = 'SPACE_FEATURE_SAVE_AS_TEMPLATE',
@@ -2733,6 +2770,39 @@ export enum LicenseCredential {
   SpaceLicenseFree = 'SPACE_LICENSE_FREE',
   SpaceLicensePlus = 'SPACE_LICENSE_PLUS',
   SpaceLicensePremium = 'SPACE_LICENSE_PREMIUM',
+}
+
+export type LicenseEntitlement = {
+  __typename?: 'LicenseEntitlement';
+  /** The date at which the entity was created. */
+  createdDate?: Maybe<Scalars['DateTime']>;
+  /** Data type of the entitlement, e.g. Limit, Feature flag etc. */
+  dataType: LicenseEntitlementDataType;
+  /** If the Entitlement is enabled */
+  enabled: Scalars['Boolean'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Limit of the entitlement */
+  limit: Scalars['Float'];
+  /** Type of the entitlement, e.g. Space, Whiteboard contributors etc. */
+  type: LicenseEntitlementType;
+  /** The date at which the entity was last updated. */
+  updatedDate?: Maybe<Scalars['DateTime']>;
+};
+
+export enum LicenseEntitlementDataType {
+  Flag = 'FLAG',
+  Limit = 'LIMIT',
+}
+
+export enum LicenseEntitlementType {
+  AccountInnovationHub = 'ACCOUNT_INNOVATION_HUB',
+  AccountInnovationPack = 'ACCOUNT_INNOVATION_PACK',
+  AccountSpace = 'ACCOUNT_SPACE',
+  AccountVirtualContributor = 'ACCOUNT_VIRTUAL_CONTRIBUTOR',
+  SpaceFlagSaveAsTemplate = 'SPACE_FLAG_SAVE_AS_TEMPLATE',
+  SpaceFlagVirtualContributorAccess = 'SPACE_FLAG_VIRTUAL_CONTRIBUTOR_ACCESS',
+  SpaceFlagWhiteboardMultiUser = 'SPACE_FLAG_WHITEBOARD_MULTI_USER',
 }
 
 export type LicensePlan = {
@@ -2798,12 +2868,21 @@ export type LicensePolicyCredentialRule = {
 };
 
 export enum LicensePrivilege {
+  AccountCreateInnovationHub = 'ACCOUNT_CREATE_INNOVATION_HUB',
   AccountCreateInnovationPack = 'ACCOUNT_CREATE_INNOVATION_PACK',
   AccountCreateSpace = 'ACCOUNT_CREATE_SPACE',
   AccountCreateVirtualContributor = 'ACCOUNT_CREATE_VIRTUAL_CONTRIBUTOR',
   SpaceSaveAsTemplate = 'SPACE_SAVE_AS_TEMPLATE',
   SpaceVirtualContributorAccess = 'SPACE_VIRTUAL_CONTRIBUTOR_ACCESS',
   SpaceWhiteboardMultiUser = 'SPACE_WHITEBOARD_MULTI_USER',
+}
+
+export enum LicenseType {
+  Account = 'ACCOUNT',
+  Collaboration = 'COLLABORATION',
+  Roleset = 'ROLESET',
+  Space = 'SPACE',
+  Whiteboard = 'WHITEBOARD',
 }
 
 export type Licensing = {
@@ -2879,7 +2958,7 @@ export type LookupByNameQueryResults = {
   __typename?: 'LookupByNameQueryResults';
   /** Lookup the specified InnovationPack using a NameID */
   innovationPack?: Maybe<InnovationPack>;
-  /** Lookup the specified Template using a templatesSetId and NameID */
+  /** Lookup the specified Template using a templatesSetId and the template NameID */
   template?: Maybe<Template>;
 };
 
@@ -3272,6 +3351,8 @@ export type Mutation = {
   createTagsetOnProfile: Tagset;
   /** Creates a new Template on the specified TemplatesSet. */
   createTemplate: Template;
+  /** Creates a new Template on the specified TemplatesSet using the provided Collaboration as content. */
+  createTemplateFromCollaboration: Template;
   /** Creates a new User on the platform. */
   createUser: User;
   /** Creates a new User profile on the platform for a user that has a valid Authentication session. */
@@ -3346,6 +3427,8 @@ export type Mutation = {
   inviteUserToPlatformWithRole: PlatformInvitation;
   /** Join the specified RoleSet using the entry Role, without going through an approval process. */
   joinRoleSet: RoleSet;
+  /** Reset the License with Entitlements on the specified Account. */
+  licenseResetOnAccount: Account;
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
   /** Moves the specified Contribution to another Callout. */
@@ -3633,7 +3716,7 @@ export type MutationCreateInnovationPackArgs = {
 };
 
 export type MutationCreateLicensePlanArgs = {
-  planData: CreateLicensePlanOnLicensingInput;
+  planData: CreateLicensePlanOnLicensingFrameworkInput;
 };
 
 export type MutationCreateOrganizationArgs = {
@@ -3658,6 +3741,10 @@ export type MutationCreateTagsetOnProfileArgs = {
 
 export type MutationCreateTemplateArgs = {
   templateData: CreateTemplateOnTemplatesSetInput;
+};
+
+export type MutationCreateTemplateFromCollaborationArgs = {
+  templateData: CreateTemplateFromCollaborationOnTemplatesSetInput;
 };
 
 export type MutationCreateUserArgs = {
@@ -3798,6 +3885,10 @@ export type MutationInviteUserToPlatformWithRoleArgs = {
 
 export type MutationJoinRoleSetArgs = {
   joinData: JoinAsEntryRoleOnRoleSetInput;
+};
+
+export type MutationLicenseResetOnAccountArgs = {
+  resetData: AccountLicenseResetInput;
 };
 
 export type MutationMessageUserArgs = {
@@ -4264,7 +4355,7 @@ export type Platform = {
   /** The Innovation Library for the platform */
   library: Library;
   /** The Licensing in use by the platform. */
-  licensing: Licensing;
+  licensingFramework: Licensing;
   /** Alkemio Services Metadata. */
   metadata: Metadata;
   /** The roles on the Platform for the currently logged in user. */
@@ -4689,6 +4780,7 @@ export type QueryOrganizationsPaginatedArgs = {
   filter?: InputMaybe<OrganizationFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  status?: InputMaybe<OrganizationVerificationEnum>;
 };
 
 export type QueryRolesOrganizationArgs = {
@@ -4841,6 +4933,8 @@ export type RelayPaginatedSpace = {
   level: Scalars['Float'];
   /** The ID of the level zero space for this tree. */
   levelZeroSpaceID: Scalars['String'];
+  /** The License operating on this Space. */
+  license: License;
   /** The privileges granted based on the License credentials held by this Space. */
   licensePrivileges?: Maybe<Array<LicensePrivilege>>;
   /** Metrics about activity within this Space. */
@@ -5409,6 +5503,8 @@ export type Space = {
   level: Scalars['Float'];
   /** The ID of the level zero space for this tree. */
   levelZeroSpaceID: Scalars['String'];
+  /** The License operating on this Space. */
+  license: License;
   /** The privileges granted based on the License credentials held by this Space. */
   licensePrivileges?: Maybe<Array<LicensePrivilege>>;
   /** Metrics about activity within this Space. */
@@ -6436,6 +6532,8 @@ export type User = Contributor & {
   accountUpn: Scalars['String'];
   /** The Agent representing this User. */
   agent: Agent;
+  /** The Authentication Method used for this User. One of email, linkedin, microsoft, or unknown */
+  authenticationMethod?: Maybe<AuthenticationType>;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
   /** The Community rooms this user is a member of */
@@ -16433,7 +16531,7 @@ export type AdminGlobalOrganizationsListQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    licensing: {
+    licensingFramework: {
       __typename?: 'Licensing';
       id: string;
       plans: Array<{
@@ -17262,7 +17360,7 @@ export type UserListQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    licensing: {
+    licensingFramework: {
       __typename?: 'Licensing';
       id: string;
       plans: Array<{
@@ -21361,7 +21459,7 @@ export type PlansTableQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    licensing: {
+    licensingFramework: {
       __typename?: 'Licensing';
       id: string;
       plans: Array<{
@@ -21965,7 +22063,7 @@ export type SpaceAccountQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    licensing: {
+    licensingFramework: {
       __typename?: 'Licensing';
       id: string;
       plans: Array<{
@@ -23405,7 +23503,7 @@ export type AdminSpacesListQuery = {
   }>;
   platform: {
     __typename?: 'Platform';
-    licensing: {
+    licensingFramework: {
       __typename?: 'Licensing';
       id: string;
       plans: Array<{ __typename?: 'LicensePlan'; id: string; name: string; licenseCredential: LicenseCredential }>;

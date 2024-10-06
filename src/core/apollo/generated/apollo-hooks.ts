@@ -11199,7 +11199,7 @@ export const AdminGlobalOrganizationsListDocument = gql`
     }
     platform {
       id
-      licensing {
+      licensingFramework {
         id
         plans {
           id
@@ -12547,7 +12547,7 @@ export const UserListDocument = gql`
     }
     platform {
       id
-      licensing {
+      licensingFramework {
         id
         plans {
           id
@@ -16055,7 +16055,7 @@ export const PlansTableDocument = gql`
   query PlansTable {
     platform {
       id
-      licensing {
+      licensingFramework {
         id
         plans {
           id
@@ -16882,7 +16882,7 @@ export const SpaceAccountDocument = gql`
     }
     platform {
       id
-      licensing {
+      licensingFramework {
         id
         plans {
           id
@@ -18055,7 +18055,7 @@ export const AdminSpacesListDocument = gql`
       ...AdminSpace
     }
     platform {
-      licensing {
+      licensingFramework {
         id
         plans {
           id
