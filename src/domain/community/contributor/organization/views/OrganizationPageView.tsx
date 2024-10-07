@@ -70,9 +70,9 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({
 
   const hasAccountResources =
     accountResources &&
-    ((accountResources.spaces && accountResources.spaces.length > 0) ||
-      (accountResources.innovationPacks && accountResources.innovationPacks.length > 0) ||
-      (accountResources.innovationHubs && accountResources.innovationHubs.length > 0));
+    (accountResources.spaces?.length > 0 ||
+      accountResources.innovationPacks?.length > 0 ||
+      accountResources.innovationHubs?.length > 0);
 
   if (loading) {
     return <Loading />;
