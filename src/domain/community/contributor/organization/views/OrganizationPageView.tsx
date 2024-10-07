@@ -22,6 +22,7 @@ import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBl
 import AccountResourcesView, { AccountResourcesProps } from '../../Account/AccountResourcesView';
 import useFilteredMemberships from '../../../user/hooks/useFilteredMemberships';
 import { RoleType } from '../../../user/constants/RoleType';
+import Loading from '../../../../../core/ui/loading/Loading';
 
 interface OrganizationPageViewProps {
   entities: OrganizationContainerEntities;
@@ -29,7 +30,11 @@ interface OrganizationPageViewProps {
   state: OrganizationContainerState;
 }
 
-export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities, accountResources }) => {
+export const OrganizationPageView: FC<OrganizationPageViewProps> = ({
+  entities,
+  accountResources,
+  state: { loading },
+}) => {
   const { t } = useTranslation();
 
   const { permissions, socialLinks, links, organization, capabilities, keywords, associates, contributions } = entities;
@@ -68,6 +73,10 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities, 
     ((accountResources.spaces && accountResources.spaces.length > 0) ||
       (accountResources.innovationPacks && accountResources.innovationPacks.length > 0) ||
       (accountResources.innovationHubs && accountResources.innovationHubs.length > 0));
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <PageContent>
