@@ -2959,6 +2959,10 @@ export const CalendarEventDetailsFragmentDoc = gql`
         tagsets {
           ...TagsetDetails
         }
+        location {
+          id
+          city
+        }
       }
     }
     createdDate

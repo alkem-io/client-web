@@ -806,6 +806,13 @@ export type AuthenticationProviderConfig = {
 
 export type AuthenticationProviderConfigUnion = OryConfig;
 
+export enum AuthenticationType {
+  Email = 'EMAIL',
+  Linkedin = 'LINKEDIN',
+  Microsoft = 'MICROSOFT',
+  Unknown = 'UNKNOWN',
+}
+
 export type Authorization = {
   __typename?: 'Authorization';
   anonymousReadAccess: Scalars['Boolean'];
@@ -2636,6 +2643,8 @@ export type Invitation = {
   /** The User who triggered the invitation. */
   createdBy: User;
   createdDate: Scalars['DateTime'];
+  /** An additional role to assign to the Contributor, in addition to the entry Role. */
+  extraRole?: Maybe<CommunityRoleType>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Whether to also add the invited contributor to the parent community. */
@@ -2651,6 +2660,8 @@ export type InvitationEventInput = {
 };
 
 export type InviteForEntryRoleOnRoleSetInput = {
+  /** An additional role to assign to the Contributors, in addition to the entry Role. */
+  extraRole?: InputMaybe<CommunityRoleType>;
   /** The identifiers for the contributors being invited. */
   invitedContributors: Array<Scalars['UUID']>;
   roleSetID: Scalars['UUID'];
@@ -2865,7 +2876,7 @@ export type LookupByNameQueryResults = {
   __typename?: 'LookupByNameQueryResults';
   /** Lookup the specified InnovationPack using a NameID */
   innovationPack?: Maybe<InnovationPack>;
-  /** Lookup the specified Template using a templatesSetId and NameID */
+  /** Lookup the specified Template using a templatesSetId and the template NameID */
   template?: Maybe<Template>;
 };
 
@@ -6411,6 +6422,8 @@ export type User = Contributor & {
   accountUpn: Scalars['String'];
   /** The Agent representing this User. */
   agent: Agent;
+  /** The Authentication Method used for this User. One of email, linkedin, microsoft, or unknown */
+  authenticationMethod?: Maybe<AuthenticationType>;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
   /** The Community rooms this user is a member of */
@@ -26109,6 +26122,7 @@ export type CalendarEventDetailsQuery = {
                         type: TagsetType;
                       }>
                     | undefined;
+                  location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
                 };
               }
             | undefined;
@@ -26307,6 +26321,7 @@ export type CalendarEventDetailsFragment = {
                 type: TagsetType;
               }>
             | undefined;
+          location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
         };
       }
     | undefined;
@@ -26499,6 +26514,7 @@ export type CreateCalendarEventMutation = {
                   type: TagsetType;
                 }>
               | undefined;
+            location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
           };
         }
       | undefined;
@@ -26676,6 +26692,7 @@ export type UpdateCalendarEventMutation = {
                   type: TagsetType;
                 }>
               | undefined;
+            location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
           };
         }
       | undefined;
