@@ -39,7 +39,13 @@ const AlkemioTimePicker = ({
   const djsDate = useMemo(() => dayjs(value).startOf('day'), [value]);
 
   const timeSlots = useMemo(
-    () => times(24).flatMap(h => [djsDate.set('hour', h), djsDate.set('hour', h).set('minute', 30)]),
+    () =>
+      times(24).flatMap(h => [
+        djsDate.set('hour', h).set('minute', 0),
+        djsDate.set('hour', h).set('minute', 15),
+        djsDate.set('hour', h).set('minute', 30),
+        djsDate.set('hour', h).set('minute', 45),
+      ]),
     [djsDate]
   );
 

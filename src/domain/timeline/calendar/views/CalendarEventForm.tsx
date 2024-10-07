@@ -2,7 +2,7 @@ import React, { ReactNode, useMemo } from 'react';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { Box, DialogContent, Theme, useMediaQuery } from '@mui/material';
+import { Box, DialogContent, FormControlLabel, Switch, Theme, useMediaQuery } from '@mui/material';
 import DialogHeader, { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import { BlockTitle } from '../../../../core/ui/typography';
 import FormikDatePicker from '../../../../core/ui/forms/DatePicker/FormikDatePicker';
@@ -24,6 +24,8 @@ import FormikDurationMinutes from '../../../../core/ui/forms/DatePicker/FormikDu
 import { LoadingButton } from '@mui/lab';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+
+const DEFAULT_DURATION_MINUTES = 30;
 
 interface CalendarEventFormProps {
   event: Partial<CalendarEventDetailData> | undefined;
@@ -62,9 +64,11 @@ const CalendarEventForm = ({
   actions,
 }: CalendarEventFormProps) => {
   const { t } = useTranslation();
+
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
   const handleSubmit = (formValues: Partial<CalendarEventFormData>) => {
+    debugger;
     onSubmit(formValues as CalendarEventFormData);
   };
 
@@ -76,7 +80,7 @@ const CalendarEventForm = ({
 
     return {
       startDate,
-      durationMinutes: event?.durationMinutes ?? 30,
+      durationMinutes: event?.durationMinutes ?? DEFAULT_DURATION_MINUTES,
       displayName: event?.profile?.displayName ?? '',
       description: event?.profile?.description ?? '',
       type: event?.type,
@@ -102,44 +106,63 @@ const CalendarEventForm = ({
       <DialogHeader onClose={onClose}>
         <BlockTitle>{dialogTitle}</BlockTitle>
       </DialogHeader>
-      <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
-        {({ isValid, handleSubmit }) => (
+      <Formik
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+        validationSchema={validationSchema}
+        enableReinitialize
+      >
+        {({ isValid, handleSubmit, values: { wholeDay }, setFieldValue }) => (
           <>
             <DialogContent>
               <Form>
                 <Gutters disablePadding>
                   <Gutters disablePadding sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
+                    <Box sx={{ flex: 1 }}>
+                      <FormikInputField name="displayName" title={t('fields.displayName')} />
+                    </Box>
+                    <FormikAutocomplete
+                      name="type"
+                      label={t('calendar.event.type')}
+                      values={typeOptions}
+                      sx={{ flex: 1 }}
+                    />
+                  </Gutters>
+                  <Box display="flex" gap={gutters()} flexWrap="wrap">
                     <GridItem columns={4}>
                       <Box>
                         <FormikDatePicker name="startDate" label={t('common.date')} minDate={new Date()} />
                       </Box>
                     </GridItem>
-                    <Box flexGrow={1}>
-                      <FormikInputField name="displayName" title={t('fields.displayName')} />
-                    </Box>
-                  </Gutters>
-                  <Box display="flex" gap={gutters()} flexWrap="wrap">
                     <GridItem columns={isMobile ? undefined : 4}>
                       <Box display="flex" gap={gutters()}>
                         <FormikTimePicker
                           name="startDate"
                           label={t('fields.startTime')}
                           containerProps={{ flexGrow: 1 }}
+                          disabled={wholeDay}
                         />
                         <FormikDurationMinutes
                           name="durationMinutes"
                           startTimeFieldName="startDate"
                           label={t('fields.endTime')}
                           containerProps={{ flexGrow: 1 }}
+                          disabled={wholeDay}
+                        />
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={wholeDay}
+                              name="wholeDay"
+                              onChange={() => {
+                                setFieldValue('wholeDay', !wholeDay);
+                              }}
+                            />
+                          }
+                          label={'All Day'}
                         />
                       </Box>
                     </GridItem>
-                    <FormikAutocomplete
-                      name="type"
-                      label={t('calendar.event.type')}
-                      values={typeOptions}
-                      sx={{ flexGrow: 1 }}
-                    />
                   </Box>
                   <FormikMarkdownField
                     name="description"
