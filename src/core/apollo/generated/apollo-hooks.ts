@@ -16793,11 +16793,15 @@ export const SubspacesInSpaceDocument = gql`
             id
             displayName
             url
+            cardBanner: visual(type: CARD) {
+              ...VisualUri
+            }
           }
         }
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**
