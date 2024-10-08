@@ -6,6 +6,16 @@ query AccountInformation($accountId: UUID!) {
         id
         myPrivileges
       }
+      license {
+        id
+        entitlements {
+          id
+          type
+          limit
+          usage
+          isAvailable
+        }
+      }
       host {
         id
       }

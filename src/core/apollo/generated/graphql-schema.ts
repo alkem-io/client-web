@@ -1256,6 +1256,8 @@ export type Collaboration = {
   id: Scalars['UUID'];
   /** The InnovationFlow for the Collaboration. */
   innovationFlow: InnovationFlow;
+  /** The License operating on this Collaboration. */
+  license: License;
   /** The tagset templates on this Collaboration. */
   tagsetTemplates?: Maybe<Array<TagsetTemplate>>;
   /** The timeline with events in use by this Space */
@@ -2782,12 +2784,16 @@ export type LicenseEntitlement = {
   enabled: Scalars['Boolean'];
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** Whether the specified entitlement is available. */
+  isAvailable: Scalars['Boolean'];
   /** Limit of the entitlement */
   limit: Scalars['Float'];
   /** Type of the entitlement, e.g. Space, Whiteboard contributors etc. */
   type: LicenseEntitlementType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
+  /** The amount of the spcified entitlement used. */
+  usage: Scalars['Float'];
 };
 
 export enum LicenseEntitlementDataType {
@@ -5106,6 +5112,8 @@ export type RoleSet = {
   id: Scalars['UUID'];
   /** Invitations for this roleSet. */
   invitations: Array<Invitation>;
+  /** The License operating on this RoleSet. */
+  license: License;
   /** The membership status of the currently logged in user. */
   myMembershipStatus?: Maybe<CommunityMembershipStatus>;
   /** The roles on this community for the currently logged in user. */
@@ -7894,6 +7902,18 @@ export type AccountInformationQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
+          license: {
+            __typename?: 'License';
+            id: string;
+            entitlements: Array<{
+              __typename?: 'LicenseEntitlement';
+              id: string;
+              type: LicenseEntitlementType;
+              limit: number;
+              usage: number;
+              isAvailable: boolean;
+            }>;
+          };
           host?:
             | { __typename?: 'Organization'; id: string }
             | { __typename?: 'User'; id: string }
@@ -29604,6 +29624,17 @@ export type MyAccountQuery = {
                 authorization?:
                   | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
                   | undefined;
+                license: {
+                  __typename?: 'License';
+                  id: string;
+                  entitlements: Array<{
+                    __typename?: 'LicenseEntitlement';
+                    id: string;
+                    limit: number;
+                    usage: number;
+                    isAvailable: boolean;
+                  }>;
+                };
                 virtualContributors: Array<{
                   __typename?: 'VirtualContributor';
                   id: string;

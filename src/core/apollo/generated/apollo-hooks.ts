@@ -4817,6 +4817,16 @@ export const AccountInformationDocument = gql`
           id
           myPrivileges
         }
+        license {
+          id
+          entitlements {
+            id
+            type
+            limit
+            usage
+            isAvailable
+          }
+        }
         host {
           id
         }
@@ -22352,6 +22362,15 @@ export const MyAccountDocument = gql`
           id
           authorization {
             myPrivileges
+          }
+          license {
+            id
+            entitlements {
+              id
+              limit
+              usage
+              isAvailable
+            }
           }
           virtualContributors {
             id

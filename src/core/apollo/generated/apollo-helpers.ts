@@ -856,6 +856,7 @@ export type CollaborationKeySpecifier = (
   | 'groups'
   | 'id'
   | 'innovationFlow'
+  | 'license'
   | 'tagsetTemplates'
   | 'timeline'
   | 'updatedDate'
@@ -868,6 +869,7 @@ export type CollaborationFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
+  license?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsetTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1643,9 +1645,11 @@ export type LicenseEntitlementKeySpecifier = (
   | 'dataType'
   | 'enabled'
   | 'id'
+  | 'isAvailable'
   | 'limit'
   | 'type'
   | 'updatedDate'
+  | 'usage'
   | LicenseEntitlementKeySpecifier
 )[];
 export type LicenseEntitlementFieldPolicy = {
@@ -1653,9 +1657,11 @@ export type LicenseEntitlementFieldPolicy = {
   dataType?: FieldPolicy<any> | FieldReadFunction<any>;
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isAvailable?: FieldPolicy<any> | FieldReadFunction<any>;
   limit?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  usage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LicensePlanKeySpecifier = (
   | 'assignToNewOrganizationAccounts'
@@ -2816,6 +2822,7 @@ export type RoleSetKeySpecifier = (
   | 'entryRoleType'
   | 'id'
   | 'invitations'
+  | 'license'
   | 'myMembershipStatus'
   | 'myRoles'
   | 'myRolesImplicit'
@@ -2838,6 +2845,7 @@ export type RoleSetFieldPolicy = {
   entryRoleType?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
+  license?: FieldPolicy<any> | FieldReadFunction<any>;
   myMembershipStatus?: FieldPolicy<any> | FieldReadFunction<any>;
   myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   myRolesImplicit?: FieldPolicy<any> | FieldReadFunction<any>;
