@@ -1,7 +1,7 @@
 query PlansTable {
   platform {
     id
-    licensing {
+    licensingFramework {
       id
       plans {
         id

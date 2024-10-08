@@ -247,7 +247,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const plans = useMemo(
     () =>
-      plansData?.platform.licensing.plans
+      plansData?.platform.licensingFramework.plans
         .filter(plan => plan.enabled)
         .filter(plan => plan.type === LicensePlanType.SpacePlan)
         .filter(plan => isPlanAvailable(plan))

@@ -3,7 +3,7 @@ query adminSpacesList {
     ...AdminSpace
   }
   platform {
-    licensing {
+    licensingFramework {
       id
       plans {
         id
