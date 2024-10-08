@@ -16944,6 +16944,98 @@ export type OrganizationsListQuery = {
   }>;
 };
 
+export type AccountResourcesInfoQueryVariables = Exact<{
+  accountId: Scalars['UUID'];
+}>;
+
+export type AccountResourcesInfoQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    account?:
+      | {
+          __typename?: 'Account';
+          id: string;
+          spaces: Array<{
+            __typename?: 'Space';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }>;
+          virtualContributors: Array<{
+            __typename?: 'VirtualContributor';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              tagline?: string | undefined;
+              id: string;
+              displayName: string;
+              url: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }>;
+          innovationPacks: Array<{
+            __typename?: 'InnovationPack';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+            templatesSet?:
+              | {
+                  __typename?: 'TemplatesSet';
+                  id: string;
+                  calloutTemplatesCount: number;
+                  communityGuidelinesTemplatesCount: number;
+                  innovationFlowTemplatesCount: number;
+                  postTemplatesCount: number;
+                  whiteboardTemplatesCount: number;
+                }
+              | undefined;
+          }>;
+          innovationHubs: Array<{
+            __typename?: 'InnovationHub';
+            id: string;
+            spaceVisibilityFilter?: SpaceVisibility | undefined;
+            subdomain: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+            spaceListFilter?:
+              | Array<{
+                  __typename?: 'Space';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string };
+                }>
+              | undefined;
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type AccountResourceProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  url: string;
+  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+};
+
 export type DeleteInvitationMutationVariables = Exact<{
   invitationId: Scalars['UUID'];
 }>;
