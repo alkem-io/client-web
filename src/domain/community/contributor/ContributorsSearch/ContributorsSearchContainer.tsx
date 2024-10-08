@@ -61,7 +61,7 @@ const ContributorsSearchContainer: FC<ContributorsSearchContainerProps> = ({ sea
       skip: !isAuthenticated,
     },
     variables: {
-      withTags: false,
+      withTags: true,
       filter: { firstName: searchTerms, lastName: searchTerms, email: searchTerms },
     },
     pageSize: pageSize,
