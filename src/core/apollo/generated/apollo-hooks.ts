@@ -10726,8 +10726,13 @@ export type RemoveRoleFromVirtualContributorMutationOptions = Apollo.BaseMutatio
   SchemaTypes.RemoveRoleFromVirtualContributorMutationVariables
 >;
 export const ContributorsPageOrganizationsDocument = gql`
-  query ContributorsPageOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
-    organizationsPaginated(first: $first, after: $after, filter: $filter) {
+  query ContributorsPageOrganizations(
+    $first: Int!
+    $after: UUID
+    $status: OrganizationVerificationEnum
+    $filter: OrganizationFilterInput
+  ) {
+    organizationsPaginated(first: $first, after: $after, filter: $filter, status: $status) {
       ...OrganizationContributorPaginated
     }
   }
@@ -10748,6 +10753,7 @@ export const ContributorsPageOrganizationsDocument = gql`
  *   variables: {
  *      first: // value for 'first'
  *      after: // value for 'after'
+ *      status: // value for 'status'
  *      filter: // value for 'filter'
  *   },
  * });
@@ -16665,11 +16671,15 @@ export const SubspacesInSpaceDocument = gql`
             id
             displayName
             url
+            cardBanner: visual(type: CARD) {
+              ...VisualUri
+            }
           }
         }
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**

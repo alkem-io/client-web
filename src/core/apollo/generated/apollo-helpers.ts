@@ -3412,6 +3412,7 @@ export type UserKeySpecifier = (
   | 'account'
   | 'accountUpn'
   | 'agent'
+  | 'authenticationMethod'
   | 'authorization'
   | 'communityRooms'
   | 'createdDate'
@@ -3433,6 +3434,7 @@ export type UserFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   accountUpn?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  authenticationMethod?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;

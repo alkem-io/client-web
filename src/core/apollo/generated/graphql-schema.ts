@@ -806,6 +806,13 @@ export type AuthenticationProviderConfig = {
 
 export type AuthenticationProviderConfigUnion = OryConfig;
 
+export enum AuthenticationType {
+  Email = 'EMAIL',
+  Linkedin = 'LINKEDIN',
+  Microsoft = 'MICROSOFT',
+  Unknown = 'UNKNOWN',
+}
+
 export type Authorization = {
   __typename?: 'Authorization';
   anonymousReadAccess: Scalars['Boolean'];
@@ -4671,6 +4678,7 @@ export type QueryOrganizationsPaginatedArgs = {
   filter?: InputMaybe<OrganizationFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  status?: InputMaybe<OrganizationVerificationEnum>;
 };
 
 export type QueryRolesOrganizationArgs = {
@@ -6415,6 +6423,8 @@ export type User = Contributor & {
   accountUpn: Scalars['String'];
   /** The Agent representing this User. */
   agent: Agent;
+  /** The Authentication Method used for this User. One of email, linkedin, microsoft, or unknown */
+  authenticationMethod?: Maybe<AuthenticationType>;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
   /** The Community rooms this user is a member of */
@@ -15988,6 +15998,7 @@ export type RemoveRoleFromVirtualContributorMutation = {
 export type ContributorsPageOrganizationsQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
+  status?: InputMaybe<OrganizationVerificationEnum>;
   filter?: InputMaybe<OrganizationFilterInput>;
 }>;
 
@@ -21789,7 +21800,13 @@ export type SubspacesInSpaceQuery = {
           subspaces: Array<{
             __typename?: 'Space';
             id: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
           }>;
         }
       | undefined;
