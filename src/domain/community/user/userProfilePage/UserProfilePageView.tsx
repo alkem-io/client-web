@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material';
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useConfig } from '../../../platform/config/useConfig';
 import { CredentialsView } from '../../profile/views/ProfileView';
@@ -11,19 +11,23 @@ import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
 import { PlatformFeatureFlagName } from '../../../../core/apollo/generated/graphql-schema';
 import ContributionsView from '../../contributor/Contributions/ContributionsView';
 import { CaptionSmall } from '../../../../core/ui/typography';
-import { RoleType } from '../constants/RoleType';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import AccountResourcesView, { AccountResourcesProps } from '../../contributor/Account/AccountResourcesView';
+import useFilteredMemberships from '../hooks/useFilteredMemberships';
+import { RoleType } from '../constants/RoleType';
 
 export interface UserProfileViewPageProps extends UserProfileViewProps {
   contributions: SpaceHostedItem[] | undefined;
   organizationIds: string[] | undefined;
+  accountResources: AccountResourcesProps | undefined;
 }
 
 export const UserProfilePageView: FC<UserProfileViewPageProps> = ({
   contributions = [],
   organizationIds,
   entities,
+  accountResources,
 }) => {
   const { t } = useTranslation();
   const { user } = entities.userMetadata;
@@ -31,13 +35,12 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({
 
   const { isFeatureEnabled } = useConfig();
 
-  const subspaceILead = useMemo(
-    () =>
-      contributions?.filter(
-        contribution => contribution.roles?.includes(RoleType.Lead) || contribution.roles?.includes(RoleType.Admin)
-      ) || [],
-    [contributions]
-  );
+  const [filteredMemberships, remainingMemberships] = useFilteredMemberships(contributions, [
+    RoleType.Lead,
+    RoleType.Admin,
+  ]);
+
+  const hasAccountResources = accountResources && accountResources.spaces && accountResources.spaces.length > 0;
 
   return (
     <PageContent>
@@ -59,16 +62,22 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({
         )}
       </PageContentColumn>
       <PageContentColumn columns={8}>
-        {subspaceILead.length > 0 && (
-          <ContributionsView
-            title={t('pages.user-profile.communities.leadSpacesTitle')}
-            contributions={subspaceILead}
+        {hasAccountResources && (
+          <AccountResourcesView
+            title={t('pages.user-profile.accountResources.sectionTitle')}
+            accountResources={accountResources}
           />
         )}
-        {contributions.length > 0 ? (
+        {filteredMemberships.length > 0 && (
+          <ContributionsView
+            title={t('pages.user-profile.communities.leadSpacesTitle')}
+            contributions={filteredMemberships}
+          />
+        )}
+        {remainingMemberships.length > 0 ? (
           <ContributionsView
             title={t('pages.user-profile.communities.allMembershipsTitle')}
-            contributions={contributions}
+            contributions={remainingMemberships}
           />
         ) : (
           <PageContentBlock>
