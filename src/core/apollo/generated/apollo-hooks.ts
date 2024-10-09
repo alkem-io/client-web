@@ -1451,6 +1451,17 @@ export const OrganizationProfileInfoFragmentDoc = gql`
   ${VisualFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
+export const AccountResourceProfileFragmentDoc = gql`
+  fragment AccountResourceProfile on Profile {
+    id
+    displayName
+    url
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const PendingMembershipsJourneyProfileFragmentDoc = gql`
   fragment PendingMembershipsJourneyProfile on Profile {
     id
@@ -10734,8 +10745,13 @@ export type RemoveRoleFromVirtualContributorMutationOptions = Apollo.BaseMutatio
   SchemaTypes.RemoveRoleFromVirtualContributorMutationVariables
 >;
 export const ContributorsPageOrganizationsDocument = gql`
-  query ContributorsPageOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
-    organizationsPaginated(first: $first, after: $after, filter: $filter) {
+  query ContributorsPageOrganizations(
+    $first: Int!
+    $after: UUID
+    $status: OrganizationVerificationEnum
+    $filter: OrganizationFilterInput
+  ) {
+    organizationsPaginated(first: $first, after: $after, filter: $filter, status: $status) {
       ...OrganizationContributorPaginated
     }
   }
@@ -10756,6 +10772,7 @@ export const ContributorsPageOrganizationsDocument = gql`
  *   variables: {
  *      first: // value for 'first'
  *      after: // value for 'after'
+ *      status: // value for 'status'
  *      filter: // value for 'filter'
  *   },
  * });
@@ -11906,6 +11923,118 @@ export type OrganizationsListQueryResult = Apollo.QueryResult<
 >;
 export function refetchOrganizationsListQuery(variables?: SchemaTypes.OrganizationsListQueryVariables) {
   return { query: OrganizationsListDocument, variables: variables };
+}
+
+export const AccountResourcesInfoDocument = gql`
+  query AccountResourcesInfo($accountId: UUID!) {
+    lookup {
+      account(ID: $accountId) {
+        id
+        spaces {
+          id
+          profile {
+            ...AccountResourceProfile
+            cardBanner: visual(type: CARD) {
+              ...VisualUri
+            }
+          }
+        }
+        virtualContributors {
+          id
+          profile {
+            ...AccountResourceProfile
+            tagline
+          }
+        }
+        innovationPacks {
+          id
+          profile {
+            ...AccountResourceProfile
+          }
+          templatesSet {
+            id
+            calloutTemplatesCount
+            communityGuidelinesTemplatesCount
+            innovationFlowTemplatesCount
+            postTemplatesCount
+            whiteboardTemplatesCount
+          }
+        }
+        innovationHubs {
+          id
+          profile {
+            ...AccountResourceProfile
+            banner: visual(type: BANNER_WIDE) {
+              ...VisualUri
+            }
+          }
+          spaceVisibilityFilter
+          spaceListFilter {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+          subdomain
+        }
+      }
+    }
+  }
+  ${AccountResourceProfileFragmentDoc}
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useAccountResourcesInfoQuery__
+ *
+ * To run a query within a React component, call `useAccountResourcesInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountResourcesInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountResourcesInfoQuery({
+ *   variables: {
+ *      accountId: // value for 'accountId'
+ *   },
+ * });
+ */
+export function useAccountResourcesInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AccountResourcesInfoQuery,
+    SchemaTypes.AccountResourcesInfoQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AccountResourcesInfoQuery, SchemaTypes.AccountResourcesInfoQueryVariables>(
+    AccountResourcesInfoDocument,
+    options
+  );
+}
+
+export function useAccountResourcesInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AccountResourcesInfoQuery,
+    SchemaTypes.AccountResourcesInfoQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AccountResourcesInfoQuery, SchemaTypes.AccountResourcesInfoQueryVariables>(
+    AccountResourcesInfoDocument,
+    options
+  );
+}
+
+export type AccountResourcesInfoQueryHookResult = ReturnType<typeof useAccountResourcesInfoQuery>;
+export type AccountResourcesInfoLazyQueryHookResult = ReturnType<typeof useAccountResourcesInfoLazyQuery>;
+export type AccountResourcesInfoQueryResult = Apollo.QueryResult<
+  SchemaTypes.AccountResourcesInfoQuery,
+  SchemaTypes.AccountResourcesInfoQueryVariables
+>;
+export function refetchAccountResourcesInfoQuery(variables: SchemaTypes.AccountResourcesInfoQueryVariables) {
+  return { query: AccountResourcesInfoDocument, variables: variables };
 }
 
 export const DeleteInvitationDocument = gql`
@@ -16672,11 +16801,15 @@ export const SubspacesInSpaceDocument = gql`
             id
             displayName
             url
+            cardBanner: visual(type: CARD) {
+              ...VisualUri
+            }
           }
         }
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**

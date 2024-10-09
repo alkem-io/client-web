@@ -165,6 +165,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
     });
 
     setDeletingTemplate(undefined);
+    backToTemplates(baseUrl);
   });
 
   // Import Template

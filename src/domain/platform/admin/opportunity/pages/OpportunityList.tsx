@@ -49,7 +49,7 @@ export const OpportunityList: FC = () => {
         displayName: s.profile.displayName,
         url: buildSettingsUrl(s.profile.url),
         avatar: {
-          uri: '',
+          uri: s.profile.cardBanner?.uri ?? '',
         },
       },
     })) || [];
