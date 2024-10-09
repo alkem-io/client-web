@@ -106,14 +106,45 @@ const CalendarEventForm = ({
     };
   }, [event, initialStartDate]);
 
-  // todo:b validation for end time same day
-  const validationSchema = yup.object().shape({
-    displayName: displayNameValidator,
-    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH)
-      .required(t('common.field-required'))
-      .min(3, ({ min }) => t('common.field-min-length', { min })),
-    type: yup.string().required(t('common.field-required')),
-  });
+  // the following validation applies ensuring that the event is either:
+  // 1. wholeDay;
+  // 2. if it's the same day it should be with positive durationMinutes
+  // 3. outherwise the endDate should be greater than startDate
+  // (not the case in #2 where we're using durationMinutes instead of endDate)
+  const validateDuration = value => {
+    const { durationMinutes, startDate, endDate, wholeDay } = value || {};
+    const isDurationPositive = (durationMinutes ?? 0) > 0;
+    const isEndDateValid = endDate && startDate && new Date(endDate) > new Date(startDate);
+
+    if (wholeDay) {
+      return true;
+    } else if (isSameDay(startDate, endDate)) {
+      return isDurationPositive;
+    }
+
+    return isEndDateValid;
+  };
+
+  const validationSchema = yup
+    .object()
+    .shape({
+      displayName: displayNameValidator,
+      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH)
+        .required(t('common.field-required'))
+        .min(3, ({ min }) => t('common.field-min-length', { min })),
+      type: yup.string().required(t('common.field-required')),
+      durationMinutes: yup.number().positive().nullable(),
+      startDate: yup.date().nullable(),
+      endDate: yup.date().nullable(),
+      wholeDay: yup.boolean(),
+    })
+    .test(
+      'valid-event',
+      'Either durationMinutes must be positive, or endDate must be greater than startDate, or wholeDay must be true',
+      function (value) {
+        return validateDuration(value);
+      }
+    );
 
   const getMinTime = (startDate: DateType, endDate: DateType) => {
     if (!startDate) {
