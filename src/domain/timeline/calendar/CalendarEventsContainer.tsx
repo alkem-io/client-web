@@ -14,6 +14,7 @@ import {
 } from '../../../core/apollo/generated/graphql-schema';
 import { StorageConfigContextProvider } from '../../storage/StorageBucket/StorageConfigContext';
 import { MutationBaseOptions } from '@apollo/client/core/watchQueryOptions';
+import { isSameDay } from '../../../core/utils/time/utils';
 
 export interface CalendarEventFormData
   extends Pick<CalendarEvent, 'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay'> {
@@ -95,12 +96,12 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ jour
     (event: CalendarEventFormData) => {
       const { startDate, description, tags, references, displayName, endDate, location, wholeDay, ...rest } = event;
       const parsedStartDate = startDate ? new Date(startDate) : new Date();
-      const parsedEndDate = endDate ? new Date(endDate) : new Date();
-      let durationMinutes = 0;
+      let durationMinutes = rest.durationMinutes;
       let durationDays = 0;
       let multipleDays = false;
 
-      if (!wholeDay) {
+      if (!isSameDay(startDate, endDate) && !wholeDay) {
+        const parsedEndDate = endDate ? new Date(endDate) : new Date();
         durationMinutes = Math.floor((parsedEndDate.getTime() - parsedStartDate.getTime()) / 60000);
         durationDays = Math.floor(durationMinutes / (24 * 60));
         multipleDays = durationDays > 0;
@@ -139,12 +140,12 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ jour
       const parsedStartDate = startDate ? new Date(startDate) : new Date();
 
       // todo:b reuse
-      const parsedEndDate = endDate ? new Date(endDate) : new Date();
-      let durationMinutes = 0;
+      let durationMinutes = rest.durationMinutes;
       let durationDays = 0;
       let multipleDays = false;
 
-      if (!wholeDay) {
+      if (!isSameDay(startDate, endDate) && !wholeDay) {
+        const parsedEndDate = endDate ? new Date(endDate) : new Date();
         durationMinutes = Math.floor((parsedEndDate.getTime() - parsedStartDate.getTime()) / 60000);
         durationDays = Math.floor(durationMinutes / (24 * 60));
         multipleDays = durationDays > 0;

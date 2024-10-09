@@ -23,6 +23,8 @@ import { LoadingButton } from '@mui/lab';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import dayjs from 'dayjs';
+import FormikDurationMinutes from '../../../../core/ui/forms/DatePicker/FormikDurationMinutes';
+import { isSameDay } from '../../../../core/utils/time/utils';
 
 const DEFAULT_DURATION_MINUTES = 30;
 
@@ -70,18 +72,19 @@ const CalendarEventForm = ({
     onSubmit(formValues as CalendarEventFormData);
   };
 
-  // TODO: Remove startDate from here
-  const initialStartDate = useMemo(() => event?.startDate ?? new Date(), [event]);
+  const dateNow = new Date();
+
+  const initialStartDate = useMemo(() => event?.startDate ?? dateNow, [event]);
   const initialEndDate = useMemo(() => {
     if (!event?.startDate) {
-      return new Date();
+      return dateNow;
     }
 
     if (event.durationMinutes) {
       return new Date(new Date(event.startDate).getTime() + event.durationMinutes * 60000);
     }
 
-    return new Date();
+    return dateNow;
   }, [event]);
 
   const initialValues = useMemo<Partial<CalendarEventFormData>>(() => {
@@ -177,13 +180,23 @@ const CalendarEventForm = ({
                         minDate={startDate}
                         disabled={wholeDay}
                       />
-                      <FormikTimePicker
-                        name="endDate"
-                        label={'End Time'}
-                        containerProps={{ flexGrow: 1 }}
-                        disabled={wholeDay}
-                        minTime={getMinTime(startDate, endDate)}
-                      />
+                      {isSameDay(startDate, endDate) ? (
+                        <FormikDurationMinutes
+                          name="durationMinutes"
+                          startTimeFieldName="startDate"
+                          label={t('fields.endTime')}
+                          containerProps={{ flexGrow: 1 }}
+                          disabled={wholeDay}
+                        />
+                      ) : (
+                        <FormikTimePicker
+                          name="endDate"
+                          label={'End Time'}
+                          containerProps={{ flexGrow: 1 }}
+                          disabled={wholeDay}
+                          minTime={getMinTime(startDate, endDate)}
+                        />
+                      )}
                     </Gutters>
                   </Gutters>
                   <FormikMarkdownField
@@ -192,8 +205,10 @@ const CalendarEventForm = ({
                     maxLength={MARKDOWN_TEXT_LENGTH}
                     sx={{ marginBottom: gutters(-1) }}
                   />
-                  <FormikInputField name="location.city" title={'Location'} placeholder={' '} />
-                  <TagsetField name="tags" title={t('common.tags')} />
+                  <Gutters disablePadding sx={{ flexDirection: 'row', flexGrow: 1 }}>
+                    <FormikInputField name="location.city" title={'Location'} placeholder={' '} fullWidth />
+                    <TagsetField name="tags" title={t('common.tags')} />
+                  </Gutters>
                 </Gutters>
               </Form>
             </DialogContent>

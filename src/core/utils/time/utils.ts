@@ -99,3 +99,18 @@ export const startOfDay = (date: Date = new Date()) => {
 export const formatDateTime = (date: Date) => {
   return dayjs(date).format('DD/MM/YYYY[ at ]HH:mm');
 };
+
+export const isSameDay = (startDate: Date | undefined, endDate: number | Date | undefined) => {
+  if (!startDate || !endDate) {
+    return true;
+  }
+
+  const startDateOnly = new Date(startDate);
+  const endDateOnly = new Date(endDate);
+
+  return (
+    startDateOnly.getFullYear() === endDateOnly.getFullYear() &&
+    startDateOnly.getMonth() === endDateOnly.getMonth() &&
+    startDateOnly.getDate() === endDateOnly.getDate()
+  );
+};
