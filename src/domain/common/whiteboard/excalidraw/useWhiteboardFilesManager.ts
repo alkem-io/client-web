@@ -1,6 +1,11 @@
 import { useMemo, useRef, useState } from 'react';
 import { useUploadFileMutation } from '../../../../core/apollo/generated/apollo-hooks';
-import { BinaryFileData, BinaryFiles, DataURL, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
+import {
+  BinaryFileData,
+  BinaryFiles,
+  DataURL,
+  ExcalidrawImperativeAPI,
+} from '@alkemio/excalidraw/dist/excalidraw/types';
 import { excalidrawFileMimeType, generateIdFromFile } from './collab/utils';
 import Semaphore from 'ts-semaphore';
 

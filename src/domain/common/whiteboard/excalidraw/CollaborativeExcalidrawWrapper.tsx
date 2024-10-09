@@ -1,6 +1,11 @@
-import type { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
-import type { AppState, BinaryFiles, ExcalidrawImperativeAPI, ExcalidrawProps } from '@alkemio/excalidraw/types/types';
-import type { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
+import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
+import type {
+  AppState,
+  BinaryFiles,
+  ExcalidrawImperativeAPI,
+  ExcalidrawProps,
+} from '@alkemio/excalidraw/dist/excalidraw/types';
+import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
 import { makeStyles } from '@mui/styles';
 import { debounce, merge } from 'lodash';
 import React, { PropsWithChildren, Ref, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';

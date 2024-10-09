@@ -1,6 +1,6 @@
 import { IsSyncableElement, SocketUpdateData, SocketUpdateDataSource } from './data';
-import type { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import type { DataURL } from '@alkemio/excalidraw/types/types';
+import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
+import type { DataURL } from '@alkemio/excalidraw/dist/excalidraw/types';
 import {
   CollaboratorModeEvent,
   PRECEDING_ELEMENT_KEY,
@@ -69,9 +69,10 @@ class Portal {
     return new Promise(async (resolve, reject) => {
       const { default: socketIOClient } = await import('socket.io-client');
 
-      const socket = socketIOClient(connectionOptions.url, {
+      const socket = socketIOClient('localhost:4002' /*connectionOptions.url*/, {
         transports: connectionOptions.polling ? ['websocket', 'polling'] : ['websocket'],
-        path: '/api/private/ws/socket.io',
+        path: '/socket.io',
+        // path: '/api/private/ws/socket.io',
         retries: 0,
         reconnection: false,
       });

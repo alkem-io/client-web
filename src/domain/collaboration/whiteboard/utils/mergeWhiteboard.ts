@@ -1,5 +1,5 @@
-import type { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
+import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
+import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
 import { v4 as uuidv4 } from 'uuid';
 
 type ExcalidrawElementWithContainerId = ExcalidrawElement & { containerId: string | null };
@@ -158,7 +158,7 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
     const newElements = [...currentElements, ...insertedElements];
     whiteboardApi.updateScene({
       elements: newElements,
-      commitToHistory: true,
+      commitToStore: true,
     });
     whiteboardApi.zoomToFit();
     return true;

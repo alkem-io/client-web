@@ -1,5 +1,5 @@
 import { throttle } from 'lodash';
-import type { Collaborator, ExcalidrawImperativeAPI, Gesture } from '@alkemio/excalidraw/types/types';
+import type { Collaborator, ExcalidrawImperativeAPI, Gesture } from '@alkemio/excalidraw/dist/excalidraw/types';
 import {
   ACTIVE_THRESHOLD,
   CollaboratorModeEvent,
@@ -9,8 +9,8 @@ import {
   SYNC_FULL_SCENE_INTERVAL_MS,
   WS_SCENE_EVENT_TYPES,
 } from './excalidrawAppConstants';
-import type { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import type { ImportedDataState } from '@alkemio/excalidraw/types/data/types';
+import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
+import type { ImportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
 import { isImageElement, UserIdleState } from './utils';
 import { getCollabServer, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
@@ -130,7 +130,7 @@ class Collab {
 
     this.excalidrawAPI.updateScene({
       elements,
-      commitToHistory: false,
+      commitToStore: false,
     });
   };
 
@@ -298,7 +298,7 @@ class Collab {
   private handleRemoteSceneUpdate = (elements: ReconciledElements, { init = false }: { init?: boolean } = {}) => {
     this.excalidrawAPI.updateScene({
       elements,
-      commitToHistory: !!init,
+      commitToStore: !!init,
     });
 
     this.filesManager.pushFilesToExcalidraw();

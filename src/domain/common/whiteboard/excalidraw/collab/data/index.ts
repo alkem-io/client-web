@@ -1,5 +1,5 @@
-import type { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import type { AppState, UserIdleState } from '@alkemio/excalidraw/types/types';
+import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
+import type { AppState, UserIdleState } from '@alkemio/excalidraw/dist/excalidraw/types';
 import { DELETED_ELEMENT_TIMEOUT } from '../excalidrawAppConstants';
 import { env } from '../../../../../../main/env';
 import { BinaryFilesWithUrl } from '../../useWhiteboardFilesManager';
