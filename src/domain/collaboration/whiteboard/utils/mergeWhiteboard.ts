@@ -1,7 +1,7 @@
 import type { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import { PRECEDING_ELEMENT_KEY } from '@alkemio/excalidraw/types/constants';
 import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import { v4 as uuidv4 } from 'uuid';
+import { PRECEDING_ELEMENT_KEY } from '../../../common/whiteboard/excalidraw/collab/excalidrawAppConstants';
 
 type ExcalidrawElementWithContainerId = ExcalidrawElement & { containerId: string | null };
 class WhiteboardMergeError extends Error {}
