@@ -1,8 +1,11 @@
 query SpaceTemplatesSetId($spaceNameId: UUID_NAMEID!) {
   space(ID: $spaceNameId) {
     id
-    library {
+    templatesManager {
       id
+      templatesSet {
+        id
+      }
     }
   }
 }

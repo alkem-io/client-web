@@ -4,7 +4,7 @@ export interface JourneyFormValues {
   vision: string;
   tags: string[];
   background?: string;
-  addDefaultCallouts: boolean;
+  addTutorialCallouts: boolean;
 }
 
 export interface JourneyCreationForm {

@@ -39,7 +39,10 @@ fragment SubspacePageSpace on Space {
   collaboration {
     id
   }
-  library {
+  templatesManager {
     id
+    templatesSet {
+      id
+    }
   }
 }

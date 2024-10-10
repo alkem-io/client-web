@@ -1792,6 +1792,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'storageAggregator'
   | 'storageBucket'
   | 'template'
+  | 'templatesManager'
   | 'templatesSet'
   | 'virtualContributor'
   | 'whiteboard'
@@ -1822,6 +1823,7 @@ export type LookupQueryResultsFieldPolicy = {
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   template?: FieldPolicy<any> | FieldReadFunction<any>;
+  templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesSet?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2030,11 +2032,11 @@ export type MutationKeySpecifier = (
   | 'updateProfile'
   | 'updateReference'
   | 'updateSpace'
-  | 'updateSpaceDefaults'
   | 'updateSpacePlatformSettings'
   | 'updateSpaceSettings'
   | 'updateTagset'
   | 'updateTemplate'
+  | 'updateTemplateDefault'
   | 'updateUser'
   | 'updateUserGroup'
   | 'updateUserPlatformSettings'
@@ -2189,11 +2191,11 @@ export type MutationFieldPolicy = {
   updateProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   updateReference?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpace?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateSpaceDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpacePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSpaceSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateTemplateDefault?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2339,6 +2341,7 @@ export type PlatformKeySpecifier = (
   | 'myRoles'
   | 'platformInvitations'
   | 'storageAggregator'
+  | 'templatesManager'
   | 'updatedDate'
   | PlatformKeySpecifier
 )[];
@@ -2356,6 +2359,7 @@ export type PlatformFieldPolicy = {
   myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   platformInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
+  templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformFeatureFlagKeySpecifier = ('enabled' | 'name' | PlatformFeatureFlagKeySpecifier)[];
@@ -2668,11 +2672,9 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'community'
   | 'context'
   | 'createdDate'
-  | 'defaults'
   | 'id'
   | 'level'
   | 'levelZeroSpaceID'
-  | 'library'
   | 'licensePrivileges'
   | 'metrics'
   | 'nameID'
@@ -2683,6 +2685,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'subscriptions'
   | 'subspace'
   | 'subspaces'
+  | 'templatesManager'
   | 'type'
   | 'updatedDate'
   | 'visibility'
@@ -2697,11 +2700,9 @@ export type RelayPaginatedSpaceFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  defaults?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
-  library?: FieldPolicy<any> | FieldReadFunction<any>;
   licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2712,6 +2713,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   subspace?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3044,11 +3046,9 @@ export type SpaceKeySpecifier = (
   | 'community'
   | 'context'
   | 'createdDate'
-  | 'defaults'
   | 'id'
   | 'level'
   | 'levelZeroSpaceID'
-  | 'library'
   | 'licensePrivileges'
   | 'metrics'
   | 'nameID'
@@ -3059,6 +3059,7 @@ export type SpaceKeySpecifier = (
   | 'subscriptions'
   | 'subspace'
   | 'subspaces'
+  | 'templatesManager'
   | 'type'
   | 'updatedDate'
   | 'visibility'
@@ -3073,11 +3074,9 @@ export type SpaceFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  defaults?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
-  library?: FieldPolicy<any> | FieldReadFunction<any>;
   licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3088,24 +3087,10 @@ export type SpaceFieldPolicy = {
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
   subspace?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type SpaceDefaultsKeySpecifier = (
-  | 'authorization'
-  | 'createdDate'
-  | 'id'
-  | 'innovationFlowTemplate'
-  | 'updatedDate'
-  | SpaceDefaultsKeySpecifier
-)[];
-export type SpaceDefaultsFieldPolicy = {
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceSettingsKeySpecifier = ('collaboration' | 'membership' | 'privacy' | SpaceSettingsKeySpecifier)[];
 export type SpaceSettingsFieldPolicy = {
@@ -3351,15 +3336,53 @@ export type TemplateFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type TemplateDefaultKeySpecifier = (
+  | 'allowedTemplateType'
+  | 'authorization'
+  | 'createdDate'
+  | 'id'
+  | 'template'
+  | 'type'
+  | 'updatedDate'
+  | TemplateDefaultKeySpecifier
+)[];
+export type TemplateDefaultFieldPolicy = {
+  allowedTemplateType?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  template?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type TemplateResultKeySpecifier = ('innovationPack' | 'template' | TemplateResultKeySpecifier)[];
 export type TemplateResultFieldPolicy = {
   innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   template?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type TemplatesManagerKeySpecifier = (
+  | 'authorization'
+  | 'createdDate'
+  | 'id'
+  | 'templateDefaults'
+  | 'templatesSet'
+  | 'updatedDate'
+  | TemplatesManagerKeySpecifier
+)[];
+export type TemplatesManagerFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  templateDefaults?: FieldPolicy<any> | FieldReadFunction<any>;
+  templatesSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type TemplatesSetKeySpecifier = (
   | 'authorization'
   | 'calloutTemplates'
   | 'calloutTemplatesCount'
+  | 'collaborationTemplates'
+  | 'collaborationTemplatesCount'
   | 'communityGuidelinesTemplates'
   | 'communityGuidelinesTemplatesCount'
   | 'createdDate'
@@ -3379,6 +3402,8 @@ export type TemplatesSetFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   communityGuidelinesTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   communityGuidelinesTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4357,10 +4382,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | SpaceKeySpecifier | (() => undefined | SpaceKeySpecifier);
     fields?: SpaceFieldPolicy;
   };
-  SpaceDefaults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | SpaceDefaultsKeySpecifier | (() => undefined | SpaceDefaultsKeySpecifier);
-    fields?: SpaceDefaultsFieldPolicy;
-  };
   SpaceSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceSettingsKeySpecifier | (() => undefined | SpaceSettingsKeySpecifier);
     fields?: SpaceSettingsFieldPolicy;
@@ -4428,9 +4449,17 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | TemplateKeySpecifier | (() => undefined | TemplateKeySpecifier);
     fields?: TemplateFieldPolicy;
   };
+  TemplateDefault?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | TemplateDefaultKeySpecifier | (() => undefined | TemplateDefaultKeySpecifier);
+    fields?: TemplateDefaultFieldPolicy;
+  };
   TemplateResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TemplateResultKeySpecifier | (() => undefined | TemplateResultKeySpecifier);
     fields?: TemplateResultFieldPolicy;
+  };
+  TemplatesManager?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | TemplatesManagerKeySpecifier | (() => undefined | TemplatesManagerKeySpecifier);
+    fields?: TemplatesManagerFieldPolicy;
   };
   TemplatesSet?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TemplatesSetKeySpecifier | (() => undefined | TemplatesSetKeySpecifier);

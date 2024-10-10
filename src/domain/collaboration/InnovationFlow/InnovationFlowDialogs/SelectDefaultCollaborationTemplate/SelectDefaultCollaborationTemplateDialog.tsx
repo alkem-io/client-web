@@ -8,34 +8,35 @@ import FormikSelect from '../../../../../core/ui/forms/FormikSelect';
 import { Form, Formik } from 'formik';
 import useLoadingState from '../../../../shared/utils/useLoadingState';
 import { LoadingButton } from '@mui/lab';
-import { useSpaceInnovationFlowsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useSpaceCollaborationTemplatesQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import { Actions } from '../../../../../core/ui/actions/Actions';
 
 interface FormValues {
-  innovationFlowSelectedId: string;
+  collaborationTemplateSelectedId: string;
 }
 
-interface SelectDefaultInnovationFlowDialogProps {
+interface SelectDefaultCollaborationTemplateDialogProps {
   spaceId: string | undefined;
   open: boolean;
   onClose?: () => void;
   defaultInnovationFlowId?: string;
-  onSelectInnovationFlow: (innovationFlowTemplateId: string) => Promise<unknown>;
+  onSelectCollaborationTemplate: (collaborationTemplateId: string) => Promise<unknown>;
 }
 
-const SelectDefaultInnovationFlowDialog = ({
+const SelectDefaultCollaborationTemplateDialog = ({
   spaceId,
   open,
   onClose,
-  defaultInnovationFlowId,
-  onSelectInnovationFlow,
-}: SelectDefaultInnovationFlowDialogProps) => {
+  defaultInnovationFlowId: defaultCollaborationTemplateId,
+  onSelectCollaborationTemplate: onSelectInnovationFlow,
+}: SelectDefaultCollaborationTemplateDialogProps) => {
   const { t } = useTranslation();
-  const [handleSelectInnovationFlow, loadingSelectInnovationFlow] = useLoadingState(onSelectInnovationFlow);
+  const [handleSelectCollaborationTemplate, loadingSelectCollaborationTemplate] =
+    useLoadingState(onSelectInnovationFlow);
 
-  const { data, loading: loadingInnovationFlows } = useSpaceInnovationFlowsQuery({
+  const { data, loading: loadingInnovationFlows } = useSpaceCollaborationTemplatesQuery({
     variables: {
       spaceId: spaceId!,
     },
@@ -43,8 +44,10 @@ const SelectDefaultInnovationFlowDialog = ({
   });
 
   const initialValues: FormValues = {
-    innovationFlowSelectedId:
-      defaultInnovationFlowId ?? data?.lookup.space?.library?.innovationFlowTemplates[0]?.id ?? '',
+    collaborationTemplateSelectedId:
+      defaultCollaborationTemplateId ??
+      data?.lookup.space?.templatesManager?.templatesSet?.collaborationTemplates[0]?.id ??
+      '',
   };
 
   const validationSchema = yup.object().shape({
@@ -53,11 +56,11 @@ const SelectDefaultInnovationFlowDialog = ({
 
   const innovationFlowTemplates = useMemo(
     () =>
-      data?.lookup.space?.library?.innovationFlowTemplates.map(template => ({
+      data?.lookup.space?.templatesManager?.templatesSet?.collaborationTemplates.map(template => ({
         id: template.id,
         name: template.profile.displayName,
       })),
-    [data?.lookup.space?.library?.innovationFlowTemplates]
+    [data?.lookup.space?.templatesManager?.templatesSet?.collaborationTemplates]
   );
 
   return (
@@ -87,9 +90,9 @@ const SelectDefaultInnovationFlowDialog = ({
                 </Button>
                 <LoadingButton
                   variant="contained"
-                  loading={loadingSelectInnovationFlow}
+                  loading={loadingSelectCollaborationTemplate}
                   disabled={!isValid}
-                  onClick={() => handleSelectInnovationFlow(values.innovationFlowSelectedId)}
+                  onClick={() => handleSelectCollaborationTemplate(values.collaborationTemplateSelectedId)}
                 >
                   {t('buttons.save')}
                 </LoadingButton>
@@ -102,4 +105,4 @@ const SelectDefaultInnovationFlowDialog = ({
   );
 };
 
-export default SelectDefaultInnovationFlowDialog;
+export default SelectDefaultCollaborationTemplateDialog;

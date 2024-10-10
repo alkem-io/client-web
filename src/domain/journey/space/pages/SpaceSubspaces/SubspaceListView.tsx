@@ -10,7 +10,7 @@ import {
   useAdminSpaceSubspacesPageQuery,
   useCreateSubspaceMutation,
   useDeleteSpaceMutation,
-  useUpdateSpaceDefaultInnovationFlowTemplateMutation,
+  useUpdateTemplateDefaultMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useSpace } from '../../SpaceContext/useSpace';
@@ -26,7 +26,7 @@ import InnovationFlowProfileView from '../../../../collaboration/InnovationFlow/
 import InnovationFlowStates from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import { Actions } from '../../../../../core/ui/actions/Actions';
 import { Cached, ContentCopyOutlined, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
-import SelectDefaultInnovationFlowDialog from '../../../../collaboration/InnovationFlow/InnovationFlowDialogs/SelectDefaultInnovationFlow/SelectDefaultInnovationFlowDialog';
+import SelectDefaultCollaborationTemplateDialog from '../../../../collaboration/InnovationFlow/InnovationFlowDialogs/SelectDefaultCollaborationTemplate/SelectDefaultCollaborationTemplateDialog';
 import MenuItemWithIcon from '../../../../../core/ui/menu/MenuItemWithIcon';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import SearchableList, { SearchableListItem } from '../../../../platform/admin/components/SearchableList';
@@ -45,15 +45,18 @@ export const SubspaceListView: FC = () => {
       spaceId: spaceNameId,
     },
   });
-  const defaultInnovationFlow = data?.space.defaults?.innovationFlowTemplate;
-  const spaceDefaultsID = data?.space.defaults?.id || ''; // How to handle when IDs are not found?
+  const templatesManager = data?.space.templatesManager;
+  const templateDefaults = templatesManager?.templateDefaults;
+  const subspaceTemplateDefault = templateDefaults ? templateDefaults[0].template : undefined;
+  const defaultInnovationFlow = subspaceTemplateDefault?.collaboration?.innovationFlow;
+  const templatesManagerID = templatesManager?.id || ''; // How to handle when IDs are not found?
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<SearchableListItem | undefined>(undefined);
 
   useEffect(() => {
-    setSelectedState(defaultInnovationFlow?.innovationFlow?.states?.[0].displayName);
-  }, [defaultInnovationFlow?.innovationFlow?.states?.[0]?.displayName]);
+    setSelectedState(subspaceTemplateDefault?.collaboration?.innovationFlow?.states?.[0].displayName);
+  }, [subspaceTemplateDefault?.collaboration?.innovationFlow?.states?.[0]?.displayName]);
 
   const subspaces =
     data?.space?.subspaces?.map(s => ({
@@ -111,7 +114,7 @@ export const SubspaceListView: FC = () => {
             },
             tags: value.tags,
             collaborationData: {
-              addDefaultCallouts: value.addDefaultCallouts,
+              addTutorialCallouts: value.addTutorialCallouts,
             },
           },
         },
@@ -127,12 +130,12 @@ export const SubspaceListView: FC = () => {
     [navigate, createSubspace, spaceNameId]
   );
 
-  const [updateInnovationFlow] = useUpdateSpaceDefaultInnovationFlowTemplateMutation();
-  const handleSelectInnovationFlow = async (innovationFlowTemplateId: string) => {
-    await updateInnovationFlow({
+  const [updateTemplateDefault] = useUpdateTemplateDefaultMutation();
+  const handleSelectInnovationFlow = async (collaborationTemplateId: string) => {
+    await updateTemplateDefault({
       variables: {
-        spaceDefaultsID: spaceDefaultsID,
-        innovationFlowTemplateId,
+        templateDefaultID: templatesManagerID,
+        templateID: collaborationTemplateId,
       },
       refetchQueries: [
         refetchAdminSpaceSubspacesPageQuery({
@@ -197,7 +200,7 @@ export const SubspaceListView: FC = () => {
           <BlockSectionTitle>{defaultInnovationFlow?.profile.displayName}</BlockSectionTitle>
           <InnovationFlowProfileView innovationFlow={defaultInnovationFlow} />
           <InnovationFlowStates
-            states={defaultInnovationFlow?.innovationFlow?.states}
+            states={defaultInnovationFlow?.states}
             selectedState={selectedState}
             onSelectState={state => setSelectedState(state.displayName)}
           />
@@ -224,12 +227,12 @@ export const SubspaceListView: FC = () => {
           </Gutters>
         </Box>
       </PageContentBlock>
-      <SelectDefaultInnovationFlowDialog
+      <SelectDefaultCollaborationTemplateDialog
         spaceId={spaceId}
         open={innovationFlowDialogOpen}
         defaultInnovationFlowId={defaultInnovationFlow?.id}
         onClose={() => setInnovationFlowDialogOpen(false)}
-        onSelectInnovationFlow={handleSelectInnovationFlow}
+        onSelectCollaborationTemplate={handleSelectInnovationFlow}
       />
       <JourneyCreationDialog
         open={journeyCreationDialogOpen}
