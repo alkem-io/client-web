@@ -4,26 +4,44 @@ import { Caption } from '../../../../core/ui/typography';
 import RoundedBadge, { RoundedBadgeProps } from '../../../../core/ui/icon/RoundedBadge';
 import { formatBadgeDate, formatTooltipDate, startOfDay } from '../../../../core/utils/time/utils';
 import ToggleableTooltip from '../../../../core/ui/tooltip/ToggleableTooltip';
-import { useTheme } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 
 interface CalendarEventBadgeProps extends Partial<RoundedBadgeProps> {
-  eventStartDate: Date | undefined;
+  startDate: Date | undefined;
+  durationMinutes: number;
+  durationDays: number | undefined;
   tooltipDisabled?: boolean;
 }
 
-const CalendarEventBadge = ({ eventStartDate, tooltipDisabled = false, ...badgeProps }: CalendarEventBadgeProps) => {
+const CalendarEventBadge = ({
+  startDate,
+  durationMinutes,
+  durationDays,
+  tooltipDisabled = false,
+  ...badgeProps
+}: CalendarEventBadgeProps) => {
   const isPast = useMemo(() => {
     const currentDate = startOfDay();
-    return dayjs(eventStartDate).isBefore(currentDate);
-  }, [eventStartDate]);
+    return dayjs(startDate).isBefore(currentDate);
+  }, [startDate]);
   const theme = useTheme();
 
+  const dates = formatBadgeDate({ startDate, durationMinutes, durationDays });
+
   return (
-    <RoundedBadge size="medium" color={isPast ? theme.palette.divider : theme.palette.primary.main} {...badgeProps}>
-      <ToggleableTooltip title={formatTooltipDate(eventStartDate)} disabled={tooltipDisabled}>
-        <Caption color={isPast ? theme.palette.neutral.light : theme.palette.primary.contrastText}>
-          {formatBadgeDate(eventStartDate)}
-        </Caption>
+    <RoundedBadge
+      size="medium"
+      color={isPast ? theme.palette.divider : theme.palette.background.default}
+      borderRadius="12%"
+      {...badgeProps}
+    >
+      <ToggleableTooltip title={formatTooltipDate(startDate)} disabled={tooltipDisabled}>
+        <>
+          <Caption color={theme.palette.primary.main}>
+            {dates.startDate}
+            {dates.endDate && <Box color={theme.palette.primary.main}>{dates.endDate}</Box>}
+          </Caption>
+        </>
       </ToggleableTooltip>
     </RoundedBadge>
   );

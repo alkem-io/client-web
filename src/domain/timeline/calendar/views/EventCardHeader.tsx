@@ -14,6 +14,8 @@ export interface EventCardHeaderProps {
   event:
     | {
         startDate?: Date;
+        durationDays?: number | undefined;
+        durationMinutes: number;
         profile: {
           displayName: string;
         };
@@ -26,7 +28,15 @@ const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderP
 
   return (
     <BadgeCardView
-      visual={<CalendarEventBadge eventStartDate={event?.startDate} marginLeft={0.5} tooltipDisabled />}
+      visual={
+        <CalendarEventBadge
+          startDate={event?.startDate}
+          durationDays={event?.durationDays ?? 0}
+          durationMinutes={event?.durationMinutes ?? 0}
+          marginLeft={0.5}
+          tooltipDisabled
+        />
+      }
       height={gutters(3)}
       paddingX={1}
       gap={1}

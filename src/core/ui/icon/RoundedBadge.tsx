@@ -1,11 +1,12 @@
 import React, { PropsWithChildren } from 'react';
-import { Box, BoxProps, useTheme } from '@mui/material';
+import { Box, BoxProps, SxProps, Theme, useTheme } from '@mui/material';
 
 export type RoundedBadgeSize = 'medium' | 'small' | 'xsmall';
 
 export interface RoundedBadgeProps extends BoxProps {
   size: RoundedBadgeSize;
   color?: string;
+  sx?: SxProps<Theme>;
 }
 
 const getSizeInSpacing = (size: RoundedBadgeSize) => {
@@ -22,6 +23,7 @@ const getSizeInSpacing = (size: RoundedBadgeSize) => {
 const RoundedBadge = ({
   size,
   color = 'primary.main',
+  borderRadius = '50%',
   children,
   sx,
   ...containerProps
@@ -37,7 +39,7 @@ const RoundedBadge = ({
       sx={{
         backgroundColor: color,
         color: 'common.white',
-        borderRadius: '50%',
+        borderRadius,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',

@@ -12,11 +12,48 @@ const LocaleId = 'en-GB';
 
 export const DAYJS_DATEFORMAT = 'DD/MM/YYYY';
 
-export const formatBadgeDate = (date: Date | undefined, defaultValue: string = '') => {
-  if (!date) {
-    return defaultValue;
+type BadgeDateProps = {
+  startDate: Date | undefined;
+  durationMinutes: number;
+  durationDays?: number;
+  defaultValue?: string;
+};
+
+// Badge component displays start and end dates
+// we're calculating the end date (if such) by durationMinutes
+export const formatBadgeDate = ({
+  startDate,
+  durationMinutes,
+  durationDays = 0,
+  defaultValue = '',
+}: BadgeDateProps) => {
+  if (!startDate) {
+    return {
+      startDate: defaultValue,
+      endDate: null,
+    };
   }
-  return new Date(date).toLocaleDateString(LocaleId, { day: '2-digit', month: '2-digit' });
+
+  const startDateFormatted = new Date(startDate).toLocaleDateString(LocaleId, { day: '2-digit', month: '2-digit' });
+
+  if (!durationDays || durationDays < 1) {
+    return {
+      startDate: startDateFormatted,
+      endDate: null,
+    };
+  } else if (durationMinutes && durationMinutes > 0) {
+    const endDate = new Date(new Date(startDate).getTime() + durationMinutes * 60000); // 60000 ms in a minute
+
+    return {
+      startDate: startDateFormatted,
+      endDate: endDate.toLocaleDateString(LocaleId, { day: '2-digit', month: '2-digit' }),
+    };
+  }
+
+  return {
+    startDate: startDateFormatted,
+    endDate: null,
+  };
 };
 
 export const formatTooltipDate = (date: Date | undefined, defaultValue: string = '') => {
