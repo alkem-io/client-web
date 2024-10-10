@@ -95,7 +95,7 @@
     "no-upcoming-events": "Atualmente, não há eventos futuros para serem exibidos",
     "past-events": "Eventos Anteriores",
     "show-calendar": "Exibir calendário",
-    "defaultEventDescription": "$t(common.location):\n\n$t(common.url):\n\n$t(common.description):"
+    "defaultEventDescription": "$t(common.url):\n\n$t(common.description):"
   },
   "buttons": {
     "leave": "Sair",
