@@ -1,6 +1,7 @@
 import type { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
 import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
 import { v4 as uuidv4 } from 'uuid';
+import { PRECEDING_ELEMENT_KEY } from '../../../common/whiteboard/excalidraw/collab/excalidrawAppConstants';
 
 type ExcalidrawElementWithContainerId = ExcalidrawElement & { containerId: string | null };
 class WhiteboardMergeError extends Error {}
@@ -92,6 +93,46 @@ const replaceElementVersion = (version: number) => (element: ExcalidrawElement) 
 });
 
 /**
+ * Returns a function that can be pased to elements.map to replace __preceedingElement__ on the elements that have it
+ * For old versions of whiteboards that sort the elements with the __preceedingElement__ property
+ */
+const replacePreceedingElementsIds = (idsMap: Record<string, string>, lastElementId: string) => {
+  return (element: ExcalidrawElement) => {
+    if (!element[PRECEDING_ELEMENT_KEY]) {
+      return element;
+    }
+    if (element[PRECEDING_ELEMENT_KEY] === '^') {
+      return {
+        ...element,
+        [PRECEDING_ELEMENT_KEY]: lastElementId,
+      };
+    }
+    if (idsMap[element[PRECEDING_ELEMENT_KEY]]) {
+      return {
+        ...element,
+        [PRECEDING_ELEMENT_KEY]: idsMap[element[PRECEDING_ELEMENT_KEY]],
+      };
+    }
+    return element;
+  };
+};
+
+/**
+ * Returns a function that can be pased to elements.map to replace the index on the elements that have it
+ * For new versions of whiteboards that have the index property
+ */
+const replaceIndexes = baseIndex => {
+  return (element: ExcalidrawElement) => {
+    if (baseIndex && typeof element['index'] === 'number') {
+      return {
+        ...element,
+        index: element['index'] + baseIndex,
+      };
+    }
+    return element;
+  };
+};
+/**
  * Returns a function that can be pased to elements.map to replace containerId and boundElements ids
  */
 const replaceBoundElementsIds = (idsMap: Record<string, string>) => {
@@ -140,7 +181,7 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
       }
     }
 
-    const currentElements = whiteboardApi.getSceneElements();
+    const currentElements = whiteboardApi.getSceneElementsIncludingDeleted();
     const sceneVersion = excalidrawUtils.getSceneVersion(whiteboardApi.getSceneElementsIncludingDeleted());
 
     const currentElementsBBox = getBoundingBox(currentElements);
@@ -149,9 +190,17 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
 
     const replacedIds: Record<string, string> = {};
 
+    const lastElementId = currentElements[currentElements.length - 1]?.id ?? '^';
+    const maxIndex = currentElements.reduce(
+      (max, element) => (typeof element['index'] === 'number' ? Math.max(max, element['index']) : max),
+      0
+    );
+
     const insertedElements = parsedWhiteboard.elements
       ?.map(generateNewIds(replacedIds))
       .map(replaceElementVersion(sceneVersion + 1))
+      .map(replaceIndexes(maxIndex + 1))
+      .map(replacePreceedingElementsIds(replacedIds, lastElementId))
       .map(replaceBoundElementsIds(replacedIds))
       .map(displaceElements(displacement));
 
