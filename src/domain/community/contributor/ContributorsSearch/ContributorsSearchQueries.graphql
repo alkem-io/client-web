@@ -4,8 +4,8 @@ query ContributorsPageOrganizations($first: Int!, $after: UUID, $status: Organiz
   }
 }
 
-query ContributorsPageUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
-  usersPaginated(first: $first, after: $after, filter: $filter) {
+query ContributorsPageUsers($first: Int!, $after: UUID, $filter: UserFilterInput, $withTags: Boolean) {
+  usersPaginated(first: $first, after: $after, filter: $filter, withTags: $withTags) {
     ...UserContributorPaginated
   }
 }

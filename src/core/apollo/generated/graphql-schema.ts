@@ -4743,6 +4743,7 @@ export type QueryUsersPaginatedArgs = {
   filter?: InputMaybe<UserFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  withTags?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QueryUsersWithAuthorizationCredentialArgs = {
@@ -16032,6 +16033,7 @@ export type ContributorsPageUsersQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<UserFilterInput>;
+  withTags?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type ContributorsPageUsersQuery = {
