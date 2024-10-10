@@ -50,7 +50,7 @@ export const formatBadgeDate = ({
       endDate: null,
     };
   } else if (durationMinutes && durationMinutes > 0) {
-    const endDate = getEndDateByDuration(startDate, durationMinutes); // 60000 ms in a minute
+    const endDate = getEndDateByDuration(startDate, durationMinutes);
 
     return {
       startDate: startDateFormatted,
@@ -64,18 +64,44 @@ export const formatBadgeDate = ({
   };
 };
 
-export const formatTooltipDate = (date: Date | undefined, defaultValue: string = '') => {
-  if (!date) {
+// either only startDateTime
+// or startDateTime - endDateTime
+export const formatLongDateTimeString = ({
+  startDate,
+  durationMinutes,
+  durationDays = 0,
+  defaultValue = '',
+}: BadgeDateProps) => {
+  if (!startDate) {
     return defaultValue;
   }
-  return new Date(date).toLocaleDateString(LocaleId, {
-    weekday: 'long',
+
+  // note can't extract the formatting options beacuse of type error
+  let longDateTimeString = new Date(startDate).toLocaleDateString(LocaleId, {
+    weekday: 'short',
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
   });
+
+  if ((durationDays || 0) > 0 && durationMinutes && durationMinutes > 0) {
+    const endDate = getEndDateByDuration(startDate, durationMinutes);
+
+    longDateTimeString +=
+      ' - ' +
+      endDate.toLocaleDateString(LocaleId, {
+        weekday: 'short',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+  }
+
+  return longDateTimeString;
 };
 
 export const formatLongDate = (date: Date | undefined, defaultValue: string = '') => {

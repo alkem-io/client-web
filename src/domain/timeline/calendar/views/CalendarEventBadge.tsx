@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import dayjs from 'dayjs';
 import { Caption } from '../../../../core/ui/typography';
 import RoundedBadge, { RoundedBadgeProps } from '../../../../core/ui/icon/RoundedBadge';
-import { formatBadgeDate, formatTooltipDate, startOfDay } from '../../../../core/utils/time/utils';
+import { formatBadgeDate, formatLongDateTimeString, startOfDay } from '../../../../core/utils/time/utils';
 import ToggleableTooltip from '../../../../core/ui/tooltip/ToggleableTooltip';
 import { Box, useTheme } from '@mui/material';
 
@@ -27,6 +27,7 @@ const CalendarEventBadge = ({
   const theme = useTheme();
 
   const dates = formatBadgeDate({ startDate, durationMinutes, durationDays });
+  const tooltipText = formatLongDateTimeString({ startDate, durationMinutes, durationDays });
 
   return (
     <RoundedBadge
@@ -35,13 +36,13 @@ const CalendarEventBadge = ({
       borderRadius="12%"
       {...badgeProps}
     >
-      <ToggleableTooltip title={formatTooltipDate(startDate)} disabled={tooltipDisabled}>
-        <>
+      <ToggleableTooltip title={tooltipText} disabled={tooltipDisabled}>
+        <div>
           <Caption color={theme.palette.primary.main}>
             {dates.startDate}
             {dates.endDate && <Box color={theme.palette.primary.main}>{dates.endDate}</Box>}
           </Caption>
-        </>
+        </div>
       </ToggleableTooltip>
     </RoundedBadge>
   );
