@@ -20,6 +20,7 @@ import {
   CalloutType,
   CalloutVisibility,
   CommunityRoleType,
+  CreateVirtualContributorOnAccountMutationVariables,
   LicensePlanType,
   SpaceType,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -42,6 +43,7 @@ import SetupVCInfo from './SetupVCInfo';
 import { info } from '../../../../core/logging/sentry/log';
 import { compact } from 'lodash';
 import InfoDialog from '../../../../core/ui/dialogs/InfoDialog';
+import CreateExternalAIDialog, { ExternalVcFormValues } from './CreateExternalAIDialog';
 
 const SPACE_LABEL = '(space)';
 const entityNamePostfixes = {
@@ -54,6 +56,7 @@ type Step =
   | 'createSpace'
   | 'addKnowledge'
   | 'existingKnowledge'
+  | 'externalProvider'
   | 'loadingVCSetup'
   | 'insufficientPrivileges';
 
@@ -157,7 +160,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     setTryCreateCallout(true);
   };
 
-  const onDialogClose = () => {
+  const handleCloseWizard = () => {
     setDialogOpen(false);
     setStep('initial');
   };
@@ -276,6 +279,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [CreateNewSpace] = useCreateSpaceMutation({
     refetchQueries: ['MyAccount'],
   });
+
   const handleCreateSpace = async (values: VirtualContributorFromProps) => {
     if (!user?.user.id) {
       return;
@@ -372,7 +376,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       setCreatedSpaceId(undefined);
     }
 
-    onDialogClose();
+    handleCloseWizard();
   };
 
   const [getNewSpaceUrl] = useSpaceUrlLazyQuery({
@@ -496,67 +500,75 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       setStep('insufficientPrivileges');
       return false;
     }
+    const createdVc = await executeMutation({ values, accountId });
 
-    try {
-      const { data } = await createVirtualContributor({
-        variables: {
-          virtualContributorData: {
-            accountID: accountId,
-            profileData: {
-              displayName: values.name,
-              tagline: values.tagline,
-              description:
-                values.description ?? t('createVirtualContributorWizard.createdVirtualContributor.description'),
-            },
-            aiPersona: {
-              aiPersonaService: {
-                bodyOfKnowledgeID: vcBoKId,
-              },
-            },
-          },
-        },
-      });
+    const virtualContributorId = createdVc?.id;
 
-      const virtualContributorId = data?.createVirtualContributor.id;
-
-      if (virtualContributorId) {
-        if (parentRoleSetId) {
-          // the VC cannot be added to the BoK community
-          // if it's not part of the parent community
-          await addVirtualContributorToRole({
-            variables: {
-              roleSetId: parentRoleSetId,
-              contributorId: virtualContributorId,
-              role: CommunityRoleType.Member,
-            },
-          });
-        }
-
-        // add the VC to the BoK community
+    if (virtualContributorId) {
+      if (parentRoleSetId) {
+        // the VC cannot be added to the BoK community
+        // if it's not part of the parent community
         await addVirtualContributorToRole({
           variables: {
-            roleSetId: roleSetId,
+            roleSetId: parentRoleSetId,
             contributorId: virtualContributorId,
             role: CommunityRoleType.Member,
           },
         });
-
-        // add vc's nameId to the cache for the TryVC dialog
-        if (data?.createVirtualContributor.nameID) {
-          addVCCreationCache(data?.createVirtualContributor.nameID);
-        }
-
-        notify(
-          t('createVirtualContributorWizard.createdVirtualContributor.successMessage', { name: values.name }),
-          'success'
-        );
-
-        return true;
       }
 
-      return false;
+      // add the VC to the BoK community
+      await addVirtualContributorToRole({
+        variables: {
+          roleSetId: roleSetId,
+          contributorId: virtualContributorId,
+          role: CommunityRoleType.Member,
+        },
+      });
+
+      notify(
+        t('createVirtualContributorWizard.createdVirtualContributor.successMessage', { name: values.name }),
+        'success'
+      );
+
+      return true;
+    }
+
+    return false;
+  };
+
+  const executeMutation = async ({ values, accountId }: { values: VirtualContributorFromProps; accountId: string }) => {
+    try {
+      const variables: CreateVirtualContributorOnAccountMutationVariables = {
+        virtualContributorData: {
+          accountID: accountId,
+          profileData: {
+            displayName: values.name,
+            tagline: values.tagline,
+            description:
+              values.description ?? t('createVirtualContributorWizard.createdVirtualContributor.description'),
+          },
+          aiPersona: {
+            aiPersonaService: {
+              engine: values.engine,
+            },
+          },
+        },
+      };
+
+      if (values.externalConfig) {
+        variables.virtualContributorData.aiPersona.aiPersonaService!.externalConfig = values.externalConfig;
+      }
+      const { data } = await createVirtualContributor({
+        variables,
+      });
+
+      if (data?.createVirtualContributor.nameID) {
+        addVCCreationCache(data.createVirtualContributor.nameID);
+      }
+      return data?.createVirtualContributor;
     } catch (error) {
-      return false;
+      return;
     }
   };
 
@@ -574,6 +586,28 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
   };
 
+  const handleCreateExternal = async (externalVcValues: ExternalVcFormValues) => {
+    if (virtualContributorInput && myAccountId) {
+      virtualContributorInput.engine = externalVcValues.engine;
+
+      virtualContributorInput.externalConfig = {
+        apiKey: externalVcValues.apiKey,
+      };
+      if (externalVcValues.assistantId) {
+        virtualContributorInput.externalConfig.assistantId = externalVcValues.assistantId;
+      }
+      const createdVc = await executeMutation({
+        values: virtualContributorInput,
+        accountId: myAccountId,
+      });
+
+      // navigate to VC page
+      if (createdVc) {
+        navigate(`vc/${createdVc.nameID}`);
+      }
+    }
+  };
+
   useEffect(() => {
     if (tryCreateCallout && canCreateCallout) {
       createCalloutContent();
@@ -585,10 +619,11 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       <DialogWithGrid open={dialogOpen} columns={6}>
         {step === 'initial' && (
           <CreateNewVirtualContributor
-            onClose={onDialogClose}
+            onClose={handleCloseWizard}
             loading={loading}
             onCreateSpace={handleCreateSpace}
             onUseExistingKnowledge={values => onStepSelection('existingKnowledge', values)}
+            onUseExternal={values => onStepSelection('externalProvider', values)}
           />
         )}
         {step === 'createSpace' && (
@@ -599,12 +634,15 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         )}
         {step === 'existingKnowledge' && (
           <ExistingSpace
-            onClose={onDialogClose}
+            onClose={handleCloseWizard}
             onBack={() => setStep('initial')}
             onSubmit={handleCreateVCWithExistingKnowledge}
             availableSpaces={selectableSpaces}
             loading={loading}
           />
+        )}
+        {step === 'externalProvider' && (
+          <CreateExternalAIDialog onCreateExternal={handleCreateExternal} onClose={handleCloseWizard} />
         )}
         {step === 'loadingVCSetup' && <SetupVCInfo />}
         {step === 'insufficientPrivileges' && (
@@ -614,7 +652,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
               content: t('createVirtualContributorWizard.insufficientPrivileges.description'),
               buttonCaption: t('buttons.ok'),
             }}
-            actions={{ onButtonClick: onDialogClose }}
+            actions={{ onButtonClick: handleCloseWizard }}
             options={{ show: true }}
           />
         )}

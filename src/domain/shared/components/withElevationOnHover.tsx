@@ -30,6 +30,13 @@ const withElevationOnHover = <El, P extends ComponentProps<El>>(Component: Compo
     );
     const setInitialElevation = useCallback(() => setElevation(initialElevation), [initialElevation]);
 
+    if (componentProps['$$typeof']) {
+      delete componentProps['$$typeof'];
+    }
+    if (componentProps['propTypes']) {
+      delete componentProps['propTypes'];
+    }
+
     return (
       <Component
         ref={ref}

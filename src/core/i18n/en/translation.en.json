@@ -3012,12 +3012,30 @@
       },
       "submitDisabled": "Add at least one Post to continue"
     },
-    "externalAICommingSoon": {
-      "title": "🚀 Coming soon!",
-      "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
-      "input": {
-        "label": "AI Service",
-        "placeholder": "E.g. the AI that xx created to xx"
+    "externalAI": {
+      "create": {
+        "title": "Create Virtual Contributor with an External AI",
+        "subTitle": "Choose a provider and enter your API Key or token to connect your external AI to a Virtual Contributor",
+        "apiKey": {
+          "label": "API Key",
+          "placeholder": "E.g. sk-proj-Uq3zU..."
+        },
+        "assistantId": {
+          "label": "Assistant ID",
+          "placeholder": "E.g. asst_wTLKgGkKryqR5FlEFleLy5Uq"
+        },
+        "provider": {
+          "title": "Provider",
+          "placeholder": "Select a provider from this list"
+        }
+      },
+      "commingSoon": {
+        "title": "🚀 Coming soon!",
+        "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
+        "input": {
+          "label": "AI Service",
+          "placeholder": "E.g. the AI that xx created to xx"
+        }
       },
       "contactOptions": {
         "title": "May we contact you if we have questions about the way you want to use this AI service?",

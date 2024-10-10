@@ -1572,6 +1572,7 @@ export type InvitationKeySpecifier = (
   | 'contributorType'
   | 'createdBy'
   | 'createdDate'
+  | 'extraRole'
   | 'id'
   | 'invitedToParent'
   | 'lifecycle'
@@ -1585,6 +1586,7 @@ export type InvitationFieldPolicy = {
   contributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  extraRole?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2557,6 +2559,7 @@ export type QueryKeySpecifier = (
   | 'aiServer'
   | 'askChatGuidanceQuestion'
   | 'askVirtualContributorQuestion'
+  | 'exploreSpaces'
   | 'getSupportedVerifiedCredentialMetadata'
   | 'inputCreator'
   | 'lookup'
@@ -2595,6 +2598,7 @@ export type QueryFieldPolicy = {
   aiServer?: FieldPolicy<any> | FieldReadFunction<any>;
   askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   askVirtualContributorQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
+  exploreSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   inputCreator?: FieldPolicy<any> | FieldReadFunction<any>;
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3408,6 +3412,7 @@ export type UserKeySpecifier = (
   | 'account'
   | 'accountUpn'
   | 'agent'
+  | 'authenticationMethod'
   | 'authorization'
   | 'communityRooms'
   | 'createdDate'
@@ -3429,6 +3434,7 @@ export type UserFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   accountUpn?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  authenticationMethod?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;

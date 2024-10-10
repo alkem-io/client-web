@@ -61,7 +61,7 @@ const useStyles = makeStyles(_ =>
   })
 );
 
-const ElevatedPaper = withElevationOnHover(Paper);
+const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
 export const ContributorCardSquare: FC<ContributorCardSquareProps> = props => {
   const styles = useStyles();

@@ -625,7 +625,9 @@ export enum AiPersonaDataAccessMode {
 export enum AiPersonaEngine {
   CommunityManager = 'COMMUNITY_MANAGER',
   Expert = 'EXPERT',
+  GenericOpenai = 'GENERIC_OPENAI',
   Guidance = 'GUIDANCE',
+  OpenaiAssistant = 'OPENAI_ASSISTANT',
 }
 
 export enum AiPersonaInteractionMode {
@@ -651,7 +653,7 @@ export type AiPersonaService = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The prompt used by this Virtual Persona */
-  prompt: Scalars['String'];
+  prompt: Array<Scalars['String']>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
@@ -805,6 +807,13 @@ export type AuthenticationProviderConfig = {
 };
 
 export type AuthenticationProviderConfigUnion = OryConfig;
+
+export enum AuthenticationType {
+  Email = 'EMAIL',
+  Linkedin = 'LINKEDIN',
+  Microsoft = 'MICROSOFT',
+  Unknown = 'UNKNOWN',
+}
 
 export type Authorization = {
   __typename?: 'Authorization';
@@ -1635,7 +1644,8 @@ export type CreateAiPersonaServiceInput = {
   bodyOfKnowledgeType?: InputMaybe<AiPersonaBodyOfKnowledgeType>;
   dataAccessMode?: InputMaybe<AiPersonaDataAccessMode>;
   engine?: InputMaybe<AiPersonaEngine>;
-  prompt?: InputMaybe<Scalars['JSON']>;
+  externalConfig?: InputMaybe<ExternalConfig>;
+  prompt?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CreateCalendarEventOnCalendarInput = {
@@ -2353,6 +2363,20 @@ export type EcosystemModel = {
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
+export type ExploreSpacesInput = {
+  /** Take into account only the activity in the past X days. */
+  daysOld?: InputMaybe<Scalars['Float']>;
+  /** Amount of Spaces returned. */
+  limit?: InputMaybe<Scalars['Float']>;
+};
+
+export type ExternalConfig = {
+  /** The API key for the external LLM provider. */
+  apiKey?: InputMaybe<Scalars['String']>;
+  /** The assistent ID backing the service in OpenAI`s assistant API */
+  assistantId?: InputMaybe<Scalars['String']>;
+};
+
 export type FileStorageConfig = {
   __typename?: 'FileStorageConfig';
   /** Max file size, in bytes. */
@@ -2629,6 +2653,8 @@ export type Invitation = {
   /** The User who triggered the invitation. */
   createdBy: User;
   createdDate: Scalars['DateTime'];
+  /** An additional role to assign to the Contributor, in addition to the entry Role. */
+  extraRole?: Maybe<CommunityRoleType>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Whether to also add the invited contributor to the parent community. */
@@ -2644,6 +2670,8 @@ export type InvitationEventInput = {
 };
 
 export type InviteForEntryRoleOnRoleSetInput = {
+  /** An additional role to assign to the Contributors, in addition to the entry Role. */
+  extraRole?: InputMaybe<CommunityRoleType>;
   /** The identifiers for the contributors being invited. */
   invitedContributors: Array<Scalars['UUID']>;
   roleSetID: Scalars['UUID'];
@@ -2858,7 +2886,7 @@ export type LookupByNameQueryResults = {
   __typename?: 'LookupByNameQueryResults';
   /** Lookup the specified InnovationPack using a NameID */
   innovationPack?: Maybe<InnovationPack>;
-  /** Lookup the specified Template using a templatesSetId and NameID */
+  /** Lookup the specified Template using a templatesSetId and the template NameID */
   template?: Maybe<Template>;
 };
 
@@ -4554,6 +4582,8 @@ export type Query = {
   askChatGuidanceQuestion: MessageAnswerQuestion;
   /** Ask the virtual contributor a question directly. */
   askVirtualContributorQuestion: MessageAnswerQuestion;
+  /** Active Spaces only, order by most active in the past X days. */
+  exploreSpaces: Array<Space>;
   /** Get supported credential metadata */
   getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** Allow creation of inputs based on existing entities in the domain model */
@@ -4638,6 +4668,10 @@ export type QueryAskVirtualContributorQuestionArgs = {
   virtualContributorQuestionInput: VirtualContributorQuestionInput;
 };
 
+export type QueryExploreSpacesArgs = {
+  options?: InputMaybe<ExploreSpacesInput>;
+};
+
 export type QueryOrganizationArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
@@ -4654,6 +4688,7 @@ export type QueryOrganizationsPaginatedArgs = {
   filter?: InputMaybe<OrganizationFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  status?: InputMaybe<OrganizationVerificationEnum>;
 };
 
 export type QueryRolesOrganizationArgs = {
@@ -5893,8 +5928,9 @@ export type UpdateAiPersonaInput = {
 
 export type UpdateAiPersonaServiceInput = {
   ID: Scalars['UUID'];
-  engine: AiPersonaEngine;
-  prompt?: InputMaybe<Scalars['JSON']>;
+  engine?: InputMaybe<AiPersonaEngine>;
+  externalConfig?: InputMaybe<ExternalConfig>;
+  prompt?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type UpdateApplicationFormOnRoleSetInput = {
@@ -6397,6 +6433,8 @@ export type User = Contributor & {
   accountUpn: Scalars['String'];
   /** The Agent representing this User. */
   agent: Agent;
+  /** The Authentication Method used for this User. One of email, linkedin, microsoft, or unknown */
+  authenticationMethod?: Maybe<AuthenticationType>;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
   /** The Community rooms this user is a member of */
