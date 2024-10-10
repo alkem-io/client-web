@@ -181,7 +181,7 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
       }
     }
 
-    const currentElements = whiteboardApi.getSceneElements();
+    const currentElements = whiteboardApi.getSceneElementsIncludingDeleted();
     const sceneVersion = excalidrawUtils.getSceneVersion(whiteboardApi.getSceneElementsIncludingDeleted());
 
     const currentElementsBBox = getBoundingBox(currentElements);
