@@ -5,7 +5,12 @@ import CardHeaderDetail from '../../../../core/ui/card/CardHeaderDetail';
 import { gutters } from '../../../../core/ui/grid/utils';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
-import { formatLongDate, formatTimeAndDuration } from '../../../../core/utils/time/utils';
+import {
+  formatLongDate,
+  formatTime,
+  formatTimeAndDuration,
+  getEndDateByDuration,
+} from '../../../../core/utils/time/utils';
 import { CalendarIcon } from '../icons/CalendarIcon';
 import { ClockIcon } from '../icons/ClockIcon';
 import CalendarEventBadge from './CalendarEventBadge';
@@ -16,6 +21,7 @@ export interface EventCardHeaderProps {
         startDate?: Date;
         durationDays?: number | undefined;
         durationMinutes: number;
+        wholeDay?: boolean;
         profile: {
           displayName: string;
         };
@@ -26,11 +32,15 @@ export interface EventCardHeaderProps {
 const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderProps>) => {
   const { t } = useTranslation();
 
+  const startDate = event?.startDate;
+  const endDate = getEndDateByDuration(startDate, event?.durationMinutes ?? 0);
+  const hasEndDate = (event?.durationDays ?? 0) > 0 && !event?.wholeDay;
+
   return (
     <BadgeCardView
       visual={
         <CalendarEventBadge
-          startDate={event?.startDate}
+          startDate={startDate}
           durationDays={event?.durationDays ?? 0}
           durationMinutes={event?.durationMinutes ?? 0}
           marginLeft={0.5}
@@ -46,9 +56,15 @@ const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderP
       <Box display="flex" gap={gutters()} flexDirection="row">
         {event && (
           <>
-            {/* event.location && <CardHeaderDetail iconComponent={LocationIcon}>Location, City</CardHeaderDetail> */}
-            <CardHeaderDetail iconComponent={CalendarIcon}>{formatLongDate(event.startDate)}</CardHeaderDetail>
+            <CardHeaderDetail iconComponent={CalendarIcon}>{formatLongDate(startDate)}</CardHeaderDetail>
             <CardHeaderDetail iconComponent={ClockIcon}>{formatTimeAndDuration(event, t)}</CardHeaderDetail>
+            {hasEndDate && (
+              <>
+                <Box>-</Box>
+                <CardHeaderDetail iconComponent={CalendarIcon}>{formatLongDate(endDate)}</CardHeaderDetail>
+                <CardHeaderDetail iconComponent={ClockIcon}>{formatTime(endDate)}</CardHeaderDetail>
+              </>
+            )}
           </>
         )}
         {!event && <Skeleton variant="rectangular" />}

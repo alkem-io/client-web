@@ -12,6 +12,14 @@ const LocaleId = 'en-GB';
 
 export const DAYJS_DATEFORMAT = 'DD/MM/YYYY';
 
+export const getEndDateByDuration = (startDate: Date | string | undefined, durationMinutes: number) => {
+  if (!startDate) {
+    return new Date();
+  }
+
+  return new Date(new Date(startDate).getTime() + durationMinutes * 60000);
+};
+
 type BadgeDateProps = {
   startDate: Date | undefined;
   durationMinutes: number;
@@ -42,7 +50,7 @@ export const formatBadgeDate = ({
       endDate: null,
     };
   } else if (durationMinutes && durationMinutes > 0) {
-    const endDate = new Date(new Date(startDate).getTime() + durationMinutes * 60000); // 60000 ms in a minute
+    const endDate = getEndDateByDuration(startDate, durationMinutes); // 60000 ms in a minute
 
     return {
       startDate: startDateFormatted,
@@ -75,7 +83,7 @@ export const formatLongDate = (date: Date | undefined, defaultValue: string = ''
     return defaultValue;
   }
   return new Date(date).toLocaleDateString(LocaleId, {
-    weekday: 'long',
+    weekday: 'short',
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
@@ -87,7 +95,7 @@ export function addMinutes(date: Date | string, minutes: number): Date {
 }
 
 export const formatTimeAndDuration = (
-  event: { startDate?: Date; durationMinutes?: number; wholeDay?: boolean },
+  event: { startDate?: Date; durationMinutes?: number; wholeDay?: boolean; durationDays?: number },
   t: TFunction<'translation', undefined>
 ) => {
   if (!event.startDate) return '';
@@ -95,7 +103,8 @@ export const formatTimeAndDuration = (
     return t('calendar.event.whole-day');
   }
   const startDate = new Date(event.startDate);
-  if (!event.durationMinutes) {
+
+  if (!event.durationMinutes || (event.durationDays ?? 0) > 0) {
     return startDate.toLocaleTimeString(LocaleId, {
       hour: '2-digit',
       minute: '2-digit',
@@ -114,6 +123,17 @@ export const formatTimeAndDuration = (
       })
     );
   }
+};
+
+export const formatTime = (date: Date | undefined) => {
+  if (!date) {
+    return null;
+  }
+
+  return date.toLocaleTimeString(LocaleId, {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 };
 
 export const dateRounded = (date: Date = new Date()) => {
