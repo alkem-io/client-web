@@ -190,7 +190,7 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
 
     const replacedIds: Record<string, string> = {};
 
-    const lastElementId = currentElements[currentElements.length - 1].id ?? '^';
+    const lastElementId = currentElements[currentElements.length - 1]?.id ?? '^';
     const maxIndex = currentElements.reduce(
       (max, element) => (typeof element['index'] === 'number' ? Math.max(max, element['index']) : max),
       0
