@@ -30,7 +30,7 @@ const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
   return (
     <PageContentBlockSeamless row disablePadding>
       {data?.me.mySpaces.slice(0, columns / 2 - 1).map(result => (
-        <RecentJourneyHydrator journey={result.space} component={RecentJourneyCard} />
+        <RecentJourneyHydrator key={result.space.id} journey={result.space} component={RecentJourneyCard} />
       ))}
       <GridItem columns={2}>
         <Paper
