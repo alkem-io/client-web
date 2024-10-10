@@ -129,9 +129,7 @@ const CalendarEventForm = ({
     .object()
     .shape({
       displayName: displayNameValidator,
-      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH)
-        .required(t('common.field-required'))
-        .min(3, ({ min }) => t('common.field-min-length', { min })),
+      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
       type: yup.string().required(t('common.field-required')),
       durationMinutes: yup.number().positive().nullable(),
       startDate: yup.date().nullable(),

@@ -95,7 +95,7 @@
     "no-upcoming-events": "Er zijn momenteel geen evenementen om weer te geven",
     "past-events": "Afgelopen evenementen",
     "show-calendar": "Toon Kalender",
-    "defaultEventDescription": "$t(common.url):\n\n$t(common.description):"
+    "defaultEventDescription": ""
   },
   "buttons": {
     "leave": "Verlaat",
