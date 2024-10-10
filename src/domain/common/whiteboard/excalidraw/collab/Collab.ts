@@ -179,6 +179,7 @@ class Collab {
                 if (Object.entries(convertedFilesWithUrl).length) {
                   await this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, [], convertedFilesWithUrl);
                 }
+                this.excalidrawAPI.zoomToFit();
               }
             },
             'client-broadcast': async (binaryData: ArrayBuffer) => {
