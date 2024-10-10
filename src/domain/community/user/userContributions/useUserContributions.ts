@@ -1,5 +1,6 @@
 import { useUserContributionsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { CommunityContributorType, SpaceType } from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
+import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
 import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
 import { useMemo } from 'react';
 
@@ -25,28 +26,18 @@ const useUserContributions = (userId: string | undefined) => {
         spaceLevel: 0,
         contributorId: userId!,
         contributorType: CommunityContributorType.User,
+        roles: e.roles,
       });
 
       e.subspaces.forEach(ss => {
-        if (ss.type === SpaceType.Challenge) {
-          contributions.push({
-            id: ss.id,
-            spaceID: ss.id,
-            spaceLevel: 1,
-            contributorId: userId!,
-            contributorType: CommunityContributorType.User,
-          });
-        }
-
-        if (ss.type === SpaceType.Opportunity) {
-          contributions.push({
-            id: ss.id,
-            spaceID: ss.id,
-            spaceLevel: 2,
-            contributorId: userId!,
-            contributorType: CommunityContributorType.User,
-          });
-        }
+        contributions.push({
+          id: ss.id,
+          spaceID: ss.id,
+          spaceLevel: ss.level as JourneyLevel,
+          contributorId: userId!,
+          contributorType: CommunityContributorType.User,
+          roles: ss.roles,
+        });
       });
     });
 

@@ -1595,6 +1595,8 @@
     },
     "contributions": {
       "title": "Contributions",
+      "leadSpacesTitle": "(Sub)Spaces we lead",
+      "allMembershipsTitle": "(Sub)Spaces we're in",
       "help": "The Spaces and Subspaces that this organization is contributing to"
     },
     "discussions-list": {
@@ -1851,7 +1853,7 @@
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
             "noTemplates": "This Innovation Pack doesn't have any template yet",
-            "customHomepages": "Your Custom Homepages",
+            "customHomepages": "Custom Homepages",
             "hostTitle": "Host",
             "contactsLink": "If you want to change any of these settings, please contact the Alkemio team here.",
             "freeTrialNotice": {
@@ -2132,6 +2134,7 @@
     },
     "exploreSpaces": {
       "fullName": "Explore Spaces",
+      "title": "Explore Spaces of Your Interest",
       "shortName": "$t(common.spaces)",
       "subtitle": "All activity on Alkemio happens inside Spaces and their corresponding Subspaces. Explore both to find topics where you can contribute!",
       "caption": "Discover a diverse range of Spaces awaiting your exploration. Whether you're an experienced member or a curious newcomer, there's something here for everyone. Let's delve into the details:<ol><li><strong>Member Spaces:</strong> These are spaces where you already hold membership.</li><li><strong>Public Spaces:</strong> These spaces have visible content, and you can request to join them.</li><li><strong>All Spaces:</strong> This category includes both public and private spaces. In private spaces, only limited content is visible, but you can still apply for membership.</li></ol>",
@@ -2252,6 +2255,7 @@
         },
         "welcome": {
           "welcomeUnauthenticated": "Welcome to Alkemio!",
+          "welcomeUnauthenticatedSubtitle": "Safe Spaces for Collaboration",
           "welcome-back": "Welcome back {{username}}!",
           "join": "Want to join the community and see more?",
           "existing-user": {
@@ -2348,6 +2352,11 @@
       }
     },
     "organization": {
+      "profile": {
+        "accountResources": {
+          "sectionTitle": "Resources we host"
+        }
+      },
       "settings": {
         "tooltip": "Organization settings"
       },
@@ -2561,9 +2570,15 @@
       "applications": {
         "title": "Pending applications"
       },
+      "accountResources": {
+        "sectionTitle": "Resources I host"
+      },
       "communities": {
         "title": "Communities",
-        "help": "Communities the user is a part of"
+        "help": "Communities the user is a part of",
+        "leadSpacesTitle": "(Sub)Spaces I lead",
+        "allMembershipsTitle": "(Sub)Spaces I'm in",
+        "noMembership": "Not a member of any Space or SubSpace yet."
       },
       "pending-applications": {
         "title": "Pending Applications",
