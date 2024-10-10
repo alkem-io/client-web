@@ -70,40 +70,42 @@ export const VCProfilePageView: FC<PropsWithChildren<VCProfilePageViewProps>> = 
         <HostCard hostProfile={virtualContributor?.provider.profile} />
       </PageContentColumn>
       <PageContentColumn columns={8}>
-        <PageContentBlock>
-          <SectionTitle>
-            <BookIcon htmlColor={theme.palette.icons.dark} sx={{ fontSize: '18px' }} />
-            {t('pages.virtualContributorProfile.sections.knowledge.title')}
-          </SectionTitle>
-          <SectionContent>
-            <Trans i18nKey="pages.virtualContributorProfile.sections.knowledge.description" values={{ name }} />
-            {bokProfile ? (
-              <BasicSpaceCard space={bokProfile} />
-            ) : (
-              <WrapperMarkdown>{bokDescription ?? ''}</WrapperMarkdown>
-            )}
-            <Spacer />
-          </SectionContent>
-          <SectionTitle>
-            <RecordVoiceOverIcon htmlColor={theme.palette.icons.dark} sx={{ fontSize: '18px' }} />
-            {t('pages.virtualContributorProfile.sections.personality.title')}
-          </SectionTitle>
-          <SectionContent>
-            <Trans i18nKey="pages.virtualContributorProfile.sections.personality.description" values={{ name }} />
-            <Spacer />
-          </SectionContent>
-          <SectionTitle>
-            <CloudDownloadIcon htmlColor={theme.palette.icons.dark} sx={{ fontSize: '18px' }} />
-            {t('pages.virtualContributorProfile.sections.context.title')}
-          </SectionTitle>
-          <SectionContent>
-            <Trans i18nKey="pages.virtualContributorProfile.sections.context.description" values={{ name }} />
-            <Trans
-              i18nKey="pages.virtualContributorProfile.sections.context.bullets"
-              components={{ ul: <ul />, li: <li /> }}
-            />
-          </SectionContent>
-        </PageContentBlock>
+        {bokProfile && (
+          <PageContentBlock>
+            <SectionTitle>
+              <BookIcon htmlColor={theme.palette.icons.dark} sx={{ fontSize: '18px' }} />
+              {t('pages.virtualContributorProfile.sections.knowledge.title')}
+            </SectionTitle>
+            <SectionContent>
+              <Trans i18nKey="pages.virtualContributorProfile.sections.knowledge.description" values={{ name }} />
+              {bokProfile ? (
+                <BasicSpaceCard space={bokProfile} />
+              ) : (
+                <WrapperMarkdown>{bokDescription ?? ''}</WrapperMarkdown>
+              )}
+              <Spacer />
+            </SectionContent>
+            <SectionTitle>
+              <RecordVoiceOverIcon htmlColor={theme.palette.icons.dark} sx={{ fontSize: '18px' }} />
+              {t('pages.virtualContributorProfile.sections.personality.title')}
+            </SectionTitle>
+            <SectionContent>
+              <Trans i18nKey="pages.virtualContributorProfile.sections.personality.description" values={{ name }} />
+              <Spacer />
+            </SectionContent>
+            <SectionTitle>
+              <CloudDownloadIcon htmlColor={theme.palette.icons.dark} sx={{ fontSize: '18px' }} />
+              {t('pages.virtualContributorProfile.sections.context.title')}
+            </SectionTitle>
+            <SectionContent>
+              <Trans i18nKey="pages.virtualContributorProfile.sections.context.description" values={{ name }} />
+              <Trans
+                i18nKey="pages.virtualContributorProfile.sections.context.bullets"
+                components={{ ul: <ul />, li: <li /> }}
+              />
+            </SectionContent>
+          </PageContentBlock>
+        )}
         <PageContentBlock>
           <SectionTitle>
             <ShieldIcon htmlColor={theme.palette.icons.dark} sx={{ fontSize: '18px' }} />

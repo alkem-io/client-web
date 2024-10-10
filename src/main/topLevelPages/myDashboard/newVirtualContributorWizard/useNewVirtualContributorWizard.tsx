@@ -14,6 +14,7 @@ import {
   useAssignRoleToVirtualContributorMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
+  AiPersonaBodyOfKnowledgeType,
   AuthorizationPrivilege,
   CalloutGroupName,
   CalloutState,
@@ -551,6 +552,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           aiPersona: {
             aiPersonaService: {
               engine: values.engine,
+              bodyOfKnowledgeType: values.bodyOfKnowledgeType,
             },
           },
         },
@@ -596,6 +598,9 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       if (externalVcValues.assistantId) {
         virtualContributorInput.externalConfig.assistantId = externalVcValues.assistantId;
       }
+
+      virtualContributorInput.bodyOfKnowledgeType = AiPersonaBodyOfKnowledgeType.None;
+
       const createdVc = await executeMutation({
         values: virtualContributorInput,
         accountId: myAccountId,
@@ -603,7 +608,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
       // navigate to VC page
       if (createdVc) {
-        navigate(`vc/${createdVc.nameID}`);
+        navigate(createdVc.profile.url);
       }
     }
   };

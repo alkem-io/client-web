@@ -20,7 +20,7 @@ import { theme } from '../../../../core/ui/themes/default/Theme';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MessageWithPayload } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
-import { AiPersonaEngine } from '../../../../core/apollo/generated/graphql-schema';
+import { AiPersonaBodyOfKnowledgeType, AiPersonaEngine } from '../../../../core/apollo/generated/graphql-schema';
 
 type CreateNewVirtualContributorProps = {
   canCreateSubspace?: boolean;
@@ -47,6 +47,7 @@ export interface VirtualContributorFromProps {
     assistantId?: string;
   };
   engine: AiPersonaEngine;
+  bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
 }
 
 const BigButton = ({
@@ -97,6 +98,7 @@ const CreateNewVirtualContributor = ({
     tagline: '',
     description: '',
     engine: AiPersonaEngine.Expert,
+    bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType.AlkemioSpace,
   };
 
   const validationSchema = yup.object().shape({
