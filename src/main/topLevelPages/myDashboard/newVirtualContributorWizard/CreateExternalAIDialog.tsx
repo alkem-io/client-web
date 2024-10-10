@@ -18,7 +18,7 @@ const PROVIDERS = [
   { id: AiPersonaEngine.GenericOpenai, name: 'OpenAI' },
 ];
 
-interface ExternalAIComingSoonDialogProps {
+interface CreateExternalAIDialogProps {
   onClose: () => void;
   onCreateExternal: (externalparams: ExternalVcFormValues) => void;
 }
@@ -29,7 +29,7 @@ export interface ExternalVcFormValues {
   assistantId?: string;
 }
 
-const CreateExternalAIDialog: React.FC<ExternalAIComingSoonDialogProps> = ({ onClose, onCreateExternal }) => {
+const CreateExternalAIDialog: React.FC<CreateExternalAIDialogProps> = ({ onClose, onCreateExternal }) => {
   const { t } = useTranslation();
 
   const initialValues: ExternalVcFormValues = {
@@ -44,7 +44,11 @@ const CreateExternalAIDialog: React.FC<ExternalAIComingSoonDialogProps> = ({ onC
       .oneOf(PROVIDERS.map(({ id }) => id))
       .required(),
     apiKey: yup.string().required(),
-    assistantId: yup.string().when('engine', { is: AiPersonaEngine.OpenaiAssistant, then: yup.string().required() }),
+    assistantId: yup.string().when('engine', {
+      is: AiPersonaEngine.OpenaiAssistant,
+      then: yup.string().required(),
+      otherwise: yup.string().notRequired(),
+    }),
   });
 
   const handleSubmit = async (values: ExternalVcFormValues) => {
