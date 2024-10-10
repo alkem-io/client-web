@@ -5,7 +5,6 @@ import type {
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
 } from '@alkemio/excalidraw/dist/excalidraw/types';
-import '@alkemio/excalidraw/index.css';
 import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
 import { makeStyles } from '@mui/styles';
 import { debounce, merge } from 'lodash';
@@ -35,6 +34,7 @@ const SAVE_FILE_TO_DISK = true;
 
 const Excalidraw = React.lazy(async () => {
   const { Excalidraw } = await import('@alkemio/excalidraw');
+  await import('@alkemio/excalidraw/index.css');
   return { default: Excalidraw };
 });
 

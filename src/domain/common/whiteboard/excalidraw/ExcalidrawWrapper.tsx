@@ -58,6 +58,7 @@ const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
 const Excalidraw = React.lazy(async () => {
   const { Excalidraw } = await import('@alkemio/excalidraw');
+  await import('@alkemio/excalidraw/index.css');
   return { default: Excalidraw };
 });
 
