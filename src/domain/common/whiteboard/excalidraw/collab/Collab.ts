@@ -1,5 +1,10 @@
 import { throttle } from 'lodash';
-import type { Collaborator, ExcalidrawImperativeAPI, Gesture } from '@alkemio/excalidraw/dist/excalidraw/types';
+import type {
+  Collaborator,
+  ExcalidrawImperativeAPI,
+  Gesture,
+  SocketId,
+} from '@alkemio/excalidraw/dist/excalidraw/types';
 import {
   ACTIVE_THRESHOLD,
   CollaboratorModeEvent,
@@ -10,12 +15,13 @@ import {
   WS_SCENE_EVENT_TYPES,
 } from './excalidrawAppConstants';
 import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
-import type { ImportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
 import { isImageElement, UserIdleState } from './utils';
 import { getCollabServer, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
 import { ReconciledElements, reconcileElements as _reconcileElements } from './reconciliation';
 import { BinaryFilesWithUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
+import { newElementWith } from '@alkemio/excalidraw/dist/excalidraw/element/mutateElement';
+import { getSceneVersion, hashElementsVersion, restoreElements } from '@alkemio/excalidraw';
 
 interface CollabState {
   errorMessage: string;
@@ -32,7 +38,12 @@ export interface CollabProps {
   onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
 }
 
-type ElementUpdate<TElement extends ExcalidrawElement> = Omit<Partial<TElement>, 'id' | 'version' | 'versionNonce'>;
+type IncomingClientBroadcastData = {
+  type: string;
+  payload: {
+    [key: string]: unknown;
+  };
+};
 
 class Collab {
   portal: Portal;
@@ -44,25 +55,15 @@ class Collab {
 
   private socketInitializationTimer?: number;
   private lastBroadcastedOrReceivedSceneVersion: number = -1;
-  private collaborators = new Map<string, Collaborator>();
+  private collaborators = new Map<SocketId, Collaborator>();
   private onCloseConnection: () => void;
   private onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
   private excalidrawUtils: Promise<{
-    getSceneVersion: (elements: readonly ExcalidrawElement[]) => number;
-    newElementWith: <TElement extends ExcalidrawElement>(
-      element: TElement,
-      updates: ElementUpdate<TElement>
-    ) => TElement;
-    restoreElements: (
-      elements: ImportedDataState['elements'],
-      localElements: readonly ExcalidrawElement[] | null | undefined,
-      opts?:
-        | {
-            refreshDimensions?: boolean;
-            repairBindings?: boolean;
-          }
-        | undefined
-    ) => ExcalidrawElement[];
+    // todo: migrate to hashElementsVersion
+    getSceneVersion: typeof getSceneVersion;
+    hashElementsVersion: typeof hashElementsVersion;
+    newElementWith: typeof newElementWith;
+    restoreElements: typeof restoreElements;
   }>;
 
   constructor(props: CollabProps) {
@@ -180,39 +181,39 @@ class Collab {
                 }
               }
             },
-            'client-broadcast': async (encryptedData: ArrayBuffer) => {
-              const decodedData = new TextDecoder().decode(encryptedData);
-              const decryptedData = JSON.parse(decodedData);
+            'client-broadcast': async (binaryData: ArrayBuffer) => {
+              const strData = new TextDecoder().decode(binaryData);
+              const data = JSON.parse(strData) as IncomingClientBroadcastData;
 
-              switch (decryptedData.type) {
-                case 'INVALID_RESPONSE':
-                  return;
-                case WS_SCENE_EVENT_TYPES.SCENE_UPDATE: {
-                  const remoteElements = decryptedData.payload.elements;
-                  const remoteFiles = decryptedData.payload.files;
-                  this.handleRemoteSceneUpdate(await this.reconcileElementsAndLoadFiles(remoteElements, remoteFiles));
-                  break;
-                }
+              if (isInvalidResponsePayload(data)) {
+                return;
+              } else if (isMouseLocationPayload(data)) {
+                const { pointer, button, username, selectedElementIds } = data.payload;
+                const socketId: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['socketId'] =
+                  data.payload.socketId ||
+                  // @ts-ignore legacy, see #2094 (#2097)
+                  data.payload.socketID;
 
-                case WS_SCENE_EVENT_TYPES.MOUSE_LOCATION: {
-                  const { pointer, button, username, selectedElementIds } = decryptedData.payload;
-                  const socketId: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['socketId'] =
-                    decryptedData.payload.socketId ||
-                    // @ts-ignore legacy, see #2094 (#2097)
-                    decryptedData.payload.socketID;
-
-                  const collaborators = new Map(this.collaborators);
-                  const user = collaborators.get(socketId) || {}!;
-                  user.pointer = pointer;
-                  user.button = button;
-                  user.selectedElementIds = selectedElementIds;
-                  user.username = username;
-                  collaborators.set(socketId, user);
-                  this.excalidrawAPI.updateScene({
-                    collaborators,
-                  });
-                  break;
-                }
+                const collaborators = new Map(this.collaborators);
+                const user = collaborators.get(socketId) || {}!;
+                /* user.pointer = pointer;
+                user.button = button;
+                user.selectedElementIds = selectedElementIds;
+                user.username = username;*/
+                collaborators.set(socketId, {
+                  ...user,
+                  pointer,
+                  button,
+                  selectedElementIds,
+                  username,
+                });
+                this.excalidrawAPI.updateScene({
+                  collaborators,
+                });
+              } else if (isSceneUpdatePayload(data)) {
+                const remoteElements = data.payload.elements;
+                const remoteFiles = data.payload.files;
+                this.handleRemoteSceneUpdate(await this.reconcileElementsAndLoadFiles(remoteElements, remoteFiles));
               }
             },
             'collaborator-mode': event => {
@@ -222,8 +223,13 @@ class Collab {
             'idle-state': ({ userState, socketId, username }) => {
               const collaborators = new Map(this.collaborators);
               const user = collaborators.get(socketId) || {}!;
-              user.userState = userState;
-              user.username = username;
+              // user.userState = userState;
+              // user.username = username;
+              collaborators.set(socketId, {
+                ...user,
+                userState,
+                username,
+              });
               this.excalidrawAPI.updateScene({
                 collaborators,
               });
@@ -361,8 +367,8 @@ class Collab {
     document.addEventListener(EVENT.VISIBILITY_CHANGE, this.onVisibilityChange);
   };
 
-  private setCollaborators = (sockets: string[]) => {
-    const collaborators = new Map<string, Collaborator>();
+  private setCollaborators = (sockets: SocketId[]) => {
+    const collaborators = new Map<SocketId, Collaborator>();
 
     for (const socketId of sockets) {
       if (this.collaborators.has(socketId)) {
@@ -434,3 +440,11 @@ class Collab {
 }
 
 export default Collab;
+
+const isInvalidResponsePayload = (
+  data: IncomingClientBroadcastData
+): data is SocketUpdateDataSource['INVALID_RESPONSE'] => data.type === 'INVALID_RESPONSE';
+const isMouseLocationPayload = (data: IncomingClientBroadcastData): data is SocketUpdateDataSource['MOUSE_LOCATION'] =>
+  data.type === WS_SCENE_EVENT_TYPES.MOUSE_LOCATION;
+const isSceneUpdatePayload = (data: IncomingClientBroadcastData): data is SocketUpdateDataSource['SCENE_UPDATE'] =>
+  data.type === WS_SCENE_EVENT_TYPES.SCENE_UPDATE;

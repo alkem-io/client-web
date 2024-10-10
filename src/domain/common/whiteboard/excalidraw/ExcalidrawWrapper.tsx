@@ -16,7 +16,7 @@ import EmptyWhiteboard from '../EmptyWhiteboard';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
 import Loading from '../../../../core/ui/loading/Loading';
-import { Excalidraw } from '@alkemio/excalidraw';
+// import { Excalidraw } from '@alkemio/excalidraw';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -56,10 +56,10 @@ type RefreshWhiteboardStateParam = Parameters<ExcalidrawImperativeAPI['updateSce
 
 const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
-// const Excalidraw = React.lazy(async () => {
-//   const { Excalidraw } = await import('@alkemio/excalidraw');
-//   return { default: Excalidraw };
-// });
+const Excalidraw = React.lazy(async () => {
+  const { Excalidraw } = await import('@alkemio/excalidraw');
+  return { default: Excalidraw };
+});
 
 const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardProps) => {
   const { whiteboard, filesManager } = entities;

@@ -1,5 +1,5 @@
 import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
-import type { AppState, UserIdleState } from '@alkemio/excalidraw/dist/excalidraw/types';
+import type { AppState, CollaboratorPointer, SocketId, UserIdleState } from '@alkemio/excalidraw/dist/excalidraw/types';
 import { DELETED_ELEMENT_TIMEOUT } from '../excalidrawAppConstants';
 import { env } from '../../../../../../main/env';
 import { BinaryFilesWithUrl } from '../../useWhiteboardFilesManager';
@@ -55,8 +55,8 @@ export type SocketUpdateDataSource = {
   MOUSE_LOCATION: {
     type: 'MOUSE_LOCATION';
     payload: {
-      socketId: string;
-      pointer: { x: number; y: number };
+      socketId: SocketId;
+      pointer: CollaboratorPointer;
       button: 'down' | 'up';
       selectedElementIds: AppState['selectedElementIds'];
       username: string;
@@ -65,10 +65,14 @@ export type SocketUpdateDataSource = {
   IDLE_STATUS: {
     type: 'IDLE_STATUS';
     payload: {
-      socketId: string;
+      socketId: SocketId;
       userState: UserIdleState;
       username: string;
     };
+  };
+  INVALID_RESPONSE: {
+    type: 'INVALID_RESPONSE';
+    payload: never;
   };
 };
 
