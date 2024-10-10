@@ -5,6 +5,7 @@ import type {
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
 } from '@alkemio/excalidraw/dist/excalidraw/types';
+import '@alkemio/excalidraw/index.css';
 import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
 import { makeStyles } from '@mui/styles';
 import { debounce, merge } from 'lodash';
