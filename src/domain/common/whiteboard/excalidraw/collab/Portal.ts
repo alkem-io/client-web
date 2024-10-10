@@ -1,6 +1,6 @@
 import { IsSyncableElement, SocketUpdateData, SocketUpdateDataSource } from './data';
-import type { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import type { DataURL } from '@alkemio/excalidraw/types/types';
+import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
+import type { DataURL, SocketId } from '@alkemio/excalidraw/dist/excalidraw/types';
 import {
   CollaboratorModeEvent,
   PRECEDING_ELEMENT_KEY,
@@ -15,7 +15,7 @@ import { BinaryFileDataWithUrl, BinaryFilesWithUrl } from '../useWhiteboardFiles
 interface PortalProps {
   onRemoteSave: () => void;
   onCloseConnection: () => void;
-  onRoomUserChange: (clients: string[]) => void;
+  onRoomUserChange: (clients: SocketId[]) => void;
   getSceneElements: () => readonly ExcalidrawElement[];
   getFiles: () => Promise<BinaryFilesWithUrl>;
 }
@@ -44,7 +44,7 @@ interface SocketEventHandlers {
 class Portal {
   onRemoteSave: () => void;
   onCloseConnection: () => void;
-  onRoomUserChange: (clients: string[]) => void;
+  onRoomUserChange: (clients: SocketId[]) => void;
   getSceneElements: () => readonly ExcalidrawElement[];
   getFiles: () => Promise<BinaryFilesWithUrl>;
   socket: Socket | null = null;
@@ -69,9 +69,10 @@ class Portal {
     return new Promise(async (resolve, reject) => {
       const { default: socketIOClient } = await import('socket.io-client');
 
-      const socket = socketIOClient(connectionOptions.url, {
+      const socket = socketIOClient('localhost:4002' /*connectionOptions.url*/, {
         transports: connectionOptions.polling ? ['websocket', 'polling'] : ['websocket'],
-        path: '/api/private/ws/socket.io',
+        path: '/socket.io',
+        // path: '/api/private/ws/socket.io',
         retries: 0,
         reconnection: false,
       });
@@ -96,14 +97,12 @@ class Portal {
 
       this.socket.on('collaborator-mode', eventHandlers['collaborator-mode']);
 
-      this.socket.on('room-user-change', (clients: string[]) => {
-        this.onRoomUserChange(clients);
-      });
+      this.socket.on('room-user-change', this.onRoomUserChange);
 
-      this.socket.on('idle-state', (encryptedData: ArrayBuffer) => {
-        const decodedData = new TextDecoder().decode(encryptedData);
-        const decryptedData = JSON.parse(decodedData);
-        eventHandlers['idle-state'](decryptedData.payload);
+      this.socket.on('idle-state', (binaryData: ArrayBuffer) => {
+        const strData = new TextDecoder().decode(binaryData);
+        const data = JSON.parse(strData) as SocketUpdateDataSource['IDLE_STATUS'];
+        eventHandlers['idle-state'](data.payload);
       });
 
       this.socket.on('client-broadcast', eventHandlers['client-broadcast']);
@@ -191,8 +190,7 @@ class Portal {
     const emptyDataURL = '' as DataURL;
     const syncableFiles = Object.keys(allFiles).reduce<Record<string, BinaryFileDataWithUrl>>((result, fileId) => {
       if (syncAll || !this.broadcastedFiles.has(fileId)) {
-        const file = { ...allFiles[fileId], dataURL: emptyDataURL };
-        result[fileId] = file;
+        result[fileId] = { ...allFiles[fileId], dataURL: emptyDataURL };
         this.broadcastedFiles.add(fileId);
       }
       return result;
@@ -218,7 +216,7 @@ class Portal {
       const data: SocketUpdateDataSource['IDLE_STATUS'] = {
         type: 'IDLE_STATUS',
         payload: {
-          socketId: this.socket.id,
+          socketId: this.socket.id as SocketId,
           userState,
           username,
         },
@@ -239,7 +237,7 @@ class Portal {
       const data: SocketUpdateDataSource['MOUSE_LOCATION'] = {
         type: 'MOUSE_LOCATION',
         payload: {
-          socketId: this.socket.id,
+          socketId: this.socket.id as SocketId,
           ...payload,
         },
       };
