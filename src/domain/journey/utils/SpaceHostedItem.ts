@@ -7,4 +7,5 @@ export interface SpaceHostedItem extends Identifiable {
   spaceLevel: JourneyLevel;
   contributorId: string;
   contributorType: CommunityContributorType;
+  roles?: string[];
 }

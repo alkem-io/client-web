@@ -69,7 +69,7 @@ interface Space extends Identifiable {
   };
 }
 
-export const ITEMS_LIMIT = 14; // 3 rows of 5 but without the welcome space
+export const ITEMS_LIMIT = 15; // 3 rows of 5 but without the welcome space
 
 export const ExploreSpacesUnauthenticatedView: FC<ExploreSpacesUnauthenticatedViewProps> = ({
   spaces,
@@ -131,7 +131,7 @@ export const ExploreSpacesUnauthenticatedView: FC<ExploreSpacesUnauthenticatedVi
           fullWidth={false}
           sx={{ flexGrow: 1, flexBasis: getGridItemStyle(3).width }}
         />
-        <Gutters row disablePadding maxWidth="100%" alignItems="center">
+        <Gutters row disablePadding maxWidth="100%" alignItems="center" sx={{ flexWrap: 'wrap' }}>
           <Button
             variant={SpacesExplorerMembershipFilter.All === selectedFilter ? 'contained' : 'outlined'}
             sx={{ textTransform: 'none', flexShrink: 1 }}

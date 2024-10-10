@@ -1451,6 +1451,17 @@ export const OrganizationProfileInfoFragmentDoc = gql`
   ${VisualFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
+export const AccountResourceProfileFragmentDoc = gql`
+  fragment AccountResourceProfile on Profile {
+    id
+    displayName
+    url
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const PendingMembershipsJourneyProfileFragmentDoc = gql`
   fragment PendingMembershipsJourneyProfile on Profile {
     id
@@ -2287,6 +2298,9 @@ export const RoleSetDetailsFragmentDoc = gql`
       ...CommunityMemberUser
     }
     leadUsers: usersInRole(role: LEAD) {
+      ...CommunityMemberUser
+    }
+    adminUsers: usersInRole(role: ADMIN) {
       ...CommunityMemberUser
     }
     memberOrganizations: organizationsInRole(role: MEMBER) {
@@ -4729,6 +4743,79 @@ export function refetchRoleSetAvailableMembersQuery(variables: SchemaTypes.RoleS
   return { query: RoleSetAvailableMembersDocument, variables: variables };
 }
 
+export const UsersWithCredentialsDocument = gql`
+  query usersWithCredentials($input: UsersWithAuthorizationCredentialInput!) {
+    usersWithAuthorizationCredential(credentialsCriteriaData: $input) {
+      id
+      firstName
+      lastName
+      email
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          ...VisualUri
+        }
+        url
+      }
+      isContactable
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useUsersWithCredentialsQuery__
+ *
+ * To run a query within a React component, call `useUsersWithCredentialsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersWithCredentialsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersWithCredentialsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUsersWithCredentialsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UsersWithCredentialsQuery,
+    SchemaTypes.UsersWithCredentialsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UsersWithCredentialsQuery, SchemaTypes.UsersWithCredentialsQueryVariables>(
+    UsersWithCredentialsDocument,
+    options
+  );
+}
+
+export function useUsersWithCredentialsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UsersWithCredentialsQuery,
+    SchemaTypes.UsersWithCredentialsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UsersWithCredentialsQuery, SchemaTypes.UsersWithCredentialsQueryVariables>(
+    UsersWithCredentialsDocument,
+    options
+  );
+}
+
+export type UsersWithCredentialsQueryHookResult = ReturnType<typeof useUsersWithCredentialsQuery>;
+export type UsersWithCredentialsLazyQueryHookResult = ReturnType<typeof useUsersWithCredentialsLazyQuery>;
+export type UsersWithCredentialsQueryResult = Apollo.QueryResult<
+  SchemaTypes.UsersWithCredentialsQuery,
+  SchemaTypes.UsersWithCredentialsQueryVariables
+>;
+export function refetchUsersWithCredentialsQuery(variables: SchemaTypes.UsersWithCredentialsQueryVariables) {
+  return { query: UsersWithCredentialsDocument, variables: variables };
+}
+
 export const AccountInformationDocument = gql`
   query AccountInformation($accountId: UUID!) {
     lookup {
@@ -4759,6 +4846,10 @@ export const AccountInformationDocument = gql`
             id
             roleSet {
               id
+              authorization {
+                id
+                myPrivileges
+              }
             }
           }
           subspaces {
@@ -10646,8 +10737,13 @@ export type RemoveRoleFromVirtualContributorMutationOptions = Apollo.BaseMutatio
   SchemaTypes.RemoveRoleFromVirtualContributorMutationVariables
 >;
 export const ContributorsPageOrganizationsDocument = gql`
-  query ContributorsPageOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
-    organizationsPaginated(first: $first, after: $after, filter: $filter) {
+  query ContributorsPageOrganizations(
+    $first: Int!
+    $after: UUID
+    $status: OrganizationVerificationEnum
+    $filter: OrganizationFilterInput
+  ) {
+    organizationsPaginated(first: $first, after: $after, filter: $filter, status: $status) {
       ...OrganizationContributorPaginated
     }
   }
@@ -10668,6 +10764,7 @@ export const ContributorsPageOrganizationsDocument = gql`
  *   variables: {
  *      first: // value for 'first'
  *      after: // value for 'after'
+ *      status: // value for 'status'
  *      filter: // value for 'filter'
  *   },
  * });
@@ -10915,6 +11012,7 @@ export const RolesOrganizationDocument = gql`
           id
           displayName
           roles
+          level
         }
       }
     }
@@ -11817,6 +11915,118 @@ export type OrganizationsListQueryResult = Apollo.QueryResult<
 >;
 export function refetchOrganizationsListQuery(variables?: SchemaTypes.OrganizationsListQueryVariables) {
   return { query: OrganizationsListDocument, variables: variables };
+}
+
+export const AccountResourcesInfoDocument = gql`
+  query AccountResourcesInfo($accountId: UUID!) {
+    lookup {
+      account(ID: $accountId) {
+        id
+        spaces {
+          id
+          profile {
+            ...AccountResourceProfile
+            cardBanner: visual(type: CARD) {
+              ...VisualUri
+            }
+          }
+        }
+        virtualContributors {
+          id
+          profile {
+            ...AccountResourceProfile
+            tagline
+          }
+        }
+        innovationPacks {
+          id
+          profile {
+            ...AccountResourceProfile
+          }
+          templatesSet {
+            id
+            calloutTemplatesCount
+            communityGuidelinesTemplatesCount
+            innovationFlowTemplatesCount
+            postTemplatesCount
+            whiteboardTemplatesCount
+          }
+        }
+        innovationHubs {
+          id
+          profile {
+            ...AccountResourceProfile
+            banner: visual(type: BANNER_WIDE) {
+              ...VisualUri
+            }
+          }
+          spaceVisibilityFilter
+          spaceListFilter {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+          subdomain
+        }
+      }
+    }
+  }
+  ${AccountResourceProfileFragmentDoc}
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useAccountResourcesInfoQuery__
+ *
+ * To run a query within a React component, call `useAccountResourcesInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountResourcesInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountResourcesInfoQuery({
+ *   variables: {
+ *      accountId: // value for 'accountId'
+ *   },
+ * });
+ */
+export function useAccountResourcesInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AccountResourcesInfoQuery,
+    SchemaTypes.AccountResourcesInfoQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AccountResourcesInfoQuery, SchemaTypes.AccountResourcesInfoQueryVariables>(
+    AccountResourcesInfoDocument,
+    options
+  );
+}
+
+export function useAccountResourcesInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AccountResourcesInfoQuery,
+    SchemaTypes.AccountResourcesInfoQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AccountResourcesInfoQuery, SchemaTypes.AccountResourcesInfoQueryVariables>(
+    AccountResourcesInfoDocument,
+    options
+  );
+}
+
+export type AccountResourcesInfoQueryHookResult = ReturnType<typeof useAccountResourcesInfoQuery>;
+export type AccountResourcesInfoLazyQueryHookResult = ReturnType<typeof useAccountResourcesInfoLazyQuery>;
+export type AccountResourcesInfoQueryResult = Apollo.QueryResult<
+  SchemaTypes.AccountResourcesInfoQuery,
+  SchemaTypes.AccountResourcesInfoQueryVariables
+>;
+export function refetchAccountResourcesInfoQuery(variables: SchemaTypes.AccountResourcesInfoQueryVariables) {
+  return { query: AccountResourcesInfoDocument, variables: variables };
 }
 
 export const DeleteInvitationDocument = gql`
@@ -13291,150 +13501,6 @@ export function refetchUserProfileQuery(variables: SchemaTypes.UserProfileQueryV
   return { query: UserProfileDocument, variables: variables };
 }
 
-export const UsersWithCredentialsDocument = gql`
-  query usersWithCredentials($input: UsersWithAuthorizationCredentialInput!) {
-    usersWithAuthorizationCredential(credentialsCriteriaData: $input) {
-      id
-      firstName
-      lastName
-      email
-      profile {
-        id
-        displayName
-        avatar: visual(type: AVATAR) {
-          ...VisualUri
-        }
-        url
-      }
-      isContactable
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-
-/**
- * __useUsersWithCredentialsQuery__
- *
- * To run a query within a React component, call `useUsersWithCredentialsQuery` and pass it any options that fit your needs.
- * When your component renders, `useUsersWithCredentialsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUsersWithCredentialsQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUsersWithCredentialsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.UsersWithCredentialsQuery,
-    SchemaTypes.UsersWithCredentialsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.UsersWithCredentialsQuery, SchemaTypes.UsersWithCredentialsQueryVariables>(
-    UsersWithCredentialsDocument,
-    options
-  );
-}
-
-export function useUsersWithCredentialsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.UsersWithCredentialsQuery,
-    SchemaTypes.UsersWithCredentialsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.UsersWithCredentialsQuery, SchemaTypes.UsersWithCredentialsQueryVariables>(
-    UsersWithCredentialsDocument,
-    options
-  );
-}
-
-export type UsersWithCredentialsQueryHookResult = ReturnType<typeof useUsersWithCredentialsQuery>;
-export type UsersWithCredentialsLazyQueryHookResult = ReturnType<typeof useUsersWithCredentialsLazyQuery>;
-export type UsersWithCredentialsQueryResult = Apollo.QueryResult<
-  SchemaTypes.UsersWithCredentialsQuery,
-  SchemaTypes.UsersWithCredentialsQueryVariables
->;
-export function refetchUsersWithCredentialsQuery(variables: SchemaTypes.UsersWithCredentialsQueryVariables) {
-  return { query: UsersWithCredentialsDocument, variables: variables };
-}
-
-export const UsersWithCredentialsSimpleListDocument = gql`
-  query usersWithCredentialsSimpleList($input: UsersWithAuthorizationCredentialInput!) {
-    usersWithAuthorizationCredential(credentialsCriteriaData: $input) {
-      id
-      profile {
-        id
-        displayName
-      }
-      firstName
-      lastName
-      email
-    }
-  }
-`;
-
-/**
- * __useUsersWithCredentialsSimpleListQuery__
- *
- * To run a query within a React component, call `useUsersWithCredentialsSimpleListQuery` and pass it any options that fit your needs.
- * When your component renders, `useUsersWithCredentialsSimpleListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUsersWithCredentialsSimpleListQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUsersWithCredentialsSimpleListQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.UsersWithCredentialsSimpleListQuery,
-    SchemaTypes.UsersWithCredentialsSimpleListQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.UsersWithCredentialsSimpleListQuery,
-    SchemaTypes.UsersWithCredentialsSimpleListQueryVariables
-  >(UsersWithCredentialsSimpleListDocument, options);
-}
-
-export function useUsersWithCredentialsSimpleListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.UsersWithCredentialsSimpleListQuery,
-    SchemaTypes.UsersWithCredentialsSimpleListQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.UsersWithCredentialsSimpleListQuery,
-    SchemaTypes.UsersWithCredentialsSimpleListQueryVariables
-  >(UsersWithCredentialsSimpleListDocument, options);
-}
-
-export type UsersWithCredentialsSimpleListQueryHookResult = ReturnType<typeof useUsersWithCredentialsSimpleListQuery>;
-export type UsersWithCredentialsSimpleListLazyQueryHookResult = ReturnType<
-  typeof useUsersWithCredentialsSimpleListLazyQuery
->;
-export type UsersWithCredentialsSimpleListQueryResult = Apollo.QueryResult<
-  SchemaTypes.UsersWithCredentialsSimpleListQuery,
-  SchemaTypes.UsersWithCredentialsSimpleListQueryVariables
->;
-export function refetchUsersWithCredentialsSimpleListQuery(
-  variables: SchemaTypes.UsersWithCredentialsSimpleListQueryVariables
-) {
-  return { query: UsersWithCredentialsSimpleListDocument, variables: variables };
-}
-
 export const UserProviderDocument = gql`
   query UserProvider {
     me {
@@ -13759,10 +13825,13 @@ export const UserContributionsDocument = gql`
       spaces {
         id
         nameID
+        roles
         subspaces {
           id
           nameID
           type
+          level
+          roles
         }
       }
     }
@@ -16724,11 +16793,15 @@ export const SubspacesInSpaceDocument = gql`
             id
             displayName
             url
+            cardBanner: visual(type: CARD) {
+              ...VisualUri
+            }
           }
         }
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -21729,18 +21802,12 @@ export function refetchExploreSpacesSearchQuery(variables: SchemaTypes.ExploreSp
 }
 
 export const ExploreAllSpacesDocument = gql`
-  query ExploreAllSpaces($first: Int!, $after: UUID, $visibilities: [SpaceVisibility!] = [ACTIVE]) {
-    spacesPaginated(first: $first, after: $after, filter: { visibilities: $visibilities }) {
-      spaces {
-        ...ExploreSpaces
-      }
-      pageInfo {
-        ...PageInfo
-      }
+  query ExploreAllSpaces {
+    exploreSpaces {
+      ...ExploreSpaces
     }
   }
   ${ExploreSpacesFragmentDoc}
-  ${PageInfoFragmentDoc}
 `;
 
 /**
@@ -21755,14 +21822,11 @@ export const ExploreAllSpacesDocument = gql`
  * @example
  * const { data, loading, error } = useExploreAllSpacesQuery({
  *   variables: {
- *      first: // value for 'first'
- *      after: // value for 'after'
- *      visibilities: // value for 'visibilities'
  *   },
  * });
  */
 export function useExploreAllSpacesQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ExploreAllSpacesQuery, SchemaTypes.ExploreAllSpacesQueryVariables>
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.ExploreAllSpacesQuery, SchemaTypes.ExploreAllSpacesQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<SchemaTypes.ExploreAllSpacesQuery, SchemaTypes.ExploreAllSpacesQueryVariables>(
@@ -21790,7 +21854,7 @@ export type ExploreAllSpacesQueryResult = Apollo.QueryResult<
   SchemaTypes.ExploreAllSpacesQuery,
   SchemaTypes.ExploreAllSpacesQueryVariables
 >;
-export function refetchExploreAllSpacesQuery(variables: SchemaTypes.ExploreAllSpacesQueryVariables) {
+export function refetchExploreAllSpacesQuery(variables?: SchemaTypes.ExploreAllSpacesQueryVariables) {
   return { query: ExploreAllSpacesDocument, variables: variables };
 }
 

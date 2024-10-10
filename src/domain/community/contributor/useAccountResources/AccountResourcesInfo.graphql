@@ -1,63 +1,27 @@
-query AccountInformation($accountId: UUID!) {
+query AccountResourcesInfo($accountId: UUID!) {
   lookup {
     account(ID: $accountId) {
       id
-      authorization {
-        id
-        myPrivileges
-      }
-      host {
-        id
-      }
       spaces {
         id
-        level
-        authorization {
-          id
-          myPrivileges
-        }
         profile {
-          ...AccountItemProfile
+          ...AccountResourceProfile
           cardBanner: visual(type: CARD) {
             ...VisualUri
-          }
-          tagline
-        }
-        community {
-          id
-          roleSet {
-            id
-            authorization {
-              id
-              myPrivileges
-            }
-          }
-        }
-        subspaces {
-          id
-          profile {
-            ...AccountItemProfile
-          }
-          type
-          community {
-            id
-            roleSet {
-              id
-            }
           }
         }
       }
       virtualContributors {
         id
         profile {
-          ...AccountItemProfile
+          ...AccountResourceProfile
           tagline
         }
       }
       innovationPacks {
         id
         profile {
-          ...AccountItemProfile
+          ...AccountResourceProfile
         }
         templatesSet {
           id
@@ -71,7 +35,7 @@ query AccountInformation($accountId: UUID!) {
       innovationHubs {
         id
         profile {
-          ...AccountItemProfile
+          ...AccountResourceProfile
           banner: visual(type: BANNER_WIDE) {
             ...VisualUri
           }
@@ -90,12 +54,11 @@ query AccountInformation($accountId: UUID!) {
   }
 }
 
-fragment AccountItemProfile on Profile {
+fragment AccountResourceProfile on Profile {
   id
   displayName
-  description
+  url
   avatar: visual(type: AVATAR) {
     ...VisualUri
   }
-  url
 }

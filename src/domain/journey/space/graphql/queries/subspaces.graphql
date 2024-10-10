@@ -8,6 +8,9 @@ query SubspacesInSpace($spaceId: UUID!) {
           id
           displayName
           url
+          cardBanner: visual(type: CARD) {
+            ...VisualUri
+          }
         }
       }
     }

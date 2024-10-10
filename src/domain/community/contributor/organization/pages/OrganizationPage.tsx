@@ -6,15 +6,26 @@ import Loading from '../../../../../core/ui/loading/Loading';
 import TopLevelLayout from '../../../../../main/ui/layout/TopLevelLayout';
 import { Error404 } from '../../../../../core/pages/Errors/Error404';
 import { useOrganization } from '../hooks/useOrganization';
+import { useOrganizationAccountQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import useAccountResources from '../../useAccountResources/useAccountResources';
 
 interface OrganizationPageProps {}
 
 export const OrganizationPage: FC<OrganizationPageProps> = () => {
   const { organization, loading } = useOrganization();
 
+  const { data: organizationData, loading: loadingOrganization } = useOrganizationAccountQuery({
+    variables: {
+      organizationNameId: organization?.nameID!,
+    },
+    skip: !organization?.nameID,
+  });
+
+  const accountResources = useAccountResources(organizationData?.organization.account?.id);
+
   if (loading) return <Loading />;
 
-  if (!organization && !loading) {
+  if (!organization && !loading && !loadingOrganization) {
     return (
       <TopLevelLayout>
         <Error404 />
@@ -25,7 +36,9 @@ export const OrganizationPage: FC<OrganizationPageProps> = () => {
   return (
     <OrganizationPageLayout>
       <OrganizationPageContainer>
-        {(entities, state) => <OrganizationPageView entities={entities} state={state} />}
+        {(entities, state) => (
+          <OrganizationPageView entities={entities} state={state} accountResources={accountResources} />
+        )}
       </OrganizationPageContainer>
     </OrganizationPageLayout>
   );

@@ -55,18 +55,26 @@ interface AccountProfile {
   url: string;
 }
 
-export interface ContributorAccountViewProps {
-  accountHostName?: string;
-  loading?: boolean;
-  account?: {
+export interface AccountTabResourcesProps {
+  id: string;
+  authorization?: { myPrivileges?: AuthorizationPrivilege[] };
+  spaces: {
     id: string;
-    authorization?: { myPrivileges?: AuthorizationPrivilege[] };
-    spaces: {
+    level: number;
+    profile: AccountProfile & {
+      cardBanner?: { uri: string };
+      tagline?: string;
+    };
+    community: {
       id: string;
-      level: number;
+      roleSet: {
+        id: string;
+      };
+    };
+    subspaces: {
+      id: string;
       profile: AccountProfile & {
         cardBanner?: { uri: string };
-        tagline?: string;
       };
       community: {
         id: string;
@@ -74,52 +82,46 @@ export interface ContributorAccountViewProps {
           id: string;
         };
       };
-      subspaces: {
-        id: string;
-        profile: AccountProfile & {
-          cardBanner?: { uri: string };
-        };
-        community: {
-          id: string;
-          roleSet: {
-            id: string;
-          };
-        };
-        type: SpaceType;
-      }[];
+      type: SpaceType;
     }[];
-    virtualContributors: {
+  }[];
+  virtualContributors: {
+    id: string;
+    profile: AccountProfile & {
+      tagline?: string;
+    };
+  }[];
+  innovationPacks: {
+    id: string;
+    profile: AccountProfile;
+    templates?: {
+      calloutTemplatesCount: number;
+      communityGuidelinesTemplatesCount: number;
+      innovationFlowTemplatesCount: number;
+      postTemplatesCount: number;
+      whiteboardTemplatesCount: number;
+    };
+  }[];
+  innovationHubs: {
+    id: string;
+    profile: AccountProfile & {
+      banner?: { uri: string };
+    };
+    spaceVisibilityFilter?: SpaceVisibility;
+    spaceListFilter?: {
       id: string;
-      profile: AccountProfile & {
-        tagline?: string;
+      profile: {
+        displayName: string;
       };
     }[];
-    innovationPacks: {
-      id: string;
-      profile: AccountProfile;
-      templates?: {
-        calloutTemplatesCount: number;
-        communityGuidelinesTemplatesCount: number;
-        innovationFlowTemplatesCount: number;
-        postTemplatesCount: number;
-        whiteboardTemplatesCount: number;
-      };
-    }[];
-    innovationHubs: {
-      id: string;
-      profile: AccountProfile & {
-        banner?: { uri: string };
-      };
-      spaceVisibilityFilter?: SpaceVisibility;
-      spaceListFilter?: {
-        id: string;
-        profile: {
-          displayName: string;
-        };
-      }[];
-      subdomain: string;
-    }[];
-  };
+    subdomain: string;
+  }[];
+}
+
+export interface ContributorAccountViewProps {
+  accountHostName?: string;
+  loading?: boolean;
+  account?: AccountTabResourcesProps;
 }
 
 const useStyles = makeStyles(() => ({
