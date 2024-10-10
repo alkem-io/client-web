@@ -1,19 +1,28 @@
-import { Box, Skeleton } from '@mui/material';
+import { Box, Skeleton, useMediaQuery } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import CardHeaderDetail from '../../../../core/ui/card/CardHeaderDetail';
 import { gutters } from '../../../../core/ui/grid/utils';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
-import { formatLongDate, formatTimeAndDuration } from '../../../../core/utils/time/utils';
+import {
+  formatLongDate,
+  formatTime,
+  formatTimeAndDuration,
+  getEndDateByDuration,
+} from '../../../../core/utils/time/utils';
 import { CalendarIcon } from '../icons/CalendarIcon';
 import { ClockIcon } from '../icons/ClockIcon';
 import CalendarEventBadge from './CalendarEventBadge';
+import { theme } from '../../../../core/ui/themes/default/Theme';
 
 export interface EventCardHeaderProps {
   event:
     | {
         startDate?: Date;
+        durationDays?: number | undefined;
+        durationMinutes: number;
+        wholeDay?: boolean;
         profile: {
           displayName: string;
         };
@@ -23,22 +32,41 @@ export interface EventCardHeaderProps {
 
 const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderProps>) => {
   const { t } = useTranslation();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const startDate = event?.startDate;
+  const endDate = getEndDateByDuration(startDate, event?.durationMinutes ?? 0);
+  const hasEndDate = (event?.durationDays ?? 0) > 0 && !event?.wholeDay;
 
   return (
     <BadgeCardView
-      visual={<CalendarEventBadge eventStartDate={event?.startDate} marginLeft={0.5} tooltipDisabled />}
-      height={gutters(3)}
+      visual={
+        <CalendarEventBadge
+          startDate={startDate}
+          durationDays={event?.durationDays ?? 0}
+          durationMinutes={event?.durationMinutes ?? 0}
+          marginLeft={0.5}
+          tooltipDisabled
+        />
+      }
+      height={isMobile ? 'auto' : gutters(3)}
       paddingX={1}
       gap={1}
       contentProps={{ paddingLeft: 0.5 }}
     >
       <BlockSectionTitle noWrap>{event?.profile.displayName}</BlockSectionTitle>
-      <Box display="flex" gap={gutters()} flexDirection="row">
+      <Box display="flex" gap={isMobile ? 0 : gutters()} flexDirection={isMobile ? 'column' : 'row'}>
         {event && (
           <>
-            {/* event.location && <CardHeaderDetail iconComponent={LocationIcon}>Location, City</CardHeaderDetail> */}
-            <CardHeaderDetail iconComponent={CalendarIcon}>{formatLongDate(event.startDate)}</CardHeaderDetail>
+            <CardHeaderDetail iconComponent={CalendarIcon}>{formatLongDate(startDate)}</CardHeaderDetail>
             <CardHeaderDetail iconComponent={ClockIcon}>{formatTimeAndDuration(event, t)}</CardHeaderDetail>
+            {hasEndDate && (
+              <>
+                <Box>-</Box>
+                <CardHeaderDetail iconComponent={CalendarIcon}>{formatLongDate(endDate)}</CardHeaderDetail>
+                <CardHeaderDetail iconComponent={ClockIcon}>{formatTime(endDate)}</CardHeaderDetail>
+              </>
+            )}
           </>
         )}
         {!event && <Skeleton variant="rectangular" />}

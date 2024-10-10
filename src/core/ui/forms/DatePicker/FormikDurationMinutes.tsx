@@ -38,7 +38,7 @@ const FormikDurationMinutes = ({ name, startTimeFieldName, ...datePickerProps }:
 
   const oldStartTimeRef = useRef(new Date(startTimeField.value));
 
-  useLayoutEffect(() => {
+  const updateDurationMinutes = () => {
     // Normally we keep durationMinutes when startTime changes, except for the case when
     // startTime was after endTime (negative durationMinutes) but then it got changed
     // to be before endTime (valid combination).
@@ -56,6 +56,14 @@ const FormikDurationMinutes = ({ name, startTimeFieldName, ...datePickerProps }:
     if (isStartTimeValid) {
       oldStartTimeRef.current = startTime;
     }
+  };
+
+  useLayoutEffect(() => {
+    updateDurationMinutes();
+  }, []);
+
+  useLayoutEffect(() => {
+    updateDurationMinutes();
   }, [startTimeField.value]);
 
   const date = addMinutes(startTimeField.value, field.value);

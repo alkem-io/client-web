@@ -8,7 +8,8 @@ import OneLineMarkdown from '../../../../core/ui/markdown/OneLineMarkdown';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import CalendarEventBadge from './CalendarEventBadge';
 
-interface CalendarEventViewProps extends Pick<CalendarEventDetailsFragment, 'startDate' | 'profile'> {}
+interface CalendarEventViewProps
+  extends Pick<CalendarEventDetailsFragment, 'startDate' | 'durationDays' | 'durationMinutes' | 'profile'> {}
 
 const EVENT_DESCRIPTION_MAX_LENGTH = 80; // characters
 
@@ -46,7 +47,17 @@ const CalendarEventView: FC<CalendarEventViewProps> = event => {
   const url = event.profile.url;
 
   return (
-    <BadgeCardView component={RouterLink} to={url} visual={<CalendarEventBadge eventStartDate={event.startDate} />}>
+    <BadgeCardView
+      component={RouterLink}
+      to={url}
+      visual={
+        <CalendarEventBadge
+          startDate={event.startDate}
+          durationMinutes={event.durationMinutes}
+          durationDays={event.durationDays}
+        />
+      }
+    >
       <BlockSectionTitle>{event.profile.displayName}</BlockSectionTitle>
       <EventDescription>{event.profile.description}</EventDescription>
     </BadgeCardView>

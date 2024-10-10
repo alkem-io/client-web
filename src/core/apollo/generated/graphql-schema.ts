@@ -26220,6 +26220,7 @@ export type CalendarEventDetailsQuery = {
                         type: TagsetType;
                       }>
                     | undefined;
+                  location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
                 };
               }
             | undefined;
@@ -26418,6 +26419,7 @@ export type CalendarEventDetailsFragment = {
                 type: TagsetType;
               }>
             | undefined;
+          location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
         };
       }
     | undefined;
@@ -26610,6 +26612,7 @@ export type CreateCalendarEventMutation = {
                   type: TagsetType;
                 }>
               | undefined;
+            location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
           };
         }
       | undefined;
@@ -26787,6 +26790,7 @@ export type UpdateCalendarEventMutation = {
                   type: TagsetType;
                 }>
               | undefined;
+            location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
           };
         }
       | undefined;

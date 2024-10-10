@@ -26,6 +26,8 @@ interface CalendarEventsListProps {
     id: string;
     nameID: string;
     startDate?: Date;
+    durationDays?: number | undefined;
+    durationMinutes: number;
     profile: {
       url: string;
       displayName: string;
