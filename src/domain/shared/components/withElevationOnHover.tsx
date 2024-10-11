@@ -5,8 +5,6 @@ export const FINAL_ELEVATION = 8;
 
 interface ComponentProps<Element> extends Pick<DOMAttributes<Element>, 'onMouseOver' | 'onMouseOut'> {
   elevation?: number;
-  $$typeof: 'string';
-  propTypes: object;
 }
 
 type WithElevationProps<El, P extends ComponentProps<El>> = P & {
@@ -32,7 +30,14 @@ const withElevationOnHover = <El, P extends ComponentProps<El>>(Component: Compo
     );
     const setInitialElevation = useCallback(() => setElevation(initialElevation), [initialElevation]);
 
-    const { $$typeof, propTypes, ...safeComponentProps } = componentProps as P;
+    if (componentProps['$$typeof']) {
+      delete componentProps['$$typeof'];
+    }
+    // eslint-disable-next-line react/forbid-foreign-prop-types
+    if (componentProps['propTypes']) {
+      // eslint-disable-next-line react/forbid-foreign-prop-types
+      delete componentProps['propTypes'];
+    }
 
     return (
       <Component
@@ -40,7 +45,7 @@ const withElevationOnHover = <El, P extends ComponentProps<El>>(Component: Compo
         elevation={elevation}
         onMouseOver={setFinalElevation}
         onMouseOut={setInitialElevation}
-        {...(safeComponentProps as P)}
+        {...(componentProps as P)}
       />
     );
   });
