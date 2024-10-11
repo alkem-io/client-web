@@ -729,6 +729,7 @@ export type CalloutKeySpecifier = (
   | 'createdDate'
   | 'framing'
   | 'id'
+  | 'isTemplate'
   | 'nameID'
   | 'posts'
   | 'publishedBy'
@@ -750,6 +751,7 @@ export type CalloutFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   framing?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   posts?: FieldPolicy<any> | FieldReadFunction<any>;
   publishedBy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -854,6 +856,7 @@ export type CollaborationKeySpecifier = (
   | 'groups'
   | 'id'
   | 'innovationFlow'
+  | 'isTemplate'
   | 'tagsetTemplates'
   | 'timeline'
   | 'updatedDate'
@@ -866,6 +869,7 @@ export type CollaborationFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
+  isTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsetTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1940,6 +1944,7 @@ export type MutationKeySpecifier = (
   | 'createSubspace'
   | 'createTagsetOnProfile'
   | 'createTemplate'
+  | 'createTemplateFromCollaboration'
   | 'createUser'
   | 'createUserNewRegistration'
   | 'createVirtualContributor'
@@ -2011,6 +2016,7 @@ export type MutationKeySpecifier = (
   | 'updateCalloutPublishInfo'
   | 'updateCalloutVisibility'
   | 'updateCalloutsSortOrder'
+  | 'updateCollaborationFromTemplate'
   | 'updateCommunityGuidelines'
   | 'updateContributionsSortOrder'
   | 'updateDiscussion'
@@ -2019,7 +2025,6 @@ export type MutationKeySpecifier = (
   | 'updateInnovationFlow'
   | 'updateInnovationFlowSelectedState'
   | 'updateInnovationFlowSingleState'
-  | 'updateInnovationFlowStatesFromTemplate'
   | 'updateInnovationHub'
   | 'updateInnovationPack'
   | 'updateLicensePlan'
@@ -2099,6 +2104,7 @@ export type MutationFieldPolicy = {
   createSubspace?: FieldPolicy<any> | FieldReadFunction<any>;
   createTagsetOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  createTemplateFromCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   createUser?: FieldPolicy<any> | FieldReadFunction<any>;
   createUserNewRegistration?: FieldPolicy<any> | FieldReadFunction<any>;
   createVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2170,6 +2176,7 @@ export type MutationFieldPolicy = {
   updateCalloutPublishInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCollaborationFromTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   updateContributionsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2178,7 +2185,6 @@ export type MutationFieldPolicy = {
   updateInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationFlowSelectedState?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationFlowSingleState?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateInnovationFlowStatesFromTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   updateLicensePlan?: FieldPolicy<any> | FieldReadFunction<any>;

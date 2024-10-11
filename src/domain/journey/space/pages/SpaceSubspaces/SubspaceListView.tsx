@@ -49,7 +49,7 @@ export const SubspaceListView: FC = () => {
   const templateDefaults = templatesManager?.templateDefaults;
   const subspaceTemplateDefault = templateDefaults ? templateDefaults[0].template : undefined;
   const defaultInnovationFlow = subspaceTemplateDefault?.collaboration?.innovationFlow;
-  const templatesManagerID = templatesManager?.id || ''; // How to handle when IDs are not found?
+  const subspaceTemplateDefaultID = templatesManager?.templateDefaults?.[0].id || '';
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<SearchableListItem | undefined>(undefined);
@@ -134,7 +134,7 @@ export const SubspaceListView: FC = () => {
   const handleSelectInnovationFlow = async (collaborationTemplateId: string) => {
     await updateTemplateDefault({
       variables: {
-        templateDefaultID: templatesManagerID,
+        templateDefaultID: subspaceTemplateDefaultID,
         templateID: collaborationTemplateId,
       },
       refetchQueries: [

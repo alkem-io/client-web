@@ -34,6 +34,13 @@ fragment PostTemplate on Template {
   postDefaultDescription
 }
 
+fragment CollaborationTemplate on Template {
+  ...TemplateProfileInfo
+  collaboration {
+    id
+  }
+}
+
 fragment WhiteboardTemplate on Template {
   ...TemplateProfileInfo
   whiteboard {

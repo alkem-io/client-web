@@ -87,7 +87,7 @@ const ImportTemplatesDialog = ({
     variables: {
       templatesSetId: templatesSetId!,
       includeCallout: templateType === TemplateType.Callout,
-      includeInnovationFlow: templateType === TemplateType.InnovationFlow,
+      includeCollaboration: templateType === TemplateType.Collaboration,
     },
     skip: !open || disableSpaceTemplates || !templatesSetId,
   });
@@ -102,7 +102,7 @@ const ImportTemplatesDialog = ({
     variables: {
       templateTypes: templateType ? [templateType] : undefined,
       includeCallout: templateType === TemplateType.Callout,
-      includeInnovationFlow: templateType === TemplateType.InnovationFlow,
+      includeCollaboration: templateType === TemplateType.Collaboration,
     },
     skip: !open || !loadPlatformTemplates,
   });

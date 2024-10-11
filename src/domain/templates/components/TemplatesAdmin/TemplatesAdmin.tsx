@@ -100,6 +100,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
     innovationFlowTemplates,
     calloutTemplates,
     communityGuidelinesTemplates,
+    collaborationTemplates,
   } = data?.lookup.templatesSet ?? {};
 
   const selectedTemplate = useMemo<AnyTemplate | undefined>(() => {
@@ -110,6 +111,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
       ...(innovationFlowTemplates ?? []),
       ...(communityGuidelinesTemplates ?? []),
       ...(calloutTemplates ?? []),
+      ...(collaborationTemplates ?? []),
     ].find(template => template.id === templateId);
   }, [templateId, data?.lookup.templatesSet]);
 
@@ -178,6 +180,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
         includeCallout: templateType === TemplateType.Callout,
         includeCommunityGuidelines: templateType === TemplateType.CommunityGuidelines,
         includeInnovationFlow: templateType === TemplateType.InnovationFlow,
+        includeCollaboration: templateType === TemplateType.Collaboration,
         includePost: templateType === TemplateType.Post,
         includeWhiteboard: templateType === TemplateType.Whiteboard,
       },
@@ -225,6 +228,18 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           })}
           actions={<GalleryActions templateType={TemplateType.Callout} />}
           templates={calloutTemplates}
+          loading={loading}
+          buildTemplateLink={buildTemplateLink}
+        />
+      </PageContentBlockSeamless>
+      <PageContentBlockSeamless disablePadding>
+        <TemplatesGallery
+          headerText={t('common.entitiesWithCount', {
+            entityType: t(`common.enums.templateType.${TemplateType.Callout}_plural`), // TODO
+            count: calloutTemplates?.length ?? 0,
+          })}
+          actions={<GalleryActions templateType={TemplateType.Collaboration} />}
+          templates={collaborationTemplates}
           loading={loading}
           buildTemplateLink={buildTemplateLink}
         />

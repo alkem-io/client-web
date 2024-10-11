@@ -123,18 +123,21 @@ mutation updateInnovationFlowStates($innovationFlowId: UUID!, $states: [UpdateIn
   }
 }
 
-mutation UpdateInnovationFlowStatesFromTemplate($innovationFlowId: UUID!, $innovationFlowTemplateId: UUID!) {
-  updateInnovationFlowStatesFromTemplate(
-    innovationFlowData: { innovationFlowID: $innovationFlowId, innovationFlowTemplateID: $innovationFlowTemplateId }
+mutation UpdateCollaborationFromTemplate($collaborationId: UUID!, $collaborationTemplateId: UUID!) {
+  updateCollaborationFromTemplate(
+    updateData: { collaborationID: $collaborationId, collaborationTemplateID: $collaborationTemplateId }
   ) {
     id
-    states {
-      displayName
-      description
-    }
-    currentState {
-      displayName
-      description
+    innovationFlow {
+      id
+      states {
+        displayName
+        description
+      }
+      currentState {
+        displayName
+        description
+      }
     }
   }
 }

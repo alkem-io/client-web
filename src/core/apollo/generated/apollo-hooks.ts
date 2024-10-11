@@ -2788,6 +2788,18 @@ export const InnovationFlowTemplateContentFragmentDoc = gql`
     }
   }
 `;
+export const CollaborationTemplateContentFragmentDoc = gql`
+  fragment CollaborationTemplateContent on Collaboration {
+    id
+    innovationFlow {
+      id
+      states {
+        displayName
+        description
+      }
+    }
+  }
+`;
 export const WhiteboardTemplateContentFragmentDoc = gql`
   fragment WhiteboardTemplateContent on Whiteboard {
     id
@@ -2880,6 +2892,15 @@ export const CommunityGuidelinesTemplateFragmentDoc = gql`
   ${TemplateProfileInfoFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
 `;
+export const CollaborationTemplateFragmentDoc = gql`
+  fragment CollaborationTemplate on Template {
+    ...TemplateProfileInfo
+    collaboration {
+      id
+    }
+  }
+  ${TemplateProfileInfoFragmentDoc}
+`;
 export const TemplatesSetTemplatesFragmentDoc = gql`
   fragment TemplatesSetTemplates on TemplatesSet {
     calloutTemplates {
@@ -2897,12 +2918,16 @@ export const TemplatesSetTemplatesFragmentDoc = gql`
     communityGuidelinesTemplates {
       ...CommunityGuidelinesTemplate
     }
+    collaborationTemplates {
+      ...CollaborationTemplate
+    }
   }
   ${CalloutTemplateFragmentDoc}
   ${PostTemplateFragmentDoc}
   ${WhiteboardTemplateFragmentDoc}
   ${InnovationFlowTemplateFragmentDoc}
   ${CommunityGuidelinesTemplateFragmentDoc}
+  ${CollaborationTemplateFragmentDoc}
 `;
 export const EventProfileFragmentDoc = gql`
   fragment EventProfile on Profile {
@@ -5649,67 +5674,70 @@ export type UpdateInnovationFlowStatesMutationOptions = Apollo.BaseMutationOptio
   SchemaTypes.UpdateInnovationFlowStatesMutation,
   SchemaTypes.UpdateInnovationFlowStatesMutationVariables
 >;
-export const UpdateInnovationFlowStatesFromTemplateDocument = gql`
-  mutation UpdateInnovationFlowStatesFromTemplate($innovationFlowId: UUID!, $innovationFlowTemplateId: UUID!) {
-    updateInnovationFlowStatesFromTemplate(
-      innovationFlowData: { innovationFlowID: $innovationFlowId, innovationFlowTemplateID: $innovationFlowTemplateId }
+export const UpdateCollaborationFromTemplateDocument = gql`
+  mutation UpdateCollaborationFromTemplate($collaborationId: UUID!, $collaborationTemplateId: UUID!) {
+    updateCollaborationFromTemplate(
+      updateData: { collaborationID: $collaborationId, collaborationTemplateID: $collaborationTemplateId }
     ) {
       id
-      states {
-        displayName
-        description
-      }
-      currentState {
-        displayName
-        description
+      innovationFlow {
+        id
+        states {
+          displayName
+          description
+        }
+        currentState {
+          displayName
+          description
+        }
       }
     }
   }
 `;
-export type UpdateInnovationFlowStatesFromTemplateMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutation,
-  SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutationVariables
+export type UpdateCollaborationFromTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCollaborationFromTemplateMutation,
+  SchemaTypes.UpdateCollaborationFromTemplateMutationVariables
 >;
 
 /**
- * __useUpdateInnovationFlowStatesFromTemplateMutation__
+ * __useUpdateCollaborationFromTemplateMutation__
  *
- * To run a mutation, you first call `useUpdateInnovationFlowStatesFromTemplateMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateInnovationFlowStatesFromTemplateMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateCollaborationFromTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCollaborationFromTemplateMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateInnovationFlowStatesFromTemplateMutation, { data, loading, error }] = useUpdateInnovationFlowStatesFromTemplateMutation({
+ * const [updateCollaborationFromTemplateMutation, { data, loading, error }] = useUpdateCollaborationFromTemplateMutation({
  *   variables: {
- *      innovationFlowId: // value for 'innovationFlowId'
- *      innovationFlowTemplateId: // value for 'innovationFlowTemplateId'
+ *      collaborationId: // value for 'collaborationId'
+ *      collaborationTemplateId: // value for 'collaborationTemplateId'
  *   },
  * });
  */
-export function useUpdateInnovationFlowStatesFromTemplateMutation(
+export function useUpdateCollaborationFromTemplateMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutation,
-    SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutationVariables
+    SchemaTypes.UpdateCollaborationFromTemplateMutation,
+    SchemaTypes.UpdateCollaborationFromTemplateMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutation,
-    SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutationVariables
-  >(UpdateInnovationFlowStatesFromTemplateDocument, options);
+    SchemaTypes.UpdateCollaborationFromTemplateMutation,
+    SchemaTypes.UpdateCollaborationFromTemplateMutationVariables
+  >(UpdateCollaborationFromTemplateDocument, options);
 }
 
-export type UpdateInnovationFlowStatesFromTemplateMutationHookResult = ReturnType<
-  typeof useUpdateInnovationFlowStatesFromTemplateMutation
+export type UpdateCollaborationFromTemplateMutationHookResult = ReturnType<
+  typeof useUpdateCollaborationFromTemplateMutation
 >;
-export type UpdateInnovationFlowStatesFromTemplateMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutation>;
-export type UpdateInnovationFlowStatesFromTemplateMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutation,
-  SchemaTypes.UpdateInnovationFlowStatesFromTemplateMutationVariables
+export type UpdateCollaborationFromTemplateMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateCollaborationFromTemplateMutation>;
+export type UpdateCollaborationFromTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCollaborationFromTemplateMutation,
+  SchemaTypes.UpdateCollaborationFromTemplateMutationVariables
 >;
 export const UpdateInnovationFlowSingleStateDocument = gql`
   mutation updateInnovationFlowSingleState(
@@ -19460,7 +19488,7 @@ export function refetchPlatformStorageConfigQuery(variables?: SchemaTypes.Platfo
 export const ImportTemplateDialogDocument = gql`
   query ImportTemplateDialog(
     $templatesSetId: UUID!
-    $includeInnovationFlow: Boolean = false
+    $includeCollaboration: Boolean = false
     $includeCallout: Boolean = false
   ) {
     lookup {
@@ -19471,10 +19499,13 @@ export const ImportTemplateDialogDocument = gql`
             id
             type
           }
-          innovationFlow @include(if: $includeInnovationFlow) {
+          collaboration @include(if: $includeCollaboration) {
             id
-            states {
-              displayName
+            innovationFlow {
+              id
+              states {
+                displayName
+              }
             }
           }
         }
@@ -19497,7 +19528,7 @@ export const ImportTemplateDialogDocument = gql`
  * const { data, loading, error } = useImportTemplateDialogQuery({
  *   variables: {
  *      templatesSetId: // value for 'templatesSetId'
- *      includeInnovationFlow: // value for 'includeInnovationFlow'
+ *      includeCollaboration: // value for 'includeCollaboration'
  *      includeCallout: // value for 'includeCallout'
  *   },
  * });
@@ -19541,7 +19572,7 @@ export function refetchImportTemplateDialogQuery(variables: SchemaTypes.ImportTe
 export const ImportTemplateDialogPlatformTemplatesDocument = gql`
   query ImportTemplateDialogPlatformTemplates(
     $templateTypes: [TemplateType!]
-    $includeInnovationFlow: Boolean = false
+    $includeCollaboration: Boolean = false
     $includeCallout: Boolean = false
   ) {
     platform {
@@ -19553,10 +19584,13 @@ export const ImportTemplateDialogPlatformTemplatesDocument = gql`
               id
               type
             }
-            innovationFlow @include(if: $includeInnovationFlow) {
+            collaboration @include(if: $includeCollaboration) {
               id
-              states {
-                displayName
+              innovationFlow {
+                id
+                states {
+                  displayName
+                }
               }
             }
           }
@@ -19600,7 +19634,7 @@ export const ImportTemplateDialogPlatformTemplatesDocument = gql`
  * const { data, loading, error } = useImportTemplateDialogPlatformTemplatesQuery({
  *   variables: {
  *      templateTypes: // value for 'templateTypes'
- *      includeInnovationFlow: // value for 'includeInnovationFlow'
+ *      includeCollaboration: // value for 'includeCollaboration'
  *      includeCallout: // value for 'includeCallout'
  *   },
  * });
@@ -19789,6 +19823,7 @@ export const TemplateContentDocument = gql`
     $includeCallout: Boolean = false
     $includeCommunityGuidelines: Boolean = false
     $includeInnovationFlow: Boolean = false
+    $includeCollaboration: Boolean = false
     $includePost: Boolean = false
     $includeWhiteboard: Boolean = false
   ) {
@@ -19817,6 +19852,9 @@ export const TemplateContentDocument = gql`
         whiteboard @include(if: $includeWhiteboard) {
           ...WhiteboardTemplateContent
         }
+        collaboration @include(if: $includeCollaboration) {
+          ...CollaborationTemplateContent
+        }
       }
     }
   }
@@ -19825,6 +19863,7 @@ export const TemplateContentDocument = gql`
   ${CommunityGuidelinesTemplateContentFragmentDoc}
   ${InnovationFlowTemplateContentFragmentDoc}
   ${WhiteboardTemplateContentFragmentDoc}
+  ${CollaborationTemplateContentFragmentDoc}
 `;
 
 /**
@@ -19843,6 +19882,7 @@ export const TemplateContentDocument = gql`
  *      includeCallout: // value for 'includeCallout'
  *      includeCommunityGuidelines: // value for 'includeCommunityGuidelines'
  *      includeInnovationFlow: // value for 'includeInnovationFlow'
+ *      includeCollaboration: // value for 'includeCollaboration'
  *      includePost: // value for 'includePost'
  *      includeWhiteboard: // value for 'includeWhiteboard'
  *   },
