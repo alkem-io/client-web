@@ -93,10 +93,10 @@ const replaceElementVersion = (version: number) => (element: ExcalidrawElement) 
 });
 
 /**
- * Returns a function that can be pased to elements.map to replace __preceedingElement__ on the elements that have it
- * For old versions of whiteboards that sort the elements with the __preceedingElement__ property
+ * Returns a function that can be passed to elements.map to replace __precedingElement__ on the elements that have it
+ * For old versions of whiteboards that sort the elements with the __precedingElement__ property
  */
-const replacePreceedingElementsIds = (idsMap: Record<string, string>, lastElementId: string) => {
+const replacePrecedingElementsIds = (idsMap: Record<string, string>, lastElementId: string) => {
   return (element: ExcalidrawElement) => {
     if (!element[PRECEDING_ELEMENT_KEY]) {
       return element;
@@ -118,12 +118,12 @@ const replacePreceedingElementsIds = (idsMap: Record<string, string>, lastElemen
 };
 
 /**
- * Returns a function that can be pased to elements.map to replace the index on the elements that have it
+ * Returns a function that can be passed to elements.map to replace the index on the elements that have it
  * For new versions of whiteboards that have the index property
  */
-const replaceIndexes = baseIndex => {
+const replaceIndexes = (baseIndex: number) => {
   return (element: ExcalidrawElement) => {
-    if (baseIndex && typeof element['index'] === 'number') {
+    if (typeof element['index'] === 'number') {
       return {
         ...element,
         index: element['index'] + baseIndex,
@@ -133,7 +133,7 @@ const replaceIndexes = baseIndex => {
   };
 };
 /**
- * Returns a function that can be pased to elements.map to replace containerId and boundElements ids
+ * Returns a function that can be passed to elements.map to replace containerId and boundElements ids
  */
 const replaceBoundElementsIds = (idsMap: Record<string, string>) => {
   const replace = (id: string | null) => (id ? idsMap[id] || id : id);
@@ -150,7 +150,7 @@ const replaceBoundElementsIds = (idsMap: Record<string, string>) => {
 };
 
 /**
- * Returns a function that can be pased to elements.map, to displace elements by a given displacement
+ * Returns a function that can be passed to elements.map, to displace elements by a given displacement
  */
 const displaceElements = (displacement: { x: number; y: number }) => (element: ExcalidrawElement) => ({
   ...element,
@@ -200,7 +200,7 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
       ?.map(generateNewIds(replacedIds))
       .map(replaceElementVersion(sceneVersion + 1))
       .map(replaceIndexes(maxIndex + 1))
-      .map(replacePreceedingElementsIds(replacedIds, lastElementId))
+      .map(replacePrecedingElementsIds(replacedIds, lastElementId))
       .map(replaceBoundElementsIds(replacedIds))
       .map(displaceElements(displacement));
 

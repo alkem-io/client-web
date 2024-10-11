@@ -1,42 +1,43 @@
 import { useMemo } from 'react';
-import { CommunityPolicyFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { RoleDefinitionPolicyFragment } from '../../../../core/apollo/generated/graphql-schema';
 
 const useCommunityPolicyChecker = (
-  communicationPolicy: CommunityPolicyFragment | undefined,
+  memberRoleDefinition: RoleDefinitionPolicyFragment | undefined,
+  leadRoleDefinition: RoleDefinitionPolicyFragment | undefined,
   entities: { isLead: boolean }[] | undefined
 ) =>
   useMemo(() => {
     const leadsCount = (entities ?? []).filter(entity => entity.isLead).length;
 
     const canAddLeadUser = () => {
-      if (!communicationPolicy || communicationPolicy.lead.maxUser === -1) {
+      if (!leadRoleDefinition || leadRoleDefinition.userPolicy.maximum === -1) {
         return true;
       } else {
-        return communicationPolicy.lead.maxUser > leadsCount;
+        return leadRoleDefinition.userPolicy.maximum > leadsCount;
       }
     };
 
     const canRemoveLeadUser = () => {
-      if (!communicationPolicy || communicationPolicy.lead.minUser <= 0) {
+      if (!leadRoleDefinition || leadRoleDefinition.userPolicy.minimum <= 0) {
         return true;
       } else {
-        return communicationPolicy.lead.minUser < leadsCount;
+        return leadRoleDefinition.userPolicy.minimum < leadsCount;
       }
     };
 
     const canAddLeadOrganization = () => {
-      if (!communicationPolicy || communicationPolicy.lead.maxOrg === -1) {
+      if (!leadRoleDefinition || leadRoleDefinition.organizationPolicy.maximum === -1) {
         return true;
       } else {
-        return communicationPolicy.lead.maxOrg > leadsCount;
+        return leadRoleDefinition.organizationPolicy.maximum > leadsCount;
       }
     };
 
     const canRemoveLeadOrganization = () => {
-      if (!communicationPolicy || communicationPolicy.lead.minOrg <= 0) {
+      if (!leadRoleDefinition || leadRoleDefinition.organizationPolicy.minimum <= 0) {
         return true;
       } else {
-        return communicationPolicy.lead.minOrg < leadsCount;
+        return leadRoleDefinition.organizationPolicy.minimum < leadsCount;
       }
     };
 
@@ -46,6 +47,6 @@ const useCommunityPolicyChecker = (
       canAddLeadOrganization: canAddLeadOrganization(),
       canRemoveLeadOrganization: canRemoveLeadOrganization(),
     };
-  }, [communicationPolicy, entities]);
+  }, [memberRoleDefinition, leadRoleDefinition, entities]);
 
 export default useCommunityPolicyChecker;

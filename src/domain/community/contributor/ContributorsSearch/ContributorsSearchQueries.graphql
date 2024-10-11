@@ -1,11 +1,11 @@
-query ContributorsPageOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
-  organizationsPaginated(first: $first, after: $after, filter: $filter) {
+query ContributorsPageOrganizations($first: Int!, $after: UUID, $status: OrganizationVerificationEnum, $filter: OrganizationFilterInput) {
+  organizationsPaginated(first: $first, after: $after, filter: $filter, status: $status) {
     ...OrganizationContributorPaginated
   }
 }
 
-query ContributorsPageUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
-  usersPaginated(first: $first, after: $after, filter: $filter) {
+query ContributorsPageUsers($first: Int!, $after: UUID, $filter: UserFilterInput, $withTags: Boolean) {
+  usersPaginated(first: $first, after: $after, filter: $filter, withTags: $withTags) {
     ...UserContributorPaginated
   }
 }

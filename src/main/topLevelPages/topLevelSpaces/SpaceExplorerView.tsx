@@ -79,7 +79,9 @@ interface Space extends Identifiable {
     vision?: string;
   };
   community?: {
-    myMembershipStatus?: CommunityMembershipStatus;
+    roleSet?: {
+      myMembershipStatus?: CommunityMembershipStatus;
+    };
   };
   matchedTerms?: string[];
   settings: {
@@ -226,7 +228,7 @@ export const SpaceExplorerView: FC<SpaceExplorerViewProps> = ({
                   shouldDisplayPrivacyInfo && (
                     <SpaceSubspaceCardLabel
                       type={space.profile.type!}
-                      member={space.community?.myMembershipStatus === CommunityMembershipStatus.Member}
+                      member={space.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
                       isPrivate={space.settings.privacy?.mode === SpacePrivacyMode.Private}
                     />
                   )
