@@ -532,6 +532,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         'success'
       );
 
+      addVCCreationCache(createdVc.nameID);
+
       return true;
     }
 
@@ -564,10 +566,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       const { data } = await createVirtualContributor({
         variables,
       });
-
-      if (data?.createVirtualContributor.nameID) {
-        addVCCreationCache(data.createVirtualContributor.nameID);
-      }
       return data?.createVirtualContributor;
     } catch (error) {
       return;
