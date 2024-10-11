@@ -5,6 +5,9 @@ import type {
   Gesture,
   SocketId,
 } from '@alkemio/excalidraw/dist/excalidraw/types';
+import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
+import { newElementWith } from '@alkemio/excalidraw/dist/excalidraw/element/mutateElement';
+import { getSceneVersion, hashElementsVersion, restoreElements } from '@alkemio/excalidraw';
 import {
   ACTIVE_THRESHOLD,
   CollaboratorModeEvent,
@@ -14,14 +17,12 @@ import {
   SYNC_FULL_SCENE_INTERVAL_MS,
   WS_SCENE_EVENT_TYPES,
 } from './excalidrawAppConstants';
-import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
 import { isImageElement, UserIdleState } from './utils';
 import { getCollabServer, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
 import { ReconciledElements, reconcileElements as _reconcileElements } from './reconciliation';
 import { BinaryFilesWithUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
-import { newElementWith } from '@alkemio/excalidraw/dist/excalidraw/element/mutateElement';
-import { getSceneVersion, hashElementsVersion, restoreElements } from '@alkemio/excalidraw';
+import { error as logError, TagCategoryValues } from '../../../../../core/logging/sentry/log';
 
 interface CollabState {
   errorMessage: string;
@@ -197,10 +198,6 @@ class Collab {
 
                 const collaborators = new Map(this.collaborators);
                 const user = collaborators.get(socketId) || {}!;
-                /* user.pointer = pointer;
-                user.button = button;
-                user.selectedElementIds = selectedElementIds;
-                user.username = username;*/
                 collaborators.set(socketId, {
                   ...user,
                   pointer,
@@ -224,8 +221,6 @@ class Collab {
             'idle-state': ({ userState, socketId, username }) => {
               const collaborators = new Map(this.collaborators);
               const user = collaborators.get(socketId) || {}!;
-              // user.userState = userState;
-              // user.username = username;
               collaborators.set(socketId, {
                 ...user,
                 userState,
@@ -238,8 +233,12 @@ class Collab {
           }
         );
       } catch (error) {
+        const err = error as Error;
         // eslint-disable-next-line no-console
-        console.error(error);
+        logError(err?.message ?? JSON.stringify(err), {
+          category: TagCategoryValues.WHITEBOARD,
+          label: 'Collab',
+        });
         this.state.errorMessage = (error as { message: string } | undefined)?.message ?? '';
         reject(error);
       }
@@ -264,9 +263,13 @@ class Collab {
       try {
         this.queueBroadcastAllElements();
       } catch (error: unknown) {
+        const err = error as Error;
         // log the error and move on. other peers will sync us the scene.
         // eslint-disable-next-line no-console
-        console.error(error);
+        logError(err?.message ?? JSON.stringify(err), {
+          category: TagCategoryValues.WHITEBOARD,
+          label: 'Collab',
+        });
       } finally {
         this.portal.socketInitialized = true;
       }
