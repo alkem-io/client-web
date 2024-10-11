@@ -10,7 +10,7 @@ import { Actions } from '../../../../core/ui/actions/Actions';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { AiPersonaEngine } from '../../../../core/apollo/generated/graphql-schema';
-import ExternalAIComingSoonDialog from './ExternalAICominSoonDialog';
+import ExternalAIComingSoonDialog from './ExternalAIComingSoonDialog';
 import FormikAutocomplete from '../../../../core/ui/forms/FormikAutocomplete';
 
 const PROVIDERS = [
