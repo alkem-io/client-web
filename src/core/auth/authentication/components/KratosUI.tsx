@@ -156,11 +156,7 @@ export const KratosUI: FC<KratosUIProps> = ({
     }
 
     if (node.group === 'oidc' && isSubmitButton(node)) {
-      return (
-        <React.Fragment key={node.attributes.value}>
-          <KratosSocialButton node={node} buttonComponent={buttonComponent} />
-        </React.Fragment>
-      );
+      return <KratosSocialButton key={node.attributes.value} node={node} buttonComponent={buttonComponent} />;
     }
 
     switch (node.attributes.type) {
