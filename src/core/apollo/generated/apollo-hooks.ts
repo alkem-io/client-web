@@ -10810,8 +10810,8 @@ export function refetchContributorsPageOrganizationsQuery(
 }
 
 export const ContributorsPageUsersDocument = gql`
-  query ContributorsPageUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
-    usersPaginated(first: $first, after: $after, filter: $filter) {
+  query ContributorsPageUsers($first: Int!, $after: UUID, $filter: UserFilterInput, $withTags: Boolean) {
+    usersPaginated(first: $first, after: $after, filter: $filter, withTags: $withTags) {
       ...UserContributorPaginated
     }
   }
@@ -10833,6 +10833,7 @@ export const ContributorsPageUsersDocument = gql`
  *      first: // value for 'first'
  *      after: // value for 'after'
  *      filter: // value for 'filter'
+ *      withTags: // value for 'withTags'
  *   },
  * });
  */
