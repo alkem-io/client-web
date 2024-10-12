@@ -8772,39 +8772,6 @@ export type UpdateInnovationFlowSingleStateMutation = {
   };
 };
 
-export type SpaceCollaborationTemplatesQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-}>;
-
-export type SpaceCollaborationTemplatesQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          templatesManager?:
-            | {
-                __typename?: 'TemplatesManager';
-                id: string;
-                templatesSet?:
-                  | {
-                      __typename?: 'TemplatesSet';
-                      id: string;
-                      collaborationTemplates: Array<{
-                        __typename?: 'Template';
-                        id: string;
-                        profile: { __typename?: 'Profile'; id: string; displayName: string };
-                      }>;
-                    }
-                  | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
 export type UpdateInnovationFlowMutationVariables = Exact<{
   input: UpdateInnovationFlowEntityInput;
 }>;
@@ -24514,6 +24481,39 @@ export type CalloutOnCollaborationWithStorageConfigFragment = {
       };
     };
   }>;
+};
+
+export type SpaceCollaborationTemplatesQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpaceCollaborationTemplatesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          templatesManager?:
+            | {
+                __typename?: 'TemplatesManager';
+                id: string;
+                templatesSet?:
+                  | {
+                      __typename?: 'TemplatesSet';
+                      id: string;
+                      collaborationTemplates: Array<{
+                        __typename?: 'Template';
+                        id: string;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }>;
+                    }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
 };
 
 export type ImportTemplateDialogQueryVariables = Exact<{

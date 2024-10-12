@@ -5810,82 +5810,6 @@ export type UpdateInnovationFlowSingleStateMutationOptions = Apollo.BaseMutation
   SchemaTypes.UpdateInnovationFlowSingleStateMutation,
   SchemaTypes.UpdateInnovationFlowSingleStateMutationVariables
 >;
-export const SpaceCollaborationTemplatesDocument = gql`
-  query SpaceCollaborationTemplates($spaceId: UUID!) {
-    lookup {
-      space(ID: $spaceId) {
-        templatesManager {
-          id
-          templatesSet {
-            id
-            collaborationTemplates {
-              id
-              profile {
-                id
-                displayName
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useSpaceCollaborationTemplatesQuery__
- *
- * To run a query within a React component, call `useSpaceCollaborationTemplatesQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceCollaborationTemplatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceCollaborationTemplatesQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useSpaceCollaborationTemplatesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceCollaborationTemplatesQuery,
-    SchemaTypes.SpaceCollaborationTemplatesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.SpaceCollaborationTemplatesQuery,
-    SchemaTypes.SpaceCollaborationTemplatesQueryVariables
-  >(SpaceCollaborationTemplatesDocument, options);
-}
-
-export function useSpaceCollaborationTemplatesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceCollaborationTemplatesQuery,
-    SchemaTypes.SpaceCollaborationTemplatesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.SpaceCollaborationTemplatesQuery,
-    SchemaTypes.SpaceCollaborationTemplatesQueryVariables
-  >(SpaceCollaborationTemplatesDocument, options);
-}
-
-export type SpaceCollaborationTemplatesQueryHookResult = ReturnType<typeof useSpaceCollaborationTemplatesQuery>;
-export type SpaceCollaborationTemplatesLazyQueryHookResult = ReturnType<typeof useSpaceCollaborationTemplatesLazyQuery>;
-export type SpaceCollaborationTemplatesQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceCollaborationTemplatesQuery,
-  SchemaTypes.SpaceCollaborationTemplatesQueryVariables
->;
-export function refetchSpaceCollaborationTemplatesQuery(
-  variables: SchemaTypes.SpaceCollaborationTemplatesQueryVariables
-) {
-  return { query: SpaceCollaborationTemplatesDocument, variables: variables };
-}
-
 export const UpdateInnovationFlowDocument = gql`
   mutation updateInnovationFlow($input: UpdateInnovationFlowEntityInput!) {
     updateInnovationFlow(innovationFlowData: $input) {
@@ -19483,6 +19407,82 @@ export type PlatformStorageConfigQueryResult = Apollo.QueryResult<
 >;
 export function refetchPlatformStorageConfigQuery(variables?: SchemaTypes.PlatformStorageConfigQueryVariables) {
   return { query: PlatformStorageConfigDocument, variables: variables };
+}
+
+export const SpaceCollaborationTemplatesDocument = gql`
+  query SpaceCollaborationTemplates($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        templatesManager {
+          id
+          templatesSet {
+            id
+            collaborationTemplates {
+              id
+              profile {
+                id
+                displayName
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceCollaborationTemplatesQuery__
+ *
+ * To run a query within a React component, call `useSpaceCollaborationTemplatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceCollaborationTemplatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceCollaborationTemplatesQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceCollaborationTemplatesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceCollaborationTemplatesQuery,
+    SchemaTypes.SpaceCollaborationTemplatesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.SpaceCollaborationTemplatesQuery,
+    SchemaTypes.SpaceCollaborationTemplatesQueryVariables
+  >(SpaceCollaborationTemplatesDocument, options);
+}
+
+export function useSpaceCollaborationTemplatesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceCollaborationTemplatesQuery,
+    SchemaTypes.SpaceCollaborationTemplatesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SpaceCollaborationTemplatesQuery,
+    SchemaTypes.SpaceCollaborationTemplatesQueryVariables
+  >(SpaceCollaborationTemplatesDocument, options);
+}
+
+export type SpaceCollaborationTemplatesQueryHookResult = ReturnType<typeof useSpaceCollaborationTemplatesQuery>;
+export type SpaceCollaborationTemplatesLazyQueryHookResult = ReturnType<typeof useSpaceCollaborationTemplatesLazyQuery>;
+export type SpaceCollaborationTemplatesQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceCollaborationTemplatesQuery,
+  SchemaTypes.SpaceCollaborationTemplatesQueryVariables
+>;
+export function refetchSpaceCollaborationTemplatesQuery(
+  variables: SchemaTypes.SpaceCollaborationTemplatesQueryVariables
+) {
+  return { query: SpaceCollaborationTemplatesDocument, variables: variables };
 }
 
 export const ImportTemplateDialogDocument = gql`

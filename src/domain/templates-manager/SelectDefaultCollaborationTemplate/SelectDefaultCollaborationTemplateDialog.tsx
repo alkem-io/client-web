@@ -1,17 +1,17 @@
 import * as yup from 'yup';
 import { Button, Skeleton } from '@mui/material';
-import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
-import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
-import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
+import DialogHeader from '../../../core/ui/dialog/DialogHeader';
+import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
+import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
 import { useTranslation } from 'react-i18next';
-import FormikSelect from '../../../../../core/ui/forms/FormikSelect';
+import FormikSelect from '../../../core/ui/forms/FormikSelect';
 import { Form, Formik } from 'formik';
-import useLoadingState from '../../../../shared/utils/useLoadingState';
+import useLoadingState from '../../shared/utils/useLoadingState';
 import { LoadingButton } from '@mui/lab';
-import { useSpaceCollaborationTemplatesQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useSpaceCollaborationTemplatesQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';
-import Gutters from '../../../../../core/ui/grid/Gutters';
-import { Actions } from '../../../../../core/ui/actions/Actions';
+import Gutters from '../../../core/ui/grid/Gutters';
+import { Actions } from '../../../core/ui/actions/Actions';
 
 interface FormValues {
   collaborationTemplateSelectedId: string;
@@ -21,7 +21,7 @@ interface SelectDefaultCollaborationTemplateDialogProps {
   spaceId: string | undefined;
   open: boolean;
   onClose?: () => void;
-  defaultInnovationFlowId?: string;
+  defaultCollaborationTemplateId?: string;
   onSelectCollaborationTemplate: (collaborationTemplateId: string) => Promise<unknown>;
 }
 
@@ -29,7 +29,7 @@ const SelectDefaultCollaborationTemplateDialog = ({
   spaceId,
   open,
   onClose,
-  defaultInnovationFlowId: defaultCollaborationTemplateId,
+  defaultCollaborationTemplateId,
   onSelectCollaborationTemplate: onSelectInnovationFlow,
 }: SelectDefaultCollaborationTemplateDialogProps) => {
   const { t } = useTranslation();
@@ -51,10 +51,10 @@ const SelectDefaultCollaborationTemplateDialog = ({
   };
 
   const validationSchema = yup.object().shape({
-    innovationFlowSelectedId: yup.string().required(),
+    collaborationTemplateSelectedId: yup.string().required(),
   });
 
-  const innovationFlowTemplates = useMemo(
+  const collaborationTemplates = useMemo(
     () =>
       data?.lookup.space?.templatesManager?.templatesSet?.collaborationTemplates.map(template => ({
         id: template.id,
@@ -77,11 +77,11 @@ const SelectDefaultCollaborationTemplateDialog = ({
                 {t('pages.admin.space.sections.subspaces.defaultSettings.defaultInnovationFlow.description')}
               </WrapperMarkdown>
               {loadingInnovationFlows && <Skeleton variant="rectangular" />}
-              {innovationFlowTemplates && (
+              {collaborationTemplates && (
                 <FormikSelect
                   title={t('components.discussionForm.category.title')}
-                  name="innovationFlowSelectedId"
-                  values={innovationFlowTemplates}
+                  name="collaborationTemplateSelectedId"
+                  values={collaborationTemplates}
                 />
               )}
               <Actions justifyContent="end">
