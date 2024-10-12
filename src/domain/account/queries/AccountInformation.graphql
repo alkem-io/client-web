@@ -64,6 +64,7 @@ query AccountInformation($accountId: UUID!) {
           calloutTemplatesCount
           communityGuidelinesTemplatesCount
           innovationFlowTemplatesCount
+          collaborationTemplatesCount
           postTemplatesCount
           whiteboardTemplatesCount
         }

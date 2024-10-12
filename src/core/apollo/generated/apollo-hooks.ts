@@ -3436,6 +3436,7 @@ export const InnovationPackCardFragmentDoc = gql`
       postTemplatesCount
       whiteboardTemplatesCount
       innovationFlowTemplatesCount
+      collaborationTemplatesCount
       calloutTemplatesCount
       communityGuidelinesTemplatesCount
     }
@@ -4911,6 +4912,7 @@ export const AccountInformationDocument = gql`
             calloutTemplatesCount
             communityGuidelinesTemplatesCount
             innovationFlowTemplatesCount
+            collaborationTemplatesCount
             postTemplatesCount
             whiteboardTemplatesCount
           }
@@ -11908,6 +11910,7 @@ export const AccountResourcesInfoDocument = gql`
             calloutTemplatesCount
             communityGuidelinesTemplatesCount
             innovationFlowTemplatesCount
+            collaborationTemplatesCount
             postTemplatesCount
             whiteboardTemplatesCount
           }
@@ -21657,6 +21660,7 @@ export const InnovationLibraryDocument = gql`
             calloutTemplatesCount
             communityGuidelinesTemplatesCount
             innovationFlowTemplatesCount
+            collaborationTemplatesCount
             postTemplatesCount
             whiteboardTemplatesCount
           }

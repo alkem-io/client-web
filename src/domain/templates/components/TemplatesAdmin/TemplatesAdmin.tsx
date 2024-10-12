@@ -235,7 +235,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
       <PageContentBlockSeamless disablePadding>
         <TemplatesGallery
           headerText={t('common.entitiesWithCount', {
-            entityType: t(`common.enums.templateType.${TemplateType.Callout}_plural`), // TODO
+            entityType: t(`common.enums.templateType.${TemplateType.Collaboration}_plural`), // TODO
             count: calloutTemplates?.length ?? 0,
           })}
           actions={<GalleryActions templateType={TemplateType.Collaboration} />}

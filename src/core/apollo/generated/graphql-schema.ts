@@ -7904,6 +7904,7 @@ export type AccountInformationQuery = {
                   calloutTemplatesCount: number;
                   communityGuidelinesTemplatesCount: number;
                   innovationFlowTemplatesCount: number;
+                  collaborationTemplatesCount: number;
                   postTemplatesCount: number;
                   whiteboardTemplatesCount: number;
                 }
@@ -17011,6 +17012,7 @@ export type AccountResourcesInfoQuery = {
                   calloutTemplatesCount: number;
                   communityGuidelinesTemplatesCount: number;
                   innovationFlowTemplatesCount: number;
+                  collaborationTemplatesCount: number;
                   postTemplatesCount: number;
                   whiteboardTemplatesCount: number;
                 }
@@ -28010,6 +28012,7 @@ export type InnovationLibraryQuery = {
               calloutTemplatesCount: number;
               communityGuidelinesTemplatesCount: number;
               innovationFlowTemplatesCount: number;
+              collaborationTemplatesCount: number;
               postTemplatesCount: number;
               whiteboardTemplatesCount: number;
             }
@@ -28566,6 +28569,7 @@ export type InnovationLibraryBlockQuery = {
               postTemplatesCount: number;
               whiteboardTemplatesCount: number;
               innovationFlowTemplatesCount: number;
+              collaborationTemplatesCount: number;
               calloutTemplatesCount: number;
               communityGuidelinesTemplatesCount: number;
             }
@@ -28640,6 +28644,7 @@ export type InnovationPackCardFragment = {
         postTemplatesCount: number;
         whiteboardTemplatesCount: number;
         innovationFlowTemplatesCount: number;
+        collaborationTemplatesCount: number;
         calloutTemplatesCount: number;
         communityGuidelinesTemplatesCount: number;
       }

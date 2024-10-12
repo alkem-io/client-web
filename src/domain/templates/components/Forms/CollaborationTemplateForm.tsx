@@ -127,7 +127,7 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: Collaboratio
 
   return (
     <TemplateFormBase
-      templateType={TemplateType.InnovationFlow}
+      templateType={TemplateType.Collaboration}
       template={template}
       initialValues={initialValues}
       onSubmit={onSubmit}

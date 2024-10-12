@@ -22,6 +22,7 @@ const TemplatePreview = ({ template }: TemplatePreviewProps) => {
       includeCallout: template?.type === TemplateType.Callout,
       includeCommunityGuidelines: template?.type === TemplateType.CommunityGuidelines,
       includeInnovationFlow: template?.type === TemplateType.InnovationFlow,
+      includeCollaboration: template?.type === TemplateType.Collaboration,
       includePost: template?.type === TemplateType.Post,
       includeWhiteboard: template?.type === TemplateType.Whiteboard,
     },
