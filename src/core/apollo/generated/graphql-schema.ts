@@ -1424,8 +1424,8 @@ export type CommunityApplicationResult = {
   application: Application;
   /** ID for the pending membership */
   id: Scalars['UUID'];
-  /** The space that the application is for */
-  space: Space;
+  /** The key information for the Space that the application/invitation is for */
+  spaceInfo: SpaceInfo;
 };
 
 export enum CommunityContributorType {
@@ -1482,8 +1482,8 @@ export type CommunityInvitationResult = {
   id: Scalars['UUID'];
   /** The invitation itself */
   invitation: Invitation;
-  /** The space that the application is for */
-  space: Space;
+  /** The key information for the Space that the application/invitation is for */
+  spaceInfo: SpaceInfo;
 };
 
 export enum CommunityMembershipPolicy {
@@ -2259,6 +2259,7 @@ export type DeleteUserGroupInput = {
 
 export type DeleteUserInput = {
   ID: Scalars['UUID_NAMEID_EMAIL'];
+  deleteIdentity?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type DeleteVirtualContributorInput = {
@@ -5471,6 +5472,20 @@ export type SpaceDefaults = {
 export type SpaceFilterInput = {
   /** Return Spaces with a Visibility matching one of the provided types. */
   visibilities?: InputMaybe<Array<SpaceVisibility>>;
+};
+
+export type SpaceInfo = {
+  __typename?: 'SpaceInfo';
+  /** The Context of the Space */
+  context: Context;
+  /** The Space ID */
+  id: Scalars['UUID'];
+  /** The Level of the Space */
+  level: SpaceLevel;
+  /** The Space nameID */
+  nameID: Scalars['NameID'];
+  /** The Profile of the Space */
+  profile: Profile;
 };
 
 export enum SpaceLevel {
@@ -18137,10 +18152,10 @@ export type UserPendingMembershipsQuery = {
     communityApplications: Array<{
       __typename?: 'CommunityApplicationResult';
       id: string;
-      space: {
-        __typename?: 'Space';
+      spaceInfo: {
+        __typename?: 'SpaceInfo';
         id: string;
-        level: number;
+        level: SpaceLevel;
         profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
       };
       application: {
@@ -18153,10 +18168,10 @@ export type UserPendingMembershipsQuery = {
     communityInvitations: Array<{
       __typename?: 'CommunityInvitationResult';
       id: string;
-      space: {
-        __typename?: 'Space';
+      spaceInfo: {
+        __typename?: 'SpaceInfo';
         id: string;
-        level: number;
+        level: SpaceLevel;
         profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
       };
       invitation: {
@@ -18179,10 +18194,10 @@ export type UserPendingMembershipsQuery = {
 export type InvitationDataFragment = {
   __typename?: 'CommunityInvitationResult';
   id: string;
-  space: {
-    __typename?: 'Space';
+  spaceInfo: {
+    __typename?: 'SpaceInfo';
     id: string;
-    level: number;
+    level: SpaceLevel;
     profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
   };
   invitation: {
@@ -18586,10 +18601,10 @@ export type VcMembershipsQuery = {
     communityInvitations: Array<{
       __typename?: 'CommunityInvitationResult';
       id: string;
-      space: {
-        __typename?: 'Space';
+      spaceInfo: {
+        __typename?: 'SpaceInfo';
         id: string;
-        level: number;
+        level: SpaceLevel;
         profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
       };
       invitation: {
@@ -29753,10 +29768,10 @@ export type NewMembershipsQuery = {
     communityApplications: Array<{
       __typename?: 'CommunityApplicationResult';
       id: string;
-      space: {
-        __typename?: 'Space';
+      spaceInfo: {
+        __typename?: 'SpaceInfo';
         id: string;
-        level: number;
+        level: SpaceLevel;
         profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
       };
       application: {
@@ -29769,10 +29784,10 @@ export type NewMembershipsQuery = {
     communityInvitations: Array<{
       __typename?: 'CommunityInvitationResult';
       id: string;
-      space: {
-        __typename?: 'Space';
+      spaceInfo: {
+        __typename?: 'SpaceInfo';
         id: string;
-        level: number;
+        level: SpaceLevel;
         profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
       };
       invitation: {
@@ -29789,9 +29804,9 @@ export type NewMembershipsQuery = {
 };
 
 export type NewMembershipsBasicSpaceFragment = {
-  __typename?: 'Space';
+  __typename?: 'SpaceInfo';
   id: string;
-  level: number;
+  level: SpaceLevel;
   profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
 };
 

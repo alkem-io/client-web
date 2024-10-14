@@ -1686,7 +1686,7 @@ export const UserRolesDetailsFragmentDoc = gql`
 export const InvitationDataFragmentDoc = gql`
   fragment InvitationData on CommunityInvitationResult {
     id
-    space {
+    spaceInfo {
       id
       level
       profile {
@@ -3490,7 +3490,7 @@ export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
   ${VisualUriFragmentDoc}
 `;
 export const NewMembershipsBasicSpaceFragmentDoc = gql`
-  fragment NewMembershipsBasicSpace on Space {
+  fragment NewMembershipsBasicSpace on SpaceInfo {
     id
     level
     profile {
@@ -13573,7 +13573,7 @@ export const UserPendingMembershipsDocument = gql`
       }
       communityApplications(states: ["new"]) {
         id
-        space {
+        spaceInfo {
           id
           level
           profile {
@@ -22694,7 +22694,7 @@ export const NewMembershipsDocument = gql`
     me {
       communityApplications(states: ["new", "approved"]) {
         id
-        space {
+        spaceInfo {
           ...NewMembershipsBasicSpace
         }
         application {
@@ -22708,7 +22708,7 @@ export const NewMembershipsDocument = gql`
       }
       communityInvitations(states: ["invited", "accepted"]) {
         id
-        space {
+        spaceInfo {
           ...NewMembershipsBasicSpace
         }
         invitation {
