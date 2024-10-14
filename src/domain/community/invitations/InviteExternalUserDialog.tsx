@@ -13,6 +13,7 @@ import Gutters from '../../../core/ui/grid/Gutters';
 import { InviteExternalUserData } from './useInviteUsers';
 import { CommunityRoleType } from '../../../core/apollo/generated/graphql-schema';
 import FormikSelect from '../../../core/ui/forms/FormikSelect';
+import TranslationKey from '../../../core/i18n/utils/TranslationKey';
 
 interface MessageDialogProps {
   open: boolean;
@@ -94,7 +95,10 @@ const InviteExternalUserDialog = ({
                       <Gutters disableGap disablePadding sx={{ minWidth: '100px' }}>
                         <FormikSelect
                           name="extraRole"
-                          values={communityRoles.map(role => ({ id: role, name: role }))}
+                          values={communityRoles.map(role => ({
+                            id: role,
+                            name: t(`common.${role.toLowerCase()}` as TranslationKey) as string,
+                          }))}
                           required
                         />
                       </Gutters>

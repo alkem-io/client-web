@@ -17,6 +17,7 @@ import { sortBy } from 'lodash';
 import { CommunityRoleType } from '../../../core/apollo/generated/graphql-schema';
 import FormikSelect from '../../../core/ui/forms/FormikSelect';
 import { gutters } from '../../../core/ui/grid/utils';
+import TranslationKey from '../../../core/i18n/utils/TranslationKey';
 
 interface MessageDialogProps {
   open: boolean;
@@ -167,7 +168,10 @@ const InviteExistingUserDialog = ({
                   <Gutters disableGap disablePadding sx={{ minWidth: '100px' }}>
                     <FormikSelect
                       name="extraRole"
-                      values={communityRoles.map(role => ({ id: role, name: role }))}
+                      values={communityRoles.map(role => ({
+                        id: role,
+                        name: t(`common.${role.toLowerCase()}` as TranslationKey) as string,
+                      }))}
                       required
                     />
                   </Gutters>
