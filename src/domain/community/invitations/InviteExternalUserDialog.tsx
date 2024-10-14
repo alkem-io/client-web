@@ -97,7 +97,7 @@ const InviteExternalUserDialog = ({
                           name="extraRole"
                           values={communityRoles.map(role => ({
                             id: role,
-                            name: t(`common.${role.toLowerCase()}` as TranslationKey) as string,
+                            name: t(`common.${role.toLowerCase()}` as TranslationKey, { defaultValue: role }) as string,
                           }))}
                           required
                         />
