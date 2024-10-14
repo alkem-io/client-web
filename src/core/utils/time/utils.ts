@@ -64,6 +64,15 @@ export const formatBadgeDate = ({
   };
 };
 
+const longDayFormatOptions: Intl.DateTimeFormatOptions = {
+  weekday: 'short',
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+};
+
 // either only startDateTime
 // or startDateTime - endDateTime
 export const formatLongDateTimeString = ({
@@ -77,28 +86,12 @@ export const formatLongDateTimeString = ({
   }
 
   // note can't extract the formatting options beacuse of type error
-  let longDateTimeString = new Date(startDate).toLocaleDateString(LocaleId, {
-    weekday: 'short',
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  let longDateTimeString = new Date(startDate).toLocaleDateString(LocaleId, longDayFormatOptions);
 
   if ((durationDays || 0) > 0 && durationMinutes && durationMinutes > 0) {
     const endDate = getEndDateByDuration(startDate, durationMinutes);
 
-    longDateTimeString +=
-      ' - ' +
-      endDate.toLocaleDateString(LocaleId, {
-        weekday: 'short',
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      });
+    longDateTimeString += ' - ' + endDate.toLocaleDateString(LocaleId, longDayFormatOptions);
   }
 
   return longDateTimeString;
@@ -120,6 +113,11 @@ export function addMinutes(date: Date | string, minutes: number): Date {
   return dayjs(date).add(minutes, 'minutes').toDate();
 }
 
+const timeFormatOptions: Intl.DateTimeFormatOptions = {
+  hour: '2-digit',
+  minute: '2-digit',
+};
+
 export const formatTimeAndDuration = (
   event: { startDate?: Date; durationMinutes?: number; wholeDay?: boolean; durationDays?: number },
   t: TFunction<'translation', undefined>
@@ -131,22 +129,13 @@ export const formatTimeAndDuration = (
   const startDate = new Date(event.startDate);
 
   if (!event.durationMinutes || (event.durationDays ?? 0) > 0) {
-    return startDate.toLocaleTimeString(LocaleId, {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    return startDate.toLocaleTimeString(LocaleId, timeFormatOptions);
   } else {
     const endDate = addMinutes(startDate, event.durationMinutes);
     return (
-      startDate.toLocaleTimeString(LocaleId, {
-        hour: '2-digit',
-        minute: '2-digit',
-      }) +
+      startDate.toLocaleTimeString(LocaleId, timeFormatOptions) +
       ' - ' +
-      endDate.toLocaleTimeString(LocaleId, {
-        hour: '2-digit',
-        minute: '2-digit',
-      })
+      endDate.toLocaleTimeString(LocaleId, timeFormatOptions)
     );
   }
 };
@@ -156,10 +145,7 @@ export const formatTime = (date: Date | undefined) => {
     return null;
   }
 
-  return date.toLocaleTimeString(LocaleId, {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  return date.toLocaleTimeString(LocaleId, timeFormatOptions);
 };
 
 export const dateRounded = (date: Date = new Date()) => {
@@ -183,17 +169,19 @@ export const formatDateTime = (date: Date) => {
   return dayjs(date).format('DD/MM/YYYY[ at ]HH:mm');
 };
 
+const dayFormatOptions: Intl.DateTimeFormatOptions = {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+};
+
 export const isSameDay = (startDate: Date | undefined, endDate: number | Date | undefined) => {
   if (!startDate || !endDate) {
     return true;
   }
 
-  const startDateOnly = new Date(startDate);
-  const endDateOnly = new Date(endDate);
+  const startDateOnly = new Date(startDate).toLocaleDateString(LocaleId, dayFormatOptions);
+  const endDateOnly = new Date(endDate).toLocaleDateString(LocaleId, dayFormatOptions);
 
-  return (
-    startDateOnly.getFullYear() === endDateOnly.getFullYear() &&
-    startDateOnly.getMonth() === endDateOnly.getMonth() &&
-    startDateOnly.getDate() === endDateOnly.getDate()
-  );
+  return startDateOnly === endDateOnly;
 };

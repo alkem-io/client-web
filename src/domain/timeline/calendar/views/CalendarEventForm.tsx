@@ -28,7 +28,7 @@ import { isSameDay } from '../../../../core/utils/time/utils';
 
 const DEFAULT_DURATION_MINUTES = 30;
 
-type DateType = number | Date | undefined;
+type DateType = Date | undefined;
 
 interface CalendarEventFormProps {
   event: Partial<CalendarEventDetailData> | undefined;
@@ -113,43 +113,54 @@ const CalendarEventForm = ({
   // (not the case in #2 where we're using durationMinutes instead of endDate)
   const validateDuration = value => {
     const { durationMinutes, startDate, endDate, wholeDay } = value || {};
-    const isDurationPositive = (durationMinutes ?? 0) > 0;
-    const isEndDateValid = endDate && startDate && new Date(endDate) > new Date(startDate);
 
     if (wholeDay) {
       return true;
-    } else if (isSameDay(startDate, endDate)) {
-      return isDurationPositive;
+    }
+    if (isSameDay(startDate, endDate) && (durationMinutes ?? 0) > 0) {
+      return true;
+    }
+    if (endDate && startDate && dayjs(endDate).isAfter(dayjs(startDate))) {
+      return true;
     }
 
-    return isEndDateValid;
+    return false;
   };
 
-  const validationSchema = yup
-    .object()
-    .shape({
-      displayName: displayNameValidator,
-      description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-      type: yup.string().required(t('common.field-required')),
-      durationMinutes: yup.number().positive().nullable(),
-      startDate: yup.date().nullable(),
-      endDate: yup.date().nullable(),
-      wholeDay: yup.boolean(),
-    })
-    .test(
-      'valid-event',
-      'Either durationMinutes must be positive, or endDate must be greater than startDate, or wholeDay must be true',
-      function (value) {
-        return validateDuration(value);
-      }
-    );
+  const validationSchema = yup.object().shape({
+    displayName: displayNameValidator,
+    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+    type: yup.string().required(t('common.field-required')),
+    durationMinutes: yup
+      .number()
+      .positive()
+      .nullable()
+      .test('valid-duration', 'Invalid duration', function (value) {
+        return validateDuration({ ...this.parent, durationMinutes: value });
+      }),
+    startDate: yup
+      .date()
+      .nullable()
+      .test('valid-startDate', 'Invalid start date', function (value) {
+        return validateDuration({ ...this.parent, startDate: value });
+      }),
+    endDate: yup
+      .date()
+      .nullable()
+      .test('valid-endDate', 'Invalid end date', function (value) {
+        return validateDuration({ ...this.parent, endDate: value });
+      }),
+    wholeDay: yup.boolean().test('valid-wholeDay', 'Invalid whole day', function (value) {
+      return validateDuration({ ...this.parent, wholeDay: value });
+    }),
+  });
 
-  const getMinTime = (startDate: DateType, endDate: DateType) => {
+  const getMinTime = (startDate: DateType, endDate: number | DateType) => {
     if (!startDate) {
       return undefined;
     }
 
-    return startDate === endDate ? undefined : dayjs(startDate);
+    return isSameDay(startDate, endDate) ? undefined : dayjs(startDate);
   };
 
   return (
@@ -170,6 +181,7 @@ const CalendarEventForm = ({
                 <Gutters disablePadding>
                   <Gutters disablePadding sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
                     <Box sx={{ flex: 1 }}>
+                      {isValid.toString()}
                       <FormikInputField name="displayName" title={t('fields.displayName')} />
                     </Box>
                     <FormikAutocomplete

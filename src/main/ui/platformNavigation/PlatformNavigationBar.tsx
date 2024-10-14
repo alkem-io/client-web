@@ -104,8 +104,8 @@ const PlatformNavigationBar = ({ breadcrumbs }: PlatformNavigationBarProps) => {
               surface={!isMobile}
               footer={
                 isMobile && [
-                  <UserMenuDivider />,
-                  <Box component={MenuItem} paddingY={gutters(0.5)}>
+                  <UserMenuDivider key="divider" />,
+                  <Box component={MenuItem} paddingY={gutters(0.5)} key="menu-item">
                     <PoweredBy preview />
                   </Box>,
                 ]

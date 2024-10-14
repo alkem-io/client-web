@@ -67,7 +67,7 @@ const AlkemioTimePicker = ({
         {...timePickerProps}
       >
         {timeSlots.map(t => (
-          <MenuItem value={t.format()} disabled={t.isBefore(minTime)}>
+          <MenuItem key={t.format()} value={t.format()} disabled={t.isBefore(minTime)}>
             {t.format('HH:mm')}
           </MenuItem>
         ))}
