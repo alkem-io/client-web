@@ -1,4 +1,4 @@
-import React, { MouseEvent, useCallback, useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
@@ -20,7 +20,7 @@ import { theme } from '../../../../core/ui/themes/default/Theme';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MessageWithPayload } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
-import ExternalAIComingSoonDialog from './ExternalAICominSoonDialog';
+import { AiPersonaBodyOfKnowledgeType, AiPersonaEngine } from '../../../../core/apollo/generated/graphql-schema';
 
 type CreateNewVirtualContributorProps = {
   canCreateSubspace?: boolean;
@@ -28,6 +28,7 @@ type CreateNewVirtualContributorProps = {
   onClose: () => void;
   onCreateSpace: (values: VirtualContributorFromProps) => void;
   onUseExistingKnowledge: (values: VirtualContributorFromProps) => void;
+  onUseExternal: (values: VirtualContributorFromProps) => void;
   loading?: boolean;
 };
 
@@ -41,6 +42,12 @@ export interface VirtualContributorFromProps {
   name: string;
   tagline: string;
   description: string;
+  externalConfig?: {
+    apiKey?: string;
+    assistantId?: string;
+  };
+  engine: AiPersonaEngine;
+  bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
 }
 
 const BigButton = ({
@@ -77,12 +84,11 @@ const CreateNewVirtualContributor = ({
   onClose,
   onCreateSpace,
   onUseExistingKnowledge,
+  onUseExternal,
   loading,
 }: CreateNewVirtualContributorProps) => {
   const { t } = useTranslation();
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
-  const [exernalOpen, setExernalOpen] = useState(false);
-  const closeExternalAI = useCallback(() => setExernalOpen(false), [setExernalOpen]);
 
   const cols = useColumns();
   const isMobile = cols < 5;
@@ -91,6 +97,8 @@ const CreateNewVirtualContributor = ({
     name: '',
     tagline: '',
     description: '',
+    engine: AiPersonaEngine.Expert,
+    bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType.AlkemioSpace,
   };
 
   const validationSchema = yup.object().shape({
@@ -115,7 +123,7 @@ const CreateNewVirtualContributor = ({
         onUseExistingKnowledge(newValues);
         break;
       case VCSourceOptions.EXTERNAL:
-        setExernalOpen(true);
+        onUseExternal(newValues);
         break;
     }
   };
@@ -218,7 +226,6 @@ const CreateNewVirtualContributor = ({
             </GridContainer>
           </Gutters>
         )}
-        <ExternalAIComingSoonDialog open={exernalOpen} onClose={closeExternalAI} />
       </DialogContent>
     </>
   );

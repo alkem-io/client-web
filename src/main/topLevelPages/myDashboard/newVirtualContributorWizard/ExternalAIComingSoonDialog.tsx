@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { Field, Form, Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { Box, Button, DialogContent, FormControlLabel, Radio, RadioGroup } from '@mui/material';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import { Box, Button, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { Caption } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -22,7 +20,6 @@ import { warn as logWarn } from '../../../../core/logging/sentry/log';
 const SUPPORT_EMAIL = 'support@alkem.io';
 
 interface ExternalAIComingSoonDialogProps {
-  open: boolean;
   onClose: () => void;
 }
 
@@ -36,7 +33,7 @@ interface FormValues {
   sendResponse: string;
 }
 
-const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({ open, onClose }) => {
+const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({ onClose }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const notify = useNotification();
@@ -81,7 +78,7 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
           },
         });
 
-        notify(t('createVirtualContributorWizard.externalAICommingSoon.success'), 'success');
+        notify(t('createVirtualContributorWizard.externalAI.success'), 'success');
       } finally {
         setLoading(false);
         onClose();
@@ -101,66 +98,61 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
   };
 
   return (
-    <DialogWithGrid open={open} onClose={onClose} columns={8}>
-      <DialogHeader title={t('createVirtualContributorWizard.externalAICommingSoon.title')} onClose={onClose} />
-      <DialogContent>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          enableReinitialize
-          validateOnMount
-          onSubmit={(values: FormValues) => sendNotification(values)}
-        >
-          {({ isValid, handleChange }) => (
-            <Form>
-              <Gutters disablePadding>
-                <Box display="flex">
-                  <Caption alignSelf="center">
-                    {t('createVirtualContributorWizard.externalAICommingSoon.subTitle')}
-                  </Caption>
-                </Box>
-                <FormikInputField
-                  name="aiService"
-                  title={t('createVirtualContributorWizard.externalAICommingSoon.input.label')}
-                  placeholder={t('createVirtualContributorWizard.externalAICommingSoon.input.placeholder')}
-                />
-                <Box display="flex" marginTop={gutters()}>
-                  <Caption alignSelf="center">
-                    {t('createVirtualContributorWizard.externalAICommingSoon.contactOptions.title')}
-                  </Caption>
-                </Box>
-                <Field name="sendResponse">
-                  {({ field }) => (
-                    <RadioGroup {...field}>
-                      <FormControlLabel
-                        value={ContactOptions.option1}
-                        onChange={handleChange}
-                        control={<Radio disabled={loading} />}
-                        label={t('createVirtualContributorWizard.externalAICommingSoon.contactOptions.option1')}
-                      />
-                      <FormControlLabel
-                        value={ContactOptions.option2}
-                        onChange={handleChange}
-                        control={<Radio disabled={loading} />}
-                        label={t('createVirtualContributorWizard.externalAICommingSoon.contactOptions.option2')}
-                      />
-                    </RadioGroup>
-                  )}
-                </Field>
-                <Actions justifyContent="end">
-                  <Button variant="text" onClick={onClose}>
-                    {t('buttons.back')}
-                  </Button>
-                  <LoadingButton variant="contained" disabled={!isValid || loading} loading={loading} type="submit">
-                    {t('buttons.send')}
-                  </LoadingButton>
-                </Actions>
-              </Gutters>
-            </Form>
-          )}
-        </Formik>
-      </DialogContent>
-    </DialogWithGrid>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      enableReinitialize
+      validateOnMount
+      onSubmit={(values: FormValues) => sendNotification(values)}
+    >
+      {({ isValid, handleChange }) => (
+        <Form>
+          <Gutters disablePadding>
+            <Box display="flex">
+              <Caption alignSelf="center">
+                {t('createVirtualContributorWizard.externalAI.commingSoon.subTitle')}
+              </Caption>
+            </Box>
+            <FormikInputField
+              name="aiService"
+              title={t('createVirtualContributorWizard.externalAI.commingSoon.input.label')}
+              placeholder={t('createVirtualContributorWizard.externalAI.commingSoon.input.placeholder')}
+            />
+            <Box display="flex" marginTop={gutters()}>
+              <Caption alignSelf="center">
+                {t('createVirtualContributorWizard.externalAI.contactOptions.title')}
+              </Caption>
+            </Box>
+            <Field name="sendResponse">
+              {({ field }) => (
+                <RadioGroup {...field}>
+                  <FormControlLabel
+                    value={ContactOptions.option1}
+                    onChange={handleChange}
+                    control={<Radio disabled={loading} />}
+                    label={t('createVirtualContributorWizard.externalAI.contactOptions.option1')}
+                  />
+                  <FormControlLabel
+                    value={ContactOptions.option2}
+                    onChange={handleChange}
+                    control={<Radio disabled={loading} />}
+                    label={t('createVirtualContributorWizard.externalAI.contactOptions.option2')}
+                  />
+                </RadioGroup>
+              )}
+            </Field>
+            <Actions justifyContent="end">
+              <Button variant="text" onClick={onClose}>
+                {t('buttons.back')}
+              </Button>
+              <LoadingButton variant="contained" disabled={!isValid || loading} loading={loading} type="submit">
+                {t('buttons.send')}
+              </LoadingButton>
+            </Actions>
+          </Gutters>
+        </Form>
+      )}
+    </Formik>
   );
 };
 
