@@ -92,22 +92,6 @@ const replaceElementVersion = (version: number) => (element: ExcalidrawElement) 
   version,
 });
 
-// todo: index is a fractional index that needs special attention
-/**
- * Returns a function that can be passed to elements.map to replace the index on the elements that have it
- * For new versions of whiteboards that have the index property
- */
-// const replaceIndexes = (baseIndex: number) => {
-//   return (element: ExcalidrawElement) => {
-//     if (typeof element['index'] === 'number') {
-//       return {
-//         ...element,
-//         index: element['index'] + baseIndex,
-//       };
-//     }
-//     return element;
-//   };
-// };
 /**
  * Returns a function that can be passed to elements.map to replace containerId and boundElements ids
  */
@@ -165,17 +149,10 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
     const displacement = calculateInsertionPoint(currentElementsBBox, insertedWhiteboardBBox);
 
     const replacedIds: Record<string, string> = {};
-
-    /*const lastElementId = currentElements[currentElements.length - 1]?.id ?? '^';
-    const maxIndex = currentElements.reduce(
-      (max, element) => (typeof element['index'] === 'number' ? Math.max(max, element['index']) : max),
-      0
-    );*/
-
+    // fractional indices does not need overwriting
     const insertedElements = parsedWhiteboard.elements
       ?.map(generateNewIds(replacedIds))
       .map(replaceElementVersion(sceneVersion + 1))
-      //.map(replaceIndexes(maxIndex + 1)) //todo: special attention
       .map(replaceBoundElementsIds(replacedIds))
       .map(displaceElements(displacement));
 
