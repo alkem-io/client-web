@@ -5,9 +5,15 @@ import type {
   Gesture,
   SocketId,
 } from '@alkemio/excalidraw/dist/excalidraw/types';
-import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
+import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
 import { newElementWith } from '@alkemio/excalidraw/dist/excalidraw/element/mutateElement';
-import { getSceneVersion, hashElementsVersion, restoreElements } from '@alkemio/excalidraw';
+import {
+  StoreAction,
+  getSceneVersion,
+  hashElementsVersion,
+  restoreElements,
+  reconcileElements,
+} from '@alkemio/excalidraw';
 import {
   ACTIVE_THRESHOLD,
   CollaboratorModeEvent,
@@ -20,9 +26,12 @@ import {
 import { isImageElement, UserIdleState } from './utils';
 import { getCollabServer, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
-import { ReconciledElements, reconcileElements as _reconcileElements } from './reconciliation';
 import { BinaryFilesWithUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
 import { error as logError, TagCategoryValues } from '../../../../../core/logging/sentry/log';
+import {
+  ReconciledExcalidrawElement,
+  RemoteExcalidrawElement,
+} from '@alkemio/excalidraw/dist/excalidraw/data/reconcile';
 
 interface CollabState {
   errorMessage: string;
@@ -132,7 +141,7 @@ class Collab {
 
     this.excalidrawAPI.updateScene({
       elements,
-      commitToStore: false,
+      storeAction: StoreAction.NONE,
     });
   };
 
@@ -209,7 +218,7 @@ class Collab {
                   collaborators,
                 });
               } else if (isSceneUpdatePayload(data)) {
-                const remoteElements = data.payload.elements;
+                const remoteElements = data.payload.elements as RemoteExcalidrawElement[];
                 const remoteFiles = data.payload.files;
                 this.handleRemoteSceneUpdate(await this.reconcileElementsAndLoadFiles(remoteElements, remoteFiles));
               }
@@ -281,15 +290,19 @@ class Collab {
   private reconcileElementsAndLoadFiles = async (
     remoteElements: readonly ExcalidrawElement[],
     remoteFiles: BinaryFilesWithUrl
-  ): Promise<ReconciledElements> => {
+  ): Promise<ReconciledExcalidrawElement[]> => {
     const localElements = this.getSceneElementsIncludingDeleted();
     const appState = this.excalidrawAPI.getAppState();
 
     const { restoreElements } = await this.excalidrawUtils;
 
-    remoteElements = restoreElements(remoteElements, null);
+    const restoredRemoteElements = restoreElements(remoteElements, null);
 
-    const reconciledElements = _reconcileElements(localElements, remoteElements, appState);
+    const reconciledElements = reconcileElements(
+      localElements,
+      restoredRemoteElements as RemoteExcalidrawElement[],
+      appState
+    );
 
     // Download the files that this instance is missing:
     await this.filesManager.loadFiles({ files: remoteFiles });
@@ -305,10 +318,13 @@ class Collab {
     return reconciledElements;
   };
 
-  private handleRemoteSceneUpdate = (elements: ReconciledElements, { init = false }: { init?: boolean } = {}) => {
+  private handleRemoteSceneUpdate = (
+    elements: ReconciledExcalidrawElement[],
+    { init = false }: { init?: boolean } = {}
+  ) => {
     this.excalidrawAPI.updateScene({
       elements,
-      commitToStore: !!init,
+      storeAction: init ? StoreAction.CAPTURE : StoreAction.NONE,
     });
 
     this.filesManager.pushFilesToExcalidraw();
@@ -423,7 +439,7 @@ class Collab {
     this.portal.broadcastIdleChange(userState, this.state.username);
   };
 
-  public syncScene = async (elements: readonly ExcalidrawElement[], files: BinaryFilesWithUrl) => {
+  public syncScene = async (elements: readonly OrderedExcalidrawElement[], files: BinaryFilesWithUrl) => {
     const { getSceneVersion } = await this.excalidrawUtils;
     if (getSceneVersion(elements) > this.getLastBroadcastedOrReceivedSceneVersion()) {
       this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, elements, files, { syncAll: false });

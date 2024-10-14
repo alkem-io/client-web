@@ -1,14 +1,8 @@
-import { IsSyncableElement, SocketUpdateData, SocketUpdateDataSource } from './data';
-import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
+import { isSyncableElement, SocketUpdateData, SocketUpdateDataSource, SyncableExcalidrawElement } from './data';
+import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
 import type { DataURL, SocketId } from '@alkemio/excalidraw/dist/excalidraw/types';
-import {
-  CollaboratorModeEvent,
-  PRECEDING_ELEMENT_KEY,
-  WS_EVENTS,
-  WS_SCENE_EVENT_TYPES,
-} from './excalidrawAppConstants';
+import { CollaboratorModeEvent, WS_EVENTS, WS_SCENE_EVENT_TYPES } from './excalidrawAppConstants';
 import { UserIdleState } from './utils';
-import { BroadcastedExcalidrawElement } from './reconciliation';
 import { Socket } from 'socket.io-client';
 import { BinaryFileDataWithUrl, BinaryFilesWithUrl } from '../useWhiteboardFilesManager';
 
@@ -159,33 +153,25 @@ class Portal {
 
   broadcastScene = async (
     updateType: WS_SCENE_EVENT_TYPES.SCENE_UPDATE,
-    allElements: readonly ExcalidrawElement[],
+    allElements: readonly OrderedExcalidrawElement[],
     allFiles: BinaryFilesWithUrl,
     { syncAll = false }: BroadcastSceneOptions = {}
   ) => {
-    const { isInvisiblySmallElement } = await import('@alkemio/excalidraw');
-
-    const isSyncableElement = IsSyncableElement({ isInvisiblySmallElement });
-
     // sync out only the elements we think we need to to save bandwidth.
     // periodically we'll resync the whole thing to make sure no one diverges
     // due to a dropped message (server goes down etc).
-    const syncableElements = allElements.reduce((acc, element: BroadcastedExcalidrawElement, idx, elements) => {
+    const syncableElements = allElements.reduce((acc, element) => {
       if (
         (syncAll ||
           !this.broadcastedElementVersions.has(element.id) ||
           element.version > this.broadcastedElementVersions.get(element.id)!) &&
         isSyncableElement(element)
       ) {
-        acc.push({
-          ...element,
-          // z-index info for the reconciler
-          [PRECEDING_ELEMENT_KEY]: idx === 0 ? '^' : elements[idx - 1]?.id,
-        });
+        acc.push(element);
       }
 
       return acc;
-    }, [] as BroadcastedExcalidrawElement[]);
+    }, [] as SyncableExcalidrawElement[]);
 
     const emptyDataURL = '' as DataURL;
     const syncableFiles = Object.keys(allFiles).reduce<Record<string, BinaryFileDataWithUrl>>((result, fileId) => {
