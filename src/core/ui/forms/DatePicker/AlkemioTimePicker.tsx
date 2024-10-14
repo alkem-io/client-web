@@ -39,7 +39,13 @@ const AlkemioTimePicker = ({
   const djsDate = useMemo(() => dayjs(value).startOf('day'), [value]);
 
   const timeSlots = useMemo(
-    () => times(24).flatMap(h => [djsDate.set('hour', h), djsDate.set('hour', h).set('minute', 30)]),
+    () =>
+      times(24).flatMap(h => [
+        djsDate.set('hour', h).set('minute', 0),
+        djsDate.set('hour', h).set('minute', 15),
+        djsDate.set('hour', h).set('minute', 30),
+        djsDate.set('hour', h).set('minute', 45),
+      ]),
     [djsDate]
   );
 
@@ -61,7 +67,7 @@ const AlkemioTimePicker = ({
         {...timePickerProps}
       >
         {timeSlots.map(t => (
-          <MenuItem value={t.format()} disabled={t.isBefore(minTime)}>
+          <MenuItem key={t.format()} value={t.format()} disabled={t.isBefore(minTime)}>
             {t.format('HH:mm')}
           </MenuItem>
         ))}
