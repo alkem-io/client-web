@@ -1083,7 +1083,8 @@
       },
       "inviteExternalUserDialog": {
         "title": "Send an email invitation"
-      }
+      },
+      "inviteToRole": "Invite to be a: "
     },
     "confirmation-dialog": {
       "delete-comment": {

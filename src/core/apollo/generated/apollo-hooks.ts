@@ -12186,9 +12186,19 @@ export type InvitationStateEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InvitationStateEventMutationVariables
 >;
 export const InviteContributorsForRoleSetMembershipDocument = gql`
-  mutation inviteContributorsForRoleSetMembership($contributorIds: [UUID!]!, $roleSetId: UUID!, $message: String) {
+  mutation inviteContributorsForRoleSetMembership(
+    $contributorIds: [UUID!]!
+    $roleSetId: UUID!
+    $message: String
+    $extraRole: CommunityRoleType
+  ) {
     inviteContributorsForRoleSetMembership(
-      invitationData: { invitedContributors: $contributorIds, roleSetID: $roleSetId, welcomeMessage: $message }
+      invitationData: {
+        invitedContributors: $contributorIds
+        roleSetID: $roleSetId
+        welcomeMessage: $message
+        extraRole: $extraRole
+      }
     ) {
       id
     }
@@ -12215,6 +12225,7 @@ export type InviteContributorsForRoleSetMembershipMutationFn = Apollo.MutationFu
  *      contributorIds: // value for 'contributorIds'
  *      roleSetId: // value for 'roleSetId'
  *      message: // value for 'message'
+ *      extraRole: // value for 'extraRole'
  *   },
  * });
  */

@@ -14,6 +14,9 @@ import { FormikUserSelector } from '../user/FormikUserSelector/FormikUserSelecto
 import { InviteContributorsData } from './useInviteUsers';
 import { Identifiable } from '../../../core/utils/Identifiable';
 import { sortBy } from 'lodash';
+import { CommunityRoleType } from '../../../core/apollo/generated/graphql-schema';
+import FormikSelect from '../../../core/ui/forms/FormikSelect';
+import { gutters } from '../../../core/ui/grid/utils';
 
 interface MessageDialogProps {
   open: boolean;
@@ -32,6 +35,8 @@ enum SortCriteria {
   HasInvitation,
   IsMember,
 }
+
+const VISIBLE_COMMUNITY_ROLES = [CommunityRoleType.Member, CommunityRoleType.Admin, CommunityRoleType.Lead] as const;
 
 const SORT_CRITERIA_PRIORITY = [SortCriteria.HasApplication, SortCriteria.HasInvitation, SortCriteria.IsMember];
 
@@ -72,6 +77,7 @@ const InviteExistingUserDialog = ({
 
   const initialValues: InviteContributorsData = {
     contributorIds: [],
+    extraRole: CommunityRoleType.Member,
     message: t('components.invitations.defaultInvitationMessage', { space: spaceDisplayName }) as string,
   };
 
@@ -147,7 +153,24 @@ const InviteExistingUserDialog = ({
         >
           {({ handleSubmit, isValid }) => (
             <Form noValidate autoComplete="off">
-              <FormikUserSelector name="contributorIds" sortUsers={sortUsers} hydrateUsers={hydrateUsers} />
+              <Gutters disablePadding flexDirection={{ xs: 'column', sm: 'row' }} alignItems={'flex-start'}>
+                <Gutters disablePadding gap={gutters(0.5)} sx={{ width: '100%' }}>
+                  <FormikUserSelector
+                    name="contributorIds"
+                    sortUsers={sortUsers}
+                    hydrateUsers={hydrateUsers}
+                    sx={{ width: '100%', marginBottom: 0, flexGrow: 1 }}
+                  />
+                </Gutters>
+                <Caption style={{ whiteSpace: 'nowrap' }}>{t('components.invitations.inviteToRole')}</Caption>
+                <Gutters disableGap disablePadding sx={{ minWidth: '100px' }}>
+                  <FormikSelect
+                    name="extraRole"
+                    values={VISIBLE_COMMUNITY_ROLES.map(role => ({ id: role, name: role }))}
+                    required
+                  />
+                </Gutters>
+              </Gutters>
               <FormikInputField
                 name="message"
                 title={t('messaging.message')}

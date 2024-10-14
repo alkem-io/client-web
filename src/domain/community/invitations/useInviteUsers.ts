@@ -2,10 +2,12 @@ import {
   useInviteContributorsForRoleSetMembershipMutation,
   useInviteUserToPlatformAndRoleSetMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
+import { CommunityRoleType } from '../../../core/apollo/generated/graphql-schema';
 import ensurePresence from '../../../core/utils/ensurePresence';
 
 export interface InviteUserData {
   message: string;
+  extraRole: CommunityRoleType;
 }
 
 export interface InviteContributorsData extends InviteUserData {
@@ -34,11 +36,12 @@ const useInviteUsers = (
   const [inviteUserForRoleSetAndPlatform] = useInviteUserToPlatformAndRoleSetMutation();
 
   return {
-    inviteContributor: async ({ contributorIds, message }) => {
+    inviteContributor: async ({ contributorIds, message, extraRole }) => {
       await inviteExistingUser({
         variables: {
           contributorIds,
           message,
+          extraRole: extraRole,
           roleSetId: ensurePresence(roleSetId),
         },
       });

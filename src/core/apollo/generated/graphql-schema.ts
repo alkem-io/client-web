@@ -2259,6 +2259,7 @@ export type DeleteUserGroupInput = {
 
 export type DeleteUserInput = {
   ID: Scalars['UUID_NAMEID_EMAIL'];
+  deleteIdentity?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type DeleteVirtualContributorInput = {
@@ -17090,6 +17091,7 @@ export type InviteContributorsForRoleSetMembershipMutationVariables = Exact<{
   contributorIds: Array<Scalars['UUID']> | Scalars['UUID'];
   roleSetId: Scalars['UUID'];
   message?: InputMaybe<Scalars['String']>;
+  extraRole?: InputMaybe<CommunityRoleType>;
 }>;
 
 export type InviteContributorsForRoleSetMembershipMutation = {
