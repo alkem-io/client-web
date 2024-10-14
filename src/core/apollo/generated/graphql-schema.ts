@@ -625,7 +625,9 @@ export enum AiPersonaDataAccessMode {
 export enum AiPersonaEngine {
   CommunityManager = 'COMMUNITY_MANAGER',
   Expert = 'EXPERT',
+  GenericOpenai = 'GENERIC_OPENAI',
   Guidance = 'GUIDANCE',
+  OpenaiAssistant = 'OPENAI_ASSISTANT',
 }
 
 export enum AiPersonaInteractionMode {
@@ -651,7 +653,7 @@ export type AiPersonaService = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The prompt used by this Virtual Persona */
-  prompt: Scalars['String'];
+  prompt: Array<Scalars['String']>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
@@ -1642,7 +1644,8 @@ export type CreateAiPersonaServiceInput = {
   bodyOfKnowledgeType?: InputMaybe<AiPersonaBodyOfKnowledgeType>;
   dataAccessMode?: InputMaybe<AiPersonaDataAccessMode>;
   engine?: InputMaybe<AiPersonaEngine>;
-  prompt?: InputMaybe<Scalars['JSON']>;
+  externalConfig?: InputMaybe<ExternalConfig>;
+  prompt?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type CreateCalendarEventOnCalendarInput = {
@@ -2365,6 +2368,13 @@ export type ExploreSpacesInput = {
   daysOld?: InputMaybe<Scalars['Float']>;
   /** Amount of Spaces returned. */
   limit?: InputMaybe<Scalars['Float']>;
+};
+
+export type ExternalConfig = {
+  /** The API key for the external LLM provider. */
+  apiKey?: InputMaybe<Scalars['String']>;
+  /** The assistent ID backing the service in OpenAI`s assistant API */
+  assistantId?: InputMaybe<Scalars['String']>;
 };
 
 export type FileStorageConfig = {
@@ -5919,8 +5929,9 @@ export type UpdateAiPersonaInput = {
 
 export type UpdateAiPersonaServiceInput = {
   ID: Scalars['UUID'];
-  engine: AiPersonaEngine;
-  prompt?: InputMaybe<Scalars['JSON']>;
+  engine?: InputMaybe<AiPersonaEngine>;
+  externalConfig?: InputMaybe<ExternalConfig>;
+  prompt?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type UpdateApplicationFormOnRoleSetInput = {
