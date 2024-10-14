@@ -7,7 +7,7 @@ import ensurePresence from '../../../core/utils/ensurePresence';
 
 export interface InviteUserData {
   message: string;
-  extraRole: CommunityRoleType;
+  extraRole?: CommunityRoleType;
 }
 
 export interface InviteContributorsData extends InviteUserData {
