@@ -70,7 +70,7 @@
     "event": {
       "type": "Type of Event",
       "multiple-days": "{{days}} days",
-      "whole-day": "Entire Day"
+      "whole-day": "All Day"
     },
     "validation": {
       "durationMinutes": {

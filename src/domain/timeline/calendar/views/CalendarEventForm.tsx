@@ -210,7 +210,7 @@ const CalendarEventForm = ({
                             }}
                           />
                         }
-                        label={'All Day'}
+                        label={t('calendar.event.whole-day')}
                         sx={{ flexShrink: 0 }}
                       />
                     </Gutters>
