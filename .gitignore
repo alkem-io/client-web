@@ -37,3 +37,5 @@ public/*config.js
 
 # Ignores homeserver.db file
 **/*.db
+
+.env

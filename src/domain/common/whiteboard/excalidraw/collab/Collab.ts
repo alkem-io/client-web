@@ -49,7 +49,7 @@ export interface CollabProps {
 }
 
 type IncomingClientBroadcastData = {
-  type: string;
+  type: WS_SCENE_EVENT_TYPES | 'INVALID_RESPONSE';
   payload: {
     [key: string]: unknown;
   };
@@ -194,7 +194,14 @@ class Collab {
             },
             'client-broadcast': async (binaryData: ArrayBuffer) => {
               const strData = new TextDecoder().decode(binaryData);
-              const data = JSON.parse(strData) as IncomingClientBroadcastData;
+              let data: IncomingClientBroadcastData | undefined;
+
+              try {
+                data = JSON.parse(strData) as IncomingClientBroadcastData;
+              } catch (e) {
+                logError('Unable to parse incoming broadcast');
+                return;
+              }
 
               if (isInvalidResponsePayload(data)) {
                 return;

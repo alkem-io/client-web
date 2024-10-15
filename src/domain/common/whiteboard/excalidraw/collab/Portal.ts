@@ -24,6 +24,7 @@ interface BroadcastSceneOptions {
 
 interface ConnectionOptions {
   url: string;
+  path: string;
   roomId: string;
   polling?: boolean;
 }
@@ -63,10 +64,9 @@ class Portal {
     return new Promise(async (resolve, reject) => {
       const { default: socketIOClient } = await import('socket.io-client');
 
-      const socket = socketIOClient('localhost:4002' /*connectionOptions.url*/, {
+      const socket = socketIOClient(connectionOptions.url, {
         transports: connectionOptions.polling ? ['websocket', 'polling'] : ['websocket'],
-        path: '/socket.io',
-        // path: '/api/private/ws/socket.io',
+        path: connectionOptions.path,
         retries: 0,
         reconnection: false,
       });
