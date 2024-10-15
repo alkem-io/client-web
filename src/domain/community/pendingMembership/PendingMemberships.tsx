@@ -76,7 +76,7 @@ type InvitationHydratorProps = {
 );
 
 export const getChildJourneyTypeName = ({ level }: { level: SpaceLevel }): JourneyTypeName =>
-  ['space', 'subspace', 'subsubspace'][level] as JourneyTypeName;
+  level.toLocaleLowerCase() as JourneyTypeName;
 
 export const InvitationHydrator = ({
   invitation,
