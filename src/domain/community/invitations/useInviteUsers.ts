@@ -37,21 +37,26 @@ const useInviteUsers = (
 
   return {
     inviteContributor: async ({ contributorIds, message, extraRole }) => {
+      const role = extraRole === CommunityRoleType.Member ? undefined : extraRole;
+
       await inviteExistingUser({
         variables: {
           contributorIds,
           message,
-          extraRole: extraRole,
+          extraRole: role,
           roleSetId: ensurePresence(roleSetId),
         },
       });
       await onInviteContributor?.(ensurePresence(roleSetId));
     },
-    platformInviteToCommunity: async ({ email, message }) => {
+    platformInviteToCommunity: async ({ email, message, extraRole }) => {
+      const role = extraRole === CommunityRoleType.Member ? undefined : extraRole;
+
       await inviteUserForRoleSetAndPlatform({
         variables: {
           email,
           message,
+          extraRole: role,
           roleSetId: ensurePresence(roleSetId),
         },
       });

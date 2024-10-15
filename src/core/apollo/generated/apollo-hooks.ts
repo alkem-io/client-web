@@ -12252,8 +12252,15 @@ export type InviteContributorsForRoleSetMembershipMutationOptions = Apollo.BaseM
   SchemaTypes.InviteContributorsForRoleSetMembershipMutationVariables
 >;
 export const InviteUserToPlatformAndRoleSetDocument = gql`
-  mutation inviteUserToPlatformAndRoleSet($email: String!, $roleSetId: UUID!, $message: String) {
-    inviteUserToPlatformAndRoleSet(invitationData: { email: $email, roleSetID: $roleSetId, welcomeMessage: $message }) {
+  mutation inviteUserToPlatformAndRoleSet(
+    $email: String!
+    $roleSetId: UUID!
+    $message: String
+    $extraRole: CommunityRoleType
+  ) {
+    inviteUserToPlatformAndRoleSet(
+      invitationData: { email: $email, roleSetID: $roleSetId, welcomeMessage: $message, roleSetExtraRole: $extraRole }
+    ) {
       ... on PlatformInvitation {
         id
       }
@@ -12281,6 +12288,7 @@ export type InviteUserToPlatformAndRoleSetMutationFn = Apollo.MutationFunction<
  *      email: // value for 'email'
  *      roleSetId: // value for 'roleSetId'
  *      message: // value for 'message'
+ *      extraRole: // value for 'extraRole'
  *   },
  * });
  */

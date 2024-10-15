@@ -112,7 +112,7 @@ const InvitationOptionsBlock = ({
         spaceDisplayName={spaceDisplayName}
         onClose={closeInvitationDialog}
         onInviteUser={inviteExternalUser}
-        communityRoles={[]} // add AVAILABLE_COMMUNITY_ROLES once supported
+        communityRoles={[...AVAILABLE_COMMUNITY_ROLES]}
       />
     </>
   );
