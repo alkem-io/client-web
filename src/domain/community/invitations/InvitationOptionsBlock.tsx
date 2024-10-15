@@ -21,7 +21,6 @@ interface InvitationOptionsBlockProps {
   currentInvitationsUserIds: string[];
   currentMembersIds: string[];
   spaceId: string | undefined;
-  isParentPrivate?: boolean | undefined;
   isSubspace?: boolean;
 }
 
@@ -38,7 +37,6 @@ const InvitationOptionsBlock = ({
   currentInvitationsUserIds,
   currentMembersIds,
   spaceId,
-  isParentPrivate,
   isSubspace = false,
 }: InvitationOptionsBlockProps) => {
   const [currentInvitation, setCurrentInvitation] = useState<UserInvite>();
@@ -55,7 +53,7 @@ const InvitationOptionsBlock = ({
   });
 
   const allowSubspaceAdminsToInviteMembers = data?.lookup.space?.settings.membership.allowSubspaceAdminsToInviteMembers;
-  const showInviteBlock = isSubspace ? !isParentPrivate && allowSubspaceAdminsToInviteMembers : true; // for Spaces the block is always visible
+  const showInviteBlock = isSubspace ? allowSubspaceAdminsToInviteMembers : true; // for Spaces the block is always visible
 
   return loading ? (
     <Box marginX="auto">

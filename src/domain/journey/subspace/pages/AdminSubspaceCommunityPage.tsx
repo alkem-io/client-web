@@ -36,7 +36,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     subspaceId: challengeId,
     subspaceNameId,
   } = useSubSpace();
-  const { isPrivate, loading: isLoadingSpace } = useSpace();
+  const { loading: isLoadingSpace } = useSpace();
 
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
@@ -122,7 +122,6 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
               currentInvitationsUserIds={currentInvitationsContributorIds}
               currentMembersIds={currentMembersIds}
               spaceId={spaceId}
-              isParentPrivate={isPrivate}
               isSubspace
             />
           </PageContentBlockSeamless>
