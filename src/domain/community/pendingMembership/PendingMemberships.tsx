@@ -8,12 +8,15 @@ import { JourneyTypeName } from '../../journey/JourneyTypeName';
 import { PendingApplication } from '../user';
 import { Visual } from '../../common/visual/Visual';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
-import { CommunityGuidelinesSummaryFragment, VisualType } from '../../../core/apollo/generated/graphql-schema';
-import { JourneyLevel } from '../../../main/routing/resolvers/RouteResolver';
+import {
+  CommunityGuidelinesSummaryFragment,
+  SpaceLevel,
+  VisualType,
+} from '../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../core/utils/Identifiable';
 import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
 
-export interface JourneyDetails {
+export interface SpaceDetails {
   profile: {
     displayName: string;
     tagline?: string;
@@ -23,16 +26,16 @@ export interface JourneyDetails {
     };
     visual?: Visual | undefined;
   };
-  level: JourneyLevel;
+  level: SpaceLevel;
 }
 
 export interface InvitationWithMeta extends Omit<InvitationItem, 'space'> {
   userDisplayName: string | undefined;
-  space: JourneyDetails;
+  space: SpaceDetails;
 }
 
 interface ApplicationWithMeta extends Identifiable {
-  space: JourneyDetails;
+  space: SpaceDetails;
 }
 
 interface UsePendingMembershipsProvided {
@@ -72,7 +75,7 @@ type InvitationHydratorProps = {
     }
 );
 
-export const getChildJourneyTypeName = ({ level }: { level: JourneyLevel }): JourneyTypeName =>
+export const getChildJourneyTypeName = ({ level }: { level: SpaceLevel }): JourneyTypeName =>
   ['space', 'subspace', 'subsubspace'][level] as JourneyTypeName;
 
 export const InvitationHydrator = ({
@@ -86,10 +89,13 @@ export const InvitationHydrator = ({
 }: InvitationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
-      spaceId: invitation.space.id,
+      spaceId: invitation.spaceInfo.id,
       fetchDetails: withJourneyDetails,
       fetchCommunityGuidelines: withCommunityGuidelines,
-      visualType: invitation.space.level === 0 && visualType === VisualType.Avatar ? VisualType.Card : visualType, // Spaces don't have avatars
+      visualType:
+        invitation.spaceInfo.level === SpaceLevel.Space && visualType === VisualType.Avatar
+          ? VisualType.Card
+          : visualType, // Spaces don't have avatars
     },
   });
 
@@ -112,11 +118,11 @@ export const InvitationHydrator = ({
       ...invitation,
       userDisplayName: createdBy?.profile.displayName,
       space: {
-        ...invitation.space,
+        ...invitation.spaceInfo,
         ...journey,
-        level: invitation.space.level as JourneyLevel,
+        level: invitation.spaceInfo.level,
         profile: {
-          ...invitation.space.profile,
+          ...invitation.spaceInfo.profile,
           ...journey?.profile,
         },
       },
@@ -141,9 +147,12 @@ interface ApplicationHydratorProps {
 export const ApplicationHydrator = ({ application, visualType, children }: ApplicationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
-      spaceId: application.space.id,
+      spaceId: application.spaceInfo.id,
       fetchDetails: true,
-      visualType: application.space.level === 0 && visualType === VisualType.Avatar ? VisualType.Card : visualType, // Spaces don't have avatars
+      visualType:
+        application.spaceInfo.level === SpaceLevel.Space && visualType === VisualType.Avatar
+          ? VisualType.Card
+          : visualType, // Spaces don't have avatars
     },
   });
 
@@ -156,11 +165,11 @@ export const ApplicationHydrator = ({ application, visualType, children }: Appli
     return {
       ...application,
       space: {
-        ...application.space,
+        ...application.spaceInfo,
         ...journey,
-        level: application.space.level as JourneyLevel,
+        level: application.spaceInfo.level,
         profile: {
-          ...application.space.profile,
+          ...application.spaceInfo.profile,
           ...journey?.profile,
         },
       },

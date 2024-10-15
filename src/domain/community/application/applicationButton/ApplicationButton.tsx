@@ -14,7 +14,7 @@ import InvitationActionsContainer from '../../invitations/InvitationActionsConta
 import InvitationDialog from '../../invitations/InvitationDialog';
 import useNavigate from '../../../../core/routing/useNavigate';
 import ApplicationDialog from './ApplicationDialog';
-import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
+import { SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface ApplicationButtonProps {
   journeyId: string | undefined;
@@ -37,7 +37,7 @@ export interface ApplicationButtonProps {
   loading: boolean;
   component?: typeof MuiButton;
   extended?: boolean;
-  journeyLevel: JourneyLevel | -1;
+  spaceLevel: SpaceLevel | undefined;
   onUpdateInvitation?: () => void | Promise<void>;
 }
 
@@ -61,7 +61,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       canJoinParentCommunity,
       canApplyToParentCommunity,
       onJoin,
-      journeyLevel,
+      spaceLevel,
       loading = false,
       component: Button = MuiButton,
       extended = false,
@@ -76,6 +76,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
     const [isApplicationSubmittedDialogOpen, setIsApplicationSubmittedDialogOpen] = useState(false);
     const [isJoinParentDialogOpen, setIsJoinParentDialogOpen] = useState(false);
     const [isInvitationDialogOpen, setIsInvitationDialogOpen] = useState(false);
+    const isSpace = spaceLevel === SpaceLevel.Space;
 
     const handleClickApply = () => setIsApplicationDialogOpen(true);
     const handleClickApplyParent = () => setIsApplyParentDialogOpen(true);
@@ -140,7 +141,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       extended
         ? t('components.application-button.extendedMessage', {
             join: verb,
-            journey: journeyLevel > 0 ? t('common.subspace') : t('common.community'),
+            journey: isSpace ? t('common.subspace') : t('common.community'),
           })
         : verb;
 

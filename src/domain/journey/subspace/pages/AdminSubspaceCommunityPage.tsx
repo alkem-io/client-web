@@ -40,7 +40,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
 
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
-  const { spaceId, journeyLevel } = useRouteResolver();
+  const { spaceId, spaceLevel } = useRouteResolver();
 
   const {
     users,
@@ -72,7 +72,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useRoleSetAdmin({ roleSetId, spaceId, challengeId, journeyLevel });
+  } = useRoleSetAdmin({ roleSetId, spaceId, challengeId, spaceLevel });
 
   const currentApplicationsUserIds = useMemo(
     () =>

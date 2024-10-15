@@ -3107,8 +3107,17 @@ export type SpaceDefaultsFieldPolicy = {
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SpaceInfoKeySpecifier = ('context' | 'id' | 'level' | 'nameID' | 'profile' | SpaceInfoKeySpecifier)[];
+export type SpaceInfoKeySpecifier = (
+  | 'communityGuidelines'
+  | 'context'
+  | 'id'
+  | 'level'
+  | 'nameID'
+  | 'profile'
+  | SpaceInfoKeySpecifier
+)[];
 export type SpaceInfoFieldPolicy = {
+  communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;

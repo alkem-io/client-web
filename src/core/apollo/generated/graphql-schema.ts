@@ -4842,7 +4842,7 @@ export type RelayPaginatedSpace = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The level of this Space, representing the number of Spaces above this one. */
-  level: Scalars['Float'];
+  level: SpaceLevel;
   /** The ID of the level zero space for this tree. */
   levelZeroSpaceID: Scalars['String'];
   /** The Library in use by this Space */
@@ -5097,7 +5097,7 @@ export type RolesResultCommunity = {
   /** A unique identifier for this membership result. */
   id: Scalars['String'];
   /** The level of the Space e.g. space/challenge/opportunity. */
-  level: Scalars['Float'];
+  level: SpaceLevel;
   /** Name Identifier of the entity */
   nameID: Scalars['NameID'];
   /** The roles held by the contributor */
@@ -5129,7 +5129,7 @@ export type RolesResultSpace = {
   /** A unique identifier for this membership result. */
   id: Scalars['String'];
   /** The level of the Space e.g. space/challenge/opportunity. */
-  level: Scalars['Float'];
+  level: SpaceLevel;
   /** Name Identifier of the entity */
   nameID: Scalars['NameID'];
   /** The roles held by the contributor */
@@ -5412,7 +5412,7 @@ export type Space = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The level of this Space, representing the number of Spaces above this one. */
-  level: Scalars['Float'];
+  level: SpaceLevel;
   /** The ID of the level zero space for this tree. */
   levelZeroSpaceID: Scalars['String'];
   /** The Library in use by this Space */
@@ -5476,6 +5476,8 @@ export type SpaceFilterInput = {
 
 export type SpaceInfo = {
   __typename?: 'SpaceInfo';
+  /** The CommunityGuidelines for the Space */
+  communityGuidelines: CommunityGuidelines;
   /** The Context of the Space */
   context: Context;
   /** The Space ID */
@@ -7819,7 +7821,7 @@ export type AccountInformationQuery = {
           spaces: Array<{
             __typename?: 'Space';
             id: string;
-            level: number;
+            level: SpaceLevel;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -16373,7 +16375,7 @@ export type RolesOrganizationQuery = {
         id: string;
         displayName: string;
         roles: Array<string>;
-        level: number;
+        level: SpaceLevel;
       }>;
     }>;
   };
@@ -18365,7 +18367,7 @@ export type UserContributionsQuery = {
         id: string;
         nameID: string;
         type: SpaceType;
-        level: number;
+        level: SpaceLevel;
         roles: Array<string>;
       }>;
     }>;
@@ -18592,7 +18594,7 @@ export type VcMembershipsQuery = {
       __typename?: 'RolesResultSpace';
       id: string;
       nameID: string;
-      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string; level: number }>;
+      subspaces: Array<{ __typename?: 'RolesResultCommunity'; id: string; nameID: string; level: SpaceLevel }>;
     }>;
   };
   me: {
@@ -27200,7 +27202,7 @@ export type SearchQuery = {
           space: {
             __typename?: 'Space';
             id: string;
-            level: number;
+            level: SpaceLevel;
             profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
         }
@@ -27531,7 +27533,7 @@ export type SearchResultCalloutFragment = {
   space: {
     __typename?: 'Space';
     id: string;
-    level: number;
+    level: SpaceLevel;
     profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
 };
@@ -27541,7 +27543,7 @@ export type CalloutParentFragment = {
   space: {
     __typename?: 'Space';
     id: string;
-    level: number;
+    level: SpaceLevel;
     profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   };
 };
@@ -29610,7 +29612,7 @@ export type MyAccountQuery = {
                 spaces: Array<{
                   __typename?: 'Space';
                   id: string;
-                  level: number;
+                  level: SpaceLevel;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -29640,7 +29642,7 @@ export type MyMembershipsQuery = {
       space: {
         __typename?: 'Space';
         id: string;
-        level: number;
+        level: SpaceLevel;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
@@ -29668,7 +29670,7 @@ export type MyMembershipsQuery = {
         space: {
           __typename?: 'Space';
           id: string;
-          level: number;
+          level: SpaceLevel;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -29696,7 +29698,7 @@ export type MyMembershipsQuery = {
           space: {
             __typename?: 'Space';
             id: string;
-            level: number;
+            level: SpaceLevel;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -29727,7 +29729,7 @@ export type MyMembershipsQuery = {
 export type SpaceMembershipFragment = {
   __typename?: 'Space';
   id: string;
-  level: number;
+  level: SpaceLevel;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;

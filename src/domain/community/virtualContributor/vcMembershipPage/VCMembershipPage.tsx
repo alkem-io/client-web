@@ -5,9 +5,12 @@ import { ContributionsView } from '../../profile/views/ProfileView';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
 import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
-import { AuthorizationPrivilege, CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CommunityContributorType,
+  SpaceLevel,
+} from '../../../../core/apollo/generated/graphql-schema';
 import { useVcMembershipsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
 import {
   PendingMembershipsDialogType,
   usePendingMembershipsDialog,
@@ -40,7 +43,7 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
       const currentSpace = {
         spaceID: space.id,
         id: space.id,
-        spaceLevel: 0 as JourneyLevel,
+        spaceLevel: SpaceLevel.Space,
         contributorId: data.virtualContributor.id,
         contributorType: CommunityContributorType.Virtual,
       };
@@ -49,7 +52,7 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
       const subspaces = space.subspaces.map(subspace => ({
         id: subspace.id,
         spaceID: subspace.id,
-        spaceLevel: subspace.level as JourneyLevel,
+        spaceLevel: subspace.level,
         contributorId: data.virtualContributor.id,
         contributorType: CommunityContributorType.Virtual,
       }));
@@ -67,8 +70,8 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
       )
       .map(invitation => ({
         id: invitation.id,
-        spaceID: invitation.space.id,
-        spaceLevel: invitation.space.level as JourneyLevel,
+        spaceID: invitation.spaceInfo.id,
+        spaceLevel: invitation.spaceInfo.level,
         contributorId: data.virtualContributor.id,
         contributorType: CommunityContributorType.Virtual,
       }));
