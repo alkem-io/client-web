@@ -89,11 +89,11 @@ export const InvitationHydrator = ({
 }: InvitationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
-      spaceId: invitation.spaceInfo.id,
+      spaceId: invitation.spacePendingMembershipInfo.id,
       fetchDetails: withJourneyDetails,
       fetchCommunityGuidelines: withCommunityGuidelines,
       visualType:
-        invitation.spaceInfo.level === SpaceLevel.Space && visualType === VisualType.Avatar
+        invitation.spacePendingMembershipInfo.level === SpaceLevel.Space && visualType === VisualType.Avatar
           ? VisualType.Card
           : visualType, // Spaces don't have avatars
     },
@@ -118,11 +118,11 @@ export const InvitationHydrator = ({
       ...invitation,
       userDisplayName: createdBy?.profile.displayName,
       space: {
-        ...invitation.spaceInfo,
+        ...invitation.spacePendingMembershipInfo,
         ...journey,
-        level: invitation.spaceInfo.level,
+        level: invitation.spacePendingMembershipInfo.level,
         profile: {
-          ...invitation.spaceInfo.profile,
+          ...invitation.spacePendingMembershipInfo.profile,
           ...journey?.profile,
         },
       },
@@ -147,10 +147,10 @@ interface ApplicationHydratorProps {
 export const ApplicationHydrator = ({ application, visualType, children }: ApplicationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
-      spaceId: application.spaceInfo.id,
+      spaceId: application.spacePendingMembershipInfo.id,
       fetchDetails: true,
       visualType:
-        application.spaceInfo.level === SpaceLevel.Space && visualType === VisualType.Avatar
+        application.spacePendingMembershipInfo.level === SpaceLevel.Space && visualType === VisualType.Avatar
           ? VisualType.Card
           : visualType, // Spaces don't have avatars
     },
@@ -165,11 +165,11 @@ export const ApplicationHydrator = ({ application, visualType, children }: Appli
     return {
       ...application,
       space: {
-        ...application.spaceInfo,
+        ...application.spacePendingMembershipInfo,
         ...journey,
-        level: application.spaceInfo.level,
+        level: application.spacePendingMembershipInfo.level,
         profile: {
-          ...application.spaceInfo.profile,
+          ...application.spacePendingMembershipInfo.profile,
           ...journey?.profile,
         },
       },

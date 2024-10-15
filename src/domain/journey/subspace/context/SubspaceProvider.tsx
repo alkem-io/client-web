@@ -2,10 +2,10 @@ import React, { FC, useMemo } from 'react';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
-  SubspaceInfoFragment,
+  SubspacePendingMembershipInfoFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
-import { useSubspaceInfoQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useSubspacePendingMembershipInfoQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 interface SubspacePermissions {
   canUpdate: boolean;
@@ -16,14 +16,14 @@ interface SubspacePermissions {
 }
 
 interface SubspaceContextProps {
-  subspace?: SubspaceInfoFragment;
+  subspace?: SubspacePendingMembershipInfoFragment;
   subspaceId: string;
   subspaceNameId: string;
   communityId: string;
   roleSetId: string;
   loading: boolean;
   permissions: SubspacePermissions;
-  profile: SubspaceInfoFragment['profile'];
+  profile: SubspacePendingMembershipInfoFragment['profile'];
   myMembershipStatus: CommunityMembershipStatus | undefined;
 }
 
@@ -55,7 +55,7 @@ interface SubspaceProviderProps {}
 const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
   const { journeyId } = useRouteResolver();
 
-  const { data, loading } = useSubspaceInfoQuery({
+  const { data, loading } = useSubspacePendingMembershipInfoQuery({
     variables: { subspaceId: journeyId! },
     errorPolicy: 'all',
     skip: !journeyId,

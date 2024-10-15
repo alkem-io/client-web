@@ -2,7 +2,7 @@ query NewMemberships {
   me {
     communityApplications(states: ["new", "approved"]) {
       id
-      spaceInfo {
+      spacePendingMembershipInfo {
         ...NewMembershipsBasicSpace
       }
       application {
@@ -16,7 +16,7 @@ query NewMemberships {
     }
     communityInvitations(states: ["invited", "accepted"]) {
       id
-      spaceInfo {
+      spacePendingMembershipInfo {
         ...NewMembershipsBasicSpace
       }
       invitation {
@@ -36,7 +36,7 @@ query NewMemberships {
   }
 }
 
-fragment NewMembershipsBasicSpace on SpaceInfo {
+fragment NewMembershipsBasicSpace on SpacePendingMembershipInfo {
   id
   level
   profile {

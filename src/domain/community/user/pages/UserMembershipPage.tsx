@@ -64,8 +64,8 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
     } else {
       return pendingMembershipsData.me.communityApplications.map(application => ({
         id: application.id,
-        spaceID: application.spaceInfo.id,
-        spaceLevel: application.spaceInfo.level,
+        spaceID: application.spacePendingMembershipInfo.id,
+        spaceLevel: application.spacePendingMembershipInfo.level,
         contributorId: userMetadata.user.id,
         contributorType: CommunityContributorType.User,
       }));

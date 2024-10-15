@@ -2,7 +2,7 @@ import { CommunityContributorType, SpaceLevel } from '../../../../../core/apollo
 import { Identifiable } from '../../../../../core/utils/Identifiable';
 
 export interface InvitationItem extends Identifiable {
-  spaceInfo: Identifiable & {
+  spacePendingMembershipInfo: Identifiable & {
     level: SpaceLevel;
     profile: {
       url: string;

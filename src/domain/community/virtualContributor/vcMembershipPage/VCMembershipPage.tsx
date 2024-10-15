@@ -70,8 +70,8 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
       )
       .map(invitation => ({
         id: invitation.id,
-        spaceID: invitation.spaceInfo.id,
-        spaceLevel: invitation.spaceInfo.level,
+        spaceID: invitation.spacePendingMembershipInfo.id,
+        spaceLevel: invitation.spacePendingMembershipInfo.level,
         contributorId: data.virtualContributor.id,
         contributorType: CommunityContributorType.Virtual,
       }));

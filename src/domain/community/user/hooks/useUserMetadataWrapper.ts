@@ -8,7 +8,7 @@ import {
 import { Identifiable } from '../../../../core/utils/Identifiable';
 
 export interface PendingApplication extends Identifiable {
-  spaceInfo: Identifiable & {
+  spacePendingMembershipInfo: Identifiable & {
     level: SpaceLevel;
     profile: {
       displayName: string;
