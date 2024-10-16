@@ -221,7 +221,7 @@ class Portal {
   }) => {
     if (this.socket?.id) {
       const data: SocketUpdateDataSource['MOUSE_LOCATION'] = {
-        type: 'MOUSE_LOCATION',
+        type: WS_SCENE_EVENT_TYPES.MOUSE_LOCATION,
         payload: {
           socketId: this.socket.id as SocketId,
           ...payload,
