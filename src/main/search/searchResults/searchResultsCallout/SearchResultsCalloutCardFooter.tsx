@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
-import { journeyIconByJourneyLevel } from '../../../../domain/shared/components/JourneyIcon/JourneyIcon';
+import { spaceIconByLevel } from '../../../../domain/shared/components/JourneyIcon/JourneyIcon';
 import { CONTRIBUTION_ICON } from '../../../../domain/collaboration/callout/calloutCard/calloutIcons';
 import React, { useMemo } from 'react';
-import { CalloutContributionType } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutContributionType, SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import { Caption } from '../../../../core/ui/typography';
 import Gutters from '../../../../core/ui/grid/Gutters';
@@ -18,7 +18,7 @@ export interface SearchResultsCalloutCardFooterProps {
       displayName: string;
       url: string;
     };
-    level: number;
+    level: SpaceLevel;
   };
 }
 
@@ -84,7 +84,7 @@ const CalloutContributions = ({ callout }: CalloutContributionsProps) => {
 };
 
 const SearchResultsCalloutCardFooter = ({ callout, matchedTerms, space }: SearchResultsCalloutCardFooterProps) => {
-  const JourneyIcon = space && journeyIconByJourneyLevel[space.level];
+  const JourneyIcon = space && spaceIconByLevel[space.level];
 
   return (
     <Gutters padding={1} gap={1}>

@@ -21,12 +21,12 @@ import {
   AuthorizationPrivilege,
   CommunityRoleType,
   SearchVisibility,
+  SpaceLevel,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { OrganizationDetailsFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import { CommunityMemberUserFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityUsers';
 import useInviteUsers from '../../../community/invitations/useInviteUsers';
 import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
-import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 
 const MAX_AVAILABLE_MEMBERS = 100;
@@ -51,7 +51,7 @@ interface useRoleSetAdminParams {
   spaceId?: string;
   challengeId?: string;
   opportunityId?: string;
-  journeyLevel: JourneyLevel | -1;
+  spaceLevel: SpaceLevel | undefined;
 }
 
 interface VirtualContributorNameProps extends Identifiable {
@@ -61,7 +61,7 @@ interface VirtualContributorNameProps extends Identifiable {
   };
 }
 
-const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journeyLevel }: useRoleSetAdminParams) => {
+const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spaceLevel }: useRoleSetAdminParams) => {
   const journeyTypeName = getJourneyTypeName({
     spaceNameId: spaceId,
     challengeNameId: challengeId,
@@ -251,14 +251,14 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, journ
   const getAvailableVirtualContributors = async (filter: string | undefined, all: boolean = false) => {
     const { data } = await fetchAllVirtualContributors({
       variables: {
-        filterSpace: !all || journeyLevel > 0,
+        filterSpace: !all || spaceLevel !== SpaceLevel.Space,
         filterSpaceId: spaceId,
       },
     });
     const roleSet = data?.lookup?.space?.community?.roleSet;
 
     // Results for Space Level - on Account if !all (filter in the query)
-    if (journeyLevel === 0) {
+    if (spaceLevel === SpaceLevel.Space) {
       return (data?.lookup?.space?.account.virtualContributors ?? data?.virtualContributors ?? []).filter(
         vc => filterExisting(vc, virtualContributors) && filterByName(vc, filter)
       );

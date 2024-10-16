@@ -3,7 +3,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { formatTimeElapsed } from '../../utils/formatTimeElapsed';
-import journeyIcon from '../JourneyIcon/JourneyIcon';
+import spaceIcon from '../JourneyIcon/JourneyIcon';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
 
@@ -72,7 +72,7 @@ const DetailedActivityDescription = ({
       mergedValues['journeyDisplayName'] = truncatedParentName;
     }
 
-    const JourneyIcon = journeyTypeName ? journeyIcon[journeyTypeName] : undefined;
+    const JourneyIcon = journeyTypeName ? spaceIcon[journeyTypeName] : undefined;
     if (JourneyIcon) {
       mergedComponents['parenticon'] = <JourneyIcon fontSize="small" sx={{ verticalAlign: 'bottom' }} />;
       mergedComponents['journeyicon'] = <JourneyIcon fontSize="inherit" />;

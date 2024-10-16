@@ -20,6 +20,7 @@ import {
   AuthorizationPrivilege,
   CommunityContributorType,
   OrganizationInfoFragment,
+  SpaceLevel,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { buildUserProfileUrl } from '../../../../../main/routing/urlBuilders';
 import { useTranslation } from 'react-i18next';
@@ -28,7 +29,6 @@ import {
   MEMBER_TRANSLATION_KEY,
   OWNER_TRANSLATION_KEY,
 } from '../../../user/constants/translation.constants';
-import { JourneyLevel } from '../../../../../main/routing/resolvers/RouteResolver';
 
 export interface OrganizationContainerEntities {
   organization?: OrganizationInfoFragment;
@@ -155,7 +155,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
   const contributions = useMemo(() => {
     const spaceContributions = (orgRolesData?.rolesOrganization?.spaces ?? []).map<SpaceHostedItem>(x => ({
       spaceID: x.id,
-      spaceLevel: 0,
+      spaceLevel: SpaceLevel.Space,
       id: x.id,
       contributorId: organizationId,
       contributorType: CommunityContributorType.Organization,
@@ -166,7 +166,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
       orgRolesData?.rolesOrganization?.spaces.flatMap<SpaceHostedItem>(h =>
         h.subspaces.map<SpaceHostedItem>(c => ({
           spaceID: c.id,
-          spaceLevel: c.level as JourneyLevel,
+          spaceLevel: c.level,
           id: c.id,
           contributorId: organizationId,
           contributorType: CommunityContributorType.Organization,
