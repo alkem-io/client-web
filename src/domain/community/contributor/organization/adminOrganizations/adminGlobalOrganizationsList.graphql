@@ -31,7 +31,7 @@ query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: Organiza
   }
   platform {
     id
-    licensing {
+    licensingFramework {
       id
       plans {
         id

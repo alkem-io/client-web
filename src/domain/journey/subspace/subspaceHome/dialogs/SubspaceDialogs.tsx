@@ -11,7 +11,6 @@ import CalendarDialog from '../../../../timeline/calendar/CalendarDialog';
 import { useParams } from 'react-router-dom';
 import { ShareDialog } from '../../../../shared/components/ShareDialog/ShareDialog';
 import InnovationFlowSettingsDialog from '../../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog';
-import { useCollaborationAuthorization } from '../../../../collaboration/authorization/useCollaborationAuthorization';
 import DashboardNavigation from '../../../dashboardNavigation/DashboardNavigation';
 import Dialog from '@mui/material/Dialog';
 import GridProvider from '../../../../../core/ui/grid/GridProvider';
@@ -30,6 +29,7 @@ export interface SubspaceDialogsProps {
     dashboardNavigation: DashboardNavigationItem | undefined;
   };
   communityId: string | undefined;
+  collaborationId: string | undefined;
 }
 
 const SubspaceDialogs = ({
@@ -39,13 +39,12 @@ const SubspaceDialogs = ({
   journeyId,
   dashboardNavigation,
   communityId,
+  collaborationId,
 }: SubspaceDialogsProps) => {
   const { t } = useTranslation();
   const { calendarEventNameId } = useParams();
 
   const handleClose = useBackToStaticPath(journeyUrl ?? '');
-
-  const { collaborationId } = useCollaborationAuthorization({ journeyId });
 
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 

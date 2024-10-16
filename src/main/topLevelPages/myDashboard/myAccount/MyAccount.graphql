@@ -14,6 +14,17 @@ query MyAccount {
         authorization {
           myPrivileges
         }
+        license {
+          id
+          entitlements {
+            id
+            limit
+            usage
+            isAvailable
+            dataType
+            enabled
+          }
+        }
         virtualContributors {
           id
           profile {

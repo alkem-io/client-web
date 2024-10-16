@@ -13,7 +13,7 @@ export interface WhiteboardRouteProps {
 const WhiteboardRoute: FC<WhiteboardRouteProps> = ({ parentPagePath, journeyTypeName }) => {
   const { calloutNameId, whiteboardNameId } = useUrlParams();
 
-  const { journeyId } = useRouteResolver();
+  const { collaborationId } = useRouteResolver();
 
   if (!calloutNameId) {
     throw new Error('Must be within a Callout');
@@ -29,7 +29,7 @@ const WhiteboardRoute: FC<WhiteboardRouteProps> = ({ parentPagePath, journeyType
         path="/"
         element={
           <WhiteboardPage
-            journeyId={journeyId}
+            collaborationId={collaborationId}
             whiteboardNameId={whiteboardNameId}
             calloutNameId={calloutNameId}
             parentUrl={parentPagePath}

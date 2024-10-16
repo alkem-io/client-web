@@ -50,6 +50,8 @@ export type Account = {
   innovationHubs: Array<InnovationHub>;
   /** The InnovationPacks for this Account. */
   innovationPacks: Array<InnovationPack>;
+  /** The License operating on this Account. */
+  license: License;
   /** The Spaces within this Account. */
   spaces: Array<Space>;
   /** The StorageAggregator in use by this Account */
@@ -66,7 +68,12 @@ export type Account = {
 
 export type AccountAuthorizationResetInput = {
   /** The identifier of the Account whose Authorization Policy should be reset. */
-  accountID: Scalars['UUID_NAMEID'];
+  accountID: Scalars['UUID'];
+};
+
+export type AccountLicenseResetInput = {
+  /** The identifier of the Account whose License and Entitlements should be reset. */
+  accountID: Scalars['UUID'];
 };
 
 export type AccountSubscription = {
@@ -905,6 +912,7 @@ export enum AuthorizationPolicyType {
   InnovationPack = 'INNOVATION_PACK',
   Invitation = 'INVITATION',
   InMemory = 'IN_MEMORY',
+  License = 'LICENSE',
   Licensing = 'LICENSING',
   Link = 'LINK',
   Organization = 'ORGANIZATION',
@@ -966,6 +974,7 @@ export enum AuthorizationPrivilege {
   FileUpload = 'FILE_UPLOAD',
   Grant = 'GRANT',
   GrantGlobalAdmins = 'GRANT_GLOBAL_ADMINS',
+  LicenseReset = 'LICENSE_RESET',
   MoveContribution = 'MOVE_CONTRIBUTION',
   MovePost = 'MOVE_POST',
   PlatformAdmin = 'PLATFORM_ADMIN',
@@ -1253,6 +1262,8 @@ export type Collaboration = {
   innovationFlow: InnovationFlow;
   /** Whether this Collaboration is a Template or not. */
   isTemplate: Scalars['Boolean'];
+  /** The License operating on this Collaboration. */
+  license: License;
   /** The tagset templates on this Collaboration. */
   tagsetTemplates?: Maybe<Array<TagsetTemplate>>;
   /** The timeline with events in use by this Space */
@@ -1872,7 +1883,7 @@ export type CreateInnovationPackOnAccountInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
-export type CreateLicensePlanOnLicensingInput = {
+export type CreateLicensePlanOnLicensingFrameworkInput = {
   /** Assign this plan to all new Organization accounts */
   assignToNewOrganizationAccounts: Scalars['Boolean'];
   /** Assign this plan to all new User accounts */
@@ -1883,7 +1894,7 @@ export type CreateLicensePlanOnLicensingInput = {
   isFree: Scalars['Boolean'];
   /** The credential to represent this plan */
   licenseCredential: LicenseCredential;
-  licensingID: Scalars['UUID'];
+  licensingFrameworkID: Scalars['UUID'];
   /** The name of the License Plan */
   name: Scalars['String'];
   /** The price per month of this plan. */
@@ -2751,6 +2762,22 @@ export type LibraryTemplatesFilterInput = {
   types?: InputMaybe<Array<TemplateType>>;
 };
 
+export type License = {
+  __typename?: 'License';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The date at which the entity was created. */
+  createdDate?: Maybe<Scalars['DateTime']>;
+  /** The set of Entitlements associated with the License applicable to this entity. */
+  entitlements: Array<LicenseEntitlement>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The type of entity that this License is being used with. */
+  type?: Maybe<LicenseType>;
+  /** The date at which the entity was last updated. */
+  updatedDate?: Maybe<Scalars['DateTime']>;
+};
+
 export enum LicenseCredential {
   AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
   SpaceFeatureSaveAsTemplate = 'SPACE_FEATURE_SAVE_AS_TEMPLATE',
@@ -2760,6 +2787,43 @@ export enum LicenseCredential {
   SpaceLicenseFree = 'SPACE_LICENSE_FREE',
   SpaceLicensePlus = 'SPACE_LICENSE_PLUS',
   SpaceLicensePremium = 'SPACE_LICENSE_PREMIUM',
+}
+
+export type LicenseEntitlement = {
+  __typename?: 'LicenseEntitlement';
+  /** The date at which the entity was created. */
+  createdDate?: Maybe<Scalars['DateTime']>;
+  /** Data type of the entitlement, e.g. Limit, Feature flag etc. */
+  dataType: LicenseEntitlementDataType;
+  /** If the Entitlement is enabled */
+  enabled: Scalars['Boolean'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Whether the specified entitlement is available. */
+  isAvailable: Scalars['Boolean'];
+  /** Limit of the entitlement */
+  limit: Scalars['Float'];
+  /** Type of the entitlement, e.g. Space, Whiteboard contributors etc. */
+  type: LicenseEntitlementType;
+  /** The date at which the entity was last updated. */
+  updatedDate?: Maybe<Scalars['DateTime']>;
+  /** The amount of the spcified entitlement used. */
+  usage: Scalars['Float'];
+};
+
+export enum LicenseEntitlementDataType {
+  Flag = 'FLAG',
+  Limit = 'LIMIT',
+}
+
+export enum LicenseEntitlementType {
+  AccountInnovationHub = 'ACCOUNT_INNOVATION_HUB',
+  AccountInnovationPack = 'ACCOUNT_INNOVATION_PACK',
+  AccountSpace = 'ACCOUNT_SPACE',
+  AccountVirtualContributor = 'ACCOUNT_VIRTUAL_CONTRIBUTOR',
+  SpaceFlagSaveAsTemplate = 'SPACE_FLAG_SAVE_AS_TEMPLATE',
+  SpaceFlagVirtualContributorAccess = 'SPACE_FLAG_VIRTUAL_CONTRIBUTOR_ACCESS',
+  SpaceFlagWhiteboardMultiUser = 'SPACE_FLAG_WHITEBOARD_MULTI_USER',
 }
 
 export type LicensePlan = {
@@ -2825,12 +2889,21 @@ export type LicensePolicyCredentialRule = {
 };
 
 export enum LicensePrivilege {
+  AccountCreateInnovationHub = 'ACCOUNT_CREATE_INNOVATION_HUB',
   AccountCreateInnovationPack = 'ACCOUNT_CREATE_INNOVATION_PACK',
   AccountCreateSpace = 'ACCOUNT_CREATE_SPACE',
   AccountCreateVirtualContributor = 'ACCOUNT_CREATE_VIRTUAL_CONTRIBUTOR',
   SpaceSaveAsTemplate = 'SPACE_SAVE_AS_TEMPLATE',
   SpaceVirtualContributorAccess = 'SPACE_VIRTUAL_CONTRIBUTOR_ACCESS',
   SpaceWhiteboardMultiUser = 'SPACE_WHITEBOARD_MULTI_USER',
+}
+
+export enum LicenseType {
+  Account = 'ACCOUNT',
+  Collaboration = 'COLLABORATION',
+  Roleset = 'ROLESET',
+  Space = 'SPACE',
+  Whiteboard = 'WHITEBOARD',
 }
 
 export type Licensing = {
@@ -3375,6 +3448,8 @@ export type Mutation = {
   inviteUserToPlatformWithRole: PlatformInvitation;
   /** Join the specified RoleSet using the entry Role, without going through an approval process. */
   joinRoleSet: RoleSet;
+  /** Reset the License with Entitlements on the specified Account. */
+  licenseResetOnAccount: Account;
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
   /** Moves the specified Contribution to another Callout. */
@@ -3399,6 +3474,8 @@ export type Mutation = {
   removeUserFromGroup: UserGroup;
   /** Resets the interaction with the chat engine. */
   resetChatGuidance: Scalars['Boolean'];
+  /** Reset all license plans on Accounts */
+  resetLicenseOnAccounts: Space;
   /** Removes an authorization credential from an Organization. */
   revokeCredentialFromOrganization: Organization;
   /** Removes an authorization credential from a User. */
@@ -3662,7 +3739,7 @@ export type MutationCreateInnovationPackArgs = {
 };
 
 export type MutationCreateLicensePlanArgs = {
-  planData: CreateLicensePlanOnLicensingInput;
+  planData: CreateLicensePlanOnLicensingFrameworkInput;
 };
 
 export type MutationCreateOrganizationArgs = {
@@ -3831,6 +3908,10 @@ export type MutationInviteUserToPlatformWithRoleArgs = {
 
 export type MutationJoinRoleSetArgs = {
   joinData: JoinAsEntryRoleOnRoleSetInput;
+};
+
+export type MutationLicenseResetOnAccountArgs = {
+  resetData: AccountLicenseResetInput;
 };
 
 export type MutationMessageUserArgs = {
@@ -4297,7 +4378,7 @@ export type Platform = {
   /** The Innovation Library for the platform */
   library: Library;
   /** The Licensing in use by the platform. */
-  licensing: Licensing;
+  licensingFramework: Licensing;
   /** Alkemio Services Metadata. */
   metadata: Metadata;
   /** The roles on the Platform for the currently logged in user. */
@@ -4878,6 +4959,8 @@ export type RelayPaginatedSpace = {
   level: SpaceLevel;
   /** The ID of the level zero space for this tree. */
   levelZeroSpaceID: Scalars['String'];
+  /** The License operating on this Space. */
+  license: License;
   /** The privileges granted based on the License credentials held by this Space. */
   licensePrivileges?: Maybe<Array<LicensePrivilege>>;
   /** Metrics about activity within this Space. */
@@ -5049,6 +5132,8 @@ export type RoleSet = {
   id: Scalars['UUID'];
   /** Invitations for this roleSet. */
   invitations: Array<Invitation>;
+  /** The License operating on this RoleSet. */
+  license: License;
   /** The membership status of the currently logged in user. */
   myMembershipStatus?: Maybe<CommunityMembershipStatus>;
   /** The roles on this community for the currently logged in user. */
@@ -5446,6 +5531,8 @@ export type Space = {
   level: SpaceLevel;
   /** The ID of the level zero space for this tree. */
   levelZeroSpaceID: Scalars['String'];
+  /** The License operating on this Space. */
+  license: License;
   /** The privileges granted based on the License credentials held by this Space. */
   licensePrivileges?: Maybe<Array<LicensePrivilege>>;
   /** Metrics about activity within this Space. */
@@ -7852,6 +7939,20 @@ export type AccountInformationQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
+          license: {
+            __typename?: 'License';
+            id: string;
+            entitlements: Array<{
+              __typename?: 'LicenseEntitlement';
+              id: string;
+              type: LicenseEntitlementType;
+              limit: number;
+              usage: number;
+              isAvailable: boolean;
+              dataType: LicenseEntitlementDataType;
+              enabled: boolean;
+            }>;
+          };
           host?:
             | { __typename?: 'Organization'; id: string }
             | { __typename?: 'User'; id: string }
@@ -10014,56 +10115,34 @@ export type ActivityLogOnCollaborationQuery = {
   >;
 };
 
-export type CollaborationAuthorizationQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
+export type CollaborationAuthorizationEntitlementsQueryVariables = Exact<{
+  collaborationId: Scalars['UUID'];
 }>;
 
-export type CollaborationAuthorizationQuery = {
+export type CollaborationAuthorizationEntitlementsQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
-    space?:
+    collaboration?:
       | {
-          __typename?: 'Space';
+          __typename?: 'Collaboration';
           id: string;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type CollaborationPrivilegesQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-}>;
-
-export type CollaborationPrivilegesQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          collaboration: {
-            __typename?: 'Collaboration';
+          license: {
+            __typename?: 'License';
             id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
+            entitlements: Array<{
+              __typename?: 'LicenseEntitlement';
+              id: string;
+              type: LicenseEntitlementType;
+              enabled: boolean;
+            }>;
           };
         }
       | undefined;
   };
-};
-
-export type CollaborationPrivilegesFragment = {
-  __typename?: 'Collaboration';
-  id: string;
-  authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-    | undefined;
 };
 
 export type UpdateCalloutsSortOrderMutationVariables = Exact<{
@@ -10736,29 +10815,6 @@ export type DeleteCalloutMutationVariables = Exact<{
 }>;
 
 export type DeleteCalloutMutation = { __typename?: 'Mutation'; deleteCallout: { __typename?: 'Callout'; id: string } };
-
-export type CalloutIdQueryVariables = Exact<{
-  calloutNameId: Scalars['UUID_NAMEID'];
-  spaceId: Scalars['UUID'];
-}>;
-
-export type CalloutIdQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          collaboration: {
-            __typename?: 'Collaboration';
-            id: string;
-            callouts: Array<{ __typename?: 'Callout'; id: string }>;
-          };
-        }
-      | undefined;
-  };
-};
 
 export type CreatePostFromContributeTabMutationVariables = Exact<{
   postData: CreateContributionOnCalloutInput;
@@ -16463,7 +16519,7 @@ export type AdminGlobalOrganizationsListQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    licensing: {
+    licensingFramework: {
       __typename?: 'Licensing';
       id: string;
       plans: Array<{
@@ -17387,7 +17443,7 @@ export type UserListQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    licensing: {
+    licensingFramework: {
       __typename?: 'Licensing';
       id: string;
       plans: Array<{
@@ -20142,12 +20198,7 @@ export type SubspaceProviderQuery = {
             __typename?: 'Context';
             id: string;
             authorization?:
-              | {
-                  __typename?: 'Authorization';
-                  id: string;
-                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                  anonymousReadAccess: boolean;
-                }
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
           };
           community: {
@@ -20157,6 +20208,13 @@ export type SubspaceProviderQuery = {
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
             roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+          };
+          collaboration: {
+            __typename?: 'Collaboration';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
           };
         }
       | undefined;
@@ -20208,12 +20266,7 @@ export type SubspaceProviderFragment = {
     __typename?: 'Context';
     id: string;
     authorization?:
-      | {
-          __typename?: 'Authorization';
-          id: string;
-          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-          anonymousReadAccess: boolean;
-        }
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
   };
   community: {
@@ -20223,6 +20276,13 @@ export type SubspaceProviderFragment = {
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
     roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+  };
+  collaboration: {
+    __typename?: 'Collaboration';
+    id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
   };
 };
 
@@ -20689,6 +20749,13 @@ export type SpaceProviderQuery = {
           }
         | undefined;
     };
+    collaboration: {
+      __typename?: 'Collaboration';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -20751,7 +20818,7 @@ export type SpaceUrlQuery = {
   space: { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
 };
 
-export type SpacePendingMembershipInfoFragment = {
+export type SpaceInfoFragment = {
   __typename?: 'Space';
   visibility: SpaceVisibility;
   id: string;
@@ -20781,6 +20848,13 @@ export type SpacePendingMembershipInfoFragment = {
           type?: AuthorizationPolicyType | undefined;
           anonymousReadAccess: boolean;
         }
+      | undefined;
+  };
+  collaboration: {
+    __typename?: 'Collaboration';
+    id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
   };
   profile: {
@@ -21486,7 +21560,7 @@ export type PlansTableQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    licensing: {
+    licensingFramework: {
       __typename?: 'Licensing';
       id: string;
       plans: Array<{
@@ -22096,7 +22170,7 @@ export type SpaceAccountQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    licensing: {
+    licensingFramework: {
       __typename?: 'Licensing';
       id: string;
       plans: Array<{
@@ -23536,7 +23610,7 @@ export type AdminSpacesListQuery = {
   }>;
   platform: {
     __typename?: 'Platform';
-    licensing: {
+    licensingFramework: {
       __typename?: 'Licensing';
       id: string;
       plans: Array<{ __typename?: 'LicensePlan'; id: string; name: string; licenseCredential: LicenseCredential }>;
@@ -27285,6 +27359,40 @@ export type JourneyRouteResolverQuery = {
   };
 };
 
+export type SpaceKeyEntitiesIDsQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpaceKeyEntitiesIDsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          community: { __typename?: 'Community'; id: string };
+          collaboration: { __typename?: 'Collaboration'; id: string };
+        }
+      | undefined;
+  };
+};
+
+export type CalloutIdQueryVariables = Exact<{
+  calloutNameId: Scalars['UUID_NAMEID'];
+  collaborationId: Scalars['UUID'];
+}>;
+
+export type CalloutIdQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    collaboration?:
+      | { __typename?: 'Collaboration'; id: string; callouts: Array<{ __typename?: 'Callout'; id: string }> }
+      | undefined;
+  };
+};
+
 export type SearchQueryVariables = Exact<{
   searchData: SearchInput;
 }>;
@@ -29822,6 +29930,19 @@ export type MyAccountQuery = {
                 authorization?:
                   | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
                   | undefined;
+                license: {
+                  __typename?: 'License';
+                  id: string;
+                  entitlements: Array<{
+                    __typename?: 'LicenseEntitlement';
+                    id: string;
+                    limit: number;
+                    usage: number;
+                    isAvailable: boolean;
+                    dataType: LicenseEntitlementDataType;
+                    enabled: boolean;
+                  }>;
+                };
                 virtualContributors: Array<{
                   __typename?: 'VirtualContributor';
                   id: string;
