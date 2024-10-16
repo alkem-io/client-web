@@ -43,6 +43,7 @@ export type TypedCallout = Pick<Callout, 'id' | 'nameID' | 'activity' | 'sortOrd
   editable: boolean;
   movable: boolean;
   canSaveAsTemplate: boolean;
+  entitledToSaveAsTemplate: boolean;
   flowStates: string[] | undefined;
   groupName: CalloutGroupName;
 };
@@ -106,7 +107,7 @@ const useCallouts = ({
     canCreateCallout,
     canReadCallout,
     canSaveAsTemplate,
-    //entitledToSaveAsTemplate, TODO: use this in the display logic when we get to that
+    entitledToSaveAsTemplate,
     loading: authorizationLoading,
   } = useCollaborationAuthorizationEntitlements({ collaborationId });
 
@@ -164,6 +165,7 @@ const useCallouts = ({
           editable,
           movable,
           canSaveAsTemplate,
+          entitledToSaveAsTemplate,
           flowStates,
           groupName: getCalloutGroupNameValue(groupNameTagset?.tags),
         } as TypedCallout;

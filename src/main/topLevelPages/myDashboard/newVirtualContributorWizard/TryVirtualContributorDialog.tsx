@@ -117,6 +117,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
       editable: false,
       movable: false,
       canSaveAsTemplate: false,
+      entitledToSaveAsTemplate: false,
       flowStates: undefined,
       groupName: CalloutGroupName.Home,
       authorization: {

@@ -102,6 +102,7 @@ export interface CalloutSettingsContainerProps
     editable?: boolean;
     movable?: boolean;
     canSaveAsTemplate?: boolean;
+    entitledToSaveAsTemplate?: boolean;
     authorization?: {
       myPrivileges?: AuthorizationPrivilege[];
     };
@@ -312,7 +313,7 @@ const CalloutSettingsContainer = ({
             {t('callout.sortContributions')}
           </MenuItemWithIcon>
         )}
-        {callout.canSaveAsTemplate && (
+        {callout.canSaveAsTemplate && callout.entitledToSaveAsTemplate && (
           <MenuItemWithIcon
             key="saveAsTemplate"
             iconComponent={DownloadForOfflineOutlinedIcon}
