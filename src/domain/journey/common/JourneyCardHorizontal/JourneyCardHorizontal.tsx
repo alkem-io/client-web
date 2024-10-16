@@ -16,7 +16,7 @@ import { Visual } from '../../../common/visual/Visual';
 import withElevationOnHover from '../../../shared/components/withElevationOnHover';
 import RouterLink, { RouterLinkProps } from '../../../../core/ui/link/RouterLink';
 import { JourneyTypeName } from '../../JourneyTypeName';
-import JourneyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
+import spaceIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import BlockTitleWithIcon from '../../../../core/ui/content/BlockTitleWithIcon';
 import { CommunityRoleType } from '../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
@@ -79,7 +79,7 @@ const JourneyCardHorizontal = ({
   size,
   disableHoverState = false,
 }: JourneyCardHorizontalProps) => {
-  const Icon = JourneyIcon[journeyTypeName];
+  const Icon = spaceIcon[journeyTypeName];
 
   const { t } = useTranslation();
 

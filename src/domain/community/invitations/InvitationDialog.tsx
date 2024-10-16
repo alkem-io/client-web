@@ -8,7 +8,7 @@ import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
 import JourneyCard from '../../journey/common/JourneyCard/JourneyCard';
-import journeyIcon from '../../shared/components/JourneyIcon/JourneyIcon';
+import spaceIcon from '../../shared/components/JourneyIcon/JourneyIcon';
 import JourneyCardTagline from '../../journey/common/JourneyCard/JourneyCardTagline';
 import { BlockSectionTitle, Caption, Text } from '../../../core/ui/typography';
 import DetailedActivityDescription from '../../shared/components/ActivityDescription/DetailedActivityDescription';
@@ -100,7 +100,7 @@ const InvitationDialog = ({
                     alignItems={isMobile ? 'center' : 'start'}
                   >
                     <JourneyCard
-                      iconComponent={journeyIcon[getChildJourneyTypeName(invitation.space)]}
+                      iconComponent={spaceIcon[getChildJourneyTypeName(invitation.space)]}
                       header={invitation.space.profile.displayName}
                       tags={invitation.space.profile.tagset?.tags ?? []}
                       banner={invitation.space.profile.visual}

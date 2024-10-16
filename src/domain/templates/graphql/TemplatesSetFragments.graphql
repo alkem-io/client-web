@@ -14,5 +14,8 @@ fragment TemplatesSetTemplates on TemplatesSet {
   communityGuidelinesTemplates {
     ...CommunityGuidelinesTemplate
   }
+  collaborationTemplates {
+    ...CollaborationTemplate
+  }
 }
 

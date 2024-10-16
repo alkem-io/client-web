@@ -19,6 +19,7 @@ const useInnovationPackCardProps = (
           whiteboardTemplatesCount: innovationPack.templatesSet?.whiteboardTemplatesCount,
           postTemplatesCount: innovationPack.templatesSet?.postTemplatesCount,
           innovationFlowTemplatesCount: innovationPack.templatesSet?.innovationFlowTemplatesCount,
+          collaborationTemplatesCount: innovationPack.templatesSet?.collaborationTemplatesCount,
           calloutTemplatesCount: innovationPack.templatesSet?.calloutTemplatesCount,
           communityGuidelinesTemplatesCount: innovationPack.templatesSet?.communityGuidelinesTemplatesCount,
           innovationPackUri: innovationPack.profile.url,

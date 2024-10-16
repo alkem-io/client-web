@@ -27,7 +27,7 @@ import CommunityGuidelinesContainer, {
 } from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import ImportTemplatesDialog from '../../../templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
+import { SpaceLevel, TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import {
@@ -72,7 +72,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useRoleSetAdmin({ roleSetId, spaceId, journeyLevel: 0 });
+  } = useRoleSetAdmin({ roleSetId, spaceId, spaceLevel: SpaceLevel.Space });
 
   const currentApplicationsUserIds = useMemo(
     () =>

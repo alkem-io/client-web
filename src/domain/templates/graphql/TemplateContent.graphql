@@ -3,6 +3,7 @@ query TemplateContent(
   $includeCallout: Boolean = false
   $includeCommunityGuidelines: Boolean = false
   $includeInnovationFlow: Boolean = false
+  $includeCollaboration: Boolean = false
   $includePost: Boolean = false
   $includeWhiteboard: Boolean = false
 ) {
@@ -30,6 +31,9 @@ query TemplateContent(
       postDefaultDescription @include(if: $includePost)
       whiteboard @include(if: $includeWhiteboard) {
         ...WhiteboardTemplateContent
+      }
+      collaboration @include(if: $includeCollaboration) {
+        ...CollaborationTemplateContent
       }
     }
   }
@@ -91,6 +95,17 @@ fragment InnovationFlowTemplateContent on InnovationFlow {
   states {
     displayName
     description
+  }
+}
+
+fragment CollaborationTemplateContent on Collaboration {
+  id
+  innovationFlow {
+    id
+    states {
+      displayName
+      description
+    }
   }
 }
 

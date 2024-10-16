@@ -731,6 +731,7 @@ export type CalloutKeySpecifier = (
   | 'createdDate'
   | 'framing'
   | 'id'
+  | 'isTemplate'
   | 'nameID'
   | 'posts'
   | 'publishedBy'
@@ -752,6 +753,7 @@ export type CalloutFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   framing?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   posts?: FieldPolicy<any> | FieldReadFunction<any>;
   publishedBy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -856,6 +858,7 @@ export type CollaborationKeySpecifier = (
   | 'groups'
   | 'id'
   | 'innovationFlow'
+  | 'isTemplate'
   | 'license'
   | 'tagsetTemplates'
   | 'timeline'
@@ -869,6 +872,7 @@ export type CollaborationFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
+  isTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsetTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -990,13 +994,13 @@ export type CommunityApplicationForRoleResultFieldPolicy = {
 export type CommunityApplicationResultKeySpecifier = (
   | 'application'
   | 'id'
-  | 'space'
+  | 'spacePendingMembershipInfo'
   | CommunityApplicationResultKeySpecifier
 )[];
 export type CommunityApplicationResultFieldPolicy = {
   application?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  spacePendingMembershipInfo?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityGuidelinesKeySpecifier = (
   | 'authorization'
@@ -1045,13 +1049,13 @@ export type CommunityInvitationForRoleResultFieldPolicy = {
 export type CommunityInvitationResultKeySpecifier = (
   | 'id'
   | 'invitation'
-  | 'space'
+  | 'spacePendingMembershipInfo'
   | CommunityInvitationResultKeySpecifier
 )[];
 export type CommunityInvitationResultFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
-  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  spacePendingMembershipInfo?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityMembershipResultKeySpecifier = (
   | 'childMemberships'
@@ -2035,6 +2039,7 @@ export type MutationKeySpecifier = (
   | 'removeRoleFromVirtualContributor'
   | 'removeUserFromGroup'
   | 'resetChatGuidance'
+  | 'resetLicenseOnAccounts'
   | 'revokeCredentialFromOrganization'
   | 'revokeCredentialFromUser'
   | 'revokeLicensePlanFromAccount'
@@ -2057,6 +2062,7 @@ export type MutationKeySpecifier = (
   | 'updateCalloutPublishInfo'
   | 'updateCalloutVisibility'
   | 'updateCalloutsSortOrder'
+  | 'updateCollaborationFromTemplate'
   | 'updateCommunityGuidelines'
   | 'updateContributionsSortOrder'
   | 'updateDiscussion'
@@ -2065,7 +2071,6 @@ export type MutationKeySpecifier = (
   | 'updateInnovationFlow'
   | 'updateInnovationFlowSelectedState'
   | 'updateInnovationFlowSingleState'
-  | 'updateInnovationFlowStatesFromTemplate'
   | 'updateInnovationHub'
   | 'updateInnovationPack'
   | 'updateLicensePlan'
@@ -2196,6 +2201,7 @@ export type MutationFieldPolicy = {
   removeRoleFromVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   resetChatGuidance?: FieldPolicy<any> | FieldReadFunction<any>;
+  resetLicenseOnAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeLicensePlanFromAccount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2218,6 +2224,7 @@ export type MutationFieldPolicy = {
   updateCalloutPublishInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCollaborationFromTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   updateContributionsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2226,7 +2233,6 @@ export type MutationFieldPolicy = {
   updateInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationFlowSelectedState?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationFlowSingleState?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateInnovationFlowStatesFromTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   updateLicensePlan?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2417,7 +2423,6 @@ export type PlatformFeatureFlagFieldPolicy = {
 };
 export type PlatformInvitationKeySpecifier = (
   | 'authorization'
-  | 'communityInvitedToParent'
   | 'createdBy'
   | 'createdDate'
   | 'email'
@@ -2426,13 +2431,14 @@ export type PlatformInvitationKeySpecifier = (
   | 'lastName'
   | 'platformRole'
   | 'profileCreated'
+  | 'roleSetExtraRole'
+  | 'roleSetInvitedToParent'
   | 'updatedDate'
   | 'welcomeMessage'
   | PlatformInvitationKeySpecifier
 )[];
 export type PlatformInvitationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityInvitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   email?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2441,6 +2447,8 @@ export type PlatformInvitationFieldPolicy = {
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   platformRole?: FieldPolicy<any> | FieldReadFunction<any>;
   profileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleSetExtraRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleSetInvitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -3145,6 +3153,21 @@ export type SpaceFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SpacePendingMembershipInfoKeySpecifier = (
+  | 'communityGuidelines'
+  | 'context'
+  | 'id'
+  | 'level'
+  | 'profile'
+  | SpacePendingMembershipInfoKeySpecifier
+)[];
+export type SpacePendingMembershipInfoFieldPolicy = {
+  communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
+  context?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceSettingsKeySpecifier = ('collaboration' | 'membership' | 'privacy' | SpaceSettingsKeySpecifier)[];
 export type SpaceSettingsFieldPolicy = {
@@ -4443,6 +4466,13 @@ export type StrictTypedTypePolicies = {
   Space?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceKeySpecifier | (() => undefined | SpaceKeySpecifier);
     fields?: SpaceFieldPolicy;
+  };
+  SpacePendingMembershipInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | SpacePendingMembershipInfoKeySpecifier
+      | (() => undefined | SpacePendingMembershipInfoKeySpecifier);
+    fields?: SpacePendingMembershipInfoFieldPolicy;
   };
   SpaceSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceSettingsKeySpecifier | (() => undefined | SpaceSettingsKeySpecifier);

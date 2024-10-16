@@ -14,6 +14,7 @@ import CommunityGuidelinesBlock from '../../../community/community/CommunityGuid
 import { JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import useCanReadSpace from '../../common/authorization/useCanReadSpace';
+import { SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface SpacePageLayoutProps {
   currentSection: EntityPageSection;
@@ -64,7 +65,7 @@ const SpacePageLayout = ({
             description={vision}
             disabled={unauthorizedDialogDisabled}
             leftColumnChildrenTop={<CommunityGuidelinesBlock communityId={communityId} journeyUrl={profile.url} />}
-            journeyLevel={0}
+            spaceLevel={SpaceLevel.Space}
             journeyId={spaceId}
             {...props}
           />

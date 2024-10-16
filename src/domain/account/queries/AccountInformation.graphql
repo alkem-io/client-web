@@ -14,6 +14,8 @@ query AccountInformation($accountId: UUID!) {
           limit
           usage
           isAvailable
+          dataType
+          enabled
         }
       }
       host {
@@ -74,6 +76,7 @@ query AccountInformation($accountId: UUID!) {
           calloutTemplatesCount
           communityGuidelinesTemplatesCount
           innovationFlowTemplatesCount
+          collaborationTemplatesCount
           postTemplatesCount
           whiteboardTemplatesCount
         }

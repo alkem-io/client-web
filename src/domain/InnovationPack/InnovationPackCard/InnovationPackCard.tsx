@@ -27,6 +27,7 @@ export interface InnovationPackCardProps extends ContributeCardProps {
   whiteboardTemplatesCount?: ReactNode;
   postTemplatesCount: ReactNode;
   innovationFlowTemplatesCount: ReactNode;
+  collaborationTemplatesCount: ReactNode;
   calloutTemplatesCount?: ReactNode;
   communityGuidelinesTemplatesCount?: ReactNode;
   innovationPackUri: string;
@@ -41,6 +42,7 @@ const InnovationPackCard = ({
   whiteboardTemplatesCount,
   postTemplatesCount,
   innovationFlowTemplatesCount,
+  collaborationTemplatesCount,
   calloutTemplatesCount,
   communityGuidelinesTemplatesCount,
   innovationPackUri,
@@ -104,6 +106,25 @@ const InnovationPackCard = ({
               }
             >
               {innovationFlowTemplatesCount}
+            </CardFooterCountWithBadge>
+          )}
+          {!!collaborationTemplatesCount && (
+            <CardFooterCountWithBadge
+              tooltip={t(`common.enums.templateType.${TemplateType.Collaboration}_plural`)}
+              icon={
+                // TODO Try to redraw InnovationFlowIcon in the same way as MUI icons are done
+                <Box
+                  width={theme => theme.spacing(1.5)}
+                  sx={{ svg: { width: '100%' } }}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <InnovationFlowIcon />
+                </Box>
+              }
+            >
+              {collaborationTemplatesCount}
             </CardFooterCountWithBadge>
           )}
         </Box>

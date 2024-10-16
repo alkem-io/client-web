@@ -21,6 +21,8 @@ query MyAccount {
             limit
             usage
             isAvailable
+            dataType
+            enabled
           }
         }
         virtualContributors {

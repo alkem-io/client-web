@@ -26,7 +26,7 @@ import InnovationFlowProfileView from '../../../../collaboration/InnovationFlow/
 import InnovationFlowStates from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import { Actions } from '../../../../../core/ui/actions/Actions';
 import { Cached, ContentCopyOutlined, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
-import SelectDefaultCollaborationTemplateDialog from '../../../../collaboration/InnovationFlow/InnovationFlowDialogs/SelectDefaultCollaborationTemplate/SelectDefaultCollaborationTemplateDialog';
+import SelectDefaultCollaborationTemplateDialog from '../../../../templates-manager/SelectDefaultCollaborationTemplate/SelectDefaultCollaborationTemplateDialog';
 import MenuItemWithIcon from '../../../../../core/ui/menu/MenuItemWithIcon';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import SearchableList, { SearchableListItem } from '../../../../platform/admin/components/SearchableList';
@@ -38,7 +38,7 @@ export const SubspaceListView: FC = () => {
   const { spaceNameId, spaceId } = useSpace();
   const navigate = useNavigate();
   const [journeyCreationDialogOpen, setJourneyCreationDialogOpen] = useState(false);
-  const [innovationFlowDialogOpen, setInnovationFlowDialogOpen] = useState(false);
+  const [selectCollaborationTemplateDialogOpen, setSelectCollaborationTemplateDialogOpen] = useState(false);
 
   const { data, loading } = useAdminSpaceSubspacesPageQuery({
     variables: {
@@ -47,16 +47,19 @@ export const SubspaceListView: FC = () => {
   });
   const templatesManager = data?.space.templatesManager;
   const templateDefaults = templatesManager?.templateDefaults;
-  const subspaceTemplateDefault = templateDefaults ? templateDefaults[0].template : undefined;
-  const defaultInnovationFlow = subspaceTemplateDefault?.collaboration?.innovationFlow;
-  const templatesManagerID = templatesManager?.id || ''; // How to handle when IDs are not found?
+  const subspaceTemplateDefault = templateDefaults ? templateDefaults[0] : undefined; // TODO
+  const subspaceTemplateDefaultID = subspaceTemplateDefault?.id || ''; // TODO
+  const subspaceTemplateWithCollaboration = subspaceTemplateDefault?.template;
+  const subspaceTemplateWithCollaborationID = subspaceTemplateWithCollaboration?.id || ''; // TODO
+  const collaborationFromTemplate = subspaceTemplateDefault?.template?.collaboration;
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<SearchableListItem | undefined>(undefined);
 
+  const innovationFlowFromCollaborationTemplate = subspaceTemplateDefault?.template?.collaboration?.innovationFlow;
   useEffect(() => {
-    setSelectedState(subspaceTemplateDefault?.collaboration?.innovationFlow?.states?.[0].displayName);
-  }, [subspaceTemplateDefault?.collaboration?.innovationFlow?.states?.[0]?.displayName]);
+    setSelectedState(innovationFlowFromCollaborationTemplate?.states?.[0].displayName);
+  }, [innovationFlowFromCollaborationTemplate?.states?.[0]?.displayName]);
 
   const subspaces =
     data?.space?.subspaces?.map(s => ({
@@ -131,10 +134,10 @@ export const SubspaceListView: FC = () => {
   );
 
   const [updateTemplateDefault] = useUpdateTemplateDefaultMutation();
-  const handleSelectInnovationFlow = async (collaborationTemplateId: string) => {
+  const handleSelectCollaborationTemplate = async (collaborationTemplateId: string) => {
     await updateTemplateDefault({
       variables: {
-        templateDefaultID: templatesManagerID,
+        templateDefaultID: subspaceTemplateDefaultID,
         templateID: collaborationTemplateId,
       },
       refetchQueries: [
@@ -144,7 +147,7 @@ export const SubspaceListView: FC = () => {
       ],
       awaitRefetchQueries: true,
     });
-    setInnovationFlowDialogOpen(false);
+    setSelectCollaborationTemplateDialogOpen(false);
   };
 
   const onDeleteClick = (item: SearchableListItem) => {
@@ -197,15 +200,19 @@ export const SubspaceListView: FC = () => {
         <Caption>{t('pages.admin.space.sections.subspaces.defaultSettings.description')}</Caption>
         <PageContentBlock>
           <PageContentBlockHeader title={t('common.innovation-flow')} />
-          <BlockSectionTitle>{defaultInnovationFlow?.profile.displayName}</BlockSectionTitle>
-          <InnovationFlowProfileView innovationFlow={defaultInnovationFlow} />
+          <BlockSectionTitle>{subspaceTemplateDefault?.template?.profile.displayName}</BlockSectionTitle>
+          <InnovationFlowProfileView innovationFlow={collaborationFromTemplate?.innovationFlow} />
           <InnovationFlowStates
-            states={defaultInnovationFlow?.states}
+            states={collaborationFromTemplate?.innovationFlow?.states}
             selectedState={selectedState}
             onSelectState={state => setSelectedState(state.displayName)}
           />
           <Actions justifyContent="end">
-            <Button variant="outlined" startIcon={<Cached />} onClick={() => setInnovationFlowDialogOpen(true)}>
+            <Button
+              variant="outlined"
+              startIcon={<Cached />}
+              onClick={() => setSelectCollaborationTemplateDialogOpen(true)}
+            >
               {t('pages.admin.space.sections.subspaces.defaultSettings.defaultInnovationFlow.selectDifferentFlow')}
             </Button>
           </Actions>
@@ -229,10 +236,10 @@ export const SubspaceListView: FC = () => {
       </PageContentBlock>
       <SelectDefaultCollaborationTemplateDialog
         spaceId={spaceId}
-        open={innovationFlowDialogOpen}
-        defaultInnovationFlowId={defaultInnovationFlow?.id}
-        onClose={() => setInnovationFlowDialogOpen(false)}
-        onSelectCollaborationTemplate={handleSelectInnovationFlow}
+        open={selectCollaborationTemplateDialogOpen}
+        defaultCollaborationTemplateId={subspaceTemplateWithCollaborationID}
+        onClose={() => setSelectCollaborationTemplateDialogOpen(false)}
+        onSelectCollaborationTemplate={handleSelectCollaborationTemplate}
       />
       <JourneyCreationDialog
         open={journeyCreationDialogOpen}

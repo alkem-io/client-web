@@ -1,3 +1,4 @@
+import React from 'react';
 import { Visual } from '../../../../domain/common/visual/Visual';
 import { Avatar, Paper, Skeleton } from '@mui/material';
 import RouterLink from '../../../../core/ui/link/RouterLink';
@@ -6,9 +7,8 @@ import withElevationOnHover from '../../../../domain/shared/components/withEleva
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 import { gutters } from '../../../../core/ui/grid/utils';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import React from 'react';
 import { JourneyTypeName } from '../../../../domain/journey/JourneyTypeName';
-import JourneyIcon from '../../../../domain/shared/components/JourneyIcon/JourneyIcon';
+import spaceIcon from '../../../../domain/shared/components/JourneyIcon/JourneyIcon';
 import { alpha } from '@mui/material/styles';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import { BlockTitle } from '../../../../core/ui/typography';
@@ -36,7 +36,7 @@ const JOURNEY_TITLE_CLASS_NAME = 'JourneyTitle';
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
 const RecentJourneyCard = ({ journey, journeyTypeName }: RecentJourneyCardProps) => {
-  const Icon = JourneyIcon[journeyTypeName];
+  const Icon = spaceIcon[journeyTypeName];
 
   const columns = useColumns();
 
