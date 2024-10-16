@@ -16,7 +16,6 @@ import EmptyWhiteboard from '../EmptyWhiteboard';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
 import Loading from '../../../../core/ui/loading/Loading';
-// import { Excalidraw } from '@alkemio/excalidraw';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
