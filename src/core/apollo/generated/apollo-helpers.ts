@@ -2365,7 +2365,6 @@ export type PlatformFeatureFlagFieldPolicy = {
 };
 export type PlatformInvitationKeySpecifier = (
   | 'authorization'
-  | 'communityInvitedToParent'
   | 'createdBy'
   | 'createdDate'
   | 'email'
@@ -2374,13 +2373,14 @@ export type PlatformInvitationKeySpecifier = (
   | 'lastName'
   | 'platformRole'
   | 'profileCreated'
+  | 'roleSetExtraRole'
+  | 'roleSetInvitedToParent'
   | 'updatedDate'
   | 'welcomeMessage'
   | PlatformInvitationKeySpecifier
 )[];
 export type PlatformInvitationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityInvitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   email?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2389,6 +2389,8 @@ export type PlatformInvitationFieldPolicy = {
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   platformRole?: FieldPolicy<any> | FieldReadFunction<any>;
   profileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleSetExtraRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleSetInvitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
