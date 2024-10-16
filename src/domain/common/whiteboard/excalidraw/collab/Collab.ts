@@ -207,10 +207,7 @@ class Collab {
                 return;
               } else if (isMouseLocationPayload(data)) {
                 const { pointer, button, username, selectedElementIds } = data.payload;
-                const socketId: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['socketId'] =
-                  data.payload.socketId ||
-                  // @ts-ignore legacy, see #2094 (#2097)
-                  data.payload.socketID;
+                const socketId: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['socketId'] = data.payload.socketId;
 
                 const collaborators = new Map(this.collaborators);
                 const user = collaborators.get(socketId) || {}!;
