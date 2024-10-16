@@ -7,7 +7,7 @@ import { OpportunityProvider } from '../../../opportunity/context/OpportunityPro
 import { SpaceLevel } from '../../../../../core/apollo/generated/graphql-schema';
 
 const SubspaceSettingsRoute = () => {
-  const { spaceLevel, parentJourneyId } = useRouteResolver();
+  const { spaceLevel, parentSpaceId: parentJourneyId } = useRouteResolver();
 
   const { data } = useSubspaceCommunityAndRoleSetIdQuery({
     variables: {

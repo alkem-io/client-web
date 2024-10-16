@@ -7,14 +7,15 @@ interface KnowledgeBaseContainerProps
   extends SimpleContainerProps<{
     callouts: UseCalloutsProvided;
   }> {
-  journeyId: string | undefined;
+  collaborationId: string | undefined;
   journeyTypeName: JourneyTypeName;
 }
 
-const KnowledgeBaseContainer = ({ journeyId, journeyTypeName, children }: KnowledgeBaseContainerProps) => {
+const KnowledgeBaseContainer = ({ collaborationId, journeyTypeName, children }: KnowledgeBaseContainerProps) => {
   const callouts = useCallouts({
-    journeyId,
+    collaborationId,
     journeyTypeName,
+    canReadCollaboration: true,
     groupNames: [CalloutGroupName.Knowledge],
   });
 

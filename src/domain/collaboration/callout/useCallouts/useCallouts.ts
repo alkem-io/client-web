@@ -19,7 +19,7 @@ import { useCallback, useMemo } from 'react';
 import { groupBy } from 'lodash';
 import { Tagset } from '../../../common/profile/Profile';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import { useCollaborationAuthorization } from '../../authorization/useCollaborationAuthorization';
+import { useCollaborationAuthorizationEntitlements } from '../../authorization/useCollaborationAuthorization';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { getCalloutGroupNameValue } from '../utils/getCalloutGroupValue';
 
@@ -68,9 +68,10 @@ export type TypedCalloutDetails = TypedCallout &
   };
 
 interface UseCalloutsParams {
-  journeyId: string | undefined;
+  collaborationId: string | undefined;
   journeyTypeName: JourneyTypeName;
   groupNames?: CalloutGroupName[];
+  canReadCollaboration: boolean;
 }
 
 export interface OrderUpdate {
@@ -95,15 +96,19 @@ const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-group';
  * If you need Callouts without a group, don't specify groupNames at all.
  */
 
-const useCallouts = ({ journeyId, journeyTypeName, ...params }: UseCalloutsParams): UseCalloutsProvided => {
+const useCallouts = ({
+  collaborationId,
+  journeyTypeName,
+  canReadCollaboration,
+  ...params
+}: UseCalloutsParams): UseCalloutsProvided => {
   const {
-    collaborationId,
-    canReadCollaboration,
     canCreateCallout,
     canReadCallout,
     canSaveAsTemplate,
+    //entitledToSaveAsTemplate, TODO: use this in the display logic when we get to that
     loading: authorizationLoading,
-  } = useCollaborationAuthorization({ journeyId });
+  } = useCollaborationAuthorizationEntitlements({ collaborationId });
 
   const variables = {
     collaborationId: collaborationId!,

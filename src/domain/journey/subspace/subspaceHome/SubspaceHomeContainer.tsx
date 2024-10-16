@@ -36,8 +36,9 @@ const SubspaceHomeContainer = ({ journeyId, journeyTypeName, children }: Subspac
   const innovationFlow = useInnovationFlowStates({ collaborationId });
 
   const callouts = useCallouts({
-    journeyId,
+    collaborationId,
     journeyTypeName,
+    canReadCollaboration: true,
   });
 
   return <>{children({ innovationFlow, callouts, subspace: data?.lookup.space, spaceReadAccess })}</>;

@@ -52,7 +52,7 @@ export interface LocationStateCachedCallout extends NavigationState {
  * @constructor
  */
 const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: CalloutPageProps) => {
-  const { calloutId, journeyId, parentJourneyId, journeyPath } = useRouteResolver();
+  const { calloutId, journeyId, parentSpaceId: parentJourneyId, journeyPath } = useRouteResolver();
 
   const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
 

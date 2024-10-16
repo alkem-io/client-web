@@ -30,7 +30,7 @@ const CalloutsGroupView = ({
     handleCreateCalloutClosed,
     handleCreateCallout,
     loading,
-  } = useCalloutCreationWithPreviewImages({ journeyId });
+  } = useCalloutCreationWithPreviewImages({ collaborationId: journeyId });
 
   const handleCreate = () => {
     handleCreateCalloutOpened();

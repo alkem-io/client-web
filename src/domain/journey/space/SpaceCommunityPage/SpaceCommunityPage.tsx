@@ -88,7 +88,7 @@ const SpaceCommunityPage = () => {
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Community}>
-      <SpaceCommunityContainer spaceId={spaceId}>
+      <SpaceCommunityContainer collaborationId={spaceId}>
         {({ callouts }) => (
           <PageContent>
             <InfoColumn>

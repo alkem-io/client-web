@@ -1,21 +1,17 @@
 import React, { FC } from 'react';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { PostLayout } from '../views/PostLayoutWithOutlet';
 import { PostDialogSection } from '../views/PostDialogSection';
 import PostDashboardContainer from '../containers/PostDashboardContainer/PostDashboardContainer';
 import PostDashboardView from '../views/PostDashboardView';
 import { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface PostSharePageProps {
   onClose: () => void;
+  calloutId: string | undefined;
+  postNameId: string | undefined;
 }
 
-const PostSharePage: FC<PostSharePageProps> = ({ onClose }) => {
-  const { postNameId } = useUrlParams();
-
-  const { calloutId } = useRouteResolver();
-
+const PostSharePage: FC<PostSharePageProps> = ({ onClose, postNameId, calloutId }) => {
   if (!postNameId) {
     throw new Error('Must be within a Post route');
   }

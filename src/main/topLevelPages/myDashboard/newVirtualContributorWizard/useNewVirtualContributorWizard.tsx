@@ -401,7 +401,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   // load the following hook either with bokId (created subspace) or spaceId (created/existing space)
   const { handleCreateCallout, canCreateCallout } = useCalloutCreation({
-    journeyId: bokId,
+    collaborationId: bokId,
     overrideCollaborationId: collaborationId,
   });
 

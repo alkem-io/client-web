@@ -26,7 +26,7 @@ const KnowledgeBasePage = () => {
     handleCreateCalloutClosed,
     handleCreateCallout,
     loading: loadingCalloutCreation,
-  } = useCalloutCreationWithPreviewImages({ journeyId });
+  } = useCalloutCreationWithPreviewImages({ collaborationId: journeyId });
 
   const handleCreate = () => {
     handleCreateCalloutOpened();
@@ -34,7 +34,7 @@ const KnowledgeBasePage = () => {
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.KnowledgeBase}>
-      <KnowledgeBaseContainer journeyId={journeyId} journeyTypeName="space">
+      <KnowledgeBaseContainer collaborationId={journeyId} journeyTypeName="space">
         {({
           callouts: {
             loading,
