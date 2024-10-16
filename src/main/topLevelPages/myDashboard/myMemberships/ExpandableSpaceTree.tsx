@@ -64,12 +64,13 @@ const ExpandableSpaceTree = ({
   const columns = useColumns();
 
   const verticalOffset = level === SpaceLevel.Space ? 1 : 0.5;
-  let paddingLeft = 0;
-  if (level === SpaceLevel.Challenge) {
-    paddingLeft = 5;
-  } else if (level === SpaceLevel.Opportunity) {
-    paddingLeft = 10;
-  }
+
+  const paddingLeftMap = {
+    [SpaceLevel.Space]: 0,
+    [SpaceLevel.Challenge]: 5,
+    [SpaceLevel.Opportunity]: 10,
+  };
+  const paddingLeft = paddingLeftMap[level] ?? 0;
 
   const renderSubSpaces = (childMembership: MembershipProps) => {
     return <ExpandableSpaceTree key={childMembership.space.id} membership={childMembership} />;

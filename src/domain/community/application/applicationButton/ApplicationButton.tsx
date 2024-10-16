@@ -76,7 +76,6 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
     const [isApplicationSubmittedDialogOpen, setIsApplicationSubmittedDialogOpen] = useState(false);
     const [isJoinParentDialogOpen, setIsJoinParentDialogOpen] = useState(false);
     const [isInvitationDialogOpen, setIsInvitationDialogOpen] = useState(false);
-    const isSpace = spaceLevel === SpaceLevel.Space;
 
     const handleClickApply = () => setIsApplicationDialogOpen(true);
     const handleClickApplyParent = () => setIsApplyParentDialogOpen(true);
@@ -141,7 +140,7 @@ export const ApplicationButton = forwardRef<HTMLButtonElement | HTMLAnchorElemen
       extended
         ? t('components.application-button.extendedMessage', {
             join: verb,
-            journey: isSpace ? t('common.community') : t('common.subspace'),
+            journey: spaceLevel !== SpaceLevel.Space ? t('common.subspace') : t('common.community'),
           })
         : verb;
 
