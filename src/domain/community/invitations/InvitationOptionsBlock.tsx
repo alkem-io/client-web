@@ -104,7 +104,7 @@ const InvitationOptionsBlock = ({
         currentApplicationsUserIds={currentApplicationsUserIds}
         currentInvitationsUserIds={currentInvitationsUserIds}
         currentMembersIds={currentMembersIds}
-        communityRoles={[...AVAILABLE_COMMUNITY_ROLES]}
+        communityRoles={AVAILABLE_COMMUNITY_ROLES}
       />
       <InviteExternalUserDialog
         title={t('components.invitations.inviteExternalUserDialog.title')}
@@ -112,7 +112,7 @@ const InvitationOptionsBlock = ({
         spaceDisplayName={spaceDisplayName}
         onClose={closeInvitationDialog}
         onInviteUser={inviteExternalUser}
-        communityRoles={[...AVAILABLE_COMMUNITY_ROLES]}
+        communityRoles={AVAILABLE_COMMUNITY_ROLES}
       />
     </>
   );

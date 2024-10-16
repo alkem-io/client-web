@@ -22,7 +22,7 @@ interface MessageDialogProps {
   onInviteUser: (params: InviteExternalUserData) => Promise<void>;
   title?: ReactNode;
   subtitle?: ReactNode;
-  communityRoles: CommunityRoleType[];
+  communityRoles: readonly CommunityRoleType[];
 }
 
 const InviteExternalUserDialog = ({

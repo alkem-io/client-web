@@ -29,7 +29,7 @@ interface MessageDialogProps {
   currentApplicationsUserIds: string[];
   currentInvitationsUserIds: string[];
   currentMembersIds: string[];
-  communityRoles: CommunityRoleType[];
+  communityRoles: readonly CommunityRoleType[];
 }
 
 enum SortCriteria {
