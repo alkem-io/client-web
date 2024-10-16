@@ -1,5 +1,5 @@
 import SearchIcon from '@mui/icons-material/Search';
-import { FormHelperText, TextField } from '@mui/material';
+import { FormHelperText, SxProps, TextField, Theme } from '@mui/material';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useField } from 'formik';
 import { without } from 'lodash';
@@ -31,6 +31,7 @@ interface FormikUserSelectorProps {
   onChange?: (contributorIds: string[]) => void;
   sortUsers?: <U extends Identifiable>(results: U[]) => U[];
   hydrateUsers?: HydratorFn;
+  sx?: SxProps<Theme>;
 }
 
 const identityFn = <U extends Identifiable>(results: U[]) => results;
@@ -42,6 +43,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
   onChange,
   sortUsers = identityFn,
   hydrateUsers = identityFn as HydratorFn,
+  sx,
   ...containerProps
 }) => {
   // This field is the array of user Ids
@@ -130,6 +132,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
               [`& .${autocompleteClasses.popupIndicator}`]: {
                 transform: 'none',
               },
+              ...sx,
             }}
             onChange={(evt, value) => handleSelect(value)}
             renderOption={(props, user) => (
