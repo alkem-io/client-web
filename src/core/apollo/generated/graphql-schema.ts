@@ -2259,6 +2259,7 @@ export type DeleteUserGroupInput = {
 
 export type DeleteUserInput = {
   ID: Scalars['UUID_NAMEID_EMAIL'];
+  deleteIdentity?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type DeleteVirtualContributorInput = {
@@ -2682,6 +2683,8 @@ export type InviteNewContributorForRoleOnRoleSetInput = {
   email: Scalars['String'];
   firstName?: InputMaybe<Scalars['String']>;
   lastName?: InputMaybe<Scalars['String']>;
+  /** An additional role to assign to the Contributors, in addition to the entry Role. */
+  roleSetExtraRole?: InputMaybe<CommunityRoleType>;
   roleSetID: Scalars['UUID'];
   welcomeMessage?: InputMaybe<Scalars['String']>;
 };
@@ -4306,8 +4309,6 @@ export type PlatformInvitation = {
   __typename?: 'PlatformInvitation';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** Whether to also add the invited user to the parent community. */
-  communityInvitedToParent: Scalars['Boolean'];
   /** The User who triggered the platformInvitation. */
   createdBy: User;
   /** The date at which the entity was created. */
@@ -4322,6 +4323,10 @@ export type PlatformInvitation = {
   platformRole?: Maybe<PlatformRole>;
   /** Whether a new user profile has been created. */
   profileCreated: Scalars['Boolean'];
+  /** An additional role to assign to the Contributor, in addition to the entry Role. */
+  roleSetExtraRole?: Maybe<CommunityRoleType>;
+  /** Whether to also add the invited user to the parent community. */
+  roleSetInvitedToParent: Scalars['Boolean'];
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   welcomeMessage?: Maybe<Scalars['String']>;
@@ -17090,6 +17095,7 @@ export type InviteContributorsForRoleSetMembershipMutationVariables = Exact<{
   contributorIds: Array<Scalars['UUID']> | Scalars['UUID'];
   roleSetId: Scalars['UUID'];
   message?: InputMaybe<Scalars['String']>;
+  extraRole?: InputMaybe<CommunityRoleType>;
 }>;
 
 export type InviteContributorsForRoleSetMembershipMutation = {
@@ -17101,6 +17107,7 @@ export type InviteUserToPlatformAndRoleSetMutationVariables = Exact<{
   email: Scalars['String'];
   roleSetId: Scalars['UUID'];
   message?: InputMaybe<Scalars['String']>;
+  extraRole?: InputMaybe<CommunityRoleType>;
 }>;
 
 export type InviteUserToPlatformAndRoleSetMutation = {
