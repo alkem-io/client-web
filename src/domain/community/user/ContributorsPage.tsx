@@ -20,6 +20,9 @@ export interface ContributorsPageProps {}
 const ContributorsPage: FC<ContributorsPageProps> = () => {
   const { t } = useTranslation();
 
+  // temporary disable the search (server #4545)
+  const [searchEnabled] = useState(false);
+
   const [searchTerms, setSearchTerms] = useState<string>('');
   const [searchTermsDebounced, setSearchTermsDebounced] = useState<string>('');
 
@@ -49,19 +52,21 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
       }
     >
       <PageContentColumn columns={12}>
-        <PageContentBlockSeamless disablePadding>
-          <OutlinedInput
-            value={searchTerms}
-            sx={{ width: '100%' }}
-            placeholder={t('components.searchableList.placeholder')}
-            onChange={onSearchHandler}
-            endAdornment={
-              <InputAdornment position="end">
-                <SearchIcon />
-              </InputAdornment>
-            }
-          />
-        </PageContentBlockSeamless>
+        {searchEnabled && (
+          <PageContentBlockSeamless disablePadding>
+            <OutlinedInput
+              value={searchTerms}
+              sx={{ width: '100%' }}
+              placeholder={t('components.searchableList.placeholder')}
+              onChange={onSearchHandler}
+              endAdornment={
+                <InputAdornment position="end">
+                  <SearchIcon />
+                </InputAdornment>
+              }
+            />
+          </PageContentBlockSeamless>
+        )}
         <ContributorsSearchContainer searchTerms={searchTermsDebounced} pageSize={ITEMS_PER_PAGE}>
           {({ users, organizations }) => {
             return (

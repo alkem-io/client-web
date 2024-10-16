@@ -16,6 +16,7 @@ import { buildAboutUrl, buildUpdatesUrl } from '../../../../main/routing/urlBuil
 import { useTranslation } from 'react-i18next';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
+import { SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface SpaceDashboardPageProps {
   dialog?: 'about' | 'updates' | 'contributors' | 'calendar';
@@ -77,7 +78,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
             )}
             <JourneyAboutDialog
               open={dialog === 'about'}
-              journeyLevel={0}
+              spaceLevel={SpaceLevel.Space}
               displayName={entities.space?.profile.displayName}
               tagline={entities.space?.profile.tagline}
               references={entities.references}

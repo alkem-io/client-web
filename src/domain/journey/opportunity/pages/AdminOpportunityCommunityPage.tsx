@@ -11,6 +11,7 @@ import { useOpportunity } from '../hooks/useOpportunity';
 import SubspaceSettingsLayout from '../../../platform/admin/subspace/SubspaceSettingsLayout';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
 import { useSpace } from '../../space/SpaceContext/useSpace';
+import { SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { loading: isLoadingChallenge, roleSetId, opportunityId } = useOpportunity();
@@ -39,7 +40,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     getAvailableVirtualContributors,
     getAvailableVirtualContributorsInLibrary,
     loading,
-  } = useRoleSetAdmin({ spaceId, opportunityId, roleSetId, journeyLevel: 2 });
+  } = useRoleSetAdmin({ spaceId, opportunityId, roleSetId, spaceLevel: SpaceLevel.Opportunity });
 
   if (!spaceId || isLoadingChallenge) {
     return null;

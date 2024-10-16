@@ -1686,7 +1686,7 @@ export const UserRolesDetailsFragmentDoc = gql`
 export const InvitationDataFragmentDoc = gql`
   fragment InvitationData on CommunityInvitationResult {
     id
-    space {
+    spacePendingMembershipInfo {
       id
       level
       profile {
@@ -2062,8 +2062,8 @@ export const SpaceDetailsFragmentDoc = gql`
   ${FullLocationFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
-export const SpaceInfoFragmentDoc = gql`
-  fragment SpaceInfo on Space {
+export const SpacePendingMembershipInfoFragmentDoc = gql`
+  fragment SpacePendingMembershipInfo on Space {
     ...SpaceDetails
     authorization {
       id
@@ -2431,8 +2431,8 @@ export const MyMembershipsRoleSetFragmentDoc = gql`
     myRoles
   }
 `;
-export const SubspaceInfoFragmentDoc = gql`
-  fragment SubspaceInfo on Space {
+export const SubspacePendingMembershipInfoFragmentDoc = gql`
+  fragment SubspacePendingMembershipInfo on Space {
     id
     nameID
     profile {
@@ -2998,6 +2998,10 @@ export const CalendarEventDetailsFragmentDoc = gql`
         tagsets {
           ...TagsetDetails
         }
+        location {
+          id
+          city
+        }
       }
     }
     createdDate
@@ -3515,7 +3519,7 @@ export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
   ${VisualUriFragmentDoc}
 `;
 export const NewMembershipsBasicSpaceFragmentDoc = gql`
-  fragment NewMembershipsBasicSpace on Space {
+  fragment NewMembershipsBasicSpace on SpacePendingMembershipInfo {
     id
     level
     profile {
@@ -10772,8 +10776,8 @@ export function refetchContributorsPageOrganizationsQuery(
 }
 
 export const ContributorsPageUsersDocument = gql`
-  query ContributorsPageUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
-    usersPaginated(first: $first, after: $after, filter: $filter) {
+  query ContributorsPageUsers($first: Int!, $after: UUID, $filter: UserFilterInput, $withTags: Boolean) {
+    usersPaginated(first: $first, after: $after, filter: $filter, withTags: $withTags) {
       ...UserContributorPaginated
     }
   }
@@ -10795,6 +10799,7 @@ export const ContributorsPageUsersDocument = gql`
  *      first: // value for 'first'
  *      after: // value for 'after'
  *      filter: // value for 'filter'
+ *      withTags: // value for 'withTags'
  *   },
  * });
  */
@@ -12144,9 +12149,19 @@ export type InvitationStateEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InvitationStateEventMutationVariables
 >;
 export const InviteContributorsForRoleSetMembershipDocument = gql`
-  mutation inviteContributorsForRoleSetMembership($contributorIds: [UUID!]!, $roleSetId: UUID!, $message: String) {
+  mutation inviteContributorsForRoleSetMembership(
+    $contributorIds: [UUID!]!
+    $roleSetId: UUID!
+    $message: String
+    $extraRole: CommunityRoleType
+  ) {
     inviteContributorsForRoleSetMembership(
-      invitationData: { invitedContributors: $contributorIds, roleSetID: $roleSetId, welcomeMessage: $message }
+      invitationData: {
+        invitedContributors: $contributorIds
+        roleSetID: $roleSetId
+        welcomeMessage: $message
+        extraRole: $extraRole
+      }
     ) {
       id
     }
@@ -12173,6 +12188,7 @@ export type InviteContributorsForRoleSetMembershipMutationFn = Apollo.MutationFu
  *      contributorIds: // value for 'contributorIds'
  *      roleSetId: // value for 'roleSetId'
  *      message: // value for 'message'
+ *      extraRole: // value for 'extraRole'
  *   },
  * });
  */
@@ -12199,8 +12215,15 @@ export type InviteContributorsForRoleSetMembershipMutationOptions = Apollo.BaseM
   SchemaTypes.InviteContributorsForRoleSetMembershipMutationVariables
 >;
 export const InviteUserToPlatformAndRoleSetDocument = gql`
-  mutation inviteUserToPlatformAndRoleSet($email: String!, $roleSetId: UUID!, $message: String) {
-    inviteUserToPlatformAndRoleSet(invitationData: { email: $email, roleSetID: $roleSetId, welcomeMessage: $message }) {
+  mutation inviteUserToPlatformAndRoleSet(
+    $email: String!
+    $roleSetId: UUID!
+    $message: String
+    $extraRole: CommunityRoleType
+  ) {
+    inviteUserToPlatformAndRoleSet(
+      invitationData: { email: $email, roleSetID: $roleSetId, welcomeMessage: $message, roleSetExtraRole: $extraRole }
+    ) {
       ... on PlatformInvitation {
         id
       }
@@ -12228,6 +12251,7 @@ export type InviteUserToPlatformAndRoleSetMutationFn = Apollo.MutationFunction<
  *      email: // value for 'email'
  *      roleSetId: // value for 'roleSetId'
  *      message: // value for 'message'
+ *      extraRole: // value for 'extraRole'
  *   },
  * });
  */
@@ -13531,7 +13555,7 @@ export const UserPendingMembershipsDocument = gql`
       }
       communityApplications(states: ["new"]) {
         id
-        space {
+        spacePendingMembershipInfo {
           id
           level
           profile {
@@ -15726,10 +15750,10 @@ export function refetchSpaceCommunityPageQuery(variables: SchemaTypes.SpaceCommu
 export const SpaceProviderDocument = gql`
   query SpaceProvider($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
-      ...SpaceInfo
+      ...SpacePendingMembershipInfo
     }
   }
-  ${SpaceInfoFragmentDoc}
+  ${SpacePendingMembershipInfoFragmentDoc}
 `;
 
 /**
@@ -17660,61 +17684,71 @@ export function refetchSpaceDashboardNavigationOpportunitiesQuery(
   return { query: SpaceDashboardNavigationOpportunitiesDocument, variables: variables };
 }
 
-export const SubspaceInfoDocument = gql`
-  query SubspaceInfo($subspaceId: UUID!) {
+export const SubspacePendingMembershipInfoDocument = gql`
+  query SubspacePendingMembershipInfo($subspaceId: UUID!) {
     lookup {
       space(ID: $subspaceId) {
-        ...SubspaceInfo
+        ...SubspacePendingMembershipInfo
       }
     }
   }
-  ${SubspaceInfoFragmentDoc}
+  ${SubspacePendingMembershipInfoFragmentDoc}
 `;
 
 /**
- * __useSubspaceInfoQuery__
+ * __useSubspacePendingMembershipInfoQuery__
  *
- * To run a query within a React component, call `useSubspaceInfoQuery` and pass it any options that fit your needs.
- * When your component renders, `useSubspaceInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSubspacePendingMembershipInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSubspacePendingMembershipInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSubspaceInfoQuery({
+ * const { data, loading, error } = useSubspacePendingMembershipInfoQuery({
  *   variables: {
  *      subspaceId: // value for 'subspaceId'
  *   },
  * });
  */
-export function useSubspaceInfoQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SubspaceInfoQuery, SchemaTypes.SubspaceInfoQueryVariables>
+export function useSubspacePendingMembershipInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SubspacePendingMembershipInfoQuery,
+    SchemaTypes.SubspacePendingMembershipInfoQueryVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SubspaceInfoQuery, SchemaTypes.SubspaceInfoQueryVariables>(
-    SubspaceInfoDocument,
-    options
-  );
+  return Apollo.useQuery<
+    SchemaTypes.SubspacePendingMembershipInfoQuery,
+    SchemaTypes.SubspacePendingMembershipInfoQueryVariables
+  >(SubspacePendingMembershipInfoDocument, options);
 }
 
-export function useSubspaceInfoLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SubspaceInfoQuery, SchemaTypes.SubspaceInfoQueryVariables>
+export function useSubspacePendingMembershipInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SubspacePendingMembershipInfoQuery,
+    SchemaTypes.SubspacePendingMembershipInfoQueryVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SubspaceInfoQuery, SchemaTypes.SubspaceInfoQueryVariables>(
-    SubspaceInfoDocument,
-    options
-  );
+  return Apollo.useLazyQuery<
+    SchemaTypes.SubspacePendingMembershipInfoQuery,
+    SchemaTypes.SubspacePendingMembershipInfoQueryVariables
+  >(SubspacePendingMembershipInfoDocument, options);
 }
 
-export type SubspaceInfoQueryHookResult = ReturnType<typeof useSubspaceInfoQuery>;
-export type SubspaceInfoLazyQueryHookResult = ReturnType<typeof useSubspaceInfoLazyQuery>;
-export type SubspaceInfoQueryResult = Apollo.QueryResult<
-  SchemaTypes.SubspaceInfoQuery,
-  SchemaTypes.SubspaceInfoQueryVariables
+export type SubspacePendingMembershipInfoQueryHookResult = ReturnType<typeof useSubspacePendingMembershipInfoQuery>;
+export type SubspacePendingMembershipInfoLazyQueryHookResult = ReturnType<
+  typeof useSubspacePendingMembershipInfoLazyQuery
 >;
-export function refetchSubspaceInfoQuery(variables: SchemaTypes.SubspaceInfoQueryVariables) {
-  return { query: SubspaceInfoDocument, variables: variables };
+export type SubspacePendingMembershipInfoQueryResult = Apollo.QueryResult<
+  SchemaTypes.SubspacePendingMembershipInfoQuery,
+  SchemaTypes.SubspacePendingMembershipInfoQueryVariables
+>;
+export function refetchSubspacePendingMembershipInfoQuery(
+  variables: SchemaTypes.SubspacePendingMembershipInfoQueryVariables
+) {
+  return { query: SubspacePendingMembershipInfoDocument, variables: variables };
 }
 
 export const SubspaceCommunityAndRoleSetIdDocument = gql`
@@ -22680,7 +22714,7 @@ export const NewMembershipsDocument = gql`
     me {
       communityApplications(states: ["new", "approved"]) {
         id
-        space {
+        spacePendingMembershipInfo {
           ...NewMembershipsBasicSpace
         }
         application {
@@ -22694,7 +22728,7 @@ export const NewMembershipsDocument = gql`
       }
       communityInvitations(states: ["invited", "accepted"]) {
         id
-        space {
+        spacePendingMembershipInfo {
           ...NewMembershipsBasicSpace
         }
         invitation {

@@ -12,6 +12,7 @@ import { useSpaceSettingsQuery } from '../../../core/apollo/generated/apollo-hoo
 import InviteExistingUserDialog from './InviteExistingUserDialog';
 import { InviteContributorsData, InviteExternalUserData } from './useInviteUsers';
 import InviteExternalUserDialog from './InviteExternalUserDialog';
+import { CommunityRoleType } from '../../../core/apollo/generated/graphql-schema';
 
 interface InvitationOptionsBlockProps {
   spaceDisplayName: string | undefined;
@@ -21,7 +22,6 @@ interface InvitationOptionsBlockProps {
   currentInvitationsUserIds: string[];
   currentMembersIds: string[];
   spaceId: string | undefined;
-  isParentPrivate?: boolean | undefined;
   isSubspace?: boolean;
 }
 
@@ -29,6 +29,8 @@ enum UserInvite {
   Existing,
   External,
 }
+
+const AVAILABLE_COMMUNITY_ROLES = [CommunityRoleType.Member, CommunityRoleType.Admin, CommunityRoleType.Lead] as const;
 
 const InvitationOptionsBlock = ({
   spaceDisplayName = '',
@@ -38,7 +40,6 @@ const InvitationOptionsBlock = ({
   currentInvitationsUserIds,
   currentMembersIds,
   spaceId,
-  isParentPrivate,
   isSubspace = false,
 }: InvitationOptionsBlockProps) => {
   const [currentInvitation, setCurrentInvitation] = useState<UserInvite>();
@@ -55,7 +56,7 @@ const InvitationOptionsBlock = ({
   });
 
   const allowSubspaceAdminsToInviteMembers = data?.lookup.space?.settings.membership.allowSubspaceAdminsToInviteMembers;
-  const showInviteBlock = isSubspace ? !isParentPrivate && allowSubspaceAdminsToInviteMembers : true; // for Spaces the block is always visible
+  const showInviteBlock = isSubspace ? allowSubspaceAdminsToInviteMembers : true; // for Spaces the block is always visible
 
   return loading ? (
     <Box marginX="auto">
@@ -101,6 +102,7 @@ const InvitationOptionsBlock = ({
         currentApplicationsUserIds={currentApplicationsUserIds}
         currentInvitationsUserIds={currentInvitationsUserIds}
         currentMembersIds={currentMembersIds}
+        communityRoles={AVAILABLE_COMMUNITY_ROLES}
       />
       <InviteExternalUserDialog
         title={t('components.invitations.inviteExternalUserDialog.title')}
@@ -108,6 +110,7 @@ const InvitationOptionsBlock = ({
         spaceDisplayName={spaceDisplayName}
         onClose={closeInvitationDialog}
         onInviteUser={inviteExternalUser}
+        communityRoles={AVAILABLE_COMMUNITY_ROLES}
       />
     </>
   );

@@ -24,7 +24,7 @@ import GridProvider from '../../../core/ui/grid/GridProvider';
 import { Identifiable } from '../../../core/utils/Identifiable';
 
 const USERS_GRAYED_OUT_IMAGE = '/contributors/users-grayed.png';
-export const ITEMS_PER_PAGE = 16;
+export const ITEMS_PER_PAGE = 32;
 
 const userToContributorCard = (user: UserContributorFragment): ContributorCardSquareProps => {
   return {

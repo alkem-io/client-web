@@ -73,6 +73,10 @@ fragment CalendarEventDetails on CalendarEvent {
       tagsets {
         ...TagsetDetails
       }
+      location {
+        id
+        city
+      }
     }
   }
   createdDate

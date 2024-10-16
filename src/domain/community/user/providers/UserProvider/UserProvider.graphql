@@ -16,7 +16,7 @@ query UserPendingMemberships {
     }
     communityApplications(states: ["new"]) {
       id
-      space {
+      spacePendingMembershipInfo {
         id
         level
         profile {
@@ -43,7 +43,7 @@ query UserPendingMemberships {
 
 fragment InvitationData on CommunityInvitationResult {
   id
-  space {
+  spacePendingMembershipInfo {
     id
     level
     profile {
