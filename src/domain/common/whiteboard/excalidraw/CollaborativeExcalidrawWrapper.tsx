@@ -10,7 +10,6 @@ import { makeStyles } from '@mui/styles';
 import { debounce, merge } from 'lodash';
 import React, { PropsWithChildren, Ref, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
-import EmptyWhiteboard from '../EmptyWhiteboard';
 import { useUserContext } from '../../../community/user';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 import useCollab, { CollabAPI, CollabState } from './collab/useCollab';
@@ -28,6 +27,7 @@ import Reconnectable from '../../../../core/utils/reconnectable';
 import { useTick } from '../../../../core/utils/time/tick';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
 import Loading from '../../../../core/ui/loading/Loading';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
 const FILE_IMPORT_ENABLED = false;
 const SAVE_FILE_TO_DISK = true;
@@ -73,7 +73,7 @@ const useActorWhiteboardStyles = makeStyles(theme => ({
 }));
 
 export interface WhiteboardWhiteboardEntities {
-  whiteboard: { id?: string; content: string } | undefined;
+  whiteboard: Identifiable | undefined;
   filesManager: WhiteboardFilesManager;
   lastSavedDate: Date | undefined;
 }
@@ -124,24 +124,6 @@ const CollaborativeExcalidrawWrapper = ({
   const username = user?.user.profile.displayName ?? 'User';
 
   const [isSceneInitialized, setSceneInitialized] = useState(false);
-
-  const { addNewFile, loadFiles, pushFilesToExcalidraw } = filesManager;
-
-  const data = useMemo(() => {
-    const parsedData = whiteboard?.content ? JSON.parse(whiteboard?.content) : EmptyWhiteboard;
-    return {
-      ...parsedData,
-      ...whiteboardDefaults,
-    };
-  }, [whiteboard?.content]);
-
-  useEffect(() => {
-    loadFiles(data);
-  }, [data]);
-
-  useEffect(() => {
-    pushFilesToExcalidraw();
-  }, [filesManager]);
 
   const handleScroll = useRef(
     debounce(async () => {
@@ -254,7 +236,7 @@ const CollaborativeExcalidrawWrapper = ({
           <Excalidraw
             key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
             excalidrawAPI={handleInitializeApi}
-            initialData={data}
+            initialData={whiteboardDefaults}
             UIOptions={mergedUIOptions}
             isCollaborating={collaborating}
             viewModeEnabled={!collaborating || mode === 'read' || !isSceneInitialized}
@@ -262,7 +244,7 @@ const CollaborativeExcalidrawWrapper = ({
             onPointerUpdate={collabApi?.onPointerUpdate}
             detectScroll={false}
             autoFocus
-            generateIdForFile={addNewFile}
+            generateIdForFile={filesManager.addNewFile}
             aiEnabled={false}
             /*renderTopRightUI={_isMobile => {
                 return <LiveCollaborationStatus />;

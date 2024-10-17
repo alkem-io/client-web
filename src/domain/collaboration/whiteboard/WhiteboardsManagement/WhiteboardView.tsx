@@ -1,13 +1,8 @@
 import React, { FC, ReactNode } from 'react';
 import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
-import {
-  AuthorizationPrivilege,
-  WhiteboardContentFragment,
-  WhiteboardDetailsFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import WhiteboardContentContainer from '../containers/WhiteboardContentContainer';
-import WhiteboardDialog from '../WhiteboardDialog/WhiteboardDialog';
+import WhiteboardDialog, { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
 import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
 import FullscreenButton from '../../../../core/ui/button/FullscreenButton';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
@@ -23,8 +18,8 @@ export interface WhiteboardNavigationMethods {
 
 export interface WhiteboardViewProps extends ActiveWhiteboardIdHolder, WhiteboardNavigationMethods {
   journeyTypeName: JourneyTypeName;
-  whiteboard: WhiteboardDetailsFragment | undefined;
-  authorization: WhiteboardDetailsFragment['authorization'];
+  whiteboard: WhiteboardDetails | undefined;
+  authorization: { myPrivileges?: AuthorizationPrivilege[] } | undefined;
   whiteboardShareUrl: string;
   displayName?: ReactNode;
   readOnlyDisplayName?: boolean;
@@ -71,49 +66,43 @@ const WhiteboardView: FC<WhiteboardViewProps> = ({
   return (
     <WhiteboardActionsContainer>
       {(_, actionsState, actions) => (
-        <WhiteboardContentContainer whiteboardId={whiteboard?.id}>
-          {entities => {
-            return (
-              <WhiteboardDialog
-                entities={{
-                  whiteboard: entities.whiteboard as WhiteboardContentFragment & WhiteboardDetailsFragment,
-                }}
-                actions={{
-                  onCancel: handleCancel,
-                  onUpdate: actions.onUpdate,
-                  onDelete: actions.onDelete,
-                  onChangeDisplayName: actions.onChangeDisplayName,
-                }}
-                options={{
-                  canEdit: hasUpdateContentPrivileges,
-                  canDelete: hasDeletePrivileges,
-                  show: Boolean(whiteboardId),
-                  dialogTitle: displayName,
-                  readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
-                  fullscreen,
-                  headerActions: (
-                    <>
-                      <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
-                        {hasUpdatePrivileges && (
-                          <WhiteboardShareSettings
-                            createdBy={entities.whiteboard?.createdBy}
-                            journeyTypeName={journeyTypeName}
-                            {...contentUpdatePolicyProvided}
-                          />
-                        )}
-                      </ShareButton>
-                      <FullscreenButton />
-                    </>
-                  ),
-                }}
-                state={{
-                  ...whiteboardsState,
-                  ...actionsState,
-                }}
-              />
-            );
+        <WhiteboardDialog
+          entities={{
+            whiteboard: whiteboard,
           }}
-        </WhiteboardContentContainer>
+          actions={{
+            onCancel: handleCancel,
+            onUpdate: actions.onUpdate,
+            onDelete: actions.onDelete,
+            onChangeDisplayName: actions.onChangeDisplayName,
+          }}
+          options={{
+            canEdit: hasUpdateContentPrivileges,
+            canDelete: hasDeletePrivileges,
+            show: Boolean(whiteboardId),
+            dialogTitle: displayName,
+            readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
+            fullscreen,
+            headerActions: (
+              <>
+                <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
+                  {hasUpdatePrivileges && (
+                    <WhiteboardShareSettings
+                      createdBy={whiteboard?.createdBy}
+                      journeyTypeName={journeyTypeName}
+                      {...contentUpdatePolicyProvided}
+                    />
+                  )}
+                </ShareButton>
+                <FullscreenButton />
+              </>
+            ),
+          }}
+          state={{
+            ...whiteboardsState,
+            ...actionsState,
+          }}
+        />
       )}
     </WhiteboardActionsContainer>
   );

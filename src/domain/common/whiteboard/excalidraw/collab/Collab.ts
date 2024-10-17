@@ -183,7 +183,6 @@ class Collab {
           {
             'scene-init': async (payload: { elements: readonly ExcalidrawElement[]; files: BinaryFilesWithUrl }) => {
               if (!this.portal.socketInitialized) {
-                this.onSceneInitChange(true);
                 this.initializeRoom({ fetchScene: false });
                 this.handleRemoteSceneUpdate(
                   await this.reconcileElementsAndLoadFiles(payload.elements, payload.files),
@@ -197,6 +196,7 @@ class Collab {
                   await this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, [], convertedFilesWithUrl);
                 }
                 this.excalidrawAPI.zoomToFit();
+                this.onSceneInitChange(true);
               }
             },
             'client-broadcast': async (binaryData: ArrayBuffer) => {

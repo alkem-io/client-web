@@ -15,9 +15,9 @@ import { WhiteboardTemplateContent } from '../../../templates/models/WhiteboardT
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import { error as logError, TagCategoryValues } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { WhiteboardWithContent } from '../containers/WhiteboardContentContainer';
 import {
   generateWhiteboardPreviewImages,
+  PreviewImageDimensions,
   WhiteboardPreviewImage,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/useCollab';
@@ -30,19 +30,46 @@ import useLoadingState from '../../../shared/utils/useLoadingState';
 import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
 import WhiteboardDialogTemplatesLibrary from '../../../templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 import { useWhiteboardLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { ContentUpdatePolicy } from '../../../../core/apollo/generated/graphql-schema';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
-interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
+export interface WhiteboardDetails {
+  id: string;
+  nameID: string;
+  contentUpdatePolicy: ContentUpdatePolicy;
+  profile: {
+    id: string;
+    displayName: string;
+    storageBucket: { id: string };
+    visual?: {
+      id: string;
+    } & PreviewImageDimensions;
+    preview?: {
+      id: string;
+    } & PreviewImageDimensions;
+  };
+  createdBy?: {
+    id: string;
+    profile: {
+      displayName: string;
+      url: string;
+      avatar?: { id: string; uri: string };
+    };
+  };
+}
+
+interface WhiteboardDialogProps {
   entities: {
-    whiteboard?: Whiteboard;
+    whiteboard?: WhiteboardDetails;
   };
   actions: {
     onCancel: () => void;
     onUpdate: (
-      whiteboard: Whiteboard,
+      whiteboard: WhiteboardDetails,
       previewImages?: WhiteboardPreviewImage[]
     ) => Promise<{ success: boolean; errors?: string[] }>;
     onChangeDisplayName: (whiteboardId: string | undefined, newDisplayName: string) => Promise<void>;
-    onDelete: (whiteboard: Whiteboard) => Promise<void>;
+    onDelete: (whiteboard: Identifiable) => Promise<void>;
   };
   options: {
     show: boolean;
@@ -56,7 +83,6 @@ interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
     editDisplayName?: boolean;
   };
   state?: {
-    updatingWhiteboardContent?: boolean;
     loadingWhiteboardValue?: boolean;
     changingWhiteboardLockState?: boolean;
   };
@@ -80,12 +106,7 @@ const useStyles = makeStyles(theme => ({
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
-const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
-  entities,
-  actions,
-  options,
-  state,
-}: WhiteboardDialogProps<Whiteboard>) => {
+const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialogProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { whiteboard } = entities;
@@ -127,11 +148,11 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   });
 
   const prepareWhiteboardForUpdate = async (
-    whiteboard: WhiteboardWithContent,
+    whiteboard: WhiteboardDetails,
     state: RelevantExcalidrawState | undefined,
     shouldUploadPreviewImages = true
   ): Promise<{
-    whiteboard: Whiteboard;
+    whiteboard: WhiteboardDetails;
     previewImages?: WhiteboardPreviewImage[];
   }> => {
     if (!state) {
@@ -160,7 +181,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
           ...whiteboard.profile,
           displayName,
         },
-      } as Whiteboard,
+      },
       previewImages,
     };
   };
@@ -169,9 +190,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     if (!whiteboard || !excalidrawAPI) {
       return;
     }
-    const content = JSON.parse(whiteboard.content) as RelevantExcalidrawState;
     return {
-      ...content,
       elements: excalidrawAPI.getSceneElements(),
       appState: excalidrawAPI.getAppState(),
       files: excalidrawAPI.getFiles(),
@@ -308,7 +327,6 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                   canDelete={options.canDelete}
                   onRestart={restartCollaboration}
                   canUpdateContent={options.canEdit!}
-                  updating={state?.updatingWhiteboardContent}
                   createdBy={whiteboard?.createdBy}
                   contentUpdatePolicy={whiteboard?.contentUpdatePolicy}
                 />
