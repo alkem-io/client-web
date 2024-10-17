@@ -181,7 +181,6 @@ const CalendarEventForm = ({
                 <Gutters disablePadding>
                   <Gutters disablePadding sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
                     <Box sx={{ flex: 1 }}>
-                      {isValid.toString()}
                       <FormikInputField name="displayName" title={t('fields.displayName')} />
                     </Box>
                     <FormikAutocomplete
