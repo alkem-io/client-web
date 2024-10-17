@@ -8,6 +8,7 @@ import {
 } from '@alkemio/excalidraw/dist/excalidraw/types';
 import { excalidrawFileMimeType, generateIdFromFile } from './collab/utils';
 import Semaphore from 'ts-semaphore';
+import { error } from '../../../../core/logging/sentry/log';
 
 export type BinaryFileDataWithUrl = BinaryFileData & { url: string };
 export type BinaryFileDataWithOptionalUrl = BinaryFileData & { url?: string };
@@ -217,12 +218,15 @@ const useWhiteboardFilesManager = ({
           }
           if (file.url) {
             log('DOWNLOADING ', file);
-            const dataURL = await fetchFileToDataURL(file.url);
-            newFiles[fileId] = { ...file, dataURL } as BinaryFileDataWithUrl;
-            fileStoreAddFile(fileId, newFiles[fileId]);
+            try {
+              const dataURL = await fetchFileToDataURL(file.url);
+              newFiles[fileId] = { ...file, dataURL } as BinaryFileDataWithUrl;
+              fileStoreAddFile(fileId, newFiles[fileId]);
+            } catch (e) {
+              error(`Error downloading file: ${file.url}`, { label: 'whiteboard-file-manager' });
+            }
           } else {
-            // eslint-disable-next-line no-console
-            console.error('Cannot download', file);
+            error(`Cannot download: ${file.id}`, { label: 'whiteboard-file-manager' });
           }
         })
       );
