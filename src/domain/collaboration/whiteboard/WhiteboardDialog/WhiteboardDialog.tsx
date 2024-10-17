@@ -60,7 +60,7 @@ export interface WhiteboardDetails {
 
 interface WhiteboardDialogProps {
   entities: {
-    whiteboard?: WhiteboardDetails;
+    whiteboard: WhiteboardDetails | undefined;
   };
   actions: {
     onCancel: () => void;
@@ -270,14 +270,6 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
           onInitApi: setExcalidrawAPI,
           onRemoteSave: () => {
             setLastSavedDate(new Date());
-          },
-          onUpdate: async state => {
-            const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
-              whiteboard,
-              state,
-              false
-            );
-            return actions.onUpdate(updatedWhiteboard, previewImages);
           },
           onSceneInitChange: setSceneInitialized,
         }}

@@ -1,4 +1,3 @@
-import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
 import type {
   AppState,
   BinaryFiles,
@@ -79,7 +78,6 @@ export interface WhiteboardWhiteboardEntities {
 }
 
 export interface WhiteboardWhiteboardActions {
-  onUpdate?: (state: ExportedDataState) => Promise<{ success: boolean; errors?: string[] }>;
   onInitApi?: (excalidrawApi: ExcalidrawImperativeAPI) => void;
   onSceneInitChange?: (initialized: boolean) => void;
   onRemoteSave?: () => void;
