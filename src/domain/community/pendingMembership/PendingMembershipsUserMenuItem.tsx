@@ -14,7 +14,7 @@ import {
 } from './PendingMemberships';
 import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/InvitationCardHorizontal';
 import JourneyCard from '../../journey/common/JourneyCard/JourneyCard';
-import journeyIcon from '../../shared/components/JourneyIcon/JourneyIcon';
+import spaceIcon from '../../shared/components/JourneyIcon/JourneyIcon';
 import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import JourneyCardTagline from '../../journey/common/JourneyCard/JourneyCardTagline';
 import InvitationDialog from '../invitations/InvitationDialog';
@@ -147,7 +147,7 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
                     {({ application: hydratedApplication }) =>
                       hydratedApplication && (
                         <JourneyCard
-                          iconComponent={journeyIcon[getChildJourneyTypeName(hydratedApplication.space)]}
+                          iconComponent={spaceIcon[getChildJourneyTypeName(hydratedApplication.space)]}
                           header={hydratedApplication.space.profile.displayName}
                           tags={hydratedApplication.space.profile.tagset?.tags ?? []}
                           banner={hydratedApplication.space.profile.visual}

@@ -8,13 +8,13 @@ import { SvgIconProps } from '@mui/material';
 /**
  * @deprecated
  */
-const journeyIcon = {
+const spaceIcon = {
   space: SpaceIcon,
   subspace: SubspaceIcon,
   subsubspace: OpportunityIcon,
 } as const;
 
-export const journeyIconByJourneyLevel = [
+export const spaceIconByLevel = [
   SpaceIcon,
   SubspaceIcon,
   OpportunityIcon,
@@ -30,4 +30,4 @@ export const spaceTypeIcon: Record<SpaceType, ComponentType<SvgIconProps>> = {
   [SpaceType.Knowledge]: SpaceIcon,
 };
 
-export default journeyIcon;
+export default spaceIcon;

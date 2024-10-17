@@ -27,7 +27,7 @@ const JourneyUnauthorizedDialog = ({
   disabled = false,
   journeyId,
   parentSpaceId,
-  journeyLevel,
+  spaceLevel,
   ...aboutDialogProps
 }: JourneyUnauthorizedDialogProps) => {
   const { t } = useTranslation();
@@ -57,7 +57,7 @@ const JourneyUnauthorizedDialog = ({
               {...e?.applicationButtonProps}
               loading={s.loading}
               journeyId={journeyId}
-              journeyLevel={journeyLevel}
+              spaceLevel={spaceLevel}
             />
           )}
         </ApplicationButtonContainer>
@@ -72,7 +72,7 @@ const JourneyUnauthorizedDialog = ({
           </PageContentRibbon>
         )
       }
-      journeyLevel={journeyLevel}
+      spaceLevel={spaceLevel}
       {...aboutDialogProps}
     />
   );

@@ -1,5 +1,5 @@
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import { JourneyDetails } from '../../../../domain/community/pendingMembership/PendingMemberships';
+import { SpaceDetails } from '../../../../domain/community/pendingMembership/PendingMemberships';
 import { Avatar, ButtonBase, ListItemButton, ListItemButtonProps, ListItemButtonTypeMap } from '@mui/material';
 import { Caption } from '../../../../core/ui/typography';
 import { Trans, useTranslation } from 'react-i18next';
@@ -7,7 +7,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import defaultJourneyAvatar from '../../../../domain/journey/defaultVisuals/Avatar.jpg';
 
 interface NewMembershipCardProps {
-  space: JourneyDetails | undefined;
+  space: SpaceDetails | undefined;
   to?: string;
   onClick?: () => void;
   membershipType: 'application' | 'invitation' | 'membership';

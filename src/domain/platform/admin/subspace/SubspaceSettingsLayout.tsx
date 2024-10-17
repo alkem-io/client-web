@@ -14,6 +14,7 @@ import ChildJourneyPageBanner from '../../../journey/common/childJourneyPageBann
 import JourneyBreadcrumbs from '../../../journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import BackButton from '../../../../core/ui/actions/BackButton';
+import { SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
 
 interface SubspaceSettingsLayoutProps {
   currentTab: SettingsSection;
@@ -25,7 +26,7 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
 
   const { t } = useTranslation();
 
-  const { journeyId, journeyPath, journeyLevel } = useRouteResolver();
+  const { journeyId, journeyPath, spaceLevel } = useRouteResolver();
 
   const tabs = useMemo(() => {
     const tabs: TabDefinition<SettingsSection>[] = [
@@ -51,7 +52,7 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
       },
     ];
 
-    if (journeyLevel === 1) {
+    if (spaceLevel === SpaceLevel.Challenge) {
       tabs.push({
         section: SettingsSection.Subsubspaces,
         route: 'opportunities',
@@ -66,7 +67,7 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
     });
 
     return tabs;
-  }, [journeyLevel]);
+  }, [spaceLevel]);
 
   return (
     <EntitySettingsLayout

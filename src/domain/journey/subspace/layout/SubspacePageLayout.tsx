@@ -13,7 +13,7 @@ import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/Jo
 import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
 import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import PageContent from '../../../../core/ui/content/PageContent';
-import { JourneyLevel, JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
+import { JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
 import PageContentColumnBase from '../../../../core/ui/content/PageContentColumnBase';
 import { useTranslation } from 'react-i18next';
 import { KeyboardTab, Menu } from '@mui/icons-material';
@@ -48,6 +48,7 @@ import ApplicationButtonContainer from '../../../community/application/container
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import { SpaceReadAccess } from '../../common/authorization/useCanReadSpace';
+import { SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface SubspacePageLayoutProps {
   journeyId: string | undefined;
@@ -159,6 +160,12 @@ const SubspacePageLayout = ({
   });
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+  let spaceLevel = SpaceLevel.Space;
+  if (journeyPath.length === 2) {
+    spaceLevel = SpaceLevel.Challenge;
+  } else if (journeyPath.length === 3) {
+    spaceLevel = SpaceLevel.Opportunity;
+  }
 
   return (
     <StorageConfigContextProvider locationType="journey" spaceId={journeyId}>
@@ -237,7 +244,7 @@ const SubspacePageLayout = ({
                               component={FullWidthButton}
                               extended={hasExtendedApplicationButton}
                               journeyId={journeyId}
-                              journeyLevel={(journeyPath.length - 1) as JourneyLevel}
+                              spaceLevel={spaceLevel}
                             />
                           </PageContentColumn>
                         );
@@ -283,7 +290,7 @@ const SubspacePageLayout = ({
                     parentSpaceId={parentJourneyId}
                     description={vision}
                     disabled={unauthorizedDialogDisabled}
-                    journeyLevel={(journeyPath.length - 1) as JourneyLevel}
+                    spaceLevel={spaceLevel}
                     {...props}
                   />
                 )}

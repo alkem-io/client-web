@@ -19,7 +19,12 @@ import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDialog';
 import useNewVirtualContributorWizard from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
 import CreateInnovationHubDialog from '../../../innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
-import { AuthorizationPrivilege, SpaceType, SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  SpaceLevel,
+  SpaceType,
+  SpaceVisibility,
+} from '../../../../core/apollo/generated/graphql-schema';
 import { VIRTUAL_CONTRIBUTORS_LIMIT } from '../../../../main/topLevelPages/myDashboard/myAccount/MyAccountBlockVCCampaignUser';
 import MenuItemWithIcon from '../../../../core/ui/menu/MenuItemWithIcon';
 import { DeleteOutline } from '@mui/icons-material';
@@ -60,7 +65,7 @@ export interface AccountTabResourcesProps {
   authorization?: { myPrivileges?: AuthorizationPrivilege[] };
   spaces: {
     id: string;
-    level: number;
+    level: SpaceLevel;
     profile: AccountProfile & {
       cardBanner?: { uri: string };
       tagline?: string;
