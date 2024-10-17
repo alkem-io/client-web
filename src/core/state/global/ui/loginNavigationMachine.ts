@@ -11,6 +11,7 @@ export const loginNavigationMachine = createMachine<LoginNavigationContext, Logi
   {
     key: 'loginNavigation',
     initial: 'visible',
+    predictableActionArguments: true,
     states: {
       visible: {
         on: {
