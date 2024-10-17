@@ -130,7 +130,9 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
     throw new WhiteboardMergeError(`Unable to parse whiteboard content: ${err}`);
   }
 
-  if (!isWhiteboardLike(parsedWhiteboard)) throw new WhiteboardMergeError('Whiteboard verification failed');
+  if (!isWhiteboardLike(parsedWhiteboard)) {
+    throw new WhiteboardMergeError('Whiteboard verification failed');
+  }
 
   try {
     // Insert missing files into current whiteboard:
@@ -161,7 +163,17 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
       elements: newElements,
       storeAction: StoreAction.CAPTURE,
     });
-    whiteboardApi.zoomToFit();
+
+    if (insertedElements.length > 0) {
+      whiteboardApi.scrollToContent(insertedElements, {
+        animate: true,
+        duration: 1000,
+        // fitToContent: true,
+        fitToViewport: true,
+        viewportZoomFactor: 0.75,
+      });
+    }
+
     return true;
   } catch (err) {
     throw new WhiteboardMergeError(`Unable to merge whiteboards: ${err}`);
