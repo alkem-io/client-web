@@ -23,7 +23,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({ spaceId, ro
     variables: { spaceId },
     skip: !spaceId,
   });
-  const templatesSetId = data?.lookup.space?.library?.id;
+  const templatesSetId = data?.lookup.space?.templatesManager?.templatesSet?.id;
   const baseUrl = `${buildSettingsUrl(data?.lookup.space?.profile.url ?? '')}/templates`;
 
   const { data: templateResolverData, loading: resolvingTemplate } = useTemplateUrlResolverQuery({

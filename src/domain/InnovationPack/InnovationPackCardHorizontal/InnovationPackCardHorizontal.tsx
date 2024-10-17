@@ -26,6 +26,7 @@ export interface InnovationPackCardHorizontalProps {
     calloutTemplatesCount?: number;
     communityGuidelinesTemplatesCount?: number;
     innovationFlowTemplatesCount?: number;
+    collaborationTemplatesCount?: number;
     postTemplatesCount?: number;
     whiteboardTemplatesCount?: number;
   };
@@ -53,6 +54,7 @@ const InnovationPackCardHorizontal = ({
     calloutTemplatesCount,
     communityGuidelinesTemplatesCount,
     innovationFlowTemplatesCount,
+    collaborationTemplatesCount,
     postTemplatesCount,
     whiteboardTemplatesCount,
   } = templates ?? {};
@@ -128,6 +130,25 @@ const InnovationPackCardHorizontal = ({
               }
             >
               <Caption>{innovationFlowTemplatesCount}</Caption>
+            </CardFooterCountWithBadge>
+          )}
+          {!!collaborationTemplatesCount && (
+            <CardFooterCountWithBadge
+              tooltip={t(`common.enums.templateType.${TemplateType.Collaboration}_plural`)}
+              icon={
+                // TODO Try to redraw InnovationFlowIcon in the same way as MUI icons are done
+                <Box
+                  width={theme => theme.spacing(1.5)}
+                  sx={{ svg: { width: '100%' } }}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <InnovationFlowIcon />
+                </Box>
+              }
+            >
+              <Caption>{collaborationTemplatesCount}</Caption>
             </CardFooterCountWithBadge>
           )}
           {/* {totalTemplatesCount === 0 && <Caption>{t('pages.admin.generic.sections.account.noTemplates')}</Caption>} */}

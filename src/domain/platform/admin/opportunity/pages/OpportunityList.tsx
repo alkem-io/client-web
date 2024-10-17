@@ -97,7 +97,7 @@ export const OpportunityList: FC = () => {
             },
             tags: value.tags,
             collaborationData: {
-              addDefaultCallouts: value.addDefaultCallouts,
+              addTutorialCallouts: value.addTutorialCallouts,
             },
           },
         },

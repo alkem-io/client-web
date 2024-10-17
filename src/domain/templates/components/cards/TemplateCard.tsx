@@ -7,6 +7,7 @@ import InnovationFlowTemplateCard from './InnovationFlowTemplateCard';
 import WhiteboardTemplateCard from './WhiteboardTemplateCard';
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { AnyTemplateWithInnovationPack } from '../../models/TemplateBase';
+import CollaborationTemplateCard from './CollaborationTemplateCard';
 
 export interface TemplateCardProps extends AnyTemplateWithInnovationPack, ContributeCardProps {
   link?: {
@@ -19,6 +20,8 @@ export interface TemplateCardProps extends AnyTemplateWithInnovationPack, Contri
 
 const TemplateCard: FC<TemplateCardProps> = ({ template, link, ...rest }) => {
   switch (template.type) {
+    case TemplateType.Collaboration:
+      return <CollaborationTemplateCard template={template} {...link} {...rest} />;
     case TemplateType.Callout:
       return <CalloutTemplateCard template={template} {...link} {...rest} />;
     case TemplateType.CommunityGuidelines:

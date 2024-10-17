@@ -5,7 +5,7 @@ mutation createTemplate(
   $tags: [String!]
   $calloutData: CreateCalloutInput
   $communityGuidelinesData: CreateCommunityGuidelinesInput
-  $innovationFlowData: CreateInnovationFlowInput
+  $collaborationData: CreateCollaborationInput
   $postDefaultDescription: Markdown
   $whiteboard: CreateWhiteboardInput
   $includeProfileVisuals: Boolean = false
@@ -18,8 +18,8 @@ mutation createTemplate(
       type: $type
       calloutData: $calloutData
       communityGuidelinesData: $communityGuidelinesData
-      innovationFlowData: $innovationFlowData
       postDefaultDescription: $postDefaultDescription
+      collaborationData: $collaborationData
       whiteboard: $whiteboard
     }
   ) {
@@ -38,22 +38,14 @@ mutation createTemplate(
 mutation UpdateTemplate(
   $templateId: UUID!
   $profile: UpdateProfileInput!
-  $callout: UpdateCalloutInput
-  $communityGuidelines: UpdateCommunityGuidelinesInput
-  $innovationFlow: UpdateInnovationFlowInput
   $postDefaultDescription: Markdown
-  $whiteboard: UpdateWhiteboardInput
   $includeProfileVisuals: Boolean = false
 ) {
   updateTemplate(
     updateData: {
       ID: $templateId
       profile: $profile
-      callout: $callout
-      communityGuidelines: $communityGuidelines
-      innovationFlow: $innovationFlow
       postDefaultDescription: $postDefaultDescription
-      whiteboard: $whiteboard
     }
   ) {
     id
