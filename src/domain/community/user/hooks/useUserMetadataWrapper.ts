@@ -2,14 +2,14 @@ import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '../../../common/tags/tagset.cons
 import {
   AuthorizationPrivilege,
   MyPrivilegesFragment,
+  SpaceLevel,
   UserDetailsFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 
 export interface PendingApplication extends Identifiable {
-  space: Identifiable & {
-    level: JourneyLevel | number;
+  spacePendingMembershipInfo: Identifiable & {
+    level: SpaceLevel;
     profile: {
       displayName: string;
       tagline?: string;

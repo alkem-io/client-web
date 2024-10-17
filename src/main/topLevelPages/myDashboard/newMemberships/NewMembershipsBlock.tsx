@@ -19,7 +19,7 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import { HdrStrongOutlined } from '@mui/icons-material';
 import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import JourneyCard from '../../../../domain/journey/common/JourneyCard/JourneyCard';
-import journeyIcon from '../../../../domain/shared/components/JourneyIcon/JourneyIcon';
+import spaceIcon from '../../../../domain/shared/components/JourneyIcon/JourneyIcon';
 import JourneyCardTagline from '../../../../domain/journey/common/JourneyCard/JourneyCardTagline';
 import InvitationActionsContainer from '../../../../domain/community/invitations/InvitationActionsContainer';
 import InvitationDialog from '../../../../domain/community/invitations/InvitationDialog';
@@ -275,7 +275,7 @@ const NewMembershipsBlock = ({ hiddenIfEmpty = false }: NewMembershipsBlockProps
                     {({ application: hydratedApplication }) =>
                       hydratedApplication && (
                         <JourneyCard
-                          iconComponent={journeyIcon[getChildJourneyTypeName(hydratedApplication.space)]}
+                          iconComponent={spaceIcon[getChildJourneyTypeName(hydratedApplication.space)]}
                           header={hydratedApplication.space.profile.displayName}
                           tags={hydratedApplication.space.profile.tagset?.tags ?? []}
                           banner={hydratedApplication.space.profile.visual}

@@ -170,6 +170,8 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
     skip: !spaceNameId,
   });
 
+  const convertedCalloutResults = calloutResults as SearchResultCalloutFragment[];
+
   return (
     <>
       <PageContentColumn columns={12}>
@@ -216,7 +218,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
           filterTitle={t('common.type')}
           count={calloutResultsCount}
           filterConfig={undefined /* TODO: Callout filtering disabled for now calloutFilterConfig */}
-          results={calloutResults as SearchResultCalloutFragment[]}
+          results={convertedCalloutResults}
           currentFilter={calloutFilter}
           onFilterChange={setCalloutFilter}
           loading={isSearching}

@@ -5,6 +5,7 @@ import { takeWhile } from 'lodash';
 import { useMemo } from 'react';
 import { isApolloNotFoundError } from '../../../core/apollo/hooks/useApolloErrorHandler';
 import { NotFoundError } from '../../../core/notFound/NotFoundErrorBoundary';
+import { SpaceLevel } from '../../../core/apollo/generated/graphql-schema';
 
 enum RouteType {
   Journey = 'Journey',
@@ -15,7 +16,7 @@ interface JourneyRouteParams {
   journeyId: string | undefined;
   parentJourneyId?: string;
   journeyPath: JourneyPath;
-  journeyLevel: JourneyLevel | -1; // TODO not sure maybe remove as well, can be calculated from journeyPath
+  spaceLevel: SpaceLevel; // TODO not sure maybe remove as well, can be calculated from journeyPath
   /**
    * @deprecated
    * use journeyId or journeyPath instead
@@ -55,8 +56,6 @@ type LazyParams<Params extends {}> = {
 
 type RouteParams = RouteResolverState & (LazyParams<JourneyRouteParams> | LazyParams<JourneyCalloutRouteParams>);
 
-export type JourneyLevel = 0 | 1 | 2;
-
 export type JourneyPath = [] | [string] | [string, string] | [string, string, string];
 
 interface JourneyLocation {
@@ -67,8 +66,33 @@ interface JourneyLocation {
 
 const JOURNEY_PARAM_NESTING: (keyof JourneyLocation)[] = ['spaceNameId', 'subspaceNameId', 'subsubspaceNameId'];
 
-const getJourneyLevel = (urlParams: Partial<JourneyLocation>): JourneyLevel | -1 => {
-  return (takeWhile(JOURNEY_PARAM_NESTING, param => urlParams[param]).length - 1) as JourneyLevel | -1;
+const getSpaceLevel = (urlParams: Partial<JourneyLocation>): SpaceLevel => {
+  const depth = takeWhile(JOURNEY_PARAM_NESTING, param => urlParams[param]).length - 1;
+
+  if (depth === 0) {
+    return SpaceLevel.Space;
+  }
+  if (depth === 1) {
+    return SpaceLevel.Challenge;
+  }
+  if (depth === 2) {
+    return SpaceLevel.Opportunity;
+  }
+  // TODO: should be an error, every space has a level.
+  return SpaceLevel.Space;
+};
+
+const getSpaceDepth = (spaceLevel: SpaceLevel | undefined): number => {
+  if (spaceLevel === SpaceLevel.Space) {
+    return 0;
+  }
+  if (spaceLevel === SpaceLevel.Challenge) {
+    return 1;
+  }
+  if (spaceLevel === SpaceLevel.Opportunity) {
+    return 2;
+  }
+  return -1;
 };
 
 interface RouteResolverOptions {
@@ -93,8 +117,8 @@ export const useRouteResolver = ({ failOnNotFound = true }: RouteResolverOptions
     skip: !spaceNameId,
   });
 
-  const journeyLevel = getJourneyLevel({ spaceNameId, subspaceNameId, subsubspaceNameId });
-  const journeyLength = journeyLevel + 1;
+  const spaceLevel = getSpaceLevel({ spaceNameId, subspaceNameId, subsubspaceNameId });
+  const journeyLength = getSpaceDepth(spaceLevel) + 1;
   const journeyPath = useMemo(
     () =>
       (data
@@ -103,11 +127,11 @@ export const useRouteResolver = ({ failOnNotFound = true }: RouteResolverOptions
     [data, journeyLength]
   );
 
-  const getParentJourneyId = () => {
-    switch (journeyLevel) {
-      case 1:
+  const getSpaceJourneyId = () => {
+    switch (spaceLevel) {
+      case SpaceLevel.Challenge:
         return data?.space.id;
-      case 2:
+      case SpaceLevel.Opportunity:
         return data?.space.subspace?.id;
       default:
         return undefined;
@@ -120,13 +144,13 @@ export const useRouteResolver = ({ failOnNotFound = true }: RouteResolverOptions
     subSubSpaceId: data?.space.subspace?.subspace?.id,
     type: RouteType.Journey,
     journeyId: data?.space.subspace?.subspace?.id ?? data?.space.subspace?.id ?? data?.space.id,
-    parentJourneyId: getParentJourneyId(),
+    parentJourneyId: getSpaceJourneyId(),
     journeyTypeName: getJourneyTypeName({
       spaceNameId,
       challengeNameId: subspaceNameId,
       opportunityNameId: subsubspaceNameId,
     })!,
-    journeyLevel,
+    spaceLevel,
     journeyPath,
   };
 

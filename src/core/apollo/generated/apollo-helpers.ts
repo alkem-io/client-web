@@ -986,13 +986,13 @@ export type CommunityApplicationForRoleResultFieldPolicy = {
 export type CommunityApplicationResultKeySpecifier = (
   | 'application'
   | 'id'
-  | 'space'
+  | 'spacePendingMembershipInfo'
   | CommunityApplicationResultKeySpecifier
 )[];
 export type CommunityApplicationResultFieldPolicy = {
   application?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  spacePendingMembershipInfo?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityGuidelinesKeySpecifier = (
   | 'authorization'
@@ -1041,13 +1041,13 @@ export type CommunityInvitationForRoleResultFieldPolicy = {
 export type CommunityInvitationResultKeySpecifier = (
   | 'id'
   | 'invitation'
-  | 'space'
+  | 'spacePendingMembershipInfo'
   | CommunityInvitationResultKeySpecifier
 )[];
 export type CommunityInvitationResultFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
-  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  spacePendingMembershipInfo?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityMembershipResultKeySpecifier = (
   | 'childMemberships'
@@ -3109,6 +3109,21 @@ export type SpaceDefaultsFieldPolicy = {
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type SpacePendingMembershipInfoKeySpecifier = (
+  | 'communityGuidelines'
+  | 'context'
+  | 'id'
+  | 'level'
+  | 'profile'
+  | SpacePendingMembershipInfoKeySpecifier
+)[];
+export type SpacePendingMembershipInfoFieldPolicy = {
+  communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
+  context?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type SpaceSettingsKeySpecifier = ('collaboration' | 'membership' | 'privacy' | SpaceSettingsKeySpecifier)[];
 export type SpaceSettingsFieldPolicy = {
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4362,6 +4377,13 @@ export type StrictTypedTypePolicies = {
   SpaceDefaults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceDefaultsKeySpecifier | (() => undefined | SpaceDefaultsKeySpecifier);
     fields?: SpaceDefaultsFieldPolicy;
+  };
+  SpacePendingMembershipInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | SpacePendingMembershipInfoKeySpecifier
+      | (() => undefined | SpacePendingMembershipInfoKeySpecifier);
+    fields?: SpacePendingMembershipInfoFieldPolicy;
   };
   SpaceSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceSettingsKeySpecifier | (() => undefined | SpaceSettingsKeySpecifier);
