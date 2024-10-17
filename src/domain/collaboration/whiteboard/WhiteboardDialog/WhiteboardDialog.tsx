@@ -36,7 +36,7 @@ import { Identifiable } from '../../../../core/utils/Identifiable';
 export interface WhiteboardDetails {
   id: string;
   nameID: string;
-  contentUpdatePolicy: ContentUpdatePolicy;
+  contentUpdatePolicy?: ContentUpdatePolicy;
   profile: {
     id: string;
     displayName: string;

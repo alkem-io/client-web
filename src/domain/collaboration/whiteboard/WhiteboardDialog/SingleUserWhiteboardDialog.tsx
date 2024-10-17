@@ -23,22 +23,27 @@ import WhiteboardDialogTemplatesLibrary from '../../../templates/components/Whit
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import { error as logError, TagCategoryValues } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { WhiteboardWithContent, WhiteboardWithoutContent } from '../containers/WhiteboardContentContainer';
 import {
   generateWhiteboardPreviewImages,
   WhiteboardPreviewImage,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import { WhiteboardTemplateContent } from '../../../templates/models/WhiteboardTemplate';
+import { WhiteboardDetails } from './WhiteboardDialog';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
-interface SingleUserWhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
+export interface WhiteboardWithContent extends WhiteboardDetails {
+  content: string;
+}
+
+interface SingleUserWhiteboardDialogProps {
   entities: {
-    whiteboard?: Whiteboard;
+    whiteboard?: WhiteboardWithContent;
   };
   actions: {
-    onCancel: (whiteboard: WhiteboardWithoutContent<Whiteboard>) => void;
-    onUpdate: (whiteboard: Whiteboard, previewImages?: WhiteboardPreviewImage[]) => void;
-    onDelete?: (whiteboard: WhiteboardWithoutContent<Whiteboard>) => void;
+    onCancel: () => void;
+    onUpdate: (whiteboard: WhiteboardWithContent, previewImages?: WhiteboardPreviewImage[]) => Promise<void>;
+    onDelete?: (whiteboard: Identifiable) => Promise<void>;
   };
   options: {
     show: boolean;
@@ -81,12 +86,7 @@ const useStyles = makeStyles(theme => ({
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
-const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
-  entities,
-  actions,
-  options,
-  state,
-}: SingleUserWhiteboardDialogProps<Whiteboard>) => {
+const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: SingleUserWhiteboardDialogProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { whiteboard } = entities;
@@ -138,7 +138,7 @@ const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
           displayName,
         },
         content,
-      } as Whiteboard,
+      },
       previewImages
     );
   };
@@ -171,7 +171,7 @@ const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
       }
     }
 
-    actions.onCancel(whiteboard!);
+    actions.onCancel();
   };
 
   const handleImportTemplate = async (template: WhiteboardTemplateContent) => {

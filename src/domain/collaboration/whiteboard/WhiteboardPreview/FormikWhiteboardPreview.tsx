@@ -62,6 +62,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
   const whiteboardFromTemplate = useMemo(() => {
     return {
       id: '__template',
+      nameID: '__template',
       // Needed to pass yup validation of WhiteboardDialog
       profile: { id: '__templateProfile', displayName: '__template', url: '', storageBucket: { id: '' } },
       content: field.value,
@@ -111,7 +112,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
                 }}
                 actions={{
                   onCancel: handleClose,
-                  onUpdate: (whiteboard, previewImages) => {
+                  onUpdate: async (whiteboard, previewImages) => {
                     helpers.setValue(whiteboard.content);
                     if (previewImagesName) {
                       previewImagesField.setValue(previewImages);
