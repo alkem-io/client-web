@@ -167,7 +167,7 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
     if (insertedElements.length > 0) {
       whiteboardApi.scrollToContent(insertedElements, {
         animate: true,
-        duration: 1000,
+        duration: 2000,
         // fitToContent: true,
         fitToViewport: true,
         viewportZoomFactor: 0.75,
