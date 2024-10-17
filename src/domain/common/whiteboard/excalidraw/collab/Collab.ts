@@ -32,6 +32,7 @@ import {
   ReconciledExcalidrawElement,
   RemoteExcalidrawElement,
 } from '@alkemio/excalidraw/dist/excalidraw/data/reconcile';
+import { Mutable } from '@alkemio/excalidraw/dist/excalidraw/utility-types';
 
 interface CollabState {
   errorMessage: string;
@@ -209,17 +210,11 @@ class Collab {
                 const { pointer, button, username, selectedElementIds } = data.payload;
                 const socketId: SocketUpdateDataSource['MOUSE_LOCATION']['payload']['socketId'] = data.payload.socketId;
 
-                const collaborators = new Map(this.collaborators);
-                const user = collaborators.get(socketId) || {}!;
-                collaborators.set(socketId, {
-                  ...user,
+                this.updateCollaborator(socketId, {
                   pointer,
                   button,
                   selectedElementIds,
                   username,
-                });
-                this.excalidrawAPI.updateScene({
-                  collaborators,
                 });
               } else if (isSceneUpdatePayload(data)) {
                 const remoteElements = data.payload.elements as RemoteExcalidrawElement[];
@@ -232,15 +227,9 @@ class Collab {
               this.onCollaboratorModeChange(event);
             },
             'idle-state': ({ userState, socketId, username }) => {
-              const collaborators = new Map(this.collaborators);
-              const user = collaborators.get(socketId) || {}!;
-              collaborators.set(socketId, {
-                ...user,
+              this.updateCollaborator(socketId, {
                 userState,
                 username,
-              });
-              this.excalidrawAPI.updateScene({
-                collaborators,
               });
             },
           }
@@ -260,6 +249,19 @@ class Collab {
 
       this.state.activeRoomLink = window.location.href;
     });
+
+  private updateCollaborator = (socketId: SocketId, updates: Partial<Collaborator>) => {
+    const collaborators = new Map(this.collaborators);
+    const user: Mutable<Collaborator> = Object.assign({}, collaborators.get(socketId), updates, {
+      isCurrentUser: socketId === this.portal.socket?.id,
+    });
+    collaborators.set(socketId, user);
+    this.collaborators = collaborators;
+
+    this.excalidrawAPI.updateScene({
+      collaborators,
+    });
+  };
 
   private initializeRoom = ({
     fetchScene,
