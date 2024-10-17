@@ -3,6 +3,9 @@ import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidra
 import { v4 as uuidv4 } from 'uuid';
 import { StoreAction } from '@alkemio/excalidraw';
 
+const ANIMATION_SPEED = 2000;
+const ANIMATION_ZOOM_FACTOR = 0.75;
+
 type ExcalidrawElementWithContainerId = ExcalidrawElement & { containerId: string | null };
 class WhiteboardMergeError extends Error {}
 
@@ -167,10 +170,9 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
     if (insertedElements.length > 0) {
       whiteboardApi.scrollToContent(insertedElements, {
         animate: true,
-        duration: 2000,
-        // fitToContent: true,
         fitToViewport: true,
-        viewportZoomFactor: 0.75,
+        duration: ANIMATION_SPEED,
+        viewportZoomFactor: ANIMATION_ZOOM_FACTOR,
       });
     }
 
