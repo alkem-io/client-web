@@ -1,7 +1,10 @@
-import type { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
+import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
+import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
 import { v4 as uuidv4 } from 'uuid';
-import { PRECEDING_ELEMENT_KEY } from '../../../common/whiteboard/excalidraw/collab/excalidrawAppConstants';
+import { StoreAction } from '@alkemio/excalidraw';
+
+const ANIMATION_SPEED = 2000;
+const ANIMATION_ZOOM_FACTOR = 0.75;
 
 type ExcalidrawElementWithContainerId = ExcalidrawElement & { containerId: string | null };
 class WhiteboardMergeError extends Error {}
@@ -93,46 +96,6 @@ const replaceElementVersion = (version: number) => (element: ExcalidrawElement) 
 });
 
 /**
- * Returns a function that can be passed to elements.map to replace __precedingElement__ on the elements that have it
- * For old versions of whiteboards that sort the elements with the __precedingElement__ property
- */
-const replacePrecedingElementsIds = (idsMap: Record<string, string>, lastElementId: string) => {
-  return (element: ExcalidrawElement) => {
-    if (!element[PRECEDING_ELEMENT_KEY]) {
-      return element;
-    }
-    if (element[PRECEDING_ELEMENT_KEY] === '^') {
-      return {
-        ...element,
-        [PRECEDING_ELEMENT_KEY]: lastElementId,
-      };
-    }
-    if (idsMap[element[PRECEDING_ELEMENT_KEY]]) {
-      return {
-        ...element,
-        [PRECEDING_ELEMENT_KEY]: idsMap[element[PRECEDING_ELEMENT_KEY]],
-      };
-    }
-    return element;
-  };
-};
-
-/**
- * Returns a function that can be passed to elements.map to replace the index on the elements that have it
- * For new versions of whiteboards that have the index property
- */
-const replaceIndexes = (baseIndex: number) => {
-  return (element: ExcalidrawElement) => {
-    if (typeof element['index'] === 'number') {
-      return {
-        ...element,
-        index: element['index'] + baseIndex,
-      };
-    }
-    return element;
-  };
-};
-/**
  * Returns a function that can be passed to elements.map to replace containerId and boundElements ids
  */
 const replaceBoundElementsIds = (idsMap: Record<string, string>) => {
@@ -170,7 +133,9 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
     throw new WhiteboardMergeError(`Unable to parse whiteboard content: ${err}`);
   }
 
-  if (!isWhiteboardLike(parsedWhiteboard)) throw new WhiteboardMergeError('Whiteboard verification failed');
+  if (!isWhiteboardLike(parsedWhiteboard)) {
+    throw new WhiteboardMergeError('Whiteboard verification failed');
+  }
 
   try {
     // Insert missing files into current whiteboard:
@@ -189,27 +154,28 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
     const displacement = calculateInsertionPoint(currentElementsBBox, insertedWhiteboardBBox);
 
     const replacedIds: Record<string, string> = {};
-
-    const lastElementId = currentElements[currentElements.length - 1]?.id ?? '^';
-    const maxIndex = currentElements.reduce(
-      (max, element) => (typeof element['index'] === 'number' ? Math.max(max, element['index']) : max),
-      0
-    );
-
+    // fractional indices does not need overwriting
     const insertedElements = parsedWhiteboard.elements
       ?.map(generateNewIds(replacedIds))
       .map(replaceElementVersion(sceneVersion + 1))
-      .map(replaceIndexes(maxIndex + 1))
-      .map(replacePrecedingElementsIds(replacedIds, lastElementId))
       .map(replaceBoundElementsIds(replacedIds))
       .map(displaceElements(displacement));
 
     const newElements = [...currentElements, ...insertedElements];
     whiteboardApi.updateScene({
       elements: newElements,
-      commitToHistory: true,
+      storeAction: StoreAction.CAPTURE,
     });
-    whiteboardApi.zoomToFit();
+
+    if (insertedElements.length > 0) {
+      whiteboardApi.scrollToContent(insertedElements, {
+        animate: true,
+        fitToViewport: true,
+        duration: ANIMATION_SPEED,
+        viewportZoomFactor: ANIMATION_ZOOM_FACTOR,
+      });
+    }
+
     return true;
   } catch (err) {
     throw new WhiteboardMergeError(`Unable to merge whiteboards: ${err}`);

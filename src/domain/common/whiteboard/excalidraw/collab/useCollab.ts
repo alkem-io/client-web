@@ -32,6 +32,7 @@ const useCollab = ({
   onInitialize,
   onCloseConnection,
   onRemoteSave,
+  onSceneInitChange,
   ...collabProps
 }: UseCollabProps): UseCollabProvided => {
   const collabRef = useRef<Collab | null>(null);
@@ -58,6 +59,10 @@ const useCollab = ({
     onRemoteSave?.();
   };
 
+  const handleSceneInitChange = (initialized: boolean) => {
+    onSceneInitChange?.(initialized);
+  };
+
   const initialize = ({ excalidrawApi, roomId }: InitProps) => {
     collabRef.current = new Collab({
       ...collabProps,
@@ -68,6 +73,7 @@ const useCollab = ({
         setCollaboratorMode(mode);
         setCollaboratorModeReason(reason);
       },
+      onSceneInitChange: handleSceneInitChange,
     });
 
     collabRef.current.init();

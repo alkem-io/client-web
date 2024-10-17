@@ -1,21 +1,15 @@
-import { IsSyncableElement, SocketUpdateData, SocketUpdateDataSource } from './data';
-import type { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import type { DataURL } from '@alkemio/excalidraw/types/types';
-import {
-  CollaboratorModeEvent,
-  PRECEDING_ELEMENT_KEY,
-  WS_EVENTS,
-  WS_SCENE_EVENT_TYPES,
-} from './excalidrawAppConstants';
+import { isSyncableElement, SocketUpdateData, SocketUpdateDataSource, SyncableExcalidrawElement } from './data';
+import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
+import type { DataURL, SocketId } from '@alkemio/excalidraw/dist/excalidraw/types';
+import { CollaboratorModeEvent, WS_EVENTS, WS_SCENE_EVENT_TYPES } from './excalidrawAppConstants';
 import { UserIdleState } from './utils';
-import { BroadcastedExcalidrawElement } from './reconciliation';
 import { Socket } from 'socket.io-client';
 import { BinaryFileDataWithUrl, BinaryFilesWithUrl } from '../useWhiteboardFilesManager';
 
 interface PortalProps {
   onRemoteSave: () => void;
   onCloseConnection: () => void;
-  onRoomUserChange: (clients: string[]) => void;
+  onRoomUserChange: (clients: SocketId[]) => void;
   getSceneElements: () => readonly ExcalidrawElement[];
   getFiles: () => Promise<BinaryFilesWithUrl>;
 }
@@ -30,6 +24,7 @@ interface BroadcastSceneOptions {
 
 interface ConnectionOptions {
   url: string;
+  path: string;
   roomId: string;
   polling?: boolean;
 }
@@ -44,7 +39,7 @@ interface SocketEventHandlers {
 class Portal {
   onRemoteSave: () => void;
   onCloseConnection: () => void;
-  onRoomUserChange: (clients: string[]) => void;
+  onRoomUserChange: (clients: SocketId[]) => void;
   getSceneElements: () => readonly ExcalidrawElement[];
   getFiles: () => Promise<BinaryFilesWithUrl>;
   socket: Socket | null = null;
@@ -71,7 +66,7 @@ class Portal {
 
       const socket = socketIOClient(connectionOptions.url, {
         transports: connectionOptions.polling ? ['websocket', 'polling'] : ['websocket'],
-        path: '/api/private/ws/socket.io',
+        path: connectionOptions.path,
         retries: 0,
         reconnection: false,
       });
@@ -96,14 +91,12 @@ class Portal {
 
       this.socket.on('collaborator-mode', eventHandlers['collaborator-mode']);
 
-      this.socket.on('room-user-change', (clients: string[]) => {
-        this.onRoomUserChange(clients);
-      });
+      this.socket.on('room-user-change', this.onRoomUserChange);
 
-      this.socket.on('idle-state', (encryptedData: ArrayBuffer) => {
-        const decodedData = new TextDecoder().decode(encryptedData);
-        const decryptedData = JSON.parse(decodedData);
-        eventHandlers['idle-state'](decryptedData.payload);
+      this.socket.on('idle-state', (binaryData: ArrayBuffer) => {
+        const strData = new TextDecoder().decode(binaryData);
+        const data = JSON.parse(strData) as SocketUpdateDataSource['IDLE_STATUS'];
+        eventHandlers['idle-state'](data.payload);
       });
 
       this.socket.on('client-broadcast', eventHandlers['client-broadcast']);
@@ -160,39 +153,30 @@ class Portal {
 
   broadcastScene = async (
     updateType: WS_SCENE_EVENT_TYPES.SCENE_UPDATE,
-    allElements: readonly ExcalidrawElement[],
+    allElements: readonly OrderedExcalidrawElement[],
     allFiles: BinaryFilesWithUrl,
     { syncAll = false }: BroadcastSceneOptions = {}
   ) => {
-    const { isInvisiblySmallElement } = await import('@alkemio/excalidraw');
-
-    const isSyncableElement = IsSyncableElement({ isInvisiblySmallElement });
-
     // sync out only the elements we think we need to to save bandwidth.
     // periodically we'll resync the whole thing to make sure no one diverges
     // due to a dropped message (server goes down etc).
-    const syncableElements = allElements.reduce((acc, element: BroadcastedExcalidrawElement, idx, elements) => {
+    const syncableElements = allElements.reduce((acc, element) => {
       if (
         (syncAll ||
           !this.broadcastedElementVersions.has(element.id) ||
           element.version > this.broadcastedElementVersions.get(element.id)!) &&
         isSyncableElement(element)
       ) {
-        acc.push({
-          ...element,
-          // z-index info for the reconciler
-          [PRECEDING_ELEMENT_KEY]: idx === 0 ? '^' : elements[idx - 1]?.id,
-        });
+        acc.push(element);
       }
 
       return acc;
-    }, [] as BroadcastedExcalidrawElement[]);
+    }, [] as SyncableExcalidrawElement[]);
 
     const emptyDataURL = '' as DataURL;
     const syncableFiles = Object.keys(allFiles).reduce<Record<string, BinaryFileDataWithUrl>>((result, fileId) => {
       if (syncAll || !this.broadcastedFiles.has(fileId)) {
-        const file = { ...allFiles[fileId], dataURL: emptyDataURL };
-        result[fileId] = file;
+        result[fileId] = { ...allFiles[fileId], dataURL: emptyDataURL };
         this.broadcastedFiles.add(fileId);
       }
       return result;
@@ -218,7 +202,7 @@ class Portal {
       const data: SocketUpdateDataSource['IDLE_STATUS'] = {
         type: 'IDLE_STATUS',
         payload: {
-          socketId: this.socket.id,
+          socketId: this.socket.id as SocketId,
           userState,
           username,
         },
@@ -237,9 +221,9 @@ class Portal {
   }) => {
     if (this.socket?.id) {
       const data: SocketUpdateDataSource['MOUSE_LOCATION'] = {
-        type: 'MOUSE_LOCATION',
+        type: WS_SCENE_EVENT_TYPES.MOUSE_LOCATION,
         payload: {
-          socketId: this.socket.id,
+          socketId: this.socket.id as SocketId,
           ...payload,
         },
       };

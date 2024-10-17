@@ -2448,6 +2448,7 @@
       "editDisplayName": "Edit title",
       "no-whiteboards": "No whiteboards have been created yet. Be the first to add one.",
       "locked-by": "{{user}} is currently editing this Whiteboard",
+      "loadingScene": "Loading scene",
       "state-actions": {
         "save-as-template": "Save as template",
         "save-and-check-in": "Save & stop editing",

@@ -30,7 +30,7 @@ yarn-error.log*
 public/*config.js
 .build/traefik/access.log
 
-.env.base
+#.env.base
 # eslint
 .eslintcache
 
