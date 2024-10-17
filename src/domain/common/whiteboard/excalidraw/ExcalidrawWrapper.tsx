@@ -197,6 +197,7 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
             isCollaborating={false}
             viewModeEnabled
             generateIdForFile={addNewFile}
+            aiEnabled={false}
             {...restOptions}
           />
         </Suspense>
