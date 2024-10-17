@@ -11,6 +11,9 @@ import { LONG_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants'
 import SendButton from '../../shared/components/SendButton';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { InviteExternalUserData } from './useInviteUsers';
+import { CommunityRoleType } from '../../../core/apollo/generated/graphql-schema';
+import FormikSelect from '../../../core/ui/forms/FormikSelect';
+import TranslationKey from '../../../core/i18n/utils/TranslationKey';
 
 interface MessageDialogProps {
   open: boolean;
@@ -19,6 +22,7 @@ interface MessageDialogProps {
   onInviteUser: (params: InviteExternalUserData) => Promise<void>;
   title?: ReactNode;
   subtitle?: ReactNode;
+  communityRoles: readonly CommunityRoleType[];
 }
 
 const InviteExternalUserDialog = ({
@@ -28,6 +32,7 @@ const InviteExternalUserDialog = ({
   title,
   subtitle,
   spaceDisplayName,
+  communityRoles,
 }: MessageDialogProps) => {
   const { t } = useTranslation();
 
@@ -60,6 +65,7 @@ const InviteExternalUserDialog = ({
 
   const initialValues: InviteExternalUserData = {
     email: '',
+    extraRole: CommunityRoleType.Member,
     message: t('components.invitations.defaultInvitationMessage', { space: spaceDisplayName }) as string,
   };
 
@@ -79,7 +85,26 @@ const InviteExternalUserDialog = ({
           {({ handleSubmit, isValid }) => (
             <Form noValidate autoComplete="off">
               <Gutters disablePadding>
-                <FormikInputField name="email" title={t('common.email')} placeholder={t('common.email')} />
+                <Gutters disablePadding flexDirection={{ xs: 'column', sm: 'row' }} alignItems={'flex-start'}>
+                  <Gutters disablePadding flexGrow={1}>
+                    <FormikInputField name="email" title={t('common.email')} placeholder={t('common.email')} />
+                  </Gutters>
+                  {communityRoles.length > 0 && (
+                    <Gutters disablePadding row alignItems={'center'}>
+                      <Caption style={{ whiteSpace: 'nowrap' }}>{t('components.invitations.inviteToRole')}</Caption>
+                      <Gutters disableGap disablePadding sx={{ minWidth: '100px' }}>
+                        <FormikSelect
+                          name="extraRole"
+                          values={communityRoles.map(role => ({
+                            id: role,
+                            name: t(`common.${role.toLowerCase()}` as TranslationKey, { defaultValue: role }) as string,
+                          }))}
+                          required
+                        />
+                      </Gutters>
+                    </Gutters>
+                  )}
+                </Gutters>
                 <FormikInputField
                   name="message"
                   title={t('messaging.message')}

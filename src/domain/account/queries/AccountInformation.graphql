@@ -25,9 +25,12 @@ query AccountInformation($accountId: UUID!) {
         }
         community {
           id
-          authorization {
+          roleSet {
             id
-            myPrivileges
+            authorization {
+              id
+              myPrivileges
+            }
           }
         }
         subspaces {
@@ -38,6 +41,9 @@ query AccountInformation($accountId: UUID!) {
           type
           community {
             id
+            roleSet {
+              id
+            }
           }
         }
       }

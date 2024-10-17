@@ -10,7 +10,7 @@ import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import Avatar from '../../../../core/ui/avatar/Avatar';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { BlockSectionTitle, BlockTitle, Caption } from '../../../../core/ui/typography';
-import { CommunityRole } from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityRoleType, SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
@@ -26,10 +26,12 @@ interface MembershipProps {
         uri: string;
       };
     };
-    community?: {
-      myRoles?: CommunityRole[] | undefined;
+    community: {
+      roleSet?: {
+        myRoles?: CommunityRoleType[] | undefined;
+      };
     };
-    level: number;
+    level: SpaceLevel;
   };
   childMemberships?: MembershipProps[] | undefined;
 }
@@ -38,14 +40,14 @@ interface ExpandableSpaceTreeProps {
   membership: MembershipProps;
 }
 
-const VISIBLE_COMMUNITY_ROLES = [CommunityRole.Admin, CommunityRole.Lead];
+const VISIBLE_COMMUNITY_ROLES = [CommunityRoleType.Admin, CommunityRoleType.Lead];
 
 const ExpandableSpaceTree = ({
   membership: {
     space: {
       profile: { displayName, tagline, cardBanner: { uri: avatar } = { uri: '' }, url },
       level,
-      community: { myRoles: roles } = { myRoles: [] },
+      community: { roleSet: { myRoles: roles } = { myRoles: [] } },
     },
     childMemberships = [],
   },
@@ -61,7 +63,14 @@ const ExpandableSpaceTree = ({
 
   const columns = useColumns();
 
-  const verticalOffset = level === 0 ? 1 : 0.5;
+  const verticalOffset = level === SpaceLevel.Space ? 1 : 0.5;
+
+  const paddingLeftMap = {
+    [SpaceLevel.Space]: 0,
+    [SpaceLevel.Challenge]: 5,
+    [SpaceLevel.Opportunity]: 10,
+  };
+  const paddingLeft = paddingLeftMap[level] ?? 0;
 
   const renderSubSpaces = (childMembership: MembershipProps) => {
     return <ExpandableSpaceTree key={childMembership.space.id} membership={childMembership} />;
@@ -73,7 +82,7 @@ const ExpandableSpaceTree = ({
         <Gutters
           flexDirection="row"
           paddingY={gutters(verticalOffset)}
-          paddingLeft={level * 5}
+          paddingLeft={paddingLeft}
           paddingRight={0}
           marginY={0}
         >

@@ -6,7 +6,7 @@ import { useSpaceProviderQuery } from '../../../../core/apollo/generated/apollo-
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
-  SpaceInfoFragment,
+  SpacePendingMembershipInfoFragment,
   SpacePrivacyMode,
   SpaceVisibility,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -26,6 +26,7 @@ interface SpaceContextProps {
   spaceId: string;
   spaceNameId: string;
   communityId: string;
+  roleSetId: string;
   isPrivate?: boolean;
   loading: boolean;
   permissions: SpacePermissions;
@@ -33,8 +34,8 @@ interface SpaceContextProps {
   refetchSpace: () => void;
   // TODO Some components just randomly access SpaceContext instead of just querying the data the usual way.
   // TODO This Context should provide as little data as possible or just be removed.
-  context?: SpaceInfoFragment['context'];
-  profile: SpaceInfoFragment['profile'];
+  context?: SpacePendingMembershipInfoFragment['context'];
+  profile: SpacePendingMembershipInfoFragment['profile'];
   visibility: SpaceVisibility;
   myMembershipStatus: CommunityMembershipStatus | undefined;
 }
@@ -45,6 +46,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
   spaceId: '',
   spaceNameId: '',
   communityId: '',
+  roleSetId: '',
   permissions: {
     canRead: false,
     viewerCanUpdate: false,
@@ -92,6 +94,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const visibility = space?.visibility || SpaceVisibility.Active;
 
   const communityId = space?.community?.id ?? '';
+  const roleSetId = space?.community?.roleSet?.id ?? '';
   const isPrivate = space && space.settings.privacy?.mode === SpacePrivacyMode.Private;
   const error = configError || spaceError;
 
@@ -138,6 +141,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
         spaceId,
         spaceNameId,
         communityId,
+        roleSetId,
         permissions,
         isPrivate,
         loading,
@@ -146,7 +150,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
         profile,
         context: space?.context,
         visibility,
-        myMembershipStatus: space?.community?.myMembershipStatus,
+        myMembershipStatus: space?.community?.roleSet?.myMembershipStatus,
       }}
     >
       {children}

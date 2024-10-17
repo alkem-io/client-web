@@ -10,7 +10,7 @@ import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import CommunityUsers from '../../../community/community/CommunityAdmin/CommunityUsers';
-import useCommunityAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
+import useRoleSetAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
 import CommunityOrganizations from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import CommunityApplications from '../../../community/community/CommunityAdmin/CommunityApplications';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
@@ -27,7 +27,7 @@ import CommunityGuidelinesContainer, {
 } from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import ImportTemplatesDialog from '../../../templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
+import { SpaceLevel, TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import {
@@ -40,7 +40,7 @@ import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../../templat
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
-  const { spaceId, loading: isLoadingSpace, communityId, profile: spaceProfile } = useSpace();
+  const { spaceId, loading: isLoadingSpace, communityId, roleSetId, profile: spaceProfile } = useSpace();
 
   const {
     users,
@@ -49,7 +49,8 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     applications,
     invitations,
     platformInvitations,
-    communityPolicy,
+    memberRoleDefinition,
+    leadRoleDefinition,
     permissions,
     onApplicationStateChange,
     onInvitationStateChange,
@@ -71,7 +72,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useCommunityAdmin({ communityId, spaceId, journeyLevel: 0 });
+  } = useRoleSetAdmin({ roleSetId, spaceId, spaceLevel: SpaceLevel.Space });
 
   const currentApplicationsUserIds = useMemo(
     () =>
@@ -151,7 +152,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
           <Text marginBottom={gutters(2)}>
             <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
           </Text>
-          <CommunityApplicationForm communityId={communityId} />
+          <CommunityApplicationForm roleSetId={roleSetId} />
         </PageContentBlockCollapsible>
         <CommunityGuidelinesContainer communityId={communityId}>
           {({
@@ -235,7 +236,8 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
               onAddMember={onAddUser}
               onRemoveMember={onRemoveUser}
               fetchAvailableUsers={getAvailableUsers}
-              communityPolicy={communityPolicy}
+              memberRoleDefinition={memberRoleDefinition}
+              leadRoleDefinition={leadRoleDefinition}
               loading={loading}
             />
           </PageContentBlock>
@@ -249,7 +251,8 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
               onAddMember={onAddOrganization}
               onRemoveMember={onRemoveOrganization}
               fetchAvailableOrganizations={getAvailableOrganizations}
-              communityPolicy={communityPolicy}
+              memberRoleDefinition={memberRoleDefinition}
+              leadRoleDefinition={leadRoleDefinition}
               loading={loading}
             />
           </PageContentBlock>

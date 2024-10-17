@@ -112,6 +112,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   const { data: lastSaved } = useWhiteboardLastUpdatedDateQuery({
     variables: { whiteboardId: whiteboard?.id! },
     skip: !whiteboard?.id,
+    fetchPolicy: 'network-only',
   });
 
   if (!lastSavedDate && lastSaved?.lookup.whiteboard?.updatedDate) {
@@ -153,8 +154,9 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
 
     return {
       whiteboard: {
+        ...whiteboard,
         profile: {
-          id: whiteboard.profile.id,
+          ...whiteboard.profile,
           displayName,
         },
       } as Whiteboard,
@@ -190,7 +192,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   const handleImportTemplate = async (template: WhiteboardTemplateContent) => {
     if (excalidrawAPI) {
       try {
-        mergeWhiteboard(excalidrawAPI, template.whiteboard.content);
+        await mergeWhiteboard(excalidrawAPI, template.whiteboard.content);
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
         logError(new Error(`Error importing whiteboard template: '${err}'`), {

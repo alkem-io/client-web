@@ -19,7 +19,12 @@ import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
 import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDialog';
 import useNewVirtualContributorWizard from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
 import CreateInnovationHubDialog from '../../../innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
-import { AuthorizationPrivilege, SpaceType, SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  SpaceLevel,
+  SpaceType,
+  SpaceVisibility,
+} from '../../../../core/apollo/generated/graphql-schema';
 import { VIRTUAL_CONTRIBUTORS_LIMIT } from '../../../../main/topLevelPages/myDashboard/myAccount/MyAccountBlockVCCampaignUser';
 import MenuItemWithIcon from '../../../../core/ui/menu/MenuItemWithIcon';
 import { DeleteOutline } from '@mui/icons-material';
@@ -55,61 +60,73 @@ interface AccountProfile {
   url: string;
 }
 
+export interface AccountTabResourcesProps {
+  id: string;
+  authorization?: { myPrivileges?: AuthorizationPrivilege[] };
+  spaces: {
+    id: string;
+    level: SpaceLevel;
+    profile: AccountProfile & {
+      cardBanner?: { uri: string };
+      tagline?: string;
+    };
+    community: {
+      id: string;
+      roleSet: {
+        id: string;
+      };
+    };
+    subspaces: {
+      id: string;
+      profile: AccountProfile & {
+        cardBanner?: { uri: string };
+      };
+      community: {
+        id: string;
+        roleSet: {
+          id: string;
+        };
+      };
+      type: SpaceType;
+    }[];
+  }[];
+  virtualContributors: {
+    id: string;
+    profile: AccountProfile & {
+      tagline?: string;
+    };
+  }[];
+  innovationPacks: {
+    id: string;
+    profile: AccountProfile;
+    templates?: {
+      calloutTemplatesCount: number;
+      communityGuidelinesTemplatesCount: number;
+      innovationFlowTemplatesCount: number;
+      postTemplatesCount: number;
+      whiteboardTemplatesCount: number;
+    };
+  }[];
+  innovationHubs: {
+    id: string;
+    profile: AccountProfile & {
+      banner?: { uri: string };
+    };
+    spaceVisibilityFilter?: SpaceVisibility;
+    spaceListFilter?: {
+      id: string;
+      profile: {
+        displayName: string;
+      };
+    }[];
+    subdomain: string;
+  }[];
+}
+
 export interface ContributorAccountViewProps {
   accountHostName?: string;
   loading?: boolean;
-  account?: {
-    id: string;
-    authorization?: { myPrivileges?: AuthorizationPrivilege[] };
-    spaces: {
-      id: string;
-      level: number;
-      profile: AccountProfile & {
-        cardBanner?: { uri: string };
-        tagline?: string;
-      };
-      community: { id: string };
-      subspaces: {
-        id: string;
-        profile: AccountProfile & {
-          cardBanner?: { uri: string };
-        };
-        community: { id: string };
-        type: SpaceType;
-      }[];
-    }[];
-    virtualContributors: {
-      id: string;
-      profile: AccountProfile & {
-        tagline?: string;
-      };
-    }[];
-    innovationPacks: {
-      id: string;
-      profile: AccountProfile;
-      templates?: {
-        calloutTemplatesCount: number;
-        communityGuidelinesTemplatesCount: number;
-        innovationFlowTemplatesCount: number;
-        postTemplatesCount: number;
-        whiteboardTemplatesCount: number;
-      };
-    }[];
-    innovationHubs: {
-      id: string;
-      profile: AccountProfile & {
-        banner?: { uri: string };
-      };
-      spaceVisibilityFilter?: SpaceVisibility;
-      spaceListFilter?: {
-        id: string;
-        profile: {
-          displayName: string;
-        };
-      }[];
-      subdomain: string;
-    }[];
-  };
+  account?: AccountTabResourcesProps;
 }
 
 const useStyles = makeStyles(() => ({

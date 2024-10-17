@@ -4,16 +4,17 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import CommunityOrganizations from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import CommunityUsers from '../../../community/community/CommunityAdmin/CommunityUsers';
-import useCommunityAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
+import useRoleSetAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
 import { useOpportunity } from '../hooks/useOpportunity';
 import SubspaceSettingsLayout from '../../../platform/admin/subspace/SubspaceSettingsLayout';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
 import { useSpace } from '../../space/SpaceContext/useSpace';
+import { SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { loading: isLoadingChallenge, communityId, opportunityId } = useOpportunity();
+  const { loading: isLoadingChallenge, roleSetId, opportunityId } = useOpportunity();
 
   const { spaceId } = useSpace();
 
@@ -21,7 +22,8 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     users,
     organizations,
     virtualContributors,
-    communityPolicy,
+    memberRoleDefinition,
+    leadRoleDefinition,
     permissions,
     onUserLeadChange,
     onUserAuthorizationChange,
@@ -38,7 +40,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     getAvailableVirtualContributors,
     getAvailableVirtualContributorsInLibrary,
     loading,
-  } = useCommunityAdmin({ spaceId, opportunityId, communityId, journeyLevel: 2 });
+  } = useRoleSetAdmin({ spaceId, opportunityId, roleSetId, spaceLevel: SpaceLevel.Opportunity });
 
   if (!spaceId || isLoadingChallenge) {
     return null;
@@ -57,7 +59,8 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
               onAddMember={onAddUser}
               onRemoveMember={onRemoveUser}
               fetchAvailableUsers={getAvailableUsers}
-              communityPolicy={communityPolicy}
+              memberRoleDefinition={memberRoleDefinition}
+              leadRoleDefinition={leadRoleDefinition}
               loading={loading}
             />
           </PageContentBlock>
@@ -71,7 +74,8 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
               onAddMember={onAddOrganization}
               onRemoveMember={onRemoveOrganization}
               fetchAvailableOrganizations={getAvailableOrganizations}
-              communityPolicy={communityPolicy}
+              memberRoleDefinition={memberRoleDefinition}
+              leadRoleDefinition={leadRoleDefinition}
               loading={loading}
             />
           </PageContentBlock>

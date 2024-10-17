@@ -7,7 +7,7 @@ import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import CommunityApplications from '../../../community/community/CommunityAdmin/CommunityApplications';
 import CommunityOrganizations from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import CommunityUsers from '../../../community/community/CommunityAdmin/CommunityUsers';
-import useCommunityAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
+import useRoleSetAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
 import { useSubSpace } from '../hooks/useSubSpace';
@@ -29,12 +29,18 @@ import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
-  const { loading: isLoadingChallenge, communityId, subspaceId: challengeId, subspaceNameId } = useSubSpace();
-  const { isPrivate, loading: isLoadingSpace } = useSpace();
+  const {
+    loading: isLoadingChallenge,
+    communityId,
+    roleSetId,
+    subspaceId: challengeId,
+    subspaceNameId,
+  } = useSubSpace();
+  const { loading: isLoadingSpace } = useSpace();
 
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
-  const { spaceId, journeyLevel } = useRouteResolver();
+  const { spaceId, spaceLevel } = useRouteResolver();
 
   const {
     users,
@@ -43,7 +49,8 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     applications,
     invitations,
     platformInvitations,
-    communityPolicy,
+    memberRoleDefinition,
+    leadRoleDefinition,
     permissions,
     onApplicationStateChange,
     onInvitationStateChange,
@@ -65,7 +72,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useCommunityAdmin({ communityId, spaceId, challengeId, journeyLevel });
+  } = useRoleSetAdmin({ roleSetId, spaceId, challengeId, spaceLevel });
 
   const currentApplicationsUserIds = useMemo(
     () =>
@@ -115,7 +122,6 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
               currentInvitationsUserIds={currentInvitationsContributorIds}
               currentMembersIds={currentMembersIds}
               spaceId={spaceId}
-              isParentPrivate={isPrivate}
               isSubspace
             />
           </PageContentBlockSeamless>
@@ -173,7 +179,8 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
               onAddMember={onAddUser}
               onRemoveMember={onRemoveUser}
               fetchAvailableUsers={getAvailableUsers}
-              communityPolicy={communityPolicy}
+              memberRoleDefinition={memberRoleDefinition}
+              leadRoleDefinition={leadRoleDefinition}
               loading={loading}
             />
           </PageContentBlock>
@@ -187,7 +194,8 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
               onAddMember={onAddOrganization}
               onRemoveMember={onRemoveOrganization}
               fetchAvailableOrganizations={getAvailableOrganizations}
-              communityPolicy={communityPolicy}
+              memberRoleDefinition={memberRoleDefinition}
+              leadRoleDefinition={leadRoleDefinition}
               loading={loading}
             />
           </PageContentBlock>

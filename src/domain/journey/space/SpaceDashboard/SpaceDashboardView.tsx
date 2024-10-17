@@ -4,8 +4,7 @@ import {
   CalloutGroupName,
   CalloutsQueryVariables,
   CommunityMembershipStatus,
-  DashboardLeadUserFragment,
-  SpaceWelcomeBlockContributorProfileFragment,
+  SpaceLevel,
 } from '../../../../core/apollo/generated/graphql-schema';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import PageContent from '../../../../core/ui/content/PageContent';
@@ -22,7 +21,9 @@ import useDirectMessageDialog from '../../../communication/messaging/DirectMessa
 import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
-import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
+import JourneyDashboardWelcomeBlock, {
+  JourneyDashboardWelcomeBlockProps,
+} from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import InfoColumn from '../../../../core/ui/content/InfoColumn';
@@ -36,10 +37,6 @@ import {
 } from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/vcCreationUtil';
 import TryVirtualContributorDialog from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVirtualContributorDialog';
 
-interface SpaceWelcomeBlockContributor {
-  profile: SpaceWelcomeBlockContributorProfileFragment;
-}
-
 interface SpaceDashboardViewProps {
   spaceId: string | undefined;
   dashboardNavigation: DashboardNavigationItem | undefined;
@@ -48,7 +45,7 @@ interface SpaceDashboardViewProps {
   communityId?: string;
   organization?: unknown;
   host: ContributorViewProps | undefined;
-  leadUsers: (SpaceWelcomeBlockContributor & DashboardLeadUserFragment)[] | undefined;
+  leadUsers: JourneyDashboardWelcomeBlockProps['leadUsers'];
   leadVirtualContributors: ContributorViewProps[] | undefined;
   communityReadAccess: boolean;
   timelineReadAccess?: boolean;
@@ -136,7 +133,7 @@ const SpaceDashboardView = ({
                   component={FullWidthButton}
                   extended={hasExtendedApplicationButton}
                   journeyId={spaceId}
-                  journeyLevel={0}
+                  spaceLevel={SpaceLevel.Space}
                 />
               </PageContentColumn>
             );

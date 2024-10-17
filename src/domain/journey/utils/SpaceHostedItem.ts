@@ -1,10 +1,10 @@
-import { CommunityContributorType } from '../../../core/apollo/generated/graphql-schema';
+import { CommunityContributorType, SpaceLevel } from '../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../core/utils/Identifiable';
-import { JourneyLevel } from '../../../main/routing/resolvers/RouteResolver';
 
 export interface SpaceHostedItem extends Identifiable {
   spaceID: string;
-  spaceLevel: JourneyLevel;
+  spaceLevel: SpaceLevel;
   contributorId: string;
   contributorType: CommunityContributorType;
+  roles?: string[];
 }

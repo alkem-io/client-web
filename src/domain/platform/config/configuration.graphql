@@ -45,6 +45,7 @@ fragment Configuration on Config {
     newuser
     tips
     aup
+    documentation
   }
   featureFlags {
     enabled

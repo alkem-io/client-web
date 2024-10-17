@@ -25,6 +25,7 @@ export interface Configuration {
     newuser: string;
     tips: string;
     aup: string;
+    documentation: string;
   };
   featureFlags: FeatureFlag[];
   sentry: {

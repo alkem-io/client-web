@@ -15,7 +15,7 @@ import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
 import SwitchSettingsGroup from '../../../../core/ui/forms/SettingsGroups/SwitchSettingsGroup';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import RadioSettingsGroup from '../../../../core/ui/forms/SettingsGroups/RadioSettingsGroup';
-import { SearchVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import { AiPersonaBodyOfKnowledgeType, SearchVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import { BlockTitle, Caption } from '../../../../core/ui/typography';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
@@ -129,19 +129,21 @@ export const VCAccessibilitySettingsPage = () => {
             </PageContentBlock>
           </PageContentColumn>
         </PageContent>
-        <PageContent background="background.paper">
-          <PageContentColumn columns={12}>
-            <PageContentBlock>
-              <BlockTitle>{t('pages.virtualContributorProfile.settings.ingestion.title')}</BlockTitle>
-              <Caption>{t('pages.virtualContributorProfile.settings.ingestion.infoText')}</Caption>
-              <Actions>
-                <LoadingButton variant="contained" loading={updateLoading} onClick={refreshIngestion}>
-                  {t('pages.virtualContributorProfile.settings.ingestion.refreshBtn')}
-                </LoadingButton>
-              </Actions>
-            </PageContentBlock>
-          </PageContentColumn>
-        </PageContent>
+        {data?.virtualContributor?.aiPersona?.bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace && (
+          <PageContent background="background.paper">
+            <PageContentColumn columns={12}>
+              <PageContentBlock>
+                <BlockTitle>{t('pages.virtualContributorProfile.settings.ingestion.title')}</BlockTitle>
+                <Caption>{t('pages.virtualContributorProfile.settings.ingestion.infoText')}</Caption>
+                <Actions>
+                  <LoadingButton variant="contained" loading={updateLoading} onClick={refreshIngestion}>
+                    {t('pages.virtualContributorProfile.settings.ingestion.refreshBtn')}
+                  </LoadingButton>
+                </Actions>
+              </PageContentBlock>
+            </PageContentColumn>
+          </PageContent>
+        )}
       </VCSettingsPageLayout>
     </StorageConfigContextProvider>
   );

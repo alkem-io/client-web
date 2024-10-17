@@ -24,7 +24,7 @@ interface ContributorCardTooltip {
 
 export interface ContributorCardSquareProps {
   id: string;
-  avatar: string;
+  avatar: string | undefined;
   avatarAltText?: string;
   displayName: string;
   tooltip?: ContributorCardTooltip;
@@ -61,7 +61,7 @@ const useStyles = makeStyles(_ =>
   })
 );
 
-const ElevatedPaper = withElevationOnHover(Paper);
+const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
 export const ContributorCardSquare: FC<ContributorCardSquareProps> = props => {
   const styles = useStyles();
@@ -115,7 +115,7 @@ export const ContributorCardSquare: FC<ContributorCardSquareProps> = props => {
                   displayName={displayName}
                   avatarSrc={avatar}
                   avatarAltText={avatarAltText}
-                  tags={tooltip?.tags || []}
+                  tags={tooltip?.tags ?? []}
                   roleName={roleName ?? tooltip?.roleName}
                   city={tooltip?.city}
                   country={tooltip?.country}

@@ -70,7 +70,7 @@
     "event": {
       "type": "Type of Event",
       "multiple-days": "{{days}} days",
-      "whole-day": "Entire Day"
+      "whole-day": "All Day"
     },
     "validation": {
       "durationMinutes": {
@@ -81,7 +81,7 @@
     "no-upcoming-events": "Currently, there are no upcoming events to be displayed",
     "past-events": "Past Events",
     "show-calendar": "Show calendar",
-    "defaultEventDescription": "$t(common.location):\n\n$t(common.url):\n\n$t(common.description):",
+    "defaultEventDescription": "",
     "adminsOnly": "Since there are no events, this block is only visible for admins and leads"
   },
   "buttons": {
@@ -1083,7 +1083,8 @@
       },
       "inviteExternalUserDialog": {
         "title": "Send an email invitation"
-      }
+      },
+      "inviteToRole": "Invite to be a: "
     },
     "confirmation-dialog": {
       "delete-comment": {
@@ -1595,6 +1596,8 @@
     },
     "contributions": {
       "title": "Contributions",
+      "leadSpacesTitle": "(Sub)Spaces we lead",
+      "allMembershipsTitle": "(Sub)Spaces we're in",
       "help": "The Spaces and Subspaces that this organization is contributing to"
     },
     "discussions-list": {
@@ -1851,7 +1854,7 @@
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
             "noTemplates": "This Innovation Pack doesn't have any template yet",
-            "customHomepages": "Your Custom Homepages",
+            "customHomepages": "Custom Homepages",
             "hostTitle": "Host",
             "contactsLink": "If you want to change any of these settings, please contact the Alkemio team here.",
             "freeTrialNotice": {
@@ -2132,6 +2135,7 @@
     },
     "exploreSpaces": {
       "fullName": "Explore Spaces",
+      "title": "Explore Spaces of Your Interest",
       "shortName": "$t(common.spaces)",
       "subtitle": "All activity on Alkemio happens inside Spaces and their corresponding Subspaces. Explore both to find topics where you can contribute!",
       "caption": "Discover a diverse range of Spaces awaiting your exploration. Whether you're an experienced member or a curious newcomer, there's something here for everyone. Let's delve into the details:<ol><li><strong>Member Spaces:</strong> These are spaces where you already hold membership.</li><li><strong>Public Spaces:</strong> These spaces have visible content, and you can request to join them.</li><li><strong>All Spaces:</strong> This category includes both public and private spaces. In private spaces, only limited content is visible, but you can still apply for membership.</li></ol>",
@@ -2145,7 +2149,7 @@
         "placeholder": "Search…",
         "noResults": "No results matched your search terms."
       },
-      "seeAll": "Show all Spaces on the platform"
+      "seeAll": "Show all Spaces"
     },
     "lead-organization": {
       "search": {
@@ -2252,6 +2256,7 @@
         },
         "welcome": {
           "welcomeUnauthenticated": "Welcome to Alkemio!",
+          "welcomeUnauthenticatedSubtitle": "Safe Spaces for Collaboration",
           "welcome-back": "Welcome back {{username}}!",
           "join": "Want to join the community and see more?",
           "existing-user": {
@@ -2348,6 +2353,11 @@
       }
     },
     "organization": {
+      "profile": {
+        "accountResources": {
+          "sectionTitle": "Resources we host"
+        }
+      },
       "settings": {
         "tooltip": "Organization settings"
       },
@@ -2561,9 +2571,15 @@
       "applications": {
         "title": "Pending applications"
       },
+      "accountResources": {
+        "sectionTitle": "Resources I host"
+      },
       "communities": {
         "title": "Communities",
-        "help": "Communities the user is a part of"
+        "help": "Communities the user is a part of",
+        "leadSpacesTitle": "(Sub)Spaces I lead",
+        "allMembershipsTitle": "(Sub)Spaces I'm in",
+        "noMembership": "Not a member of any Space or SubSpace yet."
       },
       "pending-applications": {
         "title": "Pending Applications",
@@ -2685,6 +2701,9 @@
       "shortName": "$t(common.forum)",
       "new-title": "Alkemio Forum - Initiate Discussion",
       "back": "See all discussions"
+    },
+    "documentation": {
+      "title": "Documentation"
     }
   },
   "operations": {
@@ -3007,12 +3026,30 @@
       },
       "submitDisabled": "Add at least one Post to continue"
     },
-    "externalAICommingSoon": {
-      "title": "🚀 Coming soon!",
-      "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
-      "input": {
-        "label": "AI Service",
-        "placeholder": "E.g. the AI that xx created to xx"
+    "externalAI": {
+      "create": {
+        "title": "Create Virtual Contributor with an External AI",
+        "subTitle": "Choose a provider and enter your API Key or token to connect your external AI to a Virtual Contributor",
+        "apiKey": {
+          "label": "API Key",
+          "placeholder": "E.g. sk-proj-Uq3zU..."
+        },
+        "assistantId": {
+          "label": "Assistant ID",
+          "placeholder": "E.g. asst_wTLKgGkKryqR5FlEFleLy5Uq"
+        },
+        "provider": {
+          "title": "Provider",
+          "placeholder": "Select a provider from this list"
+        }
+      },
+      "commingSoon": {
+        "title": "🚀 Coming soon!",
+        "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
+        "input": {
+          "label": "AI Service",
+          "placeholder": "E.g. the AI that xx created to xx"
+        }
       },
       "contactOptions": {
         "title": "May we contact you if we have questions about the way you want to use this AI service?",

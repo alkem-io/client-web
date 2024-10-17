@@ -16,6 +16,7 @@ import { buildAboutUrl, buildUpdatesUrl } from '../../../../main/routing/urlBuil
 import { useTranslation } from 'react-i18next';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
+import { SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface SpaceDashboardPageProps {
   dialog?: 'about' | 'updates' | 'contributors' | 'calendar';
@@ -46,12 +47,12 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               timelineReadAccess={entities.permissions.timelineReadAccess}
               entityReadAccess={entities.permissions.spaceReadAccess}
               readUsersAccess={entities.permissions.readUsers}
-              leadUsers={entities.space?.community?.leadUsers}
-              leadVirtualContributors={entities.space?.community?.leadVirtualContributors}
+              leadUsers={entities.space?.community?.roleSet?.leadUsers ?? []}
+              leadVirtualContributors={entities.space?.community?.roleSet?.leadVirtualContributors}
               host={entities.provider}
               callouts={callouts}
               journeyTypeName="space"
-              myMembershipStatus={entities.space?.community?.myMembershipStatus}
+              myMembershipStatus={entities.space?.community?.roleSet?.myMembershipStatus}
               shareUpdatesUrl={buildUpdatesUrl(entities.space?.profile.url ?? '')}
             />
             <CommunityUpdatesDialog
@@ -77,7 +78,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
             )}
             <JourneyAboutDialog
               open={dialog === 'about'}
-              journeyLevel={0}
+              spaceLevel={SpaceLevel.Space}
               displayName={entities.space?.profile.displayName}
               tagline={entities.space?.profile.tagline}
               references={entities.references}
@@ -94,10 +95,10 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                 />
               }
               loading={state.loading}
-              leadUsers={entities.space?.community?.leadUsers}
+              leadUsers={entities.space?.community?.roleSet?.leadUsers}
               provider={entities.provider}
-              leadOrganizations={entities.space?.community?.leadOrganizations}
-              leadVirtualContributors={entities.space?.community?.leadVirtualContributors}
+              leadOrganizations={entities.space?.community?.roleSet?.leadOrganizations}
+              leadVirtualContributors={entities.space?.community?.roleSet?.leadVirtualContributors}
               endButton={
                 <IconButton onClick={backToDashboard} aria-label={t('buttons.close')}>
                   <Close />
