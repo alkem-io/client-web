@@ -47,6 +47,7 @@ export interface CollabProps {
   filesManager: WhiteboardFilesManager;
   onCloseConnection: () => void;
   onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
+  onSceneInitChange: (initialized: boolean) => void;
 }
 
 type IncomingClientBroadcastData = {
@@ -69,6 +70,7 @@ class Collab {
   private collaborators = new Map<SocketId, Collaborator>();
   private onCloseConnection: () => void;
   private onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
+  private onSceneInitChange: (initialized: boolean) => void;
   private excalidrawUtils: Promise<{
     // todo: migrate to hashElementsVersion
     getSceneVersion: typeof getSceneVersion;
@@ -94,6 +96,7 @@ class Collab {
     this.excalidrawAPI = props.excalidrawApi;
     this.filesManager = props.filesManager;
     this.onCollaboratorModeChange = props.onCollaboratorModeChange;
+    this.onSceneInitChange = props.onSceneInitChange;
     this.excalidrawUtils = import('@alkemio/excalidraw');
   }
 
@@ -124,6 +127,8 @@ class Collab {
   private handleCloseConnection = () => {
     this.setCollaborators([]);
     this.onCloseConnection();
+    this.portal.socketInitialized = false;
+    this.onSceneInitChange(false);
   };
 
   stopCollaboration = async () => {
@@ -178,6 +183,7 @@ class Collab {
           {
             'scene-init': async (payload: { elements: readonly ExcalidrawElement[]; files: BinaryFilesWithUrl }) => {
               if (!this.portal.socketInitialized) {
+                this.onSceneInitChange(true);
                 this.initializeRoom({ fetchScene: false });
                 this.handleRemoteSceneUpdate(
                   await this.reconcileElementsAndLoadFiles(payload.elements, payload.files),

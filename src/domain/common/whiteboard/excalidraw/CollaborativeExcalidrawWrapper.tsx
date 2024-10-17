@@ -20,7 +20,7 @@ import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import { Caption, Text } from '../../../../core/ui/typography';
 import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
-import { Button, DialogActions } from '@mui/material';
+import { Box, Button, DialogActions } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { LoadingButton } from '@mui/lab';
 import useOnlineStatus from '../../../../core/utils/onlineStatus';
@@ -42,6 +42,14 @@ const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
     height: '100%',
     flexGrow: 1,
+    position: 'relative',
+  },
+  loadingScene: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    zIndex: `${theme.zIndex.modal + 2} !important`,
+    backgroundColor: theme.palette.background.paper,
   },
   '@global': {
     '.excalidraw-modal-container': {
@@ -62,6 +70,7 @@ export interface WhiteboardWhiteboardEntities {
 export interface WhiteboardWhiteboardActions {
   onUpdate?: (state: ExportedDataState) => Promise<{ success: boolean; errors?: string[] }>;
   onInitApi?: (excalidrawApi: ExcalidrawImperativeAPI) => void;
+  onSceneInitChange?: (initialized: boolean) => void;
   onRemoteSave?: () => void;
 }
 
@@ -102,6 +111,8 @@ const CollaborativeExcalidrawWrapper = ({
 
   const { user } = useUserContext();
   const username = user?.user.profile.displayName ?? 'User';
+
+  const [isSceneInitialized, setSceneInitialized] = useState(false);
 
   const { addNewFile, loadFiles, pushFilesToExcalidraw } = filesManager;
 
@@ -158,12 +169,17 @@ const CollaborativeExcalidrawWrapper = ({
     onRemoteSave: () => actions.onRemoteSave?.(),
     onCloseConnection: () => {
       setCollaborationStoppedNoticeOpen(true);
+      setSceneInitialized(false);
       if (isOnline) {
         setupReconnectTimeout();
       }
     },
     onInitialize: collabApi => {
       combinedCollabApiRef.current = collabApi;
+    },
+    onSceneInitChange: (initialized: boolean) => {
+      setSceneInitialized(initialized);
+      actions.onSceneInitChange?.(initialized);
     },
   });
 
@@ -219,9 +235,18 @@ const CollaborativeExcalidrawWrapper = ({
 
   const { t } = useTranslation();
 
+  const LoadingScene = ({ enabled }: { enabled: boolean }) => {
+    return enabled ? (
+      <Box className={styles.loadingScene}>
+        <Loading text={'Loading scene'} />
+      </Box>
+    ) : null;
+  };
+
   const children = (
     <div className={styles.container}>
       <Suspense fallback={<Loading />}>
+        <LoadingScene enabled={!isSceneInitialized} />
         {whiteboard && (
           <Excalidraw
             key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
@@ -229,12 +254,13 @@ const CollaborativeExcalidrawWrapper = ({
             initialData={data}
             UIOptions={mergedUIOptions}
             isCollaborating={collaborating}
-            viewModeEnabled={!collaborating || mode === 'read'}
+            viewModeEnabled={!collaborating || mode === 'read' || !isSceneInitialized}
             onChange={onChange}
             onPointerUpdate={collabApi?.onPointerUpdate}
             detectScroll={false}
             autoFocus
             generateIdForFile={addNewFile}
+            aiEnabled={false}
             /*renderTopRightUI={_isMobile => {
                 return <LiveCollaborationStatus />;
               }}*/

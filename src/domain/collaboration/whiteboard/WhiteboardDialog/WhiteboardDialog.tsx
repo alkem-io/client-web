@@ -108,6 +108,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   const columns = useGlobalGridColumns();
 
   const [lastSavedDate, setLastSavedDate] = useState<Date | undefined>(undefined);
+  const [isSceneInitialized, setSceneInitialized] = useState(false);
 
   const { data: lastSaved } = useWhiteboardLastUpdatedDateQuery({
     variables: { whiteboardId: whiteboard?.id! },
@@ -259,6 +260,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
             );
             return actions.onUpdate(updatedWhiteboard, previewImages);
           },
+          onSceneInitChange: setSceneInitialized,
         }}
       >
         {({ children, mode, modeReason, restartCollaboration }) => {
@@ -293,6 +295,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                   />
                   <WhiteboardDialogTemplatesLibrary
                     editModeEnabled={editModeEnabled}
+                    disabled={!isSceneInitialized}
                     onImportTemplate={handleImportTemplate}
                   />
                 </DialogHeader>
