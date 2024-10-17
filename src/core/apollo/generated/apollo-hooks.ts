@@ -2680,6 +2680,7 @@ export const ConfigurationFragmentDoc = gql`
       enabled
       endpoint
       submitPII
+      environment
     }
     apm {
       rumEnabled
