@@ -38,6 +38,17 @@ const Excalidraw = React.lazy(async () => {
   return { default: Excalidraw };
 });
 
+const LoadingScene = ({ enabled }: { enabled: boolean }) => {
+  const { t } = useTranslation();
+  const styles = useActorWhiteboardStyles();
+
+  return enabled ? (
+    <Box className={styles.loadingScene}>
+      <Loading text={t('pages.whiteboard.loadingScene')} />
+    </Box>
+  ) : null;
+};
+
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
     height: '100%',
@@ -234,14 +245,6 @@ const CollaborativeExcalidrawWrapper = ({
   );
 
   const { t } = useTranslation();
-
-  const LoadingScene = ({ enabled }: { enabled: boolean }) => {
-    return enabled ? (
-      <Box className={styles.loadingScene}>
-        <Loading text={'Loading scene'} />
-      </Box>
-    ) : null;
-  };
 
   const children = (
     <div className={styles.container}>
