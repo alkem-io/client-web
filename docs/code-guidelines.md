@@ -169,7 +169,7 @@ Usages:
 
 3. If you create a component (`ComponentType`) to pass as a prop, always wrap into `useMemo()` to preserve the component identity. If the component identity changes, React will always remount (that basically disables incremental rendering for the component).
 
-```js
+```jsx
 // Wrong
 const MyComponent = ({ prop }) => {
   const Component = () => <Input color={prop} />;
@@ -194,13 +194,33 @@ useCallback is actually a shortcut based on `useMemo()`. It's created for one pa
 
 ## TypeScript specifics and "gotchas!"
 
-### `type` **vs** `interface` ~ when to use which
+### `type` **vs** `interface` ~ when to use which [video about it [here](https://youtu.be/zM9UPcIyyhQ?si=BzBMjlqP-rR0jbVg)]
 
 Tests show that there is no significant difference in performance betweet types and interfaces during compilation. It's not critical to use only one approach. It's important to be consistent. However, **recommendation** is to use **type** over **interface** because interfaces come with huge set features which most of the time we don't really care about or need at all. We should use **interface** only when we need to **extend** other interface/s, if this is the only option when working alongside with a third party library or we explicitly need an interface feature. **Type**s provide predicatability and clarity, which is especially beneficial in application development.
 
 > **Conclusion:** Use **type**s for declaring structures unless you require the specific advantages of **interface**s.
 
-### ENUMs considered harmfull
+### `enum`s considered harmfull [video about it [here](https://youtu.be/jjMbPt_H3RQ?si=Ww4n75eTPOHSfGzh)]
+
+`enum`s are not native to JavaScript! They were introduced in TS to provide a more object-oriented feel, similar to languages like C#. However, even Anders Hejlsberg, one of TypeScript’s creators, mentioned that enums might not have been included if the language were designed today. This is mainly because they are not native to JavaScript and introduce some quirks at runtime.
+
+- **Runtime Behavior**: Numeric enums behave unpredictably when compiled to JavaScript. For example, an enum like: `enum LogLevel { Debug, Warning, Error }` compiles into a JavaScript object that assigns both values to names and names to values. This bidirectional mapping can lead to confusing behavior, especially if you use methods like Object.values().
+- **String Enums**: While string enums avoid the bidirectional mapping issue, they somewhat defeat the purpose of using enums, as values must be explicitly assigned.
+- **Type System Peculiarities**: TypeScript typically uses a structural type system, meaning it doesn’t care about the names of things, only their shapes. However, enums break this rule. They introduce nominal typing, where the name of the enum itself becomes significant, not just its values. This can complicate code reuse and refactoring.
+- **Const Enums**: Const enums optimize enums by stripping them out of the runtime and inlining their values. While this approach eliminates runtime objects, it can lead to issues if the code is used in a library where the compiler isn’t controlled, making them potentially unsafe.
+- **Alternative Approach**: A more common modern practice is to use plain JavaScript objects with the as const assertion to define a set of constant values. This method avoids the pitfalls of enums while keeping the benefits of type safety and ease of refactoring. Here's an example:
+
+```ts
+const LogLevel = {
+  Debug: 'debug',
+  Warning: 'warning',
+  Error: 'error',
+} as const;
+
+type LogLevel = typeof LogLevel[keyof typeof LogLevel];
+```
+
+**Conclusion**: Although enums provide a structured way to represent constants, their runtime quirks and incompatibilities with TypeScript’s structural typing system make them less desirable for modern codebases. Using constant objects (as const) is a cleaner, safer, and more predictable alternative.
 
 ## Component prop types/interfaces
 
