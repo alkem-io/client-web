@@ -30,7 +30,7 @@ const TemplatesGallery: FC<TemplatesGalleryProps> = ({
       <PageContentBlock>
         <PageContentBlockHeader title={headerText} actions={actions} />
         <ScrollableCardsLayoutContainer>
-          {loading && !templates ? times(3, () => <ContributeCardSkeleton />) : null}
+          {loading && !templates ? times(3, i => <ContributeCardSkeleton key={i} />) : null}
           {templates?.map(template => (
             <TemplateCard key={template.id} template={template} link={buildTemplateLink(template)} />
           ))}

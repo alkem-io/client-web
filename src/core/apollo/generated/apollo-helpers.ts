@@ -3026,10 +3026,11 @@ export type SearchResultUserGroupFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   userGroup?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SentryKeySpecifier = ('enabled' | 'endpoint' | 'submitPII' | SentryKeySpecifier)[];
+export type SentryKeySpecifier = ('enabled' | 'endpoint' | 'environment' | 'submitPII' | SentryKeySpecifier)[];
 export type SentryFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   endpoint?: FieldPolicy<any> | FieldReadFunction<any>;
+  environment?: FieldPolicy<any> | FieldReadFunction<any>;
   submitPII?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ServiceMetadataKeySpecifier = ('name' | 'version' | ServiceMetadataKeySpecifier)[];
