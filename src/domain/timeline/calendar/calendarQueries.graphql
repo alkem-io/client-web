@@ -73,10 +73,6 @@ fragment CalendarEventDetails on CalendarEvent {
       tagsets {
         ...TagsetDetails
       }
-      location {
-        id
-        city
-      }
     }
   }
   createdDate
@@ -98,6 +94,10 @@ fragment EventProfile on Profile {
     name
     uri
     description
+  }
+  location {
+    id
+    city
   }
 }
 
