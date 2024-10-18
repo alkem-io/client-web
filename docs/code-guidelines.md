@@ -192,6 +192,16 @@ useCallback is actually a shortcut based on `useMemo()`. It's created for one pa
 > :warning: **When not to use:**
 > Don't use `useCallback` for the functions that are used in the same component. Unless you pass those functions as props, there's no use in `useCallback`. It doesn't optimize anything about how the function executes.
 
+## TypeScript specifics and "gotchas!"
+
+### `type` **vs** `interface` ~ when to use which
+
+Tests show that there is no significant difference in performance betweet types and interfaces during compilation. It's not critical to use only one approach. It's important to be consistent. However, **recommendation** is to use **type** over **interface** because interfaces come with huge set features which most of the time we don't really care about or need at all. We should use **interface** only when we need to **extend** other interface/s, if this is the only option when working alongside with a third party library or we explicitly need an interface feature. **Type**s provide predicatability and clarity, which is especially beneficial in application development.
+
+> **Conclusion:** Use **type**s for declaring structures unless you require the specific advantages of **interface**s.
+
+### ENUMs considered harmfull
+
 ## Component prop types/interfaces
 
 ### Structure/nesting
