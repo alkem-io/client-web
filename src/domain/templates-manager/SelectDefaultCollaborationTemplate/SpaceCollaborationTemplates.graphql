@@ -1,0 +1,19 @@
+query SpaceCollaborationTemplates($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      templatesManager {
+        id
+        templatesSet {
+          id
+          collaborationTemplates {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
+      }
+    }
+  }
+}

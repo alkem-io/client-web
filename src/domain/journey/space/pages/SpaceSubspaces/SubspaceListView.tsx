@@ -10,7 +10,7 @@ import {
   useAdminSpaceSubspacesPageQuery,
   useCreateSubspaceMutation,
   useDeleteSpaceMutation,
-  useUpdateSpaceDefaultInnovationFlowTemplateMutation,
+  useUpdateTemplateDefaultMutation,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useSpace } from '../../SpaceContext/useSpace';
@@ -26,7 +26,7 @@ import InnovationFlowProfileView from '../../../../collaboration/InnovationFlow/
 import InnovationFlowStates from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import { Actions } from '../../../../../core/ui/actions/Actions';
 import { Cached, ContentCopyOutlined, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
-import SelectDefaultInnovationFlowDialog from '../../../../collaboration/InnovationFlow/InnovationFlowDialogs/SelectDefaultInnovationFlow/SelectDefaultInnovationFlowDialog';
+import SelectDefaultCollaborationTemplateDialog from '../../../../templates-manager/SelectDefaultCollaborationTemplate/SelectDefaultCollaborationTemplateDialog';
 import MenuItemWithIcon from '../../../../../core/ui/menu/MenuItemWithIcon';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import SearchableList, { SearchableListItem } from '../../../../platform/admin/components/SearchableList';
@@ -38,22 +38,28 @@ export const SubspaceListView: FC = () => {
   const { spaceNameId, spaceId } = useSpace();
   const navigate = useNavigate();
   const [journeyCreationDialogOpen, setJourneyCreationDialogOpen] = useState(false);
-  const [innovationFlowDialogOpen, setInnovationFlowDialogOpen] = useState(false);
+  const [selectCollaborationTemplateDialogOpen, setSelectCollaborationTemplateDialogOpen] = useState(false);
 
   const { data, loading } = useAdminSpaceSubspacesPageQuery({
     variables: {
       spaceId: spaceNameId,
     },
   });
-  const defaultInnovationFlow = data?.space.defaults?.innovationFlowTemplate;
-  const spaceDefaultsID = data?.space.defaults?.id || ''; // How to handle when IDs are not found?
+  const templatesManager = data?.space.templatesManager;
+  const templateDefaults = templatesManager?.templateDefaults;
+  const subspaceTemplateDefault = templateDefaults ? templateDefaults[0] : undefined; // TODO
+  const subspaceTemplateDefaultID = subspaceTemplateDefault?.id || ''; // TODO
+  const subspaceTemplateWithCollaboration = subspaceTemplateDefault?.template;
+  const subspaceTemplateWithCollaborationID = subspaceTemplateWithCollaboration?.id || ''; // TODO
+  const collaborationFromTemplate = subspaceTemplateDefault?.template?.collaboration;
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<SearchableListItem | undefined>(undefined);
 
+  const innovationFlowFromCollaborationTemplate = subspaceTemplateDefault?.template?.collaboration?.innovationFlow;
   useEffect(() => {
-    setSelectedState(defaultInnovationFlow?.innovationFlow?.states?.[0].displayName);
-  }, [defaultInnovationFlow?.innovationFlow?.states?.[0]?.displayName]);
+    setSelectedState(innovationFlowFromCollaborationTemplate?.states?.[0].displayName);
+  }, [innovationFlowFromCollaborationTemplate?.states?.[0]?.displayName]);
 
   const subspaces =
     data?.space?.subspaces?.map(s => ({
@@ -111,7 +117,7 @@ export const SubspaceListView: FC = () => {
             },
             tags: value.tags,
             collaborationData: {
-              addDefaultCallouts: value.addDefaultCallouts,
+              addTutorialCallouts: value.addTutorialCallouts,
             },
           },
         },
@@ -127,12 +133,12 @@ export const SubspaceListView: FC = () => {
     [navigate, createSubspace, spaceNameId]
   );
 
-  const [updateInnovationFlow] = useUpdateSpaceDefaultInnovationFlowTemplateMutation();
-  const handleSelectInnovationFlow = async (innovationFlowTemplateId: string) => {
-    await updateInnovationFlow({
+  const [updateTemplateDefault] = useUpdateTemplateDefaultMutation();
+  const handleSelectCollaborationTemplate = async (collaborationTemplateId: string) => {
+    await updateTemplateDefault({
       variables: {
-        spaceDefaultsID: spaceDefaultsID,
-        innovationFlowTemplateId,
+        templateDefaultID: subspaceTemplateDefaultID,
+        templateID: collaborationTemplateId,
       },
       refetchQueries: [
         refetchAdminSpaceSubspacesPageQuery({
@@ -141,7 +147,7 @@ export const SubspaceListView: FC = () => {
       ],
       awaitRefetchQueries: true,
     });
-    setInnovationFlowDialogOpen(false);
+    setSelectCollaborationTemplateDialogOpen(false);
   };
 
   const onDeleteClick = (item: SearchableListItem) => {
@@ -194,15 +200,19 @@ export const SubspaceListView: FC = () => {
         <Caption>{t('pages.admin.space.sections.subspaces.defaultSettings.description')}</Caption>
         <PageContentBlock>
           <PageContentBlockHeader title={t('common.innovation-flow')} />
-          <BlockSectionTitle>{defaultInnovationFlow?.profile.displayName}</BlockSectionTitle>
-          <InnovationFlowProfileView innovationFlow={defaultInnovationFlow} />
+          <BlockSectionTitle>{subspaceTemplateDefault?.template?.profile.displayName}</BlockSectionTitle>
+          <InnovationFlowProfileView innovationFlow={collaborationFromTemplate?.innovationFlow} />
           <InnovationFlowStates
-            states={defaultInnovationFlow?.innovationFlow?.states}
+            states={collaborationFromTemplate?.innovationFlow?.states}
             selectedState={selectedState}
             onSelectState={state => setSelectedState(state.displayName)}
           />
           <Actions justifyContent="end">
-            <Button variant="outlined" startIcon={<Cached />} onClick={() => setInnovationFlowDialogOpen(true)}>
+            <Button
+              variant="outlined"
+              startIcon={<Cached />}
+              onClick={() => setSelectCollaborationTemplateDialogOpen(true)}
+            >
               {t('pages.admin.space.sections.subspaces.defaultSettings.defaultInnovationFlow.selectDifferentFlow')}
             </Button>
           </Actions>
@@ -224,12 +234,12 @@ export const SubspaceListView: FC = () => {
           </Gutters>
         </Box>
       </PageContentBlock>
-      <SelectDefaultInnovationFlowDialog
+      <SelectDefaultCollaborationTemplateDialog
         spaceId={spaceId}
-        open={innovationFlowDialogOpen}
-        defaultInnovationFlowId={defaultInnovationFlow?.id}
-        onClose={() => setInnovationFlowDialogOpen(false)}
-        onSelectInnovationFlow={handleSelectInnovationFlow}
+        open={selectCollaborationTemplateDialogOpen}
+        defaultCollaborationTemplateId={subspaceTemplateWithCollaborationID}
+        onClose={() => setSelectCollaborationTemplateDialogOpen(false)}
+        onSelectCollaborationTemplate={handleSelectCollaborationTemplate}
       />
       <JourneyCreationDialog
         open={journeyCreationDialogOpen}

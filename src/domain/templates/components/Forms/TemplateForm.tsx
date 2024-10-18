@@ -9,6 +9,7 @@ import CommunityGuidelinesTemplateForm, {
 import PostTemplateForm, { PostTemplateFormSubmittedValues } from './PostTemplateForm';
 import InnovationFlowTemplateForm, { InnovationFlowTemplateFormSubmittedValues } from './InnovationFlowTemplateForm';
 import WhiteboardTemplateForm, { WhiteboardTemplateFormSubmittedValues } from './WhiteboardTemplateForm';
+import CollaborationTemplateForm, { CollaborationTemplateFormSubmittedValues } from './CollaborationTemplateForm';
 
 interface TemplateFormProps {
   template: AnyTemplate;
@@ -21,6 +22,7 @@ export type AnyTemplateFormSubmittedValues =
   | CommunityGuidelinesTemplateFormSubmittedValues
   | PostTemplateFormSubmittedValues
   | InnovationFlowTemplateFormSubmittedValues
+  | CollaborationTemplateFormSubmittedValues
   | WhiteboardTemplateFormSubmittedValues;
 
 const TemplateForm = ({ template, ...rest }: TemplateFormProps) => {
@@ -33,6 +35,8 @@ const TemplateForm = ({ template, ...rest }: TemplateFormProps) => {
       return <PostTemplateForm template={template} {...rest} />;
     case TemplateType.InnovationFlow:
       return <InnovationFlowTemplateForm template={template} {...rest} />;
+    case TemplateType.Collaboration:
+      return <CollaborationTemplateForm template={template} {...rest} />;
     case TemplateType.Whiteboard:
       return <WhiteboardTemplateForm template={template} {...rest} />;
   }

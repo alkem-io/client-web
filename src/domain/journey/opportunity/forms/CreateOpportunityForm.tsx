@@ -36,7 +36,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
       tagline: value.tagline,
       vision: value.vision,
       tags: value.tags,
-      addDefaultCallouts: value.addDefaultCallouts,
+      addTutorialCallouts: value.addDefaultCallouts,
     });
 
   const initialValues: FormValues = {
