@@ -68,7 +68,7 @@ const WhiteboardView: FC<WhiteboardViewProps> = ({
       {(_, actionsState, actions) => (
         <WhiteboardDialog
           entities={{
-            whiteboard: whiteboard,
+            whiteboard,
           }}
           actions={{
             onCancel: handleCancel,

@@ -147,20 +147,39 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
     allowFallbackToAttached: options.allowFilesAttached,
   });
 
+  type PrepareWhiteboardResult =
+    | {
+        success: true;
+        whiteboard: WhiteboardDetails;
+        previewImages?: WhiteboardPreviewImage[];
+      }
+    | {
+        success: false;
+        error: string;
+      };
+
   const prepareWhiteboardForUpdate = async (
     whiteboard: WhiteboardDetails,
     state: RelevantExcalidrawState | undefined,
     shouldUploadPreviewImages = true
-  ): Promise<{
-    whiteboard: WhiteboardDetails;
-    previewImages?: WhiteboardPreviewImage[];
-  }> => {
+  ): Promise<PrepareWhiteboardResult> => {
     if (!state) {
-      throw new Error('Excalidraw state not defined');
+      return {
+        success: false,
+        error: 'Excalidraw state not defined',
+      };
     }
-
     if (!whiteboard?.profile?.id) {
-      throw new Error('Whiteboard profile not defined');
+      return {
+        success: false,
+        error: 'Whiteboard profile not defined',
+      };
+    }
+    if (!formikRef.current?.isValid) {
+      return {
+        success: false,
+        error: 'Whiteboard form not valid',
+      };
     }
 
     const previewImages =
@@ -168,13 +187,10 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
         ? await generateWhiteboardPreviewImages(whiteboard, state)
         : undefined;
 
-    if (!formikRef.current?.isValid) {
-      throw new Error('Form not valid');
-    }
-
     const displayName = formikRef.current?.values.displayName ?? whiteboard?.profile?.displayName;
 
     return {
+      success: true,
       whiteboard: {
         ...whiteboard,
         profile: {
@@ -200,11 +216,15 @@ const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialo
   const onClose = async () => {
     if (editModeEnabled && collabApiRef.current?.isCollaborating() && whiteboard) {
       const whiteboardState = await getWhiteboardState();
-      const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
-        whiteboard,
-        whiteboardState
-      );
-      actions.onUpdate(updatedWhiteboard, previewImages);
+      const prepareWhiteboardResult = await prepareWhiteboardForUpdate(whiteboard, whiteboardState);
+      if (prepareWhiteboardResult.success) {
+        const { whiteboard: updatedWhiteboard, previewImages } = prepareWhiteboardResult;
+        actions.onUpdate(updatedWhiteboard, previewImages);
+      } else {
+        logError(new Error(`Error preparing whiteboard for update: '${prepareWhiteboardResult.error}'`), {
+          category: TagCategoryValues.WHITEBOARD,
+        });
+      }
     }
     actions.onCancel();
   };

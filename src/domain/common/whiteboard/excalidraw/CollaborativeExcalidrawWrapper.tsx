@@ -37,7 +37,7 @@ const Excalidraw = React.lazy(async () => {
   return { default: Excalidraw };
 });
 
-const LoadingScene = ({ enabled }: { enabled: boolean }) => {
+const LoadingScene = React.memo(({ enabled }: { enabled: boolean }) => {
   const { t } = useTranslation();
   const styles = useActorWhiteboardStyles();
 
@@ -46,7 +46,7 @@ const LoadingScene = ({ enabled }: { enabled: boolean }) => {
       <Loading text={t('pages.whiteboard.loadingScene')} />
     </Box>
   ) : null;
-};
+});
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
