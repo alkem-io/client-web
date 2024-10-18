@@ -2149,7 +2149,8 @@
         "placeholder": "Search…",
         "noResults": "No results matched your search terms."
       },
-      "seeAll": "Show all Spaces"
+      "seeAll": "Show more",
+      "activeSpacesFilter": "Most Active Spaces"
     },
     "lead-organization": {
       "search": {
