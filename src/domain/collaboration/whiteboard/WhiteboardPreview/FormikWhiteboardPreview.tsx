@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { BlockTitle } from '../../../../core/ui/typography';
 import { WhiteboardPreviewImage } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 
 interface FormikWhiteboardPreviewProps extends BoxProps {
@@ -62,6 +62,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
   const whiteboardFromTemplate = useMemo(() => {
     return {
       id: '__template',
+      nameID: '__template',
       // Needed to pass yup validation of WhiteboardDialog
       profile: { id: '__templateProfile', displayName: '__template', url: '', storageBucket: { id: '' } },
       content: field.value,
@@ -111,7 +112,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
                 }}
                 actions={{
                   onCancel: handleClose,
-                  onUpdate: (whiteboard, previewImages) => {
+                  onUpdate: async (whiteboard, previewImages) => {
                     helpers.setValue(whiteboard.content);
                     if (previewImagesName) {
                       previewImagesField.setValue(previewImages);

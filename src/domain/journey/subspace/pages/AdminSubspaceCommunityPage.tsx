@@ -36,11 +36,11 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     subspaceId: challengeId,
     subspaceNameId,
   } = useSubSpace();
-  const { isPrivate, loading: isLoadingSpace } = useSpace();
+  const { loading: isLoadingSpace } = useSpace();
 
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
-  const { spaceId, journeyLevel } = useRouteResolver();
+  const { spaceId, spaceLevel } = useRouteResolver();
 
   const {
     users,
@@ -72,7 +72,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useRoleSetAdmin({ roleSetId, spaceId, challengeId, journeyLevel });
+  } = useRoleSetAdmin({ roleSetId, spaceId, challengeId, spaceLevel });
 
   const currentApplicationsUserIds = useMemo(
     () =>
@@ -122,7 +122,6 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
               currentInvitationsUserIds={currentInvitationsContributorIds}
               currentMembersIds={currentMembersIds}
               spaceId={spaceId}
-              isParentPrivate={isPrivate}
               isSubspace
             />
           </PageContentBlockSeamless>

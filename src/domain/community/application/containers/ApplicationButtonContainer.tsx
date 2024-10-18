@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import useCanReadSpace from '../../../journey/common/authorization/useCanReadSpace';
 
 interface ApplicationContainerEntities {
-  applicationButtonProps: Omit<ApplicationButtonProps, 'journeyId' | 'journeyLevel'>;
+  applicationButtonProps: Omit<ApplicationButtonProps, 'journeyId' | 'spaceLevel'>;
 }
 
 interface ApplicationContainerActions {}
@@ -114,13 +114,13 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     update: cache => clearCacheForType(cache, 'Authorization'),
   });
 
-  const userApplication = pendingApplications?.find(x => x.space.id === journeyId);
+  const userApplication = pendingApplications?.find(x => x.spacePendingMembershipInfo.id === journeyId);
 
-  const userInvitation = pendingInvitations?.find(x => x.space.id === journeyId);
+  const userInvitation = pendingInvitations?.find(x => x.spacePendingMembershipInfo.id === journeyId);
 
   // find an application which does not have a challengeID, meaning it's on space level,
   // but you are at least at challenge level to have a parent application
-  const parentApplication = pendingApplications?.find(x => x.space.id === parentSpaceId);
+  const parentApplication = pendingApplications?.find(x => x.spacePendingMembershipInfo.id === parentSpaceId);
 
   const isMember = space?.community.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
 
@@ -170,7 +170,7 @@ export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = (
     notify(t('components.application-button.dialogApplicationSuccessful.join.body'), 'success');
   };
 
-  const applicationButtonProps: Omit<ApplicationButtonProps, 'journeyId' | 'journeyLevel'> = {
+  const applicationButtonProps: Omit<ApplicationButtonProps, 'journeyId' | 'spaceLevel'> = {
     isAuthenticated,
     isMember,
     isParentMember,

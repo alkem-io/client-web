@@ -69,6 +69,7 @@ const VirtualContributorsDialog: FC<VirtualContributorsDialogProps> = ({ open, o
               }
               component={Wrapper}
               to={vc.profile.url}
+              key={vc.id}
             >
               <BlockSectionTitle>{vc.profile.displayName}</BlockSectionTitle>
               <BlockSectionTitle>{vc.profile.tagline}</BlockSectionTitle>

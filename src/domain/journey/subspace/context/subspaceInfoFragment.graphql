@@ -1,4 +1,4 @@
-fragment SubspaceInfo on Space {
+fragment SubspacePendingMembershipInfo on Space {
   id
   nameID
   profile {

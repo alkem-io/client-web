@@ -986,13 +986,13 @@ export type CommunityApplicationForRoleResultFieldPolicy = {
 export type CommunityApplicationResultKeySpecifier = (
   | 'application'
   | 'id'
-  | 'space'
+  | 'spacePendingMembershipInfo'
   | CommunityApplicationResultKeySpecifier
 )[];
 export type CommunityApplicationResultFieldPolicy = {
   application?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  spacePendingMembershipInfo?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityGuidelinesKeySpecifier = (
   | 'authorization'
@@ -1041,13 +1041,13 @@ export type CommunityInvitationForRoleResultFieldPolicy = {
 export type CommunityInvitationResultKeySpecifier = (
   | 'id'
   | 'invitation'
-  | 'space'
+  | 'spacePendingMembershipInfo'
   | CommunityInvitationResultKeySpecifier
 )[];
 export type CommunityInvitationResultFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
-  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  spacePendingMembershipInfo?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityMembershipResultKeySpecifier = (
   | 'childMemberships'
@@ -2365,7 +2365,6 @@ export type PlatformFeatureFlagFieldPolicy = {
 };
 export type PlatformInvitationKeySpecifier = (
   | 'authorization'
-  | 'communityInvitedToParent'
   | 'createdBy'
   | 'createdDate'
   | 'email'
@@ -2374,13 +2373,14 @@ export type PlatformInvitationKeySpecifier = (
   | 'lastName'
   | 'platformRole'
   | 'profileCreated'
+  | 'roleSetExtraRole'
+  | 'roleSetInvitedToParent'
   | 'updatedDate'
   | 'welcomeMessage'
   | PlatformInvitationKeySpecifier
 )[];
 export type PlatformInvitationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityInvitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   email?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2389,6 +2389,8 @@ export type PlatformInvitationFieldPolicy = {
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   platformRole?: FieldPolicy<any> | FieldReadFunction<any>;
   profileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleSetExtraRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleSetInvitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -3024,10 +3026,11 @@ export type SearchResultUserGroupFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   userGroup?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type SentryKeySpecifier = ('enabled' | 'endpoint' | 'submitPII' | SentryKeySpecifier)[];
+export type SentryKeySpecifier = ('enabled' | 'endpoint' | 'environment' | 'submitPII' | SentryKeySpecifier)[];
 export type SentryFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   endpoint?: FieldPolicy<any> | FieldReadFunction<any>;
+  environment?: FieldPolicy<any> | FieldReadFunction<any>;
   submitPII?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ServiceMetadataKeySpecifier = ('name' | 'version' | ServiceMetadataKeySpecifier)[];
@@ -3106,6 +3109,21 @@ export type SpaceDefaultsFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlowTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SpacePendingMembershipInfoKeySpecifier = (
+  | 'communityGuidelines'
+  | 'context'
+  | 'id'
+  | 'level'
+  | 'profile'
+  | SpacePendingMembershipInfoKeySpecifier
+)[];
+export type SpacePendingMembershipInfoFieldPolicy = {
+  communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
+  context?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceSettingsKeySpecifier = ('collaboration' | 'membership' | 'privacy' | SpaceSettingsKeySpecifier)[];
 export type SpaceSettingsFieldPolicy = {
@@ -4360,6 +4378,13 @@ export type StrictTypedTypePolicies = {
   SpaceDefaults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceDefaultsKeySpecifier | (() => undefined | SpaceDefaultsKeySpecifier);
     fields?: SpaceDefaultsFieldPolicy;
+  };
+  SpacePendingMembershipInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | SpacePendingMembershipInfoKeySpecifier
+      | (() => undefined | SpacePendingMembershipInfoKeySpecifier);
+    fields?: SpacePendingMembershipInfoFieldPolicy;
   };
   SpaceSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SpaceSettingsKeySpecifier | (() => undefined | SpaceSettingsKeySpecifier);

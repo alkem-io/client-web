@@ -9,7 +9,7 @@ import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import CardActions from '../../../../core/ui/card/CardActions';
 import JourneyCardTagline from '../../../journey/common/JourneyCard/JourneyCardTagline';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import journeyIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
+import spaceIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
 import CardRibbon from '../../../../core/ui/card/CardRibbon';
 import { SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
@@ -51,7 +51,7 @@ const ContributionDetailsCard = ({
     <>
       <JourneyCard
         {...props}
-        iconComponent={journeyIcon[journeyTypeName]}
+        iconComponent={spaceIcon[journeyTypeName]}
         header={
           <BlockTitle component="div" sx={webkitLineClamp(2)}>
             {displayName}

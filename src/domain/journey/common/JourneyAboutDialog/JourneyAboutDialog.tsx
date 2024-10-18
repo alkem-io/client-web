@@ -25,22 +25,21 @@ import OpportunityMetrics from '../../opportunity/utils/useOpportunityMetricsIte
 import { Theme } from '@mui/material/styles';
 import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
-import { journeyIconByJourneyLevel } from '../../../shared/components/JourneyIcon/JourneyIcon';
+import { spaceIconByLevel } from '../../../shared/components/JourneyIcon/JourneyIcon';
 import References from '../../../shared/components/References/References';
-import { Reference } from '../../../../core/apollo/generated/graphql-schema';
+import { Reference, SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import { getSpaceLabel } from '../../JourneyTypeName';
 import Loading from '../../../../core/ui/loading/Loading';
-import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
 import VirtualContributorsBlock from '../../../community/community/VirtualContributorsBlock/VirtualContributorsBlock';
 import { VirtualContributorProps } from '../../../community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 
 export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   open: boolean;
-  journeyLevel: JourneyLevel | -1;
+  spaceLevel: SpaceLevel;
   displayName: ReactNode;
   tagline: ReactNode;
   references: Reference[] | undefined;
@@ -70,11 +69,11 @@ const DialogHeaderItem = ({ align = 'center', ...props }: DialogHeaderItemProps)
   return <Box {...props} flexGrow={1} display="flex" justifyContent={align} alignItems="center" gap={gutters()} />;
 };
 
-const getMetricsSpec = (journeyLevel: JourneyLevel | -1) => {
-  if (journeyLevel === -1) {
+const getMetricsSpec = (spaceLevel: SpaceLevel | undefined) => {
+  if (!spaceLevel) {
     return undefined;
   }
-  if (journeyLevel === 2) {
+  if (spaceLevel === SpaceLevel.Opportunity) {
     return OpportunityMetrics;
   }
   return SpaceMetrics;
@@ -91,7 +90,7 @@ const JourneyAboutDialog = ({
   tagline,
   references,
   ribbon,
-  journeyLevel,
+  spaceLevel,
   leadUsers,
   leadOrganizations,
   leadVirtualContributors,
@@ -114,7 +113,7 @@ const JourneyAboutDialog = ({
 }: JourneyAboutDialogProps) => {
   const { t } = useTranslation();
 
-  const isSpace = journeyLevel === 0;
+  const isSpace = spaceLevel === SpaceLevel.Space;
   const leadOrganizationsHeader = isSpace
     ? 'pages.space.sections.dashboard.leadingOrganizations'
     : 'community.leading-organizations';
@@ -143,9 +142,9 @@ const JourneyAboutDialog = ({
   );
 
   // @ts-ignore TS5UPGRADE
-  const JourneyIcon = journeyLevel > -1 ? journeyIconByJourneyLevel[journeyLevel] : undefined;
+  const JourneyIcon = spaceLevel > -1 ? spaceIconByLevel[spaceLevel] : undefined;
 
-  const metricsItems = useMetricsItems(metrics, getMetricsSpec(journeyLevel));
+  const metricsItems = useMetricsItems(metrics, getMetricsSpec(spaceLevel));
 
   const breakpoint = useCurrentBreakpoint();
 
@@ -155,7 +154,7 @@ const JourneyAboutDialog = ({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
-  const journeyTypeName = getSpaceLabel(journeyLevel);
+  const journeyTypeName = getSpaceLabel(spaceLevel);
 
   return (
     <DialogWithGrid

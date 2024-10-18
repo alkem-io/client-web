@@ -8,12 +8,15 @@ import { JourneyTypeName } from '../../journey/JourneyTypeName';
 import { PendingApplication } from '../user';
 import { Visual } from '../../common/visual/Visual';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
-import { CommunityGuidelinesSummaryFragment, VisualType } from '../../../core/apollo/generated/graphql-schema';
-import { JourneyLevel } from '../../../main/routing/resolvers/RouteResolver';
+import {
+  CommunityGuidelinesSummaryFragment,
+  SpaceLevel,
+  VisualType,
+} from '../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../core/utils/Identifiable';
 import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
 
-export interface JourneyDetails {
+export interface SpaceDetails {
   profile: {
     displayName: string;
     tagline?: string;
@@ -23,16 +26,16 @@ export interface JourneyDetails {
     };
     visual?: Visual | undefined;
   };
-  level: JourneyLevel;
+  level: SpaceLevel;
 }
 
 export interface InvitationWithMeta extends Omit<InvitationItem, 'space'> {
   userDisplayName: string | undefined;
-  space: JourneyDetails;
+  space: SpaceDetails;
 }
 
 interface ApplicationWithMeta extends Identifiable {
-  space: JourneyDetails;
+  space: SpaceDetails;
 }
 
 interface UsePendingMembershipsProvided {
@@ -72,8 +75,17 @@ type InvitationHydratorProps = {
     }
 );
 
-export const getChildJourneyTypeName = ({ level }: { level: JourneyLevel }): JourneyTypeName =>
-  ['space', 'subspace', 'subsubspace'][level] as JourneyTypeName;
+export const getChildJourneyTypeName = ({ level }: { level: SpaceLevel }): JourneyTypeName => {
+  switch (level) {
+    case SpaceLevel.Challenge:
+      return 'subspace' as JourneyTypeName;
+    case SpaceLevel.Opportunity:
+      return 'subsubspace' as JourneyTypeName;
+    case SpaceLevel.Space:
+    default:
+      return 'space' as JourneyTypeName;
+  }
+};
 
 export const InvitationHydrator = ({
   invitation,
@@ -86,10 +98,13 @@ export const InvitationHydrator = ({
 }: InvitationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
-      spaceId: invitation.space.id,
+      spaceId: invitation.spacePendingMembershipInfo.id,
       fetchDetails: withJourneyDetails,
       fetchCommunityGuidelines: withCommunityGuidelines,
-      visualType: invitation.space.level === 0 && visualType === VisualType.Avatar ? VisualType.Card : visualType, // Spaces don't have avatars
+      visualType:
+        invitation.spacePendingMembershipInfo.level === SpaceLevel.Space && visualType === VisualType.Avatar
+          ? VisualType.Card
+          : visualType, // Spaces don't have avatars
     },
   });
 
@@ -112,11 +127,11 @@ export const InvitationHydrator = ({
       ...invitation,
       userDisplayName: createdBy?.profile.displayName,
       space: {
-        ...invitation.space,
+        ...invitation.spacePendingMembershipInfo,
         ...journey,
-        level: invitation.space.level as JourneyLevel,
+        level: invitation.spacePendingMembershipInfo.level,
         profile: {
-          ...invitation.space.profile,
+          ...invitation.spacePendingMembershipInfo.profile,
           ...journey?.profile,
         },
       },
@@ -141,9 +156,12 @@ interface ApplicationHydratorProps {
 export const ApplicationHydrator = ({ application, visualType, children }: ApplicationHydratorProps) => {
   const { data: spaceData } = usePendingMembershipsSpaceQuery({
     variables: {
-      spaceId: application.space.id,
+      spaceId: application.spacePendingMembershipInfo.id,
       fetchDetails: true,
-      visualType: application.space.level === 0 && visualType === VisualType.Avatar ? VisualType.Card : visualType, // Spaces don't have avatars
+      visualType:
+        application.spacePendingMembershipInfo.level === SpaceLevel.Space && visualType === VisualType.Avatar
+          ? VisualType.Card
+          : visualType, // Spaces don't have avatars
     },
   });
 
@@ -156,11 +174,11 @@ export const ApplicationHydrator = ({ application, visualType, children }: Appli
     return {
       ...application,
       space: {
-        ...application.space,
+        ...application.spacePendingMembershipInfo,
         ...journey,
-        level: application.space.level as JourneyLevel,
+        level: application.spacePendingMembershipInfo.level,
         profile: {
-          ...application.space.profile,
+          ...application.spacePendingMembershipInfo.profile,
           ...journey?.profile,
         },
       },

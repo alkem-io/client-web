@@ -4,6 +4,7 @@ import {
   CalloutGroupName,
   CalloutsQueryVariables,
   CommunityMembershipStatus,
+  SpaceLevel,
 } from '../../../../core/apollo/generated/graphql-schema';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import PageContent from '../../../../core/ui/content/PageContent';
@@ -132,7 +133,7 @@ const SpaceDashboardView = ({
                   component={FullWidthButton}
                   extended={hasExtendedApplicationButton}
                   journeyId={spaceId}
-                  journeyLevel={0}
+                  spaceLevel={SpaceLevel.Space}
                 />
               </PageContentColumn>
             );

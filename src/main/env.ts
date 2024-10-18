@@ -5,6 +5,8 @@ declare global {
       VITE_APP_DEBUG_QUERY?: string;
       VITE_APP_LOG_ERRORS?: string;
       VITE_APP_IN_CONTEXT_TRANSLATION?: string;
+      VITE_APP_COLLAB_URL?: string;
+      VITE_APP_COLLAB_PATH?: string;
     };
   }
 }

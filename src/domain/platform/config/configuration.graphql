@@ -55,6 +55,7 @@ fragment Configuration on Config {
     enabled
     endpoint
     submitPII
+    environment
   }
   apm {
     rumEnabled

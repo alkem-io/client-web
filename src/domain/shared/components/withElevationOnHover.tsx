@@ -30,6 +30,15 @@ const withElevationOnHover = <El, P extends ComponentProps<El>>(Component: Compo
     );
     const setInitialElevation = useCallback(() => setElevation(initialElevation), [initialElevation]);
 
+    if (componentProps['$$typeof']) {
+      delete componentProps['$$typeof'];
+    }
+    // eslint-disable-next-line react/forbid-foreign-prop-types
+    if (componentProps['propTypes']) {
+      // eslint-disable-next-line react/forbid-foreign-prop-types
+      delete componentProps['propTypes'];
+    }
+
     return (
       <Component
         ref={ref}

@@ -6,14 +6,22 @@ import {
   useUpdateWhiteboardMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
-import {
-  WhiteboardDetailsFragment,
-  WhiteboardContentFragment,
-  CreateContributionOnCalloutInput,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { CreateContributionOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
 import { WhiteboardPreviewImage, useUploadWhiteboardVisuals } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { Identifiable } from '../../../../core/utils/Identifiable';
+
+interface WhiteboardWithPreviewVisuals {
+  nameID: string; // Whiteboard nameID is used to name the files uploaded as visuals
+  profile: {
+    visual?: {
+      id: string;
+    };
+    preview?: {
+      id: string;
+    };
+  };
+}
 
 export interface IWhiteboardActions {
   onCreate: (
@@ -23,7 +31,7 @@ export interface IWhiteboardActions {
   onDelete: (whiteboard: Identifiable) => Promise<void>;
 
   onUpdate: (
-    whiteboard: WhiteboardContentFragment & WhiteboardDetailsFragment,
+    whiteboard: WhiteboardWithPreviewVisuals,
     previewImages?: WhiteboardPreviewImage[]
   ) => Promise<{ success: boolean; errors?: string[] }>;
 
@@ -35,7 +43,6 @@ export interface WhiteboardActionsContainerState {
   deletingWhiteboard?: boolean;
   changingWhiteboardLockState?: boolean;
   updatingWhiteboard?: boolean;
-  updatingWhiteboardContent?: boolean;
   uploadingVisuals?: boolean;
 }
 
@@ -121,10 +128,7 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
   );
 
   const handleUploadWhiteboardVisuals = useCallback(
-    async (
-      whiteboard: WhiteboardContentFragment & WhiteboardDetailsFragment,
-      previewImages?: WhiteboardPreviewImage[]
-    ) => {
+    async (whiteboard: WhiteboardWithPreviewVisuals, previewImages?: WhiteboardPreviewImage[]) => {
       if ((whiteboard.profile.visual || whiteboard.profile.preview) && previewImages) {
         uploadVisuals(
           previewImages,
@@ -177,7 +181,6 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
         {
           creatingWhiteboard,
           deletingWhiteboard,
-          updatingWhiteboardContent: false,
           updatingWhiteboard,
           uploadingVisuals,
         },
