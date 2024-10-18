@@ -451,9 +451,7 @@ class Collab {
     const elements = this.excalidrawAPI.getSceneElementsIncludingDeleted();
     const files = await this.filesManager.getUploadedFiles(this.excalidrawAPI.getFiles());
     this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, elements, files, { syncAll: true });
-    const currentVersion = this.lastBroadcastedOrReceivedSceneVersion;
-    const candidateVersion = hashElementsVersion(this.getSceneElementsIncludingDeleted());
-    this.lastBroadcastedOrReceivedSceneVersion = Math.max(currentVersion, candidateVersion);
+    this.lastBroadcastedOrReceivedSceneVersion = hashElementsVersion(this.getSceneElementsIncludingDeleted());
   }, SYNC_FULL_SCENE_INTERVAL_MS);
 }
 
