@@ -2917,6 +2917,10 @@ export const EventProfileFragmentDoc = gql`
       uri
       description
     }
+    location {
+      id
+      city
+    }
   }
   ${TagsetDetailsFragmentDoc}
 `;
@@ -2970,10 +2974,6 @@ export const CalendarEventDetailsFragmentDoc = gql`
         }
         tagsets {
           ...TagsetDetails
-        }
-        location {
-          id
-          city
         }
       }
     }

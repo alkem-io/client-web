@@ -65,6 +65,7 @@ const CalendarEventDetail = ({
                 type={event?.type}
                 tags={event?.profile.tagset?.tags}
                 references={event?.profile.references}
+                location={event?.profile.location}
                 postUrl=""
                 bannerOverlayOverride={<EventCardHeader event={event} />}
                 messages={messages}
