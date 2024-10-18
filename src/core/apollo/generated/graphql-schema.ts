@@ -5381,6 +5381,8 @@ export type Sentry = {
   enabled: Scalars['Boolean'];
   /** URL to the Sentry endpoint. */
   endpoint: Scalars['String'];
+  /** The Sentry environment to report to. */
+  environment: Scalars['String'];
   /** Flag indicating if PII should be submitted on Sentry events. */
   submitPII: Scalars['Boolean'];
 };
@@ -24018,7 +24020,7 @@ export type ConfigurationQuery = {
         documentation: string;
       };
       featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
-      sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
+      sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
       apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
       geo: { __typename?: 'Geo'; endpoint: string };
     };
@@ -24065,7 +24067,7 @@ export type ConfigurationFragment = {
     documentation: string;
   };
   featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
-  sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
+  sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
   apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
   geo: { __typename?: 'Geo'; endpoint: string };
 };
