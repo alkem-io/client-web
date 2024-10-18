@@ -32,7 +32,6 @@ export enum EVENT {
   EXCALIDRAW_LINK = 'excalidraw-link',
   MENU_ITEM_SELECT = 'menu.itemSelect',
 }
-export const PRECEDING_ELEMENT_KEY = '__precedingElement__';
 
 export const IDLE_THRESHOLD = 60_000;
 export const ACTIVE_THRESHOLD = 3_000;

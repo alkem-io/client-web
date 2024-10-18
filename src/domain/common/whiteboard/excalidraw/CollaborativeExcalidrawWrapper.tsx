@@ -1,11 +1,14 @@
-import type { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
-import type { AppState, BinaryFiles, ExcalidrawImperativeAPI, ExcalidrawProps } from '@alkemio/excalidraw/types/types';
-import type { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
+import type {
+  AppState,
+  BinaryFiles,
+  ExcalidrawImperativeAPI,
+  ExcalidrawProps,
+} from '@alkemio/excalidraw/dist/excalidraw/types';
+import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
 import { makeStyles } from '@mui/styles';
 import { debounce, merge } from 'lodash';
 import React, { PropsWithChildren, Ref, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
-import EmptyWhiteboard from '../EmptyWhiteboard';
 import { useUserContext } from '../../../community/user';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 import useCollab, { CollabAPI, CollabState } from './collab/useCollab';
@@ -15,7 +18,7 @@ import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import { Caption, Text } from '../../../../core/ui/typography';
 import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
-import { Button, DialogActions } from '@mui/material';
+import { Box, Button, DialogActions } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { LoadingButton } from '@mui/lab';
 import useOnlineStatus from '../../../../core/utils/onlineStatus';
@@ -23,19 +26,40 @@ import Reconnectable from '../../../../core/utils/reconnectable';
 import { useTick } from '../../../../core/utils/time/tick';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
 import Loading from '../../../../core/ui/loading/Loading';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
 const FILE_IMPORT_ENABLED = false;
 const SAVE_FILE_TO_DISK = true;
 
 const Excalidraw = React.lazy(async () => {
   const { Excalidraw } = await import('@alkemio/excalidraw');
+  await import('@alkemio/excalidraw/index.css');
   return { default: Excalidraw };
+});
+
+const LoadingScene = React.memo(({ enabled }: { enabled: boolean }) => {
+  const { t } = useTranslation();
+  const styles = useActorWhiteboardStyles();
+
+  return enabled ? (
+    <Box className={styles.loadingScene}>
+      <Loading text={t('pages.whiteboard.loadingScene')} />
+    </Box>
+  ) : null;
 });
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
     height: '100%',
     flexGrow: 1,
+    position: 'relative',
+  },
+  loadingScene: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    zIndex: `${theme.zIndex.modal + 2} !important`,
+    backgroundColor: theme.palette.background.paper,
   },
   '@global': {
     '.excalidraw-modal-container': {
@@ -48,14 +72,14 @@ const useActorWhiteboardStyles = makeStyles(theme => ({
 }));
 
 export interface WhiteboardWhiteboardEntities {
-  whiteboard: { id?: string; content: string } | undefined;
+  whiteboard: Identifiable | undefined;
   filesManager: WhiteboardFilesManager;
   lastSavedDate: Date | undefined;
 }
 
 export interface WhiteboardWhiteboardActions {
-  onUpdate?: (state: ExportedDataState) => Promise<{ success: boolean; errors?: string[] }>;
   onInitApi?: (excalidrawApi: ExcalidrawImperativeAPI) => void;
+  onSceneInitChange?: (initialized: boolean) => void;
   onRemoteSave?: () => void;
 }
 
@@ -97,23 +121,7 @@ const CollaborativeExcalidrawWrapper = ({
   const { user } = useUserContext();
   const username = user?.user.profile.displayName ?? 'User';
 
-  const { addNewFile, loadFiles, pushFilesToExcalidraw } = filesManager;
-
-  const data = useMemo(() => {
-    const parsedData = whiteboard?.content ? JSON.parse(whiteboard?.content) : EmptyWhiteboard;
-    return {
-      ...parsedData,
-      ...whiteboardDefaults,
-    };
-  }, [whiteboard?.content]);
-
-  useEffect(() => {
-    loadFiles(data);
-  }, [data]);
-
-  useEffect(() => {
-    pushFilesToExcalidraw();
-  }, [filesManager]);
+  const [isSceneInitialized, setSceneInitialized] = useState(false);
 
   const handleScroll = useRef(
     debounce(async () => {
@@ -152,6 +160,7 @@ const CollaborativeExcalidrawWrapper = ({
     onRemoteSave: () => actions.onRemoteSave?.(),
     onCloseConnection: () => {
       setCollaborationStoppedNoticeOpen(true);
+      setSceneInitialized(false);
       if (isOnline) {
         setupReconnectTimeout();
       }
@@ -159,9 +168,13 @@ const CollaborativeExcalidrawWrapper = ({
     onInitialize: collabApi => {
       combinedCollabApiRef.current = collabApi;
     },
+    onSceneInitChange: (initialized: boolean) => {
+      setSceneInitialized(initialized);
+      actions.onSceneInitChange?.(initialized);
+    },
   });
 
-  const onChange = async (elements: readonly ExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
+  const onChange = async (elements: readonly OrderedExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
     const uploadedFiles = await filesManager.getUploadedFiles(files);
     collabApi?.syncScene(elements, uploadedFiles);
   };
@@ -216,19 +229,21 @@ const CollaborativeExcalidrawWrapper = ({
   const children = (
     <div className={styles.container}>
       <Suspense fallback={<Loading />}>
+        <LoadingScene enabled={!isSceneInitialized} />
         {whiteboard && (
           <Excalidraw
             key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
             excalidrawAPI={handleInitializeApi}
-            initialData={data}
+            initialData={whiteboardDefaults}
             UIOptions={mergedUIOptions}
             isCollaborating={collaborating}
-            viewModeEnabled={!collaborating || mode === 'read'}
+            viewModeEnabled={!collaborating || mode === 'read' || !isSceneInitialized}
             onChange={onChange}
             onPointerUpdate={collabApi?.onPointerUpdate}
             detectScroll={false}
             autoFocus
-            generateIdForFile={addNewFile}
+            generateIdForFile={filesManager.addNewFile}
+            aiEnabled={false}
             /*renderTopRightUI={_isMobile => {
                 return <LiveCollaborationStatus />;
               }}*/

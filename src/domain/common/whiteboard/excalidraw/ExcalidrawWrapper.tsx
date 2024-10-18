@@ -1,11 +1,11 @@
-import type { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
+import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
 import type {
   BinaryFileData,
   BinaryFiles,
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
   ExportOpts,
-} from '@alkemio/excalidraw/types/types';
+} from '@alkemio/excalidraw/dist/excalidraw/types';
 import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
@@ -57,6 +57,7 @@ const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
 
 const Excalidraw = React.lazy(async () => {
   const { Excalidraw } = await import('@alkemio/excalidraw');
+  await import('@alkemio/excalidraw/index.css');
   return { default: Excalidraw };
 });
 
@@ -196,6 +197,7 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
             isCollaborating={false}
             viewModeEnabled
             generateIdForFile={addNewFile}
+            aiEnabled={false}
             {...restOptions}
           />
         </Suspense>

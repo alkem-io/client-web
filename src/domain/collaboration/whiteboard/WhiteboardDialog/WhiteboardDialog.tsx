@@ -2,22 +2,22 @@ import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import Loading from '../../../../core/ui/loading/Loading';
 import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import CollaborativeExcalidrawWrapper from '../../../common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
-import type { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
+import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import whiteboardSchema from '../validation/whiteboardSchema';
 import { WhiteboardTemplateContent } from '../../../templates/models/WhiteboardTemplate';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import { error as logError, TagCategoryValues } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { WhiteboardWithContent } from '../containers/WhiteboardContentContainer';
 import {
   generateWhiteboardPreviewImages,
+  PreviewImageDimensions,
   WhiteboardPreviewImage,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/useCollab';
@@ -30,19 +30,46 @@ import useLoadingState from '../../../shared/utils/useLoadingState';
 import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
 import WhiteboardDialogTemplatesLibrary from '../../../templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 import { useWhiteboardLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { ContentUpdatePolicy } from '../../../../core/apollo/generated/graphql-schema';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
-interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
+export interface WhiteboardDetails {
+  id: string;
+  nameID: string;
+  contentUpdatePolicy?: ContentUpdatePolicy;
+  profile: {
+    id: string;
+    displayName: string;
+    storageBucket: { id: string };
+    visual?: {
+      id: string;
+    } & PreviewImageDimensions;
+    preview?: {
+      id: string;
+    } & PreviewImageDimensions;
+  };
+  createdBy?: {
+    id: string;
+    profile: {
+      displayName: string;
+      url: string;
+      avatar?: { id: string; uri: string };
+    };
+  };
+}
+
+interface WhiteboardDialogProps {
   entities: {
-    whiteboard?: Whiteboard;
+    whiteboard: WhiteboardDetails | undefined;
   };
   actions: {
     onCancel: () => void;
     onUpdate: (
-      whiteboard: Whiteboard,
+      whiteboard: WhiteboardDetails,
       previewImages?: WhiteboardPreviewImage[]
     ) => Promise<{ success: boolean; errors?: string[] }>;
     onChangeDisplayName: (whiteboardId: string | undefined, newDisplayName: string) => Promise<void>;
-    onDelete: (whiteboard: Whiteboard) => Promise<void>;
+    onDelete: (whiteboard: Identifiable) => Promise<void>;
   };
   options: {
     show: boolean;
@@ -56,7 +83,6 @@ interface WhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
     editDisplayName?: boolean;
   };
   state?: {
-    updatingWhiteboardContent?: boolean;
     loadingWhiteboardValue?: boolean;
     changingWhiteboardLockState?: boolean;
   };
@@ -80,12 +106,7 @@ const useStyles = makeStyles(theme => ({
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
-const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
-  entities,
-  actions,
-  options,
-  state,
-}: WhiteboardDialogProps<Whiteboard>) => {
+const WhiteboardDialog = ({ entities, actions, options, state }: WhiteboardDialogProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { whiteboard } = entities;
@@ -108,6 +129,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   const columns = useGlobalGridColumns();
 
   const [lastSavedDate, setLastSavedDate] = useState<Date | undefined>(undefined);
+  const [isSceneInitialized, setSceneInitialized] = useState(false);
 
   const { data: lastSaved } = useWhiteboardLastUpdatedDateQuery({
     variables: { whiteboardId: whiteboard?.id! },
@@ -125,20 +147,39 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     allowFallbackToAttached: options.allowFilesAttached,
   });
 
+  type PrepareWhiteboardResult =
+    | {
+        success: true;
+        whiteboard: WhiteboardDetails;
+        previewImages?: WhiteboardPreviewImage[];
+      }
+    | {
+        success: false;
+        error: string;
+      };
+
   const prepareWhiteboardForUpdate = async (
-    whiteboard: WhiteboardWithContent,
+    whiteboard: WhiteboardDetails,
     state: RelevantExcalidrawState | undefined,
     shouldUploadPreviewImages = true
-  ): Promise<{
-    whiteboard: Whiteboard;
-    previewImages?: WhiteboardPreviewImage[];
-  }> => {
+  ): Promise<PrepareWhiteboardResult> => {
     if (!state) {
-      throw new Error('Excalidraw state not defined');
+      return {
+        success: false,
+        error: 'Excalidraw state not defined',
+      };
     }
-
     if (!whiteboard?.profile?.id) {
-      throw new Error('Whiteboard profile not defined');
+      return {
+        success: false,
+        error: 'Whiteboard profile not defined',
+      };
+    }
+    if (!formikRef.current?.isValid) {
+      return {
+        success: false,
+        error: 'Whiteboard form not valid',
+      };
     }
 
     const previewImages =
@@ -146,20 +187,17 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
         ? await generateWhiteboardPreviewImages(whiteboard, state)
         : undefined;
 
-    if (!formikRef.current?.isValid) {
-      throw new Error('Form not valid');
-    }
-
     const displayName = formikRef.current?.values.displayName ?? whiteboard?.profile?.displayName;
 
     return {
+      success: true,
       whiteboard: {
         ...whiteboard,
         profile: {
           ...whiteboard.profile,
           displayName,
         },
-      } as Whiteboard,
+      },
       previewImages,
     };
   };
@@ -168,9 +206,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
     if (!whiteboard || !excalidrawAPI) {
       return;
     }
-    const content = JSON.parse(whiteboard.content) as RelevantExcalidrawState;
     return {
-      ...content,
       elements: excalidrawAPI.getSceneElements(),
       appState: excalidrawAPI.getAppState(),
       files: excalidrawAPI.getFiles(),
@@ -180,11 +216,15 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
   const onClose = async () => {
     if (editModeEnabled && collabApiRef.current?.isCollaborating() && whiteboard) {
       const whiteboardState = await getWhiteboardState();
-      const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
-        whiteboard,
-        whiteboardState
-      );
-      actions.onUpdate(updatedWhiteboard, previewImages);
+      const prepareWhiteboardResult = await prepareWhiteboardForUpdate(whiteboard, whiteboardState);
+      if (prepareWhiteboardResult.success) {
+        const { whiteboard: updatedWhiteboard, previewImages } = prepareWhiteboardResult;
+        actions.onUpdate(updatedWhiteboard, previewImages);
+      } else {
+        logError(new Error(`Error preparing whiteboard for update: '${prepareWhiteboardResult.error}'`), {
+          category: TagCategoryValues.WHITEBOARD,
+        });
+      }
     }
     actions.onCancel();
   };
@@ -251,14 +291,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
           onRemoteSave: () => {
             setLastSavedDate(new Date());
           },
-          onUpdate: async state => {
-            const { whiteboard: updatedWhiteboard, previewImages } = await prepareWhiteboardForUpdate(
-              whiteboard,
-              state,
-              false
-            );
-            return actions.onUpdate(updatedWhiteboard, previewImages);
-          },
+          onSceneInitChange: setSceneInitialized,
         }}
       >
         {({ children, mode, modeReason, restartCollaboration }) => {
@@ -293,6 +326,7 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                   />
                   <WhiteboardDialogTemplatesLibrary
                     editModeEnabled={editModeEnabled}
+                    disabled={!isSceneInitialized}
                     onImportTemplate={handleImportTemplate}
                   />
                 </DialogHeader>
@@ -305,7 +339,6 @@ const WhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
                   canDelete={options.canDelete}
                   onRestart={restartCollaboration}
                   canUpdateContent={options.canEdit!}
-                  updating={state?.updatingWhiteboardContent}
                   createdBy={whiteboard?.createdBy}
                   contentUpdatePolicy={whiteboard?.contentUpdatePolicy}
                 />
