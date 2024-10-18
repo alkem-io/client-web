@@ -7,13 +7,7 @@ import type {
 } from '@alkemio/excalidraw/dist/excalidraw/types';
 import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
 import { newElementWith } from '@alkemio/excalidraw/dist/excalidraw/element/mutateElement';
-import {
-  StoreAction,
-  getSceneVersion,
-  hashElementsVersion,
-  restoreElements,
-  reconcileElements,
-} from '@alkemio/excalidraw';
+import { hashElementsVersion, reconcileElements, restoreElements, StoreAction } from '@alkemio/excalidraw';
 import {
   ACTIVE_THRESHOLD,
   CollaboratorModeEvent,
@@ -72,8 +66,6 @@ class Collab {
   private onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
   private onSceneInitChange: (initialized: boolean) => void;
   private excalidrawUtils: Promise<{
-    // todo: migrate to hashElementsVersion
-    getSceneVersion: typeof getSceneVersion;
     hashElementsVersion: typeof hashElementsVersion;
     newElementWith: typeof newElementWith;
     restoreElements: typeof restoreElements;
@@ -319,13 +311,13 @@ class Collab {
     // Download the files that this instance is missing:
     await this.filesManager.loadFiles({ files: remoteFiles });
 
-    const { getSceneVersion } = await this.excalidrawUtils;
+    const { hashElementsVersion } = await this.excalidrawUtils;
 
     // Avoid broadcasting to the rest of the collaborators the scene
     // we just received!
     // Note: this needs to be set before updating the scene as it
     // synchronously calls render.
-    this.setLastBroadcastedOrReceivedSceneVersion(getSceneVersion(reconciledElements));
+    this.lastBroadcastedOrReceivedSceneVersion = hashElementsVersion(reconciledElements);
 
     return reconciledElements;
   };
@@ -414,14 +406,6 @@ class Collab {
     this.excalidrawAPI.updateScene({ collaborators });
   };
 
-  private setLastBroadcastedOrReceivedSceneVersion = (version: number) => {
-    this.lastBroadcastedOrReceivedSceneVersion = version;
-  };
-
-  private getLastBroadcastedOrReceivedSceneVersion = () => {
-    return this.lastBroadcastedOrReceivedSceneVersion;
-  };
-
   private getSceneElementsIncludingDeleted = () => {
     return this.excalidrawAPI.getSceneElementsIncludingDeleted();
   };
@@ -452,22 +436,24 @@ class Collab {
   };
 
   public syncScene = async (elements: readonly OrderedExcalidrawElement[], files: BinaryFilesWithUrl) => {
-    const { getSceneVersion } = await this.excalidrawUtils;
-    if (getSceneVersion(elements) > this.getLastBroadcastedOrReceivedSceneVersion()) {
+    const { hashElementsVersion } = await this.excalidrawUtils;
+    const newVersion = hashElementsVersion(elements);
+
+    if (newVersion !== this.lastBroadcastedOrReceivedSceneVersion) {
       this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, elements, files, { syncAll: false });
-      this.lastBroadcastedOrReceivedSceneVersion = getSceneVersion(elements);
+      this.lastBroadcastedOrReceivedSceneVersion = newVersion;
       this.queueBroadcastAllElements();
     }
   };
 
   private queueBroadcastAllElements = throttle(async () => {
-    const { getSceneVersion } = await this.excalidrawUtils;
+    const { hashElementsVersion } = await this.excalidrawUtils;
     const elements = this.excalidrawAPI.getSceneElementsIncludingDeleted();
     const files = await this.filesManager.getUploadedFiles(this.excalidrawAPI.getFiles());
     this.portal.broadcastScene(WS_SCENE_EVENT_TYPES.SCENE_UPDATE, elements, files, { syncAll: true });
-    const currentVersion = this.getLastBroadcastedOrReceivedSceneVersion();
-    const newVersion = Math.max(currentVersion, getSceneVersion(this.getSceneElementsIncludingDeleted()));
-    this.setLastBroadcastedOrReceivedSceneVersion(newVersion);
+    const currentVersion = this.lastBroadcastedOrReceivedSceneVersion;
+    const candidateVersion = hashElementsVersion(this.getSceneElementsIncludingDeleted());
+    this.lastBroadcastedOrReceivedSceneVersion = Math.max(currentVersion, candidateVersion);
   }, SYNC_FULL_SCENE_INTERVAL_MS);
 }
 
