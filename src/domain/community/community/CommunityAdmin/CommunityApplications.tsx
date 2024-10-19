@@ -35,6 +35,7 @@ type MembershipTableItem = {
   url: string;
   displayName: string;
   state?: string;
+  nextEvents: string[];
   email?: string;
   createdDate: Date | undefined;
   updatedDate?: Date;
@@ -153,6 +154,7 @@ const CreatePendingMembershipForApplication = (application: AdminCommunityApplic
     displayName: applicant.profile.displayName,
     url: applicant.profile.url,
     state: application.state,
+    nextEvents: application.nextEvents || [],
     email: (applicant as User).email,
     createdDate: new Date(application.createdDate),
     updatedDate: new Date(application.updatedDate),
@@ -169,6 +171,7 @@ const CreatePendingMembershipForInvitation = (invitation: AdminCommunityInvitati
     type: MembershipType.Invitation,
     contributorType: invitation.contributorType,
     displayName: contributor.profile.displayName,
+    nextEvents: invitation.nextEvents || [],
     url: contributor.profile.url,
     state: invitation.state,
     email: (contributor as User).email,
@@ -185,6 +188,7 @@ const CreatePendingMembershipForPlatformInvitation = (invitation: AdminPlatformI
     id: invitation.id,
     type: MembershipType.PlatformInvitation,
     contributorType: CommunityContributorType.User,
+    nextEvents: [],
     displayName: invitation.email,
     url: '',
     email: invitation.email,
