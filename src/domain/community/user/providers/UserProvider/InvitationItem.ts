@@ -15,7 +15,7 @@ export interface InvitationItem extends Identifiable {
     createdBy: Identifiable;
     welcomeMessage?: string;
     createdDate: Date | string;
-    lifecycle: { state?: string };
+    state?: string;
     contributorType?: CommunityContributorType;
   };
 }

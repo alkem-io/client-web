@@ -34,8 +34,7 @@ type MembershipTableItem = {
   contributorType: CommunityContributorType;
   url: string;
   displayName: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  lifecycle?: any;
+  state?: string;
   email?: string;
   createdDate: Date | undefined;
   updatedDate?: Date;
@@ -92,7 +91,7 @@ const getDeleteDialogTranslationNamespace = (row: MembershipTableItem) => {
 
 const formatState = (item: MembershipTableItem, t: TFunction<'translation', undefined>) => {
   if (item.type === MembershipType.Application) {
-    switch (item.lifecycle.state) {
+    switch (item.state) {
       case 'new':
         return <strong>{t('community.applicationStatus.applicationReceived')}</strong>;
       case 'approved':
@@ -103,7 +102,7 @@ const formatState = (item: MembershipTableItem, t: TFunction<'translation', unde
         return t('community.applicationStatus.applicationArchived');
     }
   } else if (item.type === MembershipType.Invitation) {
-    switch (item.lifecycle.state) {
+    switch (item.state) {
       case 'invited':
         return t('community.invitationStatus.invited');
       case 'accepted':
@@ -153,7 +152,7 @@ const CreatePendingMembershipForApplication = (application: AdminCommunityApplic
     contributorType: CommunityContributorType.User,
     displayName: applicant.profile.displayName,
     url: applicant.profile.url,
-    lifecycle: application.lifecycle,
+    state: application.state,
     email: (applicant as User).email,
     createdDate: new Date(application.createdDate),
     updatedDate: new Date(application.updatedDate),
@@ -171,7 +170,7 @@ const CreatePendingMembershipForInvitation = (invitation: AdminCommunityInvitati
     contributorType: invitation.contributorType,
     displayName: contributor.profile.displayName,
     url: contributor.profile.url,
-    lifecycle: invitation.lifecycle,
+    state: invitation.state,
     email: (contributor as User).email,
     createdDate: new Date(invitation.createdDate),
     updatedDate: new Date(invitation.updatedDate),
@@ -261,7 +260,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
       minWidth: 200,
       renderHeader: () => <>{t('common.status')}</>,
       renderCell: ({ row }: RenderParams) => formatState(row, t),
-      valueGetter: ({ row }: GetterParams) => sortState(row.lifecycle?.state),
+      valueGetter: ({ row }: GetterParams) => sortState(row.state),
       filterable: false, // TODO maybe... (has to be a combobox, maybe when we implement invitations)
     },
     {
@@ -274,14 +273,11 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
     },
   ];
 
-  const visibleTableItems = useMemo(
-    () => tableItems.filter(item => item.lifecycle?.state !== 'archived'),
-    [tableItems]
-  );
+  const visibleTableItems = useMemo(() => tableItems.filter(item => item.state !== 'archived'), [tableItems]);
 
   const [handleDeleteItem, isDeletingItem] = useLoadingState(async (item: MembershipTableItem) => {
     if (item.type === MembershipType.Application) {
-      switch (item.lifecycle.state) {
+      switch (item.state) {
         case 'new': {
           await onApplicationStateChange(item.id, 'REJECT');
           await onApplicationStateChange(item.id, 'ARCHIVE');
@@ -294,7 +290,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
         }
       }
     } else if (item.type === MembershipType.Invitation) {
-      switch (item.lifecycle.state) {
+      switch (item.state) {
         case 'invited': {
           await onDeleteInvitation?.(item.id);
           break;
@@ -316,14 +312,13 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
       // TODO: Disabled for approved Applications for now: see #2900
       <IconButton
         onClick={() => setDeletingItem(row)}
-        disabled={row.lifecycle?.state === 'approved'}
+        disabled={row?.state === 'approved'}
         aria-label={t('buttons.delete')}
       >
-        {row.type === MembershipType.Invitation &&
-        (row.lifecycle.state === 'approved' || row.lifecycle.state === 'rejected') ? (
+        {row.type === MembershipType.Invitation && (row.state === 'approved' || row.state === 'rejected') ? (
           <RemoveIcon color="error" />
         ) : (
-          <DeleteIcon color={row.lifecycle?.state === 'approved' ? 'disabled' : 'error'} />
+          <DeleteIcon color={row?.state === 'approved' ? 'disabled' : 'error'} />
         )}
       </IconButton>
     );

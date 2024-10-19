@@ -18,11 +18,8 @@ fragment AdminCommunityApplication on Application {
   id
   createdDate
   updatedDate
-  lifecycle {
-    id
-    state
-    nextEvents
-  }
+  state
+  nextEvents
   contributor {
     ...AdminCommunityCandidateMember
     ... on User {
@@ -40,11 +37,8 @@ fragment AdminCommunityInvitation on Invitation {
   id
   createdDate
   updatedDate
-  lifecycle {
-    id
-    state
-    nextEvents
-  }
+  state
+  nextEvents
   contributorType
   contributor {
     ...AdminCommunityCandidateMember

@@ -719,8 +719,14 @@ export type Application = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   lifecycle: Lifecycle;
+  /** The next events of this Lifecycle. */
+  nextEvents?: Maybe<Array<Scalars['String']>>;
   /** The Questions for this application. */
   questions: Array<Question>;
+  /** The current state of this Lifecycle. */
+  state?: Maybe<Scalars['String']>;
+  /** Is this lifecycle in a final state (done). */
+  stateIsFinal: Scalars['Boolean'];
   updatedDate: Scalars['DateTime'];
 };
 
@@ -2661,6 +2667,12 @@ export type Invitation = {
   /** Whether to also add the invited contributor to the parent community. */
   invitedToParent: Scalars['Boolean'];
   lifecycle: Lifecycle;
+  /** The next events of this Lifecycle. */
+  nextEvents?: Maybe<Array<Scalars['String']>>;
+  /** The current state of this Lifecycle. */
+  state?: Maybe<Scalars['String']>;
+  /** Is this lifecycle in a final state (done). */
+  stateIsFinal: Scalars['Boolean'];
   updatedDate: Scalars['DateTime'];
   welcomeMessage?: Maybe<Scalars['String']>;
 };
@@ -2838,16 +2850,6 @@ export type Lifecycle = {
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The machine definition, describing the states, transitions etc for this Lifeycle. */
-  machineDef: Scalars['LifecycleDefinition'];
-  /** The next events of this Lifecycle. */
-  nextEvents?: Maybe<Array<Scalars['String']>>;
-  /** The current state of this Lifecycle. */
-  state?: Maybe<Scalars['String']>;
-  /** Is this lifecycle in a final state (done). */
-  stateIsFinal: Scalars['Boolean'];
-  /** The Lifecycle template name. */
-  templateName?: Maybe<Scalars['String']>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
@@ -3190,6 +3192,8 @@ export type Mutation = {
   adminSearchIngestFromScratch: Scalars['String'];
   /** Update the Avatar on the Profile with the spedified profileID to be stored as a Document. */
   adminUpdateContributorAvatars: Profile;
+  /** Remove the Kratos account associated with the specified User. Note: the Users profile on the platform is not deleted. */
+  adminUserAccountDelete: User;
   /** Reset the Authorization Policy on the specified AiServer. */
   aiServerAuthorizationPolicyReset: AiServer;
   /** Creates a new AiPersonaService on the aiServer. */
@@ -3510,6 +3514,10 @@ export type MutationAdminCommunicationUpdateRoomStateArgs = {
 
 export type MutationAdminUpdateContributorAvatarsArgs = {
   profileID: Scalars['UUID'];
+};
+
+export type MutationAdminUserAccountDeleteArgs = {
+  userID: Scalars['UUID'];
 };
 
 export type MutationAiServerCreateAiPersonaServiceArgs = {
@@ -4192,6 +4200,12 @@ export type OrganizationVerification = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   lifecycle: Lifecycle;
+  /** The next events of this Lifecycle. */
+  nextEvents?: Maybe<Array<Scalars['String']>>;
+  /** The current state of this Lifecycle. */
+  state?: Maybe<Scalars['String']>;
+  /** Is this lifecycle in a final state (done). */
+  stateIsFinal: Scalars['Boolean'];
   /** Organization verification type */
   status: OrganizationVerificationEnum;
   /** The date at which the entity was last updated. */
@@ -6455,8 +6469,8 @@ export type User = Contributor & {
   accountUpn: Scalars['String'];
   /** The Agent representing this User. */
   agent: Agent;
-  /** The Authentication Method used for this User. One of email, linkedin, microsoft, or unknown */
-  authenticationMethod?: Maybe<AuthenticationType>;
+  /** Details about the authentication used for this User. */
+  authentication?: Maybe<UserAuthenticationResult>;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
   /** The Community rooms this user is a member of */
@@ -6485,6 +6499,14 @@ export type User = Contributor & {
   storageAggregator?: Maybe<StorageAggregator>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
+};
+
+export type UserAuthenticationResult = {
+  __typename?: 'UserAuthenticationResult';
+  /** When the Kratos Account for the user was created */
+  createdAt?: Maybe<Scalars['DateTime']>;
+  /** The Authentication Method used for this User. One of email, linkedin, microsoft, or unknown */
+  method: AuthenticationType;
 };
 
 export type UserAuthorizationPrivilegesInput = {
@@ -7383,12 +7405,8 @@ export type EventOnApplicationMutation = {
   eventOnApplication: {
     __typename?: 'Application';
     id: string;
-    lifecycle: {
-      __typename?: 'Lifecycle';
-      id: string;
-      nextEvents?: Array<string> | undefined;
-      state?: string | undefined;
-    };
+    nextEvents?: Array<string> | undefined;
+    state?: string | undefined;
   };
 };
 
@@ -7414,12 +7432,8 @@ export type CommunityApplicationsInvitationsQuery = {
             id: string;
             createdDate: Date;
             updatedDate: Date;
-            lifecycle: {
-              __typename?: 'Lifecycle';
-              id: string;
-              state?: string | undefined;
-              nextEvents?: Array<string> | undefined;
-            };
+            state?: string | undefined;
+            nextEvents?: Array<string> | undefined;
             contributor:
               | {
                   __typename?: 'Organization';
@@ -7474,13 +7488,9 @@ export type CommunityApplicationsInvitationsQuery = {
             id: string;
             createdDate: Date;
             updatedDate: Date;
+            state?: string | undefined;
+            nextEvents?: Array<string> | undefined;
             contributorType: CommunityContributorType;
-            lifecycle: {
-              __typename?: 'Lifecycle';
-              id: string;
-              state?: string | undefined;
-              nextEvents?: Array<string> | undefined;
-            };
             contributor:
               | {
                   __typename?: 'Organization';
@@ -7545,12 +7555,8 @@ export type AdminCommunityApplicationFragment = {
   id: string;
   createdDate: Date;
   updatedDate: Date;
-  lifecycle: {
-    __typename?: 'Lifecycle';
-    id: string;
-    state?: string | undefined;
-    nextEvents?: Array<string> | undefined;
-  };
+  state?: string | undefined;
+  nextEvents?: Array<string> | undefined;
   contributor:
     | {
         __typename?: 'Organization';
@@ -7606,13 +7612,9 @@ export type AdminCommunityInvitationFragment = {
   id: string;
   createdDate: Date;
   updatedDate: Date;
+  state?: string | undefined;
+  nextEvents?: Array<string> | undefined;
   contributorType: CommunityContributorType;
-  lifecycle: {
-    __typename?: 'Lifecycle';
-    id: string;
-    state?: string | undefined;
-    nextEvents?: Array<string> | undefined;
-  };
   contributor:
     | {
         __typename?: 'Organization';
@@ -16434,11 +16436,7 @@ export type AdminGlobalOrganizationsListQuery = {
         displayName: string;
         visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       };
-      verification: {
-        __typename?: 'OrganizationVerification';
-        id: string;
-        lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
-      };
+      verification: { __typename?: 'OrganizationVerification'; id: string; state?: string | undefined };
     }>;
     pageInfo: {
       __typename?: 'PageInfo';
@@ -16473,12 +16471,8 @@ export type AdminOrganizationVerifyMutation = {
   eventOnOrganizationVerification: {
     __typename?: 'OrganizationVerification';
     id: string;
-    lifecycle: {
-      __typename?: 'Lifecycle';
-      id: string;
-      nextEvents?: Array<string> | undefined;
-      state?: string | undefined;
-    };
+    nextEvents?: Array<string> | undefined;
+    state?: string | undefined;
   };
 };
 
@@ -17098,12 +17092,8 @@ export type InvitationStateEventMutation = {
   eventOnCommunityInvitation: {
     __typename?: 'Invitation';
     id: string;
-    lifecycle: {
-      __typename?: 'Lifecycle';
-      id: string;
-      nextEvents?: Array<string> | undefined;
-      state?: string | undefined;
-    };
+    nextEvents?: Array<string> | undefined;
+    state?: string | undefined;
   };
 };
 
@@ -18166,12 +18156,7 @@ export type UserPendingMembershipsQuery = {
         level: SpaceLevel;
         profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
       };
-      application: {
-        __typename?: 'Application';
-        id: string;
-        createdDate: Date;
-        lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
-      };
+      application: { __typename?: 'Application'; id: string; state?: string | undefined; createdDate: Date };
     }>;
     communityInvitations: Array<{
       __typename?: 'CommunityInvitationResult';
@@ -18186,10 +18171,10 @@ export type UserPendingMembershipsQuery = {
         __typename?: 'Invitation';
         id: string;
         welcomeMessage?: string | undefined;
+        state?: string | undefined;
         createdDate: Date;
         contributorType: CommunityContributorType;
         createdBy: { __typename?: 'User'; id: string };
-        lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
         contributor:
           | { __typename?: 'Organization'; id: string }
           | { __typename?: 'User'; id: string }
@@ -18212,10 +18197,10 @@ export type InvitationDataFragment = {
     __typename?: 'Invitation';
     id: string;
     welcomeMessage?: string | undefined;
+    state?: string | undefined;
     createdDate: Date;
     contributorType: CommunityContributorType;
     createdBy: { __typename?: 'User'; id: string };
-    lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
     contributor:
       | { __typename?: 'Organization'; id: string }
       | { __typename?: 'User'; id: string }
@@ -18619,10 +18604,10 @@ export type VcMembershipsQuery = {
         __typename?: 'Invitation';
         id: string;
         welcomeMessage?: string | undefined;
+        state?: string | undefined;
         createdDate: Date;
         contributorType: CommunityContributorType;
         createdBy: { __typename?: 'User'; id: string };
-        lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
         contributor:
           | { __typename?: 'Organization'; id: string }
           | { __typename?: 'User'; id: string }
@@ -29782,12 +29767,7 @@ export type NewMembershipsQuery = {
         level: SpaceLevel;
         profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
       };
-      application: {
-        __typename?: 'Application';
-        id: string;
-        createdDate: Date;
-        lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
-      };
+      application: { __typename?: 'Application'; id: string; state?: string | undefined; createdDate: Date };
     }>;
     communityInvitations: Array<{
       __typename?: 'CommunityInvitationResult';
@@ -29803,9 +29783,9 @@ export type NewMembershipsQuery = {
         id: string;
         welcomeMessage?: string | undefined;
         contributorType: CommunityContributorType;
+        state?: string | undefined;
         createdDate: Date;
         createdBy: { __typename?: 'User'; id: string };
-        lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
       };
     }>;
   };

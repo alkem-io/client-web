@@ -28,10 +28,7 @@ query UserPendingMemberships {
       }
       application {
         id
-        lifecycle {
-          id
-          state
-        }
+        state
         createdDate
       }
     }
@@ -59,10 +56,7 @@ fragment InvitationData on CommunityInvitationResult {
     createdBy {
       id
     }
-    lifecycle {
-      id
-      state
-    }
+    state
     createdDate
     contributor {
       id
