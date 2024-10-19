@@ -77,7 +77,7 @@ export type ApplicationDialogDataType = {
   id: string;
   contributorType: CommunityContributorType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  nextEvents?: string[];
+  nextEvents: string[];
   email?: string;
   createdDate: Date | undefined;
   updatedDate?: Date;
