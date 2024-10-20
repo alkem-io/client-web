@@ -41,7 +41,7 @@ const EmptyOrganization: Omit<Organization, 'authorization' | 'agent'> = {
       id: '',
     },
     status: OrganizationVerificationEnum.NotVerified,
-    stateIsFinal: false,
+    isFinalized: false,
   },
   account: undefined,
   profile: {
