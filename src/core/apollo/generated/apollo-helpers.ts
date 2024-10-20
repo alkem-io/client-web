@@ -577,11 +577,11 @@ export type ApplicationKeySpecifier = (
   | 'contributor'
   | 'createdDate'
   | 'id'
+  | 'isFinalized'
   | 'lifecycle'
   | 'nextEvents'
   | 'questions'
   | 'state'
-  | 'stateIsFinal'
   | 'updatedDate'
   | ApplicationKeySpecifier
 )[];
@@ -590,11 +590,11 @@ export type ApplicationFieldPolicy = {
   contributor?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isFinalized?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   nextEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   questions?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
-  stateIsFinal?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthenticationConfigKeySpecifier = ('providers' | AuthenticationConfigKeySpecifier)[];
@@ -1581,10 +1581,10 @@ export type InvitationKeySpecifier = (
   | 'extraRole'
   | 'id'
   | 'invitedToParent'
+  | 'isFinalized'
   | 'lifecycle'
   | 'nextEvents'
   | 'state'
-  | 'stateIsFinal'
   | 'updatedDate'
   | 'welcomeMessage'
   | InvitationKeySpecifier
@@ -1598,10 +1598,10 @@ export type InvitationFieldPolicy = {
   extraRole?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
+  isFinalized?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   nextEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
-  stateIsFinal?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2270,10 +2270,10 @@ export type OrganizationVerificationKeySpecifier = (
   | 'authorization'
   | 'createdDate'
   | 'id'
+  | 'isFinalized'
   | 'lifecycle'
   | 'nextEvents'
   | 'state'
-  | 'stateIsFinal'
   | 'status'
   | 'updatedDate'
   | OrganizationVerificationKeySpecifier
@@ -2282,10 +2282,10 @@ export type OrganizationVerificationFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isFinalized?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   nextEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
-  stateIsFinal?: FieldPolicy<any> | FieldReadFunction<any>;
   status?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };

@@ -718,6 +718,8 @@ export type Application = {
   createdDate: Scalars['DateTime'];
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** Is this lifecycle in a final state (done). */
+  isFinalized: Scalars['Boolean'];
   lifecycle: Lifecycle;
   /** The next events of this Lifecycle. */
   nextEvents?: Maybe<Array<Scalars['String']>>;
@@ -725,8 +727,6 @@ export type Application = {
   questions: Array<Question>;
   /** The current state of this Lifecycle. */
   state?: Maybe<Scalars['String']>;
-  /** Is this lifecycle in a final state (done). */
-  stateIsFinal: Scalars['Boolean'];
   updatedDate: Scalars['DateTime'];
 };
 
@@ -800,7 +800,7 @@ export type AuthenticationConfig = {
 
 export type AuthenticationProviderConfig = {
   __typename?: 'AuthenticationProviderConfig';
-  /** Configuration of the authenticaiton provider */
+  /** Configuration of the authentication provider */
   config: AuthenticationProviderConfigUnion;
   /** Is the authentication provider enabled? */
   enabled: Scalars['Boolean'];
@@ -2666,13 +2666,13 @@ export type Invitation = {
   id: Scalars['UUID'];
   /** Whether to also add the invited contributor to the parent community. */
   invitedToParent: Scalars['Boolean'];
+  /** Is this lifecycle in a final state (done). */
+  isFinalized: Scalars['Boolean'];
   lifecycle: Lifecycle;
   /** The next events of this Lifecycle. */
   nextEvents?: Maybe<Array<Scalars['String']>>;
   /** The current state of this Lifecycle. */
   state?: Maybe<Scalars['String']>;
-  /** Is this lifecycle in a final state (done). */
-  stateIsFinal: Scalars['Boolean'];
   updatedDate: Scalars['DateTime'];
   welcomeMessage?: Maybe<Scalars['String']>;
 };
@@ -4199,13 +4199,13 @@ export type OrganizationVerification = {
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** Is this lifecycle in a final state (done). */
+  isFinalized: Scalars['Boolean'];
   lifecycle: Lifecycle;
   /** The next events of this Lifecycle. */
   nextEvents?: Maybe<Array<Scalars['String']>>;
   /** The current state of this Lifecycle. */
   state?: Maybe<Scalars['String']>;
-  /** Is this lifecycle in a final state (done). */
-  stateIsFinal: Scalars['Boolean'];
   /** Organization verification type */
   status: OrganizationVerificationEnum;
   /** The date at which the entity was last updated. */
