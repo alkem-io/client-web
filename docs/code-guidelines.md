@@ -200,7 +200,7 @@ Tests show that there is no significant difference in performance betweet types 
 
 > **Conclusion:** Use **type**s for declaring structures unless you require the specific advantages of **interface**s.
 
-### `enum`s considered harmfull [video about it [here](https://youtu.be/jjMbPt_H3RQ?si=Ww4n75eTPOHSfGzh)]
+### `enum`s considered harmful [video about it [here](https://youtu.be/jjMbPt_H3RQ?si=Ww4n75eTPOHSfGzh)]
 
 `enum`s are not native to JavaScript! They were introduced in TS to provide a more object-oriented feel, similar to languages like C#. However, even Anders Hejlsberg, one of TypeScript’s creators, mentioned that enums might not have been included if the language were designed today. This is mainly because they are not native to JavaScript and introduce some quirks at runtime.
 
