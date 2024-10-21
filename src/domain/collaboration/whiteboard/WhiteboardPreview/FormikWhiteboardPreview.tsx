@@ -91,7 +91,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
             }}
             options={{
               viewModeEnabled: true,
-              gridModeEnabled: false, // Disabling the grid because it fails on runtime when the grid is enabled
+              gridModeEnabled: true,
               UIOptions: {
                 canvasActions: {
                   export: false,
