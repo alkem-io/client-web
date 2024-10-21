@@ -87,7 +87,7 @@ return <Dialog open={isDialogOpen} />;
 
 In React, we usually implement "inheritance by composition", i.e. we wrap a base component to either:
 
-- preprocess data
+- pre-process data
 - override/decorate callbacks
 - wrap the rendered result in extra markup
 - provide specific children for the underlying component to render
