@@ -187,7 +187,7 @@ const MyComponent = ({ prop }) => {
 
 ### useCallback
 
-useCallback is actually a shortcut based on `useMemo()`. It's created for one particular reason: functions defined in your component body are always new instances, recreated on each render. If you pass them as props, the child components props always change. However if you wrap those functions in `useCallback`, the functions won't be redeclared unless their dependencies change.
+useCallback is actually a shortcut based on `useMemo()`. It's created for one particular reason: functions defined in your component body are always new instances, recreated on each render. If you pass them as props, the child components props always change. However if you wrap those functions in `useCallback`, the functions won't be re-declared unless their dependencies change.
 
 > :warning: **When not to use:**
 > Don't use `useCallback` for the functions that are used in the same component. Unless you pass those functions as props, there's no use in `useCallback`. It doesn't optimize anything about how the function executes.
