@@ -1,5 +1,5 @@
 import React from 'react';
-import { getChildJourneyTypeName, InvitationWithMeta } from '../../pendingMembership/PendingMemberships';
+import { InvitationWithMeta } from '../../pendingMembership/PendingMemberships';
 import JourneyAvatar from '../../../journey/common/JourneyAvatar/JourneyAvatar';
 import { BlockSectionTitle, CardText } from '../../../../core/ui/typography';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -7,6 +7,7 @@ import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import DetailedActivityDescription from '../../../shared/components/ActivityDescription/DetailedActivityDescription';
 import LinkButton from '../../../../core/ui/button/LinkButton';
+import { getChildJourneyTypeName } from '../../../shared/utils/spaceLevel';
 
 interface InvitationCardHorizontalProps {
   invitation: InvitationWithMeta | undefined;

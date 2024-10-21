@@ -11,6 +11,7 @@ import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
 import { CommunityContributorType, CommunityRoleType } from '../../../../core/apollo/generated/graphql-schema';
+import { getChildJourneyTypeName } from '../../../shared/utils/spaceLevel';
 
 export interface EntityDetailsContainerEntities {
   details?: ContributionDetails;
@@ -65,7 +66,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
       const space = spaceData.lookup.space;
       return {
         displayName: space.profile.displayName!,
-        journeyTypeName: ['space', 'subspace', 'subsubspace'][spaceLevel] as JourneyTypeName,
+        journeyTypeName: getChildJourneyTypeName({ level: spaceLevel }) as JourneyTypeName,
         banner: getVisualByType(VisualName.CARD, space.profile.visuals),
         tags: space.profile.tagset?.tags ?? [],
         journeyUri: space.profile.url,
