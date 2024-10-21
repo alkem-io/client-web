@@ -192,7 +192,7 @@ useCallback is actually a shortcut based on `useMemo()`. It's created for one pa
 > :warning: **When not to use:**
 > Don't use `useCallback` for the functions that are used in the same component. Unless you pass those functions as props, there's no use in `useCallback`. It doesn't optimize anything about how the function executes.
 
-## TypeScript specifics and "gotchas!" muhahahaha
+## TypeScript specifics and "gotchas!" muhahahahaha
 
 ### `type` **vs** `interface` ~ when to use which [video about it [here](https://youtu.be/zM9UPcIyyhQ?si=BzBMjlqP-rR0jbVg)]
 
