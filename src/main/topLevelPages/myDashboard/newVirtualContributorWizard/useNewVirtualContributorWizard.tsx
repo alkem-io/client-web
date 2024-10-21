@@ -501,7 +501,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       setStep('insufficientPrivileges');
       return false;
     }
-    const createdVc = await executeMutation({ values, accountId });
+    const createdVc = await executeMutation({ values, accountId, vcBoKId });
 
     const virtualContributorId = createdVc?.id;
 
@@ -540,7 +540,15 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     return false;
   };
 
-  const executeMutation = async ({ values, accountId }: { values: VirtualContributorFromProps; accountId: string }) => {
+  const executeMutation = async ({
+    values,
+    accountId,
+    vcBoKId,
+  }: {
+    values: VirtualContributorFromProps;
+    accountId: string;
+    vcBoKId?: string;
+  }) => {
     try {
       const variables: CreateVirtualContributorOnAccountMutationVariables = {
         virtualContributorData: {
@@ -555,6 +563,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             aiPersonaService: {
               engine: values.engine,
               bodyOfKnowledgeType: values.bodyOfKnowledgeType,
+              bodyOfKnowledgeID: vcBoKId,
             },
           },
         },
