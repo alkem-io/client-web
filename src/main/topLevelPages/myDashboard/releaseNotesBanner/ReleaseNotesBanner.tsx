@@ -17,14 +17,14 @@ const ReleaseNotesBanner = () => {
 
   const { open, onClose } = useReleaseNotes(releaseNotesUrl);
 
-  const notClicable = releaseNotesUrl.includes(URL_NOT_CLICKABLE_MARKER);
+  const notClickable = releaseNotesUrl.includes(URL_NOT_CLICKABLE_MARKER);
 
   if (!open) {
     return null;
   }
 
   return (
-    <DashboardBanner to={releaseNotesUrl} isLink={!notClicable} onClose={onClose}>
+    <DashboardBanner to={releaseNotesUrl} isLink={!notClickable} onClose={onClose}>
       <Trans
         i18nKey="releaseNotes.title"
         components={{
