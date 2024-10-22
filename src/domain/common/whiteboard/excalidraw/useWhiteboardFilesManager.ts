@@ -1,12 +1,19 @@
 import { useMemo, useRef, useState } from 'react';
 import { useUploadFileMutation } from '../../../../core/apollo/generated/apollo-hooks';
-import { BinaryFileData, BinaryFiles, DataURL, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
+import {
+  BinaryFileData,
+  BinaryFiles,
+  DataURL,
+  ExcalidrawImperativeAPI,
+} from '@alkemio/excalidraw/dist/excalidraw/types';
 import { excalidrawFileMimeType, generateIdFromFile } from './collab/utils';
 import Semaphore from 'ts-semaphore';
+import { error } from '../../../../core/logging/sentry/log';
 
 export type BinaryFileDataWithUrl = BinaryFileData & { url: string };
 export type BinaryFileDataWithOptionalUrl = BinaryFileData & { url?: string };
 export type BinaryFilesWithUrl = Record<string, BinaryFileDataWithUrl>;
+export type BinaryFilesWithOptionalUrl = Record<string, BinaryFileDataWithOptionalUrl>;
 
 const isValidDataURL = (url: string) =>
   url.match(/^(data:)([\w/+-]*)(;charset=[\w-]+|;base64){0,1},[A-Za-z0-9+/=]+$/gi) !== null;
@@ -71,6 +78,7 @@ export interface WhiteboardFilesManager {
   pushFilesToExcalidraw: () => Promise<void>;
   convertLocalFilesToRemoteInWhiteboard: <W extends WhiteboardWithFiles>(whiteboard: W) => Promise<W>;
   convertLocalFileToRemote: (file: BinaryFileData & { url?: string }) => Promise<BinaryFileDataWithUrl | undefined>;
+  loadAndTryConvertEmbeddedFiles: (files: BinaryFilesWithOptionalUrl) => Promise<BinaryFilesWithUrl>;
   loading: {
     uploadingFile: boolean;
     downloadingFiles: boolean;
@@ -210,12 +218,15 @@ const useWhiteboardFilesManager = ({
           }
           if (file.url) {
             log('DOWNLOADING ', file);
-            const dataURL = await fetchFileToDataURL(file.url);
-            newFiles[fileId] = { ...file, dataURL } as BinaryFileDataWithUrl;
-            fileStoreAddFile(fileId, newFiles[fileId]);
+            try {
+              const dataURL = await fetchFileToDataURL(file.url);
+              newFiles[fileId] = { ...file, dataURL } as BinaryFileDataWithUrl;
+              fileStoreAddFile(fileId, newFiles[fileId]);
+            } catch (e) {
+              error(`Error downloading file: ${file.url}`, { label: 'whiteboard-file-manager' });
+            }
           } else {
-            // eslint-disable-next-line no-console
-            console.error('Cannot download', file);
+            error(`Cannot download: ${file.id}`, { label: 'whiteboard-file-manager' });
           }
         })
       );
@@ -339,6 +350,40 @@ const useWhiteboardFilesManager = ({
     });
   };
 
+  /**
+   * Receives a mixed list of files with dataURL or URL. Loads only the files with dataURLs and tries to convert them to URLs.
+   * Returns only the converted files.
+   * @param files
+   */
+  const loadAndTryConvertEmbeddedFiles = async (files: BinaryFilesWithOptionalUrl): Promise<BinaryFilesWithUrl> => {
+    // extract only files with dataURL
+    const filesWithDataUrl = { ...files };
+    Object.values(filesWithDataUrl).forEach(file => {
+      if (!file.dataURL) {
+        delete filesWithDataUrl[file.id];
+      }
+    });
+
+    const filesWithDataUrlArray = Object.values(filesWithDataUrl);
+
+    if (!filesWithDataUrlArray.length) {
+      return {};
+    }
+
+    // adds files with dataURL
+    excalidrawAPI?.addFiles(filesWithDataUrlArray);
+    // converts files from dataURL to URL
+    const { files: uploadedFilesWithOptionalUrl } = await convertLocalFilesToRemoteInWhiteboard({
+      files: filesWithDataUrl,
+    });
+
+    // leave only the successfully converted files
+    return Object.fromEntries(
+      // filter out files that were not converted
+      Object.entries(uploadedFilesWithOptionalUrl).filter(([_, file]) => file.url)
+    ) as BinaryFilesWithUrl;
+  };
+
   return useMemo<WhiteboardFilesManager>(
     () => ({
       addNewFile,
@@ -347,6 +392,7 @@ const useWhiteboardFilesManager = ({
       pushFilesToExcalidraw,
       convertLocalFileToRemote,
       convertLocalFilesToRemoteInWhiteboard,
+      loadAndTryConvertEmbeddedFiles,
       loading: {
         uploadingFile,
         downloadingFiles,

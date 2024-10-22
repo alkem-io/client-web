@@ -3,18 +3,25 @@ import {
   WhiteboardDetailsFragmentDoc,
   useCreateWhiteboardOnCalloutMutation,
   useDeleteWhiteboardMutation,
-  useUpdateWhiteboardContentMutation,
   useUpdateWhiteboardMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
-import {
-  WhiteboardDetailsFragment,
-  WhiteboardContentFragment,
-  CreateContributionOnCalloutInput,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { CreateContributionOnCalloutInput } from '../../../../core/apollo/generated/graphql-schema';
 import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
 import { WhiteboardPreviewImage, useUploadWhiteboardVisuals } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { Identifiable } from '../../../../core/utils/Identifiable';
+
+interface WhiteboardWithPreviewVisuals {
+  nameID: string; // Whiteboard nameID is used to name the files uploaded as visuals
+  profile: {
+    visual?: {
+      id: string;
+    };
+    preview?: {
+      id: string;
+    };
+  };
+}
 
 export interface IWhiteboardActions {
   onCreate: (
@@ -24,7 +31,7 @@ export interface IWhiteboardActions {
   onDelete: (whiteboard: Identifiable) => Promise<void>;
 
   onUpdate: (
-    whiteboard: WhiteboardContentFragment & WhiteboardDetailsFragment,
+    whiteboard: WhiteboardWithPreviewVisuals,
     previewImages?: WhiteboardPreviewImage[]
   ) => Promise<{ success: boolean; errors?: string[] }>;
 
@@ -36,7 +43,6 @@ export interface WhiteboardActionsContainerState {
   deletingWhiteboard?: boolean;
   changingWhiteboardLockState?: boolean;
   updatingWhiteboard?: boolean;
-  updatingWhiteboardContent?: boolean;
   uploadingVisuals?: boolean;
 }
 
@@ -121,13 +127,8 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
     [deleteWhiteboard]
   );
 
-  const [updateWhiteboardContent, { loading: updatingWhiteboardContent }] = useUpdateWhiteboardContentMutation({});
-
-  const handleUpdateWhiteboardContent = useCallback(
-    async (
-      whiteboard: WhiteboardContentFragment & WhiteboardDetailsFragment,
-      previewImages?: WhiteboardPreviewImage[]
-    ) => {
+  const handleUploadWhiteboardVisuals = useCallback(
+    async (whiteboard: WhiteboardWithPreviewVisuals, previewImages?: WhiteboardPreviewImage[]) => {
       if ((whiteboard.profile.visual || whiteboard.profile.preview) && previewImages) {
         uploadVisuals(
           previewImages,
@@ -135,21 +136,12 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
           whiteboard.nameID
         );
       }
-      const result = await updateWhiteboardContent({
-        variables: {
-          input: {
-            ID: whiteboard.id,
-            content: whiteboard.content,
-          },
-        },
-        refetchQueries: ['CalloutWhiteboards'],
-      });
       return {
-        success: !result.errors || result.errors.length === 0,
-        errors: result.errors?.map(({ message }) => message),
+        success: true,
+        errors: undefined,
       };
     },
-    [updateWhiteboardContent]
+    []
   );
 
   const [updateWhiteboard, { loading: updatingWhiteboard }] = useUpdateWhiteboardMutation({});
@@ -162,7 +154,7 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
         variables: {
           input: {
             ID: whiteboardId,
-            profileData: {
+            profile: {
               displayName,
             },
           },
@@ -176,10 +168,10 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
     () => ({
       onCreate: handleCreateWhiteboard,
       onDelete: handleDeleteWhiteboard,
-      onUpdate: handleUpdateWhiteboardContent,
+      onUpdate: handleUploadWhiteboardVisuals,
       onChangeDisplayName: handleChangeDisplayName,
     }),
-    [handleUpdateWhiteboardContent]
+    [handleUploadWhiteboardVisuals]
   );
 
   return (
@@ -189,7 +181,6 @@ const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ child
         {
           creatingWhiteboard,
           deletingWhiteboard,
-          updatingWhiteboardContent,
           updatingWhiteboard,
           uploadingVisuals,
         },

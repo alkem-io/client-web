@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
+import React, { FC, useMemo, useRef, useState } from 'react';
 import { Button, Icon, IconButton, Tooltip } from '@mui/material';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
 import InnovationLibraryIcon from '../../../../main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
@@ -10,7 +10,7 @@ import PageContent from '../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import CommunityUsers from '../../../community/community/CommunityAdmin/CommunityUsers';
-import useCommunityAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
+import useRoleSetAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
 import CommunityOrganizations from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import CommunityApplications from '../../../community/community/CommunityAdmin/CommunityApplications';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
@@ -22,18 +22,25 @@ import { Trans, useTranslation } from 'react-i18next';
 import { gutters } from '../../../../core/ui/grid/utils';
 import CommunityGuidelinesForm from '../../../community/community/CommunityGuidelines/CommunityGuidelinesForm';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
-import CommunityGuidelinesTemplatesLibrary from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatesLibrary';
-import CommunityGuidelinesContainer from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
-import CreateCommunityGuidelinesTemplateDialog, {
-  CommunityGuidelinesFormValues,
-} from '../../../platform/admin/templates/CommunityGuidelines/CreateCommunityGuidelinesTemplateDialog';
-import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../../platform/admin/templates/CommunityGuidelines/CommunityGuidelinesTemplateForm';
-import { useCreateCommunityGuidelinesTemplate } from '../../../platform/admin/templates/CommunityGuidelines/useCreateCommunityGuidelinesTemplate';
+import CommunityGuidelinesContainer, {
+  CommunityGuidelines,
+} from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import ImportTemplatesDialog from '../../../templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import { SpaceLevel, TemplateType } from '../../../../core/apollo/generated/graphql-schema';
+import { LoadingButton } from '@mui/lab';
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import {
+  useCreateTemplateMutation,
+  useSpaceTemplatesSetIdLazyQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
+import CreateTemplateDialog from '../../../templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
+import { toCreateTemplateMutationVariables } from '../../../templates/components/Forms/common/mappings';
+import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../../templates/components/Forms/CommunityGuidelinesTemplateForm';
 
 const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
-  const { spaceId, loading: isLoadingSpace, communityId, profile: spaceProfile } = useSpace();
+  const { spaceId, loading: isLoadingSpace, communityId, roleSetId, profile: spaceProfile } = useSpace();
 
   const {
     users,
@@ -42,7 +49,8 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     applications,
     invitations,
     platformInvitations,
-    communityPolicy,
+    memberRoleDefinition,
+    leadRoleDefinition,
     permissions,
     onApplicationStateChange,
     onInvitationStateChange,
@@ -64,7 +72,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useCommunityAdmin({ communityId, spaceId, journeyLevel: 0 });
+  } = useRoleSetAdmin({ roleSetId, spaceId, spaceLevel: SpaceLevel.Space });
 
   const currentApplicationsUserIds = useMemo(
     () =>
@@ -84,25 +92,27 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
 
   const currentMembersIds = useMemo(() => users.map(user => user.id), [users]);
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const openTemplateDialog = useCallback(() => setDialogOpen(true), []);
-  const closeTemplatesDialog = useCallback(() => setDialogOpen(false), []);
+  const currentCommunityGuidelines = useRef<CommunityGuidelines>();
+  const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
-  const currentGuidelines = useRef<CommunityGuidelinesFormValues>();
   const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState(false);
-  const handleSaveAsTemplateDialogOpen = () => {
-    setSaveAsTemplateDialogOpen(true);
-  };
 
   const { spaceNameId } = useUrlParams();
   if (!spaceNameId) {
     throw new Error('Must be within a Space');
   }
 
-  const { handleCreateCommunityGuidelinesTemplate } = useCreateCommunityGuidelinesTemplate();
+  const [fetchSpaceTemplatesSetId] = useSpaceTemplatesSetIdLazyQuery();
+  const [createTemplate] = useCreateTemplateMutation();
   const handleSaveAsTemplate = async (values: CommunityGuidelinesTemplateFormSubmittedValues) => {
-    await handleCreateCommunityGuidelinesTemplate(values, spaceNameId);
-    setSaveAsTemplateDialogOpen(false);
+    const { data: templatesSetData } = await fetchSpaceTemplatesSetId({ variables: { spaceNameId: spaceId } });
+    const templatesSetId = templatesSetData?.space.library?.id;
+    if (templatesSetId) {
+      await createTemplate({
+        variables: toCreateTemplateMutationVariables(templatesSetId, TemplateType.CommunityGuidelines, values),
+      });
+      setSaveAsTemplateDialogOpen(false);
+    }
   };
 
   if (!spaceId || isLoadingSpace) {
@@ -142,7 +152,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
           <Text marginBottom={gutters(2)}>
             <Trans i18nKey="community.application-form.subtitle" components={{ b: <strong /> }} />
           </Text>
-          <CommunityApplicationForm communityId={communityId} />
+          <CommunityApplicationForm roleSetId={roleSetId} />
         </PageContentBlockCollapsible>
         <CommunityGuidelinesContainer communityId={communityId}>
           {({
@@ -159,7 +169,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
                   <>
                     <Button
                       variant="outlined"
-                      onClick={() => openTemplateDialog()}
+                      onClick={() => setCommunityGuidelinesTemplatesDialogOpen(true)}
                       startIcon={<InnovationLibraryIcon />}
                     >
                       {t('common.library')}
@@ -168,8 +178,8 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
                       <IconButton
                         aria-label={t('buttons.saveAsTemplate')}
                         onClick={() => {
-                          handleSaveAsTemplateDialogOpen();
-                          currentGuidelines.current = communityGuidelines;
+                          currentCommunityGuidelines.current = communityGuidelines;
+                          setSaveAsTemplateDialogOpen(true);
                         }}
                         sx={{ marginLeft: gutters(0.5) }}
                       >
@@ -186,19 +196,35 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
                   profileId={profileId}
                 />
               </PageContentBlockCollapsible>
-              <CommunityGuidelinesTemplatesLibrary
-                open={dialogOpen}
-                onClose={closeTemplatesDialog}
+              <ImportTemplatesDialog
+                open={communityGuidelinesTemplatesDialogOpen}
+                templateType={TemplateType.CommunityGuidelines}
+                onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
                 onSelectTemplate={onSelectCommunityGuidelinesTemplate}
+                enablePlatformTemplates
+                actionButton={
+                  <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+                    {t('buttons.use')}
+                  </LoadingButton>
+                }
               />
             </>
           )}
         </CommunityGuidelinesContainer>
-        <CreateCommunityGuidelinesTemplateDialog
-          guidelines={currentGuidelines.current}
+        <CreateTemplateDialog
           open={saveAsTemplateDialogOpen}
           onClose={() => setSaveAsTemplateDialogOpen(false)}
+          templateType={TemplateType.CommunityGuidelines}
           onSubmit={handleSaveAsTemplate}
+          getDefaultValues={() =>
+            Promise.resolve({
+              type: TemplateType.CommunityGuidelines,
+              communityGuidelines: {
+                id: '',
+                profile: currentCommunityGuidelines.current!,
+              },
+            })
+          }
         />
         <PageContentColumn columns={6}>
           <PageContentBlock>
@@ -210,7 +236,8 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
               onAddMember={onAddUser}
               onRemoveMember={onRemoveUser}
               fetchAvailableUsers={getAvailableUsers}
-              communityPolicy={communityPolicy}
+              memberRoleDefinition={memberRoleDefinition}
+              leadRoleDefinition={leadRoleDefinition}
               loading={loading}
             />
           </PageContentBlock>
@@ -224,7 +251,8 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
               onAddMember={onAddOrganization}
               onRemoveMember={onRemoveOrganization}
               fetchAvailableOrganizations={getAvailableOrganizations}
-              communityPolicy={communityPolicy}
+              memberRoleDefinition={memberRoleDefinition}
+              leadRoleDefinition={leadRoleDefinition}
               loading={loading}
             />
           </PageContentBlock>

@@ -2,11 +2,6 @@ import React, { PropsWithChildren, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EntityDashboardLeads } from '../EntityDashboardContributorsSection/Types';
 import AssociatedOrganizationsView from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
-import {
-  buildOrganizationUrl,
-  buildUserProfileUrl,
-  buildVirtualContributorUrl,
-} from '../../../../main/routing/urlBuilders';
 import { useUserContext } from '../../user';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
@@ -52,7 +47,6 @@ const EntityDashboardLeadsSection = ({
         key: org.id,
         id: org.id,
         profile: org.profile,
-        url: buildOrganizationUrl(org.nameID),
         seamless: true,
         onContact: () => {
           sendMessage('organization', {
@@ -69,13 +63,12 @@ const EntityDashboardLeadsSection = ({
 
   const leadUsersMapped = useMemo(() => {
     return leadUsers?.map(user => ({
-      id: user.profile.id,
+      id: user.id,
       profile: user.profile,
-      url: buildUserProfileUrl(user.nameID),
       seamless: true,
       onContact: () => {
         sendMessage('user', {
-          id: user.profile.id,
+          id: user.id,
           avatarUri: user.profile.avatar?.uri,
           displayName: user.profile.displayName,
           city: user.profile.location?.city,
@@ -89,7 +82,6 @@ const EntityDashboardLeadsSection = ({
     return leadVirtualContributors?.map(vc => ({
       id: vc.id,
       profile: vc.profile,
-      url: buildVirtualContributorUrl(vc.nameID),
       seamless: true,
       onContact: () => {
         sendMessage('user', {

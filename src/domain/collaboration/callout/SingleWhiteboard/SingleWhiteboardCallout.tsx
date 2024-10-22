@@ -2,7 +2,7 @@ import { useState } from 'react';
 import CalloutLayout, { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import WhiteboardView from '../../whiteboard/WhiteboardsManagement/WhiteboardView';
-import WhiteboardPreview from '../../whiteboard/whiteboardPreview/WhiteboardPreview';
+import WhiteboardPreview from '../../whiteboard/WhiteboardPreview/WhiteboardPreview';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 
 interface SingleWhiteboardCalloutProps extends BaseCalloutViewProps {

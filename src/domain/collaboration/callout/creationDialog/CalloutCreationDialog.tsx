@@ -6,6 +6,7 @@ import {
   CalloutType,
   CalloutVisibility,
   CalloutGroupName,
+  TemplateType,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { CalloutCreationTypeWithPreviewImages } from './useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
@@ -13,11 +14,7 @@ import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import { LoadingButton } from '@mui/lab';
 import calloutIcons from '../utils/calloutIcons';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
-import {
-  useCalloutTemplateContentLazyQuery,
-  useWhiteboardTemplateContentLazyQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useTemplateContentLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -29,8 +26,11 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import CalloutTemplatesLibrary from '../CalloutTemplatesLibrary/CalloutTemplatesLibrary';
-import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
+import { EmptyWhiteboardString } from '../../../common/whiteboard/EmptyWhiteboard';
+import { findDefaultTagset } from '../../../common/tags/utils';
+import ImportTemplatesDialog from '../../../templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -66,23 +66,19 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   journeyTypeName,
 }) => {
   const { t } = useTranslation();
-  const { spaceNameId } = useUrlParams();
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
   const [selectedCalloutType, setSelectedCalloutType] = useState<CalloutType | undefined>(undefined);
   const [isPublishDialogOpen, setIsConfirmPublishDialogOpen] = useState(false);
   const [isConfirmCloseDialogOpen, setIsConfirmCloseDialogOpen] = useState(false);
   const [sendNotification, setSendNotification] = useState(true);
+  const [importCalloutTemplateDialogOpen, setImportCalloutDialogOpen] = useState(false);
 
   useLayoutEffect(() => {
     if (open) {
       setSelectedCalloutType(undefined);
     }
   }, [open]);
-
-  const [fetchWhiteboardTemplateContent] = useWhiteboardTemplateContentLazyQuery({
-    fetchPolicy: 'cache-and-network',
-  });
 
   const handleValueChange = useCallback(
     (calloutValues: CalloutFormOutput) => {
@@ -104,8 +100,8 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
       callout.postDescription ||
       callout.references?.length !== 0 ||
       callout.tags?.length !== 0 ||
-      callout.whiteboard?.content !== JSON.stringify(EmptyWhiteboard) ||
-      callout.whiteboardContent !== JSON.stringify(EmptyWhiteboard)
+      callout.whiteboard?.content !== EmptyWhiteboardString ||
+      callout.whiteboardContent !== EmptyWhiteboardString
     );
   };
 
@@ -163,7 +159,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
         return result;
       }
     },
-    [callout, onCreateCallout, spaceNameId, fetchWhiteboardTemplateContent]
+    [callout, onCreateCallout]
   );
 
   const handleClose = useCallback(() => {
@@ -172,33 +168,35 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     closeConfirmCloseDialog();
   }, [onClose]);
 
-  const [fetchCalloutTemplateContent] = useCalloutTemplateContentLazyQuery();
-
-  const handleSelectTemplate = async ({ id: calloutTemplateId }: Identifiable) => {
-    const { data } = await fetchCalloutTemplateContent({
+  const [fetchTemplateContent] = useTemplateContentLazyQuery();
+  const handleSelectTemplate = async ({ id: templateId }: Identifiable) => {
+    const { data } = await fetchTemplateContent({
       variables: {
-        calloutTemplateId,
+        templateId,
+        includeCallout: true,
       },
     });
 
-    const template = data?.lookup.calloutTemplate;
+    const template = data?.lookup.template;
+    const templateCallout = template?.callout;
 
-    if (!template) {
+    if (!template || !templateCallout) {
       throw new Error("Couldn't load CalloutTemplate");
     }
 
-    const whiteboard = template.type === CalloutType.Whiteboard ? template.framing.whiteboard : undefined;
+    const whiteboard = templateCallout.type === CalloutType.Whiteboard ? templateCallout.framing.whiteboard : undefined;
 
-    const references = template.type === CalloutType.LinkCollection ? undefined : template.framing.profile.references;
+    const references =
+      templateCallout.type === CalloutType.LinkCollection ? undefined : templateCallout.framing.profile.references;
 
     setCallout({
-      displayName: template.framing.profile.displayName,
-      description: template.framing.profile.description,
-      tags: template.framing.profile.tagset?.tags,
+      displayName: templateCallout.framing.profile.displayName,
+      description: templateCallout.framing.profile.description,
+      tags: findDefaultTagset(templateCallout.framing.profile.tagsets)?.tags,
       references,
-      type: template.type,
-      postDescription: template.contributionDefaults?.postDescription,
-      whiteboardContent: template.contributionDefaults?.whiteboardContent,
+      type: templateCallout.type,
+      postDescription: templateCallout.contributionDefaults?.postDescription,
+      whiteboardContent: templateCallout.contributionDefaults?.whiteboardContent,
       whiteboard: whiteboard && {
         content: whiteboard.content,
         profileData: {
@@ -207,7 +205,8 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
         previewImages: [],
       },
     });
-    setSelectedCalloutType(template.type);
+    setSelectedCalloutType(templateCallout.type);
+    setImportCalloutDialogOpen(false);
   };
 
   const CalloutIcon = selectedCalloutType ? calloutIcons[selectedCalloutType] : undefined;
@@ -223,10 +222,32 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             <Gutters>
               <CalloutTypeSelect
                 onSelect={handleSelectCalloutType}
-                extraButtons={<CalloutTemplatesLibrary onImportTemplate={handleSelectTemplate} />}
+                extraButtons={
+                  <Button
+                    size="large"
+                    startIcon={<TipsAndUpdatesOutlinedIcon />}
+                    variant="outlined"
+                    sx={{ textTransform: 'none', justifyContent: 'start' }}
+                    onClick={() => setImportCalloutDialogOpen(true)}
+                  >
+                    {t('components.calloutTypeSelect.callout-templates-library')}
+                  </Button>
+                }
               />
             </Gutters>
           </DialogContent>
+          <ImportTemplatesDialog
+            open={importCalloutTemplateDialogOpen}
+            templateType={TemplateType.Callout}
+            onClose={() => setImportCalloutDialogOpen(false)}
+            onSelectTemplate={handleSelectTemplate}
+            enablePlatformTemplates
+            actionButton={
+              <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+                {t('buttons.use')}
+              </LoadingButton>
+            }
+          />
         </>
       )}
       {selectedCalloutType && (

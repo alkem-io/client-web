@@ -28,7 +28,13 @@ export interface CollabState {
   modeReason: CollaboratorModeReasons | null;
 }
 
-const useCollab = ({ onInitialize, onCloseConnection, ...collabProps }: UseCollabProps): UseCollabProvided => {
+const useCollab = ({
+  onInitialize,
+  onCloseConnection,
+  onRemoteSave,
+  onSceneInitChange,
+  ...collabProps
+}: UseCollabProps): UseCollabProvided => {
   const collabRef = useRef<Collab | null>(null);
 
   const collabApiRef = useRef<CollabAPI | null>(null);
@@ -49,15 +55,25 @@ const useCollab = ({ onInitialize, onCloseConnection, ...collabProps }: UseColla
     }
   };
 
+  const handleRemoteSave = () => {
+    onRemoteSave?.();
+  };
+
+  const handleSceneInitChange = (initialized: boolean) => {
+    onSceneInitChange?.(initialized);
+  };
+
   const initialize = ({ excalidrawApi, roomId }: InitProps) => {
     collabRef.current = new Collab({
       ...collabProps,
       excalidrawApi,
+      onRemoteSave: handleRemoteSave,
       onCloseConnection: handleCloseConnection,
       onCollaboratorModeChange: ({ mode, reason }) => {
         setCollaboratorMode(mode);
         setCollaboratorModeReason(reason);
       },
+      onSceneInitChange: handleSceneInitChange,
     });
 
     collabRef.current.init();

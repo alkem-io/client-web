@@ -2,7 +2,6 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useCallback, useMemo } from 'react';
 import { ContributorCardSquareProps } from '../../ContributorCardSquare/ContributorCardSquare';
 import { isSocialLink, SocialLinkItem } from '../../../../shared/components/SocialLinks/SocialLinks';
-import { RoleType } from '../../../user/constants/RoleType';
 import { useOrganization } from '../hooks/useOrganization';
 import {
   useRolesOrganizationQuery,
@@ -21,6 +20,7 @@ import {
   AuthorizationPrivilege,
   CommunityContributorType,
   OrganizationInfoFragment,
+  SpaceLevel,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { buildUserProfileUrl } from '../../../../../main/routing/urlBuilders';
 import { useTranslation } from 'react-i18next';
@@ -151,32 +151,27 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
     );
   }, [usersWithRoles]);
 
+  // Return all contributions, filter by role in the view if needed
   const contributions = useMemo(() => {
-    const spacesHostingLeading =
-      orgRolesData?.rolesOrganization?.spaces?.filter(
-        space => space.roles?.includes(RoleType.Host) || space.roles?.includes(RoleType.Lead)
-      ) || [];
-
-    const spaceContributions = spacesHostingLeading.map<SpaceHostedItem>(x => ({
+    const spaceContributions = (orgRolesData?.rolesOrganization?.spaces ?? []).map<SpaceHostedItem>(x => ({
       spaceID: x.id,
-      spaceLevel: 0,
+      spaceLevel: SpaceLevel.Space,
       id: x.id,
       contributorId: organizationId,
       contributorType: CommunityContributorType.Organization,
+      roles: x.roles,
     }));
 
-    // Loop over spaces, filter the challenges in which user has the role 'lead' and map those challenges to ContributionItems
     const subspaceContributions =
       orgRolesData?.rolesOrganization?.spaces.flatMap<SpaceHostedItem>(h =>
-        h.subspaces
-          .filter(c => c.roles?.includes(RoleType.Lead))
-          .map<SpaceHostedItem>(c => ({
-            spaceID: c.id,
-            spaceLevel: 1,
-            id: c.id,
-            contributorId: organizationId,
-            contributorType: CommunityContributorType.Organization,
-          }))
+        h.subspaces.map<SpaceHostedItem>(c => ({
+          spaceID: c.id,
+          spaceLevel: c.level,
+          id: c.id,
+          contributorId: organizationId,
+          contributorType: CommunityContributorType.Organization,
+          roles: c.roles,
+        }))
       ) || [];
 
     return [...spaceContributions, ...subspaceContributions];

@@ -45,6 +45,7 @@ fragment Configuration on Config {
     newuser
     tips
     aup
+    documentation
   }
   featureFlags {
     enabled
@@ -54,6 +55,7 @@ fragment Configuration on Config {
     enabled
     endpoint
     submitPII
+    environment
   }
   apm {
     rumEnabled

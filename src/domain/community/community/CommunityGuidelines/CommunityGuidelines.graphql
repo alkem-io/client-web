@@ -28,7 +28,7 @@ fragment CommunityGuidelinesDetails on CommunityGuidelines {
   }
 }
 
-mutation updateCommunityGuidelines($communityGuidelinesData: UpdateCommunityGuidelinesInput!) {
+mutation updateCommunityGuidelines($communityGuidelinesData: UpdateCommunityGuidelinesEntityInput!) {
   updateCommunityGuidelines(communityGuidelinesData: $communityGuidelinesData) {
     ...CommunityGuidelinesDetails
   }

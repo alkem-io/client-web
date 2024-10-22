@@ -23,6 +23,7 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import useCommentReactionsMutations from '../../../communication/room/Comments/useCommentReactionsMutations';
 import MessagesThread, { MessagesThreadProps } from '../../../communication/room/Comments/MessagesThread';
 import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradient';
+import LocationCaption from '../../../../core/ui/location/LocationCaption';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
@@ -36,6 +37,7 @@ export interface PostDashboardViewProps {
   banner?: string;
   displayName?: string;
   description?: string;
+  // TODO: Posts don't have `type` anymore, but don't remove this because CalendarEvents still have type and we use this view to display them
   type?: string;
   messages?: Message[];
   vcInteractions?: MessagesThreadProps['vcInteractions'];
@@ -43,6 +45,7 @@ export interface PostDashboardViewProps {
   roomId: string | undefined;
   tags?: string[];
   references?: Pick<Reference, 'id' | 'name' | 'uri' | 'description'>[];
+  location?: { city?: string };
   bannerOverlayOverride?: ReactNode;
   creatorAvatar?: string;
   creatorName?: string;
@@ -90,6 +93,7 @@ const PostDashboardView: FC<PostDashboardViewProps> = props => {
     roomId,
     tags = [],
     references,
+    location,
   } = props;
 
   const { creatorName, creatorAvatar, createdDate } = props;
@@ -150,7 +154,9 @@ const PostDashboardView: FC<PostDashboardViewProps> = props => {
           ) : (
             <>
               <Typography component={WrapperMarkdown}>{description}</Typography>
-              <SectionSpacer double />
+              <SectionSpacer half />
+              {location && <LocationCaption {...location} />}
+              <SectionSpacer half />
               <TagsComponent tags={tags} loading={loading} />
             </>
           )}

@@ -95,7 +95,7 @@
     "no-upcoming-events": "Actuellement, il n'y a aucun événement à venir à afficher",
     "past-events": "Événements passés",
     "show-calendar": "Afficher le calendrier",
-    "defaultEventDescription": "$t(commun.location):\n\n$t(common.url):\n\n$t(common.description):"
+    "defaultEventDescription": ""
   },
   "buttons": {
     "leave": "Partir",

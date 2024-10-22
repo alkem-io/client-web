@@ -11,7 +11,6 @@ import { useTranslation } from 'react-i18next';
 import { FC, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import { CommunityPolicyFragment } from '../../../../core/apollo/generated/graphql-schema';
 import { gutters } from '../../../../core/ui/grid/utils';
 import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
 import DataGridTable from '../../../../core/ui/table/DataGridTable';
@@ -20,6 +19,7 @@ import CommunityMemberSettingsDialog from './CommunityMemberSettingsDialog';
 import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from './CommunityAddMembersDialog';
 import useCommunityPolicyChecker from './useCommunityPolicyChecker';
 import { ContributorViewProps } from '../EntityDashboardContributorsSection/Types';
+import { RoleDefinitionPolicyFragment } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface OrganizationDetailsFragmentWithRoles extends ContributorViewProps {
   isMember: boolean;
@@ -54,7 +54,8 @@ interface CommunityOrganizationsProps {
   onAddMember: (organizationId) => Promise<unknown> | undefined;
   fetchAvailableOrganizations: CommunityAddMembersDialogProps['fetchAvailableEntities'];
   onRemoveMember: (organizationId) => Promise<unknown> | void;
-  communityPolicy?: CommunityPolicyFragment;
+  memberRoleDefinition?: RoleDefinitionPolicyFragment;
+  leadRoleDefinition?: RoleDefinitionPolicyFragment;
   loading?: boolean;
 }
 
@@ -65,12 +66,14 @@ const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
   onAddMember,
   fetchAvailableOrganizations,
   onRemoveMember,
-  communityPolicy,
+  memberRoleDefinition,
+  leadRoleDefinition,
   loading,
 }) => {
   const { t } = useTranslation();
   const { canAddLeadOrganization, canRemoveLeadOrganization } = useCommunityPolicyChecker(
-    communityPolicy,
+    memberRoleDefinition,
+    leadRoleDefinition,
     organizations
   );
 

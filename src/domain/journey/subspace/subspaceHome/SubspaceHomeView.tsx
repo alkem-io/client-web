@@ -20,6 +20,7 @@ import { CalloutGroupNameValuesMap } from '../../../collaboration/callout/Callou
 interface SubspaceHomeViewProps {
   journeyId: string | undefined;
   collaborationId: string | undefined;
+  templatesSetId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
   callouts: TypedCallout[] | undefined;
@@ -33,6 +34,7 @@ interface SubspaceHomeViewProps {
 const SubspaceHomeView = ({
   journeyId,
   collaborationId,
+  templatesSetId,
   innovationFlowStates,
   currentInnovationFlowState,
   callouts,
@@ -108,6 +110,7 @@ const SubspaceHomeView = ({
               manageFlowActionDef && (
                 <InnovationFlowSettingsButton
                   collaborationId={collaborationId}
+                  templatesSetId={templatesSetId}
                   filterCalloutGroups={[CalloutGroupNameValuesMap.Home]}
                   tooltip={manageFlowActionDef.label}
                   icon={manageFlowActionDef.icon}

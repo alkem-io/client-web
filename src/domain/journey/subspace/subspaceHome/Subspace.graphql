@@ -26,10 +26,20 @@ fragment SubspacePageSpace on Space {
     vision
   }
   community @include(if: $authorizedReadAccessCommunity) {
-    ...EntityDashboardCommunity
-    myMembershipStatus
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+    roleSet {
+      ...RoleSetDetails
+      myMembershipStatus
+    }
   }
   collaboration {
+    id
+  }
+  library {
     id
   }
 }

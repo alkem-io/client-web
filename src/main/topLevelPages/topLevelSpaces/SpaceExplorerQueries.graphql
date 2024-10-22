@@ -84,7 +84,10 @@ fragment SpaceExplorerSpace on Space {
   visibility
   community {
     id
-    myMembershipStatus
+    roleSet {
+      id
+      myMembershipStatus
+    }
   }
   settings {
     privacy {
@@ -102,7 +105,7 @@ fragment SpaceExplorerSubspace on Space {
     tagline
     displayName
     description
-    cardBanner2: visual(type: CARD) {
+    cardBanner: visual(type: CARD) {
       ...VisualUri
     }
     type
@@ -110,7 +113,7 @@ fragment SpaceExplorerSubspace on Space {
       id
       tags
     }
-    avatar2: visual(type: AVATAR) {
+    avatar: visual(type: AVATAR) {
       ...VisualUri
     }
   }
@@ -120,7 +123,10 @@ fragment SpaceExplorerSubspace on Space {
   }
   community {
     id
-    myMembershipStatus
+    roleSet {
+      id
+      myMembershipStatus
+    }
   }
   settings {
     privacy {

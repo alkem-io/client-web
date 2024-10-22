@@ -1,25 +1,39 @@
 import { useMemo, useState } from 'react';
 import { ApolloError } from '@apollo/client';
-import { SearchableListItem } from '../../../platform/admin/components/SearchableList';
-import { useDeleteUserMutation, useUserListQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { SearchableTableItem } from '../../../platform/admin/components/SearchableTable';
+import {
+  refetchUserListQuery,
+  useAssignLicensePlanToAccountMutation,
+  useDeleteUserMutation,
+  useRevokeLicensePlanFromAccountMutation,
+  useUserListQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
-import { UserListQuery, UserListQueryVariables } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  LicensePlanType,
+  UserListQuery,
+  UserListQueryVariables,
+} from '../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import clearCacheForQuery from '../../../../core/apollo/utils/clearCacheForQuery';
 import { buildSettingsUrl } from '../../../../main/routing/urlBuilders';
+import { ContributorLicensePlan } from '../../contributor/organization/adminOrganizations/useAdminGlobalOrganizationsList';
 
 interface Provided {
   loading: boolean;
   deleting: boolean;
   error?: ApolloError;
-  userList: SearchableListItem[];
-  onDelete: (item: SearchableListItem) => void;
+  userList: SearchableTableItem[];
+  onDelete: (item: SearchableTableItem) => void;
   fetchMore: (itemsNumber?: number) => Promise<void>;
   hasMore: boolean | undefined;
   pageSize: number;
   firstPageSize: number;
   searchTerm: string;
+  licensePlans: ContributorLicensePlan[];
+  assignLicensePlan: (accountId: string, planId: string) => Promise<void>;
+  revokeLicensePlan: (accountId: string, planId: string) => Promise<void>;
   onSearchTermChange: (filterTerm: string) => void;
 }
 
@@ -63,10 +77,17 @@ const useAdminGlobalUserList = ({
 
   const userList = useMemo(
     () =>
-      (data?.usersPaginated.users ?? []).map<SearchableListItem>(({ id, profile, email }) => ({
+      (data?.usersPaginated.users ?? []).map<SearchableTableItem>(({ id, profile, email, account }) => ({
         id,
+        accountId: account?.id,
         value: `${profile.displayName} (${email})`,
         url: buildSettingsUrl(profile.url),
+        avatar: profile.visual,
+        activeLicensePlanIds: data?.platform.licensing.plans
+          .filter(({ licenseCredential }) =>
+            account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
+          )
+          .map(({ id }) => id),
       })),
     [data]
   );
@@ -76,7 +97,7 @@ const useAdminGlobalUserList = ({
     onCompleted: () => notify(t('pages.admin.users.notifications.user-removed'), 'success'),
   });
 
-  const onDelete = (item: SearchableListItem) => {
+  const onDelete = (item: SearchableTableItem) => {
     deleteUser({
       variables: {
         input: {
@@ -85,6 +106,53 @@ const useAdminGlobalUserList = ({
       },
     });
   };
+
+  const [assignLicense] = useAssignLicensePlanToAccountMutation();
+  const assignLicensePlan = async (accountId: string, licensePlanId: string) => {
+    await assignLicense({
+      variables: {
+        accountId,
+        licensePlanId,
+        licensingId: data?.platform.licensing.id ?? '',
+      },
+      refetchQueries: [
+        refetchUserListQuery({
+          first: pageSize,
+          filter: { firstName: searchTerm, lastName: searchTerm, email: searchTerm },
+        }),
+      ],
+      onCompleted: () => notify(t('pages.admin.generic.sections.account.licenseUpdated'), 'success'),
+    });
+  };
+
+  const [revokeLicense] = useRevokeLicensePlanFromAccountMutation();
+  const revokeLicensePlan = async (accountId: string, licensePlanId: string) => {
+    await revokeLicense({
+      variables: {
+        accountId,
+        licensePlanId,
+        licensingId: data?.platform.licensing.id ?? '',
+      },
+      refetchQueries: [
+        refetchUserListQuery({
+          first: pageSize,
+          filter: { firstName: searchTerm, lastName: searchTerm, email: searchTerm },
+        }),
+      ],
+      onCompleted: () => notify(t('pages.admin.generic.sections.account.licenseUpdated'), 'success'),
+    });
+  };
+
+  const licensePlans = useMemo<ContributorLicensePlan[]>(
+    () =>
+      data?.platform.licensing.plans
+        .filter(plan => plan.type === LicensePlanType.AccountPlan)
+        .map(licensePlan => ({
+          id: licensePlan.id,
+          name: licensePlan.name,
+        })) || [],
+    [data]
+  );
 
   return {
     userList,
@@ -97,6 +165,9 @@ const useAdminGlobalUserList = ({
     pageSize: actualPageSize,
     firstPageSize,
     searchTerm,
+    licensePlans,
+    assignLicensePlan,
+    revokeLicensePlan,
     onSearchTermChange: setSearchTerm,
   };
 };

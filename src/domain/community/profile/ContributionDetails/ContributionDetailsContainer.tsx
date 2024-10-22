@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import {
-  useRemoveUserAsCommunityMemberMutation,
-  useRemoveVirtualContributorAsCommunityMemberMutation,
+  useRemoveRoleFromUserMutation,
+  useRemoveRoleFromVirtualContributorMutation,
   useSpaceContributionDetailsQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '../../../../core/container/container';
@@ -10,7 +10,8 @@ import { useUserContext } from '../../user/hooks/useUserContext';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
-import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityContributorType, CommunityRoleType } from '../../../../core/apollo/generated/graphql-schema';
+import { getChildJourneyTypeName } from '../../../shared/utils/spaceLevel';
 
 export interface EntityDetailsContainerEntities {
   details?: ContributionDetails;
@@ -43,7 +44,7 @@ export interface ContributionDetails {
   };
   tags: string[];
   journeyUri: string;
-  communityId?: string;
+  roleSetId?: string;
   tagline: string;
 }
 
@@ -57,19 +58,20 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
     },
   });
 
-  const [userLeaveCommunity, { loading: userIsLeavingCommunity }] = useRemoveUserAsCommunityMemberMutation();
-  const [vcLeaveCommunity, { loading: vcIsLeavingCommunity }] = useRemoveVirtualContributorAsCommunityMemberMutation();
+  const [userLeaveCommunity, { loading: userIsLeavingCommunity }] = useRemoveRoleFromUserMutation();
+  const [vcLeaveCommunity, { loading: vcIsLeavingCommunity }] = useRemoveRoleFromVirtualContributorMutation();
 
   const details = useMemo<ContributionDetails | undefined>(() => {
     if (spaceData?.lookup.space) {
       const space = spaceData.lookup.space;
       return {
         displayName: space.profile.displayName!,
-        journeyTypeName: ['space', 'subspace', 'subsubspace'][spaceLevel] as JourneyTypeName,
+        journeyTypeName: getChildJourneyTypeName({ level: spaceLevel }) as JourneyTypeName,
         banner: getVisualByType(VisualName.CARD, space.profile.visuals),
         tags: space.profile.tagset?.tags ?? [],
         journeyUri: space.profile.url,
         communityId: space.community?.id,
+        roleSetId: space.community?.roleSet.id,
         tagline: space.profile.tagline ?? '',
       };
     }
@@ -78,11 +80,12 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
   const handleLeaveCommunity = useCallback(async () => {
     switch (contributorType) {
       case CommunityContributorType.User: {
-        if (details?.communityId && userId) {
+        if (details?.roleSetId && userId) {
           await userLeaveCommunity({
             variables: {
-              memberId: userId,
-              communityId: details.communityId,
+              contributorId: userId,
+              roleSetId: details.roleSetId,
+              role: CommunityRoleType.Member,
             },
             awaitRefetchQueries: true,
           });
@@ -90,11 +93,12 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         break;
       }
       case CommunityContributorType.Virtual: {
-        if (details?.communityId && contributorId) {
+        if (details?.roleSetId && contributorId) {
           await vcLeaveCommunity({
             variables: {
-              memberId: contributorId,
-              communityId: details.communityId,
+              contributorId: contributorId,
+              roleSetId: details.roleSetId,
+              role: CommunityRoleType.Member,
             },
           });
         }
@@ -104,7 +108,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         throw new Error('Invalid contributor type');
       }
     }
-  }, [userId, contributorId, contributorType, details?.communityId, userLeaveCommunity, vcLeaveCommunity]);
+  }, [userId, contributorId, contributorType, details?.roleSetId, userLeaveCommunity, vcLeaveCommunity]);
 
   return (
     <>

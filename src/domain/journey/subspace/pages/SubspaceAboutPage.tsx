@@ -26,7 +26,7 @@ const SubspaceAboutPage: FC = () => {
 
   const { t } = useTranslation();
 
-  const { journeyId, journeyLevel } = useRouteResolver();
+  const { journeyId, spaceLevel } = useRouteResolver();
 
   return (
     <>
@@ -51,7 +51,7 @@ const SubspaceAboutPage: FC = () => {
         ) => (
           <JourneyAboutDialog
             open
-            journeyLevel={journeyLevel}
+            spaceLevel={spaceLevel}
             displayName={profile?.displayName}
             tagline={profile?.tagline}
             references={references}

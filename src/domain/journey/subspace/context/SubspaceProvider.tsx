@@ -2,10 +2,10 @@ import React, { FC, useMemo } from 'react';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
-  SubspaceInfoFragment,
+  SubspacePendingMembershipInfoFragment,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
-import { useSubspaceInfoQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useSubspacePendingMembershipInfoQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 interface SubspacePermissions {
   canUpdate: boolean;
@@ -16,13 +16,14 @@ interface SubspacePermissions {
 }
 
 interface SubspaceContextProps {
-  subspace?: SubspaceInfoFragment;
+  subspace?: SubspacePendingMembershipInfoFragment;
   subspaceId: string;
   subspaceNameId: string;
   communityId: string;
+  roleSetId: string;
   loading: boolean;
   permissions: SubspacePermissions;
-  profile: SubspaceInfoFragment['profile'];
+  profile: SubspacePendingMembershipInfoFragment['profile'];
   myMembershipStatus: CommunityMembershipStatus | undefined;
 }
 
@@ -31,6 +32,7 @@ export const SubspaceContext = React.createContext<SubspaceContextProps>({
   subspaceId: '',
   subspaceNameId: '',
   communityId: '',
+  roleSetId: '',
   permissions: {
     canUpdate: false,
     canCreate: false,
@@ -53,7 +55,7 @@ interface SubspaceProviderProps {}
 const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
   const { journeyId } = useRouteResolver();
 
-  const { data, loading } = useSubspaceInfoQuery({
+  const { data, loading } = useSubspacePendingMembershipInfoQuery({
     variables: { subspaceId: journeyId! },
     errorPolicy: 'all',
     skip: !journeyId,
@@ -61,6 +63,7 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
 
   const subspace = data?.lookup.space;
   const communityId = subspace?.community?.id ?? '';
+  const roleSetId = subspace?.community?.roleSet?.id ?? '';
   const subspaceNameId = data?.lookup.space?.profile.displayName ?? '';
 
   const myPrivileges = useMemo(
@@ -104,10 +107,11 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
         subspaceId: journeyId ?? '',
         subspaceNameId,
         communityId,
+        roleSetId,
         permissions,
         profile,
         loading,
-        myMembershipStatus: subspace?.community?.myMembershipStatus,
+        myMembershipStatus: subspace?.community?.roleSet?.myMembershipStatus,
       }}
     >
       {children}

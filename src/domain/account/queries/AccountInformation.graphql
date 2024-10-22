@@ -12,6 +12,10 @@ query AccountInformation($accountId: UUID!) {
       spaces {
         id
         level
+        authorization {
+          id
+          myPrivileges
+        }
         profile {
           ...AccountItemProfile
           cardBanner: visual(type: CARD) {
@@ -21,6 +25,13 @@ query AccountInformation($accountId: UUID!) {
         }
         community {
           id
+          roleSet {
+            id
+            authorization {
+              id
+              myPrivileges
+            }
+          }
         }
         subspaces {
           id
@@ -30,6 +41,9 @@ query AccountInformation($accountId: UUID!) {
           type
           community {
             id
+            roleSet {
+              id
+            }
           }
         }
       }
@@ -45,7 +59,7 @@ query AccountInformation($accountId: UUID!) {
         profile {
           ...AccountItemProfile
         }
-        templates {
+        templatesSet {
           id
           calloutTemplatesCount
           communityGuidelinesTemplatesCount

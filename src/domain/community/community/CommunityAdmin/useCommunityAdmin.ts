@@ -1,40 +1,32 @@
 import { useMemo } from 'react';
 import {
   useAllOrganizationsLazyQuery,
-  useAssignOrganizationAsCommunityLeadMutation,
-  useAssignOrganizationAsCommunityMemberMutation,
-  useAssignUserAsCommunityLeadMutation,
-  useAssignUserAsCommunityMemberMutation,
   useEventOnApplicationMutation,
   useCommunityApplicationsInvitationsQuery,
-  useRemoveOrganizationAsCommunityLeadMutation,
-  useRemoveOrganizationAsCommunityMemberMutation,
-  useRemoveUserAsCommunityLeadMutation,
-  useRemoveUserAsCommunityMemberMutation,
-  useUsersWithCredentialsQuery,
   useInvitationStateEventMutation,
   useDeleteInvitationMutation,
   useDeletePlatformInvitationMutation,
   useCommunityMembersListQuery,
-  useCommunityAvailableMembersLazyQuery,
-  useAssignCommunityRoleToUserMutation,
-  useRemoveCommunityRoleFromUserMutation,
+  useAssignRoleToUserMutation,
+  useAssignRoleToOrganizationMutation,
+  useAssignRoleToVirtualContributorMutation,
+  useRemoveRoleFromUserMutation,
+  useRemoveRoleFromOrganizationMutation,
+  useRemoveRoleFromVirtualContributorMutation,
   useAvailableVirtualContributorsLazyQuery,
-  useRemoveVirtualContributorFromCommunityMutation,
   useAvailableVirtualContributorsInLibraryLazyQuery,
-  useAssignCommunityRoleToVirtualContributorMutation,
+  useRoleSetAvailableMembersLazyQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
-  AuthorizationCredential,
   AuthorizationPrivilege,
-  CommunityRole,
+  CommunityRoleType,
   SearchVisibility,
+  SpaceLevel,
 } from '../../../../core/apollo/generated/graphql-schema';
 import { OrganizationDetailsFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import { CommunityMemberUserFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityUsers';
 import useInviteUsers from '../../../community/invitations/useInviteUsers';
 import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
-import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 
 const MAX_AVAILABLE_MEMBERS = 100;
@@ -54,12 +46,12 @@ const buildOrganizationFilterObject = (filter: string | undefined) =>
     : undefined;
 
 // TODO: Inherit from CoreEntityIds when they are not NameIds
-interface useCommunityAdminParams {
-  communityId: string;
+interface useRoleSetAdminParams {
+  roleSetId: string;
   spaceId?: string;
   challengeId?: string;
   opportunityId?: string;
-  journeyLevel: JourneyLevel | -1;
+  spaceLevel: SpaceLevel | undefined;
 }
 
 interface VirtualContributorNameProps extends Identifiable {
@@ -69,13 +61,7 @@ interface VirtualContributorNameProps extends Identifiable {
   };
 }
 
-const useCommunityAdmin = ({
-  communityId,
-  spaceId,
-  challengeId,
-  opportunityId,
-  journeyLevel,
-}: useCommunityAdminParams) => {
+const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spaceLevel }: useRoleSetAdminParams) => {
   const journeyTypeName = getJourneyTypeName({
     spaceNameId: spaceId,
     challengeNameId: challengeId,
@@ -83,68 +69,58 @@ const useCommunityAdmin = ({
   })!;
 
   const {
-    data,
+    data: roleSetData,
     loading: loadingMembers,
     refetch: refetchCommunityMembers,
   } = useCommunityMembersListQuery({
     variables: {
-      communityId,
+      roleSetId,
       spaceId,
       includeSpaceHost: journeyTypeName === 'space',
     },
-    skip: !communityId || !spaceId,
+    skip: !roleSetId || !spaceId,
   });
 
-  const communityPolicy = data?.lookup.community?.policy;
+  const roleSet = roleSetData?.lookup.roleSet;
+
+  const memberRoleDefinition = roleSet?.memberRoleDefinition;
+  const leadRoleDefinition = roleSet?.leadRoleDefinition;
+  const roleSetMyPrivileges = roleSet?.authorization?.myPrivileges ?? [];
 
   const permissions = {
-    virtualContributorsEnabled: (data?.lookup.community?.authorization?.myPrivileges ?? []).some(
+    virtualContributorsEnabled: roleSetMyPrivileges.some(
       priv => priv === AuthorizationPrivilege.AccessVirtualContributor
     ),
-    canAddMembers: (data?.lookup.community?.authorization?.myPrivileges ?? []).some(
-      priv => priv === AuthorizationPrivilege.CommunityAddMember
-    ),
+    canAddMembers: roleSetMyPrivileges.some(priv => priv === AuthorizationPrivilege.CommunityAddMember),
     // the following privilege allows Admins of a space without CommunityAddMember privilege, to
     // be able to add VC from the account; CommunityAddMember overrides this privilege as it's not granted to PAs
-    canAddVirtualContributorsFromAccount: (data?.lookup.community?.authorization?.myPrivileges ?? []).some(
+    canAddVirtualContributorsFromAccount: roleSetMyPrivileges.some(
       priv => priv === AuthorizationPrivilege.CommunityAddMemberVcFromAccount
     ),
   };
-
-  const {
-    data: dataAdmins,
-    loading: loadingAdmins,
-    refetch: refetchAuthorization,
-  } = useUsersWithCredentialsQuery({
-    variables: {
-      input: {
-        type: AuthorizationCredential.SpaceAdmin,
-        resourceID: [spaceId, challengeId, opportunityId][journeyLevel],
-      },
-    },
-    skip: ![spaceId, challengeId, opportunityId][journeyLevel],
-  });
 
   const {
     data: dataApplications,
     loading: loadingApplications,
     refetch: refetchApplicationsAndInvitations,
   } = useCommunityApplicationsInvitationsQuery({
-    variables: { communityId },
-    skip: !communityId,
+    variables: { roleSetId },
+    skip: !roleSetId,
   });
 
   // Members:
   const users = useMemo(() => {
-    const members = data?.lookup.community?.memberUsers ?? [];
-    const leads = data?.lookup.community?.leadUsers ?? [];
-    const admins = dataAdmins?.usersWithAuthorizationCredential ?? [];
+    const roleSet = roleSetData?.lookup.roleSet;
+    const members = roleSet?.memberUsers ?? [];
+    const leads = roleSet?.leadUsers ?? [];
+    const admins = roleSet?.adminUsers ?? [];
 
     const result = members.map<CommunityMemberUserFragmentWithRoles>(user => ({
       ...user,
       isMember: true,
       isLead: leads.find(lead => lead.id === user.id) !== undefined,
       isAdmin: admins.find(admins => admins.id === user.id) !== undefined,
+      isContactable: user.isContactable,
     }));
 
     // Push the rest of the leads that are not yet in the list of members
@@ -156,6 +132,7 @@ const useCommunityAdmin = ({
           isMember: false,
           isLead: true,
           isAdmin: admins.find(admins => admins.id === lead.id) !== undefined,
+          isContactable: lead.isContactable,
         });
       }
     });
@@ -169,22 +146,25 @@ const useCommunityAdmin = ({
           isMember: false,
           isLead: false,
           isAdmin: true,
+          isContactable: admin.isContactable,
         });
       }
     });
 
     return result;
-  }, [data, dataAdmins]);
+  }, [roleSetData]);
 
   const organizations = useMemo(() => {
-    const members = data?.lookup.community?.memberOrganizations ?? [];
-    const leads = data?.lookup.community?.leadOrganizations ?? [];
+    const roleSet = roleSetData?.lookup.roleSet;
+    const members = roleSet?.memberOrganizations ?? [];
+    const leads = roleSet?.leadOrganizations ?? [];
 
     const result = members.map<OrganizationDetailsFragmentWithRoles>(member => ({
       ...member,
       isMember: true,
       isLead: leads.find(lead => lead.id === member.id) !== undefined,
-      isFacilitating: data?.lookup.space?.provider.id === member.id,
+      isFacilitating: roleSetData?.lookup.space?.provider.id === member.id,
+      isContactable: false, // TODO: Implement contactable for organizations
     }));
 
     // Push the rest of the leads that are not yet in the list of members
@@ -195,36 +175,44 @@ const useCommunityAdmin = ({
           ...lead,
           isMember: false,
           isLead: true,
-          isFacilitating: data?.lookup.space?.provider.id === lead.id,
+          isFacilitating: roleSetData?.lookup.space?.provider.id === lead.id,
+          isContactable: false, // TODO: Implement contactable for organizations
         });
       }
     });
 
     // Add Facilitating if it's not yet in the result
-    if (data?.lookup.space?.provider) {
-      const member = result.find(organization => organization.id === data.lookup.space?.provider?.id);
+    if (roleSetData?.lookup.space?.provider) {
+      const member = result.find(organization => organization.id === roleSetData.lookup.space?.provider.id);
       if (!member) {
-        result.push({ ...data.lookup.space.provider, isMember: false, isLead: false, isFacilitating: true });
+        result.push({
+          ...roleSetData.lookup.space.provider,
+          isMember: false,
+          isLead: false,
+          isFacilitating: true,
+          isContactable: false,
+        });
       }
     }
     return result;
-  }, [data, dataAdmins]);
+  }, [roleSetData]);
 
   const virtualContributors = useMemo(() => {
-    return data?.lookup.community?.virtualContributorsInRole ?? [];
-  }, [data]);
+    const roleSet = roleSetData?.lookup.roleSet;
+    return roleSet?.memberVirtualContributors ?? [];
+  }, [roleSetData]);
 
   // Available new members:
-  const [fetchAvailableUsers, { refetch: refetchAvailableMemberUsers }] = useCommunityAvailableMembersLazyQuery();
+  const [fetchAvailableUsers, { refetch: refetchAvailableMemberUsers }] = useRoleSetAvailableMembersLazyQuery();
   const getAvailableUsers = async (filter: string | undefined) => {
     const { data } = await fetchAvailableUsers({
       variables: {
-        communityId,
+        roleSetId,
         first: MAX_AVAILABLE_MEMBERS,
         filter: buildUserFilterObject(filter),
       },
     });
-    return data?.lookup.availableMembers?.availableMemberUsers?.users;
+    return data?.lookup.availableMembers?.availableUsersForMemberRole?.users;
   };
 
   const [fetchAllOrganizations, { refetch: refetchAvailableMemberOrganizations }] = useAllOrganizationsLazyQuery();
@@ -263,13 +251,14 @@ const useCommunityAdmin = ({
   const getAvailableVirtualContributors = async (filter: string | undefined, all: boolean = false) => {
     const { data } = await fetchAllVirtualContributors({
       variables: {
-        filterSpace: !all || journeyLevel > 0,
+        filterSpace: !all || spaceLevel !== SpaceLevel.Space,
         filterSpaceId: spaceId,
       },
     });
+    const roleSet = data?.lookup?.space?.community?.roleSet;
 
     // Results for Space Level - on Account if !all (filter in the query)
-    if (journeyLevel === 0) {
+    if (spaceLevel === SpaceLevel.Space) {
       return (data?.lookup?.space?.account.virtualContributors ?? data?.virtualContributors ?? []).filter(
         vc => filterExisting(vc, virtualContributors) && filterByName(vc, filter)
       );
@@ -277,13 +266,13 @@ const useCommunityAdmin = ({
 
     // Results for Subspaces - Community Members including External VCs (filter in the query)
     if (all) {
-      return (data?.lookup?.space?.community.virtualContributorsInRole ?? []).filter(
+      return (roleSet?.virtualContributorsInRole ?? []).filter(
         vc => filterExisting(vc, virtualContributors) && filterByName(vc, filter)
       );
     }
 
     // Results for Subspaces - Only Community Members On Account (filter in the query)
-    return (data?.lookup?.space?.community.virtualContributorsInRole ?? []).filter(
+    return (roleSet?.virtualContributorsInRole ?? []).filter(
       vc =>
         data?.lookup?.space?.account.virtualContributors.some(member => member.id === vc.id) &&
         filterExisting(vc, virtualContributors) &&
@@ -292,30 +281,32 @@ const useCommunityAdmin = ({
   };
 
   // Adding new members:
-  const [addUserToCommunity] = useAssignUserAsCommunityMemberMutation();
+  const [addUserToCommunity] = useAssignRoleToUserMutation();
   const handleAddUser = async (memberId: string) => {
-    if (!communityId) {
+    if (!roleSetId) {
       return;
     }
     await addUserToCommunity({
       variables: {
-        communityId,
-        memberId,
+        roleSetId,
+        contributorId: memberId,
+        role: CommunityRoleType.Member,
       },
     });
     await refetchAvailableMemberUsers();
     return refetchCommunityMembers();
   };
 
-  const [addOrganizationToCommunity] = useAssignOrganizationAsCommunityMemberMutation();
+  const [addOrganizationToCommunity] = useAssignRoleToOrganizationMutation();
   const handleAddOrganization = async (memberId: string) => {
-    if (!communityId) {
+    if (!roleSetId) {
       return;
     }
     await addOrganizationToCommunity({
       variables: {
-        communityId,
-        memberId,
+        roleSetId,
+        contributorId: memberId,
+        role: CommunityRoleType.Member,
       },
     });
     await refetchAvailableMemberOrganizations();
@@ -336,119 +327,128 @@ const useCommunityAdmin = ({
     return refetchCommunityMembers();
   };
 
-  const [assignUserAsCommunityLead] = useAssignUserAsCommunityLeadMutation();
-  const [removeUserAsCommunityLead] = useRemoveUserAsCommunityLeadMutation();
+  const [assignRoleToUser] = useAssignRoleToUserMutation();
+  const [removeRoleFromUser] = useRemoveRoleFromUserMutation();
   const handleUserLeadChange = async (memberId: string, isLead: boolean) => {
-    if (!communityId) {
+    if (!roleSetId) {
       return;
     }
     if (isLead) {
-      await assignUserAsCommunityLead({
+      await assignRoleToUser({
         variables: {
-          memberId,
-          communityId,
+          contributorId: memberId,
+          roleSetId,
+          role: CommunityRoleType.Lead,
         },
       });
     } else {
-      await removeUserAsCommunityLead({
+      await removeRoleFromUser({
         variables: {
-          memberId,
-          communityId,
+          contributorId: memberId,
+          roleSetId,
+          role: CommunityRoleType.Lead,
         },
       });
     }
     return refetchCommunityMembers();
   };
 
-  const [assignCommunityRole] = useAssignCommunityRoleToUserMutation();
-  const [removeCommunityRole] = useRemoveCommunityRoleFromUserMutation();
   const handleUserAuthorizationChange = async (memberId: string, isAdmin: boolean) => {
+    if (!roleSetId) {
+      return;
+    }
     if (isAdmin) {
-      await assignCommunityRole({
-        variables: { communityID: communityId, role: CommunityRole.Admin, userID: memberId },
+      await assignRoleToUser({
+        variables: { roleSetId: roleSetId, role: CommunityRoleType.Admin, contributorId: memberId },
       });
     } else {
-      await removeCommunityRole({
-        variables: { communityID: communityId, role: CommunityRole.Admin, userID: memberId },
+      await removeRoleFromUser({
+        variables: { roleSetId: roleSetId, role: CommunityRoleType.Admin, contributorId: memberId },
       });
     }
-    return refetchAuthorization();
+    return refetchCommunityMembers();
   };
 
-  const [removeUserAsCommunityMember] = useRemoveUserAsCommunityMemberMutation();
+  const [removeUserAsCommunityMember] = useRemoveRoleFromUserMutation();
   const handleRemoveUser = async (memberId: string) => {
-    if (!communityId) {
+    if (!roleSetId) {
       return;
     }
     await removeUserAsCommunityMember({
       variables: {
-        memberId,
-        communityId,
+        contributorId: memberId,
+        roleSetId,
+        role: CommunityRoleType.Member,
       },
     });
     return refetchCommunityMembers();
   };
 
-  const [assignOrganizationAsCommunityLead] = useAssignOrganizationAsCommunityLeadMutation();
-  const [removeOrganizationAsCommunityLeadMutation] = useRemoveOrganizationAsCommunityLeadMutation();
+  const [assignOrganizationAsCommunityLead] = useAssignRoleToOrganizationMutation();
+  const [removeOrganizationAsCommunityLeadMutation] = useRemoveRoleFromOrganizationMutation();
   const onOrganizationLeadChange = async (memberId: string, isLead: boolean) => {
-    if (!communityId) {
+    if (!roleSetId) {
       return;
     }
     if (isLead) {
       await assignOrganizationAsCommunityLead({
         variables: {
-          memberId,
-          communityId,
+          contributorId: memberId,
+          roleSetId,
+          role: CommunityRoleType.Lead,
         },
       });
     } else {
       await removeOrganizationAsCommunityLeadMutation({
         variables: {
-          memberId,
-          communityId,
+          contributorId: memberId,
+          roleSetId,
+          role: CommunityRoleType.Lead,
         },
       });
     }
     return refetchCommunityMembers();
   };
 
-  const [removeOrganizationAsCommunityMember] = useRemoveOrganizationAsCommunityMemberMutation();
+  const [removeOrganizationAsCommunityMember] = useRemoveRoleFromOrganizationMutation();
   const handleRemoveOrganization = async (memberId: string) => {
-    if (!communityId) {
+    if (!roleSetId) {
       return;
     }
     await removeOrganizationAsCommunityMember({
       variables: {
-        memberId,
-        communityId,
+        contributorId: memberId,
+        roleSetId,
+        role: CommunityRoleType.Member,
       },
     });
     return refetchCommunityMembers();
   };
 
-  const [addVirtualContributor] = useAssignCommunityRoleToVirtualContributorMutation();
+  const [addVirtualContributor] = useAssignRoleToVirtualContributorMutation();
   const handleAddVirtualContributor = async (virtualContributorId: string) => {
-    if (!communityId) {
+    if (!roleSetId) {
       return;
     }
     await addVirtualContributor({
       variables: {
-        communityId,
-        virtualContributorId,
+        roleSetId,
+        contributorId: virtualContributorId,
+        role: CommunityRoleType.Member,
       },
     });
     return refetchCommunityMembers();
   };
-  const [removeVirtualContributor] = useRemoveVirtualContributorFromCommunityMutation();
+  const [removeVirtualContributor] = useRemoveRoleFromVirtualContributorMutation();
   const handleRemoveVirtualContributor = async (virtualContributorId: string) => {
-    if (!communityId) {
+    if (!roleSetId) {
       return;
     }
     await removeVirtualContributor({
       variables: {
-        communityId,
-        virtualContributorId,
+        roleSetId,
+        contributorId: virtualContributorId,
+        role: CommunityRoleType.Member,
       },
     });
     return refetchCommunityMembers();
@@ -459,7 +459,7 @@ const useCommunityAdmin = ({
   };
 
   const { inviteContributor: inviteExistingUser, platformInviteToCommunity: inviteExternalUser } = useInviteUsers(
-    communityId,
+    roleSetId,
     {
       onInviteContributor: onInviteUser,
       onInviteExternalUser: onInviteUser,
@@ -497,16 +497,18 @@ const useCommunityAdmin = ({
     });
     await refetchApplicationsAndInvitations();
   };
+  const roleSetPending = dataApplications?.lookup.roleSet;
 
   return {
     users,
     organizations,
     virtualContributors,
-    communityPolicy,
+    memberRoleDefinition,
+    leadRoleDefinition,
     permissions,
-    applications: dataApplications?.lookup.community?.applications,
-    invitations: dataApplications?.lookup.community?.invitations,
-    platformInvitations: dataApplications?.lookup.community?.platformInvitations,
+    applications: roleSetPending?.applications,
+    invitations: roleSetPending?.invitations,
+    platformInvitations: roleSetPending?.platformInvitations,
     onApplicationStateChange: handleApplicationStateChange,
     onInvitationStateChange: handleInvitationStateChange,
     onUserLeadChange: handleUserLeadChange,
@@ -526,8 +528,8 @@ const useCommunityAdmin = ({
     getAvailableVirtualContributorsInLibrary,
     inviteExistingUser,
     inviteExternalUser,
-    loading: loadingAdmins || loadingMembers || loadingApplications,
+    loading: loadingMembers || loadingApplications,
   };
 };
 
-export default useCommunityAdmin;
+export default useRoleSetAdmin;

@@ -1,21 +1,19 @@
-import type { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import type { AppState, UserIdleState } from '@alkemio/excalidraw/types/types';
-import { DELETED_ELEMENT_TIMEOUT } from '../excalidrawAppConstants';
+import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
+import type { AppState, CollaboratorPointer, SocketId, UserIdleState } from '@alkemio/excalidraw/dist/excalidraw/types';
+import { DELETED_ELEMENT_TIMEOUT, WS_SCENE_EVENT_TYPES } from '../excalidrawAppConstants';
 import { env } from '../../../../../../main/env';
 import { BinaryFilesWithUrl } from '../../useWhiteboardFilesManager';
+import { MakeBrand } from '@alkemio/excalidraw/dist/excalidraw/utility-types';
+import { isInvisiblySmallElement } from '@alkemio/excalidraw';
 
-export type SyncableExcalidrawElement = ExcalidrawElement & {
-  _brand: 'SyncableExcalidrawElement';
+export type SyncableExcalidrawElement = OrderedExcalidrawElement & MakeBrand<'SyncableExcalidrawElement'>;
+
+export const isSyncableElement = (element: OrderedExcalidrawElement): element is SyncableExcalidrawElement => {
+  if (element.isDeleted) {
+    return element.updated > Date.now() - DELETED_ELEMENT_TIMEOUT;
+  }
+  return !isInvisiblySmallElement(element);
 };
-
-export const IsSyncableElement =
-  ({ isInvisiblySmallElement }: { isInvisiblySmallElement: (element: ExcalidrawElement) => boolean }) =>
-  (element: ExcalidrawElement): element is SyncableExcalidrawElement => {
-    if (element.isDeleted) {
-      return element.updated > Date.now() - DELETED_ELEMENT_TIMEOUT;
-    }
-    return !isInvisiblySmallElement(element);
-  };
 
 /**
  * Right now the reason why we resolve connection params (url, polling...)
@@ -26,11 +24,13 @@ export const IsSyncableElement =
  */
 export const getCollabServer = async (): Promise<{
   url: string;
+  path: string;
   polling: boolean;
 }> => {
-  if (env?.VITE_APP_ALKEMIO_DOMAIN) {
+  if (env?.VITE_APP_COLLAB_PATH && env?.VITE_APP_COLLAB_URL) {
     return {
-      url: env.VITE_APP_ALKEMIO_DOMAIN,
+      url: env.VITE_APP_COLLAB_URL,
+      path: env.VITE_APP_COLLAB_PATH,
       polling: true,
     };
   }
@@ -46,17 +46,17 @@ export type SocketUpdateDataSource = {
     };
   };
   SCENE_UPDATE: {
-    type: 'SCENE_UPDATE';
+    type: WS_SCENE_EVENT_TYPES.SCENE_UPDATE;
     payload: {
       elements: readonly ExcalidrawElement[];
       files: BinaryFilesWithUrl;
     };
   };
   MOUSE_LOCATION: {
-    type: 'MOUSE_LOCATION';
+    type: WS_SCENE_EVENT_TYPES.MOUSE_LOCATION;
     payload: {
-      socketId: string;
-      pointer: { x: number; y: number };
+      socketId: SocketId;
+      pointer: CollaboratorPointer;
       button: 'down' | 'up';
       selectedElementIds: AppState['selectedElementIds'];
       username: string;
@@ -65,17 +65,14 @@ export type SocketUpdateDataSource = {
   IDLE_STATUS: {
     type: 'IDLE_STATUS';
     payload: {
-      socketId: string;
+      socketId: SocketId;
       userState: UserIdleState;
       username: string;
     };
   };
-  SAVED: {
-    type: 'SAVED';
-    payload: {
-      socketId: string;
-      username: string;
-    };
+  INVALID_RESPONSE: {
+    type: 'INVALID_RESPONSE';
+    payload: never;
   };
 };
 

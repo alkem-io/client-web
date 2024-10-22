@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@mui/material';
 import PageContent from '../../../../core/ui/content/PageContent';
@@ -7,7 +7,7 @@ import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import CommunityApplications from '../../../community/community/CommunityAdmin/CommunityApplications';
 import CommunityOrganizations from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import CommunityUsers from '../../../community/community/CommunityAdmin/CommunityUsers';
-import useCommunityAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
+import useRoleSetAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
 import { useSubSpace } from '../hooks/useSubSpace';
@@ -21,19 +21,26 @@ import PageContentBlockCollapsible from '../../../../core/ui/content/PageContent
 import { BlockTitle } from '../../../../core/ui/typography';
 import CommunityGuidelinesContainer from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import CommunityGuidelinesForm from '../../../community/community/CommunityGuidelines/CommunityGuidelinesForm';
-import CommunityGuidelinesTemplatesLibrary from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateLibrary/CommunityGuidelinesTemplatesLibrary';
 import { useSpace } from '../../space/SpaceContext/useSpace';
+import ImportTemplatesDialog from '../../../templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import { LoadingButton } from '@mui/lab';
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();
-  const { loading: isLoadingChallenge, communityId, subspaceId: challengeId, subspaceNameId } = useSubSpace();
-  const { isPrivate, loading: isLoadingSpace } = useSpace();
+  const {
+    loading: isLoadingChallenge,
+    communityId,
+    roleSetId,
+    subspaceId: challengeId,
+    subspaceNameId,
+  } = useSubSpace();
+  const { loading: isLoadingSpace } = useSpace();
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const openTemplateDialog = useCallback(() => setIsDialogOpen(true), []);
-  const closeTemplatesDialog = useCallback(() => setIsDialogOpen(false), []);
+  const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
-  const { spaceId, journeyLevel } = useRouteResolver();
+  const { spaceId, spaceLevel } = useRouteResolver();
 
   const {
     users,
@@ -42,7 +49,8 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     applications,
     invitations,
     platformInvitations,
-    communityPolicy,
+    memberRoleDefinition,
+    leadRoleDefinition,
     permissions,
     onApplicationStateChange,
     onInvitationStateChange,
@@ -64,7 +72,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useCommunityAdmin({ communityId, spaceId, challengeId, journeyLevel });
+  } = useRoleSetAdmin({ roleSetId, spaceId, challengeId, spaceLevel });
 
   const currentApplicationsUserIds = useMemo(
     () =>
@@ -114,7 +122,6 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
               currentInvitationsUserIds={currentInvitationsContributorIds}
               currentMembersIds={currentMembersIds}
               spaceId={spaceId}
-              isParentPrivate={isPrivate}
               isSubspace
             />
           </PageContentBlockSeamless>
@@ -131,7 +138,11 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
               <PageContentBlockCollapsible
                 header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
                 primaryAction={
-                  <Button variant="outlined" onClick={() => openTemplateDialog()} startIcon={<InnovationLibraryIcon />}>
+                  <Button
+                    variant="outlined"
+                    onClick={() => setCommunityGuidelinesTemplatesDialogOpen(true)}
+                    startIcon={<InnovationLibraryIcon />}
+                  >
                     {t('common.library')}
                   </Button>
                 }
@@ -143,10 +154,17 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
                   profileId={profileId}
                 />
               </PageContentBlockCollapsible>
-              <CommunityGuidelinesTemplatesLibrary
-                open={isDialogOpen}
-                onClose={closeTemplatesDialog}
+              <ImportTemplatesDialog
+                open={communityGuidelinesTemplatesDialogOpen}
+                templateType={TemplateType.CommunityGuidelines}
+                onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
                 onSelectTemplate={onSelectCommunityGuidelinesTemplate}
+                enablePlatformTemplates
+                actionButton={
+                  <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+                    {t('buttons.use')}
+                  </LoadingButton>
+                }
               />
             </>
           )}
@@ -161,7 +179,8 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
               onAddMember={onAddUser}
               onRemoveMember={onRemoveUser}
               fetchAvailableUsers={getAvailableUsers}
-              communityPolicy={communityPolicy}
+              memberRoleDefinition={memberRoleDefinition}
+              leadRoleDefinition={leadRoleDefinition}
               loading={loading}
             />
           </PageContentBlock>
@@ -175,7 +194,8 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
               onAddMember={onAddOrganization}
               onRemoveMember={onRemoveOrganization}
               fetchAvailableOrganizations={getAvailableOrganizations}
-              communityPolicy={communityPolicy}
+              memberRoleDefinition={memberRoleDefinition}
+              leadRoleDefinition={leadRoleDefinition}
               loading={loading}
             />
           </PageContentBlock>

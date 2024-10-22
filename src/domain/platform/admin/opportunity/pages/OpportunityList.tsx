@@ -21,6 +21,10 @@ import {
   useDeleteSpaceMutation,
   useSubspacesInSpaceQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
+import { ContentCopyOutlined, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
+import MenuItemWithIcon from '../../../../../core/ui/menu/MenuItemWithIcon';
+import EntityConfirmDeleteDialog from '../../../../journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
+import Gutters from '../../../../../core/ui/grid/Gutters';
 
 export const OpportunityList: FC = () => {
   const { t } = useTranslation();
@@ -30,17 +34,24 @@ export const OpportunityList: FC = () => {
   const { challengeNameId = '' } = useUrlParams();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState<SearchableListItem | undefined>(undefined);
 
   const { data: subspacesListQuery, loading } = useSubspacesInSpaceQuery({
     variables: { spaceId: subspaceId },
     skip: !subspaceId,
   });
 
-  const opportunityList =
-    subspacesListQuery?.lookup.space?.subspaces?.map(o => ({
-      id: o.id,
-      value: o.profile.displayName,
-      url: buildSettingsUrl(o.profile.url),
+  const subsubspaces =
+    subspacesListQuery?.lookup.space?.subspaces?.map(s => ({
+      id: s.id,
+      profile: {
+        displayName: s.profile.displayName,
+        url: buildSettingsUrl(s.profile.url),
+        avatar: {
+          uri: s.profile.cardBanner?.uri ?? '',
+        },
+      },
     })) || [];
 
   const [deleteOpportunity] = useDeleteSpaceMutation({
@@ -54,7 +65,7 @@ export const OpportunityList: FC = () => {
   });
 
   const handleDelete = (item: SearchableListItem) => {
-    deleteOpportunity({
+    return deleteOpportunity({
       variables: {
         input: {
           ID: item.id,
@@ -102,6 +113,47 @@ export const OpportunityList: FC = () => {
     [navigate, createSubspace, spaceNameId, subspaceId, challengeNameId]
   );
 
+  const onDeleteClick = (item: SearchableListItem) => {
+    setDeleteDialogOpen(true);
+    setSelectedItem(item);
+  };
+
+  const clearDeleteState = () => {
+    setDeleteDialogOpen(false);
+    setSelectedItem(undefined);
+  };
+
+  const onDeleteConfirmation = () => {
+    if (selectedItem) {
+      handleDelete(selectedItem);
+      setDeleteDialogOpen(false);
+    }
+  };
+
+  const onDuplicateClick = (item: SearchableListItem) => {
+    // todo: implement
+    setSelectedItem(item);
+  };
+
+  const onSaveAsTemplateClick = (item: SearchableListItem) => {
+    // todo: implement
+    setSelectedItem(item);
+  };
+
+  const getActions = (item: SearchableListItem) => (
+    <>
+      <MenuItemWithIcon disabled iconComponent={ContentCopyOutlined} onClick={() => onDuplicateClick(item)}>
+        Duplicate Subspace
+      </MenuItemWithIcon>
+      <MenuItemWithIcon disabled iconComponent={DownloadForOfflineOutlined} onClick={() => onSaveAsTemplateClick(item)}>
+        Save As Template
+      </MenuItemWithIcon>
+      <MenuItemWithIcon iconComponent={DeleteOutline} onClick={() => onDeleteClick(item)}>
+        {t('buttons.delete')}
+      </MenuItemWithIcon>
+    </>
+  );
+
   if (loading) return <Loading text={'Loading spaces'} />;
 
   return (
@@ -115,7 +167,9 @@ export const OpportunityList: FC = () => {
         >
           {t('buttons.create')}
         </Button>
-        <SearchableList data={opportunityList} onDelete={handleDelete} />
+        <Gutters disablePadding>
+          <SearchableList data={subsubspaces} getActions={getActions} journeyTypeName="subsubspace" />
+        </Gutters>
       </Box>
       <JourneyCreationDialog
         open={open}
@@ -124,6 +178,13 @@ export const OpportunityList: FC = () => {
         onClose={() => setOpen(false)}
         onCreate={handleCreate}
         formComponent={CreateOpportunityForm}
+      />
+      <EntityConfirmDeleteDialog
+        entity={t('common.subsubspace')}
+        open={deleteDialogOpen}
+        onClose={clearDeleteState}
+        onDelete={onDeleteConfirmation}
+        description={'components.deleteEntity.confirmDialog.descriptionShort'}
       />
     </>
   );

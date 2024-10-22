@@ -6,7 +6,7 @@ import { useSpaceProviderQuery } from '../../../../core/apollo/generated/apollo-
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
-  SpaceInfoFragment,
+  SpacePendingMembershipInfoFragment,
   SpacePrivacyMode,
   SpaceVisibility,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -15,8 +15,8 @@ export interface SpacePermissions {
   canRead: boolean;
   viewerCanUpdate: boolean;
   canReadPosts: boolean;
-  canReadChallenges: boolean;
-  canCreateChallenges: boolean;
+  canReadSubspaces: boolean;
+  canCreateSubspaces: boolean;
   canCreate: boolean;
   communityReadAccess: boolean;
   contextPrivileges: AuthorizationPrivilege[];
@@ -26,6 +26,7 @@ interface SpaceContextProps {
   spaceId: string;
   spaceNameId: string;
   communityId: string;
+  roleSetId: string;
   isPrivate?: boolean;
   loading: boolean;
   permissions: SpacePermissions;
@@ -33,8 +34,8 @@ interface SpaceContextProps {
   refetchSpace: () => void;
   // TODO Some components just randomly access SpaceContext instead of just querying the data the usual way.
   // TODO This Context should provide as little data as possible or just be removed.
-  context?: SpaceInfoFragment['context'];
-  profile: SpaceInfoFragment['profile'];
+  context?: SpacePendingMembershipInfoFragment['context'];
+  profile: SpacePendingMembershipInfoFragment['profile'];
   visibility: SpaceVisibility;
   myMembershipStatus: CommunityMembershipStatus | undefined;
 }
@@ -45,13 +46,14 @@ const SpaceContext = React.createContext<SpaceContextProps>({
   spaceId: '',
   spaceNameId: '',
   communityId: '',
+  roleSetId: '',
   permissions: {
     canRead: false,
     viewerCanUpdate: false,
     canCreate: false,
-    canCreateChallenges: false,
+    canCreateSubspaces: false,
     canReadPosts: false,
-    canReadChallenges: false,
+    canReadSubspaces: false,
     communityReadAccess: false,
     contextPrivileges: [],
   },
@@ -92,13 +94,14 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const visibility = space?.visibility || SpaceVisibility.Active;
 
   const communityId = space?.community?.id ?? '';
+  const roleSetId = space?.community?.roleSet?.id ?? '';
   const isPrivate = space && space.settings.privacy?.mode === SpacePrivacyMode.Private;
   const error = configError || spaceError;
 
   const contextPrivileges = space?.context?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const spacePrivileges = space?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
-  const canReadChallenges = spacePrivileges.includes(AuthorizationPrivilege.Read);
+  const canReadSubspaces = spacePrivileges.includes(AuthorizationPrivilege.Read);
   const canCreateSubspaces = spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace);
   const canCreate = spacePrivileges.includes(AuthorizationPrivilege.Create);
 
@@ -108,14 +111,14 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
     return {
       canRead: spacePrivileges.includes(AuthorizationPrivilege.Read),
       viewerCanUpdate: spacePrivileges.includes(AuthorizationPrivilege.Update),
-      canReadChallenges,
-      canCreateChallenges: canCreateSubspaces,
+      canReadSubspaces,
+      canCreateSubspaces: canCreateSubspaces,
       canCreate,
       communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
       canReadPosts: contextPrivileges.includes(AuthorizationPrivilege.Read),
       contextPrivileges,
     };
-  }, [spacePrivileges, contextPrivileges, canReadChallenges, communityPrivileges, canCreate, canCreateSubspaces]);
+  }, [spacePrivileges, contextPrivileges, canReadSubspaces, communityPrivileges, canCreate, canCreateSubspaces]);
 
   const profile = useMemo(() => {
     return {
@@ -138,6 +141,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
         spaceId,
         spaceNameId,
         communityId,
+        roleSetId,
         permissions,
         isPrivate,
         loading,
@@ -146,7 +150,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
         profile,
         context: space?.context,
         visibility,
-        myMembershipStatus: space?.community?.myMembershipStatus,
+        myMembershipStatus: space?.community?.roleSet?.myMembershipStatus,
       }}
     >
       {children}

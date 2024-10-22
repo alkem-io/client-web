@@ -95,6 +95,10 @@ fragment EventProfile on Profile {
     uri
     description
   }
+  location {
+    id
+    city
+  }
 }
 
 mutation createCalendarEvent($eventData: CreateCalendarEventOnCalendarInput!) {

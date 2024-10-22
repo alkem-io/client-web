@@ -1,0 +1,12 @@
+query AllTemplatesInTemplatesSet($templatesSetId: UUID!) {
+  lookup {
+    templatesSet(ID: $templatesSetId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      ...TemplatesSetTemplates
+    }
+  }
+}

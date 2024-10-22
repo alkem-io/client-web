@@ -1,14 +1,10 @@
 import React, { ReactNode } from 'react';
-import {
-  getChildJourneyTypeName,
-  InvitationHydrator,
-  InvitationWithMeta,
-} from '../pendingMembership/PendingMemberships';
+import { InvitationHydrator, InvitationWithMeta } from '../pendingMembership/PendingMemberships';
 import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
 import JourneyCard from '../../journey/common/JourneyCard/JourneyCard';
-import journeyIcon from '../../shared/components/JourneyIcon/JourneyIcon';
+import spaceIcon from '../../shared/components/JourneyIcon/JourneyIcon';
 import JourneyCardTagline from '../../journey/common/JourneyCard/JourneyCardTagline';
 import { BlockSectionTitle, Caption, Text } from '../../../core/ui/typography';
 import DetailedActivityDescription from '../../shared/components/ActivityDescription/DetailedActivityDescription';
@@ -24,6 +20,7 @@ import References from '../../shared/components/References/References';
 import { gutters } from '../../../core/ui/grid/utils';
 import FlexSpacer from '../../../core/ui/utils/FlexSpacer';
 import { theme } from '../../../core/ui/themes/default/Theme';
+import { getChildJourneyTypeName } from '../../shared/utils/spaceLevel';
 
 interface InvitationDialogProps {
   open: boolean;
@@ -100,7 +97,7 @@ const InvitationDialog = ({
                     alignItems={isMobile ? 'center' : 'start'}
                   >
                     <JourneyCard
-                      iconComponent={journeyIcon[getChildJourneyTypeName(invitation.space)]}
+                      iconComponent={spaceIcon[getChildJourneyTypeName(invitation.space)]}
                       header={invitation.space.profile.displayName}
                       tags={invitation.space.profile.tagset?.tags ?? []}
                       banner={invitation.space.profile.visual}

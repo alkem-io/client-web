@@ -1,11 +1,13 @@
 import {
-  useInviteContributorsToCommunityMutation,
-  useInviteUserToPlatformAndCommunityMutation,
+  useInviteContributorsForRoleSetMembershipMutation,
+  useInviteUserToPlatformAndRoleSetMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
+import { CommunityRoleType } from '../../../core/apollo/generated/graphql-schema';
 import ensurePresence from '../../../core/utils/ensurePresence';
 
 export interface InviteUserData {
   message: string;
+  extraRole?: CommunityRoleType;
 }
 
 export interface InviteContributorsData extends InviteUserData {
@@ -22,37 +24,43 @@ interface UseInviteUsersProvided {
 }
 
 interface UseInviteUsersCallbacks {
-  onInviteContributor?: (communityId: string) => void | Promise<void>;
-  onInviteExternalUser?: (communityId: string) => void | Promise<void>;
+  onInviteContributor?: (roleSetId: string) => void | Promise<void>;
+  onInviteExternalUser?: (roleSetId: string) => void | Promise<void>;
 }
 
 const useInviteUsers = (
-  communityId: string | undefined,
+  roleSetId: string | undefined,
   { onInviteContributor, onInviteExternalUser }: UseInviteUsersCallbacks = {}
 ): UseInviteUsersProvided => {
-  const [inviteExistingUser] = useInviteContributorsToCommunityMutation();
-  const [invitePlatformCommunity] = useInviteUserToPlatformAndCommunityMutation();
+  const [inviteExistingUser] = useInviteContributorsForRoleSetMembershipMutation();
+  const [inviteUserForRoleSetAndPlatform] = useInviteUserToPlatformAndRoleSetMutation();
 
   return {
-    inviteContributor: async ({ contributorIds, message }) => {
+    inviteContributor: async ({ contributorIds, message, extraRole }) => {
+      const role = extraRole === CommunityRoleType.Member ? undefined : extraRole;
+
       await inviteExistingUser({
         variables: {
           contributorIds,
           message,
-          communityId: ensurePresence(communityId),
+          extraRole: role,
+          roleSetId: ensurePresence(roleSetId),
         },
       });
-      await onInviteContributor?.(ensurePresence(communityId));
+      await onInviteContributor?.(ensurePresence(roleSetId));
     },
-    platformInviteToCommunity: async ({ email, message }) => {
-      await invitePlatformCommunity({
+    platformInviteToCommunity: async ({ email, message, extraRole }) => {
+      const role = extraRole === CommunityRoleType.Member ? undefined : extraRole;
+
+      await inviteUserForRoleSetAndPlatform({
         variables: {
           email,
           message,
-          communityId: ensurePresence(communityId),
+          extraRole: role,
+          roleSetId: ensurePresence(roleSetId),
         },
       });
-      await onInviteExternalUser?.(ensurePresence(communityId));
+      await onInviteExternalUser?.(ensurePresence(roleSetId));
     },
   };
 };

@@ -2,14 +2,14 @@ import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
 import { Delete, Save } from '@mui/icons-material';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import Loading from '../../../../core/ui/loading/Loading';
 import { DialogContent } from '../../../../core/ui/dialog/deprecated';
 import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
-import type { ExportedDataState } from '@alkemio/excalidraw/types/data/types';
+import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
 import { Box, Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -19,26 +19,31 @@ import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
 import whiteboardSchema from '../validation/whiteboardSchema';
 import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import WhiteboardDialogTemplatesLibrary from './WhiteboardDialogTemplatesLibrary';
-import { WhiteboardTemplateWithContent } from '../WhiteboardTemplateCard/WhiteboardTemplate';
+import WhiteboardDialogTemplatesLibrary from '../../../templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import { error as logError, TagCategoryValues } from '../../../../core/logging/sentry/log';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { WhiteboardWithContent, WhiteboardWithoutContent } from '../containers/WhiteboardContentContainer';
 import {
   generateWhiteboardPreviewImages,
   WhiteboardPreviewImage,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import { WhiteboardTemplateContent } from '../../../templates/models/WhiteboardTemplate';
+import { WhiteboardDetails } from './WhiteboardDialog';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
-interface SingleUserWhiteboardDialogProps<Whiteboard extends WhiteboardWithContent> {
+export interface WhiteboardWithContent extends WhiteboardDetails {
+  content: string;
+}
+
+interface SingleUserWhiteboardDialogProps {
   entities: {
-    whiteboard?: Whiteboard;
+    whiteboard?: WhiteboardWithContent;
   };
   actions: {
-    onCancel: (whiteboard: WhiteboardWithoutContent<Whiteboard>) => void;
-    onUpdate: (whiteboard: Whiteboard, previewImages?: WhiteboardPreviewImage[]) => void;
-    onDelete?: (whiteboard: WhiteboardWithoutContent<Whiteboard>) => void;
+    onCancel: () => void;
+    onUpdate: (whiteboard: WhiteboardWithContent, previewImages?: WhiteboardPreviewImage[]) => Promise<void>;
+    onDelete?: (whiteboard: Identifiable) => Promise<void>;
   };
   options: {
     show: boolean;
@@ -81,12 +86,7 @@ const useStyles = makeStyles(theme => ({
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
-const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
-  entities,
-  actions,
-  options,
-  state,
-}: SingleUserWhiteboardDialogProps<Whiteboard>) => {
+const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: SingleUserWhiteboardDialogProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { whiteboard } = entities;
@@ -138,7 +138,7 @@ const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
           displayName,
         },
         content,
-      } as Whiteboard,
+      },
       previewImages
     );
   };
@@ -171,17 +171,17 @@ const SingleUserWhiteboardDialog = <Whiteboard extends WhiteboardWithContent>({
       }
     }
 
-    actions.onCancel(whiteboard!);
+    actions.onCancel();
   };
 
-  const handleImportTemplate = async (template: WhiteboardTemplateWithContent) => {
+  const handleImportTemplate = async (template: WhiteboardTemplateContent) => {
     if (excalidrawAPI && options.canEdit) {
       try {
-        mergeWhiteboard(excalidrawAPI, template.content);
+        await mergeWhiteboard(excalidrawAPI, template.whiteboard.content);
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
-        // @ts-ignore
-        logError(new Error(`Error importing whiteboard template ${template.id}: '${err}'`), {
+
+        logError(new Error(`Error importing whiteboard template: '${err}'`), {
           category: TagCategoryValues.WHITEBOARD,
         });
       }

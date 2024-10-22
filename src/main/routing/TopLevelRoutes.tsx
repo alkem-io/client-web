@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
 import { CommunityContextProvider } from '../../domain/community/community/CommunityContext';
@@ -22,7 +22,7 @@ import devRoute from '../../dev/routes';
 import RedirectToLanding from '../../domain/platform/routes/RedirectToLanding';
 import ForumRoute from '../../domain/communication/discussion/routing/ForumRoute';
 import InnovationLibraryPage from '../topLevelPages/InnovationLibraryPage/InnovationLibraryPage';
-import InnovationPackRoute from '../../domain/collaboration/InnovationPack/InnovationPackRoute';
+import InnovationPackRoute from '../../domain/InnovationPack/InnovationPackRoute';
 import NonIdentity from '../../domain/platform/routes/NonIdentity';
 import useRedirectToIdentityDomain from '../../core/auth/authentication/routing/useRedirectToIdentityDomain';
 import { EntityPageLayoutHolder, NotFoundPageLayout, RenderPoint } from '../../domain/journey/common/EntityPageLayout';
@@ -30,6 +30,9 @@ import RedirectToWelcomeSite from '../../domain/platform/routes/RedirectToWelcom
 import CreateSpaceDialog from '../../domain/journey/space/createSpace/CreateSpaceDialog';
 import VCRoute from '../../domain/community/virtualContributor/VCRoute';
 import { TopLevelRoutePath } from './TopLevelRoutePath';
+import Loading from '../../core/ui/loading/Loading';
+
+const DocumentationPage = React.lazy(() => import('../../domain/documentation/DocumentationPage'));
 
 export const TopLevelRoutes: FC = () => {
   useRedirectToIdentityDomain();
@@ -149,6 +152,14 @@ export const TopLevelRoutes: FC = () => {
                 <InnovationPackRoute />
               </WithApmTransaction>
             </NonIdentity>
+          }
+        />
+        <Route
+          path={`${TopLevelRoutePath.Docs}/*`}
+          element={
+            <Suspense fallback={<Loading />}>
+              <DocumentationPage />
+            </Suspense>
           }
         />
         <Route

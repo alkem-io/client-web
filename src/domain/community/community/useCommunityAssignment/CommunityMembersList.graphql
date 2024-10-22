@@ -1,5 +1,5 @@
 query CommunityMembersList(
-  $communityId: UUID!
+  $roleSetId: UUID!
   $spaceId: UUID = "00000000-0000-0000-0000-000000000000"
   $includeSpaceHost: Boolean = false
 ) {
@@ -9,89 +9,15 @@ query CommunityMembersList(
         ...ContributorDetails
       }
     }
-    community(ID: $communityId) {
-      ...CommunityMembersDetails
-    }
-  }
-}
-
-query CommunityAvailableMembers($communityId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
-  lookup {
-    availableMembers: community(ID: $communityId) {
-      ...CommunityAvailableMemberUsers
-    }
-  }
-}
-
-fragment CommunityMembersDetails on Community {
-  id
-  memberUsers {
-    ...CommunityMemberUser
-  }
-  leadUsers: usersInRole(role: LEAD) {
-    ...CommunityMemberUser
-  }
-  memberOrganizations: organizationsInRole(role: MEMBER) {
-    ...OrganizationDetails
-  }
-  leadOrganizations: organizationsInRole(role: LEAD) {
-    ...OrganizationDetails
-  }
-  virtualContributorsInRole(role: MEMBER) {
-    ...CommunityMemberVirtualContributor
-  }
-  policy {
-    ...CommunityPolicy
-  }
-  authorization {
-    id
-    myPrivileges
-  }
-}
-
-fragment CommunityPolicy on CommunityPolicy {
-  id
-  lead {
-    maxOrg
-    maxUser
-    minOrg
-    minUser
-  }
-  member {
-    maxOrg
-    maxUser
-    minOrg
-    minUser
-  }
-}
-
-fragment CommunityAvailableLeadUsers on Community {
-  id
-  availableLeadUsers(first: $first, after: $after, filter: $filter) {
-    users {
-      ...AvailableUser
-    }
-    pageInfo {
-      ...PageInfo
-    }
-  }
-}
-
-fragment CommunityAvailableMemberUsers on Community {
-  id
-  availableMemberUsers(first: $first, after: $after, filter: $filter) {
-    users {
-      ...AvailableUser
-    }
-    pageInfo {
-      ...PageInfo
+    roleSet(ID: $roleSetId) {
+      ...RoleSetDetails
     }
   }
 }
 
 fragment CommunityMemberUser on User {
   id
-  nameID
+  isContactable
   profile {
     id
     displayName
@@ -103,27 +29,55 @@ fragment CommunityMemberUser on User {
       city
       country
     }
+    tagsets {
+      ...TagsetDetails
+    }
+    url
   }
   email
   firstName
   lastName
 }
 
-fragment CommunityMemberVirtualContributor on VirtualContributor {
+fragment CommunityMemberOrganization on Organization {
   id
-  nameID
   profile {
     id
     displayName
-    url
     avatar: visual(type: AVATAR) {
       ...VisualUri
+    }
+    description
+    tagsets {
+      ...TagsetDetails
+    }
+    location {
+      id
+      country
+      city
+    }
+    url
+  }
+}
+
+fragment CommunityMemberVirtualContributor on VirtualContributor {
+  id
+  searchVisibility
+  profile {
+    id
+    displayName
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+    tagsets {
+      ...TagsetDetails
     }
     location {
       id
       city
       country
     }
+    url
   }
 }
 

@@ -9,12 +9,11 @@ import { useUserMetadata } from '../hooks/useUserMetadata';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
-import { CommunityContributorType, SpaceType } from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityContributorType, SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
 import {
   useUserContributionsQuery,
   useUserPendingMembershipsQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { JourneyLevel } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface UserMembershipPageProps {}
 
@@ -39,7 +38,7 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
       const currentSpace = {
         spaceID: space.id,
         id: space.id,
-        spaceLevel: 0 as JourneyLevel,
+        spaceLevel: SpaceLevel.Space,
         contributorId: userMetadata?.user.id!,
         contributorType: CommunityContributorType.User,
       };
@@ -48,12 +47,7 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
       const subspaces = space.subspaces.map(subspace => ({
         id: subspace.id,
         spaceID: subspace.id,
-        spaceLevel:
-          subspace.type === SpaceType.Challenge
-            ? (1 as JourneyLevel)
-            : subspace.type === SpaceType.Opportunity
-            ? (2 as JourneyLevel)
-            : (1 as JourneyLevel),
+        spaceLevel: subspace.level,
         contributorId: userMetadata?.user.id!,
         contributorType: CommunityContributorType.User,
       }));
@@ -70,8 +64,8 @@ const UserMembershipPage: FC<UserMembershipPageProps> = () => {
     } else {
       return pendingMembershipsData.me.communityApplications.map(application => ({
         id: application.id,
-        spaceID: application.space.id,
-        spaceLevel: application.space.level as JourneyLevel,
+        spaceID: application.spacePendingMembershipInfo.id,
+        spaceLevel: application.spacePendingMembershipInfo.level,
         contributorId: userMetadata.user.id,
         contributorType: CommunityContributorType.User,
       }));

@@ -18,7 +18,10 @@ fragment SpaceCard on Space {
   }
   community {
     id
-    myMembershipStatus
+    roleSet {
+      id
+      myMembershipStatus
+    }
   }
   context {
     id

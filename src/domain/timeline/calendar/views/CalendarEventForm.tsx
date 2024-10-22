@@ -1,31 +1,24 @@
 import React, { ReactNode, useMemo } from 'react';
-import { Form, Formik } from 'formik';
+import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { Box, DialogContent, Theme, useMediaQuery } from '@mui/material';
 import DialogHeader, { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
 import { BlockTitle } from '../../../../core/ui/typography';
-import FormikDatePicker from '../../../../core/ui/forms/DatePicker/FormikDatePicker';
 import { CalendarEventFormData } from '../CalendarEventsContainer';
 import { CalendarEventType } from '../../../../core/apollo/generated/graphql-schema';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { gutters } from '../../../../core/ui/grid/utils';
-import FormikTimePicker from '../../../../core/ui/forms/DatePicker/FormikTimePicker';
-import FormikAutocomplete, { FormikSelectValue } from '../../../../core/ui/forms/FormikAutocomplete';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { TagsetField } from '../../../platform/admin/components/Common/TagsetSegment';
-import GridItem from '../../../../core/ui/grid/GridItem';
-import GridProvider from '../../../../core/ui/grid/GridProvider';
 import { displayNameValidator } from '../../../../core/ui/forms/validator';
 import { CalendarEventDetailData } from '../CalendarEventDetailContainer';
-import FormikDurationMinutes from '../../../../core/ui/forms/DatePicker/FormikDurationMinutes';
-import { LoadingButton } from '@mui/lab';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import dayjs from 'dayjs';
+import { isSameDay } from '../../../../core/utils/time/utils';
+import EventForm from './EventForm';
+import { FormikSelectValue } from '../../../../core/ui/forms/FormikSelect';
+import GridProvider from '../../../../core/ui/grid/GridProvider';
 
-interface CalendarEventFormProps {
+const DEFAULT_DURATION_MINUTES = 30;
+
+export interface CalendarEventFormProps {
   event: Partial<CalendarEventDetailData> | undefined;
   dialogTitle: string;
   onClose: DialogHeaderProps['onClose'];
@@ -62,21 +55,34 @@ const CalendarEventForm = ({
   actions,
 }: CalendarEventFormProps) => {
   const { t } = useTranslation();
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
   const handleSubmit = (formValues: Partial<CalendarEventFormData>) => {
     onSubmit(formValues as CalendarEventFormData);
   };
 
-  // TODO: Remove startDate from here
-  const initialStartDate = useMemo(() => event?.startDate ?? new Date(), [event]);
+  const dateNow = new Date();
+
+  const initialStartDate = useMemo(() => event?.startDate ?? dateNow, [event]);
+  const initialEndDate = useMemo(() => {
+    if (!event?.startDate) {
+      return dateNow;
+    }
+
+    if (event.durationMinutes) {
+      return new Date(new Date(event.startDate).getTime() + event.durationMinutes * 60000);
+    }
+
+    return dateNow;
+  }, [event]);
 
   const initialValues = useMemo<Partial<CalendarEventFormData>>(() => {
     const startDate = initialStartDate;
+    const endDate = initialEndDate;
 
     return {
       startDate,
-      durationMinutes: event?.durationMinutes ?? 30,
+      endDate,
+      durationMinutes: event?.durationMinutes ?? DEFAULT_DURATION_MINUTES,
       displayName: event?.profile?.displayName ?? '',
       description: event?.profile?.description ?? '',
       type: event?.type,
@@ -85,16 +91,57 @@ const CalendarEventForm = ({
       durationDays: event?.durationDays,
       tags: event?.profile?.tagset?.tags ?? [],
       references: event?.profile?.references ?? [],
+      location: event?.profile?.location,
     };
   }, [event, initialStartDate]);
 
+  // the following validation applies ensuring that the event is either:
+  // 1. wholeDay;
+  // 2. if it's the same day it should be with positive durationMinutes
+  // 3. outherwise the endDate should be greater than startDate
+  // (not the case in #2 where we're using durationMinutes instead of endDate)
+  const validateDuration = value => {
+    const { durationMinutes, startDate, endDate, wholeDay } = value || {};
+
+    if (wholeDay) {
+      return true;
+    }
+    if (isSameDay(startDate, endDate) && (durationMinutes ?? 0) > 0) {
+      return true;
+    }
+    if (endDate && startDate && dayjs(endDate).isAfter(dayjs(startDate))) {
+      return true;
+    }
+
+    return false;
+  };
+
   const validationSchema = yup.object().shape({
     displayName: displayNameValidator,
-    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH)
-      .required(t('common.field-required'))
-      .min(3, ({ min }) => t('common.field-min-length', { min })),
+    description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     type: yup.string().required(t('common.field-required')),
-    durationMinutes: yup.number().positive(t('calendar.validation.durationMinutes.positive')),
+    durationMinutes: yup
+      .number()
+      .positive()
+      .nullable()
+      .test('valid-duration', 'Invalid duration', function (value) {
+        return validateDuration({ ...this.parent, durationMinutes: value });
+      }),
+    startDate: yup
+      .date()
+      .nullable()
+      .test('valid-startDate', 'Invalid start date', function (value) {
+        return validateDuration({ ...this.parent, startDate: value });
+      }),
+    endDate: yup
+      .date()
+      .nullable()
+      .test('valid-endDate', 'Invalid end date', function (value) {
+        return validateDuration({ ...this.parent, endDate: value });
+      }),
+    wholeDay: yup.boolean().test('valid-wholeDay', 'Invalid whole day', function (value) {
+      return validateDuration({ ...this.parent, wholeDay: value });
+    }),
   });
 
   return (
@@ -102,68 +149,13 @@ const CalendarEventForm = ({
       <DialogHeader onClose={onClose}>
         <BlockTitle>{dialogTitle}</BlockTitle>
       </DialogHeader>
-      <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
-        {({ isValid, handleSubmit }) => (
-          <>
-            <DialogContent>
-              <Form>
-                <Gutters disablePadding>
-                  <Gutters disablePadding sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
-                    <GridItem columns={4}>
-                      <Box>
-                        <FormikDatePicker name="startDate" label={t('common.date')} minDate={new Date()} />
-                      </Box>
-                    </GridItem>
-                    <Box flexGrow={1}>
-                      <FormikInputField name="displayName" title={t('fields.displayName')} />
-                    </Box>
-                  </Gutters>
-                  <Box display="flex" gap={gutters()} flexWrap="wrap">
-                    <GridItem columns={isMobile ? undefined : 4}>
-                      <Box display="flex" gap={gutters()}>
-                        <FormikTimePicker
-                          name="startDate"
-                          label={t('fields.startTime')}
-                          containerProps={{ flexGrow: 1 }}
-                        />
-                        <FormikDurationMinutes
-                          name="durationMinutes"
-                          startTimeFieldName="startDate"
-                          label={t('fields.endTime')}
-                          containerProps={{ flexGrow: 1 }}
-                        />
-                      </Box>
-                    </GridItem>
-                    <FormikAutocomplete
-                      name="type"
-                      label={t('calendar.event.type')}
-                      values={typeOptions}
-                      sx={{ flexGrow: 1 }}
-                    />
-                  </Box>
-                  <FormikMarkdownField
-                    name="description"
-                    title={t('common.description')}
-                    maxLength={MARKDOWN_TEXT_LENGTH}
-                    sx={{ marginBottom: gutters(-1) }}
-                  />
-                  <TagsetField name="tags" title={t('common.tags')} />
-                </Gutters>
-              </Form>
-            </DialogContent>
-            <Actions justifyContent="space-between" padding={gutters()}>
-              {actions}
-              <LoadingButton
-                variant="contained"
-                disabled={!isValid}
-                loading={isSubmitting}
-                onClick={() => handleSubmit()}
-              >
-                {t('buttons.save')}
-              </LoadingButton>
-            </Actions>
-          </>
-        )}
+      <Formik
+        initialValues={initialValues}
+        onSubmit={handleSubmit}
+        validationSchema={validationSchema}
+        enableReinitialize
+      >
+        <EventForm typeOptions={typeOptions} isSubmitting={isSubmitting} actions={actions} />
       </Formik>
     </GridProvider>
   );

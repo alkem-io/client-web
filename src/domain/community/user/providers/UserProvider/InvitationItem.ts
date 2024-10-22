@@ -1,10 +1,9 @@
-import { CommunityContributorType } from '../../../../../core/apollo/generated/graphql-schema';
+import { CommunityContributorType, SpaceLevel } from '../../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../../../core/utils/Identifiable';
-import { JourneyLevel } from '../../../../../main/routing/resolvers/RouteResolver';
 
 export interface InvitationItem extends Identifiable {
-  space: Identifiable & {
-    level: JourneyLevel | number;
+  spacePendingMembershipInfo: Identifiable & {
+    level: SpaceLevel;
     profile: {
       url: string;
       displayName: string;

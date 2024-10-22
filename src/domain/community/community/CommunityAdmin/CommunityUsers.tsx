@@ -11,8 +11,10 @@ import {
 } from '@mui/x-data-grid';
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
-import { CommunityMemberUserFragment, CommunityPolicyFragment } from '../../../../core/apollo/generated/graphql-schema';
+import {
+  CommunityMemberUserFragment,
+  RoleDefinitionPolicyFragment,
+} from '../../../../core/apollo/generated/graphql-schema';
 import { gutters } from '../../../../core/ui/grid/utils';
 import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
 import DataGridTable from '../../../../core/ui/table/DataGridTable';
@@ -25,6 +27,7 @@ export interface CommunityMemberUserFragmentWithRoles extends CommunityMemberUse
   isMember: boolean;
   isLead: boolean;
   isAdmin: boolean;
+  isContactable: boolean;
 }
 
 type RenderParams = GridRenderCellParams<string, CommunityMemberUserFragmentWithRoles>;
@@ -55,7 +58,8 @@ interface CommunityUsersProps {
   canAddMembers: boolean;
   onAddMember: (memberId: string) => Promise<unknown> | undefined;
   fetchAvailableUsers: CommunityAddMembersDialogProps['fetchAvailableEntities'];
-  communityPolicy?: CommunityPolicyFragment;
+  memberRoleDefinition?: RoleDefinitionPolicyFragment;
+  leadRoleDefinition?: RoleDefinitionPolicyFragment;
   loading?: boolean;
 }
 
@@ -67,11 +71,16 @@ const CommunityUsers: FC<CommunityUsersProps> = ({
   canAddMembers,
   onAddMember,
   fetchAvailableUsers,
-  communityPolicy,
+  memberRoleDefinition,
+  leadRoleDefinition,
   loading,
 }) => {
   const { t } = useTranslation();
-  const { canAddLeadUser, canRemoveLeadUser } = useCommunityPolicyChecker(communityPolicy, users);
+  const { canAddLeadUser, canRemoveLeadUser } = useCommunityPolicyChecker(
+    memberRoleDefinition,
+    leadRoleDefinition,
+    users
+  );
 
   const usersColumns: GridColDef[] = [
     {
@@ -79,7 +88,7 @@ const CommunityUsers: FC<CommunityUsersProps> = ({
       headerName: t('common.name'),
       renderHeader: () => <>{t('common.name')}</>,
       renderCell: ({ row }: RenderParams) => (
-        <Link href={buildUserProfileUrl(row.nameID)} target="_blank">
+        <Link href={row.profile.url} target="_blank">
           {row.profile.displayName}
         </Link>
       ),

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
-  refetchAdminSpaceChallengesPageQuery,
+  refetchAdminSpaceSubspacesPageQuery,
   refetchSubspaceProfileInfoQuery,
   useCreateSubspaceMutation,
   useSubspaceProfileInfoQuery,
@@ -41,7 +41,7 @@ const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
       onSuccess('Successfully created');
       navigate(buildSettingsUrl(data.createSubspace.profile.url), { replace: true });
     },
-    refetchQueries: [refetchAdminSpaceChallengesPageQuery({ spaceId: spaceNameId })],
+    refetchQueries: [refetchAdminSpaceSubspacesPageQuery({ spaceId: spaceNameId })],
     awaitRefetchQueries: true,
   });
 
@@ -63,6 +63,8 @@ const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
   const onSubmit = async (values: ProfileFormValues) => {
     const { name: displayName, nameID, tagsets, tagline, references } = values;
 
+    // TODO: We need to select the template for the user if they want and put it in the collaborationData passing what we get using the createInput service
+
     switch (mode) {
       case FormMode.create:
         createSubspace({
@@ -76,9 +78,7 @@ const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
               },
               spaceID: spaceNameId,
               tags: tagsets.flatMap(x => x.tags),
-              collaborationData: {
-                innovationFlowTemplateID: '',
-              },
+              collaborationData: {},
             },
           },
         });

@@ -1,4 +1,4 @@
-fragment SubspaceInfo on Space {
+fragment SubspacePendingMembershipInfo on Space {
   id
   nameID
   profile {
@@ -24,10 +24,12 @@ fragment SubspaceInfo on Space {
   }
   community {
     id
-    myMembershipStatus
     authorization {
       id
       myPrivileges
+    }
+    roleSet {
+      ...MyMembershipsRoleSet
     }
   }
   authorization {

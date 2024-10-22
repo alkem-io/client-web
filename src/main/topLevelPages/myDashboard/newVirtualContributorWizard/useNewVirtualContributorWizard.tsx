@@ -10,14 +10,18 @@ import {
   usePlansTableQuery,
   useSpaceUrlLazyQuery,
   useSubspaceProfileInfoQuery,
-  useSubspaceCommunityIdLazyQuery,
-  useAssignCommunityRoleToVirtualContributorMutation,
+  useSubspaceCommunityAndRoleSetIdLazyQuery,
+  useAssignRoleToVirtualContributorMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
+  AiPersonaBodyOfKnowledgeType,
+  AuthorizationPrivilege,
   CalloutGroupName,
   CalloutState,
   CalloutType,
   CalloutVisibility,
+  CommunityRoleType,
+  CreateVirtualContributorOnAccountMutationVariables,
   LicensePlanType,
   SpaceType,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -39,6 +43,8 @@ import {
 import SetupVCInfo from './SetupVCInfo';
 import { info } from '../../../../core/logging/sentry/log';
 import { compact } from 'lodash';
+import InfoDialog from '../../../../core/ui/dialogs/InfoDialog';
+import CreateExternalAIDialog, { ExternalVcFormValues } from './CreateExternalAIDialog';
 
 const SPACE_LABEL = '(space)';
 const entityNamePostfixes = {
@@ -46,7 +52,14 @@ const entityNamePostfixes = {
   SUBSPACE: "'s Knowledge Subspace",
 };
 
-type Step = 'initial' | 'createSpace' | 'addKnowledge' | 'existingKnowledge' | 'loadingVCSetup';
+type Step =
+  | 'initial'
+  | 'createSpace'
+  | 'addKnowledge'
+  | 'existingKnowledge'
+  | 'externalProvider'
+  | 'loadingVCSetup'
+  | 'insufficientPrivileges';
 
 export interface UserAccountProps {
   id: string;
@@ -57,11 +70,22 @@ export interface UserAccountProps {
     id: string;
     community: {
       id: string;
+      roleSet: {
+        id: string;
+        authorization?: {
+          id: string;
+          myPrivileges?: AuthorizationPrivilege[] | undefined;
+        };
+      };
     };
     profile: {
       id: string;
       displayName: string;
       url: string;
+    };
+    authorization?: {
+      id: string;
+      myPrivileges?: AuthorizationPrivilege[] | undefined;
     };
     subspaces: Array<{
       id: string;
@@ -73,6 +97,12 @@ export interface UserAccountProps {
       };
       community: {
         id: string;
+        roleSet: {
+          id: string;
+          authorization?: {
+            myPrivileges?: AuthorizationPrivilege[] | undefined;
+          };
+        };
       };
     }>;
   }>;
@@ -105,8 +135,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [targetAccount, setTargetAccount] = useState<UserAccountProps | undefined>(undefined);
   const [createdSpaceId, setCreatedSpaceId] = useState<string | undefined>(undefined);
   const [bokId, setbokId] = useState<string | undefined>(undefined);
-  const [bokCommunityId, setBokCommunityId] = useState<string | undefined>(undefined);
-  const [boKParentCommunityId, setBoKParentCommunityId] = useState<string | undefined>(undefined);
+  const [bokRoleSetId, setBokRoleSetId] = useState<string | undefined>(undefined);
+  const [boKParentRoleSetId, setBoKParentRoleSetId] = useState<string | undefined>(undefined);
   const [creationIndex, setCreationIndex] = useState<number>(0); // used in case of space deletion
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps | undefined>(
     undefined
@@ -131,7 +161,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     setTryCreateCallout(true);
   };
 
-  const onDialogClose = () => {
+  const handleCloseWizard = () => {
     setDialogOpen(false);
     setStep('initial');
   };
@@ -143,10 +173,11 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   // selectableSpaces are space and subspaces
   // subspaces has communityId in order to manually add the VC to it
-  const { selectedExistingSpaceId, myAccountId, selectableSpaces } = useMemo(() => {
+  const { selectedExistingSpaceId, spacePrivileges, myAccountId, selectableSpaces } = useMemo(() => {
     const account = targetAccount ?? data?.me.user?.account;
     const accountId = account?.id;
     const mySpaces = compact(account?.spaces);
+    const mySpace = mySpaces?.[0]; // TODO: auto-selecting the first space, not ideal
     let selectableSpaces: SelectableKnowledgeProps[] = [];
 
     if (accountId) {
@@ -157,7 +188,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             name: `${space.profile.displayName} ${SPACE_LABEL}`,
             accountId,
             url: space.profile.url,
-            communityId: space.community.id,
+            roleSetId: space.community.roleSet.id,
           });
           selectableSpaces = selectableSpaces.concat(
             space.subspaces?.map(subspace => ({
@@ -165,8 +196,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
               name: subspace.profile.displayName,
               accountId,
               url: space.profile.url, // land on parent space
-              communityId: subspace.community.id,
-              parentCommunityId: space.community.id,
+              roleSetId: subspace.community.roleSet.id,
+              parentRoleSetId: space.community.roleSet.id,
             })) ?? []
           );
         }
@@ -174,8 +205,14 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
 
     return {
-      selectedExistingSpaceId: mySpaces?.[0]?.id, // TODO: auto-selecting the first space, not ideal
+      selectedExistingSpaceId: mySpace?.id,
       myAccountId: accountId,
+      spacePrivileges: {
+        myPrivileges: mySpace?.authorization?.myPrivileges,
+        collaboration: {
+          myPrivileges: mySpace?.community?.roleSet.authorization?.myPrivileges,
+        },
+      },
       selectableSpaces,
     };
   }, [data, user, targetAccount]);
@@ -222,27 +259,51 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     [plansData, isPlanAvailable]
   );
 
+  const hasPrivilegesOnSpaceAndCommunity = () => {
+    // in case of clean creation, the user is an admin of the space
+    // no way and need to check the privileges
+    if (!selectedExistingSpaceId) {
+      return true;
+    }
+
+    // todo: check create callout privilege (community) if needed
+    const { myPrivileges: spaceMyPrivileges } = spacePrivileges;
+    const { myPrivileges: collaborationMyPrivileges } = spacePrivileges.collaboration;
+
+    return (
+      spaceMyPrivileges?.includes(AuthorizationPrivilege.CreateSubspace) &&
+      collaborationMyPrivileges?.includes(AuthorizationPrivilege.AccessVirtualContributor) &&
+      collaborationMyPrivileges?.includes(AuthorizationPrivilege.CommunityAddMemberVcFromAccount)
+    );
+  };
+
   const [CreateNewSpace] = useCreateSpaceMutation({
     refetchQueries: ['MyAccount'],
   });
+
   const handleCreateSpace = async (values: VirtualContributorFromProps) => {
     if (!user?.user.id) {
       return;
     }
 
     setVirtualContributorInput(values);
-    setStep('createSpace');
 
     // in case of existing space, create subspace as BoK
     // otherwise create a new space
     if (selectedExistingSpaceId && myAccountId) {
+      if (!hasPrivilegesOnSpaceAndCommunity()) {
+        setStep('insufficientPrivileges');
+        return;
+      }
+      setStep('createSpace');
+
       const subspace = await handleSubspaceCreation(selectedExistingSpaceId, values.name);
       setbokId(subspace?.data?.createSubspace.id);
-      setBokCommunityId(subspace?.data?.createSubspace.community.id);
-      const parentCommunityId = selectableSpaces.filter(space => space.id === selectedExistingSpaceId)[0]?.communityId;
+      setBokRoleSetId(subspace?.data?.createSubspace.community.roleSet.id);
+      const parentCommunityId = selectableSpaces.filter(space => space.id === selectedExistingSpaceId)[0]?.roleSetId;
 
       if (parentCommunityId) {
-        setBoKParentCommunityId(parentCommunityId);
+        setBoKParentRoleSetId(parentCommunityId);
       }
     } else {
       if (plans.length === 0) {
@@ -250,6 +311,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         notify('No available plans for this account. Please, contact support@alkem.io.', 'error');
         return;
       }
+      setStep('createSpace');
 
       const { data: newSpace } = await CreateNewSpace({
         variables: {
@@ -271,10 +333,10 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
         const subspace = await handleSubspaceCreation(newlyCreatedSpaceId, values.name);
         setbokId(subspace?.data?.createSubspace.id);
-        setBokCommunityId(subspace?.data?.createSubspace.community.id);
+        setBokRoleSetId(subspace?.data?.createSubspace.community.roleSet.id);
 
         const parentCommunityData = await getSpaceCommunity();
-        setBoKParentCommunityId(parentCommunityData.data?.lookup.space?.community.id);
+        setBoKParentRoleSetId(parentCommunityData.data?.lookup.space?.community.roleSet.id);
       }
     }
 
@@ -298,8 +360,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
       // cleanup state
       setbokId(undefined);
-      setBokCommunityId(undefined);
-      setBoKParentCommunityId(undefined);
+      setBokRoleSetId(undefined);
+      setBoKParentRoleSetId(undefined);
     }
 
     if (createdSpaceId) {
@@ -315,7 +377,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       setCreatedSpaceId(undefined);
     }
 
-    onDialogClose();
+    handleCloseWizard();
   };
 
   const [getNewSpaceUrl] = useSpaceUrlLazyQuery({
@@ -324,7 +386,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     },
   });
 
-  const [getSpaceCommunity] = useSubspaceCommunityIdLazyQuery({
+  const [getSpaceCommunity] = useSubspaceCommunityAndRoleSetIdLazyQuery({
     variables: {
       spaceId: createdSpaceId!,
     },
@@ -335,12 +397,12 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     skip: !bokId,
   });
 
-  const callabId = subspaceProfile?.lookup.space?.collaboration?.id;
+  const collaborationId = subspaceProfile?.lookup.space?.collaboration?.id;
 
   // load the following hook either with bokId (created subspace) or spaceId (created/existing space)
   const { handleCreateCallout, canCreateCallout } = useCalloutCreation({
     journeyId: bokId,
-    collabId: callabId,
+    overrideCollaborationId: collaborationId,
   });
 
   const calloutDetails: CalloutCreationType = {
@@ -373,7 +435,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
               displayName: post.title,
               description: post.description,
             },
-            type: CalloutType.Post,
           },
         },
       },
@@ -398,38 +459,98 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
 
     // create VC
-    if (virtualContributorInput && myAccountId && bokId && bokCommunityId) {
-      await handleCreateVirtualContributor(
-        virtualContributorInput,
-        myAccountId,
-        bokId,
-        bokCommunityId,
-        boKParentCommunityId
-      );
+    if (virtualContributorInput && myAccountId && bokId && bokRoleSetId) {
+      const creationSuccess = await handleCreateVirtualContributor({
+        values: virtualContributorInput,
+        accountId: myAccountId,
+        vcBoKId: bokId,
+        roleSetId: bokRoleSetId,
+        parentRoleSetId: boKParentRoleSetId,
+      });
 
-      const { data } = await getNewSpaceUrl();
-      navigate(data?.space.profile.url ?? '');
+      if (creationSuccess) {
+        const { data } = await getNewSpaceUrl();
+        navigate(data?.space.profile.url ?? '');
+      }
     }
   };
 
-  const [addVirtualContributorToCommunity] = useAssignCommunityRoleToVirtualContributorMutation();
+  const [addVirtualContributorToRole] = useAssignRoleToVirtualContributorMutation();
   const [createVirtualContributor] = useCreateVirtualContributorOnAccountMutation({
     refetchQueries: ['MyAccount', 'AccountInformation'],
   });
 
-  const handleCreateVirtualContributor = async (
-    values: VirtualContributorFromProps,
-    accountId: string,
-    vcBoKId: string,
-    communityId: string,
-    parentCommunityId?: string
-  ) => {
+  const handleCreateVirtualContributor = async ({
+    values,
+    accountId,
+    vcBoKId,
+    roleSetId,
+    parentRoleSetId,
+  }: {
+    values: VirtualContributorFromProps;
+    accountId: string;
+    vcBoKId: string;
+    roleSetId: string;
+    parentRoleSetId?: string;
+  }) => {
     if (!accountId || !vcBoKId || !virtualContributorInput) {
       return;
     }
 
-    const { data } = await createVirtualContributor({
-      variables: {
+    if (!hasPrivilegesOnSpaceAndCommunity()) {
+      setStep('insufficientPrivileges');
+      return false;
+    }
+    const createdVc = await executeMutation({ values, accountId, vcBoKId });
+
+    const virtualContributorId = createdVc?.id;
+
+    if (virtualContributorId) {
+      if (parentRoleSetId) {
+        // the VC cannot be added to the BoK community
+        // if it's not part of the parent community
+        await addVirtualContributorToRole({
+          variables: {
+            roleSetId: parentRoleSetId,
+            contributorId: virtualContributorId,
+            role: CommunityRoleType.Member,
+          },
+        });
+      }
+
+      // add the VC to the BoK community
+      await addVirtualContributorToRole({
+        variables: {
+          roleSetId: roleSetId,
+          contributorId: virtualContributorId,
+          role: CommunityRoleType.Member,
+        },
+      });
+
+      notify(
+        t('createVirtualContributorWizard.createdVirtualContributor.successMessage', { name: values.name }),
+        'success'
+      );
+
+      addVCCreationCache(createdVc.nameID);
+
+      return true;
+    }
+
+    return false;
+  };
+
+  const executeMutation = async ({
+    values,
+    accountId,
+    vcBoKId,
+  }: {
+    values: VirtualContributorFromProps;
+    accountId: string;
+    vcBoKId?: string;
+  }) => {
+    try {
+      const variables: CreateVirtualContributorOnAccountMutationVariables = {
         virtualContributorData: {
           accountID: accountId,
           profileData: {
@@ -440,58 +561,62 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           },
           aiPersona: {
             aiPersonaService: {
+              engine: values.engine,
+              bodyOfKnowledgeType: values.bodyOfKnowledgeType,
               bodyOfKnowledgeID: vcBoKId,
             },
           },
         },
-      },
-    });
+      };
 
-    const vcId = data?.createVirtualContributor.id;
-
-    if (vcId) {
-      if (parentCommunityId) {
-        // the VC cannot be added to the BoK community
-        // if it's not part of the parent community
-        await addVirtualContributorToCommunity({
-          variables: {
-            communityId: parentCommunityId,
-            virtualContributorId: vcId,
-          },
-        });
+      if (values.externalConfig) {
+        variables.virtualContributorData.aiPersona.aiPersonaService!.externalConfig = values.externalConfig;
       }
-
-      // add the VC to the BoK community
-      await addVirtualContributorToCommunity({
-        variables: {
-          communityId: communityId,
-          virtualContributorId: vcId,
-        },
+      const { data } = await createVirtualContributor({
+        variables,
       });
-
-      // add vc's nameId to the cache for the TryVC dialog
-      if (data?.createVirtualContributor.nameID) {
-        addVCCreationCache(data?.createVirtualContributor.nameID);
-      }
-
-      notify(
-        t('createVirtualContributorWizard.createdVirtualContributor.successMessage', { name: values.name }),
-        'success'
-      );
+      return data?.createVirtualContributor;
+    } catch (error) {
+      return;
     }
   };
 
   const handleCreateVCWithExistingKnowledge = async (selectedKnowledge: SelectableKnowledgeProps) => {
-    if (selectedKnowledge && selectedKnowledge.communityId && virtualContributorInput) {
-      await handleCreateVirtualContributor(
-        virtualContributorInput,
-        selectedKnowledge.accountId,
-        selectedKnowledge.id,
-        selectedKnowledge.communityId,
-        selectedKnowledge.parentCommunityId
-      );
+    if (selectedKnowledge && selectedKnowledge.roleSetId && virtualContributorInput) {
+      const creationSuccess = await handleCreateVirtualContributor({
+        values: virtualContributorInput,
+        accountId: selectedKnowledge.accountId,
+        vcBoKId: selectedKnowledge.id,
+        roleSetId: selectedKnowledge.roleSetId,
+        parentRoleSetId: selectedKnowledge.parentRoleSetId,
+      });
 
-      navigate(selectedKnowledge.url ?? '');
+      creationSuccess && navigate(selectedKnowledge.url ?? '');
+    }
+  };
+
+  const handleCreateExternal = async (externalVcValues: ExternalVcFormValues) => {
+    if (virtualContributorInput && myAccountId) {
+      virtualContributorInput.engine = externalVcValues.engine;
+
+      virtualContributorInput.externalConfig = {
+        apiKey: externalVcValues.apiKey,
+      };
+      if (externalVcValues.assistantId) {
+        virtualContributorInput.externalConfig.assistantId = externalVcValues.assistantId;
+      }
+
+      virtualContributorInput.bodyOfKnowledgeType = AiPersonaBodyOfKnowledgeType.None;
+
+      const createdVc = await executeMutation({
+        values: virtualContributorInput,
+        accountId: myAccountId,
+      });
+
+      // navigate to VC page
+      if (createdVc) {
+        navigate(createdVc.profile.url);
+      }
     }
   };
 
@@ -506,10 +631,11 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       <DialogWithGrid open={dialogOpen} columns={6}>
         {step === 'initial' && (
           <CreateNewVirtualContributor
-            onClose={onDialogClose}
+            onClose={handleCloseWizard}
             loading={loading}
             onCreateSpace={handleCreateSpace}
             onUseExistingKnowledge={values => onStepSelection('existingKnowledge', values)}
+            onUseExternal={values => onStepSelection('externalProvider', values)}
           />
         )}
         {step === 'createSpace' && (
@@ -520,14 +646,28 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         )}
         {step === 'existingKnowledge' && (
           <ExistingSpace
-            onClose={onDialogClose}
+            onClose={handleCloseWizard}
             onBack={() => setStep('initial')}
             onSubmit={handleCreateVCWithExistingKnowledge}
             availableSpaces={selectableSpaces}
             loading={loading}
           />
         )}
+        {step === 'externalProvider' && (
+          <CreateExternalAIDialog onCreateExternal={handleCreateExternal} onClose={handleCloseWizard} />
+        )}
         {step === 'loadingVCSetup' && <SetupVCInfo />}
+        {step === 'insufficientPrivileges' && (
+          <InfoDialog
+            entities={{
+              title: t('createVirtualContributorWizard.insufficientPrivileges.title'),
+              content: t('createVirtualContributorWizard.insufficientPrivileges.description'),
+              buttonCaption: t('buttons.ok'),
+            }}
+            actions={{ onButtonClick: handleCloseWizard }}
+            options={{ show: true }}
+          />
+        )}
       </DialogWithGrid>
     ),
     [dialogOpen, step, loading]

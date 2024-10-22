@@ -5,7 +5,6 @@ import { BlockSectionTitle, CaptionSmall } from '../../../../core/ui/typography'
 import { gutters } from '../../../../core/ui/grid/utils';
 import {
   ApplicationHydrator,
-  getChildJourneyTypeName,
   InvitationHydrator,
   InvitationWithMeta,
 } from '../../../../domain/community/pendingMembership/PendingMemberships';
@@ -19,7 +18,7 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import { HdrStrongOutlined } from '@mui/icons-material';
 import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import JourneyCard from '../../../../domain/journey/common/JourneyCard/JourneyCard';
-import journeyIcon from '../../../../domain/shared/components/JourneyIcon/JourneyIcon';
+import spaceIcon from '../../../../domain/shared/components/JourneyIcon/JourneyIcon';
 import JourneyCardTagline from '../../../../domain/journey/common/JourneyCard/JourneyCardTagline';
 import InvitationActionsContainer from '../../../../domain/community/invitations/InvitationActionsContainer';
 import InvitationDialog from '../../../../domain/community/invitations/InvitationDialog';
@@ -31,6 +30,7 @@ import HorizontalCardsGroup from '../../../../core/ui/content/HorizontalCardsGro
 import useNavigate from '../../../../core/routing/useNavigate';
 import { PendingApplication } from '../../../../domain/community/user';
 import { InvitationItem } from '../../../../domain/community/user/providers/UserProvider/InvitationItem';
+import { getChildJourneyTypeName } from '../../../../domain/shared/utils/spaceLevel';
 
 enum PendingMembershipItemType {
   Invitation,
@@ -275,7 +275,7 @@ const NewMembershipsBlock = ({ hiddenIfEmpty = false }: NewMembershipsBlockProps
                     {({ application: hydratedApplication }) =>
                       hydratedApplication && (
                         <JourneyCard
-                          iconComponent={journeyIcon[getChildJourneyTypeName(hydratedApplication.space)]}
+                          iconComponent={spaceIcon[getChildJourneyTypeName(hydratedApplication.space)]}
                           header={hydratedApplication.space.profile.displayName}
                           tags={hydratedApplication.space.profile.tagset?.tags ?? []}
                           banner={hydratedApplication.space.profile.visual}

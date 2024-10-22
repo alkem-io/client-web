@@ -13,10 +13,17 @@ query CommunityUserPrivileges(
       }
       community {
         id
-        myMembershipStatus
         authorization {
           id
           myPrivileges
+        }
+        roleSet {
+          id
+          myMembershipStatus
+          authorization {
+            id
+            myPrivileges
+          }
         }
       }
     }
@@ -31,10 +38,17 @@ query CommunityUserPrivileges(
       }
       community {
         id
-        myMembershipStatus
         authorization {
           id
           myPrivileges
+        }
+        roleSet {
+          id
+          myMembershipStatus
+          authorization {
+            id
+            myPrivileges
+          }
         }
       }
     }

@@ -3,15 +3,16 @@ import {
   useCommunityGuidelinesQuery,
   useCreateReferenceOnProfileMutation,
   useDeleteReferenceMutation,
+  useTemplateContentLazyQuery,
   useUpdateCommunityGuidelinesMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
-import { CommunityGuidelinesTemplateWithContent } from '../../../collaboration/communityGuidelines/CommunityGuidelinesTemplateCard/CommunityGuidelines';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
 import { useTranslation } from 'react-i18next';
 import { compact } from 'lodash';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 
-interface CommunityGuidelines {
+export interface CommunityGuidelines {
   displayName: string;
   description: string | undefined;
   references: {
@@ -27,7 +28,7 @@ interface CommunityGuidelinesContainerProvided {
   communityGuidelinesId: string | undefined;
   profileId: string | undefined; // ProfileId is required to create references
   loading: boolean;
-  onSelectCommunityGuidelinesTemplate: (template: CommunityGuidelinesTemplateWithContent) => Promise<unknown>;
+  onSelectCommunityGuidelinesTemplate: (template: Identifiable) => Promise<unknown>;
   onUpdateCommunityGuidelines: (values: CommunityGuidelines) => Promise<unknown>;
 }
 
@@ -92,12 +93,20 @@ const CommunityGuidelinesContainer = ({ communityId, children }: CommunityGuidel
     });
   };
 
+  const [fetchCommunityGuidelinesTemplates] = useTemplateContentLazyQuery();
   const [removeReference, { loading: removingReference }] = useDeleteReferenceMutation();
   const [createReference, { loading: addingReference }] = useCreateReferenceOnProfileMutation();
-  const onSelectCommunityGuidelinesTemplate = async (template: CommunityGuidelinesTemplateWithContent) => {
+  const onSelectCommunityGuidelinesTemplate = async ({ id: templateId }: Identifiable) => {
+    const { data } = await fetchCommunityGuidelinesTemplates({
+      variables: {
+        templateId,
+        includeCommunityGuidelines: true,
+      },
+    });
+    const template = data?.lookup.template;
     const currentReferences = communityGuidelines?.references ?? [];
-    const templateReferences = template.guidelines?.profile.references ?? [];
-    const guidelines = template.guidelines;
+    const templateReferences = template?.communityGuidelines?.profile.references ?? [];
+    const guidelines = template?.communityGuidelines;
     if (!guidelines || !profileId) {
       return;
     }

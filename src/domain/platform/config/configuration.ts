@@ -25,12 +25,14 @@ export interface Configuration {
     newuser: string;
     tips: string;
     aup: string;
+    documentation: string;
   };
   featureFlags: FeatureFlag[];
   sentry: {
     enabled: boolean;
     endpoint: string;
     submitPII: boolean;
+    environment: string;
   };
   apm: {
     rumEnabled: boolean;

@@ -1,6 +1,10 @@
-import type { ExcalidrawElement } from '@alkemio/excalidraw/types/element/types';
-import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types/types';
+import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
+import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
 import { v4 as uuidv4 } from 'uuid';
+import { StoreAction } from '@alkemio/excalidraw';
+
+const ANIMATION_SPEED = 2000;
+const ANIMATION_ZOOM_FACTOR = 0.75;
 
 type ExcalidrawElementWithContainerId = ExcalidrawElement & { containerId: string | null };
 class WhiteboardMergeError extends Error {}
@@ -84,7 +88,15 @@ const generateNewIds = (idsMap: Record<string, string>) => (element: ExcalidrawE
 });
 
 /**
- * Returns a function that can be pased to elements.map to replace containerId and boundElements ids
+ * Returns a function that can be passed to elements.map to replace the version of the elements
+ */
+const replaceElementVersion = (version: number) => (element: ExcalidrawElement) => ({
+  ...element,
+  version,
+});
+
+/**
+ * Returns a function that can be passed to elements.map to replace containerId and boundElements ids
  */
 const replaceBoundElementsIds = (idsMap: Record<string, string>) => {
   const replace = (id: string | null) => (id ? idsMap[id] || id : id);
@@ -101,7 +113,7 @@ const replaceBoundElementsIds = (idsMap: Record<string, string>) => {
 };
 
 /**
- * Returns a function that can be pased to elements.map, to displace elements by a given displacement
+ * Returns a function that can be passed to elements.map, to displace elements by a given displacement
  */
 const displaceElements = (displacement: { x: number; y: number }) => (element: ExcalidrawElement) => ({
   ...element,
@@ -109,7 +121,11 @@ const displaceElements = (displacement: { x: number; y: number }) => (element: E
   y: element.y + displacement.y,
 });
 
-const mergeWhiteboard = (whiteboardApi: ExcalidrawImperativeAPI, whiteboardContent: string) => {
+const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboardContent: string) => {
+  const excalidrawUtils: {
+    getSceneVersion: (elements: readonly ExcalidrawElement[]) => number;
+  } = await import('@alkemio/excalidraw');
+
   let parsedWhiteboard: unknown;
   try {
     parsedWhiteboard = JSON.parse(whiteboardContent);
@@ -117,7 +133,9 @@ const mergeWhiteboard = (whiteboardApi: ExcalidrawImperativeAPI, whiteboardConte
     throw new WhiteboardMergeError(`Unable to parse whiteboard content: ${err}`);
   }
 
-  if (!isWhiteboardLike(parsedWhiteboard)) throw new WhiteboardMergeError('Whiteboard verification failed');
+  if (!isWhiteboardLike(parsedWhiteboard)) {
+    throw new WhiteboardMergeError('Whiteboard verification failed');
+  }
 
   try {
     // Insert missing files into current whiteboard:
@@ -128,25 +146,36 @@ const mergeWhiteboard = (whiteboardApi: ExcalidrawImperativeAPI, whiteboardConte
       }
     }
 
-    const currentElements = whiteboardApi.getSceneElements();
+    const currentElements = whiteboardApi.getSceneElementsIncludingDeleted();
+    const sceneVersion = excalidrawUtils.getSceneVersion(whiteboardApi.getSceneElementsIncludingDeleted());
 
     const currentElementsBBox = getBoundingBox(currentElements);
     const insertedWhiteboardBBox = getBoundingBox(parsedWhiteboard.elements);
     const displacement = calculateInsertionPoint(currentElementsBBox, insertedWhiteboardBBox);
 
     const replacedIds: Record<string, string> = {};
-
+    // fractional indices does not need overwriting
     const insertedElements = parsedWhiteboard.elements
       ?.map(generateNewIds(replacedIds))
+      .map(replaceElementVersion(sceneVersion + 1))
       .map(replaceBoundElementsIds(replacedIds))
       .map(displaceElements(displacement));
 
     const newElements = [...currentElements, ...insertedElements];
     whiteboardApi.updateScene({
       elements: newElements,
-      commitToHistory: true, // TODO: WARNING maybe this needs to be false when collaborative editing
+      storeAction: StoreAction.CAPTURE,
     });
-    whiteboardApi.zoomToFit();
+
+    if (insertedElements.length > 0) {
+      whiteboardApi.scrollToContent(insertedElements, {
+        animate: true,
+        fitToViewport: true,
+        duration: ANIMATION_SPEED,
+        viewportZoomFactor: ANIMATION_ZOOM_FACTOR,
+      });
+    }
+
     return true;
   } catch (err) {
     throw new WhiteboardMergeError(`Unable to merge whiteboards: ${err}`);

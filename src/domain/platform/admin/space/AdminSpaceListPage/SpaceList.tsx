@@ -9,7 +9,7 @@ import {
 import { useNotification } from '../../../../../core/ui/notifications/useNotification';
 import Loading from '../../../../../core/ui/loading/Loading';
 import ListPage from '../../components/ListPage';
-import { SearchableListItem, searchableListItemMapper } from '../../components/SearchableList';
+import { SearchableTableItem, SearchableTableItemMapper } from '../../components/SearchableTable';
 import { AuthorizationPrivilege, SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
@@ -59,7 +59,7 @@ export const SpaceList: FC = () => {
             .map(({ id }) => id);
 
           return {
-            ...searchableListItemMapper()(space),
+            ...SearchableTableItemMapper()(space),
             spaceId: space.id,
             nameId: space.nameID,
             visibility: space.visibility,
@@ -77,7 +77,7 @@ export const SpaceList: FC = () => {
       notify(t('pages.admin.space.notifications.space-removed', { name: data.deleteSpace.nameID }), 'success'),
   });
 
-  const handleDelete = (item: SearchableListItem) => {
+  const handleDelete = (item: SearchableTableItem) => {
     deleteSpace({
       variables: {
         input: {
