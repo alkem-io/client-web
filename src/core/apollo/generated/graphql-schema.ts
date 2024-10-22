@@ -5495,6 +5495,8 @@ export type Sentry = {
   enabled: Scalars['Boolean'];
   /** URL to the Sentry endpoint. */
   endpoint: Scalars['String'];
+  /** The Sentry environment to report to. */
+  environment: Scalars['String'];
   /** Flag indicating if PII should be submitted on Sentry events. */
   submitPII: Scalars['Boolean'];
 };
@@ -24130,7 +24132,7 @@ export type ConfigurationQuery = {
         documentation: string;
       };
       featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
-      sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
+      sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
       apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
       geo: { __typename?: 'Geo'; endpoint: string };
     };
@@ -24177,7 +24179,7 @@ export type ConfigurationFragment = {
     documentation: string;
   };
   featureFlags: Array<{ __typename?: 'PlatformFeatureFlag'; enabled: boolean; name: PlatformFeatureFlagName }>;
-  sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
+  sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
   apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
   geo: { __typename?: 'Geo'; endpoint: string };
 };
@@ -26399,6 +26401,7 @@ export type SpaceCalendarEventsQuery = {
                               description?: string | undefined;
                             }>
                           | undefined;
+                        location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
                       };
                     }>
                   | undefined;
@@ -26457,6 +26460,7 @@ export type CollaborationTimelineInfoFragment = {
                     description?: string | undefined;
                   }>
                 | undefined;
+              location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
             };
           }>
         | undefined;
@@ -26503,6 +26507,7 @@ export type CalendarEventInfoFragment = {
     references?:
       | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
       | undefined;
+    location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
   };
 };
 
@@ -26546,7 +26551,6 @@ export type CalendarEventDetailsQuery = {
                         type: TagsetType;
                       }>
                     | undefined;
-                  location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
                 };
               }
             | undefined;
@@ -26708,6 +26712,7 @@ export type CalendarEventDetailsQuery = {
                   description?: string | undefined;
                 }>
               | undefined;
+            location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
           };
         }
       | undefined;
@@ -26745,7 +26750,6 @@ export type CalendarEventDetailsFragment = {
                 type: TagsetType;
               }>
             | undefined;
-          location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
         };
       }
     | undefined;
@@ -26877,6 +26881,7 @@ export type CalendarEventDetailsFragment = {
     references?:
       | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
       | undefined;
+    location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
   };
 };
 
@@ -26899,6 +26904,7 @@ export type EventProfileFragment = {
   references?:
     | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
     | undefined;
+  location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
 };
 
 export type CreateCalendarEventMutationVariables = Exact<{
@@ -26938,7 +26944,6 @@ export type CreateCalendarEventMutation = {
                   type: TagsetType;
                 }>
               | undefined;
-            location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
           };
         }
       | undefined;
@@ -27075,6 +27080,7 @@ export type CreateCalendarEventMutation = {
       references?:
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
+      location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
     };
   };
 };
@@ -27116,7 +27122,6 @@ export type UpdateCalendarEventMutation = {
                   type: TagsetType;
                 }>
               | undefined;
-            location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
           };
         }
       | undefined;
@@ -27253,6 +27258,7 @@ export type UpdateCalendarEventMutation = {
       references?:
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
+      location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
     };
   };
 };

@@ -7,7 +7,6 @@ import Gutters from '../../../core/ui/grid/Gutters';
 import { BlockSectionTitle } from '../../../core/ui/typography';
 import {
   ApplicationHydrator,
-  getChildJourneyTypeName,
   InvitationHydrator,
   InvitationWithMeta,
   usePendingMemberships,
@@ -25,6 +24,7 @@ import useNavigate from '../../../core/routing/useNavigate';
 import { useNewMembershipsQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
 import { defer } from 'lodash';
+import { getChildJourneyTypeName } from '../../shared/utils/spaceLevel';
 
 interface ButtonImplementationParams {
   header: ReactNode;

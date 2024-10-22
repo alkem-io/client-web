@@ -37,6 +37,17 @@ The page will reload if you make edits.<br />
 By default, eslint will cause compilation errors and be prominently visible.
 Setting `ESLINT_NO_DEV_ERRORS=true` in `.env.local` reduces eslint errors to warnings in the console.
 
+## Environment variables
+
+Environment variables are used as usual in React applications.
+
+Vite does not acknowledge variable at runtime, so `./.build/docker/env.sh` is run everytime before launching the application.
+For it to work properly, you need to have a `.env` file in the root of the project. Yes - it is commited to the code base. Locally you can use .env.local.
+
+The script is reading the variables from `.env` and combines them with the values from the same variables in your deployment environment.
+The result is added to `./.build/docker/.env.base`.
+The variables are also attached to the `window` object of the browser, via `_env_` field.
+
 ## Development stack
 
 The client development stack includes:

@@ -32,6 +32,7 @@ export interface Configuration {
     enabled: boolean;
     endpoint: string;
     submitPII: boolean;
+    environment: string;
   };
   apm: {
     rumEnabled: boolean;
