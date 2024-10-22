@@ -2683,6 +2683,7 @@ export const ConfigurationFragmentDoc = gql`
       enabled
       endpoint
       submitPII
+      environment
     }
     apm {
       rumEnabled
@@ -2944,6 +2945,10 @@ export const EventProfileFragmentDoc = gql`
       uri
       description
     }
+    location {
+      id
+      city
+    }
   }
   ${TagsetDetailsFragmentDoc}
 `;
@@ -2997,10 +3002,6 @@ export const CalendarEventDetailsFragmentDoc = gql`
         }
         tagsets {
           ...TagsetDetails
-        }
-        location {
-          id
-          city
         }
       }
     }

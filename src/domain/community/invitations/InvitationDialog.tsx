@@ -1,9 +1,5 @@
 import React, { ReactNode } from 'react';
-import {
-  getChildJourneyTypeName,
-  InvitationHydrator,
-  InvitationWithMeta,
-} from '../pendingMembership/PendingMemberships';
+import { InvitationHydrator, InvitationWithMeta } from '../pendingMembership/PendingMemberships';
 import DialogHeader from '../../../core/ui/dialog/DialogHeader';
 import Gutters from '../../../core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
@@ -24,6 +20,7 @@ import References from '../../shared/components/References/References';
 import { gutters } from '../../../core/ui/grid/utils';
 import FlexSpacer from '../../../core/ui/utils/FlexSpacer';
 import { theme } from '../../../core/ui/themes/default/Theme';
+import { getChildJourneyTypeName } from '../../shared/utils/spaceLevel';
 
 interface InvitationDialogProps {
   open: boolean;

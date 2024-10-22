@@ -13,11 +13,13 @@ import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 export interface WhiteboardDialogTemplatesLibraryProps {
   editModeEnabled?: boolean;
+  disabled?: boolean;
   onImportTemplate: (template: WhiteboardTemplateContent) => void;
 }
 
 const WhiteboardDialogTemplatesLibrary: FC<WhiteboardDialogTemplatesLibraryProps> = ({
   editModeEnabled = false,
+  disabled,
   onImportTemplate,
 }) => {
   const { t } = useTranslation();
@@ -43,11 +45,21 @@ const WhiteboardDialogTemplatesLibrary: FC<WhiteboardDialogTemplatesLibraryProps
       {editModeEnabled && (
         <Box height={gutters()} display="flex" alignItems="center" marginLeft={gutters()}>
           {columns <= 4 ? (
-            <IconButton color="primary" onClick={() => setDialogOpen(true)} aria-label={t('buttons.find-template')}>
+            <IconButton
+              color="primary"
+              onClick={() => setDialogOpen(true)}
+              aria-label={t('buttons.find-template')}
+              disabled={disabled}
+            >
               <LibraryIcon fontSize="small" />
             </IconButton>
           ) : (
-            <Button variant="outlined" startIcon={<LibraryIcon />} onClick={() => setDialogOpen(true)}>
+            <Button
+              variant="outlined"
+              startIcon={<LibraryIcon />}
+              onClick={() => setDialogOpen(true)}
+              disabled={disabled}
+            >
               {t('buttons.find-template')}
             </Button>
           )}

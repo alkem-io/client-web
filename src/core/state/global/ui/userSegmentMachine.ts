@@ -10,6 +10,7 @@ export type UserSegmentState = { value: 'visible'; context: {} } | { value: 'hid
 export const userSegmentMachine = createMachine<UserSegmentContext, UserSegmentEvent, UserSegmentState>({
   key: 'userSegment',
   initial: 'visible',
+  predictableActionArguments: true,
   states: {
     visible: {
       on: {

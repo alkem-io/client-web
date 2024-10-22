@@ -5,7 +5,6 @@ import { BlockSectionTitle, CaptionSmall } from '../../../../core/ui/typography'
 import { gutters } from '../../../../core/ui/grid/utils';
 import {
   ApplicationHydrator,
-  getChildJourneyTypeName,
   InvitationHydrator,
   InvitationWithMeta,
 } from '../../../../domain/community/pendingMembership/PendingMemberships';
@@ -31,6 +30,7 @@ import HorizontalCardsGroup from '../../../../core/ui/content/HorizontalCardsGro
 import useNavigate from '../../../../core/routing/useNavigate';
 import { PendingApplication } from '../../../../domain/community/user';
 import { InvitationItem } from '../../../../domain/community/user/providers/UserProvider/InvitationItem';
+import { getChildJourneyTypeName } from '../../../../domain/shared/utils/spaceLevel';
 
 enum PendingMembershipItemType {
   Invitation,

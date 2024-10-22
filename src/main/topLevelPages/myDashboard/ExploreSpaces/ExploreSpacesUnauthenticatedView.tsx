@@ -137,7 +137,7 @@ export const ExploreSpacesUnauthenticatedView: FC<ExploreSpacesUnauthenticatedVi
             sx={{ textTransform: 'none', flexShrink: 1 }}
             onClick={() => onFilterChange(SpacesExplorerMembershipFilter.All)}
           >
-            <Caption noWrap>{t('common.all')}</Caption>
+            <Caption noWrap>{t('pages.exploreSpaces.activeSpacesFilter')}</Caption>
           </Button>
           {enabledFilters.map((filter, i) => (
             <Button

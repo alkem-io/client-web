@@ -4,7 +4,6 @@ import {
   usePendingMembershipsUserQuery,
   useUserPendingMembershipsQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
-import { JourneyTypeName } from '../../journey/JourneyTypeName';
 import { PendingApplication } from '../user';
 import { Visual } from '../../common/visual/Visual';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
@@ -74,18 +73,6 @@ type InvitationHydratorProps = {
       visualType: VisualType;
     }
 );
-
-export const getChildJourneyTypeName = ({ level }: { level: SpaceLevel }): JourneyTypeName => {
-  switch (level) {
-    case SpaceLevel.Challenge:
-      return 'subspace' as JourneyTypeName;
-    case SpaceLevel.Opportunity:
-      return 'subsubspace' as JourneyTypeName;
-    case SpaceLevel.Space:
-    default:
-      return 'space' as JourneyTypeName;
-  }
-};
 
 export const InvitationHydrator = ({
   invitation,
