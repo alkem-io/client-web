@@ -1901,6 +1901,7 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationUpdateRoomState'
   | 'adminSearchIngestFromScratch'
   | 'adminUpdateContributorAvatars'
+  | 'adminUserAccountDelete'
   | 'aiServerAuthorizationPolicyReset'
   | 'aiServerCreateAiPersonaService'
   | 'aiServerDeleteAiPersonaService'
@@ -2061,6 +2062,7 @@ export type MutationFieldPolicy = {
   adminCommunicationUpdateRoomState?: FieldPolicy<any> | FieldReadFunction<any>;
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUserAccountDelete?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerAuthorizationPolicyReset?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerCreateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerDeleteAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3461,7 +3463,7 @@ export type UserKeySpecifier = (
   | 'account'
   | 'accountUpn'
   | 'agent'
-  | 'authenticationMethod'
+  | 'authentication'
   | 'authorization'
   | 'communityRooms'
   | 'createdDate'
@@ -3483,7 +3485,7 @@ export type UserFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   accountUpn?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
-  authenticationMethod?: FieldPolicy<any> | FieldReadFunction<any>;
+  authentication?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3499,6 +3501,11 @@ export type UserFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserAuthenticationResultKeySpecifier = ('createdAt' | 'method' | UserAuthenticationResultKeySpecifier)[];
+export type UserAuthenticationResultFieldPolicy = {
+  createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  method?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserGroupKeySpecifier = (
   | 'authorization'
@@ -4503,6 +4510,10 @@ export type StrictTypedTypePolicies = {
   User?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserKeySpecifier | (() => undefined | UserKeySpecifier);
     fields?: UserFieldPolicy;
+  };
+  UserAuthenticationResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UserAuthenticationResultKeySpecifier | (() => undefined | UserAuthenticationResultKeySpecifier);
+    fields?: UserAuthenticationResultFieldPolicy;
   };
   UserGroup?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserGroupKeySpecifier | (() => undefined | UserGroupKeySpecifier);

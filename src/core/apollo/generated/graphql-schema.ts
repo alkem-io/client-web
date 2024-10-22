@@ -3213,6 +3213,8 @@ export type Mutation = {
   adminSearchIngestFromScratch: Scalars['String'];
   /** Update the Avatar on the Profile with the spedified profileID to be stored as a Document. */
   adminUpdateContributorAvatars: Profile;
+  /** Remove the Kratos account associated with the specified User. Note: the Users profile on the platform is not deleted. */
+  adminUserAccountDelete: User;
   /** Reset the Authorization Policy on the specified AiServer. */
   aiServerAuthorizationPolicyReset: AiServer;
   /** Creates a new AiPersonaService on the aiServer. */
@@ -3493,7 +3495,7 @@ export type Mutation = {
   updateTagset: Tagset;
   /** Updates the specified Template. */
   updateTemplate: Template;
-  /** Updates the specified SpaceDefaults. */
+  /** Updates the specified Template Defaults. */
   updateTemplateDefault: TemplateDefault;
   /** Updates the User. */
   updateUser: User;
@@ -3535,6 +3537,10 @@ export type MutationAdminCommunicationUpdateRoomStateArgs = {
 
 export type MutationAdminUpdateContributorAvatarsArgs = {
   profileID: Scalars['UUID'];
+};
+
+export type MutationAdminUserAccountDeleteArgs = {
+  userID: Scalars['UUID'];
 };
 
 export type MutationAiServerCreateAiPersonaServiceArgs = {
@@ -6492,8 +6498,8 @@ export type User = Contributor & {
   accountUpn: Scalars['String'];
   /** The Agent representing this User. */
   agent: Agent;
-  /** The Authentication Method used for this User. One of email, linkedin, microsoft, or unknown */
-  authenticationMethod?: Maybe<AuthenticationType>;
+  /** Details about the authentication used for this User. */
+  authentication?: Maybe<UserAuthenticationResult>;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
   /** The Community rooms this user is a member of */
@@ -6522,6 +6528,14 @@ export type User = Contributor & {
   storageAggregator?: Maybe<StorageAggregator>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
+};
+
+export type UserAuthenticationResult = {
+  __typename?: 'UserAuthenticationResult';
+  /** When the Kratos Account for the user was created */
+  createdAt?: Maybe<Scalars['DateTime']>;
+  /** The Authentication Method used for this User. One of email, linkedin, microsoft, or unknown */
+  method: AuthenticationType;
 };
 
 export type UserAuthorizationPrivilegesInput = {
