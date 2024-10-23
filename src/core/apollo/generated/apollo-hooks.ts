@@ -2799,6 +2799,17 @@ export const CollaborationTemplateContentFragmentDoc = gql`
         description
       }
     }
+    callouts {
+      id
+      type
+      framing {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
+    }
   }
 `;
 export const WhiteboardTemplateContentFragmentDoc = gql`
@@ -2898,6 +2909,13 @@ export const CollaborationTemplateFragmentDoc = gql`
     ...TemplateProfileInfo
     collaboration {
       id
+      innovationFlow {
+        id
+        states {
+          displayName
+          description
+        }
+      }
     }
   }
   ${TemplateProfileInfoFragmentDoc}
@@ -3376,7 +3394,39 @@ export const LibraryTemplatesFragmentDoc = gql`
         }
       }
     }
-    communityGuidelinesTemplatesCount
+    collaborationTemplatesCount
+    collaborationTemplates {
+      id
+      profile {
+        id
+        displayName
+        description
+        tagset {
+          ...TagsetDetails
+        }
+      }
+      collaboration {
+        id
+        innovationFlow {
+          id
+          states {
+            displayName
+            description
+          }
+        }
+        callouts {
+          id
+          framing {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
+      }
+    }
+    collaborationTemplatesCount
   }
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
@@ -3438,12 +3488,12 @@ export const InnovationPackCardFragmentDoc = gql`
     }
     templatesSet {
       id
-      postTemplatesCount
-      whiteboardTemplatesCount
-      innovationFlowTemplatesCount
-      collaborationTemplatesCount
       calloutTemplatesCount
       communityGuidelinesTemplatesCount
+      collaborationTemplatesCount
+      innovationFlowTemplatesCount
+      postTemplatesCount
+      whiteboardTemplatesCount
     }
     provider {
       ...InnovationPackProviderProfileWithAvatar
@@ -4915,9 +4965,9 @@ export const AccountInformationDocument = gql`
           templatesSet {
             id
             calloutTemplatesCount
+            collaborationTemplatesCount
             communityGuidelinesTemplatesCount
             innovationFlowTemplatesCount
-            collaborationTemplatesCount
             postTemplatesCount
             whiteboardTemplatesCount
           }
@@ -11914,9 +11964,9 @@ export const AccountResourcesInfoDocument = gql`
           templatesSet {
             id
             calloutTemplatesCount
+            collaborationTemplatesCount
             communityGuidelinesTemplatesCount
             innovationFlowTemplatesCount
-            collaborationTemplatesCount
             postTemplatesCount
             whiteboardTemplatesCount
           }
@@ -21693,9 +21743,9 @@ export const InnovationLibraryDocument = gql`
           templatesSet {
             id
             calloutTemplatesCount
+            collaborationTemplatesCount
             communityGuidelinesTemplatesCount
             innovationFlowTemplatesCount
-            collaborationTemplatesCount
             postTemplatesCount
             whiteboardTemplatesCount
           }

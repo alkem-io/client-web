@@ -15,6 +15,7 @@ import RoundedIcon from '../../../core/ui/icon/RoundedIcon';
 import ActionsMenu from '../../../core/ui/card/ActionsMenu';
 import OneLineMarkdown from '../../../core/ui/markdown/OneLineMarkdown';
 import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
+import { SpaceIcon } from '../../journey/space/icon/SpaceIcon';
 
 export interface InnovationPackCardHorizontalProps {
   profile: {
@@ -24,9 +25,9 @@ export interface InnovationPackCardHorizontalProps {
   };
   templates?: {
     calloutTemplatesCount?: number;
+    collaborationTemplatesCount?: number;
     communityGuidelinesTemplatesCount?: number;
     innovationFlowTemplatesCount?: number;
-    collaborationTemplatesCount?: number;
     postTemplatesCount?: number;
     whiteboardTemplatesCount?: number;
   };
@@ -52,15 +53,16 @@ const InnovationPackCardHorizontal = ({
 
   const {
     calloutTemplatesCount,
+    collaborationTemplatesCount,
     communityGuidelinesTemplatesCount,
     innovationFlowTemplatesCount,
-    collaborationTemplatesCount,
     postTemplatesCount,
     whiteboardTemplatesCount,
   } = templates ?? {};
 
   const totalTemplatesCount =
     (calloutTemplatesCount ?? 0) +
+    (collaborationTemplatesCount ?? 0) +
     (communityGuidelinesTemplatesCount ?? 0) +
     (innovationFlowTemplatesCount ?? 0) +
     (postTemplatesCount ?? 0) +
@@ -135,18 +137,7 @@ const InnovationPackCardHorizontal = ({
           {!!collaborationTemplatesCount && (
             <CardFooterCountWithBadge
               tooltip={t(`common.enums.templateType.${TemplateType.Collaboration}_plural`)}
-              icon={
-                // TODO Try to redraw InnovationFlowIcon in the same way as MUI icons are done
-                <Box
-                  width={theme => theme.spacing(1.5)}
-                  sx={{ svg: { width: '100%' } }}
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <InnovationFlowIcon />
-                </Box>
-              }
+              iconComponent={SpaceIcon}
             >
               <Caption>{collaborationTemplatesCount}</Caption>
             </CardFooterCountWithBadge>

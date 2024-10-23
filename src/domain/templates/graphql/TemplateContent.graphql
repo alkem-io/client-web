@@ -107,6 +107,17 @@ fragment CollaborationTemplateContent on Collaboration {
       description
     }
   }
+  callouts {
+    id
+    type
+    framing {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
 }
 
 fragment WhiteboardTemplateContent on Whiteboard {

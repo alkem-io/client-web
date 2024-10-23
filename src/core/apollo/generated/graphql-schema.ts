@@ -7949,9 +7949,9 @@ export type AccountInformationQuery = {
                   __typename?: 'TemplatesSet';
                   id: string;
                   calloutTemplatesCount: number;
+                  collaborationTemplatesCount: number;
                   communityGuidelinesTemplatesCount: number;
                   innovationFlowTemplatesCount: number;
-                  collaborationTemplatesCount: number;
                   postTemplatesCount: number;
                   whiteboardTemplatesCount: number;
                 }
@@ -17058,9 +17058,9 @@ export type AccountResourcesInfoQuery = {
                   __typename?: 'TemplatesSet';
                   id: string;
                   calloutTemplatesCount: number;
+                  collaborationTemplatesCount: number;
                   communityGuidelinesTemplatesCount: number;
                   innovationFlowTemplatesCount: number;
-                  collaborationTemplatesCount: number;
                   postTemplatesCount: number;
                   whiteboardTemplatesCount: number;
                 }
@@ -24989,7 +24989,17 @@ export type AllTemplatesInTemplatesSetQuery = {
             __typename?: 'Template';
             id: string;
             type: TemplateType;
-            collaboration?: { __typename?: 'Collaboration'; id: string } | undefined;
+            collaboration?:
+              | {
+                  __typename?: 'Collaboration';
+                  id: string;
+                  innovationFlow: {
+                    __typename?: 'InnovationFlow';
+                    id: string;
+                    states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+                  };
+                }
+              | undefined;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -25284,6 +25294,16 @@ export type TemplateContentQuery = {
                   id: string;
                   states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
                 };
+                callouts: Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  type: CalloutType;
+                  framing: {
+                    __typename?: 'CalloutFraming';
+                    id: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  };
+                }>;
               }
             | undefined;
         }
@@ -25447,6 +25467,16 @@ export type CollaborationTemplateContentFragment = {
     id: string;
     states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
   };
+  callouts: Array<{
+    __typename?: 'Callout';
+    id: string;
+    type: CalloutType;
+    framing: {
+      __typename?: 'CalloutFraming';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string };
+    };
+  }>;
 };
 
 export type WhiteboardTemplateContentFragment = {
@@ -25588,7 +25618,17 @@ export type CollaborationTemplateFragment = {
   __typename?: 'Template';
   id: string;
   type: TemplateType;
-  collaboration?: { __typename?: 'Collaboration'; id: string } | undefined;
+  collaboration?:
+    | {
+        __typename?: 'Collaboration';
+        id: string;
+        innovationFlow: {
+          __typename?: 'InnovationFlow';
+          id: string;
+          states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+        };
+      }
+    | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -26080,7 +26120,17 @@ export type TemplatesSetTemplatesFragment = {
     __typename?: 'Template';
     id: string;
     type: TemplateType;
-    collaboration?: { __typename?: 'Collaboration'; id: string } | undefined;
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          innovationFlow: {
+            __typename?: 'InnovationFlow';
+            id: string;
+            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+          };
+        }
+      | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -28068,9 +28118,9 @@ export type InnovationLibraryQuery = {
               __typename?: 'TemplatesSet';
               id: string;
               calloutTemplatesCount: number;
+              collaborationTemplatesCount: number;
               communityGuidelinesTemplatesCount: number;
               innovationFlowTemplatesCount: number;
-              collaborationTemplatesCount: number;
               postTemplatesCount: number;
               whiteboardTemplatesCount: number;
             }
@@ -28124,7 +28174,7 @@ export type LibraryTemplatesFragment = {
   whiteboardTemplatesCount: number;
   innovationFlowTemplatesCount: number;
   calloutTemplatesCount: number;
-  communityGuidelinesTemplatesCount: number;
+  collaborationTemplatesCount: number;
   postTemplates: Array<{
     __typename?: 'Template';
     id: string;
@@ -28390,6 +28440,46 @@ export type LibraryTemplatesFragment = {
         }
       | undefined;
   }>;
+  collaborationTemplates: Array<{
+    __typename?: 'Template';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+    };
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          innovationFlow: {
+            __typename?: 'InnovationFlow';
+            id: string;
+            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+          };
+          callouts: Array<{
+            __typename?: 'Callout';
+            id: string;
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            };
+          }>;
+        }
+      | undefined;
+  }>;
 };
 
 export type ExploreSpacesSearchQueryVariables = Exact<{
@@ -28624,12 +28714,12 @@ export type InnovationLibraryBlockQuery = {
           | {
               __typename?: 'TemplatesSet';
               id: string;
-              postTemplatesCount: number;
-              whiteboardTemplatesCount: number;
-              innovationFlowTemplatesCount: number;
-              collaborationTemplatesCount: number;
               calloutTemplatesCount: number;
               communityGuidelinesTemplatesCount: number;
+              collaborationTemplatesCount: number;
+              innovationFlowTemplatesCount: number;
+              postTemplatesCount: number;
+              whiteboardTemplatesCount: number;
             }
           | undefined;
         provider:
@@ -28699,12 +28789,12 @@ export type InnovationPackCardFragment = {
     | {
         __typename?: 'TemplatesSet';
         id: string;
-        postTemplatesCount: number;
-        whiteboardTemplatesCount: number;
-        innovationFlowTemplatesCount: number;
-        collaborationTemplatesCount: number;
         calloutTemplatesCount: number;
         communityGuidelinesTemplatesCount: number;
+        collaborationTemplatesCount: number;
+        innovationFlowTemplatesCount: number;
+        postTemplatesCount: number;
+        whiteboardTemplatesCount: number;
       }
     | undefined;
   provider:

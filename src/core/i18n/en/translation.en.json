@@ -939,6 +939,10 @@
       "name": "Innovation Flow template",
       "title": "Template Library: Innovation Flows"
     },
+    "collaborationTemplates": {
+      "name": "Subspace template",
+      "title": "Template Library: Subspace templates"
+    },
     "communityGuidelinesTemplates": {
       "name": "Community Guidelines",
       "title": "Template Library: Community Guidelines",

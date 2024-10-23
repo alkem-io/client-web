@@ -24,12 +24,12 @@ fragment InnovationPackCard on InnovationPack {
   }
   templatesSet {
     id
-    postTemplatesCount
-    whiteboardTemplatesCount
-    innovationFlowTemplatesCount
-    collaborationTemplatesCount
     calloutTemplatesCount
     communityGuidelinesTemplatesCount
+    collaborationTemplatesCount
+    innovationFlowTemplatesCount
+    postTemplatesCount
+    whiteboardTemplatesCount
   }
   provider {
     ...InnovationPackProviderProfileWithAvatar
