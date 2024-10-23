@@ -22701,6 +22701,20 @@ export type AdminSpaceSubspacesPageQuery = {
   };
 };
 
+export type SpaceCollaborationIdQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpaceCollaborationIdQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | { __typename?: 'Space'; id: string; collaboration: { __typename?: 'Collaboration'; id: string } }
+      | undefined;
+  };
+};
+
 export type SpaceDashboardNavigationChallengesQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
@@ -25301,11 +25315,55 @@ export type TemplateContentQuery = {
                   framing: {
                     __typename?: 'CalloutFraming';
                     id: string;
-                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      description?: string | undefined;
+                      flowStateTagset?: { __typename?: 'Tagset'; tags: Array<string> } | undefined;
+                    };
                   };
                 }>;
               }
             | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CollaborationTemplateContentQueryVariables = Exact<{
+  collaborationId: Scalars['UUID'];
+}>;
+
+export type CollaborationTemplateContentQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          innovationFlow: {
+            __typename?: 'InnovationFlow';
+            id: string;
+            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+          };
+          callouts: Array<{
+            __typename?: 'Callout';
+            id: string;
+            type: CalloutType;
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                description?: string | undefined;
+                flowStateTagset?: { __typename?: 'Tagset'; tags: Array<string> } | undefined;
+              };
+            };
+          }>;
         }
       | undefined;
   };
@@ -25474,7 +25532,13 @@ export type CollaborationTemplateContentFragment = {
     framing: {
       __typename?: 'CalloutFraming';
       id: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        description?: string | undefined;
+        flowStateTagset?: { __typename?: 'Tagset'; tags: Array<string> } | undefined;
+      };
     };
   }>;
 };

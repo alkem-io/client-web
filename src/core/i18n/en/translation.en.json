@@ -307,6 +307,7 @@
     "context": "Context",
     "community": "Community",
     "library": "Library",
+    "templateLibrary": "Template Library",
     "people": "People",
     "settings": "Settings",
     "space-settings": "$t(common.settings)",
@@ -515,8 +516,8 @@
       "templateType": {
         "CALLOUT": "Collaboration Tool Template",
         "CALLOUT_plural": "Collaboration Tool Templates",
-        "COLLABORATION": "Collaboration Template",
-        "COLLABORATION_plural": "Collaboration Templates",
+        "COLLABORATION": "Subspace Template",
+        "COLLABORATION_plural": "Subspace Templates",
         "COMMUNITY_GUIDELINES": "Community Guidelines Template",
         "COMMUNITY_GUIDELINES_plural": "Community Guidelines Templates",
         "INNOVATION_FLOW": "Innovation Flow",
@@ -842,8 +843,8 @@
         "description": "Enter words that are key to the Subspace to make it stand out and easier to find.",
         "placeholder": ""
       },
-      "addDefaultCallouts": {
-        "title": "Add default collaboration tools"
+      "addTutorialCallouts": {
+        "title": "Add default collaboration tools and tutorials"
       },
       "innovationFlow": {
         "title": "Subspace Flow"
@@ -885,8 +886,8 @@
         "description": "Enter words that are key to your Subspace to make it stand out and easier to find.",
         "placeholder": ""
       },
-      "addDefaultCallouts": {
-        "title": "Add default collaboration tools"
+      "addTutorialCallouts": {
+        "title": "Add default collaboration tools and tutorials"
       },
       "innovationFlow": {
         "title": "Subspace Flow"
@@ -918,34 +919,34 @@
   },
   "templateLibrary": {
     "calloutTemplates": {
-      "name": "Collaboration Tool template",
-      "title": "Template Library: Collaboration Tools",
+      "name": "$(common.enums.templateType.CALLOUT)",
+      "title": "$(common.templateLibrary): $(common.enums.templateType.CALLOUT_plural)",
       "type": "Callout type",
       "description": "Description"
     },
     "postTemplates": {
-      "name": "Post template",
-      "title": "Template Library: Posts",
+      "name": "$(common.enums.templateType.POST)",
+      "title": "$(common.templateLibrary): $(common.enums.templateType.POST_plural)",
       "defaultDescription": "Default Post content"
     },
     "whiteboardTemplates": {
-      "name": "Whiteboard template",
-      "title": "Template Library: Whiteboards",
+      "name": "$(common.enums.templateType.WHITEBOARD)",
+      "title": "$(common.templateLibrary): $(common.enums.templateType.WHITEBOARD_plural)",
       "editTemplateButton": "Edit Template",
       "editDialogTitle": "Edit Whiteboard Template",
       "errorImporting": "Error importing Whiteboard Template"
     },
     "innovationFlowTemplates": {
-      "name": "Innovation Flow template",
-      "title": "Template Library: Innovation Flows"
+      "name": "$(common.enums.templateType.INNOVATION_FLOW)",
+      "title": "$(common.templateLibrary): $(common.enums.templateType.INNOVATION_FLOW_plural)"
     },
     "collaborationTemplates": {
-      "name": "Subspace template",
-      "title": "Template Library: Subspace templates"
+      "name": "$(common.enums.templateType.COLLABORATION)",
+      "title": "$(common.templateLibrary): $(common.enums.templateType.COLLABORATION_plural)"
     },
     "communityGuidelinesTemplates": {
-      "name": "Community Guidelines",
-      "title": "Template Library: Community Guidelines",
+      "name": "$(common.enums.templateType.COMMUNITY_GUIDELINES)",
+      "title": "$(common.templateLibrary):  $(common.enums.templateType.COMMUNITY_GUIDELINES_plural)",
       "content": "Guidelines",
       "guidelinesTitle": "Title",
       "guidelinesDescription": "Guidelines"
@@ -1811,7 +1812,7 @@
             "delete-confirmation": "Are you sure you want to delete the template '{{template}}'?",
             "import": {
               "defaultTitle": "Templates Library",
-              "title": "Template Library: {{templateType}}",
+              "title": "$(common.templateLibrary): {{templateType}}",
               "subtitle": "Find templates to use in your Space or Subspace. Select the template and click `Import` to add it to your Template set.",
               "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",
               "noTemplates": "No templates found.",

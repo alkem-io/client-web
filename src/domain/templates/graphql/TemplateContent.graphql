@@ -39,6 +39,15 @@ query TemplateContent(
   }
 }
 
+# Used temporarily to preview any collaboration before turning it into a template
+query CollaborationTemplateContent($collaborationId: UUID!) {
+  lookup {
+    collaboration(ID: $collaborationId) {
+      ...CollaborationTemplateContent
+    }
+  }
+}
+
 fragment CalloutTemplateContent on Callout {
   id
   type
@@ -115,6 +124,10 @@ fragment CollaborationTemplateContent on Collaboration {
       profile {
         id
         displayName
+        description
+        flowStateTagset: tagset(tagsetName: FLOW_STATE) {
+          tags
+        }
       }
     }
   }

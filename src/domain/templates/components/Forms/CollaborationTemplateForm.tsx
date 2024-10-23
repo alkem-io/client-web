@@ -5,16 +5,19 @@ import { FormikProps } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfile } from './common/mappings';
-import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
-import InnovationFlowDragNDropEditor from '../../../collaboration/InnovationFlow/InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
-import { CollaborationTemplate, MAX_INNOVATIONFLOW_STATES } from '../../models/CollaborationTemplate';
+import { CollaborationTemplate } from '../../models/CollaborationTemplate';
+import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
+import CollaborationTemplatePreview from '../Previews/CollaborationTemplatePreview';
+import { useCollaborationTemplateContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
 export interface CollaborationTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
-  innovationFlow: {
-    states: InnovationFlowState[];
-  };
+  collaborationId?: string;
+  // TODO: Commented because in the future we may want to edit the IF states, for the moment we can just select another collaboration to make a template of it
+  // innovationFlow?: {
+  //   states: InnovationFlowState[];
+  // };
+  // callouts?: { .... }
 }
 
 interface CollaborationTemplateFormProps {
@@ -24,7 +27,8 @@ interface CollaborationTemplateFormProps {
 }
 
 const validator = {
-  innovationFlow: yup.object().shape({
+  collaborationId: yup.string().required(),
+  /* innovationFlow: yup.object().shape({
     states: yup
       .array()
       .required()
@@ -40,18 +44,22 @@ const validator = {
       .min(1)
       .max(MAX_INNOVATIONFLOW_STATES),
   }),
+  callouts: ...
+  */
 };
 
 const CollaborationTemplateForm = ({ template, onSubmit, actions }: CollaborationTemplateFormProps) => {
   const initialValues: CollaborationTemplateFormSubmittedValues = {
     profile: mapTemplateProfileToUpdateProfile(template?.profile),
-    innovationFlow: {
+    collaborationId: template?.collaboration?.id ?? '',
+    /*innovationFlow: {
       states: template?.collaboration?.innovationFlow?.states ?? [],
-    },
+    },*/
   };
 
   const { t } = useTranslation();
 
+  /* No edit functionality for the moment
   const onCreateState = (
     currentStates: InnovationFlowState[],
     newState: InnovationFlowState,
@@ -124,6 +132,17 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: Collaboratio
     ];
     setStates(newStates);
   };
+  */
+  // Just load the innovation flow and the callouts of the selected collaboration and show it
+  const { data, loading } = useCollaborationTemplateContentQuery({
+    variables: {
+      collaborationId: template?.collaboration?.id!,
+    },
+    skip: !template?.collaboration?.id,
+  });
+  const collaborationPreview = {
+    collaboration: data?.lookup.collaboration,
+  };
 
   return (
     <TemplateFormBase
@@ -134,15 +153,19 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: Collaboratio
       actions={actions}
       validator={validator}
     >
-      {({ values, setFieldValue, setFieldTouched }) => {
-        const setStates = (states: InnovationFlowState[]) => {
+      {
+        (/*{ values, setFieldValue, setFieldTouched }*/) => {
+          /*const setStates = (states: InnovationFlowState[]) => {
           setFieldTouched('innovationFlow.states', true);
           setFieldValue('innovationFlow.states', states);
-        };
+        };*/
 
-        return (
-          <>
-            <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
+          return (
+            <>
+              <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
+              <FormikInputField title="collab id" name="collaborationId" />
+              <CollaborationTemplatePreview loading={loading} template={collaborationPreview} />
+              {/*
             <InnovationFlowDragNDropEditor
               innovationFlowStates={values.innovationFlow.states}
               onCreateFlowState={(newState, options) =>
@@ -156,9 +179,12 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: Collaboratio
                 onSortStates(values.innovationFlow.states, states, sortOrder, setStates)
               }
             />
-          </>
-        );
-      }}
+            */}
+              {/* Callouts Previewer/Editor .... */}
+            </>
+          );
+        }
+      }
     </TemplateFormBase>
   );
 };

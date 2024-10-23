@@ -95,12 +95,12 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   });
 
   const {
+    calloutTemplates,
+    collaborationTemplates,
+    communityGuidelinesTemplates,
+    innovationFlowTemplates,
     postTemplates,
     whiteboardTemplates,
-    innovationFlowTemplates,
-    calloutTemplates,
-    communityGuidelinesTemplates,
-    collaborationTemplates,
   } = data?.lookup.templatesSet ?? {};
 
   const selectedTemplate = useMemo<AnyTemplate | undefined>(() => {

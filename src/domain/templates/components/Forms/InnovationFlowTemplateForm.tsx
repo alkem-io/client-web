@@ -9,7 +9,8 @@ import { InnovationFlowState } from '../../../collaboration/InnovationFlow/Innov
 import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
 import InnovationFlowDragNDropEditor from '../../../collaboration/InnovationFlow/InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
-import { InnovationFlowTemplate, MAX_INNOVATIONFLOW_STATES } from '../../models/InnovationFlowTemplate';
+import { InnovationFlowTemplate } from '../../models/InnovationFlowTemplate';
+import { MAX_INNOVATIONFLOW_STATES } from '../../models/CollaborationTemplate';
 
 export interface InnovationFlowTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   innovationFlow: {

@@ -21,7 +21,7 @@ interface FormValues {
   background: string;
   vision: string;
   tags: string[];
-  addDefaultCallouts: boolean;
+  addTutorialCallouts: boolean;
 }
 
 interface CreateSubspaceFormProps extends JourneyCreationForm {}
@@ -38,7 +38,7 @@ export const CreateSubspaceForm: FC<CreateSubspaceFormProps> = ({ isSubmitting, 
       background: value.background,
       vision: value.vision,
       tags: value.tags,
-      addTutorialCallouts: value.addDefaultCallouts,
+      addTutorialCallouts: value.addTutorialCallouts,
     });
 
   const initialValues: FormValues = {
@@ -47,7 +47,7 @@ export const CreateSubspaceForm: FC<CreateSubspaceFormProps> = ({ isSubmitting, 
     background: '',
     vision: '',
     tags: [],
-    addDefaultCallouts: true,
+    addTutorialCallouts: true,
   };
 
   const validationSchema = yup.object().shape({
@@ -116,7 +116,7 @@ export const CreateSubspaceForm: FC<CreateSubspaceFormProps> = ({ isSubmitting, 
               title={t('context.subspace.tags.title')}
               helperText={t('context.subspace.tags.description')}
             />
-            <FormikSwitch name="addDefaultCallouts" title={t('context.subspace.addDefaultCallouts.title')} />
+            <FormikSwitch name="addTutorialCallouts" title={t('context.subspace.addTutorialCallouts.title')} />
           </Gutters>
         </Form>
       )}

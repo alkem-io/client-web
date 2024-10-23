@@ -5,7 +5,7 @@ import { TemplateType } from '../../../../../core/apollo/generated/graphql-schem
 import TemplateForm, { AnyTemplateFormSubmittedValues } from '../../Forms/TemplateForm';
 import { getNewTemplate } from '../../../models/common';
 import { AnyTemplate } from '../../../models/TemplateBase';
-import { CircularProgress } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 
 interface CreateTemplateDialogProps {
   open: boolean;
@@ -39,7 +39,11 @@ const CreateTemplateDialog = ({
     <CreateEditTemplateDialogBase open={open} onClose={onClose} templateType={templateType}>
       {({ actions }) => (
         <>
-          {!defaultValues && <CircularProgress />}
+          {!defaultValues && (
+            <Box textAlign="center">
+              <CircularProgress />
+            </Box>
+          )}
           {defaultValues && <TemplateForm template={defaultValues} onSubmit={onSubmit} actions={actions} />}
         </>
       )}
