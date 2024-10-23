@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import HomePageLayout from '../Home/HomePageLayout';
 import PageContent from '../../../core/ui/content/PageContent';
-import MyMembershipsDialog from './myMemberships/MyMembershipsDialog';
 import { useLatestContributionsSpacesFlatQuery } from '../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../core/ui/loading/Loading';
 import MyDashboardWithMemberships from './MyDashboardWithMemberships';
@@ -12,7 +11,6 @@ import { DashboardProvider } from './DashboardContext';
 
 export const MyDashboard = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
-  const [isMyMembershipsDialogOpen, setIsMyMembershipsDialogOpen] = useState(false);
 
   const { data: spacesData, loading: areSpacesLoading } = useLatestContributionsSpacesFlatQuery();
   const hasSpaceMemberships = !!spacesData?.me.spaceMembershipsFlat.length;
@@ -28,17 +26,13 @@ export const MyDashboard = () => {
   return (
     <HomePageLayout>
       <DashboardProvider>
-        <MyMembershipsDialog open={isMyMembershipsDialogOpen} onClose={() => setIsMyMembershipsDialogOpen(false)} />
         {!isAuthenticated && !isLoadingAuthentication ? (
-          <PageContent gridContainerProps={{ flexDirection: 'row-reverse' }}>
+          <PageContent>
             <MyDashboardUnauthenticated />
           </PageContent>
         ) : hasSpaceMemberships ? (
-          <PageContent gridContainerProps={{ flexDirection: 'row-reverse' }}>
-            <MyDashboardWithMemberships
-              spacesData={spacesData}
-              onOpenMembershipsDialog={() => setIsMyMembershipsDialogOpen(true)}
-            />
+          <PageContent>
+            <MyDashboardWithMemberships />
           </PageContent>
         ) : (
           <PageContent>
