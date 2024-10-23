@@ -7,24 +7,23 @@ import useReleaseNotes from '../../../../domain/platform/metadata/useReleaseNote
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { useConfig } from '../../../../domain/platform/config/useConfig';
 
-const URL_NOT_CLICKABLE_MARKER = 'NOT_CLICKABLE';
+const IS_CLICKABLE = 'true';
 
 const ReleaseNotesBanner = () => {
   const { t } = useTranslation();
   const { locations } = useConfig();
 
   const releaseNotesUrl = t('releaseNotes.url');
+  const isClickable = t('releaseNotes.isClickable').toLocaleLowerCase() === IS_CLICKABLE;
 
   const { open, onClose } = useReleaseNotes(releaseNotesUrl);
-
-  const notClickable = releaseNotesUrl.includes(URL_NOT_CLICKABLE_MARKER);
 
   if (!open) {
     return null;
   }
 
   return (
-    <DashboardBanner to={releaseNotesUrl} isLink={!notClickable} onClose={onClose}>
+    <DashboardBanner to={releaseNotesUrl} isLink={isClickable} onClose={onClose}>
       <Trans
         i18nKey="releaseNotes.title"
         components={{

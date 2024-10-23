@@ -34,7 +34,8 @@
   },
   "releaseNotes": {
     "title": "<small><icon/>Our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy> have been updated. Click on the titles to review them, or dismiss this notification.</small>",
-    "url": "termsUpdateOct.24?NOT_CLICKABLE"
+    "url": "NotClickableTermsUpdate-Oct-2024",
+    "isClickable": "FALSE"
   },
   "cookie": {
     "consent": "By clicking \"Accept All Cookies\", you agree to the storing of cookies on your device to enhance site navigation and analyze site usage.",
