@@ -23,14 +23,14 @@ export const VCProfilePage = () => {
     },
   });
 
-  const isBoKSpace =
+  const isBokSpace =
     data?.virtualContributor?.aiPersona?.bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
 
-  const { data: bokProfile, loading: loadingBok } = useBodyOfKnowledgeProfileQuery({
+  const { data: bokProfile } = useBodyOfKnowledgeProfileQuery({
     variables: {
       spaceId: data?.virtualContributor?.aiPersona?.bodyOfKnowledgeID!,
     },
-    skip: !data?.virtualContributor?.aiPersona?.bodyOfKnowledgeID || !isBoKSpace,
+    skip: !data?.virtualContributor?.aiPersona?.bodyOfKnowledgeID || !isBokSpace,
   });
 
   useRestrictedRedirect({ data, error }, data => data.virtualContributor.authorization?.myPrivileges);
@@ -53,9 +53,9 @@ export const VCProfilePage = () => {
     <VCPageLayout>
       <VCProfilePageView
         virtualContributor={data?.virtualContributor}
-        hasBokId={!!data?.virtualContributor.aiPersona?.bodyOfKnowledgeID}
-        bokProfile={isBoKSpace || loadingBok ? bokProfile?.lookup.space?.profile : undefined}
-        bokDescription={loadingBok ? undefined : data?.virtualContributor?.aiPersona?.bodyOfKnowledge}
+        bokDescription={data?.virtualContributor?.aiPersona?.bodyOfKnowledge}
+        bokProfile={isBokSpace ? bokProfile?.lookup.space?.profile : undefined}
+        hasBokId={Boolean(data?.virtualContributor.aiPersona?.bodyOfKnowledgeID)}
       />
     </VCPageLayout>
   );

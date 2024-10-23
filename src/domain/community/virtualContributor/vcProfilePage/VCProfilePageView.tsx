@@ -9,21 +9,14 @@ import HostCard from '../components/HostCard';
 import Spacer from '../../../../core/ui/content/Spacer';
 import BasicSpaceCard from '../components/BasicSpaceCard';
 import PageContent from '../../../../core/ui/content/PageContent';
-import { BlockTitle, Text } from '../../../../core/ui/typography';
+import { Text, BlockTitle } from '../../../../core/ui/typography';
 import ProfileDetail from '../../profile/ProfileDetail/ProfileDetail';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 
 import { type VCProfilePageViewProps } from './model';
-
-const SectionTitle = ({ children }) => (
-  <BlockTitle display={'flex'} alignItems={'center'} gap={theme => theme.spacing(1)}>
-    {children}
-  </BlockTitle>
-);
-
-const SectionContent = ({ children }) => <Text>{children}</Text>;
+import { gutters } from '../../../../core/ui/grid/utils';
 
 export const VCProfilePageView = ({
   hasBokId,
@@ -31,7 +24,7 @@ export const VCProfilePageView = ({
   bokDescription,
   virtualContributor,
 }: VCProfilePageViewProps) => {
-  const theme = useTheme();
+  const { palette } = useTheme();
 
   const { t } = useTranslation();
   const vcTBase = 'pages.virtualContributorProfile.sections';
@@ -39,8 +32,8 @@ export const VCProfilePageView = ({
   const externalVcTBase = 'pages.virtualContributorProfile.sections.external';
   const { t: externalVcT } = useTranslation('translation', { keyPrefix: externalVcTBase });
 
-  const hasBokProfile = !!bokProfile;
-  const darkIcons = theme.palette.icons.dark;
+  const darkIcons = palette.icons.dark;
+  const hasBokProfile = Boolean(bokProfile);
   const vcProfile = virtualContributor?.profile;
   const name = vcProfile?.displayName || t('pages.virtualContributorProfile.defaultName');
 
@@ -135,3 +128,15 @@ export const VCProfilePageView = ({
 };
 
 export default VCProfilePageView;
+
+function SectionTitle({ children }) {
+  return (
+    <BlockTitle display={'flex'} alignItems={'center'} gap={gutters(0.5)}>
+      {children}
+    </BlockTitle>
+  );
+}
+
+function SectionContent({ children }) {
+  return <Text>{children}</Text>;
+}
