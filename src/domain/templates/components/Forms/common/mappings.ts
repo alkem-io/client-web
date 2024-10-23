@@ -1,6 +1,7 @@
 import produce from 'immer';
 import {
   CalloutType,
+  CreateTemplateFromCollaborationMutationVariables,
   UpdateProfileInput,
   UpdateReferenceInput,
   UpdateTagsetInput,
@@ -16,6 +17,7 @@ import { WritableDraft } from 'immer/dist/internal';
 import { InnovationFlowTemplateFormSubmittedValues } from '../InnovationFlowTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../WhiteboardTemplateForm';
 import { CalloutTemplateFormSubmittedValues } from '../CalloutTemplateForm';
+import { CollaborationTemplateFormSubmittedValues } from '../CollaborationTemplateForm';
 
 // TODO MAYBE: Create the mappings mannually instead of using produce,
 // maybe that's the best way to keep the Typescript integrity
@@ -282,6 +284,31 @@ export const toCreateTemplateMutationVariables = (
     type: templateType,
     ...newValues,
   };
+};
+
+export const toCreateTemplateFromCollaborationMutationVariables = (
+  templatesSetId: string,
+  values: CollaborationTemplateFormSubmittedValues
+): CreateTemplateFromCollaborationMutationVariables => {
+  if (!values.collaborationId) {
+    throw new Error('Collaboration ID is required to create a template from a collaboration');
+  }
+
+  const result: CreateTemplateFromCollaborationMutationVariables = {
+    collaborationId: values.collaborationId,
+    templatesSetId: templatesSetId,
+    profileData: {
+      displayName: values.profile.displayName ?? '',
+      description: values.profile.description,
+      referencesData: values.profile.references?.map((ref, i) => ({
+        name: ref.name ?? `Reference ${i}`,
+        uri: ref.uri,
+        description: ref.description,
+      })),
+    },
+    tags: values.profile.tagsets?.[0]?.tags ?? [],
+  };
+  return result;
 };
 
 /* ==========================

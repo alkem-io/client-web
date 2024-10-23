@@ -1,4 +1,4 @@
-mutation createTemplate(
+mutation CreateTemplate(
   $templatesSetId: UUID!
   $profileData: CreateProfileInput!
   $type: TemplateType!
@@ -35,19 +35,33 @@ mutation createTemplate(
     }
   }
 }
+
+# Special case for creating a template from an existing collaboration
+mutation CreateTemplateFromCollaboration(
+  $templatesSetId: UUID!
+  $profileData: CreateProfileInput!
+  $tags: [String!]
+  $collaborationId: UUID!
+) {
+  createTemplateFromCollaboration(
+    templateData: {
+      templatesSetID: $templatesSetId
+      profileData: $profileData
+      tags: $tags
+      collaborationID: $collaborationId
+    }
+  ) {
+    id
+  }
+}
+
 mutation UpdateTemplate(
   $templateId: UUID!
   $profile: UpdateProfileInput!
   $postDefaultDescription: Markdown
   $includeProfileVisuals: Boolean = false
 ) {
-  updateTemplate(
-    updateData: {
-      ID: $templateId
-      profile: $profile
-      postDefaultDescription: $postDefaultDescription
-    }
-  ) {
+  updateTemplate(updateData: { ID: $templateId, profile: $profile, postDefaultDescription: $postDefaultDescription }) {
     id
     profile @include(if: $includeProfileVisuals) {
       id
@@ -61,7 +75,7 @@ mutation UpdateTemplate(
   }
 }
 
-mutation deleteTemplate($templateId: UUID!) {
+mutation DeleteTemplate($templateId: UUID!) {
   deleteTemplate(deleteData: { ID: $templateId }) {
     id
   }

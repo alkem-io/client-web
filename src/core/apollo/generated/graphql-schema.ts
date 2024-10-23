@@ -25897,6 +25897,18 @@ export type CreateTemplateMutation = {
   };
 };
 
+export type CreateTemplateFromCollaborationMutationVariables = Exact<{
+  templatesSetId: Scalars['UUID'];
+  profileData: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  collaborationId: Scalars['UUID'];
+}>;
+
+export type CreateTemplateFromCollaborationMutation = {
+  __typename?: 'Mutation';
+  createTemplateFromCollaboration: { __typename?: 'Template'; id: string };
+};
+
 export type UpdateTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
   profile: UpdateProfileInput;

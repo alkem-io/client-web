@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IconButton, Menu } from '@mui/material';
+import { ClickAwayListener, IconButton, Menu } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTranslation } from 'react-i18next';
 
@@ -33,18 +33,20 @@ const ActionsMenu: React.FC<ActionsMenuProps> = ({ children }) => {
       >
         <MoreVertIcon color="primary" />
       </IconButton>
-      <Menu
-        aria-labelledby="settings-button"
-        anchorEl={settingsAnchorEl}
-        open={settingsOpened}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
-        {children}
-      </Menu>
+      <ClickAwayListener onClickAway={handleClose}>
+        <Menu
+          aria-labelledby="settings-button"
+          anchorEl={settingsAnchorEl}
+          open={settingsOpened}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+        >
+          {children}
+        </Menu>
+      </ClickAwayListener>
     </div>
   );
 };

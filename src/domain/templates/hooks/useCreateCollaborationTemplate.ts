@@ -1,11 +1,10 @@
 import { useCallback } from 'react';
 import { CollaborationTemplateFormSubmittedValues } from '../components/Forms/CollaborationTemplateForm';
-import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
 import {
-  useCreateTemplateMutation,
+  useCreateTemplateFromCollaborationMutation,
   useSpaceTemplatesSetIdLazyQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
-import { toCreateTemplateMutationVariables } from '../components/Forms/common/mappings';
+import { toCreateTemplateFromCollaborationMutationVariables } from '../components/Forms/common/mappings';
 
 export interface CollaborationCreationUtils {
   handleCreateCollaborationTemplate: (
@@ -15,7 +14,7 @@ export interface CollaborationCreationUtils {
 }
 
 export const useCreateCollaborationTemplate = (): CollaborationCreationUtils => {
-  const [createCollaborationTemplate] = useCreateTemplateMutation(); //!! Pending special mutation for CollaborationTemplates
+  const [createCollaborationTemplate] = useCreateTemplateFromCollaborationMutation();
   const [fetchTemplatesSetId] = useSpaceTemplatesSetIdLazyQuery();
 
   const handleCreateCollaborationTemplate = useCallback(
@@ -26,7 +25,7 @@ export const useCreateCollaborationTemplate = (): CollaborationCreationUtils => 
         throw new TypeError('TemplateSet not found!');
       }
 
-      const variables = toCreateTemplateMutationVariables(templatesSetId, TemplateType.Collaboration!, values);
+      const variables = toCreateTemplateFromCollaborationMutationVariables(templatesSetId, values);
       return createCollaborationTemplate({ variables });
     },
     [createCollaborationTemplate]

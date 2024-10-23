@@ -20143,7 +20143,7 @@ export function refetchCollaborationTemplateContentQuery(
 }
 
 export const CreateTemplateDocument = gql`
-  mutation createTemplate(
+  mutation CreateTemplate(
     $templatesSetId: UUID!
     $profileData: CreateProfileInput!
     $type: TemplateType!
@@ -20231,6 +20231,72 @@ export type CreateTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateTemplateMutation,
   SchemaTypes.CreateTemplateMutationVariables
 >;
+export const CreateTemplateFromCollaborationDocument = gql`
+  mutation CreateTemplateFromCollaboration(
+    $templatesSetId: UUID!
+    $profileData: CreateProfileInput!
+    $tags: [String!]
+    $collaborationId: UUID!
+  ) {
+    createTemplateFromCollaboration(
+      templateData: {
+        templatesSetID: $templatesSetId
+        profileData: $profileData
+        tags: $tags
+        collaborationID: $collaborationId
+      }
+    ) {
+      id
+    }
+  }
+`;
+export type CreateTemplateFromCollaborationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateTemplateFromCollaborationMutation,
+  SchemaTypes.CreateTemplateFromCollaborationMutationVariables
+>;
+
+/**
+ * __useCreateTemplateFromCollaborationMutation__
+ *
+ * To run a mutation, you first call `useCreateTemplateFromCollaborationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTemplateFromCollaborationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTemplateFromCollaborationMutation, { data, loading, error }] = useCreateTemplateFromCollaborationMutation({
+ *   variables: {
+ *      templatesSetId: // value for 'templatesSetId'
+ *      profileData: // value for 'profileData'
+ *      tags: // value for 'tags'
+ *      collaborationId: // value for 'collaborationId'
+ *   },
+ * });
+ */
+export function useCreateTemplateFromCollaborationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateTemplateFromCollaborationMutation,
+    SchemaTypes.CreateTemplateFromCollaborationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateTemplateFromCollaborationMutation,
+    SchemaTypes.CreateTemplateFromCollaborationMutationVariables
+  >(CreateTemplateFromCollaborationDocument, options);
+}
+
+export type CreateTemplateFromCollaborationMutationHookResult = ReturnType<
+  typeof useCreateTemplateFromCollaborationMutation
+>;
+export type CreateTemplateFromCollaborationMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateTemplateFromCollaborationMutation>;
+export type CreateTemplateFromCollaborationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateTemplateFromCollaborationMutation,
+  SchemaTypes.CreateTemplateFromCollaborationMutationVariables
+>;
 export const UpdateTemplateDocument = gql`
   mutation UpdateTemplate(
     $templateId: UUID!
@@ -20299,7 +20365,7 @@ export type UpdateTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateTemplateMutationVariables
 >;
 export const DeleteTemplateDocument = gql`
-  mutation deleteTemplate($templateId: UUID!) {
+  mutation DeleteTemplate($templateId: UUID!) {
     deleteTemplate(deleteData: { ID: $templateId }) {
       id
     }

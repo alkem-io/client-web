@@ -200,7 +200,11 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
     ({ templateType }: { templateType: TemplateType }) => (
       <>
         {canImportTemplates ? <ImportTemplateButton onClick={() => setImportTemplateType(templateType)} /> : null}
-        {canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(templateType)} /> : null}
+        {canCreateTemplates &&
+        /* TODO: InnovationFlow templates are going to be removed in the near future, so disallow creation for this type */
+        templateType !== TemplateType.InnovationFlow ? (
+          <CreateTemplateButton onClick={() => setCreatingTemplateType(templateType)} />
+        ) : null}
       </>
     ),
     [canCreateTemplates, canImportTemplates, setCreatingTemplateType, setImportTemplateType]
@@ -235,8 +239,8 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
       <PageContentBlockSeamless disablePadding>
         <TemplatesGallery
           headerText={t('common.entitiesWithCount', {
-            entityType: t(`common.enums.templateType.${TemplateType.Collaboration}_plural`), // TODO
-            count: calloutTemplates?.length ?? 0,
+            entityType: t(`common.enums.templateType.${TemplateType.Collaboration}_plural`),
+            count: collaborationTemplates?.length ?? 0,
           })}
           actions={<GalleryActions templateType={TemplateType.Collaboration} />}
           templates={collaborationTemplates}
