@@ -121,7 +121,7 @@ const MyAccountBlock = () => {
   };
 
   return (
-    <PageContentBlock columns={4}>
+    <PageContentBlock>
       <PageContentBlockHeader title={t('pages.home.sections.myAccount.title')} fullWidth />
       {loading ? <Loading text="" /> : renderMyBlock(userRole)}
       <NewVirtualContributorWizard />

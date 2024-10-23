@@ -1,39 +1,30 @@
 import React, { FC } from 'react';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
-import MoreAboutAlkemio from './moreAboutAlkemio/MoreAboutAlkemio';
-import RecentForumMessages from './recentForumMessages/RecentForumMessages';
-import InnovationLibraryBlock from './innovationLibraryBlock/InnovationLibraryBlock';
-import TipsAndTricks from './tipsAndTricks/TipsAndTricks';
-import ExploreOtherChallenges from './exploreOtherChallenges/ExploreOtherChallenges';
-import { useColumns } from '../../../core/ui/grid/GridContext';
-import NewMembershipsBlock from './newMemberships/NewMembershipsBlock';
 import MyAccountBlock from './myAccount/MyAccountBlock';
-import MyLatestContributions from './latestContributions/myLatestContributions/MyLatestContributions';
-import MembershipSuggestions from './membershipSuggestions/MembershipSuggestions';
+import InfoColumn from '../../../core/ui/content/InfoColumn';
+import ContentColumn from '../../../core/ui/content/ContentColumn';
+import { useLatestReleaseDiscussionQuery } from '../../../core/apollo/generated/apollo-hooks';
+import ReleaseNotesBanner from './releaseNotesBanner/ReleaseNotesBanner';
+import DashboardMenu from './DashboardMenu/DashboardMenu';
+import MyDashboardUnauthenticated from './MyDashboardUnauthenticated';
 
 const MyDashboardWithoutMemberships: FC = () => {
-  const columns = useColumns();
+  const { data } = useLatestReleaseDiscussionQuery({
+    fetchPolicy: 'network-only',
+  });
 
   return (
-    <>
-      <PageContentColumn columns={12}>
-        <MyAccountBlock />
-        <MembershipSuggestions />
-      </PageContentColumn>
-      <PageContentColumn columns={8}>
-        <TipsAndTricks halfWidth />
-        <InnovationLibraryBlock halfWidth />
-      </PageContentColumn>
-      <PageContentColumn columns={columns === 12 ? 4 : 8} flexDirection="column" alignSelf="stretch">
-        <NewMembershipsBlock hiddenIfEmpty />
-        <MyLatestContributions />
-        <RecentForumMessages />
-      </PageContentColumn>
-      <PageContentColumn columns={8}>
-        <ExploreOtherChallenges />
-      </PageContentColumn>
-      <MoreAboutAlkemio />
-    </>
+    <PageContentColumn columns={12}>
+      <InfoColumn>
+        <DashboardMenu />
+      </InfoColumn>
+      <ContentColumn>
+        {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />} {/* TODO: tweak to match design */}
+        {/* TODO: implement and import here the pending memberships block */}
+        <MyAccountBlock /> {/* TODO: modify, simplify and match the requirements */}
+        <MyDashboardUnauthenticated /> {/* TODO: tweak to match design */}
+      </ContentColumn>
+    </PageContentColumn>
   );
 };
 

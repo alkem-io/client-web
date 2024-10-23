@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import RecentSpacesList from './recentSpaces/RecentJourneysList';
-import MoreAboutAlkemio from './moreAboutAlkemio/MoreAboutAlkemio';
 import RecentForumMessages from './recentForumMessages/RecentForumMessages';
 import InnovationLibraryBlock from './innovationLibraryBlock/InnovationLibraryBlock';
 import LatestContributions from './latestContributions/LatestContributions';
@@ -46,7 +45,6 @@ const MyDashboardWithMemberships: FC<MyDashboardWithMembershipsProps> = ({ space
         <TipsAndTricks halfWidth />
         <InnovationLibraryBlock halfWidth />
         <ExploreOtherChallenges />
-        <MoreAboutAlkemio />
       </PageContentColumn>
     </>
   );
