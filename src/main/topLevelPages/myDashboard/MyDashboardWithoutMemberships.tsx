@@ -16,13 +16,14 @@ const MyDashboardWithoutMemberships: FC = () => {
   return (
     <PageContentColumn columns={12}>
       <InfoColumn>
-        <DashboardMenu />
+        <DashboardMenu compact />
       </InfoColumn>
       <ContentColumn>
         {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />} {/* TODO: tweak to match design */}
         {/* TODO: implement and import here the pending memberships block */}
         <MyAccountBlock /> {/* TODO: modify, simplify and match the requirements */}
         <MyDashboardUnauthenticated /> {/* TODO: tweak to match design */}
+        {/* TODO: implement create space btn component */}
       </ContentColumn>
     </PageContentColumn>
   );

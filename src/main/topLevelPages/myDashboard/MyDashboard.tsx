@@ -8,6 +8,7 @@ import MyDashboardWithMemberships from './MyDashboardWithMemberships';
 import MyDashboardWithoutMemberships from './MyDashboardWithoutMemberships';
 import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
 import MyDashboardUnauthenticated from './MyDashboardUnauthenticated';
+import { DashboardProvider } from './DashboardContext';
 
 export const MyDashboard = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
@@ -26,23 +27,25 @@ export const MyDashboard = () => {
 
   return (
     <HomePageLayout>
-      <MyMembershipsDialog open={isMyMembershipsDialogOpen} onClose={() => setIsMyMembershipsDialogOpen(false)} />
-      {!isAuthenticated && !isLoadingAuthentication ? (
-        <PageContent gridContainerProps={{ flexDirection: 'row-reverse' }}>
-          <MyDashboardUnauthenticated />
-        </PageContent>
-      ) : hasSpaceMemberships ? (
-        <PageContent gridContainerProps={{ flexDirection: 'row-reverse' }}>
-          <MyDashboardWithMemberships
-            spacesData={spacesData}
-            onOpenMembershipsDialog={() => setIsMyMembershipsDialogOpen(true)}
-          />
-        </PageContent>
-      ) : (
-        <PageContent gridContainerProps={{ flexDirection: 'row' }}>
-          <MyDashboardWithoutMemberships />
-        </PageContent>
-      )}
+      <DashboardProvider>
+        <MyMembershipsDialog open={isMyMembershipsDialogOpen} onClose={() => setIsMyMembershipsDialogOpen(false)} />
+        {!isAuthenticated && !isLoadingAuthentication ? (
+          <PageContent gridContainerProps={{ flexDirection: 'row-reverse' }}>
+            <MyDashboardUnauthenticated />
+          </PageContent>
+        ) : hasSpaceMemberships ? (
+          <PageContent gridContainerProps={{ flexDirection: 'row-reverse' }}>
+            <MyDashboardWithMemberships
+              spacesData={spacesData}
+              onOpenMembershipsDialog={() => setIsMyMembershipsDialogOpen(true)}
+            />
+          </PageContent>
+        ) : (
+          <PageContent>
+            <MyDashboardWithoutMemberships />
+          </PageContent>
+        )}
+      </DashboardProvider>
     </HomePageLayout>
   );
 };
