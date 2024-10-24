@@ -26,6 +26,7 @@ query AccountResourcesInfo($accountId: UUID!) {
         templatesSet {
           id
           calloutTemplatesCount
+          collaborationTemplatesCount
           communityGuidelinesTemplatesCount
           innovationFlowTemplatesCount
           postTemplatesCount

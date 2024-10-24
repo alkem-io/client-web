@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { ContributeCardProps } from '../../../../core/ui/card/ContributeCard';
 import CalloutTemplateCard from './CalloutTemplateCard';
+import CollaborationTemplateCard from './CollaborationTemplateCard';
 import CommunityGuidelinesTemplateCard from './CommunityGuidelinesTemplateCard';
 import PostTemplateCard from './PostTemplateCard';
 import InnovationFlowTemplateCard from './InnovationFlowTemplateCard';
@@ -21,6 +22,8 @@ const TemplateCard: FC<TemplateCardProps> = ({ template, link, ...rest }) => {
   switch (template.type) {
     case TemplateType.Callout:
       return <CalloutTemplateCard template={template} {...link} {...rest} />;
+    case TemplateType.Collaboration:
+      return <CollaborationTemplateCard template={template} {...link} {...rest} />;
     case TemplateType.CommunityGuidelines:
       return <CommunityGuidelinesTemplateCard template={template} {...link} {...rest} />;
     case TemplateType.InnovationFlow:

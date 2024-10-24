@@ -51,9 +51,11 @@ export const getNewTemplate = (templateType: TemplateType, defaultValues?: Parti
       return template;
     }
     case TemplateType.Collaboration: {
+      const data = defaultValues as Partial<CollaborationTemplate>;
       const template: CollaborationTemplate = {
         ...common,
         type: TemplateType.Collaboration,
+        collaboration: data?.collaboration,
       };
       return template;
     }

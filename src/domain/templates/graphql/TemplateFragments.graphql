@@ -34,6 +34,20 @@ fragment PostTemplate on Template {
   postDefaultDescription
 }
 
+fragment CollaborationTemplate on Template {
+  ...TemplateProfileInfo
+  collaboration {
+    id
+    innovationFlow {
+      id
+      states {
+        displayName
+        description
+      }
+    }
+  }
+}
+
 fragment WhiteboardTemplate on Template {
   ...TemplateProfileInfo
   whiteboard {

@@ -16,6 +16,7 @@ import CardFooterCountWithBadge from '../../../core/ui/card/CardFooterCountWithB
 import { gutters } from '../../../core/ui/grid/utils';
 import { CommunityGuidelinesIcon } from '../../community/communityGuidelines/icon/CommunityGuidelinesIcon';
 import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
+import { SpaceIcon } from '../../journey/space/icon/SpaceIcon';
 
 export interface InnovationPackCardProps extends ContributeCardProps {
   displayName: string;
@@ -27,6 +28,7 @@ export interface InnovationPackCardProps extends ContributeCardProps {
   whiteboardTemplatesCount?: ReactNode;
   postTemplatesCount: ReactNode;
   innovationFlowTemplatesCount: ReactNode;
+  collaborationTemplatesCount: ReactNode;
   calloutTemplatesCount?: ReactNode;
   communityGuidelinesTemplatesCount?: ReactNode;
   innovationPackUri: string;
@@ -41,6 +43,7 @@ const InnovationPackCard = ({
   whiteboardTemplatesCount,
   postTemplatesCount,
   innovationFlowTemplatesCount,
+  collaborationTemplatesCount,
   calloutTemplatesCount,
   communityGuidelinesTemplatesCount,
   innovationPackUri,
@@ -104,6 +107,14 @@ const InnovationPackCard = ({
               }
             >
               {innovationFlowTemplatesCount}
+            </CardFooterCountWithBadge>
+          )}
+          {!!collaborationTemplatesCount && (
+            <CardFooterCountWithBadge
+              tooltip={t(`common.enums.templateType.${TemplateType.Collaboration}_plural`)}
+              iconComponent={SpaceIcon}
+            >
+              {collaborationTemplatesCount}
             </CardFooterCountWithBadge>
           )}
         </Box>

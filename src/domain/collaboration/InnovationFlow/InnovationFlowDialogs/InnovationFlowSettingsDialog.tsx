@@ -118,7 +118,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
       />
       <ImportTemplatesDialog
         open={importInnovationFlowDialogOpen}
-        templateType={TemplateType.InnovationFlow}
+        templateType={TemplateType.Collaboration}
         onClose={() => setImportInnovationFlowDialogOpen(false)}
         onSelectTemplate={handleImportTemplate}
         enablePlatformTemplates

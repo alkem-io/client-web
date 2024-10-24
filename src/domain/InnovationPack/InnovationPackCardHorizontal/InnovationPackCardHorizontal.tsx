@@ -15,6 +15,7 @@ import RoundedIcon from '../../../core/ui/icon/RoundedIcon';
 import ActionsMenu from '../../../core/ui/card/ActionsMenu';
 import OneLineMarkdown from '../../../core/ui/markdown/OneLineMarkdown';
 import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
+import { SpaceIcon } from '../../journey/space/icon/SpaceIcon';
 
 export interface InnovationPackCardHorizontalProps {
   profile: {
@@ -24,6 +25,7 @@ export interface InnovationPackCardHorizontalProps {
   };
   templates?: {
     calloutTemplatesCount?: number;
+    collaborationTemplatesCount?: number;
     communityGuidelinesTemplatesCount?: number;
     innovationFlowTemplatesCount?: number;
     postTemplatesCount?: number;
@@ -51,6 +53,7 @@ const InnovationPackCardHorizontal = ({
 
   const {
     calloutTemplatesCount,
+    collaborationTemplatesCount,
     communityGuidelinesTemplatesCount,
     innovationFlowTemplatesCount,
     postTemplatesCount,
@@ -59,6 +62,7 @@ const InnovationPackCardHorizontal = ({
 
   const totalTemplatesCount =
     (calloutTemplatesCount ?? 0) +
+    (collaborationTemplatesCount ?? 0) +
     (communityGuidelinesTemplatesCount ?? 0) +
     (innovationFlowTemplatesCount ?? 0) +
     (postTemplatesCount ?? 0) +
@@ -128,6 +132,14 @@ const InnovationPackCardHorizontal = ({
               }
             >
               <Caption>{innovationFlowTemplatesCount}</Caption>
+            </CardFooterCountWithBadge>
+          )}
+          {!!collaborationTemplatesCount && (
+            <CardFooterCountWithBadge
+              tooltip={t(`common.enums.templateType.${TemplateType.Collaboration}_plural`)}
+              iconComponent={SpaceIcon}
+            >
+              <Caption>{collaborationTemplatesCount}</Caption>
             </CardFooterCountWithBadge>
           )}
           {/* {totalTemplatesCount === 0 && <Caption>{t('pages.admin.generic.sections.account.noTemplates')}</Caption>} */}

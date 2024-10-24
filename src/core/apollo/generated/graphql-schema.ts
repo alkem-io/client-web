@@ -918,12 +918,13 @@ export enum AuthorizationPolicyType {
   RoleSet = 'ROLE_SET',
   Room = 'ROOM',
   Space = 'SPACE',
-  SpaceDefaults = 'SPACE_DEFAULTS',
   StorageAggregator = 'STORAGE_AGGREGATOR',
   StorageBucket = 'STORAGE_BUCKET',
   Tagset = 'TAGSET',
   Template = 'TEMPLATE',
+  TemplatesManager = 'TEMPLATES_MANAGER',
   TemplatesSet = 'TEMPLATES_SET',
+  TemplateDefault = 'TEMPLATE_DEFAULT',
   Timeline = 'TIMELINE',
   Unknown = 'UNKNOWN',
   User = 'USER',
@@ -1067,6 +1068,8 @@ export type Callout = {
   framing: CalloutFraming;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** Whether this callout is a Template or not. */
+  isTemplate: Scalars['Boolean'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** The Posts associated with this Callout. */
@@ -1248,6 +1251,8 @@ export type Collaboration = {
   id: Scalars['UUID'];
   /** The InnovationFlow for the Collaboration. */
   innovationFlow: InnovationFlow;
+  /** Whether this Collaboration is a Template or not. */
+  isTemplate: Scalars['Boolean'];
   /** The tagset templates on this Collaboration. */
   tagsetTemplates?: Maybe<Array<TagsetTemplate>>;
   /** The timeline with events in use by this Space */
@@ -1782,10 +1787,12 @@ export type CreateCollaborationInput = {
 };
 
 export type CreateCollaborationOnSpaceInput = {
-  /** Add default callouts to the Collaboration; defaults to true. */
-  addDefaultCallouts?: InputMaybe<Scalars['Boolean']>;
+  /** Add tutorial callouts to the Collaboration; defaults to false. */
+  addTutorialCallouts?: InputMaybe<Scalars['Boolean']>;
   /** The Callouts to add to this Collaboration. */
   calloutsData?: InputMaybe<Array<CreateCalloutInput>>;
+  /** The Template to use for instantiating the Collaboration. */
+  collaborationTemplateID?: InputMaybe<Scalars['UUID']>;
   /** The InnovationFlow Template to use for this Collaboration. */
   innovationFlowData?: InputMaybe<CreateInnovationFlowInput>;
 };
@@ -2041,6 +2048,17 @@ export type CreateTagsetOnProfileInput = {
   type?: InputMaybe<TagsetType>;
 };
 
+export type CreateTemplateFromCollaborationOnTemplatesSetInput = {
+  /** The Collaboration to use as the content for the Template. */
+  collaborationID: Scalars['UUID'];
+  /** A readable identifier, unique within the containing scope. */
+  nameID?: InputMaybe<Scalars['NameID']>;
+  profileData: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  templatesSetID: Scalars['UUID'];
+  visualUri?: InputMaybe<Scalars['String']>;
+};
+
 export type CreateTemplateOnTemplatesSetInput = {
   /** The Callout to associate with this template. */
   calloutData?: InputMaybe<CreateCalloutInput>;
@@ -2048,7 +2066,6 @@ export type CreateTemplateOnTemplatesSetInput = {
   collaborationData?: InputMaybe<CreateCollaborationInput>;
   /** The Community guidelines to associate with this template. */
   communityGuidelinesData?: InputMaybe<CreateCommunityGuidelinesInput>;
-  innovationFlowData?: InputMaybe<CreateInnovationFlowInput>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** Post Template: The default description to be pre-filled. */
@@ -2952,6 +2969,8 @@ export type LookupQueryResults = {
   storageBucket?: Maybe<StorageBucket>;
   /** Lookup the specified Template */
   template?: Maybe<Template>;
+  /** Lookup the specified TemplatesManager */
+  templatesManager?: Maybe<TemplatesManager>;
   /** Lookup the specified TemplatesSet */
   templatesSet?: Maybe<TemplatesSet>;
   /** A particular VirtualContributor */
@@ -3054,6 +3073,10 @@ export type LookupQueryResultsStorageBucketArgs = {
 };
 
 export type LookupQueryResultsTemplateArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsTemplatesManagerArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -3190,6 +3213,8 @@ export type Mutation = {
   adminSearchIngestFromScratch: Scalars['String'];
   /** Update the Avatar on the Profile with the spedified profileID to be stored as a Document. */
   adminUpdateContributorAvatars: Profile;
+  /** Remove the Kratos account associated with the specified User. Note: the Users profile on the platform is not deleted. */
+  adminUserAccountDelete: User;
   /** Reset the Authorization Policy on the specified AiServer. */
   aiServerAuthorizationPolicyReset: AiServer;
   /** Creates a new AiPersonaService on the aiServer. */
@@ -3276,6 +3301,8 @@ export type Mutation = {
   createTagsetOnProfile: Tagset;
   /** Creates a new Template on the specified TemplatesSet. */
   createTemplate: Template;
+  /** Creates a new Template on the specified TemplatesSet using the provided Collaboration as content. */
+  createTemplateFromCollaboration: Template;
   /** Creates a new User on the platform. */
   createUser: User;
   /** Creates a new User profile on the platform for a user that has a valid Authentication session. */
@@ -3418,6 +3445,8 @@ export type Mutation = {
   updateCalloutVisibility: Callout;
   /** Update the sortOrder field of the supplied Callouts to increase as per the order that they are provided in. */
   updateCalloutsSortOrder: Array<Callout>;
+  /** Updates the Collaboration, including InnovationFlow states, from the specified Collaboration Template. */
+  updateCollaborationFromTemplate: Collaboration;
   /** Updates the CommunityGuidelines. */
   updateCommunityGuidelines: CommunityGuidelines;
   /** Update the sortOrder field of the Contributions of s Callout. */
@@ -3434,8 +3463,6 @@ export type Mutation = {
   updateInnovationFlowSelectedState: InnovationFlow;
   /** Updates the specified InnovationFlowState. */
   updateInnovationFlowSingleState: InnovationFlow;
-  /** Updates the InnovationFlow states from the specified template. */
-  updateInnovationFlowStatesFromTemplate: InnovationFlow;
   /** Update Innovation Hub. */
   updateInnovationHub: InnovationHub;
   /** Updates the InnovationPack. */
@@ -3460,8 +3487,6 @@ export type Mutation = {
   updateReference: Reference;
   /** Updates the Space. */
   updateSpace: Space;
-  /** Updates the specified SpaceDefaults. */
-  updateSpaceDefaults: SpaceDefaults;
   /** Update the platform settings, such as nameID, of the specified Space. */
   updateSpacePlatformSettings: Space;
   /** Updates one of the Setting on a Space */
@@ -3470,6 +3495,8 @@ export type Mutation = {
   updateTagset: Tagset;
   /** Updates the specified Template. */
   updateTemplate: Template;
+  /** Updates the specified Template Defaults. */
+  updateTemplateDefault: TemplateDefault;
   /** Updates the User. */
   updateUser: User;
   /** Updates the specified User Group. */
@@ -3510,6 +3537,10 @@ export type MutationAdminCommunicationUpdateRoomStateArgs = {
 
 export type MutationAdminUpdateContributorAvatarsArgs = {
   profileID: Scalars['UUID'];
+};
+
+export type MutationAdminUserAccountDeleteArgs = {
+  userID: Scalars['UUID'];
 };
 
 export type MutationAiServerCreateAiPersonaServiceArgs = {
@@ -3662,6 +3693,10 @@ export type MutationCreateTagsetOnProfileArgs = {
 
 export type MutationCreateTemplateArgs = {
   templateData: CreateTemplateOnTemplatesSetInput;
+};
+
+export type MutationCreateTemplateFromCollaborationArgs = {
+  templateData: CreateTemplateFromCollaborationOnTemplatesSetInput;
 };
 
 export type MutationCreateUserArgs = {
@@ -3936,6 +3971,10 @@ export type MutationUpdateCalloutsSortOrderArgs = {
   sortOrderData: UpdateCollaborationCalloutsSortOrderInput;
 };
 
+export type MutationUpdateCollaborationFromTemplateArgs = {
+  updateData: UpdateCollaborationFromTemplateInput;
+};
+
 export type MutationUpdateCommunityGuidelinesArgs = {
   communityGuidelinesData: UpdateCommunityGuidelinesEntityInput;
 };
@@ -3966,10 +4005,6 @@ export type MutationUpdateInnovationFlowSelectedStateArgs = {
 
 export type MutationUpdateInnovationFlowSingleStateArgs = {
   innovationFlowStateData: UpdateInnovationFlowSingleStateInput;
-};
-
-export type MutationUpdateInnovationFlowStatesFromTemplateArgs = {
-  innovationFlowData: UpdateInnovationFlowFromTemplateInput;
 };
 
 export type MutationUpdateInnovationHubArgs = {
@@ -4020,10 +4055,6 @@ export type MutationUpdateSpaceArgs = {
   spaceData: UpdateSpaceInput;
 };
 
-export type MutationUpdateSpaceDefaultsArgs = {
-  spaceDefaultsData: UpdateSpaceDefaultsInput;
-};
-
 export type MutationUpdateSpacePlatformSettingsArgs = {
   updateData: UpdateSpacePlatformSettingsInput;
 };
@@ -4038,6 +4069,10 @@ export type MutationUpdateTagsetArgs = {
 
 export type MutationUpdateTemplateArgs = {
   updateData: UpdateTemplateInput;
+};
+
+export type MutationUpdateTemplateDefaultArgs = {
+  templateDefaultData: UpdateTemplateDefaultTemplateInput;
 };
 
 export type MutationUpdateUserArgs = {
@@ -4277,6 +4312,8 @@ export type Platform = {
   platformInvitations: Array<PlatformInvitation>;
   /** The StorageAggregator with documents in use by Users + Organizations on the Platform. */
   storageAggregator: StorageAggregator;
+  /** The TemplatesManager in use by the Platform */
+  templatesManager?: Maybe<TemplatesManager>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
@@ -4841,16 +4878,12 @@ export type RelayPaginatedSpace = {
   context: Context;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
-  /** The defaults in use by this Space */
-  defaults?: Maybe<SpaceDefaults>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The level of this Space, representing the number of Spaces above this one. */
   level: SpaceLevel;
   /** The ID of the level zero space for this tree. */
   levelZeroSpaceID: Scalars['String'];
-  /** The Library in use by this Space */
-  library?: Maybe<TemplatesSet>;
   /** The privileges granted based on the License credentials held by this Space. */
   licensePrivileges?: Maybe<Array<LicensePrivilege>>;
   /** Metrics about activity within this Space. */
@@ -4871,6 +4904,8 @@ export type RelayPaginatedSpace = {
   subspace: Space;
   /** The subspaces for the space. */
   subspaces: Array<Space>;
+  /** The TemplatesManager in use by this Space */
+  templatesManager?: Maybe<TemplatesManager>;
   /** The Type of the Space e.g. space/challenge/opportunity. */
   type: SpaceType;
   /** The date at which the entity was last updated. */
@@ -5413,16 +5448,12 @@ export type Space = {
   context: Context;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
-  /** The defaults in use by this Space */
-  defaults?: Maybe<SpaceDefaults>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The level of this Space, representing the number of Spaces above this one. */
   level: SpaceLevel;
   /** The ID of the level zero space for this tree. */
   levelZeroSpaceID: Scalars['String'];
-  /** The Library in use by this Space */
-  library?: Maybe<TemplatesSet>;
   /** The privileges granted based on the License credentials held by this Space. */
   licensePrivileges?: Maybe<Array<LicensePrivilege>>;
   /** Metrics about activity within this Space. */
@@ -5443,6 +5474,8 @@ export type Space = {
   subspace: Space;
   /** The subspaces for the space. */
   subspaces: Array<Space>;
+  /** The TemplatesManager in use by this Space */
+  templatesManager?: Maybe<TemplatesManager>;
   /** The Type of the Space e.g. space/challenge/opportunity. */
   type: SpaceType;
   /** The date at which the entity was last updated. */
@@ -5459,20 +5492,6 @@ export type SpaceSubspacesArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID']>>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
-};
-
-export type SpaceDefaults = {
-  __typename?: 'SpaceDefaults';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The date at which the entity was created. */
-  createdDate?: Maybe<Scalars['DateTime']>;
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** The innovation flow template to use for new Challenges / Opportunities. */
-  innovationFlowTemplate?: Maybe<Template>;
-  /** The date at which the entity was last updated. */
-  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type SpaceFilterInput = {
@@ -5841,6 +5860,32 @@ export type Template = {
   whiteboard?: Maybe<Whiteboard>;
 };
 
+export type TemplateDefault = {
+  __typename?: 'TemplateDefault';
+  /** The type of any Template stored here. */
+  allowedTemplateType: TemplateType;
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The date at which the entity was created. */
+  createdDate?: Maybe<Scalars['DateTime']>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The template accessible via this TemplateDefault, if any. */
+  template?: Maybe<Template>;
+  /** The type of this TemplateDefault. */
+  type: TemplateDefaultType;
+  /** The date at which the entity was last updated. */
+  updatedDate?: Maybe<Scalars['DateTime']>;
+};
+
+export enum TemplateDefaultType {
+  PlatformSpace = 'PLATFORM_SPACE',
+  PlatformSpaceTutorials = 'PLATFORM_SPACE_TUTORIALS',
+  PlatformSubspace = 'PLATFORM_SUBSPACE',
+  PlatformSubspaceKnowledge = 'PLATFORM_SUBSPACE_KNOWLEDGE',
+  SpaceSubspace = 'SPACE_SUBSPACE',
+}
+
 export type TemplateResult = {
   __typename?: 'TemplateResult';
   /** The InnovationPack where this Template is being returned from. */
@@ -5858,6 +5903,22 @@ export enum TemplateType {
   Whiteboard = 'WHITEBOARD',
 }
 
+export type TemplatesManager = {
+  __typename?: 'TemplatesManager';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The date at which the entity was created. */
+  createdDate?: Maybe<Scalars['DateTime']>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The TemplateDefaultss in this TemplatesManager. */
+  templateDefaults: Array<TemplateDefault>;
+  /** The templatesSet in use by this InnovationPack */
+  templatesSet?: Maybe<TemplatesSet>;
+  /** The date at which the entity was last updated. */
+  updatedDate?: Maybe<Scalars['DateTime']>;
+};
+
 export type TemplatesSet = {
   __typename?: 'TemplatesSet';
   /** The authorization rules for the entity */
@@ -5866,6 +5927,10 @@ export type TemplatesSet = {
   calloutTemplates: Array<Template>;
   /** The total number of CalloutTemplates in this TemplatesSet. */
   calloutTemplatesCount: Scalars['Float'];
+  /** The CollaborationTemplates in this TemplatesSet. */
+  collaborationTemplates: Array<Template>;
+  /** The total number of CollaborationTemplates in this TemplatesSet. */
+  collaborationTemplatesCount: Scalars['Float'];
   /** The CommunityGuidelines in this TemplatesSet. */
   communityGuidelinesTemplates: Array<Template>;
   /** The total number of CommunityGuidelinesTemplates in this TemplatesSet. */
@@ -6007,19 +6072,8 @@ export type UpdateCalloutEntityInput = {
 export type UpdateCalloutFramingInput = {
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
-  whiteboard?: InputMaybe<UpdateWhiteboardInput>;
-};
-
-export type UpdateCalloutInput = {
-  contributionDefaults?: InputMaybe<UpdateCalloutContributionDefaultsInput>;
-  contributionPolicy?: InputMaybe<UpdateCalloutContributionPolicyInput>;
-  framing?: InputMaybe<UpdateCalloutFramingInput>;
-  /** Set Group for this Callout. */
-  groupName?: InputMaybe<Scalars['String']>;
-  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']>;
-  /** The sort order to assign to this Callout. */
-  sortOrder?: InputMaybe<Scalars['Float']>;
+  /** The new content to be used. */
+  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']>;
 };
 
 export type UpdateCalloutPublishInfoInput = {
@@ -6046,14 +6100,18 @@ export type UpdateCollaborationCalloutsSortOrderInput = {
   collaborationID: Scalars['UUID'];
 };
 
+export type UpdateCollaborationFromTemplateInput = {
+  /** Add in the Callouts */
+  addCallouts?: InputMaybe<Scalars['Boolean']>;
+  /** ID of the Collaboration to be updated */
+  collaborationID: Scalars['UUID'];
+  /** The Collaboration Template that will be used for updates to the Collaboration */
+  collaborationTemplateID: Scalars['UUID'];
+};
+
 export type UpdateCommunityGuidelinesEntityInput = {
   /** ID of the CommunityGuidelines */
   communityGuidelinesID: Scalars['UUID'];
-  /** The Profile for this community guidelines. */
-  profile: UpdateProfileInput;
-};
-
-export type UpdateCommunityGuidelinesInput = {
   /** The Profile for this community guidelines. */
   profile: UpdateProfileInput;
 };
@@ -6116,13 +6174,6 @@ export type UpdateInnovationFlowEntityInput = {
   /** The Profile of this entity. */
   profileData?: InputMaybe<UpdateProfileInput>;
   states?: InputMaybe<Array<UpdateInnovationFlowStateInput>>;
-};
-
-export type UpdateInnovationFlowFromTemplateInput = {
-  /** ID of the Innovation Flow */
-  innovationFlowID: Scalars['UUID'];
-  /** The InnovationFlow template whose State definition will be used for the Innovation Flow */
-  innovationFlowTemplateID: Scalars['UUID'];
 };
 
 export type UpdateInnovationFlowInput = {
@@ -6287,13 +6338,6 @@ export type UpdateReferenceInput = {
   uri?: InputMaybe<Scalars['String']>;
 };
 
-export type UpdateSpaceDefaultsInput = {
-  /** The ID for the InnovationFlowtemplate to use for new Subspaces. */
-  flowTemplateID: Scalars['UUID'];
-  /** The identifier for the SpaceDefaults to be updated. */
-  spaceDefaultsID: Scalars['UUID'];
-};
-
 export type UpdateSpaceInput = {
   ID: Scalars['UUID'];
   /** Update the contained Context entity. */
@@ -6358,19 +6402,21 @@ export type UpdateTagsetInput = {
   tags: Array<Scalars['String']>;
 };
 
+export type UpdateTemplateDefaultTemplateInput = {
+  /** The identifier for the TemplateDefault to be updated. */
+  templateDefaultID: Scalars['UUID'];
+  /** The ID for the Template to use. */
+  templateID: Scalars['UUID'];
+};
+
 export type UpdateTemplateInput = {
   ID: Scalars['UUID'];
-  /** The Callout for this template. */
-  callout?: InputMaybe<UpdateCalloutInput>;
-  /** The Community guidelines to associate with this template. */
-  communityGuidelines?: InputMaybe<UpdateCommunityGuidelinesInput>;
-  innovationFlow?: InputMaybe<UpdateInnovationFlowInput>;
   /** The default description to be pre-filled when users create Posts based on this template. */
   postDefaultDescription?: InputMaybe<Scalars['Markdown']>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
-  /** The Whiteboard for this template. */
-  whiteboard?: InputMaybe<UpdateWhiteboardInput>;
+  /** The new content to be used. */
+  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']>;
 };
 
 export type UpdateUserGroupInput = {
@@ -6437,16 +6483,6 @@ export type UpdateWhiteboardEntityInput = {
   profile?: InputMaybe<UpdateProfileInput>;
 };
 
-export type UpdateWhiteboardInput = {
-  /** The new content to be used. */
-  content?: InputMaybe<Scalars['WhiteboardContent']>;
-  contentUpdatePolicy?: InputMaybe<ContentUpdatePolicy>;
-  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']>;
-  /** The Profile of this entity. */
-  profile?: InputMaybe<UpdateProfileInput>;
-};
-
 export type User = Contributor & {
   __typename?: 'User';
   /** The account hosted by this User. */
@@ -6455,8 +6491,8 @@ export type User = Contributor & {
   accountUpn: Scalars['String'];
   /** The Agent representing this User. */
   agent: Agent;
-  /** The Authentication Method used for this User. One of email, linkedin, microsoft, or unknown */
-  authenticationMethod?: Maybe<AuthenticationType>;
+  /** Details about the authentication used for this User. */
+  authentication?: Maybe<UserAuthenticationResult>;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
   /** The Community rooms this user is a member of */
@@ -6485,6 +6521,14 @@ export type User = Contributor & {
   storageAggregator?: Maybe<StorageAggregator>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
+};
+
+export type UserAuthenticationResult = {
+  __typename?: 'UserAuthenticationResult';
+  /** When the Kratos Account for the user was created */
+  createdAt?: Maybe<Scalars['DateTime']>;
+  /** The Authentication Method used for this User. One of email, linkedin, microsoft, or unknown */
+  method: AuthenticationType;
 };
 
 export type UserAuthorizationPrivilegesInput = {
@@ -7898,6 +7942,7 @@ export type AccountInformationQuery = {
                   __typename?: 'TemplatesSet';
                   id: string;
                   calloutTemplatesCount: number;
+                  collaborationTemplatesCount: number;
                   communityGuidelinesTemplatesCount: number;
                   innovationFlowTemplatesCount: number;
                   postTemplatesCount: number;
@@ -8733,18 +8778,22 @@ export type UpdateInnovationFlowStatesMutation = {
   };
 };
 
-export type UpdateInnovationFlowStatesFromTemplateMutationVariables = Exact<{
-  innovationFlowId: Scalars['UUID'];
-  innovationFlowTemplateId: Scalars['UUID'];
+export type UpdateCollaborationFromTemplateMutationVariables = Exact<{
+  collaborationId: Scalars['UUID'];
+  collaborationTemplateId: Scalars['UUID'];
 }>;
 
-export type UpdateInnovationFlowStatesFromTemplateMutation = {
+export type UpdateCollaborationFromTemplateMutation = {
   __typename?: 'Mutation';
-  updateInnovationFlowStatesFromTemplate: {
-    __typename?: 'InnovationFlow';
+  updateCollaborationFromTemplate: {
+    __typename?: 'Collaboration';
     id: string;
-    states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-    currentState: { __typename?: 'InnovationFlowState'; displayName: string; description: string };
+    innovationFlow: {
+      __typename?: 'InnovationFlow';
+      id: string;
+      states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+      currentState: { __typename?: 'InnovationFlowState'; displayName: string; description: string };
+    };
   };
 };
 
@@ -8761,33 +8810,6 @@ export type UpdateInnovationFlowSingleStateMutation = {
     id: string;
     states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
     currentState: { __typename?: 'InnovationFlowState'; displayName: string; description: string };
-  };
-};
-
-export type SpaceInnovationFlowsQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-}>;
-
-export type SpaceInnovationFlowsQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          library?:
-            | {
-                __typename?: 'TemplatesSet';
-                id: string;
-                innovationFlowTemplates: Array<{
-                  __typename?: 'Template';
-                  id: string;
-                  profile: { __typename?: 'Profile'; id: string; displayName: string };
-                }>;
-              }
-            | undefined;
-        }
-      | undefined;
   };
 };
 
@@ -17029,6 +17051,7 @@ export type AccountResourcesInfoQuery = {
                   __typename?: 'TemplatesSet';
                   id: string;
                   calloutTemplatesCount: number;
+                  collaborationTemplatesCount: number;
                   communityGuidelinesTemplatesCount: number;
                   innovationFlowTemplatesCount: number;
                   postTemplatesCount: number;
@@ -22595,76 +22618,94 @@ export type AdminSpaceSubspacesPageQuery = {
         cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
     }>;
-    defaults?:
+    templatesManager?:
       | {
-          __typename?: 'SpaceDefaults';
+          __typename?: 'TemplatesManager';
           id: string;
-          innovationFlowTemplate?:
-            | {
-                __typename?: 'Template';
-                id: string;
-                profile: {
-                  __typename?: 'Profile';
+          templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
+          templateDefaults: Array<{
+            __typename?: 'TemplateDefault';
+            id: string;
+            template?:
+              | {
+                  __typename?: 'Template';
                   id: string;
-                  displayName: string;
-                  description?: string | undefined;
-                  tagsets?:
-                    | Array<{
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }>
-                    | undefined;
-                  references?:
-                    | Array<{
-                        __typename?: 'Reference';
-                        id: string;
-                        name: string;
-                        description?: string | undefined;
-                        uri: string;
-                      }>
-                    | undefined;
-                  bannerNarrow?:
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          description?: string | undefined;
+                          uri: string;
+                        }>
+                      | undefined;
+                    bannerNarrow?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: string;
+                          allowedTypes: Array<string>;
+                          aspectRatio: number;
+                          maxHeight: number;
+                          maxWidth: number;
+                          minHeight: number;
+                          minWidth: number;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                  collaboration?:
                     | {
-                        __typename?: 'Visual';
+                        __typename?: 'Collaboration';
                         id: string;
-                        uri: string;
-                        name: string;
-                        allowedTypes: Array<string>;
-                        aspectRatio: number;
-                        maxHeight: number;
-                        maxWidth: number;
-                        minHeight: number;
-                        minWidth: number;
-                        alternativeText?: string | undefined;
+                        innovationFlow: {
+                          __typename?: 'InnovationFlow';
+                          id: string;
+                          profile: { __typename?: 'Profile'; id: string; displayName: string };
+                          states: Array<{
+                            __typename?: 'InnovationFlowState';
+                            displayName: string;
+                            description: string;
+                          }>;
+                        };
                       }
                     | undefined;
-                };
-                innovationFlow?:
-                  | {
-                      __typename?: 'InnovationFlow';
-                      id: string;
-                      states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
-                    }
-                  | undefined;
-              }
-            | undefined;
+                }
+              | undefined;
+          }>;
         }
       | undefined;
   };
 };
 
-export type UpdateSpaceDefaultInnovationFlowTemplateMutationVariables = Exact<{
-  spaceDefaultsID: Scalars['UUID'];
-  innovationFlowTemplateId: Scalars['UUID'];
+export type SpaceCollaborationIdQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
 }>;
 
-export type UpdateSpaceDefaultInnovationFlowTemplateMutation = {
-  __typename?: 'Mutation';
-  updateSpaceDefaults: { __typename?: 'SpaceDefaults'; id: string };
+export type SpaceCollaborationIdQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | { __typename?: 'Space'; id: string; collaboration: { __typename?: 'Collaboration'; id: string } }
+      | undefined;
+  };
 };
 
 export type SpaceDashboardNavigationChallengesQueryVariables = Exact<{
@@ -23182,7 +23223,13 @@ export type SubspacePageQuery = {
             };
           };
           collaboration: { __typename?: 'Collaboration'; id: string };
-          library?: { __typename?: 'TemplatesSet'; id: string } | undefined;
+          templatesManager?:
+            | {
+                __typename?: 'TemplatesManager';
+                id: string;
+                templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -23409,7 +23456,13 @@ export type SubspacePageSpaceFragment = {
     };
   };
   collaboration: { __typename?: 'Collaboration'; id: string };
-  library?: { __typename?: 'TemplatesSet'; id: string } | undefined;
+  templatesManager?:
+    | {
+        __typename?: 'TemplatesManager';
+        id: string;
+        templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
+      }
+    | undefined;
 };
 
 export type PlatformLevelAuthorizationQueryVariables = Exact<{ [key: string]: never }>;
@@ -23546,7 +23599,13 @@ export type SpaceTemplatesAdminQuery = {
       | {
           __typename?: 'Space';
           profile: { __typename?: 'Profile'; id: string; url: string };
-          library?: { __typename?: 'TemplatesSet'; id: string } | undefined;
+          templatesManager?:
+            | {
+                __typename?: 'TemplatesManager';
+                id: string;
+                templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
@@ -24483,9 +24542,42 @@ export type CalloutOnCollaborationWithStorageConfigFragment = {
   }>;
 };
 
+export type SpaceCollaborationTemplatesQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpaceCollaborationTemplatesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          templatesManager?:
+            | {
+                __typename?: 'TemplatesManager';
+                id: string;
+                templatesSet?:
+                  | {
+                      __typename?: 'TemplatesSet';
+                      id: string;
+                      collaborationTemplates: Array<{
+                        __typename?: 'Template';
+                        id: string;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }>;
+                    }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type ImportTemplateDialogQueryVariables = Exact<{
   templatesSetId: Scalars['UUID'];
-  includeInnovationFlow?: InputMaybe<Scalars['Boolean']>;
+  includeCollaboration?: InputMaybe<Scalars['Boolean']>;
   includeCallout?: InputMaybe<Scalars['Boolean']>;
 }>;
 
@@ -24501,11 +24593,15 @@ export type ImportTemplateDialogQuery = {
             id: string;
             type: TemplateType;
             callout?: { __typename?: 'Callout'; id: string; type: CalloutType } | undefined;
-            innovationFlow?:
+            collaboration?:
               | {
-                  __typename?: 'InnovationFlow';
+                  __typename?: 'Collaboration';
                   id: string;
-                  states: Array<{ __typename?: 'InnovationFlowState'; displayName: string }>;
+                  innovationFlow: {
+                    __typename?: 'InnovationFlow';
+                    id: string;
+                    states: Array<{ __typename?: 'InnovationFlowState'; displayName: string }>;
+                  };
                 }
               | undefined;
             profile: {
@@ -24548,7 +24644,7 @@ export type ImportTemplateDialogQuery = {
 
 export type ImportTemplateDialogPlatformTemplatesQueryVariables = Exact<{
   templateTypes?: InputMaybe<Array<TemplateType> | TemplateType>;
-  includeInnovationFlow?: InputMaybe<Scalars['Boolean']>;
+  includeCollaboration?: InputMaybe<Scalars['Boolean']>;
   includeCallout?: InputMaybe<Scalars['Boolean']>;
 }>;
 
@@ -24565,11 +24661,15 @@ export type ImportTemplateDialogPlatformTemplatesQuery = {
           id: string;
           type: TemplateType;
           callout?: { __typename?: 'Callout'; id: string; type: CalloutType } | undefined;
-          innovationFlow?:
+          collaboration?:
             | {
-                __typename?: 'InnovationFlow';
+                __typename?: 'Collaboration';
                 id: string;
-                states: Array<{ __typename?: 'InnovationFlowState'; displayName: string }>;
+                innovationFlow: {
+                  __typename?: 'InnovationFlow';
+                  id: string;
+                  states: Array<{ __typename?: 'InnovationFlowState'; displayName: string }>;
+                };
               }
             | undefined;
           profile: {
@@ -24892,6 +24992,54 @@ export type AllTemplatesInTemplatesSetQuery = {
                 | undefined;
             };
           }>;
+          collaborationTemplates: Array<{
+            __typename?: 'Template';
+            id: string;
+            type: TemplateType;
+            collaboration?:
+              | {
+                  __typename?: 'Collaboration';
+                  id: string;
+                  innovationFlow: {
+                    __typename?: 'InnovationFlow';
+                    id: string;
+                    states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+                  };
+                }
+              | undefined;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              url: string;
+              defaultTagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+              visual?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            };
+          }>;
         }
       | undefined;
   };
@@ -24903,7 +25051,17 @@ export type SpaceTemplatesSetIdQueryVariables = Exact<{
 
 export type SpaceTemplatesSetIdQuery = {
   __typename?: 'Query';
-  space: { __typename?: 'Space'; id: string; library?: { __typename?: 'TemplatesSet'; id: string } | undefined };
+  space: {
+    __typename?: 'Space';
+    id: string;
+    templatesManager?:
+      | {
+          __typename?: 'TemplatesManager';
+          id: string;
+          templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
+        }
+      | undefined;
+  };
 };
 
 export type TemplateCardProfileInfoFragment = {
@@ -24929,6 +25087,7 @@ export type TemplateContentQueryVariables = Exact<{
   includeCallout?: InputMaybe<Scalars['Boolean']>;
   includeCommunityGuidelines?: InputMaybe<Scalars['Boolean']>;
   includeInnovationFlow?: InputMaybe<Scalars['Boolean']>;
+  includeCollaboration?: InputMaybe<Scalars['Boolean']>;
   includePost?: InputMaybe<Scalars['Boolean']>;
   includeWhiteboard?: InputMaybe<Scalars['Boolean']>;
 }>;
@@ -25133,6 +25292,71 @@ export type TemplateContentQuery = {
                 profile: { __typename?: 'Profile'; id: string; displayName: string };
               }
             | undefined;
+          collaboration?:
+            | {
+                __typename?: 'Collaboration';
+                id: string;
+                innovationFlow: {
+                  __typename?: 'InnovationFlow';
+                  id: string;
+                  states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+                };
+                callouts: Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  type: CalloutType;
+                  framing: {
+                    __typename?: 'CalloutFraming';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      description?: string | undefined;
+                      flowStateTagset?: { __typename?: 'Tagset'; tags: Array<string> } | undefined;
+                    };
+                  };
+                }>;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CollaborationTemplateContentQueryVariables = Exact<{
+  collaborationId: Scalars['UUID'];
+}>;
+
+export type CollaborationTemplateContentQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          innovationFlow: {
+            __typename?: 'InnovationFlow';
+            id: string;
+            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+          };
+          callouts: Array<{
+            __typename?: 'Callout';
+            id: string;
+            type: CalloutType;
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                description?: string | undefined;
+                flowStateTagset?: { __typename?: 'Tagset'; tags: Array<string> } | undefined;
+              };
+            };
+          }>;
         }
       | undefined;
   };
@@ -25286,6 +25510,32 @@ export type InnovationFlowTemplateContentFragment = {
   states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
 };
 
+export type CollaborationTemplateContentFragment = {
+  __typename?: 'Collaboration';
+  id: string;
+  innovationFlow: {
+    __typename?: 'InnovationFlow';
+    id: string;
+    states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+  };
+  callouts: Array<{
+    __typename?: 'Callout';
+    id: string;
+    type: CalloutType;
+    framing: {
+      __typename?: 'CalloutFraming';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        description?: string | undefined;
+        flowStateTagset?: { __typename?: 'Tagset'; tags: Array<string> } | undefined;
+      };
+    };
+  }>;
+};
+
 export type WhiteboardTemplateContentFragment = {
   __typename?: 'Whiteboard';
   id: string;
@@ -25387,6 +25637,55 @@ export type PostTemplateFragment = {
   postDefaultDescription?: string | undefined;
   id: string;
   type: TemplateType;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    url: string;
+    defaultTagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
+      | undefined;
+    visual?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          alternativeText?: string | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CollaborationTemplateFragment = {
+  __typename?: 'Template';
+  id: string;
+  type: TemplateType;
+  collaboration?:
+    | {
+        __typename?: 'Collaboration';
+        id: string;
+        innovationFlow: {
+          __typename?: 'InnovationFlow';
+          id: string;
+          states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+        };
+      }
+    | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -25571,7 +25870,7 @@ export type CreateTemplateMutationVariables = Exact<{
   tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
   calloutData?: InputMaybe<CreateCalloutInput>;
   communityGuidelinesData?: InputMaybe<CreateCommunityGuidelinesInput>;
-  innovationFlowData?: InputMaybe<CreateInnovationFlowInput>;
+  collaborationData?: InputMaybe<CreateCollaborationInput>;
   postDefaultDescription?: InputMaybe<Scalars['Markdown']>;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
   includeProfileVisuals?: InputMaybe<Scalars['Boolean']>;
@@ -25591,14 +25890,23 @@ export type CreateTemplateMutation = {
   };
 };
 
+export type CreateTemplateFromCollaborationMutationVariables = Exact<{
+  templatesSetId: Scalars['UUID'];
+  profileData: CreateProfileInput;
+  tags?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
+  collaborationId: Scalars['UUID'];
+}>;
+
+export type CreateTemplateFromCollaborationMutation = {
+  __typename?: 'Mutation';
+  createTemplateFromCollaboration: { __typename?: 'Template'; id: string };
+};
+
 export type UpdateTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
   profile: UpdateProfileInput;
-  callout?: InputMaybe<UpdateCalloutInput>;
-  communityGuidelines?: InputMaybe<UpdateCommunityGuidelinesInput>;
-  innovationFlow?: InputMaybe<UpdateInnovationFlowInput>;
   postDefaultDescription?: InputMaybe<Scalars['Markdown']>;
-  whiteboard?: InputMaybe<UpdateWhiteboardInput>;
+  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']>;
   includeProfileVisuals?: InputMaybe<Scalars['Boolean']>;
 }>;
 
@@ -25636,6 +25944,16 @@ export type TemplateUrlResolverQuery = {
     __typename?: 'LookupByNameQueryResults';
     template?: { __typename?: 'Template'; id: string } | undefined;
   };
+};
+
+export type UpdateTemplateDefaultMutationVariables = Exact<{
+  templateDefaultID: Scalars['UUID'];
+  templateID: Scalars['UUID'];
+}>;
+
+export type UpdateTemplateDefaultMutation = {
+  __typename?: 'Mutation';
+  updateTemplateDefault: { __typename?: 'TemplateDefault'; id: string };
 };
 
 export type TemplatesSetTemplatesFragment = {
@@ -25868,20 +26186,54 @@ export type TemplatesSetTemplatesFragment = {
         | undefined;
     };
   }>;
-};
-
-export type SpaceLibraryQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-}>;
-
-export type SpaceLibraryQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | { __typename?: 'Space'; id: string; library?: { __typename?: 'TemplatesSet'; id: string } | undefined }
+  collaborationTemplates: Array<{
+    __typename?: 'Template';
+    id: string;
+    type: TemplateType;
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          innovationFlow: {
+            __typename?: 'InnovationFlow';
+            id: string;
+            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+          };
+        }
       | undefined;
-  };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      url: string;
+      defaultTagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+      visual?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+    };
+  }>;
 };
 
 export type CreateTemplateInputQueryVariables = Exact<{
@@ -27836,6 +28188,7 @@ export type InnovationLibraryQuery = {
               __typename?: 'TemplatesSet';
               id: string;
               calloutTemplatesCount: number;
+              collaborationTemplatesCount: number;
               communityGuidelinesTemplatesCount: number;
               innovationFlowTemplatesCount: number;
               postTemplatesCount: number;
@@ -27891,7 +28244,7 @@ export type LibraryTemplatesFragment = {
   whiteboardTemplatesCount: number;
   innovationFlowTemplatesCount: number;
   calloutTemplatesCount: number;
-  communityGuidelinesTemplatesCount: number;
+  collaborationTemplatesCount: number;
   postTemplates: Array<{
     __typename?: 'Template';
     id: string;
@@ -28157,6 +28510,46 @@ export type LibraryTemplatesFragment = {
         }
       | undefined;
   }>;
+  collaborationTemplates: Array<{
+    __typename?: 'Template';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+    };
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          innovationFlow: {
+            __typename?: 'InnovationFlow';
+            id: string;
+            states: Array<{ __typename?: 'InnovationFlowState'; displayName: string; description: string }>;
+          };
+          callouts: Array<{
+            __typename?: 'Callout';
+            id: string;
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            };
+          }>;
+        }
+      | undefined;
+  }>;
 };
 
 export type ExploreSpacesSearchQueryVariables = Exact<{
@@ -28391,11 +28784,12 @@ export type InnovationLibraryBlockQuery = {
           | {
               __typename?: 'TemplatesSet';
               id: string;
-              postTemplatesCount: number;
-              whiteboardTemplatesCount: number;
-              innovationFlowTemplatesCount: number;
               calloutTemplatesCount: number;
               communityGuidelinesTemplatesCount: number;
+              collaborationTemplatesCount: number;
+              innovationFlowTemplatesCount: number;
+              postTemplatesCount: number;
+              whiteboardTemplatesCount: number;
             }
           | undefined;
         provider:
@@ -28465,11 +28859,12 @@ export type InnovationPackCardFragment = {
     | {
         __typename?: 'TemplatesSet';
         id: string;
-        postTemplatesCount: number;
-        whiteboardTemplatesCount: number;
-        innovationFlowTemplatesCount: number;
         calloutTemplatesCount: number;
         communityGuidelinesTemplatesCount: number;
+        collaborationTemplatesCount: number;
+        innovationFlowTemplatesCount: number;
+        postTemplatesCount: number;
+        whiteboardTemplatesCount: number;
       }
     | undefined;
   provider:

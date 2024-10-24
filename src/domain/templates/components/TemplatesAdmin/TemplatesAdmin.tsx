@@ -5,6 +5,8 @@ import {
   useCreateTemplateMutation,
   useDeleteTemplateMutation,
   useTemplateContentLazyQuery,
+  useUpdateCalloutMutation,
+  useUpdateCommunityGuidelinesMutation,
   useUpdateTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
@@ -95,11 +97,12 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   });
 
   const {
+    calloutTemplates,
+    collaborationTemplates,
+    communityGuidelinesTemplates,
+    innovationFlowTemplates,
     postTemplates,
     whiteboardTemplates,
-    innovationFlowTemplates,
-    calloutTemplates,
-    communityGuidelinesTemplates,
   } = data?.lookup.templatesSet ?? {};
 
   const selectedTemplate = useMemo<AnyTemplate | undefined>(() => {
@@ -110,6 +113,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
       ...(innovationFlowTemplates ?? []),
       ...(communityGuidelinesTemplates ?? []),
       ...(calloutTemplates ?? []),
+      ...(collaborationTemplates ?? []),
     ].find(template => template.id === templateId);
   }, [templateId, data?.lookup.templatesSet]);
 
@@ -118,13 +122,32 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   const [updateTemplate] = useUpdateTemplateMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet', 'TemplateContent'],
   });
-  const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
-    const variables = toUpdateTemplateMutationVariables(templateId!, values);
-    const result = await updateTemplate({
-      variables,
-    });
+  const [updateCallout] = useUpdateCalloutMutation();
+  const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation();
+  //const [updateWhiteboardContent] = useUpdateWhiteboardContentMutation();
 
-    if (selectedTemplate?.type === TemplateType.Whiteboard) {
+  const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
+    if (!selectedTemplate) {
+      return;
+    }
+    const { updateTemplateVariables, updateCalloutVariables, updateCommunityGuidelinesVariables } =
+      toUpdateTemplateMutationVariables(templateId!, selectedTemplate, values);
+
+    const result = await updateTemplate({
+      variables: updateTemplateVariables,
+    });
+    if (updateCalloutVariables) {
+      await updateCallout({
+        variables: updateCalloutVariables,
+      });
+    }
+    if (updateCommunityGuidelinesVariables) {
+      await updateCommunityGuidelines({
+        variables: updateCommunityGuidelinesVariables,
+      });
+    }
+
+    if (updateTemplateVariables.includeProfileVisuals) {
       // Handle the visual in a special way with the preview images
       handlePreviewTemplates(values, result.data?.updateTemplate.profile);
     }
@@ -178,6 +201,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
         includeCallout: templateType === TemplateType.Callout,
         includeCommunityGuidelines: templateType === TemplateType.CommunityGuidelines,
         includeInnovationFlow: templateType === TemplateType.InnovationFlow,
+        includeCollaboration: templateType === TemplateType.Collaboration,
         includePost: templateType === TemplateType.Post,
         includeWhiteboard: templateType === TemplateType.Whiteboard,
       },
@@ -197,7 +221,11 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
     ({ templateType }: { templateType: TemplateType }) => (
       <>
         {canImportTemplates ? <ImportTemplateButton onClick={() => setImportTemplateType(templateType)} /> : null}
-        {canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(templateType)} /> : null}
+        {canCreateTemplates &&
+        /* TODO: InnovationFlow templates are going to be removed in the near future, so disallow creation for this type */
+        templateType !== TemplateType.InnovationFlow ? (
+          <CreateTemplateButton onClick={() => setCreatingTemplateType(templateType)} />
+        ) : null}
       </>
     ),
     [canCreateTemplates, canImportTemplates, setCreatingTemplateType, setImportTemplateType]
@@ -225,6 +253,18 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           })}
           actions={<GalleryActions templateType={TemplateType.Callout} />}
           templates={calloutTemplates}
+          loading={loading}
+          buildTemplateLink={buildTemplateLink}
+        />
+      </PageContentBlockSeamless>
+      <PageContentBlockSeamless disablePadding>
+        <TemplatesGallery
+          headerText={t('common.entitiesWithCount', {
+            entityType: t(`common.enums.templateType.${TemplateType.Collaboration}_plural`),
+            count: collaborationTemplates?.length ?? 0,
+          })}
+          actions={<GalleryActions templateType={TemplateType.Collaboration} />}
+          templates={collaborationTemplates}
           loading={loading}
           buildTemplateLink={buildTemplateLink}
         />
