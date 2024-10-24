@@ -43,7 +43,7 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
   const plansData = useMemo(
     () =>
       (
-        data?.platform.licensing.plans
+        data?.platform.licensingFramework.plans
           .filter(plan => plan.enabled)
           .filter(plan => plan.type === LicensePlanType.SpacePlan)
           .sort((a, b) => a.sortOrder - b.sortOrder) ?? []

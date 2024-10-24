@@ -251,7 +251,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const plans = useMemo(
     () =>
-      plansData?.platform.licensing.plans
+      plansData?.platform.licensingFramework.plans
         .filter(plan => plan.enabled)
         .filter(plan => plan.type === LicensePlanType.SpacePlan)
         .filter(plan => isPlanAvailable(plan))
@@ -401,7 +401,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   // load the following hook either with bokId (created subspace) or spaceId (created/existing space)
   const { handleCreateCallout, canCreateCallout } = useCalloutCreation({
-    journeyId: bokId,
+    collaborationId: bokId,
     overrideCollaborationId: collaborationId,
   });
 

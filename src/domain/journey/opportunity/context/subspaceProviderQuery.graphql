@@ -36,7 +36,6 @@ fragment SubspaceProvider on Space {
     authorization {
       id
       myPrivileges
-      anonymousReadAccess
     }
   }
   community {
@@ -48,6 +47,13 @@ fragment SubspaceProvider on Space {
     roleSet {
       id
       myMembershipStatus
+    }
+  }
+  collaboration {
+    id
+    authorization {
+      id
+      myPrivileges
     }
   }
 }
