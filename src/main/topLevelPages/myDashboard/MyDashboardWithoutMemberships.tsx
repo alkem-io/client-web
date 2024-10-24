@@ -5,7 +5,7 @@ import InfoColumn from '../../../core/ui/content/InfoColumn';
 import ContentColumn from '../../../core/ui/content/ContentColumn';
 import { useLatestReleaseDiscussionQuery } from '../../../core/apollo/generated/apollo-hooks';
 import ReleaseNotesBanner from './releaseNotesBanner/ReleaseNotesBanner';
-import DashboardMenu from './DashboardMenu/DashboardMenu';
+import { DashboardMenu } from './DashboardMenu/DashboardMenu';
 import ExploreSpaces from './ExploreSpaces/ExploreSpaces';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 
