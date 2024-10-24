@@ -11,8 +11,6 @@ import {
   UpdateProfileInput,
   UpdateReferenceInput,
   UpdateTagsetInput,
-  UpdateWhiteboardInput,
-  UpdateWhiteboardMutationVariables,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   CreateTemplateMutationVariables,
@@ -28,7 +26,6 @@ import { PostTemplateFormSubmittedValues } from '../PostTemplateForm';
 import { AnyTemplate } from '../../../models/TemplateBase';
 import { CommunityGuidelinesTemplate } from '../../../models/CommunityGuidelinesTemplate';
 import { CalloutTemplate } from '../../../models/CalloutTemplate';
-import { WhiteboardTemplate } from '../../../models/WhiteboardTemplate';
 
 // TODO MAYBE: Create the mappings mannually instead of using produce,
 // maybe that's the best way to keep the Typescript integrity
@@ -330,23 +327,6 @@ export const mapTemplateProfileToUpdateProfile = (profile?: TemplateProfile): Up
   };
 };
 
-const handleUpdateWhiteboard = (data?: {
-  content?: string;
-  profile?: {
-    displayName?: string;
-  };
-}): UpdateWhiteboardInput | undefined => {
-  if (!data) {
-    return undefined;
-  }
-  return {
-    content: data.content,
-    profile: {
-      displayName: data.profile?.displayName,
-    },
-  };
-};
-
 // For updating a template we update the Template itself and the elements inside it separately
 export const toUpdateTemplateMutationVariables = (
   templateId: string,
@@ -356,7 +336,6 @@ export const toUpdateTemplateMutationVariables = (
   updateTemplateVariables: UpdateTemplateMutationVariables;
   updateCalloutVariables?: UpdateCalloutMutationVariables;
   updateCommunityGuidelinesVariables?: UpdateCommunityGuidelinesMutationVariables;
-  updateWhiteboardVariables?: UpdateWhiteboardMutationVariables;
 } => {
   const updateTemplateVariables: UpdateTemplateMutationVariables = {
     templateId: templateId!,
@@ -371,7 +350,7 @@ export const toUpdateTemplateMutationVariables = (
           ID: (template as CalloutTemplate).callout?.id!,
           framing: {
             profile: mapTemplateProfileToUpdateProfile(calloutTemplateData.callout?.framing.profile),
-            whiteboard: handleUpdateWhiteboard(calloutTemplateData.callout?.framing.whiteboard),
+            whiteboardContent: calloutTemplateData.callout?.framing.whiteboard?.content,
           },
           contributionDefaults: handleContributionDefaults(calloutTemplateData.callout?.contributionDefaults),
         },
@@ -380,16 +359,16 @@ export const toUpdateTemplateMutationVariables = (
       switch ((template as CalloutTemplate).callout?.type) {
         case CalloutType.Post: {
           delete updateCalloutVariables.calloutData?.contributionDefaults;
-          delete updateCalloutVariables.calloutData?.framing?.whiteboard;
+          delete updateCalloutVariables.calloutData?.framing?.whiteboardContent;
           break;
         }
         case CalloutType.PostCollection: {
-          delete updateCalloutVariables.calloutData?.framing?.whiteboard;
+          delete updateCalloutVariables.calloutData?.framing?.whiteboardContent;
           delete updateCalloutVariables.calloutData?.contributionDefaults?.whiteboardContent;
           break;
         }
         case CalloutType.LinkCollection: {
-          delete updateCalloutVariables.calloutData?.framing?.whiteboard;
+          delete updateCalloutVariables.calloutData?.framing?.whiteboardContent;
           delete updateCalloutVariables.calloutData?.contributionDefaults;
           break;
         }
@@ -398,7 +377,7 @@ export const toUpdateTemplateMutationVariables = (
           break;
         }
         case CalloutType.WhiteboardCollection: {
-          delete updateCalloutVariables.calloutData?.framing?.whiteboard;
+          delete updateCalloutVariables.calloutData?.framing?.whiteboardContent;
           delete updateCalloutVariables.calloutData?.contributionDefaults?.postDescription;
           break;
         }
@@ -443,16 +422,11 @@ export const toUpdateTemplateMutationVariables = (
       };
     }
     case TemplateType.Whiteboard: {
-      const whiteboardTemplateData = newValues as WhiteboardTemplateFormSubmittedValues;
-
+      updateTemplateVariables.whiteboardContent = (
+        newValues as WhiteboardTemplateFormSubmittedValues
+      ).whiteboard?.content;
       return {
         updateTemplateVariables,
-        updateWhiteboardVariables: {
-          input: {
-            ID: (template as WhiteboardTemplate).whiteboard?.id!,
-            content: whiteboardTemplateData.whiteboard?.content,
-          },
-        },
       };
     }
   }

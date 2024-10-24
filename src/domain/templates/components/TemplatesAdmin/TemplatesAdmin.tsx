@@ -130,12 +130,8 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
     if (!selectedTemplate) {
       return;
     }
-    const {
-      updateTemplateVariables,
-      updateCalloutVariables,
-      updateCommunityGuidelinesVariables,
-      updateWhiteboardVariables,
-    } = toUpdateTemplateMutationVariables(templateId!, selectedTemplate, values);
+    const { updateTemplateVariables, updateCalloutVariables, updateCommunityGuidelinesVariables } =
+      toUpdateTemplateMutationVariables(templateId!, selectedTemplate, values);
 
     const result = await updateTemplate({
       variables: updateTemplateVariables,
@@ -149,13 +145,6 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
       await updateCommunityGuidelines({
         variables: updateCommunityGuidelinesVariables,
       });
-    }
-    if (updateWhiteboardVariables) {
-      //!! TODO
-      // updateWhiteboardContent
-      // await updateWhiteboardContent({
-      //   variables: updateWhiteboardVariables,
-      // });
     }
 
     if (updateTemplateVariables.includeProfileVisuals) {

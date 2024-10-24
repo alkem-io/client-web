@@ -20302,10 +20302,16 @@ export const UpdateTemplateDocument = gql`
     $templateId: UUID!
     $profile: UpdateProfileInput!
     $postDefaultDescription: Markdown
+    $whiteboardContent: WhiteboardContent
     $includeProfileVisuals: Boolean = false
   ) {
     updateTemplate(
-      updateData: { ID: $templateId, profile: $profile, postDefaultDescription: $postDefaultDescription }
+      updateData: {
+        ID: $templateId
+        profile: $profile
+        postDefaultDescription: $postDefaultDescription
+        whiteboardContent: $whiteboardContent
+      }
     ) {
       id
       profile @include(if: $includeProfileVisuals) {
@@ -20341,6 +20347,7 @@ export type UpdateTemplateMutationFn = Apollo.MutationFunction<
  *      templateId: // value for 'templateId'
  *      profile: // value for 'profile'
  *      postDefaultDescription: // value for 'postDefaultDescription'
+ *      whiteboardContent: // value for 'whiteboardContent'
  *      includeProfileVisuals: // value for 'includeProfileVisuals'
  *   },
  * });

@@ -59,9 +59,17 @@ mutation UpdateTemplate(
   $templateId: UUID!
   $profile: UpdateProfileInput!
   $postDefaultDescription: Markdown
+  $whiteboardContent: WhiteboardContent
   $includeProfileVisuals: Boolean = false
 ) {
-  updateTemplate(updateData: { ID: $templateId, profile: $profile, postDefaultDescription: $postDefaultDescription }) {
+  updateTemplate(
+    updateData: {
+      ID: $templateId
+      profile: $profile
+      postDefaultDescription: $postDefaultDescription
+      whiteboardContent: $whiteboardContent
+    }
+  ) {
     id
     profile @include(if: $includeProfileVisuals) {
       id
