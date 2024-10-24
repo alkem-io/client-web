@@ -12,7 +12,7 @@ import RouterLink, { RouterLinkProps } from '../../../../core/ui/link/RouterLink
 import VirtualContributorsDialog, { VirtualContributorProps } from './VirtualContributorsDialog';
 import VCIcon from '../../virtualContributor/VirtualContributorsIcons';
 
-const VIRTUAL_CONTRIBUTORS_LIMIT = 3;
+export const VIRTUAL_CONTRIBUTORS_LIMIT = 3;
 
 interface VirtualContributorsBlockProps {
   virtualContributors: VirtualContributorProps[];

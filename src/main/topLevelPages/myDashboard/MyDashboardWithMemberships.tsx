@@ -2,7 +2,7 @@ import React from 'react';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import ReleaseNotesBanner from './releaseNotesBanner/ReleaseNotesBanner';
 import { useLatestReleaseDiscussionQuery } from '../../../core/apollo/generated/apollo-hooks';
-import MyAccountBlock from './myAccount/MyAccountBlock';
+import CampaignBlock from './campaignBlock/CampaignBlock';
 import InfoColumn from '../../../core/ui/content/InfoColumn';
 import DashboardMenu from './DashboardMenu/DashboardMenu';
 import ContentColumn from '../../../core/ui/content/ContentColumn';
@@ -23,7 +23,7 @@ const MyDashboardWithMemberships = () => {
       </InfoColumn>
       <ContentColumn>
         {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />}
-        <MyAccountBlock />
+        <CampaignBlock />
         {activityEnebled ? <DashboardActivity /> : <DashboardSpaces />}
       </ContentColumn>
     </PageContentColumn>

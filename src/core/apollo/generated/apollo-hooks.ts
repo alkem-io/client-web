@@ -21948,6 +21948,74 @@ export function refetchWelcomeSpaceQuery(variables: SchemaTypes.WelcomeSpaceQuer
   return { query: WelcomeSpaceDocument, variables: variables };
 }
 
+export const CampaignBlockCredentialsDocument = gql`
+  query CampaignBlockCredentials {
+    me {
+      user {
+        id
+        agent {
+          id
+          credentials {
+            resourceID
+            type
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCampaignBlockCredentialsQuery__
+ *
+ * To run a query within a React component, call `useCampaignBlockCredentialsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCampaignBlockCredentialsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCampaignBlockCredentialsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCampaignBlockCredentialsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.CampaignBlockCredentialsQuery,
+    SchemaTypes.CampaignBlockCredentialsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CampaignBlockCredentialsQuery, SchemaTypes.CampaignBlockCredentialsQueryVariables>(
+    CampaignBlockCredentialsDocument,
+    options
+  );
+}
+
+export function useCampaignBlockCredentialsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CampaignBlockCredentialsQuery,
+    SchemaTypes.CampaignBlockCredentialsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CampaignBlockCredentialsQuery,
+    SchemaTypes.CampaignBlockCredentialsQueryVariables
+  >(CampaignBlockCredentialsDocument, options);
+}
+
+export type CampaignBlockCredentialsQueryHookResult = ReturnType<typeof useCampaignBlockCredentialsQuery>;
+export type CampaignBlockCredentialsLazyQueryHookResult = ReturnType<typeof useCampaignBlockCredentialsLazyQuery>;
+export type CampaignBlockCredentialsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CampaignBlockCredentialsQuery,
+  SchemaTypes.CampaignBlockCredentialsQueryVariables
+>;
+export function refetchCampaignBlockCredentialsQuery(variables?: SchemaTypes.CampaignBlockCredentialsQueryVariables) {
+  return { query: CampaignBlockCredentialsDocument, variables: variables };
+}
+
 export const DashboardSpacesDocument = gql`
   query DashboardSpaces($visibilities: [SpaceVisibility!] = [ACTIVE]) {
     spaces(filter: { visibilities: $visibilities }) {
@@ -22555,97 +22623,6 @@ export type MembershipSuggestionSpaceQueryResult = Apollo.QueryResult<
 >;
 export function refetchMembershipSuggestionSpaceQuery(variables: SchemaTypes.MembershipSuggestionSpaceQueryVariables) {
   return { query: MembershipSuggestionSpaceDocument, variables: variables };
-}
-
-export const MyAccountDocument = gql`
-  query MyAccount {
-    me {
-      user {
-        id
-        agent {
-          id
-          credentials {
-            resourceID
-            type
-          }
-        }
-        account {
-          id
-          authorization {
-            myPrivileges
-          }
-          virtualContributors {
-            id
-            profile {
-              id
-              displayName
-              tagline
-              url
-              avatar: visual(type: AVATAR) {
-                ...VisualUri
-              }
-            }
-          }
-          spaces {
-            id
-            profile {
-              id
-              displayName
-              tagline
-              url
-              avatar: visual(type: AVATAR) {
-                ...VisualUri
-              }
-              cardBanner: visual(type: CARD) {
-                ...VisualUri
-              }
-            }
-            level
-          }
-        }
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-
-/**
- * __useMyAccountQuery__
- *
- * To run a query within a React component, call `useMyAccountQuery` and pass it any options that fit your needs.
- * When your component renders, `useMyAccountQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMyAccountQuery({
- *   variables: {
- *   },
- * });
- */
-export function useMyAccountQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.MyAccountQuery, SchemaTypes.MyAccountQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.MyAccountQuery, SchemaTypes.MyAccountQueryVariables>(MyAccountDocument, options);
-}
-
-export function useMyAccountLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.MyAccountQuery, SchemaTypes.MyAccountQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.MyAccountQuery, SchemaTypes.MyAccountQueryVariables>(
-    MyAccountDocument,
-    options
-  );
-}
-
-export type MyAccountQueryHookResult = ReturnType<typeof useMyAccountQuery>;
-export type MyAccountLazyQueryHookResult = ReturnType<typeof useMyAccountLazyQuery>;
-export type MyAccountQueryResult = Apollo.QueryResult<SchemaTypes.MyAccountQuery, SchemaTypes.MyAccountQueryVariables>;
-export function refetchMyAccountQuery(variables?: SchemaTypes.MyAccountQueryVariables) {
-  return { query: MyAccountDocument, variables: variables };
 }
 
 export const MyMembershipsDocument = gql`

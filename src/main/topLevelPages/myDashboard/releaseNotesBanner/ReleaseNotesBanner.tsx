@@ -6,6 +6,7 @@ import DashboardBanner from '../../../../core/ui/content/DashboardBanner';
 import useReleaseNotes from '../../../../domain/platform/metadata/useReleaseNotes';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { useConfig } from '../../../../domain/platform/config/useConfig';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 const IS_CLICKABLE = 'true';
 
@@ -23,7 +24,12 @@ const ReleaseNotesBanner = () => {
   }
 
   return (
-    <DashboardBanner to={releaseNotesUrl} isLink={isClickable} onClose={onClose}>
+    <DashboardBanner
+      to={releaseNotesUrl}
+      isLink={isClickable}
+      onClose={onClose}
+      containerProps={{ paddingX: gutters(), paddingY: gutters(0.5) }}
+    >
       <Trans
         i18nKey="releaseNotes.title"
         components={{
