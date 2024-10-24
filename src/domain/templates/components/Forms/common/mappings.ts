@@ -1,10 +1,18 @@
-import produce from 'immer';
 import {
+  CalloutState,
   CalloutType,
+  CreateCalloutInput,
+  CreateProfileInput,
+  CreateReferenceInput,
   CreateTemplateFromCollaborationMutationVariables,
+  CreateWhiteboardInput,
+  UpdateCalloutMutationVariables,
+  UpdateCommunityGuidelinesMutationVariables,
   UpdateProfileInput,
   UpdateReferenceInput,
   UpdateTagsetInput,
+  UpdateWhiteboardInput,
+  UpdateWhiteboardMutationVariables,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import {
   CreateTemplateMutationVariables,
@@ -13,67 +21,34 @@ import {
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { AnyTemplateFormSubmittedValues } from '../TemplateForm';
 import { CommunityGuidelinesTemplateFormSubmittedValues } from '../CommunityGuidelinesTemplateForm';
-import { WritableDraft } from 'immer/dist/internal';
-import { InnovationFlowTemplateFormSubmittedValues } from '../InnovationFlowTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../WhiteboardTemplateForm';
 import { CalloutTemplateFormSubmittedValues } from '../CalloutTemplateForm';
 import { CollaborationTemplateFormSubmittedValues } from '../CollaborationTemplateForm';
+import { PostTemplateFormSubmittedValues } from '../PostTemplateForm';
+import { AnyTemplate } from '../../../models/TemplateBase';
+import { CommunityGuidelinesTemplate } from '../../../models/CommunityGuidelinesTemplate';
+import { CalloutTemplate } from '../../../models/CalloutTemplate';
+import { WhiteboardTemplate } from '../../../models/WhiteboardTemplate';
 
 // TODO MAYBE: Create the mappings mannually instead of using produce,
 // maybe that's the best way to keep the Typescript integrity
-interface TemplateTagset {
-  id?: string;
-  name?: string;
-  tags?: string[];
-}
 
-export const mapTagsetsToUpdateTagsets = (tagsets: TemplateTagset[] | undefined): UpdateTagsetInput[] => {
-  return (
-    tagsets?.map(tagset => ({
-      ID: tagset.id ?? '',
-      tags: tagset.tags ?? [],
-    })) ?? [{ ID: '', tags: [] }]
-  );
-};
-
-interface TemplateReference {
-  id?: string;
-  name?: string;
-  uri?: string;
-  description?: string;
-}
-
-export const mapReferencesToUpdateReferences = (
-  references: TemplateReference[] | undefined
-): UpdateReferenceInput[] | undefined => {
-  return references?.map(reference => ({
-    ID: reference.id ?? '',
-    description: reference.description,
-    uri: reference.uri,
-    name: reference.name,
-  }));
-};
-
-interface TemplateProfile {
-  displayName: string;
-  description?: string;
-  defaultTagset?: TemplateTagset;
-}
-
-export const mapTemplateProfileToUpdateProfile = (profile?: TemplateProfile): UpdateProfileInput => {
-  return {
-    displayName: profile?.displayName ?? '',
-    description: profile?.description ?? '',
-    tagsets: profile?.defaultTagset
-      ? mapTagsetsToUpdateTagsets([profile.defaultTagset])
-      : mapTagsetsToUpdateTagsets(undefined),
+interface EntityWithProfile {
+  profile: {
+    displayName?: string;
+    description?: string;
+    tagline?: string;
+    references?: {
+      name?: string;
+      uri?: string;
+      description?: string;
+    }[];
+    tagsets?: {
+      tags: string[];
+    }[];
   };
-};
+}
 
-/* ==========================
- * CREATE TEMPLATES MUTATIONS
- * ==========================
- */
 interface ProfileWithTags {
   profile: {
     tagsets?: {
@@ -97,37 +72,80 @@ interface ProfileWithReferences {
   };
 }
 
-// For creation, instead of tagsets, we want tags at the parent level
-const handleTags = (draft: WritableDraft<ProfileWithTags>) => {
-  if (draft.profile.defaultTagset) {
-    draft['tags'] = draft.profile.defaultTagset.tags;
+const handleCreateProfile = (
+  data: EntityWithProfile | undefined
+): { profileData: CreateProfileInput; tags: string[] | undefined } => {
+  if (!data) {
+    throw new Error('No profile data provided');
   }
-  const tags = draft.profile.tagsets?.[0]?.tags ?? [];
+  return {
+    profileData: {
+      displayName: data.profile.displayName ?? '',
+      description: data.profile.description,
+      tagline: data.profile.tagline,
+      referencesData: handleCreateReferences(data),
+    },
+    tags: handleCreateTags(data),
+  };
+};
+
+const handleCreateReferences = (data: ProfileWithReferences): CreateReferenceInput[] | undefined => {
+  return data.profile.references?.map((reference, index) => ({
+    name: reference.name ?? `Reference ${index + 1}`,
+    description: reference.description,
+    uri: reference.uri,
+  }));
+};
+
+const handleCreateTags = (data: ProfileWithTags): string[] | undefined => {
+  if (data.profile.defaultTagset) {
+    return data.profile.defaultTagset.tags;
+  }
+  const tags = data.profile.tagsets?.[0]?.tags ?? [];
   if (tags.length > 0) {
-    draft['tags'] = tags;
+    return tags;
   }
-  delete draft.profile.defaultTagset;
-  delete draft.profile.tagsets;
 };
 
-// For creation, instead of references, we need to pass referencesData without ids
-const handleReferences = (draft: WritableDraft<ProfileWithReferences>) => {
-  const references = draft.profile.references ?? [];
-  if (references.length > 0) {
-    draft.profile['referencesData'] = references.map(ref => ({
-      name: ref.name,
-      uri: ref.uri,
-      description: ref.description,
-    }));
+const handleCreateWhiteboard = (data?: {
+  content?: string;
+  profile?: {
+    displayName?: string;
+  };
+}): CreateWhiteboardInput | undefined => {
+  if (!data) {
+    return undefined;
   }
-  delete draft.profile.references;
+  return {
+    content: data.content,
+    profileData: {
+      displayName: data.profile?.displayName ?? '',
+    },
+  };
 };
 
-// Always remove the preview images from the Create/Update calls, visuals are handled separately
-const handlePreviewImages = draft => {
-  if (draft.whiteboardPreviewImages) {
-    delete draft.whiteboardPreviewImages;
-    draft['includeProfileVisuals'] = true; // Will tell the mutation to retrieve the visuals after creation/update to upload the preview images of f.e. whiteboards
+const handlePreviewImages = (data: AnyTemplateFormSubmittedValues): { includeProfileVisuals?: boolean } | undefined => {
+  // We don't do anything from here, preview images are handled and uploaded in WhiteboardPreviewImages
+  // But we need to tell the server that we want it to include the visuals so we can upload the previews to those visuals
+  if (data && (data as WhiteboardTemplateFormSubmittedValues).whiteboardPreviewImages) {
+    return { includeProfileVisuals: true };
+  }
+  return undefined;
+};
+
+const handleContributionDefaults = (
+  data:
+    | {
+        postDescription?: string;
+        whiteboardContent?: string;
+      }
+    | undefined
+) => {
+  if (data) {
+    return {
+      postDescription: data.postDescription,
+      whiteboardContent: data.whiteboardContent,
+    };
   }
 };
 
@@ -136,160 +154,93 @@ export const toCreateTemplateMutationVariables = (
   templateType: TemplateType,
   values: AnyTemplateFormSubmittedValues
 ): CreateTemplateMutationVariables => {
-  let newValues = produce(values, draft => {
-    handleTags(draft);
-    handleReferences(draft);
-    handlePreviewImages(draft);
-  });
+  const result: CreateTemplateMutationVariables = {
+    templatesSetId,
+    type: templateType,
+    ...handleCreateProfile(values),
+    ...handlePreviewImages(values),
+  };
 
   switch (templateType) {
     case TemplateType.Callout: {
-      newValues = produce(newValues, draft => {
-        const calloutDraft = draft as CalloutTemplateFormSubmittedValues;
-        if (!calloutDraft.callout) {
-          throw new Error('Callout template must have a callout object');
+      const calloutTemplateData = values as CalloutTemplateFormSubmittedValues;
+      if (!calloutTemplateData.callout || !calloutTemplateData.callout.type) {
+        throw new Error('Callout template must have callout data');
+      }
+      const { profileData, tags } = handleCreateProfile(calloutTemplateData.callout.framing);
+      const callout: CreateCalloutInput = {
+        type: calloutTemplateData.callout.type,
+        framing: {
+          profile: profileData,
+          tags,
+          whiteboard: handleCreateWhiteboard(calloutTemplateData.callout.framing.whiteboard),
+        },
+      };
+      callout.contributionDefaults = handleContributionDefaults(calloutTemplateData.callout.contributionDefaults);
+
+      switch (calloutTemplateData.callout?.type) {
+        case CalloutType.Post:
+        case CalloutType.PostCollection: {
+          delete callout.contributionDefaults?.whiteboardContent;
+          delete callout.framing.whiteboard;
+          break;
         }
-
-        delete calloutDraft.callout['id'];
-
-        if (calloutDraft.callout?.framing) {
-          handleTags(calloutDraft.callout.framing);
-          handleReferences(calloutDraft.callout.framing);
-          delete calloutDraft.callout.framing['id'];
+        case CalloutType.LinkCollection: {
+          delete callout.contributionDefaults;
+          delete callout.framing.whiteboard;
+          break;
         }
-
-        delete calloutDraft.callout.contributionDefaults?.['id'];
-
-        switch (calloutDraft.callout?.type) {
-          case CalloutType.Post: {
-            delete calloutDraft.callout.contributionDefaults?.whiteboardContent;
-            delete calloutDraft.callout.framing.whiteboard;
-            break;
-          }
-          case CalloutType.PostCollection: {
-            delete calloutDraft.callout.contributionDefaults?.whiteboardContent;
-            delete calloutDraft.callout.framing.whiteboard;
-            break;
-          }
-          case CalloutType.LinkCollection: {
-            delete calloutDraft.callout.contributionDefaults;
-            delete calloutDraft.callout.framing.whiteboard;
-            break;
-          }
-          case CalloutType.Whiteboard: {
-            delete calloutDraft.callout.contributionDefaults;
-            if (calloutDraft.callout.framing.whiteboard) {
-              const content = calloutDraft.callout.framing.whiteboard.content;
-              calloutDraft.callout.framing.whiteboard = {
-                content,
-              };
-              calloutDraft.callout.framing.whiteboard['profileData'] = {
-                displayName: 'Whiteboard Template',
-              };
-            }
-            break;
-          }
-          case CalloutType.WhiteboardCollection: {
-            delete calloutDraft.callout.framing.whiteboard;
-            delete calloutDraft.callout.contributionDefaults?.postDescription;
-            break;
-          }
+        case CalloutType.Whiteboard: {
+          delete callout.contributionDefaults;
+          break;
         }
-        calloutDraft.callout['contributionPolicy'] = { state: 'OPEN' };
-        delete calloutDraft.callout.framing.profile['id'];
-        delete calloutDraft.callout.framing.profile['storageBucket'];
-
-        calloutDraft['calloutData'] = calloutDraft.callout;
-        delete draft['callout'];
-
-        delete draft['communityGuidelines'];
-        delete draft['innovationFlow'];
-        delete draft['whiteboard'];
-      });
+        case CalloutType.WhiteboardCollection: {
+          delete calloutTemplateData.callout.framing.whiteboard;
+          delete calloutTemplateData.callout.contributionDefaults?.postDescription;
+          break;
+        }
+      }
+      callout.contributionPolicy = { state: CalloutState.Open };
+      result.calloutData = callout;
+      break;
+    }
+    case TemplateType.Collaboration: {
+      // TODO: Nothing to do here, for now we cannot create CollaborationTemplates with data inside, we can only copy another collaboration
+      throw new Error('Call toCreateTemplateFromCollaborationMutationVariables instead');
+    }
+    case TemplateType.CommunityGuidelines: {
+      const communityGuidelinesTemplateData = values as CommunityGuidelinesTemplateFormSubmittedValues;
+      const { profileData } = handleCreateProfile(communityGuidelinesTemplateData.communityGuidelines);
+      result.communityGuidelinesData = {
+        profile: profileData,
+        // Community Guidelines don't have tags
+      };
+      break;
+    }
+    // TODO: Remove - Cannot create an Innovation Flow template anymore
+    case TemplateType.InnovationFlow: {
       break;
     }
     case TemplateType.Post: {
-      newValues = produce(newValues, draft => {
-        delete draft['callout'];
-        delete draft['communityGuidelines'];
-        delete draft['innovationFlow'];
-        delete draft['whiteboard'];
-      });
-      break;
-    }
-    case TemplateType.CommunityGuidelines: {
-      newValues = produce(newValues, draft => {
-        const communityGuidelinesDraft = draft as CommunityGuidelinesTemplateFormSubmittedValues;
-        communityGuidelinesDraft['communityGuidelinesData'] = communityGuidelinesDraft.communityGuidelines;
-        if (communityGuidelinesDraft.communityGuidelines?.profile.references) {
-          handleReferences(communityGuidelinesDraft.communityGuidelines);
-        }
-
-        delete communityGuidelinesDraft['communityGuidelinesData']['id'];
-        delete communityGuidelinesDraft.communityGuidelines?.profile?.['id'];
-
-        delete draft['callout'];
-        delete draft['communityGuidelines'];
-        delete draft['innovationFlow'];
-        delete draft['whiteboard'];
-      });
-      break;
-    }
-    case TemplateType.InnovationFlow: {
-      newValues = produce(newValues, draft => {
-        const innovationFlowDraft = draft as InnovationFlowTemplateFormSubmittedValues;
-        innovationFlowDraft['innovationFlowData'] = innovationFlowDraft.innovationFlow;
-        innovationFlowDraft['innovationFlowData']['profile'] = {
-          displayName: 'Innovation Flow Template',
-        };
-        delete innovationFlowDraft['innovationFlowData']['id'];
-
-        delete draft['callout'];
-        delete draft['communityGuidelines'];
-        delete draft['innovationFlow'];
-        delete draft['whiteboard'];
-      });
+      const postData = values as PostTemplateFormSubmittedValues;
+      result.postDefaultDescription = postData.postDefaultDescription;
       break;
     }
     case TemplateType.Whiteboard: {
-      newValues = produce(newValues, draft => {
-        const whiteboardDraft = draft as WhiteboardTemplateFormSubmittedValues;
-        if (whiteboardDraft.whiteboard) {
-          delete whiteboardDraft.whiteboard['profile'];
-          delete whiteboardDraft.whiteboard['id'];
-          whiteboardDraft.whiteboard['profileData'] = {
-            // This shoudln't be required by the server but for now can stay
-            displayName: 'Whiteboard Template',
-          };
-        }
-        delete draft['callout'];
-        delete draft['communityGuidelines'];
-        delete draft['innovationFlow'];
-      });
+      const whiteboardTemplateData = values as WhiteboardTemplateFormSubmittedValues;
+      result.whiteboard = handleCreateWhiteboard(whiteboardTemplateData.whiteboard);
+      break;
     }
   }
 
-  newValues = produce(newValues, draft => {
-    draft['profileData'] = draft.profile;
-    delete draft['profileData'].id;
-    delete draft['profileData'].defaultTagset;
-    //@ts-ignore
-    delete draft.profile;
-  });
-
-  // After those productions TypeScript is completely clueless of what's in newValues.
-  //@ts-ignore
-  return {
-    templatesSetId: templatesSetId,
-    type: templateType,
-    ...newValues,
-  };
+  return result;
 };
 
 export const toCreateTemplateFromCollaborationMutationVariables = (
   templatesSetId: string,
   values: CollaborationTemplateFormSubmittedValues
 ): CreateTemplateFromCollaborationMutationVariables => {
+  // TODO: Maybe in the future we don't receive collaborationId to copy the collaboration and we receive the collaboration data directly
   if (!values.collaborationId) {
     throw new Error('Collaboration ID is required to create a template from a collaboration');
   }
@@ -311,70 +262,199 @@ export const toCreateTemplateFromCollaborationMutationVariables = (
   return result;
 };
 
-/* ==========================
- * UPDATE TEMPLATES MUTATIONS
- * ==========================
- */
+interface TemplateTagset {
+  id?: string;
+  name?: string;
+  tags?: string[];
+}
 
-const mapReferences = (ref: { id?: string; ID?: string; name?: string; uri?: string; description?: string }) => ({
-  ID: ref.ID ?? ref.id ?? '', // We have some cases where id is lowercase, see ProfileReferenceSegment
-  name: ref.name,
-  uri: ref.uri,
-  description: ref.description,
-});
+export const mapTagsetsToUpdateTagsets = (
+  profile:
+    | {
+        defaultTagset?: TemplateTagset;
+        tagsets?: TemplateTagset[];
+      }
+    | undefined
+): UpdateTagsetInput[] | undefined => {
+  if (profile?.defaultTagset && profile?.defaultTagset.id) {
+    return [
+      {
+        ID: profile.defaultTagset.id,
+        tags: profile.defaultTagset.tags ?? [],
+      },
+    ];
+  } else if (profile?.tagsets && profile.tagsets.length > 0) {
+    return profile.tagsets
+      .filter(tagset => tagset.id) // remove all tagsets that don't have an ID
+      .map(tagset => ({
+        ID: tagset.id ?? '',
+        name: tagset.name,
+        tags: tagset.tags ?? [],
+      }));
+  }
+  return undefined;
+};
 
+interface TemplateReference {
+  ID?: string; // TODO: We have some cases where id is lowercase, see ProfileReferenceSegment
+  id?: string;
+  name?: string;
+  uri?: string;
+  description?: string;
+}
+
+export const mapReferencesToUpdateReferences = (
+  references: TemplateReference[] | undefined
+): UpdateReferenceInput[] | undefined => {
+  return references?.map(reference => ({
+    ID: reference.ID ?? reference.id ?? '',
+    description: reference.description,
+    uri: reference.uri,
+    name: reference.name,
+  }));
+};
+
+interface TemplateProfile {
+  displayName?: string;
+  description?: string;
+  tagline?: string;
+  defaultTagset?: TemplateTagset;
+}
+
+export const mapTemplateProfileToUpdateProfile = (profile?: TemplateProfile): UpdateProfileInput => {
+  return {
+    displayName: profile?.displayName,
+    description: profile?.description,
+    tagline: profile?.tagline,
+    tagsets: mapTagsetsToUpdateTagsets(profile),
+  };
+};
+
+const handleUpdateWhiteboard = (data?: {
+  content?: string;
+  profile?: {
+    displayName?: string;
+  };
+}): UpdateWhiteboardInput | undefined => {
+  if (!data) {
+    return undefined;
+  }
+  return {
+    content: data.content,
+    profile: {
+      displayName: data.profile?.displayName,
+    },
+  };
+};
+
+// For updating a template we update the Template itself and the elements inside it separately
 export const toUpdateTemplateMutationVariables = (
   templateId: string,
-  values: AnyTemplateFormSubmittedValues
-): UpdateTemplateMutationVariables => {
-  let newValues = produce(values, draft => {
-    handlePreviewImages(draft);
-    if (draft.profile.references) {
-      draft.profile.references = draft.profile.references.map(mapReferences);
-    }
-    if (draft['communityGuidelines']) {
-      const communityGuidelinesDraft = draft as WritableDraft<CommunityGuidelinesTemplateFormSubmittedValues>;
-      if (communityGuidelinesDraft.communityGuidelines?.profile.references) {
-        communityGuidelinesDraft.communityGuidelines.profile.references =
-          communityGuidelinesDraft.communityGuidelines.profile.references.map(mapReferences);
-      }
-    }
-    if (draft['callout']) {
-      const calloutDraft = draft as WritableDraft<CalloutTemplateFormSubmittedValues>;
+  template: AnyTemplate,
+  newValues: AnyTemplateFormSubmittedValues
+): {
+  updateTemplateVariables: UpdateTemplateMutationVariables;
+  updateCalloutVariables?: UpdateCalloutMutationVariables;
+  updateCommunityGuidelinesVariables?: UpdateCommunityGuidelinesMutationVariables;
+  updateWhiteboardVariables?: UpdateWhiteboardMutationVariables;
+} => {
+  const updateTemplateVariables: UpdateTemplateMutationVariables = {
+    templateId: templateId!,
+    profile: mapTemplateProfileToUpdateProfile(newValues.profile),
+    ...handlePreviewImages(newValues),
+  };
+  switch (template.type) {
+    case TemplateType.Callout: {
+      const calloutTemplateData = newValues as CalloutTemplateFormSubmittedValues;
+      const updateCalloutVariables: UpdateCalloutMutationVariables = {
+        calloutData: {
+          ID: (template as CalloutTemplate).callout?.id!,
+          framing: {
+            profile: mapTemplateProfileToUpdateProfile(calloutTemplateData.callout?.framing.profile),
+            whiteboard: handleUpdateWhiteboard(calloutTemplateData.callout?.framing.whiteboard),
+          },
+          contributionDefaults: handleContributionDefaults(calloutTemplateData.callout?.contributionDefaults),
+        },
+      };
       // Delete useless fields and leave only the fields relevant to the callout types
-      switch (calloutDraft.callout?.type) {
+      switch ((template as CalloutTemplate).callout?.type) {
         case CalloutType.Post: {
-          delete calloutDraft.callout?.contributionDefaults;
-          delete calloutDraft.callout?.framing.whiteboard;
+          delete updateCalloutVariables.calloutData?.contributionDefaults;
+          delete updateCalloutVariables.calloutData?.framing?.whiteboard;
           break;
         }
         case CalloutType.PostCollection: {
-          delete calloutDraft.callout?.framing.whiteboard;
-          delete calloutDraft.callout?.contributionDefaults?.whiteboardContent;
+          delete updateCalloutVariables.calloutData?.framing?.whiteboard;
+          delete updateCalloutVariables.calloutData?.contributionDefaults?.whiteboardContent;
           break;
         }
         case CalloutType.LinkCollection: {
-          delete calloutDraft.callout?.framing.whiteboard;
-          delete calloutDraft.callout?.contributionDefaults;
+          delete updateCalloutVariables.calloutData?.framing?.whiteboard;
+          delete updateCalloutVariables.calloutData?.contributionDefaults;
           break;
         }
         case CalloutType.Whiteboard: {
-          delete calloutDraft.callout?.contributionDefaults;
+          delete updateCalloutVariables.calloutData?.contributionDefaults;
           break;
         }
         case CalloutType.WhiteboardCollection: {
-          delete calloutDraft.callout?.framing.whiteboard;
-          delete calloutDraft.callout?.contributionDefaults?.postDescription;
+          delete updateCalloutVariables.calloutData?.framing?.whiteboard;
+          delete updateCalloutVariables.calloutData?.contributionDefaults?.postDescription;
           break;
         }
       }
 
-      delete calloutDraft.callout?.type; // Never send Callout type as it cannot be changed
+      return {
+        updateTemplateVariables,
+        updateCalloutVariables,
+      };
     }
-  });
+    case TemplateType.Collaboration: {
+      // TODO: Cannot update Collaboration Template content yet, but we can update the profile of it
+      return {
+        updateTemplateVariables,
+      };
+    }
+    case TemplateType.CommunityGuidelines: {
+      const communityGuidelinesTemplateData = newValues as CommunityGuidelinesTemplateFormSubmittedValues;
+      const updateCommunityGuidelinesVariables: UpdateCommunityGuidelinesMutationVariables = {
+        communityGuidelinesData: {
+          communityGuidelinesID: (template as CommunityGuidelinesTemplate).communityGuidelines?.id!,
+          profile: mapTemplateProfileToUpdateProfile(communityGuidelinesTemplateData.communityGuidelines?.profile),
+        },
+      };
+      return {
+        updateTemplateVariables,
+        updateCommunityGuidelinesVariables,
+      };
+    }
+    case TemplateType.InnovationFlow: {
+      // TODO: Remove, this template type will be removed soon
+      return {
+        updateTemplateVariables,
+      };
+    }
+    case TemplateType.Post: {
+      updateTemplateVariables.postDefaultDescription = (
+        newValues as PostTemplateFormSubmittedValues
+      ).postDefaultDescription;
+      return {
+        updateTemplateVariables,
+      };
+    }
+    case TemplateType.Whiteboard: {
+      const whiteboardTemplateData = newValues as WhiteboardTemplateFormSubmittedValues;
 
-  return {
-    templateId: templateId!,
-    ...newValues,
-  };
+      return {
+        updateTemplateVariables,
+        updateWhiteboardVariables: {
+          input: {
+            ID: (template as WhiteboardTemplate).whiteboard?.id!,
+            content: whiteboardTemplateData.whiteboard?.content,
+          },
+        },
+      };
+    }
+  }
+  throw new Error('Coulndt identify callout type');
 };

@@ -5,6 +5,8 @@ import {
   useCreateTemplateMutation,
   useDeleteTemplateMutation,
   useTemplateContentLazyQuery,
+  useUpdateCalloutMutation,
+  useUpdateCommunityGuidelinesMutation,
   useUpdateTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
@@ -120,13 +122,43 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   const [updateTemplate] = useUpdateTemplateMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet', 'TemplateContent'],
   });
-  const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
-    const variables = toUpdateTemplateMutationVariables(templateId!, values);
-    const result = await updateTemplate({
-      variables,
-    });
+  const [updateCallout] = useUpdateCalloutMutation();
+  const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation();
+  //const [updateWhiteboardContent] = useUpdateWhiteboardContentMutation();
 
-    if (selectedTemplate?.type === TemplateType.Whiteboard) {
+  const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
+    if (!selectedTemplate) {
+      return;
+    }
+    const {
+      updateTemplateVariables,
+      updateCalloutVariables,
+      updateCommunityGuidelinesVariables,
+      updateWhiteboardVariables,
+    } = toUpdateTemplateMutationVariables(templateId!, selectedTemplate, values);
+
+    const result = await updateTemplate({
+      variables: updateTemplateVariables,
+    });
+    if (updateCalloutVariables) {
+      await updateCallout({
+        variables: updateCalloutVariables,
+      });
+    }
+    if (updateCommunityGuidelinesVariables) {
+      await updateCommunityGuidelines({
+        variables: updateCommunityGuidelinesVariables,
+      });
+    }
+    if (updateWhiteboardVariables) {
+      //!! TODO
+      // updateWhiteboardContent
+      // await updateWhiteboardContent({
+      //   variables: updateWhiteboardVariables,
+      // });
+    }
+
+    if (updateTemplateVariables.includeProfileVisuals) {
       // Handle the visual in a special way with the preview images
       handlePreviewTemplates(values, result.data?.updateTemplate.profile);
     }

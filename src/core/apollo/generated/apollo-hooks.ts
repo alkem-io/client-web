@@ -9982,7 +9982,7 @@ export function refetchCommunityGuidelinesQuery(variables: SchemaTypes.Community
 }
 
 export const UpdateCommunityGuidelinesDocument = gql`
-  mutation updateCommunityGuidelines($communityGuidelinesData: UpdateCommunityGuidelinesEntityInput!) {
+  mutation UpdateCommunityGuidelines($communityGuidelinesData: UpdateCommunityGuidelinesEntityInput!) {
     updateCommunityGuidelines(communityGuidelinesData: $communityGuidelinesData) {
       ...CommunityGuidelinesDetails
     }

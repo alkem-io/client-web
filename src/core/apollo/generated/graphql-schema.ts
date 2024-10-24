@@ -6075,6 +6075,18 @@ export type UpdateCalloutFramingInput = {
   whiteboard?: InputMaybe<UpdateWhiteboardInput>;
 };
 
+export type UpdateCalloutInput = {
+  contributionDefaults?: InputMaybe<UpdateCalloutContributionDefaultsInput>;
+  contributionPolicy?: InputMaybe<UpdateCalloutContributionPolicyInput>;
+  framing?: InputMaybe<UpdateCalloutFramingInput>;
+  /** Set Group for this Callout. */
+  groupName?: InputMaybe<Scalars['String']>;
+  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
+  nameID?: InputMaybe<Scalars['NameID']>;
+  /** The sort order to assign to this Callout. */
+  sortOrder?: InputMaybe<Scalars['Float']>;
+};
+
 export type UpdateCalloutPublishInfoInput = {
   /** The identifier for the Callout whose publisher is to be updated. */
   calloutID: Scalars['String'];
@@ -6111,6 +6123,11 @@ export type UpdateCollaborationFromTemplateInput = {
 export type UpdateCommunityGuidelinesEntityInput = {
   /** ID of the CommunityGuidelines */
   communityGuidelinesID: Scalars['UUID'];
+  /** The Profile for this community guidelines. */
+  profile: UpdateProfileInput;
+};
+
+export type UpdateCommunityGuidelinesInput = {
   /** The Profile for this community guidelines. */
   profile: UpdateProfileInput;
 };
@@ -6410,10 +6427,17 @@ export type UpdateTemplateDefaultTemplateInput = {
 
 export type UpdateTemplateInput = {
   ID: Scalars['UUID'];
+  /** The Callout for this template. */
+  callout?: InputMaybe<UpdateCalloutInput>;
+  /** The Community guidelines to associate with this template. */
+  communityGuidelines?: InputMaybe<UpdateCommunityGuidelinesInput>;
+  innovationFlow?: InputMaybe<UpdateInnovationFlowInput>;
   /** The default description to be pre-filled when users create Posts based on this template. */
   postDefaultDescription?: InputMaybe<Scalars['Markdown']>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
+  /** The Whiteboard for this template. */
+  whiteboard?: InputMaybe<UpdateWhiteboardInput>;
 };
 
 export type UpdateUserGroupInput = {
@@ -6473,6 +6497,8 @@ export type UpdateVisualInput = {
 
 export type UpdateWhiteboardEntityInput = {
   ID: Scalars['UUID'];
+  /** The new content to be used. */
+  content?: InputMaybe<Scalars['WhiteboardContent']>;
   contentUpdatePolicy?: InputMaybe<ContentUpdatePolicy>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;

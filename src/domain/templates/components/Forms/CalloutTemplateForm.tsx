@@ -134,7 +134,7 @@ const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFor
           displayName: template?.callout?.framing?.profile?.displayName ?? '',
           description: template?.callout?.framing?.profile?.description ?? '',
           references: mapReferencesToUpdateReferences(template?.callout?.framing?.profile?.references) ?? [],
-          tagsets: mapTagsetsToUpdateTagsets(template?.callout?.framing?.profile?.tagsets),
+          tagsets: mapTagsetsToUpdateTagsets(template?.callout?.framing?.profile) ?? [{ ID: '', tags: [] }], // ID will be ignored on create
         },
         whiteboard: {
           profile: {
