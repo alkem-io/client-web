@@ -1,4 +1,10 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
+import { getCachedView, setViewToCache } from './dashboardUtil';
+
+const dashBoardViews = {
+  ACTIVITY: 'ACTIVITY',
+  SPACES: 'SPACES',
+} as const;
 
 interface DashboardContextProps {
   activityEnebled: boolean;
@@ -8,7 +14,14 @@ interface DashboardContextProps {
 const DashboardContext = createContext<DashboardContextProps | undefined>(undefined);
 
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
-  const [activityEnebled, setActivityEnebled] = useState<boolean>(false);
+  const cachedView = getCachedView();
+  const isActivityEnebled = cachedView === dashBoardViews.ACTIVITY;
+  const [activityEnebled, setEnebled] = useState<boolean>(isActivityEnebled);
+
+  const setActivityEnebled = (val: boolean) => {
+    setViewToCache(val ? dashBoardViews.ACTIVITY : dashBoardViews.SPACES);
+    setEnebled(val);
+  };
 
   return (
     <DashboardContext.Provider value={{ activityEnebled, setActivityEnebled }}>{children}</DashboardContext.Provider>
