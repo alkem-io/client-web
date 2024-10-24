@@ -7,33 +7,10 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { ExploreSpacesSearchFragment, SearchResultType } from '../../../../core/apollo/generated/graphql-schema';
 import { TypedSearchResult } from '../../../search/SearchView';
-import { SpacesExplorerMembershipFilter, SpaceWithParent } from './ExploreSpacesUnauthenticatedView';
-import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
+import { SpacesExplorerMembershipFilter } from './ExploreSpacesView';
+import { ExploreSpacesContainerProps, SpaceWithParent } from './ExploreSpacesTypes';
 
-export interface ExploreSpacesContainerEntities {
-  spaces: SpaceWithParent[] | undefined;
-  searchTerms: string[];
-  selectedFilter: string;
-  fetchMore: () => Promise<void>;
-  loading: boolean;
-  hasMore: boolean | undefined;
-  filtersConfig: {
-    key: string;
-    name: string;
-    tags: string[];
-  }[];
-}
-
-interface ExploreSpacesUnauthenticatedContainerProps extends SimpleContainerProps<ExploreSpacesContainerEntities> {
-  searchTerms: string[];
-  selectedFilter: string;
-}
-
-const ExploreSpacesUnauthenticatedContainer = ({
-  searchTerms,
-  selectedFilter,
-  children,
-}: ExploreSpacesUnauthenticatedContainerProps) => {
+const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: ExploreSpacesContainerProps) => {
   const { t } = useTranslation();
   const filtersConfig = t('spaces-filter.config', { returnObjects: true });
   const shouldSearch = searchTerms.length > 0 || selectedFilter !== SpacesExplorerMembershipFilter.All;
@@ -131,4 +108,4 @@ const ExploreSpacesUnauthenticatedContainer = ({
   return <>{children(provided)}</>;
 };
 
-export default ExploreSpacesUnauthenticatedContainer;
+export default ExploreSpacesContainer;

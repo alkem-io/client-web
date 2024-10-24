@@ -23,6 +23,7 @@ interface JourneyTileProps {
       }
     | undefined;
   journeyTypeName: JourneyTypeName;
+  columns?: number;
 }
 
 export const RECENT_JOURNEY_CARD_ASPECT_RATIO = '175/100';
@@ -31,9 +32,9 @@ const JOURNEY_TITLE_CLASS_NAME = 'JourneyTitle';
 
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
-const JourneyTile = ({ journey }: JourneyTileProps) => {
+const JourneyTile = ({ journey, columns = 3 }: JourneyTileProps) => {
   return (
-    <GridItem columns={3}>
+    <GridItem columns={columns}>
       <ElevatedPaper
         component={RouterLink}
         to={journey?.profile.url ?? ''}

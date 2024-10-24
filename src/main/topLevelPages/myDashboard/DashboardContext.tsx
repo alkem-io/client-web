@@ -1,30 +1,30 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { getCachedView, setViewToCache } from './dashboardUtil';
 
-const dashBoardViews = {
+const dashboardViews = {
   ACTIVITY: 'ACTIVITY',
   SPACES: 'SPACES',
 } as const;
 
 interface DashboardContextProps {
-  activityEnebled: boolean;
-  setActivityEnebled: (item: boolean) => void;
+  activityEnabled: boolean;
+  setActivityEnabled: (item: boolean) => void;
 }
 
 const DashboardContext = createContext<DashboardContextProps | undefined>(undefined);
 
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const cachedView = getCachedView();
-  const isActivityEnebled = cachedView === dashBoardViews.ACTIVITY;
-  const [activityEnebled, setEnebled] = useState<boolean>(isActivityEnebled);
+  const isActivityEnabled = cachedView === dashboardViews.ACTIVITY;
+  const [activityEnabled, setEnabled] = useState<boolean>(isActivityEnabled);
 
-  const setActivityEnebled = (val: boolean) => {
-    setViewToCache(val ? dashBoardViews.ACTIVITY : dashBoardViews.SPACES);
-    setEnebled(val);
+  const setActivityEnabled = (val: boolean) => {
+    setViewToCache(val ? dashboardViews.ACTIVITY : dashboardViews.SPACES);
+    setEnabled(val);
   };
 
   return (
-    <DashboardContext.Provider value={{ activityEnebled, setActivityEnebled }}>{children}</DashboardContext.Provider>
+    <DashboardContext.Provider value={{ activityEnabled, setActivityEnabled }}>{children}</DashboardContext.Provider>
   );
 };
 

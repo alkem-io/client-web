@@ -1,6 +1,6 @@
 import { FormControlLabel, Switch } from '@mui/material';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import { DashboardMenuProps } from './DashboardMenuProps';
+import { DashboardMenuProps } from './dashboardMenuTypes';
 import { useDashboardContext } from '../DashboardContext';
 
 /* TODO: extrat in dialogs */
@@ -12,11 +12,11 @@ import { useDashboardContext } from '../DashboardContext';
   <RecentForumMessages />
 */
 
-const DashboardMenu = ({ compact = false }: DashboardMenuProps) => {
+export const DashboardMenu = ({ compact = false }: DashboardMenuProps) => {
   const context = useDashboardContext();
 
   const changeView = (event: React.ChangeEvent<HTMLInputElement>) => {
-    context.setActivityEnebled(event.target.checked);
+    context.setActivityEnabled(event.target.checked);
   };
 
   return (
@@ -25,11 +25,9 @@ const DashboardMenu = ({ compact = false }: DashboardMenuProps) => {
       {!compact && (
         <FormControlLabel
           label="Activity View"
-          control={<Switch name={'view'} checked={context.activityEnebled} onChange={changeView} />}
+          control={<Switch name={'view'} checked={context.activityEnabled} onChange={changeView} />}
         />
       )}
     </PageContentBlock>
   );
 };
-
-export default DashboardMenu;
