@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import CampaignBlock from './campaignBlock/CampaignBlock';
 import InfoColumn from '../../../core/ui/content/InfoColumn';
@@ -6,9 +6,10 @@ import ContentColumn from '../../../core/ui/content/ContentColumn';
 import { useLatestReleaseDiscussionQuery } from '../../../core/apollo/generated/apollo-hooks';
 import ReleaseNotesBanner from './releaseNotesBanner/ReleaseNotesBanner';
 import DashboardMenu from './DashboardMenu/DashboardMenu';
-import MyDashboardUnauthenticated from './MyDashboardUnauthenticated';
+import ExploreSpaces from './ExploreSpaces/ExploreSpaces';
+import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 
-const MyDashboardWithoutMemberships: FC = () => {
+const MyDashboardWithoutMemberships = () => {
   const { data } = useLatestReleaseDiscussionQuery({
     fetchPolicy: 'network-only',
   });
@@ -22,7 +23,9 @@ const MyDashboardWithoutMemberships: FC = () => {
         {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />} {/* TODO: tweak to match design */}
         {/* TODO: implement and import here the pending memberships block */}
         <CampaignBlock />
-        <MyDashboardUnauthenticated /> {/* TODO: tweak to match design */}
+        <PageContentBlock columns={12}>
+          <ExploreSpaces itemsLimit={16} />
+        </PageContentBlock>
         {/* TODO: implement create space btn component */}
       </ContentColumn>
     </PageContentColumn>
