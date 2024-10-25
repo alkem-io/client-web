@@ -28275,6 +28275,41 @@ export type ExploreSpacesFragment = {
   };
 };
 
+export type PendingInvitationsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PendingInvitationsQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    communityInvitations: Array<{
+      __typename?: 'CommunityInvitationResult';
+      id: string;
+      spacePendingMembershipInfo: {
+        __typename?: 'SpacePendingMembershipInfo';
+        id: string;
+        level: SpaceLevel;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
+      };
+      invitation: {
+        __typename?: 'Invitation';
+        id: string;
+        welcomeMessage?: string | undefined;
+        contributorType: CommunityContributorType;
+        createdDate: Date;
+        createdBy: { __typename?: 'User'; id: string };
+        lifecycle: { __typename?: 'Lifecycle'; id: string; state?: string | undefined };
+      };
+    }>;
+  };
+};
+
+export type NewMembershipsBasicSpaceFragment = {
+  __typename?: 'SpacePendingMembershipInfo';
+  id: string;
+  level: SpaceLevel;
+  profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
+};
+
 export type CampaignBlockCredentialsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type CampaignBlockCredentialsQuery = {
@@ -29792,13 +29827,6 @@ export type NewMembershipsQuery = {
       };
     }>;
   };
-};
-
-export type NewMembershipsBasicSpaceFragment = {
-  __typename?: 'SpacePendingMembershipInfo';
-  id: string;
-  level: SpaceLevel;
-  profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
 };
 
 export type NewVirtualContributorMySpacesQueryVariables = Exact<{ [key: string]: never }>;

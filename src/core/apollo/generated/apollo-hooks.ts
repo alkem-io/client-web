@@ -3380,6 +3380,18 @@ export const ExploreSpacesSearchFragmentDoc = gql`
   }
   ${ExploreSpacesFragmentDoc}
 `;
+export const NewMembershipsBasicSpaceFragmentDoc = gql`
+  fragment NewMembershipsBasicSpace on SpacePendingMembershipInfo {
+    id
+    level
+    profile {
+      id
+      displayName
+      tagline
+      url
+    }
+  }
+`;
 export const InnovationPackProviderProfileWithAvatarFragmentDoc = gql`
   fragment InnovationPackProviderProfileWithAvatar on Contributor {
     id
@@ -3489,18 +3501,6 @@ export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
-`;
-export const NewMembershipsBasicSpaceFragmentDoc = gql`
-  fragment NewMembershipsBasicSpace on SpacePendingMembershipInfo {
-    id
-    level
-    profile {
-      id
-      displayName
-      tagline
-      url
-    }
-  }
 `;
 export const RecentJourneyProfileFragmentDoc = gql`
   fragment RecentJourneyProfile on Profile {
@@ -21946,6 +21946,84 @@ export type WelcomeSpaceQueryResult = Apollo.QueryResult<
 >;
 export function refetchWelcomeSpaceQuery(variables: SchemaTypes.WelcomeSpaceQueryVariables) {
   return { query: WelcomeSpaceDocument, variables: variables };
+}
+
+export const PendingInvitationsDocument = gql`
+  query PendingInvitations {
+    me {
+      communityInvitations(states: ["invited"]) {
+        id
+        spacePendingMembershipInfo {
+          ...NewMembershipsBasicSpace
+        }
+        invitation {
+          id
+          welcomeMessage
+          contributorType
+          createdBy {
+            id
+          }
+          lifecycle {
+            id
+            state
+          }
+          createdDate
+        }
+      }
+    }
+  }
+  ${NewMembershipsBasicSpaceFragmentDoc}
+`;
+
+/**
+ * __usePendingInvitationsQuery__
+ *
+ * To run a query within a React component, call `usePendingInvitationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePendingInvitationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePendingInvitationsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePendingInvitationsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PendingInvitationsQuery,
+    SchemaTypes.PendingInvitationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PendingInvitationsQuery, SchemaTypes.PendingInvitationsQueryVariables>(
+    PendingInvitationsDocument,
+    options
+  );
+}
+
+export function usePendingInvitationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PendingInvitationsQuery,
+    SchemaTypes.PendingInvitationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.PendingInvitationsQuery, SchemaTypes.PendingInvitationsQueryVariables>(
+    PendingInvitationsDocument,
+    options
+  );
+}
+
+export type PendingInvitationsQueryHookResult = ReturnType<typeof usePendingInvitationsQuery>;
+export type PendingInvitationsLazyQueryHookResult = ReturnType<typeof usePendingInvitationsLazyQuery>;
+export type PendingInvitationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.PendingInvitationsQuery,
+  SchemaTypes.PendingInvitationsQueryVariables
+>;
+export function refetchPendingInvitationsQuery(variables?: SchemaTypes.PendingInvitationsQueryVariables) {
+  return { query: PendingInvitationsDocument, variables: variables };
 }
 
 export const CampaignBlockCredentialsDocument = gql`
