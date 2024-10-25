@@ -3190,6 +3190,8 @@ export type Mutation = {
   adminSearchIngestFromScratch: Scalars['String'];
   /** Update the Avatar on the Profile with the spedified profileID to be stored as a Document. */
   adminUpdateContributorAvatars: Profile;
+  /** Remove the Kratos account associated with the specified User. Note: the Users profile on the platform is not deleted. */
+  adminUserAccountDelete: User;
   /** Reset the Authorization Policy on the specified AiServer. */
   aiServerAuthorizationPolicyReset: AiServer;
   /** Creates a new AiPersonaService on the aiServer. */
@@ -3510,6 +3512,10 @@ export type MutationAdminCommunicationUpdateRoomStateArgs = {
 
 export type MutationAdminUpdateContributorAvatarsArgs = {
   profileID: Scalars['UUID'];
+};
+
+export type MutationAdminUserAccountDeleteArgs = {
+  userID: Scalars['UUID'];
 };
 
 export type MutationAiServerCreateAiPersonaServiceArgs = {
@@ -6455,8 +6461,8 @@ export type User = Contributor & {
   accountUpn: Scalars['String'];
   /** The Agent representing this User. */
   agent: Agent;
-  /** The Authentication Method used for this User. One of email, linkedin, microsoft, or unknown */
-  authenticationMethod?: Maybe<AuthenticationType>;
+  /** Details about the authentication used for this User. */
+  authentication?: Maybe<UserAuthenticationResult>;
   /** The authorization rules for the Contributor */
   authorization?: Maybe<Authorization>;
   /** The Community rooms this user is a member of */
@@ -6485,6 +6491,14 @@ export type User = Contributor & {
   storageAggregator?: Maybe<StorageAggregator>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
+};
+
+export type UserAuthenticationResult = {
+  __typename?: 'UserAuthenticationResult';
+  /** When the Kratos Account for the user was created */
+  createdAt?: Maybe<Scalars['DateTime']>;
+  /** The Authentication Method used for this User. One of email, linkedin, microsoft, or unknown */
+  method: AuthenticationType;
 };
 
 export type UserAuthorizationPrivilegesInput = {
@@ -28261,6 +28275,26 @@ export type ExploreSpacesFragment = {
   };
 };
 
+export type CampaignBlockCredentialsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type CampaignBlockCredentialsQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          agent: {
+            __typename?: 'Agent';
+            id: string;
+            credentials?: Array<{ __typename?: 'Credential'; resourceID: string; type: CredentialType }> | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
 export type DashboardSpacesQueryVariables = Exact<{
   visibilities?: InputMaybe<Array<SpaceVisibility> | SpaceVisibility>;
 }>;
@@ -29582,61 +29616,6 @@ export type MembershipSuggestionSpaceQuery = {
       id: string;
       roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<CommunityRoleType> };
     };
-  };
-};
-
-export type MyAccountQueryVariables = Exact<{ [key: string]: never }>;
-
-export type MyAccountQuery = {
-  __typename?: 'Query';
-  me: {
-    __typename?: 'MeQueryResults';
-    user?:
-      | {
-          __typename?: 'User';
-          id: string;
-          agent: {
-            __typename?: 'Agent';
-            id: string;
-            credentials?: Array<{ __typename?: 'Credential'; resourceID: string; type: CredentialType }> | undefined;
-          };
-          account?:
-            | {
-                __typename?: 'Account';
-                id: string;
-                authorization?:
-                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                  | undefined;
-                virtualContributors: Array<{
-                  __typename?: 'VirtualContributor';
-                  id: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    tagline?: string | undefined;
-                    url: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  };
-                }>;
-                spaces: Array<{
-                  __typename?: 'Space';
-                  id: string;
-                  level: SpaceLevel;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    displayName: string;
-                    tagline?: string | undefined;
-                    url: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  };
-                }>;
-              }
-            | undefined;
-        }
-      | undefined;
   };
 };
 
