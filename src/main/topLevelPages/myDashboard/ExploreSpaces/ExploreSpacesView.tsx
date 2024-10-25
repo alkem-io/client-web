@@ -1,77 +1,26 @@
-import React, { FC, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { Caption, CaptionSmall } from '../../../../core/ui/typography';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Theme, useMediaQuery } from '@mui/material';
 import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import SearchTagsInput from '../../../../domain/shared/components/SearchTagsInput/SearchTagsInput';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import { Identifiable } from '../../../../core/utils/Identifiable';
-import { Visual } from '../../../../domain/common/visual/Visual';
 import { gutters, useGridItem } from '../../../../core/ui/grid/utils';
 import useLazyLoading from '../../../../domain/shared/pagination/useLazyLoading';
 import SeeMoreExpandable from '../../../../core/ui/content/SeeMoreExpandable';
-import { Link } from 'react-router-dom';
-import { AUTH_SIGN_UP_PATH } from '../../../../core/auth/authentication/constants/authentication.constants';
-import { Actions } from '../../../../core/ui/actions/Actions';
 import JourneyTile from '../../../../domain/journey/common/JourneyTile/JourneyTile';
+import { ExploreSpacesViewProps } from './ExploreSpacesTypes';
+import { useColumns } from '../../../../core/ui/grid/GridContext';
 
-export interface ExploreSpacesUnauthenticatedViewProps {
-  spaces: SpaceWithParent[] | undefined;
-  setSearchTerms: React.Dispatch<React.SetStateAction<string[]>>;
-  setSelectedFilter: React.Dispatch<React.SetStateAction<string>>;
-  selectedFilter: string;
-  searchTerms: string[];
-  loading: boolean;
-  hasMore: boolean | undefined;
-  fetchMore: () => Promise<void>;
-  filtersConfig: {
-    key: string;
-    name: string;
-  }[];
-  welcomeSpace?: {
-    id: string;
-    profile: {
-      displayName: string;
-      url: string;
-      cardBanner?: Visual;
-    };
-  };
-}
+const DEFAULT_ITEMS_LIMIT = 15; // 3 rows of 5 but without the welcome space
 
-// Default option not a filer
+// Default option not a filter
 export enum SpacesExplorerMembershipFilter {
   All = 'all',
 }
 
-export type SpaceWithParent = Space & WithParent<ParentSpace>;
-
-interface ParentSpace extends Identifiable {
-  profile: {
-    displayName: string;
-    avatar?: Visual;
-    cardBanner?: Visual;
-  };
-}
-
-type WithParent<ParentInfo extends {}> = {
-  parent?: ParentInfo & WithParent<ParentInfo>;
-};
-
-interface Space extends Identifiable {
-  profile: {
-    url: string;
-    displayName: string;
-    avatar?: Visual;
-    cardBanner?: Visual;
-  };
-}
-
-export const ITEMS_LIMIT = 15; // 3 rows of 5 but without the welcome space
-
-export const ExploreSpacesUnauthenticatedView: FC<ExploreSpacesUnauthenticatedViewProps> = ({
+export const ExploreSpacesView = ({
   spaces,
   searchTerms,
   setSearchTerms,
@@ -82,8 +31,16 @@ export const ExploreSpacesUnauthenticatedView: FC<ExploreSpacesUnauthenticatedVi
   hasMore,
   filtersConfig,
   welcomeSpace,
-}) => {
+  itemsPerRow = 4,
+  itemsLimit = DEFAULT_ITEMS_LIMIT,
+}: ExploreSpacesViewProps) => {
   const { t } = useTranslation();
+
+  const columns = useColumns();
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const isSmall = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+  // 2 items on small and full width on mobile; issue with 8 columns on isSmall instead of 12
+  const cardColumns = isMobile ? columns : isSmall ? columns / 2 : columns / 4;
 
   const [hasExpanded, setHasExpanded] = useState(false);
   const enabledFilters = filtersConfig.flatMap(category => category.key);
@@ -91,13 +48,13 @@ export const ExploreSpacesUnauthenticatedView: FC<ExploreSpacesUnauthenticatedVi
 
   const isCollapsed = !hasExpanded;
 
-  const enableLazyLoading = !isCollapsed || (spaces && spaces.length < ITEMS_LIMIT);
+  const enableLazyLoading = !isCollapsed || (spaces && spaces.length < itemsLimit);
 
-  const enableShowAll = isCollapsed && spaces && (spaces.length > ITEMS_LIMIT || hasMore);
+  const enableShowAll = isCollapsed && spaces && (spaces.length > itemsLimit || hasMore);
 
   const loader = useLazyLoading(Box, { fetchMore, loading, hasMore });
 
-  const visibleSpaces = isCollapsed ? spaces?.slice(0, ITEMS_LIMIT) : spaces;
+  const visibleSpaces = isCollapsed ? spaces?.slice(0, itemsLimit) : spaces;
 
   const getGridItemStyle = useGridItem();
 
@@ -107,7 +64,7 @@ export const ExploreSpacesUnauthenticatedView: FC<ExploreSpacesUnauthenticatedVi
 
   const renderSkeleton = (size: number) =>
     Array.from({ length: size }).map((_, index) => (
-      <JourneyTile key={index} journey={undefined} journeyTypeName="space" />
+      <JourneyTile key={index} journey={undefined} journeyTypeName="space" columns={cardColumns} />
     ));
 
   const isSearching = searchTerms.length > 0 || selectedFilter !== SpacesExplorerMembershipFilter.All;
@@ -116,7 +73,7 @@ export const ExploreSpacesUnauthenticatedView: FC<ExploreSpacesUnauthenticatedVi
   const visibleFirstWelcomeSpace = !isSearching && welcomeSpace;
 
   return (
-    <PageContentBlock>
+    <>
       <Gutters row disablePadding maxWidth="100%" alignItems="center">
         <Caption gap={gutters(0.5)} display={'flex'} justifyContent={'center'}>
           <RocketLaunchOutlinedIcon fontSize="small" />
@@ -156,35 +113,25 @@ export const ExploreSpacesUnauthenticatedView: FC<ExploreSpacesUnauthenticatedVi
           {t('pages.exploreSpaces.search.noResults')}
         </CaptionSmall>
       )}
-      <ScrollableCardsLayoutContainer>
-        {visibleFirstWelcomeSpace && <JourneyTile journey={welcomeSpace} journeyTypeName="space" />}
+      <ScrollableCardsLayoutContainer orientation="vertical">
+        {visibleFirstWelcomeSpace && (
+          <JourneyTile journey={welcomeSpace} journeyTypeName="space" columns={cardColumns} />
+        )}
         {spaces && spaces.length > 0 && (
           <>
             {visibleSpaces!.map(space =>
               visibleFirstWelcomeSpace && space.id === welcomeSpace?.id ? null : (
-                <JourneyTile key={space.id} journey={space} journeyTypeName="space" />
+                <JourneyTile key={space.id} journey={space} journeyTypeName="space" columns={cardColumns} />
               )
             )}
             {enableLazyLoading && loader}
           </>
         )}
-        {loading && renderSkeleton(5)}
+        {loading && renderSkeleton(itemsPerRow)}
       </ScrollableCardsLayoutContainer>
       {enableShowAll && (
         <SeeMoreExpandable onExpand={() => setHasExpanded(true)} label={t('pages.exploreSpaces.seeAll')} />
       )}
-      <Actions justifyContent={'center'}>
-        <Button
-          component={Link}
-          to={AUTH_SIGN_UP_PATH}
-          variant="contained"
-          size="large"
-          sx={{ width: 'auto', textTransform: 'none', a: { textDecoration: 'underline' } }}
-          startIcon={<AccountCircleOutlinedIcon />}
-        >
-          {t('authentication.sign-up')}
-        </Button>
-      </Actions>
-    </PageContentBlock>
+    </>
   );
 };
