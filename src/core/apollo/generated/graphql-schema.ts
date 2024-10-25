@@ -22694,20 +22694,6 @@ export type AdminSpaceSubspacesPageQuery = {
   };
 };
 
-export type SpaceCollaborationIdQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-}>;
-
-export type SpaceCollaborationIdQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | { __typename?: 'Space'; id: string; collaboration: { __typename?: 'Collaboration'; id: string } }
-      | undefined;
-  };
-};
-
 export type SpaceDashboardNavigationChallengesQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
@@ -25041,6 +25027,20 @@ export type AllTemplatesInTemplatesSetQuery = {
             };
           }>;
         }
+      | undefined;
+  };
+};
+
+export type SpaceCollaborationIdQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpaceCollaborationIdQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | { __typename?: 'Space'; id: string; collaboration: { __typename?: 'Collaboration'; id: string } }
       | undefined;
   };
 };

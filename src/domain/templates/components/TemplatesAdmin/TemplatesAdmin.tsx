@@ -2,6 +2,7 @@ import React, { FC, useCallback, useMemo, useState } from 'react';
 import TemplatesGallery from '../TemplatesGallery/TemplatesGallery';
 import {
   useAllTemplatesInTemplatesSetQuery,
+  useCreateTemplateFromCollaborationMutation,
   useCreateTemplateMutation,
   useDeleteTemplateMutation,
   useTemplateContentLazyQuery,
@@ -20,7 +21,11 @@ import useBackToPath from '../../../../core/routing/useBackToPath';
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { Button, ButtonProps } from '@mui/material';
 import CreateTemplateDialog from '../Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { toCreateTemplateMutationVariables, toUpdateTemplateMutationVariables } from '../Forms/common/mappings';
+import {
+  toCreateTemplateFromCollaborationMutationVariables,
+  toCreateTemplateMutationVariables,
+  toUpdateTemplateMutationVariables,
+} from '../Forms/common/mappings';
 import { WhiteboardTemplateFormSubmittedValues } from '../Forms/WhiteboardTemplateForm';
 import { useUploadWhiteboardVisuals } from '../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import PreviewTemplateDialog from '../Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
@@ -29,6 +34,7 @@ import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/Import
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LoadingButton } from '@mui/lab';
 import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
+import { CollaborationTemplateFormSubmittedValues } from '../Forms/CollaborationTemplateForm';
 
 interface TemplatesAdminProps {
   templatesSetId: string;
@@ -124,7 +130,6 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   });
   const [updateCallout] = useUpdateCalloutMutation();
   const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation();
-  //const [updateWhiteboardContent] = useUpdateWhiteboardContentMutation();
 
   const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
     if (!selectedTemplate) {
@@ -161,7 +166,16 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   const [createTemplate] = useCreateTemplateMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
+  const [createCollaborationTemplate] = useCreateTemplateFromCollaborationMutation({
+    refetchQueries: ['AllTemplatesInTemplatesSet'],
+  });
+
   const handleTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
+    // Special case, handle Collaboration templates differently for now, until we have full support for editing them and sending all the data, and not just for cloning an existing collaboration
+    if (creatingTemplateType === TemplateType.Collaboration) {
+      return handleCollaborationTemplateCreate(values);
+    }
+
     const variables = toCreateTemplateMutationVariables(templatesSetId, creatingTemplateType!, values);
     const result = await createTemplate({
       variables,
@@ -170,6 +184,18 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
       // Handle the visual in a special way with the preview images
       handlePreviewTemplates(values, result.data?.createTemplate.profile);
     }
+    setCreatingTemplateType(undefined);
+  };
+
+  // Create a Collaboration template
+  const handleCollaborationTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
+    const variables = toCreateTemplateFromCollaborationMutationVariables(
+      templatesSetId,
+      values as CollaborationTemplateFormSubmittedValues
+    );
+    await createCollaborationTemplate({
+      variables,
+    });
     setCreatingTemplateType(undefined);
   };
 

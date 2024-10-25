@@ -116,7 +116,7 @@ const handleCreateWhiteboard = (data?: {
   return {
     content: data.content,
     profileData: {
-      displayName: data.profile?.displayName ?? '',
+      displayName: data.profile?.displayName ?? 'Whiteboard Template',
     },
   };
 };
@@ -261,6 +261,7 @@ export const toCreateTemplateFromCollaborationMutationVariables = (
 
 interface TemplateTagset {
   id?: string;
+  ID?: string;
   name?: string;
   tags?: string[];
 }
@@ -273,18 +274,18 @@ export const mapTagsetsToUpdateTagsets = (
       }
     | undefined
 ): UpdateTagsetInput[] | undefined => {
-  if (profile?.defaultTagset && profile?.defaultTagset.id) {
+  if (profile?.defaultTagset && (profile?.defaultTagset.id || profile?.defaultTagset.ID)) {
     return [
       {
-        ID: profile.defaultTagset.id,
+        ID: profile.defaultTagset.id ?? profile.defaultTagset.ID!, // ensured by the previous if
         tags: profile.defaultTagset.tags ?? [],
       },
     ];
   } else if (profile?.tagsets && profile.tagsets.length > 0) {
     return profile.tagsets
-      .filter(tagset => tagset.id) // remove all tagsets that don't have an ID
+      .filter(tagset => tagset.id || tagset.ID) // remove all tagsets that don't have an ID
       .map(tagset => ({
-        ID: tagset.id ?? '',
+        ID: tagset.id ?? tagset.ID!, // ensured by the filter
         name: tagset.name,
         tags: tagset.tags ?? [],
       }));

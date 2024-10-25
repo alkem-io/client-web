@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { FormikProps } from 'formik';
@@ -7,9 +7,9 @@ import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfile } from './common/mappings';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
 import { CollaborationTemplate } from '../../models/CollaborationTemplate';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import CollaborationTemplatePreview from '../Previews/CollaborationTemplatePreview';
 import { useCollaborationTemplateContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import CollaborationFromSpaceUrlForm from './CollaborationFromSpaceUrlForm';
 
 export interface CollaborationTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   collaborationId?: string;
@@ -49,15 +49,20 @@ const validator = {
 };
 
 const CollaborationTemplateForm = ({ template, onSubmit, actions }: CollaborationTemplateFormProps) => {
-  const initialValues: CollaborationTemplateFormSubmittedValues = {
-    profile: mapTemplateProfileToUpdateProfile(template?.profile),
-    collaborationId: template?.collaboration?.id ?? '',
-    /*innovationFlow: {
+  const { t } = useTranslation();
+
+  const [collaborationId, setCollaborationId] = useState<string | undefined>(template?.collaboration?.id);
+
+  const initialValues: CollaborationTemplateFormSubmittedValues = useMemo(
+    () => ({
+      profile: mapTemplateProfileToUpdateProfile(template?.profile),
+      collaborationId: collaborationId ?? '',
+      /*innovationFlow: {
       states: template?.collaboration?.innovationFlow?.states ?? [],
     },*/
-  };
-
-  const { t } = useTranslation();
+    }),
+    [collaborationId, template]
+  );
 
   /* No edit functionality for the moment
   const onCreateState = (
@@ -136,9 +141,9 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: Collaboratio
   // Just load the innovation flow and the callouts of the selected collaboration and show it
   const { data, loading } = useCollaborationTemplateContentQuery({
     variables: {
-      collaborationId: template?.collaboration?.id!,
+      collaborationId: collaborationId!,
     },
-    skip: !template?.collaboration?.id,
+    skip: !collaborationId,
   });
   const collaborationPreview = {
     collaboration: data?.lookup.collaboration,
@@ -159,11 +164,16 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: Collaboratio
           setFieldTouched('innovationFlow.states', true);
           setFieldValue('innovationFlow.states', states);
         };*/
-
           return (
             <>
+              {!template?.collaboration?.id && (
+                <CollaborationFromSpaceUrlForm
+                  onUseCollaboration={async collaborationId => {
+                    setCollaborationId(collaborationId);
+                  }}
+                />
+              )}
               <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
-              <FormikInputField title="collab id" name="collaborationId" />
               <CollaborationTemplatePreview loading={loading} template={collaborationPreview} />
               {/*
             <InnovationFlowDragNDropEditor
