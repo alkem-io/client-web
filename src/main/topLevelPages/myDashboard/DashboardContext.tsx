@@ -1,10 +1,10 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { getCachedView, setViewToCache } from './dashboardUtil';
 
-const dashboardViews = {
-  ACTIVITY: 'ACTIVITY',
-  SPACES: 'SPACES',
-} as const;
+const enum DashboardViews {
+  ACTIVITY = 'ACTIVITY',
+  SPACES = 'SPACES',
+}
 
 interface DashboardContextProps {
   activityEnabled: boolean;
@@ -15,11 +15,11 @@ const DashboardContext = createContext<DashboardContextProps | undefined>(undefi
 
 export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const cachedView = getCachedView();
-  const isActivityEnabled = cachedView === dashboardViews.ACTIVITY;
+  const isActivityEnabled = cachedView === DashboardViews.ACTIVITY;
   const [activityEnabled, setEnabled] = useState<boolean>(isActivityEnabled);
 
   const setActivityEnabled = (val: boolean) => {
-    setViewToCache(val ? dashboardViews.ACTIVITY : dashboardViews.SPACES);
+    setViewToCache(val ? DashboardViews.ACTIVITY : DashboardViews.SPACES);
     setEnabled(val);
   };
 
