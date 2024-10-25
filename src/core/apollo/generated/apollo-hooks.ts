@@ -2813,6 +2813,7 @@ export const CollaborationTemplateContentFragmentDoc = gql`
           }
         }
       }
+      sortOrder
     }
   }
 `;

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Skeleton } from '@mui/material';
-import { SvgIconComponent } from '@mui/icons-material';
 import CardHeader from '../../../../core/ui/card/CardHeader';
 import CardHeaderCaption from '../../../../core/ui/card/CardHeaderCaption';
 import CardDetails from '../../../../core/ui/card/CardDetails';
@@ -8,7 +7,7 @@ import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { Caption } from '../../../../core/ui/typography/components';
 import InnovationPackIcon from '../../../InnovationPack/InnovationPackIcon';
-import { InnovationFlowIcon } from '../../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
+import { SubspaceIcon } from '../../../journey/subspace/icon/SubspaceIcon2';
 import CardDescription, { DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from '../../../../core/ui/card/CardDescription';
 import CardContent from '../../../../core/ui/card/CardContent';
 import CardTags from '../../../../core/ui/card/CardTags';
@@ -30,7 +29,7 @@ const CollaborationTemplateCard = ({ template, innovationPack, loading, ...props
 
   return (
     <ContributeCard {...props}>
-      <CardHeader title={template?.profile.displayName} iconComponent={InnovationFlowIcon as SvgIconComponent}>
+      <CardHeader title={template?.profile.displayName} iconComponent={SubspaceIcon}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
           {innovationPack?.provider?.profile.displayName}

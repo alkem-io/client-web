@@ -10,11 +10,45 @@ import TemplatesAdmin from '../../../templates/components/TemplatesAdmin/Templat
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
 import SpaceSettingsLayout from './SpaceSettingsLayout';
+import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 
 interface SpaceTemplatesAdminPageProps extends SettingsPageProps {
   spaceId: string;
   routePrefix: string;
 }
+
+const TemplateTypePermissions = {
+  create: [
+    TemplateType.Callout,
+    TemplateType.Collaboration,
+    TemplateType.CommunityGuidelines,
+    TemplateType.Post,
+    TemplateType.Whiteboard,
+  ],
+  edit: [
+    TemplateType.Callout,
+    TemplateType.Collaboration,
+    TemplateType.CommunityGuidelines,
+    TemplateType.InnovationFlow,
+    TemplateType.Post,
+    TemplateType.Whiteboard,
+  ],
+  delete: [
+    TemplateType.Callout,
+    TemplateType.Collaboration,
+    TemplateType.CommunityGuidelines,
+    TemplateType.InnovationFlow,
+    TemplateType.Post,
+    TemplateType.Whiteboard,
+  ],
+  import: [
+    TemplateType.Callout,
+    TemplateType.Collaboration,
+    TemplateType.CommunityGuidelines,
+    TemplateType.Post,
+    TemplateType.Whiteboard,
+  ],
+};
 
 const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({ spaceId, routePrefix }) => {
   const { templateNameId } = useUrlParams();
@@ -41,10 +75,10 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({ spaceId, ro
           templatesSetId={templatesSetId}
           templateId={selectedTemplateId}
           baseUrl={baseUrl}
-          canDeleteTemplates
-          canCreateTemplates
-          canEditTemplates
-          canImportTemplates
+          canCreateTemplates={templateType => TemplateTypePermissions.create.includes(templateType)}
+          canEditTemplates={templateType => TemplateTypePermissions.edit.includes(templateType)}
+          canDeleteTemplates={templateType => TemplateTypePermissions.delete.includes(templateType)}
+          canImportTemplates={templateType => TemplateTypePermissions.import.includes(templateType)}
           importTemplateOptions={{
             enablePlatformTemplates: true,
             disableSpaceTemplates: true,

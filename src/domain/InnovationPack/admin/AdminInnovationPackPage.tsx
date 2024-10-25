@@ -17,8 +17,35 @@ import { StorageConfigContextProvider } from '../../storage/StorageBucket/Storag
 import TemplatesAdmin from '../../templates/components/TemplatesAdmin/TemplatesAdmin';
 import InnovationPackProfileLayout from '../InnovationPackProfilePage/InnovationPackProfileLayout';
 import { buildInnovationPackSettingsUrl } from '../../../main/routing/urlBuilders';
+import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
 
 interface AdminInnovationPackPageProps {}
+
+const TemplateTypePermissions = {
+  create: [
+    TemplateType.Callout,
+    TemplateType.Collaboration,
+    TemplateType.CommunityGuidelines,
+    TemplateType.Post,
+    TemplateType.Whiteboard,
+  ],
+  edit: [
+    TemplateType.Callout,
+    TemplateType.Collaboration,
+    TemplateType.CommunityGuidelines,
+    TemplateType.InnovationFlow,
+    TemplateType.Post,
+    TemplateType.Whiteboard,
+  ],
+  delete: [
+    TemplateType.Callout,
+    TemplateType.Collaboration,
+    TemplateType.CommunityGuidelines,
+    TemplateType.InnovationFlow,
+    TemplateType.Post,
+    TemplateType.Whiteboard,
+  ],
+};
 
 const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = () => {
   const { t } = useTranslation();
@@ -111,8 +138,9 @@ const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = () => {
                   templateId={selectedTemplateId}
                   baseUrl={buildInnovationPackSettingsUrl(innovationPack.profile.url)}
                   alwaysEditTemplate // When editing an Innovation pack, we don't want to see template preview, just go to Edit mode always
-                  canDeleteTemplates
-                  canCreateTemplates
+                  canCreateTemplates={templateType => TemplateTypePermissions.create.includes(templateType)}
+                  canEditTemplates={templateType => TemplateTypePermissions.edit.includes(templateType)}
+                  canDeleteTemplates={templateType => TemplateTypePermissions.delete.includes(templateType)}
                 />
               </PageContentColumn>
             </PageContent>

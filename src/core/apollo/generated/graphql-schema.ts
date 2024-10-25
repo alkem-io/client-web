@@ -25305,6 +25305,7 @@ export type TemplateContentQuery = {
                   __typename?: 'Callout';
                   id: string;
                   type: CalloutType;
+                  sortOrder: number;
                   framing: {
                     __typename?: 'CalloutFraming';
                     id: string;
@@ -25345,6 +25346,7 @@ export type CollaborationTemplateContentQuery = {
             __typename?: 'Callout';
             id: string;
             type: CalloutType;
+            sortOrder: number;
             framing: {
               __typename?: 'CalloutFraming';
               id: string;
@@ -25522,6 +25524,7 @@ export type CollaborationTemplateContentFragment = {
     __typename?: 'Callout';
     id: string;
     type: CalloutType;
+    sortOrder: number;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;

@@ -115,6 +115,7 @@
     "yes-close": "Yes, close",
     "yesReplace": "Yes, replace",
     "yesStop": "Yes, stop",
+    "yesDiscard": "Yes, Discard",
     "delete": "Delete",
     "submit": "Submit",
     "remove": "Remove",
@@ -962,7 +963,13 @@
     "platformTemplates": "Platform Templates",
     "loadPlatformTemplates": "Or click here to browse through all platform templates",
     "platformUseDisabled": "Please note that you can only use the templates that are selected for this community (see above). If you would like to use any of the templates below, please ask the administrator or the lead of the Space to add these in the template section of the Space Settings.",
-    "disabledTemplateInfo": "Please note that you can only use the templates that are selected for this community, which this is not. If you would like to use this template, please ask the administrator or the lead of the Space to add it in the template section of the Space Settings."
+    "disabledTemplateInfo": "Please note that you can only use the templates that are selected for this community, which this is not. If you would like to use this template, please ask the administrator or the lead of the Space to add it in the template section of the Space Settings.",
+    "importTemplateDialog": {
+      "confirmClose": {
+        "title": "Discard template",
+        "description": "Are you sure you want to close this template? Unsaved changes will be lost."
+      }
+    }
   },
   "innovation-templates": {
     "states": {

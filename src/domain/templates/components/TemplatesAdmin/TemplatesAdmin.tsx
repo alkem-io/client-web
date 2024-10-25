@@ -35,16 +35,20 @@ import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LoadingButton } from '@mui/lab';
 import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
 import { CollaborationTemplateFormSubmittedValues } from '../Forms/CollaborationTemplateForm';
+import { CollaborationTemplate } from '../../models/CollaborationTemplate';
+
+type TemplatePermissionCallback = (templateType: TemplateType) => boolean;
+const defaultCant: TemplatePermissionCallback = () => false;
 
 interface TemplatesAdminProps {
   templatesSetId: string;
   templateId?: string; // Template selected, if any
   alwaysEditTemplate?: boolean; // If true, the selected template is editable, if false preview dialog is shown
   baseUrl: string | undefined;
-  canCreateTemplates?: boolean;
-  canEditTemplates?: boolean;
-  canDeleteTemplates?: boolean;
-  canImportTemplates?: boolean;
+  canCreateTemplates?: TemplatePermissionCallback;
+  canEditTemplates?: TemplatePermissionCallback;
+  canDeleteTemplates?: TemplatePermissionCallback;
+  canImportTemplates?: TemplatePermissionCallback;
   importTemplateOptions?: ImportTemplatesOptions;
 }
 
@@ -71,11 +75,11 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   templateId,
   alwaysEditTemplate = false,
   baseUrl = '',
-  canImportTemplates = false,
+  canImportTemplates = defaultCant,
   importTemplateOptions = {},
-  canCreateTemplates = false,
-  canEditTemplates = false,
-  canDeleteTemplates = false,
+  canCreateTemplates = defaultCant,
+  canEditTemplates = defaultCant,
+  canDeleteTemplates = defaultCant,
 }) => {
   const { t } = useTranslation();
   const backToTemplates = useBackToPath();
@@ -220,14 +224,20 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   // Import Template
   const [importTemplateType, setImportTemplateType] = useState<TemplateType>();
   const [getTemplateContent] = useTemplateContentLazyQuery();
-  const handleImportTemplate = async ({ id, type: templateType }: AnyTemplate) => {
+  const handleImportTemplate = async (importedTemplate: AnyTemplate) => {
+    const { id, type: templateType } = importedTemplate;
+    // TODO: Special case for collaboration, just for now, until we can import collaborations entirely
+    if (templateType === TemplateType.Collaboration) {
+      return handleImportCollaborationTemplate(importedTemplate as CollaborationTemplate);
+    }
+
     const { data } = await getTemplateContent({
       variables: {
         templateId: id,
         includeCallout: templateType === TemplateType.Callout,
         includeCommunityGuidelines: templateType === TemplateType.CommunityGuidelines,
         includeInnovationFlow: templateType === TemplateType.InnovationFlow,
-        includeCollaboration: templateType === TemplateType.Collaboration,
+        includeCollaboration: false, // templateType === TemplateType.Collaboration,
         includePost: templateType === TemplateType.Post,
         includeWhiteboard: templateType === TemplateType.Whiteboard,
       },
@@ -241,13 +251,36 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
       setImportTemplateType(undefined);
     }
   };
+  // Special case for Collaboration templates
+  const handleImportCollaborationTemplate = async (importedTemplate: CollaborationTemplate) => {
+    const { id } = importedTemplate;
+    const { data } = await getTemplateContent({
+      variables: {
+        templateId: id,
+        includeCollaboration: true,
+      },
+    });
+    const template = data?.lookup.template;
+    if (template) {
+      const variables = toCreateTemplateFromCollaborationMutationVariables(templatesSetId, {
+        ...template,
+        collaborationId: template.collaboration?.id,
+      });
+      await createCollaborationTemplate({
+        variables,
+      });
+      setImportTemplateType(undefined);
+    }
+  };
 
   // Actions (buttons for gallery)
   const GalleryActions = useCallback(
     ({ templateType }: { templateType: TemplateType }) => (
       <>
-        {canImportTemplates ? <ImportTemplateButton onClick={() => setImportTemplateType(templateType)} /> : null}
-        {canCreateTemplates &&
+        {canImportTemplates(templateType) ? (
+          <ImportTemplateButton onClick={() => setImportTemplateType(templateType)} />
+        ) : null}
+        {canCreateTemplates(templateType) &&
         /* TODO: InnovationFlow templates are going to be removed in the near future, so disallow creation for this type */
         templateType !== TemplateType.InnovationFlow ? (
           <CreateTemplateButton onClick={() => setCreatingTemplateType(templateType)} />
@@ -358,7 +391,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           template={selectedTemplate}
           templateType={selectedTemplate.type}
           onSubmit={handleTemplateUpdate}
-          onDelete={canDeleteTemplates ? () => setDeletingTemplate(selectedTemplate) : undefined}
+          onDelete={canDeleteTemplates(selectedTemplate.type) ? () => setDeletingTemplate(selectedTemplate) : undefined}
         />
       )}
       {selectedTemplate && !editTemplateMode && (
@@ -367,7 +400,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           onClose={() => backToTemplates(baseUrl)}
           template={selectedTemplate}
           actions={
-            canEditTemplates ? (
+            canEditTemplates(selectedTemplate.type) ? (
               <Button variant="contained" onClick={() => setEditTemplateMode(true)}>
                 {t('buttons.edit')}
               </Button>
