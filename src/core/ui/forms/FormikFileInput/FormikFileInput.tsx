@@ -25,6 +25,7 @@ const FormikFileInput = ({
   const [field, , helpers] = useField(name);
 
   const storageConfig = useStorageConfigContext();
+  console.log('@@@ <FormikFileInput /> storageConfig >>>', storageConfig);
 
   const checkProtocol = () => {
     if (!defaultProtocol) {
@@ -42,19 +43,19 @@ const FormikFileInput = ({
     <FormikInputField
       name={name}
       loading={!storageConfig}
-      onBlur={checkProtocol}
       endAdornment={
         storageConfig &&
         storageConfig.canUpload && (
           <FileUploadButton
-            onUpload={helpers.setValue}
-            onChange={(fileName: string) => onChange?.(fileName)}
             entityID={entityID}
             entityType={entityType}
             storageConfig={storageConfig}
+            onUpload={helpers.setValue}
+            onChange={(fileName: string) => onChange?.(fileName)}
           />
         )
       }
+      onBlur={checkProtocol}
       {...props}
     />
   );

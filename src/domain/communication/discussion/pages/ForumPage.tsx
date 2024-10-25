@@ -32,6 +32,7 @@ import { ForumOutlined } from '@mui/icons-material';
 import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
 import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { BlockTitle } from '../../../../core/ui/typography';
+import { useStorageConfigLocally } from '../../../storage/StorageBucket/useStorageConfigLocally';
 
 const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;
 const FORUM_GRAYED_OUT_IMAGE = '/forum/forum-grayed.png';
@@ -138,6 +139,12 @@ export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
   const handleClickDiscussion = (discussionUrl: string) => {
     navigate(discussionUrl);
   };
+
+  const { setLastOpenedStorageConfig } = useStorageConfigLocally();
+
+  useEffect(() => {
+    setLastOpenedStorageConfig(communicationId ?? '');
+  }, [communicationId, setLastOpenedStorageConfig]);
 
   return (
     <StorageConfigContextProvider locationType="platform">

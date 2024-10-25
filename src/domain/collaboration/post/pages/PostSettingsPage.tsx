@@ -29,6 +29,7 @@ import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { normalizeLink } from '../../../../core/utils/links';
 import { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { useStorageConfigLocally } from '../../../storage/StorageBucket/useStorageConfigLocally';
 
 export interface PostSettingsPageProps {
   onClose: () => void;
@@ -132,6 +133,12 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
       navigate(`${postURL}/settings`, { replace: true });
     }
   });
+
+  const { setLastOpenedStorageConfig } = useStorageConfigLocally();
+
+  useEffect(() => {
+    setLastOpenedStorageConfig(calloutId ?? '');
+  }, [calloutId, setLastOpenedStorageConfig]);
 
   return (
     <PostLayout currentSection={PostDialogSection.Settings} onClose={onClose}>

@@ -87,7 +87,7 @@ interface UseStorageConfigOptionsPlatform extends UseStorageConfigOptionsBase {
   locationType: 'platform';
 }
 
-export type StorageConfigOptions =
+export type StorageConfigOptions = (
   | UseStorageConfigOptionsSpace
   | UseStorageConfigOptionsUser
   | UseStorageConfigOptionsVirtualContributor
@@ -97,13 +97,16 @@ export type StorageConfigOptions =
   | UseStorageConfigOptionsTemplate
   | UseStorageConfigOptionsInnovationPack
   | UseStorageConfigOptionsInnovationHub
-  | UseStorageConfigOptionsPlatform;
+  | UseStorageConfigOptionsPlatform
+) & {
+  temporaryLocation?: boolean;
+};
 
 export interface StorageConfigProvided {
   storageConfig: StorageConfig | undefined;
 }
 
-const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptions): StorageConfigProvided => {
+const useStorageConfig = ({ skip, locationType, temporaryLocation, ...options }: StorageConfigOptions) => {
   const journeyOptions = options as UseStorageConfigOptionsSpace;
   const { data: journeyStorageConfigData } = useJourneyStorageConfigQuery({
     variables: {
@@ -202,6 +205,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     () => ({
       storageConfig: storageConfig
         ? {
+            temporaryLocation,
             storageBucketId: storageConfig.id,
             allowedMimeTypes: storageConfig.allowedMimeTypes,
             maxFileSize: storageConfig.maxFileSize,

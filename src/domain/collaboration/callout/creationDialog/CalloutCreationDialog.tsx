@@ -1,36 +1,41 @@
-import React, { FC, useCallback, useLayoutEffect, useState } from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
+
 import { Trans, useTranslation } from 'react-i18next';
-import Dialog from '@mui/material/Dialog/Dialog';
-import {
-  CalloutState,
-  CalloutType,
-  CalloutVisibility,
-  CalloutGroupName,
-  TemplateType,
-} from '../../../../core/apollo/generated/graphql-schema';
-import { CalloutCreationTypeWithPreviewImages } from './useCalloutCreation/useCalloutCreationWithPreviewImages';
-import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
-import { DialogContent } from '../../../../core/ui/dialog/deprecated';
+
 import { LoadingButton } from '@mui/lab';
-import calloutIcons from '../utils/calloutIcons';
-import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
-import { useTemplateContentLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import { gutters } from '../../../../core/ui/grid/utils';
-import CalloutTypeSelect from './CalloutType/CalloutTypeSelect';
-import { Reference } from '../../../common/profile/Profile';
-import { Identifiable } from '../../../../core/utils/Identifiable';
-import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
+import Dialog from '@mui/material/Dialog/Dialog';
+import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
+import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
+
 import Gutters from '../../../../core/ui/grid/Gutters';
-import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
-import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
+import { Actions } from '../../../../core/ui/actions/Actions';
+import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
+import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
+import CalloutTypeSelect from './CalloutType/CalloutTypeSelect';
+import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import { DialogContent } from '../../../../core/ui/dialog/deprecated';
+import ImportTemplatesDialog from '../../../templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+
+import calloutIcons from '../utils/calloutIcons';
+import { gutters } from '../../../../core/ui/grid/utils';
+import {
+  CalloutType,
+  CalloutState,
+  TemplateType,
+  CalloutGroupName,
+  CalloutVisibility,
+} from '../../../../core/apollo/generated/graphql-schema';
+import { Reference } from '../../../common/profile/Profile';
+import { findDefaultTagset } from '../../../common/tags/utils';
+import { Identifiable } from '../../../../core/utils/Identifiable';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { EmptyWhiteboardString } from '../../../common/whiteboard/EmptyWhiteboard';
-import { findDefaultTagset } from '../../../common/tags/utils';
-import ImportTemplatesDialog from '../../../templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
-import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import { useTemplateContentLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import { CalloutCreationTypeWithPreviewImages } from './useCalloutCreation/useCalloutCreationWithPreviewImages';
+import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
+import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -46,25 +51,26 @@ export type CalloutCreationDialogFields = {
   whiteboardContent?: string;
 };
 
-export interface CalloutCreationDialogProps {
+export type CalloutCreationDialogProps = {
   open: boolean;
-  onClose: () => void;
-  onCreateCallout: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
   loading: boolean;
   groupName: CalloutGroupName;
-  flowState?: string;
   journeyTypeName: JourneyTypeName;
-}
+  onClose: () => void;
+  onCreateCallout: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
 
-const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
+  flowState?: string;
+};
+
+const CalloutCreationDialog = ({
   open,
-  onClose,
-  onCreateCallout,
   loading,
   groupName,
   flowState,
   journeyTypeName,
-}) => {
+  onClose,
+  onCreateCallout,
+}: CalloutCreationDialogProps) => {
   const { t } = useTranslation();
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
@@ -169,6 +175,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
   }, [onClose]);
 
   const [fetchTemplateContent] = useTemplateContentLazyQuery();
+
   const handleSelectTemplate = async ({ id: templateId }: Identifiable) => {
     const { data } = await fetchTemplateContent({
       variables: {
@@ -205,7 +212,9 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
         previewImages: [],
       },
     });
+
     setSelectedCalloutType(templateCallout.type);
+
     setImportCalloutDialogOpen(false);
   };
 
@@ -218,6 +227,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
           <DialogHeader onClose={handleClose}>
             <Box display="flex">{t('components.calloutTypeSelect.title')}</Box>
           </DialogHeader>
+
           <DialogContent>
             <Gutters>
               <CalloutTypeSelect
@@ -225,8 +235,8 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
                 extraButtons={
                   <Button
                     size="large"
-                    startIcon={<TipsAndUpdatesOutlinedIcon />}
                     variant="outlined"
+                    startIcon={<TipsAndUpdatesOutlinedIcon />}
                     sx={{ textTransform: 'none', justifyContent: 'start' }}
                     onClick={() => setImportCalloutDialogOpen(true)}
                   >
@@ -236,20 +246,22 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
               />
             </Gutters>
           </DialogContent>
+
           <ImportTemplatesDialog
-            open={importCalloutTemplateDialogOpen}
-            templateType={TemplateType.Callout}
-            onClose={() => setImportCalloutDialogOpen(false)}
-            onSelectTemplate={handleSelectTemplate}
             enablePlatformTemplates
+            templateType={TemplateType.Callout}
+            open={importCalloutTemplateDialogOpen}
             actionButton={
               <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
                 {t('buttons.use')}
               </LoadingButton>
             }
+            onSelectTemplate={handleSelectTemplate}
+            onClose={() => setImportCalloutDialogOpen(false)}
           />
         </>
       )}
+
       {selectedCalloutType && (
         <>
           <DialogHeader onClose={openConfirmCloseDialog}>
@@ -260,83 +272,96 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
               })}
             </Box>
           </DialogHeader>
+
           <DialogContent>
-            <CalloutForm
-              calloutType={selectedCalloutType}
-              callout={callout}
-              onChange={handleValueChange}
-              onStatusChanged={handleStatusChange}
-              journeyTypeName={journeyTypeName}
-            />
+            {/* Извикай кокалСториджа, разчети го и го спредни тук */}
+            <StorageConfigContextProvider temporaryLocation>
+              <CalloutForm
+                callout={callout}
+                calloutType={selectedCalloutType}
+                journeyTypeName={journeyTypeName}
+                onChange={handleValueChange}
+                onStatusChanged={handleStatusChange}
+              />
+            </StorageConfigContextProvider>
           </DialogContent>
+
           <Actions padding={gutters()}>
             <Button onClick={openConfirmCloseDialog}>{t('buttons.cancel')}</Button>
+
             <FlexSpacer />
+
             <LoadingButton
               loading={loading}
-              loadingIndicator={`${t('buttons.save-draft')}...`}
-              onClick={() => handleSaveCallout(CalloutVisibility.Draft, sendNotification)}
               variant="outlined"
               disabled={!isValid}
+              loadingIndicator={`${t('buttons.save-draft')}...`}
+              onClick={() => handleSaveCallout(CalloutVisibility.Draft, sendNotification)}
             >
               {t('buttons.save-draft')}
             </LoadingButton>
-            <Button variant="contained" onClick={openPublishDialog} disabled={!isValid}>
+
+            <Button variant="contained" disabled={!isValid} onClick={openPublishDialog}>
               {t('buttons.publish')}
             </Button>
           </Actions>
+
           <Dialog open={isPublishDialogOpen} maxWidth="xs">
             <DialogHeader onClose={closePublishDialog}>
               <Box display="flex">{t('buttons.publish')}</Box>
             </DialogHeader>
+
             <DialogContent>
               <Gutters>
                 <Box>
                   <Trans
                     i18nKey="components.callout-creation.publish-dialog.text"
-                    values={{
-                      calloutDisplayName: callout.displayName,
-                    }}
-                    components={{
-                      b: <strong />,
-                    }}
+                    values={{ calloutDisplayName: callout.displayName }}
+                    components={{ b: <strong /> }}
                   />
                 </Box>
+
                 <FormControlLabel
+                  label={t('components.callout-creation.publish-dialog.checkbox-label')}
                   control={
                     <Checkbox checked={sendNotification} onChange={() => setSendNotification(!sendNotification)} />
                   }
-                  label={t('components.callout-creation.publish-dialog.checkbox-label')}
                 />
               </Gutters>
             </DialogContent>
+
             <Actions padding={gutters()} justifyContent="end">
               <Button onClick={closePublishDialog}>{t('buttons.cancel')}</Button>
+
               <LoadingButton
                 loading={loading}
-                loadingIndicator={`${t('buttons.publish')}...`}
-                onClick={() => handleSaveCallout(CalloutVisibility.Published, sendNotification)}
                 variant="contained"
                 disabled={!isValid}
+                loadingIndicator={`${t('buttons.publish')}...`}
+                onClick={() => handleSaveCallout(CalloutVisibility.Published, sendNotification)}
               >
                 {t('buttons.publish')}
               </LoadingButton>
             </Actions>
           </Dialog>
+
           <Dialog open={isConfirmCloseDialogOpen}>
             <DialogHeader
               onClose={closeConfirmCloseDialog}
               title={t('components.callout-creation.close-dialog.title')}
             />
+
             <DialogContent>
               {t('components.callout-creation.close-dialog.text', {
                 calloutType: t(`components.calloutTypeSelect.label.${selectedCalloutType}` as const),
               })}
             </DialogContent>
+
             <Actions padding={gutters()} justifyContent="end">
               <Button variant="contained" onClick={closeConfirmCloseDialog}>
                 {t('buttons.cancel')}
               </Button>
+
               <Button onClick={handleClose}>{t('buttons.yes-close')}</Button>
             </Actions>
           </Dialog>

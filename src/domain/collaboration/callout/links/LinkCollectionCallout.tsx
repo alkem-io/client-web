@@ -1,5 +1,5 @@
 import CalloutLayout, { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, useEffect } from 'react';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import { Caption, CaptionSmall } from '../../../../core/ui/typography';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +22,7 @@ import { StorageConfigContextProvider } from '../../../storage/StorageBucket/Sto
 import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
 import { compact, sortBy } from 'lodash';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
+import { useStorageConfigLocally } from '../../../storage/StorageBucket/useStorageConfigLocally';
 
 const MAX_LINKS_NORMALVIEW = 3;
 
@@ -215,6 +216,12 @@ const LinkCollectionCallout = ({
     () => (compact(callout.contributions?.map(contribution => contribution.link))?.length ?? 0) > MAX_LINKS_NORMALVIEW,
     [callout]
   );
+
+  const { setLastOpenedStorageConfig } = useStorageConfigLocally();
+
+  useEffect(() => {
+    setLastOpenedStorageConfig(callout.id);
+  }, [callout.id, setLastOpenedStorageConfig]);
 
   return (
     <StorageConfigContextProvider
