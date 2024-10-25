@@ -1,0 +1,34 @@
+query PendingInvitations {
+  me {
+    communityInvitations(states: ["invited"]) {
+      id
+      spacePendingMembershipInfo {
+        ...NewMembershipsBasicSpace
+      }
+      invitation {
+        id
+        welcomeMessage
+        contributorType
+        createdBy {
+          id
+        }
+        lifecycle {
+          id
+          state
+        }
+        createdDate
+      }
+    }
+  }
+}
+
+fragment NewMembershipsBasicSpace on SpacePendingMembershipInfo {
+  id
+  level
+  profile {
+    id
+    displayName
+    tagline
+    url
+  }
+}

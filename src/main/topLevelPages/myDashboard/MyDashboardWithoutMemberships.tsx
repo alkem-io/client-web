@@ -8,6 +8,7 @@ import ReleaseNotesBanner from './releaseNotesBanner/ReleaseNotesBanner';
 import { DashboardMenu } from './DashboardMenu/DashboardMenu';
 import ExploreSpaces from './ExploreSpaces/ExploreSpaces';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
+import { InvitationsBlock } from './InvitationsBlock/InvitationsBlock';
 
 const MyDashboardWithoutMemberships = () => {
   const { data } = useLatestReleaseDiscussionQuery({
@@ -20,9 +21,9 @@ const MyDashboardWithoutMemberships = () => {
         <DashboardMenu compact />
       </InfoColumn>
       <ContentColumn>
-        {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />} {/* TODO: tweak to match design */}
-        {/* TODO: implement and import here the pending memberships block */}
+        {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />}
         <CampaignBlock />
+        <InvitationsBlock />
         <PageContentBlock columns={12}>
           <ExploreSpaces itemsLimit={16} />
         </PageContentBlock>
