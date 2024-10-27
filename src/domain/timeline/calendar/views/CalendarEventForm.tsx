@@ -91,6 +91,7 @@ const CalendarEventForm = ({
       durationDays: event?.durationDays,
       tags: event?.profile?.tagset?.tags ?? [],
       references: event?.profile?.references ?? [],
+      location: event?.profile?.location,
     };
   }, [event, initialStartDate]);
 

@@ -26094,6 +26094,7 @@ export type SpaceCalendarEventsQuery = {
                               description?: string | undefined;
                             }>
                           | undefined;
+                        location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
                       };
                     }>
                   | undefined;
@@ -26152,6 +26153,7 @@ export type CollaborationTimelineInfoFragment = {
                     description?: string | undefined;
                   }>
                 | undefined;
+              location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
             };
           }>
         | undefined;
@@ -26198,6 +26200,7 @@ export type CalendarEventInfoFragment = {
     references?:
       | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
       | undefined;
+    location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
   };
 };
 
@@ -26241,7 +26244,6 @@ export type CalendarEventDetailsQuery = {
                         type: TagsetType;
                       }>
                     | undefined;
-                  location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
                 };
               }
             | undefined;
@@ -26403,6 +26405,7 @@ export type CalendarEventDetailsQuery = {
                   description?: string | undefined;
                 }>
               | undefined;
+            location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
           };
         }
       | undefined;
@@ -26440,7 +26443,6 @@ export type CalendarEventDetailsFragment = {
                 type: TagsetType;
               }>
             | undefined;
-          location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
         };
       }
     | undefined;
@@ -26572,6 +26574,7 @@ export type CalendarEventDetailsFragment = {
     references?:
       | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
       | undefined;
+    location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
   };
 };
 
@@ -26594,6 +26597,7 @@ export type EventProfileFragment = {
   references?:
     | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
     | undefined;
+  location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
 };
 
 export type CreateCalendarEventMutationVariables = Exact<{
@@ -26633,7 +26637,6 @@ export type CreateCalendarEventMutation = {
                   type: TagsetType;
                 }>
               | undefined;
-            location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
           };
         }
       | undefined;
@@ -26770,6 +26773,7 @@ export type CreateCalendarEventMutation = {
       references?:
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
+      location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
     };
   };
 };
@@ -26811,7 +26815,6 @@ export type UpdateCalendarEventMutation = {
                   type: TagsetType;
                 }>
               | undefined;
-            location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
           };
         }
       | undefined;
@@ -26948,6 +26951,7 @@ export type UpdateCalendarEventMutation = {
       references?:
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
+      location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
     };
   };
 };

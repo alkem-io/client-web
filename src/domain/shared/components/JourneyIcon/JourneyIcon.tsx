@@ -12,6 +12,7 @@ const spaceIcon = {
   space: SpaceIcon,
   subspace: SubspaceIcon,
   subsubspace: OpportunityIcon,
+  undefined: SpaceIcon,
 } as const;
 
 export const spaceIconByLevel = [
