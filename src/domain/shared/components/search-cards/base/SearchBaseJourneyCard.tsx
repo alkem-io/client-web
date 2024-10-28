@@ -9,14 +9,14 @@ import { BlockTitle } from '../../../../../core/ui/typography/components';
 import webkitLineClamp from '../../../../../core/ui/utils/webkitLineClamp';
 import JourneyCardDescription from '../../../../journey/common/JourneyCard/JourneyCardDescription';
 import JourneyCardSpacing from '../../../../journey/common/JourneyCard/JourneyCardSpacing';
-import { SpaceType, SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
+import { SpaceLevel, SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
 import CardRibbon from '../../../../../core/ui/card/CardRibbon';
 
 export interface SearchBaseJourneyCardProps
   extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'parentSegment'> {
   tagline: string;
   locked?: boolean;
-  spaceType: SpaceType;
+  spaceLevel: SpaceLevel;
   displayName: string;
   vision: string;
   parentSegment?: ReactNode;
@@ -25,7 +25,7 @@ export interface SearchBaseJourneyCardProps
 }
 
 const SearchBaseJourneyCard = ({
-  spaceType,
+  spaceLevel,
   tagline,
   displayName,
   vision,
@@ -41,7 +41,7 @@ const SearchBaseJourneyCard = ({
 
   return (
     <JourneyCard
-      iconComponent={spaceTypeIcon[spaceType]}
+      iconComponent={spaceTypeIcon[spaceLevel]}
       header={
         <BlockTitle component="div" sx={webkitLineClamp(2)}>
           {displayName}
@@ -51,7 +51,7 @@ const SearchBaseJourneyCard = ({
       expansion={<JourneyCardDescription>{vision}</JourneyCardDescription>}
       expansionActions={
         <CardActions>
-          <JourneyCardGoToButton journeyUri={props.journeyUri} subspace={spaceType !== SpaceType.Space} />
+          <JourneyCardGoToButton journeyUri={props.journeyUri} subspace={spaceLevel !== SpaceLevel.Space} />
         </CardActions>
       }
       {...props}

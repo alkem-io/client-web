@@ -6,8 +6,8 @@ import {
   SearchResultSpaceFragment,
   SearchResultType,
   SearchResultUserFragment,
+  SpaceLevel,
   SpacePrivacyMode,
-  SpaceType,
   UserRolesSearchCardsQuery,
 } from '../../../core/apollo/generated/graphql-schema';
 import React from 'react';
@@ -84,7 +84,7 @@ const _hydrateOrganizationCard = (
 
 const hydrateSpaceCard = (
   data: TypedSearchResult<
-    SearchResultType.Space | SearchResultType.Challenge | SearchResultType.Opportunity,
+    SearchResultType.Space | SearchResultType.Subspace | SearchResultType.Challenge | SearchResultType.Opportunity,
     SearchResultSpaceFragment
   >
 ) => {
@@ -98,7 +98,7 @@ const hydrateSpaceCard = (
 
   const parentSegment = (
     data: TypedSearchResult<
-      SearchResultType.Space | SearchResultType.Challenge | SearchResultType.Opportunity,
+      SearchResultType.Space | SearchResultType.Subspace | SearchResultType.Challenge | SearchResultType.Opportunity,
       SearchResultSpaceFragment
     >
   ) => {
@@ -106,7 +106,7 @@ const hydrateSpaceCard = (
       return null;
     }
 
-    const parentIcon = data.parentSpace.type === SpaceType.Space ? SpaceIcon : SubspaceIcon;
+    const parentIcon = data.parentSpace.level === SpaceLevel.Space ? SpaceIcon : SubspaceIcon;
 
     return (
       <CardParentJourneySegment
@@ -121,7 +121,7 @@ const hydrateSpaceCard = (
 
   return (
     <SearchBaseJourneyCard
-      spaceType={space.type}
+      spaceLevel={space.level}
       banner={getVisualByType(VisualName.CARD, space.profile.visuals)}
       member={isMember}
       displayName={name}
@@ -145,11 +145,11 @@ const getContributionParentInformation = (data: TypedSearchResult<SearchResultTy
     icon: SpaceIcon,
   };
 
-  if (data.space.type === SpaceType.Opportunity) {
+  if (data.space.level === SpaceLevel.Opportunity) {
     info.icon = OpportunityIcon;
-  } else if (data.space.type === SpaceType.Challenge) {
+  } else if (data.space.level === SpaceLevel.Challenge) {
     info.icon = SubspaceIcon as SvgIconComponent;
-  } else if (data.space.type === SpaceType.Space) {
+  } else if (data.space.level === SpaceLevel.Space) {
     info.icon = SpaceIcon;
   }
 
@@ -201,7 +201,7 @@ interface UseHydrateCardProvided {
   hydrateContributionCard: HydratedCardGetter<TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>>;
   hydrateSpaceCard: HydratedCardGetter<
     TypedSearchResult<
-      SearchResultType.Space | SearchResultType.Challenge | SearchResultType.Opportunity,
+      SearchResultType.Space | SearchResultType.Subspace | SearchResultType.Challenge | SearchResultType.Opportunity,
       SearchResultSpaceFragment
     >
   >;

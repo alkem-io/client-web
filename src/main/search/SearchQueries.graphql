@@ -77,7 +77,7 @@ fragment SearchResultPost on SearchResultPost {
 fragment PostParent on SearchResultPost {
   space {
     id
-    type
+    level
     visibility
     profile {
       id
@@ -207,7 +207,7 @@ fragment SearchResultPostProfile on Profile {
 fragment SearchResultSpace on SearchResultSpace {
   parentSpace {
     id
-    type
+    level
     profile {
       id
       url
@@ -221,7 +221,7 @@ fragment SearchResultSpace on SearchResultSpace {
   }
   space {
     id
-    type
+    level
     profile {
       id
       url
