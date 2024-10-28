@@ -2162,6 +2162,15 @@
     "home": {
       "title": "My Dashboard",
       "subtitle": "Ready to make some impact?",
+      "mainNavigation": {
+        "invitations": "Invitations",
+        "myLatestActivity": "My Latest Activity",
+        "myLatestSpacesActivity": "Latest Activity In My Spaces",
+        "tipsAndTricks": "Tips & Tricks",
+        "myAccount": "My Account",
+        "createSpace": "Create my own Space",
+        "activityView": "Activity View"
+      },
       "sections": {
         "latestContributions": {
           "title": "Latest Contributions in my Spaces",

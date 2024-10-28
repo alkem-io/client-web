@@ -9,6 +9,7 @@ import { DashboardMenu } from './DashboardMenu/DashboardMenu';
 import ExploreSpaces from './ExploreSpaces/ExploreSpaces';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import { InvitationsBlock } from './InvitationsBlock/InvitationsBlock';
+import { DashboardDialogs } from './DashboardDialogs/DashboardDialogs';
 
 const MyDashboardWithoutMemberships = () => {
   const { data } = useLatestReleaseDiscussionQuery({
@@ -29,6 +30,7 @@ const MyDashboardWithoutMemberships = () => {
         </PageContentBlock>
         {/* TODO: implement create space btn component */}
       </ContentColumn>
+      <DashboardDialogs />
     </PageContentColumn>
   );
 };

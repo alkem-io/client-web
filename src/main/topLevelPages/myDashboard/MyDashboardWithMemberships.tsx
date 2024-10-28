@@ -9,6 +9,7 @@ import ContentColumn from '../../../core/ui/content/ContentColumn';
 import DashboardActivity from './DashboardWithMemberships/DashboardActivity';
 import DashboardSpaces from './DashboardWithMemberships/DashboardSpaces';
 import { useDashboardContext } from './DashboardContext';
+import { DashboardDialogs } from './DashboardDialogs/DashboardDialogs';
 
 const MyDashboardWithMemberships = () => {
   const { activityEnabled } = useDashboardContext();
@@ -26,6 +27,7 @@ const MyDashboardWithMemberships = () => {
         <CampaignBlock />
         {activityEnabled ? <DashboardActivity /> : <DashboardSpaces />}
       </ContentColumn>
+      <DashboardDialogs />
     </PageContentColumn>
   );
 };

@@ -18062,7 +18062,19 @@ export type UserProviderQuery = {
           lastName: string;
           email: string;
           phone?: string | undefined;
-          account?: { __typename?: 'Account'; id: string } | undefined;
+          account?:
+            | {
+                __typename?: 'Account';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;

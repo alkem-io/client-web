@@ -4,6 +4,10 @@ query UserProvider {
       ...UserDetails
       account {
         id
+        authorization {
+          id
+          myPrivileges
+        }
       }
     }
   }

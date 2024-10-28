@@ -13533,6 +13533,10 @@ export const UserProviderDocument = gql`
         ...UserDetails
         account {
           id
+          authorization {
+            id
+            myPrivileges
+          }
         }
       }
     }
