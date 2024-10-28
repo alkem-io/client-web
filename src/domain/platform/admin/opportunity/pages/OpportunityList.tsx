@@ -123,6 +123,7 @@ export const OpportunityList: FC = () => {
   const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
   const handleSaveAsTemplate = async (values: CollaborationTemplateFormSubmittedValues) => {
     await handleCreateCollaborationTemplate(values, spaceNameId);
+    notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
     setSaveAsTemplateDialogSelectedItem(undefined);
   };
 

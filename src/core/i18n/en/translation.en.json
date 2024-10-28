@@ -1965,7 +1965,8 @@
         "notifications": {
           "subspace-created": "Subspace created successfully.",
           "subspace-removed": "Subspace removed successfully.",
-          "subspace-updated": "Subspace updated successfully."
+          "subspace-updated": "Subspace updated successfully.",
+          "templateSaved": "Template saved successfully"
         }
       },
       "space": {
