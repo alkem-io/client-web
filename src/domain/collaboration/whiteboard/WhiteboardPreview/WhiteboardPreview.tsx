@@ -17,15 +17,16 @@ interface WhiteboardPreviewProps {
   onClose?: () => void;
 }
 
-const WhiteboardPreview = ({ displayName, whiteboard, onClose, ...props }: WhiteboardPreviewProps) => {
+const WhiteboardPreview = ({ displayName, whiteboard, onClick, onClose, ...props }: WhiteboardPreviewProps) => {
   const { t } = useTranslation();
 
   return (
     <ImageWithCaption
-      caption={t('callout.singleWhiteboard.clickToSee')}
+      caption={onClick ? t('callout.singleWhiteboard.clickToSee') : ''}
       src={whiteboard?.profile.preview?.uri}
       alt={displayName}
       defaultImage={<WhiteboardIcon />}
+      onClick={onClick}
       {...props}
     />
   );

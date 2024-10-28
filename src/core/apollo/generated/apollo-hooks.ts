@@ -2812,10 +2812,19 @@ export const CollaborationTemplateContentFragmentDoc = gql`
             tags
           }
         }
+        whiteboard {
+          id
+          profile {
+            preview: visual(type: BANNER) {
+              ...VisualFull
+            }
+          }
+        }
       }
       sortOrder
     }
   }
+  ${VisualFullFragmentDoc}
 `;
 export const WhiteboardTemplateContentFragmentDoc = gql`
   fragment WhiteboardTemplateContent on Whiteboard {

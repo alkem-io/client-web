@@ -237,6 +237,7 @@
     "create-new-entity": "Create new {{entity}}",
     "date": "Date",
     "description": "Description",
+    "noDescription": "No description",
     "event": "Event",
     "events": "Events",
     "fullScreen": "Full screen",

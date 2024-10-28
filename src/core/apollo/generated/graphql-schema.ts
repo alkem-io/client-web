@@ -25316,6 +25316,30 @@ export type TemplateContentQuery = {
                       description?: string | undefined;
                       flowStateTagset?: { __typename?: 'Tagset'; tags: Array<string> } | undefined;
                     };
+                    whiteboard?:
+                      | {
+                          __typename?: 'Whiteboard';
+                          id: string;
+                          profile: {
+                            __typename?: 'Profile';
+                            preview?:
+                              | {
+                                  __typename?: 'Visual';
+                                  id: string;
+                                  uri: string;
+                                  name: string;
+                                  allowedTypes: Array<string>;
+                                  aspectRatio: number;
+                                  maxHeight: number;
+                                  maxWidth: number;
+                                  minHeight: number;
+                                  minWidth: number;
+                                  alternativeText?: string | undefined;
+                                }
+                              | undefined;
+                          };
+                        }
+                      | undefined;
                   };
                 }>;
               }
@@ -25357,6 +25381,30 @@ export type CollaborationTemplateContentQuery = {
                 description?: string | undefined;
                 flowStateTagset?: { __typename?: 'Tagset'; tags: Array<string> } | undefined;
               };
+              whiteboard?:
+                | {
+                    __typename?: 'Whiteboard';
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      preview?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            allowedTypes: Array<string>;
+                            aspectRatio: number;
+                            maxHeight: number;
+                            maxWidth: number;
+                            minHeight: number;
+                            minWidth: number;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    };
+                  }
+                | undefined;
             };
           }>;
         }
@@ -25535,6 +25583,30 @@ export type CollaborationTemplateContentFragment = {
         description?: string | undefined;
         flowStateTagset?: { __typename?: 'Tagset'; tags: Array<string> } | undefined;
       };
+      whiteboard?:
+        | {
+            __typename?: 'Whiteboard';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              preview?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            };
+          }
+        | undefined;
     };
   }>;
 };

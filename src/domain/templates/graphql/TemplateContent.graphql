@@ -129,6 +129,14 @@ fragment CollaborationTemplateContent on Collaboration {
           tags
         }
       }
+      whiteboard {
+        id
+        profile {
+          preview: visual(type: BANNER) {
+            ...VisualFull
+          }
+        }
+      }
     }
     sortOrder
   }
