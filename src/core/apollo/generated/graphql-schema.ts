@@ -8781,6 +8781,7 @@ export type UpdateInnovationFlowStatesMutation = {
 export type UpdateCollaborationFromTemplateMutationVariables = Exact<{
   collaborationId: Scalars['UUID'];
   collaborationTemplateId: Scalars['UUID'];
+  addCallouts?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type UpdateCollaborationFromTemplateMutation = {

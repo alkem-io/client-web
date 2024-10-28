@@ -5746,9 +5746,17 @@ export type UpdateInnovationFlowStatesMutationOptions = Apollo.BaseMutationOptio
   SchemaTypes.UpdateInnovationFlowStatesMutationVariables
 >;
 export const UpdateCollaborationFromTemplateDocument = gql`
-  mutation UpdateCollaborationFromTemplate($collaborationId: UUID!, $collaborationTemplateId: UUID!) {
+  mutation UpdateCollaborationFromTemplate(
+    $collaborationId: UUID!
+    $collaborationTemplateId: UUID!
+    $addCallouts: Boolean
+  ) {
     updateCollaborationFromTemplate(
-      updateData: { collaborationID: $collaborationId, collaborationTemplateID: $collaborationTemplateId }
+      updateData: {
+        collaborationID: $collaborationId
+        collaborationTemplateID: $collaborationTemplateId
+        addCallouts: $addCallouts
+      }
     ) {
       id
       innovationFlow {
@@ -5785,6 +5793,7 @@ export type UpdateCollaborationFromTemplateMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      collaborationId: // value for 'collaborationId'
  *      collaborationTemplateId: // value for 'collaborationTemplateId'
+ *      addCallouts: // value for 'addCallouts'
  *   },
  * });
  */

@@ -16,6 +16,7 @@ import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { Identifiable } from '../../../../core/utils/Identifiable';
+import YesNoCancelDialog from '../../../../core/ui/dialogs/YesNoCancelDialog';
 
 interface InnovationFlowSettingsDialogProps {
   open?: boolean;
@@ -42,8 +43,11 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
 
   const [importInnovationFlowConfirmDialogOpen, setImportInnovationFlowConfirmDialogOpen] = useState(false);
   const [importInnovationFlowDialogOpen, setImportInnovationFlowDialogOpen] = useState(false);
-  const handleImportTemplate = async ({ id: templateId }: Identifiable) => {
-    await actions.importInnovationFlow(templateId);
+  const [selectedTemplateToImport, setSelectedTemplateToImport] = useState<Identifiable>();
+
+  const handleImportTemplate = async ({ id: templateId }: Identifiable, importCallouts: boolean) => {
+    await actions.importCollaborationTemplate(templateId, importCallouts);
+    setSelectedTemplateToImport(undefined);
     setImportInnovationFlowDialogOpen(false);
   };
 
@@ -116,11 +120,27 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
           confirmButtonTextId: 'buttons.continue',
         }}
       />
+      <YesNoCancelDialog
+        open={Boolean(selectedTemplateToImport)}
+        dialogTitle={t('components.innovationFlowSettings.stateEditor.selectDifferentFlow.importCalloutsDialog.title')}
+        dialogContent={t(
+          'components.innovationFlowSettings.stateEditor.selectDifferentFlow.importCalloutsDialog.description'
+        )}
+        buttonTexts={{
+          yes: t('components.innovationFlowSettings.stateEditor.selectDifferentFlow.importCalloutsDialog.yes'),
+          no: t('components.innovationFlowSettings.stateEditor.selectDifferentFlow.importCalloutsDialog.no'),
+          cancel: t('components.innovationFlowSettings.stateEditor.selectDifferentFlow.importCalloutsDialog.cancel'),
+        }}
+        onYes={() => handleImportTemplate(selectedTemplateToImport!, true)}
+        onNo={() => handleImportTemplate(selectedTemplateToImport!, false)}
+        onCancel={() => setSelectedTemplateToImport(undefined)}
+        onClose={() => setSelectedTemplateToImport(undefined)}
+      />
       <ImportTemplatesDialog
         open={importInnovationFlowDialogOpen}
         templateType={TemplateType.Collaboration}
         onClose={() => setImportInnovationFlowDialogOpen(false)}
-        onSelectTemplate={handleImportTemplate}
+        onSelectTemplate={async templateId => setSelectedTemplateToImport(templateId)}
         enablePlatformTemplates
         actionButton={
           <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">

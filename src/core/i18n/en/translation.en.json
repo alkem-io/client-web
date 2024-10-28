@@ -112,10 +112,12 @@
     "home": "Home",
     "take-me-home": "Take me home",
     "close": "Close",
+    "yes": "Yes",
     "yes-close": "Yes, close",
     "yesReplace": "Yes, replace",
     "yesStop": "Yes, stop",
     "yesDiscard": "Yes, Discard",
+    "no": "No",
     "delete": "Delete",
     "submit": "Submit",
     "remove": "Remove",
@@ -1075,10 +1077,17 @@
           "text": "This action cannot be undone."
         },
         "selectDifferentFlow": {
-          "title": "Select different Flow",
+          "title": "Find subspace template",
           "confirmationDialog": {
             "title": "Be careful when changing the flow!",
             "description": "- By changing the Innovation Flow, **all changes made to the current flow will be lost**.\n- All existing collaboration tools will be grouped under the first phase of the new flow."
+          },
+          "importCalloutsDialog": {
+            "title": "Import Collaboration Tools too",
+            "description": "Do you want to import the collaboration tools from the template or just apply the Innovation Flow to your current collaboration tools?",
+            "yes": "Yes, import the tools too",
+            "no": "No, only apply the Innovation Flow",
+            "cancel": "Cancel, and go back to the template"
           }
         }
       }
@@ -1977,10 +1986,10 @@
             "defaultSettings": {
               "title": "Default settings",
               "description": "Choose the default settings that will apply when creating a new Subspace within this Space. These settings can be modified during the creation process or at a later time.",
-              "defaultInnovationFlow": {
-                "selectDifferentFlow": "Select different Flow",
-                "title": "Selecting the Default Innovation Flow",
-                "description": "Customize the default flow for newly created Subspaces. Admins can modify it later in the Innovation flow settings. \n\nBelow you can choose between the templates collected in the Space Templates library. If you’re looking to create new flows or explore additional templates, click here to access this library."
+              "defaultCollaborationTemplate": {
+                "selectDifferentTemplate": "Select Collaboration Template",
+                "title": "Selecting the Default Collaboration Template",
+                "description": "Customize the default template for newly created Subspaces. Admins can modify it later in the Innovation flow settings. \n\nBelow you can choose between the templates collected in the Space Templates library."
               }
             }
           }

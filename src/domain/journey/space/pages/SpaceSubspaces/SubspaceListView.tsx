@@ -214,7 +214,9 @@ export const SubspaceListView: FC = () => {
               startIcon={<Cached />}
               onClick={() => setSelectCollaborationTemplateDialogOpen(true)}
             >
-              {t('pages.admin.space.sections.subspaces.defaultSettings.defaultInnovationFlow.selectDifferentFlow')}
+              {t(
+                'pages.admin.space.sections.subspaces.defaultSettings.defaultCollaborationTemplate.selectDifferentTemplate'
+              )}
             </Button>
           </Actions>
         </PageContentBlock>
