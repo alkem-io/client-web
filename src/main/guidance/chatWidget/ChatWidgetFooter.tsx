@@ -21,8 +21,8 @@ const ChatWidgetFooter = () => {
     <SwapColors>
       <Paper square>
         <Gutters sx={{ '.MuiSvgIcon-root': { fontSize: gutters() } }}>
-          {references.map(({ uri, title, icon: iconName }) => (
-            <ReferencesListSmallItem uri={uri} iconComponent={Icons[iconName]}>
+          {references.map(({ uri, title, icon: iconName }, idx) => (
+            <ReferencesListSmallItem key={idx} uri={uri} iconComponent={Icons[iconName]}>
               {title}
             </ReferencesListSmallItem>
           ))}
