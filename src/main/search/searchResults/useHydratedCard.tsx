@@ -1,4 +1,3 @@
-import { SvgIconComponent } from '@mui/icons-material';
 import {
   CommunityMembershipStatus,
   SearchResultOrganizationFragment,
@@ -18,7 +17,6 @@ import { useUserRolesSearchCardsQuery } from '../../../core/apollo/generated/apo
 import { useUserContext } from '../../../domain/community/user/hooks/useUserContext';
 import { TypedSearchResult } from '../SearchView';
 import { SearchContributionCardCard } from '../../../domain/shared/components/search-cards/SearchContributionPostCard';
-import { OpportunityIcon } from '../../../domain/journey/opportunity/icon/OpportunityIcon';
 import { SubspaceIcon } from '../../../domain/journey/subspace/icon/SubspaceIcon';
 import { SpaceIcon } from '../../../domain/journey/space/icon/SpaceIcon';
 import ContributingUserCard from '../../../domain/community/user/ContributingUserCard/ContributingUserCard';
@@ -28,6 +26,7 @@ import CardParentJourneySegment from '../../../domain/journey/common/SpaceChildJ
 import { CalloutIcon } from '../../../domain/collaboration/callout/icon/CalloutIcon';
 import { VisualName } from '../../../domain/common/visual/constants/visuals.constants';
 import SearchBaseJourneyCard from '../../../domain/shared/components/search-cards/base/SearchBaseJourneyCard';
+import { spaceIconByLevel } from '../../../domain/shared/components/JourneyIcon/JourneyIcon';
 
 const hydrateUserCard = (data: TypedSearchResult<SearchResultType.User, SearchResultUserFragment>) => {
   const user = data.user;
@@ -145,13 +144,7 @@ const getContributionParentInformation = (data: TypedSearchResult<SearchResultTy
     icon: SpaceIcon,
   };
 
-  if (data.space.level === SpaceLevel.Opportunity) {
-    info.icon = OpportunityIcon;
-  } else if (data.space.level === SpaceLevel.Challenge) {
-    info.icon = SubspaceIcon as SvgIconComponent;
-  } else if (data.space.level === SpaceLevel.Space) {
-    info.icon = SpaceIcon;
-  }
+  info.icon = spaceIconByLevel[data.space.level];
 
   return info;
 };
