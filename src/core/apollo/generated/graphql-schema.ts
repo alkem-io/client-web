@@ -5352,6 +5352,7 @@ export enum SearchResultType {
   Organization = 'ORGANIZATION',
   Post = 'POST',
   Space = 'SPACE',
+  Subspace = 'SUBSPACE',
   User = 'USER',
   Usergroup = 'USERGROUP',
   Whiteboard = 'WHITEBOARD',
@@ -27090,7 +27091,7 @@ export type SearchQuery = {
             | {
                 __typename?: 'Space';
                 id: string;
-                type: SpaceType;
+                level: SpaceLevel;
                 profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
                 settings: {
                   __typename?: 'SpaceSettings';
@@ -27101,7 +27102,7 @@ export type SearchQuery = {
           space: {
             __typename?: 'Space';
             id: string;
-            type: SpaceType;
+            level: SpaceLevel;
             visibility: SpaceVisibility;
             profile: {
               __typename?: 'Profile';
@@ -27345,7 +27346,7 @@ export type SearchQuery = {
           space: {
             __typename?: 'Space';
             id: string;
-            type: SpaceType;
+            level: SpaceLevel;
             visibility: SpaceVisibility;
             profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
             settings: {
@@ -27408,7 +27409,7 @@ export type SearchResultPostFragment = {
   space: {
     __typename?: 'Space';
     id: string;
-    type: SpaceType;
+    level: SpaceLevel;
     visibility: SpaceVisibility;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
     settings: {
@@ -27432,7 +27433,7 @@ export type PostParentFragment = {
   space: {
     __typename?: 'Space';
     id: string;
-    type: SpaceType;
+    level: SpaceLevel;
     visibility: SpaceVisibility;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
     settings: {
@@ -27614,7 +27615,7 @@ export type SearchResultSpaceFragment = {
     | {
         __typename?: 'Space';
         id: string;
-        type: SpaceType;
+        level: SpaceLevel;
         profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
         settings: {
           __typename?: 'SpaceSettings';
@@ -27625,7 +27626,7 @@ export type SearchResultSpaceFragment = {
   space: {
     __typename?: 'Space';
     id: string;
-    type: SpaceType;
+    level: SpaceLevel;
     visibility: SpaceVisibility;
     profile: {
       __typename?: 'Profile';
