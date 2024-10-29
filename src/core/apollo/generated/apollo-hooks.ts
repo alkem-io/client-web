@@ -4438,7 +4438,7 @@ export type ApplyForEntryRoleOnRoleSetMutationOptions = Apollo.BaseMutationOptio
 >;
 export const EventOnApplicationDocument = gql`
   mutation eventOnApplication($input: ApplicationEventInput!) {
-    eventOnApplication(applicationEventData: $input) {
+    eventOnApplication(eventData: $input) {
       id
       nextEvents
       state
@@ -11273,7 +11273,7 @@ export function refetchAdminGlobalOrganizationsListQuery(
 
 export const AdminOrganizationVerifyDocument = gql`
   mutation adminOrganizationVerify($input: OrganizationVerificationEventInput!) {
-    eventOnOrganizationVerification(organizationVerificationEventData: $input) {
+    eventOnOrganizationVerification(eventData: $input) {
       id
       nextEvents
       state
@@ -12116,7 +12116,7 @@ export type DeletePlatformInvitationMutationOptions = Apollo.BaseMutationOptions
 >;
 export const InvitationStateEventDocument = gql`
   mutation InvitationStateEvent($eventName: String!, $invitationId: UUID!) {
-    eventOnCommunityInvitation(invitationEventData: { eventName: $eventName, invitationID: $invitationId }) {
+    eventOnInvitation(eventData: { eventName: $eventName, invitationID: $invitationId }) {
       id
       nextEvents
       state

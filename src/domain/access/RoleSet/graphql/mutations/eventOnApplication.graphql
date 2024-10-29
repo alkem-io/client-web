@@ -1,5 +1,5 @@
 mutation eventOnApplication($input: ApplicationEventInput!) {
-  eventOnApplication(applicationEventData: $input) {
+  eventOnApplication(eventData: $input) {
     id
     nextEvents
     state

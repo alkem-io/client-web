@@ -722,11 +722,11 @@ export type Application = {
   isFinalized: Scalars['Boolean'];
   lifecycle: Lifecycle;
   /** The next events of this Lifecycle. */
-  nextEvents?: Maybe<Array<Scalars['String']>>;
+  nextEvents: Array<Scalars['String']>;
   /** The Questions for this application. */
   questions: Array<Question>;
   /** The current state of this Lifecycle. */
-  state?: Maybe<Scalars['String']>;
+  state: Scalars['String'];
   updatedDate: Scalars['DateTime'];
 };
 
@@ -759,14 +759,14 @@ export type AssignLicensePlanToSpace = {
 };
 
 export type AssignOrganizationRoleToUserInput = {
-  organizationID: Scalars['UUID_NAMEID'];
+  organizationID: Scalars['UUID'];
   role: OrganizationRole;
-  userID: Scalars['UUID_NAMEID_EMAIL'];
+  userID: Scalars['UUID'];
 };
 
 export type AssignPlatformRoleToUserInput = {
   role: PlatformRole;
-  userID: Scalars['UUID_NAMEID_EMAIL'];
+  userID: Scalars['UUID'];
 };
 
 export type AssignRoleOnRoleSetToOrganizationInput = {
@@ -789,7 +789,7 @@ export type AssignRoleOnRoleSetToVirtualContributorInput = {
 
 export type AssignUserGroupMemberInput = {
   groupID: Scalars['UUID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
+  userID: Scalars['UUID'];
 };
 
 export type AuthenticationConfig = {
@@ -2264,7 +2264,7 @@ export type DeleteUserGroupInput = {
 };
 
 export type DeleteUserInput = {
-  ID: Scalars['UUID_NAMEID_EMAIL'];
+  ID: Scalars['UUID'];
   deleteIdentity?: InputMaybe<Scalars['Boolean']>;
 };
 
@@ -2478,7 +2478,7 @@ export type GrantAuthorizationCredentialInput = {
   resourceID?: InputMaybe<Scalars['UUID']>;
   type: AuthorizationCredential;
   /** The user to whom the credential is being granted. */
-  userID: Scalars['UUID_NAMEID_EMAIL'];
+  userID: Scalars['UUID'];
 };
 
 export type GrantOrganizationAuthorizationCredentialInput = {
@@ -2670,9 +2670,9 @@ export type Invitation = {
   isFinalized: Scalars['Boolean'];
   lifecycle: Lifecycle;
   /** The next events of this Lifecycle. */
-  nextEvents?: Maybe<Array<Scalars['String']>>;
+  nextEvents: Array<Scalars['String']>;
   /** The current state of this Lifecycle. */
-  state?: Maybe<Scalars['String']>;
+  state: Scalars['String'];
   updatedDate: Scalars['DateTime'];
   welcomeMessage?: Maybe<Scalars['String']>;
 };
@@ -2956,6 +2956,8 @@ export type LookupQueryResults = {
   template?: Maybe<Template>;
   /** Lookup the specified TemplatesSet */
   templatesSet?: Maybe<TemplatesSet>;
+  /** A particular User */
+  user?: Maybe<User>;
   /** A particular VirtualContributor */
   virtualContributor?: Maybe<VirtualContributor>;
   /** Lookup the specified Whiteboard */
@@ -3060,6 +3062,10 @@ export type LookupQueryResultsTemplateArgs = {
 };
 
 export type LookupQueryResultsTemplatesSetArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsUserArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -3337,7 +3343,7 @@ export type Mutation = {
   /** Trigger an event on the Application. */
   eventOnApplication: Application;
   /** Trigger an event on the Invitation. */
-  eventOnCommunityInvitation: Invitation;
+  eventOnInvitation: Invitation;
   /** Trigger an event on the Organization Verification. */
   eventOnOrganizationVerification: OrganizationVerification;
   /** Grants an authorization credential to an Organization. */
@@ -3777,15 +3783,15 @@ export type MutationDeleteWhiteboardArgs = {
 };
 
 export type MutationEventOnApplicationArgs = {
-  applicationEventData: ApplicationEventInput;
+  eventData: ApplicationEventInput;
 };
 
-export type MutationEventOnCommunityInvitationArgs = {
-  invitationEventData: InvitationEventInput;
+export type MutationEventOnInvitationArgs = {
+  eventData: InvitationEventInput;
 };
 
 export type MutationEventOnOrganizationVerificationArgs = {
-  organizationVerificationEventData: OrganizationVerificationEventInput;
+  eventData: OrganizationVerificationEventInput;
 };
 
 export type MutationGrantCredentialToOrganizationArgs = {
@@ -4170,7 +4176,7 @@ export type OrganizationGroupArgs = {
 
 export type OrganizationAuthorizationResetInput = {
   /** The identifier of the Organization whose Authorization Policy should be reset. */
-  organizationID: Scalars['UUID_NAMEID_EMAIL'];
+  organizationID: Scalars['UUID'];
 };
 
 export type OrganizationFilterInput = {
@@ -4203,9 +4209,9 @@ export type OrganizationVerification = {
   isFinalized: Scalars['Boolean'];
   lifecycle: Lifecycle;
   /** The next events of this Lifecycle. */
-  nextEvents?: Maybe<Array<Scalars['String']>>;
+  nextEvents: Array<Scalars['String']>;
   /** The current state of this Lifecycle. */
-  state?: Maybe<Scalars['String']>;
+  state: Scalars['String'];
   /** Organization verification type */
   status: OrganizationVerificationEnum;
   /** The date at which the entity was last updated. */
@@ -4921,14 +4927,14 @@ export type RelayPaginatedSpacePageInfo = {
 };
 
 export type RemoveOrganizationRoleFromUserInput = {
-  organizationID: Scalars['UUID_NAMEID'];
+  organizationID: Scalars['UUID'];
   role: OrganizationRole;
-  userID: Scalars['UUID_NAMEID_EMAIL'];
+  userID: Scalars['UUID'];
 };
 
 export type RemovePlatformRoleFromUserInput = {
   role: PlatformRole;
-  userID: Scalars['UUID_NAMEID_EMAIL'];
+  userID: Scalars['UUID'];
 };
 
 export type RemoveRoleOnRoleSetFromOrganizationInput = {
@@ -4951,7 +4957,7 @@ export type RemoveRoleOnRoleSetFromVirtualContributorInput = {
 
 export type RemoveUserGroupMemberInput = {
   groupID: Scalars['UUID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
+  userID: Scalars['UUID'];
 };
 
 export type RevokeAuthorizationCredentialInput = {
@@ -4959,7 +4965,7 @@ export type RevokeAuthorizationCredentialInput = {
   resourceID: Scalars['String'];
   type: AuthorizationCredential;
   /** The user from whom the credential is being removed. */
-  userID: Scalars['UUID_NAMEID_EMAIL'];
+  userID: Scalars['UUID'];
 };
 
 export type RevokeLicensePlanFromAccount = {
@@ -6039,11 +6045,11 @@ export type UpdateCalloutInput = {
 
 export type UpdateCalloutPublishInfoInput = {
   /** The identifier for the Callout whose publisher is to be updated. */
-  calloutID: Scalars['String'];
+  calloutID: Scalars['UUID'];
   /** The timestamp to set for the publishing of the Callout. */
   publishDate?: InputMaybe<Scalars['Float']>;
   /** The identifier of the publisher of the Callout. */
-  publisherID?: InputMaybe<Scalars['UUID_NAMEID_EMAIL']>;
+  publisherID?: InputMaybe<Scalars['UUID']>;
 };
 
 export type UpdateCalloutVisibilityInput = {
@@ -6395,7 +6401,7 @@ export type UpdateUserGroupInput = {
 };
 
 export type UpdateUserInput = {
-  ID: Scalars['UUID_NAMEID_EMAIL'];
+  ID: Scalars['UUID'];
   accountUpn?: InputMaybe<Scalars['String']>;
   firstName?: InputMaybe<Scalars['String']>;
   lastName?: InputMaybe<Scalars['String']>;
@@ -6420,7 +6426,7 @@ export type UpdateUserPreferenceInput = {
   /** Type of the user preference */
   type: UserPreferenceType;
   /** ID of the User */
-  userID: Scalars['UUID_NAMEID_EMAIL'];
+  userID: Scalars['UUID'];
   value: Scalars['String'];
 };
 
@@ -6514,12 +6520,12 @@ export type UserAuthorizationPrivilegesInput = {
   /** The authorization definition to evaluate the user credentials against. */
   authorizationID: Scalars['UUID'];
   /** The user to evaluate privileges granted based on held credentials. */
-  userID: Scalars['UUID_NAMEID_EMAIL'];
+  userID: Scalars['UUID'];
 };
 
 export type UserAuthorizationResetInput = {
   /** The identifier of the User whose Authorization Policy should be reset. */
-  userID: Scalars['UUID_NAMEID_EMAIL'];
+  userID: Scalars['UUID'];
 };
 
 export type UserFilterInput = {
@@ -7403,12 +7409,7 @@ export type EventOnApplicationMutationVariables = Exact<{
 
 export type EventOnApplicationMutation = {
   __typename?: 'Mutation';
-  eventOnApplication: {
-    __typename?: 'Application';
-    id: string;
-    nextEvents?: Array<string> | undefined;
-    state?: string | undefined;
-  };
+  eventOnApplication: { __typename?: 'Application'; id: string; nextEvents: Array<string>; state: string };
 };
 
 export type JoinRoleSetMutationVariables = Exact<{
@@ -7433,8 +7434,8 @@ export type CommunityApplicationsInvitationsQuery = {
             id: string;
             createdDate: Date;
             updatedDate: Date;
-            state?: string | undefined;
-            nextEvents?: Array<string> | undefined;
+            state: string;
+            nextEvents: Array<string>;
             contributor:
               | {
                   __typename?: 'Organization';
@@ -7489,8 +7490,8 @@ export type CommunityApplicationsInvitationsQuery = {
             id: string;
             createdDate: Date;
             updatedDate: Date;
-            state?: string | undefined;
-            nextEvents?: Array<string> | undefined;
+            state: string;
+            nextEvents: Array<string>;
             contributorType: CommunityContributorType;
             contributor:
               | {
@@ -7556,8 +7557,8 @@ export type AdminCommunityApplicationFragment = {
   id: string;
   createdDate: Date;
   updatedDate: Date;
-  state?: string | undefined;
-  nextEvents?: Array<string> | undefined;
+  state: string;
+  nextEvents: Array<string>;
   contributor:
     | {
         __typename?: 'Organization';
@@ -7613,8 +7614,8 @@ export type AdminCommunityInvitationFragment = {
   id: string;
   createdDate: Date;
   updatedDate: Date;
-  state?: string | undefined;
-  nextEvents?: Array<string> | undefined;
+  state: string;
+  nextEvents: Array<string>;
   contributorType: CommunityContributorType;
   contributor:
     | {
@@ -16437,7 +16438,7 @@ export type AdminGlobalOrganizationsListQuery = {
         displayName: string;
         visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
       };
-      verification: { __typename?: 'OrganizationVerification'; id: string; state?: string | undefined };
+      verification: { __typename?: 'OrganizationVerification'; id: string; state: string };
     }>;
     pageInfo: {
       __typename?: 'PageInfo';
@@ -16472,8 +16473,8 @@ export type AdminOrganizationVerifyMutation = {
   eventOnOrganizationVerification: {
     __typename?: 'OrganizationVerification';
     id: string;
-    nextEvents?: Array<string> | undefined;
-    state?: string | undefined;
+    nextEvents: Array<string>;
+    state: string;
   };
 };
 
@@ -17090,12 +17091,7 @@ export type InvitationStateEventMutationVariables = Exact<{
 
 export type InvitationStateEventMutation = {
   __typename?: 'Mutation';
-  eventOnCommunityInvitation: {
-    __typename?: 'Invitation';
-    id: string;
-    nextEvents?: Array<string> | undefined;
-    state?: string | undefined;
-  };
+  eventOnInvitation: { __typename?: 'Invitation'; id: string; nextEvents: Array<string>; state: string };
 };
 
 export type InviteContributorsForRoleSetMembershipMutationVariables = Exact<{
@@ -18157,7 +18153,7 @@ export type UserPendingMembershipsQuery = {
         level: SpaceLevel;
         profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
       };
-      application: { __typename?: 'Application'; id: string; state?: string | undefined; createdDate: Date };
+      application: { __typename?: 'Application'; id: string; state: string; createdDate: Date };
     }>;
     communityInvitations: Array<{
       __typename?: 'CommunityInvitationResult';
@@ -18172,7 +18168,7 @@ export type UserPendingMembershipsQuery = {
         __typename?: 'Invitation';
         id: string;
         welcomeMessage?: string | undefined;
-        state?: string | undefined;
+        state: string;
         createdDate: Date;
         contributorType: CommunityContributorType;
         createdBy: { __typename?: 'User'; id: string };
@@ -18198,7 +18194,7 @@ export type InvitationDataFragment = {
     __typename?: 'Invitation';
     id: string;
     welcomeMessage?: string | undefined;
-    state?: string | undefined;
+    state: string;
     createdDate: Date;
     contributorType: CommunityContributorType;
     createdBy: { __typename?: 'User'; id: string };
@@ -18605,7 +18601,7 @@ export type VcMembershipsQuery = {
         __typename?: 'Invitation';
         id: string;
         welcomeMessage?: string | undefined;
-        state?: string | undefined;
+        state: string;
         createdDate: Date;
         contributorType: CommunityContributorType;
         createdBy: { __typename?: 'User'; id: string };
@@ -29772,7 +29768,7 @@ export type NewMembershipsQuery = {
         level: SpaceLevel;
         profile: { __typename?: 'Profile'; id: string; displayName: string; tagline?: string | undefined; url: string };
       };
-      application: { __typename?: 'Application'; id: string; state?: string | undefined; createdDate: Date };
+      application: { __typename?: 'Application'; id: string; state: string; createdDate: Date };
     }>;
     communityInvitations: Array<{
       __typename?: 'CommunityInvitationResult';
@@ -29788,7 +29784,7 @@ export type NewMembershipsQuery = {
         id: string;
         welcomeMessage?: string | undefined;
         contributorType: CommunityContributorType;
-        state?: string | undefined;
+        state: string;
         createdDate: Date;
         createdBy: { __typename?: 'User'; id: string };
       };

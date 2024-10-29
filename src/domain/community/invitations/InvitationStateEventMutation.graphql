@@ -1,5 +1,5 @@
 mutation InvitationStateEvent($eventName: String!, $invitationId: UUID!) {
-  eventOnCommunityInvitation(invitationEventData: { eventName: $eventName, invitationID: $invitationId }) {
+  eventOnInvitation(eventData: { eventName: $eventName, invitationID: $invitationId }) {
     id
     nextEvents
     state

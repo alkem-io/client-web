@@ -41,7 +41,7 @@ query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: Organiza
 }
 
 mutation adminOrganizationVerify($input: OrganizationVerificationEventInput!) {
-  eventOnOrganizationVerification(organizationVerificationEventData: $input) {
+  eventOnOrganizationVerification(eventData: $input) {
     id
     nextEvents
     state

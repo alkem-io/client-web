@@ -1790,6 +1790,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'storageBucket'
   | 'template'
   | 'templatesSet'
+  | 'user'
   | 'virtualContributor'
   | 'whiteboard'
   | LookupQueryResultsKeySpecifier
@@ -1820,6 +1821,7 @@ export type LookupQueryResultsFieldPolicy = {
   storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   template?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1964,7 +1966,7 @@ export type MutationKeySpecifier = (
   | 'deleteVirtualContributor'
   | 'deleteWhiteboard'
   | 'eventOnApplication'
-  | 'eventOnCommunityInvitation'
+  | 'eventOnInvitation'
   | 'eventOnOrganizationVerification'
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
@@ -2124,7 +2126,7 @@ export type MutationFieldPolicy = {
   deleteVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
-  eventOnCommunityInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  eventOnInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
