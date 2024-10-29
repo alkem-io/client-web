@@ -1,12 +1,14 @@
+import { ComponentType, PropsWithChildren, ReactNode } from 'react';
+
+import { SvgIconProps } from '@mui/material';
+
+import Gutters from '../../../core/ui/grid/Gutters';
 import { gutters } from '../../../core/ui/grid/utils';
 import { PageTitle, Text } from '../../../core/ui/typography';
-import React, { ComponentType, PropsWithChildren, ReactNode } from 'react';
-import { SvgIconProps } from '@mui/material';
+import BadgeCardView from '../../../core/ui/list/BadgeCardView';
 import PageBannerCardWrapper, {
   PageBannerCardWrapperProps,
 } from '../../../core/ui/layout/pageBannerCard/PageBannerCardWrapper';
-import BadgeCardView from '../../../core/ui/list/BadgeCardView';
-import Gutters from '../../../core/ui/grid/Gutters';
 
 export interface PageBannerCardProps extends PageBannerCardWrapperProps {
   subtitle?: ReactNode;
@@ -22,6 +24,7 @@ const PageBannerCard = ({ title, subtitle, iconComponent: Icon, ...props }: Prop
             {title}
           </PageTitle>
         </BadgeCardView>
+
         <Text color="primary" noWrap>
           {subtitle}
         </Text>
