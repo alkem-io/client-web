@@ -1,6 +1,4 @@
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { useTranslation } from 'react-i18next';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradient';
 import { useLatestContributionsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import usePaginatedQuery from '../../../../domain/shared/pagination/usePaginatedQuery';
@@ -21,10 +19,8 @@ import { SelectOption } from '@mui/base';
 import useLazyLoading from '../../../../domain/shared/pagination/useLazyLoading';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { gutters } from '../../../../core/ui/grid/utils';
-import { Identifiable } from '../../../../core/utils/Identifiable';
-
-const ROLE_OPTION_ALL = 'ROLE_OPTION_ALL';
-const SPACE_OPTION_ALL = 'SPACE_OPTION_ALL';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import { LatestContributionsProps, ROLE_OPTION_ALL, SPACE_OPTION_ALL } from './LatestContributionsProps';
 
 const SELECTABLE_ROLES = [ActivityFeedRoles.Member, ActivityFeedRoles.Admin, ActivityFeedRoles.Lead] as const;
 
@@ -44,16 +40,6 @@ const Loader = forwardRef((props, ref) => {
     </BadgeCardView>
   );
 });
-
-interface LatestContributionsProps {
-  spaceMemberships:
-    | (Identifiable & {
-        profile: {
-          displayName: string;
-        };
-      })[]
-    | undefined;
-}
 
 const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => {
   const { t } = useTranslation();
@@ -127,8 +113,7 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
   }, [t]);
 
   return (
-    <PageContentBlock sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
-      <PageContentBlockHeader title={t('pages.home.sections.latestContributions.title')} />
+    <Gutters disablePadding disableGap sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
       <Box display="flex" justifyContent="end" alignItems="center">
         <SeamlessSelect
           value={filter.space}
@@ -157,7 +142,7 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
           {loader}
         </Box>
       </ScrollerWithGradient>
-    </PageContentBlock>
+    </Gutters>
   );
 };
 

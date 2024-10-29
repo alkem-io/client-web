@@ -2173,7 +2173,7 @@
       },
       "sections": {
         "latestContributions": {
-          "title": "Latest Contributions in my Spaces",
+          "title": "Latest Activity in my Spaces",
           "filter": {
             "space": {
               "label": "Space:",
@@ -2186,7 +2186,7 @@
           }
         },
         "myLatestContributions": {
-          "title": "My Latest Contributions",
+          "title": "My Latest Activity",
           "card": {
             "journey": "in: <journeyicon /> {{journey}}"
           },
