@@ -21,6 +21,7 @@ import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { gutters } from '../../../../core/ui/grid/utils';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { LatestContributionsProps, ROLE_OPTION_ALL, SPACE_OPTION_ALL } from './LatestContributionsProps';
+import Loading from '../../../../core/ui/loading/Loading';
 
 const SELECTABLE_ROLES = [ActivityFeedRoles.Member, ActivityFeedRoles.Admin, ActivityFeedRoles.Lead] as const;
 
@@ -112,36 +113,44 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
     return options;
   }, [t]);
 
+  const renderFilters = () => (
+    <Box display="flex" justifyContent="end" alignItems="center">
+      <SeamlessSelect
+        value={filter.space}
+        options={spaceOptions}
+        label={t('pages.home.sections.latestContributions.filter.space.label')}
+        onChange={handleSpaceSelect}
+      />
+      <SeamlessSelect
+        value={filter.role}
+        options={roleOptions}
+        label={t('pages.home.sections.latestContributions.filter.role.label')}
+        onChange={handleRoleSelect}
+      />
+    </Box>
+  );
+
   return (
     <Gutters disablePadding disableGap sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
-      <Box display="flex" justifyContent="end" alignItems="center">
-        <SeamlessSelect
-          value={filter.space}
-          options={spaceOptions}
-          label={t('pages.home.sections.latestContributions.filter.space.label')}
-          onChange={handleSpaceSelect}
-        />
-        <SeamlessSelect
-          value={filter.role}
-          options={roleOptions}
-          label={t('pages.home.sections.latestContributions.filter.role.label')}
-          onChange={handleRoleSelect}
-        />
-      </Box>
-      <ScrollerWithGradient>
-        <Box padding={1}>
-          {data?.activityFeed.activityFeed.map(activity => {
-            return (
-              <ActivityViewChooser
-                key={activity.id}
-                activity={activity as ActivityLogResultType}
-                avatarUrl={activity.triggeredBy.profile.avatar?.uri}
-              />
-            );
-          })}
-          {loader}
-        </Box>
-      </ScrollerWithGradient>
+      {renderFilters()}
+      {!data && loading ? (
+        <Loading />
+      ) : (
+        <ScrollerWithGradient>
+          <Box padding={gutters(0.5)}>
+            {data?.activityFeed.activityFeed.map(activity => {
+              return (
+                <ActivityViewChooser
+                  key={activity.id}
+                  activity={activity as ActivityLogResultType}
+                  avatarUrl={activity.triggeredBy.profile.avatar?.uri}
+                />
+              );
+            })}
+            {loader}
+          </Box>
+        </ScrollerWithGradient>
+      )}
     </Gutters>
   );
 };

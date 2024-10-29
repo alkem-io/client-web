@@ -17,6 +17,9 @@ import defaultJourneyAvatar from '../../../../../domain/journey/defaultVisuals/A
 import { LatestContributionsProps, SPACE_OPTION_ALL } from '../LatestContributionsProps';
 import { SelectOption } from '@mui/base';
 import SeamlessSelect from '../../../../../core/ui/forms/select/SeamlessSelect';
+import Loading from '../../../../../core/ui/loading/Loading';
+import Gutters from '../../../../../core/ui/grid/Gutters';
+import { gutters } from '../../../../../core/ui/grid/utils';
 
 const MY_LATEST_CONTRIBUTIONS_COUNT = 20;
 
@@ -44,7 +47,7 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
       space: event.target.value as string | typeof SPACE_OPTION_ALL,
     });
 
-  const { data } = useLatestContributionsGroupedQuery({
+  const { data, loading } = useLatestContributionsGroupedQuery({
     variables: {
       filter: {
         myActivity: true,
@@ -86,8 +89,11 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
     return spaces;
   }, [spaceMemberships, t]);
 
+  const hasActivity = activities && activities.length > 0;
+  const isAllSpcesSelected = filter.space === SPACE_OPTION_ALL;
+
   return (
-    <>
+    <Gutters disableGap disablePadding>
       <Box display="flex" justifyContent="end" alignItems="center">
         <SeamlessSelect
           value={filter.space}
@@ -96,24 +102,30 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
           onChange={handleSpaceSelect}
         />
       </Box>
-      <ScrollerWithGradient>
-        <Box padding={1}>
-          {activities && activities.length > 0 ? (
-            activities.map(activity => {
-              return (
-                <ActivityViewChooser
-                  key={activity.id}
-                  activity={activity as ActivityLogResultType}
-                  avatarUrl={activity.space?.profile.avatar?.uri || defaultJourneyAvatar}
-                />
-              );
-            })
-          ) : (
-            <CaptionSmall padding={1}>{t('pages.home.sections.myLatestContributions.noContributions')}</CaptionSmall>
-          )}
-        </Box>
-      </ScrollerWithGradient>
-    </>
+      {loading ? (
+        <Loading />
+      ) : (
+        <ScrollerWithGradient>
+          <Box padding={gutters(0.5)}>
+            {hasActivity &&
+              activities.map(activity => {
+                return (
+                  <ActivityViewChooser
+                    key={activity.id}
+                    activity={activity as ActivityLogResultType}
+                    avatarUrl={activity.space?.profile.avatar?.uri || defaultJourneyAvatar}
+                  />
+                );
+              })}
+            {!hasActivity && isAllSpcesSelected && (
+              <CaptionSmall padding={gutters()}>
+                {t('pages.home.sections.myLatestContributions.noContributions')}
+              </CaptionSmall>
+            )}
+          </Box>
+        </ScrollerWithGradient>
+      )}
+    </Gutters>
   );
 };
 
