@@ -3000,7 +3000,7 @@ export const PostParentFragmentDoc = gql`
   fragment PostParent on SearchResultPost {
     space {
       id
-      type
+      level
       visibility
       profile {
         id
@@ -3167,7 +3167,7 @@ export const SearchResultSpaceFragmentDoc = gql`
   fragment SearchResultSpace on SearchResultSpace {
     parentSpace {
       id
-      type
+      level
       profile {
         id
         url
@@ -3181,7 +3181,7 @@ export const SearchResultSpaceFragmentDoc = gql`
     }
     space {
       id
-      type
+      level
       profile {
         id
         url

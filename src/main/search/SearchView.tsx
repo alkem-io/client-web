@@ -48,6 +48,7 @@ export type SearchResultMetaType =
   | TypedSearchResult<SearchResultType.Organization, SearchResultOrganizationFragment>
   | TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>
   | TypedSearchResult<SearchResultType.Space, SearchResultSpaceFragment>
+  | TypedSearchResult<SearchResultType.Subspace, SearchResultSpaceFragment>
   | TypedSearchResult<SearchResultType.Challenge, SearchResultSpaceFragment>
   | TypedSearchResult<SearchResultType.Opportunity, SearchResultSpaceFragment>
   | TypedSearchResult<SearchResultType.Callout, SearchResultCalloutFragment>;
@@ -66,7 +67,12 @@ interface SearchViewSections {
 }
 
 const searchResultSectionTypes: Record<keyof SearchViewSections, SearchResultType[]> = {
-  journeyResults: [SearchResultType.Space, SearchResultType.Challenge, SearchResultType.Opportunity],
+  journeyResults: [
+    SearchResultType.Space,
+    SearchResultType.Subspace,
+    SearchResultType.Challenge,
+    SearchResultType.Opportunity,
+  ],
   calloutResults: [SearchResultType.Callout],
   contributionResults: [SearchResultType.Post],
   contributorResults: [SearchResultType.User, SearchResultType.Organization],
