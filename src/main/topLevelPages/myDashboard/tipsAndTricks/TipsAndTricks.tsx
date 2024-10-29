@@ -1,25 +1,18 @@
-import { FC } from 'react';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { useTranslation } from 'react-i18next';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import SeeMore from '../../../../core/ui/content/SeeMore';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import Avatar from '../../../../core/ui/avatar/Avatar';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { Caption } from '../../../../core/ui/typography';
+import Gutters from '../../../../core/ui/grid/Gutters';
 
-interface TipsAndTricksProps {
-  halfWidth?: boolean;
-}
-
-const TipsAndTricks: FC<TipsAndTricksProps> = ({ halfWidth }) => {
+export const TipsAndTricks = () => {
   const { t } = useTranslation();
 
   const items = t('pages.home.sections.tipsAndTricks.items', { returnObjects: true });
 
   return (
-    <PageContentBlock halfWidth={halfWidth} sx={{ justifyContent: 'space-around' }}>
-      <PageContentBlockHeader title={t('pages.home.sections.tipsAndTricks.title')} />
+    <Gutters disablePadding>
       {items.map((item, index) => (
         <BadgeCardView
           key={index}
@@ -36,8 +29,6 @@ const TipsAndTricks: FC<TipsAndTricksProps> = ({ halfWidth }) => {
         </BadgeCardView>
       ))}
       <SeeMore label="pages.home.sections.tipsAndTricks.findMore" to="/forum" />
-    </PageContentBlock>
+    </Gutters>
   );
 };
-
-export default TipsAndTricks;
