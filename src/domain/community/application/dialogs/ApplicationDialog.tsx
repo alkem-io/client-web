@@ -77,7 +77,7 @@ export type ApplicationDialogDataType = {
   id: string;
   contributorType: CommunityContributorType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  lifecycle?: any;
+  nextEvents: string[];
   email?: string;
   createdDate: Date | undefined;
   updatedDate?: Date;
@@ -121,7 +121,7 @@ export const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onClose, on
   const user = app?.contributor;
   const questions = app?.questions ?? [];
 
-  const nextEvents = app?.lifecycle?.nextEvents ?? [];
+  const nextEvents = app?.nextEvents ?? [];
 
   const username = user?.profile.displayName ?? '';
   const avatarSrc = user?.profile.avatar?.uri ?? '';

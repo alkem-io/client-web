@@ -19,10 +19,7 @@ query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: Organiza
       }
       verification {
         id
-        lifecycle {
-          id
-          state
-        }
+        state
       }
     }
     pageInfo {
@@ -44,12 +41,9 @@ query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: Organiza
 }
 
 mutation adminOrganizationVerify($input: OrganizationVerificationEventInput!) {
-  eventOnOrganizationVerification(organizationVerificationEventData: $input) {
+  eventOnOrganizationVerification(eventData: $input) {
     id
-    lifecycle {
-      id
-      nextEvents
-      state
-    }
+    nextEvents
+    state
   }
 }
