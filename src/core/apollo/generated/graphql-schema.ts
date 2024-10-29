@@ -5344,6 +5344,7 @@ export enum SearchResultType {
   Organization = 'ORGANIZATION',
   Post = 'POST',
   Space = 'SPACE',
+  Subspace = 'SUBSPACE',
   User = 'USER',
   Usergroup = 'USERGROUP',
   Whiteboard = 'WHITEBOARD',
@@ -28183,6 +28184,16 @@ export type LibraryTemplatesFragment = {
         }
       | undefined;
   }>;
+};
+
+export type PendingInvitationsCountQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PendingInvitationsCountQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    communityInvitations: Array<{ __typename?: 'CommunityInvitationResult'; id: string }>;
+  };
 };
 
 export type ExploreSpacesSearchQueryVariables = Exact<{

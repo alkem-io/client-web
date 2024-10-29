@@ -21773,6 +21773,67 @@ export function refetchInnovationLibraryQuery(variables?: SchemaTypes.Innovation
   return { query: InnovationLibraryDocument, variables: variables };
 }
 
+export const PendingInvitationsCountDocument = gql`
+  query PendingInvitationsCount {
+    me {
+      communityInvitations(states: ["invited"]) {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __usePendingInvitationsCountQuery__
+ *
+ * To run a query within a React component, call `usePendingInvitationsCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePendingInvitationsCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePendingInvitationsCountQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePendingInvitationsCountQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PendingInvitationsCountQuery,
+    SchemaTypes.PendingInvitationsCountQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PendingInvitationsCountQuery, SchemaTypes.PendingInvitationsCountQueryVariables>(
+    PendingInvitationsCountDocument,
+    options
+  );
+}
+
+export function usePendingInvitationsCountLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PendingInvitationsCountQuery,
+    SchemaTypes.PendingInvitationsCountQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.PendingInvitationsCountQuery,
+    SchemaTypes.PendingInvitationsCountQueryVariables
+  >(PendingInvitationsCountDocument, options);
+}
+
+export type PendingInvitationsCountQueryHookResult = ReturnType<typeof usePendingInvitationsCountQuery>;
+export type PendingInvitationsCountLazyQueryHookResult = ReturnType<typeof usePendingInvitationsCountLazyQuery>;
+export type PendingInvitationsCountQueryResult = Apollo.QueryResult<
+  SchemaTypes.PendingInvitationsCountQuery,
+  SchemaTypes.PendingInvitationsCountQueryVariables
+>;
+export function refetchPendingInvitationsCountQuery(variables?: SchemaTypes.PendingInvitationsCountQueryVariables) {
+  return { query: PendingInvitationsCountDocument, variables: variables };
+}
+
 export const ExploreSpacesSearchDocument = gql`
   query ExploreSpacesSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {

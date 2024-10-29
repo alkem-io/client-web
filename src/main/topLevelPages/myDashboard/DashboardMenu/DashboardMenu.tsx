@@ -1,5 +1,5 @@
 import React from 'react';
-import { Divider, FormControlLabel, List, ListItem, ListItemButton, Switch } from '@mui/material';
+import { Box, Divider, FormControlLabel, List, ListItem, ListItemButton, Switch } from '@mui/material';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { DashboardMenuProps, MenuOptionProps } from './dashboardMenuTypes';
 import { useDashboardContext } from '../DashboardContext';
@@ -14,12 +14,28 @@ import {
   PendingMembershipsDialogType,
   usePendingMembershipsDialog,
 } from '../../../../domain/community/pendingMembership/PendingMembershipsDialogContext';
+import { usePendingInvitationsCountQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import BadgeCounter from '../../../../core/ui/icon/BadgeCounter';
 
+/**
+ * DashboardMenu Component
+ *
+ * This component renders the home menu with various menu items by type.
+ * It uses the `useHomeMenuItems` hook to fetch and prepare the menu items,
+ * A special case is the 'invites' type, requiring  a query for the count.
+ *
+ * @component
+ */
 export const DashboardMenu = ({ compact = false }: DashboardMenuProps) => {
   const { t } = useTranslation();
   const { activityEnabled, setActivityEnabled, setOpenedDialog } = useDashboardContext();
   const { items, loading: itemsConfigLoading } = useHomeMenuItems();
   const { setOpenDialog } = usePendingMembershipsDialog();
+
+  const { data: invitesData } = usePendingInvitationsCountQuery({
+    fetchPolicy: 'network-only',
+  });
+  const pendingInvitationsCount = invitesData?.me?.communityInvitations?.length ?? 0;
 
   const changeView = (event: React.ChangeEvent<HTMLInputElement>) => {
     setActivityEnabled(event.target.checked);
@@ -46,6 +62,12 @@ export const DashboardMenu = ({ compact = false }: DashboardMenuProps) => {
             onClick={() => setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList })}
           >
             {getItemContent(item)}
+            {pendingInvitationsCount > 0 && (
+              <>
+                <Box sx={{ flexGrow: 1 }} />
+                <BadgeCounter count={pendingInvitationsCount} size="small" />
+              </>
+            )}
           </ListItemButton>
         );
       case 'link':
