@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 import { LoadingButton } from '@mui/lab';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +16,6 @@ import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import { DEFAULT_TAGSET } from '../../../../common/tags/tagset.constants';
 import { EmptyWhiteboardString } from '../../../../common/whiteboard/EmptyWhiteboard';
 import { CalloutType, TagsetType } from '../../../../../core/apollo/generated/graphql-schema';
-import { useStorageConfigLocally } from '../../../../storage/StorageBucket/useStorageConfigLocally';
 
 export type CalloutEditDialogProps = {
   open: boolean;
@@ -59,8 +58,6 @@ const CalloutEditDialog = ({
 
   const { t } = useTranslation();
 
-  const { setLastOpenedStorageConfig } = useStorageConfigLocally();
-
   const handleStatusChanged = (valid: boolean) => setValid(valid);
 
   const handleChange = (newCallout: CalloutFormOutput) => setNewCallout(newCallout);
@@ -95,10 +92,6 @@ const CalloutEditDialog = ({
   }, [callout, newCallout, onCalloutEdit]);
 
   const CalloutIcon = calloutType ? calloutIcons[calloutType] : undefined;
-
-  useEffect(() => {
-    setLastOpenedStorageConfig(callout.id);
-  }, [callout.id, setLastOpenedStorageConfig]);
 
   return (
     <>

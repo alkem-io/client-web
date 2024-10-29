@@ -1,106 +1,57 @@
-import React, { FC, useMemo } from 'react';
-import { Formik, FormikConfig } from 'formik';
-import {
-  CalloutGroupName,
-  CalloutState,
-  CalloutType,
-  Tagset,
-  TagsetType,
-} from '../../../core/apollo/generated/graphql-schema';
+import { useMemo, PropsWithChildren } from 'react';
+
 import * as yup from 'yup';
+import { Formik, FormikConfig } from 'formik';
 import { useTranslation } from 'react-i18next';
-import { MARKDOWN_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
-import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInputField';
-import FormikEffectFactory from '../../../core/ui/forms/FormikEffect';
-import { FormikSwitch } from '../../../core/ui/forms/FormikSwitch';
-import { displayNameValidator } from '../../../core/ui/forms/validator/displayNameValidator';
-import MarkdownValidator from '../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import FormikMarkdownField from '../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { TagsetSegment } from '../../platform/admin/components/Common/TagsetSegment';
-import ReferenceSegment, { referenceSegmentSchema } from '../../platform/admin/components/Common/ReferenceSegment';
-import { Reference } from '../../common/profile/Profile';
-import { ProfileReferenceSegment } from '../../platform/admin/components/Common/ProfileReferenceSegment';
-import Gutters from '../../../core/ui/grid/Gutters';
-import { gutters } from '../../../core/ui/grid/utils';
-import { EmptyWhiteboardString } from '../../common/whiteboard/EmptyWhiteboard';
-import FormikSelect from '../../../core/ui/forms/FormikSelect';
-import { FormikSelectValue } from '../../../core/ui/forms/FormikAutocomplete';
 import { FormControlLabel } from '@mui/material';
+
+import Gutters from '../../../core/ui/grid/Gutters';
 import { Caption } from '../../../core/ui/typography';
+import FormikSelect from '../../../core/ui/forms/FormikSelect';
+import { FormikSwitch } from '../../../core/ui/forms/FormikSwitch';
+import FormikEffectFactory from '../../../core/ui/forms/FormikEffect';
 import CalloutWhiteboardField, {
   WhiteboardFieldSubmittedValues,
   WhiteboardFieldSubmittedValuesWithPreviewImages,
 } from './creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
-import { JourneyTypeName } from '../../journey/JourneyTypeName';
-import { JourneyCalloutGroupNameOptions } from './CalloutsInContext/CalloutsGroup';
-import { DEFAULT_TAGSET } from '../../common/tags/tagset.constants';
+import { FormikSelectValue } from '../../../core/ui/forms/FormikAutocomplete';
+import { EmptyWhiteboardString } from '../../common/whiteboard/EmptyWhiteboard';
+import { TagsetSegment } from '../../platform/admin/components/Common/TagsetSegment';
+import MarkdownValidator from '../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInputField';
+import FormikMarkdownField from '../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import PostTemplateSelector from '../../templates/components/CalloutForm/PostTemplateSelector';
+import { ProfileReferenceSegment } from '../../platform/admin/components/Common/ProfileReferenceSegment';
 import WhiteboardTemplateSelector from '../../templates/components/CalloutForm/WhiteboardTemplateSelector';
+import ReferenceSegment, { referenceSegmentSchema } from '../../platform/admin/components/Common/ReferenceSegment';
 
-type FormValueType = {
-  displayName: string;
-  description: string;
-  type: CalloutType;
-  tagsets: Tagset[];
-  references: Reference[];
-  opened: boolean;
-  groupName: CalloutGroupName;
-  postDescription?: string;
-  whiteboardContent?: string;
-  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
-};
+import { gutters } from '../../../core/ui/grid/utils';
+import {
+  Tagset,
+  TagsetType,
+  CalloutType,
+  CalloutState,
+  CalloutGroupName,
+} from '../../../core/apollo/generated/graphql-schema';
+import { Reference } from '../../common/profile/Profile';
+import { JourneyTypeName } from '../../journey/JourneyTypeName';
+import { DEFAULT_TAGSET } from '../../common/tags/tagset.constants';
+import { JourneyCalloutGroupNameOptions } from './CalloutsInContext/CalloutsGroup';
+import { MARKDOWN_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
+import { displayNameValidator } from '../../../core/ui/forms/validator/displayNameValidator';
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
 
-export type CalloutFormInput = {
-  id?: string;
-  displayName?: string;
-  description?: string;
-  tags?: string[];
-  references?: Reference[];
-  type?: CalloutType;
-  state?: CalloutState;
-  groupName?: CalloutGroupName;
-  postDescription?: string;
-  whiteboardContent?: string;
-  whiteboard?: WhiteboardFieldSubmittedValues;
-  profileId?: string;
-};
-
-export type CalloutFormOutput = {
-  displayName: string;
-  description: string;
-  tags: string[];
-  references: Reference[];
-  type: CalloutType;
-  state: CalloutState;
-  groupName: CalloutGroupName;
-  postDescription?: string;
-  whiteboardContent?: string;
-  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
-};
-
-export interface CalloutFormProps {
-  calloutType: CalloutType;
-  callout: CalloutFormInput;
-  editMode?: boolean;
-  canChangeCalloutLocation?: boolean;
-  onChange?: (callout: CalloutFormOutput) => void;
-  onStatusChanged?: (isValid: boolean) => void;
-  children?: FormikConfig<FormValueType>['children'];
-  journeyTypeName: JourneyTypeName;
-}
-
-const CalloutForm: FC<CalloutFormProps> = ({
-  calloutType,
+const CalloutForm = ({
+  children,
   callout,
+  calloutType,
+  journeyTypeName,
   editMode = false,
   canChangeCalloutLocation,
   onChange,
   onStatusChanged,
-  journeyTypeName,
-  children,
-}) => {
+}: PropsWithChildren<CalloutFormProps>) => {
   const { t } = useTranslation();
 
   const tagsets: Tagset[] = useMemo(
@@ -118,14 +69,14 @@ const CalloutForm: FC<CalloutFormProps> = ({
 
   const initialValues: FormValueType = useMemo(
     () => ({
+      tagsets,
+      type: calloutType,
+      references: callout?.references ?? [],
       displayName: callout?.displayName ?? '',
       description: callout?.description ?? '',
-      type: calloutType,
-      tagsets,
-      references: callout?.references ?? [],
-      opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
-      groupName: callout?.groupName ?? CalloutGroupName.Knowledge,
       postDescription: callout.postDescription ?? '',
+      groupName: callout?.groupName ?? CalloutGroupName.Knowledge,
+      opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
       whiteboardContent: callout.whiteboardContent ?? EmptyWhiteboardString,
       whiteboard: callout?.whiteboard
         ? {
@@ -157,17 +108,18 @@ const CalloutForm: FC<CalloutFormProps> = ({
 
   const handleChange = (values: FormValueType) => {
     const callout: CalloutFormOutput = {
-      displayName: values.displayName,
-      description: values.description,
+      type: calloutType,
+      groupName: values.groupName,
       tags: values.tagsets[0].tags,
       references: values.references,
-      type: calloutType,
-      state: values.opened ? CalloutState.Open : CalloutState.Closed,
-      groupName: values.groupName,
+      whiteboard: values.whiteboard,
+      displayName: values.displayName,
+      description: values.description,
       postDescription: values.postDescription,
       whiteboardContent: values.whiteboardContent,
-      whiteboard: values.whiteboard,
+      state: values.opened ? CalloutState.Open : CalloutState.Closed,
     };
+
     onChange?.(callout);
   };
 
@@ -180,55 +132,62 @@ const CalloutForm: FC<CalloutFormProps> = ({
         name: t(`callout.callout-group.${key}` as const),
       }));
     }
+
     return [];
   }, [editMode]);
 
   // Enable or disable form fields depending on the callout type and other conditions
   const formConfiguration = {
-    references: calloutType !== CalloutType.LinkCollection,
-    linkCollectionAdd: calloutType === CalloutType.LinkCollection,
     tags: true,
-    postTemplate: calloutType === CalloutType.PostCollection,
-    whiteboardTemplate: calloutType === CalloutType.WhiteboardCollection,
-    newResponses: calloutType !== CalloutType.Whiteboard,
-    locationChange: editMode && Boolean(canChangeCalloutLocation),
     whiteboard: calloutType === CalloutType.Whiteboard,
+    newResponses: calloutType !== CalloutType.Whiteboard,
+    references: calloutType !== CalloutType.LinkCollection,
+    postTemplate: calloutType === CalloutType.PostCollection,
+    linkCollectionAdd: calloutType === CalloutType.LinkCollection,
+    locationChange: editMode && Boolean(canChangeCalloutLocation),
+    whiteboardTemplate: calloutType === CalloutType.WhiteboardCollection,
   };
 
   return (
     <Formik
+      validateOnMount
+      enableReinitialize
       initialValues={initialValues}
       validationSchema={validationSchema}
       initialTouched={{
         displayName: initialValues.displayName !== '',
       }}
-      enableReinitialize
-      validateOnMount
       onSubmit={() => {}}
     >
       {formikState => (
         <>
           <Gutters>
             <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
+
             <FormikInputField name="displayName" title={t('common.title')} placeholder={t('common.title')} />
+
             {!editMode && formConfiguration.whiteboard && <CalloutWhiteboardField name="whiteboard" />}
+
             <FormikMarkdownField
-              name="description"
-              title={t('components.callout-creation.info-step.description')}
               rows={7}
+              name="description"
               maxLength={MARKDOWN_TEXT_LENGTH}
+              title={t('components.callout-creation.info-step.description')}
             />
+
             {editMode && formConfiguration.references && (
               <ProfileReferenceSegment
                 compactMode
-                references={formikState.values.references}
-                profileId={callout?.profileId}
                 marginTop={gutters(-1)}
+                profileId={callout?.profileId}
+                references={formikState.values.references}
               />
             )}
+
             {!editMode && formConfiguration.references && (
               <ReferenceSegment compactMode references={formikState.values.references} marginTop={gutters(-1)} />
             )}
+
             {formConfiguration.tags && (
               <TagsetSegment
                 tagsets={tagsets}
@@ -236,21 +195,27 @@ const CalloutForm: FC<CalloutFormProps> = ({
                 helpText={t('components.post-creation.info-step.tags-help-text')}
               />
             )}
+
             {!editMode && formConfiguration.linkCollectionAdd && (
               <Caption>{t('callout.link-collection.save-to-add')}</Caption>
             )}
+
             {formConfiguration.postTemplate && <PostTemplateSelector name="postDescription" />}
+
             {formConfiguration.whiteboardTemplate && <WhiteboardTemplateSelector name="whiteboardContent" />}
+
             {formConfiguration.newResponses && <FormikSwitch name="opened" title={t('callout.state-permission')} />}
+
             {formConfiguration.locationChange && journeyTypeName === 'space' && (
               <FormControlLabel
-                sx={{ margin: 0, '& > span': { marginRight: theme => theme.spacing(2) } }}
                 labelPlacement="start"
-                control={<FormikSelect name="groupName" values={calloutsGroups} />}
                 label={t('callout.callout-location')}
+                control={<FormikSelect name="groupName" values={calloutsGroups} />}
+                sx={{ margin: 0, '& > span': { marginRight: theme => theme.spacing(2) } }}
               />
             )}
           </Gutters>
+
           {typeof children === 'function' ? (children as Function)(formikState) : children}
         </>
       )}
@@ -259,3 +224,55 @@ const CalloutForm: FC<CalloutFormProps> = ({
 };
 
 export default CalloutForm;
+
+type FormValueType = {
+  opened: boolean;
+  type: CalloutType;
+  tagsets: Tagset[];
+  displayName: string;
+  description: string;
+  references: Reference[];
+  postDescription?: string;
+  whiteboardContent?: string;
+  groupName: CalloutGroupName;
+  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
+};
+
+export type CalloutFormInput = {
+  id?: string;
+  tags?: string[];
+  profileId?: string;
+  type?: CalloutType;
+  displayName?: string;
+  description?: string;
+  state?: CalloutState;
+  postDescription?: string;
+  references?: Reference[];
+  whiteboardContent?: string;
+  groupName?: CalloutGroupName;
+  whiteboard?: WhiteboardFieldSubmittedValues;
+};
+
+export type CalloutFormOutput = {
+  tags: string[];
+  type: CalloutType;
+  displayName: string;
+  description: string;
+  state: CalloutState;
+  references: Reference[];
+  postDescription?: string;
+  whiteboardContent?: string;
+  groupName: CalloutGroupName;
+  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
+};
+
+export interface CalloutFormProps {
+  calloutType: CalloutType;
+  callout: CalloutFormInput;
+  journeyTypeName: JourneyTypeName;
+  editMode?: boolean;
+  canChangeCalloutLocation?: boolean;
+  children?: FormikConfig<FormValueType>['children'];
+  onStatusChanged?: (isValid: boolean) => void;
+  onChange?: (callout: CalloutFormOutput) => void;
+}

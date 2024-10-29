@@ -1,31 +1,34 @@
-import { createContext, PropsWithChildren, useContext } from 'react';
-import useStorageConfig, { StorageConfigOptions, StorageConfigProvided } from './useStorageConfig';
+import { useState, useContext, createContext, PropsWithChildren } from 'react';
+import useStorageConfig, { type StorageConfigOptions, type StorageConfigProvided } from './useStorageConfig';
 
 const StorageConfigContext = createContext<StorageConfigProvided | undefined>(undefined);
 
-/**
- *
- * @param temporaryLocation - false by default unless we're creating a new callout.
- *
- */
+export const StorageConfigContextProvider = ({ children, ...rest }: PropsWithChildren<StorageConfigOptions>) => {
+  const [isTemporary, setIsTemporary] = useState(false);
 
-export const StorageConfigContextProvider = ({
-  children,
-  temporaryLocation = false,
-  ...rest
-}: PropsWithChildren<StorageConfigOptions>) => {
-  const storageConfig = useStorageConfig({ ...rest, temporaryLocation });
-  // console.log('@@@@@ storageConfig >>>>>', JSON.stringify(storageConfig, null, 2));
+  const storageConfig = useStorageConfig(rest)?.storageConfig;
 
-  return <StorageConfigContext.Provider value={storageConfig} children={children} />;
+  const ctxValue = {
+    storageConfig: storageConfig
+      ? {
+          ...storageConfig,
+          temporaryLocation: isTemporary,
+        }
+      : undefined,
+    setTemporaryLocation: (arg: boolean) => setIsTemporary(arg),
+  };
+
+  console.log('@@@ STORAGE_CONFIG >>>', JSON.stringify(ctxValue.storageConfig, null, 2));
+
+  return <StorageConfigContext.Provider value={ctxValue} children={children} />;
 };
 
 export const useStorageConfigContext = () => {
-  const storageConfig = useContext(StorageConfigContext);
+  const storageConfigCtx = useContext(StorageConfigContext);
 
-  if (!storageConfig) {
+  if (!storageConfigCtx) {
     throw new Error('No StorageConfigContext provided.');
   }
 
-  return storageConfig.storageConfig;
+  return storageConfigCtx;
 };

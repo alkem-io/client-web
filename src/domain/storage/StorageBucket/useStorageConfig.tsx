@@ -1,23 +1,131 @@
+import { useMemo } from 'react';
+
 import {
-  useCalloutPostStorageConfigQuery,
+  useUserStorageConfigQuery,
   useCalloutStorageConfigQuery,
-  useInnovationHubStorageConfigQuery,
-  useInnovationPackStorageConfigQuery,
   useJourneyStorageConfigQuery,
-  useOrganizationStorageConfigQuery,
   usePlatformStorageConfigQuery,
   useTemplateStorageConfigQuery,
-  useUserStorageConfigQuery,
+  useCalloutPostStorageConfigQuery,
+  useOrganizationStorageConfigQuery,
+  useInnovationHubStorageConfigQuery,
+  useInnovationPackStorageConfigQuery,
   useVirtualContributorStorageConfigQuery,
 } from '../../../core/apollo/generated/apollo-hooks';
-import { useMemo } from 'react';
 import { AuthorizationPrivilege } from '../../../core/apollo/generated/graphql-schema';
 
+const useStorageConfig = ({ skip, locationType, ...options }: StorageConfigOptions) => {
+  const journeyOptions = options as UseStorageConfigOptionsSpace;
+  const { data: journeyStorageConfigData } = useJourneyStorageConfigQuery({
+    variables: { spaceId: journeyOptions.spaceId! },
+    skip: skip || locationType !== 'journey' || !journeyOptions.spaceId,
+  });
+
+  const calloutOptions = options as UseStorageConfigOptionsCallout;
+  const { data: calloutStorageConfigData } = useCalloutStorageConfigQuery({
+    variables: { calloutId: calloutOptions.calloutId },
+    skip: skip || locationType !== 'callout',
+  });
+
+  const postOptions = options as UseStorageConfigOptionsPost;
+  const { data: postStorageConfigData } = useCalloutPostStorageConfigQuery({
+    variables: {
+      postId: postOptions.postId!, // ensured by skip
+      calloutId: postOptions.calloutId!, // ensured by skip
+    },
+    skip: skip || locationType !== 'post' || !postOptions.postId || !postOptions.calloutId,
+  });
+
+  const templateOptions = options as UseStorageConfigOptionsTemplate;
+  const { data: templateStorageConfigData } = useTemplateStorageConfigQuery({
+    variables: { templateId: templateOptions.templateId! },
+    skip: skip || locationType !== 'template' || !templateOptions.templateId,
+  });
+
+  const userOptions = options as UseStorageConfigOptionsUser;
+  const { data: userStorageConfigData } = useUserStorageConfigQuery({
+    variables: userOptions,
+    skip: skip || locationType !== 'user',
+  });
+
+  const virtualContributorOptions = options as UseStorageConfigOptionsVirtualContributor;
+  const { data: virtualContributorStorageConfigData } = useVirtualContributorStorageConfigQuery({
+    variables: virtualContributorOptions,
+    skip: skip || locationType !== 'virtualContributor',
+  });
+
+  const organizationOptions = options as UseStorageConfigOptionsOrganization;
+  const { data: organizationStorageConfigData } = useOrganizationStorageConfigQuery({
+    variables: {
+      organizationId: organizationOptions.organizationId!, // presence ensured by skip
+    },
+    skip: skip || locationType !== 'organization' || !organizationOptions.organizationId,
+  });
+
+  const innovationPackOptions = options as UseStorageConfigOptionsInnovationPack;
+  const { data: innovationPackStorageConfigData } = useInnovationPackStorageConfigQuery({
+    variables: {
+      innovationPackId: innovationPackOptions.innovationPackId!, // presence ensured by skip
+    },
+    skip: skip || locationType !== 'innovationPack' || !innovationPackOptions.innovationPackId,
+  });
+
+  const innovationHubOptions = options as UseStorageConfigOptionsInnovationHub;
+  const { data: innovationHubStorageConfigData } = useInnovationHubStorageConfigQuery({
+    variables: {
+      innovationHubId: innovationHubOptions.innovationHubId!, // presence ensured by skip
+    },
+    skip: skip || locationType !== 'innovationHub' || !innovationHubOptions.innovationHubId,
+  });
+
+  const { data: platformStorageConfigData } = usePlatformStorageConfigQuery({
+    skip: skip || locationType !== 'platform',
+  });
+
+  const journey = journeyStorageConfigData?.lookup.space;
+
+  const callout = calloutStorageConfigData?.lookup.callout;
+
+  const [contribution] = postStorageConfigData?.lookup.callout?.contributions ?? [];
+
+  const { profile } =
+    journey ??
+    callout?.framing ??
+    contribution?.post ??
+    templateStorageConfigData?.lookup.template ??
+    userStorageConfigData?.user ??
+    virtualContributorStorageConfigData?.virtualContributor ??
+    organizationStorageConfigData?.organization ??
+    innovationPackStorageConfigData?.lookup.innovationPack ??
+    innovationHubStorageConfigData?.platform.innovationHub ??
+    {};
+
+  const storageConfig =
+    profile?.storageBucket ?? platformStorageConfigData?.platform.storageAggregator.directStorageBucket;
+
+  return useMemo(
+    () => ({
+      storageConfig: storageConfig
+        ? {
+            storageBucketId: storageConfig.id,
+            maxFileSize: storageConfig.maxFileSize,
+            allowedMimeTypes: storageConfig.allowedMimeTypes,
+            canUpload: (storageConfig?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.FileUpload),
+          }
+        : undefined,
+    }),
+    [storageConfig]
+  );
+};
+
+export default useStorageConfig;
+
 export interface StorageConfig {
+  canUpload: boolean;
+  maxFileSize: number;
   storageBucketId: string;
   allowedMimeTypes: string[];
-  maxFileSize: number;
-  canUpload: boolean;
+  temporaryLocation: boolean;
 }
 
 type StorageConfigLocation =
@@ -87,7 +195,7 @@ interface UseStorageConfigOptionsPlatform extends UseStorageConfigOptionsBase {
   locationType: 'platform';
 }
 
-export type StorageConfigOptions = (
+export type StorageConfigOptions =
   | UseStorageConfigOptionsSpace
   | UseStorageConfigOptionsUser
   | UseStorageConfigOptionsVirtualContributor
@@ -97,124 +205,9 @@ export type StorageConfigOptions = (
   | UseStorageConfigOptionsTemplate
   | UseStorageConfigOptionsInnovationPack
   | UseStorageConfigOptionsInnovationHub
-  | UseStorageConfigOptionsPlatform
-) & {
-  temporaryLocation?: boolean;
-};
+  | UseStorageConfigOptionsPlatform;
 
-export interface StorageConfigProvided {
+export type StorageConfigProvided = {
   storageConfig: StorageConfig | undefined;
-}
-
-const useStorageConfig = ({ skip, locationType, temporaryLocation, ...options }: StorageConfigOptions) => {
-  const journeyOptions = options as UseStorageConfigOptionsSpace;
-  const { data: journeyStorageConfigData } = useJourneyStorageConfigQuery({
-    variables: {
-      spaceId: journeyOptions.spaceId!,
-    },
-    skip: skip || locationType !== 'journey' || !journeyOptions.spaceId,
-  });
-
-  const calloutOptions = options as UseStorageConfigOptionsCallout;
-  const { data: calloutStorageConfigData } = useCalloutStorageConfigQuery({
-    variables: {
-      calloutId: calloutOptions.calloutId,
-    },
-    skip: skip || locationType !== 'callout',
-  });
-
-  const postOptions = options as UseStorageConfigOptionsPost;
-  const { data: postStorageConfigData } = useCalloutPostStorageConfigQuery({
-    variables: {
-      postId: postOptions.postId!, // ensured by skip
-      calloutId: postOptions.calloutId!, // ensured by skip
-    },
-    skip: skip || locationType !== 'post' || !postOptions.postId || !postOptions.calloutId,
-  });
-
-  const templateOptions = options as UseStorageConfigOptionsTemplate;
-  const { data: templateStorageConfigData } = useTemplateStorageConfigQuery({
-    variables: {
-      templateId: templateOptions.templateId!,
-    },
-    skip: skip || locationType !== 'template' || !templateOptions.templateId,
-  });
-
-  const userOptions = options as UseStorageConfigOptionsUser;
-  const { data: userStorageConfigData } = useUserStorageConfigQuery({
-    variables: userOptions,
-    skip: skip || locationType !== 'user',
-  });
-
-  const virtualContributorOptions = options as UseStorageConfigOptionsVirtualContributor;
-  const { data: virtualContributorStorageConfigData } = useVirtualContributorStorageConfigQuery({
-    variables: virtualContributorOptions,
-    skip: skip || locationType !== 'virtualContributor',
-  });
-
-  const organizationOptions = options as UseStorageConfigOptionsOrganization;
-  const { data: organizationStorageConfigData } = useOrganizationStorageConfigQuery({
-    variables: {
-      organizationId: organizationOptions.organizationId!, // presence ensured by skip
-    },
-    skip: skip || locationType !== 'organization' || !organizationOptions.organizationId,
-  });
-
-  const innovationPackOptions = options as UseStorageConfigOptionsInnovationPack;
-  const { data: innovationPackStorageConfigData } = useInnovationPackStorageConfigQuery({
-    variables: {
-      innovationPackId: innovationPackOptions.innovationPackId!, // presence ensured by skip
-    },
-    skip: skip || locationType !== 'innovationPack' || !innovationPackOptions.innovationPackId,
-  });
-
-  const innovationHubOptions = options as UseStorageConfigOptionsInnovationHub;
-  const { data: innovationHubStorageConfigData } = useInnovationHubStorageConfigQuery({
-    variables: {
-      innovationHubId: innovationHubOptions.innovationHubId!, // presence ensured by skip
-    },
-    skip: skip || locationType !== 'innovationHub' || !innovationHubOptions.innovationHubId,
-  });
-
-  const { data: platformStorageConfigData } = usePlatformStorageConfigQuery({
-    skip: skip || locationType !== 'platform',
-  });
-
-  const journey = journeyStorageConfigData?.lookup.space;
-
-  const callout = calloutStorageConfigData?.lookup.callout;
-
-  const [contribution] = postStorageConfigData?.lookup.callout?.contributions ?? [];
-
-  const { profile } =
-    journey ??
-    callout?.framing ??
-    contribution?.post ??
-    templateStorageConfigData?.lookup.template ??
-    userStorageConfigData?.user ??
-    virtualContributorStorageConfigData?.virtualContributor ??
-    organizationStorageConfigData?.organization ??
-    innovationPackStorageConfigData?.lookup.innovationPack ??
-    innovationHubStorageConfigData?.platform.innovationHub ??
-    {};
-
-  const storageConfig =
-    profile?.storageBucket ?? platformStorageConfigData?.platform.storageAggregator.directStorageBucket;
-
-  return useMemo(
-    () => ({
-      storageConfig: storageConfig
-        ? {
-            temporaryLocation,
-            storageBucketId: storageConfig.id,
-            allowedMimeTypes: storageConfig.allowedMimeTypes,
-            maxFileSize: storageConfig.maxFileSize,
-            canUpload: (storageConfig?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.FileUpload),
-          }
-        : undefined,
-    }),
-    [storageConfig]
-  );
+  setTemporaryLocation: (isTemporary: boolean) => void;
 };
-
-export default useStorageConfig;

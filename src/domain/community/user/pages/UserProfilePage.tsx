@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import useNavigate from '../../../../core/routing/useNavigate';
 import { UserForm } from '../userForm/UserForm';
 import Loading from '../../../../core/ui/loading/Loading';
@@ -19,7 +19,6 @@ import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettingsLayout';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
-import { useStorageConfigLocally } from '../../../storage/StorageBucket/useStorageConfigLocally';
 
 interface UserProfilePageProps {}
 
@@ -54,12 +53,6 @@ export const UserProfilePage: FC<UserProfilePageProps> = () => {
     if (data?.user.id === currentUser?.user.id) return EditMode.edit;
     return EditMode.readOnly;
   }, [data, currentUser]);
-
-  const { setLastOpenedStorageConfig } = useStorageConfigLocally();
-
-  useEffect(() => {
-    setLastOpenedStorageConfig(user?.id ?? '');
-  }, [user?.id, setLastOpenedStorageConfig]);
 
   if (loading) return <Loading text={'Loading User Profile ...'} />;
 

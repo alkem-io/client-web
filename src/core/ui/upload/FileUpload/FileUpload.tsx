@@ -1,43 +1,30 @@
-import AttachFileIcon from '@mui/icons-material/AttachFile';
-import { CircularProgress } from '@mui/material';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CircularProgress } from '@mui/material';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+
 import 'react-image-crop/dist/ReactCrop.css';
-import UploadButton from '../../button/UploadButton';
-import { StorageConfig } from '../../../../domain/storage/StorageBucket/useStorageConfig';
 import {
   useUploadFileMutation,
   useUploadFileOnLinkMutation,
   useUploadFileOnReferenceMutation,
 } from '../../../apollo/generated/apollo-hooks';
+import UploadButton from '../../button/UploadButton';
 import { useNotification } from '../../notifications/useNotification';
-
-const DEFAULT_REFERENCE_TYPE = 'reference';
-
-export type FileUploadEntityType = 'reference' | 'link';
-
-interface FileUploadProps {
-  onUpload?: (fileCID: string) => void;
-  onChange?: (fileName: string) => void;
-  entityID?: string;
-  entityType?: FileUploadEntityType;
-  storageConfig: StorageConfig;
-}
+import { StorageConfig } from '../../../../domain/storage/StorageBucket/useStorageConfig';
 
 const bytesInMegabyte = Math.pow(1024, 2);
+const DEFAULT_REFERENCE_TYPE = 'reference';
 
-const FileUploadButton: FC<FileUploadProps> = ({
-  onUpload,
-  onChange,
+const FileUploadButton = ({
   entityID,
-  entityType = DEFAULT_REFERENCE_TYPE,
   storageConfig,
-}) => {
+  entityType = DEFAULT_REFERENCE_TYPE,
+  onChange,
+  onUpload,
+}: FileUploadProps) => {
   const { t } = useTranslation();
-  const notify = useNotification();
 
-  const acceptedFileTypes = storageConfig.allowedMimeTypes.join(',');
-  const maxFileSizeMb = storageConfig.maxFileSize ? storageConfig.maxFileSize / bytesInMegabyte : 0;
+  const notify = useNotification();
 
   const [uploadFileOnReference, { loading: loadingOnReference }] = useUploadFileOnReferenceMutation({
     onCompleted: data => {
@@ -45,6 +32,7 @@ const FileUploadButton: FC<FileUploadProps> = ({
       onUpload?.(data.uploadFileOnReference.uri);
     },
   });
+
   const [uploadFileOnLink, { loading: loadingOnLink }] = useUploadFileOnLinkMutation({
     onCompleted: data => {
       notify(t('components.file-upload.file-upload-success'), 'success');
@@ -58,15 +46,19 @@ const FileUploadButton: FC<FileUploadProps> = ({
       onUpload?.(data.uploadFileOnStorageBucket);
     },
   });
-  const loading = loadingOnReference || loadingOnLink || loadingOnStorageBucket;
 
   const handleSubmit = async (selectedFile: File) => {
-    if (!selectedFile) return;
-
-    if (storageConfig.maxFileSize && selectedFile.size > storageConfig.maxFileSize) {
-      notify(t('components.file-upload.file-size-error', { limit: maxFileSizeMb }), 'error');
+    if (!selectedFile) {
       return;
     }
+
+    const maxFileSizeMb = storageConfig.maxFileSize ? storageConfig.maxFileSize / bytesInMegabyte : 0;
+    if (storageConfig.maxFileSize && selectedFile.size > storageConfig.maxFileSize) {
+      notify(t('components.file-upload.file-size-error', { limit: maxFileSizeMb }), 'error');
+
+      return;
+    }
+
     if (entityID && entityType === 'reference') {
       await uploadFileOnReference({
         variables: {
@@ -76,8 +68,10 @@ const FileUploadButton: FC<FileUploadProps> = ({
           },
         },
       });
+
       return;
     }
+
     if (entityID && entityType === 'link') {
       await uploadFileOnLink({
         variables: {
@@ -87,6 +81,7 @@ const FileUploadButton: FC<FileUploadProps> = ({
           },
         },
       });
+
       return;
     }
 
@@ -95,18 +90,23 @@ const FileUploadButton: FC<FileUploadProps> = ({
         file: selectedFile,
         uploadData: {
           storageBucketId: storageConfig.storageBucketId,
+          temporaryLocation: storageConfig.temporaryLocation,
         },
       },
     });
   };
 
+  const acceptedFileTypes = storageConfig.allowedMimeTypes.join(',');
+  const loading = loadingOnReference || loadingOnLink || loadingOnStorageBucket;
+
   return (
     <UploadButton
-      icon={loading ? <CircularProgress size={20} /> : <AttachFileIcon />}
       disabled={loading}
       accept={acceptedFileTypes}
+      icon={loading ? <CircularProgress size={20} /> : <AttachFileIcon />}
       onChange={e => {
-        const file = e && e.target && e.target.files && e.target.files[0];
+        const file = e?.target?.files?.[0];
+
         if (file) {
           handleSubmit(file);
           onChange?.(file.name);
@@ -117,3 +117,13 @@ const FileUploadButton: FC<FileUploadProps> = ({
 };
 
 export default FileUploadButton;
+
+export type FileUploadEntityType = 'reference' | 'link';
+
+interface FileUploadProps {
+  storageConfig: StorageConfig;
+  entityID?: string;
+  entityType?: FileUploadEntityType;
+  onUpload?: (fileCID: string) => void;
+  onChange?: (fileName: string) => void;
+}

@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useState } from 'react';
+import { useState, useEffect, useCallback, useLayoutEffect } from 'react';
 
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -32,35 +32,10 @@ import { Identifiable } from '../../../../core/utils/Identifiable';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { EmptyWhiteboardString } from '../../../common/whiteboard/EmptyWhiteboard';
 import { useTemplateContentLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import { useStorageConfigContext } from '../../../storage/StorageBucket/StorageConfigContext';
 import { CalloutCreationTypeWithPreviewImages } from './useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
-
-export type CalloutCreationDialogFields = {
-  description?: string;
-  displayName?: string;
-  tags?: string[];
-  references?: Reference[];
-  type?: CalloutType;
-  state?: CalloutState;
-  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
-  profileId?: string;
-  flowState?: string;
-  postDescription?: string;
-  whiteboardContent?: string;
-};
-
-export type CalloutCreationDialogProps = {
-  open: boolean;
-  loading: boolean;
-  groupName: CalloutGroupName;
-  journeyTypeName: JourneyTypeName;
-  onClose: () => void;
-  onCreateCallout: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
-
-  flowState?: string;
-};
 
 const CalloutCreationDialog = ({
   open,
@@ -71,14 +46,17 @@ const CalloutCreationDialog = ({
   onClose,
   onCreateCallout,
 }: CalloutCreationDialogProps) => {
-  const { t } = useTranslation();
-  const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
-  const [selectedCalloutType, setSelectedCalloutType] = useState<CalloutType | undefined>(undefined);
-  const [isPublishDialogOpen, setIsConfirmPublishDialogOpen] = useState(false);
-  const [isConfirmCloseDialogOpen, setIsConfirmCloseDialogOpen] = useState(false);
   const [sendNotification, setSendNotification] = useState(true);
+  const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
+  const [isPublishDialogOpen, setIsConfirmPublishDialogOpen] = useState(false);
+  const [selectedCalloutType, setSelectedCalloutType] = useState<CalloutType>();
+  const [isConfirmCloseDialogOpen, setIsConfirmCloseDialogOpen] = useState(false);
   const [importCalloutTemplateDialogOpen, setImportCalloutDialogOpen] = useState(false);
+
+  const storageConfigCtx = useStorageConfigContext();
+
+  const { t } = useTranslation();
 
   useLayoutEffect(() => {
     if (open) {
@@ -113,18 +91,14 @@ const CalloutCreationDialog = ({
 
   const openPublishDialog = () => setIsConfirmPublishDialogOpen(true);
   const closePublishDialog = () => setIsConfirmPublishDialogOpen(false);
-  const openConfirmCloseDialog = () => {
-    if (isCalloutDataEntered(callout)) {
-      setIsConfirmCloseDialogOpen(true);
-    } else {
-      handleClose();
-    }
-  };
   const closeConfirmCloseDialog = () => setIsConfirmCloseDialogOpen(false);
+  const openConfirmCloseDialog = () =>
+    isCalloutDataEntered(callout) ? setIsConfirmCloseDialogOpen(true) : handleClose();
 
   const handleSaveCallout = useCallback(
     async (visibility: CalloutVisibility, sendNotification: boolean) => {
       let result: Identifiable | undefined;
+
       try {
         const newCallout: CalloutCreationTypeWithPreviewImages = {
           framing: {
@@ -141,15 +115,18 @@ const CalloutCreationDialog = ({
             whiteboard: callout.type === CalloutType.Whiteboard && callout.whiteboard ? callout.whiteboard : undefined,
             tags: callout.tags ?? [],
           },
+
           contributionDefaults: {
             postDescription: callout.type === CalloutType.PostCollection ? callout.postDescription : undefined,
             whiteboardContent:
               callout.type === CalloutType.WhiteboardCollection ? callout.whiteboardContent : undefined,
           },
+
           type: callout.type!,
           contributionPolicy: {
             state: callout.state!,
           },
+
           groupName,
           visibility,
           sendNotification: visibility === CalloutVisibility.Published && sendNotification,
@@ -218,6 +195,11 @@ const CalloutCreationDialog = ({
     setImportCalloutDialogOpen(false);
   };
 
+  useEffect(() => {
+    // Must run only on mount.
+    storageConfigCtx?.setTemporaryLocation(true);
+  }, []);
+
   const CalloutIcon = selectedCalloutType ? calloutIcons[selectedCalloutType] : undefined;
 
   return (
@@ -231,7 +213,6 @@ const CalloutCreationDialog = ({
           <DialogContent>
             <Gutters>
               <CalloutTypeSelect
-                onSelect={handleSelectCalloutType}
                 extraButtons={
                   <Button
                     size="large"
@@ -243,6 +224,7 @@ const CalloutCreationDialog = ({
                     {t('components.calloutTypeSelect.callout-templates-library')}
                   </Button>
                 }
+                onSelect={handleSelectCalloutType}
               />
             </Gutters>
           </DialogContent>
@@ -267,6 +249,7 @@ const CalloutCreationDialog = ({
           <DialogHeader onClose={openConfirmCloseDialog}>
             <Box display="flex" alignItems="center" gap={1}>
               {CalloutIcon && <CalloutIcon />}
+
               {t('components.callout-creation.titleWithType', {
                 type: t(`components.calloutTypeSelect.label.${selectedCalloutType}` as const),
               })}
@@ -274,16 +257,13 @@ const CalloutCreationDialog = ({
           </DialogHeader>
 
           <DialogContent>
-            {/* Извикай кокалСториджа, разчети го и го спредни тук */}
-            <StorageConfigContextProvider temporaryLocation>
-              <CalloutForm
-                callout={callout}
-                calloutType={selectedCalloutType}
-                journeyTypeName={journeyTypeName}
-                onChange={handleValueChange}
-                onStatusChanged={handleStatusChange}
-              />
-            </StorageConfigContextProvider>
+            <CalloutForm
+              callout={callout}
+              calloutType={selectedCalloutType}
+              journeyTypeName={journeyTypeName}
+              onChange={handleValueChange}
+              onStatusChanged={handleStatusChange}
+            />
           </DialogContent>
 
           <Actions padding={gutters()}>
@@ -372,3 +352,28 @@ const CalloutCreationDialog = ({
 };
 
 export default CalloutCreationDialog;
+
+export type CalloutCreationDialogFields = {
+  tags?: string[];
+  type?: CalloutType;
+  profileId?: string;
+  flowState?: string;
+  description?: string;
+  displayName?: string;
+  state?: CalloutState;
+  references?: Reference[];
+  postDescription?: string;
+  whiteboardContent?: string;
+  whiteboard?: WhiteboardFieldSubmittedValuesWithPreviewImages;
+};
+
+export type CalloutCreationDialogProps = {
+  open: boolean;
+  loading: boolean;
+  groupName: CalloutGroupName;
+  journeyTypeName: JourneyTypeName;
+  onClose: () => void;
+  onCreateCallout: (callout: CalloutCreationTypeWithPreviewImages) => Promise<Identifiable | undefined>;
+
+  flowState?: string;
+};

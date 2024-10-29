@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
 import RemoveModal from '../../../../core/ui/dialogs/RemoveModal';
@@ -28,7 +28,6 @@ import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPage
 import UpdateDiscussionDialog from '../views/UpdateDiscussionDialog';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import useNavigate from '../../../../core/routing/useNavigate';
-import { useStorageConfigLocally } from '../../../storage/StorageBucket/useStorageConfigLocally';
 
 interface DiscussionPageProps {
   discussionNameId: string;
@@ -143,12 +142,6 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ discussionNameId }) =>
   };
 
   const { pathname } = useLocation();
-
-  const { setLastOpenedStorageConfig } = useStorageConfigLocally();
-
-  useEffect(() => {
-    setLastOpenedStorageConfig('');
-  }, [setLastOpenedStorageConfig]);
 
   return (
     <StorageConfigContextProvider locationType="platform">

@@ -1,42 +1,36 @@
-import React from 'react';
 import { useField } from 'formik';
-import FormikInputField, { FormikInputFieldProps } from '../FormikInputField/FormikInputField';
-import FileUploadButton, { FileUploadEntityType } from '../../upload/FileUpload/FileUpload';
+
+import FileUploadButton, { type FileUploadEntityType } from '../../upload/FileUpload/FileUpload';
+import FormikInputField, { type FormikInputFieldProps } from '../FormikInputField/FormikInputField';
+
 import { useStorageConfigContext } from '../../../../domain/storage/StorageBucket/StorageConfigContext';
 
 const DEFAULT_PROTOCOL = 'https';
 const MATCH_PROTOCOL_REGEX = /^[a-z][a-z0-9+_-]{0,500}:\/\//i;
 
-type FormikFileInputProps = FormikInputFieldProps & {
-  entityID?: string;
-  entityType?: FileUploadEntityType;
-  defaultProtocol?: string;
-  onChange?: (fileName: string) => void;
-};
-
 const FormikFileInput = ({
   name,
   entityID,
-  defaultProtocol = DEFAULT_PROTOCOL,
   entityType,
+  defaultProtocol = DEFAULT_PROTOCOL,
   onChange,
-  ...props
+  ...rest
 }: FormikFileInputProps) => {
   const [field, , helpers] = useField(name);
 
-  const storageConfig = useStorageConfigContext();
-  console.log('@@@ <FormikFileInput /> storageConfig >>>', storageConfig);
+  const storageConfig = useStorageConfigContext()?.storageConfig;
 
   const checkProtocol = () => {
-    if (!defaultProtocol) {
-      return;
-    }
-    if (field.value) {
-      const currentValue = `${field.value}`; // make sure field.value is a string
-      if (!currentValue.match(MATCH_PROTOCOL_REGEX)) {
-        helpers.setValue(`${defaultProtocol}://${currentValue}`);
+    if (defaultProtocol) {
+      if (field.value) {
+        const currentValue = `${field.value}`; // make sure field.value is a string
+        if (!currentValue.match(MATCH_PROTOCOL_REGEX)) {
+          helpers.setValue(`${defaultProtocol}://${currentValue}`);
+        }
       }
     }
+
+    return;
   };
 
   return (
@@ -56,9 +50,16 @@ const FormikFileInput = ({
         )
       }
       onBlur={checkProtocol}
-      {...props}
+      {...rest}
     />
   );
 };
 
 export default FormikFileInput;
+
+type FormikFileInputProps = FormikInputFieldProps & {
+  entityID?: string;
+  defaultProtocol?: string;
+  entityType?: FileUploadEntityType;
+  onChange?: (fileName: string) => void;
+};

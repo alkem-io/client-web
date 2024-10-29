@@ -6,10 +6,9 @@ import {
 } from '../../../../core/apollo/generated/apollo-hooks';
 import { useInView } from 'react-intersection-observer';
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
-import { Ref, useEffect } from 'react';
+import { Ref } from 'react';
 import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import { useStorageConfigLocally } from '../../../storage/StorageBucket/useStorageConfigLocally';
 
 interface PostCalloutContainerProvided {
   ref: Ref<Element>;
@@ -123,12 +122,6 @@ const PostCalloutContainer = ({ callout, children }: PostCalloutContainerProps) 
 
     return nameID ? { nameID } : undefined;
   };
-
-  const { setLastOpenedStorageConfig } = useStorageConfigLocally();
-
-  useEffect(() => {
-    setLastOpenedStorageConfig(callout.id);
-  }, [callout.id, setLastOpenedStorageConfig]);
 
   return (
     <StorageConfigContextProvider locationType="callout" calloutId={callout?.id}>
