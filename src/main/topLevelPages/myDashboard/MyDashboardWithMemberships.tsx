@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import ReleaseNotesBanner from './releaseNotesBanner/ReleaseNotesBanner';
 import { useLatestReleaseDiscussionQuery } from '../../../core/apollo/generated/apollo-hooks';
@@ -6,10 +6,11 @@ import CampaignBlock from './campaignBlock/CampaignBlock';
 import InfoColumn from '../../../core/ui/content/InfoColumn';
 import { DashboardMenu } from './DashboardMenu/DashboardMenu';
 import ContentColumn from '../../../core/ui/content/ContentColumn';
-import DashboardActivity from './DashboardWithMemberships/DashboardActivity';
-import DashboardSpaces from './DashboardWithMemberships/DashboardSpaces';
 import { useDashboardContext } from './DashboardContext';
-import { DashboardDialogs } from './DashboardDialogs/DashboardDialogs';
+
+const DashboardDialogs = React.lazy(() => import('./DashboardDialogs/DashboardDialogs'));
+const DashboardActivity = React.lazy(() => import('./DashboardWithMemberships/DashboardActivity'));
+const DashboardSpaces = React.lazy(() => import('./DashboardWithMemberships/DashboardSpaces'));
 
 const MyDashboardWithMemberships = () => {
   const { activityEnabled } = useDashboardContext();
@@ -27,7 +28,9 @@ const MyDashboardWithMemberships = () => {
         <CampaignBlock />
         {activityEnabled ? <DashboardActivity /> : <DashboardSpaces />}
       </ContentColumn>
-      <DashboardDialogs />
+      <Suspense fallback={null}>
+        <DashboardDialogs />
+      </Suspense>
     </PageContentColumn>
   );
 };

@@ -12,6 +12,7 @@ interface MyDashboardUnauthenticatedProps {}
 
 const MyDashboardUnauthenticated: FC<MyDashboardUnauthenticatedProps> = () => {
   const { t } = useTranslation();
+
   return (
     <PageContentBlock columns={12}>
       <ExploreSpaces />

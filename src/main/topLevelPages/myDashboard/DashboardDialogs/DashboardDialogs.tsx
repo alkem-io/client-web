@@ -9,7 +9,7 @@ import MyLatestContributions from '../latestContributions/myLatestContributions/
 import LatestContributions from '../latestContributions/LatestContributions';
 import { useLatestContributionsSpacesFlatQuery } from '../../../../core/apollo/generated/apollo-hooks';
 
-export const DashboardDialogs = () => {
+const DashboardDialogs = () => {
   const { t } = useTranslation();
   const { openedDialog, setOpenedDialog } = useDashboardContext();
 
@@ -45,3 +45,5 @@ export const DashboardDialogs = () => {
     </>
   );
 };
+
+export default DashboardDialogs;

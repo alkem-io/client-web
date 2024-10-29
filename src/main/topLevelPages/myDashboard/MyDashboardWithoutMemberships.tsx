@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import CampaignBlock from './campaignBlock/CampaignBlock';
 import InfoColumn from '../../../core/ui/content/InfoColumn';
@@ -9,7 +9,8 @@ import { DashboardMenu } from './DashboardMenu/DashboardMenu';
 import ExploreSpaces from './ExploreSpaces/ExploreSpaces';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import { InvitationsBlock } from './InvitationsBlock/InvitationsBlock';
-import { DashboardDialogs } from './DashboardDialogs/DashboardDialogs';
+
+const DashboardDialogs = React.lazy(() => import('./DashboardDialogs/DashboardDialogs'));
 
 const MyDashboardWithoutMemberships = () => {
   const { data } = useLatestReleaseDiscussionQuery({
@@ -30,7 +31,9 @@ const MyDashboardWithoutMemberships = () => {
         </PageContentBlock>
         {/* TODO: implement create space btn component */}
       </ContentColumn>
-      <DashboardDialogs />
+      <Suspense fallback={null}>
+        <DashboardDialogs />
+      </Suspense>
     </PageContentColumn>
   );
 };
