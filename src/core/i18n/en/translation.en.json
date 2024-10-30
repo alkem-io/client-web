@@ -117,7 +117,6 @@
     "yesReplace": "Yes, replace",
     "yesStop": "Yes, stop",
     "yesDiscard": "Yes, Discard",
-    "no": "No",
     "delete": "Delete",
     "submit": "Submit",
     "remove": "Remove",
@@ -1083,11 +1082,13 @@
             "description": "- By changing the Innovation Flow, **all changes made to the current flow will be lost**.\n- All existing collaboration tools will be grouped under the first phase of the new flow."
           },
           "importCalloutsDialog": {
-            "title": "Import Collaboration Tools too",
-            "description": "Do you want to import the collaboration tools from the template or just apply the Innovation Flow to your current collaboration tools?",
-            "yes": "Yes, import the tools too",
-            "no": "No, only apply the Innovation Flow",
-            "cancel": "Cancel, and go back to the template"
+            "title": "Apply New Template",
+            "description": "You are about to apply a new template. This action will <b>permanently delete</b> your current Innovation Flow. However, the existing collaboration tools linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+            "yes": "Add Collaboration Tools from Template",
+            "yesDescription": "This will include the new collaboration tools from the template in addition to your existing ones.",
+            "no": "Only Change the Innovation Flow",
+            "noDescription": "This will replace only the Innovation Flow, keeping your current collaboration tools as they are.",
+            "apply": "Apply new template"
           }
         }
       }

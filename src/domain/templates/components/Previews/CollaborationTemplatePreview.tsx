@@ -1,5 +1,5 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, styled } from '@mui/material';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import Loading from '../../../../core/ui/loading/Loading';
 import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
@@ -86,6 +86,12 @@ const CollaborationTemplatePreview: FC<CollaborationTemplatePreviewProps> = ({ t
 
   const handleSelectedCalloutChange = (calloutId: string) => (_event, isExpanded: boolean) =>
     setSelectedCallout(isExpanded ? calloutId : false);
+
+  useEffect(() => {
+    if (!selectedState && templateStates.length > 0) {
+      setSelectedState(templateStates[0]?.displayName);
+    }
+  }, [selectedState, templateStates]);
 
   return (
     <PageContentBlock>
