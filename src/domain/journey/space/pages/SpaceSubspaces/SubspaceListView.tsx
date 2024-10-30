@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import Box from '@mui/material/Box';
 import useNavigate from '../../../../../core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
@@ -33,7 +33,7 @@ import Gutters from '../../../../../core/ui/grid/Gutters';
 import SearchableList, { SearchableListItem } from '../../../../platform/admin/components/SearchableList';
 import EntityConfirmDeleteDialog from '../SpaceSettings/EntityConfirmDeleteDialog';
 import CreateTemplateDialog from '../../../../templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
+import { TemplateDefaultType, TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
 import { CollaborationTemplateFormSubmittedValues } from '../../../../templates/components/Forms/CollaborationTemplateForm';
 import { useCreateCollaborationTemplate } from '../../../../templates/hooks/useCreateCollaborationTemplate';
 
@@ -54,19 +54,13 @@ export const SubspaceListView: FC = () => {
 
   const templatesManager = data?.space.templatesManager;
   const templateDefaults = templatesManager?.templateDefaults;
-  const subspaceTemplateDefault = templateDefaults ? templateDefaults[0] : undefined; // TODO
-  const subspaceTemplateDefaultID = subspaceTemplateDefault?.id || ''; // TODO
-  const subspaceTemplateWithCollaboration = subspaceTemplateDefault?.template;
-  const subspaceTemplateWithCollaborationID = subspaceTemplateWithCollaboration?.id || ''; // TODO
-  const collaborationFromTemplate = subspaceTemplateDefault?.template?.collaboration;
+  const defaultSubspaceTemplate = templateDefaults?.find(
+    templateDefault => templateDefault.type === TemplateDefaultType.SpaceSubspace
+  );
+
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   const [saveAsTemplateDialogSelectedItem, setSaveAsTemplateDialogSelectedItem] = useState<SearchableListItem>();
   const [deleteDialogSelectedItem, setDeleteDialogSelectedItem] = useState<SearchableListItem>();
-
-  const innovationFlowFromCollaborationTemplate = subspaceTemplateDefault?.template?.collaboration?.innovationFlow;
-  useEffect(() => {
-    setSelectedState(innovationFlowFromCollaborationTemplate?.states?.[0].displayName);
-  }, [innovationFlowFromCollaborationTemplate?.states?.[0]?.displayName]);
 
   const subspaces =
     data?.space?.subspaces?.map(s => ({
@@ -142,9 +136,12 @@ export const SubspaceListView: FC = () => {
 
   const [updateTemplateDefault] = useUpdateTemplateDefaultMutation();
   const handleSelectCollaborationTemplate = async (collaborationTemplateId: string) => {
+    if (!defaultSubspaceTemplate) {
+      return;
+    }
     await updateTemplateDefault({
       variables: {
-        templateDefaultID: subspaceTemplateDefaultID,
+        templateDefaultID: defaultSubspaceTemplate?.id,
         templateID: collaborationTemplateId,
       },
       refetchQueries: [
@@ -201,10 +198,12 @@ export const SubspaceListView: FC = () => {
         <Caption>{t('pages.admin.space.sections.subspaces.defaultSettings.description')}</Caption>
         <PageContentBlock>
           <PageContentBlockHeader title={t('common.innovation-flow')} />
-          <BlockSectionTitle>{subspaceTemplateDefault?.template?.profile.displayName}</BlockSectionTitle>
-          <InnovationFlowProfileView innovationFlow={collaborationFromTemplate?.innovationFlow} />
+          <BlockSectionTitle>{defaultSubspaceTemplate?.template?.profile.displayName}</BlockSectionTitle>
+          <InnovationFlowProfileView
+            innovationFlow={defaultSubspaceTemplate?.template?.collaboration?.innovationFlow}
+          />
           <InnovationFlowStates
-            states={collaborationFromTemplate?.innovationFlow?.states}
+            states={defaultSubspaceTemplate?.template?.collaboration?.innovationFlow.states}
             selectedState={selectedState}
             onSelectState={state => setSelectedState(state.displayName)}
           />
@@ -240,7 +239,7 @@ export const SubspaceListView: FC = () => {
       <SelectDefaultCollaborationTemplateDialog
         spaceId={spaceId}
         open={selectCollaborationTemplateDialogOpen}
-        defaultCollaborationTemplateId={subspaceTemplateWithCollaborationID}
+        defaultCollaborationTemplateId={defaultSubspaceTemplate?.template?.id}
         onClose={() => setSelectCollaborationTemplateDialogOpen(false)}
         onSelectCollaborationTemplate={handleSelectCollaborationTemplate}
       />

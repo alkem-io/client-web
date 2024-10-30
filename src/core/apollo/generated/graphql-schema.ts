@@ -22596,6 +22596,7 @@ export type AdminSpaceSubspacesPageQuery = {
           templateDefaults: Array<{
             __typename?: 'TemplateDefault';
             id: string;
+            type: TemplateDefaultType;
             template?:
               | {
                   __typename?: 'Template';

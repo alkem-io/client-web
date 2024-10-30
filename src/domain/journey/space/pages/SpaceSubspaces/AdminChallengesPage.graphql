@@ -19,6 +19,7 @@ query AdminSpaceSubspacesPage($spaceId: UUID_NAMEID!) {
       }
       templateDefaults {
         id
+        type
         template {
           id
           profile {

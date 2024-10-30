@@ -17471,6 +17471,7 @@ export const AdminSpaceSubspacesPageDocument = gql`
         }
         templateDefaults {
           id
+          type
           template {
             id
             profile {
