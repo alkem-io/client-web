@@ -22425,6 +22425,7 @@ export type SpaceSettingsQuery = {
             };
           };
           community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
+          collaboration: { __typename?: 'Collaboration'; id: string };
         }
       | undefined;
   };

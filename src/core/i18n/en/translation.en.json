@@ -2042,6 +2042,12 @@
             "inheritRights": "Allow Space members to contribute.",
             "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an admin in this Space."
           },
+          "copySpace": {
+            "title": "Copy Subspace",
+            "description": "To utilize this Subspace setup, you can either duplicate it within the same Space or save it as a template for use across the platform. In both scenarios, the innovation flow and all collaboration tools will be replicated. Please note that comments or contributions to a tool will not be included in the template or duplicated Subspace.",
+            "createTemplate": "Create Template",
+            "duplicate": "Duplicate"
+          },
           "account": {
             "vc-section-title": "Virtual Contributors created from this Space",
             "vc-create-button": "Create Virtual Contributor"

@@ -17128,6 +17128,9 @@ export const SpaceSettingsDocument = gql`
             id
           }
         }
+        collaboration {
+          id
+        }
       }
     }
   }
