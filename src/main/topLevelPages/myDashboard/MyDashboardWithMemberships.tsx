@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import ReleaseNotesBanner from './releaseNotesBanner/ReleaseNotesBanner';
 import { useLatestReleaseDiscussionQuery } from '../../../core/apollo/generated/apollo-hooks';
-import CampaignBlock from './CampaignBlock/CampaignBlock';
+import CampaignBlock from './Campaigns/CampaignBlock';
 import InfoColumn from '../../../core/ui/content/InfoColumn';
 import { DashboardMenu } from './DashboardMenu/DashboardMenu';
 import ContentColumn from '../../../core/ui/content/ContentColumn';
