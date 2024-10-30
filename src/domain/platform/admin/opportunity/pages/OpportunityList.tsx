@@ -139,6 +139,24 @@ export const OpportunityList: FC = () => {
     //setSelectedItem(item);
   };
 
+  const getDefaultTemplateValues = async () => {
+    if (saveAsTemplateDialogSelectedItem?.id) {
+      const { data } = await fetchCollaborationId({
+        variables: {
+          spaceId: saveAsTemplateDialogSelectedItem?.id,
+        },
+      });
+      return {
+        type: TemplateType.Collaboration,
+        collaboration: {
+          id: data?.lookup.space?.collaboration.id,
+        },
+      };
+    } else {
+      throw new Error('No item selected');
+    }
+  };
+
   const getActions = (item: SearchableListItem) => (
     <>
       <MenuItemWithIcon disabled iconComponent={ContentCopyOutlined} onClick={() => onDuplicateClick(item)}>
@@ -194,23 +212,7 @@ export const OpportunityList: FC = () => {
           onClose={() => setSaveAsTemplateDialogSelectedItem(undefined)}
           templateType={TemplateType.Collaboration}
           onSubmit={handleSaveAsTemplate}
-          getDefaultValues={async () => {
-            if (saveAsTemplateDialogSelectedItem?.id) {
-              const { data } = await fetchCollaborationId({
-                variables: {
-                  spaceId: saveAsTemplateDialogSelectedItem?.id,
-                },
-              });
-              return {
-                type: TemplateType.Collaboration,
-                collaboration: {
-                  id: data?.lookup.space?.collaboration.id,
-                },
-              };
-            } else {
-              throw new Error('No item selected');
-            }
-          }}
+          getDefaultValues={getDefaultTemplateValues}
         />
       )}
     </>

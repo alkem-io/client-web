@@ -38,7 +38,7 @@ import { CollaborationTemplateFormSubmittedValues } from '../Forms/Collaboration
 import { CollaborationTemplate } from '../../models/CollaborationTemplate';
 
 type TemplatePermissionCallback = (templateType: TemplateType) => boolean;
-const defaultCant: TemplatePermissionCallback = () => false;
+const defaultPermissionDenied: TemplatePermissionCallback = () => false;
 
 interface TemplatesAdminProps {
   templatesSetId: string;
@@ -75,11 +75,11 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   templateId,
   alwaysEditTemplate = false,
   baseUrl = '',
-  canImportTemplates = defaultCant,
+  canImportTemplates = defaultPermissionDenied,
   importTemplateOptions = {},
-  canCreateTemplates = defaultCant,
-  canEditTemplates = defaultCant,
-  canDeleteTemplates = defaultCant,
+  canCreateTemplates = defaultPermissionDenied,
+  canEditTemplates = defaultPermissionDenied,
+  canDeleteTemplates = defaultPermissionDenied,
 }) => {
   const { t } = useTranslation();
   const backToTemplates = useBackToPath();
@@ -174,6 +174,18 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
 
+  // Create a Collaboration template
+  const handleCollaborationTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
+    const variables = toCreateTemplateFromCollaborationMutationVariables(
+      templatesSetId,
+      values as CollaborationTemplateFormSubmittedValues
+    );
+    await createCollaborationTemplate({
+      variables,
+    });
+    setCreatingTemplateType(undefined);
+  };
+
   const handleTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
     // Special case, handle Collaboration templates differently for now, until we have full support for editing them and sending all the data, and not just for cloning an existing collaboration
     if (creatingTemplateType === TemplateType.Collaboration) {
@@ -188,18 +200,6 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
       // Handle the visual in a special way with the preview images
       handlePreviewTemplates(values, result.data?.createTemplate.profile);
     }
-    setCreatingTemplateType(undefined);
-  };
-
-  // Create a Collaboration template
-  const handleCollaborationTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
-    const variables = toCreateTemplateFromCollaborationMutationVariables(
-      templatesSetId,
-      values as CollaborationTemplateFormSubmittedValues
-    );
-    await createCollaborationTemplate({
-      variables,
-    });
     setCreatingTemplateType(undefined);
   };
 

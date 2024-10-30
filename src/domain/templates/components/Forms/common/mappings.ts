@@ -214,10 +214,6 @@ export const toCreateTemplateMutationVariables = (
       };
       break;
     }
-    // TODO: Remove - Cannot create an Innovation Flow template anymore
-    case TemplateType.InnovationFlow: {
-      break;
-    }
     case TemplateType.Post: {
       const postData = values as PostTemplateFormSubmittedValues;
       result.postDefaultDescription = postData.postDefaultDescription;
@@ -406,12 +402,6 @@ export const toUpdateTemplateMutationVariables = (
       return {
         updateTemplateVariables,
         updateCommunityGuidelinesVariables,
-      };
-    }
-    case TemplateType.InnovationFlow: {
-      // TODO: Remove, this template type will be removed soon
-      return {
-        updateTemplateVariables,
       };
     }
     case TemplateType.Post: {

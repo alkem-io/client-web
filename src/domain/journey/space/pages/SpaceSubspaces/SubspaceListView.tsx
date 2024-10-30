@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import Box from '@mui/material/Box';
 import useNavigate from '../../../../../core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
@@ -37,13 +37,17 @@ import { TemplateDefaultType, TemplateType } from '../../../../../core/apollo/ge
 import { CollaborationTemplateFormSubmittedValues } from '../../../../templates/components/Forms/CollaborationTemplateForm';
 import { useCreateCollaborationTemplate } from '../../../../templates/hooks/useCreateCollaborationTemplate';
 
-export const SubspaceListView: FC = () => {
+export const SubspaceListView = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { spaceNameId, spaceId } = useSpace();
   const navigate = useNavigate();
+
+  const { spaceNameId, spaceId } = useSpace();
   const [journeyCreationDialogOpen, setJourneyCreationDialogOpen] = useState(false);
   const [selectCollaborationTemplateDialogOpen, setSelectCollaborationTemplateDialogOpen] = useState(false);
+  const [selectedState, setSelectedState] = useState<string>();
+  const [saveAsTemplateDialogSelectedItem, setSaveAsTemplateDialogSelectedItem] = useState<SearchableListItem>();
+  const [deleteDialogSelectedItem, setDeleteDialogSelectedItem] = useState<SearchableListItem>();
 
   const { data, loading } = useAdminSpaceSubspacesPageQuery({
     variables: {
@@ -52,27 +56,25 @@ export const SubspaceListView: FC = () => {
   });
   const [fetchCollaborationId] = useSpaceCollaborationIdLazyQuery();
 
-  const templatesManager = data?.space.templatesManager;
-  const templateDefaults = templatesManager?.templateDefaults;
+  const templateDefaults = data?.space.templatesManager?.templateDefaults;
   const defaultSubspaceTemplate = templateDefaults?.find(
     templateDefault => templateDefault.type === TemplateDefaultType.SpaceSubspace
   );
 
-  const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
-  const [saveAsTemplateDialogSelectedItem, setSaveAsTemplateDialogSelectedItem] = useState<SearchableListItem>();
-  const [deleteDialogSelectedItem, setDeleteDialogSelectedItem] = useState<SearchableListItem>();
-
-  const subspaces =
-    data?.space?.subspaces?.map(s => ({
-      id: s.id,
-      profile: {
-        displayName: s.profile.displayName,
-        url: buildSettingsUrl(s.profile.url),
-        avatar: {
-          uri: s.profile.cardBanner?.uri ?? '',
+  const subspaces = useMemo(() => {
+    return (
+      data?.space?.subspaces?.map(s => ({
+        id: s.id,
+        profile: {
+          displayName: s.profile.displayName,
+          url: buildSettingsUrl(s.profile.url),
+          avatar: {
+            uri: s.profile.cardBanner?.uri ?? '',
+          },
         },
-      },
-    })) || [];
+      })) || []
+    );
+  }, [data]);
 
   const [deleteSubspace] = useDeleteSpaceMutation({
     refetchQueries: [
@@ -172,6 +174,24 @@ export const SubspaceListView: FC = () => {
     }
   };
 
+  const getDefaultTemplateValues = async () => {
+    if (saveAsTemplateDialogSelectedItem?.id) {
+      const { data } = await fetchCollaborationId({
+        variables: {
+          spaceId: saveAsTemplateDialogSelectedItem?.id,
+        },
+      });
+      return {
+        type: TemplateType.Collaboration,
+        collaboration: {
+          id: data?.lookup.space?.collaboration.id,
+        },
+      };
+    } else {
+      throw new Error('No item selected');
+    }
+  };
+
   const getSubSpaceActions = (item: SearchableListItem) => (
     <>
       <MenuItemWithIcon disabled iconComponent={ContentCopyOutlined} onClick={() => onDuplicateClick(item)}>
@@ -264,23 +284,7 @@ export const SubspaceListView: FC = () => {
           onClose={() => setSaveAsTemplateDialogSelectedItem(undefined)}
           templateType={TemplateType.Collaboration}
           onSubmit={handleSaveAsTemplate}
-          getDefaultValues={async () => {
-            if (saveAsTemplateDialogSelectedItem?.id) {
-              const { data } = await fetchCollaborationId({
-                variables: {
-                  spaceId: saveAsTemplateDialogSelectedItem?.id,
-                },
-              });
-              return {
-                type: TemplateType.Collaboration,
-                collaboration: {
-                  id: data?.lookup.space?.collaboration.id,
-                },
-              };
-            } else {
-              throw new Error('No item selected');
-            }
-          }}
+          getDefaultValues={getDefaultTemplateValues}
         />
       )}
     </>

@@ -79,7 +79,7 @@ const SelectDefaultCollaborationTemplateDialog = ({
               {loadingInnovationFlows && <Skeleton variant="rectangular" />}
               {collaborationTemplates && (
                 <FormikSelect
-                  title={t('components.discussionForm.category.title')}
+                  title={t('common.category')}
                   name="collaborationTemplateSelectedId"
                   values={collaborationTemplates}
                 />
