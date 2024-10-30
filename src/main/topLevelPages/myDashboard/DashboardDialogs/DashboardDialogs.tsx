@@ -11,31 +11,29 @@ import { useLatestContributionsSpacesFlatQuery } from '../../../../core/apollo/g
 
 const DashboardDialogs = () => {
   const { t } = useTranslation();
-  const { openedDialog, setOpenedDialog } = useDashboardContext();
+  const { isOpen, setIsOpen } = useDashboardContext();
 
   const { data: spacesData } = useLatestContributionsSpacesFlatQuery();
   const flatSpacesWithMemberships = spacesData?.me.spaceMembershipsFlat.map(membership => membership.space);
 
   return (
     <>
-      <DialogWithGrid open={openedDialog === DashboardDialog.TipsAndTricks}>
-        <DialogHeader onClose={() => setOpenedDialog(undefined)}>
-          {t('pages.home.sections.tipsAndTricks.title')}
-        </DialogHeader>
+      <DialogWithGrid open={isOpen === DashboardDialog.TipsAndTricks}>
+        <DialogHeader onClose={() => setIsOpen(undefined)}>{t('pages.home.sections.tipsAndTricks.title')}</DialogHeader>
         <DialogContent>
           <TipsAndTricks />
         </DialogContent>
       </DialogWithGrid>
-      <DialogWithGrid open={openedDialog === DashboardDialog.MyActivity}>
-        <DialogHeader onClose={() => setOpenedDialog(undefined)}>
+      <DialogWithGrid open={isOpen === DashboardDialog.MyActivity}>
+        <DialogHeader onClose={() => setIsOpen(undefined)}>
           {t('pages.home.sections.myLatestContributions.title')}
         </DialogHeader>
         <DialogContent>
           <MyLatestContributions spaceMemberships={flatSpacesWithMemberships} />
         </DialogContent>
       </DialogWithGrid>
-      <DialogWithGrid open={openedDialog === DashboardDialog.MySpaceActivity}>
-        <DialogHeader onClose={() => setOpenedDialog(undefined)}>
+      <DialogWithGrid open={isOpen === DashboardDialog.MySpaceActivity}>
+        <DialogHeader onClose={() => setIsOpen(undefined)}>
           {t('pages.home.sections.latestContributions.title')}
         </DialogHeader>
         <DialogContent>

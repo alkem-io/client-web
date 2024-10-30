@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
-import CampaignBlock from './campaignBlock/CampaignBlock';
+import CampaignBlock from './CampaignBlock/CampaignBlock';
 import InfoColumn from '../../../core/ui/content/InfoColumn';
 import ContentColumn from '../../../core/ui/content/ContentColumn';
 import { useLatestReleaseDiscussionQuery } from '../../../core/apollo/generated/apollo-hooks';

@@ -28,7 +28,7 @@ import BadgeCounter from '../../../../core/ui/icon/BadgeCounter';
  */
 export const DashboardMenu = ({ compact = false }: DashboardMenuProps) => {
   const { t } = useTranslation();
-  const { activityEnabled, setActivityEnabled, setOpenedDialog } = useDashboardContext();
+  const { activityEnabled, setActivityEnabled, setIsOpen } = useDashboardContext();
   const { items, loading: itemsConfigLoading } = useHomeMenuItems();
   const { setOpenDialog } = usePendingMembershipsDialog();
 
@@ -43,7 +43,7 @@ export const DashboardMenu = ({ compact = false }: DashboardMenuProps) => {
 
   const getTranslationByKey = (key: string) => t(`${key}` as TranslationKey, { defaultValue: key });
 
-  const openDialog = (dialog: DashboardDialog | undefined) => () => setOpenedDialog(dialog);
+  const openDialog = (dialog: DashboardDialog | undefined) => () => setIsOpen(dialog);
 
   const getItemContent = (item: MenuOptionProps) => (
     <>

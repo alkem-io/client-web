@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import RecentSpacesList from '../recentSpaces/RecentJourneysList';
+import RecentJourneysList from '../recentSpaces/RecentJourneysList';
 import LatestContributions from '../latestContributions/LatestContributions';
 import MyLatestContributions from '../latestContributions/myLatestContributions/MyLatestContributions';
 import MyMembershipsDialog from '../myMemberships/MyMembershipsDialog';
@@ -20,7 +20,7 @@ const DashboardActivity = () => {
 
   return (
     <>
-      <RecentSpacesList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />
+      <RecentJourneysList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />
       <PageContentColumn columns={columns / 2}>
         <PageContentBlock>
           <PageContentBlockHeader title={t('pages.home.sections.latestContributions.title')} />

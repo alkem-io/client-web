@@ -10,8 +10,8 @@ const enum DashboardViews {
 interface DashboardContextProps {
   activityEnabled: boolean;
   setActivityEnabled: (item: boolean) => void;
-  openedDialog: DashboardDialog | undefined;
-  setOpenedDialog: (item: DashboardDialog | undefined) => void;
+  isOpen: DashboardDialog | undefined;
+  setIsOpen: (item: DashboardDialog | undefined) => void;
 }
 
 const DashboardContext = createContext<DashboardContextProps | undefined>(undefined);
@@ -20,7 +20,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   const cachedView = getCachedView();
   const isActivityEnabled = cachedView === DashboardViews.ACTIVITY;
   const [activityEnabled, setEnabled] = useState<boolean>(isActivityEnabled);
-  const [openedDialog, setOpenedDialog] = useState<DashboardDialog | undefined>(undefined);
+  const [isOpen, setIsOpen] = useState<DashboardDialog>();
 
   const setActivityEnabled = (val: boolean) => {
     setViewToCache(val ? DashboardViews.ACTIVITY : DashboardViews.SPACES);
@@ -28,7 +28,7 @@ export const DashboardProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <DashboardContext.Provider value={{ activityEnabled, setActivityEnabled, openedDialog, setOpenedDialog }}>
+    <DashboardContext.Provider value={{ activityEnabled, setActivityEnabled, isOpen, setIsOpen }}>
       {children}
     </DashboardContext.Provider>
   );
