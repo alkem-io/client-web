@@ -40,6 +40,8 @@ const EmptyOrganization: Omit<Organization, 'authorization' | 'agent'> = {
     lifecycle: {
       id: '',
     },
+    nextEvents: [],
+    state: '',
     status: OrganizationVerificationEnum.NotVerified,
     isFinalized: false,
   },

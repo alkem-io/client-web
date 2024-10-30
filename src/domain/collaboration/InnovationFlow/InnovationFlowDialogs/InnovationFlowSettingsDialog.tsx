@@ -87,6 +87,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
           >
             <InnovationFlowCollaborationToolsBlock
               callouts={callouts}
+              loading={state.loading}
               innovationFlowStates={innovationFlow?.states}
               currentState={innovationFlow?.currentState.displayName}
               onUpdateCurrentState={actions.updateInnovationFlowCurrentState}
