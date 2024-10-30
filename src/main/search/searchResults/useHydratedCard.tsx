@@ -1,4 +1,3 @@
-import { SvgIconComponent } from '@mui/icons-material';
 import {
   CommunityMembershipStatus,
   SearchResultOrganizationFragment,
@@ -6,8 +5,8 @@ import {
   SearchResultSpaceFragment,
   SearchResultType,
   SearchResultUserFragment,
+  SpaceLevel,
   SpacePrivacyMode,
-  SpaceType,
   UserRolesSearchCardsQuery,
 } from '../../../core/apollo/generated/graphql-schema';
 import React from 'react';
@@ -18,7 +17,6 @@ import { useUserRolesSearchCardsQuery } from '../../../core/apollo/generated/apo
 import { useUserContext } from '../../../domain/community/user/hooks/useUserContext';
 import { TypedSearchResult } from '../SearchView';
 import { SearchContributionCardCard } from '../../../domain/shared/components/search-cards/SearchContributionPostCard';
-import { OpportunityIcon } from '../../../domain/journey/opportunity/icon/OpportunityIcon';
 import { SubspaceIcon } from '../../../domain/journey/subspace/icon/SubspaceIcon';
 import { SpaceIcon } from '../../../domain/journey/space/icon/SpaceIcon';
 import ContributingUserCard from '../../../domain/community/user/ContributingUserCard/ContributingUserCard';
@@ -28,6 +26,7 @@ import CardParentJourneySegment from '../../../domain/journey/common/SpaceChildJ
 import { CalloutIcon } from '../../../domain/collaboration/callout/icon/CalloutIcon';
 import { VisualName } from '../../../domain/common/visual/constants/visuals.constants';
 import SearchBaseJourneyCard from '../../../domain/shared/components/search-cards/base/SearchBaseJourneyCard';
+import { spaceIconByLevel } from '../../../domain/shared/components/JourneyIcon/JourneyIcon';
 
 const hydrateUserCard = (data: TypedSearchResult<SearchResultType.User, SearchResultUserFragment>) => {
   const user = data.user;
@@ -84,7 +83,7 @@ const _hydrateOrganizationCard = (
 
 const hydrateSpaceCard = (
   data: TypedSearchResult<
-    SearchResultType.Space | SearchResultType.Challenge | SearchResultType.Opportunity,
+    SearchResultType.Space | SearchResultType.Subspace | SearchResultType.Challenge | SearchResultType.Opportunity,
     SearchResultSpaceFragment
   >
 ) => {
@@ -98,7 +97,7 @@ const hydrateSpaceCard = (
 
   const parentSegment = (
     data: TypedSearchResult<
-      SearchResultType.Space | SearchResultType.Challenge | SearchResultType.Opportunity,
+      SearchResultType.Space | SearchResultType.Subspace | SearchResultType.Challenge | SearchResultType.Opportunity,
       SearchResultSpaceFragment
     >
   ) => {
@@ -106,7 +105,7 @@ const hydrateSpaceCard = (
       return null;
     }
 
-    const parentIcon = data.parentSpace.type === SpaceType.Space ? SpaceIcon : SubspaceIcon;
+    const parentIcon = data.parentSpace.level === SpaceLevel.Space ? SpaceIcon : SubspaceIcon;
 
     return (
       <CardParentJourneySegment
@@ -121,7 +120,7 @@ const hydrateSpaceCard = (
 
   return (
     <SearchBaseJourneyCard
-      spaceType={space.type}
+      spaceLevel={space.level}
       banner={getVisualByType(VisualName.CARD, space.profile.visuals)}
       member={isMember}
       displayName={name}
@@ -145,13 +144,7 @@ const getContributionParentInformation = (data: TypedSearchResult<SearchResultTy
     icon: SpaceIcon,
   };
 
-  if (data.space.type === SpaceType.Opportunity) {
-    info.icon = OpportunityIcon;
-  } else if (data.space.type === SpaceType.Challenge) {
-    info.icon = SubspaceIcon as SvgIconComponent;
-  } else if (data.space.type === SpaceType.Space) {
-    info.icon = SpaceIcon;
-  }
+  info.icon = spaceIconByLevel[data.space.level];
 
   return info;
 };
@@ -201,7 +194,7 @@ interface UseHydrateCardProvided {
   hydrateContributionCard: HydratedCardGetter<TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>>;
   hydrateSpaceCard: HydratedCardGetter<
     TypedSearchResult<
-      SearchResultType.Space | SearchResultType.Challenge | SearchResultType.Opportunity,
+      SearchResultType.Space | SearchResultType.Subspace | SearchResultType.Challenge | SearchResultType.Opportunity,
       SearchResultSpaceFragment
     >
   >;

@@ -37,12 +37,11 @@ const EmptyOrganization: Omit<Organization, 'authorization' | 'agent'> = {
   website: '',
   verification: {
     id: '',
-    status: OrganizationVerificationEnum.NotVerified,
     lifecycle: {
       id: '',
-      stateIsFinal: false,
-      machineDef: '',
     },
+    status: OrganizationVerificationEnum.NotVerified,
+    isFinalized: false,
   },
   account: undefined,
   profile: {

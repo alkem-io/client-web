@@ -115,11 +115,8 @@ export const AdminCommunityApplicationFragmentDoc = gql`
     id
     createdDate
     updatedDate
-    lifecycle {
-      id
-      state
-      nextEvents
-    }
+    state
+    nextEvents
     contributor {
       ...AdminCommunityCandidateMember
       ... on User {
@@ -139,11 +136,8 @@ export const AdminCommunityInvitationFragmentDoc = gql`
     id
     createdDate
     updatedDate
-    lifecycle {
-      id
-      state
-      nextEvents
-    }
+    state
+    nextEvents
     contributorType
     contributor {
       ...AdminCommunityCandidateMember
@@ -1702,10 +1696,7 @@ export const InvitationDataFragmentDoc = gql`
       createdBy {
         id
       }
-      lifecycle {
-        id
-        state
-      }
+      state
       createdDate
       contributor {
         id
@@ -3060,7 +3051,7 @@ export const PostParentFragmentDoc = gql`
   fragment PostParent on SearchResultPost {
     space {
       id
-      type
+      level
       visibility
       profile {
         id
@@ -3227,7 +3218,7 @@ export const SearchResultSpaceFragmentDoc = gql`
   fragment SearchResultSpace on SearchResultSpace {
     parentSpace {
       id
-      type
+      level
       profile {
         id
         url
@@ -3241,7 +3232,7 @@ export const SearchResultSpaceFragmentDoc = gql`
     }
     space {
       id
-      type
+      level
       profile {
         id
         url
@@ -4540,13 +4531,10 @@ export type ApplyForEntryRoleOnRoleSetMutationOptions = Apollo.BaseMutationOptio
 >;
 export const EventOnApplicationDocument = gql`
   mutation eventOnApplication($input: ApplicationEventInput!) {
-    eventOnApplication(applicationEventData: $input) {
+    eventOnApplication(eventData: $input) {
       id
-      lifecycle {
-        id
-        nextEvents
-        state
-      }
+      nextEvents
+      state
     }
   }
 `;
@@ -11237,10 +11225,7 @@ export const AdminGlobalOrganizationsListDocument = gql`
         }
         verification {
           id
-          lifecycle {
-            id
-            state
-          }
+          state
         }
       }
       pageInfo {
@@ -11323,13 +11308,10 @@ export function refetchAdminGlobalOrganizationsListQuery(
 
 export const AdminOrganizationVerifyDocument = gql`
   mutation adminOrganizationVerify($input: OrganizationVerificationEventInput!) {
-    eventOnOrganizationVerification(organizationVerificationEventData: $input) {
+    eventOnOrganizationVerification(eventData: $input) {
       id
-      lifecycle {
-        id
-        nextEvents
-        state
-      }
+      nextEvents
+      state
     }
   }
 `;
@@ -12170,13 +12152,10 @@ export type DeletePlatformInvitationMutationOptions = Apollo.BaseMutationOptions
 >;
 export const InvitationStateEventDocument = gql`
   mutation InvitationStateEvent($eventName: String!, $invitationId: UUID!) {
-    eventOnCommunityInvitation(invitationEventData: { eventName: $eventName, invitationID: $invitationId }) {
+    eventOnInvitation(eventData: { eventName: $eventName, invitationID: $invitationId }) {
       id
-      lifecycle {
-        id
-        nextEvents
-        state
-      }
+      nextEvents
+      state
     }
   }
 `;
@@ -13641,10 +13620,7 @@ export const UserPendingMembershipsDocument = gql`
         }
         application {
           id
-          lifecycle {
-            id
-            state
-          }
+          state
           createdDate
         }
       }
@@ -22998,10 +22974,7 @@ export const NewMembershipsDocument = gql`
         }
         application {
           id
-          lifecycle {
-            id
-            state
-          }
+          state
           createdDate
         }
       }
@@ -23017,10 +22990,7 @@ export const NewMembershipsDocument = gql`
           createdBy {
             id
           }
-          lifecycle {
-            id
-            state
-          }
+          state
           createdDate
         }
       }

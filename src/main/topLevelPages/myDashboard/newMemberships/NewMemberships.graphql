@@ -7,10 +7,8 @@ query NewMemberships {
       }
       application {
         id
-        lifecycle {
-          id
-          state
-        }
+
+        state
         createdDate
       }
     }
@@ -26,10 +24,7 @@ query NewMemberships {
         createdBy {
           id
         }
-        lifecycle {
-          id
-          state
-        }
+        state
         createdDate
       }
     }
