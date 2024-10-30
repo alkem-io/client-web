@@ -209,5 +209,4 @@ fragment LibraryTemplates on TemplatesSet {
       }
     }
   }
-  collaborationTemplatesCount
 }
