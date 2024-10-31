@@ -93,7 +93,7 @@ export const ContributionsView = ({
                       enableLeave={enableLeave}
                       leavingCommunity={isLeavingCommunity}
                       handleLeaveCommunity={handleLeaveCommunity}
-                      leavingCommunityDialogOpen={!!leavingRoleSetId && leavingRoleSetId === details?.roleSetId} //!! there is a problem here
+                      leavingCommunityDialogOpen={!!leavingRoleSetId && leavingRoleSetId === details?.roleSetId}
                       onLeaveCommunityDialogOpen={isOpen =>
                         setLeavingRoleSetId(isOpen ? details?.roleSetId : undefined)
                       }

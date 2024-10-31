@@ -1,0 +1,12 @@
+# TODO: This query shouldn't be needed. In fact, when we merge Entitlements PR#7003 we should remove it and just use useSpace().collaborationId
+# In the end we need it for the CollaborationFromSpaceUrlForm, so this query should stay. But I leave the todo, because we need to remove the other usage when we merge 7003
+query SpaceCollaborationId($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      collaboration {
+        id
+      }
+    }
+  }
+}

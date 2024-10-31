@@ -21,7 +21,8 @@ interface SubspaceCreationInput {
   background?: string;
   vision: string;
   tags: string[];
-  addDefaultCallouts: boolean;
+  addTutorialCallouts: boolean;
+  addCallouts: boolean;
 }
 
 export const useSubspaceCreation = () => {
@@ -82,7 +83,8 @@ export const useSubspaceCreation = () => {
             },
             tags: value.tags,
             collaborationData: {
-              addDefaultCallouts: value.addDefaultCallouts,
+              addTutorialCallouts: value.addTutorialCallouts,
+              addCallouts: value.addCallouts,
             },
           },
         },

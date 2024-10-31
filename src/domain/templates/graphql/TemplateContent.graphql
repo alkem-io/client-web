@@ -3,6 +3,7 @@ query TemplateContent(
   $includeCallout: Boolean = false
   $includeCommunityGuidelines: Boolean = false
   $includeInnovationFlow: Boolean = false
+  $includeCollaboration: Boolean = false
   $includePost: Boolean = false
   $includeWhiteboard: Boolean = false
 ) {
@@ -31,6 +32,18 @@ query TemplateContent(
       whiteboard @include(if: $includeWhiteboard) {
         ...WhiteboardTemplateContent
       }
+      collaboration @include(if: $includeCollaboration) {
+        ...CollaborationTemplateContent
+      }
+    }
+  }
+}
+
+# Used temporarily to preview any collaboration before turning it into a template
+query CollaborationTemplateContent($collaborationId: UUID!) {
+  lookup {
+    collaboration(ID: $collaborationId) {
+      ...CollaborationTemplateContent
     }
   }
 }
@@ -91,6 +104,41 @@ fragment InnovationFlowTemplateContent on InnovationFlow {
   states {
     displayName
     description
+  }
+}
+
+fragment CollaborationTemplateContent on Collaboration {
+  id
+  innovationFlow {
+    id
+    states {
+      displayName
+      description
+    }
+  }
+  callouts {
+    id
+    type
+    framing {
+      id
+      profile {
+        id
+        displayName
+        description
+        flowStateTagset: tagset(tagsetName: FLOW_STATE) {
+          tags
+        }
+      }
+      whiteboard {
+        id
+        profile {
+          preview: visual(type: BANNER) {
+            ...VisualFull
+          }
+        }
+      }
+    }
+    sortOrder
   }
 }
 
