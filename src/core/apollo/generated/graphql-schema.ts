@@ -5928,9 +5928,9 @@ export type TemplatesManager = {
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The TemplateDefaultss in this TemplatesManager. */
+  /** The TemplateDefaults in this TemplatesManager. */
   templateDefaults: Array<TemplateDefault>;
-  /** The templatesSet in use by this InnovationPack */
+  /** The templatesSet in use by this TemplatesManager. */
   templatesSet?: Maybe<TemplatesSet>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
@@ -6118,8 +6118,8 @@ export type UpdateCollaborationCalloutsSortOrderInput = {
 };
 
 export type UpdateCollaborationFromTemplateInput = {
-  /** Add in the Callouts */
-  addCallouts?: InputMaybe<Scalars['Boolean']>;
+  /** Add the Callouts from the Collaboration Template */
+  addCallouts?: Scalars['Boolean'];
   /** ID of the Collaboration to be updated */
   collaborationID: Scalars['UUID'];
   /** The Collaboration Template that will be used for updates to the Collaboration */
