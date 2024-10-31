@@ -10,11 +10,10 @@ import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
 import { Theme, useMediaQuery } from '@mui/material';
-import { theme } from '../../../../core/ui/themes/default/Theme';
 
 const DashboardActivity = () => {
   const { t } = useTranslation();
-  const isMobile = useMediaQuery<Theme>(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
   const columns = useColumns();
 
   const [isMyMembershipsDialogOpen, setIsMyMembershipsDialogOpen] = useState(false);

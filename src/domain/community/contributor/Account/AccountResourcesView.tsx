@@ -13,8 +13,7 @@ import InnovationPackCardHorizontal from '../../../InnovationPack/InnovationPack
 import InnovationHubCardHorizontal from '../../../innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
 import GridItem from '../../../../core/ui/grid/GridItem';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
-import { Button, useMediaQuery } from '@mui/material';
-import { theme } from '../../../../core/ui/themes/default/Theme';
+import { Button, Theme, useMediaQuery } from '@mui/material';
 import { Actions } from '../../../../core/ui/actions/Actions';
 import { ExpandMore } from '@mui/icons-material';
 
@@ -79,7 +78,7 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
 
   const [visibleSpacesCount, setVisibleSpacesCount] = useState(VISIBLE_SPACE_LIMIT);
 
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
   const columns = useColumns();
 
