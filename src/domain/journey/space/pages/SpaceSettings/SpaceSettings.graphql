@@ -11,6 +11,9 @@ query SpaceSettings($spaceId: UUID!) {
           id
         }
       }
+      collaboration {
+        id
+      }
     }
   }
 }

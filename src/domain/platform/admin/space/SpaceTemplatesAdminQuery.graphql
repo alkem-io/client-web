@@ -5,8 +5,11 @@ query SpaceTemplatesAdmin($spaceId: UUID!) {
         id
         url
       }
-      library {
+      templatesManager {
         id
+        templatesSet {
+          id
+        }
       }
     }
   }

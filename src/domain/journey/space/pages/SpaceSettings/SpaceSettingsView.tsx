@@ -15,6 +15,7 @@ import {
   CommunityMembershipPolicy,
   SpacePrivacyMode,
   SpaceSettingsCollaboration,
+  TemplateType,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import PageContent from '../../../../../core/ui/content/PageContent';
 import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
@@ -27,13 +28,17 @@ import { useNotification } from '../../../../../core/ui/notifications/useNotific
 import { BlockSectionTitle, BlockTitle, Caption, Text } from '../../../../../core/ui/typography';
 import CommunityApplicationForm from '../../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
-import { Box, CircularProgress } from '@mui/material';
+import { Box, Button, CircularProgress } from '@mui/material';
 import { JourneyTypeName } from '../../../JourneyTypeName';
 import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
 import DeleteIcon from './icon/DeleteIcon';
 import EntityConfirmDeleteDialog from './EntityConfirmDeleteDialog';
 import { useSubSpace } from '../../../subspace/hooks/useSubSpace';
 import { useSpace } from '../../SpaceContext/useSpace';
+import Gutters from '../../../../../core/ui/grid/Gutters';
+import CreateTemplateDialog from '../../../../templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
+import { useCreateCollaborationTemplate } from '../../../../templates/hooks/useCreateCollaborationTemplate';
+import { CollaborationTemplateFormSubmittedValues } from '../../../../templates/components/Forms/CollaborationTemplateForm';
 
 interface SpaceSettingsViewProps {
   journeyId: string;
@@ -69,6 +74,7 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
   const { subspaceId } = useSubSpace();
   const { spaceNameId } = useSpace();
 
+  const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const openDialog = () => setOpenDeleteDialog(true);
   const closeDialog = () => setOpenDeleteDialog(false);
@@ -118,6 +124,14 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
     },
   });
   const roleSetId = settingsData?.lookup.space?.community?.roleSet.id;
+  const collaborationId = settingsData?.lookup.space?.collaboration.id;
+
+  const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
+  const handleSaveAsTemplate = async (values: CollaborationTemplateFormSubmittedValues) => {
+    await handleCreateCollaborationTemplate(values, spaceNameId);
+    setSaveAsTemplateDialogOpen(false);
+    notify(t('pages.admin.subspace.notifications.templateSaved'), 'success');
+  };
 
   const currentSettings = useMemo(() => {
     const settings = settingsData?.lookup.space?.settings;
@@ -370,7 +384,36 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
               />
             )}
           </PageContentBlock>
-
+          {isSubspace && (
+            <PageContentBlock>
+              <PageContentBlockHeader title={t('pages.admin.space.settings.copySpace.title')} />
+              <Text>{t('pages.admin.space.settings.copySpace.description')}</Text>
+              <Gutters disablePadding row>
+                <Button variant="contained" onClick={() => setSaveAsTemplateDialogOpen(true)}>
+                  {t('pages.admin.space.settings.copySpace.createTemplate')}
+                </Button>
+                <Button variant="outlined" onClick={/* PENDING */ () => {}} disabled>
+                  {t('pages.admin.space.settings.copySpace.duplicate')}
+                </Button>
+              </Gutters>
+              {saveAsTemplateDialogOpen && (
+                <CreateTemplateDialog
+                  open
+                  onClose={() => setSaveAsTemplateDialogOpen(false)}
+                  templateType={TemplateType.Collaboration}
+                  onSubmit={handleSaveAsTemplate}
+                  getDefaultValues={async () => {
+                    return {
+                      type: TemplateType.Collaboration,
+                      collaboration: {
+                        id: collaborationId,
+                      },
+                    };
+                  }}
+                />
+              )}
+            </PageContentBlock>
+          )}
           {isSubspace && canDelete && (
             <PageContentBlock sx={{ borderColor: errorColor }}>
               <PageContentBlockHeader sx={{ color: errorColor }} title={t('components.deleteEntity.title')} />

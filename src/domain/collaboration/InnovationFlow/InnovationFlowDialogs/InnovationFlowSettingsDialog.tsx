@@ -16,6 +16,7 @@ import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { Identifiable } from '../../../../core/utils/Identifiable';
+import ApplyCollaborationTemplateDialog from '../../../templates/components/Dialogs/ApplyCollaborationTemplateDialog';
 
 interface InnovationFlowSettingsDialogProps {
   open?: boolean;
@@ -42,8 +43,11 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
 
   const [importInnovationFlowConfirmDialogOpen, setImportInnovationFlowConfirmDialogOpen] = useState(false);
   const [importInnovationFlowDialogOpen, setImportInnovationFlowDialogOpen] = useState(false);
-  const handleImportTemplate = async ({ id: templateId }: Identifiable) => {
-    await actions.importInnovationFlow(templateId);
+  const [selectedTemplateToImport, setSelectedTemplateToImport] = useState<Identifiable>();
+
+  const handleImportTemplate = async ({ id: templateId }: Identifiable, importCallouts: boolean) => {
+    await actions.importCollaborationTemplate(templateId, importCallouts);
+    setSelectedTemplateToImport(undefined);
     setImportInnovationFlowDialogOpen(false);
   };
 
@@ -83,6 +87,7 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
           >
             <InnovationFlowCollaborationToolsBlock
               callouts={callouts}
+              loading={state.loading}
               innovationFlowStates={innovationFlow?.states}
               currentState={innovationFlow?.currentState.displayName}
               onUpdateCurrentState={actions.updateInnovationFlowCurrentState}
@@ -116,11 +121,16 @@ const InnovationFlowSettingsDialog: FC<InnovationFlowSettingsDialogProps> = ({
           confirmButtonTextId: 'buttons.continue',
         }}
       />
+      <ApplyCollaborationTemplateDialog
+        open={Boolean(selectedTemplateToImport)}
+        onConfirm={addCallouts => handleImportTemplate(selectedTemplateToImport!, addCallouts)}
+        onClose={() => setSelectedTemplateToImport(undefined)}
+      />
       <ImportTemplatesDialog
         open={importInnovationFlowDialogOpen}
-        templateType={TemplateType.InnovationFlow}
+        templateType={TemplateType.Collaboration}
         onClose={() => setImportInnovationFlowDialogOpen(false)}
-        onSelectTemplate={handleImportTemplate}
+        onSelectTemplate={async templateId => setSelectedTemplateToImport(templateId)}
         enablePlatformTemplates
         actionButton={
           <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">

@@ -6,7 +6,7 @@ import SwapColors from '../../palette/SwapColors';
 import { gutters } from '../../grid/utils';
 
 export interface RadioButtonOption<Value> {
-  icon: ComponentType<SvgIconProps>;
+  icon?: ComponentType<SvgIconProps>;
   value: Value;
   label: ReactNode;
   tooltip?: ReactNode;
@@ -42,21 +42,23 @@ const RadioButtonsGroup = <Value,>({
                 '&.Mui-disabled': value === optionValue ? { color: 'primary.main' } : {},
               }}
               startIcon={
-                <SwapColors swap={value === optionValue}>
-                  <Gutters
-                    disablePadding
-                    sx={{
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      backgroundColor: value === optionValue ? 'background.paper' : undefined,
-                      borderRadius: gutters(),
-                      width: gutters(2),
-                      height: gutters(2),
-                    }}
-                  >
-                    <Icon color="primary" />
-                  </Gutters>
-                </SwapColors>
+                Icon && (
+                  <SwapColors swap={value === optionValue}>
+                    <Gutters
+                      disablePadding
+                      sx={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: value === optionValue ? 'background.paper' : undefined,
+                        borderRadius: gutters(),
+                        width: gutters(2),
+                        height: gutters(2),
+                      }}
+                    >
+                      <Icon color="primary" />
+                    </Gutters>
+                  </SwapColors>
+                )
               }
             >
               <Caption whiteSpace="wrap">{label}</Caption>

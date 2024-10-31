@@ -1,5 +1,5 @@
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import { DialogActions, DialogContent, IconButton } from '@mui/material';
+import { DialogActions, DialogContent, IconButton, Skeleton } from '@mui/material';
 import { cloneElement, FC, ReactElement, useState } from 'react';
 import { Reference, TagsetType, UpdateProfileInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
@@ -10,6 +10,7 @@ import DialogWithGrid, { DialogFooter } from '../../../../core/ui/dialog/DialogW
 import { useInView } from 'react-intersection-observer';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 export interface InnovationFlowProfile {
   id: string;
@@ -54,6 +55,7 @@ const InnovationFlowProfileBlock: FC<InnovationFlowProfileBlockProps> = ({
   canEdit = false,
   onUpdate,
   innovationFlow,
+  loading,
   children,
 }) => {
   const { t } = useTranslation();
@@ -74,7 +76,16 @@ const InnovationFlowProfileBlock: FC<InnovationFlowProfileBlockProps> = ({
   return (
     <>
       <PageContentBlock disableGap>
-        <PageContentBlockHeader title={innovationFlow?.profile.displayName}>
+        <PageContentBlockHeader
+          title={
+            <>
+              {innovationFlow?.profile.displayName}
+              {loading && !innovationFlow?.profile.displayName && (
+                <Skeleton sx={{ width: gutters(20), marginBottom: gutters() }} />
+              )}
+            </>
+          }
+        >
           {canEdit && (
             <IconButton size="small" onClick={() => setIsEditing(true)} aria-label={t('buttons.edit')}>
               <EditOutlinedIcon />
