@@ -15,8 +15,6 @@ import { error as logError } from '../../../logging/sentry/log';
 import { MarkdownTextMaxLength } from '../field-length.constants';
 import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
 
-// @@@ WIP ~ Най-вероятно ще подавам isTemporaryLocation като props на FormikMarkdownField,
-// който ще го подава на MarkdownInput компонента.
 export const FormikMarkdownField = ({
   name,
   title,
@@ -117,7 +115,7 @@ export const FormikMarkdownField = ({
           label={title}
           value={field.value}
           readOnly={readOnly}
-          inputComponent={MarkdownInput} // @@@ WIP
+          inputComponent={MarkdownInput}
           inputProps={{
             maxLength,
             hideImageOptions,

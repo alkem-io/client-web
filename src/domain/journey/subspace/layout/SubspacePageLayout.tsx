@@ -1,88 +1,63 @@
 import React, {
+  useMemo,
   Children,
-  createContext,
-  PropsWithChildren,
+  useState,
+  useEffect,
   ReactNode,
   useContext,
-  useEffect,
-  useMemo,
-  useState,
+  createContext,
+  PropsWithChildren,
 } from 'react';
-import ChildJourneyPageBanner from '../../common/childJourneyPageBanner/ChildJourneyPageBanner';
-import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
-import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
-import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
-import PageContent from '../../../../core/ui/content/PageContent';
-import { JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
-import PageContentColumnBase from '../../../../core/ui/content/PageContentColumnBase';
+
+import produce from 'immer';
 import { useTranslation } from 'react-i18next';
 import { KeyboardTab, Menu } from '@mui/icons-material';
-import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
-import InfoColumn from './InfoColumn';
-import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
-import { Error404 } from '../../../../core/pages/Errors/Error404';
-import FloatingActionButtons from '../../../../core/ui/button/FloatingActionButtons';
-import { gutters } from '../../../../core/ui/grid/utils';
-import PlatformHelpButton from '../../../../main/ui/helpButton/PlatformHelpButton';
-import { NotFoundErrorBoundary } from '../../../../core/notFound/NotFoundErrorBoundary';
 import { Box, Drawer, IconButton, Paper, Theme, useMediaQuery } from '@mui/material';
-import GridProvider from '../../../../core/ui/grid/GridProvider';
-import { GRID_COLUMNS_MOBILE } from '../../../../core/ui/grid/constants';
-import SwapColors from '../../../../core/ui/palette/SwapColors';
-import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
+
+import InfoColumn from './InfoColumn';
+import WelcomeBlock from './WelcomeBlock';
 import DialogActionsMenu from './DialogActionsMenu';
 import Gutters from '../../../../core/ui/grid/Gutters';
-import createLayoutHolder from '../../../../core/ui/layout/layoutHolder/LayoutHolder';
-import PoweredBy from '../../../../main/ui/poweredBy/PoweredBy';
 import DialogActionButtons from './DialogActionButtons';
-import unwrapFragment from '../../../../core/ui/utils/unwrapFragment';
-import { SubspaceDialog } from './SubspaceDialog';
-import { DialogDefinitionProps, isDialogDef } from './DialogDefinition';
-import produce from 'immer';
-import WelcomeBlock from './WelcomeBlock';
+import SwapColors from '../../../../core/ui/palette/SwapColors';
+import PoweredBy from '../../../../main/ui/poweredBy/PoweredBy';
+import GridProvider from '../../../../core/ui/grid/GridProvider';
+import { Error404 } from '../../../../core/pages/Errors/Error404';
+import PageContent from '../../../../core/ui/content/PageContent';
 import { UrlBaseProvider } from '../../../../core/ui/link/UrlBase';
-import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
-import { theme } from '../../../../core/ui/themes/default/Theme';
-import ApplicationButton from '../../../community/application/applicationButton/ApplicationButton';
-import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
+import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
+import FullWidthButton from '../../../../core/ui/button/FullWidthButton';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import PlatformHelpButton from '../../../../main/ui/helpButton/PlatformHelpButton';
+import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
+import PageContentColumnBase from '../../../../core/ui/content/PageContentColumnBase';
+import { NotFoundErrorBoundary } from '../../../../core/notFound/NotFoundErrorBoundary';
+import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
+import ChildJourneyPageBanner from '../../common/childJourneyPageBanner/ChildJourneyPageBanner';
+import ApplicationButton from '../../../community/application/applicationButton/ApplicationButton';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import { SpaceReadAccess } from '../../common/authorization/useCanReadSpace';
-import { SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
+import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
+import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
+import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
 
-export interface SubspacePageLayoutProps {
-  journeyId: string | undefined;
-  parentJourneyId: string | undefined;
-  spaceReadAccess: SpaceReadAccess;
-  journeyPath: JourneyPath;
-  journeyUrl?: string | undefined; // TODO make required
-  loading?: boolean;
-  unauthorizedDialogDisabled?: boolean;
-  welcome?: ReactNode;
-  actions?: ReactNode;
-  infoColumnChildren?: ReactNode;
-}
+import { SubspaceDialog } from './SubspaceDialog';
+import { gutters } from '../../../../core/ui/grid/utils';
+import { theme } from '../../../../core/ui/themes/default/Theme';
+import unwrapFragment from '../../../../core/ui/utils/unwrapFragment';
+import { GRID_COLUMNS_MOBILE } from '../../../../core/ui/grid/constants';
+import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
+import { SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
+import { isDialogDef, type DialogDefinitionProps } from './DialogDefinition';
+import { type SpaceReadAccess } from '../../common/authorization/useCanReadSpace';
+import { type JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
+import FloatingActionButtons from '../../../../core/ui/button/FloatingActionButtons';
+import createLayoutHolder from '../../../../core/ui/layout/layoutHolder/LayoutHolder';
 
 const {
   LayoutHolder: InnovationFlowHolder,
   RenderPoint: InnovationFlowRenderPoint,
   createLayout,
 } = createLayoutHolder();
-
-export const SubspaceInnovationFlow = createLayout(({ children }: PropsWithChildren<{}>) => {
-  return <>{children}</>;
-});
-
-/**
- * The rationale for this context is to allow actions to be consumed by individual components,
- * and not rendered in the action list (menu or buttons).
- * Rather that handling a set of rules whether the action should be rendered in the menu or not,
- * we let the child components decide.
- */
-interface ActionsProvider {
-  consume(action: SubspaceDialog): DialogDefinitionProps | undefined;
-  dispose(action: SubspaceDialog): void;
-}
 
 const DialogActionsContext = createContext<ActionsProvider>({
   consume: () => undefined,
@@ -97,36 +72,30 @@ export const useConsumeAction = (action: SubspaceDialog | undefined | null | fal
 };
 
 const MENU_STATE_KEY = 'menuState';
-enum MenuState {
-  EXPANDED = 'expanded',
-  COLLAPSED = 'collapsed',
-}
 
 const SubspacePageLayout = ({
-  journeyId,
-  spaceReadAccess,
-  journeyPath,
-  journeyUrl,
-  loading = false,
-  unauthorizedDialogDisabled = false,
-  welcome,
   actions,
-  parentJourneyId,
+  welcome,
   children,
+  journeyId,
+  journeyUrl,
+  journeyPath,
+  spaceReadAccess,
+  loading = false,
+  parentJourneyId,
   infoColumnChildren,
+  unauthorizedDialogDisabled = false,
 }: PropsWithChildren<SubspacePageLayoutProps>) => {
+  const [isInfoDrawerOpen, setIsInfoDrawerOpen] = useState(false);
+  // Some actions are handled/consumed by individual components, in that case they aren't rendered in the action list (menu or buttons)
+  const [consumedActions, setConsumedActions] = useState<Partial<Record<SubspaceDialog, true>>>({});
   const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem(MENU_STATE_KEY) === MenuState.COLLAPSED || false);
 
   const { t } = useTranslation();
 
-  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
-
-  const [isInfoDrawerOpen, setIsInfoDrawerOpen] = useState(false);
-
   const actionsList = Children.toArray(unwrapFragment(actions));
 
-  // Some actions are handled/consumed by individual components, in that case they aren't rendered in the action list (menu or buttons)
-  const [consumedActions, setConsumedActions] = useState<Partial<Record<SubspaceDialog, true>>>({});
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
   const actionsProvider = useMemo<ActionsProvider>(() => {
     const actionDefinitions = actionsList.filter(isDialogDef);
@@ -185,14 +154,15 @@ const SubspacePageLayout = ({
                 floatingActions={
                   <FloatingActionButtons
                     visible
-                    floatingActions={<PlatformHelpButton />}
                     bottom={isMobile ? gutters(2) : 0}
+                    floatingActions={<PlatformHelpButton />}
                   />
                 }
               >
                 <PageContent>
                   <InfoColumn collapsed={isCollapsed}>
                     {!isCollapsed && <WelcomeBlock about={!isMobile}>{welcome}</WelcomeBlock>}
+
                     {!isCollapsed && (
                       <FullWidthButton
                         startIcon={<KeyboardTab />}
@@ -207,14 +177,14 @@ const SubspacePageLayout = ({
                       </FullWidthButton>
                     )}
 
-                    {/* @@@ WIP ~ temporaryLocation true трябва да е тук!!! */}
                     <DialogActionButtons column={isCollapsed}>
                       {unconsumedActions}
+
                       {isCollapsed && (
                         <ButtonWithTooltip
-                          tooltip={t('buttons.expand')}
-                          tooltipPlacement="right"
                           iconButton
+                          tooltipPlacement="right"
+                          tooltip={t('buttons.expand')}
                           onClick={() => {
                             setIsCollapsed(false);
                             localStorage.setItem(MENU_STATE_KEY, MenuState.EXPANDED);
@@ -224,8 +194,10 @@ const SubspacePageLayout = ({
                         </ButtonWithTooltip>
                       )}
                     </DialogActionButtons>
+
                     {infoColumnChildren}
                   </InfoColumn>
+
                   <PageContentColumnBase
                     columns={isCollapsed ? 12 : 9}
                     flexBasis={0}
@@ -238,6 +210,7 @@ const SubspacePageLayout = ({
                         if (loading || applicationButtonProps.isMember) {
                           return null;
                         }
+
                         return (
                           <PageContentColumn columns={9}>
                             <ApplicationButton
@@ -272,19 +245,24 @@ const SubspacePageLayout = ({
                     {children}
                   </PageContentColumnBase>
                 </PageContent>
+
                 {isMobile && (
                   <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1 }} elevation={3} square>
                     <Gutters row padding={1} paddingBottom={0} justifyContent="space-between">
                       <IconButton onClick={() => setIsInfoDrawerOpen(true)}>
                         <Menu />
                       </IconButton>
+
                       <InnovationFlowRenderPoint />
+
                       <Box width={gutters(2)} />
                     </Gutters>
+
                     <PoweredBy compact />
                   </Paper>
                 )}
               </TopLevelLayout>
+
               <JourneyUnauthorizedDialogContainer {...spaceReadAccess} journeyId={journeyId}>
                 {({ vision, ...props }) => (
                   <JourneyUnauthorizedDialog
@@ -297,15 +275,17 @@ const SubspacePageLayout = ({
                   />
                 )}
               </JourneyUnauthorizedDialogContainer>
+
               {isMobile && (
                 <SwapColors>
                   <GridProvider columns={GRID_COLUMNS_MOBILE}>
                     <Drawer
                       open={isInfoDrawerOpen}
-                      onClose={() => setIsInfoDrawerOpen(false)}
                       sx={{ '.MuiDrawer-paper': { width: '60vw' } }}
+                      onClose={() => setIsInfoDrawerOpen(false)}
                     >
                       <PageContentBlockSeamless>{welcome}</PageContentBlockSeamless>
+
                       <DialogActionsMenu onClose={() => setIsInfoDrawerOpen(false)}>
                         {unconsumedActions}
                       </DialogActionsMenu>
@@ -313,6 +293,7 @@ const SubspacePageLayout = ({
                   </GridProvider>
                 </SwapColors>
               )}
+
               {isMobile && <Box height={gutters(3)} />}
             </InnovationFlowHolder>
           </DialogActionsContext.Provider>
@@ -323,3 +304,37 @@ const SubspacePageLayout = ({
 };
 
 export default SubspacePageLayout;
+
+export const SubspaceInnovationFlow = createLayout(({ children }: PropsWithChildren<{}>) => {
+  return <>{children}</>;
+});
+
+export interface SubspacePageLayoutProps {
+  journeyPath: JourneyPath;
+  journeyId: string | undefined;
+  spaceReadAccess: SpaceReadAccess;
+  parentJourneyId: string | undefined;
+
+  loading?: boolean;
+  welcome?: ReactNode;
+  actions?: ReactNode;
+  infoColumnChildren?: ReactNode;
+  journeyUrl?: string | undefined; // TODO make required
+  unauthorizedDialogDisabled?: boolean;
+}
+
+enum MenuState {
+  EXPANDED = 'expanded',
+  COLLAPSED = 'collapsed',
+}
+
+/**
+ * The rationale for this context is to allow actions to be consumed by individual components,
+ * and not rendered in the action list (menu or buttons).
+ * Rather that handling a set of rules whether the action should be rendered in the menu or not,
+ * we let the child components decide.
+ */
+type ActionsProvider = {
+  dispose(action: SubspaceDialog): void;
+  consume(action: SubspaceDialog): DialogDefinitionProps | undefined;
+};

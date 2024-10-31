@@ -84,7 +84,6 @@ const ControlsButton = memo(
   }
 );
 
-// @@@ WIP ~ Това са контролите на RICH TEXT EDITOR-а, който се използва във формите за създаване на постове и пр.
 const MarkdownInputControls = memo(
   forwardRef<HTMLDivElement | null, MarkdownInputControlsProps>(
     (

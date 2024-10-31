@@ -8,9 +8,8 @@ import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialo
 import TemplateForm, { type AnyTemplateFormSubmittedValues } from '../../Forms/TemplateForm';
 
 import { getNewTemplate } from '../../../models/common';
-import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
-
 import { type AnyTemplate } from '../../../models/TemplateBase';
+import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
 
 const CreateTemplateDialog = ({
   open,
@@ -35,28 +34,26 @@ const CreateTemplateDialog = ({
     })();
   }, [open]);
 
-  const handleClose = () => {
-    setConfirmCloseDialogOpen(true);
-  };
-
   return (
     <>
-      <CreateEditTemplateDialogBase open={open} onClose={handleClose} templateType={templateType}>
+      <CreateEditTemplateDialogBase
+        open={open}
+        templateType={templateType}
+        onClose={() => setConfirmCloseDialogOpen(true)}
+      >
         {({ actions }) => (
           <>
-            {!defaultValues && (
-              <Box textAlign="center">
-                <CircularProgress />
-              </Box>
-            )}
-
-            {defaultValues && (
+            {defaultValues ? (
               <TemplateForm
                 actions={actions}
                 template={defaultValues}
                 temporaryLocation={temporaryLocation}
                 onSubmit={onSubmit}
               />
+            ) : (
+              <Box textAlign="center">
+                <CircularProgress />
+              </Box>
             )}
           </>
         )}
