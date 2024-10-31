@@ -27,6 +27,7 @@ import { formatLocation } from '../../../../common/location/LocationUtils';
 import { LocationSegment } from '../../../../common/location/LocationSegment';
 import { EmptyLocation } from '../../../../common/location/Location';
 import Gutters from '../../../../../core/ui/grid/Gutters';
+import { OrgVerificationLifecycleEvents } from '../../../../community/contributor/organization/adminOrganizations/useAdminGlobalOrganizationsList';
 
 const EmptyOrganization: Omit<Organization, 'authorization' | 'agent'> = {
   id: '',
@@ -37,12 +38,13 @@ const EmptyOrganization: Omit<Organization, 'authorization' | 'agent'> = {
   website: '',
   verification: {
     id: '',
-    status: OrganizationVerificationEnum.NotVerified,
     lifecycle: {
       id: '',
-      stateIsFinal: false,
-      machineDef: '',
     },
+    status: OrganizationVerificationEnum.NotVerified,
+    isFinalized: false,
+    nextEvents: [OrgVerificationLifecycleEvents.VERIFICATION_REQUEST],
+    state: 'notVerified',
   },
   account: undefined,
   profile: {

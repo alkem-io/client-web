@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@mui/material';
+import RouterLink from './RouterLink';
 
 export interface ConditionalLinkProps {
   to?: string;

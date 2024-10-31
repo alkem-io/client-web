@@ -12,10 +12,7 @@ query PendingInvitations {
         createdBy {
           id
         }
-        lifecycle {
-          id
-          state
-        }
+        state
         createdDate
       }
     }

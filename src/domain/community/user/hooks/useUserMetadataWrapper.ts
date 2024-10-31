@@ -18,7 +18,7 @@ export interface PendingApplication extends Identifiable {
   };
   application: {
     createdDate: Date | string;
-    lifecycle: { state?: string };
+    state?: string;
   };
 }
 
