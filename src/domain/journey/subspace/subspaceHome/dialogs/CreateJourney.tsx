@@ -39,6 +39,7 @@ export const CreateJourney = ({ isVisible = false, onClose, parentSpaceId = '' }
             tags: value.tags,
             collaborationData: {
               addTutorialCallouts: value.addTutorialCallouts,
+              addCallouts: value.addCallouts,
             },
           },
         },

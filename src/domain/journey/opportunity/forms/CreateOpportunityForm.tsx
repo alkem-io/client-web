@@ -21,6 +21,7 @@ interface FormValues {
   vision: string;
   tags: string[];
   addTutorialCallouts: boolean;
+  addCallouts: boolean;
 }
 
 interface CreateOpportunityFormProps extends JourneyCreationForm {}
@@ -37,6 +38,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
       vision: value.vision,
       tags: value.tags,
       addTutorialCallouts: value.addTutorialCallouts,
+      addCallouts: value.addCallouts,
     });
 
   const initialValues: FormValues = {
@@ -45,6 +47,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
     vision: '',
     tags: [],
     addTutorialCallouts: true,
+    addCallouts: true,
   };
 
   const validationSchema = yup.object().shape({
@@ -104,6 +107,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
               title={t('context.subsubspace.tags.title')}
               helperText={t('context.subsubspace.tags.description')}
             />
+            <FormikSwitch name="addCallouts" title={t('context.subsubspace.addCallouts.title')} />
             <FormikSwitch name="addTutorialCallouts" title={t('context.subsubspace.addTutorialCallouts.title')} />
           </Gutters>
         </Form>

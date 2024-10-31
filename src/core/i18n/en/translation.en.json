@@ -847,8 +847,11 @@
         "description": "Enter words that are key to the Subspace to make it stand out and easier to find.",
         "placeholder": ""
       },
+      "addCallouts": {
+        "title": "Add default template's collaboration tools"
+      },
       "addTutorialCallouts": {
-        "title": "Add default collaboration tools and tutorials"
+        "title": "Add tutorials collaboration tools"
       },
       "innovationFlow": {
         "title": "Subspace Flow"
@@ -890,8 +893,11 @@
         "description": "Enter words that are key to your Subspace to make it stand out and easier to find.",
         "placeholder": ""
       },
+      "addCallouts": {
+        "title": "Add default template's collaboration tools"
+      },
       "addTutorialCallouts": {
-        "title": "Add default collaboration tools and tutorials"
+        "title": "Add tutorials collaboration tools"
       },
       "innovationFlow": {
         "title": "Subspace Flow"

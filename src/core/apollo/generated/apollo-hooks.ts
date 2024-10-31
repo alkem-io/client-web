@@ -3431,7 +3431,6 @@ export const LibraryTemplatesFragmentDoc = gql`
         }
       }
     }
-    collaborationTemplatesCount
   }
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}

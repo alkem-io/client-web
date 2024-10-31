@@ -236,7 +236,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           },
           tags: [],
           collaborationData: {
-            addTutorialCallouts: true,
+            addTutorialCallouts: false,
+            addCallouts: true,
           },
         },
       },

@@ -1793,6 +1793,8 @@ export type CreateCollaborationInput = {
 };
 
 export type CreateCollaborationOnSpaceInput = {
+  /** Add callouts from the template to the Collaboration; defaults to true. */
+  addCallouts?: InputMaybe<Scalars['Boolean']>;
   /** Add tutorial callouts to the Collaboration; defaults to false. */
   addTutorialCallouts?: InputMaybe<Scalars['Boolean']>;
   /** The Callouts to add to this Collaboration. */
