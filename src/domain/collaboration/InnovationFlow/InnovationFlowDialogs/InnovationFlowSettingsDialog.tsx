@@ -16,7 +16,7 @@ import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { Identifiable } from '../../../../core/utils/Identifiable';
-import ApplyCollaborationTemplateDialog from '../../../templates/components/Dialogs/ApplyCollaborationTemplateDialog/ApplyCollaborationTemplateDialog';
+import ApplyCollaborationTemplateDialog from '../../../templates/components/Dialogs/ApplyCollaborationTemplateDialog';
 
 interface InnovationFlowSettingsDialogProps {
   open?: boolean;

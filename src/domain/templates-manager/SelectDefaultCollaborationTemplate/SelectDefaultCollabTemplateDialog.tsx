@@ -17,7 +17,7 @@ interface FormValues {
   collaborationTemplateSelectedId: string;
 }
 
-interface SelectDefaultCollaborationTemplateDialogProps {
+interface SelectDefaultCollabTemplateDialogProps {
   spaceId: string | undefined;
   open: boolean;
   onClose?: () => void;
@@ -25,13 +25,13 @@ interface SelectDefaultCollaborationTemplateDialogProps {
   onSelectCollaborationTemplate: (collaborationTemplateId: string) => Promise<unknown>;
 }
 
-const SelectDefaultCollaborationTemplateDialog = ({
+const SelectDefaultCollabTemplateDialog = ({
   spaceId,
   open,
   onClose,
   defaultCollaborationTemplateId,
   onSelectCollaborationTemplate: onSelectInnovationFlow,
-}: SelectDefaultCollaborationTemplateDialogProps) => {
+}: SelectDefaultCollabTemplateDialogProps) => {
   const { t } = useTranslation();
   const [handleSelectCollaborationTemplate, loadingSelectCollaborationTemplate] =
     useLoadingState(onSelectInnovationFlow);
@@ -105,4 +105,4 @@ const SelectDefaultCollaborationTemplateDialog = ({
   );
 };
 
-export default SelectDefaultCollaborationTemplateDialog;
+export default SelectDefaultCollabTemplateDialog;

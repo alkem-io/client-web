@@ -7,13 +7,13 @@ import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
 import ContributeCard from '../../../../core/ui/card/ContributeCard';
 import { Caption } from '../../../../core/ui/typography/components';
 import InnovationPackIcon from '../../../InnovationPack/InnovationPackIcon';
-import { SubspaceIcon } from '../../../journey/subspace/icon/SubspaceIcon2';
 import CardDescription, { DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from '../../../../core/ui/card/CardDescription';
 import CardContent from '../../../../core/ui/card/CardContent';
 import CardTags from '../../../../core/ui/card/CardTags';
 import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import { TemplateCardProps } from './TemplateCard';
 import { CollaborationTemplate } from '../../models/CollaborationTemplate';
+import { SubspaceIconV2 } from '../../../journey/subspace/icon/SubspaceIconV2';
 
 interface CollaborationTemplateCardProps extends TemplateCardProps {
   template: CollaborationTemplate;
@@ -29,7 +29,7 @@ const CollaborationTemplateCard = ({ template, innovationPack, loading, ...props
 
   return (
     <ContributeCard {...props}>
-      <CardHeader title={template?.profile.displayName} iconComponent={SubspaceIcon}>
+      <CardHeader title={template?.profile.displayName} iconComponent={SubspaceIconV2}>
         {loading && <Skeleton />}
         <CardHeaderCaption logoUrl={innovationPack?.provider?.profile.avatar?.uri}>
           {innovationPack?.provider?.profile.displayName}

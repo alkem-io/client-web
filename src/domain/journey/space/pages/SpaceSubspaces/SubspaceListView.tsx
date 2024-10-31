@@ -27,7 +27,7 @@ import InnovationFlowProfileView from '../../../../collaboration/InnovationFlow/
 import InnovationFlowStates from '../../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import { Actions } from '../../../../../core/ui/actions/Actions';
 import { Cached, ContentCopyOutlined, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
-import SelectDefaultCollaborationTemplateDialog from '../../../../templates-manager/SelectDefaultCollaborationTemplate/SelectDefaultCollaborationTemplateDialog';
+import SelectDefaultCollabTemplateDialog from '../../../../templates-manager/SelectDefaultCollaborationTemplate/SelectDefaultCollabTemplateDialog';
 import MenuItemWithIcon from '../../../../../core/ui/menu/MenuItemWithIcon';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import SearchableList, { SearchableListItem } from '../../../../platform/admin/components/SearchableList';
@@ -256,7 +256,7 @@ export const SubspaceListView = () => {
           </Gutters>
         </Box>
       </PageContentBlock>
-      <SelectDefaultCollaborationTemplateDialog
+      <SelectDefaultCollabTemplateDialog
         spaceId={spaceId}
         open={selectCollaborationTemplateDialogOpen}
         defaultCollaborationTemplateId={defaultSubspaceTemplate?.template?.id}

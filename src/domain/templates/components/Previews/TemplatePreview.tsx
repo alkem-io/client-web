@@ -2,7 +2,7 @@ import { useTemplateContentQuery } from '../../../../core/apollo/generated/apoll
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 import CalloutTemplatePreview from './CalloutTemplatePreview';
-import CollaborationTemplatePreview from './CollaborationTemplatePreview';
+import CollaborationTemplatePreview from './CollabTemplatePreview';
 import CommunityGuidelinesTemplatePreview from './CommunityGuidelinesTemplatePreview';
 import InnovationFlowTemplatePreview from './InnovationFlowTemplatePreview';
 import PostTemplatePreview from './PostTemplatePreview';

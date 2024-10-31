@@ -7,7 +7,7 @@ import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfile } from './common/mappings';
 import { BlockSectionTitle } from '../../../../core/ui/typography';
 import { CollaborationTemplate } from '../../models/CollaborationTemplate';
-import CollaborationTemplatePreview from '../Previews/CollaborationTemplatePreview';
+import CollaborationTemplatePreview from '../Previews/CollabTemplatePreview';
 import { useCollaborationTemplateContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import CollaborationFromSpaceUrlForm from './CollaborationFromSpaceUrlForm';
 
