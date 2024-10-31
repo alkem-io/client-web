@@ -3493,8 +3493,8 @@ export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const RecentJourneyProfileFragmentDoc = gql`
-  fragment RecentJourneyProfile on Profile {
+export const RecentSpaceProfileFragmentDoc = gql`
+  fragment RecentSpaceProfile on Profile {
     id
     url
     displayName
@@ -22708,77 +22708,21 @@ export function refetchNewVirtualContributorMySpacesQuery(
   return { query: NewVirtualContributorMySpacesDocument, variables: variables };
 }
 
-export const RecentJourneyDocument = gql`
-  query RecentJourney($spaceId: UUID!) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        profile {
-          ...RecentJourneyProfile
-        }
-      }
-    }
-  }
-  ${RecentJourneyProfileFragmentDoc}
-`;
-
-/**
- * __useRecentJourneyQuery__
- *
- * To run a query within a React component, call `useRecentJourneyQuery` and pass it any options that fit your needs.
- * When your component renders, `useRecentJourneyQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useRecentJourneyQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useRecentJourneyQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.RecentJourneyQuery, SchemaTypes.RecentJourneyQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.RecentJourneyQuery, SchemaTypes.RecentJourneyQueryVariables>(
-    RecentJourneyDocument,
-    options
-  );
-}
-
-export function useRecentJourneyLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.RecentJourneyQuery, SchemaTypes.RecentJourneyQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.RecentJourneyQuery, SchemaTypes.RecentJourneyQueryVariables>(
-    RecentJourneyDocument,
-    options
-  );
-}
-
-export type RecentJourneyQueryHookResult = ReturnType<typeof useRecentJourneyQuery>;
-export type RecentJourneyLazyQueryHookResult = ReturnType<typeof useRecentJourneyLazyQuery>;
-export type RecentJourneyQueryResult = Apollo.QueryResult<
-  SchemaTypes.RecentJourneyQuery,
-  SchemaTypes.RecentJourneyQueryVariables
->;
-export function refetchRecentJourneyQuery(variables: SchemaTypes.RecentJourneyQueryVariables) {
-  return { query: RecentJourneyDocument, variables: variables };
-}
-
 export const RecentSpacesDocument = gql`
   query RecentSpaces($limit: Float) {
     me {
       mySpaces(limit: $limit) {
         space {
           id
+          profile {
+            ...RecentSpaceProfile
+          }
           __typename
         }
       }
     }
   }
+  ${RecentSpaceProfileFragmentDoc}
 `;
 
 /**
