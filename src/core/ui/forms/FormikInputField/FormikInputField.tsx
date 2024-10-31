@@ -1,52 +1,42 @@
-import { FC, ReactNode, useMemo } from 'react';
+import { useMemo, ReactNode } from 'react';
+
 import { useField } from 'formik';
+import { DistributiveOmit } from '@mui/types';
 import { Box, FormHelperText, TextField, TextFieldProps } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
-import { DistributiveOmit } from '@mui/types';
-import TranslationKey from '../../../i18n/utils/TranslationKey';
-import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
+
 import HelpButton from '../../button/HelpButton';
+import TranslationKey from '../../../i18n/utils/TranslationKey';
 import CharacterCounter from '../characterCounter/CharacterCounter';
 
-export type FormikInputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
-  title: string;
-  name: string;
-  required?: boolean;
-  readOnly?: boolean;
-  disabled?: boolean;
-  placeholder?: string;
-  autoComplete?: string;
-  helpIconText?: string;
-  helpText?: string;
-  loading?: boolean;
-  counterDisabled?: boolean;
-  maxLength?: number;
-  endAdornment?: ReactNode;
-};
+import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
 
-export const FormikInputField: FC<FormikInputFieldProps> = ({
-  title,
+export const FormikInputField = ({
+  rows,
+  type,
   name,
+  title,
+  loading,
+  fullWidth,
+  maxLength,
+  InputProps,
+  placeholder,
+  autoComplete,
+  endAdornment,
+  helpIconText,
   required = false,
   readOnly = false,
   disabled = false,
-  type,
-  placeholder,
-  autoComplete,
-  InputProps,
-  helpIconText,
   helperText: _helperText,
-  loading,
-  rows,
   counterDisabled = false,
-  maxLength,
-  fullWidth,
-  endAdornment,
   ...rest
-}) => {
-  const tErr = useValidationMessageTranslation();
+}: FormikInputFieldProps) => {
   const [field, meta, helpers] = useField(name);
+
+  const tErr = useValidationMessageTranslation();
+
   const isError = Boolean(meta.error) && meta.touched;
+
   const helperText = useMemo(() => {
     if (!isError) {
       return _helperText;
@@ -58,20 +48,18 @@ export const FormikInputField: FC<FormikInputFieldProps> = ({
   return (
     <Box width={fullWidth ? '100%' : undefined}>
       <TextField
-        name={name}
-        placeholder={placeholder}
-        label={title}
-        onBlur={field.onBlur}
-        onChange={event => helpers.setValue(event.target.value)}
-        value={field.value}
-        variant="outlined"
-        error={isError}
-        required={required}
-        disabled={loading || disabled}
-        autoComplete={autoComplete}
-        rows={rows}
-        multiline={!!rows}
         fullWidth
+        rows={rows}
+        name={name}
+        label={title}
+        error={isError}
+        variant="outlined"
+        multiline={!!rows}
+        required={required}
+        value={field.value}
+        placeholder={placeholder}
+        autoComplete={autoComplete}
+        disabled={loading || disabled}
         InputProps={{
           ...InputProps,
           endAdornment: (
@@ -83,8 +71,11 @@ export const FormikInputField: FC<FormikInputFieldProps> = ({
           ),
           readOnly: readOnly,
         }}
+        onBlur={field.onBlur}
+        onChange={event => helpers.setValue(event.target.value)}
         {...rest}
       />
+
       <CharacterCounter count={field.value?.length} maxLength={maxLength} disabled={counterDisabled || !maxLength}>
         <FormHelperText error={isError}>{helperText}</FormHelperText>
       </CharacterCounter>
@@ -93,3 +84,19 @@ export const FormikInputField: FC<FormikInputFieldProps> = ({
 };
 
 export default FormikInputField;
+
+export type FormikInputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
+  name: string;
+  title: string;
+  helpText?: string;
+  loading?: boolean;
+  required?: boolean;
+  readOnly?: boolean;
+  disabled?: boolean;
+  maxLength?: number;
+  placeholder?: string;
+  autoComplete?: string;
+  helpIconText?: string;
+  endAdornment?: ReactNode;
+  counterDisabled?: boolean;
+};

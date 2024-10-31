@@ -1,68 +1,32 @@
-import React, { ReactNode, useMemo } from 'react';
+import { useMemo, ReactNode } from 'react';
+
 import * as yup from 'yup';
-import { useTranslation } from 'react-i18next';
-import { FormikProps } from 'formik';
-import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
-import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import { CalloutType, TemplateType } from '../../../../core/apollo/generated/graphql-schema';
-import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { CalloutTemplate } from '../../models/CalloutTemplate';
-import { displayNameValidator } from '../../../../core/ui/forms/validator';
-import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
-import { RadioButtonOption } from '../../../../core/ui/forms/radioButtons/RadioButtonsGroup';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import { Box } from '@mui/material';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { FormikProps } from 'formik';
+import { useTranslation } from 'react-i18next';
+
+import { Caption } from '../../../../core/ui/typography';
+import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
 import { TagsetField } from '../../../platform/admin/components/Common/TagsetSegment';
+import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
+import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
+import TemplateFormBase, { type TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import FormikRadioButtonsGroup from '../../../../core/ui/forms/radioButtons/FormikRadioButtonsGroup';
 import FormikWhiteboardPreview from '../../../collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
-import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
+
 import {
-  mapReferencesToUpdateReferences,
   mapTagsetsToUpdateTagsets,
+  mapReferencesToUpdateReferences,
   mapTemplateProfileToUpdateProfile,
 } from './common/mappings';
-import { Caption } from '../../../../core/ui/typography';
-
-export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
-  callout?: {
-    framing: {
-      profile: {
-        displayName: string;
-        description: string;
-        references?: {
-          ID: string;
-          name?: string;
-          description?: string;
-          uri?: string;
-        }[];
-        tagsets?: {
-          ID: string;
-          tags: string[];
-        }[];
-      };
-      whiteboard?: {
-        profile?: {
-          displayName: string;
-          description?: string;
-        };
-        content: string;
-      };
-    };
-    contributionDefaults?: {
-      postDescription?: string;
-      whiteboardContent?: string;
-    };
-    type?: CalloutType; // Cannot be sent on updates, but it's needed in the forms
-  };
-}
-
-interface CalloutTemplateFormProps {
-  template?: CalloutTemplate;
-  onSubmit: (values: CalloutTemplateFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<CalloutTemplateFormSubmittedValues>) => ReactNode);
-}
+import { gutters } from '../../../../core/ui/grid/utils';
+import { type CalloutTemplate } from '../../models/CalloutTemplate';
+import { displayNameValidator } from '../../../../core/ui/forms/validator';
+import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { CalloutType, TemplateType } from '../../../../core/apollo/generated/graphql-schema';
+import { type RadioButtonOption } from '../../../../core/ui/forms/radioButtons/RadioButtonsGroup';
 
 const validator = {
   callout: yup
@@ -107,8 +71,9 @@ const validator = {
     .required(),
 };
 
-const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFormProps) => {
+const CalloutTemplateForm = ({ actions, template, temporaryLocation = false, onSubmit }: CalloutTemplateFormProps) => {
   const { t } = useTranslation();
+
   const createMode = !template?.id;
 
   const calloutTypeOptions = useMemo<RadioButtonOption<CalloutType>[]>(() => {
@@ -165,32 +130,40 @@ const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFor
         return (
           <>
             <FormikInputField name="callout.framing.profile.displayName" title={t('common.title')} />
+
             <Box marginBottom={gutters(-1)}>
               <FormikMarkdownField
-                name="callout.framing.profile.description"
                 title={t('common.description')}
                 maxLength={MARKDOWN_TEXT_LENGTH}
+                temporaryLocation={temporaryLocation}
+                name="callout.framing.profile.description"
               />
             </Box>
+
             <TagsetField name="callout.framing.profile.tagsets[0].tags" title={t('common.tags')} />
+
             <FormikRadioButtonsGroup
               name="callout.type"
-              options={calloutTypeOptions}
               readOnly={!createMode}
+              options={calloutTypeOptions}
               tooltipProps={{ PopperProps: { sx: { pointerEvents: 'none' } } }}
             />
+
             {values.callout?.type === CalloutType.Whiteboard && (
               <FormikWhiteboardPreview name="callout.framing.whiteboard.content" canEdit />
             )}
+
             {values.callout?.type === CalloutType.WhiteboardCollection && (
               <FormikWhiteboardPreview name="callout.contributionDefaults.whiteboardContent" canEdit />
             )}
+
             {values.callout?.type === CalloutType.PostCollection && (
               <Box marginBottom={gutters(-1)}>
                 <FormikMarkdownField
-                  name="callout.contributionDefaults.postDescription"
                   title={t('common.description')}
                   maxLength={MARKDOWN_TEXT_LENGTH}
+                  temporaryLocation={temporaryLocation}
+                  name="callout.contributionDefaults.postDescription"
                 />
               </Box>
             )}
@@ -202,3 +175,44 @@ const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFor
 };
 
 export default CalloutTemplateForm;
+
+type CalloutTemplateFormProps = {
+  onSubmit: (values: CalloutTemplateFormSubmittedValues) => void;
+  actions: ReactNode | ((formState: FormikProps<CalloutTemplateFormSubmittedValues>) => ReactNode);
+
+  template?: CalloutTemplate;
+  temporaryLocation?: boolean;
+};
+
+export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
+  callout?: {
+    framing: {
+      profile: {
+        displayName: string;
+        description: string;
+        references?: {
+          ID: string;
+          name?: string;
+          description?: string;
+          uri?: string;
+        }[];
+        tagsets?: {
+          ID: string;
+          tags: string[];
+        }[];
+      };
+      whiteboard?: {
+        profile?: {
+          displayName: string;
+          description?: string;
+        };
+        content: string;
+      };
+    };
+    contributionDefaults?: {
+      postDescription?: string;
+      whiteboardContent?: string;
+    };
+    type?: CalloutType; // Cannot be sent on updates, but it's needed in the forms
+  };
+}

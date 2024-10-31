@@ -1,6 +1,6 @@
 import { TemplateBase } from './TemplateBase';
 import { InnovationFlowState, TemplateType } from '../../../core/apollo/generated/graphql-schema';
-export const MAX_INNOVATIONFLOW_STATES = 100;
+export const MAX_INNOVATION_FLOW_STATES = 100;
 
 export interface CollaborationTemplate extends TemplateBase {
   type: TemplateType; // TemplateType.Collaboration;

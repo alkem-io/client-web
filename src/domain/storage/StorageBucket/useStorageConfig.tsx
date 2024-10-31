@@ -107,6 +107,7 @@ const useStorageConfig = ({ skip, locationType, ...options }: StorageConfigOptio
     () => ({
       storageConfig: storageConfig
         ? {
+            temporaryLocation: false, // False by default, change it to true only on the components that need it.
             storageBucketId: storageConfig.id,
             maxFileSize: storageConfig.maxFileSize,
             allowedMimeTypes: storageConfig.allowedMimeTypes,
@@ -207,7 +208,4 @@ export type StorageConfigOptions =
   | UseStorageConfigOptionsInnovationHub
   | UseStorageConfigOptionsPlatform;
 
-export type StorageConfigProvided = {
-  storageConfig: StorageConfig | undefined;
-  setTemporaryLocation: (isTemporary: boolean) => void;
-};
+export type StorageConfigProvided = StorageConfig | undefined;

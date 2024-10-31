@@ -1,55 +1,39 @@
-import { Editor } from '@tiptap/react';
-import React, { forwardRef, memo, useEffect, useState } from 'react';
+import { memo, useState, useEffect, forwardRef } from 'react';
+
+import produce from 'immer';
 import {
   Code,
+  Undo,
+  Redo,
+  Title,
   FormatBold,
   FormatItalic,
   FormatListBulleted,
   FormatListNumbered,
   FormatQuoteOutlined,
   HorizontalRuleOutlined,
-  Redo,
-  Title,
-  Undo,
 } from '@mui/icons-material';
-import { Collapse, IconButton, IconButtonProps, Tabs } from '@mui/material';
+import { Editor } from '@tiptap/react';
 import { styled } from '@mui/material/styles';
-import { gutters } from '../../grid/utils';
-import { ChainedCommands } from '@tiptap/core/dist/packages/core/src/types';
-import InsertImageButton from './InsertImageButton';
+import { Collapse, IconButton, IconButtonProps, Tabs } from '@mui/material';
+
 import ToggleLinkButton from './ToggleLinkButton';
 import InsertEmojiButton from './InsertEmojiButton';
-import produce from 'immer';
+import InsertImageButton from './InsertImageButton';
 
-interface MarkdownInputControlsProps {
-  editor: Editor | null;
-  visible?: boolean;
-  hideImageOptions?: boolean;
-  onDialogOpen?: () => void;
-  onDialogClose?: () => void;
-}
-
-interface ControlsButtonProps extends IconButtonProps {
-  editor: Editor | null;
-  command: (commandsChain: ChainedCommands) => ChainedCommands;
-  specs?: string | [attributes: {}] | [nodeOrMark: string, attributes?: {}];
-}
+import { gutters } from '../../grid/utils';
+import { ChainedCommands } from '@tiptap/core/dist/packages/core/src/types';
 
 /*
 Tabs component used without real Tabs, because MUI Tabs component has a very useful variant="scrollable"
 that adds buttons on the sides of the toolbar when the buttons don't fit in a single row */
 const Toolbar = styled(Tabs)(() => ({
-  /* Hide scroller buttons when they are disabled. Material puts opacity: 0 and toolbar looks ugly. Better hidden */
+  /* Hide scroll buttons when they are disabled. Material puts opacity: 0 and toolbar looks ugly. Better hidden */
   '.MuiTabScrollButton-root.Mui-disabled': {
     display: 'none',
   },
   minHeight: 'auto',
 }));
-
-interface ButtonState {
-  active?: boolean;
-  disabled?: boolean;
-}
 
 const ControlsButton = memo(
   ({ editor, command, specs, ...buttonProps }: ControlsButtonProps) => {
@@ -87,10 +71,10 @@ const ControlsButton = memo(
 
     return (
       <IconButton
-        onClick={() => editor && command(editor.chain().focus()).run()}
         disabled={state.disabled}
         color={state.active ? 'secondary' : undefined}
         sx={{ width: gutters(2), height: gutters(2) }}
+        onClick={() => editor && command(editor.chain().focus()).run()}
         {...buttonProps}
       />
     );
@@ -100,78 +84,105 @@ const ControlsButton = memo(
   }
 );
 
-const CONTROLS_SHOW_DELAY_MS = 150; // to allow a user to select text by double-click without "jumping"
-
+// @@@ WIP ~ Това са контролите на RICH TEXT EDITOR-а, който се използва във формите за създаване на постове и пр.
 const MarkdownInputControls = memo(
   forwardRef<HTMLDivElement | null, MarkdownInputControlsProps>(
-    ({ editor, visible = false, hideImageOptions = false, onDialogOpen, onDialogClose }, ref) => {
+    (
+      { editor, visible = false, hideImageOptions = false, temporaryLocation = false, onDialogOpen, onDialogClose },
+      ref
+    ) => {
       const [isVisible, setIsVisible] = useState(visible);
 
       useEffect(() => {
+        let timeoutId: NodeJS.Timeout;
+
         if (visible) {
-          setTimeout(() => {
+          const CONTROLS_SHOW_DELAY_MS = 150; // Allows a user to select text by double-click without "jumping".
+
+          timeoutId = setTimeout(() => {
             setIsVisible(() => visible);
           }, CONTROLS_SHOW_DELAY_MS);
         } else {
           setIsVisible(false);
         }
+
+        return () => clearTimeout(timeoutId);
       }, [visible]);
 
       return (
-        <Collapse in={isVisible} ref={ref}>
+        <Collapse ref={ref} in={isVisible}>
           <Toolbar value={false} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
             <ControlsButton editor={editor} command={e => e.undo()}>
               <Undo />
             </ControlsButton>
+
             <ControlsButton editor={editor} command={e => e.redo()}>
               <Redo />
             </ControlsButton>
+
             <ControlsButton editor={editor} command={e => e.toggleBold()} specs="bold">
               <FormatBold />
             </ControlsButton>
+
             <ControlsButton editor={editor} command={e => e.toggleItalic()} specs="italic">
               <FormatItalic />
             </ControlsButton>
+
             <ControlsButton
               editor={editor}
-              command={e => e.toggleHeading({ level: 1 })}
               specs={['heading', { level: 1 }]}
+              command={e => e.toggleHeading({ level: 1 })}
             >
               <Title fontSize="large" />
             </ControlsButton>
+
             <ControlsButton
               editor={editor}
-              command={e => e.toggleHeading({ level: 2 })}
               specs={['heading', { level: 2 }]}
+              command={e => e.toggleHeading({ level: 2 })}
             >
               <Title />
             </ControlsButton>
+
             <ControlsButton
               editor={editor}
-              command={e => e.toggleHeading({ level: 3 })}
               specs={['heading', { level: 3 }]}
+              command={e => e.toggleHeading({ level: 3 })}
             >
               <Title fontSize="small" />
             </ControlsButton>
+
             <ControlsButton editor={editor} command={e => e.toggleBulletList()} specs="bulletList">
               <FormatListBulleted />
             </ControlsButton>
+
             <ControlsButton editor={editor} command={e => e.toggleOrderedList()} specs="orderedList">
               <FormatListNumbered />
             </ControlsButton>
+
             <ControlsButton editor={editor} command={e => e.toggleBlockquote()} specs="blockquote">
               <FormatQuoteOutlined />
             </ControlsButton>
+
             <ControlsButton editor={editor} command={e => e.toggleCodeBlock()} specs="codeBlock">
               <Code />
             </ControlsButton>
+
             <ControlsButton editor={editor} command={e => e.setHorizontalRule()}>
               <HorizontalRuleOutlined />
             </ControlsButton>
+
             <ToggleLinkButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+
             {!hideImageOptions && (
-              <InsertImageButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+              <InsertImageButton
+                editor={editor}
+                temporaryLocation={temporaryLocation}
+                onDialogOpen={onDialogOpen}
+                onDialogClose={onDialogClose}
+              />
             )}
+
             <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
           </Toolbar>
         </Collapse>
@@ -181,3 +192,23 @@ const MarkdownInputControls = memo(
 );
 
 export default MarkdownInputControls;
+
+interface ButtonState {
+  active?: boolean;
+  disabled?: boolean;
+}
+
+type MarkdownInputControlsProps = {
+  visible?: boolean;
+  editor: Editor | null;
+  hideImageOptions?: boolean;
+  temporaryLocation?: boolean;
+  onDialogOpen?: () => void;
+  onDialogClose?: () => void;
+};
+
+interface ControlsButtonProps extends IconButtonProps {
+  editor: Editor | null;
+  command: (commandsChain: ChainedCommands) => ChainedCommands;
+  specs?: string | [attributes: {}] | [nodeOrMark: string, attributes?: {}];
+}

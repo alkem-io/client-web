@@ -206,6 +206,8 @@ const SubspacePageLayout = ({
                         {t('buttons.collapse')}
                       </FullWidthButton>
                     )}
+
+                    {/* @@@ WIP ~ temporaryLocation true трябва да е тук!!! */}
                     <DialogActionButtons column={isCollapsed}>
                       {unconsumedActions}
                       {isCollapsed && (

@@ -1,8 +1,9 @@
-import React, { FC, forwardRef } from 'react';
+import { forwardRef, PropsWithChildren } from 'react';
+
 import { Box, BoxProps } from '@mui/material';
 
-export interface ActionsProps extends BoxProps {}
+export const Actions = forwardRef((props: PropsWithChildren<ActionsProps>, ref) => (
+  <Box ref={ref} display="flex" gap={1} alignItems="center" {...props} />
+));
 
-export const Actions: FC<ActionsProps> = forwardRef((props, ref) => {
-  return <Box ref={ref} display="flex" gap={1} alignItems="center" {...props} />;
-});
+export interface ActionsProps extends BoxProps {}

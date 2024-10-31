@@ -1,46 +1,39 @@
-import React, { useEffect } from 'react';
-import CalloutsListDialog from '../../../../collaboration/callout/calloutsList/CalloutsListDialog';
-import { useBackToStaticPath } from '../../../../../core/routing/useBackToPath';
+import { useEffect } from 'react';
+
+import Dialog from '@mui/material/Dialog';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { UseCalloutsProvided } from '../../../../collaboration/callout/useCallouts/useCallouts';
+import { Theme, useMediaQuery } from '@mui/material';
+
 import { SubspaceDialog } from '../../layout/SubspaceDialog';
 import SubspacesListDialog from '../../dialogs/SubspacesListDialog';
-import ContributorsToggleDialog from '../../dialogs/ContributorsToggleDialog';
+import GridProvider from '../../../../../core/ui/grid/GridProvider';
 import ActivityDialog from '../../../common/Activity/ActivityDialog';
 import CalendarDialog from '../../../../timeline/calendar/CalendarDialog';
-import { useParams } from 'react-router-dom';
-import { ShareDialog } from '../../../../shared/components/ShareDialog/ShareDialog';
-import InnovationFlowSettingsDialog from '../../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog';
-import { useCollaborationAuthorization } from '../../../../collaboration/authorization/useCollaborationAuthorization';
+import ContributorsToggleDialog from '../../dialogs/ContributorsToggleDialog';
 import DashboardNavigation from '../../../dashboardNavigation/DashboardNavigation';
-import Dialog from '@mui/material/Dialog';
-import GridProvider from '../../../../../core/ui/grid/GridProvider';
-import { GRID_COLUMNS_MOBILE } from '../../../../../core/ui/grid/constants';
-import { Theme, useMediaQuery } from '@mui/material';
-import { DashboardNavigationItem } from '../../../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import { ShareDialog } from '../../../../shared/components/ShareDialog/ShareDialog';
+import CalloutsListDialog from '../../../../collaboration/callout/calloutsList/CalloutsListDialog';
 import CommunityUpdatesDialog from '../../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
-import { buildUpdatesUrl } from '../../../../../main/routing/urlBuilders';
+import InnovationFlowSettingsDialog from '../../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog';
 
-export interface SubspaceDialogsProps {
-  dialogOpen: SubspaceDialog | undefined;
-  journeyId: string | undefined;
-  journeyUrl: string | undefined;
-  callouts: UseCalloutsProvided;
-  dashboardNavigation: {
-    dashboardNavigation: DashboardNavigationItem | undefined;
-  };
-  communityId: string | undefined;
-}
+import { buildUpdatesUrl } from '../../../../../main/routing/urlBuilders';
+import { GRID_COLUMNS_MOBILE } from '../../../../../core/ui/grid/constants';
+import { useBackToStaticPath } from '../../../../../core/routing/useBackToPath';
+import { type UseCalloutsProvided } from '../../../../collaboration/callout/useCallouts/useCallouts';
+import { type DashboardNavigationItem } from '../../../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import { useCollaborationAuthorization } from '../../../../collaboration/authorization/useCollaborationAuthorization';
 
 const SubspaceDialogs = ({
-  dialogOpen,
-  journeyUrl,
   callouts,
   journeyId,
-  dashboardNavigation,
+  dialogOpen,
+  journeyUrl,
   communityId,
+  dashboardNavigation,
 }: SubspaceDialogsProps) => {
   const { t } = useTranslation();
+
   const { calendarEventNameId } = useParams();
 
   const handleClose = useBackToStaticPath(journeyUrl ?? '');
@@ -62,48 +55,57 @@ const SubspaceDialogs = ({
   return (
     <>
       <CalloutsListDialog
-        open={dialogOpen === SubspaceDialog.Index}
-        onClose={handleClose}
-        callouts={callouts.callouts}
         loading={callouts.loading}
+        callouts={callouts.callouts}
+        open={dialogOpen === SubspaceDialog.Index}
         emptyListCaption={t('pages.generic.sections.subentities.empty', {
           entities: t('common.collaborationTools'),
         })}
+        onClose={handleClose}
       />
+
       <SubspacesListDialog journeyId={journeyId} open={dialogOpen === SubspaceDialog.Subspaces} onClose={handleClose} />
+
       <ContributorsToggleDialog
         journeyId={journeyId}
         open={dialogOpen === SubspaceDialog.Contributors}
         onClose={handleClose}
       />
+
       <ActivityDialog journeyId={journeyId} open={dialogOpen === SubspaceDialog.Activity} onClose={handleClose} />
+
       <CalendarDialog
+        temporaryLocation
         journeyId={journeyId}
-        open={dialogOpen === SubspaceDialog.Timeline}
-        onClose={handleClose}
         parentPath={journeyUrl}
         calendarEventNameId={calendarEventNameId}
-      />
-      <ShareDialog
-        open={dialogOpen === SubspaceDialog.Share}
+        open={dialogOpen === SubspaceDialog.Timeline}
         onClose={handleClose}
+      />
+
+      <ShareDialog
         url={journeyUrl}
         entityTypeName="subspace"
-      />
-      <CommunityUpdatesDialog
-        open={dialogOpen === SubspaceDialog.Updates}
+        open={dialogOpen === SubspaceDialog.Share}
         onClose={handleClose}
+      />
+
+      <CommunityUpdatesDialog
+        loading={false}
         communityId={communityId}
         shareUrl={buildUpdatesUrl(journeyUrl ?? '')}
-        loading={false}
+        open={dialogOpen === SubspaceDialog.Updates}
+        onClose={handleClose}
       />
+
       <InnovationFlowSettingsDialog
         collaborationId={collaborationId}
         open={dialogOpen === SubspaceDialog.ManageFlow}
         onClose={handleClose}
       />
+
       {dashboardNavigation && (
-        <Dialog open={dialogOpen === SubspaceDialog.Outline} onClose={handleClose} fullWidth>
+        <Dialog fullWidth open={dialogOpen === SubspaceDialog.Outline} onClose={handleClose}>
           <GridProvider columns={GRID_COLUMNS_MOBILE}>
             <DashboardNavigation currentItemId={journeyId} {...dashboardNavigation} />
           </GridProvider>
@@ -114,3 +116,14 @@ const SubspaceDialogs = ({
 };
 
 export default SubspaceDialogs;
+
+export interface SubspaceDialogsProps {
+  journeyId: string | undefined;
+  callouts: UseCalloutsProvided;
+  journeyUrl: string | undefined;
+  communityId: string | undefined;
+  dialogOpen: SubspaceDialog | undefined;
+  dashboardNavigation: {
+    dashboardNavigation: DashboardNavigationItem | undefined;
+  };
+}

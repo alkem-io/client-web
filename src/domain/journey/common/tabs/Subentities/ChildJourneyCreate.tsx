@@ -1,17 +1,12 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@mui/material';
-import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
-import { JourneyTypeName } from '../../../JourneyTypeName';
-import getJourneyChildrenTranslation from '../../../subspace/getJourneyChildrenTranslation';
+import { useTranslation } from 'react-i18next';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
-interface ChildJourneyCreateProps {
-  canCreateSubentity: boolean;
-  onCreateSubentity?: () => void;
-  journeyTypeName: JourneyTypeName;
-}
+import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
+import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
+
+import { type JourneyTypeName } from '../../../JourneyTypeName';
+import getJourneyChildrenTranslation from '../../../subspace/getJourneyChildrenTranslation';
 
 const ChildJourneyCreate = ({ journeyTypeName, canCreateSubentity, onCreateSubentity }: ChildJourneyCreateProps) => {
   const { t } = useTranslation();
@@ -23,6 +18,7 @@ const ChildJourneyCreate = ({ journeyTypeName, canCreateSubentity, onCreateSuben
           entities: getJourneyChildrenTranslation(t, journeyTypeName),
         })}
       </WrapperMarkdown>
+
       {canCreateSubentity && (
         <Box display="flex" justifyContent="flex-end">
           <Button startIcon={<AddOutlinedIcon />} variant="contained" onClick={onCreateSubentity}>
@@ -35,3 +31,9 @@ const ChildJourneyCreate = ({ journeyTypeName, canCreateSubentity, onCreateSuben
 };
 
 export default ChildJourneyCreate;
+
+type ChildJourneyCreateProps = {
+  canCreateSubentity: boolean;
+  journeyTypeName: JourneyTypeName;
+  onCreateSubentity?: () => void;
+};

@@ -1,46 +1,67 @@
-import { FormikProps } from 'formik';
 import { ReactNode } from 'react';
-import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
-import { AnyTemplate } from '../../models/TemplateBase';
-import CalloutTemplateForm, { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
-import CollaborationTemplateForm, { CollaborationTemplateFormSubmittedValues } from './CollaborationTemplateForm';
+
+import { FormikProps } from 'formik';
+
+import InnovationFlowTemplateForm, {
+  type InnovationFlowTemplateFormSubmittedValues,
+} from './InnovationFlowTemplateForm';
 import CommunityGuidelinesTemplateForm, {
-  CommunityGuidelinesTemplateFormSubmittedValues,
+  type CommunityGuidelinesTemplateFormSubmittedValues,
 } from './CommunityGuidelinesTemplateForm';
-import InnovationFlowTemplateForm, { InnovationFlowTemplateFormSubmittedValues } from './InnovationFlowTemplateForm';
-import PostTemplateForm, { PostTemplateFormSubmittedValues } from './PostTemplateForm';
-import WhiteboardTemplateForm, { WhiteboardTemplateFormSubmittedValues } from './WhiteboardTemplateForm';
+import PostTemplateForm, { type PostTemplateFormSubmittedValues } from './PostTemplateForm';
+import CalloutTemplateForm, { type CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
+import WhiteboardTemplateForm, { type WhiteboardTemplateFormSubmittedValues } from './WhiteboardTemplateForm';
+import CollaborationTemplateForm, { type CollaborationTemplateFormSubmittedValues } from './CollaborationTemplateForm';
 
-interface TemplateFormProps {
-  template: AnyTemplate;
-  onSubmit: (values: AnyTemplateFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<AnyTemplate>) => ReactNode);
-}
+import { type AnyTemplate } from '../../models/TemplateBase';
+import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 
-export type AnyTemplateFormSubmittedValues =
-  | CalloutTemplateFormSubmittedValues
-  | CollaborationTemplateFormSubmittedValues
-  | CommunityGuidelinesTemplateFormSubmittedValues
-  | PostTemplateFormSubmittedValues
-  | InnovationFlowTemplateFormSubmittedValues
-  | WhiteboardTemplateFormSubmittedValues;
-
-const TemplateForm = ({ template, ...rest }: TemplateFormProps) => {
+const TemplateForm = ({ template, temporaryLocation = false, ...rest }: TemplateFormProps) => {
   switch (template.type) {
-    case TemplateType.Callout:
-      return <CalloutTemplateForm template={template} {...rest} />;
-    case TemplateType.Collaboration:
-      return <CollaborationTemplateForm template={template} {...rest} />;
-    case TemplateType.CommunityGuidelines:
-      return <CommunityGuidelinesTemplateForm template={template} {...rest} />;
-    case TemplateType.Post:
-      return <PostTemplateForm template={template} {...rest} />;
-    case TemplateType.InnovationFlow:
-      return <InnovationFlowTemplateForm template={template} {...rest} />;
-    case TemplateType.Whiteboard:
+    case TemplateType.Whiteboard: {
       return <WhiteboardTemplateForm template={template} {...rest} />;
+    }
+
+    case TemplateType.Collaboration: {
+      return <CollaborationTemplateForm template={template} {...rest} />;
+    }
+
+    case TemplateType.InnovationFlow: {
+      return <InnovationFlowTemplateForm template={template} {...rest} />;
+    }
+
+    case TemplateType.Post: {
+      return <PostTemplateForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
+    }
+
+    case TemplateType.Callout: {
+      return <CalloutTemplateForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
+    }
+
+    case TemplateType.CommunityGuidelines: {
+      return <CommunityGuidelinesTemplateForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
+    }
+
+    default: {
+      throw new Error('Template type not supported');
+    }
   }
-  throw new Error('Template type not supported');
 };
 
 export default TemplateForm;
+
+export type AnyTemplateFormSubmittedValues =
+  | PostTemplateFormSubmittedValues
+  | CalloutTemplateFormSubmittedValues
+  | WhiteboardTemplateFormSubmittedValues
+  | CollaborationTemplateFormSubmittedValues
+  | InnovationFlowTemplateFormSubmittedValues
+  | CommunityGuidelinesTemplateFormSubmittedValues;
+
+type TemplateFormProps = {
+  template: AnyTemplate;
+  onSubmit: (values: AnyTemplateFormSubmittedValues) => void;
+  actions: ReactNode | ((formState: FormikProps<AnyTemplate>) => ReactNode);
+
+  temporaryLocation?: boolean;
+};

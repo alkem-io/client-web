@@ -1,32 +1,31 @@
-import { Button, IconButton, IconButtonProps } from '@mui/material';
-import { Editor } from '@tiptap/react';
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
+
 import { Form, Formik } from 'formik';
-import FormikFileInput from '../FormikFileInput/FormikFileInput';
+import { Editor } from '@tiptap/react';
+import { useTranslation } from 'react-i18next';
 import { AddPhotoAlternateOutlined } from '@mui/icons-material';
-import DialogHeader from '../../dialog/DialogHeader';
+import { Button, IconButton, IconButtonProps } from '@mui/material';
+
 import Gutters from '../../grid/Gutters';
-import { Actions } from '../../actions/Actions';
-import DialogWithGrid from '../../dialog/DialogWithGrid';
-import { useNotification } from '../../notifications/useNotification';
 import { BlockTitle } from '../../typography';
+import { Actions } from '../../actions/Actions';
+import DialogHeader from '../../dialog/DialogHeader';
+import DialogWithGrid from '../../dialog/DialogWithGrid';
+import FormikFileInput from '../FormikFileInput/FormikFileInput';
 import FormikInputField from '../FormikInputField/FormikInputField';
 
-interface InsertImageButtonProps extends IconButtonProps {
-  editor: Editor | null;
-  onDialogOpen?: () => void;
-  onDialogClose?: () => void;
-}
+import { useNotification } from '../../notifications/useNotification';
 
-interface ImageProps {
-  src: string;
-  alt: string;
-}
-
-const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps }: InsertImageButtonProps) => {
-  const { t } = useTranslation();
+const InsertImageButton = ({
+  editor,
+  temporaryLocation,
+  onDialogOpen,
+  onDialogClose,
+  ...rest
+}: InsertImageButtonProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const { t } = useTranslation();
 
   const openDialog = () => {
     onDialogOpen?.();
@@ -48,39 +47,42 @@ const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
       if (error instanceof Error) {
         notify(error.message, 'error');
       }
+
       throw error;
     }
+
     closeDialog();
   };
 
-  const initialValues: ImageProps = {
-    src: 'https://',
-    alt: '',
-  };
-
+  const initialValues: ImageProps = { src: 'https://', alt: '' };
   const isDisabled = !editor || !editor.can().setImage(initialValues);
 
   return (
     <>
       <IconButton
-        onClick={openDialog}
         disabled={isDisabled}
+        onClick={openDialog}
         aria-label={t('components.wysiwyg-editor.toolbar.image.image')}
-        {...buttonProps}
+        {...rest}
       >
         <AddPhotoAlternateOutlined />
       </IconButton>
+
       <DialogWithGrid open={isDialogOpen} onClose={closeDialog}>
         <DialogHeader onClose={closeDialog}>
           <BlockTitle>{t('components.wysiwyg-editor.image.dialogHeader')}</BlockTitle>
         </DialogHeader>
+
         <Formik initialValues={initialValues} onSubmit={insertImage}>
           <Form>
             <Gutters>
-              <FormikFileInput title={t('common.url')} name="src" />
+              <FormikFileInput name="src" title={t('common.url')} temporaryLocation={temporaryLocation} />
+
               <FormikInputField title={t('common.description')} name="alt" />
+
               <Actions justifyContent="space-between">
                 <Button onClick={closeDialog}>{t('buttons.cancel')}</Button>
+
                 <Button type="submit" variant="contained">
                   {t('buttons.insert')}
                 </Button>
@@ -94,3 +96,15 @@ const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
 };
 
 export default InsertImageButton;
+
+interface ImageProps {
+  src: string;
+  alt: string;
+}
+
+interface InsertImageButtonProps extends IconButtonProps {
+  editor: Editor | null;
+  temporaryLocation?: boolean;
+  onDialogOpen?: () => void;
+  onDialogClose?: () => void;
+}

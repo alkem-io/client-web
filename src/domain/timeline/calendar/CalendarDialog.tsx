@@ -1,40 +1,47 @@
+import { useMemo, useState } from 'react';
+
+import dayjs from 'dayjs';
 import { Add } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
-import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useNavigate from '../../../core/routing/useNavigate';
-import RoundedIcon from '../../../core/ui/icon/RoundedIcon';
-import { CalendarEventDetailsFragment, TagsetType } from '../../../core/apollo/generated/graphql-schema';
-import { useQueryParams } from '../../../core/routing/useQueryParams';
-import BackButton from '../../../core/ui/actions/BackButton';
-import { dateRounded } from '../../../core/utils/time/utils';
-import CalendarEventDetailContainer, { CalendarEventDetailData } from './CalendarEventDetailContainer';
-import { CalendarEventFormData, CalendarEventsContainer } from './CalendarEventsContainer';
-import CalendarEventDetail from './views/CalendarEventDetail';
+
 import CalendarEventForm from './views/CalendarEventForm';
 import CalendarEventsList from './views/CalendarEventsList';
-import dayjs from 'dayjs';
+import RoundedIcon from '../../../core/ui/icon/RoundedIcon';
+import BackButton from '../../../core/ui/actions/BackButton';
+import CalendarEventDetail from './views/CalendarEventDetail';
 import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import ConfirmationDialog from '../../../core/ui/dialogs/ConfirmationDialog';
+import { CalendarEventFormData, CalendarEventsContainer } from './CalendarEventsContainer';
+
+import useNavigate from '../../../core/routing/useNavigate';
+import { dateRounded } from '../../../core/utils/time/utils';
+import { useQueryParams } from '../../../core/routing/useQueryParams';
+import CalendarEventDetailContainer, { CalendarEventDetailData } from './CalendarEventDetailContainer';
+import { TagsetType, CalendarEventDetailsFragment } from '../../../core/apollo/generated/graphql-schema';
 
 // If url params contains `highlight=YYYY-MM-DD` events in that date will be highlighted
-export const HIGHLIGHT_PARAM_NAME = 'highlight';
 export const INIT_CREATING_EVENT_PARAM = 'new';
+export const HIGHLIGHT_PARAM_NAME = 'highlight';
 
-export interface CalendarDialogProps {
-  open: boolean;
-  journeyId: string | undefined;
-  onClose: () => void;
-  parentPath: string;
-  calendarEventNameId?: string;
-}
+const CalendarDialog = ({
+  open,
+  journeyId,
+  onClose,
+  parentPath,
+  temporaryLocation,
+  calendarEventNameId,
+}: CalendarDialogProps) => {
+  const [isCreatingEvent, setIsCreatingEvent] = useState(false);
+  const [editingEventId, setEditingEventId] = useState<string>();
+  const [deletingEvent, setDeletingEvent] = useState<Pick<CalendarEventDetailsFragment, 'id' | 'nameID' | 'profile'>>();
 
-const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, parentPath, calendarEventNameId }) => {
   const { t } = useTranslation();
+
   const navigate = useNavigate();
 
   const params = useQueryParams();
-  const isCreatingEventInit = params.get(INIT_CREATING_EVENT_PARAM);
+
   const highlightedDayParam: string | null = params.get(HIGHLIGHT_PARAM_NAME);
   const highlightedDay = useMemo(
     () =>
@@ -44,10 +51,6 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
     [highlightedDayParam]
   );
 
-  const [isCreatingEvent, setIsCreatingEvent] = useState(false);
-  const [editingEventId, setEditingEventId] = useState<string>();
-  const [deletingEvent, setDeletingEvent] = useState<Pick<CalendarEventDetailsFragment, 'id' | 'nameID' | 'profile'>>();
-
   const handleClose = () => {
     setIsCreatingEvent(false);
     setEditingEventId(undefined);
@@ -55,9 +58,9 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
     onClose();
   };
 
-  const navigateBack = () => {
-    return navigate(`${parentPath}/calendar`);
-  };
+  const navigateBack = () => navigate(`${parentPath}/calendar`);
+
+  const isCreatingEventInit = params.get(INIT_CREATING_EVENT_PARAM);
 
   const emptyCalendarEvent: Partial<CalendarEventDetailData> = useMemo(
     () => ({
@@ -66,23 +69,23 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
       profile: {
         id: '',
         url: '',
+        references: [],
         displayName: '',
         description: t('calendar.defaultEventDescription'),
-        references: [],
         tagset: { id: '', name: '', tags: [], allowedValues: [], type: TagsetType.Freeform },
       },
-      multipleDays: false,
       durationDays: 0,
       wholeDay: false,
       type: undefined,
+      multipleDays: false,
     }),
     [t]
   );
 
   return (
     <DialogWithGrid
-      columns={12}
       open={open}
+      columns={12}
       aria-labelledby="calendar-events-dialog-title"
       PaperProps={{ sx: { padding: 0, display: `${deletingEvent ? 'none' : 'flex'}`, flexDirection: 'column' } }}
     >
@@ -111,13 +114,11 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
                   },
                 }}
                 entities={{
+                  titleId: 'calendar.delete-event',
                   confirmButtonTextId: 'buttons.delete',
                   content: t('calendar.delete-confirmation', { title: deletingEvent.profile.displayName }),
-                  titleId: 'calendar.delete-event',
                 }}
-                options={{
-                  show: Boolean(deletingEvent),
-                }}
+                options={{ show: Boolean(deletingEvent) }}
               />
             );
 
@@ -131,14 +132,15 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
 
             return (
               <CalendarEventForm
-                dialogTitle={t('calendar.add-event')}
                 event={emptyCalendarEvent}
-                onSubmit={handleNewEventSubmit}
-                onClose={handleClose}
                 isSubmitting={creatingCalendarEvent}
+                temporaryLocation={temporaryLocation}
+                dialogTitle={t('calendar.add-event')}
                 actions={
                   isCreatingEventInit ? <div>&nbsp;</div> : <BackButton onClick={() => setIsCreatingEvent(false)} />
                 }
+                onClose={handleClose}
+                onSubmit={handleNewEventSubmit}
               />
             );
 
@@ -147,6 +149,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
             const event = events.find(event => event.nameID === editingEventId || event.id === editingEventId);
             if (!event) {
               setEditingEventId(undefined);
+
               return;
             }
 
@@ -163,14 +166,14 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
               <CalendarEventDetailContainer eventId={event.id}>
                 {({ event: eventDetail }) => (
                   <CalendarEventForm
-                    dialogTitle={t('calendar.edit-event')}
                     event={eventDetail}
+                    isSubmitting={updatingCalendarEvent}
+                    dialogTitle={t('calendar.edit-event')}
+                    actions={<BackButton onClick={() => setEditingEventId(undefined)} />}
+                    onClose={handleClose}
                     onSubmit={(calendarEvent: CalendarEventFormData) =>
                       handleEditEventSubmit(event.id, event.profile.tagset?.id, calendarEvent)
                     }
-                    onClose={handleClose}
-                    isSubmitting={updatingCalendarEvent}
-                    actions={<BackButton onClick={() => setEditingEventId(undefined)} />}
                   />
                 )}
               </CalendarEventDetailContainer>
@@ -195,15 +198,16 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
             } else {
               // Event Details:
               const event = events.find(event => event.nameID === calendarEventNameId);
+
               return (
                 <CalendarEventDetail
                   eventId={event?.id}
-                  onClose={onClose}
                   canEdit={privileges.canEditEvents}
-                  onEdit={() => setEditingEventId(event?.nameID)}
                   canDelete={privileges.canDeleteEvents}
-                  onDelete={() => setDeletingEvent(event)}
                   actions={<BackButton onClick={navigateBack} />}
+                  onClose={onClose}
+                  onDelete={() => setDeletingEvent(event)}
+                  onEdit={() => setEditingEventId(event?.nameID)}
                 />
               );
             }
@@ -215,3 +219,13 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
 };
 
 export default CalendarDialog;
+
+export interface CalendarDialogProps {
+  open: boolean;
+  parentPath: string;
+  onClose: () => void;
+  journeyId: string | undefined;
+
+  temporaryLocation?: boolean;
+  calendarEventNameId?: string;
+}

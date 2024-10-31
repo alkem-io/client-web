@@ -1,39 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import CreateEditTemplateDialogBase from './CreateEditTemplateDialogBase';
-import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
-import TemplateForm, { AnyTemplateFormSubmittedValues } from '../../Forms/TemplateForm';
-import { getNewTemplate } from '../../../models/common';
-import { AnyTemplate } from '../../../models/TemplateBase';
-import { Box, CircularProgress } from '@mui/material';
-import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
-import { useTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react';
 
-interface CreateTemplateDialogProps {
-  open: boolean;
-  onClose: () => void;
-  onSubmit: (values: AnyTemplateFormSubmittedValues) => void;
-  templateType: TemplateType;
-  getDefaultValues?: () => Promise<Partial<AnyTemplate>>;
-}
+import { useTranslation } from 'react-i18next';
+import { Box, CircularProgress } from '@mui/material';
+
+import CreateEditTemplateDialogBase from './CreateEditTemplateDialogBase';
+import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
+import TemplateForm, { type AnyTemplateFormSubmittedValues } from '../../Forms/TemplateForm';
+
+import { getNewTemplate } from '../../../models/common';
+import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
+
+import { type AnyTemplate } from '../../../models/TemplateBase';
 
 const CreateTemplateDialog = ({
-  templateType,
   open,
-  onClose,
+  templateType,
   getDefaultValues,
+  temporaryLocation = false,
+  onClose,
   onSubmit,
 }: CreateTemplateDialogProps) => {
-  const { t } = useTranslation();
-  const [confirmCloseDialogOpen, setConfirmCloseDialogOpen] = useState<boolean>(false);
   const [defaultValues, setDefaultValues] = useState<AnyTemplate | undefined>();
+  const [confirmCloseDialogOpen, setConfirmCloseDialogOpen] = useState<boolean>(false);
+
+  const { t } = useTranslation();
+
   useEffect(() => {
     (async () => {
       if (open) {
-        if (getDefaultValues) {
-          setDefaultValues(getNewTemplate(templateType, await getDefaultValues()));
-        } else {
-          setDefaultValues(getNewTemplate(templateType));
-        }
+        getDefaultValues
+          ? setDefaultValues(getNewTemplate(templateType, await getDefaultValues()))
+          : setDefaultValues(getNewTemplate(templateType));
       }
     })();
   }, [open]);
@@ -52,22 +49,29 @@ const CreateTemplateDialog = ({
                 <CircularProgress />
               </Box>
             )}
-            {defaultValues && <TemplateForm template={defaultValues} onSubmit={onSubmit} actions={actions} />}
+
+            {defaultValues && (
+              <TemplateForm
+                actions={actions}
+                template={defaultValues}
+                temporaryLocation={temporaryLocation}
+                onSubmit={onSubmit}
+              />
+            )}
           </>
         )}
       </CreateEditTemplateDialogBase>
+
       <ConfirmationDialog
-        entities={{
-          title: t('templateLibrary.importTemplateDialog.confirmClose.title'),
-          content: t('templateLibrary.importTemplateDialog.confirmClose.description'),
-          confirmButtonText: t('buttons.yesDiscard'),
-        }}
+        options={{ show: confirmCloseDialogOpen }}
         actions={{
           onCancel: () => setConfirmCloseDialogOpen(false),
           onConfirm: () => onClose?.(),
         }}
-        options={{
-          show: confirmCloseDialogOpen,
+        entities={{
+          confirmButtonText: t('buttons.yesDiscard'),
+          title: t('templateLibrary.importTemplateDialog.confirmClose.title'),
+          content: t('templateLibrary.importTemplateDialog.confirmClose.description'),
         }}
       />
     </>
@@ -75,3 +79,13 @@ const CreateTemplateDialog = ({
 };
 
 export default CreateTemplateDialog;
+
+type CreateTemplateDialogProps = {
+  open: boolean;
+  templateType: TemplateType;
+  onClose: () => void;
+  onSubmit: (values: AnyTemplateFormSubmittedValues) => void;
+
+  temporaryLocation?: boolean;
+  getDefaultValues?: () => Promise<Partial<AnyTemplate>>;
+};

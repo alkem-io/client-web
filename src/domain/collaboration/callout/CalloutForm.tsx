@@ -49,6 +49,7 @@ const CalloutForm = ({
   journeyTypeName,
   editMode = false,
   canChangeCalloutLocation,
+  temporaryLocation = false,
   onChange,
   onStatusChanged,
 }: PropsWithChildren<CalloutFormProps>) => {
@@ -172,6 +173,7 @@ const CalloutForm = ({
               rows={7}
               name="description"
               maxLength={MARKDOWN_TEXT_LENGTH}
+              temporaryLocation={temporaryLocation}
               title={t('components.callout-creation.info-step.description')}
             />
 
@@ -185,7 +187,12 @@ const CalloutForm = ({
             )}
 
             {!editMode && formConfiguration.references && (
-              <ReferenceSegment compactMode references={formikState.values.references} marginTop={gutters(-1)} />
+              <ReferenceSegment
+                compactMode
+                marginTop={gutters(-1)}
+                temporaryLocation={temporaryLocation}
+                references={formikState.values.references}
+              />
             )}
 
             {formConfiguration.tags && (
@@ -270,7 +277,9 @@ export interface CalloutFormProps {
   calloutType: CalloutType;
   callout: CalloutFormInput;
   journeyTypeName: JourneyTypeName;
+
   editMode?: boolean;
+  temporaryLocation?: boolean;
   canChangeCalloutLocation?: boolean;
   children?: FormikConfig<FormValueType>['children'];
   onStatusChanged?: (isValid: boolean) => void;

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useLayoutEffect } from 'react';
+import { useState, useCallback, useLayoutEffect } from 'react';
 
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -32,7 +32,6 @@ import { Identifiable } from '../../../../core/utils/Identifiable';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { EmptyWhiteboardString } from '../../../common/whiteboard/EmptyWhiteboard';
 import { useTemplateContentLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { useStorageConfigContext } from '../../../storage/StorageBucket/StorageConfigContext';
 import { CalloutCreationTypeWithPreviewImages } from './useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
@@ -53,8 +52,6 @@ const CalloutCreationDialog = ({
   const [selectedCalloutType, setSelectedCalloutType] = useState<CalloutType>();
   const [isConfirmCloseDialogOpen, setIsConfirmCloseDialogOpen] = useState(false);
   const [importCalloutTemplateDialogOpen, setImportCalloutDialogOpen] = useState(false);
-
-  const storageConfigCtx = useStorageConfigContext();
 
   const { t } = useTranslation();
 
@@ -195,11 +192,6 @@ const CalloutCreationDialog = ({
     setImportCalloutDialogOpen(false);
   };
 
-  useEffect(() => {
-    // Must run only on mount.
-    storageConfigCtx?.setTemporaryLocation(true);
-  }, []);
-
   const CalloutIcon = selectedCalloutType ? calloutIcons[selectedCalloutType] : undefined;
 
   return (
@@ -259,6 +251,7 @@ const CalloutCreationDialog = ({
           <DialogContent>
             <CalloutForm
               callout={callout}
+              temporaryLocation // Always true for callout creation.
               calloutType={selectedCalloutType}
               journeyTypeName={journeyTypeName}
               onChange={handleValueChange}

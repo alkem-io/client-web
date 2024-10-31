@@ -1,34 +1,23 @@
 import { Grid } from '@mui/material';
-import React, { FC } from 'react';
+
 import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
+
 import useProfileStyles from './useProfileStyles';
 import { MarkdownTextMaxLength } from '../../../../../core/ui/forms/field-length.constants';
-
-interface MarkdownInputFieldProps {
-  name: string;
-  label: string;
-  placeholder?: string;
-  rows?: number;
-  disabled?: boolean;
-  required?: boolean;
-  maxLength?: MarkdownTextMaxLength;
-  helperText?: string;
-  loading?: boolean;
-}
 
 /**
  * @deprecated - remove, use FormikMarkdownField directly
  */
-const MarkdownInput: FC<MarkdownInputFieldProps> = ({
+const MarkdownInput = ({
   name,
-  label,
-  placeholder,
   rows,
-  disabled = false,
+  label,
+  loading,
   required,
   maxLength,
   helperText,
-  loading,
+  placeholder,
+  disabled = false,
 }: MarkdownInputFieldProps) => {
   const styles = useProfileStyles();
 
@@ -36,18 +25,31 @@ const MarkdownInput: FC<MarkdownInputFieldProps> = ({
     <Grid item xs={12}>
       <FormikMarkdownField
         name={name}
-        title={label}
-        placeholder={placeholder || label}
-        className={styles.field}
-        disabled={disabled}
         rows={rows}
+        title={label}
+        loading={loading}
+        disabled={disabled}
         required={required}
         maxLength={maxLength}
         helperText={helperText}
-        loading={loading}
+        className={styles.field}
+        placeholder={placeholder || label}
       />
     </Grid>
   );
 };
 
 export default MarkdownInput;
+
+type MarkdownInputFieldProps = {
+  name: string;
+  label: string;
+
+  rows?: number;
+  loading?: boolean;
+  disabled?: boolean;
+  required?: boolean;
+  helperText?: string;
+  placeholder?: string;
+  maxLength?: MarkdownTextMaxLength;
+};

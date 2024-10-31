@@ -1,38 +1,24 @@
-import { Formik } from 'formik';
-import React, { ElementType, FC } from 'react';
+import { ElementType } from 'react';
+
 import * as yup from 'yup';
+import { Formik } from 'formik';
+
 import { Context, Profile } from '../../../core/apollo/generated/graphql-schema';
 import { ContextSegmentProps, contextSegmentSchema } from '../../platform/admin/components/Common/ContextSegment';
 
-export interface ContextFormValues {
-  background: string;
-  impact: string;
-  vision: string;
-  who: string;
-}
-
-interface ContextFormProps {
-  context?: Context;
-  profile?: Omit<Profile, 'storageBucket' | 'url'>;
-  onSubmit: (formData: ContextFormValues) => void;
-  wireSubmit: (setter: () => void) => void;
-  contextSegment: ElementType<ContextSegmentProps>;
-  loading: boolean;
-}
-
-export const ContextForm: FC<ContextFormProps> = ({
+export const ContextForm = ({
   context,
   profile,
+  loading,
   onSubmit,
   wireSubmit,
-  loading,
   contextSegment: ContextSegment,
-}) => {
+}: ContextFormProps) => {
   const initialValues: ContextFormValues = {
-    background: profile?.description || '',
-    impact: context?.impact || '',
-    vision: context?.vision || '',
     who: context?.who || '',
+    vision: context?.vision || '',
+    impact: context?.impact || '',
+    background: profile?.description || '',
   };
 
   const validationSchema = yup.object().shape({
@@ -46,9 +32,9 @@ export const ContextForm: FC<ContextFormProps> = ({
 
   return (
     <Formik
+      enableReinitialize
       initialValues={initialValues}
       validationSchema={validationSchema}
-      enableReinitialize
       onSubmit={async values => {
         onSubmit(values);
       }}
@@ -65,3 +51,19 @@ export const ContextForm: FC<ContextFormProps> = ({
     </Formik>
   );
 };
+
+export interface ContextFormValues {
+  who: string;
+  vision: string;
+  impact: string;
+  background: string;
+}
+
+interface ContextFormProps {
+  loading: boolean;
+  contextSegment: ElementType<ContextSegmentProps>;
+  wireSubmit: (setter: () => void) => void;
+  onSubmit: (formData: ContextFormValues) => void;
+  context?: Context;
+  profile?: Omit<Profile, 'storageBucket' | 'url'>;
+}

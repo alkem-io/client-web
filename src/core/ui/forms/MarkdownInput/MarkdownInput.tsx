@@ -1,50 +1,32 @@
 import React, {
-  FormEvent,
-  forwardRef,
   memo,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useLayoutEffect,
   useRef,
   useState,
+  useEffect,
+  FormEvent,
+  forwardRef,
+  useCallback,
+  useLayoutEffect,
+  useImperativeHandle,
 } from 'react';
-import { Box, useTheme } from '@mui/material';
-import { Editor, EditorContent, useEditor } from '@tiptap/react';
+
 import StarterKit from '@tiptap/starter-kit';
-import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
-import { CharacterCountContainer, useSetCharacterCount } from './CharacterCountContext';
-import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControls';
-import { Image } from '@tiptap/extension-image';
-import { Link } from '@tiptap/extension-link';
-import usePersistentValue from '../../../utils/usePersistentValue';
-import UnifiedConverter from '../../markdown/html/UnifiedConverter';
-import { gutters } from '../../grid/utils';
-import { EditorState } from '@tiptap/pm/state';
-import { Highlight } from '@tiptap/extension-highlight';
-import { Selection } from 'prosemirror-state';
 import { EditorOptions } from '@tiptap/core';
+import { Box, useTheme } from '@mui/material';
+import { Link } from '@tiptap/extension-link';
+import { Selection } from 'prosemirror-state';
+import { EditorState } from '@tiptap/pm/state';
+import { Image } from '@tiptap/extension-image';
+import { Highlight } from '@tiptap/extension-highlight';
+import { Editor, EditorContent, useEditor } from '@tiptap/react';
+import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
 
-interface MarkdownInputProps extends InputBaseComponentProps {
-  controlsVisible?: 'always' | 'focused';
-  maxLength?: number;
-  hideImageOptions?: boolean;
-}
+import UnifiedConverter from '../../markdown/html/UnifiedConverter';
+import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControls';
+import { CharacterCountContainer, useSetCharacterCount } from './CharacterCountContext';
 
-interface Offset {
-  x: string;
-  y: string;
-}
-
-export interface MarkdownInputRefApi {
-  focus: () => void;
-  value: string | undefined;
-  getLabelOffset: () => Offset;
-}
-
-const ImageExtension = Image.configure({
-  inline: true,
-});
+import { gutters } from '../../grid/utils';
+import usePersistentValue from '../../../utils/usePersistentValue';
 
 const proseMirrorStyles = {
   outline: 'none',
@@ -54,16 +36,28 @@ const proseMirrorStyles = {
   '& p:last-child': { marginBottom: 0 },
   '& img': { maxWidth: '100%' },
 } as const;
-
+const ImageExtension = Image.configure({ inline: true });
 const editorOptions: Partial<EditorOptions> = {
   extensions: [StarterKit, ImageExtension, Link, Highlight],
 };
 
 export const MarkdownInput = memo(
   forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
-    ({ value, onChange, maxLength, controlsVisible = 'focused', hideImageOptions, onFocus, onBlur }, ref) => {
-      const containerRef = useRef<HTMLDivElement>(null);
+    (
+      {
+        value,
+        maxLength,
+        hideImageOptions,
+        temporaryLocation = false,
+        controlsVisible = 'focused',
+        onBlur,
+        onFocus,
+        onChange,
+      },
+      ref
+    ) => {
       const toolbarRef = useRef<HTMLDivElement>(null);
+      const containerRef = useRef<HTMLDivElement>(null);
 
       const [hasFocus, setHasFocus] = useState(false);
       const [isControlsDialogOpen, setIsControlsDialogOpen] = useState(false);
@@ -78,13 +72,7 @@ export const MarkdownInput = memo(
         setHtmlContent(String(content));
       };
 
-      const editor = useEditor(
-        {
-          ...editorOptions,
-          content: htmlContent,
-        },
-        [htmlContent]
-      );
+      const editor = useEditor({ ...editorOptions, content: htmlContent }, [htmlContent]);
 
       // Currently used to highlight overflow but can be reused for other similar features as well
       const shadowEditor = useEditor({
@@ -105,6 +93,7 @@ export const MarkdownInput = memo(
         if (controlsVisible === 'always') {
           return true;
         }
+
         if (controlsVisible === 'focused') {
           return isInteractingWithInput;
         }
@@ -148,12 +137,8 @@ export const MarkdownInput = memo(
           setCharacterCount(editor.getText().length);
 
           onChange?.({
-            currentTarget: {
-              value: markdown,
-            },
-            target: {
-              value: markdown,
-            },
+            currentTarget: { value: markdown },
+            target: { value: markdown },
           } as unknown as FormEvent<HTMLInputElement>);
         };
 
@@ -245,6 +230,7 @@ export const MarkdownInput = memo(
         if (containerRef.current?.contains(event.relatedTarget)) {
           return;
         }
+
         setPrevEditorHeight(editor?.view.dom.clientHeight ?? 0);
         setHasFocus(false);
         onBlur?.(event as React.FocusEvent<HTMLInputElement>);
@@ -254,25 +240,21 @@ export const MarkdownInput = memo(
       const handleDialogClose = useCallback(() => setIsControlsDialogOpen(false), [setIsControlsDialogOpen]);
 
       return (
-        <Box ref={containerRef} width="100%" onFocus={handleFocus} onBlur={handleBlur}>
+        <Box ref={containerRef} width="100%" onBlur={handleBlur} onFocus={handleFocus}>
           <MarkdownInputControls
             ref={toolbarRef}
             editor={editor}
             visible={areControlsVisible()}
             hideImageOptions={hideImageOptions}
+            temporaryLocation={temporaryLocation}
             onDialogOpen={handleDialogOpen}
             onDialogClose={handleDialogClose}
           />
-          <Box
-            width="100%"
-            maxHeight="50vh"
-            sx={{
-              overflowY: 'auto',
-              '.ProseMirror': proseMirrorStyles,
-            }}
-          >
+
+          <Box width="100%" maxHeight="50vh" sx={{ overflowY: 'auto', '.ProseMirror': proseMirrorStyles }}>
             <Box position="relative" style={{ minHeight: prevEditorHeight }}>
               <EditorContent editor={editor} />
+
               <CharacterCountContainer>
                 {({ characterCount }) =>
                   typeof maxLength === 'undefined' || characterCount <= maxLength ? null : (
@@ -280,8 +262,8 @@ export const MarkdownInput = memo(
                       position="absolute"
                       top={0}
                       left={0}
-                      bottom={0}
                       right={0}
+                      bottom={0}
                       sx={{
                         pointerEvents: 'none',
                         color: 'transparent',
@@ -305,3 +287,21 @@ export const MarkdownInput = memo(
 );
 
 export default MarkdownInput;
+
+interface Offset {
+  x: string;
+  y: string;
+}
+
+export interface MarkdownInputRefApi {
+  value: string | undefined;
+  focus: () => void;
+  getLabelOffset: () => Offset;
+}
+
+interface MarkdownInputProps extends InputBaseComponentProps {
+  maxLength?: number;
+  hideImageOptions?: boolean;
+  temporaryLocation?: boolean;
+  controlsVisible?: 'always' | 'focused';
+}

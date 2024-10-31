@@ -1,42 +1,24 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
+
 import * as yup from 'yup';
-import { useTranslation } from 'react-i18next';
 import { FormikProps } from 'formik';
+import { useTranslation } from 'react-i18next';
+
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
-import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { CommunityGuidelinesTemplate } from '../../models/CommunityGuidelinesTemplate';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import ProfileReferenceSegment from '../../../platform/admin/components/Common/ProfileReferenceSegment';
+import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import FormikReferenceSegment from '../../../platform/admin/components/Common/FormikReferenceSegment';
-import { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
-import { tagsetsSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
-import { mapReferencesToUpdateReferences, mapTemplateProfileToUpdateProfile } from './common/mappings';
+import ProfileReferenceSegment from '../../../platform/admin/components/Common/ProfileReferenceSegment';
+
 import { gutters } from '../../../../core/ui/grid/utils';
 import { displayNameValidator } from '../../../../core/ui/forms/validator';
-
-export interface CommunityGuidelinesTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
-  communityGuidelines?: {
-    profile: {
-      displayName: string;
-      description?: string;
-      references?: {
-        ID: string;
-        name?: string;
-        description?: string;
-        uri?: string;
-      }[];
-    };
-  };
-}
-
-interface CommunityGuidelinesTemplateFormProps {
-  template?: CommunityGuidelinesTemplate;
-  onSubmit: (values: CommunityGuidelinesTemplateFormSubmittedValues) => void;
-  actions: ReactNode | ((formState: FormikProps<CommunityGuidelinesTemplateFormSubmittedValues>) => ReactNode);
-}
+import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { type CommunityGuidelinesTemplate } from '../../models/CommunityGuidelinesTemplate';
+import { tagsetsSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
+import { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
+import { mapReferencesToUpdateReferences, mapTemplateProfileToUpdateProfile } from './common/mappings';
 
 const validator = {
   communityGuidelines: yup.object().shape({
@@ -52,10 +34,15 @@ const validator = {
   }),
 };
 
-const CommunityGuidelinesTemplateForm = ({ template, onSubmit, actions }: CommunityGuidelinesTemplateFormProps) => {
+const CommunityGuidelinesTemplateForm = ({
+  actions,
+  template,
+  temporaryLocation,
+  onSubmit,
+}: CommunityGuidelinesTemplateFormProps) => {
   const { t } = useTranslation();
-  const profileId = template?.communityGuidelines?.profile.id;
 
+  const profileId = template?.communityGuidelines?.profile.id;
   const initialValues: CommunityGuidelinesTemplateFormSubmittedValues = {
     profile: mapTemplateProfileToUpdateProfile(template?.profile),
     communityGuidelines: {
@@ -69,12 +56,12 @@ const CommunityGuidelinesTemplateForm = ({ template, onSubmit, actions }: Commun
 
   return (
     <TemplateFormBase
-      templateType={TemplateType.CommunityGuidelines}
-      template={template}
-      initialValues={initialValues}
-      onSubmit={onSubmit}
       actions={actions}
+      template={template}
       validator={validator}
+      initialValues={initialValues}
+      templateType={TemplateType.CommunityGuidelines}
+      onSubmit={onSubmit}
     >
       {({ values }) => (
         <>
@@ -82,11 +69,14 @@ const CommunityGuidelinesTemplateForm = ({ template, onSubmit, actions }: Commun
             name="communityGuidelines.profile.displayName"
             title={t('templateLibrary.communityGuidelinesTemplates.guidelinesTitle')}
           />
+
           <FormikMarkdownField
+            maxLength={MARKDOWN_TEXT_LENGTH}
+            temporaryLocation={temporaryLocation}
             name="communityGuidelines.profile.description"
             title={t('templateLibrary.communityGuidelinesTemplates.guidelinesDescription')}
-            maxLength={MARKDOWN_TEXT_LENGTH}
           />
+
           {profileId ? (
             <ProfileReferenceSegment
               profileId={profileId}
@@ -116,3 +106,26 @@ const CommunityGuidelinesTemplateForm = ({ template, onSubmit, actions }: Commun
 };
 
 export default CommunityGuidelinesTemplateForm;
+
+type CommunityGuidelinesTemplateFormProps = {
+  onSubmit: (values: CommunityGuidelinesTemplateFormSubmittedValues) => void;
+  actions: ReactNode | ((formState: FormikProps<CommunityGuidelinesTemplateFormSubmittedValues>) => ReactNode);
+
+  temporaryLocation?: boolean;
+  template?: CommunityGuidelinesTemplate;
+};
+
+export interface CommunityGuidelinesTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
+  communityGuidelines?: {
+    profile: {
+      displayName: string;
+      description?: string;
+      references?: {
+        ID: string;
+        name?: string;
+        description?: string;
+        uri?: string;
+      }[];
+    };
+  };
+}

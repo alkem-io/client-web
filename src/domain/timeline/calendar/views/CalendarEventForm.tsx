@@ -1,32 +1,25 @@
-import React, { ReactNode, useMemo } from 'react';
-import { Formik } from 'formik';
+import { ReactNode, useMemo } from 'react';
+
+import dayjs from 'dayjs';
 import * as yup from 'yup';
+import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
-import DialogHeader, { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
+
+import EventForm from './EventForm';
 import { BlockTitle } from '../../../../core/ui/typography';
+import GridProvider from '../../../../core/ui/grid/GridProvider';
+import DialogHeader, { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
+
+import { isSameDay } from '../../../../core/utils/time/utils';
 import { CalendarEventFormData } from '../CalendarEventsContainer';
-import { CalendarEventType } from '../../../../core/apollo/generated/graphql-schema';
-import { displayNameValidator } from '../../../../core/ui/forms/validator';
 import { CalendarEventDetailData } from '../CalendarEventDetailContainer';
+import { displayNameValidator } from '../../../../core/ui/forms/validator';
+import { FormikSelectValue } from '../../../../core/ui/forms/FormikSelect';
+import { CalendarEventType } from '../../../../core/apollo/generated/graphql-schema';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import dayjs from 'dayjs';
-import { isSameDay } from '../../../../core/utils/time/utils';
-import EventForm from './EventForm';
-import { FormikSelectValue } from '../../../../core/ui/forms/FormikSelect';
-import GridProvider from '../../../../core/ui/grid/GridProvider';
 
 const DEFAULT_DURATION_MINUTES = 30;
-
-export interface CalendarEventFormProps {
-  event: Partial<CalendarEventDetailData> | undefined;
-  dialogTitle: string;
-  onClose: DialogHeaderProps['onClose'];
-  onSubmit: (eventValues: CalendarEventFormData) => void;
-  isSubmitting: boolean;
-  actions?: ReactNode;
-}
-
 const typeOptions: FormikSelectValue[] = [
   {
     id: CalendarEventType.Event,
@@ -48,21 +41,18 @@ const typeOptions: FormikSelectValue[] = [
 
 const CalendarEventForm = ({
   event,
-  dialogTitle,
-  onSubmit,
-  onClose,
-  isSubmitting,
   actions,
+  dialogTitle,
+  isSubmitting,
+  temporaryLocation = false,
+  onClose,
+  onSubmit,
 }: CalendarEventFormProps) => {
   const { t } = useTranslation();
 
-  const handleSubmit = (formValues: Partial<CalendarEventFormData>) => {
-    onSubmit(formValues as CalendarEventFormData);
-  };
-
   const dateNow = new Date();
-
   const initialStartDate = useMemo(() => event?.startDate ?? dateNow, [event]);
+
   const initialEndDate = useMemo(() => {
     if (!event?.startDate) {
       return dateNow;
@@ -98,22 +88,16 @@ const CalendarEventForm = ({
   // the following validation applies ensuring that the event is either:
   // 1. wholeDay;
   // 2. if it's the same day it should be with positive durationMinutes
-  // 3. outherwise the endDate should be greater than startDate
+  // 3. otherwise the endDate should be greater than startDate
   // (not the case in #2 where we're using durationMinutes instead of endDate)
   const validateDuration = value => {
     const { durationMinutes, startDate, endDate, wholeDay } = value || {};
 
-    if (wholeDay) {
-      return true;
-    }
-    if (isSameDay(startDate, endDate) && (durationMinutes ?? 0) > 0) {
-      return true;
-    }
-    if (endDate && startDate && dayjs(endDate).isAfter(dayjs(startDate))) {
-      return true;
-    }
-
-    return false;
+    return wholeDay ||
+      (isSameDay(startDate, endDate) && (durationMinutes ?? 0) > 0) ||
+      (endDate && startDate && dayjs(endDate).isAfter(dayjs(startDate)))
+      ? true
+      : false;
   };
 
   const validationSchema = yup.object().shape({
@@ -144,21 +128,42 @@ const CalendarEventForm = ({
     }),
   });
 
+  const handleSubmit = (formValues: Partial<CalendarEventFormData>) => {
+    onSubmit(formValues as CalendarEventFormData);
+  };
+
   return (
     <GridProvider columns={12}>
       <DialogHeader onClose={onClose}>
         <BlockTitle>{dialogTitle}</BlockTitle>
       </DialogHeader>
+
       <Formik
-        initialValues={initialValues}
-        onSubmit={handleSubmit}
-        validationSchema={validationSchema}
         enableReinitialize
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
       >
-        <EventForm typeOptions={typeOptions} isSubmitting={isSubmitting} actions={actions} />
+        <EventForm
+          actions={actions}
+          typeOptions={typeOptions}
+          isSubmitting={isSubmitting}
+          temporaryLocation={temporaryLocation}
+        />
       </Formik>
     </GridProvider>
   );
 };
 
 export default CalendarEventForm;
+
+export interface CalendarEventFormProps {
+  dialogTitle: string;
+  isSubmitting: boolean;
+  event: Partial<CalendarEventDetailData> | undefined;
+  onClose: DialogHeaderProps['onClose'];
+  onSubmit: (eventValues: CalendarEventFormData) => void;
+
+  actions?: ReactNode;
+  temporaryLocation?: boolean;
+}

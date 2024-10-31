@@ -12,18 +12,21 @@ const FormikFileInput = ({
   name,
   entityID,
   entityType,
+  temporaryLocation = false,
   defaultProtocol = DEFAULT_PROTOCOL,
   onChange,
   ...rest
 }: FormikFileInputProps) => {
   const [field, , helpers] = useField(name);
 
-  const storageConfig = useStorageConfigContext()?.storageConfig;
+  const storageConfig = useStorageConfigContext();
+  const updatedStorageConfig = { ...storageConfig, temporaryLocation };
 
   const checkProtocol = () => {
     if (defaultProtocol) {
       if (field.value) {
-        const currentValue = `${field.value}`; // make sure field.value is a string
+        const currentValue = `${field.value}`; // Make sure field.value is a string.
+
         if (!currentValue.match(MATCH_PROTOCOL_REGEX)) {
           helpers.setValue(`${defaultProtocol}://${currentValue}`);
         }
@@ -43,9 +46,9 @@ const FormikFileInput = ({
           <FileUploadButton
             entityID={entityID}
             entityType={entityType}
-            storageConfig={storageConfig}
+            storageConfig={updatedStorageConfig}
+            onChange={onChange}
             onUpload={helpers.setValue}
-            onChange={(fileName: string) => onChange?.(fileName)}
           />
         )
       }
@@ -60,6 +63,7 @@ export default FormikFileInput;
 type FormikFileInputProps = FormikInputFieldProps & {
   entityID?: string;
   defaultProtocol?: string;
+  temporaryLocation?: boolean;
   entityType?: FileUploadEntityType;
   onChange?: (fileName: string) => void;
 };

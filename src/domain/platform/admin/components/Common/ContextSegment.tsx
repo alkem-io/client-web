@@ -1,67 +1,71 @@
-import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
-import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
-import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
+import { useTranslation } from 'react-i18next';
+
 import MarkdownInput from './MarkdownInput';
+import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
+
+import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
 import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 
 export const contextSegmentSchema = yup.object().shape({
-  background: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-  impact: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
-  vision: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   who: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   tagline: yup.string().max(SMALL_TEXT_LENGTH),
+  impact: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+  vision: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
+  background: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
 });
 
-export interface ContextSegmentProps {
-  loading?: boolean;
-}
-
-export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyTypeName }> = ({
-  loading,
-  contextType,
-}) => {
+export const ContextSegment = ({ loading, contextType }: ContextSegmentProps & { contextType: JourneyTypeName }) => {
   const { t } = useTranslation();
 
   return (
     <>
       <MarkdownInput
+        rows={10}
         name="vision"
+        loading={loading}
+        maxLength={MARKDOWN_TEXT_LENGTH}
         label={t(`context.${contextType}.vision.title` as const)}
         helperText={t(`context.${contextType}.vision.description` as const)}
-        rows={10}
-        maxLength={MARKDOWN_TEXT_LENGTH}
-        loading={loading}
       />
+
       <SectionSpacer />
+
       <MarkdownInput
+        rows={10}
         name="background"
+        loading={loading}
+        maxLength={MARKDOWN_TEXT_LENGTH}
         label={t(`context.${contextType}.background.title` as const)}
         helperText={t(`context.${contextType}.background.description` as const)}
-        rows={10}
-        maxLength={MARKDOWN_TEXT_LENGTH}
-        loading={loading}
       />
+
       <SectionSpacer />
+
       <MarkdownInput
+        rows={10}
         name="impact"
+        loading={loading}
+        maxLength={MARKDOWN_TEXT_LENGTH}
         label={t(`context.${contextType}.impact.title` as const)}
         helperText={t(`context.${contextType}.impact.description` as const)}
-        rows={10}
-        maxLength={MARKDOWN_TEXT_LENGTH}
-        loading={loading}
       />
+
       <SectionSpacer />
+
       <MarkdownInput
+        rows={10}
         name="who"
+        loading={loading}
+        maxLength={MARKDOWN_TEXT_LENGTH}
         label={t(`context.${contextType}.who.title` as const)}
         helperText={t(`context.${contextType}.who.description` as const)}
-        rows={10}
-        maxLength={MARKDOWN_TEXT_LENGTH}
-        loading={loading}
       />
     </>
   );
 };
+
+export interface ContextSegmentProps {
+  loading?: boolean;
+}

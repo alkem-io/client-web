@@ -1,8 +1,7 @@
-import { FC } from 'react';
 import { ContextSegment, ContextSegmentProps } from '../components/Common/ContextSegment';
 
-export interface OpportunityContextSegmentProps extends ContextSegmentProps {}
+export const OpportunityContextSegment = (props: OpportunityContextSegmentProps) => (
+  <ContextSegment contextType="subsubspace" {...props} />
+);
 
-export const OpportunityContextSegment: FC<OpportunityContextSegmentProps> = ({ ...props }) => {
-  return <ContextSegment contextType="subsubspace" {...props} />;
-};
+export interface OpportunityContextSegmentProps extends ContextSegmentProps {}

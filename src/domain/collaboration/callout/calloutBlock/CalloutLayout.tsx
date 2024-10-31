@@ -96,7 +96,7 @@ const CalloutLayout = ({
   onOpenSettings,
   calloutActions = true,
 }: PropsWithChildren<CalloutLayoutProps>) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('translation', { keyPrefix: 'callout' });
 
   const dontShow = callout.draft && !callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
 
@@ -110,7 +110,7 @@ const CalloutLayout = ({
     <>
       {callout.draft && (
         <Ribbon>
-          <BlockTitle textAlign="center">{t('callout.draftNotice')}</BlockTitle>
+          <BlockTitle textAlign="center">{t('draftNotice')}</BlockTitle>
         </Ribbon>
       )}
       <CalloutHeader
