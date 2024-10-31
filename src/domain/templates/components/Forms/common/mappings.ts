@@ -27,9 +27,6 @@ import { AnyTemplate } from '../../../models/TemplateBase';
 import { CommunityGuidelinesTemplate } from '../../../models/CommunityGuidelinesTemplate';
 import { CalloutTemplate } from '../../../models/CalloutTemplate';
 
-// TODO MAYBE: Create the mappings mannually instead of using produce,
-// maybe that's the best way to keep the Typescript integrity
-
 interface EntityWithProfile {
   profile: {
     displayName?: string;
