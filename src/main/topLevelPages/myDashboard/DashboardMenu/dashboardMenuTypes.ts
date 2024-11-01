@@ -13,6 +13,8 @@ export interface MenuOptionProps {
   type: MenuOptionType;
   icon?: ComponentType<SvgIconProps>;
   to?: string;
-  isVisible: (viewEnabled: boolean, compactMode: boolean) => boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Component?: ComponentType<any>;
+  isVisible: (viewEnabled: boolean, compactMoBoxTypeMapde: boolean) => boolean;
   dialog?: DashboardDialog;
 }

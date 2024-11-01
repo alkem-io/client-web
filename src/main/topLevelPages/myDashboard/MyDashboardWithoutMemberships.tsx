@@ -1,4 +1,6 @@
 import React, { Suspense } from 'react';
+import { Button } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import CampaignBlock from './Campaigns/CampaignBlock';
 import InfoColumn from '../../../core/ui/content/InfoColumn';
@@ -9,10 +11,13 @@ import { DashboardMenu } from './DashboardMenu/DashboardMenu';
 import ExploreSpaces from './ExploreSpaces/ExploreSpaces';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import { InvitationsBlock } from './InvitationsBlock/InvitationsBlock';
+import { CreateSpaceBtn } from './createSpaceBtn/CreateSpaceBtn';
+import { SpaceIcon } from '../../../domain/journey/space/icon/SpaceIcon';
 
 const DashboardDialogs = React.lazy(() => import('./DashboardDialogs/DashboardDialogs'));
 
 const MyDashboardWithoutMemberships = () => {
+  const { t } = useTranslation();
   const { data } = useLatestReleaseDiscussionQuery({
     fetchPolicy: 'network-only',
   });
@@ -29,7 +34,18 @@ const MyDashboardWithoutMemberships = () => {
         <PageContentBlock columns={12}>
           <ExploreSpaces itemsLimit={16} />
         </PageContentBlock>
-        {/* TODO: implement create space btn component */}
+        <CreateSpaceBtn
+          component={Button}
+          variant="outlined"
+          startIcon={<SpaceIcon />}
+          sx={{
+            background: theme => theme.palette.background.paper,
+            flex: 1,
+            textTransform: 'none',
+          }}
+        >
+          {t('buttons.createOwnSpace')}
+        </CreateSpaceBtn>
       </ContentColumn>
       <Suspense fallback={null}>
         <DashboardDialogs />

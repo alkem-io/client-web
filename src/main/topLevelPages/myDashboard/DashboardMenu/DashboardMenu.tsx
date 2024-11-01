@@ -71,6 +71,14 @@ export const DashboardMenu = ({ compact = false }: DashboardMenuProps) => {
           </ListItemButton>
         );
       case 'link':
+        if (item.Component) {
+          return (
+            <item.Component key={index} component={ListItemButton} sx={{ paddingY: gutters(0.75) }}>
+              {getItemContent(item)}
+            </item.Component>
+          );
+        }
+
         return (
           <ListItemButton key={index} component={RouterLink} to={item.to ?? ''} sx={{ paddingY: gutters(0.75) }}>
             {getItemContent(item)}

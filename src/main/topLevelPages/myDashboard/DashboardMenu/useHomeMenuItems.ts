@@ -6,22 +6,13 @@ import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
 import { useUserContext } from '../../../../domain/community/user';
 import { getAccountLink } from '../../../routing/urlBuilders';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
-import { TopLevelRoutePath } from '../../../routing/TopLevelRoutePath';
-import { useTranslation } from 'react-i18next';
 import { MenuOptionProps } from './dashboardMenuTypes';
 import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
 import { useMemo } from 'react';
+import { CreateSpaceBtn } from '../createSpaceBtn/CreateSpaceBtn';
 
 export const useHomeMenuItems = () => {
-  const { t } = useTranslation();
-  const { user, accountPrivileges, loading } = useUserContext();
-
-  let createLink = t('pages.home.sections.startingSpace.url');
-
-  if (accountPrivileges.includes(AuthorizationPrivilege.CreateSpace)) {
-    createLink = `/${TopLevelRoutePath.CreateSpace}`;
-  }
+  const { user, loading } = useUserContext();
 
   const dashboardMenuItems: MenuOptionProps[] = useMemo(
     () => [
@@ -67,7 +58,7 @@ export const useHomeMenuItems = () => {
       {
         label: 'pages.home.mainNavigation.createSpace',
         type: 'link',
-        to: createLink,
+        Component: CreateSpaceBtn,
         icon: RocketLaunchOutlinedIcon,
         isVisible: (_, __) => true,
       },
@@ -82,7 +73,7 @@ export const useHomeMenuItems = () => {
         isVisible: (_, compactMode) => !compactMode,
       },
     ],
-    [user, createLink]
+    [user]
   );
 
   return { items: dashboardMenuItems, loading };
