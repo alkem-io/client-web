@@ -2400,6 +2400,7 @@ export const SpaceSettingsFragmentDoc = gql`
       allowMembersToCreateCallouts
       allowMembersToCreateSubspaces
       inheritMembershipRights
+      allowEventsFromSubspaces
     }
   }
 `;
@@ -17295,6 +17296,7 @@ export const UpdateSpaceSettingsDocument = gql`
           allowMembersToCreateCallouts
           allowMembersToCreateSubspaces
           inheritMembershipRights
+          allowEventsFromSubspaces
         }
       }
     }

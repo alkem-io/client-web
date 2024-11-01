@@ -3130,12 +3130,14 @@ export type SpaceSettingsFieldPolicy = {
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceSettingsCollaborationKeySpecifier = (
+  | 'allowEventsFromSubspaces'
   | 'allowMembersToCreateCallouts'
   | 'allowMembersToCreateSubspaces'
   | 'inheritMembershipRights'
   | SpaceSettingsCollaborationKeySpecifier
 )[];
 export type SpaceSettingsCollaborationFieldPolicy = {
+  allowEventsFromSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToCreateCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToCreateSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   inheritMembershipRights?: FieldPolicy<any> | FieldReadFunction<any>;

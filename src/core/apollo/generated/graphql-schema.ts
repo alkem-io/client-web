@@ -948,6 +948,7 @@ export enum AuthorizationPrivilege {
   CommunityAddMember = 'COMMUNITY_ADD_MEMBER',
   CommunityAddMemberVcFromAccount = 'COMMUNITY_ADD_MEMBER_VC_FROM_ACCOUNT',
   CommunityApply = 'COMMUNITY_APPLY',
+  CommunityApplyAccept = 'COMMUNITY_APPLY_ACCEPT',
   CommunityInvite = 'COMMUNITY_INVITE',
   CommunityInviteAccept = 'COMMUNITY_INVITE_ACCEPT',
   CommunityJoin = 'COMMUNITY_JOIN',
@@ -5553,6 +5554,8 @@ export type SpaceSettings = {
 
 export type SpaceSettingsCollaboration = {
   __typename?: 'SpaceSettingsCollaboration';
+  /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
+  allowEventsFromSubspaces: Scalars['Boolean'];
   /** Flag to control if members can create callouts. */
   allowMembersToCreateCallouts: Scalars['Boolean'];
   /** Flag to control if members can create subspaces. */
@@ -6377,6 +6380,8 @@ export type UpdateSpacePlatformSettingsInput = {
 };
 
 export type UpdateSpaceSettingsCollaborationInput = {
+  /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
+  allowEventsFromSubspaces: Scalars['Boolean'];
   /** Flag to control if members can create callouts. */
   allowMembersToCreateCallouts: Scalars['Boolean'];
   /** Flag to control if members can create subspaces. */
@@ -22424,6 +22429,7 @@ export type SpaceSettingsQuery = {
               allowMembersToCreateCallouts: boolean;
               allowMembersToCreateSubspaces: boolean;
               inheritMembershipRights: boolean;
+              allowEventsFromSubspaces: boolean;
             };
           };
           community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
@@ -22447,6 +22453,7 @@ export type SpaceSettingsFragment = {
     allowMembersToCreateCallouts: boolean;
     allowMembersToCreateSubspaces: boolean;
     inheritMembershipRights: boolean;
+    allowEventsFromSubspaces: boolean;
   };
 };
 
@@ -22542,6 +22549,7 @@ export type UpdateSpaceSettingsMutation = {
         allowMembersToCreateCallouts: boolean;
         allowMembersToCreateSubspaces: boolean;
         inheritMembershipRights: boolean;
+        allowEventsFromSubspaces: boolean;
       };
     };
   };

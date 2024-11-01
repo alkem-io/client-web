@@ -60,6 +60,7 @@ const defaultSpaceSettings = {
     allowMembersToCreateCallouts: true,
     allowMembersToCreateSubspaces: true,
     inheritMembershipRights: true,
+    allowEventsFromSubspaces: true,
   },
 };
 
@@ -148,6 +149,8 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
     membershipPolicy = currentSettings?.membership?.policy ?? defaultSpaceSettings.membership.policy,
     allowSubspaceAdminsToInviteMembers = currentSettings?.membership?.allowSubspaceAdminsToInviteMembers ??
       defaultSpaceSettings.membership.allowSubspaceAdminsToInviteMembers,
+    allowEventsFromSubspaces = currentSettings?.collaboration?.allowEventsFromSubspaces ??
+      defaultSpaceSettings.collaboration.allowEventsFromSubspaces,
     hostOrganizationTrusted = currentSettings.hostOrganizationTrusted ??
       defaultSpaceSettings.membership.hostOrganizationTrusted,
     collaborationSettings = currentSettings.collaboration ?? defaultSpaceSettings.collaboration,
@@ -158,6 +161,7 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
     privacyMode?: SpacePrivacyMode;
     membershipPolicy?: CommunityMembershipPolicy;
     allowSubspaceAdminsToInviteMembers?: boolean;
+    allowEventsFromSubspaces?: boolean;
     hostOrganizationTrusted?: boolean;
     collaborationSettings?: Partial<SpaceSettingsCollaboration>;
     showNotification?: boolean;
@@ -185,6 +189,7 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
       collaboration: {
         ...currentSettings.collaboration,
         ...collaborationSettings, // Overwrite with the passed values if any
+        allowEventsFromSubspaces,
       } as SpaceSettingsCollaboration,
     };
 
@@ -361,7 +366,30 @@ export const SpaceSettingsView: FC<SpaceSettingsViewProps> = ({ journeyId, journ
                 options={{
                   allowSubspaceAdminsToInviteMembers: {
                     checked: currentSettings?.membership?.allowSubspaceAdminsToInviteMembers || false,
-                    label: t('pages.admin.space.settings.membership.allowSubspaceAdminsToInviteMembers'),
+                    label: (
+                      <Trans
+                        i18nKey="pages.admin.space.settings.membership.allowSubspaceAdminsToInviteMembers"
+                        components={{ b: <strong /> }}
+                      />
+                    ),
+                  },
+                }}
+                onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}
+              />
+            )}
+            {!isSubspace && (
+              <SwitchSettingsGroup
+                options={{
+                  allowEventsFromSubspaces: {
+                    checked:
+                      currentSettings.collaboration?.allowEventsFromSubspaces ??
+                      defaultSpaceSettings.collaboration.allowEventsFromSubspaces,
+                    label: (
+                      <Trans
+                        i18nKey="pages.admin.space.settings.memberActions.eventsFromSubspaces"
+                        components={{ b: <strong /> }}
+                      />
+                    ),
                   },
                 }}
                 onChange={(setting, newValue) => handleUpdateSettings({ [setting]: newValue })}

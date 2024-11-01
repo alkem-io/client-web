@@ -15,6 +15,7 @@ mutation UpdateSpaceSettings($settingsData: UpdateSpaceSettingsInput!) {
         allowMembersToCreateCallouts
         allowMembersToCreateSubspaces
         inheritMembershipRights
+        allowEventsFromSubspaces
       }
     }
   }
