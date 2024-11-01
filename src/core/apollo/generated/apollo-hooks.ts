@@ -3585,6 +3585,17 @@ export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const ShortAccountItemFragmentDoc = gql`
+  fragment ShortAccountItem on Profile {
+    id
+    displayName
+    url
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const RecentSpaceProfileFragmentDoc = gql`
   fragment RecentSpaceProfile on Profile {
     id
@@ -22869,6 +22880,96 @@ export type MyMembershipsQueryResult = Apollo.QueryResult<
 >;
 export function refetchMyMembershipsQuery(variables?: SchemaTypes.MyMembershipsQueryVariables) {
   return { query: MyMembershipsDocument, variables: variables };
+}
+
+export const MyResourcesDocument = gql`
+  query MyResources($accountId: UUID!) {
+    lookup {
+      account(ID: $accountId) {
+        id
+        spaces {
+          id
+          level
+          profile {
+            ...ShortAccountItem
+            cardBanner: visual(type: CARD) {
+              ...VisualUri
+            }
+          }
+        }
+        virtualContributors {
+          id
+          profile {
+            ...ShortAccountItem
+          }
+        }
+        innovationPacks {
+          id
+          profile {
+            ...ShortAccountItem
+          }
+        }
+        innovationHubs {
+          id
+          profile {
+            ...ShortAccountItem
+            banner: visual(type: BANNER_WIDE) {
+              ...VisualUri
+            }
+          }
+          subdomain
+        }
+      }
+    }
+  }
+  ${ShortAccountItemFragmentDoc}
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useMyResourcesQuery__
+ *
+ * To run a query within a React component, call `useMyResourcesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyResourcesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMyResourcesQuery({
+ *   variables: {
+ *      accountId: // value for 'accountId'
+ *   },
+ * });
+ */
+export function useMyResourcesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.MyResourcesQuery, SchemaTypes.MyResourcesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.MyResourcesQuery, SchemaTypes.MyResourcesQueryVariables>(
+    MyResourcesDocument,
+    options
+  );
+}
+
+export function useMyResourcesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.MyResourcesQuery, SchemaTypes.MyResourcesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.MyResourcesQuery, SchemaTypes.MyResourcesQueryVariables>(
+    MyResourcesDocument,
+    options
+  );
+}
+
+export type MyResourcesQueryHookResult = ReturnType<typeof useMyResourcesQuery>;
+export type MyResourcesLazyQueryHookResult = ReturnType<typeof useMyResourcesLazyQuery>;
+export type MyResourcesQueryResult = Apollo.QueryResult<
+  SchemaTypes.MyResourcesQuery,
+  SchemaTypes.MyResourcesQueryVariables
+>;
+export function refetchMyResourcesQuery(variables: SchemaTypes.MyResourcesQueryVariables) {
+  return { query: MyResourcesDocument, variables: variables };
 }
 
 export const NewVirtualContributorMySpacesDocument = gql`
