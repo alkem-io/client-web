@@ -89,6 +89,7 @@ export interface CalloutFormProps {
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<FormValueType>['children'];
   journeyTypeName: JourneyTypeName;
+  temporaryLocation?: boolean;
 }
 
 const CalloutForm: FC<CalloutFormProps> = ({
@@ -100,6 +101,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
   onStatusChanged,
   journeyTypeName,
   children,
+  temporaryLocation = false,
 }) => {
   const { t } = useTranslation();
 
@@ -217,6 +219,7 @@ const CalloutForm: FC<CalloutFormProps> = ({
               title={t('components.callout-creation.info-step.description')}
               rows={7}
               maxLength={MARKDOWN_TEXT_LENGTH}
+              temporaryLocation={temporaryLocation}
             />
             {editMode && formConfiguration.references && (
               <ProfileReferenceSegment
@@ -227,7 +230,12 @@ const CalloutForm: FC<CalloutFormProps> = ({
               />
             )}
             {!editMode && formConfiguration.references && (
-              <ReferenceSegment compactMode references={formikState.values.references} marginTop={gutters(-1)} />
+              <ReferenceSegment
+                compactMode
+                references={formikState.values.references}
+                marginTop={gutters(-1)}
+                temporaryLocation={temporaryLocation}
+              />
             )}
             {formConfiguration.tags && (
               <TagsetSegment

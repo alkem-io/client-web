@@ -25,6 +25,7 @@ export interface CalendarEventFormProps {
   onSubmit: (eventValues: CalendarEventFormData) => void;
   isSubmitting: boolean;
   actions?: ReactNode;
+  temporaryLocation?: boolean;
 }
 
 const typeOptions: FormikSelectValue[] = [
@@ -53,6 +54,7 @@ const CalendarEventForm = ({
   onClose,
   isSubmitting,
   actions,
+  temporaryLocation = false,
 }: CalendarEventFormProps) => {
   const { t } = useTranslation();
 
@@ -155,7 +157,12 @@ const CalendarEventForm = ({
         validationSchema={validationSchema}
         enableReinitialize
       >
-        <EventForm typeOptions={typeOptions} isSubmitting={isSubmitting} actions={actions} />
+        <EventForm
+          typeOptions={typeOptions}
+          isSubmitting={isSubmitting}
+          actions={actions}
+          temporaryLocation={temporaryLocation}
+        />
       </Formik>
     </GridProvider>
   );

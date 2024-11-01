@@ -7,7 +7,7 @@ import { gutters } from '../../../../core/ui/grid/utils';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import FormikDurationMinutes from '../../../../core/ui/forms/DatePicker/FormikDurationMinutes';
 import { isSameDay } from '../../../../core/utils/time/utils';
-import FormikAutocomplete from '../../../../core/ui/forms/FormikAutocomplete';
+import FormikAutocomplete, { type FormikSelectValue } from '../../../../core/ui/forms/FormikAutocomplete';
 import FormikDatePicker from '../../../../core/ui/forms/DatePicker/FormikDatePicker';
 import FormikTimePicker from '../../../../core/ui/forms/DatePicker/FormikTimePicker';
 import dayjs from 'dayjs';
@@ -28,7 +28,7 @@ const getMinTime = (startDate: DateType, endDate: number | DateType) => {
   return isSameDay(startDate, endDate) ? undefined : dayjs(startDate);
 };
 
-const EventForm = ({ typeOptions, isSubmitting, actions }) => {
+const EventForm = ({ typeOptions, isSubmitting, actions, temporaryLocation = false }: EventFormProps) => {
   const { t } = useTranslation();
   const {
     isValid,
@@ -103,6 +103,7 @@ const EventForm = ({ typeOptions, isSubmitting, actions }) => {
               title={t('common.description')}
               maxLength={MARKDOWN_TEXT_LENGTH}
               sx={{ marginBottom: gutters(-1) }}
+              temporaryLocation={temporaryLocation}
             />
             <Gutters disablePadding sx={{ flexDirection: 'row', flexGrow: 1 }}>
               <FormikInputField name="location.city" title={'Location'} placeholder={' '} fullWidth />
@@ -122,3 +123,11 @@ const EventForm = ({ typeOptions, isSubmitting, actions }) => {
 };
 
 export default EventForm;
+
+type EventFormProps = {
+  isSubmitting: boolean;
+  actions: React.ReactNode;
+  typeOptions: FormikSelectValue[];
+
+  temporaryLocation?: boolean;
+};
