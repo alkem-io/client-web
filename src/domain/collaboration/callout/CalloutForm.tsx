@@ -80,7 +80,7 @@ const CalloutForm = ({
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
       whiteboardContent: callout?.whiteboardContent ?? EmptyWhiteboardString,
       whiteboard: callout?.whiteboard
-        ? { ...callout.whiteboard, previewImages: undefined }
+        ? { ...callout?.whiteboard, previewImages: undefined }
         : {
             previewImages: undefined,
             content: EmptyWhiteboardString,

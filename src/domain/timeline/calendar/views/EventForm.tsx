@@ -32,7 +32,19 @@ const EventForm = ({ actions, typeOptions, isSubmitting, temporaryLocation }: Ev
   } = useFormikContext<Partial<CalendarEventFormData>>();
 
   useEffect(() => {
-    if (endDate && startDate && dayjs(startDate).isAfter(dayjs(endDate))) {
+    if (!startDate || !endDate) {
+      return;
+    }
+
+    const start = dayjs(startDate);
+    const end = dayjs(endDate);
+
+    if (!start.isValid() || !end.isValid()) {
+      console.warn('Invalid date values detected');
+      return;
+    }
+
+    if (start.isAfter(end)) {
       setFieldValue('endDate', startDate);
     }
   }, [endDate, startDate, setFieldValue]);

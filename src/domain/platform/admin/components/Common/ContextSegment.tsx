@@ -32,21 +32,24 @@ const commonConfig = {
 const contextFields = ['who', 'vision', 'impact', 'background'];
 const mdConfig = contextFields.map(name => ({ ...commonConfig, name }));
 
-export const ContextSegment = ({ loading, contextType }: ContextSegmentProps & { contextType: JourneyTypeName }) =>
-  mdConfig.map(({ rows, name, label, maxLength, helperText }, idx: number) => (
-    <React.Fragment key={name}>
-      <MarkdownInput
-        rows={rows}
-        name={name}
-        loading={loading}
-        maxLength={maxLength as MarkdownTextMaxLength}
-        label={isValidName(name) ? label('label', contextType, name) : ''}
-        helperText={isValidName(name) ? helperText('hText', contextType, name) : ''}
-      />
+export const ContextSegment = ({ loading, contextType }: ContextSegmentProps & { contextType: JourneyTypeName }) => (
+  <>
+    {mdConfig.map(({ rows, name, label, maxLength, helperText }, idx: number) => (
+      <React.Fragment key={name}>
+        <MarkdownInput
+          rows={rows}
+          name={name}
+          loading={loading}
+          maxLength={maxLength as MarkdownTextMaxLength}
+          label={isValidName(name) ? label('label', contextType, name) : ''}
+          helperText={isValidName(name) ? helperText('hText', contextType, name) : ''}
+        />
 
-      {idx !== mdConfig.length - 1 && <SectionSpacer />}
-    </React.Fragment>
-  ));
+        {idx !== mdConfig.length - 1 && <SectionSpacer />}
+      </React.Fragment>
+    ))}
+  </>
+);
 
 function isValidName(name: string): name is Name {
   return contextFields.includes(name);
