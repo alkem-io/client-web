@@ -104,7 +104,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
   const [createTemplate] = useCreateTemplateMutation();
   const handleSaveAsTemplate = async (values: CommunityGuidelinesTemplateFormSubmittedValues) => {
     const { data: templatesSetData } = await fetchSpaceTemplatesSetId({ variables: { spaceNameId: spaceId } });
-    const templatesSetId = templatesSetData?.space.library?.id;
+    const templatesSetId = templatesSetData?.space.templatesManager?.templatesSet?.id;
     if (templatesSetId) {
       await createTemplate({
         variables: toCreateTemplateMutationVariables(templatesSetId, TemplateType.CommunityGuidelines, values),
