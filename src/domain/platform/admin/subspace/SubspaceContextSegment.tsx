@@ -1,7 +1,5 @@
 import { ContextSegment, ContextSegmentProps } from '../components/Common/ContextSegment';
 
-export const SubspaceContextSegment = (props: SubspaceContextSegmentProps) => (
+export const SubspaceContextSegment = (props: ContextSegmentProps) => (
   <ContextSegment contextType="subspace" {...props} />
 );
-
-export interface SubspaceContextSegmentProps extends ContextSegmentProps {}

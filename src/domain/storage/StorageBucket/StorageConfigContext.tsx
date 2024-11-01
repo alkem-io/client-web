@@ -4,9 +4,15 @@ import useStorageConfig, { type StorageConfigOptions, type StorageConfigProvided
 const StorageConfigContext = createContext<StorageConfigProvided | undefined>(undefined);
 
 export const StorageConfigContextProvider = ({ children, ...rest }: PropsWithChildren<StorageConfigOptions>) => {
-  const storageConfig = useStorageConfig(rest)?.storageConfig;
+  const result = useStorageConfig(rest);
 
-  return <StorageConfigContext.Provider value={storageConfig} children={children} />;
+  if (!result) {
+    throw new Error('Storage configuration initialization failed');
+  }
+
+  const { storageConfig } = result;
+
+  return <StorageConfigContext.Provider value={storageConfig}>{children}</StorageConfigContext.Provider>;
 };
 
 export const useStorageConfigContext = () => {

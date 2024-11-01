@@ -1,6 +1,6 @@
 import { ContextSegment, ContextSegmentProps } from '../components/Common/ContextSegment';
 
-export const SpaceContextSegment = ({ ...props }: SpaceContextSegmentProps) => (
+export const SpaceContextSegment = (props: SpaceContextSegmentProps) => (
   <ContextSegment contextType="space" {...props} />
 );
 

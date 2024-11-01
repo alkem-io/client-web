@@ -56,6 +56,7 @@ const TemplatesAdmin = ({
   canDeleteTemplates = defaultPermissionDenied,
 }: TemplatesAdminProps) => {
   const { t } = useTranslation();
+
   const backToTemplates = useBackToPath();
 
   // Visuals management (for whiteboards)
@@ -103,6 +104,7 @@ const TemplatesAdmin = ({
 
   // Update Template
   const [editTemplateMode, setEditTemplateMode] = useState(alwaysEditTemplate);
+
   const [updateTemplate] = useUpdateTemplateMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet', 'TemplateContent'],
   });
@@ -145,12 +147,10 @@ const TemplatesAdmin = ({
 
   // Create Template
   const [creatingTemplateType, setCreatingTemplateType] = useState<TemplateType>();
-  const [createTemplate] = useCreateTemplateMutation({
-    refetchQueries: ['AllTemplatesInTemplatesSet'],
-  });
   const [createCollaborationTemplate] = useCreateTemplateFromCollaborationMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
+  const [createTemplate] = useCreateTemplateMutation({ refetchQueries: ['AllTemplatesInTemplatesSet'] });
 
   // Create a Collaboration template
   const handleCollaborationTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
@@ -164,7 +164,7 @@ const TemplatesAdmin = ({
   };
 
   const handleTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
-    // Special case, handle Collaboration templates differently for now, until we have full support for editing them and sending all the data, and not just for cloning an existing collaboration
+    // Special case, handle Collaboration templates differently for now, until we have full support for editing them and sending all the data, and not just for cloning an existing collaboration.
     if (creatingTemplateType === TemplateType.Collaboration) {
       return handleCollaborationTemplateCreate(values);
     }
@@ -176,6 +176,7 @@ const TemplatesAdmin = ({
       // Handle the visual in a special way with the preview images
       handlePreviewTemplates(values, result.data?.createTemplate.profile);
     }
+
     setCreatingTemplateType(undefined);
   };
 
@@ -211,12 +212,12 @@ const TemplatesAdmin = ({
     const { data } = await getTemplateContent({
       variables: {
         templateId: id,
-        includeCallout: templateType === TemplateType.Callout,
-        includeCommunityGuidelines: templateType === TemplateType.CommunityGuidelines,
-        includeInnovationFlow: templateType === TemplateType.InnovationFlow,
         includeCollaboration: false, // templateType === TemplateType.Collaboration,
         includePost: templateType === TemplateType.Post,
+        includeCallout: templateType === TemplateType.Callout,
         includeWhiteboard: templateType === TemplateType.Whiteboard,
+        includeInnovationFlow: templateType === TemplateType.InnovationFlow,
+        includeCommunityGuidelines: templateType === TemplateType.CommunityGuidelines,
       },
     });
 
@@ -238,9 +239,9 @@ const TemplatesAdmin = ({
         ...template,
         collaborationId: template.collaboration?.id,
       });
-      await createCollaborationTemplate({
-        variables,
-      });
+
+      await createCollaborationTemplate({ variables });
+
       setImportTemplateType(undefined);
     }
   };
@@ -252,6 +253,7 @@ const TemplatesAdmin = ({
         {canImportTemplates(templateType) ? (
           <ImportTemplateButton onClick={() => setImportTemplateType(templateType)} />
         ) : null}
+
         {canCreateTemplates(templateType) &&
         /* TODO: InnovationFlow templates are going to be removed in the near future, so disallow creation for this type */
         templateType !== TemplateType.InnovationFlow ? (
@@ -274,85 +276,70 @@ const TemplatesAdmin = ({
     }
   };
 
+  const templatesGalleryConfig = [
+    {
+      templates: calloutTemplates,
+      templateType: TemplateType.Callout,
+      headerText: t('common.entitiesWithCount', {
+        entityType: t(`common.enums.templateType.${TemplateType.Callout}_plural`),
+        count: calloutTemplates?.length ?? 0,
+      }),
+    },
+    {
+      templates: collaborationTemplates,
+      templateType: TemplateType.Collaboration,
+      headerText: t('common.entitiesWithCount', {
+        entityType: t(`common.enums.templateType.${TemplateType.Collaboration}_plural`),
+        count: collaborationTemplates?.length ?? 0,
+      }),
+    },
+    {
+      templates: communityGuidelinesTemplates,
+      templateType: TemplateType.CommunityGuidelines,
+      headerText: t('common.entitiesWithCount', {
+        entityType: t(`common.enums.templateType.${TemplateType.CommunityGuidelines}_plural`),
+        count: communityGuidelinesTemplates?.length ?? 0,
+      }),
+    },
+    {
+      templates: innovationFlowTemplates,
+      templateType: TemplateType.InnovationFlow,
+      headerText: t('common.entitiesWithCount', {
+        entityType: t(`common.enums.templateType.${TemplateType.InnovationFlow}_plural`),
+        count: innovationFlowTemplates?.length ?? 0,
+      }),
+    },
+    {
+      templates: postTemplates,
+      templateType: TemplateType.Post,
+      headerText: t('common.entitiesWithCount', {
+        entityType: t(`common.enums.templateType.${TemplateType.Post}_plural`),
+        count: postTemplates?.length ?? 0,
+      }),
+    },
+    {
+      templates: whiteboardTemplates,
+      templateType: TemplateType.Whiteboard,
+      headerText: t('common.entitiesWithCount', {
+        entityType: t(`common.enums.templateType.${TemplateType.Whiteboard}_plural`),
+        count: whiteboardTemplates?.length ?? 0,
+      }),
+    },
+  ];
+
   return (
     <>
-      <PageContentBlockSeamless disablePadding>
-        <TemplatesGallery
-          headerText={t('common.entitiesWithCount', {
-            entityType: t(`common.enums.templateType.${TemplateType.Callout}_plural`),
-            count: calloutTemplates?.length ?? 0,
-          })}
-          actions={<GalleryActions templateType={TemplateType.Callout} />}
-          templates={calloutTemplates}
-          loading={loading}
-          buildTemplateLink={buildTemplateLink}
-        />
-      </PageContentBlockSeamless>
-
-      <PageContentBlockSeamless disablePadding>
-        <TemplatesGallery
-          headerText={t('common.entitiesWithCount', {
-            entityType: t(`common.enums.templateType.${TemplateType.Collaboration}_plural`),
-            count: collaborationTemplates?.length ?? 0,
-          })}
-          actions={<GalleryActions templateType={TemplateType.Collaboration} />}
-          templates={collaborationTemplates}
-          loading={loading}
-          buildTemplateLink={buildTemplateLink}
-        />
-      </PageContentBlockSeamless>
-
-      <PageContentBlockSeamless disablePadding>
-        <TemplatesGallery
-          headerText={t('common.entitiesWithCount', {
-            entityType: t(`common.enums.templateType.${TemplateType.CommunityGuidelines}_plural`),
-            count: communityGuidelinesTemplates?.length ?? 0,
-          })}
-          actions={<GalleryActions templateType={TemplateType.CommunityGuidelines} />}
-          templates={communityGuidelinesTemplates}
-          loading={loading}
-          buildTemplateLink={buildTemplateLink}
-        />
-      </PageContentBlockSeamless>
-
-      <PageContentBlockSeamless disablePadding>
-        <TemplatesGallery
-          headerText={t('common.entitiesWithCount', {
-            entityType: t(`common.enums.templateType.${TemplateType.InnovationFlow}_plural`),
-            count: innovationFlowTemplates?.length ?? 0,
-          })}
-          actions={<GalleryActions templateType={TemplateType.InnovationFlow} />}
-          templates={innovationFlowTemplates}
-          loading={loading}
-          buildTemplateLink={buildTemplateLink}
-        />
-      </PageContentBlockSeamless>
-
-      <PageContentBlockSeamless disablePadding>
-        <TemplatesGallery
-          headerText={t('common.entitiesWithCount', {
-            entityType: t(`common.enums.templateType.${TemplateType.Post}_plural`),
-            count: postTemplates?.length ?? 0,
-          })}
-          actions={<GalleryActions templateType={TemplateType.Post} />}
-          templates={postTemplates}
-          loading={loading}
-          buildTemplateLink={buildTemplateLink}
-        />
-      </PageContentBlockSeamless>
-
-      <PageContentBlockSeamless disablePadding>
-        <TemplatesGallery
-          loading={loading}
-          templates={whiteboardTemplates}
-          buildTemplateLink={buildTemplateLink}
-          actions={<GalleryActions templateType={TemplateType.Whiteboard} />}
-          headerText={t('common.entitiesWithCount', {
-            entityType: t(`common.enums.templateType.${TemplateType.Whiteboard}_plural`),
-            count: whiteboardTemplates?.length ?? 0,
-          })}
-        />
-      </PageContentBlockSeamless>
+      {templatesGalleryConfig.map(({ templates, headerText, templateType }) => (
+        <PageContentBlockSeamless key={templateType} disablePadding>
+          <TemplatesGallery
+            loading={loading}
+            templates={templates}
+            headerText={headerText}
+            buildTemplateLink={buildTemplateLink}
+            actions={<GalleryActions templateType={templateType} />}
+          />
+        </PageContentBlockSeamless>
+      ))}
 
       {creatingTemplateType && (
         <CreateTemplateDialog
@@ -411,10 +398,10 @@ const TemplatesAdmin = ({
       {importTemplateType && (
         <ImportTemplatesDialog
           open
-          onClose={() => setImportTemplateType(undefined)}
           templateType={importTemplateType}
-          subtitle={t('pages.admin.generic.sections.templates.import.subtitle')}
           onSelectTemplate={handleImportTemplate}
+          subtitle={t('pages.admin.generic.sections.templates.import.subtitle')}
+          onClose={() => setImportTemplateType(undefined)}
           {...importTemplateOptions}
           actionButton={
             <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">

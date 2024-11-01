@@ -93,8 +93,8 @@ const SubspaceDialogs = ({
       <CommunityUpdatesDialog
         loading={false}
         communityId={communityId}
-        shareUrl={buildUpdatesUrl(journeyUrl ?? '')}
         open={dialogOpen === SubspaceDialog.Updates}
+        shareUrl={journeyUrl ? buildUpdatesUrl(journeyUrl) : ''}
         onClose={handleClose}
       />
 

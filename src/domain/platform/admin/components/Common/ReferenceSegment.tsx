@@ -139,10 +139,14 @@ export const ReferenceSegment = ({
                             onClick={() => {
                               // TODO When onRemove doesn't have this callback signature anymore
                               // TODO remove branching and use `try { ... } finally { setRemoving(index, false) }`
+
                               if (onRemove) {
                                 setRemoving(index, true);
                                 onRemove(attachment, (success: boolean) => {
-                                  if (success) remove(index);
+                                  if (success) {
+                                    remove(index);
+                                  }
+
                                   setRemoving(index, false);
                                 });
                               } else {

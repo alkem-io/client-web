@@ -1,6 +1,7 @@
 import { useMemo, ReactNode } from 'react';
 
 import * as yup from 'yup';
+import i18next from 'i18next';
 import { Box } from '@mui/material';
 import { FormikProps } from 'formik';
 import { useTranslation } from 'react-i18next';
@@ -131,14 +132,7 @@ const CalloutTemplateForm = ({ actions, template, temporaryLocation = false, onS
           <>
             <FormikInputField name="callout.framing.profile.displayName" title={t('common.title')} />
 
-            <Box marginBottom={gutters(-1)}>
-              <FormikMarkdownField
-                title={t('common.description')}
-                maxLength={MARKDOWN_TEXT_LENGTH}
-                temporaryLocation={temporaryLocation}
-                name="callout.framing.profile.description"
-              />
-            </Box>
+            {getFormikMarkdownField('callout.framing.profile.description', temporaryLocation)}
 
             <TagsetField name="callout.framing.profile.tagsets[0].tags" title={t('common.tags')} />
 
@@ -157,16 +151,8 @@ const CalloutTemplateForm = ({ actions, template, temporaryLocation = false, onS
               <FormikWhiteboardPreview name="callout.contributionDefaults.whiteboardContent" canEdit />
             )}
 
-            {values.callout?.type === CalloutType.PostCollection && (
-              <Box marginBottom={gutters(-1)}>
-                <FormikMarkdownField
-                  title={t('common.description')}
-                  maxLength={MARKDOWN_TEXT_LENGTH}
-                  temporaryLocation={temporaryLocation}
-                  name="callout.contributionDefaults.postDescription"
-                />
-              </Box>
-            )}
+            {values.callout?.type === CalloutType.PostCollection &&
+              getFormikMarkdownField('callout.contributionDefaults.postDescription', temporaryLocation)}
           </>
         );
       }}
@@ -215,4 +201,17 @@ export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileS
     };
     type?: CalloutType; // Cannot be sent on updates, but it's needed in the forms
   };
+}
+
+function getFormikMarkdownField(name: string, temporaryLocation: boolean) {
+  return (
+    <Box marginBottom={gutters(-1)}>
+      <FormikMarkdownField
+        name={name}
+        maxLength={MARKDOWN_TEXT_LENGTH}
+        temporaryLocation={temporaryLocation}
+        title={i18next.t('common.description')}
+      />
+    </Box>
+  );
 }

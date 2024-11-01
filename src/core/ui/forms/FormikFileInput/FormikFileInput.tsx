@@ -20,20 +20,18 @@ const FormikFileInput = ({
   const [field, , helpers] = useField(name);
 
   const storageConfig = useStorageConfigContext();
-  const updatedStorageConfig = { ...storageConfig, temporaryLocation };
+
+  const updatedStorageConfig = storageConfig ? { ...storageConfig, temporaryLocation } : null;
 
   const checkProtocol = () => {
-    if (defaultProtocol) {
-      if (field.value) {
-        const currentValue = `${field.value}`; // Make sure field.value is a string.
-
-        if (!currentValue.match(MATCH_PROTOCOL_REGEX)) {
-          helpers.setValue(`${defaultProtocol}://${currentValue}`);
-        }
-      }
+    if (!defaultProtocol || !field.value) {
+      return;
     }
 
-    return;
+    const currentValue = String(field.value);
+    if (!currentValue.match(MATCH_PROTOCOL_REGEX)) {
+      helpers.setValue(`${defaultProtocol}://${currentValue}`);
+    }
   };
 
   return (
@@ -42,7 +40,8 @@ const FormikFileInput = ({
       loading={!storageConfig}
       endAdornment={
         storageConfig &&
-        storageConfig.canUpload && (
+        storageConfig.canUpload &&
+        updatedStorageConfig && (
           <FileUploadButton
             entityID={entityID}
             entityType={entityType}

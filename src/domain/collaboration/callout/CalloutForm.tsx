@@ -75,21 +75,16 @@ const CalloutForm = ({
       references: callout?.references ?? [],
       displayName: callout?.displayName ?? '',
       description: callout?.description ?? '',
-      postDescription: callout.postDescription ?? '',
+      postDescription: callout?.postDescription ?? '',
       groupName: callout?.groupName ?? CalloutGroupName.Knowledge,
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
       whiteboardContent: callout.whiteboardContent ?? EmptyWhiteboardString,
       whiteboard: callout?.whiteboard
-        ? {
-            ...callout.whiteboard,
-            previewImages: undefined,
-          }
+        ? { ...callout.whiteboard, previewImages: undefined }
         : {
-            profileData: {
-              displayName: t('common.whiteboard'),
-            },
-            content: EmptyWhiteboardString,
             previewImages: undefined,
+            content: EmptyWhiteboardString,
+            profileData: { displayName: t('common.whiteboard') },
           },
     }),
     [callout?.id, tagsets]
@@ -111,13 +106,13 @@ const CalloutForm = ({
     const callout: CalloutFormOutput = {
       type: calloutType,
       groupName: values.groupName,
-      tags: values.tagsets[0].tags,
       references: values.references,
       whiteboard: values.whiteboard,
       displayName: values.displayName,
       description: values.description,
       postDescription: values.postDescription,
       whiteboardContent: values.whiteboardContent,
+      tags: values.tagsets.length > 0 ? values.tagsets[0].tags : [],
       state: values.opened ? CalloutState.Open : CalloutState.Closed,
     };
 
@@ -177,16 +172,14 @@ const CalloutForm = ({
               title={t('components.callout-creation.info-step.description')}
             />
 
-            {editMode && formConfiguration.references && (
+            {formConfiguration.references && editMode ? (
               <ProfileReferenceSegment
                 compactMode
                 marginTop={gutters(-1)}
                 profileId={callout?.profileId}
                 references={formikState.values.references}
               />
-            )}
-
-            {!editMode && formConfiguration.references && (
+            ) : (
               <ReferenceSegment
                 compactMode
                 marginTop={gutters(-1)}

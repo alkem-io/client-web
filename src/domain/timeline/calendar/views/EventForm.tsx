@@ -8,20 +8,20 @@ import { Box, DialogContent, FormControlLabel, Switch } from '@mui/material';
 
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { Actions } from '../../../../core/ui/actions/Actions';
-import FormikAutocomplete from '../../../../core/ui/forms/FormikAutocomplete';
 import FormikTimePicker from '../../../../core/ui/forms/DatePicker/FormikTimePicker';
 import FormikDatePicker from '../../../../core/ui/forms/DatePicker/FormikDatePicker';
 import { TagsetField } from '../../../platform/admin/components/Common/TagsetSegment';
 import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
 import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
 import FormikDurationMinutes from '../../../../core/ui/forms/DatePicker/FormikDurationMinutes';
+import FormikAutocomplete, { FormikSelectValue } from '../../../../core/ui/forms/FormikAutocomplete';
 
 import { gutters } from '../../../../core/ui/grid/utils';
 import { isSameDay } from '../../../../core/utils/time/utils';
 import { type CalendarEventFormData } from '../CalendarEventsContainer';
 import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
 
-const EventForm = ({ actions, typeOptions, isSubmitting, temporaryLocation }) => {
+const EventForm = ({ actions, typeOptions, isSubmitting, temporaryLocation }: EventFormProps) => {
   const { t } = useTranslation();
 
   const {
@@ -134,3 +134,11 @@ type DateType = Date | undefined;
 function getMinTime(startDate: DateType, endDate: number | DateType) {
   return startDate ? (isSameDay(startDate, endDate) ? undefined : dayjs(startDate)) : undefined;
 }
+
+type EventFormProps = {
+  isSubmitting: boolean;
+  actions: React.ReactNode;
+  typeOptions: FormikSelectValue[];
+
+  temporaryLocation?: boolean;
+};

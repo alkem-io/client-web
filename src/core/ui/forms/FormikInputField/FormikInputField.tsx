@@ -13,7 +13,6 @@ import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/
 
 export const FormikInputField = ({
   rows,
-  type,
   name,
   title,
   loading,

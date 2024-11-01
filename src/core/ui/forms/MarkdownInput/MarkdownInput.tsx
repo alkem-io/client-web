@@ -75,11 +75,7 @@ export const MarkdownInput = memo(
       const editor = useEditor({ ...editorOptions, content: htmlContent }, [htmlContent]);
 
       // Currently used to highlight overflow but can be reused for other similar features as well
-      const shadowEditor = useEditor({
-        ...editorOptions,
-        content: '',
-        editable: false,
-      });
+      const shadowEditor = useEditor({ ...editorOptions, content: '', editable: false });
 
       useLayoutEffect(() => {
         if (!editor || !isInteractingWithInput || editor.getText() === '') {
@@ -97,6 +93,8 @@ export const MarkdownInput = memo(
         if (controlsVisible === 'focused') {
           return isInteractingWithInput;
         }
+
+        return false;
       };
 
       const getLabelOffset = () => {
@@ -288,10 +286,10 @@ export const MarkdownInput = memo(
 
 export default MarkdownInput;
 
-interface Offset {
+type Offset = {
   x: string;
   y: string;
-}
+};
 
 export interface MarkdownInputRefApi {
   value: string | undefined;

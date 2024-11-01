@@ -22,6 +22,10 @@ const FileUploadButton = ({
   onChange,
   onUpload,
 }: FileUploadProps) => {
+  if (!storageConfig?.storageBucketId || !Array.isArray(storageConfig.allowedMimeTypes)) {
+    throw new Error('Invalid storage configuration provided');
+  }
+
   const { t } = useTranslation();
 
   const notify = useNotification();

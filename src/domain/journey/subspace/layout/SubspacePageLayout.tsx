@@ -1,13 +1,4 @@
-import React, {
-  useMemo,
-  Children,
-  useState,
-  useEffect,
-  ReactNode,
-  useContext,
-  createContext,
-  PropsWithChildren,
-} from 'react';
+import { useMemo, Children, useState, useEffect, ReactNode, useContext, createContext, PropsWithChildren } from 'react';
 
 import produce from 'immer';
 import { useTranslation } from 'react-i18next';
@@ -52,6 +43,11 @@ import { type SpaceReadAccess } from '../../common/authorization/useCanReadSpace
 import { type JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
 import FloatingActionButtons from '../../../../core/ui/button/FloatingActionButtons';
 import createLayoutHolder from '../../../../core/ui/layout/layoutHolder/LayoutHolder';
+
+enum MenuState {
+  EXPANDED = 'expanded',
+  COLLAPSED = 'collapsed',
+}
 
 const {
   LayoutHolder: InnovationFlowHolder,
@@ -321,11 +317,6 @@ export interface SubspacePageLayoutProps {
   infoColumnChildren?: ReactNode;
   journeyUrl?: string | undefined; // TODO make required
   unauthorizedDialogDisabled?: boolean;
-}
-
-enum MenuState {
-  EXPANDED = 'expanded',
-  COLLAPSED = 'collapsed',
 }
 
 /**

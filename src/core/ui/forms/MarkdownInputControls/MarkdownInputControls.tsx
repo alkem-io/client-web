@@ -1,4 +1,4 @@
-import { memo, useState, useEffect, forwardRef } from 'react';
+import { memo, useState, useEffect, forwardRef, useCallback } from 'react';
 
 import produce from 'immer';
 import {
@@ -74,7 +74,7 @@ const ControlsButton = memo(
         disabled={state.disabled}
         color={state.active ? 'secondary' : undefined}
         sx={{ width: gutters(2), height: gutters(2) }}
-        onClick={() => editor && command(editor.chain().focus()).run()}
+        onClick={useCallback(() => editor && command(editor.chain().focus()).run(), [editor, command])}
         {...buttonProps}
       />
     );
@@ -83,6 +83,8 @@ const ControlsButton = memo(
     return prevProps.editor === nextProps.editor;
   }
 );
+
+const CONTROLS_SHOW_DELAY_MS = 150; // Allows a user to select text by double-click without "jumping".
 
 const MarkdownInputControls = memo(
   forwardRef<HTMLDivElement | null, MarkdownInputControlsProps>(
@@ -96,8 +98,6 @@ const MarkdownInputControls = memo(
         let timeoutId: NodeJS.Timeout;
 
         if (visible) {
-          const CONTROLS_SHOW_DELAY_MS = 150; // Allows a user to select text by double-click without "jumping".
-
           timeoutId = setTimeout(() => {
             setIsVisible(() => visible);
           }, CONTROLS_SHOW_DELAY_MS);

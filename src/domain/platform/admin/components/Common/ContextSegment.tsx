@@ -1,12 +1,18 @@
+import React from 'react';
+
 import * as yup from 'yup';
-import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
 
 import MarkdownInput from './MarkdownInput';
 import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 
+import {
+  SMALL_TEXT_LENGTH,
+  MARKDOWN_TEXT_LENGTH,
+  MarkdownTextMaxLength,
+} from '../../../../../core/ui/forms/field-length.constants';
 import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
 import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
 
 export const contextSegmentSchema = yup.object().shape({
   who: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
@@ -16,56 +22,61 @@ export const contextSegmentSchema = yup.object().shape({
   background: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
 });
 
-export const ContextSegment = ({ loading, contextType }: ContextSegmentProps & { contextType: JourneyTypeName }) => {
-  const { t } = useTranslation();
+const mdConfig = [
+  {
+    rows: 10,
+    name: 'vision',
+    label: getLabelAndHelperText,
+    maxLength: MARKDOWN_TEXT_LENGTH,
+    helperText: getLabelAndHelperText,
+  },
+  {
+    rows: 10,
+    name: 'background',
+    label: getLabelAndHelperText,
+    maxLength: MARKDOWN_TEXT_LENGTH,
+    helperText: getLabelAndHelperText,
+  },
+  {
+    rows: 10,
+    name: 'impact',
+    label: getLabelAndHelperText,
+    maxLength: MARKDOWN_TEXT_LENGTH,
+    helperText: getLabelAndHelperText,
+  },
+  {
+    rows: 10,
+    name: 'who',
+    label: getLabelAndHelperText,
+    maxLength: MARKDOWN_TEXT_LENGTH,
+    helperText: getLabelAndHelperText,
+  },
+];
 
-  return (
-    <>
+export const ContextSegment = ({ loading, contextType }: ContextSegmentProps & { contextType: JourneyTypeName }) =>
+  mdConfig.map(({ rows, name, label, maxLength, helperText }, idx: number) => (
+    <React.Fragment key={name}>
       <MarkdownInput
-        rows={10}
-        name="vision"
+        rows={rows}
+        name={name}
         loading={loading}
-        maxLength={MARKDOWN_TEXT_LENGTH}
-        label={t(`context.${contextType}.vision.title` as const)}
-        helperText={t(`context.${contextType}.vision.description` as const)}
+        maxLength={maxLength as MarkdownTextMaxLength}
+        label={label('label', contextType, name as Name)}
+        helperText={helperText('hText', contextType, name as Name)}
       />
 
-      <SectionSpacer />
+      {idx !== mdConfig.length - 1 && <SectionSpacer />}
+    </React.Fragment>
+  ));
 
-      <MarkdownInput
-        rows={10}
-        name="background"
-        loading={loading}
-        maxLength={MARKDOWN_TEXT_LENGTH}
-        label={t(`context.${contextType}.background.title` as const)}
-        helperText={t(`context.${contextType}.background.description` as const)}
-      />
-
-      <SectionSpacer />
-
-      <MarkdownInput
-        rows={10}
-        name="impact"
-        loading={loading}
-        maxLength={MARKDOWN_TEXT_LENGTH}
-        label={t(`context.${contextType}.impact.title` as const)}
-        helperText={t(`context.${contextType}.impact.description` as const)}
-      />
-
-      <SectionSpacer />
-
-      <MarkdownInput
-        rows={10}
-        name="who"
-        loading={loading}
-        maxLength={MARKDOWN_TEXT_LENGTH}
-        label={t(`context.${contextType}.who.title` as const)}
-        helperText={t(`context.${contextType}.who.description` as const)}
-      />
-    </>
-  );
-};
+function getLabelAndHelperText(type: 'label' | 'hText', contextType: JourneyTypeName, name: Name) {
+  return type === 'label'
+    ? i18next.t(`context.${contextType}.${name}.title` as const)
+    : i18next.t(`context.${contextType}.${name}.description` as const);
+}
 
 export interface ContextSegmentProps {
   loading?: boolean;
 }
+
+type Name = 'who' | 'vision' | 'impact' | 'background';

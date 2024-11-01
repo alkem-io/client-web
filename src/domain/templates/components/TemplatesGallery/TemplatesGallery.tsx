@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { memo, ReactElement } from 'react';
 
 import { times } from 'lodash';
 
@@ -12,22 +12,20 @@ import { type AnyTemplate } from '../../models/TemplateBase';
 import { type LinkWithState } from '../../../shared/types/LinkWithState';
 
 const TemplatesGallery = ({ actions, loading, templates, headerText, buildTemplateLink }: TemplatesGalleryProps) => (
-  <>
-    <PageContentBlock>
-      <PageContentBlockHeader title={headerText} actions={actions} />
+  <PageContentBlock>
+    <PageContentBlockHeader title={headerText} actions={actions} />
 
-      <ScrollableCardsLayoutContainer>
-        {loading && !templates ? times(3, i => <ContributeCardSkeleton key={i} />) : null}
+    <ScrollableCardsLayoutContainer>
+      {loading && !templates ? times(3, i => <ContributeCardSkeleton key={i} />) : null}
 
-        {templates?.map(template => (
-          <TemplateCard key={template.id} template={template} link={buildTemplateLink(template)} />
-        ))}
-      </ScrollableCardsLayoutContainer>
-    </PageContentBlock>
-  </>
+      {templates?.map(template => (
+        <TemplateCard key={template.id} template={template} link={buildTemplateLink(template)} />
+      ))}
+    </ScrollableCardsLayoutContainer>
+  </PageContentBlock>
 );
 
-export default TemplatesGallery;
+export default memo(TemplatesGallery);
 
 type TemplatesGalleryProps = {
   headerText: string;
@@ -36,5 +34,5 @@ type TemplatesGalleryProps = {
   buildTemplateLink: (template: AnyTemplate) => LinkWithState | undefined;
 
   loading?: boolean;
-  actions?: ReactNode;
+  actions?: ReactElement | ReactElement[];
 };
