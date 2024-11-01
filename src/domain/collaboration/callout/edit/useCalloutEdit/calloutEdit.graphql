@@ -34,6 +34,43 @@ mutation UpdateCallout($calloutData: UpdateCalloutEntityInput!) {
   }
 }
 
+mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
+  updateCallout(calloutData: $calloutData) {
+    id
+    framing {
+      id
+      profile {
+        id
+        description
+        displayName
+        tagset {
+          ...TagsetDetails
+        }
+        references {
+          id
+          name
+          uri
+        }
+      }
+      whiteboard {
+        id
+        content
+      }
+    }
+    contributionDefaults {
+      id
+      postDescription
+      whiteboardContent
+    }
+    contributionPolicy {
+      id
+      state
+    }
+    type
+    visibility
+  }
+}
+
 mutation UpdateCalloutVisibility($calloutData: UpdateCalloutVisibilityInput!) {
   updateCalloutVisibility(calloutData: $calloutData) {
     ...CalloutDetails
