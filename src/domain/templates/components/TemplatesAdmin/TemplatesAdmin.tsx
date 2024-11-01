@@ -2,9 +2,12 @@ import React, { FC, useCallback, useMemo, useState } from 'react';
 import TemplatesGallery from '../TemplatesGallery/TemplatesGallery';
 import {
   useAllTemplatesInTemplatesSetQuery,
+  useCreateTemplateFromCollaborationMutation,
   useCreateTemplateMutation,
   useDeleteTemplateMutation,
   useTemplateContentLazyQuery,
+  useUpdateCalloutMutation,
+  useUpdateCommunityGuidelinesMutation,
   useUpdateTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
@@ -18,7 +21,11 @@ import useBackToPath from '../../../../core/routing/useBackToPath';
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { Button, ButtonProps } from '@mui/material';
 import CreateTemplateDialog from '../Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { toCreateTemplateMutationVariables, toUpdateTemplateMutationVariables } from '../Forms/common/mappings';
+import {
+  toCreateTemplateFromCollaborationMutationVariables,
+  toCreateTemplateMutationVariables,
+  toUpdateTemplateMutationVariables,
+} from '../Forms/common/mappings';
 import { WhiteboardTemplateFormSubmittedValues } from '../Forms/WhiteboardTemplateForm';
 import { useUploadWhiteboardVisuals } from '../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import PreviewTemplateDialog from '../Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
@@ -27,16 +34,21 @@ import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/Import
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LoadingButton } from '@mui/lab';
 import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
+import { CollaborationTemplateFormSubmittedValues } from '../Forms/CollaborationTemplateForm';
+import { CollaborationTemplate } from '../../models/CollaborationTemplate';
+
+type TemplatePermissionCallback = (templateType: TemplateType) => boolean;
+const defaultPermissionDenied: TemplatePermissionCallback = () => false;
 
 interface TemplatesAdminProps {
   templatesSetId: string;
   templateId?: string; // Template selected, if any
   alwaysEditTemplate?: boolean; // If true, the selected template is editable, if false preview dialog is shown
   baseUrl: string | undefined;
-  canCreateTemplates?: boolean;
-  canEditTemplates?: boolean;
-  canDeleteTemplates?: boolean;
-  canImportTemplates?: boolean;
+  canCreateTemplates?: TemplatePermissionCallback;
+  canEditTemplates?: TemplatePermissionCallback;
+  canDeleteTemplates?: TemplatePermissionCallback;
+  canImportTemplates?: TemplatePermissionCallback;
   importTemplateOptions?: ImportTemplatesOptions;
 }
 
@@ -63,11 +75,11 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   templateId,
   alwaysEditTemplate = false,
   baseUrl = '',
-  canImportTemplates = false,
+  canImportTemplates = defaultPermissionDenied,
   importTemplateOptions = {},
-  canCreateTemplates = false,
-  canEditTemplates = false,
-  canDeleteTemplates = false,
+  canCreateTemplates = defaultPermissionDenied,
+  canEditTemplates = defaultPermissionDenied,
+  canDeleteTemplates = defaultPermissionDenied,
 }) => {
   const { t } = useTranslation();
   const backToTemplates = useBackToPath();
@@ -95,11 +107,12 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   });
 
   const {
+    calloutTemplates,
+    collaborationTemplates,
+    communityGuidelinesTemplates,
+    innovationFlowTemplates,
     postTemplates,
     whiteboardTemplates,
-    innovationFlowTemplates,
-    calloutTemplates,
-    communityGuidelinesTemplates,
   } = data?.lookup.templatesSet ?? {};
 
   const selectedTemplate = useMemo<AnyTemplate | undefined>(() => {
@@ -110,6 +123,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
       ...(innovationFlowTemplates ?? []),
       ...(communityGuidelinesTemplates ?? []),
       ...(calloutTemplates ?? []),
+      ...(collaborationTemplates ?? []),
     ].find(template => template.id === templateId);
   }, [templateId, data?.lookup.templatesSet]);
 
@@ -118,13 +132,31 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   const [updateTemplate] = useUpdateTemplateMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet', 'TemplateContent'],
   });
-  const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
-    const variables = toUpdateTemplateMutationVariables(templateId!, values);
-    const result = await updateTemplate({
-      variables,
-    });
+  const [updateCallout] = useUpdateCalloutMutation();
+  const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation();
 
-    if (selectedTemplate?.type === TemplateType.Whiteboard) {
+  const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
+    if (!selectedTemplate) {
+      return;
+    }
+    const { updateTemplateVariables, updateCalloutVariables, updateCommunityGuidelinesVariables } =
+      toUpdateTemplateMutationVariables(templateId!, selectedTemplate, values);
+
+    const result = await updateTemplate({
+      variables: updateTemplateVariables,
+    });
+    if (updateCalloutVariables) {
+      await updateCallout({
+        variables: updateCalloutVariables,
+      });
+    }
+    if (updateCommunityGuidelinesVariables) {
+      await updateCommunityGuidelines({
+        variables: updateCommunityGuidelinesVariables,
+      });
+    }
+
+    if (updateTemplateVariables.includeProfileVisuals) {
       // Handle the visual in a special way with the preview images
       handlePreviewTemplates(values, result.data?.updateTemplate.profile);
     }
@@ -138,7 +170,28 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   const [createTemplate] = useCreateTemplateMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
+  const [createCollaborationTemplate] = useCreateTemplateFromCollaborationMutation({
+    refetchQueries: ['AllTemplatesInTemplatesSet'],
+  });
+
+  // Create a Collaboration template
+  const handleCollaborationTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
+    const variables = toCreateTemplateFromCollaborationMutationVariables(
+      templatesSetId,
+      values as CollaborationTemplateFormSubmittedValues
+    );
+    await createCollaborationTemplate({
+      variables,
+    });
+    setCreatingTemplateType(undefined);
+  };
+
   const handleTemplateCreate = async (values: AnyTemplateFormSubmittedValues) => {
+    // Special case, handle Collaboration templates differently for now, until we have full support for editing them and sending all the data, and not just for cloning an existing collaboration
+    if (creatingTemplateType === TemplateType.Collaboration) {
+      return handleCollaborationTemplateCreate(values);
+    }
+
     const variables = toCreateTemplateMutationVariables(templatesSetId, creatingTemplateType!, values);
     const result = await createTemplate({
       variables,
@@ -171,13 +224,20 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   // Import Template
   const [importTemplateType, setImportTemplateType] = useState<TemplateType>();
   const [getTemplateContent] = useTemplateContentLazyQuery();
-  const handleImportTemplate = async ({ id, type: templateType }: AnyTemplate) => {
+  const handleImportTemplate = async (importedTemplate: AnyTemplate) => {
+    const { id, type: templateType } = importedTemplate;
+    // TODO: Special case for collaboration, just for now, until we can import collaborations entirely
+    if (templateType === TemplateType.Collaboration) {
+      return handleImportCollaborationTemplate(importedTemplate as CollaborationTemplate);
+    }
+
     const { data } = await getTemplateContent({
       variables: {
         templateId: id,
         includeCallout: templateType === TemplateType.Callout,
         includeCommunityGuidelines: templateType === TemplateType.CommunityGuidelines,
         includeInnovationFlow: templateType === TemplateType.InnovationFlow,
+        includeCollaboration: false, // templateType === TemplateType.Collaboration,
         includePost: templateType === TemplateType.Post,
         includeWhiteboard: templateType === TemplateType.Whiteboard,
       },
@@ -191,13 +251,40 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
       setImportTemplateType(undefined);
     }
   };
+  // Special case for Collaboration templates
+  const handleImportCollaborationTemplate = async (importedTemplate: CollaborationTemplate) => {
+    const { id } = importedTemplate;
+    const { data } = await getTemplateContent({
+      variables: {
+        templateId: id,
+        includeCollaboration: true,
+      },
+    });
+    const template = data?.lookup.template;
+    if (template) {
+      const variables = toCreateTemplateFromCollaborationMutationVariables(templatesSetId, {
+        ...template,
+        collaborationId: template.collaboration?.id,
+      });
+      await createCollaborationTemplate({
+        variables,
+      });
+      setImportTemplateType(undefined);
+    }
+  };
 
   // Actions (buttons for gallery)
   const GalleryActions = useCallback(
     ({ templateType }: { templateType: TemplateType }) => (
       <>
-        {canImportTemplates ? <ImportTemplateButton onClick={() => setImportTemplateType(templateType)} /> : null}
-        {canCreateTemplates ? <CreateTemplateButton onClick={() => setCreatingTemplateType(templateType)} /> : null}
+        {canImportTemplates(templateType) ? (
+          <ImportTemplateButton onClick={() => setImportTemplateType(templateType)} />
+        ) : null}
+        {canCreateTemplates(templateType) &&
+        /* TODO: InnovationFlow templates are going to be removed in the near future, so disallow creation for this type */
+        templateType !== TemplateType.InnovationFlow ? (
+          <CreateTemplateButton onClick={() => setCreatingTemplateType(templateType)} />
+        ) : null}
       </>
     ),
     [canCreateTemplates, canImportTemplates, setCreatingTemplateType, setImportTemplateType]
@@ -225,6 +312,18 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           })}
           actions={<GalleryActions templateType={TemplateType.Callout} />}
           templates={calloutTemplates}
+          loading={loading}
+          buildTemplateLink={buildTemplateLink}
+        />
+      </PageContentBlockSeamless>
+      <PageContentBlockSeamless disablePadding>
+        <TemplatesGallery
+          headerText={t('common.entitiesWithCount', {
+            entityType: t(`common.enums.templateType.${TemplateType.Collaboration}_plural`),
+            count: collaborationTemplates?.length ?? 0,
+          })}
+          actions={<GalleryActions templateType={TemplateType.Collaboration} />}
+          templates={collaborationTemplates}
           loading={loading}
           buildTemplateLink={buildTemplateLink}
         />
@@ -292,7 +391,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           template={selectedTemplate}
           templateType={selectedTemplate.type}
           onSubmit={handleTemplateUpdate}
-          onDelete={canDeleteTemplates ? () => setDeletingTemplate(selectedTemplate) : undefined}
+          onDelete={canDeleteTemplates(selectedTemplate.type) ? () => setDeletingTemplate(selectedTemplate) : undefined}
         />
       )}
       {selectedTemplate && !editTemplateMode && (
@@ -301,7 +400,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           onClose={() => backToTemplates(baseUrl)}
           template={selectedTemplate}
           actions={
-            canEditTemplates ? (
+            canEditTemplates(selectedTemplate.type) ? (
               <Button variant="contained" onClick={() => setEditTemplateMode(true)}>
                 {t('buttons.edit')}
               </Button>

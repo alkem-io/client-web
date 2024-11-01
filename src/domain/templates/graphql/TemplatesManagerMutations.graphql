@@ -1,0 +1,7 @@
+mutation updateTemplateDefault($templateDefaultID: UUID!, $templateID: UUID!) {
+  updateTemplateDefault(
+    templateDefaultData: { templateDefaultID: $templateDefaultID, templateID: $templateID }
+  ) {
+    id
+  }
+}

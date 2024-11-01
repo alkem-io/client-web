@@ -1,13 +1,14 @@
-import { ReactNode } from 'react';
 import { FormikProps } from 'formik';
+import { ReactNode } from 'react';
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { AnyTemplate } from '../../models/TemplateBase';
 import CalloutTemplateForm, { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
+import CollaborationTemplateForm, { CollaborationTemplateFormSubmittedValues } from './CollaborationTemplateForm';
 import CommunityGuidelinesTemplateForm, {
   CommunityGuidelinesTemplateFormSubmittedValues,
 } from './CommunityGuidelinesTemplateForm';
-import PostTemplateForm, { PostTemplateFormSubmittedValues } from './PostTemplateForm';
 import InnovationFlowTemplateForm, { InnovationFlowTemplateFormSubmittedValues } from './InnovationFlowTemplateForm';
+import PostTemplateForm, { PostTemplateFormSubmittedValues } from './PostTemplateForm';
 import WhiteboardTemplateForm, { WhiteboardTemplateFormSubmittedValues } from './WhiteboardTemplateForm';
 
 interface TemplateFormProps {
@@ -18,6 +19,7 @@ interface TemplateFormProps {
 
 export type AnyTemplateFormSubmittedValues =
   | CalloutTemplateFormSubmittedValues
+  | CollaborationTemplateFormSubmittedValues
   | CommunityGuidelinesTemplateFormSubmittedValues
   | PostTemplateFormSubmittedValues
   | InnovationFlowTemplateFormSubmittedValues
@@ -27,6 +29,8 @@ const TemplateForm = ({ template, ...rest }: TemplateFormProps) => {
   switch (template.type) {
     case TemplateType.Callout:
       return <CalloutTemplateForm template={template} {...rest} />;
+    case TemplateType.Collaboration:
+      return <CollaborationTemplateForm template={template} {...rest} />;
     case TemplateType.CommunityGuidelines:
       return <CommunityGuidelinesTemplateForm template={template} {...rest} />;
     case TemplateType.Post:

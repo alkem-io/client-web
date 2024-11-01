@@ -46,6 +46,7 @@ export interface AccountResourcesProps {
     profile: AccountProfile;
     templates?: {
       calloutTemplatesCount: number;
+      collaborationTemplatesCount: number;
       communityGuidelinesTemplatesCount: number;
       innovationFlowTemplatesCount: number;
       postTemplatesCount: number;
