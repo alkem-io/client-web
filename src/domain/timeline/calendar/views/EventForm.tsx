@@ -132,7 +132,11 @@ export default EventForm;
 type DateType = Date | undefined;
 
 function getMinTime(startDate: DateType, endDate: number | DateType) {
-  return startDate ? (isSameDay(startDate, endDate) ? undefined : dayjs(startDate)) : undefined;
+  if (!startDate || isSameDay(startDate, endDate)) {
+    return undefined;
+  }
+
+  return dayjs(startDate);
 }
 
 type EventFormProps = {

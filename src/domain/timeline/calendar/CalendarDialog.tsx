@@ -86,8 +86,8 @@ const CalendarDialog = ({
     <DialogWithGrid
       open={open}
       columns={12}
-      aria-labelledby="calendar-events-dialog-title"
       PaperProps={{ sx: { padding: 0, display: `${deletingEvent ? 'none' : 'flex'}`, flexDirection: 'column' } }}
+      aria-labelledby="calendar-events-dialog-title"
     >
       <CalendarEventsContainer journeyId={journeyId}>
         {(

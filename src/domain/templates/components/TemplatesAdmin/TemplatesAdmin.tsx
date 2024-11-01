@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { memo, useMemo, useState, useCallback } from 'react';
 
 import { LoadingButton } from '@mui/lab';
 import { useTranslation } from 'react-i18next';
@@ -43,6 +43,27 @@ import { type CollaborationTemplateFormSubmittedValues } from '../Forms/Collabor
 import { useUploadWhiteboardVisuals } from '../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 const defaultPermissionDenied: TemplatePermissionCallback = () => false;
+
+const CreateTemplateButton = memo((props: ButtonProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <Button variant="outlined" {...props}>
+      {t('common.create-new')}{' '}
+    </Button>
+  );
+});
+
+const ImportTemplateButton = memo((props: ButtonProps) => {
+  const { t } = useTranslation();
+
+  const defaults = {
+    children: <>{t('common.library')}</>,
+    startIcon: <LibraryIcon />,
+  };
+
+  return <Button {...defaults} {...props} />;
+});
 
 const TemplatesAdmin = ({
   templateId,
@@ -430,24 +451,3 @@ type TemplatesAdminProps = {
   canDeleteTemplates?: TemplatePermissionCallback;
   canImportTemplates?: TemplatePermissionCallback;
 };
-
-function CreateTemplateButton(props: ButtonProps) {
-  const { t } = useTranslation();
-
-  return (
-    <Button variant="outlined" {...props}>
-      {t('common.create-new')}{' '}
-    </Button>
-  );
-}
-
-function ImportTemplateButton(props: ButtonProps) {
-  const { t } = useTranslation();
-
-  const defaults = {
-    children: <>{t('common.library')}</>,
-    startIcon: <LibraryIcon />,
-  };
-
-  return <Button {...defaults} {...props} />;
-}

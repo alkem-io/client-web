@@ -22,36 +22,15 @@ export const contextSegmentSchema = yup.object().shape({
   background: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
 });
 
-const mdConfig = [
-  {
-    rows: 10,
-    name: 'vision',
-    label: getLabelAndHelperText,
-    maxLength: MARKDOWN_TEXT_LENGTH,
-    helperText: getLabelAndHelperText,
-  },
-  {
-    rows: 10,
-    name: 'background',
-    label: getLabelAndHelperText,
-    maxLength: MARKDOWN_TEXT_LENGTH,
-    helperText: getLabelAndHelperText,
-  },
-  {
-    rows: 10,
-    name: 'impact',
-    label: getLabelAndHelperText,
-    maxLength: MARKDOWN_TEXT_LENGTH,
-    helperText: getLabelAndHelperText,
-  },
-  {
-    rows: 10,
-    name: 'who',
-    label: getLabelAndHelperText,
-    maxLength: MARKDOWN_TEXT_LENGTH,
-    helperText: getLabelAndHelperText,
-  },
-];
+const commonConfig = {
+  rows: 10,
+  label: getLabelAndHelperText,
+  maxLength: MARKDOWN_TEXT_LENGTH,
+  helperText: getLabelAndHelperText,
+};
+
+const contextFields = ['who', 'vision', 'impact', 'background'];
+const mdConfig = contextFields.map(name => ({ ...commonConfig, name }));
 
 export const ContextSegment = ({ loading, contextType }: ContextSegmentProps & { contextType: JourneyTypeName }) =>
   mdConfig.map(({ rows, name, label, maxLength, helperText }, idx: number) => (
@@ -61,13 +40,17 @@ export const ContextSegment = ({ loading, contextType }: ContextSegmentProps & {
         name={name}
         loading={loading}
         maxLength={maxLength as MarkdownTextMaxLength}
-        label={label('label', contextType, name as Name)}
-        helperText={helperText('hText', contextType, name as Name)}
+        label={isValidName(name) ? label('label', contextType, name) : ''}
+        helperText={isValidName(name) ? helperText('hText', contextType, name) : ''}
       />
 
       {idx !== mdConfig.length - 1 && <SectionSpacer />}
     </React.Fragment>
   ));
+
+function isValidName(name: string): name is Name {
+  return contextFields.includes(name);
+}
 
 function getLabelAndHelperText(type: 'label' | 'hText', contextType: JourneyTypeName, name: Name) {
   return type === 'label'

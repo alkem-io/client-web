@@ -166,8 +166,8 @@ export const ReferenceSegment = ({
                     <Box>
                       <FormikInputField
                         readOnly={readOnly}
-                        title={'Description'}
                         disabled={isDisabled}
+                        title={t('common.description')}
                         name={`${fieldName}.${index}.description`}
                       />
                     </Box>

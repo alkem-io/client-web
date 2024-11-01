@@ -1,7 +1,7 @@
 import { useMemo, PropsWithChildren } from 'react';
 
 import * as yup from 'yup';
-import { Formik, FormikConfig } from 'formik';
+import { Formik, FormikConfig, FormikProps } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { FormControlLabel } from '@mui/material';
 
@@ -78,7 +78,7 @@ const CalloutForm = ({
       postDescription: callout?.postDescription ?? '',
       groupName: callout?.groupName ?? CalloutGroupName.Knowledge,
       opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
-      whiteboardContent: callout.whiteboardContent ?? EmptyWhiteboardString,
+      whiteboardContent: callout?.whiteboardContent ?? EmptyWhiteboardString,
       whiteboard: callout?.whiteboard
         ? { ...callout.whiteboard, previewImages: undefined }
         : {
@@ -216,7 +216,9 @@ const CalloutForm = ({
             )}
           </Gutters>
 
-          {typeof children === 'function' ? (children as Function)(formikState) : children}
+          {children !== null && typeof children === 'function'
+            ? (children as (props: FormikProps<FormValueType>) => React.ReactNode)(formikState)
+            : children}
         </>
       )}
     </Formik>

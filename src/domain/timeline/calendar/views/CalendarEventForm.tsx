@@ -21,22 +21,10 @@ import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownV
 
 const DEFAULT_DURATION_MINUTES = 30;
 const typeOptions: FormikSelectValue[] = [
-  {
-    id: CalendarEventType.Event,
-    name: CalendarEventType.Event,
-  },
-  {
-    id: CalendarEventType.Training,
-    name: CalendarEventType.Training,
-  },
-  {
-    id: CalendarEventType.Milestone,
-    name: CalendarEventType.Milestone,
-  },
-  {
-    id: CalendarEventType.Other,
-    name: CalendarEventType.Other,
-  },
+  { id: CalendarEventType.Event, name: CalendarEventType.Event },
+  { id: CalendarEventType.Training, name: CalendarEventType.Training },
+  { id: CalendarEventType.Milestone, name: CalendarEventType.Milestone },
+  { id: CalendarEventType.Other, name: CalendarEventType.Other },
 ];
 
 const CalendarEventForm = ({
@@ -70,34 +58,36 @@ const CalendarEventForm = ({
     const endDate = initialEndDate;
 
     return {
-      startDate,
       endDate,
-      durationMinutes: event?.durationMinutes ?? DEFAULT_DURATION_MINUTES,
+      startDate,
+      type: event?.type,
+      durationDays: event?.durationDays,
+      wholeDay: event?.wholeDay ?? false,
+      location: event?.profile?.location,
+      tags: event?.profile?.tagset?.tags ?? [],
+      multipleDays: event?.multipleDays ?? false,
+      references: event?.profile?.references ?? [],
       displayName: event?.profile?.displayName ?? '',
       description: event?.profile?.description ?? '',
-      type: event?.type,
-      multipleDays: event?.multipleDays ?? false,
-      wholeDay: event?.wholeDay ?? false,
-      durationDays: event?.durationDays,
-      tags: event?.profile?.tagset?.tags ?? [],
-      references: event?.profile?.references ?? [],
-      location: event?.profile?.location,
+      durationMinutes: event?.durationMinutes ?? DEFAULT_DURATION_MINUTES,
     };
   }, [event, initialStartDate]);
 
-  // the following validation applies ensuring that the event is either:
-  // 1. wholeDay;
-  // 2. if it's the same day it should be with positive durationMinutes
-  // 3. otherwise the endDate should be greater than startDate
-  // (not the case in #2 where we're using durationMinutes instead of endDate)
+  /**
+   * the following validation applies ensuring that the event is either:
+   * 1. wholeDay;
+   * 2. if it's the same day it should be with positive durationMinutes
+   * 3. otherwise the endDate should be greater than startDate
+   * (not the case in #2 where we're using durationMinutes instead of endDate)
+   */
   const validateDuration = value => {
     const { durationMinutes, startDate, endDate, wholeDay } = value || {};
 
-    return wholeDay ||
+    return (
+      wholeDay ||
       (isSameDay(startDate, endDate) && (durationMinutes ?? 0) > 0) ||
       (endDate && startDate && dayjs(endDate).isAfter(dayjs(startDate)))
-      ? true
-      : false;
+    );
   };
 
   const validationSchema = yup.object().shape({

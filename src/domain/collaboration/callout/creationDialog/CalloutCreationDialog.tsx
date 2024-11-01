@@ -270,6 +270,7 @@ const CalloutCreationDialog = ({
               disabled={!isValid}
               loadingIndicator={`${t('buttons.save-draft')}...`}
               onClick={() => handleSaveCallout(CalloutVisibility.Draft, sendNotification)}
+              aria-label={t('buttons.save-draft')}
             >
               {t('buttons.save-draft')}
             </LoadingButton>
