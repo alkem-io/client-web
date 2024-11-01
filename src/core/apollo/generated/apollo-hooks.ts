@@ -73,11 +73,12 @@ export const InnovationPackCardFragmentDoc = gql`
     }
     templatesSet {
       id
-      postTemplatesCount
-      whiteboardTemplatesCount
-      innovationFlowTemplatesCount
       calloutTemplatesCount
       communityGuidelinesTemplatesCount
+      collaborationTemplatesCount
+      innovationFlowTemplatesCount
+      postTemplatesCount
+      whiteboardTemplatesCount
     }
     provider {
       ...InnovationPackProviderProfileWithAvatar
