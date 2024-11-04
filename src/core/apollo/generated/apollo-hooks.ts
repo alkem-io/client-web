@@ -3585,8 +3585,19 @@ export const MyMembershipsChildJourneyProfileFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const RecentJourneyProfileFragmentDoc = gql`
-  fragment RecentJourneyProfile on Profile {
+export const ShortAccountItemFragmentDoc = gql`
+  fragment ShortAccountItem on Profile {
+    id
+    displayName
+    url
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const RecentSpaceProfileFragmentDoc = gql`
+  fragment RecentSpaceProfile on Profile {
     id
     url
     displayName
@@ -22871,6 +22882,96 @@ export function refetchMyMembershipsQuery(variables?: SchemaTypes.MyMembershipsQ
   return { query: MyMembershipsDocument, variables: variables };
 }
 
+export const MyResourcesDocument = gql`
+  query MyResources($accountId: UUID!) {
+    lookup {
+      account(ID: $accountId) {
+        id
+        spaces {
+          id
+          level
+          profile {
+            ...ShortAccountItem
+            cardBanner: visual(type: CARD) {
+              ...VisualUri
+            }
+          }
+        }
+        virtualContributors {
+          id
+          profile {
+            ...ShortAccountItem
+          }
+        }
+        innovationPacks {
+          id
+          profile {
+            ...ShortAccountItem
+          }
+        }
+        innovationHubs {
+          id
+          profile {
+            ...ShortAccountItem
+            banner: visual(type: BANNER_WIDE) {
+              ...VisualUri
+            }
+          }
+          subdomain
+        }
+      }
+    }
+  }
+  ${ShortAccountItemFragmentDoc}
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useMyResourcesQuery__
+ *
+ * To run a query within a React component, call `useMyResourcesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyResourcesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMyResourcesQuery({
+ *   variables: {
+ *      accountId: // value for 'accountId'
+ *   },
+ * });
+ */
+export function useMyResourcesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.MyResourcesQuery, SchemaTypes.MyResourcesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.MyResourcesQuery, SchemaTypes.MyResourcesQueryVariables>(
+    MyResourcesDocument,
+    options
+  );
+}
+
+export function useMyResourcesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.MyResourcesQuery, SchemaTypes.MyResourcesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.MyResourcesQuery, SchemaTypes.MyResourcesQueryVariables>(
+    MyResourcesDocument,
+    options
+  );
+}
+
+export type MyResourcesQueryHookResult = ReturnType<typeof useMyResourcesQuery>;
+export type MyResourcesLazyQueryHookResult = ReturnType<typeof useMyResourcesLazyQuery>;
+export type MyResourcesQueryResult = Apollo.QueryResult<
+  SchemaTypes.MyResourcesQuery,
+  SchemaTypes.MyResourcesQueryVariables
+>;
+export function refetchMyResourcesQuery(variables: SchemaTypes.MyResourcesQueryVariables) {
+  return { query: MyResourcesDocument, variables: variables };
+}
+
 export const NewVirtualContributorMySpacesDocument = gql`
   query NewVirtualContributorMySpaces {
     me {
@@ -22980,77 +23081,21 @@ export function refetchNewVirtualContributorMySpacesQuery(
   return { query: NewVirtualContributorMySpacesDocument, variables: variables };
 }
 
-export const RecentJourneyDocument = gql`
-  query RecentJourney($spaceId: UUID!) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        profile {
-          ...RecentJourneyProfile
-        }
-      }
-    }
-  }
-  ${RecentJourneyProfileFragmentDoc}
-`;
-
-/**
- * __useRecentJourneyQuery__
- *
- * To run a query within a React component, call `useRecentJourneyQuery` and pass it any options that fit your needs.
- * When your component renders, `useRecentJourneyQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useRecentJourneyQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useRecentJourneyQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.RecentJourneyQuery, SchemaTypes.RecentJourneyQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.RecentJourneyQuery, SchemaTypes.RecentJourneyQueryVariables>(
-    RecentJourneyDocument,
-    options
-  );
-}
-
-export function useRecentJourneyLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.RecentJourneyQuery, SchemaTypes.RecentJourneyQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.RecentJourneyQuery, SchemaTypes.RecentJourneyQueryVariables>(
-    RecentJourneyDocument,
-    options
-  );
-}
-
-export type RecentJourneyQueryHookResult = ReturnType<typeof useRecentJourneyQuery>;
-export type RecentJourneyLazyQueryHookResult = ReturnType<typeof useRecentJourneyLazyQuery>;
-export type RecentJourneyQueryResult = Apollo.QueryResult<
-  SchemaTypes.RecentJourneyQuery,
-  SchemaTypes.RecentJourneyQueryVariables
->;
-export function refetchRecentJourneyQuery(variables: SchemaTypes.RecentJourneyQueryVariables) {
-  return { query: RecentJourneyDocument, variables: variables };
-}
-
 export const RecentSpacesDocument = gql`
   query RecentSpaces($limit: Float) {
     me {
       mySpaces(limit: $limit) {
         space {
           id
+          profile {
+            ...RecentSpaceProfile
+          }
           __typename
         }
       }
     }
   }
+  ${RecentSpaceProfileFragmentDoc}
 `;
 
 /**

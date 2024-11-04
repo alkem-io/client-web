@@ -9,25 +9,29 @@ import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
+import { Theme, useMediaQuery } from '@mui/material';
 
 const DashboardActivity = () => {
   const { t } = useTranslation();
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const columns = useColumns();
+
   const [isMyMembershipsDialogOpen, setIsMyMembershipsDialogOpen] = useState(false);
   const { data: spacesData } = useLatestContributionsSpacesFlatQuery();
   const flatSpacesWithMemberships = spacesData?.me.spaceMembershipsFlat.map(membership => membership.space);
 
-  const columns = useColumns();
+  const blockColumns = isMobile ? columns : columns / 2;
 
   return (
     <>
       <RecentJourneysList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />
-      <PageContentColumn columns={columns / 2}>
+      <PageContentColumn columns={blockColumns}>
         <PageContentBlock>
           <PageContentBlockHeader title={t('pages.home.sections.latestContributions.title')} />
           <LatestContributions spaceMemberships={flatSpacesWithMemberships} />
         </PageContentBlock>
       </PageContentColumn>
-      <PageContentColumn columns={columns / 2}>
+      <PageContentColumn columns={blockColumns}>
         <PageContentBlock>
           <PageContentBlockHeader title={t('pages.home.sections.myLatestContributions.title')} />
           <MyLatestContributions spaceMemberships={flatSpacesWithMemberships} />

@@ -9,6 +9,7 @@ import { gutters } from '../../../core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
 import { buildInnovationHubUrl } from '../../../main/routing/urlBuilders';
 import ActionsMenu from '../../../core/ui/card/ActionsMenu';
+import { AvatarSize } from '../../../core/ui/avatar/Avatar';
 
 export const InnovationHubCardHorizontalSkeleton = () => (
   <BadgeCardView
@@ -33,6 +34,7 @@ export interface InnovationHubCardHorizontalProps extends InnovationHubSpacesPro
     url: string;
   };
   subdomain: string;
+  size?: AvatarSize;
 }
 
 interface InnovationHubSpacesProps {
@@ -66,11 +68,12 @@ const InnovationHubCardHorizontal = ({
   profile: { displayName, description, banner },
   subdomain,
   actions = undefined,
+  size = 'medium',
   ...spaces
 }: InnovationHubCardHorizontalProps) => {
   return (
     <BadgeCardView
-      visual={<JourneyAvatar src={banner?.uri} size="medium" />}
+      visual={<JourneyAvatar src={banner?.uri} size={size} />}
       component={RouterLink}
       to={buildInnovationHubUrl(subdomain)}
       target="_blank"

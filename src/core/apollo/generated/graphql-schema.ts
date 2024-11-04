@@ -30072,6 +30072,79 @@ export type MyMembershipsChildJourneyProfileFragment = {
   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
 };
 
+export type MyResourcesQueryVariables = Exact<{
+  accountId: Scalars['UUID'];
+}>;
+
+export type MyResourcesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    account?:
+      | {
+          __typename?: 'Account';
+          id: string;
+          spaces: Array<{
+            __typename?: 'Space';
+            id: string;
+            level: SpaceLevel;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }>;
+          virtualContributors: Array<{
+            __typename?: 'VirtualContributor';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }>;
+          innovationPacks: Array<{
+            __typename?: 'InnovationPack';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }>;
+          innovationHubs: Array<{
+            __typename?: 'InnovationHub';
+            id: string;
+            subdomain: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type ShortAccountItemFragment = {
+  __typename?: 'Profile';
+  id: string;
+  displayName: string;
+  url: string;
+  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+};
+
 export type NewVirtualContributorMySpacesQueryVariables = Exact<{ [key: string]: never }>;
 
 export type NewVirtualContributorMySpacesQuery = {
@@ -30137,38 +30210,6 @@ export type NewVirtualContributorMySpacesQuery = {
   };
 };
 
-export type RecentJourneyQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-}>;
-
-export type RecentJourneyQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            url: string;
-            displayName: string;
-            cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          };
-        }
-      | undefined;
-  };
-};
-
-export type RecentJourneyProfileFragment = {
-  __typename?: 'Profile';
-  id: string;
-  url: string;
-  displayName: string;
-  cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-};
-
 export type RecentSpacesQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Float']>;
 }>;
@@ -30177,8 +30218,29 @@ export type RecentSpacesQuery = {
   __typename?: 'Query';
   me: {
     __typename?: 'MeQueryResults';
-    mySpaces: Array<{ __typename?: 'MySpaceResults'; space: { __typename: 'Space'; id: string } }>;
+    mySpaces: Array<{
+      __typename?: 'MySpaceResults';
+      space: {
+        __typename: 'Space';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          url: string;
+          displayName: string;
+          cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      };
+    }>;
   };
+};
+
+export type RecentSpaceProfileFragment = {
+  __typename?: 'Profile';
+  id: string;
+  url: string;
+  displayName: string;
+  cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
 };
 
 export type ChallengeExplorerPageQueryVariables = Exact<{ [key: string]: never }>;

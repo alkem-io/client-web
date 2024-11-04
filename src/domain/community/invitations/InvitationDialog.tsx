@@ -14,12 +14,11 @@ import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { useTranslation } from 'react-i18next';
 import { CommunityContributorType, VisualType } from '../../../core/apollo/generated/graphql-schema';
-import { Box, DialogActions, DialogContent, useMediaQuery } from '@mui/material';
+import { Box, DialogActions, DialogContent, Theme, useMediaQuery } from '@mui/material';
 import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
 import References from '../../shared/components/References/References';
 import { gutters } from '../../../core/ui/grid/utils';
 import FlexSpacer from '../../../core/ui/utils/FlexSpacer';
-import { theme } from '../../../core/ui/themes/default/Theme';
 import { getChildJourneyTypeName } from '../../shared/utils/spaceLevel';
 
 interface InvitationDialogProps {
@@ -47,7 +46,7 @@ const InvitationDialog = ({
 }: InvitationDialogProps) => {
   const { t } = useTranslation();
 
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
   const getTitle = (invitation: InvitationWithMeta) => {
     if (invitation.invitation.contributorType === CommunityContributorType.Virtual) {
