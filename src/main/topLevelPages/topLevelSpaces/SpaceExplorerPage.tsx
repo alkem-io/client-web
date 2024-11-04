@@ -8,7 +8,7 @@ import { SpaceIcon } from '../../../domain/journey/space/icon/SpaceIcon';
 import BreadcrumbsItem from '../../../core/ui/navigation/BreadcrumbsItem';
 import TopLevelPageBreadcrumbs from '../topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 
-export const SpaceExplorerPage = () => {
+const SpaceExplorerPage = () => {
   const { t } = useTranslation();
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
 
@@ -34,3 +34,5 @@ export const SpaceExplorerPage = () => {
     </TopLevelPageLayout>
   );
 };
+
+export default SpaceExplorerPage;
