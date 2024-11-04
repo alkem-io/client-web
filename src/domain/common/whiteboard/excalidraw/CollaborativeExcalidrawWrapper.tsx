@@ -28,7 +28,7 @@ import useWhiteboardDefaults from './useWhiteboardDefaults';
 import Loading from '../../../../core/ui/loading/Loading';
 import { Identifiable } from '../../../../core/utils/Identifiable';
 
-const FILE_IMPORT_ENABLED = false;
+const FILE_IMPORT_ENABLED = true;
 const SAVE_FILE_TO_DISK = true;
 
 const Excalidraw = React.lazy(async () => {
