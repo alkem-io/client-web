@@ -1,4 +1,4 @@
-import React from 'react';
+import { useMemo } from 'react';
 import { useField } from 'formik';
 import FormikInputField, { FormikInputFieldProps } from '../FormikInputField/FormikInputField';
 import FileUploadButton, { FileUploadEntityType } from '../../upload/FileUpload/FileUpload';
@@ -28,7 +28,10 @@ const FormikFileInput = ({
 
   const storageConfig = useStorageConfigContext();
 
-  const updatedStorageConfig = storageConfig ? { ...storageConfig, temporaryLocation } : null;
+  const updatedStorageConfig = useMemo(
+    () => (storageConfig ? { ...storageConfig, temporaryLocation } : null),
+    [storageConfig, temporaryLocation]
+  );
 
   const checkProtocol = () => {
     if (!defaultProtocol) {
