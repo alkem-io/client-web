@@ -12,27 +12,35 @@ query AdminSpaceSubspacesPage($spaceId: UUID_NAMEID!) {
         }
       }
     }
-    defaults {
+    templatesManager {
       id
-      innovationFlowTemplate {
+      templatesSet {
         id
-        profile {
-          ...InnovationFlowProfile
-        }
-        innovationFlow {
+      }
+      templateDefaults {
+        id
+        type
+        template {
           id
-          states {
-            displayName
-            description
+          profile {
+            ...InnovationFlowProfile
+          }
+          collaboration {
+            id
+            innovationFlow {
+              id
+              profile {
+                id
+                displayName
+              }
+              states {
+                displayName
+                description
+              }
+            }
           }
         }
       }
     }
-  }
-}
-
-mutation UpdateSpaceDefaultInnovationFlowTemplate($spaceDefaultsID: UUID!, $innovationFlowTemplateId: UUID!) {
-  updateSpaceDefaults(spaceDefaultsData: { spaceDefaultsID: $spaceDefaultsID, flowTemplateID: $innovationFlowTemplateId }) {
-    id
   }
 }

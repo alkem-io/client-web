@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { DialogHeaderProps } from '../../../../../core/ui/dialog/DialogHeader';
 import CreateEditTemplateDialogBase from './CreateEditTemplateDialogBase';
 import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
 import TemplateForm, { AnyTemplateFormSubmittedValues } from '../../Forms/TemplateForm';
 import { getNewTemplate } from '../../../models/common';
 import { AnyTemplate } from '../../../models/TemplateBase';
-import { CircularProgress } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
+import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
+import { useTranslation } from 'react-i18next';
 
 interface CreateTemplateDialogProps {
   open: boolean;
-  onClose: DialogHeaderProps['onClose'];
+  onClose: () => void;
   onSubmit: (values: AnyTemplateFormSubmittedValues) => void;
   templateType: TemplateType;
   getDefaultValues?: () => Promise<Partial<AnyTemplate>>;
@@ -22,6 +23,8 @@ const CreateTemplateDialog = ({
   getDefaultValues,
   onSubmit,
 }: CreateTemplateDialogProps) => {
+  const { t } = useTranslation();
+  const [confirmCloseDialogOpen, setConfirmCloseDialogOpen] = useState<boolean>(false);
   const [defaultValues, setDefaultValues] = useState<AnyTemplate | undefined>();
   useEffect(() => {
     (async () => {
@@ -35,15 +38,39 @@ const CreateTemplateDialog = ({
     })();
   }, [open]);
 
+  const handleClose = () => {
+    setConfirmCloseDialogOpen(true);
+  };
+
   return (
-    <CreateEditTemplateDialogBase open={open} onClose={onClose} templateType={templateType}>
-      {({ actions }) => (
-        <>
-          {!defaultValues && <CircularProgress />}
-          {defaultValues && <TemplateForm template={defaultValues} onSubmit={onSubmit} actions={actions} />}
-        </>
-      )}
-    </CreateEditTemplateDialogBase>
+    <>
+      <CreateEditTemplateDialogBase open={open} onClose={handleClose} templateType={templateType}>
+        {({ actions }) => (
+          <>
+            {!defaultValues && (
+              <Box textAlign="center">
+                <CircularProgress />
+              </Box>
+            )}
+            {defaultValues && <TemplateForm template={defaultValues} onSubmit={onSubmit} actions={actions} />}
+          </>
+        )}
+      </CreateEditTemplateDialogBase>
+      <ConfirmationDialog
+        entities={{
+          title: t('templateLibrary.importTemplateDialog.confirmClose.title'),
+          content: t('templateLibrary.importTemplateDialog.confirmClose.description'),
+          confirmButtonText: t('buttons.yesDiscard'),
+        }}
+        actions={{
+          onCancel: () => setConfirmCloseDialogOpen(false),
+          onConfirm: () => onClose?.(),
+        }}
+        options={{
+          show: confirmCloseDialogOpen,
+        }}
+      />
+    </>
   );
 };
 

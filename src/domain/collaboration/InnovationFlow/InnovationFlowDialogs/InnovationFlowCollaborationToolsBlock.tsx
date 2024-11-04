@@ -1,4 +1,4 @@
-import { Box, BoxProps, SvgIconProps } from '@mui/material';
+import { Box, BoxProps, Skeleton, SvgIconProps } from '@mui/material';
 import { groupBy } from 'lodash';
 import { ComponentType, FC, forwardRef } from 'react';
 import { Draggable, Droppable, OnDragEndResponder } from 'react-beautiful-dnd';
@@ -10,6 +10,9 @@ import calloutIcons from '../../callout/utils/calloutIcons';
 import InnovationFlowDragNDropEditor, {
   InnovationFlowDragNDropEditorProps,
 } from '../InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
+import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+
+const SKELETON_COUNT = 3;
 
 interface InnovationFlowCollaborationToolsBlockProps extends Omit<InnovationFlowDragNDropEditorProps, 'children'> {
   callouts: {
@@ -28,6 +31,7 @@ interface InnovationFlowCollaborationToolsBlockProps extends Omit<InnovationFlow
         }
       | undefined;
   }[];
+  loading?: boolean;
   onUpdateCalloutFlowState: (calloutId: string, newState: string, index: number) => Promise<unknown> | void;
 }
 
@@ -52,6 +56,7 @@ const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
 
 const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationToolsBlockProps> = ({
   callouts,
+  loading,
   innovationFlowStates,
   currentState,
   onUpdateCalloutFlowState,
@@ -67,6 +72,18 @@ const InnovationFlowCollaborationToolsBlock: FC<InnovationFlowCollaborationTools
     }
     onUnhandledDragEnd?.(result, provided);
   };
+
+  if (loading && !callouts.length) {
+    return (
+      <Gutters disablePadding height={gutters(5)} flexDirection="row">
+        {Array.from({ length: SKELETON_COUNT }).map((_, index) => (
+          <PageContentBlock key={index} columns={3} fullHeight>
+            <Skeleton aria-busy="true" />
+          </PageContentBlock>
+        ))}
+      </Gutters>
+    );
+  }
 
   return (
     <InnovationFlowDragNDropEditor

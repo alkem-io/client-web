@@ -76,17 +76,15 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
 
   const currentApplicationsUserIds = useMemo(
     () =>
-      applications
-        ?.filter(application => application.lifecycle.state === 'new')
-        .map(application => application.contributor.id) ?? [],
+      applications?.filter(application => application.state === 'new').map(application => application.contributor.id) ??
+      [],
     [applications]
   );
 
   const currentInvitationsUserIds = useMemo(
     () =>
-      invitations
-        ?.filter(invitation => invitation.lifecycle.state === 'invited')
-        .map(invitation => invitation.contributor.id) ?? [],
+      invitations?.filter(invitation => invitation.state === 'invited').map(invitation => invitation.contributor.id) ??
+      [],
     [invitations]
   );
 
@@ -106,7 +104,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
   const [createTemplate] = useCreateTemplateMutation();
   const handleSaveAsTemplate = async (values: CommunityGuidelinesTemplateFormSubmittedValues) => {
     const { data: templatesSetData } = await fetchSpaceTemplatesSetId({ variables: { spaceNameId: spaceId } });
-    const templatesSetId = templatesSetData?.space.library?.id;
+    const templatesSetId = templatesSetData?.space.templatesManager?.templatesSet?.id;
     if (templatesSetId) {
       await createTemplate({
         variables: toCreateTemplateMutationVariables(templatesSetId, TemplateType.CommunityGuidelines, values),

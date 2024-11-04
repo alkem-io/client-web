@@ -18,9 +18,10 @@ const useInnovationPackCardProps = (
           providerAvatarUri: innovationPack.provider.profile.avatar?.uri,
           whiteboardTemplatesCount: innovationPack.templatesSet?.whiteboardTemplatesCount,
           postTemplatesCount: innovationPack.templatesSet?.postTemplatesCount,
-          innovationFlowTemplatesCount: innovationPack.templatesSet?.innovationFlowTemplatesCount,
           calloutTemplatesCount: innovationPack.templatesSet?.calloutTemplatesCount,
+          collaborationTemplatesCount: innovationPack.templatesSet?.collaborationTemplatesCount,
           communityGuidelinesTemplatesCount: innovationPack.templatesSet?.communityGuidelinesTemplatesCount,
+          innovationFlowTemplatesCount: innovationPack.templatesSet?.innovationFlowTemplatesCount,
           innovationPackUri: innovationPack.profile.url,
         };
       }),

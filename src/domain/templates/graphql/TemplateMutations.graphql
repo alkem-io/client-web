@@ -1,11 +1,11 @@
-mutation createTemplate(
+mutation CreateTemplate(
   $templatesSetId: UUID!
   $profileData: CreateProfileInput!
   $type: TemplateType!
   $tags: [String!]
   $calloutData: CreateCalloutInput
   $communityGuidelinesData: CreateCommunityGuidelinesInput
-  $innovationFlowData: CreateInnovationFlowInput
+  $collaborationData: CreateCollaborationInput
   $postDefaultDescription: Markdown
   $whiteboard: CreateWhiteboardInput
   $includeProfileVisuals: Boolean = false
@@ -18,41 +18,8 @@ mutation createTemplate(
       type: $type
       calloutData: $calloutData
       communityGuidelinesData: $communityGuidelinesData
-      innovationFlowData: $innovationFlowData
       postDefaultDescription: $postDefaultDescription
-      whiteboard: $whiteboard
-    }
-  ) {
-    id
-    profile @include(if: $includeProfileVisuals) {
-      id
-      cardVisual: visual(type: CARD) {
-        id
-      }
-      previewVisual: visual(type: BANNER) {
-        id
-      }
-    }
-  }
-}
-mutation UpdateTemplate(
-  $templateId: UUID!
-  $profile: UpdateProfileInput!
-  $callout: UpdateCalloutInput
-  $communityGuidelines: UpdateCommunityGuidelinesInput
-  $innovationFlow: UpdateInnovationFlowInput
-  $postDefaultDescription: Markdown
-  $whiteboard: UpdateWhiteboardInput
-  $includeProfileVisuals: Boolean = false
-) {
-  updateTemplate(
-    updateData: {
-      ID: $templateId
-      profile: $profile
-      callout: $callout
-      communityGuidelines: $communityGuidelines
-      innovationFlow: $innovationFlow
-      postDefaultDescription: $postDefaultDescription
+      collaborationData: $collaborationData
       whiteboard: $whiteboard
     }
   ) {
@@ -69,7 +36,58 @@ mutation UpdateTemplate(
   }
 }
 
-mutation deleteTemplate($templateId: UUID!) {
+# Special case for creating a template from an existing collaboration
+mutation CreateTemplateFromCollaboration(
+  $templatesSetId: UUID!
+  $profileData: CreateProfileInput!
+  $tags: [String!]
+  $collaborationId: UUID!
+) {
+  createTemplateFromCollaboration(
+    templateData: {
+      templatesSetID: $templatesSetId
+      profileData: $profileData
+      tags: $tags
+      collaborationID: $collaborationId
+    }
+  ) {
+    id
+  }
+}
+
+mutation UpdateTemplate(
+  $templateId: UUID!
+  $profile: UpdateProfileInput!
+  $postDefaultDescription: Markdown
+  $whiteboardContent: WhiteboardContent
+  $includeProfileVisuals: Boolean = false
+) {
+  updateTemplate(
+    updateData: {
+      ID: $templateId
+      profile: $profile
+      postDefaultDescription: $postDefaultDescription
+      whiteboardContent: $whiteboardContent
+    }
+  ) {
+    id
+    profile @include(if: $includeProfileVisuals) {
+      id
+      cardVisual: visual(type: CARD) {
+        id
+      }
+      previewVisual: visual(type: BANNER) {
+        id
+      }
+    }
+    whiteboard {
+      id
+      content
+    }
+  }
+}
+
+mutation DeleteTemplate($templateId: UUID!) {
   deleteTemplate(deleteData: { ID: $templateId }) {
     id
   }

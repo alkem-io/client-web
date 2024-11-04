@@ -7,7 +7,7 @@ import {
   useUpdateInnovationFlowCurrentStateMutation,
   useUpdateInnovationFlowStatesMutation,
   useUpdateInnovationFlowSingleStateMutation,
-  useUpdateInnovationFlowStatesFromTemplateMutation,
+  useUpdateCollaborationFromTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -267,18 +267,27 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
     });
   };
 
-  const [importInnovationFlow] = useUpdateInnovationFlowStatesFromTemplateMutation();
-  const handleImportInnovationFlow = (innovationFlowTemplateId: string) => {
+  const [applyCollaborationTemplate] = useUpdateCollaborationFromTemplateMutation();
+  const handleImportCollaborationTemplate = (collaborationTemplateId: string, addCallouts?: boolean) => {
     const innovationFlowId = innovationFlow?.id;
     if (!innovationFlowId) {
       throw new Error('Innovation flow still not loaded.');
     }
-    return importInnovationFlow({
+    const collaborationId = collaboration?.id;
+    if (!collaborationId) {
+      throw new Error('Collaboration flow still not loaded.');
+    }
+    return applyCollaborationTemplate({
       variables: {
-        innovationFlowId,
-        innovationFlowTemplateId,
+        collaborationId,
+        collaborationTemplateId,
+        addCallouts,
       },
-      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId!, filterCalloutGroups })],
+      refetchQueries: [
+        refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId!, filterCalloutGroups }),
+        'InnovationFlowDetails',
+        'Callouts',
+      ],
     });
   };
 
@@ -297,7 +306,7 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
       updateInnovationFlowProfile: handleUpdateInnovationFlowProfile,
       updateInnovationFlowStateOrder: handleInnovationFlowStateOrder,
       updateCalloutFlowState: handleUpdateCalloutFlowState,
-      importInnovationFlow: handleImportInnovationFlow,
+      importCollaborationTemplate: handleImportCollaborationTemplate,
       createState: handleCreateState,
       editState: handleEditState,
       deleteState: handleDeleteState,
