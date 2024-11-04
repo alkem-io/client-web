@@ -11,13 +11,15 @@ import { DashboardMenu } from './DashboardMenu/DashboardMenu';
 import ExploreSpaces from './ExploreSpaces/ExploreSpaces';
 import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import { InvitationsBlock } from './InvitationsBlock/InvitationsBlock';
-import { CreateSpaceBtn } from './createSpaceBtn/CreateSpaceBtn';
 import { SpaceIcon } from '../../../domain/journey/space/icon/SpaceIcon';
+import RouterLink from '../../../core/ui/link/RouterLink';
+import { useCreateSpaceLink } from './useCreateSpaceLink/useCreateSpaceLink';
 
 const DashboardDialogs = React.lazy(() => import('./DashboardDialogs/DashboardDialogs'));
 
 const MyDashboardWithoutMemberships = () => {
   const { t } = useTranslation();
+  const { link: createSpaceLink, loading } = useCreateSpaceLink();
   const { data } = useLatestReleaseDiscussionQuery({
     fetchPolicy: 'network-only',
   });
@@ -34,8 +36,10 @@ const MyDashboardWithoutMemberships = () => {
         <PageContentBlock columns={12}>
           <ExploreSpaces itemsLimit={16} />
         </PageContentBlock>
-        <CreateSpaceBtn
-          component={Button}
+        <Button
+          component={RouterLink}
+          to={createSpaceLink}
+          disabled={loading}
           variant="outlined"
           startIcon={<SpaceIcon />}
           sx={{
@@ -45,7 +49,7 @@ const MyDashboardWithoutMemberships = () => {
           }}
         >
           {t('buttons.createOwnSpace')}
-        </CreateSpaceBtn>
+        </Button>
       </ContentColumn>
       <Suspense fallback={null}>
         <DashboardDialogs />

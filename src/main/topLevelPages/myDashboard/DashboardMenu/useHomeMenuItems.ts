@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import MailOutlineOutlinedIcon from '@mui/icons-material/MailOutlineOutlined';
 import EmojiObjectsOutlinedIcon from '@mui/icons-material/EmojiObjectsOutlined';
 import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
@@ -8,11 +9,11 @@ import { useUserContext } from '../../../../domain/community/user';
 import { getAccountLink } from '../../../routing/urlBuilders';
 import { MenuOptionProps } from './dashboardMenuTypes';
 import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
-import { useMemo } from 'react';
-import { CreateSpaceBtn } from '../createSpaceBtn/CreateSpaceBtn';
+import { useCreateSpaceLink } from '../useCreateSpaceLink/useCreateSpaceLink';
 
 export const useHomeMenuItems = () => {
   const { user, loading } = useUserContext();
+  const { link: createSpaceLink, loading: loadingLink } = useCreateSpaceLink();
 
   const dashboardMenuItems: MenuOptionProps[] = useMemo(
     () => [
@@ -58,7 +59,7 @@ export const useHomeMenuItems = () => {
       {
         label: 'pages.home.mainNavigation.createSpace',
         type: 'link',
-        Component: CreateSpaceBtn,
+        to: loadingLink ? '' : createSpaceLink,
         icon: RocketLaunchOutlinedIcon,
         isVisible: (_, __) => true,
       },
