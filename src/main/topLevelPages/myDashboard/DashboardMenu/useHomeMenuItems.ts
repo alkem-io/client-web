@@ -74,7 +74,7 @@ export const useHomeMenuItems = () => {
         isVisible: (_, compactMode) => !compactMode,
       },
     ],
-    [user]
+    [user, createSpaceLink, loadingLink]
   );
 
   return { items: dashboardMenuItems, loading };
