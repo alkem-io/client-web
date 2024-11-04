@@ -6,7 +6,7 @@ import {
   useCreateTemplateMutation,
   useDeleteTemplateMutation,
   useTemplateContentLazyQuery,
-  useUpdateCalloutMutation,
+  useUpdateCalloutTemplateMutation,
   useUpdateCommunityGuidelinesMutation,
   useUpdateTemplateMutation,
 } from '../../../../core/apollo/generated/apollo-hooks';
@@ -132,7 +132,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   const [updateTemplate] = useUpdateTemplateMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet', 'TemplateContent'],
   });
-  const [updateCallout] = useUpdateCalloutMutation();
+  const [updateCallout] = useUpdateCalloutTemplateMutation();
   const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation();
 
   const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
