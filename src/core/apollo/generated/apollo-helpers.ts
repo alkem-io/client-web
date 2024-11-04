@@ -705,6 +705,7 @@ export type CalendarEventKeySpecifier = (
   | 'startDate'
   | 'type'
   | 'updatedDate'
+  | 'visibleOnParentCalendar'
   | 'wholeDay'
   | CalendarEventKeySpecifier
 )[];
@@ -722,6 +723,7 @@ export type CalendarEventFieldPolicy = {
   startDate?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  visibleOnParentCalendar?: FieldPolicy<any> | FieldReadFunction<any>;
   wholeDay?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutKeySpecifier = (

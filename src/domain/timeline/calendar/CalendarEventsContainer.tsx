@@ -17,7 +17,10 @@ import { MutationBaseOptions } from '@apollo/client/core/watchQueryOptions';
 import { isSameDay } from '../../../core/utils/time/utils';
 
 export interface CalendarEventFormData
-  extends Pick<CalendarEvent, 'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay'> {
+  extends Pick<
+    CalendarEvent,
+    'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay' | 'visibleOnParentCalendar'
+  > {
   endDate: number | Date;
   displayName: Profile['displayName'];
   description: Profile['description'];

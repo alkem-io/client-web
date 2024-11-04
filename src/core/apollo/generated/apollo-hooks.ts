@@ -2985,6 +2985,7 @@ export const CalendarEventInfoFragmentDoc = gql`
     durationMinutes
     wholeDay
     multipleDays
+    visibleOnParentCalendar
     profile {
       ...EventProfile
     }

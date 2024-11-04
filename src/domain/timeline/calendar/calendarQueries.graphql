@@ -44,6 +44,7 @@ fragment CalendarEventInfo on CalendarEvent {
   durationMinutes
   wholeDay
   multipleDays
+  visibleOnParentCalendar
   profile {
     ...EventProfile
   }

@@ -92,6 +92,7 @@ const CalendarEventForm = ({
       tags: event?.profile?.tagset?.tags ?? [],
       references: event?.profile?.references ?? [],
       location: event?.profile?.location,
+      visibleOnParentCalendar: event?.visibleOnParentCalendar ?? false,
     };
   }, [event, initialStartDate]);
 

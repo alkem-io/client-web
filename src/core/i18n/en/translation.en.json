@@ -71,7 +71,8 @@
     "event": {
       "type": "Type of Event",
       "multiple-days": "{{days}} days",
-      "whole-day": "All Day"
+      "whole-day": "All Day",
+      "visibleOnParentCalendar": "Also visible on <b>{{parent}}</b> calendar"
     },
     "validation": {
       "durationMinutes": {

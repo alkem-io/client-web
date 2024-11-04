@@ -1042,6 +1042,8 @@ export type CalendarEvent = {
   type: CalendarEventType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
+  /** Is the event visible on the parent calendar. */
+  visibleOnParentCalendar: Scalars['Boolean'];
   /** Flag to indicate if this event is for a whole day. */
   wholeDay: Scalars['Boolean'];
 };
@@ -1675,6 +1677,8 @@ export type CreateCalendarEventOnCalendarInput = {
   startDate: Scalars['DateTime'];
   tags?: InputMaybe<Array<Scalars['String']>>;
   type: CalendarEventType;
+  /** Is the event visible on the parent calendar. */
+  visibleOnParentCalendar: Scalars['Boolean'];
   /** Flag to indicate if this event is for a whole day. */
   wholeDay: Scalars['Boolean'];
 };
@@ -6060,6 +6064,8 @@ export type UpdateCalendarEventInput = {
   /** The state date for the event. */
   startDate: Scalars['DateTime'];
   type?: InputMaybe<CalendarEventType>;
+  /** Is the event visible on the parent calendar. */
+  visibleOnParentCalendar?: InputMaybe<Scalars['Boolean']>;
   /** Flag to indicate if this event is for a whole day. */
   wholeDay: Scalars['Boolean'];
 };
@@ -26492,6 +26498,7 @@ export type SpaceCalendarEventsQuery = {
                       durationMinutes: number;
                       wholeDay: boolean;
                       multipleDays: boolean;
+                      visibleOnParentCalendar: boolean;
                       profile: {
                         __typename?: 'Profile';
                         id: string;
@@ -26551,6 +26558,7 @@ export type CollaborationTimelineInfoFragment = {
             durationMinutes: number;
             wholeDay: boolean;
             multipleDays: boolean;
+            visibleOnParentCalendar: boolean;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -26604,6 +26612,7 @@ export type CalendarEventInfoFragment = {
   durationMinutes: number;
   wholeDay: boolean;
   multipleDays: boolean;
+  visibleOnParentCalendar: boolean;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -26647,6 +26656,7 @@ export type CalendarEventDetailsQuery = {
           durationMinutes: number;
           wholeDay: boolean;
           multipleDays: boolean;
+          visibleOnParentCalendar: boolean;
           createdBy?:
             | {
                 __typename?: 'User';
@@ -26846,6 +26856,7 @@ export type CalendarEventDetailsFragment = {
   durationMinutes: number;
   wholeDay: boolean;
   multipleDays: boolean;
+  visibleOnParentCalendar: boolean;
   createdBy?:
     | {
         __typename?: 'User';
@@ -27040,6 +27051,7 @@ export type CreateCalendarEventMutation = {
     durationMinutes: number;
     wholeDay: boolean;
     multipleDays: boolean;
+    visibleOnParentCalendar: boolean;
     createdBy?:
       | {
           __typename?: 'User';
@@ -27218,6 +27230,7 @@ export type UpdateCalendarEventMutation = {
     durationMinutes: number;
     wholeDay: boolean;
     multipleDays: boolean;
+    visibleOnParentCalendar: boolean;
     createdBy?:
       | {
           __typename?: 'User';

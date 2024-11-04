@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Form, useFormikContext } from 'formik';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { Box, DialogContent, FormControlLabel, Switch } from '@mui/material';
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { gutters } from '../../../../core/ui/grid/utils';
@@ -33,7 +33,7 @@ const EventForm = ({ typeOptions, isSubmitting, actions }) => {
   const {
     isValid,
     handleSubmit,
-    values: { wholeDay, startDate, endDate },
+    values: { wholeDay, startDate, endDate, visibleOnParentCalendar },
     setFieldValue,
   } = useFormikContext<Partial<CalendarEventFormData>>();
 
@@ -107,6 +107,28 @@ const EventForm = ({ typeOptions, isSubmitting, actions }) => {
             <Gutters disablePadding sx={{ flexDirection: 'row', flexGrow: 1 }}>
               <FormikInputField name="location.city" title={'Location'} placeholder={' '} fullWidth />
               <TagsetField name="tags" title={t('common.tags')} />
+            </Gutters>
+            <Gutters disablePadding sx={{ flexDirection: 'row', flexGrow: 1 }}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={visibleOnParentCalendar}
+                    name="visibleOnParentCalendar"
+                    onChange={() => {
+                      setFieldValue('visibleOnParentCalendar', !visibleOnParentCalendar);
+                    }}
+                  />
+                }
+                label={
+                  <Trans
+                    t={t}
+                    i18nKey="calendar.event.visibleOnParentCalendar"
+                    values={{ parent: 'Parent placeholder' }}
+                    components={{ b: <strong /> }}
+                  />
+                }
+                sx={{ flexShrink: 0 }}
+              />
             </Gutters>
           </Gutters>
         </Form>
