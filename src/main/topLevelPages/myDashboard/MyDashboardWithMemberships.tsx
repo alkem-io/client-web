@@ -7,6 +7,7 @@ import InfoColumn from '../../../core/ui/content/InfoColumn';
 import { DashboardMenu } from './DashboardMenu/DashboardMenu';
 import ContentColumn from '../../../core/ui/content/ContentColumn';
 import { useDashboardContext } from './DashboardContext';
+import MyResources from './myResources/MyResources';
 
 const DashboardDialogs = React.lazy(() => import('./DashboardDialogs/DashboardDialogs'));
 const DashboardActivity = React.lazy(() => import('./DashboardWithMemberships/DashboardActivity'));
@@ -22,6 +23,7 @@ const MyDashboardWithMemberships = () => {
     <PageContentColumn columns={12}>
       <InfoColumn>
         <DashboardMenu />
+        <MyResources />
       </InfoColumn>
       <ContentColumn>
         {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />}
