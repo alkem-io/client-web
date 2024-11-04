@@ -6486,6 +6486,86 @@ export type UpdateCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutMutation,
   SchemaTypes.UpdateCalloutMutationVariables
 >;
+export const UpdateCalloutTemplateDocument = gql`
+  mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
+    updateCallout(calloutData: $calloutData) {
+      id
+      framing {
+        id
+        profile {
+          id
+          description
+          displayName
+          tagset {
+            ...TagsetDetails
+          }
+          references {
+            id
+            name
+            uri
+          }
+        }
+        whiteboard {
+          id
+          content
+        }
+      }
+      contributionDefaults {
+        id
+        postDescription
+        whiteboardContent
+      }
+      contributionPolicy {
+        id
+        state
+      }
+      type
+      visibility
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+`;
+export type UpdateCalloutTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCalloutTemplateMutation,
+  SchemaTypes.UpdateCalloutTemplateMutationVariables
+>;
+
+/**
+ * __useUpdateCalloutTemplateMutation__
+ *
+ * To run a mutation, you first call `useUpdateCalloutTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCalloutTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCalloutTemplateMutation, { data, loading, error }] = useUpdateCalloutTemplateMutation({
+ *   variables: {
+ *      calloutData: // value for 'calloutData'
+ *   },
+ * });
+ */
+export function useUpdateCalloutTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCalloutTemplateMutation,
+    SchemaTypes.UpdateCalloutTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateCalloutTemplateMutation,
+    SchemaTypes.UpdateCalloutTemplateMutationVariables
+  >(UpdateCalloutTemplateDocument, options);
+}
+
+export type UpdateCalloutTemplateMutationHookResult = ReturnType<typeof useUpdateCalloutTemplateMutation>;
+export type UpdateCalloutTemplateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutTemplateMutation>;
+export type UpdateCalloutTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCalloutTemplateMutation,
+  SchemaTypes.UpdateCalloutTemplateMutationVariables
+>;
 export const UpdateCalloutVisibilityDocument = gql`
   mutation UpdateCalloutVisibility($calloutData: UpdateCalloutVisibilityInput!) {
     updateCalloutVisibility(calloutData: $calloutData) {
@@ -20390,6 +20470,10 @@ export const UpdateTemplateDocument = gql`
         previewVisual: visual(type: BANNER) {
           id
         }
+      }
+      whiteboard {
+        id
+        content
       }
     }
   }
