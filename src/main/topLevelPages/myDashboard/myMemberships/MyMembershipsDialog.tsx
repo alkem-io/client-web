@@ -7,7 +7,6 @@ import Gutters from '../../../../core/ui/grid/Gutters';
 import { useMyMembershipsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import { Caption } from '../../../../core/ui/typography';
 import RouterLink from '../../../../core/ui/link/RouterLink';
-import useLandingUrl from '../../../landing/useLandingUrl';
 import { SpaceIcon } from '../../../../domain/journey/space/icon/SpaceIcon';
 import { Visual } from '../../../../domain/common/visual/Visual';
 import {
@@ -18,6 +17,7 @@ import {
 import Loading from '../../../../core/ui/loading/Loading';
 import ExpandableSpaceTree from './ExpandableSpaceTree';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { useCreateSpaceLink } from '../useCreateSpaceLink/useCreateSpaceLink';
 
 interface MyJourneysDialogProps {
   open: boolean;
@@ -47,11 +47,11 @@ export interface MembershipProps {
 const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
   const { t } = useTranslation();
 
+  const { link: createSpaceLink } = useCreateSpaceLink();
+
   const { data, loading } = useMyMembershipsQuery({
     skip: !open,
   });
-
-  const landingUrl = useLandingUrl();
 
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={8}>
@@ -67,7 +67,7 @@ const MyMembershipsDialog = ({ open, onClose }: MyJourneysDialogProps) => {
               i18nKey="pages.home.sections.myMemberships.seeMore"
               components={{
                 spaces: <RouterLink to="/spaces" underline="always" />,
-                landing: <RouterLink to={landingUrl ?? ''} underline="always" />,
+                landing: <RouterLink to={createSpaceLink ?? ''} underline="always" />,
               }}
             />
           </Caption>
