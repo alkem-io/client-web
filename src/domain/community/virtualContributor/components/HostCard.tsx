@@ -1,13 +1,8 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import Avatar from '../../../../core/ui/avatar/Avatar';
-import { BlockSectionTitle } from '../../../../core/ui/typography';
-import getLocationString from '../../../../core/ui/location/getLocationString';
-import { useTranslation } from 'react-i18next';
-import { LocationIcon } from '../../../timeline/calendar/icons/LocationIcon';
-import { theme } from '../../../../core/ui/themes/default/Theme';
 
 interface HostProps {
   hostProfile?: {
@@ -19,6 +14,8 @@ interface HostProps {
       city?: string;
       country?: string;
     };
+    url?: string;
+    tagsets?: { tags: string[] }[];
   };
 }
 
@@ -37,32 +34,12 @@ const HostCard: FC<HostProps> = ({ hostProfile }) => {
   const { t } = useTranslation();
 
   const profile = hostProfile || DEFAULT_PROFILE;
-  const hasLocation = profile.location && (profile.location.city || profile.location.country);
 
   return (
-    <>
-      <PageContentBlock>
-        <PageContentBlockHeader title={t('pages.virtualContributorProfile.host')} />
-        <BadgeCardView
-          visual={
-            <Avatar src={profile.avatar?.uri} alt={t('common.avatar-of', { user: profile.displayName })}>
-              {profile.displayName[0]}
-            </Avatar>
-          }
-        >
-          <BlockSectionTitle>{profile.displayName}</BlockSectionTitle>
-          {hasLocation && (
-            <BlockSectionTitle display={'flex'} alignItems={'center'}>
-              <LocationIcon sx={{ fill: theme.palette.primary.main, width: 14, height: 14 }} />
-              {
-                //@ts-ignore already checked with hasLocation
-                getLocationString(profile.location)
-              }
-            </BlockSectionTitle>
-          )}
-        </BadgeCardView>
-      </PageContentBlock>
-    </>
+    <PageContentBlock>
+      <PageContentBlockHeader title={t('pages.virtualContributorProfile.host')} />
+      <ContributorCardHorizontal profile={profile} seamless />
+    </PageContentBlock>
   );
 };
 
