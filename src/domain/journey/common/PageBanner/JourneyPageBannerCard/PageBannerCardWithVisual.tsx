@@ -1,13 +1,15 @@
-import { gutters } from '../../../../../core/ui/grid/utils';
-import { Caption, PageTitle } from '../../../../../core/ui/typography';
-import React, { ReactElement, ReactNode } from 'react';
-import BadgeCardView from '../../../../../core/ui/list/BadgeCardView';
+import { ReactElement, ReactNode } from 'react';
+
 import { Box, BoxProps, CircularProgress, Theme, useMediaQuery, useTheme } from '@mui/material';
-import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
+
+import { gutters } from '../../../../../core/ui/grid/utils';
+import BadgeCardView from '../../../../../core/ui/list/BadgeCardView';
+import { Caption, PageTitle } from '../../../../../core/ui/typography';
 import PageBannerCardWrapper, {
   PageBannerCardWrapperProps,
 } from '../../../../../core/ui/layout/pageBannerCard/PageBannerCardWrapper';
 import Gutters, { GuttersProps } from '../../../../../core/ui/grid/Gutters';
+import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 
 export interface PageBannerCardWithVisualProps extends PageBannerCardWrapperProps {
   header?: ReactNode;
@@ -48,9 +50,11 @@ const PageBannerCardWithVisual = ({
               </PageTitle>
             )}
           </RowContainer>
+
           <Caption component="h3" color="primary" fontStyle="italic" noWrap>
             {subtitle}
           </Caption>
+
           <RowContainer>
             <TagsComponent tags={tags} color="primary" minHeight={gutters()} variant="filled" />
           </RowContainer>

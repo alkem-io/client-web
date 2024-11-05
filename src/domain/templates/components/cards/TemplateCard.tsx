@@ -7,7 +7,7 @@ import InnovationFlowTemplateCard from './InnovationFlowTemplateCard';
 import WhiteboardTemplateCard from './WhiteboardTemplateCard';
 import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
 import { AnyTemplateWithInnovationPack } from '../../models/TemplateBase';
-import CollaborationTemplateCard from './CollaborationTemplateCard';
+import CollaborationTemplateCard from './CollabTemplateCard';
 
 export interface TemplateCardProps extends AnyTemplateWithInnovationPack, ContributeCardProps {
   link?: {

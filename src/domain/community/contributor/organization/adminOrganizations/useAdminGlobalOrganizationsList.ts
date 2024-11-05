@@ -22,7 +22,7 @@ enum OrgVerificationLifecycleStates {
   manuallyVerified = 'manuallyVerified',
 }
 
-enum OrgVerificationLifecycleEvents {
+export enum OrgVerificationLifecycleEvents {
   VERIFICATION_REQUEST = 'VERIFICATION_REQUEST',
   MANUALLY_VERIFY = 'MANUALLY_VERIFY',
   RESET = 'RESET',
@@ -71,7 +71,7 @@ export const useAdminGlobalOrganizationsList = () => {
       return;
     }
 
-    if (orgFullData.verification.lifecycle.state === OrgVerificationLifecycleStates.manuallyVerified) {
+    if (orgFullData.verification.state === OrgVerificationLifecycleStates.manuallyVerified) {
       await verifyOrg({
         variables: {
           input: {
@@ -149,7 +149,7 @@ export const useAdminGlobalOrganizationsList = () => {
         accountId: org.account?.id,
         value: org.profile.displayName,
         url: buildSettingsUrl(org.profile.url),
-        verified: org.verification.lifecycle.state === OrgVerificationLifecycleStates.manuallyVerified,
+        verified: org.verification.state === OrgVerificationLifecycleStates.manuallyVerified,
         avatar: org.profile.visual,
         activeLicensePlanIds: data?.platform.licensingFramework.plans
           .filter(({ licenseCredential }) =>

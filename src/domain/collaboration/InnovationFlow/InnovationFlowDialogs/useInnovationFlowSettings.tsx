@@ -268,7 +268,7 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
   };
 
   const [applyCollaborationTemplate] = useUpdateCollaborationFromTemplateMutation();
-  const handleImportInnovationFlow = (collaborationTemplateId: string) => {
+  const handleImportCollaborationTemplate = (collaborationTemplateId: string, addCallouts?: boolean) => {
     const innovationFlowId = innovationFlow?.id;
     if (!innovationFlowId) {
       throw new Error('Innovation flow still not loaded.');
@@ -281,8 +281,13 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
       variables: {
         collaborationId,
         collaborationTemplateId,
+        addCallouts,
       },
-      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId!, filterCalloutGroups })],
+      refetchQueries: [
+        refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId!, filterCalloutGroups }),
+        'InnovationFlowDetails',
+        'Callouts',
+      ],
     });
   };
 
@@ -301,7 +306,7 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
       updateInnovationFlowProfile: handleUpdateInnovationFlowProfile,
       updateInnovationFlowStateOrder: handleInnovationFlowStateOrder,
       updateCalloutFlowState: handleUpdateCalloutFlowState,
-      importInnovationFlow: handleImportInnovationFlow,
+      importCollaborationTemplate: handleImportCollaborationTemplate,
       createState: handleCreateState,
       editState: handleEditState,
       deleteState: handleDeleteState,

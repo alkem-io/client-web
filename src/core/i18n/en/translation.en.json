@@ -33,8 +33,9 @@
     ]
   },
   "releaseNotes": {
-    "title": "<big>🎉 Platform update!</big> <small>We have some exciting news for you… Click here to read all about it!</small>",
-    "url": "/forum/releases/latest"
+    "title": "<small><icon/>Our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy> have been updated. Click on the titles to review them, or dismiss this notification.</small>",
+    "url": "NotClickableTermsUpdate-Oct-2024",
+    "isClickable": "FALSE"
   },
   "cookie": {
     "consent": "By clicking \"Accept All Cookies\", you agree to the storing of cookies on your device to enhance site navigation and analyze site usage.",
@@ -111,9 +112,11 @@
     "home": "Home",
     "take-me-home": "Take me home",
     "close": "Close",
+    "yes": "Yes",
     "yes-close": "Yes, close",
     "yesReplace": "Yes, replace",
     "yesStop": "Yes, stop",
+    "yesDiscard": "Yes, Discard",
     "delete": "Delete",
     "submit": "Submit",
     "remove": "Remove",
@@ -233,8 +236,10 @@
     "create": "Create",
     "create-new": "Create new",
     "create-new-entity": "Create new {{entity}}",
+    "category": "Category",
     "date": "Date",
     "description": "Description",
+    "noDescription": "No description",
     "event": "Event",
     "events": "Events",
     "fullScreen": "Full screen",
@@ -306,6 +311,7 @@
     "context": "Context",
     "community": "Community",
     "library": "Library",
+    "templateLibrary": "Template Library",
     "people": "People",
     "settings": "Settings",
     "space-settings": "$t(common.settings)",
@@ -514,8 +520,8 @@
       "templateType": {
         "CALLOUT": "Collaboration Tool Template",
         "CALLOUT_plural": "Collaboration Tool Templates",
-        "COLLABORATION": "Collaboration Template",
-        "COLLABORATION_plural": "Collaboration Templates",
+        "COLLABORATION": "Subspace Template",
+        "COLLABORATION_plural": "Subspace Templates",
         "COMMUNITY_GUIDELINES": "Community Guidelines Template",
         "COMMUNITY_GUIDELINES_plural": "Community Guidelines Templates",
         "INNOVATION_FLOW": "Innovation Flow",
@@ -841,8 +847,11 @@
         "description": "Enter words that are key to the Subspace to make it stand out and easier to find.",
         "placeholder": ""
       },
-      "addDefaultCallouts": {
-        "title": "Add default collaboration tools"
+      "addCallouts": {
+        "title": "Add default template's collaboration tools"
+      },
+      "addTutorialCallouts": {
+        "title": "Add tutorials collaboration tools"
       },
       "innovationFlow": {
         "title": "Subspace Flow"
@@ -884,8 +893,11 @@
         "description": "Enter words that are key to your Subspace to make it stand out and easier to find.",
         "placeholder": ""
       },
-      "addDefaultCallouts": {
-        "title": "Add default collaboration tools"
+      "addCallouts": {
+        "title": "Add default template's collaboration tools"
+      },
+      "addTutorialCallouts": {
+        "title": "Add tutorials collaboration tools"
       },
       "innovationFlow": {
         "title": "Subspace Flow"
@@ -917,30 +929,41 @@
   },
   "templateLibrary": {
     "calloutTemplates": {
-      "name": "Collaboration Tool template",
-      "title": "Template Library: Collaboration Tools",
+      "name": "$t(common.enums.templateType.CALLOUT)",
+      "title": "$t(common.templateLibrary): $t(common.enums.templateType.CALLOUT_plural)",
       "type": "Callout type",
       "description": "Description"
     },
     "postTemplates": {
-      "name": "Post template",
-      "title": "Template Library: Posts",
+      "name": "$t(common.enums.templateType.POST)",
+      "title": "$t(common.templateLibrary): $t(common.enums.templateType.POST_plural)",
       "defaultDescription": "Default Post content"
     },
     "whiteboardTemplates": {
-      "name": "Whiteboard template",
-      "title": "Template Library: Whiteboards",
+      "name": "$t(common.enums.templateType.WHITEBOARD)",
+      "title": "$t(common.templateLibrary): $t(common.enums.templateType.WHITEBOARD_plural)",
       "editTemplateButton": "Edit Template",
       "editDialogTitle": "Edit Whiteboard Template",
       "errorImporting": "Error importing Whiteboard Template"
     },
     "innovationFlowTemplates": {
-      "name": "Innovation Flow template",
-      "title": "Template Library: Innovation Flows"
+      "name": "$t(common.enums.templateType.INNOVATION_FLOW)",
+      "title": "$t(common.templateLibrary): $t(common.enums.templateType.INNOVATION_FLOW_plural)"
+    },
+    "collaborationTemplates": {
+      "name": "$t(common.enums.templateType.COLLABORATION)",
+      "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
+      "findByUrl": {
+        "title": "Space URL",
+        "description": "Enter the URL of the Space or Subspace you want to copy as a template.",
+        "use": "Use this space",
+        "spaceNotFoundError": "Space not found",
+        "collaborationNotFoundError": "Collaboration not found"
+      }
     },
     "communityGuidelinesTemplates": {
-      "name": "Community Guidelines",
-      "title": "Template Library: Community Guidelines",
+      "name": "$t(common.enums.templateType.COMMUNITY_GUIDELINES)",
+      "title": "$t(common.templateLibrary):  $t(common.enums.templateType.COMMUNITY_GUIDELINES_plural)",
       "content": "Guidelines",
       "guidelinesTitle": "Title",
       "guidelinesDescription": "Guidelines"
@@ -949,7 +972,13 @@
     "platformTemplates": "Platform Templates",
     "loadPlatformTemplates": "Or click here to browse through all platform templates",
     "platformUseDisabled": "Please note that you can only use the templates that are selected for this community (see above). If you would like to use any of the templates below, please ask the administrator or the lead of the Space to add these in the template section of the Space Settings.",
-    "disabledTemplateInfo": "Please note that you can only use the templates that are selected for this community, which this is not. If you would like to use this template, please ask the administrator or the lead of the Space to add it in the template section of the Space Settings."
+    "disabledTemplateInfo": "Please note that you can only use the templates that are selected for this community, which this is not. If you would like to use this template, please ask the administrator or the lead of the Space to add it in the template section of the Space Settings.",
+    "importTemplateDialog": {
+      "confirmClose": {
+        "title": "Discard template",
+        "description": "Are you sure you want to close this template? Unsaved changes will be lost."
+      }
+    }
   },
   "innovation-templates": {
     "states": {
@@ -1054,10 +1083,19 @@
           "text": "This action cannot be undone."
         },
         "selectDifferentFlow": {
-          "title": "Select different Flow",
+          "title": "Find subspace template",
           "confirmationDialog": {
             "title": "Be careful when changing the flow!",
             "description": "- By changing the Innovation Flow, **all changes made to the current flow will be lost**.\n- All existing collaboration tools will be grouped under the first phase of the new flow."
+          },
+          "importCalloutsDialog": {
+            "title": "Apply New Template",
+            "description": "You are about to apply a new template. This action will <b>permanently delete</b> your current Innovation Flow. However, the existing collaboration tools linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+            "yes": "Add Collaboration Tools from Template",
+            "yesDescription": "This will include the new collaboration tools from the template in addition to your existing ones.",
+            "no": "Only Change the Innovation Flow",
+            "noDescription": "This will replace only the Innovation Flow, keeping your current collaboration tools as they are.",
+            "apply": "Apply new template"
           }
         }
       }
@@ -1159,6 +1197,13 @@
         "reload": "Reload",
         "take-me-home": "Take me home",
         "contact-support": "Contact support"
+      }
+    },
+    "urlResolver": {
+      "errors": {
+        "invalidUrl": "Invalid URL",
+        "invalidUrlOrigin": "Invalid URL origin",
+        "invalidUrlFormat": "Invalid URL format"
       }
     },
     "search-cards": {
@@ -1806,7 +1851,7 @@
             "delete-confirmation": "Are you sure you want to delete the template '{{template}}'?",
             "import": {
               "defaultTitle": "Templates Library",
-              "title": "Template Library: {{templateType}}",
+              "title": "$t(common.templateLibrary): {{templateType}}",
               "subtitle": "Find templates to use in your Space or Subspace. Select the template and click `Import` to add it to your Template set.",
               "callout-template-import-subtitle": "Find a template for people to use when contributing to your $t(common.callout)",
               "noTemplates": "No templates found.",
@@ -1938,7 +1983,8 @@
         "notifications": {
           "subspace-created": "Subspace created successfully.",
           "subspace-removed": "Subspace removed successfully.",
-          "subspace-updated": "Subspace updated successfully."
+          "subspace-updated": "Subspace updated successfully.",
+          "templateSaved": "Template saved successfully"
         }
       },
       "space": {
@@ -1948,10 +1994,10 @@
             "defaultSettings": {
               "title": "Default settings",
               "description": "Choose the default settings that will apply when creating a new Subspace within this Space. These settings can be modified during the creation process or at a later time.",
-              "defaultInnovationFlow": {
-                "selectDifferentFlow": "Select different Flow",
-                "title": "Selecting the Default Innovation Flow",
-                "description": "Customize the default flow for newly created Subspaces. Admins can modify it later in the Innovation flow settings. \n\nBelow you can choose between the templates collected in the Space Templates library. If you’re looking to create new flows or explore additional templates, click here to access this library."
+              "defaultCollaborationTemplate": {
+                "selectDifferentTemplate": "Select Collaboration Template",
+                "title": "Selecting the Default Collaboration Template",
+                "description": "Customize the default template for newly created Subspaces. Admins can modify it later in the Innovation flow settings. \n\nBelow you can choose between the templates collected in the Space Templates library."
               }
             }
           }
@@ -2002,6 +2048,12 @@
             "createSubspaces": "<b>Create Subspaces</b>: allow members to create Subspaces in this Space. If you deactivate this, you can still create Subspaces yourself and add other people as an admin inside the Subspace.",
             "inheritRights": "Allow Space members to contribute.",
             "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an admin in this Space."
+          },
+          "copySpace": {
+            "title": "Copy Subspace",
+            "description": "To utilize this Subspace setup, you can either duplicate it within the same Space or save it as a template for use across the platform. In both scenarios, the innovation flow and all collaboration tools will be replicated. Please note that comments or contributions to a tool will not be included in the template or duplicated Subspace.",
+            "createTemplate": "Create Template",
+            "duplicate": "Duplicate"
           },
           "account": {
             "vc-section-title": "Virtual Contributors created from this Space",
@@ -2258,7 +2310,7 @@
         "welcome": {
           "welcomeUnauthenticated": "Welcome to Alkemio!",
           "welcomeUnauthenticatedSubtitle": "Safe Spaces for Collaboration",
-          "welcome-back": "Welcome back {{username}}!",
+          "welcome-back": "Welcome back, {{username}}!",
           "join": "Want to join the community and see more?",
           "existing-user": {
             "header": "Existing user? Jump back in!",
@@ -2598,7 +2650,7 @@
     },
     "virtualContributorProfile": {
       "title": "Virtual Contributor Profile",
-      "default-name": "Alkemio Help",
+      "defaultName": "Alkemio Help",
       "description": "Description",
       "references": "References",
       "host": "Host",
@@ -2621,6 +2673,15 @@
           "title": "Privacy",
           "description": "For Alkemio, safeguarding your data is of utmost importance. We are committed to maintaining the security and privacy of your information.",
           "bullets": "<ul><li>When interacting with a Virtual Contributor, only the data explicitly specified on the left (Context) is used to generate meaningful answers.</li><li>Importantly, your (Space) data is not utilized for training the Virtual Contributor.</li><li>Additionally, please note that questions and answers exchanged with the Virtual Contributor may be visible to the Alkemio team.</li></ul>"
+        },
+        "external": {
+          "personality": {
+            "description": "This Virtual Contributor operates using the following external AI service: <strong>OpenAI</strong>. All questions submitted to this Virtual Contributor, along with any related comments in a threaded conversation, will be sent to <strong>OpenAI</strong>. Please be aware that this data may be used to train and improve their model."
+          },
+          "privacy": {
+            "description": "At Alkemio, protecting your data is our top priority. We are fully committed to ensuring the security and privacy of your information. Here’s how we handle your data when interacting with a Virtual Contributor (VC):",
+            "bullets": "<ul><li>Only the content of your question and any related comments in a threaded conversation are shared with the AI service that powers the Virtual Contributor.</li><li>Please be aware that if the Virtual Contributor is based on an external AI service, such as OpenAI, the data shared may be used to further train and improve that service.</li><li>Additionally, note that questions and answers exchanged with the Virtual Contributor may be accessible to the Alkemio team for monitoring or support purposes.</li></ul>"
+          }
         }
       },
       "membership": {

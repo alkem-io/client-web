@@ -53,6 +53,7 @@ query InnovationLibrary($filterTemplateType: [TemplateType!]) {
         templatesSet {
           id
           calloutTemplatesCount
+          collaborationTemplatesCount
           communityGuidelinesTemplatesCount
           innovationFlowTemplatesCount
           collaborationTemplatesCount
@@ -177,5 +178,36 @@ fragment LibraryTemplates on TemplatesSet {
       }
     }
   }
-  communityGuidelinesTemplatesCount
+  collaborationTemplatesCount
+  collaborationTemplates {
+    id
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        ...TagsetDetails
+      }
+    }
+    collaboration {
+      id
+      innovationFlow {
+        id
+        states {
+          displayName
+          description
+        }
+      }
+      callouts {
+        id
+        framing {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
+    }
+  }
 }

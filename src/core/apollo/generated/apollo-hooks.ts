@@ -115,11 +115,8 @@ export const AdminCommunityApplicationFragmentDoc = gql`
     id
     createdDate
     updatedDate
-    lifecycle {
-      id
-      state
-      nextEvents
-    }
+    state
+    nextEvents
     contributor {
       ...AdminCommunityCandidateMember
       ... on User {
@@ -139,11 +136,8 @@ export const AdminCommunityInvitationFragmentDoc = gql`
     id
     createdDate
     updatedDate
-    lifecycle {
-      id
-      state
-      nextEvents
-    }
+    state
+    nextEvents
     contributorType
     contributor {
       ...AdminCommunityCandidateMember
@@ -1693,10 +1687,7 @@ export const InvitationDataFragmentDoc = gql`
       createdBy {
         id
       }
-      lifecycle {
-        id
-        state
-      }
+      state
       createdDate
       contributor {
         id
@@ -2803,7 +2794,32 @@ export const CollaborationTemplateContentFragmentDoc = gql`
         description
       }
     }
+    callouts {
+      id
+      type
+      framing {
+        id
+        profile {
+          id
+          displayName
+          description
+          flowStateTagset: tagset(tagsetName: FLOW_STATE) {
+            tags
+          }
+        }
+        whiteboard {
+          id
+          profile {
+            preview: visual(type: BANNER) {
+              ...VisualFull
+            }
+          }
+        }
+      }
+      sortOrder
+    }
   }
+  ${VisualFullFragmentDoc}
 `;
 export const WhiteboardTemplateContentFragmentDoc = gql`
   fragment WhiteboardTemplateContent on Whiteboard {
@@ -2902,6 +2918,13 @@ export const CollaborationTemplateFragmentDoc = gql`
     ...TemplateProfileInfo
     collaboration {
       id
+      innovationFlow {
+        id
+        states {
+          displayName
+          description
+        }
+      }
     }
   }
   ${TemplateProfileInfoFragmentDoc}
@@ -3032,7 +3055,7 @@ export const PostParentFragmentDoc = gql`
   fragment PostParent on SearchResultPost {
     space {
       id
-      type
+      level
       visibility
       profile {
         id
@@ -3199,7 +3222,7 @@ export const SearchResultSpaceFragmentDoc = gql`
   fragment SearchResultSpace on SearchResultSpace {
     parentSpace {
       id
-      type
+      level
       profile {
         id
         url
@@ -3213,7 +3236,7 @@ export const SearchResultSpaceFragmentDoc = gql`
     }
     space {
       id
-      type
+      level
       profile {
         id
         url
@@ -3380,7 +3403,38 @@ export const LibraryTemplatesFragmentDoc = gql`
         }
       }
     }
-    communityGuidelinesTemplatesCount
+    collaborationTemplatesCount
+    collaborationTemplates {
+      id
+      profile {
+        id
+        displayName
+        description
+        tagset {
+          ...TagsetDetails
+        }
+      }
+      collaboration {
+        id
+        innovationFlow {
+          id
+          states {
+            displayName
+            description
+          }
+        }
+        callouts {
+          id
+          framing {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
+      }
+    }
   }
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
@@ -3442,12 +3496,12 @@ export const InnovationPackCardFragmentDoc = gql`
     }
     templatesSet {
       id
-      postTemplatesCount
-      whiteboardTemplatesCount
-      innovationFlowTemplatesCount
-      collaborationTemplatesCount
       calloutTemplatesCount
       communityGuidelinesTemplatesCount
+      collaborationTemplatesCount
+      innovationFlowTemplatesCount
+      postTemplatesCount
+      whiteboardTemplatesCount
     }
     provider {
       ...InnovationPackProviderProfileWithAvatar
@@ -4480,13 +4534,10 @@ export type ApplyForEntryRoleOnRoleSetMutationOptions = Apollo.BaseMutationOptio
 >;
 export const EventOnApplicationDocument = gql`
   mutation eventOnApplication($input: ApplicationEventInput!) {
-    eventOnApplication(applicationEventData: $input) {
+    eventOnApplication(eventData: $input) {
       id
-      lifecycle {
-        id
-        nextEvents
-        state
-      }
+      nextEvents
+      state
     }
   }
 `;
@@ -4931,6 +4982,7 @@ export const AccountInformationDocument = gql`
           templatesSet {
             id
             calloutTemplatesCount
+            collaborationTemplatesCount
             communityGuidelinesTemplatesCount
             innovationFlowTemplatesCount
             collaborationTemplatesCount
@@ -5698,9 +5750,17 @@ export type UpdateInnovationFlowStatesMutationOptions = Apollo.BaseMutationOptio
   SchemaTypes.UpdateInnovationFlowStatesMutationVariables
 >;
 export const UpdateCollaborationFromTemplateDocument = gql`
-  mutation UpdateCollaborationFromTemplate($collaborationId: UUID!, $collaborationTemplateId: UUID!) {
+  mutation UpdateCollaborationFromTemplate(
+    $collaborationId: UUID!
+    $collaborationTemplateId: UUID!
+    $addCallouts: Boolean
+  ) {
     updateCollaborationFromTemplate(
-      updateData: { collaborationID: $collaborationId, collaborationTemplateID: $collaborationTemplateId }
+      updateData: {
+        collaborationID: $collaborationId
+        collaborationTemplateID: $collaborationTemplateId
+        addCallouts: $addCallouts
+      }
     ) {
       id
       innovationFlow {
@@ -5737,6 +5797,7 @@ export type UpdateCollaborationFromTemplateMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      collaborationId: // value for 'collaborationId'
  *      collaborationTemplateId: // value for 'collaborationTemplateId'
+ *      addCallouts: // value for 'addCallouts'
  *   },
  * });
  */
@@ -6376,6 +6437,86 @@ export type UpdateCalloutMutationResult = Apollo.MutationResult<SchemaTypes.Upda
 export type UpdateCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutMutation,
   SchemaTypes.UpdateCalloutMutationVariables
+>;
+export const UpdateCalloutTemplateDocument = gql`
+  mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
+    updateCallout(calloutData: $calloutData) {
+      id
+      framing {
+        id
+        profile {
+          id
+          description
+          displayName
+          tagset {
+            ...TagsetDetails
+          }
+          references {
+            id
+            name
+            uri
+          }
+        }
+        whiteboard {
+          id
+          content
+        }
+      }
+      contributionDefaults {
+        id
+        postDescription
+        whiteboardContent
+      }
+      contributionPolicy {
+        id
+        state
+      }
+      type
+      visibility
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+`;
+export type UpdateCalloutTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCalloutTemplateMutation,
+  SchemaTypes.UpdateCalloutTemplateMutationVariables
+>;
+
+/**
+ * __useUpdateCalloutTemplateMutation__
+ *
+ * To run a mutation, you first call `useUpdateCalloutTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCalloutTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCalloutTemplateMutation, { data, loading, error }] = useUpdateCalloutTemplateMutation({
+ *   variables: {
+ *      calloutData: // value for 'calloutData'
+ *   },
+ * });
+ */
+export function useUpdateCalloutTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCalloutTemplateMutation,
+    SchemaTypes.UpdateCalloutTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateCalloutTemplateMutation,
+    SchemaTypes.UpdateCalloutTemplateMutationVariables
+  >(UpdateCalloutTemplateDocument, options);
+}
+
+export type UpdateCalloutTemplateMutationHookResult = ReturnType<typeof useUpdateCalloutTemplateMutation>;
+export type UpdateCalloutTemplateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutTemplateMutation>;
+export type UpdateCalloutTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCalloutTemplateMutation,
+  SchemaTypes.UpdateCalloutTemplateMutationVariables
 >;
 export const UpdateCalloutVisibilityDocument = gql`
   mutation UpdateCalloutVisibility($calloutData: UpdateCalloutVisibilityInput!) {
@@ -9833,7 +9974,7 @@ export function refetchCommunityGuidelinesQuery(variables: SchemaTypes.Community
 }
 
 export const UpdateCommunityGuidelinesDocument = gql`
-  mutation updateCommunityGuidelines($communityGuidelinesData: UpdateCommunityGuidelinesEntityInput!) {
+  mutation UpdateCommunityGuidelines($communityGuidelinesData: UpdateCommunityGuidelinesEntityInput!) {
     updateCommunityGuidelines(communityGuidelinesData: $communityGuidelinesData) {
       ...CommunityGuidelinesDetails
     }
@@ -11069,10 +11210,7 @@ export const AdminGlobalOrganizationsListDocument = gql`
         }
         verification {
           id
-          lifecycle {
-            id
-            state
-          }
+          state
         }
       }
       pageInfo {
@@ -11155,13 +11293,10 @@ export function refetchAdminGlobalOrganizationsListQuery(
 
 export const AdminOrganizationVerifyDocument = gql`
   mutation adminOrganizationVerify($input: OrganizationVerificationEventInput!) {
-    eventOnOrganizationVerification(organizationVerificationEventData: $input) {
+    eventOnOrganizationVerification(eventData: $input) {
       id
-      lifecycle {
-        id
-        nextEvents
-        state
-      }
+      nextEvents
+      state
     }
   }
 `;
@@ -11819,6 +11954,7 @@ export const AccountResourcesInfoDocument = gql`
           templatesSet {
             id
             calloutTemplatesCount
+            collaborationTemplatesCount
             communityGuidelinesTemplatesCount
             innovationFlowTemplatesCount
             collaborationTemplatesCount
@@ -12002,13 +12138,10 @@ export type DeletePlatformInvitationMutationOptions = Apollo.BaseMutationOptions
 >;
 export const InvitationStateEventDocument = gql`
   mutation InvitationStateEvent($eventName: String!, $invitationId: UUID!) {
-    eventOnCommunityInvitation(invitationEventData: { eventName: $eventName, invitationID: $invitationId }) {
+    eventOnInvitation(eventData: { eventName: $eventName, invitationID: $invitationId }) {
       id
-      lifecycle {
-        id
-        nextEvents
-        state
-      }
+      nextEvents
+      state
     }
   }
 `;
@@ -13473,10 +13606,7 @@ export const UserPendingMembershipsDocument = gql`
         }
         application {
           id
-          lifecycle {
-            id
-            state
-          }
+          state
           createdDate
         }
       }
@@ -16984,6 +17114,9 @@ export const SpaceSettingsDocument = gql`
             id
           }
         }
+        collaboration {
+          id
+        }
       }
     }
   }
@@ -17324,6 +17457,7 @@ export const AdminSpaceSubspacesPageDocument = gql`
         }
         templateDefaults {
           id
+          type
           template {
             id
             profile {
@@ -19694,6 +19828,71 @@ export function refetchAllTemplatesInTemplatesSetQuery(
   return { query: AllTemplatesInTemplatesSetDocument, variables: variables };
 }
 
+export const SpaceCollaborationIdDocument = gql`
+  query SpaceCollaborationId($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        collaboration {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceCollaborationIdQuery__
+ *
+ * To run a query within a React component, call `useSpaceCollaborationIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceCollaborationIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceCollaborationIdQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceCollaborationIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceCollaborationIdQuery,
+    SchemaTypes.SpaceCollaborationIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceCollaborationIdQuery, SchemaTypes.SpaceCollaborationIdQueryVariables>(
+    SpaceCollaborationIdDocument,
+    options
+  );
+}
+
+export function useSpaceCollaborationIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceCollaborationIdQuery,
+    SchemaTypes.SpaceCollaborationIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceCollaborationIdQuery, SchemaTypes.SpaceCollaborationIdQueryVariables>(
+    SpaceCollaborationIdDocument,
+    options
+  );
+}
+
+export type SpaceCollaborationIdQueryHookResult = ReturnType<typeof useSpaceCollaborationIdQuery>;
+export type SpaceCollaborationIdLazyQueryHookResult = ReturnType<typeof useSpaceCollaborationIdLazyQuery>;
+export type SpaceCollaborationIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceCollaborationIdQuery,
+  SchemaTypes.SpaceCollaborationIdQueryVariables
+>;
+export function refetchSpaceCollaborationIdQuery(variables: SchemaTypes.SpaceCollaborationIdQueryVariables) {
+  return { query: SpaceCollaborationIdDocument, variables: variables };
+}
+
 export const SpaceTemplatesSetIdDocument = gql`
   query SpaceTemplatesSetId($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
@@ -19861,8 +20060,75 @@ export function refetchTemplateContentQuery(variables: SchemaTypes.TemplateConte
   return { query: TemplateContentDocument, variables: variables };
 }
 
+export const CollaborationTemplateContentDocument = gql`
+  query CollaborationTemplateContent($collaborationId: UUID!) {
+    lookup {
+      collaboration(ID: $collaborationId) {
+        ...CollaborationTemplateContent
+      }
+    }
+  }
+  ${CollaborationTemplateContentFragmentDoc}
+`;
+
+/**
+ * __useCollaborationTemplateContentQuery__
+ *
+ * To run a query within a React component, call `useCollaborationTemplateContentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCollaborationTemplateContentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCollaborationTemplateContentQuery({
+ *   variables: {
+ *      collaborationId: // value for 'collaborationId'
+ *   },
+ * });
+ */
+export function useCollaborationTemplateContentQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CollaborationTemplateContentQuery,
+    SchemaTypes.CollaborationTemplateContentQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CollaborationTemplateContentQuery,
+    SchemaTypes.CollaborationTemplateContentQueryVariables
+  >(CollaborationTemplateContentDocument, options);
+}
+
+export function useCollaborationTemplateContentLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CollaborationTemplateContentQuery,
+    SchemaTypes.CollaborationTemplateContentQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CollaborationTemplateContentQuery,
+    SchemaTypes.CollaborationTemplateContentQueryVariables
+  >(CollaborationTemplateContentDocument, options);
+}
+
+export type CollaborationTemplateContentQueryHookResult = ReturnType<typeof useCollaborationTemplateContentQuery>;
+export type CollaborationTemplateContentLazyQueryHookResult = ReturnType<
+  typeof useCollaborationTemplateContentLazyQuery
+>;
+export type CollaborationTemplateContentQueryResult = Apollo.QueryResult<
+  SchemaTypes.CollaborationTemplateContentQuery,
+  SchemaTypes.CollaborationTemplateContentQueryVariables
+>;
+export function refetchCollaborationTemplateContentQuery(
+  variables: SchemaTypes.CollaborationTemplateContentQueryVariables
+) {
+  return { query: CollaborationTemplateContentDocument, variables: variables };
+}
+
 export const CreateTemplateDocument = gql`
-  mutation createTemplate(
+  mutation CreateTemplate(
     $templatesSetId: UUID!
     $profileData: CreateProfileInput!
     $type: TemplateType!
@@ -19950,15 +20216,87 @@ export type CreateTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateTemplateMutation,
   SchemaTypes.CreateTemplateMutationVariables
 >;
+export const CreateTemplateFromCollaborationDocument = gql`
+  mutation CreateTemplateFromCollaboration(
+    $templatesSetId: UUID!
+    $profileData: CreateProfileInput!
+    $tags: [String!]
+    $collaborationId: UUID!
+  ) {
+    createTemplateFromCollaboration(
+      templateData: {
+        templatesSetID: $templatesSetId
+        profileData: $profileData
+        tags: $tags
+        collaborationID: $collaborationId
+      }
+    ) {
+      id
+    }
+  }
+`;
+export type CreateTemplateFromCollaborationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateTemplateFromCollaborationMutation,
+  SchemaTypes.CreateTemplateFromCollaborationMutationVariables
+>;
+
+/**
+ * __useCreateTemplateFromCollaborationMutation__
+ *
+ * To run a mutation, you first call `useCreateTemplateFromCollaborationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTemplateFromCollaborationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTemplateFromCollaborationMutation, { data, loading, error }] = useCreateTemplateFromCollaborationMutation({
+ *   variables: {
+ *      templatesSetId: // value for 'templatesSetId'
+ *      profileData: // value for 'profileData'
+ *      tags: // value for 'tags'
+ *      collaborationId: // value for 'collaborationId'
+ *   },
+ * });
+ */
+export function useCreateTemplateFromCollaborationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateTemplateFromCollaborationMutation,
+    SchemaTypes.CreateTemplateFromCollaborationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateTemplateFromCollaborationMutation,
+    SchemaTypes.CreateTemplateFromCollaborationMutationVariables
+  >(CreateTemplateFromCollaborationDocument, options);
+}
+
+export type CreateTemplateFromCollaborationMutationHookResult = ReturnType<
+  typeof useCreateTemplateFromCollaborationMutation
+>;
+export type CreateTemplateFromCollaborationMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateTemplateFromCollaborationMutation>;
+export type CreateTemplateFromCollaborationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateTemplateFromCollaborationMutation,
+  SchemaTypes.CreateTemplateFromCollaborationMutationVariables
+>;
 export const UpdateTemplateDocument = gql`
   mutation UpdateTemplate(
     $templateId: UUID!
     $profile: UpdateProfileInput!
     $postDefaultDescription: Markdown
+    $whiteboardContent: WhiteboardContent
     $includeProfileVisuals: Boolean = false
   ) {
     updateTemplate(
-      updateData: { ID: $templateId, profile: $profile, postDefaultDescription: $postDefaultDescription }
+      updateData: {
+        ID: $templateId
+        profile: $profile
+        postDefaultDescription: $postDefaultDescription
+        whiteboardContent: $whiteboardContent
+      }
     ) {
       id
       profile @include(if: $includeProfileVisuals) {
@@ -19969,6 +20307,10 @@ export const UpdateTemplateDocument = gql`
         previewVisual: visual(type: BANNER) {
           id
         }
+      }
+      whiteboard {
+        id
+        content
       }
     }
   }
@@ -19994,6 +20336,7 @@ export type UpdateTemplateMutationFn = Apollo.MutationFunction<
  *      templateId: // value for 'templateId'
  *      profile: // value for 'profile'
  *      postDefaultDescription: // value for 'postDefaultDescription'
+ *      whiteboardContent: // value for 'whiteboardContent'
  *      includeProfileVisuals: // value for 'includeProfileVisuals'
  *   },
  * });
@@ -20018,7 +20361,7 @@ export type UpdateTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateTemplateMutationVariables
 >;
 export const DeleteTemplateDocument = gql`
-  mutation deleteTemplate($templateId: UUID!) {
+  mutation DeleteTemplate($templateId: UUID!) {
     deleteTemplate(deleteData: { ID: $templateId }) {
       id
     }
@@ -21720,6 +22063,7 @@ export const InnovationLibraryDocument = gql`
           templatesSet {
             id
             calloutTemplatesCount
+            collaborationTemplatesCount
             communityGuidelinesTemplatesCount
             innovationFlowTemplatesCount
             collaborationTemplatesCount
@@ -22758,10 +23102,7 @@ export const NewMembershipsDocument = gql`
         }
         application {
           id
-          lifecycle {
-            id
-            state
-          }
+          state
           createdDate
         }
       }
@@ -22777,10 +23118,7 @@ export const NewMembershipsDocument = gql`
           createdBy {
             id
           }
-          lifecycle {
-            id
-            state
-          }
+          state
           createdDate
         }
       }

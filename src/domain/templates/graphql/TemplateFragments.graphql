@@ -38,6 +38,13 @@ fragment CollaborationTemplate on Template {
   ...TemplateProfileInfo
   collaboration {
     id
+    innovationFlow {
+      id
+      states {
+        displayName
+        description
+      }
+    }
   }
 }
 

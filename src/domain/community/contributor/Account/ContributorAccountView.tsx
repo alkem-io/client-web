@@ -104,6 +104,7 @@ export interface AccountTabResourcesProps {
     profile: AccountProfile;
     templates?: {
       calloutTemplatesCount: number;
+      collaborationTemplatesCount: number;
       communityGuidelinesTemplatesCount: number;
       innovationFlowTemplatesCount: number;
       postTemplatesCount: number;

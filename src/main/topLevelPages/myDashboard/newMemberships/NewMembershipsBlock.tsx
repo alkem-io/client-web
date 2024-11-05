@@ -88,9 +88,7 @@ const NewMembershipsBlock = ({ hiddenIfEmpty = false }: NewMembershipsBlockProps
   const pendingCommunityInvitations = useMemo(
     () =>
       sortBy(
-        communityInvitations.filter(
-          ({ invitation }) => !RECENT_MEMBERSHIP_STATES.includes(invitation.lifecycle.state ?? '')
-        ),
+        communityInvitations.filter(({ invitation }) => !RECENT_MEMBERSHIP_STATES.includes(invitation.state ?? '')),
         ({ invitation }) => invitation.createdDate
       ).reverse(),
     [communityInvitations]
@@ -109,7 +107,7 @@ const NewMembershipsBlock = ({ hiddenIfEmpty = false }: NewMembershipsBlockProps
   );
 
   const pendingCommunityApplications = communityApplications.filter(
-    ({ application }) => !RECENT_MEMBERSHIP_STATES.includes(application.lifecycle.state ?? '')
+    ({ application }) => !RECENT_MEMBERSHIP_STATES.includes(application.state ?? '')
   );
 
   const newestPendingApplications = useMemo(

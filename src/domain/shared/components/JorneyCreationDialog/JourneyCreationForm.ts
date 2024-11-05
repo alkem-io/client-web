@@ -5,6 +5,7 @@ export interface JourneyFormValues {
   tags: string[];
   background?: string;
   addTutorialCallouts: boolean;
+  addCallouts: boolean;
 }
 
 export interface JourneyCreationForm {

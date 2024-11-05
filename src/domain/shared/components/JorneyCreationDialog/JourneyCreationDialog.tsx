@@ -32,7 +32,8 @@ export const JourneyCreationDialog: FC<JourneyCreationDialogProps> = ({
     tagline: '',
     vision: '',
     tags: [],
-    addTutorialCallouts: true,
+    addTutorialCallouts: false,
+    addCallouts: true,
   });
 
   const handleChange = (value: JourneyFormValues) => setValue(value);
