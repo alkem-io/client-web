@@ -13,6 +13,6 @@ export interface MenuOptionProps {
   type: MenuOptionType;
   icon?: ComponentType<SvgIconProps>;
   to?: string;
-  isVisible: (viewEnabled: boolean, compactMode: boolean) => boolean;
+  isVisible: (viewEnabled: boolean, compact: boolean) => boolean;
   dialog?: DashboardDialog;
 }

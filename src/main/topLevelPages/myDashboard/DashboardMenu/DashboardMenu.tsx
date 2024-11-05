@@ -72,7 +72,13 @@ export const DashboardMenu = ({ compact = false }: DashboardMenuProps) => {
         );
       case 'link':
         return (
-          <ListItemButton key={index} component={RouterLink} to={item.to ?? ''} sx={{ paddingY: gutters(0.75) }}>
+          <ListItemButton
+            key={index}
+            component={RouterLink}
+            to={item.to ?? ''}
+            disabled={!item.to}
+            sx={{ paddingY: gutters(0.75) }}
+          >
             {getItemContent(item)}
           </ListItemButton>
         );

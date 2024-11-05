@@ -168,7 +168,8 @@
     "userMenu": "User Menu",
     "scrollToTop": "Scroll to top",
     "addSubject": "Add {{subject}}",
-    "toolPosition": "Position of tool"
+    "toolPosition": "Position of tool",
+    "createOwnSpace": "...or click here to create your own Space"
   },
   "tooltips": {
     "click-more-info": "Click for more information",

@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import MailOutlineOutlinedIcon from '@mui/icons-material/MailOutlineOutlined';
 import EmojiObjectsOutlinedIcon from '@mui/icons-material/EmojiObjectsOutlined';
 import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
@@ -6,22 +7,13 @@ import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
 import { useUserContext } from '../../../../domain/community/user';
 import { getAccountLink } from '../../../routing/urlBuilders';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
-import { TopLevelRoutePath } from '../../../routing/TopLevelRoutePath';
-import { useTranslation } from 'react-i18next';
 import { MenuOptionProps } from './dashboardMenuTypes';
 import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
-import { useMemo } from 'react';
+import { useCreateSpaceLink } from '../useCreateSpaceLink/useCreateSpaceLink';
 
 export const useHomeMenuItems = () => {
-  const { t } = useTranslation();
-  const { user, accountPrivileges, loading } = useUserContext();
-
-  let createLink = t('pages.home.sections.startingSpace.url');
-
-  if (accountPrivileges.includes(AuthorizationPrivilege.CreateSpace)) {
-    createLink = `/${TopLevelRoutePath.CreateSpace}`;
-  }
+  const { user, loading } = useUserContext();
+  const { link: createSpaceLink, loading: loadingLink } = useCreateSpaceLink();
 
   const dashboardMenuItems: MenuOptionProps[] = useMemo(
     () => [
@@ -67,7 +59,7 @@ export const useHomeMenuItems = () => {
       {
         label: 'pages.home.mainNavigation.createSpace',
         type: 'link',
-        to: createLink,
+        to: loadingLink ? '' : createSpaceLink,
         icon: RocketLaunchOutlinedIcon,
         isVisible: (_, __) => true,
       },
@@ -82,7 +74,7 @@ export const useHomeMenuItems = () => {
         isVisible: (_, compactMode) => !compactMode,
       },
     ],
-    [user, createLink]
+    [user, createSpaceLink, loadingLink]
   );
 
   return { items: dashboardMenuItems, loading };
