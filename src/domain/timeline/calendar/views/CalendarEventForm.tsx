@@ -12,7 +12,7 @@ import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.con
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import dayjs from 'dayjs';
 import { isSameDay } from '../../../../core/utils/time/utils';
-import EventForm from './EventForm';
+import EventForm from './EventForm/EventForm';
 import { FormikSelectValue } from '../../../../core/ui/forms/FormikSelect';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 
