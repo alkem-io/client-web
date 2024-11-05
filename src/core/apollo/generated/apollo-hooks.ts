@@ -2119,30 +2119,6 @@ export const DashboardTimelineAuthorizationFragmentDoc = gql`
     }
   }
 `;
-export const CommunityMemberVirtualContributorFragmentDoc = gql`
-  fragment CommunityMemberVirtualContributor on VirtualContributor {
-    id
-    searchVisibility
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      location {
-        id
-        city
-        country
-      }
-      url
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
 export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
     id
@@ -2203,9 +2179,6 @@ export const SpacePageFragmentDoc = gql`
         leadOrganizations: organizationsInRole(role: LEAD) {
           ...CommunityMemberOrganization
         }
-        leadVirtualContributors: virtualContributorsInRole(role: LEAD) {
-          ...CommunityMemberVirtualContributor
-        }
       }
     }
   }
@@ -2216,7 +2189,6 @@ export const SpacePageFragmentDoc = gql`
   ${DashboardTimelineAuthorizationFragmentDoc}
   ${CommunityMemberUserFragmentDoc}
   ${CommunityMemberOrganizationFragmentDoc}
-  ${CommunityMemberVirtualContributorFragmentDoc}
 `;
 export const SubspaceCardFragmentDoc = gql`
   fragment SubspaceCard on Space {
@@ -2269,6 +2241,30 @@ export const SubspacesOnSpaceFragmentDoc = gql`
   }
   ${SubspaceCardFragmentDoc}
 `;
+export const CommunityMemberVirtualContributorFragmentDoc = gql`
+  fragment CommunityMemberVirtualContributor on VirtualContributor {
+    id
+    searchVisibility
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        id
+        city
+        country
+      }
+      url
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
 export const RoleDefinitionPolicyFragmentDoc = gql`
   fragment RoleDefinitionPolicy on Role {
     id
@@ -2301,9 +2297,6 @@ export const RoleSetDetailsFragmentDoc = gql`
       ...CommunityMemberOrganization
     }
     memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
-      ...CommunityMemberVirtualContributor
-    }
-    leadVirtualContributors: virtualContributorsInRole(role: MEMBER) {
       ...CommunityMemberVirtualContributor
     }
     memberRoleDefinition: roleDefinition(role: MEMBER) {
