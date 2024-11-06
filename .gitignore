@@ -37,3 +37,4 @@ public/*config.js
 
 # Ignores homeserver.db file
 **/*.db
+*.session.sql

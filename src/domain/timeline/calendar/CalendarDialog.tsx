@@ -27,9 +27,17 @@ export interface CalendarDialogProps {
   onClose: () => void;
   parentPath: string;
   calendarEventNameId?: string;
+  temporaryLocation?: boolean;
 }
 
-const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, parentPath, calendarEventNameId }) => {
+const CalendarDialog: FC<CalendarDialogProps> = ({
+  open,
+  journeyId,
+  onClose,
+  parentPath,
+  calendarEventNameId,
+  temporaryLocation = false,
+}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -139,6 +147,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
                 actions={
                   isCreatingEventInit ? <div>&nbsp;</div> : <BackButton onClick={() => setIsCreatingEvent(false)} />
                 }
+                temporaryLocation={temporaryLocation}
               />
             );
 
