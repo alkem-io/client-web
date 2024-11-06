@@ -267,6 +267,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
               onChange={handleValueChange}
               onStatusChanged={handleStatusChange}
               journeyTypeName={journeyTypeName}
+              temporaryLocation // Always true for callout creation
             />
           </DialogContent>
           <Actions padding={gutters()}>

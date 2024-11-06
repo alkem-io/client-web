@@ -17,6 +17,7 @@ interface InsertImageButtonProps extends IconButtonProps {
   editor: Editor | null;
   onDialogOpen?: () => void;
   onDialogClose?: () => void;
+  temporaryLocation?: boolean;
 }
 
 interface ImageProps {
@@ -24,7 +25,13 @@ interface ImageProps {
   alt: string;
 }
 
-const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps }: InsertImageButtonProps) => {
+const InsertImageButton = ({
+  editor,
+  onDialogOpen,
+  onDialogClose,
+  temporaryLocation = false,
+  ...buttonProps
+}: InsertImageButtonProps) => {
   const { t } = useTranslation();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -77,7 +84,7 @@ const InsertImageButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps
         <Formik initialValues={initialValues} onSubmit={insertImage}>
           <Form>
             <Gutters>
-              <FormikFileInput title={t('common.url')} name="src" />
+              <FormikFileInput title={t('common.url')} name="src" temporaryLocation={temporaryLocation} />
               <FormikInputField title={t('common.description')} name="alt" />
               <Actions justifyContent="space-between">
                 <Button onClick={closeDialog}>{t('buttons.cancel')}</Button>

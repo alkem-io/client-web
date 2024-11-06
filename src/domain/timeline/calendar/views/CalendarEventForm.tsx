@@ -12,7 +12,7 @@ import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.con
 import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
 import dayjs from 'dayjs';
 import { isSameDay } from '../../../../core/utils/time/utils';
-import EventForm from './EventForm';
+import EventForm from './EventForm/EventForm';
 import { FormikSelectValue } from '../../../../core/ui/forms/FormikSelect';
 import GridProvider from '../../../../core/ui/grid/GridProvider';
 
@@ -25,6 +25,7 @@ export interface CalendarEventFormProps {
   onSubmit: (eventValues: CalendarEventFormData) => void;
   isSubmitting: boolean;
   actions?: ReactNode;
+  temporaryLocation?: boolean;
 }
 
 const typeOptions: FormikSelectValue[] = [
@@ -53,6 +54,7 @@ const CalendarEventForm = ({
   onClose,
   isSubmitting,
   actions,
+  temporaryLocation = false,
 }: CalendarEventFormProps) => {
   const { t } = useTranslation();
 
@@ -155,7 +157,12 @@ const CalendarEventForm = ({
         validationSchema={validationSchema}
         enableReinitialize
       >
-        <EventForm typeOptions={typeOptions} isSubmitting={isSubmitting} actions={actions} />
+        <EventForm
+          typeOptions={typeOptions}
+          isSubmitting={isSubmitting}
+          actions={actions}
+          temporaryLocation={temporaryLocation}
+        />
       </Formik>
     </GridProvider>
   );
