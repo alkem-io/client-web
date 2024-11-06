@@ -18,6 +18,7 @@ export interface StorageConfig {
   allowedMimeTypes: string[];
   maxFileSize: number;
   canUpload: boolean;
+  temporaryLocation: boolean;
 }
 
 type StorageConfigLocation =
@@ -206,6 +207,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
             allowedMimeTypes: storageConfig.allowedMimeTypes,
             maxFileSize: storageConfig.maxFileSize,
             canUpload: (storageConfig?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.FileUpload),
+            temporaryLocation: false, // Here should be false by default. Change it to true only on the components that need it.
           }
         : undefined,
     }),

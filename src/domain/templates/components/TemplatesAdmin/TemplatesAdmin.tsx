@@ -382,6 +382,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
           onClose={() => setCreatingTemplateType(undefined)}
           templateType={creatingTemplateType}
           onSubmit={handleTemplateCreate}
+          temporaryLocation
         />
       )}
       {selectedTemplate && editTemplateMode && (
