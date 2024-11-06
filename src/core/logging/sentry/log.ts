@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react';
 
-export enum TagCategoryValues {
+export const enum TagCategoryValues {
   SERVER = 'SERVER',
   AUTH = 'AUTH',
   UI = 'UI',
@@ -8,6 +8,7 @@ export enum TagCategoryValues {
   CONFIG = 'CONFIG',
   SPACE_CREATION = 'SPACE_CREATION',
   WS = 'WS',
+  VC = 'VC',
 }
 
 interface Tags {
