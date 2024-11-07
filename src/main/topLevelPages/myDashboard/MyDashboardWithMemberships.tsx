@@ -11,7 +11,7 @@ import MyResources from './myResources/MyResources';
 
 const DashboardDialogs = React.lazy(() => import('./DashboardDialogs/DashboardDialogs'));
 const DashboardActivity = React.lazy(() => import('./DashboardWithMemberships/DashboardActivity'));
-const DashboardSpaces = React.lazy(() => import('./DashboardWithMemberships/DashboardSpaces'));
+const DashboardSpaces = React.lazy(() => import('./DashboardWithMemberships/DashboardSpaces/DashboardSpaces'));
 
 const MyDashboardWithMemberships = () => {
   const { activityEnabled } = useDashboardContext();

@@ -3483,6 +3483,22 @@ export const LibraryTemplatesFragmentDoc = gql`
   ${WhiteboardDetailsFragmentDoc}
   ${WhiteboardContentFragmentDoc}
 `;
+export const DashboardSpaceMembershipFragmentDoc = gql`
+  fragment DashboardSpaceMembership on Space {
+    id
+    level
+    profile {
+      id
+      url
+      displayName
+      tagline
+      cardBanner: visual(type: CARD) {
+        ...VisualUri
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const ExploreSpacesFragmentDoc = gql`
   fragment ExploreSpaces on Space {
     id
@@ -22298,6 +22314,77 @@ export type PendingInvitationsCountQueryResult = Apollo.QueryResult<
 >;
 export function refetchPendingInvitationsCountQuery(variables?: SchemaTypes.PendingInvitationsCountQueryVariables) {
   return { query: PendingInvitationsCountDocument, variables: variables };
+}
+
+export const DashboardWithMembershipsDocument = gql`
+  query DashboardWithMemberships {
+    me {
+      spaceMembershipsHierarchical {
+        id
+        space {
+          ...DashboardSpaceMembership
+        }
+        childMemberships {
+          id
+          space {
+            ...DashboardSpaceMembership
+          }
+        }
+      }
+    }
+  }
+  ${DashboardSpaceMembershipFragmentDoc}
+`;
+
+/**
+ * __useDashboardWithMembershipsQuery__
+ *
+ * To run a query within a React component, call `useDashboardWithMembershipsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardWithMembershipsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDashboardWithMembershipsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDashboardWithMembershipsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.DashboardWithMembershipsQuery,
+    SchemaTypes.DashboardWithMembershipsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.DashboardWithMembershipsQuery, SchemaTypes.DashboardWithMembershipsQueryVariables>(
+    DashboardWithMembershipsDocument,
+    options
+  );
+}
+
+export function useDashboardWithMembershipsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.DashboardWithMembershipsQuery,
+    SchemaTypes.DashboardWithMembershipsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.DashboardWithMembershipsQuery,
+    SchemaTypes.DashboardWithMembershipsQueryVariables
+  >(DashboardWithMembershipsDocument, options);
+}
+
+export type DashboardWithMembershipsQueryHookResult = ReturnType<typeof useDashboardWithMembershipsQuery>;
+export type DashboardWithMembershipsLazyQueryHookResult = ReturnType<typeof useDashboardWithMembershipsLazyQuery>;
+export type DashboardWithMembershipsQueryResult = Apollo.QueryResult<
+  SchemaTypes.DashboardWithMembershipsQuery,
+  SchemaTypes.DashboardWithMembershipsQueryVariables
+>;
+export function refetchDashboardWithMembershipsQuery(variables?: SchemaTypes.DashboardWithMembershipsQueryVariables) {
+  return { query: DashboardWithMembershipsDocument, variables: variables };
 }
 
 export const ExploreSpacesSearchDocument = gql`

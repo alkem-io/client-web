@@ -22,7 +22,7 @@ const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
 
   const { data } = useRecentSpacesQuery({
     variables: {
-      limit: visibleSpaces, //todo:b double-check this logic
+      limit: visibleSpaces, // TODO:b double-check this logic
     },
   });
 
@@ -45,6 +45,7 @@ const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
           journeyTypeName="space"
         />
       ))}
+
       <GridItem columns={cardColumns}>
         <Paper
           variant="outlined"
