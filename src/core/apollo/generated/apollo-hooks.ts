@@ -14073,7 +14073,18 @@ export const VirtualContributorDocument = gql`
         profile {
           id
           displayName
-          description
+          url
+          location {
+            country
+            city
+          }
+          avatar: visual(type: AVATAR) {
+            ...VisualFull
+          }
+          tagsets {
+            id
+            tags
+          }
         }
       }
       searchVisibility
@@ -14100,8 +14111,8 @@ export const VirtualContributorDocument = gql`
       }
     }
   }
-  ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 
 /**
