@@ -6,10 +6,10 @@ import { Theme, useMediaQuery } from '@mui/material';
 
 import { useColumns } from '../../../../../core/ui/grid/GridContext';
 import { useDashboardWithMembershipsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '../../../../../domain/journey/common/JourneyTile/JourneyTile';
 
 export const useDashboardSpaces = () => {
-  const { data } = useDashboardWithMembershipsQuery({});
-  console.log('data', data);
+  const { data } = useDashboardWithMembershipsQuery();
 
   const theme = useTheme();
 
@@ -56,7 +56,13 @@ export const useDashboardSpaces = () => {
       },
 
       subSpacesContainer: {
-        paddingLeft: 0,
+        paddingInline: 0,
+      },
+
+      exploreAllButton: {
+        textTransform: 'none',
+        border: `1px solid ${theme.palette.divider}`,
+        aspectRatio: RECENT_JOURNEY_CARD_ASPECT_RATIO,
       },
     },
     visibleSpaces: Math.max(1, Math.floor(columns / 2) - 1),

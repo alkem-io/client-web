@@ -6,10 +6,9 @@ import { DoubleArrowOutlined } from '@mui/icons-material';
 
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import { Caption } from '../../../../../core/ui/typography';
-import JourneyTile, {
-  RECENT_JOURNEY_CARD_ASPECT_RATIO,
-} from '../../../../../domain/journey/common/JourneyTile/JourneyTile';
+import GridItem from '../../../../../core/ui/grid/GridItem';
 import { BlockTitle, PageTitle } from '../../../../../core/ui/typography';
+import JourneyTile from '../../../../../domain/journey/common/JourneyTile/JourneyTile';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
 
 import { useDashboardSpaces } from './useDashboardSpaces';
@@ -26,16 +25,15 @@ const DashboardSpaces = ({ onSeeMore }: { onSeeMore?: () => void }) => {
       spaceTagline,
       spaceCardMedia,
       spacesContainer,
+      exploreAllButton,
       subSpacesContainer,
       titleAndDescContainer,
     },
   } = useDashboardSpaces();
 
-  const spaceMemberships = data?.me.spaceMembershipsHierarchical;
-
   return (
     <Fragment>
-      {spaceMemberships?.map(({ space, childMemberships }) => {
+      {data?.me.spaceMembershipsHierarchical?.map(({ space, childMemberships }) => {
         if (!space) {
           return null;
         }
@@ -89,15 +87,11 @@ const DashboardSpaces = ({ onSeeMore }: { onSeeMore?: () => void }) => {
                   );
                 })}
 
-                <Paper
-                  variant="outlined"
-                  component={Button}
-                  endIcon={<DoubleArrowOutlined />}
-                  sx={{ textTransform: 'none', aspectRatio: RECENT_JOURNEY_CARD_ASPECT_RATIO }}
-                  onClick={onSeeMore}
-                >
-                  <Caption>{t('pages.home.sections.recentJourneys.seeMore')}</Caption>
-                </Paper>
+                <GridItem columns={cardColumns}>
+                  <Paper component={Button} sx={exploreAllButton} endIcon={<DoubleArrowOutlined />} onClick={onSeeMore}>
+                    <Caption>{t('pages.home.sections.recentJourneys.seeMoreSubspaces')}</Caption>
+                  </Paper>
+                </GridItem>
               </PageContentBlockSeamless>
             </Gutters>
           </Paper>
