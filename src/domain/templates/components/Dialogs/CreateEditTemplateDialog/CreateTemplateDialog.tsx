@@ -14,6 +14,7 @@ interface CreateTemplateDialogProps {
   onSubmit: (values: AnyTemplateFormSubmittedValues) => void;
   templateType: TemplateType;
   getDefaultValues?: () => Promise<Partial<AnyTemplate>>;
+  temporaryLocation?: boolean;
 }
 
 const CreateTemplateDialog = ({
@@ -22,6 +23,7 @@ const CreateTemplateDialog = ({
   onClose,
   getDefaultValues,
   onSubmit,
+  temporaryLocation = false,
 }: CreateTemplateDialogProps) => {
   const { t } = useTranslation();
   const [confirmCloseDialogOpen, setConfirmCloseDialogOpen] = useState<boolean>(false);
@@ -52,7 +54,14 @@ const CreateTemplateDialog = ({
                 <CircularProgress />
               </Box>
             )}
-            {defaultValues && <TemplateForm template={defaultValues} onSubmit={onSubmit} actions={actions} />}
+            {defaultValues && (
+              <TemplateForm
+                template={defaultValues}
+                onSubmit={onSubmit}
+                actions={actions}
+                temporaryLocation={temporaryLocation}
+              />
+            )}
           </>
         )}
       </CreateEditTemplateDialogBase>

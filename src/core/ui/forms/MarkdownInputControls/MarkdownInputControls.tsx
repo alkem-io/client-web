@@ -27,6 +27,7 @@ interface MarkdownInputControlsProps {
   hideImageOptions?: boolean;
   onDialogOpen?: () => void;
   onDialogClose?: () => void;
+  temporaryLocation?: boolean;
 }
 
 interface ControlsButtonProps extends IconButtonProps {
@@ -104,7 +105,10 @@ const CONTROLS_SHOW_DELAY_MS = 150; // to allow a user to select text by double-
 
 const MarkdownInputControls = memo(
   forwardRef<HTMLDivElement | null, MarkdownInputControlsProps>(
-    ({ editor, visible = false, hideImageOptions = false, onDialogOpen, onDialogClose }, ref) => {
+    (
+      { editor, visible = false, hideImageOptions = false, onDialogOpen, onDialogClose, temporaryLocation = false },
+      ref
+    ) => {
       const [isVisible, setIsVisible] = useState(visible);
 
       useEffect(() => {
@@ -170,7 +174,12 @@ const MarkdownInputControls = memo(
             </ControlsButton>
             <ToggleLinkButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
             {!hideImageOptions && (
-              <InsertImageButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+              <InsertImageButton
+                editor={editor}
+                onDialogOpen={onDialogOpen}
+                onDialogClose={onDialogClose}
+                temporaryLocation={temporaryLocation}
+              />
             )}
             <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
           </Toolbar>

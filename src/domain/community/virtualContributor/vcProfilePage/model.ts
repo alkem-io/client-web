@@ -15,7 +15,14 @@ type VirtualContributor = {
   provider: {
     profile: {
       displayName: string;
-      description?: string;
+      avatar?: {
+        uri: string;
+      };
+      location?: {
+        city?: string;
+        country?: string;
+      };
+      url: string;
     };
   };
 };

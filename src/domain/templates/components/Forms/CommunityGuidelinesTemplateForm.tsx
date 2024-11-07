@@ -36,6 +36,7 @@ interface CommunityGuidelinesTemplateFormProps {
   template?: CommunityGuidelinesTemplate;
   onSubmit: (values: CommunityGuidelinesTemplateFormSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<CommunityGuidelinesTemplateFormSubmittedValues>) => ReactNode);
+  temporaryLocation?: boolean;
 }
 
 const validator = {
@@ -52,7 +53,12 @@ const validator = {
   }),
 };
 
-const CommunityGuidelinesTemplateForm = ({ template, onSubmit, actions }: CommunityGuidelinesTemplateFormProps) => {
+const CommunityGuidelinesTemplateForm = ({
+  template,
+  onSubmit,
+  actions,
+  temporaryLocation = false,
+}: CommunityGuidelinesTemplateFormProps) => {
   const { t } = useTranslation();
   const profileId = template?.communityGuidelines?.profile.id;
 
@@ -86,6 +92,7 @@ const CommunityGuidelinesTemplateForm = ({ template, onSubmit, actions }: Commun
             name="communityGuidelines.profile.description"
             title={t('templateLibrary.communityGuidelinesTemplates.guidelinesDescription')}
             maxLength={MARKDOWN_TEXT_LENGTH}
+            temporaryLocation={temporaryLocation}
           />
           {profileId ? (
             <ProfileReferenceSegment

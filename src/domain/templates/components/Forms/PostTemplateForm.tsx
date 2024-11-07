@@ -17,13 +17,14 @@ interface PostTemplateFormProps {
   template?: PostTemplate;
   onSubmit: (values: PostTemplateFormSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<PostTemplateFormSubmittedValues>) => ReactNode);
+  temporaryLocation?: boolean;
 }
 
 const validator = {
   postDefaultDescription: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
 };
 
-const PostTemplateForm = ({ template, onSubmit, actions }: PostTemplateFormProps) => {
+const PostTemplateForm = ({ template, onSubmit, actions, temporaryLocation = false }: PostTemplateFormProps) => {
   const { t } = useTranslation();
 
   const initialValues: PostTemplateFormSubmittedValues = {
@@ -44,6 +45,7 @@ const PostTemplateForm = ({ template, onSubmit, actions }: PostTemplateFormProps
         name="postDefaultDescription"
         title={t('templateLibrary.postTemplates.defaultDescription')}
         maxLength={MARKDOWN_TEXT_LENGTH}
+        temporaryLocation={temporaryLocation}
       />
     </TemplateFormBase>
   );
