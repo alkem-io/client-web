@@ -23,7 +23,7 @@ import { Actions } from '../../../core/ui/actions/Actions';
 interface SingleInvitationFullProps {
   invitation: InvitationItem | undefined;
   updating: boolean;
-  acceptInvitation: (invitationId: string) => void;
+  acceptInvitation: (invitationId: string, spaceUrl: string) => void;
   accepting: boolean;
   rejectInvitation: (invitationId: string) => void;
   rejecting: boolean;
@@ -146,7 +146,7 @@ const SingleInvitationFull = ({
                   </LoadingButton>
                   <LoadingButton
                     startIcon={<CheckOutlined />}
-                    onClick={() => acceptInvitation(invitation.invitation.id)}
+                    onClick={() => acceptInvitation(invitation.invitation.id, invitation.space.profile.url)}
                     variant="contained"
                     loading={accepting}
                     disabled={updating && !accepting}

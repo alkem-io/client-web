@@ -4,9 +4,11 @@ import InvitationActionsContainer from '../../../../domain/community/invitations
 import { InvitationItem } from '../../../../domain/community/user/providers/UserProvider/InvitationItem';
 import { usePendingInvitationsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import useNavigate from '../../../../core/routing/useNavigate';
 
 export const InvitationsBlock = () => {
   const { data, refetch: refetchPendingInvitationsQuery } = usePendingInvitationsQuery();
+  const navigate = useNavigate();
 
   const communityInvitations = useMemo(
     () =>
@@ -20,8 +22,9 @@ export const InvitationsBlock = () => {
     [data?.me.communityInvitations]
   );
 
-  const onInvitationAccept = () => {
+  const onInvitationAccept = (spaceUrl: string) => {
     refetchPendingInvitationsQuery();
+    navigate(spaceUrl);
   };
 
   const onInvitationReject = () => {
