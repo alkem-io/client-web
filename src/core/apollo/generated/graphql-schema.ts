@@ -7338,31 +7338,6 @@ export type RoleSetDetailsFragment = {
         | undefined;
     };
   }>;
-  leadVirtualContributors: Array<{
-    __typename?: 'VirtualContributor';
-    id: string;
-    searchVisibility: SearchVisibility;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      url: string;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-      location?:
-        | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-        | undefined;
-    };
-  }>;
   memberRoleDefinition: {
     __typename?: 'Role';
     id: string;
@@ -15780,31 +15755,6 @@ export type CommunityMembersListQuery = {
                 | undefined;
             };
           }>;
-          leadVirtualContributors: Array<{
-            __typename?: 'VirtualContributor';
-            id: string;
-            searchVisibility: SearchVisibility;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              url: string;
-              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              tagsets?:
-                | Array<{
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }>
-                | undefined;
-              location?:
-                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                | undefined;
-            };
-          }>;
           memberRoleDefinition: {
             __typename?: 'Role';
             id: string;
@@ -19691,31 +19641,6 @@ export type AboutPageMembersQuery = {
                     | undefined;
                 };
               }>;
-              leadVirtualContributors: Array<{
-                __typename?: 'VirtualContributor';
-                id: string;
-                searchVisibility: SearchVisibility;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  tagsets?:
-                    | Array<{
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }>
-                    | undefined;
-                  location?:
-                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                    | undefined;
-                };
-              }>;
               memberRoleDefinition: {
                 __typename?: 'Role';
                 id: string;
@@ -20626,31 +20551,6 @@ export type SpaceCommunityPageQuery = {
               | undefined;
           };
         }>;
-        leadVirtualContributors: Array<{
-          __typename?: 'VirtualContributor';
-          id: string;
-          searchVisibility: SearchVisibility;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            url: string;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-            tagsets?:
-              | Array<{
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }>
-              | undefined;
-            location?:
-              | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-              | undefined;
-          };
-        }>;
         memberRoleDefinition: {
           __typename?: 'Role';
           id: string;
@@ -21204,31 +21104,6 @@ export type SpacePageQuery = {
                     | undefined;
                 };
               }>;
-              leadVirtualContributors: Array<{
-                __typename?: 'VirtualContributor';
-                id: string;
-                searchVisibility: SearchVisibility;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  tagsets?:
-                    | Array<{
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }>
-                    | undefined;
-                  location?:
-                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                    | undefined;
-                };
-              }>;
             };
           };
         }
@@ -21476,31 +21351,6 @@ export type SpacePageFragment = {
             | undefined;
           location?:
             | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-            | undefined;
-        };
-      }>;
-      leadVirtualContributors: Array<{
-        __typename?: 'VirtualContributor';
-        id: string;
-        searchVisibility: SearchVisibility;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          tagsets?:
-            | Array<{
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }>
-            | undefined;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
             | undefined;
         };
       }>;
@@ -22460,31 +22310,6 @@ export type SpaceProfileFragment = {
             | undefined;
         };
       }>;
-      leadVirtualContributors: Array<{
-        __typename?: 'VirtualContributor';
-        id: string;
-        searchVisibility: SearchVisibility;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          tagsets?:
-            | Array<{
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }>
-            | undefined;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-            | undefined;
-        };
-      }>;
       memberRoleDefinition: {
         __typename?: 'Role';
         id: string;
@@ -23249,31 +23074,6 @@ export type SubspacePageQuery = {
                     | undefined;
                 };
               }>;
-              leadVirtualContributors: Array<{
-                __typename?: 'VirtualContributor';
-                id: string;
-                searchVisibility: SearchVisibility;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  tagsets?:
-                    | Array<{
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }>
-                    | undefined;
-                  location?:
-                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                    | undefined;
-                };
-              }>;
               memberRoleDefinition: {
                 __typename?: 'Role';
                 id: string;
@@ -23458,31 +23258,6 @@ export type SubspacePageSpaceFragment = {
         };
       }>;
       memberVirtualContributors: Array<{
-        __typename?: 'VirtualContributor';
-        id: string;
-        searchVisibility: SearchVisibility;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          tagsets?:
-            | Array<{
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }>
-            | undefined;
-          location?:
-            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-            | undefined;
-        };
-      }>;
-      leadVirtualContributors: Array<{
         __typename?: 'VirtualContributor';
         id: string;
         searchVisibility: SearchVisibility;

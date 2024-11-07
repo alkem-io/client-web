@@ -27,7 +27,6 @@ interface EntityDashboardLeadsProps extends EntityDashboardLeads {
 const EntityDashboardLeadsSection = ({
   leadUsers,
   leadOrganizations,
-  leadVirtualContributors,
   usersHeader,
   organizationsHeader,
   organizationsHeaderIcon,
@@ -78,21 +77,6 @@ const EntityDashboardLeadsSection = ({
     }));
   }, [leadUsers]);
 
-  const leadVirtualContributorsMapped = useMemo(() => {
-    return leadVirtualContributors?.map(vc => ({
-      id: vc.id,
-      profile: vc.profile,
-      seamless: true,
-      onContact: () => {
-        sendMessage('user', {
-          id: vc.id,
-          avatarUri: vc.profile.avatar?.uri,
-          displayName: vc.profile.displayName,
-        });
-      },
-    }));
-  }, [leadVirtualContributors]);
-
   const leadUsersSectionVisible = !!leadUsersMapped && leadUsersMapped.length > 0;
   const leadOrganizationsSectionVisible = !!leadOrganizationsMapped && leadOrganizationsMapped.length > 0;
 
@@ -112,9 +96,6 @@ const EntityDashboardLeadsSection = ({
             entityName={t('community.leading-organizations')}
           />
         </>
-      )}
-      {leadUsersSectionVisible && usersHeader && (
-        <DashboardLeads headerText="" contributors={leadVirtualContributorsMapped} CardComponent={ContributorCard} />
       )}
       {children}
       {directMessageDialog}

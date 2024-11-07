@@ -20,9 +20,6 @@ fragment RoleSetDetails on RoleSet {
   memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
     ...CommunityMemberVirtualContributor
   }
-  leadVirtualContributors: virtualContributorsInRole(role: MEMBER) {
-    ...CommunityMemberVirtualContributor
-  }
 
   memberRoleDefinition: roleDefinition(role: MEMBER) {
     ...RoleDefinitionPolicy

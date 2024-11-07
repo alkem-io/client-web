@@ -38,7 +38,6 @@ const SubspaceAboutPage: FC = () => {
             provider,
             leadOrganizations,
             leadUsers,
-            leadVirtualContributors,
             metrics,
             memberUsers,
             memberUsersCount,
@@ -64,7 +63,6 @@ const SubspaceAboutPage: FC = () => {
             guidelines={<CommunityGuidelinesBlock communityId={communityId} journeyUrl={profile.url} />}
             loading={state.loading}
             leadUsers={leadUsers}
-            leadVirtualContributors={leadVirtualContributors}
             provider={provider}
             leadOrganizations={leadOrganizations}
             endButton={

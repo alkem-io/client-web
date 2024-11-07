@@ -101,7 +101,6 @@ const JourneyUnauthorizedDialogContainer = ({
     provider: journeyDataQueryData?.lookup.space?.provider,
     leadOrganizations: community?.roleSet.leadOrganizations,
     leadUsers: community?.roleSet.leadUsers,
-    leadVirtualContributors: undefined,
     loading,
     error: journeyCommunityPrivilegesError ?? journeyDataError,
   };
