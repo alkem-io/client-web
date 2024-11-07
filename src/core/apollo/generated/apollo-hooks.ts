@@ -2163,30 +2163,6 @@ export const DashboardTimelineAuthorizationFragmentDoc = gql`
     }
   }
 `;
-export const CommunityMemberVirtualContributorFragmentDoc = gql`
-  fragment CommunityMemberVirtualContributor on VirtualContributor {
-    id
-    searchVisibility
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      location {
-        id
-        city
-        country
-      }
-      url
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
 export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
     id
@@ -2247,9 +2223,6 @@ export const SpacePageFragmentDoc = gql`
         leadOrganizations: organizationsInRole(role: LEAD) {
           ...CommunityMemberOrganization
         }
-        leadVirtualContributors: virtualContributorsInRole(role: LEAD) {
-          ...CommunityMemberVirtualContributor
-        }
       }
     }
   }
@@ -2260,7 +2233,6 @@ export const SpacePageFragmentDoc = gql`
   ${DashboardTimelineAuthorizationFragmentDoc}
   ${CommunityMemberUserFragmentDoc}
   ${CommunityMemberOrganizationFragmentDoc}
-  ${CommunityMemberVirtualContributorFragmentDoc}
 `;
 export const SubspaceCardFragmentDoc = gql`
   fragment SubspaceCard on Space {
@@ -2313,6 +2285,30 @@ export const SubspacesOnSpaceFragmentDoc = gql`
   }
   ${SubspaceCardFragmentDoc}
 `;
+export const CommunityMemberVirtualContributorFragmentDoc = gql`
+  fragment CommunityMemberVirtualContributor on VirtualContributor {
+    id
+    searchVisibility
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        id
+        city
+        country
+      }
+      url
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
 export const RoleDefinitionPolicyFragmentDoc = gql`
   fragment RoleDefinitionPolicy on Role {
     id
@@ -2345,9 +2341,6 @@ export const RoleSetDetailsFragmentDoc = gql`
       ...CommunityMemberOrganization
     }
     memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
-      ...CommunityMemberVirtualContributor
-    }
-    leadVirtualContributors: virtualContributorsInRole(role: MEMBER) {
       ...CommunityMemberVirtualContributor
     }
     memberRoleDefinition: roleDefinition(role: MEMBER) {
@@ -6485,6 +6478,86 @@ export type UpdateCalloutMutationResult = Apollo.MutationResult<SchemaTypes.Upda
 export type UpdateCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateCalloutMutation,
   SchemaTypes.UpdateCalloutMutationVariables
+>;
+export const UpdateCalloutTemplateDocument = gql`
+  mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
+    updateCallout(calloutData: $calloutData) {
+      id
+      framing {
+        id
+        profile {
+          id
+          description
+          displayName
+          tagset {
+            ...TagsetDetails
+          }
+          references {
+            id
+            name
+            uri
+          }
+        }
+        whiteboard {
+          id
+          content
+        }
+      }
+      contributionDefaults {
+        id
+        postDescription
+        whiteboardContent
+      }
+      contributionPolicy {
+        id
+        state
+      }
+      type
+      visibility
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+`;
+export type UpdateCalloutTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCalloutTemplateMutation,
+  SchemaTypes.UpdateCalloutTemplateMutationVariables
+>;
+
+/**
+ * __useUpdateCalloutTemplateMutation__
+ *
+ * To run a mutation, you first call `useUpdateCalloutTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCalloutTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCalloutTemplateMutation, { data, loading, error }] = useUpdateCalloutTemplateMutation({
+ *   variables: {
+ *      calloutData: // value for 'calloutData'
+ *   },
+ * });
+ */
+export function useUpdateCalloutTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCalloutTemplateMutation,
+    SchemaTypes.UpdateCalloutTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateCalloutTemplateMutation,
+    SchemaTypes.UpdateCalloutTemplateMutationVariables
+  >(UpdateCalloutTemplateDocument, options);
+}
+
+export type UpdateCalloutTemplateMutationHookResult = ReturnType<typeof useUpdateCalloutTemplateMutation>;
+export type UpdateCalloutTemplateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutTemplateMutation>;
+export type UpdateCalloutTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCalloutTemplateMutation,
+  SchemaTypes.UpdateCalloutTemplateMutationVariables
 >;
 export const UpdateCalloutVisibilityDocument = gql`
   mutation UpdateCalloutVisibility($calloutData: UpdateCalloutVisibilityInput!) {
@@ -14015,7 +14088,18 @@ export const VirtualContributorDocument = gql`
         profile {
           id
           displayName
-          description
+          url
+          location {
+            country
+            city
+          }
+          avatar: visual(type: AVATAR) {
+            ...VisualFull
+          }
+          tagsets {
+            id
+            tags
+          }
         }
       }
       searchVisibility
@@ -14042,8 +14126,8 @@ export const VirtualContributorDocument = gql`
       }
     }
   }
-  ${TagsetDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 
 /**
@@ -20390,6 +20474,10 @@ export const UpdateTemplateDocument = gql`
         previewVisual: visual(type: BANNER) {
           id
         }
+      }
+      whiteboard {
+        id
+        content
       }
     }
   }

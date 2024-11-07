@@ -1,22 +1,22 @@
 import BookIcon from '@mui/icons-material/Book';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import ShieldIcon from '@mui/icons-material/Shield';
 import useTheme from '@mui/material/styles/useTheme';
 import { Trans, useTranslation } from 'react-i18next';
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
-import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
-
-import HostCard from '../components/HostCard';
-import Spacer from '../../../../core/ui/content/Spacer';
-import BasicSpaceCard from '../components/BasicSpaceCard';
 import PageContent from '../../../../core/ui/content/PageContent';
-import { Text, BlockTitle } from '../../../../core/ui/typography';
-import ProfileDetail from '../../profile/ProfileDetail/ProfileDetail';
-import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import Spacer from '../../../../core/ui/content/Spacer';
+import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
+import { BlockTitle, Text } from '../../../../core/ui/typography';
+import ProfileDetail from '../../profile/ProfileDetail/ProfileDetail';
+import BasicSpaceCard from '../components/BasicSpaceCard';
 
-import { type VCProfilePageViewProps } from './model';
+import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
+import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import { gutters } from '../../../../core/ui/grid/utils';
+import { type VCProfilePageViewProps } from './model';
 
 export const VCProfilePageView = ({
   hasBokId,
@@ -47,8 +47,10 @@ export const VCProfilePageView = ({
             aria-label="description"
           />
         </PageContentBlock>
-
-        <HostCard hostProfile={virtualContributor?.provider.profile} />
+        <PageContentBlock>
+          <PageContentBlockHeader title={t('pages.virtualContributorProfile.host')} />
+          <ContributorCardHorizontal profile={virtualContributor?.provider.profile} seamless />
+        </PageContentBlock>
       </PageContentColumn>
 
       <PageContentColumn columns={8}>

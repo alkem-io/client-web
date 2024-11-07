@@ -95,6 +95,7 @@ const FileUploadButton: FC<FileUploadProps> = ({
         file: selectedFile,
         uploadData: {
           storageBucketId: storageConfig.storageBucketId,
+          temporaryLocation: storageConfig.temporaryLocation,
         },
       },
     });

@@ -48,7 +48,6 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               entityReadAccess={entities.permissions.spaceReadAccess}
               readUsersAccess={entities.permissions.readUsers}
               leadUsers={entities.space?.community?.roleSet?.leadUsers ?? []}
-              leadVirtualContributors={entities.space?.community?.roleSet?.leadVirtualContributors}
               host={entities.provider}
               callouts={callouts}
               journeyTypeName="space"
@@ -98,7 +97,6 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
               leadUsers={entities.space?.community?.roleSet?.leadUsers}
               provider={entities.provider}
               leadOrganizations={entities.space?.community?.roleSet?.leadOrganizations}
-              leadVirtualContributors={entities.space?.community?.roleSet?.leadVirtualContributors}
               endButton={
                 <IconButton onClick={backToDashboard} aria-label={t('buttons.close')}>
                   <Close />
