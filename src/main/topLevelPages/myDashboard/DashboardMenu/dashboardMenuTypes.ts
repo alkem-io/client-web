@@ -4,6 +4,7 @@ import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
 
 export type DashboardMenuProps = {
   compact?: boolean;
+  expandable?: boolean;
 };
 
 type MenuOptionType = 'invites' | 'link' | 'dialog' | 'switch' | 'divider';
