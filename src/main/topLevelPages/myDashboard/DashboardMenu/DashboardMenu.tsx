@@ -133,7 +133,7 @@ export const DashboardMenu = ({ compact = false, expandable = false }: Dashboard
               <BadgeCounter count={pendingInvitationsCount} size="small" sx={{ position: 'absolute' }} />
             )}
             <MenuIcon fontSize="small" sx={{ color: 'neutral.light' }} />
-            <Caption paddingLeft={gutters()}>Menu</Caption>
+            <Caption paddingLeft={gutters()}>{t('common.menu')}</Caption>
           </Gutters>
         }
       >
