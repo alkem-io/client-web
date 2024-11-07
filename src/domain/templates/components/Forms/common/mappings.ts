@@ -113,7 +113,7 @@ const handleCreateWhiteboard = (data?: {
   return {
     content: data.content,
     profileData: {
-      displayName: data.profile?.displayName ?? 'Whiteboard Template',
+      displayName: data.profile?.displayName ? data.profile?.displayName : 'Whiteboard Template',
     },
   };
 };

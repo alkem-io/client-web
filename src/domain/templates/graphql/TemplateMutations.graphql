@@ -80,6 +80,10 @@ mutation UpdateTemplate(
         id
       }
     }
+    whiteboard {
+      id
+      content
+    }
   }
 }
 

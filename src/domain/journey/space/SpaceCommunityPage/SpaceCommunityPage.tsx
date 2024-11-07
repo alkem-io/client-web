@@ -97,7 +97,6 @@ const SpaceCommunityPage = () => {
                 organizationsHeader={t('pages.space.sections.dashboard.organization')}
                 leadUsers={leadUsers}
                 leadOrganizations={hostOrganizations}
-                leadVirtualContributors={undefined}
               />
               <ContactLeadsButton onClick={openContactLeadsDialog}>
                 {t('buttons.contact-leads', { contact: t('community.host') })}

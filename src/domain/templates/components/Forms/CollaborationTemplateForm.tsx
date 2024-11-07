@@ -33,9 +33,9 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: Collaboratio
   const initialValues: CollaborationTemplateFormSubmittedValues = useMemo(
     () => ({
       profile: mapTemplateProfileToUpdateProfile(template?.profile),
-      collaborationId: collaborationId ?? '',
+      collaborationId: template?.collaboration?.id ?? '',
     }),
-    [collaborationId, template]
+    [template]
   );
 
   // Just load the innovation flow and the callouts of the selected collaboration and show it
@@ -58,15 +58,15 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: Collaboratio
       actions={actions}
       validator={validator}
     >
-      {() => {
+      {({ setFieldValue }) => {
+        const handleCollaborationIdChange = async (collaborationId: string) => {
+          setFieldValue('collaborationId', collaborationId); // Change the value in Formik
+          setCollaborationId(collaborationId); // Refresh the collaboration preview
+        };
         return (
           <>
             {!template?.collaboration?.id && (
-              <CollaborationFromSpaceUrlForm
-                onUseCollaboration={async collaborationId => {
-                  setCollaborationId(collaborationId);
-                }}
-              />
+              <CollaborationFromSpaceUrlForm onUseCollaboration={handleCollaborationIdChange} />
             )}
             <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
             <CollaborationTemplatePreview loading={loading} template={collaborationPreview} />

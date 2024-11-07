@@ -86,9 +86,6 @@ fragment SpacePage on Space {
       leadOrganizations: organizationsInRole(role: LEAD) {
         ...CommunityMemberOrganization
       }
-      leadVirtualContributors: virtualContributorsInRole(role: LEAD) {
-        ...CommunityMemberVirtualContributor
-      }
     }
   }
 }

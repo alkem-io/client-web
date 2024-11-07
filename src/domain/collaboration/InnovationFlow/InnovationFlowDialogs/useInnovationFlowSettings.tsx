@@ -283,7 +283,11 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
         collaborationTemplateId,
         addCallouts,
       },
-      refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId!, filterCalloutGroups })],
+      refetchQueries: [
+        refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId!, filterCalloutGroups }),
+        'InnovationFlowDetails',
+        'Callouts',
+      ],
     });
   };
 

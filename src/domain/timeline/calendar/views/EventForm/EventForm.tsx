@@ -2,21 +2,22 @@ import React, { useEffect } from 'react';
 import { Form, useFormikContext } from 'formik';
 import { Trans, useTranslation } from 'react-i18next';
 import { Box, DialogContent, FormControlLabel, Switch } from '@mui/material';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import { gutters } from '../../../../core/ui/grid/utils';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import FormikDurationMinutes from '../../../../core/ui/forms/DatePicker/FormikDurationMinutes';
-import { isSameDay } from '../../../../core/utils/time/utils';
-import FormikAutocomplete from '../../../../core/ui/forms/FormikAutocomplete';
-import FormikDatePicker from '../../../../core/ui/forms/DatePicker/FormikDatePicker';
-import FormikTimePicker from '../../../../core/ui/forms/DatePicker/FormikTimePicker';
+import Gutters from '../../../../../core/ui/grid/Gutters';
+import { gutters } from '../../../../../core/ui/grid/utils';
+import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
+import FormikDurationMinutes from '../../../../../core/ui/forms/DatePicker/FormikDurationMinutes';
+import { isSameDay } from '../../../../../core/utils/time/utils';
+import FormikAutocomplete from '../../../../../core/ui/forms/FormikAutocomplete';
+import FormikDatePicker from '../../../../../core/ui/forms/DatePicker/FormikDatePicker';
+import FormikTimePicker from '../../../../../core/ui/forms/DatePicker/FormikTimePicker';
 import dayjs from 'dayjs';
-import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { TagsetField } from '../../../platform/admin/components/Common/TagsetSegment';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import { CalendarEventFormData } from '../CalendarEventsContainer';
-import { Actions } from '../../../../core/ui/actions/Actions';
+import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
+import { TagsetField } from '../../../../platform/admin/components/Common/TagsetSegment';
+import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
+import { CalendarEventFormData } from '../../CalendarEventsContainer';
+import { Actions } from '../../../../../core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
+import { EventFormProps } from './EventForm.model';
 
 type DateType = Date | undefined;
 
@@ -28,7 +29,7 @@ const getMinTime = (startDate: DateType, endDate: number | DateType) => {
   return isSameDay(startDate, endDate) ? undefined : dayjs(startDate);
 };
 
-const EventForm = ({ typeOptions, isSubmitting, actions }) => {
+const EventForm = ({ typeOptions, isSubmitting, actions, temporaryLocation = false }: EventFormProps) => {
   const { t } = useTranslation();
   const {
     isValid,
@@ -103,6 +104,7 @@ const EventForm = ({ typeOptions, isSubmitting, actions }) => {
               title={t('common.description')}
               maxLength={MARKDOWN_TEXT_LENGTH}
               sx={{ marginBottom: gutters(-1) }}
+              temporaryLocation={temporaryLocation}
             />
             <Gutters disablePadding sx={{ flexDirection: 'row', flexGrow: 1 }}>
               <FormikInputField name="location.city" title={'Location'} placeholder={' '} fullWidth />

@@ -27,6 +27,7 @@ export interface CalendarDialogProps {
   onClose: () => void;
   parentPath: string;
   calendarEventNameId?: string;
+  temporaryLocation?: boolean;
   isSubspace?: boolean;
 }
 
@@ -36,6 +37,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
   onClose,
   parentPath,
   calendarEventNameId,
+  temporaryLocation = false,
   isSubspace = false,
 }) => {
   const { t } = useTranslation();
@@ -150,6 +152,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
                 actions={
                   isCreatingEventInit ? <div>&nbsp;</div> : <BackButton onClick={() => setIsCreatingEvent(false)} />
                 }
+                temporaryLocation={temporaryLocation}
               />
             );
 
