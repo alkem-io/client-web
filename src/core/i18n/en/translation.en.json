@@ -67,7 +67,7 @@
     "add-event": "Add event",
     "edit-event": "Edit event",
     "delete-event": "Delete event",
-    "delete-confirmation": "Are you sure you want to delete event: '{{title}}' from the space?",
+    "delete-confirmation": "Are you sure you want to delete event: '{{title}}' from the {{entity}}?",
     "event": {
       "type": "Type of Event",
       "multiple-days": "{{days}} days",

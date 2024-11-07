@@ -120,7 +120,10 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
                 }}
                 entities={{
                   confirmButtonTextId: 'buttons.delete',
-                  content: t('calendar.delete-confirmation', { title: deletingEvent.profile.displayName }),
+                  content: t('calendar.delete-confirmation', {
+                    title: deletingEvent.profile.displayName,
+                    entity: t(`common.${isSubspace ? 'subspace' : 'space'}`),
+                  }),
                   titleId: 'calendar.delete-event',
                 }}
                 options={{
