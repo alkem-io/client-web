@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +9,11 @@ import { useDashboardWithMembershipsQuery } from '../../../../../core/apollo/gen
 import { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '../../../../../domain/journey/common/JourneyTile/JourneyTile';
 
 export const useDashboardSpaces = () => {
-  const { data } = useDashboardWithMembershipsQuery();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedSpaceName, setSelectedSpaceName] = useState('');
+  const [selectedSpaceIdx, setSelectedSpaceIdx] = useState<number | null>(null);
+
+  const { data, loading } = useDashboardWithMembershipsQuery();
 
   const theme = useTheme();
 
@@ -24,7 +28,11 @@ export const useDashboardSpaces = () => {
   return {
     t,
     data,
+    loading,
     cardColumns,
+    isDialogOpen,
+    selectedSpaceIdx,
+    selectedSpaceName,
     styles: {
       spacesContainer: {
         padding: 16,
@@ -36,8 +44,9 @@ export const useDashboardSpaces = () => {
       },
 
       spaceCardMedia: {
-        width: '100vw',
+        width: '100vw', // Keep this in order to span the image across the card.
         height: '180px',
+        maxWidth: '100%', //  Keep this in order to prevent the image from stretching.
       },
 
       titleAndDescContainer: {
@@ -66,5 +75,8 @@ export const useDashboardSpaces = () => {
       },
     },
     visibleSpaces: Math.max(1, Math.floor(columns / 2) - 1),
+    setIsDialogOpen,
+    setSelectedSpaceIdx,
+    setSelectedSpaceName,
   };
 };

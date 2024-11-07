@@ -2249,7 +2249,7 @@
         },
         "recentJourneys": {
           "seeMore": "Explore all your Spaces",
-          "seeMoreSubspaces": "Explore all Subspaces"
+          "seeMoreSubspaces": "Explore all {{spaceName}} Subspaces"
         },
         "campaignBlock": {
           "createYourVCButton": "Create your Virtual Contributor!",

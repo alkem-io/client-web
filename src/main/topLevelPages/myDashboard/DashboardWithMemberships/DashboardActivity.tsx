@@ -2,14 +2,18 @@ import React, { useState } from 'react';
 import RecentJourneysList from '../recentSpaces/RecentJourneysList';
 import LatestContributions from '../latestContributions/LatestContributions';
 import MyLatestContributions from '../latestContributions/myLatestContributions/MyLatestContributions';
-import MyMembershipsDialog from '../myMemberships/MyMembershipsDialog';
-import { useLatestContributionsSpacesFlatQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { MyMembershipsDialog } from '../myMemberships/MyMembershipsDialog';
+import {
+  useLatestContributionsSpacesFlatQuery,
+  useMyMembershipsQuery,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
 import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
 import { Theme, useMediaQuery } from '@mui/material';
+import { SpaceIcon } from '../../../../domain/journey/space/icon/SpaceIcon';
 
 const DashboardActivity = () => {
   const { t } = useTranslation();
@@ -19,6 +23,10 @@ const DashboardActivity = () => {
   const [isMyMembershipsDialogOpen, setIsMyMembershipsDialogOpen] = useState(false);
   const { data: spacesData } = useLatestContributionsSpacesFlatQuery();
   const flatSpacesWithMemberships = spacesData?.me.spaceMembershipsFlat.map(membership => membership.space);
+
+  const { data: myMembershipsData, loading: myMembershipsLoading } = useMyMembershipsQuery({
+    skip: !isMyMembershipsDialogOpen,
+  });
 
   const blockColumns = isMobile ? columns : columns / 2;
 
@@ -37,7 +45,15 @@ const DashboardActivity = () => {
           <MyLatestContributions spaceMemberships={flatSpacesWithMemberships} />
         </PageContentBlock>
       </PageContentColumn>
-      <MyMembershipsDialog open={isMyMembershipsDialogOpen} onClose={() => setIsMyMembershipsDialogOpen(false)} />
+
+      <MyMembershipsDialog
+        Icon={<SpaceIcon />}
+        loading={myMembershipsLoading}
+        open={isMyMembershipsDialogOpen}
+        title={t('pages.home.sections.myMemberships.title')}
+        data={myMembershipsData?.me?.spaceMembershipsHierarchical ?? []}
+        onClose={() => setIsMyMembershipsDialogOpen(false)}
+      />
     </>
   );
 };
