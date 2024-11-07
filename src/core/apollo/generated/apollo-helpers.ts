@@ -703,6 +703,7 @@ export type CalendarEventKeySpecifier = (
   | 'nameID'
   | 'profile'
   | 'startDate'
+  | 'subspace'
   | 'type'
   | 'updatedDate'
   | 'visibleOnParentCalendar'
@@ -721,6 +722,7 @@ export type CalendarEventFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   startDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  subspace?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   visibleOnParentCalendar?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -31,6 +31,7 @@ export interface CalendarEventFormData
 
 export interface CalendarEventsContainerProps {
   journeyId: string | undefined;
+  includeSubspace?: boolean;
   children: (
     entities: CalendarEventsEntities,
     actions: CalendarEventsActions,
@@ -65,9 +66,9 @@ export interface CalendarEventsEntities {
   };
 }
 
-export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ journeyId, children }) => {
+export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ journeyId, includeSubspace, children }) => {
   const { data: spaceData, loading } = useSpaceCalendarEventsQuery({
-    variables: { spaceId: journeyId! },
+    variables: { spaceId: journeyId!, includeSubspace },
     skip: !journeyId,
   });
 

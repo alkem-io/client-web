@@ -27,9 +27,17 @@ export interface CalendarDialogProps {
   onClose: () => void;
   parentPath: string;
   calendarEventNameId?: string;
+  isSubspace?: boolean;
 }
 
-const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, parentPath, calendarEventNameId }) => {
+const CalendarDialog: FC<CalendarDialogProps> = ({
+  open,
+  journeyId,
+  onClose,
+  parentPath,
+  calendarEventNameId,
+  isSubspace = false,
+}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -86,7 +94,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
       aria-labelledby="calendar-events-dialog-title"
       PaperProps={{ sx: { padding: 0, display: `${deletingEvent ? 'none' : 'flex'}`, flexDirection: 'column' } }}
     >
-      <CalendarEventsContainer journeyId={journeyId}>
+      <CalendarEventsContainer journeyId={journeyId} includeSubspace={!isSubspace}>
         {(
           { events, privileges },
           { createEvent, updateEvent, deleteEvent },

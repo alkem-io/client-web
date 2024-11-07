@@ -1,4 +1,4 @@
-query SpaceCalendarEvents($spaceId: UUID!, $limit: Float) {
+query SpaceCalendarEvents($spaceId: UUID!, $includeSubspace: Boolean = false) {
   lookup {
     space(ID: $spaceId) {
       id
@@ -19,7 +19,7 @@ fragment CollaborationTimelineInfo on Collaboration {
         id
         myPrivileges
       }
-      events(limit: $limit) {
+      events {
         ...CalendarEventInfo
       }
     }
@@ -48,9 +48,16 @@ fragment CalendarEventInfo on CalendarEvent {
   profile {
     ...EventProfile
   }
+  subspace @include(if: $includeSubspace) {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
 }
 
-query calendarEventDetails($eventId: UUID!) {
+query calendarEventDetails($eventId: UUID!, $includeSubspace: Boolean = false) {
   lookup {
     calendarEvent(ID: $eventId) {
       ...CalendarEventDetails
@@ -102,13 +109,13 @@ fragment EventProfile on Profile {
   }
 }
 
-mutation createCalendarEvent($eventData: CreateCalendarEventOnCalendarInput!) {
+mutation createCalendarEvent($eventData: CreateCalendarEventOnCalendarInput!, $includeSubspace: Boolean = false) {
   createEventOnCalendar(eventData: $eventData) {
     ...CalendarEventDetails
   }
 }
 
-mutation updateCalendarEvent($eventData: UpdateCalendarEventInput!) {
+mutation updateCalendarEvent($eventData: UpdateCalendarEventInput!, $includeSubspace: Boolean = false) {
   updateCalendarEvent(eventData: $eventData) {
     ...CalendarEventDetails
   }

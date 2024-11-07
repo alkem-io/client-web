@@ -33,6 +33,11 @@ interface CalendarEventsListProps {
       displayName: string;
       description?: string;
     };
+    subspace?: {
+      profile: {
+        displayName: string;
+      };
+    };
   }[];
   highlightedDay?: Date | null;
   actions?: ReactNode;

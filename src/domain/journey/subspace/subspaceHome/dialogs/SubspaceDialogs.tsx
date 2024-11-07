@@ -83,6 +83,7 @@ const SubspaceDialogs = ({
         onClose={handleClose}
         parentPath={journeyUrl}
         calendarEventNameId={calendarEventNameId}
+        isSubspace
       />
       <ShareDialog
         open={dialogOpen === SubspaceDialog.Share}

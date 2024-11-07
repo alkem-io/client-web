@@ -2989,6 +2989,13 @@ export const CalendarEventInfoFragmentDoc = gql`
     profile {
       ...EventProfile
     }
+    subspace @include(if: $includeSubspace) {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
   }
   ${EventProfileFragmentDoc}
 `;
@@ -3003,7 +3010,7 @@ export const CollaborationTimelineInfoFragmentDoc = gql`
           id
           myPrivileges
         }
-        events(limit: $limit) {
+        events {
           ...CalendarEventInfo
         }
       }
@@ -21012,7 +21019,7 @@ export function refetchCreatePostInputQuery(variables: SchemaTypes.CreatePostInp
 }
 
 export const SpaceCalendarEventsDocument = gql`
-  query SpaceCalendarEvents($spaceId: UUID!, $limit: Float) {
+  query SpaceCalendarEvents($spaceId: UUID!, $includeSubspace: Boolean = false) {
     lookup {
       space(ID: $spaceId) {
         id
@@ -21038,7 +21045,7 @@ export const SpaceCalendarEventsDocument = gql`
  * const { data, loading, error } = useSpaceCalendarEventsQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
- *      limit: // value for 'limit'
+ *      includeSubspace: // value for 'includeSubspace'
  *   },
  * });
  */
@@ -21079,7 +21086,7 @@ export function refetchSpaceCalendarEventsQuery(variables: SchemaTypes.SpaceCale
 }
 
 export const CalendarEventDetailsDocument = gql`
-  query calendarEventDetails($eventId: UUID!) {
+  query calendarEventDetails($eventId: UUID!, $includeSubspace: Boolean = false) {
     lookup {
       calendarEvent(ID: $eventId) {
         ...CalendarEventDetails
@@ -21102,6 +21109,7 @@ export const CalendarEventDetailsDocument = gql`
  * const { data, loading, error } = useCalendarEventDetailsQuery({
  *   variables: {
  *      eventId: // value for 'eventId'
+ *      includeSubspace: // value for 'includeSubspace'
  *   },
  * });
  */
@@ -21142,7 +21150,7 @@ export function refetchCalendarEventDetailsQuery(variables: SchemaTypes.Calendar
 }
 
 export const CreateCalendarEventDocument = gql`
-  mutation createCalendarEvent($eventData: CreateCalendarEventOnCalendarInput!) {
+  mutation createCalendarEvent($eventData: CreateCalendarEventOnCalendarInput!, $includeSubspace: Boolean = false) {
     createEventOnCalendar(eventData: $eventData) {
       ...CalendarEventDetails
     }
@@ -21168,6 +21176,7 @@ export type CreateCalendarEventMutationFn = Apollo.MutationFunction<
  * const [createCalendarEventMutation, { data, loading, error }] = useCreateCalendarEventMutation({
  *   variables: {
  *      eventData: // value for 'eventData'
+ *      includeSubspace: // value for 'includeSubspace'
  *   },
  * });
  */
@@ -21191,7 +21200,7 @@ export type CreateCalendarEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateCalendarEventMutationVariables
 >;
 export const UpdateCalendarEventDocument = gql`
-  mutation updateCalendarEvent($eventData: UpdateCalendarEventInput!) {
+  mutation updateCalendarEvent($eventData: UpdateCalendarEventInput!, $includeSubspace: Boolean = false) {
     updateCalendarEvent(eventData: $eventData) {
       ...CalendarEventDetails
     }
@@ -21217,6 +21226,7 @@ export type UpdateCalendarEventMutationFn = Apollo.MutationFunction<
  * const [updateCalendarEventMutation, { data, loading, error }] = useUpdateCalendarEventMutation({
  *   variables: {
  *      eventData: // value for 'eventData'
+ *      includeSubspace: // value for 'includeSubspace'
  *   },
  * });
  */

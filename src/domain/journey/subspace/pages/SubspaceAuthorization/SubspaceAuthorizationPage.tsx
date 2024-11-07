@@ -54,6 +54,7 @@ const SubspaceAuthorizationPage: FC<SubspaceAuthorizationPageProps> = ({ routePr
               allowMembersToCreateCallouts: true,
               allowMembersToCreateSubspaces: true,
               inheritMembershipRights: true,
+              allowEventsFromSubspaces: true,
             },
           },
         },
