@@ -11,7 +11,18 @@ query VirtualContributor($id: UUID_NAMEID!) {
       profile {
         id
         displayName
-        description
+        url
+        location {
+          country
+          city
+        }
+        avatar: visual(type: AVATAR) {
+          ...VisualFull
+        }
+        tagsets {
+          id
+          tags
+        }
       }
     }
     searchVisibility
