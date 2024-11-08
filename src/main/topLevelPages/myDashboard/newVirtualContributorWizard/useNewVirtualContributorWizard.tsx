@@ -12,6 +12,7 @@ import {
   useSubspaceProfileInfoQuery,
   useSubspaceCommunityAndRoleSetIdLazyQuery,
   useAssignRoleToVirtualContributorMutation,
+  refetchDashboardWithMembershipsQuery,
 } from '../../../../core/apollo/generated/apollo-hooks';
 import {
   AiPersonaBodyOfKnowledgeType,
@@ -164,7 +165,10 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   }, [data, user, targetAccount]);
 
   const [createSubspace] = useCreateSubspaceMutation({
-    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: createdSpaceId ?? selectedExistingSpaceId })],
+    refetchQueries: [
+      refetchSubspacesInSpaceQuery({ spaceId: createdSpaceId ?? selectedExistingSpaceId }),
+      refetchDashboardWithMembershipsQuery(),
+    ],
   });
 
   const handleSubspaceCreation = async (parentId: string, vcName: string) => {
@@ -232,7 +236,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   };
 
   const [CreateNewSpace] = useCreateSpaceMutation({
-    refetchQueries: ['MyAccount'],
+    refetchQueries: ['MyAccount', refetchDashboardWithMembershipsQuery()],
   });
 
   const handleCreateSpace = async (values: VirtualContributorFromProps) => {

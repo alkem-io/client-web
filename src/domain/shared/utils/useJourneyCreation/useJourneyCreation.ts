@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import {
+  refetchDashboardWithMembershipsQuery,
   refetchUserProviderQuery,
   SubspaceCardFragmentDoc,
   useCreateSubspaceMutation,
@@ -63,7 +64,7 @@ export const useSubspaceCreation = () => {
       });
     },
 
-    refetchQueries: [refetchUserProviderQuery()],
+    refetchQueries: [refetchUserProviderQuery(), refetchDashboardWithMembershipsQuery()],
   });
 
   // add useCallback

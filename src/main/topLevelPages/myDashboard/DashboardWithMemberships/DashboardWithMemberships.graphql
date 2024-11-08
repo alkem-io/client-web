@@ -1,27 +1,21 @@
-query MyMemberships {
+query DashboardWithMemberships {
   me {
     spaceMembershipsHierarchical {
       id
       space {
-        ...SpaceMembership
+        ...DashboardSpaceMembership
       }
       childMemberships {
         id
         space {
-          ...SpaceMembership
-        }
-        childMemberships {
-          id
-          space {
-            ...SpaceMembership
-          }
+          ...DashboardSpaceMembership
         }
       }
     }
   }
 }
 
-fragment SpaceMembership on Space {
+fragment DashboardSpaceMembership on Space {
   id
   level
   authorization {
@@ -37,8 +31,11 @@ fragment SpaceMembership on Space {
   profile {
     id
     url
-    displayName
     tagline
+    displayName
+    spaceBanner: visual(type: BANNER) {
+      ...VisualUri
+    }
     cardBanner: visual(type: CARD) {
       ...VisualUri
     }

@@ -12,7 +12,7 @@ import { Theme, useMediaQuery } from '@mui/material';
 
 const DashboardDialogs = React.lazy(() => import('./DashboardDialogs/DashboardDialogs'));
 const DashboardActivity = React.lazy(() => import('./DashboardWithMemberships/DashboardActivity'));
-const DashboardSpaces = React.lazy(() => import('./DashboardWithMemberships/DashboardSpaces'));
+const DashboardSpaces = React.lazy(() => import('./DashboardWithMemberships/DashboardSpaces/DashboardSpaces'));
 
 const MyDashboardWithMemberships = () => {
   const { activityEnabled } = useDashboardContext();
@@ -35,7 +35,16 @@ const MyDashboardWithMemberships = () => {
         {isMobile && <DashboardMenu expandable />}
         {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />}
         <CampaignBlock />
-        {activityEnabled ? <DashboardActivity /> : <DashboardSpaces />}
+        {!activityEnabled && (
+          <Suspense fallback={null}>
+            <DashboardSpaces />
+          </Suspense>
+        )}
+        {activityEnabled && (
+          <Suspense fallback={null}>
+            <DashboardActivity />
+          </Suspense>
+        )}
       </ContentColumn>
       <Suspense fallback={null}>
         <DashboardDialogs />

@@ -20,11 +20,7 @@ const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
   const columns = useColumns();
   const visibleSpaces = Math.max(1, Math.floor(columns / 2) - 1);
 
-  const { data } = useRecentSpacesQuery({
-    variables: {
-      limit: visibleSpaces, //todo:b double-check this logic
-    },
-  });
+  const { data } = useRecentSpacesQuery({ variables: { limit: visibleSpaces } });
 
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
   const cardColumns = useMemo(() => (isMobile ? columns / 2 : columns / 4), [isMobile, columns]);
@@ -45,6 +41,7 @@ const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
           journeyTypeName="space"
         />
       ))}
+
       <GridItem columns={cardColumns}>
         <Paper
           variant="outlined"

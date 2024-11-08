@@ -10,7 +10,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  CID: string;
   DID: string;
   DateTime: Date;
   Emoji: string;
@@ -891,6 +890,7 @@ export enum AuthorizationPolicyType {
   Agent = 'AGENT',
   AiPersona = 'AI_PERSONA',
   AiPersonaService = 'AI_PERSONA_SERVICE',
+  AiServer = 'AI_SERVER',
   Application = 'APPLICATION',
   Calendar = 'CALENDAR',
   CalendarEvent = 'CALENDAR_EVENT',
@@ -911,6 +911,8 @@ export enum AuthorizationPolicyType {
   InnovationPack = 'INNOVATION_PACK',
   Invitation = 'INVITATION',
   InMemory = 'IN_MEMORY',
+  Library = 'LIBRARY',
+  LicensePolicy = 'LICENSE_POLICY',
   Licensing = 'LICENSING',
   Link = 'LINK',
   Organization = 'ORGANIZATION',
@@ -948,7 +950,6 @@ export enum AuthorizationPrivilege {
   CommunityAddMember = 'COMMUNITY_ADD_MEMBER',
   CommunityAddMemberVcFromAccount = 'COMMUNITY_ADD_MEMBER_VC_FROM_ACCOUNT',
   CommunityApply = 'COMMUNITY_APPLY',
-  CommunityApplyAccept = 'COMMUNITY_APPLY_ACCEPT',
   CommunityInvite = 'COMMUNITY_INVITE',
   CommunityInviteAccept = 'COMMUNITY_INVITE_ACCEPT',
   CommunityJoin = 'COMMUNITY_JOIN',
@@ -28639,6 +28640,102 @@ export type PendingInvitationsCountQuery = {
   me: {
     __typename?: 'MeQueryResults';
     communityInvitations: Array<{ __typename?: 'CommunityInvitationResult'; id: string }>;
+  };
+};
+
+export type DashboardWithMembershipsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type DashboardWithMembershipsQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    spaceMembershipsHierarchical: Array<{
+      __typename?: 'CommunityMembershipResult';
+      id: string;
+      space: {
+        __typename?: 'Space';
+        id: string;
+        level: SpaceLevel;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+        community: {
+          __typename?: 'Community';
+          roleSet: {
+            __typename?: 'RoleSet';
+            id: string;
+            myMembershipStatus?: CommunityMembershipStatus | undefined;
+            myRoles: Array<CommunityRoleType>;
+          };
+        };
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          url: string;
+          tagline?: string | undefined;
+          displayName: string;
+          spaceBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      };
+      childMemberships: Array<{
+        __typename?: 'CommunityMembershipResult';
+        id: string;
+        space: {
+          __typename?: 'Space';
+          id: string;
+          level: SpaceLevel;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          community: {
+            __typename?: 'Community';
+            roleSet: {
+              __typename?: 'RoleSet';
+              id: string;
+              myMembershipStatus?: CommunityMembershipStatus | undefined;
+              myRoles: Array<CommunityRoleType>;
+            };
+          };
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            url: string;
+            tagline?: string | undefined;
+            displayName: string;
+            spaceBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+        };
+      }>;
+    }>;
+  };
+};
+
+export type DashboardSpaceMembershipFragment = {
+  __typename?: 'Space';
+  id: string;
+  level: SpaceLevel;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  community: {
+    __typename?: 'Community';
+    roleSet: {
+      __typename?: 'RoleSet';
+      id: string;
+      myMembershipStatus?: CommunityMembershipStatus | undefined;
+      myRoles: Array<CommunityRoleType>;
+    };
+  };
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    url: string;
+    tagline?: string | undefined;
+    displayName: string;
+    spaceBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
 };
 
