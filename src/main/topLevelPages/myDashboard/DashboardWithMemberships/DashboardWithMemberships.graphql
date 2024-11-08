@@ -1,4 +1,4 @@
-query DashboardWithMemberships() {
+query DashboardWithMemberships {
   me {
     spaceMembershipsHierarchical {
       id
@@ -21,8 +21,11 @@ fragment DashboardSpaceMembership on Space {
   profile {
     id
     url
-    displayName
     tagline
+    displayName
+    spaceBanner: visual(type: BANNER) {
+      ...VisualUri
+    }
     cardBanner: visual(type: CARD) {
       ...VisualUri
     }

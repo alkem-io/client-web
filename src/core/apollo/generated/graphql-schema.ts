@@ -10,7 +10,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  CID: string;
   DID: string;
   DateTime: Date;
   Emoji: string;
@@ -891,6 +890,7 @@ export enum AuthorizationPolicyType {
   Agent = 'AGENT',
   AiPersona = 'AI_PERSONA',
   AiPersonaService = 'AI_PERSONA_SERVICE',
+  AiServer = 'AI_SERVER',
   Application = 'APPLICATION',
   Calendar = 'CALENDAR',
   CalendarEvent = 'CALENDAR_EVENT',
@@ -911,6 +911,8 @@ export enum AuthorizationPolicyType {
   InnovationPack = 'INNOVATION_PACK',
   Invitation = 'INVITATION',
   InMemory = 'IN_MEMORY',
+  Library = 'LIBRARY',
+  LicensePolicy = 'LICENSE_POLICY',
   Licensing = 'LICENSING',
   Link = 'LINK',
   Organization = 'ORGANIZATION',
@@ -948,7 +950,6 @@ export enum AuthorizationPrivilege {
   CommunityAddMember = 'COMMUNITY_ADD_MEMBER',
   CommunityAddMemberVcFromAccount = 'COMMUNITY_ADD_MEMBER_VC_FROM_ACCOUNT',
   CommunityApply = 'COMMUNITY_APPLY',
-  CommunityApplyAccept = 'COMMUNITY_APPLY_ACCEPT',
   CommunityInvite = 'COMMUNITY_INVITE',
   CommunityInviteAccept = 'COMMUNITY_INVITE_ACCEPT',
   CommunityJoin = 'COMMUNITY_JOIN',
@@ -28659,8 +28660,9 @@ export type DashboardWithMembershipsQuery = {
           __typename?: 'Profile';
           id: string;
           url: string;
-          displayName: string;
           tagline?: string | undefined;
+          displayName: string;
+          spaceBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
       };
@@ -28675,8 +28677,9 @@ export type DashboardWithMembershipsQuery = {
             __typename?: 'Profile';
             id: string;
             url: string;
-            displayName: string;
             tagline?: string | undefined;
+            displayName: string;
+            spaceBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           };
         };
@@ -28693,8 +28696,9 @@ export type DashboardSpaceMembershipFragment = {
     __typename?: 'Profile';
     id: string;
     url: string;
-    displayName: string;
     tagline?: string | undefined;
+    displayName: string;
+    spaceBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
 };

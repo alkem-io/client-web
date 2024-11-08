@@ -7,8 +7,8 @@ import { DoubleArrowOutlined } from '@mui/icons-material';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import { Caption } from '../../../../../core/ui/typography';
 import GridItem from '../../../../../core/ui/grid/GridItem';
+import { PageTitle } from '../../../../../core/ui/typography';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
-import { PageTitle, BlockTitle } from '../../../../../core/ui/typography';
 import { MyMembershipsDialog } from '../../myMemberships/MyMembershipsDialog';
 import JourneyTile from '../../../../../domain/journey/common/JourneyTile/JourneyTile';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
@@ -60,7 +60,7 @@ const DashboardSpaces = () => {
                   variant="square"
                   sx={spaceCardMedia}
                   alt={profile?.displayName}
-                  src={profile?.cardBanner?.uri || defaultJourneyCardBanner}
+                  src={profile?.spaceBanner?.uri || defaultJourneyCardBanner}
                 />
               </Card>
 
@@ -70,9 +70,16 @@ const DashboardSpaces = () => {
                 </PageTitle>
 
                 {tagline && (
-                  <BlockTitle textAlign="center" color={spaceTagline.color} paddingBottom={1.5}>
+                  <Caption
+                    noWrap
+                    component="h2"
+                    textAlign="center"
+                    fontStyle="italic"
+                    color={spaceTagline.color}
+                    paddingBottom={spaceTagline.paddingBottom}
+                  >
                     {tagline}
-                  </BlockTitle>
+                  </Caption>
                 )}
               </Gutters>
             </RouterLink>

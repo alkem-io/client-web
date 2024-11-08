@@ -3483,8 +3483,11 @@ export const DashboardSpaceMembershipFragmentDoc = gql`
     profile {
       id
       url
-      displayName
       tagline
+      displayName
+      spaceBanner: visual(type: BANNER) {
+        ...VisualUri
+      }
       cardBanner: visual(type: CARD) {
         ...VisualUri
       }

@@ -15,7 +15,7 @@ import RouterLink from '../../../../core/ui/link/RouterLink';
 import { gutters } from '../../../../core/ui/grid/utils';
 import { useCreateSpaceLink } from '../useCreateSpaceLink/useCreateSpaceLink';
 
-type Props = {
+type MyMembershipsDialogProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any[]; // TODO:p Find (create if doesn't exist) type for this.
   title: string;
@@ -25,10 +25,18 @@ type Props = {
 
   showFooterText?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Icon?: ReactElement<SvgIconProps, string | JSXElementConstructor<any>>;
+  Icon?: ReactElement<SvgIconProps, string | JSXElementConstructor<any>>; // This any type must stay here.
 };
 
-export const MyMembershipsDialog = ({ data, open, Icon, title, loading, showFooterText = true, onClose }: Props) => {
+export const MyMembershipsDialog = ({
+  data,
+  open,
+  Icon,
+  title,
+  loading,
+  showFooterText = true,
+  onClose,
+}: MyMembershipsDialogProps) => {
   const { link: createSpaceLink } = useCreateSpaceLink();
 
   return (

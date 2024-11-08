@@ -56,11 +56,12 @@ export const useDashboardSpaces = () => {
       },
 
       spaceTitle: {
-        paddingBlock: 16,
+        paddingBlock: 8,
         color: theme.palette.background.paper,
       },
 
       spaceTagline: {
+        paddingBottom: 0.5,
         color: theme.palette.background.paper,
       },
 
