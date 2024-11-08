@@ -28656,6 +28656,18 @@ export type DashboardWithMembershipsQuery = {
         __typename?: 'Space';
         id: string;
         level: SpaceLevel;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+        community: {
+          __typename?: 'Community';
+          roleSet: {
+            __typename?: 'RoleSet';
+            id: string;
+            myMembershipStatus?: CommunityMembershipStatus | undefined;
+            myRoles: Array<CommunityRoleType>;
+          };
+        };
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -28673,6 +28685,18 @@ export type DashboardWithMembershipsQuery = {
           __typename?: 'Space';
           id: string;
           level: SpaceLevel;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          community: {
+            __typename?: 'Community';
+            roleSet: {
+              __typename?: 'RoleSet';
+              id: string;
+              myMembershipStatus?: CommunityMembershipStatus | undefined;
+              myRoles: Array<CommunityRoleType>;
+            };
+          };
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -28692,6 +28716,18 @@ export type DashboardSpaceMembershipFragment = {
   __typename?: 'Space';
   id: string;
   level: SpaceLevel;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  community: {
+    __typename?: 'Community';
+    roleSet: {
+      __typename?: 'RoleSet';
+      id: string;
+      myMembershipStatus?: CommunityMembershipStatus | undefined;
+      myRoles: Array<CommunityRoleType>;
+    };
+  };
   profile: {
     __typename?: 'Profile';
     id: string;

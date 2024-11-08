@@ -1,14 +1,13 @@
-import { Fragment } from 'react';
-
-import { Card, CircularProgress } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { Paper, Button, Avatar } from '@mui/material';
+import { Card, CircularProgress } from '@mui/material';
 import { DoubleArrowOutlined } from '@mui/icons-material';
 
 import Gutters from '../../../../../core/ui/grid/Gutters';
-import { Caption } from '../../../../../core/ui/typography';
 import GridItem from '../../../../../core/ui/grid/GridItem';
 import { PageTitle } from '../../../../../core/ui/typography';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
+import { Caption, Tagline } from '../../../../../core/ui/typography';
 import { MyMembershipsDialog } from '../../myMemberships/MyMembershipsDialog';
 import JourneyTile from '../../../../../domain/journey/common/JourneyTile/JourneyTile';
 import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
@@ -19,7 +18,6 @@ import defaultJourneyCardBanner from '../../../../../domain/journey/defaultVisua
 
 const DashboardSpaces = () => {
   const {
-    t,
     data,
     loading,
 
@@ -39,13 +37,15 @@ const DashboardSpaces = () => {
       subSpacesContainer,
       titleAndDescContainer,
     },
-    setIsDialogOpen,
-    setSelectedSpaceIdx,
-    setSelectedSpaceName,
+
+    handleDialogOpen,
+    handleDialogClose,
   } = useDashboardSpaces();
 
+  const { t } = useTranslation();
+
   return (
-    <Fragment>
+    <>
       {loading && (
         <Paper style={loader}>
           <CircularProgress />
@@ -78,21 +78,19 @@ const DashboardSpaces = () => {
                 </PageTitle>
 
                 {tagline && (
-                  <Caption
-                    noWrap
-                    component="h2"
+                  <Tagline
                     textAlign="center"
                     fontStyle="italic"
                     color={spaceTagline.color}
                     paddingBottom={spaceTagline.paddingBottom}
                   >
                     {tagline}
-                  </Caption>
+                  </Tagline>
                 )}
               </Gutters>
             </RouterLink>
 
-            <Gutters sx={subSpacesContainer}>
+            <Gutters disablePadding marginTop={subSpacesContainer.marginTop}>
               <PageContentBlockSeamless row disablePadding>
                 {childMemberships?.slice(0, visibleSpaces).map(({ space: subSpace }) => {
                   if (!subSpace) {
@@ -118,11 +116,7 @@ const DashboardSpaces = () => {
                       component={Button}
                       sx={exploreAllButton}
                       endIcon={<DoubleArrowOutlined />}
-                      onClick={() => {
-                        setSelectedSpaceIdx(idx);
-                        setSelectedSpaceName(profile?.displayName);
-                        setIsDialogOpen(true);
-                      }}
+                      onClick={handleDialogOpen(idx, profile?.displayName)}
                     >
                       <Caption>
                         {t('pages.home.sections.recentJourneys.seeMoreSubspaces', {
@@ -143,14 +137,10 @@ const DashboardSpaces = () => {
         open={isDialogOpen}
         showFooterText={false}
         title={selectedSpaceName}
-        data={
-          selectedSpaceIdx !== null
-            ? data?.me?.spaceMembershipsHierarchical[selectedSpaceIdx]?.childMemberships || []
-            : []
-        }
-        onClose={() => setIsDialogOpen(false)}
+        data={(selectedSpaceIdx && data?.me?.spaceMembershipsHierarchical[selectedSpaceIdx]?.childMemberships) || []}
+        onClose={handleDialogClose}
       />
-    </Fragment>
+    </>
   );
 };
 

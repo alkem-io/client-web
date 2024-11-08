@@ -1,7 +1,5 @@
-import { ComponentType } from 'react';
-
 import { Trans } from 'react-i18next';
-import { SvgIconProps, DialogContent } from '@mui/material';
+import { DialogContent } from '@mui/material';
 
 import Gutters from '../../../../core/ui/grid/Gutters';
 import { Caption } from '../../../../core/ui/typography';
@@ -13,19 +11,8 @@ import { ExpandableSpaceTree } from './ExpandableSpaceTree';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 
 import { gutters } from '../../../../core/ui/grid/utils';
+import { type MyMembershipsDialogProps } from './MyMembershipsDialog.model';
 import { useCreateSpaceLink } from '../useCreateSpaceLink/useCreateSpaceLink';
-
-type MyMembershipsDialogProps = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any[]; // TODO:p Find (create if doesn't exist) type for this.
-  title: string;
-  open: boolean;
-  loading: boolean;
-  onClose: () => void;
-
-  showFooterText?: boolean;
-  Icon: ComponentType<SvgIconProps>;
-};
 
 export const MyMembershipsDialog = ({
   data,
@@ -40,14 +27,14 @@ export const MyMembershipsDialog = ({
 
   return (
     <DialogWithGrid columns={8} open={open} onClose={onClose}>
-      <DialogHeader icon={<Icon />} title={title} onClose={onClose} />
+      <DialogHeader icon={Icon ? <Icon /> : undefined} title={title} onClose={onClose} />
 
       <DialogContent style={{ paddingTop: 0 }}>
         {loading && <Loading />}
 
         <Gutters disableGap disablePadding>
           {data?.map(spaceMembership => (
-            <ExpandableSpaceTree key={spaceMembership.id} membership={spaceMembership} />
+            <ExpandableSpaceTree key={spaceMembership.space.id} membership={spaceMembership} />
           ))}
 
           <Caption alignSelf="center" paddingTop={gutters(0.5)}>

@@ -18,29 +18,7 @@ import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import { SpaceLevel, CommunityRoleType } from '../../../../core/apollo/generated/graphql-schema';
 
 import defaultCardBanner from '../../../../domain/journey/defaultVisuals/Card.jpg';
-
-type MembershipProps = {
-  space: {
-    id: string;
-    profile: {
-      url: string;
-      displayName: string;
-
-      tagline?: string;
-      cardBanner?: { uri: string };
-    };
-
-    community: {
-      roleSet?: {
-        myRoles?: CommunityRoleType[];
-      };
-    };
-
-    level: SpaceLevel;
-  };
-
-  childMemberships?: MembershipProps[];
-};
+import { MembershipProps } from './MyMembershipsDialog.model';
 
 const VISIBLE_COMMUNITY_ROLES = [CommunityRoleType.Admin, CommunityRoleType.Lead];
 
@@ -65,10 +43,10 @@ export const ExpandableSpaceTree = (props: { membership: MembershipProps }) => {
     [SpaceLevel.Opportunity]: 10,
   };
   const {
-    childMemberships,
     space: {
       level,
       community,
+      childMemberships,
       profile: { url, tagline, cardBanner, displayName },
     },
   } = props.membership;

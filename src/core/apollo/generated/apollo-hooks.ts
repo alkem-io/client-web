@@ -3480,6 +3480,16 @@ export const DashboardSpaceMembershipFragmentDoc = gql`
   fragment DashboardSpaceMembership on Space {
     id
     level
+    authorization {
+      id
+      myPrivileges
+    }
+    community {
+      roleSet {
+        id
+        ...MyMembershipsRoleSet
+      }
+    }
     profile {
       id
       url
@@ -3493,6 +3503,7 @@ export const DashboardSpaceMembershipFragmentDoc = gql`
       }
     }
   }
+  ${MyMembershipsRoleSetFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
 export const ExploreSpacesFragmentDoc = gql`

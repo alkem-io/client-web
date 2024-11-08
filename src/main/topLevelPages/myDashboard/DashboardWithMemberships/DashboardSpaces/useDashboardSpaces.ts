@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 
 import { useTheme } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import { Theme, useMediaQuery } from '@mui/material';
 
 import { useColumns } from '../../../../../core/ui/grid/GridContext';
@@ -13,20 +12,25 @@ export const useDashboardSpaces = () => {
   const [selectedSpaceName, setSelectedSpaceName] = useState('');
   const [selectedSpaceIdx, setSelectedSpaceIdx] = useState<number | null>(null);
 
-  const { data, loading } = useDashboardWithMembershipsQuery();
+  const { data, loading } = useDashboardWithMembershipsQuery({ fetchPolicy: 'network-only' });
 
   const theme = useTheme();
 
   const columns = useColumns();
 
-  const { t } = useTranslation();
-
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
   const cardColumns = useMemo(() => (isMobile ? columns / 2 : columns / 4), [isMobile, columns]);
 
+  const handleDialogOpen = (idx: number, displayName: string) => () => {
+    setSelectedSpaceIdx(idx);
+    setSelectedSpaceName(displayName);
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = () => setIsDialogOpen(false);
+
   return {
-    t,
     data,
     loading,
     cardColumns,
@@ -75,7 +79,7 @@ export const useDashboardSpaces = () => {
       },
 
       subSpacesContainer: {
-        paddingInline: 0,
+        marginTop: 1.5,
       },
 
       exploreAllButton: {
@@ -85,8 +89,8 @@ export const useDashboardSpaces = () => {
       },
     },
     visibleSpaces: Math.max(1, Math.floor(columns / 2) - 1),
-    setIsDialogOpen,
-    setSelectedSpaceIdx,
-    setSelectedSpaceName,
+
+    handleDialogOpen,
+    handleDialogClose,
   };
 };
