@@ -12,7 +12,7 @@ export const useDashboardSpaces = () => {
   const [selectedSpaceName, setSelectedSpaceName] = useState('');
   const [selectedSpaceIdx, setSelectedSpaceIdx] = useState<number | null>(null);
 
-  const { data, loading } = useDashboardWithMembershipsQuery({ fetchPolicy: 'network-only' });
+  const { data, loading } = useDashboardWithMembershipsQuery();
 
   const theme = useTheme();
 
