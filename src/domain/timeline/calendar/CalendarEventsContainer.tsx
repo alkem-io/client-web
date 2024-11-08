@@ -68,7 +68,7 @@ export interface CalendarEventsEntities {
 
 export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ journeyId, parentJourneyId, children }) => {
   const { data: spaceData, loading } = useSpaceCalendarEventsQuery({
-    variables: { spaceId: journeyId!, includeSubspace: Boolean(parentJourneyId) },
+    variables: { spaceId: journeyId!, includeSubspace: !Boolean(parentJourneyId) },
     skip: !journeyId,
   });
 
