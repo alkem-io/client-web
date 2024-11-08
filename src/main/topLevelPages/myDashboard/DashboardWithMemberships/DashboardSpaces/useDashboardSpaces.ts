@@ -47,19 +47,15 @@ export const useDashboardSpaces = () => {
         height: '100%',
       },
 
-      spacesContainer: {
-        padding: 16,
-      },
-
       spaceCard: {
         borderBottomLeftRadius: 0,
         borderBottomRightRadius: 0,
       },
 
       spaceCardMedia: {
-        width: '100vw', // Keep this in order to span the image across the card.
         height: '180px',
-        maxWidth: '100%', //  Keep this in order to prevent the image from stretching.
+        minWidth: '100%',
+        objectFit: 'cover',
       },
 
       titleAndDescContainer: {
@@ -69,17 +65,11 @@ export const useDashboardSpaces = () => {
       },
 
       spaceTitle: {
-        paddingBlock: 8,
         color: theme.palette.background.paper,
       },
 
       spaceTagline: {
-        paddingBottom: 0.5,
         color: theme.palette.background.paper,
-      },
-
-      subSpacesContainer: {
-        marginTop: 1.5,
       },
 
       exploreAllButton: {

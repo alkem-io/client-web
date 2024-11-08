@@ -35,7 +35,16 @@ const MyDashboardWithMemberships = () => {
         {isMobile && <DashboardMenu expandable />}
         {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />}
         <CampaignBlock />
-        {activityEnabled ? <DashboardActivity /> : <DashboardSpaces />}
+        {!activityEnabled && (
+          <Suspense fallback={null}>
+            <DashboardSpaces />
+          </Suspense>
+        )}
+        {activityEnabled && (
+          <Suspense fallback={null}>
+            <DashboardActivity />
+          </Suspense>
+        )}
       </ContentColumn>
       <Suspense fallback={null}>
         <DashboardDialogs />
