@@ -42,7 +42,7 @@ const Outline = (props: DashboardNavigationProps) => {
 const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
   const { t } = useTranslation();
 
-  const { journeyId, journeyTypeName, journeyPath, parentSpaceId: parentJourneyId, loading } = useRouteResolver();
+  const { journeyId, journeyTypeName, journeyPath, parentSpaceId, loading } = useRouteResolver();
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
@@ -90,7 +90,7 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
             journeyId={journeyId}
             journeyPath={journeyPath}
             journeyUrl={subspace?.profile.url}
-            parentJourneyId={parentJourneyId}
+            parentSpaceId={parentSpaceId}
             loading={loading}
             welcome={
               <JourneyDashboardWelcomeBlock

@@ -29,7 +29,6 @@ query AccountResourcesInfo($accountId: UUID!) {
           collaborationTemplatesCount
           communityGuidelinesTemplatesCount
           innovationFlowTemplatesCount
-          collaborationTemplatesCount
           postTemplatesCount
           whiteboardTemplatesCount
         }

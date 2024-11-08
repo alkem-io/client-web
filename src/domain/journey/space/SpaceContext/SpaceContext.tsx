@@ -125,7 +125,15 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       canReadPosts: contextPrivileges.includes(AuthorizationPrivilege.Read),
       contextPrivileges,
     };
-  }, [spacePrivileges, contextPrivileges, canReadSubspaces, communityPrivileges, canCreate, canCreateSubspaces]);
+  }, [
+    spacePrivileges,
+    contextPrivileges,
+    canReadSubspaces,
+    communityPrivileges,
+    canCreate,
+    canCreateSubspaces,
+    collaborationPrivileges,
+  ]);
 
   const profile = useMemo(() => {
     return {
