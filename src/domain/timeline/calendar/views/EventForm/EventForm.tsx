@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Form, useFormikContext } from 'formik';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Box, DialogContent, FormControlLabel, Switch } from '@mui/material';
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import { gutters } from '../../../../../core/ui/grid/utils';
@@ -121,14 +121,7 @@ const EventForm = ({ typeOptions, isSubmitting, actions, temporaryLocation = fal
                     }}
                   />
                 }
-                label={
-                  <Trans
-                    t={t}
-                    i18nKey="calendar.event.visibleOnParentCalendar"
-                    values={{ parent: 'Parent placeholder' }}
-                    components={{ b: <strong /> }}
-                  />
-                }
+                label={t('calendar.event.visibleOnParentCalendar')}
                 sx={{ flexShrink: 0 }}
               />
             </Gutters>

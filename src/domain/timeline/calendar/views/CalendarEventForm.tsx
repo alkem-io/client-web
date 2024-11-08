@@ -123,6 +123,7 @@ const CalendarEventForm = ({
     displayName: displayNameValidator,
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     type: yup.string().required(t('common.field-required')),
+    visibleOnParentCalendar: yup.boolean().required(),
     durationMinutes: yup
       .number()
       .positive()
