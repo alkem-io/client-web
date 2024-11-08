@@ -26,6 +26,7 @@ export interface CalendarEventFormProps {
   isSubmitting: boolean;
   actions?: ReactNode;
   temporaryLocation?: boolean;
+  isSubspace?: boolean;
 }
 
 const typeOptions: FormikSelectValue[] = [
@@ -55,6 +56,7 @@ const CalendarEventForm = ({
   isSubmitting,
   actions,
   temporaryLocation = false,
+  isSubspace = false,
 }: CalendarEventFormProps) => {
   const { t } = useTranslation();
 
@@ -164,6 +166,7 @@ const CalendarEventForm = ({
           isSubmitting={isSubmitting}
           actions={actions}
           temporaryLocation={temporaryLocation}
+          isSubspace={isSubspace}
         />
       </Formik>
     </GridProvider>

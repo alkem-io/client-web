@@ -153,6 +153,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
                   isCreatingEventInit ? <div>&nbsp;</div> : <BackButton onClick={() => setIsCreatingEvent(false)} />
                 }
                 temporaryLocation={temporaryLocation}
+                isSubspace={isSubspace}
               />
             );
 
@@ -185,6 +186,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
                     onClose={handleClose}
                     isSubmitting={updatingCalendarEvent}
                     actions={<BackButton onClick={() => setEditingEventId(undefined)} />}
+                    isSubspace={isSubspace}
                   />
                 )}
               </CalendarEventDetailContainer>
