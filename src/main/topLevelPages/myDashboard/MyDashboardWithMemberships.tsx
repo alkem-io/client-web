@@ -8,6 +8,7 @@ import { DashboardMenu } from './DashboardMenu/DashboardMenu';
 import ContentColumn from '../../../core/ui/content/ContentColumn';
 import { useDashboardContext } from './DashboardContext';
 import MyResources from './myResources/MyResources';
+import { Theme, useMediaQuery } from '@mui/material';
 
 const DashboardDialogs = React.lazy(() => import('./DashboardDialogs/DashboardDialogs'));
 const DashboardActivity = React.lazy(() => import('./DashboardWithMemberships/DashboardActivity'));
@@ -19,13 +20,19 @@ const MyDashboardWithMemberships = () => {
     fetchPolicy: 'network-only',
   });
 
+  // using the isMobile convention but this is actually a tablet breakpoint
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+
   return (
     <PageContentColumn columns={12}>
-      <InfoColumn>
-        <DashboardMenu />
-        <MyResources />
-      </InfoColumn>
+      {!isMobile && (
+        <InfoColumn>
+          <DashboardMenu />
+          <MyResources />
+        </InfoColumn>
+      )}
       <ContentColumn>
+        {isMobile && <DashboardMenu expandable />}
         {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />}
         <CampaignBlock />
         {activityEnabled ? <DashboardActivity /> : <DashboardSpaces />}

@@ -30,22 +30,29 @@ const DashboardActivity = () => {
 
   const blockColumns = isMobile ? columns : columns / 2;
 
+  const renderSpaceActivityBlock = () => (
+    <PageContentColumn key="space-activity" columns={blockColumns}>
+      <PageContentBlock>
+        <PageContentBlockHeader title={t('pages.home.sections.latestContributions.title')} />
+        <LatestContributions spaceMemberships={flatSpacesWithMemberships} />
+      </PageContentBlock>
+    </PageContentColumn>
+  );
+
+  const renderMyActivityBlock = () => (
+    <PageContentColumn key="my-activity" columns={blockColumns}>
+      <PageContentBlock>
+        <PageContentBlockHeader title={t('pages.home.sections.myLatestContributions.title')} />
+        <MyLatestContributions spaceMemberships={flatSpacesWithMemberships} />
+      </PageContentBlock>
+    </PageContentColumn>
+  );
+
   return (
     <>
       <RecentJourneysList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />
-      <PageContentColumn columns={blockColumns}>
-        <PageContentBlock>
-          <PageContentBlockHeader title={t('pages.home.sections.latestContributions.title')} />
-          <LatestContributions spaceMemberships={flatSpacesWithMemberships} />
-        </PageContentBlock>
-      </PageContentColumn>
-      <PageContentColumn columns={blockColumns}>
-        <PageContentBlock>
-          <PageContentBlockHeader title={t('pages.home.sections.myLatestContributions.title')} />
-          <MyLatestContributions spaceMemberships={flatSpacesWithMemberships} />
-        </PageContentBlock>
-      </PageContentColumn>
-
+      {!isMobile && [renderSpaceActivityBlock(), renderMyActivityBlock()]}
+      {isMobile && [renderMyActivityBlock(), renderSpaceActivityBlock()]}
       <MyMembershipsDialog
         Icon={<SpaceIcon />}
         loading={myMembershipsLoading}

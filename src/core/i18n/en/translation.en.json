@@ -360,6 +360,7 @@
     "virtual-contributor": "Virtual Contributor",
     "collaborationTool": "Collaboration tool",
     "optional": "optional",
+    "menu": "Menu",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
