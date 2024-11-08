@@ -16,6 +16,9 @@ import {
 } from '../../../../domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { usePendingInvitationsCountQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import BadgeCounter from '../../../../core/ui/icon/BadgeCounter';
+import PageContentBlockCollapsible from '../../../../core/ui/content/PageContentBlockCollapsible';
+import { Menu as MenuIcon } from '@mui/icons-material';
+import Gutters from '../../../../core/ui/grid/Gutters';
 
 /**
  * DashboardMenu Component
@@ -26,7 +29,7 @@ import BadgeCounter from '../../../../core/ui/icon/BadgeCounter';
  *
  * @component
  */
-export const DashboardMenu = ({ compact = false }: DashboardMenuProps) => {
+export const DashboardMenu = ({ compact = false, expandable = false }: DashboardMenuProps) => {
   const { t } = useTranslation();
   const { activityEnabled, setActivityEnabled, setIsOpen } = useDashboardContext();
   const { items, loading: itemsConfigLoading } = useHomeMenuItems();
@@ -109,13 +112,35 @@ export const DashboardMenu = ({ compact = false }: DashboardMenuProps) => {
     return null;
   }
 
-  return (
-    <PageContentBlock disablePadding>
-      <List disablePadding>
-        {items
-          .filter(item => item.isVisible(activityEnabled, compact))
-          .map((item, index) => renderMenuItem(item, index))}
-      </List>
-    </PageContentBlock>
+  const renderContent = () => (
+    <List disablePadding>
+      {items.filter(item => item.isVisible(activityEnabled, compact)).map((item, index) => renderMenuItem(item, index))}
+    </List>
   );
+
+  if (expandable) {
+    return (
+      <PageContentBlockCollapsible
+        disablePadding
+        disableGap
+        collapseHeaderProps={{
+          paddingY: gutters(0.5),
+          paddingX: gutters(0.8),
+        }}
+        header={
+          <Gutters row disableGap disablePadding sx={{ position: 'relative' }}>
+            {pendingInvitationsCount > 0 && (
+              <BadgeCounter count={pendingInvitationsCount} size="small" sx={{ position: 'absolute' }} />
+            )}
+            <MenuIcon fontSize="small" sx={{ color: 'neutral.light' }} />
+            <Caption paddingLeft={gutters()}>{t('common.menu')}</Caption>
+          </Gutters>
+        }
+      >
+        {renderContent()}
+      </PageContentBlockCollapsible>
+    );
+  }
+
+  return <PageContentBlock disablePadding>{renderContent()}</PageContentBlock>;
 };

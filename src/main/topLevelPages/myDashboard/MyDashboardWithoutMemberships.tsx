@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { Button } from '@mui/material';
+import { Button, Theme, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
 import CampaignBlock from './Campaigns/CampaignBlock';
@@ -24,12 +24,18 @@ const MyDashboardWithoutMemberships = () => {
     fetchPolicy: 'network-only',
   });
 
+  // using the isMobile convention but this is actually a tablet breakpoint
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
+
   return (
     <PageContentColumn columns={12}>
-      <InfoColumn>
-        <DashboardMenu compact />
-      </InfoColumn>
+      {!isMobile && (
+        <InfoColumn>
+          <DashboardMenu compact />
+        </InfoColumn>
+      )}
       <ContentColumn>
+        {isMobile && <DashboardMenu compact expandable />}
         {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />}
         <CampaignBlock />
         <InvitationsBlock />
