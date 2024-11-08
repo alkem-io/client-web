@@ -29,6 +29,7 @@ interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
   maxLength?: number;
   hideImageOptions?: boolean;
+  temporaryLocation?: boolean;
 }
 
 interface Offset {
@@ -61,7 +62,19 @@ const editorOptions: Partial<EditorOptions> = {
 
 export const MarkdownInput = memo(
   forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
-    ({ value, onChange, maxLength, controlsVisible = 'focused', hideImageOptions, onFocus, onBlur }, ref) => {
+    (
+      {
+        value,
+        onChange,
+        maxLength,
+        controlsVisible = 'focused',
+        hideImageOptions,
+        onFocus,
+        onBlur,
+        temporaryLocation = false,
+      },
+      ref
+    ) => {
       const containerRef = useRef<HTMLDivElement>(null);
       const toolbarRef = useRef<HTMLDivElement>(null);
 
@@ -262,6 +275,7 @@ export const MarkdownInput = memo(
             hideImageOptions={hideImageOptions}
             onDialogOpen={handleDialogOpen}
             onDialogClose={handleDialogClose}
+            temporaryLocation={temporaryLocation}
           />
           <Box
             width="100%"

@@ -46,7 +46,6 @@ interface SpaceDashboardViewProps {
   organization?: unknown;
   host: ContributorViewProps | undefined;
   leadUsers: JourneyDashboardWelcomeBlockProps['leadUsers'];
-  leadVirtualContributors: ContributorViewProps[] | undefined;
   communityReadAccess: boolean;
   timelineReadAccess?: boolean;
   entityReadAccess: boolean;
@@ -77,7 +76,6 @@ const SpaceDashboardView = ({
   timelineReadAccess = false,
   host,
   leadUsers,
-  leadVirtualContributors,
   journeyTypeName,
   callouts,
   shareUpdatesUrl,
@@ -146,7 +144,6 @@ const SpaceDashboardView = ({
               leadUsers={leadUsers}
               onContactLeadUser={receiver => sendMessage('user', receiver)}
               leadOrganizations={welcomeBlockContributors}
-              leadVirtualContributors={leadVirtualContributors}
               onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
               journeyTypeName="space"
               member={myMembershipStatus === CommunityMembershipStatus.Member}

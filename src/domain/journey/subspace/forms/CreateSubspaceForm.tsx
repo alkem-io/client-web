@@ -104,6 +104,7 @@ export const CreateSubspaceForm: FC<CreateSubspaceFormProps> = ({ isSubmitting, 
               helperText={t('context.subspace.background.description')}
               disabled={isSubmitting}
               maxLength={MARKDOWN_TEXT_LENGTH}
+              temporaryLocation
             />
             <FormikMarkdownField
               name="vision"
@@ -112,6 +113,7 @@ export const CreateSubspaceForm: FC<CreateSubspaceFormProps> = ({ isSubmitting, 
               helperText={t('context.subspace.vision.description')}
               disabled={isSubmitting}
               maxLength={MARKDOWN_TEXT_LENGTH}
+              temporaryLocation
             />
             <TagsetField
               name="tags"

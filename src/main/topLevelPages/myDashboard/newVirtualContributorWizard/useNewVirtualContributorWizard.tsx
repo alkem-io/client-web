@@ -1,4 +1,4 @@
-import { ComponentType, useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   refetchSubspacesInSpaceQuery,
   useCreateSpaceMutation,
@@ -41,10 +41,12 @@ import {
   useCalloutCreation,
 } from '../../../../domain/collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreation';
 import SetupVCInfo from './SetupVCInfo';
-import { info } from '../../../../core/logging/sentry/log';
+import { info, TagCategoryValues } from '../../../../core/logging/sentry/log';
 import { compact } from 'lodash';
 import InfoDialog from '../../../../core/ui/dialogs/InfoDialog';
 import CreateExternalAIDialog, { ExternalVcFormValues } from './CreateExternalAIDialog';
+import { useNewVirtualContributorWizardProvided, UserAccountProps } from './useNewVirtualContributorProps';
+import { info as logInfo } from '../../../../core/logging/sentry/log';
 
 const SPACE_LABEL = '(space)';
 const entityNamePostfixes = {
@@ -60,60 +62,6 @@ type Step =
   | 'externalProvider'
   | 'loadingVCSetup'
   | 'insufficientPrivileges';
-
-export interface UserAccountProps {
-  id: string;
-  host?: {
-    id: string;
-  };
-  spaces: Array<{
-    id: string;
-    community: {
-      id: string;
-      roleSet: {
-        id: string;
-        authorization?: {
-          id: string;
-          myPrivileges?: AuthorizationPrivilege[] | undefined;
-        };
-      };
-    };
-    profile: {
-      id: string;
-      displayName: string;
-      url: string;
-    };
-    authorization?: {
-      id: string;
-      myPrivileges?: AuthorizationPrivilege[] | undefined;
-    };
-    subspaces: Array<{
-      id: string;
-      type: SpaceType;
-      profile: {
-        id: string;
-        displayName: string;
-        url: string;
-      };
-      community: {
-        id: string;
-        roleSet: {
-          id: string;
-          authorization?: {
-            myPrivileges?: AuthorizationPrivilege[] | undefined;
-          };
-        };
-      };
-    }>;
-  }>;
-}
-
-interface useNewVirtualContributorWizardProvided {
-  startWizard: (initAccount?: UserAccountProps | undefined) => void;
-  NewVirtualContributorWizard: ComponentType<NewVirtualContributorWizardProps>;
-}
-
-interface NewVirtualContributorWizardProps {}
 
 // generate name for the space/subspace based on the VC name
 // index is needed in case of canceling the flow. Creation with the same name/nameID leads to issues accessing it later
@@ -132,16 +80,14 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [dialogOpen, setDialogOpen] = useState(false);
   const [step, setStep] = useState<Step>('initial');
 
-  const [targetAccount, setTargetAccount] = useState<UserAccountProps | undefined>(undefined);
-  const [createdSpaceId, setCreatedSpaceId] = useState<string | undefined>(undefined);
-  const [bokId, setbokId] = useState<string | undefined>(undefined);
-  const [bokRoleSetId, setBokRoleSetId] = useState<string | undefined>(undefined);
-  const [boKParentRoleSetId, setBoKParentRoleSetId] = useState<string | undefined>(undefined);
+  const [targetAccount, setTargetAccount] = useState<UserAccountProps>();
+  const [createdSpaceId, setCreatedSpaceId] = useState<string>();
+  const [bokId, setbokId] = useState<string>();
+  const [bokRoleSetId, setBokRoleSetId] = useState<string>();
+  const [boKParentRoleSetId, setBoKParentRoleSetId] = useState<string>();
   const [creationIndex, setCreationIndex] = useState<number>(0); // used in case of space deletion
-  const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps | undefined>(
-    undefined
-  );
-  const [calloutPostData, setCalloutPostData] = useState<PostsFormValues | undefined>(undefined);
+  const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps>();
+  const [calloutPostData, setCalloutPostData] = useState<PostsFormValues>();
   const [tryCreateCallout, setTryCreateCallout] = useState<boolean>(false);
 
   const startWizard = (initAccount: UserAccountProps | undefined) => {
@@ -271,11 +217,18 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     const { myPrivileges: spaceMyPrivileges } = spacePrivileges;
     const { myPrivileges: collaborationMyPrivileges } = spacePrivileges.collaboration;
 
-    return (
+    const hasRequiredPrivileges =
       spaceMyPrivileges?.includes(AuthorizationPrivilege.CreateSubspace) &&
       collaborationMyPrivileges?.includes(AuthorizationPrivilege.AccessVirtualContributor) &&
-      collaborationMyPrivileges?.includes(AuthorizationPrivilege.CommunityAddMemberVcFromAccount)
-    );
+      collaborationMyPrivileges?.includes(AuthorizationPrivilege.CommunityAddMemberVcFromAccount);
+
+    if (!hasRequiredPrivileges) {
+      logInfo(`Insuficient privileges to create a VC: ${JSON.stringify(spacePrivileges)}`, {
+        category: TagCategoryValues.VC,
+      });
+    }
+
+    return hasRequiredPrivileges;
   };
 
   const [CreateNewSpace] = useCreateSpaceMutation({

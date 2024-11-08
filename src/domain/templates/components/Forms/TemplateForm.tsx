@@ -15,6 +15,7 @@ interface TemplateFormProps {
   template: AnyTemplate;
   onSubmit: (values: AnyTemplateFormSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<AnyTemplate>) => ReactNode);
+  temporaryLocation?: boolean;
 }
 
 export type AnyTemplateFormSubmittedValues =
@@ -26,16 +27,16 @@ export type AnyTemplateFormSubmittedValues =
   | CollaborationTemplateFormSubmittedValues
   | WhiteboardTemplateFormSubmittedValues;
 
-const TemplateForm = ({ template, ...rest }: TemplateFormProps) => {
+const TemplateForm = ({ template, temporaryLocation = false, ...rest }: TemplateFormProps) => {
   switch (template.type) {
     case TemplateType.Callout:
-      return <CalloutTemplateForm template={template} {...rest} />;
+      return <CalloutTemplateForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
     case TemplateType.Collaboration:
       return <CollaborationTemplateForm template={template} {...rest} />;
     case TemplateType.CommunityGuidelines:
-      return <CommunityGuidelinesTemplateForm template={template} {...rest} />;
+      return <CommunityGuidelinesTemplateForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
     case TemplateType.Post:
-      return <PostTemplateForm template={template} {...rest} />;
+      return <PostTemplateForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
     case TemplateType.InnovationFlow:
       return <InnovationFlowTemplateForm template={template} {...rest} />;
     case TemplateType.Whiteboard:
