@@ -31,7 +31,7 @@ export interface CalendarEventFormData
 
 export interface CalendarEventsContainerProps {
   journeyId: string | undefined;
-  includeSubspace?: boolean;
+  parentJourneyId: string | undefined;
   children: (
     entities: CalendarEventsEntities,
     actions: CalendarEventsActions,
@@ -66,9 +66,9 @@ export interface CalendarEventsEntities {
   };
 }
 
-export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ journeyId, includeSubspace, children }) => {
+export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ journeyId, parentJourneyId, children }) => {
   const { data: spaceData, loading } = useSpaceCalendarEventsQuery({
-    variables: { spaceId: journeyId!, includeSubspace },
+    variables: { spaceId: journeyId!, includeSubspace: Boolean(parentJourneyId) },
     skip: !journeyId,
   });
 
@@ -95,6 +95,10 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ jour
   let refetchQueriesList: MutationBaseOptions['refetchQueries'] = [];
 
   refetchQueriesList = [refetchSpaceCalendarEventsQuery({ spaceId: journeyId! })];
+
+  if (parentJourneyId) {
+    refetchQueriesList.push(refetchSpaceCalendarEventsQuery({ spaceId: parentJourneyId! }));
+  }
 
   const createEvent = useCallback(
     (event: CalendarEventFormData) => {

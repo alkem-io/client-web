@@ -71,6 +71,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                 open={dialog === 'calendar'}
                 onClose={backToDashboard}
                 journeyId={spaceId}
+                parentJourneyId={undefined}
                 parentPath={entities.space?.profile.url ?? ''}
                 calendarEventNameId={calendarEventNameId}
               />
