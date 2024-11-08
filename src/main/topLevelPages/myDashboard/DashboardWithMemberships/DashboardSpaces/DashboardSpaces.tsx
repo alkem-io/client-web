@@ -136,7 +136,9 @@ const DashboardSpaces = () => {
         showFooterText={false}
         title={selectedSpaceName}
         data={
-          selectedSpaceIdx !== null ? data?.me?.spaceMembershipsHierarchical[selectedSpaceIdx]?.childMemberships : []
+          selectedSpaceIdx !== null
+            ? data?.me?.spaceMembershipsHierarchical[selectedSpaceIdx]?.childMemberships || []
+            : []
         }
         onClose={() => setIsDialogOpen(false)}
       />
