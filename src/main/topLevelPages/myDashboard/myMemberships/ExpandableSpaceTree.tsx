@@ -98,7 +98,7 @@ export const ExpandableSpaceTree = (props: { membership: MembershipProps }) => {
                 alt={t('common.avatar-of', { space: displayName })}
                 aria-label="Space avatar"
               >
-                {displayName[0]}
+                {displayName[0] ?? '?'}
               </Avatar>
             }
           >
@@ -124,6 +124,7 @@ export const ExpandableSpaceTree = (props: { membership: MembershipProps }) => {
               sx={{ visibility: childMemberships?.length ? 'visible' : 'hidden' }}
               endIcon={isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
               onClick={toggleExpanded}
+              aria-expanded={isExpanded}
               area-label={isExpanded ? t('buttons.collapse') : t('buttons.expand')}
             />
           </Gutters>

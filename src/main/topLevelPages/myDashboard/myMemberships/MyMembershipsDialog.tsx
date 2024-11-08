@@ -57,7 +57,7 @@ export const MyMembershipsDialog = ({
                 i18nKey="pages.home.sections.myMemberships.seeMore"
                 components={{
                   spaces: <RouterLink to="/spaces" underline="always" />,
-                  landing: <RouterLink to={createSpaceLink ?? ''} underline="always" />,
+                  landing: <RouterLink to={createSpaceLink} underline="always" />,
                 }}
               />
             )}

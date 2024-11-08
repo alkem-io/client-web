@@ -34,6 +34,15 @@ export const useDashboardSpaces = () => {
     selectedSpaceIdx,
     selectedSpaceName,
     styles: {
+      loader: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+
+        width: '100%',
+        height: '100%',
+      },
+
       spacesContainer: {
         padding: 16,
       },

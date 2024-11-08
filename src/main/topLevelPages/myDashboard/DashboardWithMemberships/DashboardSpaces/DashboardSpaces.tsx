@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 
-import { Card } from '@mui/material';
+import { Card, CircularProgress } from '@mui/material';
 import { Paper, Button, Avatar } from '@mui/material';
 import { DoubleArrowOutlined } from '@mui/icons-material';
 
@@ -22,12 +22,14 @@ const DashboardSpaces = () => {
     t,
     data,
     loading,
+
     cardColumns,
     isDialogOpen,
     visibleSpaces,
     selectedSpaceIdx,
     selectedSpaceName,
     styles: {
+      loader,
       spaceCard,
       spaceTitle,
       spaceTagline,
@@ -44,6 +46,12 @@ const DashboardSpaces = () => {
 
   return (
     <Fragment>
+      {loading && (
+        <Paper style={loader}>
+          <CircularProgress />
+        </Paper>
+      )}
+
       {data?.me.spaceMembershipsHierarchical?.map(({ space, childMemberships }, idx) => {
         if (!space) {
           return null;
