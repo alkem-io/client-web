@@ -1,4 +1,4 @@
-import { ReactElement, JSXElementConstructor } from 'react';
+import { ComponentType } from 'react';
 
 import { Trans } from 'react-i18next';
 import { SvgIconProps, DialogContent } from '@mui/material';
@@ -24,8 +24,7 @@ type MyMembershipsDialogProps = {
   onClose: () => void;
 
   showFooterText?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Icon?: ReactElement<SvgIconProps, string | JSXElementConstructor<any>>; // This any type must stay here.
+  Icon: ComponentType<SvgIconProps>;
 };
 
 export const MyMembershipsDialog = ({
@@ -41,7 +40,7 @@ export const MyMembershipsDialog = ({
 
   return (
     <DialogWithGrid columns={8} open={open} onClose={onClose}>
-      <DialogHeader icon={Icon} title={title} onClose={onClose} />
+      <DialogHeader icon={<Icon />} title={title} onClose={onClose} />
 
       <DialogContent style={{ paddingTop: 0 }}>
         {loading && <Loading />}

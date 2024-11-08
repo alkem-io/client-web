@@ -54,7 +54,7 @@ const DashboardActivity = () => {
       {!isMobile && [renderSpaceActivityBlock(), renderMyActivityBlock()]}
       {isMobile && [renderMyActivityBlock(), renderSpaceActivityBlock()]}
       <MyMembershipsDialog
-        Icon={<SpaceIcon />}
+        Icon={SpaceIcon}
         loading={myMembershipsLoading}
         open={isMyMembershipsDialogOpen}
         title={t('pages.home.sections.myMemberships.title')}

@@ -19,7 +19,6 @@ npm-debug.log
 
 # misc
 .DS_Store
-.env.base
 .build/docker/.env.base
 .env.local
 .env.development.local
