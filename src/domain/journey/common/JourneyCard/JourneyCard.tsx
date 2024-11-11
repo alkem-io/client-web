@@ -1,5 +1,5 @@
-import React, { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
-import { Box, SvgIconProps } from '@mui/material';
+import { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
+import { Box, Paper, SvgIconProps, useTheme } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import ContributeCard, { ContributeCardProps } from '../../../../core/ui/card/ContributeCard';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
@@ -64,7 +64,9 @@ const JourneyCard = ({
       : {};
 
   return (
-    <ContributeCard {...containerProps}>
+    <ContributeCard {...containerProps} sx={{ ...containerProps.sx, position: 'relative' }}>
+      {isPrivate && <PrivacyIcon />}
+
       <Box {...wrapperProps}>
         <CardBanner
           src={banner?.uri || defaultCardBanner}
@@ -98,3 +100,31 @@ const JourneyCard = ({
 };
 
 export default JourneyCard;
+
+export function PrivacyIcon() {
+  const theme = useTheme();
+
+  return (
+    <Paper
+      elevation={3}
+      style={{
+        position: 'absolute',
+        zIndex: 10,
+        top: 10,
+        right: 10,
+
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+
+        width: 25,
+        height: 25,
+        padding: 16,
+        borderRadius: 25,
+        backgroundColor: theme.palette.background.paper,
+      }}
+    >
+      <LockOutlined fontSize="small" color="primary" />
+    </Paper>
+  );
+}

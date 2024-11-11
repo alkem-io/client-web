@@ -51,7 +51,6 @@ const DashboardSpaces = () => {
 
         const { id, profile } = space;
         const { tagline } = profile;
-
         const hasChildMemberships = childMemberships?.length > 0;
 
         return (
