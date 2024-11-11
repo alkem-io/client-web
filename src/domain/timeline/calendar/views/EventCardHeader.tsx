@@ -14,6 +14,7 @@ import {
 import { CalendarIcon } from '../icons/CalendarIcon';
 import { ClockIcon } from '../icons/ClockIcon';
 import CalendarEventBadge from './CalendarEventBadge';
+import { SubspaceIconV2 } from '../../../journey/subspace/icon/SubspaceIconV2';
 
 export interface EventCardHeaderProps {
   event:
@@ -24,6 +25,11 @@ export interface EventCardHeaderProps {
         wholeDay?: boolean;
         profile: {
           displayName: string;
+        };
+        subspace?: {
+          profile: {
+            displayName: string;
+          };
         };
       }
     | undefined;
@@ -65,6 +71,9 @@ const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderP
                 <CardHeaderDetail iconComponent={CalendarIcon}>{formatLongDate(endDate)}</CardHeaderDetail>
                 <CardHeaderDetail iconComponent={ClockIcon}>{formatTime(endDate)}</CardHeaderDetail>
               </>
+            )}
+            {event?.subspace && (
+              <CardHeaderDetail iconComponent={SubspaceIconV2}>{event.subspace.profile.displayName}</CardHeaderDetail>
             )}
           </>
         )}

@@ -186,6 +186,7 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
             parentSpaceId={createSpaceState.parentSpaceId}
           />
           <SubspaceDialogs
+            parentJourneyId={parentJourneyId}
             dialogOpen={dialog}
             callouts={callouts}
             journeyId={journeyId}

@@ -999,7 +999,7 @@ export type Calendar = {
   /** A single CalendarEvent */
   event?: Maybe<CalendarEvent>;
   /** The list of CalendarEvents for this Calendar. */
-  events?: Maybe<Array<CalendarEvent>>;
+  events: Array<CalendarEvent>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The date at which the entity was last updated. */
@@ -1008,11 +1008,6 @@ export type Calendar = {
 
 export type CalendarEventArgs = {
   ID: Scalars['UUID_NAMEID'];
-};
-
-export type CalendarEventsArgs = {
-  IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
-  limit?: InputMaybe<Scalars['Float']>;
 };
 
 export type CalendarEvent = {
@@ -1039,10 +1034,14 @@ export type CalendarEvent = {
   profile: Profile;
   /** The start time for this CalendarEvent. */
   startDate?: Maybe<Scalars['DateTime']>;
+  /** Which Subspace is this event part of. Only applicable if the Space has this option enabled. */
+  subspace?: Maybe<Space>;
   /** The event type, e.g. webinar, meetup etc. */
   type: CalendarEventType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
+  /** Is the event visible on the parent calendar. */
+  visibleOnParentCalendar: Scalars['Boolean'];
   /** Flag to indicate if this event is for a whole day. */
   wholeDay: Scalars['Boolean'];
 };
@@ -1676,6 +1675,8 @@ export type CreateCalendarEventOnCalendarInput = {
   startDate: Scalars['DateTime'];
   tags?: InputMaybe<Array<Scalars['String']>>;
   type: CalendarEventType;
+  /** Is the event visible on the parent calendar. */
+  visibleOnParentCalendar: Scalars['Boolean'];
   /** Flag to indicate if this event is for a whole day. */
   wholeDay: Scalars['Boolean'];
 };
@@ -5555,6 +5556,8 @@ export type SpaceSettings = {
 
 export type SpaceSettingsCollaboration = {
   __typename?: 'SpaceSettingsCollaboration';
+  /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
+  allowEventsFromSubspaces: Scalars['Boolean'];
   /** Flag to control if members can create callouts. */
   allowMembersToCreateCallouts: Scalars['Boolean'];
   /** Flag to control if members can create subspaces. */
@@ -6059,6 +6062,8 @@ export type UpdateCalendarEventInput = {
   /** The state date for the event. */
   startDate: Scalars['DateTime'];
   type?: InputMaybe<CalendarEventType>;
+  /** Is the event visible on the parent calendar. */
+  visibleOnParentCalendar?: InputMaybe<Scalars['Boolean']>;
   /** Flag to indicate if this event is for a whole day. */
   wholeDay: Scalars['Boolean'];
 };
@@ -6379,6 +6384,8 @@ export type UpdateSpacePlatformSettingsInput = {
 };
 
 export type UpdateSpaceSettingsCollaborationInput = {
+  /** Flag to control if events from Subspaces are visible on this Space calendar as well. */
+  allowEventsFromSubspaces: Scalars['Boolean'];
   /** Flag to control if members can create callouts. */
   allowMembersToCreateCallouts: Scalars['Boolean'];
   /** Flag to control if members can create subspaces. */
@@ -22486,6 +22493,7 @@ export type SpaceSettingsQuery = {
               allowMembersToCreateCallouts: boolean;
               allowMembersToCreateSubspaces: boolean;
               inheritMembershipRights: boolean;
+              allowEventsFromSubspaces: boolean;
             };
           };
           community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
@@ -22509,6 +22517,7 @@ export type SpaceSettingsFragment = {
     allowMembersToCreateCallouts: boolean;
     allowMembersToCreateSubspaces: boolean;
     inheritMembershipRights: boolean;
+    allowEventsFromSubspaces: boolean;
   };
 };
 
@@ -22604,6 +22613,7 @@ export type UpdateSpaceSettingsMutation = {
         allowMembersToCreateCallouts: boolean;
         allowMembersToCreateSubspaces: boolean;
         inheritMembershipRights: boolean;
+        allowEventsFromSubspaces: boolean;
       };
     };
   };
@@ -26460,7 +26470,7 @@ export type CreatePostInputQuery = {
 
 export type SpaceCalendarEventsQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
-  limit?: InputMaybe<Scalars['Float']>;
+  includeSubspace?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type SpaceCalendarEventsQuery = {
@@ -26487,45 +26497,51 @@ export type SpaceCalendarEventsQuery = {
                       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                     }
                   | undefined;
-                events?:
-                  | Array<{
-                      __typename?: 'CalendarEvent';
-                      id: string;
-                      nameID: string;
-                      startDate?: Date | undefined;
-                      durationDays?: number | undefined;
-                      durationMinutes: number;
-                      wholeDay: boolean;
-                      multipleDays: boolean;
-                      profile: {
-                        __typename?: 'Profile';
+                events: Array<{
+                  __typename?: 'CalendarEvent';
+                  id: string;
+                  nameID: string;
+                  startDate?: Date | undefined;
+                  durationDays?: number | undefined;
+                  durationMinutes: number;
+                  wholeDay: boolean;
+                  multipleDays: boolean;
+                  visibleOnParentCalendar: boolean;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    url: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                    references?:
+                      | Array<{
+                          __typename?: 'Reference';
+                          id: string;
+                          name: string;
+                          uri: string;
+                          description?: string | undefined;
+                        }>
+                      | undefined;
+                    location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
+                  };
+                  subspace?:
+                    | {
+                        __typename?: 'Space';
                         id: string;
-                        url: string;
-                        displayName: string;
-                        description?: string | undefined;
-                        tagset?:
-                          | {
-                              __typename?: 'Tagset';
-                              id: string;
-                              name: string;
-                              tags: Array<string>;
-                              allowedValues: Array<string>;
-                              type: TagsetType;
-                            }
-                          | undefined;
-                        references?:
-                          | Array<{
-                              __typename?: 'Reference';
-                              id: string;
-                              name: string;
-                              uri: string;
-                              description?: string | undefined;
-                            }>
-                          | undefined;
-                        location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
-                      };
-                    }>
-                  | undefined;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | undefined;
+                }>;
               };
             };
           };
@@ -26546,45 +26562,47 @@ export type CollaborationTimelineInfoFragment = {
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
-      events?:
-        | Array<{
-            __typename?: 'CalendarEvent';
-            id: string;
-            nameID: string;
-            startDate?: Date | undefined;
-            durationDays?: number | undefined;
-            durationMinutes: number;
-            wholeDay: boolean;
-            multipleDays: boolean;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              url: string;
-              displayName: string;
-              description?: string | undefined;
-              tagset?:
-                | {
-                    __typename?: 'Tagset';
-                    id: string;
-                    name: string;
-                    tags: Array<string>;
-                    allowedValues: Array<string>;
-                    type: TagsetType;
-                  }
-                | undefined;
-              references?:
-                | Array<{
-                    __typename?: 'Reference';
-                    id: string;
-                    name: string;
-                    uri: string;
-                    description?: string | undefined;
-                  }>
-                | undefined;
-              location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
-            };
-          }>
-        | undefined;
+      events: Array<{
+        __typename?: 'CalendarEvent';
+        id: string;
+        nameID: string;
+        startDate?: Date | undefined;
+        durationDays?: number | undefined;
+        durationMinutes: number;
+        wholeDay: boolean;
+        multipleDays: boolean;
+        visibleOnParentCalendar: boolean;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          url: string;
+          displayName: string;
+          description?: string | undefined;
+          tagset?:
+            | {
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }
+            | undefined;
+          references?:
+            | Array<{
+                __typename?: 'Reference';
+                id: string;
+                name: string;
+                uri: string;
+                description?: string | undefined;
+              }>
+            | undefined;
+          location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
+        };
+        subspace?:
+          | { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+          | undefined;
+      }>;
     };
   };
 };
@@ -26609,6 +26627,7 @@ export type CalendarEventInfoFragment = {
   durationMinutes: number;
   wholeDay: boolean;
   multipleDays: boolean;
+  visibleOnParentCalendar: boolean;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -26630,10 +26649,14 @@ export type CalendarEventInfoFragment = {
       | undefined;
     location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
   };
+  subspace?:
+    | { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+    | undefined;
 };
 
 export type CalendarEventDetailsQueryVariables = Exact<{
   eventId: Scalars['UUID'];
+  includeSubspace?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CalendarEventDetailsQuery = {
@@ -26652,6 +26675,7 @@ export type CalendarEventDetailsQuery = {
           durationMinutes: number;
           wholeDay: boolean;
           multipleDays: boolean;
+          visibleOnParentCalendar: boolean;
           createdBy?:
             | {
                 __typename?: 'User';
@@ -26835,6 +26859,9 @@ export type CalendarEventDetailsQuery = {
               | undefined;
             location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
           };
+          subspace?:
+            | { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+            | undefined;
         }
       | undefined;
   };
@@ -26851,6 +26878,7 @@ export type CalendarEventDetailsFragment = {
   durationMinutes: number;
   wholeDay: boolean;
   multipleDays: boolean;
+  visibleOnParentCalendar: boolean;
   createdBy?:
     | {
         __typename?: 'User';
@@ -27004,6 +27032,9 @@ export type CalendarEventDetailsFragment = {
       | undefined;
     location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
   };
+  subspace?:
+    | { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+    | undefined;
 };
 
 export type EventProfileFragment = {
@@ -27030,6 +27061,7 @@ export type EventProfileFragment = {
 
 export type CreateCalendarEventMutationVariables = Exact<{
   eventData: CreateCalendarEventOnCalendarInput;
+  includeSubspace?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CreateCalendarEventMutation = {
@@ -27045,6 +27077,7 @@ export type CreateCalendarEventMutation = {
     durationMinutes: number;
     wholeDay: boolean;
     multipleDays: boolean;
+    visibleOnParentCalendar: boolean;
     createdBy?:
       | {
           __typename?: 'User';
@@ -27203,11 +27236,15 @@ export type CreateCalendarEventMutation = {
         | undefined;
       location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
     };
+    subspace?:
+      | { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+      | undefined;
   };
 };
 
 export type UpdateCalendarEventMutationVariables = Exact<{
   eventData: UpdateCalendarEventInput;
+  includeSubspace?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type UpdateCalendarEventMutation = {
@@ -27223,6 +27260,7 @@ export type UpdateCalendarEventMutation = {
     durationMinutes: number;
     wholeDay: boolean;
     multipleDays: boolean;
+    visibleOnParentCalendar: boolean;
     createdBy?:
       | {
           __typename?: 'User';
@@ -27381,6 +27419,9 @@ export type UpdateCalendarEventMutation = {
         | undefined;
       location?: { __typename?: 'Location'; id: string; city?: string | undefined } | undefined;
     };
+    subspace?:
+      | { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+      | undefined;
   };
 };
 
