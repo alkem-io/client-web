@@ -169,7 +169,8 @@
     "userMenu": "User Menu",
     "scrollToTop": "Scroll to top",
     "addSubject": "Add {{subject}}",
-    "toolPosition": "Position of tool"
+    "toolPosition": "Position of tool",
+    "createOwnSpace": "...or click here to create your own Space"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -360,6 +361,7 @@
     "virtual-contributor": "Virtual Contributor",
     "collaborationTool": "Collaboration tool",
     "optional": "optional",
+    "menu": "Menu",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -2215,9 +2217,18 @@
     "home": {
       "title": "My Dashboard",
       "subtitle": "Ready to make some impact?",
+      "mainNavigation": {
+        "invitations": "Invitations",
+        "myLatestActivity": "My Latest Activity",
+        "myLatestSpacesActivity": "Latest Activity In My Spaces",
+        "tipsAndTricks": "Tips & Tricks",
+        "myAccount": "My Account",
+        "createSpace": "Create my own Space",
+        "activityView": "Activity View"
+      },
       "sections": {
         "latestContributions": {
-          "title": "Latest Contributions in my Spaces",
+          "title": "Latest Activity in my Spaces",
           "filter": {
             "space": {
               "label": "Space:",
@@ -2230,7 +2241,7 @@
           }
         },
         "myLatestContributions": {
-          "title": "My Latest Contributions",
+          "title": "My Latest Activity",
           "card": {
             "journey": "in: <journeyicon /> {{journey}}"
           },
@@ -2240,33 +2251,13 @@
           "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
         },
         "recentJourneys": {
-          "seeMore": {
-            "full": "Explore all your Spaces",
-            "short": "Explore all your Spaces"
-          }
+          "seeMore": "Explore all your Spaces",
+          "seeMoreSubspaces": "Explore all {{spaceName}} Subspaces"
         },
-        "myAccount": {
-          "title": "My Account",
-          "hostedSpaces": "Space",
-          "virtualContributors": "Virtual Contributor(s)",
-          "createSpaceButton": "🎉 Click here to start your own Space!",
-          "createVCButton": "Or start by creating your Virtual Contributor",
-          "createVCButtonDisabled": "You must create a space before you create a Virtual Contributor!",
-          "createYourVCButton": "🎉 Create your Virtual Contributor!",
-          "globalRoleUser": {
-            "createSpaceButton": "🎉 Create a Space and get started with Alkemio",
-            "createAnotherVCButton": "Create another Virtual Contributor"
-          },
-          "noGlobalRoleUser": {
-            "spaceSection": "You don’t host a Space yet. Click <pricing>here</pricing> to learn more about the different plans.",
-            "vcSectionLink": "Turn your knowledge into a Virtual Contributor powered by AI in your own space. Read more about Alkemio’s Virtual Contributor <vc>here</vc>.",
-            "vcSection": "Do you want to be part of the first group of people to test our Virtual Contributor?",
-            "joinButton": "Sign up and join the Early Access Program for free!",
-            "joinSection": "Do you want to be part of the first group of people to test our Virtual Contributor?",
-            "limitReached": "You've reached the maximum of 3 VCs"
-          },
-          "vcCampaignUser": {
-            "welcome": "Welcome to the Virtual Contributors - Early Access Program!",
+        "campaignBlock": {
+          "createYourVCButton": "Create your Virtual Contributor!",
+          "vcCampaign": {
+            "welcome": "🎉  Welcome to the  Virtual Contributors - Early Access Program!",
             "clickHere": "Click below to create your Virtual Contributor. Once finished, this block will give you access to both your Virtual Contributor and your Space in which you can interact with it. Enjoy!"
           }
         },

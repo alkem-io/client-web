@@ -28,7 +28,10 @@ import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import RouterLink from '../../../../core/ui/link/RouterLink';
 import { useConfig } from '../../../platform/config/useConfig';
 import PlansTableDialog from './plansTable/PlansTableDialog';
-import { useCreateSpaceMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import {
+  refetchDashboardWithMembershipsQuery,
+  useCreateSpaceMutation,
+} from '../../../../core/apollo/generated/apollo-hooks';
 import { useSpaceUrlLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import useNavigate from '../../../../core/routing/useNavigate';
 import Loading from '../../../../core/ui/loading/Loading';
@@ -132,7 +135,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
           licensePlanID: values.licensePlanId,
         },
       },
-      refetchQueries: ['AccountInformation'],
+      refetchQueries: ['AccountInformation', refetchDashboardWithMembershipsQuery()],
       onError: () => {
         setDialogOpen(true);
         setPlansTableDialogOpen(false);

@@ -1,0 +1,14 @@
+query CampaignBlockCredentials {
+  me {
+    user {
+      id
+      agent {
+        id
+        credentials {
+          resourceID
+          type
+        }
+      }
+    }
+  }
+}

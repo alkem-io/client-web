@@ -1,54 +1,55 @@
-import React, { FC } from 'react';
+import React, { Suspense } from 'react';
 import PageContentColumn from '../../../core/ui/content/PageContentColumn';
-import RecentSpacesList from './recentSpaces/RecentJourneysList';
-import MoreAboutAlkemio from './moreAboutAlkemio/MoreAboutAlkemio';
-import RecentForumMessages from './recentForumMessages/RecentForumMessages';
-import InnovationLibraryBlock from './innovationLibraryBlock/InnovationLibraryBlock';
-import LatestContributions from './latestContributions/LatestContributions';
-import MyLatestContributions from './latestContributions/myLatestContributions/MyLatestContributions';
-import TipsAndTricks from './tipsAndTricks/TipsAndTricks';
-import NewMembershipsBlock from './newMemberships/NewMembershipsBlock';
-import ExploreOtherChallenges from './exploreOtherChallenges/ExploreOtherChallenges';
-import { useColumns } from '../../../core/ui/grid/GridContext';
 import ReleaseNotesBanner from './releaseNotesBanner/ReleaseNotesBanner';
 import { useLatestReleaseDiscussionQuery } from '../../../core/apollo/generated/apollo-hooks';
-import MyAccountBlock from './myAccount/MyAccountBlock';
-import { LatestContributionsSpacesFlatQuery } from '../../../core/apollo/generated/graphql-schema';
+import CampaignBlock from './Campaigns/CampaignBlock';
+import InfoColumn from '../../../core/ui/content/InfoColumn';
+import { DashboardMenu } from './DashboardMenu/DashboardMenu';
+import ContentColumn from '../../../core/ui/content/ContentColumn';
+import { useDashboardContext } from './DashboardContext';
+import MyResources from './myResources/MyResources';
+import { Theme, useMediaQuery } from '@mui/material';
 
-interface MyDashboardWithMembershipsProps {
-  spacesData: LatestContributionsSpacesFlatQuery | undefined;
-  onOpenMembershipsDialog: () => void;
-}
+const DashboardDialogs = React.lazy(() => import('./DashboardDialogs/DashboardDialogs'));
+const DashboardActivity = React.lazy(() => import('./DashboardWithMemberships/DashboardActivity'));
+const DashboardSpaces = React.lazy(() => import('./DashboardWithMemberships/DashboardSpaces/DashboardSpaces'));
 
-const MyDashboardWithMemberships: FC<MyDashboardWithMembershipsProps> = ({ spacesData, onOpenMembershipsDialog }) => {
-  const columns = useColumns();
-
+const MyDashboardWithMemberships = () => {
+  const { activityEnabled } = useDashboardContext();
   const { data } = useLatestReleaseDiscussionQuery({
     fetchPolicy: 'network-only',
   });
-  // TODO: need to check here that child memberships should be done via flat or hierarchical space memberships query
-  const flatSpacesWithMemberships = spacesData?.me.spaceMembershipsFlat.map(membership => membership.space);
+
+  // using the isMobile convention but this is actually a tablet breakpoint
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
 
   return (
-    <>
-      <PageContentColumn columns={columns}>
-        <RecentSpacesList onSeeMore={() => onOpenMembershipsDialog()} />
-      </PageContentColumn>
-      <PageContentColumn columns={columns === 12 ? 4 : 8} flexDirection="column" alignSelf="stretch">
-        <NewMembershipsBlock hiddenIfEmpty />
-        <LatestContributions spaceMemberships={flatSpacesWithMemberships} />
-        <RecentForumMessages />
-      </PageContentColumn>
-      <PageContentColumn columns={8}>
+    <PageContentColumn columns={12}>
+      {!isMobile && (
+        <InfoColumn>
+          <DashboardMenu />
+          <MyResources />
+        </InfoColumn>
+      )}
+      <ContentColumn>
+        {isMobile && <DashboardMenu expandable />}
         {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />}
-        <MyAccountBlock />
-        <MyLatestContributions />
-        <TipsAndTricks halfWidth />
-        <InnovationLibraryBlock halfWidth />
-        <ExploreOtherChallenges />
-        <MoreAboutAlkemio />
-      </PageContentColumn>
-    </>
+        <CampaignBlock />
+        {!activityEnabled && (
+          <Suspense fallback={null}>
+            <DashboardSpaces />
+          </Suspense>
+        )}
+        {activityEnabled && (
+          <Suspense fallback={null}>
+            <DashboardActivity />
+          </Suspense>
+        )}
+      </ContentColumn>
+      <Suspense fallback={null}>
+        <DashboardDialogs />
+      </Suspense>
+    </PageContentColumn>
   );
 };
 
