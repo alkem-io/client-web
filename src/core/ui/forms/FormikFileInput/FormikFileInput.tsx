@@ -1,4 +1,4 @@
-import React from 'react';
+import { useMemo } from 'react';
 import { useField } from 'formik';
 import FormikInputField, { FormikInputFieldProps } from '../FormikInputField/FormikInputField';
 import FileUploadButton, { FileUploadEntityType } from '../../upload/FileUpload/FileUpload';
@@ -12,6 +12,7 @@ type FormikFileInputProps = FormikInputFieldProps & {
   entityType?: FileUploadEntityType;
   defaultProtocol?: string;
   onChange?: (fileName: string) => void;
+  temporaryLocation?: boolean;
 };
 
 const FormikFileInput = ({
@@ -20,11 +21,17 @@ const FormikFileInput = ({
   defaultProtocol = DEFAULT_PROTOCOL,
   entityType,
   onChange,
+  temporaryLocation = false,
   ...props
 }: FormikFileInputProps) => {
   const [field, , helpers] = useField(name);
 
   const storageConfig = useStorageConfigContext();
+
+  const updatedStorageConfig = useMemo(
+    () => (storageConfig ? { ...storageConfig, temporaryLocation } : null),
+    [storageConfig, temporaryLocation]
+  );
 
   const checkProtocol = () => {
     if (!defaultProtocol) {
@@ -45,13 +52,14 @@ const FormikFileInput = ({
       onBlur={checkProtocol}
       endAdornment={
         storageConfig &&
-        storageConfig.canUpload && (
+        storageConfig.canUpload &&
+        updatedStorageConfig && (
           <FileUploadButton
             onUpload={helpers.setValue}
             onChange={(fileName: string) => onChange?.(fileName)}
             entityID={entityID}
             entityType={entityType}
-            storageConfig={storageConfig}
+            storageConfig={updatedStorageConfig}
           />
         )
       }

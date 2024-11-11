@@ -24,12 +24,22 @@ export const INIT_CREATING_EVENT_PARAM = 'new';
 export interface CalendarDialogProps {
   open: boolean;
   journeyId: string | undefined;
+  parentJourneyId: string | undefined;
   onClose: () => void;
   parentPath: string;
   calendarEventNameId?: string;
+  temporaryLocation?: boolean;
 }
 
-const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, parentPath, calendarEventNameId }) => {
+const CalendarDialog: FC<CalendarDialogProps> = ({
+  open,
+  journeyId,
+  parentJourneyId,
+  onClose,
+  parentPath,
+  calendarEventNameId,
+  temporaryLocation = false,
+}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -43,6 +53,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
         : null,
     [highlightedDayParam]
   );
+  const isSubspace = Boolean(parentJourneyId);
 
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
   const [editingEventId, setEditingEventId] = useState<string>();
@@ -86,7 +97,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
       aria-labelledby="calendar-events-dialog-title"
       PaperProps={{ sx: { padding: 0, display: `${deletingEvent ? 'none' : 'flex'}`, flexDirection: 'column' } }}
     >
-      <CalendarEventsContainer journeyId={journeyId}>
+      <CalendarEventsContainer journeyId={journeyId} parentJourneyId={parentJourneyId}>
         {(
           { events, privileges },
           { createEvent, updateEvent, deleteEvent },
@@ -112,7 +123,10 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
                 }}
                 entities={{
                   confirmButtonTextId: 'buttons.delete',
-                  content: t('calendar.delete-confirmation', { title: deletingEvent.profile.displayName }),
+                  content: t('calendar.delete-confirmation', {
+                    title: deletingEvent.profile.displayName,
+                    entity: t(`common.${parentJourneyId ? 'subspace' : 'space'}`),
+                  }),
                   titleId: 'calendar.delete-event',
                 }}
                 options={{
@@ -139,6 +153,8 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
                 actions={
                   isCreatingEventInit ? <div>&nbsp;</div> : <BackButton onClick={() => setIsCreatingEvent(false)} />
                 }
+                temporaryLocation={temporaryLocation}
+                isSubspace={isSubspace}
               />
             );
 
@@ -171,6 +187,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({ open, journeyId, onClose, par
                     onClose={handleClose}
                     isSubmitting={updatingCalendarEvent}
                     actions={<BackButton onClick={() => setEditingEventId(undefined)} />}
+                    isSubspace={isSubspace}
                   />
                 )}
               </CalendarEventDetailContainer>

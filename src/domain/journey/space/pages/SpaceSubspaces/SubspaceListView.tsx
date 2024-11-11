@@ -7,6 +7,7 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import Loading from '../../../../../core/ui/loading/Loading';
 import {
   refetchAdminSpaceSubspacesPageQuery,
+  refetchDashboardWithMembershipsQuery,
   useAdminSpaceSubspacesPageQuery,
   useCreateSubspaceMutation,
   useDeleteSpaceMutation,
@@ -100,7 +101,10 @@ export const SubspaceListView = () => {
     onCompleted: () => {
       notify(t('pages.admin.subspace.notifications.subspace-created'), 'success');
     },
-    refetchQueries: [refetchAdminSpaceSubspacesPageQuery({ spaceId: spaceNameId })],
+    refetchQueries: [
+      refetchAdminSpaceSubspacesPageQuery({ spaceId: spaceNameId }),
+      refetchDashboardWithMembershipsQuery(),
+    ],
     awaitRefetchQueries: true,
   });
 

@@ -16,7 +16,6 @@ export interface JourneyDashboardWelcomeBlockProps {
   leadUsers: ContributorViewProps[];
   onContactLeadUser: (receiver: MessageReceiverChipData) => void;
   leadOrganizations: ContributorViewProps[] | undefined;
-  leadVirtualContributors: ContributorViewProps[] | undefined;
   onContactLeadOrganization: (receiver: MessageReceiverChipData) => void;
   member?: boolean;
 }
@@ -24,7 +23,6 @@ export interface JourneyDashboardWelcomeBlockProps {
 const JourneyDashboardWelcomeBlock = ({
   leadUsers,
   leadOrganizations,
-  leadVirtualContributors,
   journeyTypeName,
   onContactLeadUser,
   onContactLeadOrganization,
@@ -82,13 +80,6 @@ const JourneyDashboardWelcomeBlock = ({
               }}
               seamless
             />
-          ))}
-        </Gutters>
-      )}
-      {leadVirtualContributors && leadVirtualContributors.length > 0 && (
-        <Gutters flexWrap="wrap" row disablePadding>
-          {leadVirtualContributors.slice(0, 2).map(vc => (
-            <ContributorCardHorizontal key={vc.id} profile={vc.profile} seamless />
           ))}
         </Gutters>
       )}

@@ -62,6 +62,7 @@ interface CalloutTemplateFormProps {
   template?: CalloutTemplate;
   onSubmit: (values: CalloutTemplateFormSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<CalloutTemplateFormSubmittedValues>) => ReactNode);
+  temporaryLocation?: boolean;
 }
 
 const validator = {
@@ -107,7 +108,7 @@ const validator = {
     .required(),
 };
 
-const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFormProps) => {
+const CalloutTemplateForm = ({ template, onSubmit, actions, temporaryLocation = false }: CalloutTemplateFormProps) => {
   const { t } = useTranslation();
   const createMode = !template?.id;
 
@@ -170,6 +171,7 @@ const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFor
                 name="callout.framing.profile.description"
                 title={t('common.description')}
                 maxLength={MARKDOWN_TEXT_LENGTH}
+                temporaryLocation={temporaryLocation}
               />
             </Box>
             <TagsetField name="callout.framing.profile.tagsets[0].tags" title={t('common.tags')} />
@@ -191,6 +193,7 @@ const CalloutTemplateForm = ({ template, onSubmit, actions }: CalloutTemplateFor
                   name="callout.contributionDefaults.postDescription"
                   title={t('common.description')}
                   maxLength={MARKDOWN_TEXT_LENGTH}
+                  temporaryLocation={temporaryLocation}
                 />
               </Box>
             )}

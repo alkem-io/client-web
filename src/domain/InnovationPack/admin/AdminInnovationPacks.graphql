@@ -93,3 +93,29 @@ fragment InnovationPackProviderProfileWithAvatar on Contributor {
     url
   }
 }
+
+fragment InnovationPackCard on InnovationPack {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    description
+    tagset {
+      ...TagsetDetails
+    }
+    url
+  }
+  templatesSet {
+    id
+    calloutTemplatesCount
+    communityGuidelinesTemplatesCount
+    collaborationTemplatesCount
+    innovationFlowTemplatesCount
+    postTemplatesCount
+    whiteboardTemplatesCount
+  }
+  provider {
+    ...InnovationPackProviderProfileWithAvatar
+  }
+}

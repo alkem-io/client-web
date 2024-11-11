@@ -1,0 +1,43 @@
+query DashboardWithMemberships {
+  me {
+    spaceMembershipsHierarchical {
+      id
+      space {
+        ...DashboardSpaceMembership
+      }
+      childMemberships {
+        id
+        space {
+          ...DashboardSpaceMembership
+        }
+      }
+    }
+  }
+}
+
+fragment DashboardSpaceMembership on Space {
+  id
+  level
+  authorization {
+    id
+    myPrivileges
+  }
+  community {
+    roleSet {
+      id
+      ...MyMembershipsRoleSet
+    }
+  }
+  profile {
+    id
+    url
+    tagline
+    displayName
+    spaceBanner: visual(type: BANNER) {
+      ...VisualUri
+    }
+    cardBanner: visual(type: CARD) {
+      ...VisualUri
+    }
+  }
+}

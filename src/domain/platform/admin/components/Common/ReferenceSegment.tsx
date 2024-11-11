@@ -28,6 +28,7 @@ export interface ReferenceSegmentProps extends BoxProps {
   onAdd?: (push: PushFunc) => void;
   // TODO REMOVE CALLBACK FROM SIGNATURE!
   onRemove?: (ref: Reference, remove: RemoveFunc) => void;
+  temporaryLocation?: boolean;
 }
 
 export const referenceSegmentValidationObject = yup.object().shape({
@@ -47,6 +48,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
   compactMode = false,
   onAdd,
   onRemove,
+  temporaryLocation = false,
   ...props
 }) => {
   const { t } = useTranslation();
@@ -120,6 +122,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                           'aria-label': t('components.referenceSegment.plaintext-helper-text'),
                         },
                       })}
+                      temporaryLocation={temporaryLocation}
                     />
                     <Box>
                       <Tooltip
