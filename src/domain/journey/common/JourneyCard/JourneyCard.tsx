@@ -124,7 +124,7 @@ export function PrivacyIcon() {
         backgroundColor: theme.palette.background.paper,
       }}
     >
-      <LockOutlined fontSize="small" color="primary" />
+      <LockOutlined fontSize="medium" color="primary" />
     </Paper>
   );
 }
