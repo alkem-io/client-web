@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Form, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { Box, DialogContent, FormControlLabel, Switch } from '@mui/material';
@@ -29,12 +29,18 @@ const getMinTime = (startDate: DateType, endDate: number | DateType) => {
   return isSameDay(startDate, endDate) ? undefined : dayjs(startDate);
 };
 
-const EventForm = ({ typeOptions, isSubmitting, actions, temporaryLocation = false }: EventFormProps) => {
+const EventForm = ({
+  typeOptions,
+  isSubmitting,
+  actions,
+  temporaryLocation = false,
+  isSubspace = false,
+}: EventFormProps) => {
   const { t } = useTranslation();
   const {
     isValid,
     handleSubmit,
-    values: { wholeDay, startDate, endDate },
+    values: { wholeDay, startDate, endDate, visibleOnParentCalendar },
     setFieldValue,
   } = useFormikContext<Partial<CalendarEventFormData>>();
 
@@ -110,6 +116,23 @@ const EventForm = ({ typeOptions, isSubmitting, actions, temporaryLocation = fal
               <FormikInputField name="location.city" title={'Location'} placeholder={' '} fullWidth />
               <TagsetField name="tags" title={t('common.tags')} />
             </Gutters>
+            {isSubspace && (
+              <Gutters disablePadding sx={{ flexDirection: 'row', flexGrow: 1 }}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={visibleOnParentCalendar}
+                      name="visibleOnParentCalendar"
+                      onChange={() => {
+                        setFieldValue('visibleOnParentCalendar', !visibleOnParentCalendar);
+                      }}
+                    />
+                  }
+                  label={t('calendar.event.visibleOnParentCalendar')}
+                  sx={{ flexShrink: 0 }}
+                />
+              </Gutters>
+            )}
           </Gutters>
         </Form>
       </DialogContent>
