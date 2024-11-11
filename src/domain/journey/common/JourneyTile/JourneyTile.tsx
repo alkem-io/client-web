@@ -51,7 +51,7 @@ const JourneyTile = ({ journey, isPrivate, columns = 3 }: JourneyTileProps) => {
           />
         ) : (
           <>
-            {isPrivate && <PrivacyIcon />}
+            {!isPrivate && <PrivacyIcon />}
 
             <Avatar
               src={journey.profile.cardBanner?.uri || defaultJourneyCardBanner}
