@@ -65,7 +65,7 @@ const JourneyCard = ({
 
   return (
     <ContributeCard sx={{ position: 'relative' }} {...containerProps}>
-      {!isPrivate && <PrivacyIcon />}
+      {isPrivate && <PrivacyIcon />}
 
       <Box {...wrapperProps}>
         <CardBanner
