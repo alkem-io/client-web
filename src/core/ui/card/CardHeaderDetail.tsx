@@ -24,7 +24,7 @@ const CardHeaderDetail = ({
   ...containerProps
 }: PropsWithChildren<CardHeaderDetailProps>) => {
   return (
-    <Box display="flex" gap={gutters(0.5)} {...containerProps}>
+    <Box display="flex" alignItems={'center'} gap={gutters(0.5)} {...containerProps}>
       {iconComponent && <Box component={iconComponent} sx={iconStyles} />}
       {Icon && <Icon sx={iconStyles} {...iconProps} />}
       <CardText color="inherit" noWrap>

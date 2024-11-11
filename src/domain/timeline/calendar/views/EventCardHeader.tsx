@@ -74,7 +74,10 @@ const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderP
               </>
             )}
             {event?.subspace && (
-              <CardHeaderDetail Icon={SubspaceIcon2} iconProps={{ fill: 'primary' }}>
+              <CardHeaderDetail
+                Icon={SubspaceIcon2}
+                iconProps={{ fill: 'primary', sx: { maxHeight: gutters(0.7), maxWidth: gutters(0.7) } }}
+              >
                 {event.subspace.profile.displayName}
               </CardHeaderDetail>
             )}
