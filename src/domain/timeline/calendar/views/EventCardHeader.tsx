@@ -15,7 +15,7 @@ import { CalendarIcon } from '../icons/CalendarIcon';
 import { ClockIcon } from '../icons/ClockIcon';
 import CalendarEventBadge from './CalendarEventBadge';
 import { theme } from '../../../../core/ui/themes/default/Theme';
-import { SubspaceIconV2 } from '../../../journey/subspace/icon/SubspaceIconV2';
+import SubspaceIcon2 from '../../../journey/subspace/icon/SubspaceIcon2';
 
 export interface EventCardHeaderProps {
   event:
@@ -74,7 +74,9 @@ const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderP
               </>
             )}
             {event?.subspace && (
-              <CardHeaderDetail iconComponent={SubspaceIconV2}>{event.subspace.profile.displayName}</CardHeaderDetail>
+              <CardHeaderDetail Icon={SubspaceIcon2} iconProps={{ fill: 'primary' }}>
+                {event.subspace.profile.displayName}
+              </CardHeaderDetail>
             )}
           </>
         )}
