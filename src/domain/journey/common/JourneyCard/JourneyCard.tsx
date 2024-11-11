@@ -1,5 +1,5 @@
-import React, { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
-import { Box, SvgIconProps } from '@mui/material';
+import { memo, ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
+import { Box, Paper, SvgIconProps } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import ContributeCard, { ContributeCardProps } from '../../../../core/ui/card/ContributeCard';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
@@ -64,7 +64,9 @@ const JourneyCard = ({
       : {};
 
   return (
-    <ContributeCard {...containerProps}>
+    <ContributeCard sx={{ position: 'relative' }} {...containerProps}>
+      {isPrivate && <PrivacyIcon />}
+
       <Box {...wrapperProps}>
         <CardBanner
           src={banner?.uri || defaultCardBanner}
@@ -98,3 +100,39 @@ const JourneyCard = ({
 };
 
 export default JourneyCard;
+
+type PrivacyIconProps = {
+  size?: number;
+  top?: number;
+  right?: number;
+  ariaLabel?: string;
+};
+
+export const PrivacyIcon = memo(
+  ({ top = 10, size = 25, right = 10, ariaLabel = 'Private journey' }: PrivacyIconProps) => {
+    return (
+      <Paper
+        elevation={3}
+        sx={theme => ({
+          position: 'absolute',
+          zIndex: theme.zIndex.fab,
+          top: theme.spacing(top / 10),
+          right: theme.spacing(right / 10),
+
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+
+          width: size,
+          height: size,
+          borderRadius: '50%',
+          padding: theme.spacing(1.8),
+          backgroundColor: theme.palette.background.paper,
+        })}
+        aria-label={ariaLabel}
+      >
+        <LockOutlined fontSize="medium" color="primary" />
+      </Paper>
+    );
+  }
+);
