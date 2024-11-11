@@ -3527,6 +3527,11 @@ export const ExploreSpacesFragmentDoc = gql`
         ...VisualUri
       }
     }
+    settings {
+      privacy {
+        mode
+      }
+    }
   }
   ${VisualUriFragmentDoc}
 `;

@@ -943,7 +943,6 @@ export enum AuthorizationPolicyType {
 }
 
 export enum AuthorizationPrivilege {
-  AccessDashboardRefresh = 'ACCESS_DASHBOARD_REFRESH',
   AccessInteractiveGuidance = 'ACCESS_INTERACTIVE_GUIDANCE',
   AccessVirtualContributor = 'ACCESS_VIRTUAL_CONTRIBUTOR',
   AuthorizationReset = 'AUTHORIZATION_RESET',
@@ -987,7 +986,6 @@ export enum AuthorizationPrivilege {
   UpdateCalloutPublisher = 'UPDATE_CALLOUT_PUBLISHER',
   UpdateContent = 'UPDATE_CONTENT',
   UpdateInnovationFlow = 'UPDATE_INNOVATION_FLOW',
-  UpdateWhiteboard = 'UPDATE_WHITEBOARD',
 }
 
 export type Calendar = {
@@ -28807,6 +28805,10 @@ export type ExploreSpacesSearchQuery = {
               displayName: string;
               cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
+            settings: {
+              __typename?: 'SpaceSettings';
+              privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+            };
           };
         }
       | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType }
@@ -28828,6 +28830,10 @@ export type ExploreSpacesSearchFragment = {
       displayName: string;
       cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+    };
   };
 };
 
@@ -28845,6 +28851,10 @@ export type ExploreAllSpacesQuery = {
       url: string;
       displayName: string;
       cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    };
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
     };
   }>;
 };
@@ -28866,6 +28876,10 @@ export type WelcomeSpaceQuery = {
       displayName: string;
       cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
+    settings: {
+      __typename?: 'SpaceSettings';
+      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+    };
   };
 };
 
@@ -28880,6 +28894,7 @@ export type ExploreSpacesFragment = {
     displayName: string;
     cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
+  settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };
 };
 
 export type PendingInvitationsQueryVariables = Exact<{ [key: string]: never }>;
