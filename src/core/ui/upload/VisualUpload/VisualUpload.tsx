@@ -75,11 +75,14 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE, al
 
   const { maxWidth, maxHeight, allowedTypes, aspectRatio } = visual;
 
-  if (!maxWidth || !maxHeight || !allowedTypes || !aspectRatio) {
-    throw new Error(
-      "'maxWidth', 'maxHeight', 'allowedTypes', 'aspectRatio' fields are required for the component to operate!"
-    );
-  }
+  const missingFields = [
+    !maxWidth && 'maxWidth',
+    !maxHeight && 'maxHeight',
+    !allowedTypes && 'allowedTypes',
+    !aspectRatio && 'aspectRatio',
+  ].filter(Boolean);
+
+  if (missingFields.length) throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
 
   const width = height * aspectRatio;
 

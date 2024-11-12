@@ -10,7 +10,7 @@ const FileUploadWrapper: FC<FileUploadWrapperProps> = ({ onFileSelected, allowed
   const ref = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
-    if (ref && ref.current) {
+    if (ref.current) {
       ref.current.value = '';
       ref.current.click();
     }
@@ -25,7 +25,7 @@ const FileUploadWrapper: FC<FileUploadWrapperProps> = ({ onFileSelected, allowed
         accept={allowedTypes.join(',')}
         style={{ display: 'none' }}
         onChange={e => {
-          const file = e && e.target && e.target.files && e.target.files[0];
+          const file = e.target?.files?.[0];
           if (file) onFileSelected(file);
         }}
       />
