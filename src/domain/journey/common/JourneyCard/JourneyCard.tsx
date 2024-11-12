@@ -1,4 +1,4 @@
-import React, { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
+import { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
 import { Box, SvgIconProps } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import ContributeCard, { ContributeCardProps } from '../../../../core/ui/card/ContributeCard';
@@ -28,7 +28,6 @@ export interface JourneyCardProps extends ContributeCardProps {
   actions?: ReactNode;
   matchedTerms?: boolean; // TODO pass ComponentType<CardTags> instead
   visual?: ReactNode;
-  isPrivate?: boolean;
 }
 
 const JourneyCard = ({
@@ -45,7 +44,6 @@ const JourneyCard = ({
   actions,
   children,
   visual,
-  isPrivate,
   ...containerProps
 }: PropsWithChildren<JourneyCardProps>) => {
   const { t } = useTranslation();
@@ -64,7 +62,7 @@ const JourneyCard = ({
       : {};
 
   return (
-    <ContributeCard {...containerProps}>
+    <ContributeCard sx={{ position: 'relative' }} {...containerProps}>
       <Box {...wrapperProps}>
         <CardBanner
           src={banner?.uri || defaultCardBanner}

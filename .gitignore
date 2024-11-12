@@ -19,6 +19,7 @@ npm-debug.log
 
 # misc
 .DS_Store
+.build/docker/.env.base
 .env.local
 .env.development.local
 .env.test.local
@@ -30,7 +31,6 @@ yarn-error.log*
 public/*config.js
 .build/traefik/access.log
 
-.env.base
 # eslint
 .eslintcache
 

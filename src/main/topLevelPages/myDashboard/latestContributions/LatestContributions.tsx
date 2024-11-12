@@ -1,6 +1,4 @@
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import { useTranslation } from 'react-i18next';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradient';
 import { useLatestContributionsQuery } from '../../../../core/apollo/generated/apollo-hooks';
 import usePaginatedQuery from '../../../../domain/shared/pagination/usePaginatedQuery';
@@ -21,10 +19,9 @@ import { SelectOption } from '@mui/base';
 import useLazyLoading from '../../../../domain/shared/pagination/useLazyLoading';
 import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
 import { gutters } from '../../../../core/ui/grid/utils';
-import { Identifiable } from '../../../../core/utils/Identifiable';
-
-const ROLE_OPTION_ALL = 'ROLE_OPTION_ALL';
-const SPACE_OPTION_ALL = 'SPACE_OPTION_ALL';
+import Gutters from '../../../../core/ui/grid/Gutters';
+import { LatestContributionsProps, ROLE_OPTION_ALL, SPACE_OPTION_ALL } from './LatestContributionsProps';
+import Loading from '../../../../core/ui/loading/Loading';
 
 const SELECTABLE_ROLES = [ActivityFeedRoles.Member, ActivityFeedRoles.Admin, ActivityFeedRoles.Lead] as const;
 
@@ -44,16 +41,6 @@ const Loader = forwardRef((props, ref) => {
     </BadgeCardView>
   );
 });
-
-interface LatestContributionsProps {
-  spaceMemberships:
-    | (Identifiable & {
-        profile: {
-          displayName: string;
-        };
-      })[]
-    | undefined;
-}
 
 const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => {
   const { t } = useTranslation();
@@ -126,38 +113,45 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
     return options;
   }, [t]);
 
+  const renderFilters = () => (
+    <Box display="flex" justifyContent="end" alignItems="center">
+      <SeamlessSelect
+        value={filter.space}
+        options={spaceOptions}
+        label={t('pages.home.sections.latestContributions.filter.space.label')}
+        onChange={handleSpaceSelect}
+      />
+      <SeamlessSelect
+        value={filter.role}
+        options={roleOptions}
+        label={t('pages.home.sections.latestContributions.filter.role.label')}
+        onChange={handleRoleSelect}
+      />
+    </Box>
+  );
+
   return (
-    <PageContentBlock sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
-      <PageContentBlockHeader title={t('pages.home.sections.latestContributions.title')} />
-      <Box display="flex" justifyContent="end" alignItems="center">
-        <SeamlessSelect
-          value={filter.space}
-          options={spaceOptions}
-          label={t('pages.home.sections.latestContributions.filter.space.label')}
-          onChange={handleSpaceSelect}
-        />
-        <SeamlessSelect
-          value={filter.role}
-          options={roleOptions}
-          label={t('pages.home.sections.latestContributions.filter.role.label')}
-          onChange={handleRoleSelect}
-        />
-      </Box>
-      <ScrollerWithGradient>
-        <Box padding={1}>
-          {data?.activityFeed.activityFeed.map(activity => {
-            return (
-              <ActivityViewChooser
-                key={activity.id}
-                activity={activity as ActivityLogResultType}
-                avatarUrl={activity.triggeredBy.profile.avatar?.uri}
-              />
-            );
-          })}
-          {loader}
-        </Box>
-      </ScrollerWithGradient>
-    </PageContentBlock>
+    <Gutters disablePadding disableGap sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
+      {renderFilters()}
+      {!data && loading ? (
+        <Loading />
+      ) : (
+        <ScrollerWithGradient>
+          <Box padding={gutters(0.5)}>
+            {data?.activityFeed.activityFeed.map(activity => {
+              return (
+                <ActivityViewChooser
+                  key={activity.id}
+                  activity={activity as ActivityLogResultType}
+                  avatarUrl={activity.triggeredBy.profile.avatar?.uri}
+                />
+              );
+            })}
+            {loader}
+          </Box>
+        </ScrollerWithGradient>
+      )}
+    </Gutters>
   );
 };
 

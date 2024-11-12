@@ -3,8 +3,25 @@ query RecentSpaces($limit: Float) {
     mySpaces(limit: $limit) {
       space {
         id
+        settings {
+          privacy {
+            mode
+          }
+        }
+        profile {
+          ...RecentSpaceProfile
+        }
         __typename # do not remove
       }
     }
+  }
+}
+
+fragment RecentSpaceProfile on Profile {
+  id
+  url
+  displayName
+  cardBanner: visual(type: CARD) {
+    ...VisualUri
   }
 }

@@ -703,8 +703,10 @@ export type CalendarEventKeySpecifier = (
   | 'nameID'
   | 'profile'
   | 'startDate'
+  | 'subspace'
   | 'type'
   | 'updatedDate'
+  | 'visibleOnParentCalendar'
   | 'wholeDay'
   | CalendarEventKeySpecifier
 )[];
@@ -720,8 +722,10 @@ export type CalendarEventFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   startDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  subspace?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  visibleOnParentCalendar?: FieldPolicy<any> | FieldReadFunction<any>;
   wholeDay?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutKeySpecifier = (
@@ -3130,12 +3134,14 @@ export type SpaceSettingsFieldPolicy = {
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceSettingsCollaborationKeySpecifier = (
+  | 'allowEventsFromSubspaces'
   | 'allowMembersToCreateCallouts'
   | 'allowMembersToCreateSubspaces'
   | 'inheritMembershipRights'
   | SpaceSettingsCollaborationKeySpecifier
 )[];
 export type SpaceSettingsCollaborationFieldPolicy = {
+  allowEventsFromSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToCreateCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToCreateSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   inheritMembershipRights?: FieldPolicy<any> | FieldReadFunction<any>;

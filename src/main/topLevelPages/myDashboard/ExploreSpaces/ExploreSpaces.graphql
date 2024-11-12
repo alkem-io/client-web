@@ -39,4 +39,9 @@ fragment ExploreSpaces on Space {
       ...VisualUri
     }
   }
+  settings {
+    privacy {
+      mode
+    }
+  }
 }

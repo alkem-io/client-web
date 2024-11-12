@@ -7,6 +7,7 @@ import { JourneyFormValues } from '../../../../shared/components/JorneyCreationD
 import {
   useCreateSubspaceMutation,
   refetchSubspacesInSpaceQuery,
+  refetchDashboardWithMembershipsQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 
 export interface CreateJourneyProps {
@@ -20,7 +21,7 @@ export const CreateJourney = ({ isVisible = false, onClose, parentSpaceId = '' }
   const navigate = useNavigate();
 
   const [createSubspace] = useCreateSubspaceMutation({
-    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: parentSpaceId })],
+    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: parentSpaceId }), refetchDashboardWithMembershipsQuery()],
   });
 
   const handleCreate = useCallback(
