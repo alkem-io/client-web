@@ -6,7 +6,7 @@ import { CardText } from '../typography';
 
 interface CardHeaderDetailProps extends TypographyProps {
   iconComponent?: SvgIconComponent;
-  Icon?: ElementType<SvgIconProps>;
+  icon?: ElementType<SvgIconProps>;
   iconProps?: SvgIconProps;
 }
 
@@ -18,7 +18,7 @@ const iconStyles = {
 
 const CardHeaderDetail = ({
   iconComponent,
-  Icon,
+  icon: Icon,
   iconProps,
   children,
   ...containerProps
