@@ -25,7 +25,6 @@ import {
   SpaceType,
   SpaceVisibility,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { VIRTUAL_CONTRIBUTORS_LIMIT } from '../../../../main/topLevelPages/myDashboard/myAccount/MyAccountBlockVCCampaignUser';
 import MenuItemWithIcon from '../../../../core/ui/menu/MenuItemWithIcon';
 import { DeleteOutline } from '@mui/icons-material';
 import {
@@ -40,6 +39,7 @@ import InnovationPackCardHorizontal, {
   InnovationPackCardHorizontalSkeleton,
 } from '../../../InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
 import CreateInnovationPackDialog from '../../../InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
+import { VIRTUAL_CONTRIBUTORS_LIMIT } from '../../community/VirtualContributorsBlock/VirtualContributorsBlock';
 
 export const SPACE_COUNT_LIMIT = 3;
 

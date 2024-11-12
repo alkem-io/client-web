@@ -1,40 +1,41 @@
-import React, { FC, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
 import { CommunityContextProvider } from '../../domain/community/community/CommunityContext';
 import { SpaceContextProvider } from '../../domain/journey/space/SpaceContext/SpaceContext';
 import HomePage from '../topLevelPages/Home/HomePage';
-import AboutPage from '../topLevelPages/About';
 import { Error404 } from '../../core/pages/Errors/Error404';
-import ContributorsPage from '../../domain/community/user/ContributorsPage';
-import { AdminRoute } from '../../domain/platform/admin/routing/AdminRoute';
-import OrganizationRoute from '../../domain/community/contributor/organization/routing/OrganizationRoute';
-import ProfileRoute from '../../domain/community/profile/routing/ProfileRoute';
 import { Restricted } from '../../core/routing/Restricted';
-import NoIdentityRedirect from '../../core/routing/NoIdentityRedirect';
 import { nameOfUrl } from './urlParams';
-import UserRoute from '../../domain/community/user/routing/UserRoute';
-import { SpaceRoute } from '../../domain/journey/space/routing/SpaceRoute';
-import { SpaceExplorerPage } from '../topLevelPages/topLevelSpaces/SpaceExplorerPage';
 import { IdentityRoute } from '../../core/auth/authentication/routing/IdentityRoute';
 import { WithApmTransaction } from '../../domain/shared/components';
 import devRoute from '../../dev/routes';
+import NoIdentityRedirect from '../../core/routing/NoIdentityRedirect';
 import RedirectToLanding from '../../domain/platform/routes/RedirectToLanding';
-import ForumRoute from '../../domain/communication/discussion/routing/ForumRoute';
-import InnovationLibraryPage from '../topLevelPages/InnovationLibraryPage/InnovationLibraryPage';
-import InnovationPackRoute from '../../domain/InnovationPack/InnovationPackRoute';
 import NonIdentity from '../../domain/platform/routes/NonIdentity';
 import useRedirectToIdentityDomain from '../../core/auth/authentication/routing/useRedirectToIdentityDomain';
 import { EntityPageLayoutHolder, NotFoundPageLayout, RenderPoint } from '../../domain/journey/common/EntityPageLayout';
 import RedirectToWelcomeSite from '../../domain/platform/routes/RedirectToWelcomeSite';
-import CreateSpaceDialog from '../../domain/journey/space/createSpace/CreateSpaceDialog';
-import VCRoute from '../../domain/community/virtualContributor/VCRoute';
 import { TopLevelRoutePath } from './TopLevelRoutePath';
 import Loading from '../../core/ui/loading/Loading';
 
 const DocumentationPage = React.lazy(() => import('../../domain/documentation/DocumentationPage'));
+const SpaceExplorerPage = React.lazy(() => import('../topLevelPages/topLevelSpaces/SpaceExplorerPage'));
+const InnovationLibraryPage = React.lazy(() => import('../topLevelPages/InnovationLibraryPage/InnovationLibraryPage'));
+const ContributorsPage = React.lazy(() => import('../../domain/community/user/ContributorsPage'));
+const AdminRoute = React.lazy(() => import('../../domain/platform/admin/routing/AdminRoute'));
+const UserRoute = React.lazy(() => import('../../domain/community/user/routing/UserRoute'));
+const OrganizationRoute = React.lazy(
+  () => import('../../domain/community/contributor/organization/routing/OrganizationRoute')
+);
+const VCRoute = React.lazy(() => import('../../domain/community/virtualContributor/VCRoute'));
+const ForumRoute = React.lazy(() => import('../../domain/communication/discussion/routing/ForumRoute'));
+const InnovationPackRoute = React.lazy(() => import('../../domain/InnovationPack/InnovationPackRoute'));
+const ProfileRoute = React.lazy(() => import('../../domain/community/profile/routing/ProfileRoute'));
+const CreateSpaceDialog = React.lazy(() => import('../../domain/journey/space/createSpace/CreateSpaceDialog'));
+const SpaceRoute = React.lazy(() => import('../../domain/journey/space/routing/SpaceRoute'));
 
-export const TopLevelRoutes: FC = () => {
+export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();
 
   return (
@@ -56,7 +57,9 @@ export const TopLevelRoutes: FC = () => {
               <WithApmTransaction path={TopLevelRoutePath.CreateSpace}>
                 <>
                   <HomePage />
-                  <CreateSpaceDialog />
+                  <Suspense fallback={<Loading />}>
+                    <CreateSpaceDialog />
+                  </Suspense>
                 </>
               </WithApmTransaction>
             </NonIdentity>
@@ -80,7 +83,9 @@ export const TopLevelRoutes: FC = () => {
                 <SpaceContextProvider>
                   <CommunityContextProvider>
                     <EntityPageLayoutHolder>
-                      <SpaceRoute />
+                      <Suspense fallback={<Loading />}>
+                        <SpaceRoute />
+                      </Suspense>
                       <RenderPoint />
                     </EntityPageLayoutHolder>
                   </CommunityContextProvider>
@@ -94,7 +99,9 @@ export const TopLevelRoutes: FC = () => {
           element={
             <NonIdentity>
               <WithApmTransaction path="/admin/*">
-                <AdminRoute />
+                <Suspense fallback={<Loading />}>
+                  <AdminRoute />
+                </Suspense>
               </WithApmTransaction>
             </NonIdentity>
           }
@@ -106,7 +113,9 @@ export const TopLevelRoutes: FC = () => {
             <NonIdentity>
               <WithApmTransaction path={`:${nameOfUrl.userNameId}/*`}>
                 <NoIdentityRedirect>
-                  <UserRoute />
+                  <Suspense fallback={<Loading />}>
+                    <UserRoute />
+                  </Suspense>
                 </NoIdentityRedirect>
               </WithApmTransaction>
             </NonIdentity>
@@ -118,7 +127,9 @@ export const TopLevelRoutes: FC = () => {
             <NonIdentity>
               <WithApmTransaction path={`:${nameOfUrl.vcNameId}/*`}>
                 <NoIdentityRedirect>
-                  <VCRoute />
+                  <Suspense fallback={<Loading />}>
+                    <VCRoute />
+                  </Suspense>
                 </NoIdentityRedirect>
               </WithApmTransaction>
             </NonIdentity>
@@ -129,7 +140,9 @@ export const TopLevelRoutes: FC = () => {
           element={
             <NonIdentity>
               <WithApmTransaction path={`:${nameOfUrl.organizationNameId}/*`}>
-                <OrganizationRoute />
+                <Suspense fallback={<Loading />}>
+                  <OrganizationRoute />
+                </Suspense>
               </WithApmTransaction>
             </NonIdentity>
           }
@@ -139,7 +152,9 @@ export const TopLevelRoutes: FC = () => {
           element={
             <NonIdentity>
               <WithApmTransaction path={`/${TopLevelRoutePath.InnovationLibrary}`}>
-                <InnovationLibraryPage />
+                <Suspense fallback={<Loading />}>
+                  <InnovationLibraryPage />
+                </Suspense>
               </WithApmTransaction>
             </NonIdentity>
           }
@@ -149,7 +164,9 @@ export const TopLevelRoutes: FC = () => {
           element={
             <NonIdentity>
               <WithApmTransaction path={TopLevelRoutePath.InnovationPacks}>
-                <InnovationPackRoute />
+                <Suspense fallback={<Loading />}>
+                  <InnovationPackRoute />
+                </Suspense>
               </WithApmTransaction>
             </NonIdentity>
           }
@@ -167,7 +184,9 @@ export const TopLevelRoutes: FC = () => {
           element={
             <NonIdentity>
               <WithApmTransaction path={`/${TopLevelRoutePath.Spaces}`}>
-                <SpaceExplorerPage />
+                <Suspense fallback={<Loading />}>
+                  <SpaceExplorerPage />
+                </Suspense>
               </WithApmTransaction>
             </NonIdentity>
           }
@@ -177,7 +196,9 @@ export const TopLevelRoutes: FC = () => {
           element={
             <NonIdentity>
               <WithApmTransaction path={`/${TopLevelRoutePath.Contributors}`}>
-                <ContributorsPage />
+                <Suspense fallback={<Loading />}>
+                  <ContributorsPage />
+                </Suspense>
               </WithApmTransaction>
             </NonIdentity>
           }
@@ -187,17 +208,9 @@ export const TopLevelRoutes: FC = () => {
           element={
             <NonIdentity>
               <WithApmTransaction path={`/${TopLevelRoutePath.Forum}`}>
-                <ForumRoute />
-              </WithApmTransaction>
-            </NonIdentity>
-          }
-        />
-        <Route
-          path={`/${TopLevelRoutePath.About}`}
-          element={
-            <NonIdentity>
-              <WithApmTransaction path={`/${TopLevelRoutePath.About}`}>
-                <AboutPage />
+                <Suspense fallback={<Loading />}>
+                  <ForumRoute />
+                </Suspense>
               </WithApmTransaction>
             </NonIdentity>
           }
@@ -207,7 +220,9 @@ export const TopLevelRoutes: FC = () => {
           element={
             <NonIdentity>
               <WithApmTransaction path={`/${TopLevelRoutePath.Profile}`}>
-                <ProfileRoute />
+                <Suspense fallback={<Loading />}>
+                  <ProfileRoute />
+                </Suspense>
               </WithApmTransaction>
             </NonIdentity>
           }

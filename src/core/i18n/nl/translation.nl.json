@@ -2675,8 +2675,8 @@
   },
   "operations": {
     "user-group": {
-      "updated-successfuly": "Groep {{name}} is geupdate!",
-      "deleted-successfuly": "Groep {{name}} is succesvol verwijderd"
+      "updated-successfully": "Groep {{name}} is geupdate!",
+      "deleted-successfully": "Groep {{name}} is succesvol verwijderd"
     }
   },
   "kratos": {

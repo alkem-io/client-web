@@ -17,6 +17,7 @@ export interface UserContextValue {
   loadingMe: boolean; // Loading Authentication and Profile data. Once it's false that's enough for showing the page header and avatar.
   verified: boolean;
   isAuthenticated: boolean;
+  accountPrivileges: string[];
 }
 
 const UserContext = React.createContext<UserContextValue>({
@@ -26,6 +27,7 @@ const UserContext = React.createContext<UserContextValue>({
   loadingMe: true,
   verified: false,
   isAuthenticated: false,
+  accountPrivileges: [],
 });
 
 const UserProvider: FC<{}> = ({ children }) => {
@@ -73,6 +75,7 @@ const UserProvider: FC<{}> = ({ children }) => {
       loadingMe: loadingMeAndParentQueries,
       verified,
       isAuthenticated,
+      accountPrivileges: meData?.me.user?.account?.authorization?.myPrivileges ?? [],
     }),
     [userMetadata, loading, loadingMeAndParentQueries, verified, isAuthenticated]
   );
