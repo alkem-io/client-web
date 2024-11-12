@@ -5,18 +5,18 @@ import { DoubleArrowOutlined } from '@mui/icons-material';
 
 import Gutters from '../../../../../core/ui/grid/Gutters';
 import GridItem from '../../../../../core/ui/grid/GridItem';
+import Loading from '../../../../../core/ui/loading/Loading';
 import { PageTitle } from '../../../../../core/ui/typography';
 import RouterLink from '../../../../../core/ui/link/RouterLink';
 import { Caption, Tagline } from '../../../../../core/ui/typography';
 import { MyMembershipsDialog } from '../../myMemberships/MyMembershipsDialog';
+import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
 import JourneyTile from '../../../../../domain/journey/common/JourneyTile/JourneyTile';
 import defaultJourneyBanner from '../../../../../domain/journey/defaultVisuals/Banner.jpg';
 
 import { useDashboardSpaces } from './useDashboardSpaces';
-
 import { gutters } from '../../../../../core/ui/grid/utils';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
-import Loading from '../../../../../core/ui/loading/Loading';
+import { SpacePrivacyMode } from '../../../../../core/apollo/generated/graphql-schema';
 
 const DashboardSpaces = () => {
   const {
@@ -30,7 +30,6 @@ const DashboardSpaces = () => {
     selectedSpaceName,
     styles: { loader, spaceCard, spaceTitle, spaceTagline, spaceCardMedia, exploreAllButton, titleAndDescContainer },
 
-    isPrivate,
     handleDialogOpen,
     handleDialogClose,
   } = useDashboardSpaces();
@@ -94,8 +93,8 @@ const DashboardSpaces = () => {
                       key={id}
                       columns={cardColumns}
                       journeyTypeName="space"
-                      isPrivate={isPrivate(subSpace.settings.privacy.mode)}
                       journey={{ profile: { url, cardBanner, displayName } }}
+                      isPrivate={subSpace.settings.privacy.mode === SpacePrivacyMode.Private}
                     />
                   );
                 })}

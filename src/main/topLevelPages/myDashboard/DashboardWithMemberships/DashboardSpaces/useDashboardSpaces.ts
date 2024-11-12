@@ -4,7 +4,6 @@ import { useTheme } from '@mui/material';
 import { Theme, useMediaQuery } from '@mui/material';
 
 import { useColumns } from '../../../../../core/ui/grid/GridContext';
-import { SpacePrivacyMode } from '../../../../../core/apollo/generated/graphql-schema';
 import { useDashboardWithMembershipsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
 import { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '../../../../../domain/journey/common/JourneyTile/JourneyTile';
 
@@ -83,6 +82,5 @@ export const useDashboardSpaces = () => {
 
     handleDialogOpen,
     handleDialogClose,
-    isPrivate: (mode: SpacePrivacyMode) => mode === SpacePrivacyMode.Private,
   };
 };
