@@ -17,17 +17,27 @@ query DashboardWithMemberships {
 
 fragment DashboardSpaceMembership on Space {
   id
+
   level
+
+  settings {
+    privacy {
+      mode
+    }
+  }
+
   authorization {
     id
     myPrivileges
   }
+
   community {
     roleSet {
       id
       ...MyMembershipsRoleSet
     }
   }
+
   profile {
     id
     url
