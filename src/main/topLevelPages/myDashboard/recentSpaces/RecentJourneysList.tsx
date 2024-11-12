@@ -10,6 +10,7 @@ import JourneyTile, {
   RECENT_JOURNEY_CARD_ASPECT_RATIO,
 } from '../../../../domain/journey/common/JourneyTile/JourneyTile';
 import { useMemo } from 'react';
+import { SpacePrivacyMode } from '../../../../core/apollo/generated/graphql-schema';
 
 interface RecentJourneysListProps {
   onSeeMore?: () => void;
@@ -31,6 +32,7 @@ const RecentJourneysList = ({ onSeeMore }: RecentJourneysListProps) => {
         <JourneyTile
           key={result.space.id}
           columns={cardColumns}
+          isPrivate={result.space.settings.privacy?.mode === SpacePrivacyMode.Private}
           journey={{
             profile: {
               displayName: result.space.profile.displayName,

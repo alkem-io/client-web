@@ -30,6 +30,7 @@ const DashboardSpaces = () => {
     selectedSpaceName,
     styles: { loader, spaceCard, spaceTitle, spaceTagline, spaceCardMedia, exploreAllButton, titleAndDescContainer },
 
+    isPrivate,
     handleDialogOpen,
     handleDialogClose,
   } = useDashboardSpaces();
@@ -93,6 +94,7 @@ const DashboardSpaces = () => {
                       key={id}
                       columns={cardColumns}
                       journeyTypeName="space"
+                      isPrivate={isPrivate(subSpace.settings.privacy.mode)}
                       journey={{ profile: { url, cardBanner, displayName } }}
                     />
                   );

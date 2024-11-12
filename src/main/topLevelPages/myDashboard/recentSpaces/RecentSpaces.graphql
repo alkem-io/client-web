@@ -3,6 +3,11 @@ query RecentSpaces($limit: Float) {
     mySpaces(limit: $limit) {
       space {
         id
+        settings {
+          privacy {
+            mode
+          }
+        }
         profile {
           ...RecentSpaceProfile
         }
