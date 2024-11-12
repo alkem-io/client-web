@@ -1,0 +1,48 @@
+query MyResources($accountId: UUID!) {
+  lookup {
+    account(ID: $accountId) {
+      id
+      spaces {
+        id
+        level
+        profile {
+          ...ShortAccountItem
+          cardBanner: visual(type: CARD) {
+            ...VisualUri
+          }
+        }
+      }
+      virtualContributors {
+        id
+        profile {
+          ...ShortAccountItem
+        }
+      }
+      innovationPacks {
+        id
+        profile {
+          ...ShortAccountItem
+        }
+      }
+      innovationHubs {
+        id
+        profile {
+          ...ShortAccountItem
+          banner: visual(type: BANNER_WIDE) {
+            ...VisualUri
+          }
+        }
+        subdomain
+      }
+    }
+  }
+}
+
+fragment ShortAccountItem on Profile {
+  id
+  displayName
+  url
+  avatar: visual(type: AVATAR) {
+    ...VisualUri
+  }
+}
