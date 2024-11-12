@@ -67,11 +67,12 @@
     "add-event": "Add event",
     "edit-event": "Edit event",
     "delete-event": "Delete event",
-    "delete-confirmation": "Are you sure you want to delete event: '{{title}}' from the space?",
+    "delete-confirmation": "Are you sure you want to delete event: '{{title}}' from the {{entity}}?",
     "event": {
       "type": "Type of Event",
       "multiple-days": "{{days}} days",
-      "whole-day": "All Day"
+      "whole-day": "All Day",
+      "visibleOnParentCalendar": "Also visible on the parent Space calendar"
     },
     "validation": {
       "durationMinutes": {
@@ -168,7 +169,8 @@
     "userMenu": "User Menu",
     "scrollToTop": "Scroll to top",
     "addSubject": "Add {{subject}}",
-    "toolPosition": "Position of tool"
+    "toolPosition": "Position of tool",
+    "createOwnSpace": "...or click here to create your own Space"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -359,6 +361,7 @@
     "virtual-contributor": "Virtual Contributor",
     "collaborationTool": "Collaboration tool",
     "optional": "optional",
+    "menu": "Menu",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -2022,8 +2025,8 @@
           "savedSuccessfully": "Settings saved successfully",
           "visibility": {
             "title": "Visibility",
-            "public": "<b>Public:</b> this space and its contents are visible for everyone on the platform. Users can only contribute if they are a member.",
-            "private": "<b>Private:</b> this space is visible to everyone on the platform, but the content is only visible to members. Please note that both the information in the profile and the context are publicly visible."
+            "public": "<b>Public:</b> This space and its contents are visible for everyone on the platform. Users can only contribute if they are a member.",
+            "private": "<b>Private:</b> This space is visible to everyone on the platform, but the content is only visible to members. Please note that both the information in the profile and the context are publicly visible."
           },
           "license-features": {
             "title": "Space Features",
@@ -2035,17 +2038,18 @@
           },
           "membership": {
             "title": "Membership",
-            "open": "<b>No Application required:</b> all Alkemio users can directly join, without you having to review their application. Others will first have to create an Alkemio account, but can then also join this Space directly.",
-            "applications": "<b>Application required:</b> if people want to become a member, they have to fill in the application form. You receive their applications (<community>see Community tab here</community>) and can choose to accept these or not. If you want, you can choose to leave the form empty.",
-            "invitations": "<b>Invitation only:</b> users can only become a member after you’ve invited them (<community>which you can do from the Community tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
+            "open": "<b>No Application required:</b> All Alkemio users can directly join, without you having to review their application. Others will first have to create an Alkemio account, but can then also join this Space directly.",
+            "applications": "<b>Application required:</b> If people want to become a member, they have to fill in the application form. You receive their applications (<community>see Community tab here</community>) and can choose to accept these or not. If you want, you can choose to leave the form empty.",
+            "invitations": "<b>Invitation only:</b> Users can only become a member after you’ve invited them (<community>which you can do from the Community tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
             "trustedApplicants": "Trusted applicants",
-            "hostOrganizationJoin": "<b>Host organization:</b> allow people who are associated with <i>{{host}}</i> to directly join, without having to apply or be invited.",
-            "allowSubspaceAdminsToInviteMembers": "Allow admins of Subspaces to invite users to their Subspace. Users who were not yet a member of this Space, will become so when they accept the Subspace invitation."
+            "hostOrganizationJoin": "<b>Host organization:</b> Allow people who are associated with <i>{{host}}</i> to directly join, without having to apply or be invited.",
+            "allowSubspaceAdminsToInviteMembers": "<b>Space invitations</b>: Allow admins of Subspaces to invite users to their Subspace. Users who were not yet a member of this Space, will become so when they accept the Subspace invitation."
           },
           "memberActions": {
             "title": "Allowed Actions",
-            "createBlocks": "<b>Create Blocks</b>: allow members to create blocks for collaboration tools & posts. If you deactivate this, members will still be able to contribute to existing posts and calls, but will not be able to create new blocks.",
-            "createSubspaces": "<b>Create Subspaces</b>: allow members to create Subspaces in this Space. If you deactivate this, you can still create Subspaces yourself and add other people as an admin inside the Subspace.",
+            "createBlocks": "<b>Create Blocks</b>: Allow members to create blocks for collaboration tools & posts. If you deactivate this, members will still be able to contribute to existing posts and calls, but will not be able to create new blocks.",
+            "createSubspaces": "<b>Create Subspaces</b>: Allow members to create Subspaces in this Space. If you deactivate this, you can still create Subspaces yourself and add other people as an admin inside the Subspace.",
+            "eventsFromSubspaces": "<b>Subspace events</b>: Allow events from Subspaces to be visible on this Space calendar as well.",
             "inheritRights": "Allow Space members to contribute.",
             "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an admin in this Space."
           },
@@ -2213,9 +2217,18 @@
     "home": {
       "title": "My Dashboard",
       "subtitle": "Ready to make some impact?",
+      "mainNavigation": {
+        "invitations": "Invitations",
+        "myLatestActivity": "My Latest Activity",
+        "myLatestSpacesActivity": "Latest Activity In My Spaces",
+        "tipsAndTricks": "Tips & Tricks",
+        "myAccount": "My Account",
+        "createSpace": "Create my own Space",
+        "activityView": "Activity View"
+      },
       "sections": {
         "latestContributions": {
-          "title": "Latest Contributions in my Spaces",
+          "title": "Latest Activity in my Spaces",
           "filter": {
             "space": {
               "label": "Space:",
@@ -2228,7 +2241,7 @@
           }
         },
         "myLatestContributions": {
-          "title": "My Latest Contributions",
+          "title": "My Latest Activity",
           "card": {
             "journey": "in: <journeyicon /> {{journey}}"
           },
@@ -2238,33 +2251,13 @@
           "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
         },
         "recentJourneys": {
-          "seeMore": {
-            "full": "Explore all your Spaces",
-            "short": "Explore all your Spaces"
-          }
+          "seeMore": "Explore all your Spaces",
+          "seeMoreSubspaces": "Explore all {{spaceName}} Subspaces"
         },
-        "myAccount": {
-          "title": "My Account",
-          "hostedSpaces": "Space",
-          "virtualContributors": "Virtual Contributor(s)",
-          "createSpaceButton": "🎉 Click here to start your own Space!",
-          "createVCButton": "Or start by creating your Virtual Contributor",
-          "createVCButtonDisabled": "You must create a space before you create a Virtual Contributor!",
-          "createYourVCButton": "🎉 Create your Virtual Contributor!",
-          "globalRoleUser": {
-            "createSpaceButton": "🎉 Create a Space and get started with Alkemio",
-            "createAnotherVCButton": "Create another Virtual Contributor"
-          },
-          "noGlobalRoleUser": {
-            "spaceSection": "You don’t host a Space yet. Click <pricing>here</pricing> to learn more about the different plans.",
-            "vcSectionLink": "Turn your knowledge into a Virtual Contributor powered by AI in your own space. Read more about Alkemio’s Virtual Contributor <vc>here</vc>.",
-            "vcSection": "Do you want to be part of the first group of people to test our Virtual Contributor?",
-            "joinButton": "Sign up and join the Early Access Program for free!",
-            "joinSection": "Do you want to be part of the first group of people to test our Virtual Contributor?",
-            "limitReached": "You've reached the maximum of 3 VCs"
-          },
-          "vcCampaignUser": {
-            "welcome": "Welcome to the Virtual Contributors - Early Access Program!",
+        "campaignBlock": {
+          "createYourVCButton": "Create your Virtual Contributor!",
+          "vcCampaign": {
+            "welcome": "🎉  Welcome to the  Virtual Contributors - Early Access Program!",
             "clickHere": "Click below to create your Virtual Contributor. Once finished, this block will give you access to both your Virtual Contributor and your Space in which you can interact with it. Enjoy!"
           }
         },
@@ -2771,8 +2764,8 @@
   },
   "operations": {
     "user-group": {
-      "updated-successfuly": "Group {{name}} has been updated!",
-      "deleted-successfuly": "Group {{name}} deleted successfully"
+      "updated-successfully": "Group {{name}} has been updated!",
+      "deleted-successfully": "Group {{name}} deleted successfully"
     }
   },
   "kratos": {
@@ -3072,7 +3065,7 @@
     "cancel": {
       "title": "Discard Virtual Contributor",
       "description": "Are you sure you want to stop creating your Virtual Contributor? Your work will not be saved. A space/subspace might already be created for you. Please, reload the page if you confirm the cancellation.",
-      "deleted": "Virtual Contributor deleted successfuly!"
+      "deleted": "Virtual Contributor deleted successfully!"
     },
     "addContent": {
       "title": "Add knowledge",

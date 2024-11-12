@@ -24,6 +24,7 @@ export interface SubspaceDialogsProps {
   dialogOpen: SubspaceDialog | undefined;
   journeyId: string | undefined;
   journeyUrl: string | undefined;
+  parentJourneyId: string | undefined;
   callouts: UseCalloutsProvided;
   dashboardNavigation: {
     dashboardNavigation: DashboardNavigationItem | undefined;
@@ -37,6 +38,7 @@ const SubspaceDialogs = ({
   journeyUrl,
   callouts,
   journeyId,
+  parentJourneyId,
   dashboardNavigation,
   communityId,
   collaborationId,
@@ -78,6 +80,7 @@ const SubspaceDialogs = ({
       <ActivityDialog journeyId={journeyId} open={dialogOpen === SubspaceDialog.Activity} onClose={handleClose} />
       <CalendarDialog
         journeyId={journeyId}
+        parentJourneyId={parentJourneyId}
         open={dialogOpen === SubspaceDialog.Timeline}
         onClose={handleClose}
         parentPath={journeyUrl}

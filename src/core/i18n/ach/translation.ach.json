@@ -2684,8 +2684,8 @@
   },
   "operations": {
     "user-group": {
-      "updated-successfuly": "crwdns10706:0{{name}}crwdne10706:0",
-      "deleted-successfuly": "crwdns10708:0{{name}}crwdne10708:0"
+      "updated-successfully": "crwdns10706:0{{name}}crwdne10706:0",
+      "deleted-successfully": "crwdns10708:0{{name}}crwdne10708:0"
     }
   },
   "kratos": {

@@ -1,4 +1,4 @@
-import { Box, BoxProps, useMediaQuery, useTheme } from '@mui/material';
+import { Box, BoxProps, Theme, useMediaQuery } from '@mui/material';
 import React, { Children, PropsWithChildren, ReactNode } from 'react';
 import { Caption } from '../../typography';
 import { gutters } from '../../grid/utils';
@@ -11,8 +11,7 @@ interface PageFooterProps {
 const wrapChild = (child: ReactNode, index: number) => <Box key={`_footer_item_${index}`}>{child}</Box>;
 
 const PageFooter = ({ logo, copyright, children, ...props }: BoxProps & PropsWithChildren<PageFooterProps>) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
 
   const childrenCount = Children.count(children);
   if (childrenCount % 2 !== 0) {

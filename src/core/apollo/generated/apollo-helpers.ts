@@ -705,8 +705,10 @@ export type CalendarEventKeySpecifier = (
   | 'nameID'
   | 'profile'
   | 'startDate'
+  | 'subspace'
   | 'type'
   | 'updatedDate'
+  | 'visibleOnParentCalendar'
   | 'wholeDay'
   | CalendarEventKeySpecifier
 )[];
@@ -722,8 +724,10 @@ export type CalendarEventFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   startDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  subspace?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  visibleOnParentCalendar?: FieldPolicy<any> | FieldReadFunction<any>;
   wholeDay?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutKeySpecifier = (
@@ -1731,13 +1735,13 @@ export type LicensePolicyFieldPolicy = {
 };
 export type LicensePolicyCredentialRuleKeySpecifier = (
   | 'credentialType'
-  | 'grantedPrivileges'
+  | 'grantedEntitlements'
   | 'name'
   | LicensePolicyCredentialRuleKeySpecifier
 )[];
 export type LicensePolicyCredentialRuleFieldPolicy = {
   credentialType?: FieldPolicy<any> | FieldReadFunction<any>;
-  grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
+  grantedEntitlements?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LicensingKeySpecifier = (
@@ -2739,7 +2743,6 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'level'
   | 'levelZeroSpaceID'
   | 'license'
-  | 'licensePrivileges'
   | 'metrics'
   | 'nameID'
   | 'profile'
@@ -2768,7 +2771,6 @@ export type RelayPaginatedSpaceFieldPolicy = {
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
-  licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3118,7 +3120,6 @@ export type SpaceKeySpecifier = (
   | 'level'
   | 'levelZeroSpaceID'
   | 'license'
-  | 'licensePrivileges'
   | 'metrics'
   | 'nameID'
   | 'profile'
@@ -3147,7 +3148,6 @@ export type SpaceFieldPolicy = {
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
-  licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3184,12 +3184,14 @@ export type SpaceSettingsFieldPolicy = {
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceSettingsCollaborationKeySpecifier = (
+  | 'allowEventsFromSubspaces'
   | 'allowMembersToCreateCallouts'
   | 'allowMembersToCreateSubspaces'
   | 'inheritMembershipRights'
   | SpaceSettingsCollaborationKeySpecifier
 )[];
 export type SpaceSettingsCollaborationFieldPolicy = {
+  allowEventsFromSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToCreateCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
   allowMembersToCreateSubspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   inheritMembershipRights?: FieldPolicy<any> | FieldReadFunction<any>;

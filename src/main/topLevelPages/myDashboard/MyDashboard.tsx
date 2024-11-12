@@ -1,49 +1,47 @@
-import React, { useState } from 'react';
-import HomePageLayout from '../Home/HomePageLayout';
-import PageContent from '../../../core/ui/content/PageContent';
-import MyMembershipsDialog from './myMemberships/MyMembershipsDialog';
+import React, { Suspense } from 'react';
 import { useLatestContributionsSpacesFlatQuery } from '../../../core/apollo/generated/apollo-hooks';
 import Loading from '../../../core/ui/loading/Loading';
-import MyDashboardWithMemberships from './MyDashboardWithMemberships';
-import MyDashboardWithoutMemberships from './MyDashboardWithoutMemberships';
 import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
-import MyDashboardUnauthenticated from './MyDashboardUnauthenticated';
+import { DashboardProvider } from './DashboardContext';
+
+const MyDashboardUnauthenticated = React.lazy(() => import('./MyDashboardUnauthenticated'));
+const MyDashboardWithMemberships = React.lazy(() => import('./MyDashboardWithMemberships'));
+const MyDashboardWithoutMemberships = React.lazy(() => import('./MyDashboardWithoutMemberships'));
 
 export const MyDashboard = () => {
   const { isAuthenticated, loading: isLoadingAuthentication } = useAuthenticationContext();
-  const [isMyMembershipsDialogOpen, setIsMyMembershipsDialogOpen] = useState(false);
 
   const { data: spacesData, loading: areSpacesLoading } = useLatestContributionsSpacesFlatQuery();
   const hasSpaceMemberships = !!spacesData?.me.spaceMembershipsFlat.length;
 
   if (areSpacesLoading) {
+    return <Loading />;
+  }
+
+  if (!isAuthenticated && !isLoadingAuthentication) {
     return (
-      <HomePageLayout>
-        <Loading />
-      </HomePageLayout>
+      <Suspense fallback={<Loading />}>
+        <MyDashboardUnauthenticated />
+      </Suspense>
+    );
+  }
+
+  if (hasSpaceMemberships) {
+    return (
+      <Suspense fallback={<Loading />}>
+        <DashboardProvider>
+          <MyDashboardWithMemberships />
+        </DashboardProvider>
+      </Suspense>
     );
   }
 
   return (
-    <HomePageLayout>
-      <MyMembershipsDialog open={isMyMembershipsDialogOpen} onClose={() => setIsMyMembershipsDialogOpen(false)} />
-      {!isAuthenticated && !isLoadingAuthentication ? (
-        <PageContent gridContainerProps={{ flexDirection: 'row-reverse' }}>
-          <MyDashboardUnauthenticated />
-        </PageContent>
-      ) : hasSpaceMemberships ? (
-        <PageContent gridContainerProps={{ flexDirection: 'row-reverse' }}>
-          <MyDashboardWithMemberships
-            spacesData={spacesData}
-            onOpenMembershipsDialog={() => setIsMyMembershipsDialogOpen(true)}
-          />
-        </PageContent>
-      ) : (
-        <PageContent gridContainerProps={{ flexDirection: 'row' }}>
-          <MyDashboardWithoutMemberships />
-        </PageContent>
-      )}
-    </HomePageLayout>
+    <Suspense fallback={<Loading />}>
+      <DashboardProvider>
+        <MyDashboardWithoutMemberships />
+      </DashboardProvider>
+    </Suspense>
   );
 };
 

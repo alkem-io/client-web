@@ -13,7 +13,7 @@ import AdminInnovationHubsRoutes from '../../../innovationHub/InnovationHubsAdmi
 import VirtualContributorsRoutes from '../virtual-contributors/VirtualContributorsRoutes';
 import AuthorizationPoliciesPage from '../../../../main/admin/authorizationPolicies/AuthorizationPoliciesPage';
 
-export const AdminRoute: FC = () => {
+const AdminRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
 
   return (
@@ -35,3 +35,5 @@ export const AdminRoute: FC = () => {
     </NoIdentityRedirect>
   );
 };
+
+export default AdminRoute;

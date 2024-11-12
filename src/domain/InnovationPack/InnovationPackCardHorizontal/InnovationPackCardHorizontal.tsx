@@ -16,6 +16,7 @@ import ActionsMenu from '../../../core/ui/card/ActionsMenu';
 import OneLineMarkdown from '../../../core/ui/markdown/OneLineMarkdown';
 import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
 import { SpaceIcon } from '../../journey/space/icon/SpaceIcon';
+import { RoundedBadgeSize } from '../../../core/ui/icon/RoundedBadge';
 
 export interface InnovationPackCardHorizontalProps {
   profile: {
@@ -32,6 +33,7 @@ export interface InnovationPackCardHorizontalProps {
     whiteboardTemplatesCount?: number;
   };
   actions?: React.ReactNode;
+  size?: RoundedBadgeSize;
 }
 
 export const InnovationPackCardHorizontalSkeleton = () => {
@@ -48,6 +50,7 @@ const InnovationPackCardHorizontal = ({
   profile: { displayName, description, url },
   templates,
   actions = undefined,
+  size = 'medium',
 }: InnovationPackCardHorizontalProps) => {
   const { t } = useTranslation();
 
@@ -70,7 +73,16 @@ const InnovationPackCardHorizontal = ({
 
   return (
     <BadgeCardView
-      visual={<RoundedIcon size="medium" component={InnovationPackIcon} />}
+      visual={
+        <RoundedIcon
+          size={size}
+          component={InnovationPackIcon}
+          sx={{
+            color: theme => theme.palette.neutral.light,
+            background: theme => theme.palette.background.paper,
+          }}
+        />
+      }
       component={RouterLink}
       to={url ?? ''}
       actions={actions && <ActionsMenu>{actions}</ActionsMenu>}

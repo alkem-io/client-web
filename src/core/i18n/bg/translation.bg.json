@@ -2675,8 +2675,8 @@
   },
   "operations": {
     "user-group": {
-      "updated-successfuly": "Групата {{name}} е обновена!",
-      "deleted-successfuly": "Групата {{name}} е изтрита успешно"
+      "updated-successfully": "Групата {{name}} е обновена!",
+      "deleted-successfully": "Групата {{name}} е изтрита успешно"
     }
   },
   "kratos": {
