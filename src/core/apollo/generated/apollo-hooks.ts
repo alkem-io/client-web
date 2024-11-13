@@ -3493,6 +3493,11 @@ export const DashboardSpaceMembershipFragmentDoc = gql`
   fragment DashboardSpaceMembership on Space {
     id
     level
+    settings {
+      privacy {
+        mode
+      }
+    }
     authorization {
       id
       myPrivileges
@@ -23331,6 +23336,11 @@ export const RecentSpacesDocument = gql`
       mySpaces(limit: $limit) {
         space {
           id
+          settings {
+            privacy {
+              mode
+            }
+          }
           profile {
             ...RecentSpaceProfile
           }

@@ -1,13 +1,14 @@
 import { ComponentType } from 'react';
 
-import { SvgIconProps } from '@mui/material';
+import { type SvgIconProps } from '@mui/material';
+
 import {
   SpaceLevel,
   CommunityRoleType,
   AuthorizationPrivilege,
   CommunityMembershipStatus,
 } from '../../../../core/apollo/generated/graphql-schema';
-import { Visual } from '../../../../domain/common/visual/Visual';
+import { type Visual } from '../../../../domain/common/visual/Visual';
 
 export type MembershipProps = {
   space: {
@@ -30,8 +31,8 @@ export type MembershipProps = {
         myMembershipStatus?: CommunityMembershipStatus;
       };
     };
-    childMemberships?: MembershipProps[];
   };
+  childMemberships?: MembershipProps[];
 };
 
 export type MyMembershipsDialogProps = {
