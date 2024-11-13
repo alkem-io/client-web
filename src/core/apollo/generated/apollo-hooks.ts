@@ -13589,6 +13589,18 @@ export const UserProviderDocument = gql`
             id
             myPrivileges
           }
+          license {
+            id
+            type
+            entitlements {
+              id
+              enabled
+              limit
+              isAvailable
+              usage
+              type
+            }
+          }
         }
       }
     }

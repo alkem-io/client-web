@@ -18176,6 +18176,20 @@ export type UserProviderQuery = {
                       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                     }
                   | undefined;
+                license: {
+                  __typename?: 'License';
+                  id: string;
+                  type?: LicenseType | undefined;
+                  entitlements: Array<{
+                    __typename?: 'LicenseEntitlement';
+                    id: string;
+                    enabled: boolean;
+                    limit: number;
+                    isAvailable: boolean;
+                    usage: number;
+                    type: LicenseEntitlementType;
+                  }>;
+                };
               }
             | undefined;
           profile: {

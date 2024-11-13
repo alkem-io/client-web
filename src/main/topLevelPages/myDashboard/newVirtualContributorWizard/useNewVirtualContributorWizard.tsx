@@ -228,11 +228,13 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
     const hasRequiredPrivileges =
       spaceMyPrivileges?.includes(AuthorizationPrivilege.CreateSubspace) &&
-      Array.isArray(spaceMyEntitlements) &&
-      spaceMyEntitlements.some(t => t.type === LicenseEntitlementType.AccountVirtualContributor) &&
       collaborationMyPrivileges?.includes(AuthorizationPrivilege.CommunityAddMemberVcFromAccount);
 
-    if (!hasRequiredPrivileges) {
+    const hasRequiredEntitlements =
+      Array.isArray(spaceMyEntitlements) &&
+      spaceMyEntitlements.some(t => t.type === LicenseEntitlementType.AccountVirtualContributor);
+
+    if (!(hasRequiredPrivileges && hasRequiredEntitlements)) {
       logInfo(`Insuficient privileges to create a VC: ${JSON.stringify(spacePrivileges)}`, {
         category: TagCategoryValues.VC,
       });
