@@ -6,7 +6,7 @@ import {
   SpaceLevel,
 } from '../../core/apollo/generated/graphql-schema';
 
-enum InAppNotificationType {
+export enum InAppNotificationType {
   COLLABORATION_CALLOUT_PUBLISHED = 'COLLABORATION_CALLOUT_PUBLISHED',
   COMMUNICATION_USER_MENTION = 'COMMUNICATION_USER_MENTION',
   COMMUNITY_NEW_MEMBER = 'COMMUNITY_NEW_MEMBER',
@@ -26,27 +26,34 @@ export enum InAppNotificationState {
   ARCHIVED = 'ARCHIVED',
 }
 
-enum InAppNotificationCategory {
+export enum InAppNotificationCategory {
   PERSONAL = 'PERSONAL',
   ADMIN = 'ADMIN',
 }
 
-interface NotificationProps {
+export interface InAppNotificationProps {
+  id: string;
   type: InAppNotificationType;
   triggeredAt: Date;
   action: InAppNotificationActions | undefined;
   state: InAppNotificationState;
   category: InAppNotificationCategory;
-  triggeredBy: {
-    displayName: string;
-    url: string;
-    visual:
-      | {
-          uri: string;
-        }
-      | undefined;
-    type: CommunityContributorType;
-  };
+  triggeredBy:
+    | {
+        type: CommunityContributorType;
+        profile:
+          | {
+              displayName: string;
+              url: string;
+              visual:
+                | {
+                    uri: string;
+                  }
+                | undefined;
+            }
+          | undefined;
+      }
+    | undefined;
   parentSpace:
     | {
         level: SpaceLevel;
@@ -80,11 +87,12 @@ interface NotificationProps {
         level: SpaceLevel;
         profile: {
           displayName: string;
+          url: string;
           visual: {
             uri: string;
           };
         };
-        communityRole: CommunityRoleType;
+        communityRole?: CommunityRoleType;
       }
     | undefined;
 
@@ -95,20 +103,23 @@ interface NotificationProps {
 }
 
 export const useInAppNotifications = () => {
-  const items: NotificationProps[] = useMemo(
+  const items: InAppNotificationProps[] = useMemo(
     () => [
       {
+        id: '1',
         type: InAppNotificationType.COLLABORATION_CALLOUT_PUBLISHED,
         triggeredAt: new Date('Tue Nov 12 2024 11:04:30'),
         action: undefined,
         state: InAppNotificationState.UNREAD,
         category: InAppNotificationCategory.PERSONAL,
         triggeredBy: {
-          displayName: 'John Doe',
-          url: '',
           type: CommunityContributorType.User,
-          visual: {
-            uri: '',
+          profile: {
+            displayName: 'John Doe',
+            url: '',
+            visual: {
+              uri: '',
+            },
           },
         },
         parentSpace: {
@@ -130,17 +141,20 @@ export const useInAppNotifications = () => {
         space: undefined,
       },
       {
+        id: '2',
         type: InAppNotificationType.COMMUNICATION_USER_MENTION,
         triggeredAt: new Date('Tue Nov 12 2024 09:01:47'),
         action: undefined,
         state: InAppNotificationState.READ,
         category: InAppNotificationCategory.PERSONAL,
         triggeredBy: {
-          displayName: 'Carvahlio',
-          url: '',
           type: CommunityContributorType.User,
-          visual: {
-            uri: '',
+          profile: {
+            displayName: 'Carvahlio',
+            url: '',
+            visual: {
+              uri: '',
+            },
           },
         },
         parentSpace: {
@@ -162,17 +176,20 @@ export const useInAppNotifications = () => {
         space: undefined,
       },
       {
+        id: '3',
         type: InAppNotificationType.COMMUNITY_NEW_MEMBER,
         triggeredAt: new Date('Tue Nov 11 2024 16:12:44'),
         action: undefined,
         state: InAppNotificationState.UNREAD,
         category: InAppNotificationCategory.ADMIN, // this could be also a personal notification or a different type
         triggeredBy: {
-          displayName: 'Clara',
-          url: '',
           type: CommunityContributorType.User,
-          visual: {
-            uri: '',
+          profile: {
+            displayName: 'Clara',
+            url: '',
+            visual: {
+              uri: '',
+            },
           },
         },
         parentSpace: undefined,
@@ -181,11 +198,43 @@ export const useInAppNotifications = () => {
           level: SpaceLevel.Space,
           profile: {
             displayName: 'Welcome Space',
+            url: '',
             visual: {
               uri: '',
             },
           },
           communityRole: CommunityRoleType.Member,
+        },
+      },
+      {
+        id: '4',
+        type: InAppNotificationType.COMMUNITY_NEW_MEMBER,
+        triggeredAt: new Date('Tue Nov 11 2024 16:12:44'),
+        action: undefined,
+        state: InAppNotificationState.UNREAD,
+        category: InAppNotificationCategory.PERSONAL, // this could be also a personal notification or a different type
+        triggeredBy: {
+          type: CommunityContributorType.User,
+          profile: {
+            displayName: 'Admin Admin',
+            url: '',
+            visual: {
+              uri: '',
+            },
+          },
+        },
+        parentSpace: undefined,
+        callout: undefined,
+        space: {
+          level: SpaceLevel.Space,
+          profile: {
+            displayName: 'Welcome Space',
+            url: '',
+            visual: {
+              uri: '',
+            },
+          },
+          communityRole: undefined,
         },
       },
     ],
