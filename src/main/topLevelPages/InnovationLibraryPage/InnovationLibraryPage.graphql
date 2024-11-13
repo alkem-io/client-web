@@ -56,7 +56,6 @@ query InnovationLibrary($filterTemplateType: [TemplateType!]) {
           collaborationTemplatesCount
           communityGuidelinesTemplatesCount
           innovationFlowTemplatesCount
-          collaborationTemplatesCount
           postTemplatesCount
           whiteboardTemplatesCount
         }
