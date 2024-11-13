@@ -24,7 +24,6 @@ export type AnyTemplateFormSubmittedValues =
   | CommunityGuidelinesTemplateFormSubmittedValues
   | PostTemplateFormSubmittedValues
   | InnovationFlowTemplateFormSubmittedValues
-  | CollaborationTemplateFormSubmittedValues
   | WhiteboardTemplateFormSubmittedValues;
 
 const TemplateForm = ({ template, temporaryLocation = false, ...rest }: TemplateFormProps) => {
