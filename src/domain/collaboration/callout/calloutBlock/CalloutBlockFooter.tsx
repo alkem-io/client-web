@@ -2,8 +2,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, IconButton, lighten } from '@mui/material';
 import { Add } from '@mui/icons-material';
-import SwapColors from '../../../../core/ui/palette/SwapColors';
-import { CaptionSmall } from '../../../../core/ui/typography';
+import SwapColors from '@core/ui/palette/SwapColors';
+import { CaptionSmall } from '@core/ui/typography';
 
 interface CalloutBlockFooterProps {
   contributionsCount: number;

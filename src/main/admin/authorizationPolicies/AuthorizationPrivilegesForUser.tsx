@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { validate as validateUUID } from 'uuid';
-import { useAuthorizationPrivilegesForUserQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { useAuthorizationPrivilegesForUserQuery } from '@core/apollo/generated/apollo-hooks';
 import { Autocomplete, Chip, CircularProgress, TextField } from '@mui/material';
-import Loading from '../../../core/ui/loading/Loading';
-import Gutters from '../../../core/ui/grid/Gutters';
-import { BlockTitle } from '../../../core/ui/typography';
-import useAdminGlobalUserList from '../../../domain/community/user/adminUsers/useAdminGlobalUserList';
-import { SearchableTableItem } from '../../../domain/platform/admin/components/SearchableTable';
+import Loading from '@core/ui/loading/Loading';
+import Gutters from '@core/ui/grid/Gutters';
+import { BlockTitle } from '@core/ui/typography';
+import useAdminGlobalUserList from '@domain/community/user/adminUsers/useAdminGlobalUserList';
+import { SearchableTableItem } from '@domain/platform/admin/components/SearchableTable';
 
 interface AuthorizationDialogProps {
   authorizationPolicyId: string;

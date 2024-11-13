@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useSpaceCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useSpaceCommunityContributorsQuery } from '@core/apollo/generated/apollo-hooks';
 import CommunityContributorsView from '../CommunityContributors/CommunityContributorsView';
 import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import useUserCardProps from '../utils/useUserCardProps';

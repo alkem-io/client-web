@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Dialog, DialogActions, Button, DialogContent, RadioGroup, FormControlLabel, Radio } from '@mui/material';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
 import { Trans, useTranslation } from 'react-i18next';
-import { Caption, Text } from '../../../../core/ui/typography';
+import { Caption, Text } from '@core/ui/typography';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { LoadingButton } from '@mui/lab';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
+import Gutters from '@core/ui/grid/Gutters';
+import TranslationKey from '@core/i18n/utils/TranslationKey';
 
 interface ApplyCollaborationTemplateDialogProps {
   open: boolean;

@@ -1,5 +1,5 @@
 import React, { ReactElement, ReactNode } from 'react';
-import RouterLink from '../../../../core/ui/link/RouterLink';
+import RouterLink from '@core/ui/link/RouterLink';
 import { ListItem, ListItemIcon, ListItemText } from '@mui/material';
 
 export interface ListItemLinkProps {

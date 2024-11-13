@@ -2,8 +2,8 @@ import getMetricCount from '../../../../platform/metrics/utils/getMetricCount';
 import {
   AssociatedOrganizationDetailsFragment,
   OrganizationVerificationEnum,
-} from '../../../../../core/apollo/generated/graphql-schema';
-import { buildOrganizationUrl } from '../../../../../main/routing/urlBuilders';
+} from '@core/apollo/generated/graphql-schema';
+import { buildOrganizationUrl } from '@main/routing/urlBuilders';
 import { ApolloError } from '@apollo/client';
 import { MetricType } from '../../../../platform/metrics/MetricType';
 

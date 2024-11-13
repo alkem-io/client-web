@@ -3,14 +3,14 @@ import {
   useRemoveRoleFromUserMutation,
   useRemoveRoleFromVirtualContributorMutation,
   useSpaceContributionDetailsQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { ContainerChildProps } from '../../../../core/container/container';
+} from '@core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '@core/container/container';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { useUserContext } from '../../user/hooks/useUserContext';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
-import { CommunityContributorType, CommunityRoleType } from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityContributorType, CommunityRoleType } from '@core/apollo/generated/graphql-schema';
 import { getChildJourneyTypeName } from '../../../shared/utils/spaceLevel';
 
 export interface EntityDetailsContainerEntities {

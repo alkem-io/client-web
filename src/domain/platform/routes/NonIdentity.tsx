@@ -1,8 +1,8 @@
 import { PropsWithChildren, useLayoutEffect } from 'react';
 import { useConfig } from '../config/useConfig';
-import { Error404 } from '../../../core/pages/Errors/Error404';
-import Loading from '../../../core/ui/loading/Loading';
-import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
+import { Error404 } from '@core/pages/Errors/Error404';
+import Loading from '@core/ui/loading/Loading';
+import { useAuthenticationContext } from '@core/auth/authentication/hooks/useAuthenticationContext';
 import usePlatformOrigin from './usePlatformOrigin';
 
 const NonIdentity = ({ children }: PropsWithChildren<{}>) => {

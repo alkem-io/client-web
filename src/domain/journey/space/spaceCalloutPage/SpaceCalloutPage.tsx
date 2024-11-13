@@ -5,7 +5,7 @@ import SpaceSubspacesPage from '../pages/SpaceSubspacesPage';
 import KnowedgeBasePage from '../../../collaboration/KnowledgeBase/KnowedgeBasePage';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { JourneyCalloutDialogProps } from '../../common/JourneyCalloutDialog/JourneyCalloutDialog';
-import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutGroupName } from '@core/apollo/generated/graphql-schema';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 import { useSpace } from '../SpaceContext/useSpace';
 

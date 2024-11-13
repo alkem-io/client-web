@@ -1,9 +1,9 @@
 import React, { PropsWithChildren } from 'react';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
 import { useConsumeAction } from './SubspacePageLayout';
 import { SubspaceDialog } from './SubspaceDialog';
 import { Button } from '@mui/material';
-import RouterLink from '../../../../core/ui/link/RouterLink';
+import RouterLink from '@core/ui/link/RouterLink';
 
 interface WelcomeBlockProps {
   about?: boolean;

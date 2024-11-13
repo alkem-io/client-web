@@ -1,4 +1,4 @@
-import { CalloutType, TemplateType } from '../../../core/apollo/generated/graphql-schema';
+import { CalloutType, TemplateType } from '@core/apollo/generated/graphql-schema';
 import { CalloutTemplate } from './CalloutTemplate';
 import { CommunityGuidelinesTemplate } from './CommunityGuidelinesTemplate';
 import { InnovationFlowTemplate } from './InnovationFlowTemplate';

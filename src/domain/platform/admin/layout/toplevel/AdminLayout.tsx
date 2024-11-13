@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next';
 import SpacePageBanner from '../../../../journey/space/layout/SpacePageBanner';
 import HeaderNavigationTabs from '../../../../shared/components/PageHeader/HeaderNavigationTabs';
 import HeaderNavigationTab from '../../../../shared/components/PageHeader/HeaderNavigationTab';
-import TopLevelLayout from '../../../../../main/ui/layout/TopLevelLayout';
-import PageContent from '../../../../../core/ui/content/PageContent';
-import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
-import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
-import AdminBreadcrumbs from '../../../../../main/admin/AdminBreadcrumbs';
+import TopLevelLayout from '@main/ui/layout/TopLevelLayout';
+import PageContent from '@core/ui/content/PageContent';
+import PageContentColumn from '@core/ui/content/PageContentColumn';
+import PageContentBlockSeamless from '@core/ui/content/PageContentBlockSeamless';
+import AdminBreadcrumbs from '@main/admin/AdminBreadcrumbs';
 
 interface AdminLayoutProps {
   currentTab: AdminSection;

@@ -1,9 +1,9 @@
 import {
   useInviteContributorsForRoleSetMembershipMutation,
   useInviteUserToPlatformAndRoleSetMutation,
-} from '../../../core/apollo/generated/apollo-hooks';
-import { CommunityRoleType } from '../../../core/apollo/generated/graphql-schema';
-import ensurePresence from '../../../core/utils/ensurePresence';
+} from '@core/apollo/generated/apollo-hooks';
+import { CommunityRoleType } from '@core/apollo/generated/graphql-schema';
+import ensurePresence from '@core/utils/ensurePresence';
 
 export interface InviteUserData {
   message: string;

@@ -7,18 +7,15 @@ import { useTranslation } from 'react-i18next';
 import CredentialCard from '../../../agent/credential/CredentialCard';
 import OfferAlkemioCommunityCredentialDialog from '../../../agent/credential/OfferAlkemioCommunityCredentialDialog';
 import RequestCredentialDialog from '../../../agent/credential/RequestCredentialDialog';
-import QRCodeDialog from '../../../../core/ui/qrCode/QRCodeDialog';
-import Loading from '../../../../core/ui/loading/Loading';
+import QRCodeDialog from '@core/ui/qrCode/QRCodeDialog';
+import Loading from '@core/ui/loading/Loading';
 import UserCredentialsContainer from '../../../agent/credential/verifiedCredentials/UserCredentialsContainer';
-import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import {
-  useProfileVerifiedCredentialSubscription,
-  useUserSsiLazyQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import { useNotification } from '@core/ui/notifications/useNotification';
+import { useProfileVerifiedCredentialSubscription, useUserSsiLazyQuery } from '@core/apollo/generated/apollo-hooks';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettingsLayout';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
-import { CardLayoutContainer, CardLayoutItem } from '../../../../core/ui/card/cardsLayout/CardsLayout';
+import { CardLayoutContainer, CardLayoutItem } from '@core/ui/card/cardsLayout/CardsLayout';
 import { useUserContext } from '../hooks/useUserContext';
 import useUserContributions from '../userContributions/useUserContributions';
 

@@ -7,7 +7,7 @@ import OrganizationPageBanner from '../../../community/organization/layout/Organ
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import OrganizationPageContainer from '../../../community/contributor/organization/OrganizationPageContainer/OrganizationPageContainer';
-import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
+import BreadcrumbsItem from '@core/ui/navigation/BreadcrumbsItem';
 import { Diversity3Outlined, Settings, LocalOfferOutlined } from '@mui/icons-material';
 import { buildOrganizationUrl } from '../../../../main/routing/urlBuilders';
 import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';

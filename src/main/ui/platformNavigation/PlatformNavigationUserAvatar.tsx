@@ -1,13 +1,13 @@
 import React, { ReactElement, Ref } from 'react';
-import { useUserContext } from '../../../domain/community/user';
+import { useUserContext } from '@domain/community/user';
 import { Box, CircularProgress, Paper, useTheme } from '@mui/material';
-import Avatar from '../../../core/ui/avatar/Avatar';
+import Avatar from '@core/ui/avatar/Avatar';
 import { Person } from '@mui/icons-material';
-import { gutters } from '../../../core/ui/grid/utils';
-import SwapColors from '../../../core/ui/palette/SwapColors';
-import MenuTriggerButton from '../../../core/ui/tooltip/MenuTriggerButton';
+import { gutters } from '@core/ui/grid/utils';
+import SwapColors from '@core/ui/palette/SwapColors';
+import MenuTriggerButton from '@core/ui/tooltip/MenuTriggerButton';
 import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
-import NavigationItemContainer from '../../../core/ui/navigation/NavigationItemContainer';
+import NavigationItemContainer from '@core/ui/navigation/NavigationItemContainer';
 import { useTranslation } from 'react-i18next';
 
 interface PlatformNavigationUserAvatarProps {

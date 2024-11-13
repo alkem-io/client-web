@@ -4,14 +4,14 @@ import { MAX_CONTENT_WIDTH_GUTTERS, useGlobalGridColumns } from '../../grid/cons
 import ImageBlurredSides from '../../image/ImageBlurredSides';
 import { useTranslation } from 'react-i18next';
 import { ComponentType, ReactElement, ReactNode, useState } from 'react';
-import { Visual } from '../../../../domain/common/visual/Visual';
+import { Visual } from '@domain/common/visual/Visual';
 import { Box, Skeleton } from '@mui/material';
 import GridProvider from '../../grid/GridProvider';
 import GridItem from '../../grid/GridItem';
 import { useColumns } from '../../grid/GridContext';
 import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '../../navigation/NavigationBar';
 import Overlay from '../../utils/Overlay';
-import { BasePageBannerProps } from '../../../../domain/journey/common/EntityPageLayout/EntityPageLayoutTypes';
+import { BasePageBannerProps } from '@domain/journey/common/EntityPageLayout/EntityPageLayoutTypes';
 
 export interface PageBannerProps extends BasePageBannerProps {
   banner: Visual | undefined;

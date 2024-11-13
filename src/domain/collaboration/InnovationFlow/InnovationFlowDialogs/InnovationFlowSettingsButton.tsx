@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ButtonProps } from '@mui/material';
-import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
+import ButtonWithTooltip from '@core/ui/button/ButtonWithTooltip';
 import InnovationFlowSettingsDialog from './InnovationFlowSettingsDialog';
 import { CalloutGroupNameValuesMap } from '../../callout/CalloutsInContext/CalloutsGroup';
 import { SvgIconComponent } from '@mui/icons-material';

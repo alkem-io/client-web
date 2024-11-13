@@ -1,6 +1,6 @@
-import mainQuery from '../../../../core/apollo/utils/mainQuery';
-import { useJourneyPrivilegesQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import mainQuery from '@core/apollo/utils/mainQuery';
+import { useJourneyPrivilegesQuery } from '@core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege } from '@core/apollo/generated/graphql-schema';
 import { ApolloError } from '@apollo/client';
 import { useMemo } from 'react';
 

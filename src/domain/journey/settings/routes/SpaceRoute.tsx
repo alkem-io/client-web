@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useTransactionScope } from '../../../../core/analytics/SentryTransactionScopeContext';
+import { useTransactionScope } from '@core/analytics/SentryTransactionScopeContext';
 import { useSpace } from '../../space/SpaceContext/useSpace';
-import { Error404 } from '../../../../core/pages/Errors/Error404';
+import { Error404 } from '@core/pages/Errors/Error404';
 import SpaceCommunicationsPage from '../../space/pages/SpaceCommunication/SpaceCommunicationsPage';
 import SpaceProfilePage from '../../space/pages/SpaceProfile/SpaceProfilePage';
 import SpaceSettingsPage from '../../space/pages/SpaceSettings/SpaceSettingsPage';

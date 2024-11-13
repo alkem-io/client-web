@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogContent, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader from '../../../core/ui/dialog/DialogHeader';
-import { BlockTitle } from '../../../core/ui/typography';
-import RoundedIcon from '../../../core/ui/icon/RoundedIcon';
+import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
+import { BlockTitle } from '@core/ui/typography';
+import RoundedIcon from '@core/ui/icon/RoundedIcon';
 import InnovationHubForm, { InnovationHubFormValues } from '../InnovationHubsAdmin/InnovationHubForm';
-import { useCreateInnovationHubMutation } from '../../../core/apollo/generated/apollo-hooks';
-import { InnovationHubType } from '../../../core/apollo/generated/graphql-schema';
-import { useNotification } from '../../../core/ui/notifications/useNotification';
+import { useCreateInnovationHubMutation } from '@core/apollo/generated/apollo-hooks';
+import { InnovationHubType } from '@core/apollo/generated/graphql-schema';
+import { useNotification } from '@core/ui/notifications/useNotification';
 
 interface CreateInnovationHubDialogProps {
   accountId: string | undefined;

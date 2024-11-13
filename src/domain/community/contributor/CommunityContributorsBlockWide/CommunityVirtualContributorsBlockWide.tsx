@@ -1,17 +1,17 @@
 import { Box, Theme, useMediaQuery } from '@mui/material';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import GridItem from '../../../../core/ui/grid/GridItem';
-import GridProvider from '../../../../core/ui/grid/GridProvider';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@core/ui/content/PageContentBlockHeader';
+import GridItem from '@core/ui/grid/GridItem';
+import GridProvider from '@core/ui/grid/GridProvider';
+import Gutters from '@core/ui/grid/Gutters';
+import MultipleSelect from '@core/ui/search/MultipleSelect';
 import ContributorCardSquare from '../ContributorCardSquare/ContributorCardSquare';
 import { useState } from 'react';
-import { useColumns } from '../../../../core/ui/grid/GridContext';
+import { useColumns } from '@core/ui/grid/GridContext';
 import { VirtualContributorProps } from '../../community/VirtualContributorsBlock/VirtualContributorsDialog';
-import Loading from '../../../../core/ui/loading/Loading';
+import Loading from '@core/ui/loading/Loading';
 import usePlatformOrigin from '../../../platform/routes/usePlatformOrigin';
-import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityContributorType } from '@core/apollo/generated/graphql-schema';
 
 interface CommunityContributorsBlockWideProps {
   virtualContributors: VirtualContributorProps[];

@@ -6,7 +6,7 @@ import { times } from 'lodash';
 import { Theme } from '@mui/material/styles';
 import Skeleton from '@mui/material/Skeleton';
 import LinesFitter from '../LinesFitter/LinesFitter';
-import { CardText } from '../../../../core/ui/typography';
+import { CardText } from '@core/ui/typography';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 export interface TagsComponentProps extends BoxProps {

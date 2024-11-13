@@ -7,13 +7,13 @@ import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
 import MessageView from './MessageView';
 import PostMessageToCommentsForm from './PostMessageToCommentsForm';
-import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradient';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import { CaptionSmall } from '../../../../core/ui/typography';
-import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import ScrollerWithGradient from '@core/ui/overflow/ScrollerWithGradient';
+import Gutters from '@core/ui/grid/Gutters';
+import { CaptionSmall } from '@core/ui/typography';
+import ConfirmationDialog from '@core/ui/dialogs/ConfirmationDialog';
 import useCommentReactionsMutations from './useCommentReactionsMutations';
 import MessagesThread from './MessagesThread';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { gutters } from '@core/ui/grid/utils';
 import { CommentInputFieldProps } from './CommentInputField';
 
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;

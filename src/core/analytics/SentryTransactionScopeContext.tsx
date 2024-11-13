@@ -1,7 +1,7 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useRef } from 'react';
-import { UserMetadata } from '../../domain/community/user/hooks/useUserMetadataWrapper';
+import { UserMetadata } from '@domain/community/user/hooks/useUserMetadataWrapper';
 import { setUserScope, setTransactionScope, TransactionScope } from '../logging/sentry/scope';
-import { useConfig } from '../../domain/platform/config/useConfig';
+import { useConfig } from '@domain/platform/config/useConfig';
 import { isEqual, last } from 'lodash';
 
 export const useUserScope = (metadata: UserMetadata | undefined) => {

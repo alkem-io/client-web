@@ -1,10 +1,10 @@
 import { forwardRef } from 'react';
-import Breadcrumbs, { BreadcrumbsProps } from '../../core/ui/navigation/Breadcrumbs';
-import BreadcrumbsItem from '../../core/ui/navigation/BreadcrumbsItem';
+import Breadcrumbs, { BreadcrumbsProps } from '@core/ui/navigation/Breadcrumbs';
+import BreadcrumbsItem from '@core/ui/navigation/BreadcrumbsItem';
 import { useTranslation } from 'react-i18next';
 import { Settings } from '@mui/icons-material';
-import { Collapsible } from '../../core/ui/navigation/Collapsible';
-import { Expandable } from '../../core/ui/navigation/Expandable';
+import { Collapsible } from '@core/ui/navigation/Collapsible';
+import { Expandable } from '@core/ui/navigation/Expandable';
 import BreadcrumbsRootItem from '../ui/breadcrumbs/BreadcrumbsRootItem';
 
 const AdminBreadcrumbs = forwardRef<Collapsible, BreadcrumbsProps<Expandable>>(

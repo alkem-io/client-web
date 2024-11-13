@@ -3,9 +3,9 @@ import React, { ReactNode, useMemo, useState } from 'react';
 import calloutIcons from '../utils/calloutIcons';
 import { useTranslation } from 'react-i18next';
 import { times } from 'lodash';
-import { BlockSectionTitle, Caption } from '../../../../core/ui/typography';
-import RouterLink from '../../../../core/ui/link/RouterLink';
-import SearchField from '../../../../core/ui/search/SearchField';
+import { BlockSectionTitle, Caption } from '@core/ui/typography';
+import RouterLink from '@core/ui/link/RouterLink';
+import SearchField from '@core/ui/search/SearchField';
 import JourneyCalloutsListItemTitle from '../JourneyCalloutsTabView/JourneyCalloutsListItemTitle';
 
 export interface CalloutInfo {

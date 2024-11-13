@@ -1,11 +1,11 @@
 import { Box, IconButton, Link, Tooltip } from '@mui/material';
 import { FC, useMemo, useState } from 'react';
 import { TFunction, useTranslation } from 'react-i18next';
-import { BlockTitle } from '../../../../core/ui/typography';
-import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
-import DataGridTable from '../../../../core/ui/table/DataGridTable';
+import { BlockTitle } from '@core/ui/typography';
+import DataGridSkeleton from '@core/ui/table/DataGridSkeleton';
+import DataGridTable from '@core/ui/table/DataGridTable';
 import { GridColDef, GridInitialState, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { gutters } from '@core/ui/grid/utils';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -15,10 +15,10 @@ import {
   AdminCommunityInvitationFragment,
   CommunityContributorType,
   User,
-} from '../../../../core/apollo/generated/graphql-schema';
+} from '@core/apollo/generated/graphql-schema';
 import { ApplicationDialog } from '../../application/dialogs/ApplicationDialog';
-import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
-import { formatDateTime } from '../../../../core/utils/time/utils';
+import ConfirmationDialog from '@core/ui/dialogs/ConfirmationDialog';
+import { formatDateTime } from '@core/utils/time/utils';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import RemoveIcon from '@mui/icons-material/Remove';
 

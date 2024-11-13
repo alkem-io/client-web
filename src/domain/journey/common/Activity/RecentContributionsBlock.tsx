@@ -1,19 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutType } from '@core/apollo/generated/graphql-schema';
 import {
   ActivityComponent,
   ActivityComponentProps,
 } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
-import { Caption } from '../../../../core/ui/typography';
+import { Caption } from '@core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import TopCalloutDetails from '../../../collaboration/callout/TopCallout/TopCalloutDetails';
-import { Identifiable } from '../../../../core/utils/Identifiable';
-import { gutters } from '../../../../core/ui/grid/utils';
-import AltToggle from '../../../../core/ui/forms/AltToggle/AltToggle';
-import Gutters from '../../../../core/ui/grid/Gutters';
+import { Identifiable } from '@core/utils/Identifiable';
+import { gutters } from '@core/ui/grid/utils';
+import AltToggle from '@core/ui/forms/AltToggle/AltToggle';
+import Gutters from '@core/ui/grid/Gutters';
 import { Box } from '@mui/material';
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, RECENT_ACTIVITIES_LIMIT_EXPANDED } from '../journeyDashboard/constants';
-import { Actions } from '../../../../core/ui/actions/Actions';
+import { Actions } from '@core/ui/actions/Actions';
 
 export interface RecentContributionsBlockProps extends ActivityComponentProps {
   readUsersAccess: boolean;

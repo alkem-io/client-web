@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import { Paper } from '@mui/material';
-import { PLATFORM_NAVIGATION_MENU_ELEVATION } from '../../../main/ui/platformNavigation/constants';
+import { PLATFORM_NAVIGATION_MENU_ELEVATION } from '@main/ui/platformNavigation/constants';
 
 const GlobalMenuSurface = forwardRef<HTMLDivElement>(({ children }, ref) => {
   return (

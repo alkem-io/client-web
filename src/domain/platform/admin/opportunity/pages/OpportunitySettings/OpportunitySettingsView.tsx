@@ -2,21 +2,21 @@ import { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
-import PageContentBlock from '../../../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../../../core/ui/content/PageContentBlockHeader';
-import { Caption } from '../../../../../../core/ui/typography';
-import { useNotification } from '../../../../../../core/ui/notifications/useNotification';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@core/ui/content/PageContentBlockHeader';
+import { Caption } from '@core/ui/typography';
+import { useNotification } from '@core/ui/notifications/useNotification';
 import {
   refetchSpaceDashboardNavigationChallengesQuery,
   refetchSubspacesInSpaceQuery,
   useDeleteSpaceMutation,
   useSpacePrivilegesQuery,
-} from '../../../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '../../../../../../core/apollo/generated/graphql-schema';
+} from '@core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege } from '@core/apollo/generated/graphql-schema';
 import DeleteIcon from '../../../../../journey/space/pages/SpaceSettings/icon/DeleteIcon';
 import EntityConfirmDeleteDialog from '../../../../../journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
 import { useSubSpace } from '../../../../../journey/subspace/hooks/useSubSpace';
-import PageContent from '../../../../../../core/ui/content/PageContent';
+import PageContent from '@core/ui/content/PageContent';
 import { useSpace } from '../../../../../journey/space/SpaceContext/useSpace';
 
 const errorColor = '#940000';

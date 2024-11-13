@@ -1,7 +1,7 @@
 import { Autocomplete, AutocompleteValue, TextField, TextFieldProps } from '@mui/material';
 import { useField } from 'formik';
 import React, { FC, useMemo } from 'react';
-import { useValidationMessageTranslation } from '../../../domain/shared/i18n/ValidationMessageTranslation';
+import { useValidationMessageTranslation } from '@domain/shared/i18n/ValidationMessageTranslation';
 import TranslationKey from '../../i18n/utils/TranslationKey';
 
 export interface FormikSelectValue {

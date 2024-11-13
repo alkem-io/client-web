@@ -1,12 +1,12 @@
-import PageContent from '../../core/ui/content/PageContent';
-import PageContentColumn from '../../core/ui/content/PageContentColumn';
-import PageContentBlock from '../../core/ui/content/PageContentBlock';
-import GridItem, { GridItemProps } from '../../core/ui/grid/GridItem';
+import PageContent from '@core/ui/content/PageContent';
+import PageContentColumn from '@core/ui/content/PageContentColumn';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
+import GridItem, { GridItemProps } from '@core/ui/grid/GridItem';
 import { Box } from '@mui/material';
-import { GUTTER_MUI, GUTTER_PX } from '../../core/ui/grid/constants';
-import { BlockTitle, PageTitle, Text } from '../../core/ui/typography';
-import PageContentBlockGrid from '../../core/ui/content/PageContentBlockGrid';
-import DataGridTable from '../../core/ui/table/DataGridTable';
+import { GUTTER_MUI, GUTTER_PX } from '@core/ui/grid/constants';
+import { BlockTitle, PageTitle, Text } from '@core/ui/typography';
+import PageContentBlockGrid from '@core/ui/content/PageContentBlockGrid';
+import DataGridTable from '@core/ui/table/DataGridTable';
 
 const DummyContent = (props: GridItemProps) => (
   <GridItem {...props}>

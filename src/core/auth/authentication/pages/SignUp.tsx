@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
-import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
-import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
+import AuthPageContentContainer from '@domain/shared/layout/AuthPageContentContainer';
+import SubHeading from '@domain/shared/components/Text/SubHeading';
+import Paragraph from '@domain/shared/components/Text/Paragraph';
 import { AcceptTermsContext } from '../components/AcceptTermsContext';
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import { EmailOutlined } from '@mui/icons-material';

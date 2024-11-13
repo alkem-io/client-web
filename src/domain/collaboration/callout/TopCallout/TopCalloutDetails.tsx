@@ -1,14 +1,14 @@
 import React from 'react';
 import { Badge } from '@mui/material';
-import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
-import { BlockSectionTitle, CardText } from '../../../../core/ui/typography/components';
-import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import RoundedIcon from '@core/ui/icon/RoundedIcon';
+import { BlockSectionTitle, CardText } from '@core/ui/typography/components';
+import { CalloutType } from '@core/apollo/generated/graphql-schema';
 import calloutIcons from '../utils/calloutIcons';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
-import RouterLink from '../../../../core/ui/link/RouterLink';
-import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
-import { gutters } from '../../../../core/ui/grid/utils';
+import BadgeCardView from '@core/ui/list/BadgeCardView';
+import webkitLineClamp from '@core/ui/utils/webkitLineClamp';
+import RouterLink from '@core/ui/link/RouterLink';
+import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
+import { gutters } from '@core/ui/grid/utils';
 
 interface TopCalloutProps {
   title: string;

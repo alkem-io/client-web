@@ -2,13 +2,13 @@ import { ExpandLess, ExpandMore, LockOutlined } from '@mui/icons-material';
 import { Box, Collapse, IconButton, Tooltip, TooltipProps } from '@mui/material';
 import React, { forwardRef, MouseEventHandler, useImperativeHandle, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import BadgeCardView from '../../../core/ui/list/BadgeCardView';
-import { Caption } from '../../../core/ui/typography';
+import BadgeCardView from '@core/ui/list/BadgeCardView';
+import { Caption } from '@core/ui/typography';
 import JourneyAvatar from '../common/JourneyAvatar/JourneyAvatar';
-import RouterLink from '../../../core/ui/link/RouterLink';
+import RouterLink from '@core/ui/link/RouterLink';
 import { getIndentStyle } from './utils';
 import { DashboardNavigationItem } from '../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
-import { Identifiable } from '../../../core/utils/Identifiable';
+import { Identifiable } from '@core/utils/Identifiable';
 import DashboardNavigationAddSubspace from './DashboardNavigationAddSubspace';
 import { last } from 'lodash';
 

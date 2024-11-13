@@ -1,4 +1,4 @@
-import { AuthorizationPrivilege, TagsetType } from '../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, TagsetType } from '@core/apollo/generated/graphql-schema';
 
 export interface Tagset {
   id?: string;

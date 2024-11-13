@@ -1,7 +1,7 @@
 import { Form, Formik } from 'formik';
 import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import useNavigate from '../../../../../core/routing/useNavigate';
+import useNavigate from '@core/routing/useNavigate';
 import * as yup from 'yup';
 import { Grid } from '@mui/material';
 import { Tagset, UpdateTagset } from '../../../../common/profile/Profile';
@@ -11,11 +11,11 @@ import {
   UpdateOrganizationInput,
   CreateOrganizationInput,
   TagsetType,
-} from '../../../../../core/apollo/generated/graphql-schema';
-import { EditMode } from '../../../../../core/ui/forms/editMode';
-import WrapperButton from '../../../../../core/ui/button/deprecated/WrapperButton';
-import Section, { Header } from '../../../../../core/ui/content/deprecated/Section';
-import VisualUpload from '../../../../../core/ui/upload/VisualUpload/VisualUpload';
+} from '@core/apollo/generated/graphql-schema';
+import { EditMode } from '@core/ui/forms/editMode';
+import WrapperButton from '@core/ui/button/deprecated/WrapperButton';
+import Section, { Header } from '@core/ui/content/deprecated/Section';
+import VisualUpload from '@core/ui/upload/VisualUpload/VisualUpload';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '../Common/TagsetSegment';
@@ -26,7 +26,7 @@ import { OrganizationInput } from '../../../../community/contributor/organizatio
 import { formatLocation } from '../../../../common/location/LocationUtils';
 import { LocationSegment } from '../../../../common/location/LocationSegment';
 import { EmptyLocation } from '../../../../common/location/Location';
-import Gutters from '../../../../../core/ui/grid/Gutters';
+import Gutters from '@core/ui/grid/Gutters';
 import { OrgVerificationLifecycleEvents } from '../../../../community/contributor/organization/adminOrganizations/useAdminGlobalOrganizationsList';
 
 const EmptyOrganization: Omit<Organization, 'authorization' | 'agent'> = {

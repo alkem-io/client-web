@@ -2,19 +2,19 @@ import React, { ReactNode, useMemo } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import DialogHeader, { DialogHeaderProps } from '../../../../core/ui/dialog/DialogHeader';
-import { BlockTitle } from '../../../../core/ui/typography';
+import DialogHeader, { DialogHeaderProps } from '@core/ui/dialog/DialogHeader';
+import { BlockTitle } from '@core/ui/typography';
 import { CalendarEventFormData } from '../CalendarEventsContainer';
-import { CalendarEventType } from '../../../../core/apollo/generated/graphql-schema';
-import { displayNameValidator } from '../../../../core/ui/forms/validator';
+import { CalendarEventType } from '@core/apollo/generated/graphql-schema';
+import { displayNameValidator } from '@core/ui/forms/validator';
 import { CalendarEventDetailData } from '../CalendarEventDetailContainer';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import { MARKDOWN_TEXT_LENGTH } from '@core/ui/forms/field-length.constants';
+import MarkdownValidator from '@core/ui/forms/MarkdownInput/MarkdownValidator';
 import dayjs from 'dayjs';
-import { isSameDay } from '../../../../core/utils/time/utils';
+import { isSameDay } from '@core/utils/time/utils';
 import EventForm from './EventForm/EventForm';
-import { FormikSelectValue } from '../../../../core/ui/forms/FormikSelect';
-import GridProvider from '../../../../core/ui/grid/GridProvider';
+import { FormikSelectValue } from '@core/ui/forms/FormikSelect';
+import GridProvider from '@core/ui/grid/GridProvider';
 
 const DEFAULT_DURATION_MINUTES = 30;
 

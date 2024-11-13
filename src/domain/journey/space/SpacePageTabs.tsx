@@ -18,7 +18,7 @@ import {
   TabProps,
   useTheme,
 } from '@mui/material';
-import hexToRGBA from '../../../core/utils/hexToRGBA';
+import hexToRGBA from '@core/utils/hexToRGBA';
 import {
   DashboardOutlined,
   History,
@@ -28,12 +28,12 @@ import {
   ShareOutlined,
 } from '@mui/icons-material';
 import { CalloutIcon } from '../../collaboration/callout/icon/CalloutIcon';
-import useNavigate from '../../../core/routing/useNavigate';
+import useNavigate from '@core/routing/useNavigate';
 import getEntityColor from '../../shared/utils/getEntityColor';
-import useShare from '../../../core/utils/Share';
+import useShare from '@core/utils/Share';
 import { EntityTabsProps } from '../common/EntityPageLayout';
-import { gutters } from '../../../core/ui/grid/utils';
-import { useRouteResolver } from '../../../main/routing/resolvers/RouteResolver';
+import { gutters } from '@core/ui/grid/utils';
+import { useRouteResolver } from '@main/routing/resolvers/RouteResolver';
 import ActivityDialog from '../common/Activity/ActivityDialog';
 
 interface TabDefinition {

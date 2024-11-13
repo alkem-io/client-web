@@ -11,12 +11,12 @@ import {
   UpdateProfileInput,
   UpdateReferenceInput,
   UpdateTagsetInput,
-} from '../../../../../core/apollo/generated/graphql-schema';
+} from '@core/apollo/generated/graphql-schema';
 import {
   CreateTemplateMutationVariables,
   TemplateType,
   UpdateTemplateMutationVariables,
-} from '../../../../../core/apollo/generated/graphql-schema';
+} from '@core/apollo/generated/graphql-schema';
 import { AnyTemplateFormSubmittedValues } from '../TemplateForm';
 import { CommunityGuidelinesTemplateFormSubmittedValues } from '../CommunityGuidelinesTemplateForm';
 import { WhiteboardTemplateFormSubmittedValues } from '../WhiteboardTemplateForm';

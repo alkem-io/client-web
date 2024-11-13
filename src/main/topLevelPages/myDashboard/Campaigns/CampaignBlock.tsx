@@ -1,6 +1,6 @@
-import { useCampaignBlockCredentialsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { CredentialType } from '../../../../core/apollo/generated/graphql-schema';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import { useCampaignBlockCredentialsQuery } from '@core/apollo/generated/apollo-hooks';
+import { CredentialType } from '@core/apollo/generated/graphql-schema';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
 import useNewVirtualContributorWizard from '../newVirtualContributorWizard/useNewVirtualContributorWizard';
 import CampaignBlockCreateVC from './CampaignBlockCreateVC';
 

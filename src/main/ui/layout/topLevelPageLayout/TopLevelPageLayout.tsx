@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, ReactNode } from 'react';
 import { PageBannerCardProps } from '../../../topLevelPages/pageBannerCard/PageBannerCard';
 import TopLevelLayout from '../TopLevelLayout';
-import PageContent from '../../../../core/ui/content/PageContent';
+import PageContent from '@core/ui/content/PageContent';
 import TopLevelPageBanner from './TopLevelPageBanner';
 import { PlatformNavigationBarProps } from '../../platformNavigation/PlatformNavigationBar';
 

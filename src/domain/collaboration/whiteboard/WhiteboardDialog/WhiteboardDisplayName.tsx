@@ -5,10 +5,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { LoadingButton } from '@mui/lab';
 import { useTranslation } from 'react-i18next';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { BlockTitle } from '../../../../core/ui/typography';
+import { gutters } from '@core/ui/grid/utils';
+import { BlockTitle } from '@core/ui/typography';
 import { Edit } from '@mui/icons-material';
-import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
+import { useGlobalGridColumns } from '@core/ui/grid/constants';
 
 interface WhiteboardDisplayNameProps {
   displayName: string | undefined;

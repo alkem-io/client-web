@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { UserAvatarsProvider } from '../../../../community/user/containers/UserAvatarsProvider/UserAvatarsProvider';
-import { User } from '../../../../../core/apollo/generated/graphql-schema';
-import AlkemioAvatar from '../../../../../core/ui/image/AlkemioAvatar';
+import { User } from '@core/apollo/generated/graphql-schema';
+import AlkemioAvatar from '@core/ui/image/AlkemioAvatar';
 import GroupMembersDetailsAvatarContainer from './GroupMembersDetailsAvatarContainer';
-import WrapperButton from '../../../../../core/ui/button/deprecated/WrapperButton';
-import WrapperTypography from '../../../../../core/ui/typography/deprecated/WrapperTypography';
+import WrapperButton from '@core/ui/button/deprecated/WrapperButton';
+import WrapperTypography from '@core/ui/typography/deprecated/WrapperTypography';
 import { useTranslation } from 'react-i18next';
 import UserPopUp from '../../../../community/user/userPopUp/UserPopUp';
 

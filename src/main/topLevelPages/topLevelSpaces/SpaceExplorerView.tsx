@@ -1,29 +1,25 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import PageContentBlock from '../../../core/ui/content/PageContentBlock';
-import { Caption, CaptionSmall } from '../../../core/ui/typography';
-import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
+import { Caption, CaptionSmall } from '@core/ui/typography';
+import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
 import { Box, Button, DialogContent, IconButton } from '@mui/material';
-import SearchTagsInput from '../../../domain/shared/components/SearchTagsInput/SearchTagsInput';
-import Gutters from '../../../core/ui/grid/Gutters';
-import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import SpaceSubspaceCard from '../../../domain/journey/space/SpaceSubspaceCard/SpaceSubspaceCard';
-import { Identifiable } from '../../../core/utils/Identifiable';
-import {
-  CommunityMembershipStatus,
-  ProfileType,
-  SpacePrivacyMode,
-} from '../../../core/apollo/generated/graphql-schema';
-import { Visual } from '../../../domain/common/visual/Visual';
-import { gutters, useGridItem } from '../../../core/ui/grid/utils';
-import useLazyLoading from '../../../domain/shared/pagination/useLazyLoading';
-import SpaceSubspaceCardLabel from '../../../domain/journey/space/SpaceSubspaceCard/SpaceSubspaceCardLabel';
-import SeeMoreExpandable from '../../../core/ui/content/SeeMoreExpandable';
+import SearchTagsInput from '@domain/shared/components/SearchTagsInput/SearchTagsInput';
+import Gutters from '@core/ui/grid/Gutters';
+import ScrollableCardsLayoutContainer from '@core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import SpaceSubspaceCard from '@domain/journey/space/SpaceSubspaceCard/SpaceSubspaceCard';
+import { Identifiable } from '@core/utils/Identifiable';
+import { CommunityMembershipStatus, ProfileType, SpacePrivacyMode } from '@core/apollo/generated/graphql-schema';
+import { Visual } from '@domain/common/visual/Visual';
+import { gutters, useGridItem } from '@core/ui/grid/utils';
+import useLazyLoading from '@domain/shared/pagination/useLazyLoading';
+import SpaceSubspaceCardLabel from '@domain/journey/space/SpaceSubspaceCard/SpaceSubspaceCardLabel';
+import SeeMoreExpandable from '@core/ui/content/SeeMoreExpandable';
 import { buildLoginUrl } from '../../routing/urlBuilders';
-import RouterLink from '../../../core/ui/link/RouterLink';
-import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader from '../../../core/ui/dialog/DialogHeader';
+import RouterLink from '@core/ui/link/RouterLink';
+import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
 import { compact } from 'lodash';
 
 export interface SpaceExplorerViewProps {

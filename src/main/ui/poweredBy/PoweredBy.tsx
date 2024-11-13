@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next';
-import { BlockSectionTitle } from '../../../core/ui/typography';
+import { BlockSectionTitle } from '@core/ui/typography';
 import LogoPreviewImage from '../logo/logoPreview.svg?react';
 import LogoImage from '../logo/logo.svg?react';
-import { gutters } from '../../../core/ui/grid/utils';
+import { gutters } from '@core/ui/grid/utils';
 import { Box, BoxProps } from '@mui/material';
-import { useConfig } from '../../../domain/platform/config/useConfig';
-import { ROUTE_HOME } from '../../../domain/platform/routes/constants';
-import RouterLink from '../../../core/ui/link/RouterLink';
-import { rem } from '../../../core/ui/typography/utils';
-import { PlatformFeatureFlagName } from '../../../core/apollo/generated/graphql-schema';
+import { useConfig } from '@domain/platform/config/useConfig';
+import { ROUTE_HOME } from '@domain/platform/routes/constants';
+import RouterLink from '@core/ui/link/RouterLink';
+import { rem } from '@core/ui/typography/utils';
+import { PlatformFeatureFlagName } from '@core/apollo/generated/graphql-schema';
 
 interface PoweredByProps {
   preview?: boolean;

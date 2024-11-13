@@ -8,12 +8,12 @@ import {
   useSubspacePageLazyQuery,
   useUserPendingMembershipsQuery,
   useUserProfileLazyQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { ContainerChildProps } from '../../../../core/container/container';
-import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
-import clearCacheForType from '../../../../core/apollo/utils/clearCacheForType';
-import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
-import { useNotification } from '../../../../core/ui/notifications/useNotification';
+} from '@core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '@core/container/container';
+import { AuthorizationPrivilege, CommunityMembershipStatus } from '@core/apollo/generated/graphql-schema';
+import clearCacheForType from '@core/apollo/utils/clearCacheForType';
+import { useAuthenticationContext } from '@core/auth/authentication/hooks/useAuthenticationContext';
+import { useNotification } from '@core/ui/notifications/useNotification';
 import { useTranslation } from 'react-i18next';
 import useCanReadSpace from '../../../journey/common/authorization/useCanReadSpace';
 

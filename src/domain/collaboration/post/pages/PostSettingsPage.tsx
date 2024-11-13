@@ -1,33 +1,33 @@
 import React, { FC, useEffect, useState } from 'react';
-import useNavigate from '../../../../core/routing/useNavigate';
+import useNavigate from '@core/routing/useNavigate';
 import { Autocomplete, Button, DialogActions, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import PostForm, { PostFormInput, PostFormOutput } from '../PostForm/PostForm';
 import usePostSettings from '../containers/PostSettings/usePostSettings';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { useNotification } from '../../../../core/ui/notifications/useNotification';
+import { useUrlParams } from '@core/routing/useUrlParams';
+import { useNotification } from '@core/ui/notifications/useNotification';
 import {
   PostSettingsFragment,
   AuthorizationPrivilege,
   CalloutType,
   Visual,
   VisualType,
-} from '../../../../core/apollo/generated/graphql-schema';
+} from '@core/apollo/generated/graphql-schema';
 import EditVisualsView from '../../../common/visual/EditVisuals/EditVisualsView';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import { PostDialogSection } from '../views/PostDialogSection';
 import { PostLayout } from '../views/PostLayoutWithOutlet';
 import useCallouts from '../../callout/useCallouts/useCallouts';
-import { useMoveContributionToCalloutMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import { useMoveContributionToCalloutMutation } from '@core/apollo/generated/apollo-hooks';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { LoadingButton } from '@mui/lab';
 import useLoadingState from '../../../shared/utils/useLoadingState';
-import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
-import { normalizeLink } from '../../../../core/utils/links';
-import { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
+import ConfirmationDialog from '@core/ui/dialogs/ConfirmationDialog';
+import { normalizeLink } from '@core/utils/links';
+import { DialogFooter } from '@core/ui/dialog/DialogWithGrid';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface PostSettingsPageProps {

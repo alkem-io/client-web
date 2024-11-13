@@ -1,4 +1,4 @@
-import { SpaceLevel } from '../../../core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../journey/JourneyTypeName';
 
 export const getChildJourneyTypeName = ({ level }: { level: SpaceLevel }): JourneyTypeName => {

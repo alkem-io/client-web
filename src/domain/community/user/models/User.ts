@@ -1,5 +1,5 @@
 import { CountryType } from '../../../common/location/countries.constants';
-import { Organization } from '../../../../core/apollo/generated/graphql-schema';
+import { Organization } from '@core/apollo/generated/graphql-schema';
 import { Reference, Tagset } from '../../../common/profile/Profile';
 
 export interface UserModel {

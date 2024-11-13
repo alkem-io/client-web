@@ -1,6 +1,6 @@
 import { useUserContext } from '../../../../community/user';
-import { useFreePlanAvailabilityQuery } from '../../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, LicenseCredential } from '../../../../../core/apollo/generated/graphql-schema';
+import { useFreePlanAvailabilityQuery } from '@core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, LicenseCredential } from '@core/apollo/generated/graphql-schema';
 
 interface Provided {
   loading: boolean;

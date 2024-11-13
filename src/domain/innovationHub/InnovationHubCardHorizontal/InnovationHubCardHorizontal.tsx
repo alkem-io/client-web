@@ -1,15 +1,15 @@
 import { Box, Skeleton } from '@mui/material';
-import BadgeCardView from '../../../core/ui/list/BadgeCardView';
+import BadgeCardView from '@core/ui/list/BadgeCardView';
 import JourneyAvatar from '../../journey/common/JourneyAvatar/JourneyAvatar';
-import RouterLink from '../../../core/ui/link/RouterLink';
-import { Caption, CardTitle } from '../../../core/ui/typography';
-import OneLineMarkdown from '../../../core/ui/markdown/OneLineMarkdown';
-import { SpaceVisibility } from '../../../core/apollo/generated/graphql-schema';
-import { gutters } from '../../../core/ui/grid/utils';
+import RouterLink from '@core/ui/link/RouterLink';
+import { Caption, CardTitle } from '@core/ui/typography';
+import OneLineMarkdown from '@core/ui/markdown/OneLineMarkdown';
+import { SpaceVisibility } from '@core/apollo/generated/graphql-schema';
+import { gutters } from '@core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
-import { buildInnovationHubUrl } from '../../../main/routing/urlBuilders';
-import ActionsMenu from '../../../core/ui/card/ActionsMenu';
-import { AvatarSize } from '../../../core/ui/avatar/Avatar';
+import { buildInnovationHubUrl } from '@main/routing/urlBuilders';
+import ActionsMenu from '@core/ui/card/ActionsMenu';
+import { AvatarSize } from '@core/ui/avatar/Avatar';
 
 export const InnovationHubCardHorizontalSkeleton = () => (
   <BadgeCardView

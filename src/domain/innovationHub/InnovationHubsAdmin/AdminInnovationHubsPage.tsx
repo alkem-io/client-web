@@ -7,7 +7,7 @@ import {
   refetchAdminInnovationHubsListQuery,
   useAdminInnovationHubsListQuery,
   useDeleteInnovationHubMutation,
-} from '../../../core/apollo/generated/apollo-hooks';
+} from '@core/apollo/generated/apollo-hooks';
 import SimpleSearchableTable from '../../shared/components/SearchableList/SimpleSearchableTable';
 
 interface AdminInnovationHubsPageProps {}

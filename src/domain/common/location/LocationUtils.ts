@@ -1,4 +1,4 @@
-import { Maybe, Location as GraphQLLocation } from '../../../core/apollo/generated/graphql-schema';
+import { Maybe, Location as GraphQLLocation } from '@core/apollo/generated/graphql-schema';
 import { Location as LocationModel } from './Location';
 import { COUNTRIES } from './countries.constants';
 

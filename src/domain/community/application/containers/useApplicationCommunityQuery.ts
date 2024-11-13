@@ -1,8 +1,5 @@
 import { useMemo } from 'react';
-import {
-  useSpaceApplicationQuery,
-  useSpaceApplicationTemplateQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import { useSpaceApplicationQuery, useSpaceApplicationTemplateQuery } from '@core/apollo/generated/apollo-hooks';
 
 // can join always false for spaces ???
 export const useApplicationCommunityQuery = (journeyId: string | undefined, canJoinCommunity: boolean) => {

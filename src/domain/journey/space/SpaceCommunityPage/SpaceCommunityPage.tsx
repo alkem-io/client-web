@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import PageContent from '../../../../core/ui/content/PageContent';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import PageContent from '@core/ui/content/PageContent';
+import { useUrlParams } from '@core/routing/useUrlParams';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import EntityDashboardLeadsSection from '../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import ContactLeadsButton from '../../../community/community/ContactLeadsButton/ContactLeadsButton';
@@ -11,21 +11,17 @@ import {
   MessageReceiverChipData,
 } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import CommunityContributorsBlockWide from '../../../community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWide';
-import { useSpaceCommunityPageQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useSpaceCommunityPageQuery } from '@core/apollo/generated/apollo-hooks';
 import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
 import useCommunityMembersAsCardProps from '../../../community/community/utils/useCommunityMembersAsCardProps';
-import {
-  AuthorizationPrivilege,
-  CalloutGroupName,
-  SearchVisibility,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalloutGroupName, SearchVisibility } from '@core/apollo/generated/graphql-schema';
 import SpaceCommunityContainer from './SpaceCommunityContainer';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { useSpace } from '../SpaceContext/useSpace';
-import InfoColumn from '../../../../core/ui/content/InfoColumn';
-import ContentColumn from '../../../../core/ui/content/ContentColumn';
+import InfoColumn from '@core/ui/content/InfoColumn';
+import ContentColumn from '@core/ui/content/ContentColumn';
 import VirtualContributorsBlock from '../../../community/community/VirtualContributorsBlock/VirtualContributorsBlock';
 import { VirtualContributorProps } from '../../../community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import { useUserContext } from '../../../community/user';

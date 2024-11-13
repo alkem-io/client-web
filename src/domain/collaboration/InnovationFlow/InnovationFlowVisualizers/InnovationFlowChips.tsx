@@ -2,13 +2,13 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Divider, styled, Tooltip } from '@mui/material';
 import { ArrowRight } from '@mui/icons-material';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
-import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
-import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
-import i18n from '../../../../core/i18n/config';
+import Gutters from '@core/ui/grid/Gutters';
+import { useGlobalGridColumns } from '@core/ui/grid/constants';
+import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
+import TranslationKey from '@core/i18n/utils/TranslationKey';
+import i18n from '@core/i18n/config';
 import { InnovationFlowState } from '../InnovationFlow';
-import { Caption } from '../../../../core/ui/typography';
+import { Caption } from '@core/ui/typography';
 import { InnovationFlowVisualizerProps } from './InnovationFlowVisualizer';
 
 interface InnovationFlowChipsProps extends InnovationFlowVisualizerProps {}

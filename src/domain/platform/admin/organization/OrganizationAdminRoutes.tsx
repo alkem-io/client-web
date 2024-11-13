@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { Error404 } from '../../../../core/pages/Errors/Error404';
+import { Error404 } from '@core/pages/Errors/Error404';
 import OrganizationProfilePage from './OrganizationProfilePage';
 import OrganizationAccountPage from './OrganizationAccountPage';
 import { OrganizationGroupsRoute } from './OrganizationGroupsRoute';
@@ -8,8 +8,8 @@ import OrganizationCommunityPage from './OrganizationCommunityPage';
 import OrganizationAuthorizationPage from './OrganizationAuthorizationPage';
 import NonAdminRedirect from '../../../../main/admin/NonAdminRedirect';
 import { useOrganization } from '../../../community/contributor/organization/hooks/useOrganization';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
-import Loading from '../../../../core/ui/loading/Loading';
+import { AuthorizationPrivilege } from '@core/apollo/generated/graphql-schema';
+import Loading from '@core/ui/loading/Loading';
 import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
 
 const OrganizationAdminRoutes: FC = () => {

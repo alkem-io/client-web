@@ -1,4 +1,4 @@
-import { Callout, CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
+import { Callout, CalloutGroupName } from '@core/apollo/generated/graphql-schema';
 import { Reference, Tagset } from '../../../common/profile/Profile';
 import { CalloutFormInput } from '../CalloutForm';
 

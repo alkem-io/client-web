@@ -2,24 +2,21 @@ import { Formik } from 'formik';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
+import FormikInputField from '@core/ui/forms/FormikInputField/FormikInputField';
 import { useApplicationCommunityQuery } from '../containers/useApplicationCommunityQuery';
-import {
-  refetchUserProviderQuery,
-  useApplyForEntryRoleOnRoleSetMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { CreateNvpInput } from '../../../../core/apollo/generated/graphql-schema';
-import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
-import { BlockTitle } from '../../../../core/ui/typography';
-import Gutters from '../../../../core/ui/grid/Gutters';
+import { refetchUserProviderQuery, useApplyForEntryRoleOnRoleSetMutation } from '@core/apollo/generated/apollo-hooks';
+import { CreateNvpInput } from '@core/apollo/generated/graphql-schema';
+import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
+import { BlockTitle } from '@core/ui/typography';
+import Gutters from '@core/ui/grid/Gutters';
 import References from '../../../shared/components/References/References';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
 import { DialogContent } from '@mui/material';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { Actions } from '../../../../core/ui/actions/Actions';
+import { gutters } from '@core/ui/grid/utils';
+import { Actions } from '@core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
-import FormikEffectFactory from '../../../../core/ui/forms/FormikEffect';
+import FormikEffectFactory from '@core/ui/forms/FormikEffect';
 
 const FormikEffect = FormikEffectFactory<Record<string, string>>();
 

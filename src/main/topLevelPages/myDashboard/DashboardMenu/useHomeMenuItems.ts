@@ -5,7 +5,7 @@ import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
 import DrawOutlinedIcon from '@mui/icons-material/DrawOutlined';
 import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
-import { useUserContext } from '../../../../domain/community/user';
+import { useUserContext } from '@domain/community/user';
 import { getAccountLink } from '../../../routing/urlBuilders';
 import { MenuOptionProps } from './dashboardMenuTypes';
 import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';

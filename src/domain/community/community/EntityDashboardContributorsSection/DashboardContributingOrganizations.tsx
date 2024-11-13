@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid } from '@mui/material';
-import { WithId } from '../../../../core/utils/WithId';
+import { WithId } from '@core/utils/WithId';
 import {
   ContributorCardSquare,
   ContributorCardSquareProps,

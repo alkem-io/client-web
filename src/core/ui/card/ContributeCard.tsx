@@ -1,7 +1,7 @@
 import React, { forwardRef, MouseEventHandler, PropsWithChildren } from 'react';
 import { Paper, SxProps } from '@mui/material';
 import { Theme } from '@mui/material/styles';
-import withElevationOnHover from '../../../domain/shared/components/withElevationOnHover';
+import withElevationOnHover from '@domain/shared/components/withElevationOnHover';
 import GridItem from '../grid/GridItem';
 import RouterLink from '../link/RouterLink';
 import ButtonBaseAlignReset from '../button/ButtonBaseAlignReset';

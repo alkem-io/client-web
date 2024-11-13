@@ -2,7 +2,7 @@ import { ContributorCardSquareProps } from '../../contributor/ContributorCardSqu
 import { UserCardProps } from '../../user/userCard/UserCard';
 import { useMemo } from 'react';
 import { COUNTRIES_BY_CODE } from '../../../common/location/countries.constants';
-import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
+import { CommunityContributorType } from '@core/apollo/generated/graphql-schema';
 import { ContributorViewProps, EntityDashboardContributors } from '../EntityDashboardContributorsSection/Types';
 
 export interface RoleSetMembers {

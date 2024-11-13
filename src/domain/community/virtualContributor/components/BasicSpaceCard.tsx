@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import Avatar from '../../../../core/ui/avatar/Avatar';
-import { BlockSectionTitle } from '../../../../core/ui/typography';
+import BadgeCardView from '@core/ui/list/BadgeCardView';
+import Avatar from '@core/ui/avatar/Avatar';
+import { BlockSectionTitle } from '@core/ui/typography';
 import { useTranslation } from 'react-i18next';
-import RouterLink from '../../../../core/ui/link/RouterLink';
-import defaultJourneyCardBanner from '../../../../domain/journey/defaultVisuals/Card.jpg';
+import RouterLink from '@core/ui/link/RouterLink';
+import defaultJourneyCardBanner from '@domain/journey/defaultVisuals/Card.jpg';
 
 // TODO: add cardBanner if we want support of Spaces as BOK
 export interface BasicSpaceProps {

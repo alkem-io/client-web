@@ -10,8 +10,8 @@ import {
   SocialNetworkEnum,
   isSocialNetworkSupported,
 } from '../../../../shared/components/SocialLinks/models/SocialNetworks';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
-import { BlockSectionTitle, CardText } from '../../../../../core/ui/typography';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
+import { BlockSectionTitle, CardText } from '@core/ui/typography';
 import SocialLinks from '../../../../shared/components/SocialLinks/SocialLinks';
 import { groupBy } from 'lodash';
 

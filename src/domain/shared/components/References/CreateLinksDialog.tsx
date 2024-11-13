@@ -1,26 +1,26 @@
 import { FC, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutType } from '@core/apollo/generated/graphql-schema';
 import { Box, Button, DialogContent, IconButton, Link, Tooltip } from '@mui/material';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
+import Gutters from '@core/ui/grid/Gutters';
+import useCurrentBreakpoint from '@core/ui/utils/useCurrentBreakpoint';
+import FormikInputField from '@core/ui/forms/FormikInputField/FormikInputField';
 import { FieldArray, Formik } from 'formik';
 import * as yup from 'yup';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AddIcon from '@mui/icons-material/Add';
-import { BlockSectionTitle } from '../../../../core/ui/typography';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { BlockSectionTitle } from '@core/ui/typography';
+import { Actions } from '@core/ui/actions/Actions';
+import { gutters } from '@core/ui/grid/utils';
 import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
-import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
-import FormikFileInput from '../../../../core/ui/forms/FormikFileInput/FormikFileInput';
+import ConfirmationDialog from '@core/ui/dialogs/ConfirmationDialog';
+import FormikFileInput from '@core/ui/forms/FormikFileInput/FormikFileInput';
 import { TranslateWithElements } from '../../i18n/TranslateWithElements';
 import { useConfig } from '../../../platform/config/useConfig';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
 import { MessageWithPayload } from '../../i18n/ValidationMessageTranslation';
-import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@core/ui/forms/field-length.constants';
 import { newLinkName } from '../../../common/link/newLinkName';
 
 export interface CreateLinkFormValues {

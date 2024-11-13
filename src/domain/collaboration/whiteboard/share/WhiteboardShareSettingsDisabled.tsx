@@ -1,6 +1,6 @@
-import { BlockTitle, Caption } from '../../../../core/ui/typography';
+import { BlockTitle, Caption } from '@core/ui/typography';
 import { useTranslation } from 'react-i18next';
-import Gutters from '../../../../core/ui/grid/Gutters';
+import Gutters from '@core/ui/grid/Gutters';
 
 const WhiteboardShareSettingsDisabled = () => {
   const { t } = useTranslation();

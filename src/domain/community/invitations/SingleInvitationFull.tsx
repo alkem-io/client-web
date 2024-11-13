@@ -1,24 +1,24 @@
 import React, { ReactNode } from 'react';
 import { InvitationHydrator, InvitationWithMeta } from '../pendingMembership/PendingMemberships';
-import Gutters from '../../../core/ui/grid/Gutters';
+import Gutters from '@core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
 import JourneyCard from '../../journey/common/JourneyCard/JourneyCard';
 import spaceIcon from '../../shared/components/JourneyIcon/JourneyIcon';
 import JourneyCardTagline from '../../journey/common/JourneyCard/JourneyCardTagline';
-import { BlockSectionTitle, Caption, Text } from '../../../core/ui/typography';
+import { BlockSectionTitle, Caption, Text } from '@core/ui/typography';
 import DetailedActivityDescription from '../../shared/components/ActivityDescription/DetailedActivityDescription';
 import { LoadingButton } from '@mui/lab';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { useTranslation } from 'react-i18next';
-import { CommunityContributorType, VisualType } from '../../../core/apollo/generated/graphql-schema';
+import { CommunityContributorType, VisualType } from '@core/apollo/generated/graphql-schema';
 import { Box, Theme, useMediaQuery } from '@mui/material';
-import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
+import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
 import References from '../../shared/components/References/References';
-import { gutters } from '../../../core/ui/grid/utils';
-import FlexSpacer from '../../../core/ui/utils/FlexSpacer';
+import { gutters } from '@core/ui/grid/utils';
+import FlexSpacer from '@core/ui/utils/FlexSpacer';
 import { getChildJourneyTypeName } from '../../shared/utils/spaceLevel';
-import { Actions } from '../../../core/ui/actions/Actions';
+import { Actions } from '@core/ui/actions/Actions';
 
 interface SingleInvitationFullProps {
   invitation: InvitationItem | undefined;

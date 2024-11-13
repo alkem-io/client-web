@@ -1,4 +1,4 @@
-import { CalloutContributionType, CalloutState, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutContributionType, CalloutState, CalloutType } from '@core/apollo/generated/graphql-schema';
 import { ComponentType } from 'react';
 import { SvgIconProps } from '@mui/material';
 import { ReferenceIcon } from '../../../shared/components/References/icons/ReferenceIcon';

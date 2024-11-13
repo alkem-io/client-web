@@ -1,16 +1,16 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import { useUserContext } from '../../../community/user';
-import { ContainerChildProps } from '../../../../core/container/container';
+import { ContainerChildProps } from '@core/container/container';
 import {
   ActivityEventType,
   AuthorizationPrivilege,
   DashboardTopCalloutFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
+} from '@core/apollo/generated/graphql-schema';
 import { ActivityLogResultType } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
 import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
 import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
-import { useSpacePageQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useSpacePageQuery } from '@core/apollo/generated/apollo-hooks';
 import { useSpace } from '../../space/SpaceContext/useSpace';
 
 export interface ActivityContainerEntities {

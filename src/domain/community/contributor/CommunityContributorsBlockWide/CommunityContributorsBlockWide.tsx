@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import { ContributorCardSquareProps } from '../ContributorCardSquare/ContributorCardSquare';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeaderWithDialogAction from '../../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
+import PageContentBlockHeaderWithDialogAction from '@core/ui/content/PageContentBlockHeaderWithDialogAction';
+import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
 import { ButtonBase, useMediaQuery } from '@mui/material';
-import { BlockTitle, CaptionSmall } from '../../../../core/ui/typography';
+import { BlockTitle, CaptionSmall } from '@core/ui/typography';
 import { useTranslation } from 'react-i18next';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import { Actions } from '@core/ui/actions/Actions';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
 import CommunityContributorsBlockWideContent from './CommunityContributorsBlockWideContent';
-import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
-import AltToggle from '../../../../core/ui/forms/AltToggle/AltToggle';
-import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
+import { CommunityContributorType } from '@core/apollo/generated/graphql-schema';
+import AltToggle from '@core/ui/forms/AltToggle/AltToggle';
+import MultipleSelect from '@core/ui/search/MultipleSelect';
 import { Theme } from '@mui/material/styles';
-import { gutters } from '../../../../core/ui/grid/utils';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import Loading from '../../../../core/ui/loading/Loading';
+import { gutters } from '@core/ui/grid/utils';
+import PageContentBlockHeader from '@core/ui/content/PageContentBlockHeader';
+import Loading from '@core/ui/loading/Loading';
 
 interface CommunityContributorsBlockWideProps {
   users: ContributorCardSquareProps[] | undefined;

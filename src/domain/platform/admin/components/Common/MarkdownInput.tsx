@@ -1,8 +1,8 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
-import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikMarkdownField from '@core/ui/forms/MarkdownInput/FormikMarkdownField';
 import useProfileStyles from './useProfileStyles';
-import { MarkdownTextMaxLength } from '../../../../../core/ui/forms/field-length.constants';
+import { MarkdownTextMaxLength } from '@core/ui/forms/field-length.constants';
 
 interface MarkdownInputFieldProps {
   name: string;

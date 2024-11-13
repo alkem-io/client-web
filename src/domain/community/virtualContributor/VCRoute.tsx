@@ -2,10 +2,10 @@ import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import VCProfilePage from './vcProfilePage/VCProfilePage';
 import { PageLayoutHolderWithOutlet } from '../../journey/common/EntityPageLayout';
-import TopLevelLayout from '../../../main/ui/layout/TopLevelLayout';
-import { Error404 } from '../../../core/pages/Errors/Error404';
+import TopLevelLayout from '@main/ui/layout/TopLevelLayout';
+import { Error404 } from '@core/pages/Errors/Error404';
 import VCSettingsRoute from './VCSettingsRoute';
-import { nameOfUrl } from '../../../main/routing/urlParams';
+import { nameOfUrl } from '@main/routing/urlParams';
 
 export const VCRoute: FC = () => {
   return (

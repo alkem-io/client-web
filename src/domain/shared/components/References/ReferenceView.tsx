@@ -1,16 +1,16 @@
 import React, { FC } from 'react';
 import { Box, IconButton, Tooltip, styled, useTheme } from '@mui/material';
 import { Reference } from '../../../common/profile/Profile';
-import { BlockSectionTitle, CardText } from '../../../../core/ui/typography';
-import { RoundedIconProps } from '../../../../core/ui/icon/RoundedIcon';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
+import { BlockSectionTitle, CardText } from '@core/ui/typography';
+import { RoundedIconProps } from '@core/ui/icon/RoundedIcon';
+import BadgeCardView from '@core/ui/list/BadgeCardView';
 import { ReferenceIcon } from './icons/ReferenceIcon';
-import RouterLink from '../../../../core/ui/link/RouterLink';
-import RoundedBadge from '../../../../core/ui/icon/RoundedBadge';
+import RouterLink from '@core/ui/link/RouterLink';
+import RoundedBadge from '@core/ui/icon/RoundedBadge';
 import EditIcon from '@mui/icons-material/Edit';
-import { isFileAttachmentUrl } from '../../../../core/utils/links';
+import { isFileAttachmentUrl } from '@core/utils/links';
 import { Attachment as AttachmentIcon } from '@mui/icons-material';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { gutters } from '@core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
 
 export interface ReferenceViewProps {

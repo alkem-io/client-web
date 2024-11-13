@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import { STORAGE_KEY_RETURN_URL } from '../constants/authentication.constants';
 import { useReturnUrl } from '../utils/SignUpReturnUrl';
-import { useUserContext } from '../../../../domain/community/user';
+import { useUserContext } from '@domain/community/user';
 
 interface LoginSuccessPageProps {}
 

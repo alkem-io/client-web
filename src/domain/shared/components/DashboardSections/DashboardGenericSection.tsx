@@ -4,11 +4,11 @@ import { makeStyles } from '@mui/styles';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import clsx from 'clsx';
 import React, { FC, useState } from 'react';
-import { RouterLink } from '../../../../core/ui/link/deprecated/RouterLink';
+import { RouterLink } from '@core/ui/link/deprecated/RouterLink';
 import Section, { SectionProps, SectionSpacer } from '../Section/Section';
 import SectionHeader from '../Section/SectionHeader';
 import Button from '@mui/material/Button';
-import { Caption } from '../../../../core/ui/typography';
+import { Caption } from '@core/ui/typography';
 import { useTranslation } from 'react-i18next';
 
 export interface DashboardGenericSectionProps {

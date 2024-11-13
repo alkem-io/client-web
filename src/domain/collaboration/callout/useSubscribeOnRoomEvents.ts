@@ -1,4 +1,4 @@
-import { useApolloErrorHandler } from '../../../core/apollo/hooks/useApolloErrorHandler';
+import { useApolloErrorHandler } from '@core/apollo/hooks/useApolloErrorHandler';
 import { useConfig } from '../../platform/config/useConfig';
 import { useUserContext } from '../../community/user';
 import {
@@ -6,9 +6,9 @@ import {
   MessageDetailsFragmentDoc,
   ReactionDetailsFragmentDoc,
   useRoomEventsSubscription,
-} from '../../../core/apollo/generated/apollo-hooks';
-import { MutationType, PlatformFeatureFlagName } from '../../../core/apollo/generated/graphql-schema';
-import { evictFromCache } from '../../../core/apollo/utils/removeFromCache';
+} from '@core/apollo/generated/apollo-hooks';
+import { MutationType, PlatformFeatureFlagName } from '@core/apollo/generated/graphql-schema';
+import { evictFromCache } from '@core/apollo/utils/removeFromCache';
 
 const useSubscribeOnRoomEvents = (roomID: string | undefined, skip?: boolean) => {
   const handleError = useApolloErrorHandler();

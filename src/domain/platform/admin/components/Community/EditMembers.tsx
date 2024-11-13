@@ -16,7 +16,7 @@ import { Filter } from '../Common/Filter';
 import TableRowLoading from '../../../../shared/pagination/TableRowLoading';
 import useLazyLoading from '../../../../shared/pagination/useLazyLoading';
 import { times } from 'lodash';
-import { Identifiable } from '../../../../../core/utils/Identifiable';
+import { Identifiable } from '@core/utils/Identifiable';
 
 const StyledTableHead = styled(TableHead)(({ theme }) => ({
   '& th': { background: theme.palette.divider },

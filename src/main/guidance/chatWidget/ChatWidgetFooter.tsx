@@ -1,10 +1,10 @@
-import Gutters from '../../../core/ui/grid/Gutters';
-import ReferencesListSmallItem from '../../../domain/profile/Reference/ReferencesListSmallItem/ReferencesListSmallItem';
+import Gutters from '@core/ui/grid/Gutters';
+import ReferencesListSmallItem from '@domain/profile/Reference/ReferencesListSmallItem/ReferencesListSmallItem';
 import { useTranslation } from 'react-i18next';
-import SwapColors from '../../../core/ui/palette/SwapColors';
+import SwapColors from '@core/ui/palette/SwapColors';
 import { Paper } from '@mui/material';
 import { EmailOutlined, GradeOutlined, NotListedLocationOutlined } from '@mui/icons-material';
-import { gutters } from '../../../core/ui/grid/utils';
+import { gutters } from '@core/ui/grid/utils';
 
 const Icons = {
   GradeOutlined,

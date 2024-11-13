@@ -1,10 +1,10 @@
 import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader from '../../../core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
 import { HdrStrongOutlined } from '@mui/icons-material';
-import Gutters from '../../../core/ui/grid/Gutters';
-import { BlockSectionTitle } from '../../../core/ui/typography';
+import Gutters from '@core/ui/grid/Gutters';
+import { BlockSectionTitle } from '@core/ui/typography';
 import {
   ApplicationHydrator,
   InvitationHydrator,
@@ -14,13 +14,13 @@ import {
 import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/InvitationCardHorizontal';
 import JourneyCard from '../../journey/common/JourneyCard/JourneyCard';
 import spaceIcon from '../../shared/components/JourneyIcon/JourneyIcon';
-import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import ScrollableCardsLayoutContainer from '@core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import JourneyCardTagline from '../../journey/common/JourneyCard/JourneyCardTagline';
 import InvitationDialog from '../invitations/InvitationDialog';
 import InvitationActionsContainer from '../invitations/InvitationActionsContainer';
-import { CommunityContributorType, VisualType } from '../../../core/apollo/generated/graphql-schema';
-import BackButton from '../../../core/ui/actions/BackButton';
-import useNavigate from '../../../core/routing/useNavigate';
+import { CommunityContributorType, VisualType } from '@core/apollo/generated/graphql-schema';
+import BackButton from '@core/ui/actions/BackButton';
+import useNavigate from '@core/routing/useNavigate';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
 import { defer } from 'lodash';
 import { getChildJourneyTypeName } from '../../shared/utils/spaceLevel';

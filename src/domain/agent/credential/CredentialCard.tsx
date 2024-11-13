@@ -2,8 +2,8 @@ import { Box, CardContent, Skeleton } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
-import LinkCard from '../../../core/ui/card/LinkCard';
-import WrapperTypography from '../../../core/ui/typography/deprecated/WrapperTypography';
+import LinkCard from '@core/ui/card/LinkCard';
+import WrapperTypography from '@core/ui/typography/deprecated/WrapperTypography';
 
 export interface CredentialCardEntities {
   name: string;

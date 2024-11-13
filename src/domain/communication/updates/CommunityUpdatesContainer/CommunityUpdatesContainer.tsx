@@ -5,8 +5,8 @@ import {
   useCommunityUpdatesQuery,
   useRemoveMessageOnRoomMutation,
   useSendMessageToRoomMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { Community, Message, PlatformFeatureFlagName } from '../../../../core/apollo/generated/graphql-schema';
+} from '@core/apollo/generated/apollo-hooks';
+import { Community, Message, PlatformFeatureFlagName } from '@core/apollo/generated/graphql-schema';
 import { Author } from '../../../shared/components/AuthorAvatar/models/author';
 import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFromUser';
 import useSubscribeOnRoomEvents from '../../../collaboration/callout/useSubscribeOnRoomEvents';

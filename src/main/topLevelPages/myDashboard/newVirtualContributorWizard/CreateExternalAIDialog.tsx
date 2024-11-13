@@ -3,15 +3,15 @@ import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { DialogContent } from '@mui/material';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import { Caption } from '../../../../core/ui/typography';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
+import Gutters from '@core/ui/grid/Gutters';
+import { Caption } from '@core/ui/typography';
+import { Actions } from '@core/ui/actions/Actions';
+import FormikInputField from '@core/ui/forms/FormikInputField/FormikInputField';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { AiPersonaEngine } from '../../../../core/apollo/generated/graphql-schema';
+import { AiPersonaEngine } from '@core/apollo/generated/graphql-schema';
 import ExternalAIComingSoonDialog from './ExternalAIComingSoonDialog';
-import FormikAutocomplete from '../../../../core/ui/forms/FormikAutocomplete';
+import FormikAutocomplete from '@core/ui/forms/FormikAutocomplete';
 
 const PROVIDERS = [
   { id: AiPersonaEngine.OpenaiAssistant, name: 'OpenAI Assistant' },

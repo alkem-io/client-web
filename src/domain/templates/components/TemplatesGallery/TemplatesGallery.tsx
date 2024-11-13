@@ -1,11 +1,11 @@
 import { FC, ReactNode } from 'react';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@core/ui/content/PageContentBlockHeader';
+import ScrollableCardsLayoutContainer from '@core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import TemplateCard from '../cards/TemplateCard';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { AnyTemplate } from '../../models/TemplateBase';
-import ContributeCardSkeleton from '../../../../core/ui/card/ContributeCardSkeleton';
+import ContributeCardSkeleton from '@core/ui/card/ContributeCardSkeleton';
 import { times } from 'lodash';
 
 interface TemplatesGalleryProps {

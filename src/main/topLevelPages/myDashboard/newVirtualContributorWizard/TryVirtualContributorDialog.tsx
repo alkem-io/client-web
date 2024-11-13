@@ -1,35 +1,35 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
 import { Trans, useTranslation } from 'react-i18next';
-import Gutters from '../../../../core/ui/grid/Gutters';
+import Gutters from '@core/ui/grid/Gutters';
 import { Box, Button, DialogContent, Paper, Tooltip } from '@mui/material';
-import { Caption } from '../../../../core/ui/typography';
+import { Caption } from '@core/ui/typography';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { gutters } from '@core/ui/grid/utils';
 import {
   CalloutCreationParams,
   CalloutCreationType,
   useCalloutCreation,
-} from '../../../../domain/collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreation';
+} from '@domain/collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreation';
 import {
   CalloutGroupName,
   CalloutState,
   CalloutType,
   CalloutVisibility,
   VirtualContributorStatus,
-} from '../../../../core/apollo/generated/graphql-schema';
-import Loading from '../../../../core/ui/loading/Loading';
-import CalloutView from '../../../../domain/collaboration/callout/CalloutView/CalloutView';
+} from '@core/apollo/generated/graphql-schema';
+import Loading from '@core/ui/loading/Loading';
+import CalloutView from '@domain/collaboration/callout/CalloutView/CalloutView';
 import {
   useCalloutDetailsQuery,
   useDeleteCalloutMutation,
   useVirtualContributorQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { TypedCalloutDetails } from '../../../../domain/collaboration/callout/useCallouts/useCallouts';
-import { Actions } from '../../../../core/ui/actions/Actions';
+} from '@core/apollo/generated/apollo-hooks';
+import { TypedCalloutDetails } from '@domain/collaboration/callout/useCallouts/useCallouts';
+import { Actions } from '@core/ui/actions/Actions';
 import { removeVCCreationCache } from './vcCreationUtil';
-import { useSubscribeOnVirtualContributorEvents } from '../../../../domain/community/virtualContributor/useSubscribeOnVirtualContributorEvents';
+import { useSubscribeOnVirtualContributorEvents } from '@domain/community/virtualContributor/useSubscribeOnVirtualContributorEvents';
 
 interface TryVirtualContributorDialogProps {
   spaceId: string;

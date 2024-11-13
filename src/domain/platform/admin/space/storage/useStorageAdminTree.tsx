@@ -4,7 +4,7 @@ import { ComponentType, useEffect, useMemo, useState } from 'react';
 import {
   useSpaceStorageAdminPageLazyQuery,
   useStorageAggregatorLookupLazyQuery,
-} from '../../../../../core/apollo/generated/apollo-hooks';
+} from '@core/apollo/generated/apollo-hooks';
 import { TFunction, useTranslation } from 'react-i18next';
 import HistoryIcon from '@mui/icons-material/History';
 import {
@@ -13,7 +13,7 @@ import {
   SpaceLevel,
   StorageAggregatorFragment,
   StorageBucketFragment,
-} from '../../../../../core/apollo/generated/graphql-schema';
+} from '@core/apollo/generated/graphql-schema';
 import ImageIcon from '@mui/icons-material/Image';
 import { getProfileIcon } from '../../../../shared/icons/profileIcons';
 import { SpaceIcon } from '../../../../journey/space/icon/SpaceIcon';

@@ -11,7 +11,7 @@ import {
 import makeStyles from '@mui/styles/makeStyles';
 import { useField } from 'formik';
 import React, { FC, useMemo } from 'react';
-import { useValidationMessageTranslation } from '../../../domain/shared/i18n/ValidationMessageTranslation';
+import { useValidationMessageTranslation } from '@domain/shared/i18n/ValidationMessageTranslation';
 import TranslationKey from '../../i18n/utils/TranslationKey';
 
 const useStyles = makeStyles(theme => ({

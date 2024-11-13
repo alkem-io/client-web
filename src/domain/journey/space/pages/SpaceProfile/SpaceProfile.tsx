@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import SpaceEditForm, { SpaceEditFormValuesType } from '../../spaceEditForm/SpaceEditForm';
-import { useUpdateSpaceMutation } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useUpdateSpaceMutation } from '@core/apollo/generated/apollo-hooks';
 import { useSpace } from '../../SpaceContext/useSpace';
-import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useNotification } from '@core/ui/notifications/useNotification';
 import EditVisualsView from '../../../../common/visual/EditVisuals/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
-import PageContentColumn from '../../../../../core/ui/content/PageContentColumn';
-import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
+import PageContentColumn from '@core/ui/content/PageContentColumn';
+import PageContentBlockHeader from '@core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
 
 export const SpaceProfile: FC = () => {

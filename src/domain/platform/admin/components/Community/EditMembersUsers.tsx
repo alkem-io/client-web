@@ -2,7 +2,7 @@ import Grid from '@mui/material/Grid';
 import TableCell from '@mui/material/TableCell';
 import React, { FC } from 'react';
 import { Member } from '../../../../community/user/models/User';
-import { UserDisplayNameFragment } from '../../../../../core/apollo/generated/graphql-schema';
+import { UserDisplayNameFragment } from '@core/apollo/generated/graphql-schema';
 import { AvailableMembers, EditMembers } from './EditMembers';
 import { Box, Typography } from '@mui/material';
 

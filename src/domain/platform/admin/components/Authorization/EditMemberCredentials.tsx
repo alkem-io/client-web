@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useUserContext } from '../../../../community/user';
-import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationCredential } from '@core/apollo/generated/graphql-schema';
 import EditMemberUsers, { EditMemberUsersProps } from '../Community/EditMembersUsers';
 import { useAvailableMembersWithCredential } from '../../../../community/community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
 

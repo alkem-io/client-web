@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { InnovationHubHomeInnovationHubFragment } from '../../../core/apollo/generated/graphql-schema';
+import { InnovationHubHomeInnovationHubFragment } from '@core/apollo/generated/graphql-schema';
 import { Visual } from '../../common/visual/Visual';
 
 export interface InnovationHubAttrs {

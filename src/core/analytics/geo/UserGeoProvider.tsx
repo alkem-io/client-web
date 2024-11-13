@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 import axios from 'axios';
-import { useConfig } from '../../../domain/platform/config/useConfig';
+import { useConfig } from '@domain/platform/config/useConfig';
 
 const skipOnLocal = process.env.NODE_ENV !== 'production';
 

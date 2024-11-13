@@ -4,13 +4,13 @@ import { OrderUpdate, TypedCallout, TypedCalloutDetails } from '../useCallouts/u
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { CalloutSortEvents, CalloutSortProps } from '../CalloutViewTypes';
 import CalloutView from '../CalloutView/CalloutView';
-import useNavigate from '../../../../core/routing/useNavigate';
+import useNavigate from '@core/routing/useNavigate';
 import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 import { Box, CardHeader, Skeleton } from '@mui/material';
-import PageContentBlock, { PageContentBlockProps } from '../../../../core/ui/content/PageContentBlock';
-import ContributeCard from '../../../../core/ui/card/ContributeCard';
-import CardFooter from '../../../../core/ui/card/CardFooter';
-import { gutters } from '../../../../core/ui/grid/utils';
+import PageContentBlock, { PageContentBlockProps } from '@core/ui/content/PageContentBlock';
+import ContributeCard from '@core/ui/card/ContributeCard';
+import CardFooter from '@core/ui/card/CardFooter';
+import { gutters } from '@core/ui/grid/utils';
 import { without } from 'lodash';
 import CalloutDetailsContainer from '../useCallouts/CalloutDetailsContainer';
 

@@ -2,7 +2,7 @@ import { Box, Paper, PaperProps, Skeleton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import React, { FC, useState } from 'react';
 import SectionSpacer from './SectionSpacer';
-import Image from '../../../../core/ui/image/Image';
+import Image from '@core/ui/image/Image';
 
 const useNormalStyles = makeStyles(theme => ({
   bannerContainer: {

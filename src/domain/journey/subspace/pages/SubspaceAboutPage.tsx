@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { useSubSpace } from '../hooks/useSubSpace';
 import AboutPageContainer from '../../common/AboutPageContainer/AboutPageContainer';
-import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
+import { useBackToStaticPath } from '@core/routing/useBackToPath';
 import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
@@ -9,7 +9,7 @@ import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/us
 import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
 import SubspaceContributorsDialogContent from '../../../community/community/entities/SubspaceContributorsDialogContent';
-import SeeMore from '../../../../core/ui/content/SeeMore';
+import SeeMore from '@core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
 import { buildAboutUrl } from '../../../../main/routing/urlBuilders';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useUrlParams } from '@core/routing/useUrlParams';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import WhiteboardPage from '../EntityWhiteboardPage/WhiteboardPage';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';

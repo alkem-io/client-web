@@ -1,21 +1,21 @@
 import { DialogContent, ListItemIcon, MenuItem, Theme, useMediaQuery } from '@mui/material';
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
 import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
 import InnovationFlowProfileBlock from './InnovationFlowProfileBlock';
 import useInnovationFlowSettings from './useInnovationFlowSettings';
 import InnovationFlowCollaborationToolsBlock from './InnovationFlowCollaborationToolsBlock';
-import PageContentBlockContextualMenu from '../../../../core/ui/content/PageContentBlockContextualMenu';
-import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
-import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import PageContentBlockContextualMenu from '@core/ui/content/PageContentBlockContextualMenu';
+import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
+import ConfirmationDialog from '@core/ui/dialogs/ConfirmationDialog';
 import { CalloutGroupNameValuesMap } from '../../callout/CalloutsInContext/CalloutsGroup';
 import ImportTemplatesDialog from '../../../templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
+import { TemplateType } from '@core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { Identifiable } from '../../../../core/utils/Identifiable';
+import { Identifiable } from '@core/utils/Identifiable';
 import ApplyCollaborationTemplateDialog from '../../../templates/components/Dialogs/ApplyCollaborationTemplateDialog';
 
 interface InnovationFlowSettingsDialogProps {

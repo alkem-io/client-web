@@ -1,16 +1,16 @@
 import React, { Dispatch, ReactNode } from 'react';
 import { Box, Button, Theme, useMediaQuery } from '@mui/material';
-import PageContentBlockHeaderWithDialogAction from '../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
-import MultipleSelect from '../../../core/ui/search/MultipleSelect';
-import PageContentBlock, { PageContentBlockProps } from '../../../core/ui/content/PageContentBlock';
-import SeeMore from '../../../core/ui/content/SeeMore';
+import PageContentBlockHeaderWithDialogAction from '@core/ui/content/PageContentBlockHeaderWithDialogAction';
+import MultipleSelect from '@core/ui/search/MultipleSelect';
+import PageContentBlock, { PageContentBlockProps } from '@core/ui/content/PageContentBlock';
+import SeeMore from '@core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
-import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import { CONTRIBUTE_CARD_COLUMNS } from '../../../core/ui/card/ContributeCard';
-import GridItem from '../../../core/ui/grid/GridItem';
+import ScrollableCardsLayoutContainer from '@core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import { CONTRIBUTE_CARD_COLUMNS } from '@core/ui/card/ContributeCard';
+import GridItem from '@core/ui/grid/GridItem';
 import TemplateTypeFilter from './TemplateTypeFilter';
 import TemplateTypeFilterMobile from './TemplateTypeFilterMobile';
-import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
+import { TemplateType } from '@core/apollo/generated/graphql-schema';
 import TemplateCard from '../../templates/components/cards/TemplateCard';
 import { AnyTemplate, AnyTemplateWithInnovationPack } from '../../templates/models/TemplateBase';
 

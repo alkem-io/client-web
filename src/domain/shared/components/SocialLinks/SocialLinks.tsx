@@ -2,7 +2,7 @@ import { Box, Link, SvgIconProps } from '@mui/material';
 import { Block, Mail, Public } from '@mui/icons-material';
 import React, { FC, useMemo } from 'react';
 import { SocialNetworkEnum, SocianNetworksSortOrder } from './models/SocialNetworks';
-import WrapperTypography from '../../../../core/ui/typography/deprecated/WrapperTypography';
+import WrapperTypography from '@core/ui/typography/deprecated/WrapperTypography';
 import GitHub from './icons/GitHub';
 import LinkedIn from './icons/LinkedIn';
 import Twitter from './icons/Twitter';

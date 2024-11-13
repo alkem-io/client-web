@@ -1,13 +1,13 @@
 import React, { PropsWithChildren, useMemo } from 'react';
-import TopLevelLayout from '../../../main/ui/layout/TopLevelLayout';
-import TopLevelPageBreadcrumbs from '../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
-import { Identifiable } from '../../../core/utils/Identifiable';
+import TopLevelLayout from '@main/ui/layout/TopLevelLayout';
+import TopLevelPageBreadcrumbs from '@main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import { Identifiable } from '@core/utils/Identifiable';
 import ProfilePageBanner, { ProfilePageBannerProps } from '../../common/profile/ProfilePageBanner';
-import { buildInnovationPackSettingsUrl } from '../../../main/routing/urlBuilders';
+import { buildInnovationPackSettingsUrl } from '@main/routing/urlBuilders';
 import { Visual } from '../../common/visual/Visual';
-import BreadcrumbsItem from '../../../core/ui/navigation/BreadcrumbsItem';
+import BreadcrumbsItem from '@core/ui/navigation/BreadcrumbsItem';
 import { useTranslation } from 'react-i18next';
-import InnovationLibraryIcon from '../../../main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
+import InnovationLibraryIcon from '@main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import { Settings } from '@mui/icons-material';
 
 interface InnovationPackProfileLayoutProps {

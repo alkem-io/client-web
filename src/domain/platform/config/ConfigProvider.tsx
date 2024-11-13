@@ -1,12 +1,12 @@
 import React, { FC, useEffect, useState } from 'react';
 import { ApolloError } from '@apollo/client';
-import queryRequest from '../../../core/http/queryRequest';
-import Loading from '../../../core/ui/loading/Loading';
-import { ConfigurationDocument } from '../../../core/apollo/generated/apollo-hooks';
-import { ConfigurationQuery } from '../../../core/apollo/generated/graphql-schema';
+import queryRequest from '@core/http/queryRequest';
+import Loading from '@core/ui/loading/Loading';
+import { ConfigurationDocument } from '@core/apollo/generated/apollo-hooks';
+import { ConfigurationQuery } from '@core/apollo/generated/graphql-schema';
 import { Configuration } from './configuration';
 import useLoadingStateWithHandlers from '../../shared/utils/useLoadingStateWithHandlers';
-import { TagCategoryValues, warn as logWarn } from '../../../core/logging/sentry/log';
+import { TagCategoryValues, warn as logWarn } from '@core/logging/sentry/log';
 
 export interface ConfigContextProps {
   config?: Configuration;

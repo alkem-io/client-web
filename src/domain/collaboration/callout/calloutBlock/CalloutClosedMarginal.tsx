@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { CalloutState, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutState, CalloutType } from '@core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import CalloutBlockMarginal from './CalloutBlockMarginal';
 

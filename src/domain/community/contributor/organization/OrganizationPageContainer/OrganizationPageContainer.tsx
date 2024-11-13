@@ -3,13 +3,10 @@ import React, { FC, useCallback, useMemo } from 'react';
 import { ContributorCardSquareProps } from '../../ContributorCardSquare/ContributorCardSquare';
 import { isSocialLink, SocialLinkItem } from '../../../../shared/components/SocialLinks/SocialLinks';
 import { useOrganization } from '../hooks/useOrganization';
-import {
-  useRolesOrganizationQuery,
-  useSendMessageToOrganizationMutation,
-} from '../../../../../core/apollo/generated/apollo-hooks';
+import { useRolesOrganizationQuery, useSendMessageToOrganizationMutation } from '@core/apollo/generated/apollo-hooks';
 import { COUNTRIES_BY_CODE } from '../../../../common/location/countries.constants';
 import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '../../../../common/tags/tagset.constants';
-import { ContainerChildProps } from '../../../../../core/container/container';
+import { ContainerChildProps } from '@core/container/container';
 import { SpaceHostedItem } from '../../../../journey/utils/SpaceHostedItem';
 import {
   isSocialNetworkSupported,
@@ -21,8 +18,8 @@ import {
   CommunityContributorType,
   OrganizationInfoFragment,
   SpaceLevel,
-} from '../../../../../core/apollo/generated/graphql-schema';
-import { buildUserProfileUrl } from '../../../../../main/routing/urlBuilders';
+} from '@core/apollo/generated/graphql-schema';
+import { buildUserProfileUrl } from '@main/routing/urlBuilders';
 import { useTranslation } from 'react-i18next';
 import {
   ADMIN_TRANSLATION_KEY,

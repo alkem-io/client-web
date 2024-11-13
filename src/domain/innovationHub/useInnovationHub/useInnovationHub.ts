@@ -1,5 +1,5 @@
-import { useInnovationHubQuery } from '../../../core/apollo/generated/apollo-hooks';
-import { useQueryParams } from '../../../core/routing/useQueryParams';
+import { useInnovationHubQuery } from '@core/apollo/generated/apollo-hooks';
+import { useQueryParams } from '@core/routing/useQueryParams';
 import useInnovationHubAttrs from '../InnovationHubHomePage/InnovationHubAttrs';
 
 const useInnovationHub = () => {

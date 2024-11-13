@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useNavigate from '../../../../core/routing/useNavigate';
+import useNavigate from '@core/routing/useNavigate';
 import { journeyCardTagsGetter, journeyCardValueGetter } from '../../common/utils/journeyCardValueGetter';
 import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
 import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
@@ -11,11 +11,7 @@ import SubspacesContainer from '../containers/SubspacesContainer';
 import { useSpace } from '../SpaceContext/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
-import {
-  CalloutGroupName,
-  CommunityMembershipStatus,
-  SpacePrivacyMode,
-} from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutGroupName, CommunityMembershipStatus, SpacePrivacyMode } from '@core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import { SubspaceIcon } from '../../subspace/icon/SubspaceIcon';
 import SubspaceCard from '../../subspace/subspaceCard/SubspaceCard';

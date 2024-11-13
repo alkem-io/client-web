@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
-import { useLatestContributionsSpacesFlatQuery } from '../../../core/apollo/generated/apollo-hooks';
-import Loading from '../../../core/ui/loading/Loading';
-import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
+import { useLatestContributionsSpacesFlatQuery } from '@core/apollo/generated/apollo-hooks';
+import Loading from '@core/ui/loading/Loading';
+import { useAuthenticationContext } from '@core/auth/authentication/hooks/useAuthenticationContext';
 import { DashboardProvider } from './DashboardContext';
 
 const MyDashboardUnauthenticated = React.lazy(() => import('./MyDashboardUnauthenticated'));

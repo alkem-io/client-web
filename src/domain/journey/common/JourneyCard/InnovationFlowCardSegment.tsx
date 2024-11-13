@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { InnovationFlowIcon } from '../../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
-import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
+import CardSegmentCaption from '@core/ui/card/CardSegmentCaption';
 
 interface InnovationFlowCardSegmentProps {
   children: Exclude<ReactNode, boolean | null | undefined>;

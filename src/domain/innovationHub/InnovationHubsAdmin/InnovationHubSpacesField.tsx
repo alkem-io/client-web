@@ -1,8 +1,8 @@
-import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
+import PageContentBlockHeader from '@core/ui/content/PageContentBlockHeader';
 import { Button, IconButton, TextField } from '@mui/material';
-import DialogHeader from '../../../core/ui/dialog/DialogHeader';
-import DataGridTable from '../../../core/ui/table/DataGridTable';
-import LoadingIconButton from '../../../core/ui/button/LoadingIconButton';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
+import DataGridTable from '@core/ui/table/DataGridTable';
+import LoadingIconButton from '@core/ui/button/LoadingIconButton';
 import AddIcon from '@mui/icons-material/Add';
 import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from 'react-beautiful-dnd';
 import TableContainer from '@mui/material/TableContainer';
@@ -12,16 +12,16 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import React, { useState } from 'react';
-import { useInnovationHubAvailableSpacesQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { useInnovationHubAvailableSpacesQuery } from '@core/apollo/generated/apollo-hooks';
 import { GridColDef, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
-import { Identifiable } from '../../../core/utils/Identifiable';
+import { Identifiable } from '@core/utils/Identifiable';
 import { sortBy, without } from 'lodash';
-import { BlockSectionTitle, BlockTitle } from '../../../core/ui/typography';
+import { BlockSectionTitle, BlockTitle } from '@core/ui/typography';
 import { Remove, Search } from '@mui/icons-material';
-import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
-import Gutters from '../../../core/ui/grid/Gutters';
-import { SpaceVisibility } from '../../../core/apollo/generated/graphql-schema';
+import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
+import Gutters from '@core/ui/grid/Gutters';
+import { SpaceVisibility } from '@core/apollo/generated/graphql-schema';
 
 export interface Space extends Identifiable {
   id: string;

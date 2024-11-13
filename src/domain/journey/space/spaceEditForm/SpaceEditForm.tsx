@@ -2,7 +2,7 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Profile, Reference, Tagset, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
+import { Context, Profile, Reference, Tagset, TagsetType } from '@core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '../../../platform/admin/components/Common/ContextReferenceSegment';
 import { contextSegmentSchema } from '../../../platform/admin/components/Common/ContextSegment';
 import { nameSegmentSchema } from '../../../platform/admin/components/Common/NameSegment';
@@ -11,16 +11,16 @@ import { TagsetSegment, tagsetsSegmentSchema } from '../../../platform/admin/com
 import { EmptyLocation, Location } from '../../../common/location/Location';
 import { formatLocation } from '../../../common/location/LocationUtils';
 import { LocationSegment } from '../../../common/location/LocationSegment';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import FormikInputFieldField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import SaveButton from '../../../../core/ui/actions/SaveButton';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
+import FormikInputField from '@core/ui/forms/FormikInputField/FormikInputField';
+import FormikInputFieldField from '@core/ui/forms/FormikInputField/FormikInputField';
+import { SMALL_TEXT_LENGTH } from '@core/ui/forms/field-length.constants';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@core/ui/content/PageContentBlockHeader';
+import SaveButton from '@core/ui/actions/SaveButton';
+import { Actions } from '@core/ui/actions/Actions';
+import PageContentBlockSeamless from '@core/ui/content/PageContentBlockSeamless';
 import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
-import { Caption } from '../../../../core/ui/typography';
+import { Caption } from '@core/ui/typography';
 
 interface SpaceEditFormProps {
   context?: Context;

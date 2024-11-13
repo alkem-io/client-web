@@ -1,18 +1,18 @@
 import React, { forwardRef, useMemo } from 'react';
 import { sortBy } from 'lodash';
-import useNavigate from '../../../../core/routing/useNavigate';
+import useNavigate from '@core/routing/useNavigate';
 import CalloutLayout, { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
-import ScrollableCardsLayout from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayout';
+import ScrollableCardsLayout from '@core/ui/card/cardsLayout/ScrollableCardsLayout';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
-import { CalloutState } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutState } from '@core/apollo/generated/graphql-schema';
 import { Skeleton } from '@mui/material';
 import WhiteboardCard, { WhiteboardCardWhiteboard } from './WhiteboardCard';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { gutters } from '@core/ui/grid/utils';
 import CalloutBlockFooter from '../calloutBlock/CalloutBlockFooter';
-import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import { Identifiable } from '../../../../core/utils/Identifiable';
-import { normalizeLink } from '../../../../core/utils/links';
+import useCurrentBreakpoint from '@core/ui/utils/useCurrentBreakpoint';
+import { Identifiable } from '@core/utils/Identifiable';
+import { normalizeLink } from '@core/utils/links';
 import { LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 

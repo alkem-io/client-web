@@ -1,25 +1,25 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ScrollerWithGradient from '../../../../../core/ui/overflow/ScrollerWithGradient';
-import { useLatestContributionsGroupedQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import ScrollerWithGradient from '@core/ui/overflow/ScrollerWithGradient';
+import { useLatestContributionsGroupedQuery } from '@core/apollo/generated/apollo-hooks';
 import {
   ActivityEventType,
   ActivityLogCalloutWhiteboardContentModifiedFragment,
   ActivityLogCalloutWhiteboardCreatedFragment,
-} from '../../../../../core/apollo/generated/graphql-schema';
+} from '@core/apollo/generated/graphql-schema';
 import { Box, SelectChangeEvent } from '@mui/material';
 import {
   ActivityLogResultType,
   ActivityViewChooser,
-} from '../../../../../domain/collaboration/activity/ActivityLog/ActivityComponent';
-import { CaptionSmall } from '../../../../../core/ui/typography/components';
-import defaultJourneyAvatar from '../../../../../domain/journey/defaultVisuals/Avatar.jpg';
+} from '@domain/collaboration/activity/ActivityLog/ActivityComponent';
+import { CaptionSmall } from '@core/ui/typography/components';
+import defaultJourneyAvatar from '@domain/journey/defaultVisuals/Avatar.jpg';
 import { LatestContributionsProps, SPACE_OPTION_ALL } from '../LatestContributionsProps';
 import { SelectOption } from '@mui/base';
-import SeamlessSelect from '../../../../../core/ui/forms/select/SeamlessSelect';
-import Loading from '../../../../../core/ui/loading/Loading';
-import Gutters from '../../../../../core/ui/grid/Gutters';
-import { gutters } from '../../../../../core/ui/grid/utils';
+import SeamlessSelect from '@core/ui/forms/select/SeamlessSelect';
+import Loading from '@core/ui/loading/Loading';
+import Gutters from '@core/ui/grid/Gutters';
+import { gutters } from '@core/ui/grid/utils';
 
 const MY_LATEST_CONTRIBUTIONS_COUNT = 20;
 

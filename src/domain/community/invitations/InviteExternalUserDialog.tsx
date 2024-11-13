@@ -4,16 +4,16 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import useLoadingState from '../../shared/utils/useLoadingState';
-import DialogHeader from '../../../core/ui/dialog/DialogHeader';
-import { BlockTitle, Caption, Text } from '../../../core/ui/typography';
-import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInputField';
-import { LONG_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
+import { BlockTitle, Caption, Text } from '@core/ui/typography';
+import FormikInputField from '@core/ui/forms/FormikInputField/FormikInputField';
+import { LONG_TEXT_LENGTH } from '@core/ui/forms/field-length.constants';
 import SendButton from '../../shared/components/SendButton';
-import Gutters from '../../../core/ui/grid/Gutters';
+import Gutters from '@core/ui/grid/Gutters';
 import { InviteExternalUserData } from './useInviteUsers';
-import { CommunityRoleType } from '../../../core/apollo/generated/graphql-schema';
-import FormikSelect from '../../../core/ui/forms/FormikSelect';
-import TranslationKey from '../../../core/i18n/utils/TranslationKey';
+import { CommunityRoleType } from '@core/apollo/generated/graphql-schema';
+import FormikSelect from '@core/ui/forms/FormikSelect';
+import TranslationKey from '@core/i18n/utils/TranslationKey';
 
 interface MessageDialogProps {
   open: boolean;

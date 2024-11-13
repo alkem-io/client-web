@@ -1,4 +1,4 @@
-import { ProfileType } from '../../../../../core/apollo/generated/graphql-schema';
+import { ProfileType } from '@core/apollo/generated/graphql-schema';
 
 export interface Author {
   id: string;

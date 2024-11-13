@@ -1,4 +1,4 @@
-import { ProfileType, SpaceLevel } from '../../core/apollo/generated/graphql-schema';
+import { ProfileType, SpaceLevel } from '@core/apollo/generated/graphql-schema';
 
 export type JourneyTypeName = 'space' | 'subspace' | 'subsubspace';
 

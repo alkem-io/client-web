@@ -3,7 +3,7 @@ import SpaceSettingsView from './SpaceSettingsView';
 import SpaceSettingsLayout from '../../../../platform/admin/space/SpaceSettingsLayout';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
-import { useRouteResolver } from '../../../../../main/routing/resolvers/RouteResolver';
+import { useRouteResolver } from '@main/routing/resolvers/RouteResolver';
 import { Skeleton } from '@mui/material';
 import SubspaceSettingsLayout from '../../../../platform/admin/subspace/SubspaceSettingsLayout';
 

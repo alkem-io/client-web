@@ -2,11 +2,11 @@ import React, { FC } from 'react';
 import OrganizationPageContainer from '../OrganizationPageContainer/OrganizationPageContainer';
 import OrganizationPageLayout from '../layout/OrganizationPageLayout';
 import OrganizationPageView from '../views/OrganizationPageView';
-import Loading from '../../../../../core/ui/loading/Loading';
-import TopLevelLayout from '../../../../../main/ui/layout/TopLevelLayout';
-import { Error404 } from '../../../../../core/pages/Errors/Error404';
+import Loading from '@core/ui/loading/Loading';
+import TopLevelLayout from '@main/ui/layout/TopLevelLayout';
+import { Error404 } from '@core/pages/Errors/Error404';
 import { useOrganization } from '../hooks/useOrganization';
-import { useOrganizationAccountQuery } from '../../../../../core/apollo/generated/apollo-hooks';
+import { useOrganizationAccountQuery } from '@core/apollo/generated/apollo-hooks';
 import useAccountResources from '../../useAccountResources/useAccountResources';
 
 interface OrganizationPageProps {}

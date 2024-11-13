@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useConfig } from '../../../domain/platform/config/useConfig';
+import { useConfig } from '@domain/platform/config/useConfig';
 import { ApolloProvider } from '@apollo/client';
 import { useGraphQLClient } from '../hooks/useGraphQLClient';
 import { PlatformFeatureFlagName } from '../generated/graphql-schema';

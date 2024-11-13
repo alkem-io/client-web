@@ -1,9 +1,9 @@
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@mui/material';
-import PageContent from '../../../../core/ui/content/PageContent';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
+import PageContent from '@core/ui/content/PageContent';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
+import PageContentColumn from '@core/ui/content/PageContentColumn';
 import CommunityApplications from '../../../community/community/CommunityAdmin/CommunityApplications';
 import CommunityOrganizations from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import CommunityUsers from '../../../community/community/CommunityAdmin/CommunityUsers';
@@ -15,17 +15,17 @@ import SubspaceSettingsLayout from '../../../platform/admin/subspace/SubspaceSet
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import InnovationLibraryIcon from '../../../../main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
-import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
+import PageContentBlockSeamless from '@core/ui/content/PageContentBlockSeamless';
 import InvitationOptionsBlock from '../../../community/invitations/InvitationOptionsBlock';
-import PageContentBlockCollapsible from '../../../../core/ui/content/PageContentBlockCollapsible';
-import { BlockTitle } from '../../../../core/ui/typography';
+import PageContentBlockCollapsible from '@core/ui/content/PageContentBlockCollapsible';
+import { BlockTitle } from '@core/ui/typography';
 import CommunityGuidelinesContainer from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
 import CommunityGuidelinesForm from '../../../community/community/CommunityGuidelines/CommunityGuidelinesForm';
 import { useSpace } from '../../space/SpaceContext/useSpace';
 import ImportTemplatesDialog from '../../../templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
+import { TemplateType } from '@core/apollo/generated/graphql-schema';
 
 const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { t } = useTranslation();

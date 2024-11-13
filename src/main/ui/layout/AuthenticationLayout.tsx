@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import Grid from '@mui/material/Grid';
 import { Container, ContainerProps } from '@mui/material';
 import { Link } from 'react-router-dom';
-import ImageFadeIn from '../../../core/ui/image/ImageFadeIn';
+import ImageFadeIn from '@core/ui/image/ImageFadeIn';
 import { makeStyles } from '@mui/styles';
 
 const useAuthenticationLayout = makeStyles(theme => ({

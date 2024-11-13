@@ -4,13 +4,10 @@ import {
   refetchUserOrganizationIdsQuery,
   useAssociatedOrganizationQuery,
   useRemoveOrganizationRoleFromUserMutation,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import {
-  ContainerPropsWithProvided,
-  renderComponentOrChildrenFn,
-} from '../../../../../core/container/ComponentOrChildrenFn';
+} from '@core/apollo/generated/apollo-hooks';
+import { ContainerPropsWithProvided, renderComponentOrChildrenFn } from '@core/container/ComponentOrChildrenFn';
 import { AssociatedOrganization, mapToAssociatedOrganization } from './AssociatedOrganization';
-import { OrganizationRole } from '../../../../../core/apollo/generated/graphql-schema';
+import { OrganizationRole } from '@core/apollo/generated/graphql-schema';
 
 export type OrganizationDetailsContainerProps = ContainerPropsWithProvided<
   {

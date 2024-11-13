@@ -1,8 +1,8 @@
 import JourneyPageBannerCard from '../PageBanner/JourneyPageBannerCard/JourneyPageBannerCard';
-import PageBanner, { PageBannerProps } from '../../../../core/ui/layout/pageBanner/PageBanner';
+import PageBanner, { PageBannerProps } from '@core/ui/layout/pageBanner/PageBanner';
 import { useMemo } from 'react';
 import defaultJourneyBanner from '../../defaultVisuals/Banner.jpg';
-import { useChildJourneyPageBannerQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useChildJourneyPageBannerQuery } from '@core/apollo/generated/apollo-hooks';
 import { useSpace } from '../../space/SpaceContext/useSpace';
 import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
 import { VisualName } from '../../../common/visual/constants/visuals.constants';

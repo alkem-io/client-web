@@ -1,4 +1,4 @@
-import { ActivityEventType, CalloutType } from '../../../../../core/apollo/generated/graphql-schema';
+import { ActivityEventType, CalloutType } from '@core/apollo/generated/graphql-schema';
 import { ComponentType } from 'react';
 import { SvgIconProps } from '@mui/material';
 import {

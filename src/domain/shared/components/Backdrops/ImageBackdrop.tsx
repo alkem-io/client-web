@@ -1,12 +1,9 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import useNavigate from '../../../../core/routing/useNavigate';
+import useNavigate from '@core/routing/useNavigate';
 import { BackdropProps } from './BackdropWithMessage';
-import {
-  _AUTH_LOGIN_PATH,
-  AUTH_SIGN_UP_PATH,
-} from '../../../../core/auth/authentication/constants/authentication.constants';
-import ImageFadeIn from '../../../../core/ui/image/ImageFadeIn';
+import { _AUTH_LOGIN_PATH, AUTH_SIGN_UP_PATH } from '@core/auth/authentication/constants/authentication.constants';
+import ImageFadeIn from '@core/ui/image/ImageFadeIn';
 import { Box, BoxProps, Button, styled, Typography, TypographyProps } from '@mui/material';
 
 const Root = styled(Box)(() => ({

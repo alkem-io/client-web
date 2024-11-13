@@ -1,16 +1,16 @@
 import { Box, Button, IconButton } from '@mui/material';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { useGlobalGridColumns } from '@core/ui/grid/constants';
+import { gutters } from '@core/ui/grid/utils';
 import { LibraryIcon } from '../../LibraryIcon';
 import { WhiteboardTemplateContent } from '../../models/WhiteboardTemplate';
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
-import { useTemplateContentLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { TemplateType } from '@core/apollo/generated/graphql-schema';
+import { useTemplateContentLazyQuery } from '@core/apollo/generated/apollo-hooks';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { Identifiable } from '../../../../core/utils/Identifiable';
+import { Identifiable } from '@core/utils/Identifiable';
 export interface WhiteboardDialogTemplatesLibraryProps {
   editModeEnabled?: boolean;
   disabled?: boolean;

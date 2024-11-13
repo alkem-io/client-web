@@ -2,7 +2,7 @@ import { Configuration, UiContainer, V0alpha2Api } from '@ory/kratos-client';
 import { useMemo, useRef } from 'react';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { once } from 'lodash';
-import { useConfig } from '../../../../domain/platform/config/useConfig';
+import { useConfig } from '@domain/platform/config/useConfig';
 import { AuthenticationProviderConfigUnion, OryConfig } from '../../../apollo/generated/graphql-schema';
 import { error as logError, TagCategoryValues } from '../../../logging/sentry/log';
 

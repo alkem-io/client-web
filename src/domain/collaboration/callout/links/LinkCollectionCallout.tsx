@@ -1,7 +1,7 @@
 import CalloutLayout, { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
 import React, { useCallback, useMemo, useState } from 'react';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import { Caption, CaptionSmall } from '../../../../core/ui/typography';
+import { Caption, CaptionSmall } from '@core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import EditLinkDialog, { EditLinkFormValues } from '../../../shared/components/References/EditLinkDialog';
 import CreateLinksDialog, { CreateLinkFormValues } from '../../../shared/components/References/CreateLinksDialog';
@@ -11,15 +11,15 @@ import {
   useCreateLinkOnCalloutMutation,
   useDeleteLinkMutation,
   useUpdateLinkMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
+} from '@core/apollo/generated/apollo-hooks';
 import AddIcon from '@mui/icons-material/Add';
 import References from '../../../shared/components/References/References';
-import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
-import { AuthorizationPrivilege, CalloutState } from '../../../../core/apollo/generated/graphql-schema';
-import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import RoundedIcon from '@core/ui/icon/RoundedIcon';
+import { AuthorizationPrivilege, CalloutState } from '@core/apollo/generated/graphql-schema';
+import ConfirmationDialog from '@core/ui/dialogs/ConfirmationDialog';
 import { nanoid } from 'nanoid';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import { evictFromCache } from '../../../../core/apollo/utils/removeFromCache';
+import { evictFromCache } from '@core/apollo/utils/removeFromCache';
 import { compact, sortBy } from 'lodash';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 

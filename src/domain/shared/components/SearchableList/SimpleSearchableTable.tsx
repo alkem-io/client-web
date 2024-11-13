@@ -14,15 +14,15 @@ import {
 import DeleteOutline from '@mui/icons-material/DeleteOutline';
 import React, { forwardRef, ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import RemoveModal from '../../../../core/ui/dialogs/RemoveModal';
+import RemoveModal from '@core/ui/dialogs/RemoveModal';
 import useLazyLoading from '../../pagination/useLazyLoading';
 import LoadingListItem from './LoadingListItem';
 import { times } from 'lodash';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import PageContent from '../../../../core/ui/content/PageContent';
-import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
-import { BlockTitle, CardTitle } from '../../../../core/ui/typography';
-import RouterLink from '../../../../core/ui/link/RouterLink';
+import { Actions } from '@core/ui/actions/Actions';
+import PageContent from '@core/ui/content/PageContent';
+import ContributorCardHorizontal from '@core/ui/card/ContributorCardHorizontal';
+import { BlockTitle, CardTitle } from '@core/ui/typography';
+import RouterLink from '@core/ui/link/RouterLink';
 
 export interface SearchableListProps<Item extends SearchableListItem> {
   data: Item[] | undefined;

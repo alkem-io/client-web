@@ -15,7 +15,7 @@ import ReactDOM from 'react-dom';
 import EmptyWhiteboard from '../EmptyWhiteboard';
 import { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
-import Loading from '../../../../core/ui/loading/Loading';
+import Loading from '@core/ui/loading/Loading';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {

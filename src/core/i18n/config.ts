@@ -10,7 +10,7 @@ import translationDe from './de/translation.de.json';
 import translationFr from './fr/translation.fr.json';
 import translationPt from './pt/translation.pt.json';
 import inContextTranslation from './ach/translation.ach.json';
-import { env } from '../../main/env';
+import { env } from '@main/env';
 
 export const resources = {
   en: {

@@ -4,29 +4,29 @@ import { Formik } from 'formik';
 import { Button, CircularProgress, DialogContent, ListItemIcon } from '@mui/material';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { useTranslation } from 'react-i18next';
-import { SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
+import { SpaceVisibility } from '@core/apollo/generated/graphql-schema';
 import {
   refetchAdminSpacesListQuery,
   useAssignLicensePlanToSpaceMutation,
   useRevokeLicensePlanFromSpaceMutation,
   useUpdateSpacePlatformSettingsMutation,
-} from '../../../../../core/apollo/generated/apollo-hooks';
+} from '@core/apollo/generated/apollo-hooks';
 import ListItemLink, { ListItemLinkProps } from '../../../../shared/components/SearchableList/ListItemLink';
-import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
-import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
-import { BlockTitle } from '../../../../../core/ui/typography';
-import { Actions } from '../../../../../core/ui/actions/Actions';
+import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
+import PageContentBlockSeamless from '@core/ui/content/PageContentBlockSeamless';
+import { BlockTitle } from '@core/ui/typography';
+import { Actions } from '@core/ui/actions/Actions';
 import { nameSegmentSchema } from '../../components/Common/NameSegment';
 import { LoadingButton } from '@mui/lab';
-import { gutters } from '../../../../../core/ui/grid/utils';
+import { gutters } from '@core/ui/grid/utils';
 import useLoadingState from '../../../../shared/utils/useLoadingState';
 import PlansTable, { LicensePlan } from './PlansTable';
 import AssignPlan from './AssignPlan';
-import FlexSpacer from '../../../../../core/ui/utils/FlexSpacer';
-import FormikAutocomplete from '../../../../../core/ui/forms/FormikAutocomplete';
-import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { FormikSelectValue } from '../../../../../core/ui/forms/FormikSelect';
+import FlexSpacer from '@core/ui/utils/FlexSpacer';
+import FormikAutocomplete from '@core/ui/forms/FormikAutocomplete';
+import FormikInputField from '@core/ui/forms/FormikInputField/FormikInputField';
+import { FormikSelectValue } from '@core/ui/forms/FormikSelect';
 
 export interface SpacePlatformSettings {
   nameId: string;

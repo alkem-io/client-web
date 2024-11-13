@@ -10,14 +10,14 @@ import * as yup from 'yup';
 import { useConfig } from '../../../config/useConfig';
 import { PushFunc, RemoveFunc } from '../../../../common/reference/useEditReference';
 import { Reference } from '../../../../common/profile/Profile';
-import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
+import FormikInputField from '@core/ui/forms/FormikInputField/FormikInputField';
 import { TranslateWithElements } from '../../../../shared/i18n/TranslateWithElements';
-import { Caption, BlockSectionTitle } from '../../../../../core/ui/typography';
-import Gutters from '../../../../../core/ui/grid/Gutters';
-import useCurrentBreakpoint from '../../../../../core/ui/utils/useCurrentBreakpoint';
-import FormikFileInput from '../../../../../core/ui/forms/FormikFileInput/FormikFileInput';
+import { Caption, BlockSectionTitle } from '@core/ui/typography';
+import Gutters from '@core/ui/grid/Gutters';
+import useCurrentBreakpoint from '@core/ui/utils/useCurrentBreakpoint';
+import FormikFileInput from '@core/ui/forms/FormikFileInput/FormikFileInput';
 import { MessageWithPayload } from '../../../../shared/i18n/ValidationMessageTranslation';
-import { MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
+import { MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@core/ui/forms/field-length.constants';
 
 export interface ReferenceSegmentProps extends BoxProps {
   fieldName?: string;

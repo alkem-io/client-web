@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import useNavigate from '../../../../../core/routing/useNavigate';
-import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import useNavigate from '@core/routing/useNavigate';
+import { useNotification } from '@core/ui/notifications/useNotification';
 import { useDeleteUserGroup } from './useDeleteUserGroup';
 import {
   useCreateTagsetOnProfileMutation,
   useUpdateGroupMutation,
   useUsersWithCredentialsQuery,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationCredential, GroupInfoFragment, User } from '../../../../../core/apollo/generated/graphql-schema';
+} from '@core/apollo/generated/apollo-hooks';
+import { AuthorizationCredential, GroupInfoFragment, User } from '@core/apollo/generated/graphql-schema';
 import GroupForm, { UserGroupUpdateInput } from './GroupForm/GroupForm';
 import { getUpdateProfileInput } from '../../../../community/user/utils/getUpdateUserInput';
 import OrganizationAdminLayout from '../../organization/OrganizationAdminLayout';

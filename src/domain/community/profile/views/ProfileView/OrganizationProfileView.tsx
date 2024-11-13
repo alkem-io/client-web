@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import ProfileDetail from '../../ProfileDetail/ProfileDetail';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import OrganizationVerifiedStatus from '../../../organization/organizationVerifiedStatus/OrganizationVerifiedStatus';
-import { Location } from '../../../../../core/apollo/generated/graphql-schema';
-import { BlockTitle } from '../../../../../core/ui/typography';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
+import { Location } from '@core/apollo/generated/graphql-schema';
+import { BlockTitle } from '@core/ui/typography';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
 
 export interface OrganizationProfileViewEntity {
   displayName: string;

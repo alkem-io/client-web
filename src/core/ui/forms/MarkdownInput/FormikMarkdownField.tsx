@@ -3,7 +3,7 @@ import { FormControl, FormHelperText, InputLabel, InputProps, OutlinedInput, use
 import { useField } from 'formik';
 import CharacterCounter from '../characterCounter/CharacterCounter';
 import TranslationKey from '../../../i18n/utils/TranslationKey';
-import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
+import { useValidationMessageTranslation } from '@domain/shared/i18n/ValidationMessageTranslation';
 import MarkdownInput, { MarkdownInputRefApi } from './MarkdownInput';
 import { CharacterCountContainer, CharacterCountContextProvider } from './CharacterCountContext';
 import { gutters } from '../../grid/utils';

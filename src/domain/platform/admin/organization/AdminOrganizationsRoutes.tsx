@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import OrganizationPage from '../components/Organization/OrganizationPage';
-import { EditMode } from '../../../../core/ui/forms/editMode';
-import { Error404 } from '../../../../core/pages/Errors/Error404';
+import { EditMode } from '@core/ui/forms/editMode';
+import { Error404 } from '@core/pages/Errors/Error404';
 import AdminOrganizationsPage from '../../../community/contributor/organization/adminOrganizations/AdminOrganizationsPage';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '../layout/toplevel/AdminLayout';

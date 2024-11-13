@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box } from '@mui/material';
-import { Caption } from '../../../core/ui/typography';
+import { Caption } from '@core/ui/typography';
 
 const TextContainer = ({ children }) => {
   return (

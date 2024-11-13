@@ -2,14 +2,14 @@ import { Box, IconButton, InputBaseComponentProps, Paper, Popper, PopperProps, s
 import React, { FC, forwardRef, PropsWithChildren, ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mention, MentionsInput, OnChangeHandlerFunc, SuggestionDataItem } from 'react-mentions';
-import { useMentionableUsersLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { Caption } from '../../../../core/ui/typography';
+import { useMentionableUsersLazyQuery } from '@core/apollo/generated/apollo-hooks';
+import { gutters } from '@core/ui/grid/utils';
+import { Caption } from '@core/ui/typography';
 import { ProfileChipView } from '../../../community/contributor/ProfileChip/ProfileChipView';
 import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
 import { useCommunityContext } from '../../../community/community/CommunityContext';
 import { HelpOutlineOutlined } from '@mui/icons-material';
-import Gutters from '../../../../core/ui/grid/Gutters';
+import Gutters from '@core/ui/grid/Gutters';
 
 export const POPPER_Z_INDEX = 1400; // Dialogs are 1300
 const MAX_USERS_LISTED = 30;

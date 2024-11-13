@@ -1,11 +1,11 @@
-import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader from '../../../core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
 import { Box, DialogProps, Typography } from '@mui/material';
-import { gutters } from '../../../core/ui/grid/utils';
+import { gutters } from '@core/ui/grid/utils';
 import { InfoOutlined } from '@mui/icons-material';
-import Gutters from '../../../core/ui/grid/Gutters';
+import Gutters from '@core/ui/grid/Gutters';
 import { useTranslation } from 'react-i18next';
-import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
+import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
 
 interface ChatWidgetHelpDialogProps extends DialogProps {
   onClose?: () => void;

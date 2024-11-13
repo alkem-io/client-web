@@ -1,6 +1,6 @@
 import { DirectMessageDialog } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import React, { useCallback, useState } from 'react';
-import { useSendMessageToUserMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import { useSendMessageToUserMutation } from '@core/apollo/generated/apollo-hooks';
 import { useTranslation } from 'react-i18next';
 import { ContributorCardProps } from '../../contributor/ContributorCard/ContributorCard';
 import UserCard from '../userCard/UserCard';

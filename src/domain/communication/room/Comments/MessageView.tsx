@@ -2,14 +2,14 @@ import React, { PropsWithChildren, ReactNode } from 'react';
 import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
 import { Box, IconButton, Paper, styled, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
+import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
 import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
 import AuthorAvatar from '../../../shared/components/AuthorAvatar/AuthorAvatar';
-import { Caption, Text } from '../../../../core/ui/typography';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { Caption, Text } from '@core/ui/typography';
+import { gutters } from '@core/ui/grid/utils';
 import CommentReactions from './CommentReactions';
 import { MaybeDeletedMessage } from './useRestoredMessages';
-import { ProfileType } from '../../../../core/apollo/generated/graphql-schema';
+import { ProfileType } from '@core/apollo/generated/graphql-schema';
 import VirtualContributorLabel from '../../../community/virtualContributor/VirtualContributorLabel';
 
 const MessageContentWrapper = styled(Box)(({ theme }) => ({

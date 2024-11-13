@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import CalloutsListDialog from '../../../../collaboration/callout/calloutsList/CalloutsListDialog';
-import { useBackToStaticPath } from '../../../../../core/routing/useBackToPath';
+import { useBackToStaticPath } from '@core/routing/useBackToPath';
 import { useTranslation } from 'react-i18next';
 import { UseCalloutsProvided } from '../../../../collaboration/callout/useCallouts/useCallouts';
 import { SubspaceDialog } from '../../layout/SubspaceDialog';
@@ -14,12 +14,12 @@ import InnovationFlowSettingsDialog from '../../../../collaboration/InnovationFl
 import { useCollaborationAuthorization } from '../../../../collaboration/authorization/useCollaborationAuthorization';
 import DashboardNavigation from '../../../dashboardNavigation/DashboardNavigation';
 import Dialog from '@mui/material/Dialog';
-import GridProvider from '../../../../../core/ui/grid/GridProvider';
-import { GRID_COLUMNS_MOBILE } from '../../../../../core/ui/grid/constants';
+import GridProvider from '@core/ui/grid/GridProvider';
+import { GRID_COLUMNS_MOBILE } from '@core/ui/grid/constants';
 import { Theme, useMediaQuery } from '@mui/material';
 import { DashboardNavigationItem } from '../../../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import CommunityUpdatesDialog from '../../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
-import { buildUpdatesUrl } from '../../../../../main/routing/urlBuilders';
+import { buildUpdatesUrl } from '@main/routing/urlBuilders';
 
 export interface SubspaceDialogsProps {
   dialogOpen: SubspaceDialog | undefined;

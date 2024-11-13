@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { Tooltip } from '@mui/material';
-import { BlockSectionTitle, CardText } from '../../../../core/ui/typography';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import RouterLink from '../../../../core/ui/link/RouterLink';
-import { CalendarEventDetailsFragment } from '../../../../core/apollo/generated/graphql-schema';
-import OneLineMarkdown from '../../../../core/ui/markdown/OneLineMarkdown';
-import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
+import { BlockSectionTitle, CardText } from '@core/ui/typography';
+import BadgeCardView from '@core/ui/list/BadgeCardView';
+import RouterLink from '@core/ui/link/RouterLink';
+import { CalendarEventDetailsFragment } from '@core/apollo/generated/graphql-schema';
+import OneLineMarkdown from '@core/ui/markdown/OneLineMarkdown';
+import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
 import CalendarEventBadge from './CalendarEventBadge';
 
 interface CalendarEventViewProps

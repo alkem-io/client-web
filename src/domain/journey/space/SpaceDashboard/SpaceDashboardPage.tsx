@@ -5,7 +5,7 @@ import CommunityUpdatesDialog from '../../../community/community/CommunityUpdate
 import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
 import SpaceContributorsDialogContent from '../../../community/community/entities/SpaceContributorsDialogContent';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
+import useBackToParentPage from '@core/routing/deprecated/useBackToParentPage';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import SpaceDashboardView from './SpaceDashboardView';
 import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
@@ -16,7 +16,7 @@ import { buildAboutUrl, buildUpdatesUrl } from '../../../../main/routing/urlBuil
 import { useTranslation } from 'react-i18next';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
-import { SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@core/apollo/generated/graphql-schema';
 
 export interface SpaceDashboardPageProps {
   dialog?: 'about' | 'updates' | 'contributors' | 'calendar';

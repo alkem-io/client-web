@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
-import RouterLink from '../../../../core/ui/link/RouterLink';
+import RouterLink from '@core/ui/link/RouterLink';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
@@ -20,7 +20,7 @@ import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/Innovati
 import SpacePageBanner from '../../../journey/space/layout/SpacePageBanner';
 import JourneyBreadcrumbs from '../../../journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
-import BackButton from '../../../../core/ui/actions/BackButton';
+import BackButton from '@core/ui/actions/BackButton';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 
 interface SpaceSettingsLayoutProps {

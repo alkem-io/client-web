@@ -1,16 +1,16 @@
 import { memo } from 'react';
 import { Visual } from '../../../common/visual/Visual';
 import { Avatar, Box, Paper, Skeleton } from '@mui/material';
-import RouterLink from '../../../../core/ui/link/RouterLink';
-import GridItem from '../../../../core/ui/grid/GridItem';
+import RouterLink from '@core/ui/link/RouterLink';
+import GridItem from '@core/ui/grid/GridItem';
 import withElevationOnHover from '../../../shared/components/withElevationOnHover';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { gutters } from '@core/ui/grid/utils';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import { alpha } from '@mui/material/styles';
-import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
-import { BlockTitle } from '../../../../core/ui/typography';
+import webkitLineClamp from '@core/ui/utils/webkitLineClamp';
+import { BlockTitle } from '@core/ui/typography';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
-import defaultJourneyCardBanner from '../../../../domain/journey/defaultVisuals/Card.jpg';
+import defaultJourneyCardBanner from '@domain/journey/defaultVisuals/Card.jpg';
 import { PrivacyIcon } from './PrivacyIcon';
 
 type JourneyTileProps = {

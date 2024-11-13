@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Button, Link } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
-import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
-import { Actions } from '../../../../../core/ui/actions/Actions';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
+import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
+import { Actions } from '@core/ui/actions/Actions';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
 import { useConfig } from '../../../../platform/config/useConfig';
 
 interface ContributeCreationBlockProps {

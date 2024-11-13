@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { EntityDashboardContributors } from './Types';
 import DashboardContributingUsers from './DashboardContributingUsers';
 import DashboardContributingOrganizations from './DashboardContributingOrganizations';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import { BlockSectionTitle } from '../../../../core/ui/typography';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@core/ui/content/PageContentBlockHeader';
+import { BlockSectionTitle } from '@core/ui/typography';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
 
 const EntityDashboardContributorsSection = ({

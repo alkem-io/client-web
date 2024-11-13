@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
-import { useWhiteboardFromCalloutQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useWhiteboardFromCalloutQuery } from '@core/apollo/generated/apollo-hooks';
 import {
   WhiteboardDetailsFragment,
   CollaborationWithWhiteboardDetailsFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
+} from '@core/apollo/generated/graphql-schema';
 
 interface WhiteboardLocation {
   calloutId: string | undefined;

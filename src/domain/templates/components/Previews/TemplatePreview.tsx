@@ -1,6 +1,6 @@
-import { useTemplateContentQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
-import { Identifiable } from '../../../../core/utils/Identifiable';
+import { useTemplateContentQuery } from '@core/apollo/generated/apollo-hooks';
+import { TemplateType } from '@core/apollo/generated/graphql-schema';
+import { Identifiable } from '@core/utils/Identifiable';
 import CalloutTemplatePreview from './CalloutTemplatePreview';
 import CollaborationTemplatePreview from './CollabTemplatePreview';
 import CommunityGuidelinesTemplatePreview from './CommunityGuidelinesTemplatePreview';

@@ -7,8 +7,8 @@ import {
   CommunityRoleType,
   AuthorizationPrivilege,
   CommunityMembershipStatus,
-} from '../../../../core/apollo/generated/graphql-schema';
-import { type Visual } from '../../../../domain/common/visual/Visual';
+} from '@core/apollo/generated/graphql-schema';
+import { type Visual } from '@domain/common/visual/Visual';
 
 export type MembershipProps = {
   space: {

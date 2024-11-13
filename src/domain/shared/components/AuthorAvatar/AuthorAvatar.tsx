@@ -1,10 +1,10 @@
 import React, { FC, useCallback, useMemo, useState } from 'react';
 import { styled, AvatarProps, Tooltip, Link, Box } from '@mui/material';
-import Avatar from '../../../../core/ui/avatar/Avatar';
+import Avatar from '@core/ui/avatar/Avatar';
 import UserCard from '../../../community/user/userCard/UserCard';
 import { Author } from './models/author';
 import { DirectMessageDialog } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
-import { useSendMessageToUserMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import { useSendMessageToUserMutation } from '@core/apollo/generated/apollo-hooks';
 import { useTranslation } from 'react-i18next';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({

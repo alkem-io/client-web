@@ -17,14 +17,14 @@ import {
 } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
 import React, { FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import CharacterCounter from '../../../../core/ui/forms/characterCounter/CharacterCounter';
-import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
+import CharacterCounter from '@core/ui/forms/characterCounter/CharacterCounter';
+import TranslationKey from '@core/i18n/utils/TranslationKey';
 import { useValidationMessageTranslation } from '../../../shared/i18n/ValidationMessageTranslation';
 import { CommentInputField, CommentInputFieldProps, MENTION_SYMBOL } from './CommentInputField';
 import { CursorPositionInMarkdown, findCursorPositionInMarkdown, MentionMatch } from './utils';
-import EmojiSelector from '../../../../core/ui/forms/emoji/EmojiSelector';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { Caption } from '../../../../core/ui/typography';
+import EmojiSelector from '@core/ui/forms/emoji/EmojiSelector';
+import { gutters } from '@core/ui/grid/utils';
+import { Caption } from '@core/ui/typography';
 import HelpIcon from '@mui/icons-material/Help';
 import { useTranslation } from 'react-i18next';
 

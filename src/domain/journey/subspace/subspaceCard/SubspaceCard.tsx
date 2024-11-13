@@ -5,10 +5,10 @@ import SpaceChildJourneyCard, {
 import { SubspaceIcon } from '../icon/SubspaceIcon';
 import CardParentJourneySegment from '../../common/SpaceChildJourneyCard/CardParentJourneySegment';
 import { SpaceIcon } from '../../space/icon/SpaceIcon';
-import CardActions from '../../../../core/ui/card/CardActions';
+import CardActions from '@core/ui/card/CardActions';
 import JourneyCardGoToButton from '../../common/JourneyCard/JourneyCardGoToButton';
-import { SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
-import CardRibbon from '../../../../core/ui/card/CardRibbon';
+import { SpaceVisibility } from '@core/apollo/generated/graphql-schema';
+import CardRibbon from '@core/ui/card/CardRibbon';
 import { useTranslation } from 'react-i18next';
 
 interface SubspaceCardProps

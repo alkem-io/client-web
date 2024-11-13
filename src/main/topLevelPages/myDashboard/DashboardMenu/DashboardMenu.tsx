@@ -1,24 +1,24 @@
 import React from 'react';
 import { Box, Divider, FormControlLabel, List, ListItem, ListItemButton, Switch } from '@mui/material';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
 import { DashboardMenuProps, MenuOptionProps } from './dashboardMenuTypes';
 import { useDashboardContext } from '../DashboardContext';
-import { Caption } from '../../../../core/ui/typography';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { Caption } from '@core/ui/typography';
+import { gutters } from '@core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
-import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
-import RouterLink from '../../../../core/ui/link/RouterLink';
+import TranslationKey from '@core/i18n/utils/TranslationKey';
+import RouterLink from '@core/ui/link/RouterLink';
 import { useHomeMenuItems } from './useHomeMenuItems';
 import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
 import {
   PendingMembershipsDialogType,
   usePendingMembershipsDialog,
-} from '../../../../domain/community/pendingMembership/PendingMembershipsDialogContext';
-import { usePendingInvitationsCountQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import BadgeCounter from '../../../../core/ui/icon/BadgeCounter';
-import PageContentBlockCollapsible from '../../../../core/ui/content/PageContentBlockCollapsible';
+} from '@domain/community/pendingMembership/PendingMembershipsDialogContext';
+import { usePendingInvitationsCountQuery } from '@core/apollo/generated/apollo-hooks';
+import BadgeCounter from '@core/ui/icon/BadgeCounter';
+import PageContentBlockCollapsible from '@core/ui/content/PageContentBlockCollapsible';
 import { Menu as MenuIcon } from '@mui/icons-material';
-import Gutters from '../../../../core/ui/grid/Gutters';
+import Gutters from '@core/ui/grid/Gutters';
 
 /**
  * DashboardMenu Component

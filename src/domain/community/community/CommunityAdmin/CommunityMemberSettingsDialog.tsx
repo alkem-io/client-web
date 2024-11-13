@@ -1,16 +1,16 @@
 import { FC, useState } from 'react';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
 import { Trans, useTranslation } from 'react-i18next';
 import { ProfileChip } from '../../contributor/ProfileChip/ProfileChip';
-import { BlockSectionTitle, Caption } from '../../../../core/ui/typography';
+import { BlockSectionTitle, Caption } from '@core/ui/typography';
 import { Button, Checkbox, FormControlLabel, Link } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
-import { Actions } from '../../../../core/ui/actions/Actions';
+import ConfirmationDialog from '@core/ui/dialogs/ConfirmationDialog';
+import { Actions } from '@core/ui/actions/Actions';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import { LoadingButton } from '@mui/lab';
-import Gutters from '../../../../core/ui/grid/Gutters';
+import Gutters from '@core/ui/grid/Gutters';
 
 interface CommunityMemberSettingsDialogProps {
   member: {

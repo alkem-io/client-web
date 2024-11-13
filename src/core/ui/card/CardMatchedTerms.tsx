@@ -1,6 +1,6 @@
 import React from 'react';
 import { gutters } from '../grid/utils';
-import TagsComponent, { TagsComponentProps } from '../../../domain/shared/components/TagsComponent/TagsComponent';
+import TagsComponent, { TagsComponentProps } from '@domain/shared/components/TagsComponent/TagsComponent';
 import { Caption } from '../typography';
 import { Box, BoxProps } from '@mui/material';
 import { useTranslation } from 'react-i18next';

@@ -2,15 +2,15 @@ import { Box, BoxProps, Skeleton, SvgIconProps } from '@mui/material';
 import { groupBy } from 'lodash';
 import { ComponentType, FC, forwardRef } from 'react';
 import { Draggable, Droppable, OnDragEndResponder } from 'react-beautiful-dnd';
-import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { Caption } from '../../../../core/ui/typography';
+import { CalloutType } from '@core/apollo/generated/graphql-schema';
+import Gutters from '@core/ui/grid/Gutters';
+import { gutters } from '@core/ui/grid/utils';
+import { Caption } from '@core/ui/typography';
 import calloutIcons from '../../callout/utils/calloutIcons';
 import InnovationFlowDragNDropEditor, {
   InnovationFlowDragNDropEditorProps,
 } from '../InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
 
 const SKELETON_COUNT = 3;
 

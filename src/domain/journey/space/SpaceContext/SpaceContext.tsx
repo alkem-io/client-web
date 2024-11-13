@@ -1,15 +1,15 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useUrlParams } from '@core/routing/useUrlParams';
 import { useConfig } from '../../../platform/config/useConfig';
-import { useSpaceProviderQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useSpaceProviderQuery } from '@core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
   SpacePendingMembershipInfoFragment,
   SpacePrivacyMode,
   SpaceVisibility,
-} from '../../../../core/apollo/generated/graphql-schema';
+} from '@core/apollo/generated/graphql-schema';
 
 export interface SpacePermissions {
   canRead: boolean;

@@ -1,7 +1,7 @@
 import { Button, IconButton } from '@mui/material';
-import Gutters, { GuttersProps } from '../../../../core/ui/grid/Gutters';
+import Gutters, { GuttersProps } from '@core/ui/grid/Gutters';
 import { NavigateBeforeOutlined, NavigateNextOutlined } from '@mui/icons-material';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { gutters } from '@core/ui/grid/utils';
 import { InnovationFlowVisualizerProps } from './InnovationFlowVisualizer';
 
 interface InnovationFlowCurrentStateSelectorProps extends InnovationFlowVisualizerProps {}

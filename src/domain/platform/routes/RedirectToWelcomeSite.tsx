@@ -1,5 +1,5 @@
 import { useLayoutEffect } from 'react';
-import useLandingUrl from '../../../main/landing/useLandingUrl';
+import useLandingUrl from '@main/landing/useLandingUrl';
 
 const RedirectToWelcomeSite = () => {
   const landingUrl = useLandingUrl();

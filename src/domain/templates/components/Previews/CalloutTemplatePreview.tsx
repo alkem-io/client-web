@@ -1,6 +1,6 @@
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import { BlockSectionTitle } from '../../../../core/ui/typography';
-import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
+import { BlockSectionTitle } from '@core/ui/typography';
+import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
 import WhiteboardPreview from '../../../collaboration/whiteboard/WhiteboardPreview/WhiteboardPreview';
 import { findDefaultTagset } from '../../../common/tags/utils';

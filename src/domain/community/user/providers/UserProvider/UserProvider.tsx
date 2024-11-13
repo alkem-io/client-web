@@ -4,10 +4,10 @@ import {
   useCreateUserNewRegistrationMutation,
   usePlatformLevelAuthorizationQuery,
   useUserProviderQuery,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import { ErrorPage } from '../../../../../core/pages/Errors/ErrorPage';
-import { User } from '../../../../../core/apollo/generated/graphql-schema';
-import { useAuthenticationContext } from '../../../../../core/auth/authentication/hooks/useAuthenticationContext';
+} from '@core/apollo/generated/apollo-hooks';
+import { ErrorPage } from '@core/pages/Errors/ErrorPage';
+import { User } from '@core/apollo/generated/graphql-schema';
+import { useAuthenticationContext } from '@core/auth/authentication/hooks/useAuthenticationContext';
 import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
 
 export interface UserContextValue {

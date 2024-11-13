@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
+import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
 import { InnovationFlowProfileBlockProps } from './InnovationFlowProfileBlock';
 
 interface InnovationFlowProfileViewProps {

@@ -1,5 +1,5 @@
 import React, { ReactNode, useState } from 'react';
-import { ShareDialog, ShareDialogProps } from '../../domain/shared/components/ShareDialog/ShareDialog';
+import { ShareDialog, ShareDialogProps } from '@domain/shared/components/ShareDialog/ShareDialog';
 
 interface ShareOptions {
   url: string | undefined;

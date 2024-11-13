@@ -1,5 +1,5 @@
 import { ComponentType } from 'react';
-import { ProfileType } from '../../../core/apollo/generated/graphql-schema';
+import { ProfileType } from '@core/apollo/generated/graphql-schema';
 import { SvgIconProps } from '@mui/material';
 import { CalendarIcon } from '../../timeline/calendar/icons/CalendarIcon';
 import { SubspaceIcon } from '../../journey/subspace/icon/SubspaceIcon';
@@ -21,7 +21,7 @@ import {
 } from '@mui/icons-material';
 import calloutIcons from '../../collaboration/callout/utils/calloutIcons';
 import { SpaceIcon } from '../../journey/space/icon/SpaceIcon';
-import { warn } from '../../../core/logging/sentry/log';
+import { warn } from '@core/logging/sentry/log';
 
 export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconProps> => {
   switch (profileType) {

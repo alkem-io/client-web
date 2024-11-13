@@ -1,13 +1,13 @@
-import ContributeCard, { ContributeCardProps } from '../../../../core/ui/card/ContributeCard';
+import ContributeCard, { ContributeCardProps } from '@core/ui/card/ContributeCard';
 import { Box } from '@mui/material';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { BlockTitle } from '../../../../core/ui/typography';
-import LocationCardSegment from '../../../../core/ui/location/LocationCardSegment';
+import { gutters } from '@core/ui/grid/utils';
+import { BlockTitle } from '@core/ui/typography';
+import LocationCardSegment from '@core/ui/location/LocationCardSegment';
 import React, { ReactNode, useState } from 'react';
-import CardTags from '../../../../core/ui/card/CardTags';
-import RouterLink from '../../../../core/ui/link/RouterLink';
-import ExpandableCardFooter from '../../../../core/ui/card/ExpandableCardFooter';
-import CardBanner from '../../../../core/ui/card/CardImageHeader';
+import CardTags from '@core/ui/card/CardTags';
+import RouterLink from '@core/ui/link/RouterLink';
+import ExpandableCardFooter from '@core/ui/card/ExpandableCardFooter';
+import CardBanner from '@core/ui/card/CardImageHeader';
 import JourneyCardDescription from '../../../journey/common/JourneyCard/JourneyCardDescription';
 
 export interface ContributorCardProps extends ContributeCardProps {

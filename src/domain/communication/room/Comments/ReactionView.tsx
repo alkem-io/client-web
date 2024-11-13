@@ -1,7 +1,7 @@
 import React from 'react';
 import { Chip, Paper, Tooltip } from '@mui/material';
-import { Caption, CardText, Text } from '../../../../core/ui/typography/components';
-import Gutters from '../../../../core/ui/grid/Gutters';
+import { Caption, CardText, Text } from '@core/ui/typography/components';
+import Gutters from '@core/ui/grid/Gutters';
 
 interface ReactionViewReactionSender {
   profile: {

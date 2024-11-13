@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
-import HelpButton from '../../../../core/ui/button/HelpButton';
+import HelpButton from '@core/ui/button/HelpButton';
 import MetricCircleView from '../../../platform/metrics/MetricCircleView';
 
 interface SectionHeaderProps {

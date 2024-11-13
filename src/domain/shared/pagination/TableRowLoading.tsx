@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import TableCell, { TableCellProps } from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
-import Loading from '../../../core/ui/loading/Loading';
+import Loading from '@core/ui/loading/Loading';
 
 interface TableRowLoadingProps {
   colSpan?: TableCellProps['colSpan'];

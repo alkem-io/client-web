@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Caption, CaptionSmall } from '../../../../core/ui/typography';
+import { Caption, CaptionSmall } from '@core/ui/typography';
 import { Box, Button, Theme, useMediaQuery } from '@mui/material';
 import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
-import SearchTagsInput from '../../../../domain/shared/components/SearchTagsInput/SearchTagsInput';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import { gutters, useGridItem } from '../../../../core/ui/grid/utils';
-import useLazyLoading from '../../../../domain/shared/pagination/useLazyLoading';
-import SeeMoreExpandable from '../../../../core/ui/content/SeeMoreExpandable';
-import JourneyTile from '../../../../domain/journey/common/JourneyTile/JourneyTile';
+import SearchTagsInput from '@domain/shared/components/SearchTagsInput/SearchTagsInput';
+import Gutters from '@core/ui/grid/Gutters';
+import ScrollableCardsLayoutContainer from '@core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import { gutters, useGridItem } from '@core/ui/grid/utils';
+import useLazyLoading from '@domain/shared/pagination/useLazyLoading';
+import SeeMoreExpandable from '@core/ui/content/SeeMoreExpandable';
+import JourneyTile from '@domain/journey/common/JourneyTile/JourneyTile';
 import { ExploreSpacesViewProps } from './ExploreSpacesTypes';
-import { useColumns } from '../../../../core/ui/grid/GridContext';
-import { SpacePrivacyMode } from '../../../../core/apollo/generated/graphql-schema';
+import { useColumns } from '@core/ui/grid/GridContext';
+import { SpacePrivacyMode } from '@core/apollo/generated/graphql-schema';
 
 const DEFAULT_ITEMS_LIMIT = 15; // 3 rows of 5 but without the welcome space
 

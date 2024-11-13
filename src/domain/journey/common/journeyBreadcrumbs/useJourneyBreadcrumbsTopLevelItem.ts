@@ -1,4 +1,4 @@
-import { useJourneyBreadcrumbsInnovationHubQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useJourneyBreadcrumbsInnovationHubQuery } from '@core/apollo/generated/apollo-hooks';
 
 interface TopLevelJourneyBreadcrumbsItem {
   profile?: {

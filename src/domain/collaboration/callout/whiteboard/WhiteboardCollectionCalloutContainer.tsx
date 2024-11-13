@@ -1,11 +1,11 @@
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '@core/apollo/generated/graphql-schema';
 import {
   refetchCalloutWhiteboardsQuery,
   useCalloutWhiteboardsQuery,
   useCreateWhiteboardOnCalloutMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
+} from '@core/apollo/generated/apollo-hooks';
 import { useInView } from 'react-intersection-observer';
-import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
+import { SimpleContainerProps } from '@core/container/SimpleContainer';
 import { useTranslation } from 'react-i18next';
 import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
 import { Ref, useMemo } from 'react';

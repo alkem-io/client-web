@@ -3,20 +3,20 @@ import { Paper, Button, Avatar } from '@mui/material';
 import { Card } from '@mui/material';
 import { DoubleArrowOutlined } from '@mui/icons-material';
 
-import Gutters from '../../../../../core/ui/grid/Gutters';
-import GridItem from '../../../../../core/ui/grid/GridItem';
-import Loading from '../../../../../core/ui/loading/Loading';
-import { PageTitle } from '../../../../../core/ui/typography';
-import RouterLink from '../../../../../core/ui/link/RouterLink';
-import { Caption, Tagline } from '../../../../../core/ui/typography';
+import Gutters from '@core/ui/grid/Gutters';
+import GridItem from '@core/ui/grid/GridItem';
+import Loading from '@core/ui/loading/Loading';
+import { PageTitle } from '@core/ui/typography';
+import RouterLink from '@core/ui/link/RouterLink';
+import { Caption, Tagline } from '@core/ui/typography';
 import { MyMembershipsDialog } from '../../myMemberships/MyMembershipsDialog';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
-import JourneyTile from '../../../../../domain/journey/common/JourneyTile/JourneyTile';
-import defaultJourneyBanner from '../../../../../domain/journey/defaultVisuals/Banner.jpg';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
+import JourneyTile from '@domain/journey/common/JourneyTile/JourneyTile';
+import defaultJourneyBanner from '@domain/journey/defaultVisuals/Banner.jpg';
 
 import { useDashboardSpaces } from './useDashboardSpaces';
-import { gutters } from '../../../../../core/ui/grid/utils';
-import { SpacePrivacyMode } from '../../../../../core/apollo/generated/graphql-schema';
+import { gutters } from '@core/ui/grid/utils';
+import { SpacePrivacyMode } from '@core/apollo/generated/graphql-schema';
 
 const DashboardSpaces = () => {
   const {

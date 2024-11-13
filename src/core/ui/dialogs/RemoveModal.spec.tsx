@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import userEvent from '@testing-library/user-event';
-import { render, screen } from '../../../main/test/testUtils';
+import { render, screen } from '@main/test/testUtils';
 import RemoveModal from './RemoveModal';
 import { expect, test, describe } from 'vitest';
 

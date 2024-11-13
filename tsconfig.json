@@ -16,7 +16,14 @@
     "noEmit": true,
     "noImplicitAny": false,
     "jsx": "react-jsx",
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": "src",
+    "paths": {
+      "@core/*": ["core/*"],
+      "@main/*": ["main/*"],
+      "@dev/*": ["dev/*"],
+      "@domain/*": ["domain/*"]
+    }
   },
   "include": ["src", "@types"],
   "exclude": ["node_modules"]

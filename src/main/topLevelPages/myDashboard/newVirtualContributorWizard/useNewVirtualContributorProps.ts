@@ -1,5 +1,5 @@
 import { ComponentType } from 'react';
-import { AuthorizationPrivilege, SpaceType } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, SpaceType } from '@core/apollo/generated/graphql-schema';
 
 export interface UserAccountProps {
   id: string;

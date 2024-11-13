@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import DiscussionPage from './DiscussionPage';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useUrlParams } from '@core/routing/useUrlParams';
 
 interface DiscussionPageProps {}
 

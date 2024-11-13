@@ -1,11 +1,11 @@
 import { AvatarGroup, Box, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import Avatar from '../../../../core/ui/avatar/Avatar';
+import Avatar from '@core/ui/avatar/Avatar';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Discussion } from '../models/Discussion';
 import DiscussionIcon from './DiscussionIcon';
-import { BlockSectionTitle, Caption } from '../../../../core/ui/typography';
-import { formatLongDate } from '../../../../core/utils/time/utils';
+import { BlockSectionTitle, Caption } from '@core/ui/typography';
+import { formatLongDate } from '@core/utils/time/utils';
 
 export interface DiscussionOverviewProps {
   discussion: Discussion;

@@ -5,14 +5,14 @@ import {
   useAdminSpacesListQuery,
   useDeleteSpaceMutation,
   useOrganizationsListQuery,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import Loading from '../../../../../core/ui/loading/Loading';
+} from '@core/apollo/generated/apollo-hooks';
+import { useNotification } from '@core/ui/notifications/useNotification';
+import Loading from '@core/ui/loading/Loading';
 import ListPage from '../../components/ListPage';
 import { SearchableTableItem, SearchableTableItemMapper } from '../../components/SearchableTable';
-import { AuthorizationPrivilege, SpaceVisibility } from '../../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, SpaceVisibility } from '@core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
-import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
+import { buildSettingsUrl } from '@main/routing/urlBuilders';
 import SpaceListItem from './SpaceListItem';
 import { sortBy } from 'lodash';
 

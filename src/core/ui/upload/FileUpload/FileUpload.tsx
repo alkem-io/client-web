@@ -4,7 +4,7 @@ import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import 'react-image-crop/dist/ReactCrop.css';
 import UploadButton from '../../button/UploadButton';
-import { StorageConfig } from '../../../../domain/storage/StorageBucket/useStorageConfig';
+import { StorageConfig } from '@domain/storage/StorageBucket/useStorageConfig';
 import {
   useUploadFileMutation,
   useUploadFileOnLinkMutation,

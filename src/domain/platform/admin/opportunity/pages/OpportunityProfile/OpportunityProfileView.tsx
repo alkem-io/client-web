@@ -3,21 +3,21 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import FormMode from '../../../components/FormMode';
 import ProfileForm, { ProfileFormValues } from '../../../../../common/profile/ProfileForm';
-import { useNotification } from '../../../../../../core/ui/notifications/useNotification';
+import { useNotification } from '@core/ui/notifications/useNotification';
 import EditVisualsView from '../../../../../common/visual/EditVisuals/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../../common/location/LocationUtils';
-import SaveButton from '../../../../../../core/ui/actions/SaveButton';
-import Gutters from '../../../../../../core/ui/grid/Gutters';
-import { VisualType } from '../../../../../../core/apollo/generated/graphql-schema';
-import { useRouteResolver } from '../../../../../../main/routing/resolvers/RouteResolver';
-import useNavigate from '../../../../../../core/routing/useNavigate';
+import SaveButton from '@core/ui/actions/SaveButton';
+import Gutters from '@core/ui/grid/Gutters';
+import { VisualType } from '@core/apollo/generated/graphql-schema';
+import { useRouteResolver } from '@main/routing/resolvers/RouteResolver';
+import useNavigate from '@core/routing/useNavigate';
 import {
   refetchSubspaceProfileInfoQuery,
   refetchSubspacesInSpaceQuery,
   useCreateSubspaceMutation,
   useSubspaceProfileInfoQuery,
   useUpdateSpaceMutation,
-} from '../../../../../../core/apollo/generated/apollo-hooks';
+} from '@core/apollo/generated/apollo-hooks';
 
 interface Props {
   mode: FormMode;

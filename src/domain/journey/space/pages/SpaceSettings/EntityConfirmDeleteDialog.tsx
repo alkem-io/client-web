@@ -2,12 +2,12 @@ import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Checkbox, Dialog, DialogContent, FormControlLabel } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
-import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
-import Gutters from '../../../../../core/ui/grid/Gutters';
-import { Actions } from '../../../../../core/ui/actions/Actions';
-import { Caption } from '../../../../../core/ui/typography';
-import { gutters } from '../../../../../core/ui/grid/utils';
-import TranslationKey from '../../../../../core/i18n/utils/TranslationKey';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
+import Gutters from '@core/ui/grid/Gutters';
+import { Actions } from '@core/ui/actions/Actions';
+import { Caption } from '@core/ui/typography';
+import { gutters } from '@core/ui/grid/utils';
+import TranslationKey from '@core/i18n/utils/TranslationKey';
 import useLoadingState from '../../../../shared/utils/useLoadingState';
 
 interface EntityConfirmDeleteDialogProps {

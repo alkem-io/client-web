@@ -3,13 +3,13 @@ import { Formik } from 'formik';
 import { FC, Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import { Actions } from '../../../../core/ui/actions/Actions';
+import FormikInputField from '@core/ui/forms/FormikInputField/FormikInputField';
+import FormikMarkdownField from '@core/ui/forms/MarkdownInput/FormikMarkdownField';
+import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@core/ui/forms/field-length.constants';
+import { Actions } from '@core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
 import useLoadingState from '../../../shared/utils/useLoadingState';
-import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import MarkdownValidator from '@core/ui/forms/MarkdownInput/MarkdownValidator';
 import { InnovationFlowState } from '../InnovationFlow';
 
 export interface InnovationFlowStateFormValues extends InnovationFlowState {}

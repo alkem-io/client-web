@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react';
 import { Author } from '../../shared/components/AuthorAvatar/models/author';
-import { buildUserProfileUrl } from '../../../main/routing/urlBuilders';
-import { useAuthorDetailsQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { buildUserProfileUrl } from '@main/routing/urlBuilders';
+import { useAuthorDetailsQuery } from '@core/apollo/generated/apollo-hooks';
 import { uniq } from 'lodash';
 import { COUNTRIES_BY_CODE } from '../../common/location/countries.constants';
-import { useAuthenticationContext } from '../../../core/auth/authentication/hooks/useAuthenticationContext';
+import { useAuthenticationContext } from '@core/auth/authentication/hooks/useAuthenticationContext';
 
 export const useAuthorsDetails = (authorIds: string[]) => {
   const uniqIds = uniq(authorIds).sort();

@@ -1,7 +1,7 @@
 import { Formik } from 'formik';
 import React, { ElementType, FC } from 'react';
 import * as yup from 'yup';
-import { Context, Profile } from '../../../core/apollo/generated/graphql-schema';
+import { Context, Profile } from '@core/apollo/generated/graphql-schema';
 import { ContextSegmentProps, contextSegmentSchema } from '../../platform/admin/components/Common/ContextSegment';
 
 export interface ContextFormValues {

@@ -3,8 +3,8 @@ import {
   refetchUsersWithCredentialsQuery,
   useAssignUserToGroupMutation,
   useRemoveUserFromGroupMutation,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationCredential } from '../../../../../core/apollo/generated/graphql-schema';
+} from '@core/apollo/generated/apollo-hooks';
+import { AuthorizationCredential } from '@core/apollo/generated/graphql-schema';
 import EditMemberUsers from '../Community/EditMembersUsers';
 import { useAvailableMembersWithCredential } from '../../../../community/community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
 

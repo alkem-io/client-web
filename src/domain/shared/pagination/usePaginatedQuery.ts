@@ -1,5 +1,5 @@
 import { LazyQueryHookOptions, QueryHookOptions, QueryResult, QueryTuple } from '@apollo/client/react/types/types';
-import { PageInfo } from '../../../core/apollo/generated/graphql-schema';
+import { PageInfo } from '@core/apollo/generated/graphql-schema';
 import { useCallback } from 'react';
 import { ApolloError } from '@apollo/client';
 

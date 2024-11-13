@@ -1,10 +1,10 @@
 import React, { FC, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerChildProps } from '../../../../core/container/container';
+import { ContainerChildProps } from '@core/container/container';
 import {
   useContributorsPageOrganizationsQuery,
   useContributorsPageUsersQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+} from '@core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../user';
 import {
   ContributorsPageOrganizationsQuery,
@@ -14,9 +14,9 @@ import {
   OrganizationContributorFragment,
   OrganizationVerificationEnum,
   UserContributorFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
+} from '@core/apollo/generated/graphql-schema';
 import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
-import { arrayShuffle } from '../../../../core/utils/array.shuffle';
+import { arrayShuffle } from '@core/utils/array.shuffle';
 
 export interface PaginatedResult<T> {
   items: T[] | undefined;

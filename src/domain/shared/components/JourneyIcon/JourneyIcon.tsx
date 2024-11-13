@@ -1,7 +1,7 @@
 import { SpaceIcon } from '../../../journey/space/icon/SpaceIcon';
 import { SubspaceIcon } from '../../../journey/subspace/icon/SubspaceIcon';
 import { OpportunityIcon } from '../../../journey/opportunity/icon/OpportunityIcon';
-import { SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@core/apollo/generated/graphql-schema';
 import { ComponentType } from 'react';
 import { SvgIconProps } from '@mui/material';
 

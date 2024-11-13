@@ -3,14 +3,14 @@ import { Form, Formik } from 'formik';
 import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { ForumDiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
-import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import { ForumDiscussionCategory } from '@core/apollo/generated/graphql-schema';
+import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@core/ui/forms/field-length.constants';
+import MarkdownValidator from '@core/ui/forms/MarkdownInput/MarkdownValidator';
 import DiscussionIcon from '../views/DiscussionIcon';
 import { Discussion } from '../models/Discussion';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import FormikSelect from '../../../../core/ui/forms/FormikSelect';
-import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
+import FormikInputField from '@core/ui/forms/FormikInputField/FormikInputField';
+import FormikSelect from '@core/ui/forms/FormikSelect';
+import FormikMarkdownField from '@core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { LoadingButton } from '@mui/lab';
 
 export interface DiscussionFormValues {

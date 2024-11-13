@@ -5,16 +5,16 @@ import {
   useDeleteCalendarEventMutation,
   useSpaceCalendarEventsQuery,
   useUpdateCalendarEventMutation,
-} from '../../../core/apollo/generated/apollo-hooks';
+} from '@core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CalendarEvent,
   CalendarEventInfoFragment,
   Profile,
-} from '../../../core/apollo/generated/graphql-schema';
+} from '@core/apollo/generated/graphql-schema';
 import { StorageConfigContextProvider } from '../../storage/StorageBucket/StorageConfigContext';
 import { MutationBaseOptions } from '@apollo/client/core/watchQueryOptions';
-import { isSameDay } from '../../../core/utils/time/utils';
+import { isSameDay } from '@core/utils/time/utils';
 
 export interface CalendarEventFormData
   extends Pick<

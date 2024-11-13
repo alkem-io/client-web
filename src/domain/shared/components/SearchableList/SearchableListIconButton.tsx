@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { FC, useState } from 'react';
 import { makeStyles } from '@mui/styles';
-import hexToRGBA from '../../../../core/utils/hexToRGBA';
+import hexToRGBA from '@core/utils/hexToRGBA';
 
 const useIconButtonStyles = makeStyles(theme => ({
   button: {

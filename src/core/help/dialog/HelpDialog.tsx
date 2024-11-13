@@ -7,7 +7,7 @@ import FiberNewTwoToneIcon from '@mui/icons-material/FiberNewTwoTone';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { DialogContent } from '../../ui/dialog/deprecated';
 import WrapperMarkdown from '../../ui/markdown/WrapperMarkdown';
-import { useConfig } from '../../../domain/platform/config/useConfig';
+import { useConfig } from '@domain/platform/config/useConfig';
 import DialogHeader from '../../ui/dialog/DialogHeader';
 
 interface HelpDialogProps {

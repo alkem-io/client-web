@@ -1,17 +1,17 @@
 import { Box, Skeleton, useTheme } from '@mui/material';
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCommunityGuidelinesQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { useCommunityGuidelinesQuery } from '@core/apollo/generated/apollo-hooks';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@core/ui/content/PageContentBlockHeader';
+import { gutters } from '@core/ui/grid/utils';
 import CommunityGuidelinesInfoDialog from './CommunityGuidelinesInfoDialog';
-import OverflowGradient from '../../../../core/ui/overflow/OverflowGradient';
-import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
-import SeeMore from '../../../../core/ui/content/SeeMore';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
-import { Caption } from '../../../../core/ui/typography';
-import RouterLink from '../../../../core/ui/link/RouterLink';
+import OverflowGradient from '@core/ui/overflow/OverflowGradient';
+import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
+import SeeMore from '@core/ui/content/SeeMore';
+import { AuthorizationPrivilege } from '@core/apollo/generated/graphql-schema';
+import { Caption } from '@core/ui/typography';
+import RouterLink from '@core/ui/link/RouterLink';
 import { buildSettingsUrl } from '../../../../main/routing/urlBuilders';
 
 const CommunityGuidelinesSkeleton = () => {

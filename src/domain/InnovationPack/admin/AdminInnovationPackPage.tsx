@@ -5,19 +5,19 @@ import {
   useInnovationPackResolveIdQuery,
   useTemplateUrlResolverQuery,
   useUpdateInnovationPackMutation,
-} from '../../../core/apollo/generated/apollo-hooks';
-import { useUrlParams } from '../../../core/routing/useUrlParams';
-import PageContent from '../../../core/ui/content/PageContent';
-import PageContentBlock from '../../../core/ui/content/PageContentBlock';
-import PageContentColumn from '../../../core/ui/content/PageContentColumn';
-import Loading from '../../../core/ui/loading/Loading';
-import { useNotification } from '../../../core/ui/notifications/useNotification';
+} from '@core/apollo/generated/apollo-hooks';
+import { useUrlParams } from '@core/routing/useUrlParams';
+import PageContent from '@core/ui/content/PageContent';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
+import PageContentColumn from '@core/ui/content/PageContentColumn';
+import Loading from '@core/ui/loading/Loading';
+import { useNotification } from '@core/ui/notifications/useNotification';
 import InnovationPackForm, { InnovationPackFormValues } from './InnovationPackForm';
 import { StorageConfigContextProvider } from '../../storage/StorageBucket/StorageConfigContext';
 import TemplatesAdmin from '../../templates/components/TemplatesAdmin/TemplatesAdmin';
 import InnovationPackProfileLayout from '../InnovationPackProfilePage/InnovationPackProfileLayout';
-import { buildInnovationPackSettingsUrl } from '../../../main/routing/urlBuilders';
-import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
+import { buildInnovationPackSettingsUrl } from '@main/routing/urlBuilders';
+import { TemplateType } from '@core/apollo/generated/graphql-schema';
 
 interface AdminInnovationPackPageProps {}
 

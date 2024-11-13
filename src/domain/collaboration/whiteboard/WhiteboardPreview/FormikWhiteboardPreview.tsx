@@ -4,9 +4,9 @@ import React, { FC, MouseEventHandler, useMemo, useState } from 'react';
 import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
 import SingleUserWhiteboardDialog from '../WhiteboardDialog/SingleUserWhiteboardDialog';
 import { useTranslation } from 'react-i18next';
-import { BlockTitle } from '../../../../core/ui/typography';
+import { BlockTitle } from '@core/ui/typography';
 import { WhiteboardPreviewImage } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
-import { useFullscreen } from '../../../../core/ui/fullscreen/useFullscreen';
+import { useFullscreen } from '@core/ui/fullscreen/useFullscreen';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
 

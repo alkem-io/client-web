@@ -1,7 +1,7 @@
-import { _AUTH_LOGIN_PATH } from '../../core/auth/authentication/constants/authentication.constants';
-import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
-import { ROUTE_HOME } from '../../domain/platform/routes/constants';
-import { isAbsoluteUrl } from '../../core/utils/links';
+import { _AUTH_LOGIN_PATH } from '@core/auth/authentication/constants/authentication.constants';
+import { EntityPageSection } from '@domain/shared/layout/EntityPageSection';
+import { ROUTE_HOME } from '@domain/platform/routes/constants';
+import { isAbsoluteUrl } from '@core/utils/links';
 import { TopLevelRoutePath } from './TopLevelRoutePath';
 
 export const buildOrganizationUrl = (organizationNameId: string) => `/organization/${organizationNameId}`;

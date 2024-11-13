@@ -6,15 +6,15 @@ import {
   useSendMessageToCommunityLeadsMutation,
   useSpaceDashboardReferencesQuery,
   useSpacePageQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { ContainerChildProps } from '../../../../core/container/container';
+} from '@core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '@core/container/container';
 import {
   AuthorizationPrivilege,
   CalloutGroupName,
   CommunityMembershipStatus,
   Reference,
   SpacePageFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
+} from '@core/apollo/generated/graphql-schema';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
 import useSpaceDashboardNavigation, {
   DashboardNavigationItem,

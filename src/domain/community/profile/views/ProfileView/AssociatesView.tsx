@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import ContributorCardSquare, {
   ContributorCardSquareProps,
 } from '../../../contributor/ContributorCardSquare/ContributorCardSquare';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
-import { BlockSectionTitle } from '../../../../../core/ui/typography';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@core/ui/content/PageContentBlockHeader';
+import { BlockSectionTitle } from '@core/ui/typography';
 
 const ASSOCIATE_CARDS_COUNT = 12;
 

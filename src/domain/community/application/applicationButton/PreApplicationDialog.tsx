@@ -1,15 +1,15 @@
 import { Button, Dialog, DialogContent } from '@mui/material';
 import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import RouterLink from '../../../../core/ui/link/RouterLink';
+import RouterLink from '@core/ui/link/RouterLink';
 import isApplicationPending from './isApplicationPending';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import { useSubSpace } from '../../../journey/subspace/hooks/useSubSpace';
 import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { BlockTitle } from '../../../../core/ui/typography';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { Actions } from '../../../../core/ui/actions/Actions';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
+import { BlockTitle } from '@core/ui/typography';
+import { gutters } from '@core/ui/grid/utils';
+import { Actions } from '@core/ui/actions/Actions';
 
 export interface PreApplicationDialogProps {
   open: boolean;

@@ -2,13 +2,13 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
 import { makeStyles } from '@mui/styles';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
 import { ProfileChip } from '../../contributor/ProfileChip/ProfileChip';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
+import { Actions } from '@core/ui/actions/Actions';
+import Gutters from '@core/ui/grid/Gutters';
+import { CommunityContributorType } from '@core/apollo/generated/graphql-schema';
 import { Button } from '@mui/material';
-import { Caption, CaptionSmall } from '../../../../core/ui/typography';
+import { Caption, CaptionSmall } from '@core/ui/typography';
 
 const appStyles = makeStyles(theme => ({
   minHeight: {

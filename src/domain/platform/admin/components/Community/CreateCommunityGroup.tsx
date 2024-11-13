@@ -1,9 +1,6 @@
 import React, { FC, useCallback } from 'react';
-import useNavigate from '../../../../../core/routing/useNavigate';
-import {
-  GroupDetailsFragmentDoc,
-  useCreateGroupOnCommunityMutation,
-} from '../../../../../core/apollo/generated/apollo-hooks';
+import useNavigate from '@core/routing/useNavigate';
+import { GroupDetailsFragmentDoc, useCreateGroupOnCommunityMutation } from '@core/apollo/generated/apollo-hooks';
 import CreateGroupForm from '../Common/CreateGroupForm';
 
 interface CreateCommunityGroupProps {

@@ -1,7 +1,7 @@
-import { useBannerInnovationHubQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { useBannerInnovationHubQuery } from '@core/apollo/generated/apollo-hooks';
 import { Trans, useTranslation } from 'react-i18next';
-import TranslationKey from '../../../core/i18n/utils/TranslationKey';
-import PageContentRibbon from '../../../core/ui/content/PageContentRibbon';
+import TranslationKey from '@core/i18n/utils/TranslationKey';
+import PageContentRibbon from '@core/ui/content/PageContentRibbon';
 
 interface UseInnovationHubOutsideRibbonOptions {
   label: TranslationKey;

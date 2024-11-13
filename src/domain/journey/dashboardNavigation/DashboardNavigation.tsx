@@ -3,22 +3,22 @@ import { Box, Button, Collapse, IconButton, Tooltip, useMediaQuery } from '@mui/
 import { Theme } from '@mui/material/styles';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import PageContentBlock from '../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
-import { gutters } from '../../../core/ui/grid/utils';
-import { Caption } from '../../../core/ui/typography';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@core/ui/content/PageContentBlockHeader';
+import { gutters } from '@core/ui/grid/utils';
+import { Caption } from '@core/ui/typography';
 import DashboardNavigationItemView, {
   DashboardNavigationItemViewApi,
   DashboardNavigationItemViewProps,
 } from './DashboardNavigationItemView';
 import { DashboardNavigationItem } from '../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
-import { Actions } from '../../../core/ui/actions/Actions';
+import { Actions } from '@core/ui/actions/Actions';
 
 import produce from 'immer';
-import RouterLink from '../../../core/ui/link/RouterLink';
-import { GUTTER_PX } from '../../../core/ui/grid/constants';
+import RouterLink from '@core/ui/link/RouterLink';
+import { GUTTER_PX } from '@core/ui/grid/constants';
 import { findCurrentPath } from './utils';
-import { Identifiable } from '../../../core/utils/Identifiable';
+import { Identifiable } from '@core/utils/Identifiable';
 import { debounce, difference } from 'lodash';
 
 export interface DashboardNavigationProps {

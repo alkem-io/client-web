@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { AuthorizationCredential, UserDisplayNameFragment } from '../../../../core/apollo/generated/graphql-schema';
-import { useUsersWithCredentialsQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { AuthorizationCredential, UserDisplayNameFragment } from '@core/apollo/generated/graphql-schema';
+import { useUsersWithCredentialsQuery } from '@core/apollo/generated/apollo-hooks';
 import { Member } from '../../user/models/User';
 import { UseUsersSearchResult } from './useUsersSearch';
 import useAllPossibleMemberUsers from '../useCommunityAssignment/useAllPossibleMemberUsers';

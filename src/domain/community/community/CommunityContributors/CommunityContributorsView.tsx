@@ -9,7 +9,7 @@ import DashboardContributingUsers, {
   DashboardContributingUsersProps,
 } from '../EntityDashboardContributorsSection/DashboardContributingUsers';
 import { mapUserCardPropsToContributorCardProps } from '../utils/useCommunityMembersAsCardProps';
-import { Identifiable } from '../../../../core/utils/Identifiable';
+import { Identifiable } from '@core/utils/Identifiable';
 import { UserCardProps } from '../../user/userCard/UserCard';
 
 export interface CommunityContributorsViewProps extends ContributingOrganizationsProps {

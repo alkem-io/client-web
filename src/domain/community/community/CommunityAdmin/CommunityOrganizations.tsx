@@ -11,15 +11,15 @@ import { useTranslation } from 'react-i18next';
 import { FC, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import { gutters } from '../../../../core/ui/grid/utils';
-import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
-import DataGridTable from '../../../../core/ui/table/DataGridTable';
-import { BlockTitle } from '../../../../core/ui/typography';
+import { gutters } from '@core/ui/grid/utils';
+import DataGridSkeleton from '@core/ui/table/DataGridSkeleton';
+import DataGridTable from '@core/ui/table/DataGridTable';
+import { BlockTitle } from '@core/ui/typography';
 import CommunityMemberSettingsDialog from './CommunityMemberSettingsDialog';
 import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from './CommunityAddMembersDialog';
 import useCommunityPolicyChecker from './useCommunityPolicyChecker';
 import { ContributorViewProps } from '../EntityDashboardContributorsSection/Types';
-import { RoleDefinitionPolicyFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { RoleDefinitionPolicyFragment } from '@core/apollo/generated/graphql-schema';
 
 export interface OrganizationDetailsFragmentWithRoles extends ContributorViewProps {
   isMember: boolean;

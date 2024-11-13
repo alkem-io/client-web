@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import HelpIcon from '@mui/icons-material/Help';
-import HelpDialog from '../../../core/help/dialog/HelpDialog';
+import HelpDialog from '@core/help/dialog/HelpDialog';
 import { IconButton } from '@mui/material';
-import { useConfig } from '../../../domain/platform/config/useConfig';
-import { useUserContext } from '../../../domain/community/user';
-import { AuthorizationPrivilege, PlatformFeatureFlagName } from '../../../core/apollo/generated/graphql-schema';
-import { useFullscreen } from '../../../core/ui/fullscreen/useFullscreen';
+import { useConfig } from '@domain/platform/config/useConfig';
+import { useUserContext } from '@domain/community/user';
+import { AuthorizationPrivilege, PlatformFeatureFlagName } from '@core/apollo/generated/graphql-schema';
+import { useFullscreen } from '@core/ui/fullscreen/useFullscreen';
 import ChatWidget from '../../guidance/chatWidget/ChatWidget';
 import { useTranslation } from 'react-i18next';
 

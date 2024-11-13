@@ -3,37 +3,32 @@ import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import { IconButton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import { BlockTitle } from '../../../../core/ui/typography';
+import PageContentColumn from '@core/ui/content/PageContentColumn';
+import PageContentBlock from '@core/ui/content/PageContentBlock';
+import { BlockTitle } from '@core/ui/typography';
 import JourneyCardHorizontal, {
   JourneyCardHorizontalSkeleton,
 } from '../../../journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
+import Gutters from '@core/ui/grid/Gutters';
+import ContributorCardHorizontal from '@core/ui/card/ContributorCardHorizontal';
 import InnovationHubCardHorizontal, {
   InnovationHubCardHorizontalSkeleton,
 } from '../../../innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
+import { Actions } from '@core/ui/actions/Actions';
+import RoundedIcon from '@core/ui/icon/RoundedIcon';
 import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDialog';
 import useNewVirtualContributorWizard from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
 import CreateInnovationHubDialog from '../../../innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
-import {
-  AuthorizationPrivilege,
-  SpaceLevel,
-  SpaceType,
-  SpaceVisibility,
-} from '../../../../core/apollo/generated/graphql-schema';
-import MenuItemWithIcon from '../../../../core/ui/menu/MenuItemWithIcon';
+import { AuthorizationPrivilege, SpaceLevel, SpaceType, SpaceVisibility } from '@core/apollo/generated/graphql-schema';
+import MenuItemWithIcon from '@core/ui/menu/MenuItemWithIcon';
 import { DeleteOutline } from '@mui/icons-material';
 import {
   useDeleteInnovationHubMutation,
   useDeleteInnovationPackMutation,
   useDeleteSpaceMutation,
   useDeleteVirtualContributorOnAccountMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { useNotification } from '../../../../core/ui/notifications/useNotification';
+} from '@core/apollo/generated/apollo-hooks';
+import { useNotification } from '@core/ui/notifications/useNotification';
 import EntityConfirmDeleteDialog from '../../../journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
 import InnovationPackCardHorizontal, {
   InnovationPackCardHorizontalSkeleton,

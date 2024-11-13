@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import InnovationPackForm, { InnovationPackFormValues } from '../admin/InnovationPackForm'; // Assuming InnovationPackForm is in the same directory
-import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
+import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
 import { useTranslation } from 'react-i18next';
 import { DialogContent, IconButton } from '@mui/material';
-import { useCreateInnovationPackMutation } from '../../../core/apollo/generated/apollo-hooks';
-import DialogHeader from '../../../core/ui/dialog/DialogHeader';
-import { BlockTitle } from '../../../core/ui/typography';
+import { useCreateInnovationPackMutation } from '@core/apollo/generated/apollo-hooks';
+import DialogHeader from '@core/ui/dialog/DialogHeader';
+import { BlockTitle } from '@core/ui/typography';
 import AddIcon from '@mui/icons-material/Add';
-import RoundedIcon from '../../../core/ui/icon/RoundedIcon';
+import RoundedIcon from '@core/ui/icon/RoundedIcon';
 
 interface CreateInnovationPackDialogProps {
   accountId: string | undefined;

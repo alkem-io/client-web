@@ -6,7 +6,7 @@ import useDirectMessageDialog from '../../../communication/messaging/DirectMessa
 import { useTranslation } from 'react-i18next';
 import { SubspacePageLayout } from '../../common/EntityPageLayout';
 import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
-import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CommunityMembershipStatus } from '@core/apollo/generated/graphql-schema';
 import { DialogDef } from '../layout/DialogDefinition';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import {
@@ -26,7 +26,7 @@ import { useSpace } from '../../space/SpaceContext/useSpace';
 import useSpaceDashboardNavigation from '../../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import DashboardNavigation, { DashboardNavigationProps } from '../../dashboardNavigation/DashboardNavigation';
 import { useConsumeAction } from '../layout/SubspacePageLayout';
-import { useColumns } from '../../../../core/ui/grid/GridContext';
+import { useColumns } from '@core/ui/grid/GridContext';
 import CreateJourney from './dialogs/CreateJourney';
 
 interface SubspaceHomePageProps {
