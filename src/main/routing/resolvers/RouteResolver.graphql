@@ -40,4 +40,3 @@ query CalloutId($calloutNameId: UUID_NAMEID!, $collaborationId: UUID!) {
     }
   }
 }
-

@@ -104,6 +104,7 @@ const SpaceSubspacesPage: FC<SpaceSubspacesPageProps> = () => {
             children={
               <CalloutsGroupView
                 journeyId={spaceId}
+                collaborationId={collaborationId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}

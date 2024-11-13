@@ -16,7 +16,7 @@ import PageContentBlock from '../../../core/ui/content/PageContentBlock';
 import SpacePageLayout from '../../journey/space/layout/SpacePageLayout';
 
 const KnowledgeBasePage = () => {
-  const { journeyId, journeyPath } = useRouteResolver();
+  const { journeyId, journeyPath, collaborationId } = useRouteResolver();
 
   const { t } = useTranslation();
 
@@ -26,7 +26,7 @@ const KnowledgeBasePage = () => {
     handleCreateCalloutClosed,
     handleCreateCallout,
     loading: loadingCalloutCreation,
-  } = useCalloutCreationWithPreviewImages({ collaborationId: journeyId });
+  } = useCalloutCreationWithPreviewImages({ collaborationId });
 
   const handleCreate = () => {
     handleCreateCalloutOpened();
@@ -34,7 +34,7 @@ const KnowledgeBasePage = () => {
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.KnowledgeBase}>
-      <KnowledgeBaseContainer collaborationId={journeyId} journeyTypeName="space">
+      <KnowledgeBaseContainer collaborationId={collaborationId} journeyTypeName="space">
         {({
           callouts: {
             loading,
@@ -63,6 +63,7 @@ const KnowledgeBasePage = () => {
                 <ContentColumn>
                   <CalloutsGroupView
                     journeyId={journeyId}
+                    collaborationId={collaborationId}
                     callouts={groupedCallouts[CalloutGroupName.Knowledge]}
                     canCreateCallout={canCreateCallout}
                     loading={loading}
