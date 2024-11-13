@@ -12,7 +12,7 @@ export const InAppNotificationsDialog = () => {
   // const { items } = useInAppNotifications(); // skip if !isOpen
 
   return (
-    <DialogWithGrid open={isOpen} columns={10}>
+    <DialogWithGrid open={isOpen} columns={10} onClose={() => setIsOpen(false)}>
       <DialogHeader icon={<NotificationsNoneOutlinedIcon />} onClose={() => setIsOpen(false)}>
         {t('common.notifications')}
       </DialogHeader>
