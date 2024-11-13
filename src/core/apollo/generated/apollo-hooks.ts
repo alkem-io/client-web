@@ -21607,7 +21607,7 @@ export type ResetChatGuidanceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ResetChatGuidanceMutationVariables
 >;
 export const AskChatGuidanceQuestionDocument = gql`
-  query askChatGuidanceQuestion($chatData: ChatGuidanceInput!) {
+  mutation askChatGuidanceQuestion($chatData: ChatGuidanceInput!) {
     askChatGuidanceQuestion(chatData: $chatData) {
       id
       answer
@@ -21619,59 +21619,47 @@ export const AskChatGuidanceQuestionDocument = gql`
     }
   }
 `;
+export type AskChatGuidanceQuestionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AskChatGuidanceQuestionMutation,
+  SchemaTypes.AskChatGuidanceQuestionMutationVariables
+>;
 
 /**
- * __useAskChatGuidanceQuestionQuery__
+ * __useAskChatGuidanceQuestionMutation__
  *
- * To run a query within a React component, call `useAskChatGuidanceQuestionQuery` and pass it any options that fit your needs.
- * When your component renders, `useAskChatGuidanceQuestionQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
+ * To run a mutation, you first call `useAskChatGuidanceQuestionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAskChatGuidanceQuestionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
  *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const { data, loading, error } = useAskChatGuidanceQuestionQuery({
+ * const [askChatGuidanceQuestionMutation, { data, loading, error }] = useAskChatGuidanceQuestionMutation({
  *   variables: {
  *      chatData: // value for 'chatData'
  *   },
  * });
  */
-export function useAskChatGuidanceQuestionQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.AskChatGuidanceQuestionQuery,
-    SchemaTypes.AskChatGuidanceQuestionQueryVariables
+export function useAskChatGuidanceQuestionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AskChatGuidanceQuestionMutation,
+    SchemaTypes.AskChatGuidanceQuestionMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AskChatGuidanceQuestionQuery, SchemaTypes.AskChatGuidanceQuestionQueryVariables>(
-    AskChatGuidanceQuestionDocument,
-    options
-  );
-}
-
-export function useAskChatGuidanceQuestionLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AskChatGuidanceQuestionQuery,
-    SchemaTypes.AskChatGuidanceQuestionQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.AskChatGuidanceQuestionQuery,
-    SchemaTypes.AskChatGuidanceQuestionQueryVariables
+  return Apollo.useMutation<
+    SchemaTypes.AskChatGuidanceQuestionMutation,
+    SchemaTypes.AskChatGuidanceQuestionMutationVariables
   >(AskChatGuidanceQuestionDocument, options);
 }
 
-export type AskChatGuidanceQuestionQueryHookResult = ReturnType<typeof useAskChatGuidanceQuestionQuery>;
-export type AskChatGuidanceQuestionLazyQueryHookResult = ReturnType<typeof useAskChatGuidanceQuestionLazyQuery>;
-export type AskChatGuidanceQuestionQueryResult = Apollo.QueryResult<
-  SchemaTypes.AskChatGuidanceQuestionQuery,
-  SchemaTypes.AskChatGuidanceQuestionQueryVariables
+export type AskChatGuidanceQuestionMutationHookResult = ReturnType<typeof useAskChatGuidanceQuestionMutation>;
+export type AskChatGuidanceQuestionMutationResult = Apollo.MutationResult<SchemaTypes.AskChatGuidanceQuestionMutation>;
+export type AskChatGuidanceQuestionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AskChatGuidanceQuestionMutation,
+  SchemaTypes.AskChatGuidanceQuestionMutationVariables
 >;
-export function refetchAskChatGuidanceQuestionQuery(variables: SchemaTypes.AskChatGuidanceQuestionQueryVariables) {
-  return { query: AskChatGuidanceQuestionDocument, variables: variables };
-}
-
 export const JourneyRouteResolverDocument = gql`
   query JourneyRouteResolver(
     $spaceNameId: UUID_NAMEID!

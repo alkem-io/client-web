@@ -4,6 +4,7 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import { addResponseMessage, dropMessages, renderCustomComponent, toggleWidget, Widget } from 'react-chat-widget';
 import {
+  useAskChatGuidanceQuestionMutation,
   useAskChatGuidanceQuestionQuery,
   useResetChatGuidanceMutation,
   useUpdateAnswerRelevanceMutation,
@@ -154,19 +155,32 @@ export const useInitialChatWidgetMessage = () => {
 const ChatWidget = () => {
   const [newMessage, setNewMessage] = useState(null);
   const { t, i18n } = useTranslation();
-  const { data, loading } = useAskChatGuidanceQuestionQuery({
-    variables: { chatData: { question: newMessage!, language: i18n.language.toUpperCase() } },
-    skip: !newMessage,
-    fetchPolicy: 'network-only',
-  });
 
-  useEffect(() => {
+  const [askQuestion, { loading }] = useAskChatGuidanceQuestionMutation();
+  const handleNewUserMessage = async (newMessage: string) => {
+    const { data } = await askQuestion({
+      variables: {
+        chatData: { question: newMessage!, language: i18n.language.toUpperCase() },
+      },
+    });
     if (data && !loading) {
       const responseMessageMarkdown = formatChatGuidanceResponseAsMarkdown(data.askChatGuidanceQuestion, t);
       addResponseMessage(responseMessageMarkdown, data.askChatGuidanceQuestion.id!);
       renderCustomComponent(Feedback, { answerId: data.askChatGuidanceQuestion.id });
     }
-  }, [data, loading]);
+  };
+  //   variables: { chatData: { question: newMessage!, language: i18n.language.toUpperCase() } },
+  //   skip: !newMessage,
+  //   fetchPolicy: 'network-only',
+  // });
+
+  // useEffect(() => {
+  //   if (data && !loading) {
+  //     const responseMessageMarkdown = formatChatGuidanceResponseAsMarkdown(data.askChatGuidanceQuestion, t);
+  //     addResponseMessage(responseMessageMarkdown, data.askChatGuidanceQuestion.id!);
+  //     renderCustomComponent(Feedback, { answerId: data.askChatGuidanceQuestion.id });
+  //   }
+  // }, [data, loading]);
 
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
 
@@ -227,7 +241,7 @@ const ChatWidget = () => {
           profileAvatar={logoSrc}
           title={<ChatWidgetTitle onClickInfo={() => setIsHelpDialogOpen(true)} />}
           subtitle={<></>}
-          handleNewUserMessage={setNewMessage}
+          handleNewUserMessage={handleNewUserMessage}
           handleToggle={() => setChatToggleTime(Date.now())}
         />
       </ChatWidgetStyles>

@@ -10,7 +10,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  CID: string;
   DID: string;
   DateTime: Date;
   Emoji: string;
@@ -662,33 +661,12 @@ export type AiPersonaServiceIngestInput = {
   aiPersonaServiceID: Scalars['UUID'];
 };
 
-export type AiPersonaServiceQuestionInput = {
-  /** Virtual Persona Type. */
-  aiPersonaServiceID: Scalars['UUID'];
-  /** The ID of the context, the Virtual Persona is asked a question. */
-  contextID?: InputMaybe<Scalars['String']>;
-  /** The Virtual Contributor description. */
-  description?: InputMaybe<Scalars['String']>;
-  /** The Virtual Contributor displayName. */
-  displayName: Scalars['String'];
-  /** The Virtual Contributor interaciton part of which is this question. */
-  interactionID?: InputMaybe<Scalars['String']>;
-  /** The question that is being asked. */
-  question: Scalars['String'];
-  /** The ID of the message thread where the Virtual Contributor is asked a question if applicable. */
-  threadID?: InputMaybe<Scalars['String']>;
-  /** User identifier used internaly by the engine. */
-  userID?: InputMaybe<Scalars['String']>;
-};
-
 export type AiServer = {
   __typename?: 'AiServer';
   /** A particular AiPersonaService */
   aiPersonaService: AiPersonaService;
   /** The AiPersonaServices on this aiServer */
   aiPersonaServices: Array<AiPersonaService>;
-  /** Ask the virtual persona engine for guidance. */
-  askAiPersonaServiceQuestion: MessageAnswerQuestion;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
@@ -703,10 +681,6 @@ export type AiServer = {
 
 export type AiServerAiPersonaServiceArgs = {
   ID: Scalars['UUID'];
-};
-
-export type AiServerAskAiPersonaServiceQuestionArgs = {
-  aiPersonaQuestionInput: AiPersonaServiceQuestionInput;
 };
 
 export type Application = {
@@ -891,6 +865,7 @@ export enum AuthorizationPolicyType {
   Agent = 'AGENT',
   AiPersona = 'AI_PERSONA',
   AiPersonaService = 'AI_PERSONA_SERVICE',
+  AiServer = 'AI_SERVER',
   Application = 'APPLICATION',
   Calendar = 'CALENDAR',
   CalendarEvent = 'CALENDAR_EVENT',
@@ -911,6 +886,8 @@ export enum AuthorizationPolicyType {
   InnovationPack = 'INNOVATION_PACK',
   Invitation = 'INVITATION',
   InMemory = 'IN_MEMORY',
+  Library = 'LIBRARY',
+  LicensePolicy = 'LICENSE_POLICY',
   Licensing = 'LICENSING',
   Link = 'LINK',
   Organization = 'ORGANIZATION',
@@ -948,7 +925,6 @@ export enum AuthorizationPrivilege {
   CommunityAddMember = 'COMMUNITY_ADD_MEMBER',
   CommunityAddMemberVcFromAccount = 'COMMUNITY_ADD_MEMBER_VC_FROM_ACCOUNT',
   CommunityApply = 'COMMUNITY_APPLY',
-  CommunityApplyAccept = 'COMMUNITY_APPLY_ACCEPT',
   CommunityInvite = 'COMMUNITY_INVITE',
   CommunityInviteAccept = 'COMMUNITY_INVITE_ACCEPT',
   CommunityJoin = 'COMMUNITY_JOIN',
@@ -3238,6 +3214,8 @@ export type Mutation = {
   aiServerUpdateAiPersonaService: AiPersonaService;
   /** Apply to join the specified RoleSet in the entry Role. */
   applyForEntryRoleOnRoleSet: Application;
+  /** Ask the chat engine for guidance. */
+  askChatGuidanceQuestion: MessageAnswerQuestion;
   /** Assign the specified LicensePlan to an Account. */
   assignLicensePlanToAccount: Account;
   /** Assign the specified LicensePlan to a Space. */
@@ -3572,6 +3550,10 @@ export type MutationAiServerUpdateAiPersonaServiceArgs = {
 
 export type MutationApplyForEntryRoleOnRoleSetArgs = {
   applicationData: ApplyForEntryRoleOnRoleSetInput;
+};
+
+export type MutationAskChatGuidanceQuestionArgs = {
+  chatData: ChatGuidanceInput;
 };
 
 export type MutationAssignLicensePlanToAccountArgs = {
@@ -4637,10 +4619,6 @@ export type Query = {
   adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
   /** Alkemio AiServer */
   aiServer: AiServer;
-  /** Ask the chat engine for guidance. */
-  askChatGuidanceQuestion: MessageAnswerQuestion;
-  /** Ask the virtual contributor a question directly. */
-  askVirtualContributorQuestion: MessageAnswerQuestion;
   /** Active Spaces only, order by most active in the past X days. */
   exploreSpaces: Array<Space>;
   /** Get supported credential metadata */
@@ -4717,14 +4695,6 @@ export type QueryActivityLogOnCollaborationArgs = {
 
 export type QueryAdminCommunicationMembershipArgs = {
   communicationData: CommunicationAdminMembershipInput;
-};
-
-export type QueryAskChatGuidanceQuestionArgs = {
-  chatData: ChatGuidanceInput;
-};
-
-export type QueryAskVirtualContributorQuestionArgs = {
-  virtualContributorQuestionInput: VirtualContributorQuestionInput;
 };
 
 export type QueryExploreSpacesArgs = {
@@ -6698,21 +6668,6 @@ export type VirtualContributor = Contributor & {
   status: VirtualContributorStatus;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
-};
-
-export type VirtualContributorQuestionInput = {
-  /** The space in which context the Virtual Contributor is asked a question */
-  contextSpaceID?: InputMaybe<Scalars['String']>;
-  /** The question that is being asked. */
-  question: Scalars['String'];
-  /** The ID of the message thread where the Virtual Contributor is asked a question */
-  threadID?: InputMaybe<Scalars['String']>;
-  /** User identifier used internaly by the engine */
-  userID?: InputMaybe<Scalars['String']>;
-  /** The Virtual Contributor interaciton part of which is this question */
-  vcInteractionID?: InputMaybe<Scalars['String']>;
-  /** Virtual Contributor to be asked. */
-  virtualContributorID: Scalars['UUID'];
 };
 
 export enum VirtualContributorStatus {
@@ -27325,12 +27280,12 @@ export type ResetChatGuidanceMutationVariables = Exact<{ [key: string]: never }>
 
 export type ResetChatGuidanceMutation = { __typename?: 'Mutation'; resetChatGuidance: boolean };
 
-export type AskChatGuidanceQuestionQueryVariables = Exact<{
+export type AskChatGuidanceQuestionMutationVariables = Exact<{
   chatData: ChatGuidanceInput;
 }>;
 
-export type AskChatGuidanceQuestionQuery = {
-  __typename?: 'Query';
+export type AskChatGuidanceQuestionMutation = {
+  __typename?: 'Mutation';
   askChatGuidanceQuestion: {
     __typename?: 'MessageAnswerQuestion';
     id?: string | undefined;

@@ -554,7 +554,6 @@ export type AiPersonaServiceFieldPolicy = {
 export type AiServerKeySpecifier = (
   | 'aiPersonaService'
   | 'aiPersonaServices'
-  | 'askAiPersonaServiceQuestion'
   | 'authorization'
   | 'createdDate'
   | 'defaultAiPersonaService'
@@ -565,7 +564,6 @@ export type AiServerKeySpecifier = (
 export type AiServerFieldPolicy = {
   aiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
   aiPersonaServices?: FieldPolicy<any> | FieldReadFunction<any>;
-  askAiPersonaServiceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   defaultAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1907,6 +1905,7 @@ export type MutationKeySpecifier = (
   | 'aiServerPersonaServiceIngest'
   | 'aiServerUpdateAiPersonaService'
   | 'applyForEntryRoleOnRoleSet'
+  | 'askChatGuidanceQuestion'
   | 'assignLicensePlanToAccount'
   | 'assignLicensePlanToSpace'
   | 'assignOrganizationRoleToUser'
@@ -2068,6 +2067,7 @@ export type MutationFieldPolicy = {
   aiServerPersonaServiceIngest?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerUpdateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   assignOrganizationRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2576,8 +2576,6 @@ export type QueryKeySpecifier = (
   | 'adminCommunicationMembership'
   | 'adminCommunicationOrphanedUsage'
   | 'aiServer'
-  | 'askChatGuidanceQuestion'
-  | 'askVirtualContributorQuestion'
   | 'exploreSpaces'
   | 'getSupportedVerifiedCredentialMetadata'
   | 'inputCreator'
@@ -2615,8 +2613,6 @@ export type QueryFieldPolicy = {
   adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServer?: FieldPolicy<any> | FieldReadFunction<any>;
-  askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
-  askVirtualContributorQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   exploreSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   inputCreator?: FieldPolicy<any> | FieldReadFunction<any>;
