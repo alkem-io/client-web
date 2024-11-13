@@ -23221,6 +23221,14 @@ export const NewVirtualContributorMySpacesDocument = gql`
           }
           spaces {
             id
+            license {
+              id
+              entitlements {
+                id
+                type
+                enabled
+              }
+            }
             community {
               id
               roleSet {

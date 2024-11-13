@@ -952,7 +952,6 @@ export enum AuthorizationPolicyType {
 
 export enum AuthorizationPrivilege {
   AccessInteractiveGuidance = 'ACCESS_INTERACTIVE_GUIDANCE',
-  AccessVirtualContributor = 'ACCESS_VIRTUAL_CONTRIBUTOR',
   AuthorizationReset = 'AUTHORIZATION_RESET',
   CommunityAddMember = 'COMMUNITY_ADD_MEMBER',
   CommunityAddMemberVcFromAccount = 'COMMUNITY_ADD_MEMBER_VC_FROM_ACCOUNT',
@@ -30306,6 +30305,16 @@ export type NewVirtualContributorMySpacesQuery = {
                 spaces: Array<{
                   __typename?: 'Space';
                   id: string;
+                  license: {
+                    __typename?: 'License';
+                    id: string;
+                    entitlements: Array<{
+                      __typename?: 'LicenseEntitlement';
+                      id: string;
+                      type: LicenseEntitlementType;
+                      enabled: boolean;
+                    }>;
+                  };
                   community: {
                     __typename?: 'Community';
                     id: string;

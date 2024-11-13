@@ -23,6 +23,7 @@ import {
   CalloutVisibility,
   CommunityRoleType,
   CreateVirtualContributorOnAccountMutationVariables,
+  LicenseEntitlementType,
   LicensePlanType,
   SpaceType,
 } from '../../../../core/apollo/generated/graphql-schema';
@@ -120,7 +121,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   // selectableSpaces are space and subspaces
   // subspaces has communityId in order to manually add the VC to it
-  const { selectedExistingSpaceId, spacePrivileges, myAccountId, selectableSpaces } = useMemo(() => {
+  const { selectedExistingSpaceId, spacePrivileges, spaceEntitlements, myAccountId, selectableSpaces } = useMemo(() => {
     const account = targetAccount ?? data?.me.user?.account;
     const accountId = account?.id;
     const mySpaces = compact(account?.spaces);
@@ -159,6 +160,9 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         collaboration: {
           myPrivileges: mySpace?.community?.roleSet.authorization?.myPrivileges,
         },
+      },
+      spaceEntitlements: {
+        myEntitlements: mySpace?.license?.entitlements,
       },
       selectableSpaces,
     };
@@ -219,11 +223,13 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
     // todo: check create callout privilege (community) if needed
     const { myPrivileges: spaceMyPrivileges } = spacePrivileges;
+    const { myEntitlements: spaceMyEntitlements } = spaceEntitlements;
     const { myPrivileges: collaborationMyPrivileges } = spacePrivileges.collaboration;
 
     const hasRequiredPrivileges =
       spaceMyPrivileges?.includes(AuthorizationPrivilege.CreateSubspace) &&
-      collaborationMyPrivileges?.includes(AuthorizationPrivilege.AccessVirtualContributor) &&
+      Array.isArray(spaceMyEntitlements) &&
+      spaceMyEntitlements.some(t => t.type === LicenseEntitlementType.AccountVirtualContributor) &&
       collaborationMyPrivileges?.includes(AuthorizationPrivilege.CommunityAddMemberVcFromAccount);
 
     if (!hasRequiredPrivileges) {
