@@ -31,7 +31,6 @@ export type MembershipProps = {
         myMembershipStatus?: CommunityMembershipStatus;
       };
     };
-    childMemberships?: MembershipProps[];
   };
   childMemberships?: MembershipProps[];
 };
