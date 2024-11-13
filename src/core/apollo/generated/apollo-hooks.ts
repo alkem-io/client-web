@@ -5038,7 +5038,6 @@ export const AccountInformationDocument = gql`
             collaborationTemplatesCount
             communityGuidelinesTemplatesCount
             innovationFlowTemplatesCount
-            collaborationTemplatesCount
             postTemplatesCount
             whiteboardTemplatesCount
           }
@@ -22192,7 +22191,6 @@ export const InnovationLibraryDocument = gql`
             collaborationTemplatesCount
             communityGuidelinesTemplatesCount
             innovationFlowTemplatesCount
-            collaborationTemplatesCount
             postTemplatesCount
             whiteboardTemplatesCount
           }

@@ -23,7 +23,7 @@ export interface UserAccountProps {
       displayName: string;
       url: string;
     };
-    license?: {
+    license: {
       id: string;
       entitlements: Array<{
         id: string;
