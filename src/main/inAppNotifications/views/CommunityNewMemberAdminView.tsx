@@ -2,12 +2,12 @@ import { InAppNotificationProps } from '../useInAppNotifications';
 import { InAppNotificationBaseView, InAppNotificationBaseViewProps } from './InAppNotificationBaseView';
 import { useMemo } from 'react';
 
-export const CommunityNewMemberAdminView = ({ state, space, triggeredBy, triggeredAt }: InAppNotificationProps) => {
+export const CommunityNewMemberAdminView = ({ state, space, triggeredAt, contributor }: InAppNotificationProps) => {
   const notification: InAppNotificationBaseViewProps = useMemo(() => {
     // This notifictaion is variation of the COMMUNITY_NEW_MEMBER
-    // The type is hardcoded due to a TS error
+    // The type is hardcoded due to a TS error when concatenating _ADMIN to the COMMUNITY_NEW_MEMBER
     const descKey = 'components.inAppNotifications.description.COMMUNITY_NEW_MEMBER_ADMIN';
-    //The {{memberType}} <b>{{memberName}}</b> has joined {{spaceName}}, of which you are an admin.",
+
     return {
       state: state,
       space: {
@@ -22,12 +22,12 @@ export const CommunityNewMemberAdminView = ({ state, space, triggeredBy, trigger
         values: {
           defaultValue: '',
           spaceName: space?.profile?.displayName,
-          memberType: space?.communityRole,
-          memberName: triggeredBy?.profile?.displayName,
+          memberType: contributor?.type,
+          memberName: contributor?.profile?.displayName,
         },
       },
     };
-  }, [state, space, triggeredBy, triggeredAt]);
+  }, [state, space, contributor, triggeredAt]);
 
   return <InAppNotificationBaseView {...notification} />;
 };

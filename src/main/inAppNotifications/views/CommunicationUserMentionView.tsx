@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 export const CommunicationUserMentionView = ({
   type,
   state,
-  parentSpace,
+  space,
   callout,
   triggeredBy,
   triggeredAt,
@@ -14,7 +14,7 @@ export const CommunicationUserMentionView = ({
     return {
       state: state,
       space: {
-        avatarUrl: parentSpace?.profile.visual?.uri ?? '',
+        avatarUrl: space?.profile.visual?.uri ?? '',
       },
       subject: {
         url: callout?.profile.url ?? '',
@@ -30,7 +30,7 @@ export const CommunicationUserMentionView = ({
         },
       },
     };
-  }, [state, parentSpace, callout, triggeredBy, triggeredAt]);
+  }, [state, space, callout, triggeredBy, triggeredAt]);
 
   return <InAppNotificationBaseView {...notification} />;
 };

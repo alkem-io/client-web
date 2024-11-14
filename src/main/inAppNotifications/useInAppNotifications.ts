@@ -1,10 +1,5 @@
 import { useMemo } from 'react';
-import {
-  CalloutType,
-  CommunityContributorType,
-  CommunityRoleType,
-  SpaceLevel,
-} from '../../core/apollo/generated/graphql-schema';
+import { CalloutType, CommunityContributorType, SpaceLevel } from '../../core/apollo/generated/graphql-schema';
 
 export enum InAppNotificationType {
   COLLABORATION_CALLOUT_PUBLISHED = 'COLLABORATION_CALLOUT_PUBLISHED',
@@ -54,17 +49,20 @@ export interface InAppNotificationProps {
           | undefined;
       }
     | undefined;
-  parentSpace:
+  contributor:
     | {
-        level: SpaceLevel;
-        profile: {
-          displayName: string;
-          visual:
-            | {
-                uri: string;
-              }
-            | undefined;
-        };
+        type: CommunityContributorType;
+        profile:
+          | {
+              displayName: string;
+              url: string;
+              visual:
+                | {
+                    uri: string;
+                  }
+                | undefined;
+            }
+          | undefined;
       }
     | undefined;
   callout:
@@ -76,12 +74,6 @@ export interface InAppNotificationProps {
         };
       }
     | undefined;
-
-  // TODO: 1.
-  // For the 'join' notification type we need:
-  // 1.1. Contributor Profile (the prop to be specified or use triggeredBy?);
-  // 1.2. The CommunityRoleType (Member, Admin, Lead);
-  // suggested below:
   space:
     | {
         level: SpaceLevel;
@@ -92,7 +84,6 @@ export interface InAppNotificationProps {
             uri: string;
           };
         };
-        communityRole?: CommunityRoleType;
       }
     | undefined;
 
@@ -122,10 +113,12 @@ export const useInAppNotifications = () => {
             },
           },
         },
-        parentSpace: {
+        contributor: undefined,
+        space: {
           level: SpaceLevel.Space,
           profile: {
             displayName: 'Welcome Space',
+            url: '/welcome-space',
             visual: {
               uri: '',
             },
@@ -138,7 +131,6 @@ export const useInAppNotifications = () => {
             url: '',
           },
         },
-        space: undefined,
       },
       {
         id: '2',
@@ -157,10 +149,12 @@ export const useInAppNotifications = () => {
             },
           },
         },
-        parentSpace: {
+        contributor: undefined,
+        space: {
           level: SpaceLevel.Challenge,
           profile: {
             displayName: 'Sub Welcome',
+            url: '',
             visual: {
               uri: '',
             },
@@ -173,7 +167,6 @@ export const useInAppNotifications = () => {
             url: '',
           },
         },
-        space: undefined,
       },
       {
         id: '3',
@@ -185,6 +178,16 @@ export const useInAppNotifications = () => {
         triggeredBy: {
           type: CommunityContributorType.User,
           profile: {
+            displayName: 'Admin GA',
+            url: '',
+            visual: {
+              uri: '',
+            },
+          },
+        },
+        contributor: {
+          type: CommunityContributorType.User,
+          profile: {
             displayName: 'Clara',
             url: '',
             visual: {
@@ -192,18 +195,16 @@ export const useInAppNotifications = () => {
             },
           },
         },
-        parentSpace: undefined,
         callout: undefined,
         space: {
           level: SpaceLevel.Space,
           profile: {
             displayName: 'Welcome Space',
-            url: '',
+            url: '/welcome-space',
             visual: {
               uri: '',
             },
           },
-          communityRole: CommunityRoleType.Member,
         },
       },
       {
@@ -213,17 +214,8 @@ export const useInAppNotifications = () => {
         action: undefined,
         state: InAppNotificationState.UNREAD,
         category: InAppNotificationCategory.PERSONAL, // this could be also a personal notification or a different type
-        triggeredBy: {
-          type: CommunityContributorType.User,
-          profile: {
-            displayName: 'Admin Admin',
-            url: '',
-            visual: {
-              uri: '',
-            },
-          },
-        },
-        parentSpace: undefined,
+        triggeredBy: undefined,
+        contributor: undefined,
         callout: undefined,
         space: {
           level: SpaceLevel.Space,
@@ -234,7 +226,6 @@ export const useInAppNotifications = () => {
               uri: '',
             },
           },
-          communityRole: undefined,
         },
       },
     ],

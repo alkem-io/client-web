@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 export const CollaborationCalloutPublishedView = ({
   type,
   state,
-  parentSpace,
+  space,
   callout,
   triggeredBy,
   triggeredAt,
@@ -14,7 +14,7 @@ export const CollaborationCalloutPublishedView = ({
     return {
       state: state,
       space: {
-        avatarUrl: parentSpace?.profile.visual?.uri ?? '',
+        avatarUrl: space?.profile.visual?.uri ?? '',
       },
       subject: {
         url: callout?.profile.url ?? '',
@@ -27,15 +27,15 @@ export const CollaborationCalloutPublishedView = ({
         key: `components.inAppNotifications.description.${type}`,
         values: {
           defaultValue: '',
-          spaceName: parentSpace?.profile?.displayName,
-          spaceType: parentSpace?.level,
+          spaceName: space?.profile?.displayName,
+          spaceType: space?.level,
           calloutName: callout?.profile.displayName,
           calloutType: callout?.type,
           contributorName: triggeredBy?.profile?.displayName,
         },
       },
     };
-  }, [state, parentSpace, callout, triggeredBy, triggeredAt]);
+  }, [state, space, callout, triggeredBy, triggeredAt]);
 
   return <InAppNotificationBaseView {...notification} />;
 };
