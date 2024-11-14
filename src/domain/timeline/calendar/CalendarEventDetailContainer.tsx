@@ -75,7 +75,7 @@ const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ e
     () =>
       _messages?.map(x => ({
         id: x.id,
-        body: x.message,
+        message: x.message,
         author: x?.sender ? buildAuthorFromUser(x.sender) : undefined,
         createdAt: new Date(x.timestamp),
         reactions: x.reactions,

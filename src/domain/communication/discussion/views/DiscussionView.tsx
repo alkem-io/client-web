@@ -51,7 +51,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
       id,
       author,
       createdAt: createdAt!,
-      body: description!,
+      message: description!,
       reactions: [],
     }),
     [id, author, createdAt, description]

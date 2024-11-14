@@ -71,7 +71,7 @@ export const DiscussionPage: FC<DiscussionPageProps> = ({ discussionNameId }) =>
               messages:
                 rawDiscussion.comments.messages?.map<Message>(m => ({
                   id: m.id,
-                  body: m.message,
+                  message: m.message,
                   author: m.sender ? authors.getAuthor(m.sender?.id) : undefined,
                   createdAt: new Date(m.timestamp),
                   threadID: m.threadID,

@@ -1832,6 +1832,7 @@ export type LookupQueryResultsFieldPolicy = {
 export type MeQueryResultsKeySpecifier = (
   | 'communityApplications'
   | 'communityInvitations'
+  | 'guidanceRoomID'
   | 'id'
   | 'mySpaces'
   | 'spaceMembershipsFlat'
@@ -1842,6 +1843,7 @@ export type MeQueryResultsKeySpecifier = (
 export type MeQueryResultsFieldPolicy = {
   communityApplications?: FieldPolicy<any> | FieldReadFunction<any>;
   communityInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
+  guidanceRoomID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMembershipsFlat?: FieldPolicy<any> | FieldReadFunction<any>;

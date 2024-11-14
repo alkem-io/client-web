@@ -2,10 +2,9 @@ import { cloneElement, ReactElement, useEffect, useLayoutEffect, useRef, useStat
 import { Box, IconButton, IconButtonProps, Paper, SvgIconProps, Theme, Tooltip } from '@mui/material';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-import { addResponseMessage, dropMessages, renderCustomComponent, toggleWidget, Widget } from 'react-chat-widget';
+import { addResponseMessage, dropMessages, addUserMessage, renderCustomComponent, toggleWidget, Widget } from 'react-chat-widget';
 import {
   useAskChatGuidanceQuestionMutation,
-  useAskChatGuidanceQuestionQuery,
   useResetChatGuidanceMutation,
   useUpdateAnswerRelevanceMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
@@ -24,6 +23,8 @@ import { Caption } from '../../../core/ui/typography';
 import { InfoOutlined } from '@mui/icons-material';
 import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from '../../ui/platformNavigation/constants';
 import ChatWidgetMenu from './ChatWidgetMenu';
+import useChatGuidanceCommunication from './useChatGuidanceCommunication';
+import { useUserContext } from '../../../domain/community/user';
 
 type FeedbackType = 'positive' | 'negative';
 
@@ -145,44 +146,31 @@ const Feedback = ({ answerId }: FeedbackProps) => {
 };
 
 export const useInitialChatWidgetMessage = () => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
-  useEffect(() => {
-    addResponseMessage(t('chatbot.intro'));
-  }, []);
+  // useEffect(() => {
+  //   addResponseMessage(t('chatbot.intro'));
+  // }, []);
 };
 
 const ChatWidget = () => {
-  const [newMessage, setNewMessage] = useState(null);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const [isChatPopupOpen, setChatPopupOpen] = useState(false);
+  const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
+  const { messages, sendMessage } = useChatGuidanceCommunication({ skip: !isChatPopupOpen });
+  const { user } = useUserContext();
+  const userId = user?.user.id;
 
-  const [askQuestion, { loading }] = useAskChatGuidanceQuestionMutation();
   const handleNewUserMessage = async (newMessage: string) => {
-    const { data } = await askQuestion({
-      variables: {
-        chatData: { question: newMessage!, language: i18n.language.toUpperCase() },
-      },
-    });
-    if (data && !loading) {
+    await sendMessage(newMessage);
+
+    /*if (data) {
       const responseMessageMarkdown = formatChatGuidanceResponseAsMarkdown(data.askChatGuidanceQuestion, t);
       addResponseMessage(responseMessageMarkdown, data.askChatGuidanceQuestion.id!);
       renderCustomComponent(Feedback, { answerId: data.askChatGuidanceQuestion.id });
-    }
+    }*/
   };
-  //   variables: { chatData: { question: newMessage!, language: i18n.language.toUpperCase() } },
-  //   skip: !newMessage,
-  //   fetchPolicy: 'network-only',
-  // });
 
-  // useEffect(() => {
-  //   if (data && !loading) {
-  //     const responseMessageMarkdown = formatChatGuidanceResponseAsMarkdown(data.askChatGuidanceQuestion, t);
-  //     addResponseMessage(responseMessageMarkdown, data.askChatGuidanceQuestion.id!);
-  //     renderCustomComponent(Feedback, { answerId: data.askChatGuidanceQuestion.id });
-  //   }
-  // }, [data, loading]);
-
-  const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
 
   const [chatToggleTime, setChatToggleTime] = useState(Date.now());
 
@@ -234,6 +222,23 @@ const ChatWidget = () => {
     addResponseMessage(t('chatbot.intro'));
   };
 
+  useEffect(() => {
+    if (messages && messages.length && userId) {
+      console.log('load messages');
+      messages.forEach(message => {
+        if (message.author?.id === userId) {
+          addUserMessage(message.message);
+        } else {
+          addResponseMessage(message.message);
+        }
+      });
+    } else {
+      console.log('clear messages');
+      dropMessages();
+      addResponseMessage(t('chatbot.intro'));
+    }
+  }, [isChatPopupOpen, messages]);
+
   return (
     <>
       <ChatWidgetStyles ref={wrapperRef} aria-label={t('common.help')}>
@@ -242,7 +247,11 @@ const ChatWidget = () => {
           title={<ChatWidgetTitle onClickInfo={() => setIsHelpDialogOpen(true)} />}
           subtitle={<></>}
           handleNewUserMessage={handleNewUserMessage}
-          handleToggle={() => setChatToggleTime(Date.now())}
+          handleToggle={() => {
+            console.log('toggle');
+            setChatPopupOpen(!isChatPopupOpen);
+            setChatToggleTime(Date.now())
+          }}
         />
       </ChatWidgetStyles>
       <ChatWidgetHelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />

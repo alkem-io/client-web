@@ -1,0 +1,13 @@
+query GuidanceRoomId {
+  me {
+    guidanceRoomID
+  }
+}
+
+query GuidanceRoomMessages($roomId: UUID!) {
+  lookup {
+    room (ID: $roomId) {
+      ...CommentsWithMessages
+    }
+  }
+}

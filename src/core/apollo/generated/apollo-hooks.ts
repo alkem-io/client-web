@@ -21660,6 +21660,122 @@ export type AskChatGuidanceQuestionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AskChatGuidanceQuestionMutation,
   SchemaTypes.AskChatGuidanceQuestionMutationVariables
 >;
+export const GuidanceRoomIdDocument = gql`
+  query GuidanceRoomId {
+    me {
+      guidanceRoomID
+    }
+  }
+`;
+
+/**
+ * __useGuidanceRoomIdQuery__
+ *
+ * To run a query within a React component, call `useGuidanceRoomIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGuidanceRoomIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGuidanceRoomIdQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGuidanceRoomIdQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.GuidanceRoomIdQuery, SchemaTypes.GuidanceRoomIdQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.GuidanceRoomIdQuery, SchemaTypes.GuidanceRoomIdQueryVariables>(
+    GuidanceRoomIdDocument,
+    options
+  );
+}
+
+export function useGuidanceRoomIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.GuidanceRoomIdQuery, SchemaTypes.GuidanceRoomIdQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.GuidanceRoomIdQuery, SchemaTypes.GuidanceRoomIdQueryVariables>(
+    GuidanceRoomIdDocument,
+    options
+  );
+}
+
+export type GuidanceRoomIdQueryHookResult = ReturnType<typeof useGuidanceRoomIdQuery>;
+export type GuidanceRoomIdLazyQueryHookResult = ReturnType<typeof useGuidanceRoomIdLazyQuery>;
+export type GuidanceRoomIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.GuidanceRoomIdQuery,
+  SchemaTypes.GuidanceRoomIdQueryVariables
+>;
+export function refetchGuidanceRoomIdQuery(variables?: SchemaTypes.GuidanceRoomIdQueryVariables) {
+  return { query: GuidanceRoomIdDocument, variables: variables };
+}
+
+export const GuidanceRoomMessagesDocument = gql`
+  query GuidanceRoomMessages($roomId: UUID!) {
+    lookup {
+      room(ID: $roomId) {
+        ...CommentsWithMessages
+      }
+    }
+  }
+  ${CommentsWithMessagesFragmentDoc}
+`;
+
+/**
+ * __useGuidanceRoomMessagesQuery__
+ *
+ * To run a query within a React component, call `useGuidanceRoomMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGuidanceRoomMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGuidanceRoomMessagesQuery({
+ *   variables: {
+ *      roomId: // value for 'roomId'
+ *   },
+ * });
+ */
+export function useGuidanceRoomMessagesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.GuidanceRoomMessagesQuery,
+    SchemaTypes.GuidanceRoomMessagesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.GuidanceRoomMessagesQuery, SchemaTypes.GuidanceRoomMessagesQueryVariables>(
+    GuidanceRoomMessagesDocument,
+    options
+  );
+}
+
+export function useGuidanceRoomMessagesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.GuidanceRoomMessagesQuery,
+    SchemaTypes.GuidanceRoomMessagesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.GuidanceRoomMessagesQuery, SchemaTypes.GuidanceRoomMessagesQueryVariables>(
+    GuidanceRoomMessagesDocument,
+    options
+  );
+}
+
+export type GuidanceRoomMessagesQueryHookResult = ReturnType<typeof useGuidanceRoomMessagesQuery>;
+export type GuidanceRoomMessagesLazyQueryHookResult = ReturnType<typeof useGuidanceRoomMessagesLazyQuery>;
+export type GuidanceRoomMessagesQueryResult = Apollo.QueryResult<
+  SchemaTypes.GuidanceRoomMessagesQuery,
+  SchemaTypes.GuidanceRoomMessagesQueryVariables
+>;
+export function refetchGuidanceRoomMessagesQuery(variables: SchemaTypes.GuidanceRoomMessagesQueryVariables) {
+  return { query: GuidanceRoomMessagesDocument, variables: variables };
+}
+
 export const JourneyRouteResolverDocument = gql`
   query JourneyRouteResolver(
     $spaceNameId: UUID_NAMEID!

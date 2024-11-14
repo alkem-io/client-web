@@ -925,6 +925,7 @@ export enum AuthorizationPrivilege {
   CommunityAddMember = 'COMMUNITY_ADD_MEMBER',
   CommunityAddMemberVcFromAccount = 'COMMUNITY_ADD_MEMBER_VC_FROM_ACCOUNT',
   CommunityApply = 'COMMUNITY_APPLY',
+  CommunityApplyAccept = 'COMMUNITY_APPLY_ACCEPT',
   CommunityInvite = 'COMMUNITY_INVITE',
   CommunityInviteAccept = 'COMMUNITY_INVITE_ACCEPT',
   CommunityJoin = 'COMMUNITY_JOIN',
@@ -3085,6 +3086,8 @@ export type MeQueryResults = {
   communityApplications: Array<CommunityApplicationResult>;
   /** The invitations the current authenticated user can act on. */
   communityInvitations: Array<CommunityInvitationResult>;
+  /** Get the room ID for the current user to be able to communicate with the AI guidance service. */
+  guidanceRoomID: Scalars['String'];
   /** The query id */
   id: Scalars['String'];
   /** The Spaces I am contributing to */
@@ -27293,6 +27296,144 @@ export type AskChatGuidanceQuestionMutation = {
     question: string;
     sources?:
       | Array<{ __typename?: 'MessageAnswerToQuestionSource'; uri?: string | undefined; title?: string | undefined }>
+      | undefined;
+  };
+};
+
+export type GuidanceRoomIdQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GuidanceRoomIdQuery = {
+  __typename?: 'Query';
+  me: { __typename?: 'MeQueryResults'; guidanceRoomID: string };
+};
+
+export type GuidanceRoomMessagesQueryVariables = Exact<{
+  roomId: Scalars['UUID'];
+}>;
+
+export type GuidanceRoomMessagesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    room?:
+      | {
+          __typename?: 'Room';
+          id: string;
+          messagesCount: number;
+          authorization?:
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                anonymousReadAccess: boolean;
+              }
+            | undefined;
+          messages: Array<{
+            __typename?: 'Message';
+            id: string;
+            message: string;
+            timestamp: number;
+            threadID?: string | undefined;
+            reactions: Array<{
+              __typename?: 'Reaction';
+              id: string;
+              emoji: string;
+              sender?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  }
+                | undefined;
+            }>;
+            sender?:
+              | {
+                  __typename?: 'Organization';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    description?: string | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
+                    location?:
+                      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                      | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    description?: string | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
+                    location?:
+                      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                      | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    description?: string | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
+                    location?:
+                      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                      | undefined;
+                  };
+                }
+              | undefined;
+          }>;
+          vcInteractions: Array<{
+            __typename?: 'VcInteraction';
+            id: string;
+            threadID: string;
+            virtualContributorID: string;
+          }>;
+        }
       | undefined;
   };
 };

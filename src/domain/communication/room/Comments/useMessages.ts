@@ -36,7 +36,7 @@ export const useMessages = (messages: FetchedMessage[] | undefined) =>
     return messages?.map(message => ({
       id: message.id,
       threadID: message.threadID,
-      body: message.message,
+      message: message.message,
       author: message?.sender?.id ? buildAuthorFromUser(message.sender) : undefined,
       createdAt: new Date(message.timestamp),
       reactions: message.reactions,
