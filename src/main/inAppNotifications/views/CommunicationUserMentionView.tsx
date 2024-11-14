@@ -26,6 +26,9 @@ export const CommunicationUserMentionView = ({
       resource: {
         url: callout?.profile.url ?? '',
       },
+      contributor: {
+        avatarUrl: triggeredBy?.profile?.visual?.uri ?? '',
+      },
       triggeredAt: triggeredAt,
       values: notificationTextValues,
     };

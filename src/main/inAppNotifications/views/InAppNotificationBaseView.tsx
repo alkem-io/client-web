@@ -59,7 +59,7 @@ export const InAppNotificationBaseView = ({
         <Badge
           overlap="circular"
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          badgeContent={<Avatar size="small" src={contributor?.avatarUrl} />}
+          badgeContent={contributor ? <Avatar size="small" src={contributor?.avatarUrl} /> : null}
         >
           <Avatar size="large" src={space?.avatarUrl || defaultJourneyAvatar} />
         </Badge>

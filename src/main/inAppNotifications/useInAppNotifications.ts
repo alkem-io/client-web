@@ -96,10 +96,10 @@ export const useInAppNotifications = () => {
         triggeredBy: {
           type: CommunityContributorType.User,
           profile: {
-            displayName: 'John Doe',
+            displayName: 'Denise',
             url: '',
             visual: {
-              uri: '',
+              uri: 'http://localhost:3000/api/private/rest/storage/document/1461dbff-34ce-4871-a737-5c3a325266d9',
             },
           },
         },
@@ -131,10 +131,10 @@ export const useInAppNotifications = () => {
         triggeredBy: {
           type: CommunityContributorType.User,
           profile: {
-            displayName: 'Carvahlio',
+            displayName: 'AA',
             url: '',
             visual: {
-              uri: '',
+              uri: 'http://localhost:3000/api/private/rest/storage/document/8ee9509d-cb31-4a3d-ba49-4733a9aaac83',
             },
           },
         },
@@ -143,9 +143,9 @@ export const useInAppNotifications = () => {
           level: SpaceLevel.Challenge,
           profile: {
             displayName: 'Sub Welcome',
-            url: '',
+            url: '/welcome-space/challenges/sdfsdf2',
             visual: {
-              uri: '',
+              uri: 'http://localhost:3000/api/private/rest/storage/document/78a65ce2-d30d-46ba-bbd0-6a69fc36528b',
             },
           },
         },
@@ -153,7 +153,7 @@ export const useInAppNotifications = () => {
           type: CalloutType.Post,
           profile: {
             displayName: 'Fancy Post in subspace',
-            url: '',
+            url: 'http://localhost:3000/welcome-space/challenges/sdfsdf2/collaboration/fancypost',
           },
         },
       },
@@ -169,17 +169,17 @@ export const useInAppNotifications = () => {
             displayName: 'Admin GA',
             url: '',
             visual: {
-              uri: '',
+              uri: 'http://localhost:3000/api/private/rest/storage/document/8ee9509d-cb31-4a3d-ba49-4733a9aaac83',
             },
           },
         },
         contributor: {
           type: CommunityContributorType.User,
           profile: {
-            displayName: 'Clara',
+            displayName: 'Denise',
             url: '',
             visual: {
-              uri: '',
+              uri: 'http://localhost:3000/api/private/rest/storage/document/1461dbff-34ce-4871-a737-5c3a325266d9',
             },
           },
         },
@@ -190,7 +190,7 @@ export const useInAppNotifications = () => {
             displayName: 'Welcome Space',
             url: '/welcome-space',
             visual: {
-              uri: '',
+              uri: 'http://localhost:3000/api/private/rest/storage/document/af4d0ae0-64ae-42a8-a166-ff348d254cd6',
             },
           },
         },
@@ -208,9 +208,9 @@ export const useInAppNotifications = () => {
           level: SpaceLevel.Space,
           profile: {
             displayName: 'Welcome Space',
-            url: '',
+            url: '/welcome-space',
             visual: {
-              uri: '',
+              uri: 'http://localhost:3000/api/private/rest/storage/document/af4d0ae0-64ae-42a8-a166-ff348d254cd6',
             },
           },
         },
