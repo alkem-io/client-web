@@ -1,5 +1,5 @@
-import React, { Dispatch, ReactNode } from 'react';
-import { Box, Button, Theme, useMediaQuery } from '@mui/material';
+import { Dispatch, ReactNode } from 'react';
+import { Box, Theme, Button, Skeleton, useMediaQuery } from '@mui/material';
 import PageContentBlockHeaderWithDialogAction from '../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
 import MultipleSelect from '../../../core/ui/search/MultipleSelect';
 import PageContentBlock, { PageContentBlockProps } from '../../../core/ui/content/PageContentBlock';
@@ -19,7 +19,7 @@ export interface LibraryTemplatesFilter {
   searchTerms: string[];
 }
 
-interface LibraryTemplatesViewProps {
+type LibraryTemplatesViewProps = {
   filter: LibraryTemplatesFilter;
   headerTitle: ReactNode;
   templates: AnyTemplateWithInnovationPack[] | undefined;
@@ -29,7 +29,8 @@ interface LibraryTemplatesViewProps {
   onDialogOpen?: () => void;
   onDialogClose?: () => void;
   hasMore?: boolean;
-}
+  loading?: boolean;
+};
 
 const LibraryTemplatesView = ({
   headerTitle,
@@ -41,6 +42,7 @@ const LibraryTemplatesView = ({
   onDialogClose,
   onClick,
   hasMore = false,
+  loading,
   ...props
 }: Omit<PageContentBlockProps, 'onClick'> & LibraryTemplatesViewProps) => {
   const { t } = useTranslation();
@@ -85,34 +87,46 @@ const LibraryTemplatesView = ({
           inlineTerms
         />
       </Box>
-      {templates && (
-        <ScrollableCardsLayoutContainer minHeight={0} orientation={expanded ? 'vertical' : undefined} sameHeight>
-          {templates.map(({ template, innovationPack }) => (
-            <TemplateCard
-              key={template.id}
-              template={template}
-              innovationPack={innovationPack}
-              onClick={() => onClick(template)}
-            />
-          ))}
-          {isMobile && hasMore && (
-            <GridItem columns={CONTRIBUTE_CARD_COLUMNS}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirections: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Button variant="contained" onClick={onDialogOpen}>
-                  {t('common.show-all')}
-                </Button>
-              </Box>
-            </GridItem>
-          )}
-        </ScrollableCardsLayoutContainer>
-      )}
+
+      <ScrollableCardsLayoutContainer minHeight={0} orientation={expanded ? 'vertical' : undefined} sameHeight>
+        {loading
+          ? Array.from({ length: 5 }).map((_, idx) => (
+              <Skeleton
+                key={idx}
+                width={248}
+                height={262}
+                animation="pulse"
+                variant="rectangular"
+                sx={{ borderRadius: 1 }}
+              />
+            ))
+          : templates?.map(({ template, innovationPack }) => (
+              <TemplateCard
+                key={template.id}
+                template={template}
+                innovationPack={innovationPack}
+                onClick={() => onClick(template)}
+              />
+            ))}
+
+        {isMobile && hasMore && (
+          <GridItem columns={CONTRIBUTE_CARD_COLUMNS}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirections: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Button variant="contained" onClick={onDialogOpen}>
+                {t('common.show-all')}
+              </Button>
+            </Box>
+          </GridItem>
+        )}
+      </ScrollableCardsLayoutContainer>
+
       {!isMobile && hasMore && <SeeMore subject={t('common.templates')} onClick={onDialogOpen} />}
     </PageContentBlock>
   );

@@ -6,11 +6,12 @@ import PreviewTemplateDialog from '../../templates/components/Dialogs/PreviewTem
 import LibraryTemplatesView, { LibraryTemplatesFilter } from './LibraryTemplatesView';
 import { AnyTemplate, AnyTemplateWithInnovationPack } from '../../templates/models/TemplateBase';
 
-interface DashboardLibraryTemplatesProps {
+type DashboardLibraryTemplatesProps = {
   headerTitle: ReactNode;
   dialogTitle: ReactNode;
   templates: AnyTemplateWithInnovationPack[] | undefined;
-}
+  loading?: boolean;
+};
 
 const templatesValueGetter = (template: AnyTemplateWithInnovationPack): ValueType => ({
   id: template.template.id,
@@ -24,7 +25,12 @@ const templatesValueGetter = (template: AnyTemplateWithInnovationPack): ValueTyp
 
 const MAX_TEMPLATES_WHEN_NOT_EXPANDED = 10;
 
-const DashboardLibraryTemplates = ({ headerTitle, dialogTitle, templates }: DashboardLibraryTemplatesProps) => {
+const DashboardLibraryTemplates = ({
+  loading,
+  templates,
+  headerTitle,
+  dialogTitle,
+}: DashboardLibraryTemplatesProps) => {
   const [filter, onFilterChange] = useState<LibraryTemplatesFilter>({
     templateTypes: [],
     searchTerms: [],
@@ -64,6 +70,7 @@ const DashboardLibraryTemplates = ({ headerTitle, dialogTitle, templates }: Dash
           setSelectedTemplate(template);
         }}
         hasMore={filteredLibraryTemplates.length > MAX_TEMPLATES_WHEN_NOT_EXPANDED}
+        loading={loading}
       />
       <DialogWithGrid open={isDialogOpen} onClose={() => setIsDialogOpen(false)} columns={12}>
         <LibraryTemplatesView
