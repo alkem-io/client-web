@@ -8027,6 +8027,10 @@ export type AccountInformationQuery = {
                 __typename?: 'LicenseEntitlement';
                 id: string;
                 type: LicenseEntitlementType;
+                limit: number;
+                usage: number;
+                isAvailable: boolean;
+                dataType: LicenseEntitlementDataType;
                 enabled: boolean;
               }>;
             };
@@ -10193,6 +10197,10 @@ export type CollaborationAuthorizationEntitlementsQuery = {
               __typename?: 'LicenseEntitlement';
               id: string;
               type: LicenseEntitlementType;
+              limit: number;
+              usage: number;
+              isAvailable: boolean;
+              dataType: LicenseEntitlementDataType;
               enabled: boolean;
             }>;
           };
@@ -18193,11 +18201,12 @@ export type UserProviderQuery = {
                   entitlements: Array<{
                     __typename?: 'LicenseEntitlement';
                     id: string;
-                    enabled: boolean;
-                    limit: number;
-                    isAvailable: boolean;
-                    usage: number;
                     type: LicenseEntitlementType;
+                    limit: number;
+                    usage: number;
+                    isAvailable: boolean;
+                    dataType: LicenseEntitlementDataType;
+                    enabled: boolean;
                   }>;
                 };
               }
@@ -18369,6 +18378,17 @@ export type InvitationDataFragment = {
       | { __typename?: 'User'; id: string }
       | { __typename?: 'VirtualContributor'; id: string };
   };
+};
+
+export type EntitlementDetailsFragment = {
+  __typename?: 'LicenseEntitlement';
+  id: string;
+  type: LicenseEntitlementType;
+  limit: number;
+  usage: number;
+  isAvailable: boolean;
+  dataType: LicenseEntitlementDataType;
+  enabled: boolean;
 };
 
 export type SpaceCommunityContributorsQueryVariables = Exact<{
@@ -30345,6 +30365,10 @@ export type NewVirtualContributorMySpacesQuery = {
                       __typename?: 'LicenseEntitlement';
                       id: string;
                       type: LicenseEntitlementType;
+                      limit: number;
+                      usage: number;
+                      isAvailable: boolean;
+                      dataType: LicenseEntitlementDataType;
                       enabled: boolean;
                     }>;
                   };

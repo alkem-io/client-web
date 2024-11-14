@@ -12,12 +12,7 @@ query UserProvider {
           id
           type
           entitlements {
-            id
-            enabled
-            limit
-            isAvailable
-            usage
-            type
+            ...EntitlementDetails
           }
         }
       }
@@ -79,4 +74,14 @@ fragment InvitationData on CommunityInvitationResult {
     }
     contributorType
   }
+}
+
+fragment EntitlementDetails on LicenseEntitlement {
+  id
+  type
+  limit
+  usage
+  isAvailable
+  dataType
+  enabled
 }

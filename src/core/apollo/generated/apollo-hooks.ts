@@ -1740,6 +1740,17 @@ export const InvitationDataFragmentDoc = gql`
     }
   }
 `;
+export const EntitlementDetailsFragmentDoc = gql`
+  fragment EntitlementDetails on LicenseEntitlement {
+    id
+    type
+    limit
+    usage
+    isAvailable
+    dataType
+    enabled
+  }
+`;
 export const ContextDetailsProviderFragmentDoc = gql`
   fragment ContextDetailsProvider on Context {
     id
@@ -4970,13 +4981,7 @@ export const AccountInformationDocument = gql`
         license {
           id
           entitlements {
-            id
-            type
-            limit
-            usage
-            isAvailable
-            dataType
-            enabled
+            ...EntitlementDetails
           }
         }
         host {
@@ -4999,9 +5004,7 @@ export const AccountInformationDocument = gql`
           license {
             id
             entitlements {
-              id
-              type
-              enabled
+              ...EntitlementDetails
             }
           }
           community {
@@ -5071,6 +5074,7 @@ export const AccountInformationDocument = gql`
       }
     }
   }
+  ${EntitlementDetailsFragmentDoc}
   ${AccountItemProfileFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
@@ -6201,14 +6205,13 @@ export const CollaborationAuthorizationEntitlementsDocument = gql`
         license {
           id
           entitlements {
-            id
-            type
-            enabled
+            ...EntitlementDetails
           }
         }
       }
     }
   }
+  ${EntitlementDetailsFragmentDoc}
 `;
 
 /**
@@ -13601,12 +13604,7 @@ export const UserProviderDocument = gql`
             id
             type
             entitlements {
-              id
-              enabled
-              limit
-              isAvailable
-              usage
-              type
+              ...EntitlementDetails
             }
           }
         }
@@ -13614,6 +13612,7 @@ export const UserProviderDocument = gql`
     }
   }
   ${UserDetailsFragmentDoc}
+  ${EntitlementDetailsFragmentDoc}
 `;
 
 /**
@@ -23247,9 +23246,7 @@ export const NewVirtualContributorMySpacesDocument = gql`
             license {
               id
               entitlements {
-                id
-                type
-                enabled
+                ...EntitlementDetails
               }
             }
             community {
@@ -23291,6 +23288,7 @@ export const NewVirtualContributorMySpacesDocument = gql`
       }
     }
   }
+  ${EntitlementDetailsFragmentDoc}
 `;
 
 /**

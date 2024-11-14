@@ -13,9 +13,7 @@ query NewVirtualContributorMySpaces {
           license {
             id
             entitlements {
-              id
-              type
-              enabled
+              ...EntitlementDetails
             }
           }
           community {

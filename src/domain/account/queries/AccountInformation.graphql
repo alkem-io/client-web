@@ -9,13 +9,7 @@ query AccountInformation($accountId: UUID!) {
       license {
         id
         entitlements {
-          id
-          type
-          limit
-          usage
-          isAvailable
-          dataType
-          enabled
+          ...EntitlementDetails
         }
       }
       host {
@@ -38,9 +32,7 @@ query AccountInformation($accountId: UUID!) {
         license {
           id
           entitlements {
-            id
-            type
-            enabled
+            ...EntitlementDetails
           }
         }
         community {
