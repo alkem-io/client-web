@@ -4,28 +4,24 @@ import { useMemo } from 'react';
 
 export const CommunityNewMemberAdminView = ({ state, space, triggeredAt, contributor }: InAppNotificationProps) => {
   const notification: InAppNotificationBaseViewProps = useMemo(() => {
-    // This notifictaion is variation of the COMMUNITY_NEW_MEMBER
-    // The type is hardcoded due to a TS error when concatenating _ADMIN to the COMMUNITY_NEW_MEMBER
-    const descKey = 'components.inAppNotifications.description.COMMUNITY_NEW_MEMBER_ADMIN';
+    const notificationTextValues = {
+      defaultValue: '',
+      spaceName: space?.profile?.displayName,
+      memberType: contributor?.type,
+      memberName: contributor?.profile?.displayName,
+    };
 
     return {
-      state: state,
+      type: 'COMMUNITY_NEW_MEMBER_ADMIN',
+      state,
       space: {
         avatarUrl: space?.profile.visual?.uri ?? '',
       },
-      subject: {
+      resource: {
         url: space?.profile.url ?? '',
       },
       triggeredAt: triggeredAt,
-      description: {
-        key: descKey,
-        values: {
-          defaultValue: '',
-          spaceName: space?.profile?.displayName,
-          memberType: contributor?.type,
-          memberName: contributor?.profile?.displayName,
-        },
-      },
+      values: notificationTextValues,
     };
   }, [state, space, contributor, triggeredAt]);
 

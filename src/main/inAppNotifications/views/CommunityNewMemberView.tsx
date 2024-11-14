@@ -4,22 +4,22 @@ import { useMemo } from 'react';
 
 export const CommunityNewMemberView = ({ type, state, space, triggeredBy, triggeredAt }: InAppNotificationProps) => {
   const notification: InAppNotificationBaseViewProps = useMemo(() => {
+    const notificationTextValues = {
+      defaultValue: '',
+      spaceName: space?.profile?.displayName,
+    };
+
     return {
-      state: state,
+      type,
+      state,
       space: {
         avatarUrl: space?.profile.visual?.uri ?? '',
       },
-      subject: {
+      resource: {
         url: space?.profile.url ?? '',
       },
       triggeredAt: triggeredAt,
-      description: {
-        key: `components.inAppNotifications.description.${type}`,
-        values: {
-          defaultValue: '',
-          spaceName: space?.profile?.displayName,
-        },
-      },
+      values: notificationTextValues,
     };
   }, [state, space, triggeredBy, triggeredAt]);
 

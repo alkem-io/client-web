@@ -11,24 +11,23 @@ export const CommunicationUserMentionView = ({
   triggeredAt,
 }: InAppNotificationProps) => {
   const notification: InAppNotificationBaseViewProps = useMemo(() => {
+    const notificationTextValues = {
+      defaultValue: '',
+      commenterName: triggeredBy?.profile?.displayName,
+      colloutName: callout?.profile.displayName,
+    };
+
     return {
+      type,
       state: state,
       space: {
         avatarUrl: space?.profile.visual?.uri ?? '',
       },
-      subject: {
+      resource: {
         url: callout?.profile.url ?? '',
       },
       triggeredAt: triggeredAt,
-      description: {
-        key: `components.inAppNotifications.description.${type}`,
-        values: {
-          defaultValue: '',
-          commenterName: triggeredBy?.profile?.displayName,
-          colloutName: callout?.profile.displayName,
-          comment: '', // TODO:notificaiton comment
-        },
-      },
+      values: notificationTextValues,
     };
   }, [state, space, callout, triggeredBy, triggeredAt]);
 

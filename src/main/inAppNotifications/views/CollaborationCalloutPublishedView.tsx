@@ -11,29 +11,29 @@ export const CollaborationCalloutPublishedView = ({
   triggeredAt,
 }: InAppNotificationProps) => {
   const notification: InAppNotificationBaseViewProps = useMemo(() => {
+    const notificationTextValues = {
+      defaultValue: '',
+      spaceName: space?.profile?.displayName,
+      spaceType: space?.level,
+      calloutName: callout?.profile.displayName,
+      calloutType: callout?.type,
+      contributorName: triggeredBy?.profile?.displayName,
+    };
+
     return {
-      state: state,
+      type,
+      state,
       space: {
         avatarUrl: space?.profile.visual?.uri ?? '',
       },
-      subject: {
+      resource: {
         url: callout?.profile.url ?? '',
       },
       contributor: {
         avatarUrl: triggeredBy?.profile?.visual?.uri ?? '',
       },
       triggeredAt: triggeredAt,
-      description: {
-        key: `components.inAppNotifications.description.${type}`,
-        values: {
-          defaultValue: '',
-          spaceName: space?.profile?.displayName,
-          spaceType: space?.level,
-          calloutName: callout?.profile.displayName,
-          calloutType: callout?.type,
-          contributorName: triggeredBy?.profile?.displayName,
-        },
-      },
+      values: notificationTextValues,
     };
   }, [state, space, callout, triggeredBy, triggeredAt]);
 

@@ -10,25 +10,23 @@ import { Caption } from '../../../core/ui/typography';
 import { formatTimeElapsed } from '../../../domain/shared/utils/formatTimeElapsed';
 import defaultJourneyAvatar from '../../../domain/journey/defaultVisuals/Avatar.jpg';
 import { gutters } from '../../../core/ui/grid/utils';
-import TranslationKey from '../../../core/i18n/utils/TranslationKey';
+import { Actions } from '../../../core/ui/actions/Actions';
 
 export interface InAppNotificationBaseViewProps {
+  type: string; // to support _ADMIN
   state: InAppNotificationState;
   space?: {
     avatarUrl: string;
   };
-  subject: {
+  resource: {
     url: string;
   };
   contributor?: {
     avatarUrl: string;
   };
   triggeredAt: Date;
-  description: {
-    key: TranslationKey;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    values: any;
-  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  values: any;
 }
 
 const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultComponent'], P = {}>(
@@ -36,19 +34,20 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
 ) => <ListItemButton component={RouterLink} {...props} />;
 
 export const InAppNotificationBaseView = ({
+  type,
   state,
   space,
   contributor,
   triggeredAt,
-  description,
-  subject,
+  resource,
+  values,
 }: InAppNotificationBaseViewProps) => {
   const { t } = useTranslation();
 
   return (
     <BadgeCardView
       component={Wrapper}
-      to={subject.url ?? ''}
+      to={resource.url ?? ''}
       padding
       paddingY={gutters(2)}
       sx={{
@@ -67,20 +66,37 @@ export const InAppNotificationBaseView = ({
       }
     >
       <Gutters row disablePadding>
-        <Caption flexGrow={1}>
-          <Trans
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            i18nKey={description.key as any}
-            values={description.values}
-            components={{
-              b: <strong />,
-              br: <br />,
-              pre: <pre />,
-              i: <em />,
-            }}
-          />
-        </Caption>
-        <Caption>{formatTimeElapsed(triggeredAt, t)}</Caption>
+        <Gutters column flexGrow={1}>
+          <Caption>
+            <Trans
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              i18nKey={`components.inAppNotifications.${type}.subject` as any}
+              values={values}
+              components={{
+                b: <strong />,
+                br: <br />,
+                pre: <pre />,
+                i: <em />,
+              }}
+            />
+          </Caption>
+          <Caption>
+            <Trans
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              i18nKey={`components.inAppNotifications.${type}.description` as any}
+              values={values}
+              components={{
+                b: <strong />,
+                br: <br />,
+                pre: <pre />,
+                i: <em />,
+              }}
+            />
+          </Caption>
+        </Gutters>
+        <Actions>
+          <Caption>{formatTimeElapsed(triggeredAt, t)}</Caption>
+        </Actions>
       </Gutters>
     </BadgeCardView>
   );
