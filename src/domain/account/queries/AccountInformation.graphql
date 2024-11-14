@@ -35,6 +35,14 @@ query AccountInformation($accountId: UUID!) {
           }
           tagline
         }
+        license {
+          id
+          entitlements {
+            id
+            type
+            enabled
+          }
+        }
         community {
           id
           roleSet {

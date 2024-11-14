@@ -27,14 +27,16 @@ export interface UserAccountProps {
       displayName: string;
       url: string;
     };
-    license: {
-      id: string;
-      entitlements?: Array<{
-        id: string;
-        type: LicenseEntitlementType;
-        enabled: boolean;
-      }>;
-    };
+    license:
+      | {
+          id: string;
+          entitlements?: Array<{
+            id: string;
+            type: LicenseEntitlementType;
+            enabled: boolean;
+          }>;
+        }
+      | undefined;
     authorization?: {
       id: string;
       myPrivileges?: AuthorizationPrivilege[] | undefined;

@@ -4996,6 +4996,14 @@ export const AccountInformationDocument = gql`
             }
             tagline
           }
+          license {
+            id
+            entitlements {
+              id
+              type
+              enabled
+            }
+          }
           community {
             id
             roleSet {

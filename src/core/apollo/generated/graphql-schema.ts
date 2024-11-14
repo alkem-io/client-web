@@ -8020,6 +8020,16 @@ export type AccountInformationQuery = {
               cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
             };
+            license: {
+              __typename?: 'License';
+              id: string;
+              entitlements: Array<{
+                __typename?: 'LicenseEntitlement';
+                id: string;
+                type: LicenseEntitlementType;
+                enabled: boolean;
+              }>;
+            };
             community: {
               __typename?: 'Community';
               id: string;

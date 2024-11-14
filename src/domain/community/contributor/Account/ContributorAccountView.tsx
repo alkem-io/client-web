@@ -79,6 +79,14 @@ export interface AccountTabResourcesProps {
         id: string;
       };
     };
+    license: {
+      id: string;
+      entitlements?: Array<{
+        id: string;
+        type: LicenseEntitlementType;
+        enabled: boolean;
+      }>;
+    };
     subspaces: {
       id: string;
       profile: AccountProfile & {
