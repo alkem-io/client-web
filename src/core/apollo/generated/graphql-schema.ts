@@ -3087,7 +3087,7 @@ export type MeQueryResults = {
   /** The invitations the current authenticated user can act on. */
   communityInvitations: Array<CommunityInvitationResult>;
   /** Get the room ID for the current user to be able to communicate with the AI guidance service. */
-  guidanceRoomID: Scalars['String'];
+  guidanceRoomID?: Maybe<Scalars['String']>;
   /** The query id */
   id: Scalars['String'];
   /** The Spaces I am contributing to */
@@ -3133,11 +3133,13 @@ export type Message = {
 export type MessageAnswerQuestion = {
   __typename?: 'MessageAnswerQuestion';
   /** The answer to the question */
-  answer: Scalars['String'];
+  answer?: Maybe<Scalars['String']>;
   /** The id of the answer; null if an error was returned */
   id?: Maybe<Scalars['String']>;
   /** The original question */
-  question: Scalars['String'];
+  question?: Maybe<Scalars['String']>;
+  /** Message sent OK */
+  result: Scalars['Boolean'];
   /** The sources used to answer the question */
   sources?: Maybe<Array<MessageAnswerToQuestionSource>>;
 };
@@ -27292,8 +27294,8 @@ export type AskChatGuidanceQuestionMutation = {
   askChatGuidanceQuestion: {
     __typename?: 'MessageAnswerQuestion';
     id?: string | undefined;
-    answer: string;
-    question: string;
+    answer?: string | undefined;
+    question?: string | undefined;
     sources?:
       | Array<{ __typename?: 'MessageAnswerToQuestionSource'; uri?: string | undefined; title?: string | undefined }>
       | undefined;
@@ -27304,7 +27306,7 @@ export type GuidanceRoomIdQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GuidanceRoomIdQuery = {
   __typename?: 'Query';
-  me: { __typename?: 'MeQueryResults'; guidanceRoomID: string };
+  me: { __typename?: 'MeQueryResults'; guidanceRoomID?: string | undefined };
 };
 
 export type GuidanceRoomMessagesQueryVariables = Exact<{

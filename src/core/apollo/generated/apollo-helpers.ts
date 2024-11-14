@@ -1871,6 +1871,7 @@ export type MessageAnswerQuestionKeySpecifier = (
   | 'answer'
   | 'id'
   | 'question'
+  | 'result'
   | 'sources'
   | MessageAnswerQuestionKeySpecifier
 )[];
@@ -1878,6 +1879,7 @@ export type MessageAnswerQuestionFieldPolicy = {
   answer?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   question?: FieldPolicy<any> | FieldReadFunction<any>;
+  result?: FieldPolicy<any> | FieldReadFunction<any>;
   sources?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageAnswerToQuestionSourceKeySpecifier = ('title' | 'uri' | MessageAnswerToQuestionSourceKeySpecifier)[];

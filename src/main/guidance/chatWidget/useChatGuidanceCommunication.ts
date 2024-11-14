@@ -3,24 +3,25 @@ import {
   useAskChatGuidanceQuestionMutation,
   useGuidanceRoomIdQuery,
   useGuidanceRoomMessagesQuery,
+  useResetChatGuidanceMutation,
 } from '../../../core/apollo/generated/apollo-hooks';
 import useSubscribeOnRoomEvents from '../../../domain/collaboration/callout/useSubscribeOnRoomEvents';
-import usePostMessageMutations from '../../../domain/communication/room/Comments/usePostMessageMutations';
 import { Message } from '../../../domain/communication/room/models/Message';
 import { buildAuthorFromUser } from '../../../domain/community/user/utils/buildAuthorFromUser';
 import { useTranslation } from 'react-i18next';
 
 interface Provided {
-  roomId: string | undefined; //!! Probably not needed
   loading?: boolean;
   messages?: Message[];
+  clearChat: () => Promise<void>;
   sendMessage: (message: string) => Promise<unknown>;
   isSubscribedToMessages: boolean;
 }
 
 const useChatGuidanceCommunication = ({ skip }: { skip?: boolean }): Provided => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [askQuestion] = useAskChatGuidanceQuestionMutation();
+  const [resetChatGuidance] = useResetChatGuidanceMutation();
 
   const { data: roomIdData, loading: roomIdLoading } = useGuidanceRoomIdQuery({
     skip,
@@ -34,40 +35,58 @@ const useChatGuidanceCommunication = ({ skip }: { skip?: boolean }): Provided =>
     skip: !roomId || skip,
   });
 
-  const messages = useMemo(
-    () =>
-      messagesData?.lookup.room?.messages?.map(message => ({
-        id: message.id,
-        threadID: message.threadID,
-        message: message.message,
-        author: message?.sender?.id ? buildAuthorFromUser(message.sender) : undefined,
-        createdAt: new Date(message.timestamp),
-        reactions: message.reactions,
-      })),
-    [messagesData]
-  );
+  const messages: Message[] = useMemo(() => {
+    const introMessage = {
+      id: '__intro',
+      createdAt: new Date(),
+      reactions: [],
+      message: t('chatbot.intro'),
+      author: undefined,
+    };
+
+    if (messagesData?.lookup.room?.messages.length) {
+      return [
+        introMessage,
+        ...messagesData?.lookup.room?.messages?.map(message => ({
+          id: message.id,
+          threadID: message.threadID,
+          message: message.message,
+          author: message?.sender?.id ? buildAuthorFromUser(message.sender) : undefined,
+          createdAt: new Date(message.timestamp),
+          reactions: message.reactions,
+        })),
+      ];
+    } else if (roomIdLoading || messagesLoading) {
+      // Return an empty array to avoid showing the intro message while loading
+      return [];
+    } else {
+      // No messages or just no room at all => Return just one message with the intro text
+      return [introMessage];
+    }
+  }, [messagesData, roomId, roomIdLoading, messagesLoading, skip]);
 
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId, skip);
 
-  const { postMessage } = usePostMessageMutations({ roomId, isSubscribedToMessages });
-
   const handleSendMessage = async (message: string): Promise<unknown> => {
-    const { data } = await askQuestion({
+    return askQuestion({
       variables: {
         chatData: { question: message!, language: i18n.language.toUpperCase() },
       },
-      fetchPolicy: 'network-only',
+      refetchQueries: ['GuidanceRoomId', 'GuidanceRoomMessages'],
     });
-    // postMessage to the room
-    await postMessage(message);
-
-    return data?.askChatGuidanceQuestion; //!! remove this
   };
+
+  const clearChat = async () => {
+    resetChatGuidance({
+      refetchQueries: ['GuidanceRoomId'],
+    });
+  };
+
   return {
-    roomId,
     loading: roomIdLoading || messagesLoading,
     messages,
     isSubscribedToMessages,
+    clearChat,
     sendMessage: handleSendMessage,
   };
 };

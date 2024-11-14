@@ -2,16 +2,18 @@ import { cloneElement, ReactElement, useEffect, useLayoutEffect, useRef, useStat
 import { Box, IconButton, IconButtonProps, Paper, SvgIconProps, Theme, Tooltip } from '@mui/material';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-import { addResponseMessage, dropMessages, addUserMessage, renderCustomComponent, toggleWidget, Widget } from 'react-chat-widget';
 import {
-  useAskChatGuidanceQuestionMutation,
-  useResetChatGuidanceMutation,
-  useUpdateAnswerRelevanceMutation,
-} from '../../../core/apollo/generated/apollo-hooks';
+  addResponseMessage,
+  dropMessages,
+  addUserMessage,
+  renderCustomComponent,
+  toggleWidget,
+  Widget,
+} from 'react-chat-widget';
+import { useUpdateAnswerRelevanceMutation } from '../../../core/apollo/generated/apollo-hooks';
 import logoSrc from '../../ui/logo/logoSmall.svg';
 import { useTranslation } from 'react-i18next';
 import 'react-chat-widget/lib/styles.css';
-import formatChatGuidanceResponseAsMarkdown from './formatChatGuidanceResponseAsMarkdown';
 import ChatWidgetStyles from './ChatWidgetStyles';
 import ChatWidgetTitle from './ChatWidgetTitle';
 import ChatWidgetHelpDialog from './ChatWidgetHelpDialog';
@@ -145,32 +147,17 @@ const Feedback = ({ answerId }: FeedbackProps) => {
   );
 };
 
-export const useInitialChatWidgetMessage = () => {
-  // const { t } = useTranslation();
-
-  // useEffect(() => {
-  //   addResponseMessage(t('chatbot.intro'));
-  // }, []);
-};
-
 const ChatWidget = () => {
   const { t } = useTranslation();
   const [isChatPopupOpen, setChatPopupOpen] = useState(false);
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
-  const { messages, sendMessage } = useChatGuidanceCommunication({ skip: !isChatPopupOpen });
+  const { messages, sendMessage, clearChat } = useChatGuidanceCommunication({ skip: !isChatPopupOpen });
   const { user } = useUserContext();
   const userId = user?.user.id;
 
   const handleNewUserMessage = async (newMessage: string) => {
     await sendMessage(newMessage);
-
-    /*if (data) {
-      const responseMessageMarkdown = formatChatGuidanceResponseAsMarkdown(data.askChatGuidanceQuestion, t);
-      addResponseMessage(responseMessageMarkdown, data.askChatGuidanceQuestion.id!);
-      renderCustomComponent(Feedback, { answerId: data.askChatGuidanceQuestion.id });
-    }*/
   };
-
 
   const [chatToggleTime, setChatToggleTime] = useState(Date.now());
 
@@ -214,28 +201,25 @@ const ChatWidget = () => {
 
   useLayoutEffect(setupMenuButton, [chatToggleTime]);
 
-  const [resetChatGuidance] = useResetChatGuidanceMutation();
-
-  const handleClearChat = () => {
-    resetChatGuidance();
-    dropMessages();
-    addResponseMessage(t('chatbot.intro'));
+  const handleClearChat = async () => {
+    await clearChat();
+    setChatToggleTime(Date.now()); // Force a re-render
   };
 
   useEffect(() => {
-    if (messages && messages.length && userId) {
-      console.log('load messages');
-      messages.forEach(message => {
+    dropMessages();
+    if (isChatPopupOpen && messages && messages.length > 0) {
+      messages?.forEach(message => {
         if (message.author?.id === userId) {
           addUserMessage(message.message);
         } else {
           addResponseMessage(message.message);
         }
       });
-    } else {
-      console.log('clear messages');
-      dropMessages();
-      addResponseMessage(t('chatbot.intro'));
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage.author?.id !== userId) {
+        renderCustomComponent(Feedback, { answerId: lastMessage.id });
+      }
     }
   }, [isChatPopupOpen, messages]);
 
@@ -244,13 +228,12 @@ const ChatWidget = () => {
       <ChatWidgetStyles ref={wrapperRef} aria-label={t('common.help')}>
         <Widget
           profileAvatar={logoSrc}
-          title={<ChatWidgetTitle onClickInfo={() => setIsHelpDialogOpen(true)} />}
+          title={<ChatWidgetTitle key="title" onClickInfo={() => setIsHelpDialogOpen(true)} />}
           subtitle={<></>}
           handleNewUserMessage={handleNewUserMessage}
           handleToggle={() => {
-            console.log('toggle');
             setChatPopupOpen(!isChatPopupOpen);
-            setChatToggleTime(Date.now())
+            setChatToggleTime(Date.now());
           }}
         />
       </ChatWidgetStyles>
