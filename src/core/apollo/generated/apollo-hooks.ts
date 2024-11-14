@@ -3101,6 +3101,7 @@ export const InAppNotificationCalloutPublishedFragmentDoc = gql`
     }
     space {
       id
+      level
       profile {
         id
         displayName
@@ -3139,6 +3140,7 @@ export const InAppNotificationCommunityNewMemberFragmentDoc = gql`
     }
     space {
       id
+      level
       profile {
         id
         displayName
@@ -3159,6 +3161,34 @@ export const InAppNotificationCommunityNewMemberFragmentDoc = gql`
         }
       }
     }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const InAppNotificationUserMentionedFragmentDoc = gql`
+  fragment InAppNotificationUserMentioned on InAppNotificationUserMentioned {
+    triggeredBy {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: CARD) {
+          ...VisualUri
+        }
+      }
+    }
+    actor {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: AVATAR) {
+          ...VisualUri
+        }
+      }
+    }
+    contributorType
   }
   ${VisualUriFragmentDoc}
 `;
@@ -21888,10 +21918,14 @@ export const InAppNotificationsDocument = gql`
       ... on InAppNotificationCommunityNewMember {
         ...InAppNotificationCommunityNewMember
       }
+      ... on InAppNotificationUserMentioned {
+        ...InAppNotificationUserMentioned
+      }
     }
   }
   ${InAppNotificationCalloutPublishedFragmentDoc}
   ${InAppNotificationCommunityNewMemberFragmentDoc}
+  ${InAppNotificationUserMentionedFragmentDoc}
 `;
 
 /**

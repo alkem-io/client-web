@@ -14,7 +14,7 @@ export const PlaformNotificationsButton = () => {
     setIsOpen(true);
   };
 
-  const unreadNotificationsCount = items.filter(item => item.state === InAppNotificationState.UNREAD).length;
+  const unreadNotificationsCount = items.filter(item => item.state === InAppNotificationState.Unread).length;
 
   return (
     <Paper

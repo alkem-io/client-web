@@ -1,0 +1,18 @@
+query InAppNotifications ($receiverID: UUID_NAMEID!) {
+  notifications (receiverID: $receiverID) {
+    id
+    type
+    category
+    state
+    triggeredAt
+    ... on InAppNotificationCalloutPublished {
+      ...InAppNotificationCalloutPublished
+    }
+    ... on InAppNotificationCommunityNewMember {
+      ...InAppNotificationCommunityNewMember
+    }
+    ... on InAppNotificationUserMentioned {
+      ...InAppNotificationUserMentioned
+    }
+  }
+}

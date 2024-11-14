@@ -52,7 +52,7 @@ export const InAppNotificationBaseView = ({
       paddingY={gutters(2)}
       sx={{
         background: theme =>
-          state === InAppNotificationState.UNREAD ? theme.palette.highlight.light : theme.palette.background.paper,
+          state === InAppNotificationState.Unread ? theme.palette.highlight.light : theme.palette.background.paper,
         borderRadius: 0,
       }}
       visual={

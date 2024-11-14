@@ -27640,6 +27640,7 @@ export type InAppNotificationsQuery = {
         space: {
           __typename?: 'Space';
           id: string;
+          level: SpaceLevel;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -27729,6 +27730,7 @@ export type InAppNotificationsQuery = {
         space: {
           __typename?: 'Space';
           id: string;
+          level: SpaceLevel;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -27780,6 +27782,77 @@ export type InAppNotificationsQuery = {
         category: string;
         state: InAppNotificationState;
         triggeredAt: Date;
+        contributorType: CommunityContributorType;
+        triggeredBy?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'User';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | undefined;
+        actor?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'User';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | undefined;
       }
   >;
 };
@@ -27804,6 +27877,7 @@ export type InAppNotificationCalloutPublishedFragment = {
   space: {
     __typename?: 'Space';
     id: string;
+    level: SpaceLevel;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -27889,6 +27963,7 @@ export type InAppNotificationCommunityNewMemberFragment = {
   space: {
     __typename?: 'Space';
     id: string;
+    level: SpaceLevel;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -27897,6 +27972,81 @@ export type InAppNotificationCommunityNewMemberFragment = {
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
   };
+  actor?:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'User';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | undefined;
+};
+
+export type InAppNotificationUserMentionedFragment = {
+  __typename?: 'InAppNotificationUserMentioned';
+  contributorType: CommunityContributorType;
+  triggeredBy?:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'User';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | undefined;
   actor?:
     | {
         __typename?: 'Organization';

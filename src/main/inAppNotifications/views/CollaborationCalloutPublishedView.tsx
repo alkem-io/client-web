@@ -16,7 +16,7 @@ export const CollaborationCalloutPublishedView = ({
       spaceName: space?.profile?.displayName,
       spaceType: space?.level,
       calloutName: callout?.framing?.profile?.displayName,
-      calloutType: callout?.type,
+      calloutType: '?',
       contributorName: triggeredBy?.profile?.displayName,
     };
 
