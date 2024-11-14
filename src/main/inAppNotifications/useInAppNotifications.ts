@@ -7,14 +7,6 @@ export enum InAppNotificationType {
   COMMUNITY_NEW_MEMBER = 'COMMUNITY_NEW_MEMBER',
 }
 
-enum InAppNotificationActions {
-  CREATE = 'CREATE',
-  UPDATE = 'UPDATE',
-  DELETE = 'DELETE',
-  ACCEPT = 'ACCEPT',
-  REJECT = 'REJECT',
-}
-
 export enum InAppNotificationState {
   READ = 'READ',
   UNREAD = 'UNREAD',
@@ -30,7 +22,6 @@ export interface InAppNotificationProps {
   id: string;
   type: InAppNotificationType;
   triggeredAt: Date;
-  action: InAppNotificationActions | undefined;
   state: InAppNotificationState;
   category: InAppNotificationCategory;
   triggeredBy:
@@ -100,7 +91,6 @@ export const useInAppNotifications = () => {
         id: '1',
         type: InAppNotificationType.COLLABORATION_CALLOUT_PUBLISHED,
         triggeredAt: new Date('Tue Nov 12 2024 11:04:30'),
-        action: undefined,
         state: InAppNotificationState.UNREAD,
         category: InAppNotificationCategory.PERSONAL,
         triggeredBy: {
@@ -136,7 +126,6 @@ export const useInAppNotifications = () => {
         id: '2',
         type: InAppNotificationType.COMMUNICATION_USER_MENTION,
         triggeredAt: new Date('Tue Nov 12 2024 09:01:47'),
-        action: undefined,
         state: InAppNotificationState.READ,
         category: InAppNotificationCategory.PERSONAL,
         triggeredBy: {
@@ -172,7 +161,6 @@ export const useInAppNotifications = () => {
         id: '3',
         type: InAppNotificationType.COMMUNITY_NEW_MEMBER,
         triggeredAt: new Date('Tue Nov 11 2024 16:12:44'),
-        action: undefined,
         state: InAppNotificationState.UNREAD,
         category: InAppNotificationCategory.ADMIN, // this could be also a personal notification or a different type
         triggeredBy: {
@@ -211,7 +199,6 @@ export const useInAppNotifications = () => {
         id: '4',
         type: InAppNotificationType.COMMUNITY_NEW_MEMBER,
         triggeredAt: new Date('Tue Nov 11 2024 16:12:44'),
-        action: undefined,
         state: InAppNotificationState.UNREAD,
         category: InAppNotificationCategory.PERSONAL, // this could be also a personal notification or a different type
         triggeredBy: undefined,
