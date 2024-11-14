@@ -68,7 +68,7 @@ const InnovationPacksView = ({
             <Box
               sx={{
                 display: 'flex',
-                flexDirections: 'column',
+                flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
               }}

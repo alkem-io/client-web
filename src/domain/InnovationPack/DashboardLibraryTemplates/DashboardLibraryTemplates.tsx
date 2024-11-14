@@ -82,6 +82,7 @@ const DashboardLibraryTemplates = ({
           onDialogClose={() => setIsDialogOpen(false)}
           onClick={template => setSelectedTemplate(template)}
           sx={{ flexShrink: 1 }}
+          loading={loading}
         />
       </DialogWithGrid>
       {selectedTemplate && (

@@ -51,6 +51,7 @@ const DashboardInnovationPacks = ({
           expanded={isDialogOpen}
           onDialogClose={() => setIsDialogOpen(false)}
           sx={{ flexShrink: 1 }}
+          loading={loading}
         />
       </DialogWithGrid>
     </>
