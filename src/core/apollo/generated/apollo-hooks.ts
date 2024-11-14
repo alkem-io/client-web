@@ -3083,6 +3083,85 @@ export const CalendarEventDetailsFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
+export const InAppNotificationCalloutPublishedFragmentDoc = gql`
+  fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished {
+    callout {
+      id
+      framing {
+        id
+        profile {
+          id
+          displayName
+          url
+          visual(type: CARD) {
+            ...VisualUri
+          }
+        }
+      }
+    }
+    space {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: CARD) {
+          ...VisualUri
+        }
+      }
+    }
+    triggeredBy {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: CARD) {
+          ...VisualUri
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const InAppNotificationCommunityNewMemberFragmentDoc = gql`
+  fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMember {
+    triggeredBy {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: CARD) {
+          ...VisualUri
+        }
+      }
+    }
+    space {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: CARD) {
+          ...VisualUri
+        }
+      }
+    }
+    actor {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: AVATAR) {
+          ...VisualUri
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const SearchResultPostProfileFragmentDoc = gql`
   fragment SearchResultPostProfile on Profile {
     id
@@ -21793,6 +21872,78 @@ export type AskChatGuidanceQuestionQueryResult = Apollo.QueryResult<
 >;
 export function refetchAskChatGuidanceQuestionQuery(variables: SchemaTypes.AskChatGuidanceQuestionQueryVariables) {
   return { query: AskChatGuidanceQuestionDocument, variables: variables };
+}
+
+export const InAppNotificationsDocument = gql`
+  query InAppNotifications($receiverID: UUID_NAMEID!) {
+    notifications(receiverID: $receiverID) {
+      id
+      type
+      category
+      state
+      triggeredAt
+      ... on InAppNotificationCalloutPublished {
+        ...InAppNotificationCalloutPublished
+      }
+      ... on InAppNotificationCommunityNewMember {
+        ...InAppNotificationCommunityNewMember
+      }
+    }
+  }
+  ${InAppNotificationCalloutPublishedFragmentDoc}
+  ${InAppNotificationCommunityNewMemberFragmentDoc}
+`;
+
+/**
+ * __useInAppNotificationsQuery__
+ *
+ * To run a query within a React component, call `useInAppNotificationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInAppNotificationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInAppNotificationsQuery({
+ *   variables: {
+ *      receiverID: // value for 'receiverID'
+ *   },
+ * });
+ */
+export function useInAppNotificationsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InAppNotificationsQuery,
+    SchemaTypes.InAppNotificationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.InAppNotificationsQuery, SchemaTypes.InAppNotificationsQueryVariables>(
+    InAppNotificationsDocument,
+    options
+  );
+}
+
+export function useInAppNotificationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InAppNotificationsQuery,
+    SchemaTypes.InAppNotificationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.InAppNotificationsQuery, SchemaTypes.InAppNotificationsQueryVariables>(
+    InAppNotificationsDocument,
+    options
+  );
+}
+
+export type InAppNotificationsQueryHookResult = ReturnType<typeof useInAppNotificationsQuery>;
+export type InAppNotificationsLazyQueryHookResult = ReturnType<typeof useInAppNotificationsLazyQuery>;
+export type InAppNotificationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.InAppNotificationsQuery,
+  SchemaTypes.InAppNotificationsQueryVariables
+>;
+export function refetchInAppNotificationsQuery(variables: SchemaTypes.InAppNotificationsQueryVariables) {
+  return { query: InAppNotificationsDocument, variables: variables };
 }
 
 export const JourneyRouteResolverDocument = gql`

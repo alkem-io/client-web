@@ -14,17 +14,17 @@ export const CommunicationUserMentionView = ({
     const notificationTextValues = {
       defaultValue: '',
       commenterName: triggeredBy?.profile?.displayName,
-      colloutName: callout?.profile.displayName,
+      colloutName: callout?.framing?.profile?.displayName,
     };
 
     return {
       type,
       state: state,
       space: {
-        avatarUrl: space?.profile.visual?.uri ?? '',
+        avatarUrl: space?.profile?.visual?.uri ?? '',
       },
       resource: {
-        url: callout?.profile.url ?? '',
+        url: callout?.framing?.profile?.url ?? '',
       },
       contributor: {
         avatarUrl: triggeredBy?.profile?.visual?.uri ?? '',

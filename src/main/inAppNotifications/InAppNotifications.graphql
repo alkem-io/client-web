@@ -1,0 +1,144 @@
+query InAppNotifications ($receiverID: UUID_NAMEID!) {
+  notifications (receiverID: $receiverID) {
+    id
+    type
+    category
+    state
+    triggeredAt
+    ... on InAppNotificationCalloutPublished {
+      ...InAppNotificationCalloutPublished
+    }
+    ... on InAppNotificationCommunityNewMember {
+      ...InAppNotificationCommunityNewMember
+    }
+    # ... on InAppNotificationUserMentioned {
+    #   ...InAppNotificationUserMentioned
+    # }
+  }
+}
+
+fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished {
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        displayName,
+        url,
+        visual(type: CARD) {
+          ...VisualUri
+        }
+      }
+    }
+  }
+  space {
+    id
+    profile {
+      id
+      displayName,
+      url,
+      visual(type: CARD) {
+        ...VisualUri
+      }
+    }
+  }
+  triggeredBy {
+    id
+    profile {
+      id
+      displayName,
+      url,
+      visual(type: CARD) {
+        ...VisualUri
+      }
+    }
+  }
+}
+
+fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMember {
+  triggeredBy {
+    id
+    profile {
+      id
+      displayName,
+      url,
+      visual(type: CARD) {
+        ...VisualUri
+      }
+    }
+  }
+  space {
+    id
+    profile {
+      id
+      displayName,
+      url,
+      visual(type: CARD) {
+        ...VisualUri
+      }
+    }
+  }
+  actor {
+    id
+    profile {
+      id
+      displayName,
+      url,
+      visual(type: AVATAR) {
+        ...VisualUri
+      }
+    }
+  }
+}
+
+# fragment InAppNotificationUserMentioned on InAppNotificationUserMentioned {
+#   callout {
+#     id
+#     framing {
+#       id
+#       profile {
+#         id
+#         displayName,
+#         url,
+#         visual(type: CARD) {
+#           ...VisualUri
+#         }
+#       }
+#     }
+#   }
+#   space {
+#     id
+#     profile {
+#       id
+#       displayName,
+#       url,
+#       visual(type: CARD) {
+#         ...VisualUri
+#       }
+#     }
+#   }
+#   triggeredBy {
+#     id
+#     profile {
+#       id
+#       displayName,
+#       url,
+#       visual(type: CARD) {
+#         ...VisualUri
+#       }
+#     }
+#   }
+#   actor {
+#     id
+#     profile {
+#       id
+#       displayName,
+#       url,
+#       visual(type: AVATAR) {
+#         ...VisualUri
+#       }
+#     }
+#   }
+#   contributorType
+# }

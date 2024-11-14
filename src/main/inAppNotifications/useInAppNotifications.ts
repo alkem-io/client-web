@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 import { CalloutType, CommunityContributorType, SpaceLevel } from '../../core/apollo/generated/graphql-schema';
+import { useInAppNotificationsQuery } from '../../core/apollo/generated/apollo-hooks';
 
 export enum InAppNotificationType {
-  COLLABORATION_CALLOUT_PUBLISHED = 'COLLABORATION_CALLOUT_PUBLISHED',
-  COMMUNICATION_USER_MENTION = 'COMMUNICATION_USER_MENTION',
-  COMMUNITY_NEW_MEMBER = 'COMMUNITY_NEW_MEMBER',
+  COLLABORATION_CALLOUT_PUBLISHED = 'collaborationCalloutPublished',
+  COMMUNICATION_USER_MENTION = 'communicationUserMention',
+  COMMUNITY_NEW_MEMBER = 'communityNewMember',
 }
 
 export enum InAppNotificationState {
@@ -59,22 +60,30 @@ export interface InAppNotificationProps {
   callout:
     | {
         type: CalloutType;
-        profile: {
-          displayName: string;
-          url: string;
-        };
+        framing:
+          | {
+              profile?:
+                | {
+                    displayName: string;
+                    url: string;
+                  }
+                | undefined;
+            }
+          | undefined;
       }
     | undefined;
   space:
     | {
         level: SpaceLevel;
-        profile: {
-          displayName: string;
-          url: string;
-          visual: {
-            uri: string;
-          };
-        };
+        profile:
+          | {
+              displayName: string;
+              url: string;
+              visual: {
+                uri: string;
+              };
+            }
+          | undefined;
       }
     | undefined;
 
@@ -85,6 +94,12 @@ export interface InAppNotificationProps {
 }
 
 export const useInAppNotifications = () => {
+  const { data } = useInAppNotificationsQuery({
+    variables: {
+      receiverID: 'da5c1eec-9034-486b-bd3e-36b9d72c784d',
+    },
+  });
+
   const items: InAppNotificationProps[] = useMemo(
     () => [
       {
@@ -116,9 +131,11 @@ export const useInAppNotifications = () => {
         },
         callout: {
           type: CalloutType.Post,
-          profile: {
-            displayName: 'Fancy Post',
-            url: '',
+          framing: {
+            profile: {
+              displayName: 'Fancy Post',
+              url: '',
+            },
           },
         },
       },
@@ -151,9 +168,11 @@ export const useInAppNotifications = () => {
         },
         callout: {
           type: CalloutType.Post,
-          profile: {
-            displayName: 'Fancy Post in subspace',
-            url: 'http://localhost:3000/welcome-space/challenges/sdfsdf2/collaboration/fancypost',
+          framing: {
+            profile: {
+              displayName: 'Fancy Post in subspace',
+              url: 'http://localhost:3000/welcome-space/challenges/sdfsdf2/collaboration/fancypost',
+            },
           },
         },
       },
@@ -219,5 +238,5 @@ export const useInAppNotifications = () => {
     []
   );
 
-  return { items };
+  return { items: data?.notifications ?? items };
 };

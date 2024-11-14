@@ -15,7 +15,7 @@ export const CollaborationCalloutPublishedView = ({
       defaultValue: '',
       spaceName: space?.profile?.displayName,
       spaceType: space?.level,
-      calloutName: callout?.profile.displayName,
+      calloutName: callout?.framing?.profile?.displayName,
       calloutType: callout?.type,
       contributorName: triggeredBy?.profile?.displayName,
     };
@@ -24,10 +24,10 @@ export const CollaborationCalloutPublishedView = ({
       type,
       state,
       space: {
-        avatarUrl: space?.profile.visual?.uri ?? '',
+        avatarUrl: space?.profile?.visual?.uri ?? '',
       },
       resource: {
-        url: callout?.profile.url ?? '',
+        url: callout?.framing?.profile?.url ?? '',
       },
       contributor: {
         avatarUrl: triggeredBy?.profile?.visual?.uri ?? '',

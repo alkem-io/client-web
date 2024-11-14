@@ -12,13 +12,13 @@ export const CommunityNewMemberAdminView = ({ state, space, triggeredAt, contrib
     };
 
     return {
-      type: 'COMMUNITY_NEW_MEMBER_ADMIN',
+      type: 'communityNewMemberAdmin',
       state,
       space: {
-        avatarUrl: space?.profile.visual?.uri ?? '',
+        avatarUrl: space?.profile?.visual?.uri ?? '',
       },
       resource: {
-        url: space?.profile.url ?? '',
+        url: space?.profile?.url ?? '',
       },
       triggeredAt: triggeredAt,
       values: notificationTextValues,

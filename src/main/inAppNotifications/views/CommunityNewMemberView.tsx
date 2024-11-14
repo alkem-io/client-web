@@ -13,10 +13,10 @@ export const CommunityNewMemberView = ({ type, state, space, triggeredBy, trigge
       type,
       state,
       space: {
-        avatarUrl: space?.profile.visual?.uri ?? '',
+        avatarUrl: space?.profile?.visual?.uri ?? '',
       },
       resource: {
-        url: space?.profile.url ?? '',
+        url: space?.profile?.url ?? '',
       },
       triggeredAt: triggeredAt,
       values: notificationTextValues,

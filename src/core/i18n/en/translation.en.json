@@ -1725,19 +1725,19 @@
       "required": "Please select an Innovation Flow"
     },
     "inAppNotifications": {
-      "COLLABORATION_CALLOUT_PUBLISHED": {
+      "collaborationCalloutPublished": {
         "subject": "{{spaceName}} - New {{calloutType}} is published \"{{calloutName}}\", have a look!",
         "description": "<b>{{contributorName}}</b> published a new {{calloutType}} in {{spaceType}}: {{spaceName}}, with name: {{calloutName}}."
       },
-      "COMMUNICATION_USER_MENTION": {
+      "communicationUserMention": {
         "subject": "{{commenterName}} mentioned you in a comment on Alkemio",
         "description": "<b>{{commenterName}}</b> mentioned you in a comment on {{calloutName}}:<br /><pre><i>{{comment}}</i></pre>"
       },
-      "COMMUNITY_NEW_MEMBER": {
+      "communityNewMember": {
         "subject": "{{spaceName}} - Welcome to the Community!",
         "description": "Thank you for joining {{spaceName}}!<br /> You can now start contributing to the various posts and whiteboards, further deepen your knowledge about this topic, and connect with other Contributors."
       },
-      "COMMUNITY_NEW_MEMBER_ADMIN": {
+      "communityNewMemberAdmin": {
         "subject": "{{memberType}} \"{{memberName}}\" joined {{spaceName}}",
         "description": "The {{memberType}} <b>{{memberName}}</b> has joined {{spaceName}}, of which you are an admin."
       }
