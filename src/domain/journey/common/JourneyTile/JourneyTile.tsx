@@ -11,7 +11,7 @@ import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import { BlockTitle } from '../../../../core/ui/typography';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import defaultJourneyCardBanner from '../../../../domain/journey/defaultVisuals/Card.jpg';
-import { PrivacyIcon } from '../JourneyCard/JourneyCard';
+import { PrivacyIcon } from './PrivacyIcon';
 
 type JourneyTileProps = {
   journey:

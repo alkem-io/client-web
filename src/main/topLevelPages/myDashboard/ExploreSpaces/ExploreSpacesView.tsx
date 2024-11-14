@@ -12,6 +12,7 @@ import SeeMoreExpandable from '../../../../core/ui/content/SeeMoreExpandable';
 import JourneyTile from '../../../../domain/journey/common/JourneyTile/JourneyTile';
 import { ExploreSpacesViewProps } from './ExploreSpacesTypes';
 import { useColumns } from '../../../../core/ui/grid/GridContext';
+import { SpacePrivacyMode } from '../../../../core/apollo/generated/graphql-schema';
 
 const DEFAULT_ITEMS_LIMIT = 15; // 3 rows of 5 but without the welcome space
 
@@ -40,7 +41,7 @@ export const ExploreSpacesView = ({
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
   const isSmall = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
   // 2 items on small and full width on mobile; issue with 8 columns on isSmall instead of 12
-  const cardColumns = isMobile ? columns : isSmall ? columns / 2 : columns / 4;
+  const cardColumns = isMobile ? columns : columns / (isSmall ? 2 : 4);
 
   const [hasExpanded, setHasExpanded] = useState(false);
   const enabledFilters = filtersConfig.flatMap(category => category.key);
@@ -48,9 +49,11 @@ export const ExploreSpacesView = ({
 
   const isCollapsed = !hasExpanded;
 
-  const enableLazyLoading = !isCollapsed || (spaces && spaces.length < itemsLimit);
+  const spacesLength = spaces?.length ?? 0;
 
-  const enableShowAll = isCollapsed && spaces && (spaces.length > itemsLimit || hasMore);
+  const enableLazyLoading = !isCollapsed || spacesLength < itemsLimit;
+
+  const enableShowAll = isCollapsed && (spacesLength > itemsLimit || hasMore);
 
   const loader = useLazyLoading(Box, { fetchMore, loading, hasMore });
 
@@ -61,6 +64,8 @@ export const ExploreSpacesView = ({
   const onFilterChange = (filter: string) => {
     setSelectedFilter(filter);
   };
+
+  const isPrivate = (space): boolean => space?.settings.privacy?.mode === SpacePrivacyMode.Private;
 
   const renderSkeleton = (size: number) =>
     Array.from({ length: size }).map((_, index) => (
@@ -108,20 +113,31 @@ export const ExploreSpacesView = ({
           ))}
         </Gutters>
       </Gutters>
-      {searchTerms.length !== 0 && spaces && spaces.length === 0 && (
+      {searchTerms.length !== 0 && spacesLength === 0 && (
         <CaptionSmall marginX="auto" paddingY={gutters()}>
           {t('pages.exploreSpaces.search.noResults')}
         </CaptionSmall>
       )}
       <ScrollableCardsLayoutContainer orientation="vertical">
         {visibleFirstWelcomeSpace && (
-          <JourneyTile journey={welcomeSpace} journeyTypeName="space" columns={cardColumns} />
+          <JourneyTile
+            journey={welcomeSpace}
+            journeyTypeName="space"
+            columns={cardColumns}
+            isPrivate={isPrivate(welcomeSpace)}
+          />
         )}
-        {spaces && spaces.length > 0 && (
+        {spacesLength > 0 && (
           <>
             {visibleSpaces!.map(space =>
               visibleFirstWelcomeSpace && space.id === welcomeSpace?.id ? null : (
-                <JourneyTile key={space.id} journey={space} journeyTypeName="space" columns={cardColumns} />
+                <JourneyTile
+                  key={space.id}
+                  journey={space}
+                  journeyTypeName="space"
+                  columns={cardColumns}
+                  isPrivate={isPrivate(space)}
+                />
               )
             )}
             {enableLazyLoading && loader}
