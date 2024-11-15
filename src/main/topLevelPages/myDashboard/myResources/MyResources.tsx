@@ -6,17 +6,15 @@ import { useUserContext } from '@/domain/community/user';
 import InnovationHubCardHorizontal from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
 import InnovationPackCardHorizontal from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
 import JourneyCardHorizontal from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
-import { useDashboardContext } from '../DashboardContext';
 
 const MyResources = () => {
   const { accountId } = useUserContext();
-  const { activityEnabled } = useDashboardContext();
 
   const { data: accountData, loading: loadingAccount } = useMyResourcesQuery({
     variables: {
       accountId: accountId ?? '',
     },
-    skip: !activityEnabled || !accountId,
+    skip: !accountId,
   });
 
   const { innovationHubs, spaces, virtualContributors, innovationPacks } = useMemo(
@@ -30,7 +28,6 @@ const MyResources = () => {
   );
 
   if (
-    !activityEnabled ||
     loadingAccount ||
     !accountData?.lookup.account ||
     (innovationHubs.length < 1 && spaces?.length < 1 && virtualContributors?.length < 1 && innovationPacks?.length < 1)
