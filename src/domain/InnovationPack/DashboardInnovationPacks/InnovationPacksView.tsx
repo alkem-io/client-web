@@ -11,6 +11,8 @@ import { Box, Button, Theme, useMediaQuery } from '@mui/material';
 import { CONTRIBUTE_CARD_COLUMNS } from '../../../core/ui/card/ContributeCard';
 import GridItem from '../../../core/ui/grid/GridItem';
 import { Skeleton } from '@mui/material';
+import { gutters } from '../../../core/ui/grid/utils';
+import { useTheme } from '@mui/styles';
 
 interface InnovationPacksViewProps extends PageContentBlockProps {
   filter: string[];
@@ -37,6 +39,7 @@ const InnovationPacksView = ({
   ...props
 }: InnovationPacksViewProps) => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
   return (
@@ -54,8 +57,8 @@ const InnovationPacksView = ({
           ? Array.from({ length: isMobile ? 2 : 5 }).map((_, idx) => (
               <Skeleton
                 key={idx}
-                width={240}
-                height={300}
+                width={gutters(12)(theme)}
+                height={gutters(13)(theme)}
                 animation="pulse"
                 variant="rectangular"
                 sx={{ borderRadius: 1 }}

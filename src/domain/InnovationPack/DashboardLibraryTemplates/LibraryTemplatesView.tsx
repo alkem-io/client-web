@@ -13,6 +13,8 @@ import TemplateTypeFilterMobile from './TemplateTypeFilterMobile';
 import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
 import TemplateCard from '../../templates/components/cards/TemplateCard';
 import { AnyTemplate, AnyTemplateWithInnovationPack } from '../../templates/models/TemplateBase';
+import { gutters } from '../../../core/ui/grid/utils';
+import { useTheme } from '@mui/styles';
 
 export interface LibraryTemplatesFilter {
   templateTypes: TemplateType[];
@@ -47,6 +49,7 @@ const LibraryTemplatesView = ({
 }: Omit<PageContentBlockProps, 'onClick'> & LibraryTemplatesViewProps) => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
+  const theme = useTheme();
 
   return (
     <PageContentBlock {...props}>
@@ -90,11 +93,11 @@ const LibraryTemplatesView = ({
 
       <ScrollableCardsLayoutContainer minHeight={0} orientation={expanded ? 'vertical' : undefined} sameHeight>
         {loading
-          ? Array.from({ length: 5 }).map((_, idx) => (
+          ? Array.from({ length: isMobile ? 2 : 5 }).map((_, idx) => (
               <Skeleton
                 key={idx}
-                width={248}
-                height={262}
+                width={gutters(12)(theme)}
+                height={gutters(13)(theme)}
                 animation="pulse"
                 variant="rectangular"
                 sx={{ borderRadius: 1 }}
@@ -109,7 +112,7 @@ const LibraryTemplatesView = ({
               />
             ))}
 
-        {isMobile && hasMore && (
+        {isMobile && !loading && hasMore && (
           <GridItem columns={CONTRIBUTE_CARD_COLUMNS}>
             <Box
               sx={{
