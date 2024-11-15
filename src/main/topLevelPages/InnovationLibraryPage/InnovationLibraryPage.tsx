@@ -14,9 +14,7 @@ import BreadcrumbsItem from '../../../core/ui/navigation/BreadcrumbsItem';
 import TopLevelPageBreadcrumbs from '../topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 
 const InnovationLibraryPage = () => {
-  const { data: innovationLibraryData, loading: innovationLibraryLoading } = useInnovationLibraryQuery({
-    fetchPolicy: 'network-only',
-  });
+  const { data: innovationLibraryData, loading: innovationLibraryLoading } = useInnovationLibraryQuery();
 
   const innovationPacks = useInnovationPackCardProps(innovationLibraryData?.platform.library.innovationPacks);
   const templates = innovationLibraryData?.platform.library.templates;
