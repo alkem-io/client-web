@@ -3,7 +3,7 @@ import Delete from '@mui/icons-material/Delete';
 import React, { ComponentType, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SearchableListIconButton from '../../../shared/components/SearchableList/SearchableListIconButton';
-import RemoveModal from '@core/ui/dialogs/RemoveModal';
+import RemoveModal from '@/core/ui/dialogs/RemoveModal';
 import LoadingListItem from '../../../shared/components/SearchableList/LoadingListItem';
 import ListItemLink, { ListItemLinkProps } from '../../../shared/components/SearchableList/ListItemLink';
 import { omit } from 'lodash';

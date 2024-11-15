@@ -2,10 +2,10 @@ import React from 'react';
 import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
-import { buildNewOrganizationUrl } from '@main/routing/urlBuilders';
+import { buildNewOrganizationUrl } from '@/main/routing/urlBuilders';
 import AssociatedOrganizationsView, { AssociatedOrganizationsViewProps } from './AssociatedOrganizationsView';
-import PageContentBlock from '@core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '@core/ui/content/PageContentBlockHeader';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 
 export interface AssociatedOrganizationsDashboardSectionProps<
   Consumed extends {},

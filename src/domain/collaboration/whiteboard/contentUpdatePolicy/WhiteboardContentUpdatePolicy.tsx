@@ -1,8 +1,8 @@
 import {
   useUpdateWhiteboardContentUpdatePolicyMutation,
   useWhiteboardContentUpdatePolicyQuery,
-} from '@core/apollo/generated/apollo-hooks';
-import { ContentUpdatePolicy } from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/apollo-hooks';
+import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
 
 interface WhiteboardContentUpdatePolicyProviderProps {
   whiteboardId: string | undefined;

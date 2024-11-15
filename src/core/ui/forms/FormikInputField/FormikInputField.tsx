@@ -4,7 +4,7 @@ import { Box, FormHelperText, TextField, TextFieldProps } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
 import { DistributiveOmit } from '@mui/types';
 import TranslationKey from '../../../i18n/utils/TranslationKey';
-import { useValidationMessageTranslation } from '@domain/shared/i18n/ValidationMessageTranslation';
+import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import HelpButton from '../../button/HelpButton';
 import CharacterCounter from '../characterCounter/CharacterCounter';
 

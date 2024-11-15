@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Routes } from 'react-router';
 import { Navigate } from 'react-router-dom';
-import { Error404 } from '@core/pages/Errors/Error404';
+import { Error404 } from '@/core/pages/Errors/Error404';
 import { nameOfUrl } from '../../../../main/routing/urlParams';
 import SubspaceProvider from '../context/SubspaceProvider';
 import { CommunityContextProvider } from '../../../community/community/CommunityContext';
@@ -10,7 +10,7 @@ import { routes } from '../routes/challengeRoutes';
 import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import SubspaceAboutPage from '../pages/SubspaceAboutPage';
 import SubspaceHomePage from '../subspaceHome/SubspaceHomePage';
-import Redirect from '@core/routing/Redirect';
+import Redirect from '@/core/routing/Redirect';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 import SubspaceCalloutPage from '../subspaceCalloutPage/SubspaceCalloutPage';

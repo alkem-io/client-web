@@ -1,8 +1,8 @@
 import React, { FC, useContext } from 'react';
-import { useUrlParams } from '@core/routing/useUrlParams';
-import { usePostProviderQuery } from '@core/apollo/generated/apollo-hooks';
+import { useUrlParams } from '@/core/routing/useUrlParams';
+import { usePostProviderQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ApolloError } from '@apollo/client';
-import { AuthorizationPrivilege } from '@core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 interface PostPermissions {

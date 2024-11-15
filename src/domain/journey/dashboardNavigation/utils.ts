@@ -1,5 +1,5 @@
 import { DashboardNavigationItem } from '../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
-import { gutters } from '@core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 
 export const findCurrentPath = (
   dashboardNavigation: DashboardNavigationItem | undefined,

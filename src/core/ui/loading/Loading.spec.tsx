@@ -3,7 +3,7 @@
  */
 import Loading from './Loading';
 import WrapperTypography from '../typography/deprecated/WrapperTypography';
-import { render, screen } from '@main/test/testUtils';
+import { render, screen } from '@/main/test/testUtils';
 import { expect, test, describe } from 'vitest';
 
 describe('Loading component', () => {

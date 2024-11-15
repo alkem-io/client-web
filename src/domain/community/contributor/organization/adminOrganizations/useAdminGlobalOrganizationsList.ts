@@ -7,14 +7,14 @@ import {
   useAssignLicensePlanToAccountMutation,
   useDeleteOrganizationMutation,
   useRevokeLicensePlanFromAccountMutation,
-} from '@core/apollo/generated/apollo-hooks';
-import { useNotification } from '@core/ui/notifications/useNotification';
+} from '@/core/apollo/generated/apollo-hooks';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import usePaginatedQuery from '../../../../shared/pagination/usePaginatedQuery';
 import { SearchableListItem } from '../../../../shared/components/SearchableList/SimpleSearchableTable';
-import clearCacheForQuery from '@core/apollo/utils/clearCacheForQuery';
+import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { useTranslation } from 'react-i18next';
-import { buildSettingsUrl } from '@main/routing/urlBuilders';
-import { LicensePlanType } from '@core/apollo/generated/graphql-schema';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { LicensePlanType } from '@/core/apollo/generated/graphql-schema';
 
 const PAGE_SIZE = 10;
 

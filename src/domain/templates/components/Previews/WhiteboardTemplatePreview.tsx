@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
-import PageContentBlock from '@core/ui/content/PageContentBlock';
-import Loading from '@core/ui/loading/Loading';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import Loading from '@/core/ui/loading/Loading';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
 import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
 import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';

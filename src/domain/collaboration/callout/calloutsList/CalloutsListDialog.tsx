@@ -1,6 +1,6 @@
 import { Dialog, DialogContent } from '@mui/material';
 import React from 'react';
-import DialogHeader from '@core/ui/dialog/DialogHeader';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import CalloutsList, { CalloutInfo, CalloutsListProps } from './CalloutsList';
 import { useTranslation } from 'react-i18next';
 

@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
-import ContributeCard from '@core/ui/card/ContributeCard';
+import ContributeCard from '@/core/ui/card/ContributeCard';
 import { AddCircleOutline } from '@mui/icons-material';
-import { gutters } from '@core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 
 interface CreateCalloutItemButtonProps {
   onClick: () => void;

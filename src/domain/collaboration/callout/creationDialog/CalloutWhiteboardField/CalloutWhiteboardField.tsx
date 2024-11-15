@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useField } from 'formik';
-import { Caption } from '@core/ui/typography/components';
+import { Caption } from '@/core/ui/typography/components';
 import { Box } from '@mui/material';
 import FormikWhiteboardPreview from '../../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
-import { gutters } from '@core/ui/grid/utils';
-import { CreateProfileInput } from '@core/apollo/generated/graphql-schema';
+import { gutters } from '@/core/ui/grid/utils';
+import { CreateProfileInput } from '@/core/apollo/generated/graphql-schema';
 import { WhiteboardPreviewImage } from '../../../whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 interface CalloutWhiteboardFieldProps {

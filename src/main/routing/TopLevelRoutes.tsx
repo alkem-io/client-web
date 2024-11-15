@@ -1,39 +1,39 @@
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
-import { CommunityContextProvider } from '@domain/community/community/CommunityContext';
-import { SpaceContextProvider } from '@domain/journey/space/SpaceContext/SpaceContext';
+import { CommunityContextProvider } from '@/domain/community/community/CommunityContext';
+import { SpaceContextProvider } from '@/domain/journey/space/SpaceContext/SpaceContext';
 import HomePage from '../topLevelPages/Home/HomePage';
-import { Error404 } from '@core/pages/Errors/Error404';
-import { Restricted } from '@core/routing/Restricted';
+import { Error404 } from '@/core/pages/Errors/Error404';
+import { Restricted } from '@/core/routing/Restricted';
 import { nameOfUrl } from './urlParams';
-import { IdentityRoute } from '@core/auth/authentication/routing/IdentityRoute';
-import { WithApmTransaction } from '@domain/shared/components';
-import devRoute from '@dev/routes';
-import NoIdentityRedirect from '@core/routing/NoIdentityRedirect';
-import RedirectToLanding from '@domain/platform/routes/RedirectToLanding';
-import NonIdentity from '@domain/platform/routes/NonIdentity';
-import useRedirectToIdentityDomain from '@core/auth/authentication/routing/useRedirectToIdentityDomain';
-import { EntityPageLayoutHolder, NotFoundPageLayout, RenderPoint } from '@domain/journey/common/EntityPageLayout';
-import RedirectToWelcomeSite from '@domain/platform/routes/RedirectToWelcomeSite';
+import { IdentityRoute } from '@/core/auth/authentication/routing/IdentityRoute';
+import { WithApmTransaction } from '@/domain/shared/components';
+import devRoute from '@/dev/routes';
+import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
+import RedirectToLanding from '@/domain/platform/routes/RedirectToLanding';
+import NonIdentity from '@/domain/platform/routes/NonIdentity';
+import useRedirectToIdentityDomain from '@/core/auth/authentication/routing/useRedirectToIdentityDomain';
+import { EntityPageLayoutHolder, NotFoundPageLayout, RenderPoint } from '@/domain/journey/common/EntityPageLayout';
+import RedirectToWelcomeSite from '@/domain/platform/routes/RedirectToWelcomeSite';
 import { TopLevelRoutePath } from './TopLevelRoutePath';
-import Loading from '@core/ui/loading/Loading';
+import Loading from '@/core/ui/loading/Loading';
 
-const DocumentationPage = React.lazy(() => import('@domain/documentation/DocumentationPage'));
+const DocumentationPage = React.lazy(() => import('@/domain/documentation/DocumentationPage'));
 const SpaceExplorerPage = React.lazy(() => import('../topLevelPages/topLevelSpaces/SpaceExplorerPage'));
 const InnovationLibraryPage = React.lazy(() => import('../topLevelPages/InnovationLibraryPage/InnovationLibraryPage'));
-const ContributorsPage = React.lazy(() => import('@domain/community/user/ContributorsPage'));
-const AdminRoute = React.lazy(() => import('@domain/platform/admin/routing/AdminRoute'));
-const UserRoute = React.lazy(() => import('@domain/community/user/routing/UserRoute'));
+const ContributorsPage = React.lazy(() => import('@/domain/community/user/ContributorsPage'));
+const AdminRoute = React.lazy(() => import('@/domain/platform/admin/routing/AdminRoute'));
+const UserRoute = React.lazy(() => import('@/domain/community/user/routing/UserRoute'));
 const OrganizationRoute = React.lazy(
-  () => import('@domain/community/contributor/organization/routing/OrganizationRoute')
+  () => import('@/domain/community/contributor/organization/routing/OrganizationRoute')
 );
-const VCRoute = React.lazy(() => import('@domain/community/virtualContributor/VCRoute'));
-const ForumRoute = React.lazy(() => import('@domain/communication/discussion/routing/ForumRoute'));
-const InnovationPackRoute = React.lazy(() => import('@domain/InnovationPack/InnovationPackRoute'));
-const ProfileRoute = React.lazy(() => import('@domain/community/profile/routing/ProfileRoute'));
-const CreateSpaceDialog = React.lazy(() => import('@domain/journey/space/createSpace/CreateSpaceDialog'));
-const SpaceRoute = React.lazy(() => import('@domain/journey/space/routing/SpaceRoute'));
+const VCRoute = React.lazy(() => import('@/domain/community/virtualContributor/VCRoute'));
+const ForumRoute = React.lazy(() => import('@/domain/communication/discussion/routing/ForumRoute'));
+const InnovationPackRoute = React.lazy(() => import('@/domain/InnovationPack/InnovationPackRoute'));
+const ProfileRoute = React.lazy(() => import('@/domain/community/profile/routing/ProfileRoute'));
+const CreateSpaceDialog = React.lazy(() => import('@/domain/journey/space/createSpace/CreateSpaceDialog'));
+const SpaceRoute = React.lazy(() => import('@/domain/journey/space/routing/SpaceRoute'));
 
 export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();

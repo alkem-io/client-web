@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { useUrlParams } from '@core/routing/useUrlParams';
-import { useOrganizationInfoQuery } from '@core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, OrganizationInfoFragment } from '@core/apollo/generated/graphql-schema';
+import { useUrlParams } from '@/core/routing/useUrlParams';
+import { useOrganizationInfoQuery } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, OrganizationInfoFragment } from '@/core/apollo/generated/graphql-schema';
 import { useUserContext } from '../../../user/hooks/useUserContext';
 
 interface OrganizationContextProps {

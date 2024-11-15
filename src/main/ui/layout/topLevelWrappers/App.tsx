@@ -1,9 +1,9 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { NotificationHandler } from '@core/ui/notifications/NotificationHandler';
-import { useUserContext } from '@domain/community/user';
-import { useUserScope } from '@core/analytics/SentryTransactionScopeContext';
-import useServerMetadata from '@domain/platform/metadata/useServerMetadata';
+import { NotificationHandler } from '@/core/ui/notifications/NotificationHandler';
+import { useUserContext } from '@/domain/community/user';
+import { useUserScope } from '@/core/analytics/SentryTransactionScopeContext';
+import useServerMetadata from '@/domain/platform/metadata/useServerMetadata';
 import { useCookies } from 'react-cookie';
 import { ALKEMIO_COOKIE_NAME } from '../../../cookies/useAlkemioCookies';
 import CookieConsent from '../../../cookies/CookieConsent';

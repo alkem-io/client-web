@@ -1,17 +1,17 @@
 import * as yup from 'yup';
 import { Button, Skeleton } from '@mui/material';
-import DialogHeader from '@core/ui/dialog/DialogHeader';
-import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
-import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { useTranslation } from 'react-i18next';
-import FormikSelect from '@core/ui/forms/FormikSelect';
+import FormikSelect from '@/core/ui/forms/FormikSelect';
 import { Form, Formik } from 'formik';
 import useLoadingState from '../../shared/utils/useLoadingState';
 import { LoadingButton } from '@mui/lab';
-import { useSpaceCollaborationTemplatesQuery } from '@core/apollo/generated/apollo-hooks';
+import { useSpaceCollaborationTemplatesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';
-import Gutters from '@core/ui/grid/Gutters';
-import { Actions } from '@core/ui/actions/Actions';
+import Gutters from '@/core/ui/grid/Gutters';
+import { Actions } from '@/core/ui/actions/Actions';
 
 interface FormValues {
   collaborationTemplateSelectedId: string;

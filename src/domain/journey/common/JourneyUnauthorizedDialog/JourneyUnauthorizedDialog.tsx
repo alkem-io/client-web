@@ -1,17 +1,17 @@
-import { gutters } from '@core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { Box } from '@mui/material';
 import React, { useRef } from 'react';
-import BackButton from '@core/ui/actions/BackButton';
+import BackButton from '@/core/ui/actions/BackButton';
 import ApplicationButton from '../../../community/application/applicationButton/ApplicationButton';
 import ApplicationButtonContainer, {
   ApplicationButtonContainerProps,
 } from '../../../community/application/containers/ApplicationButtonContainer';
-import PageContentRibbon from '@core/ui/content/PageContentRibbon';
+import PageContentRibbon from '@/core/ui/content/PageContentRibbon';
 import { LockOutlined } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import useNavigate from '@core/routing/useNavigate';
+import useNavigate from '@/core/routing/useNavigate';
 import JourneyAboutDialog, { JourneyAboutDialogProps } from '../JourneyAboutDialog/JourneyAboutDialog';
-import useCanGoBack from '@core/routing/useCanGoBack';
+import useCanGoBack from '@/core/routing/useCanGoBack';
 
 interface JourneyUnauthorizedDialogProps
   extends Omit<JourneyAboutDialogProps, 'open' | 'startButton' | 'endButton'>,

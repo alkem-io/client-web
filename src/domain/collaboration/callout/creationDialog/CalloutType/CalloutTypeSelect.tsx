@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CalloutType } from '@core/apollo/generated/graphql-schema';
+import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import calloutIcons from '../../utils/calloutIcons';
-import RouterLink from '@core/ui/link/RouterLink';
+import RouterLink from '@/core/ui/link/RouterLink';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { Caption } from '@core/ui/typography';
+import { Caption } from '@/core/ui/typography';
 import { useConfig } from '../../../../platform/config/useConfig';
 import { Button } from '@mui/material';
 

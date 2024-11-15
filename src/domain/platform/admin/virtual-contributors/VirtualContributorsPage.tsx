@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import AdminLayout from '../layout/toplevel/AdminLayout';
 import { AdminSection } from '../layout/toplevel/constants';
-import { useAdminVirtualContributorsQuery } from '@core/apollo/generated/apollo-hooks';
-import Avatar from '@core/ui/avatar/Avatar';
-import { BlockTitle, CardTitle } from '@core/ui/typography';
+import { useAdminVirtualContributorsQuery } from '@/core/apollo/generated/apollo-hooks';
+import Avatar from '@/core/ui/avatar/Avatar';
+import { BlockTitle, CardTitle } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
-import BadgeCardView from '@core/ui/list/BadgeCardView';
-import RouterLink from '@core/ui/link/RouterLink';
-import Loading from '@core/ui/loading/Loading';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import RouterLink from '@/core/ui/link/RouterLink';
+import Loading from '@/core/ui/loading/Loading';
 import { Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
 const VirtualContributorsPage: FC = () => {

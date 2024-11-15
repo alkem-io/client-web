@@ -1,7 +1,7 @@
 import { onError } from '@apollo/client/link/error';
 import { ApolloError } from '@apollo/client';
 import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
-import { AlkemioGraphqlErrorCode } from '@main/constants/errors';
+import { AlkemioGraphqlErrorCode } from '@/main/constants/errors';
 
 export const useErrorHandlerLink = () => {
   const handleError = useApolloErrorHandler();

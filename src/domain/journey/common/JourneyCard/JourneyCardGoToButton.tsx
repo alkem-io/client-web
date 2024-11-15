@@ -1,8 +1,8 @@
 import React from 'react';
 import { ArrowForward } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import ButtonNarrow from '@core/ui/actions/ButtonNarrow';
-import RouterLink from '@core/ui/link/RouterLink';
+import ButtonNarrow from '@/core/ui/actions/ButtonNarrow';
+import RouterLink from '@/core/ui/link/RouterLink';
 
 interface JourneyCardGoToButtonProps {
   journeyUri: string;

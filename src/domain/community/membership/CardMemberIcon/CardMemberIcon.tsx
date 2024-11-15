@@ -1,7 +1,7 @@
 import React from 'react';
 import { BeenhereOutlined } from '@mui/icons-material';
-import { gutters } from '@core/ui/grid/utils';
-import RoundedIcon, { RoundedIconProps } from '@core/ui/icon/RoundedIcon';
+import { gutters } from '@/core/ui/grid/utils';
+import RoundedIcon, { RoundedIconProps } from '@/core/ui/icon/RoundedIcon';
 
 interface CardMemberIconProps extends Partial<RoundedIconProps> {}
 

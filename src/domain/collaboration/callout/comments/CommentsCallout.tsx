@@ -3,11 +3,15 @@ import React, { useCallback, useMemo } from 'react';
 import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts/useCallouts';
 import CommentsComponent from '../../../communication/room/Comments/CommentsComponent';
 import { useUserContext } from '../../../community/user';
-import { useRemoveCommentFromCalloutMutation } from '@core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, CalloutState, CommunityMembershipStatus } from '@core/apollo/generated/graphql-schema';
-import { evictFromCache } from '@core/apollo/utils/removeFromCache';
+import { useRemoveCommentFromCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
+import {
+  AuthorizationPrivilege,
+  CalloutState,
+  CommunityMembershipStatus,
+} from '@/core/apollo/generated/graphql-schema';
+import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import useCurrentBreakpoint from '@core/ui/utils/useCurrentBreakpoint';
+import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import useSubscribeOnRoomEvents from '../useSubscribeOnRoomEvents';
 import usePostMessageMutations from '../../../communication/room/Comments/usePostMessageMutations';
 import { useMessages } from '../../../communication/room/Comments/useMessages';

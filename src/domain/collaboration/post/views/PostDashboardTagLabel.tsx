@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Box, styled, SxProps, Theme } from '@mui/material';
-import WrapperTypography from '@core/ui/typography/deprecated/WrapperTypography';
-import { gutters } from '@core/ui/grid/utils';
+import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
+import { gutters } from '@/core/ui/grid/utils';
 
 const PREFIX = 'TagLabel';
 

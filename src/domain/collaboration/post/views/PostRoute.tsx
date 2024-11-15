@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import useBackToParentPage from '@core/routing/deprecated/useBackToParentPage';
+import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
 import PostDashboardPage from '../pages/PostDashboardPage';
 import PostSettingsPage from '../pages/PostSettingsPage';
 import PostSharePage from '../pages/PostSharePage';

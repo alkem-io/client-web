@@ -15,7 +15,7 @@ import { Chip, TextField, Theme, useMediaQuery } from '@mui/material';
 import { delay, uniq } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '../grid/utils';
-import { MAX_TERMS_SEARCH } from '@main/search/SearchView';
+import { MAX_TERMS_SEARCH } from '@/main/search/SearchView';
 
 export interface MultipleSelectProps {
   value: string[];

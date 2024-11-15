@@ -1,10 +1,10 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogContent } from '@mui/material';
-import DialogHeader from '@core/ui/dialog/DialogHeader';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import VirtualContributorForm from '../../../../community/virtualContributor/vcSettingsPage/VirtualContributorForm';
-import { UpdateVirtualContributorInput, Visual } from '@core/apollo/generated/graphql-schema';
-import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
+import { UpdateVirtualContributorInput, Visual } from '@/core/apollo/generated/graphql-schema';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 
 export interface VirtualContributorUpdateFormValues {
   id: string;

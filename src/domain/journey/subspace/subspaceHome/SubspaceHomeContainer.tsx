@@ -1,11 +1,11 @@
-import { SimpleContainerProps } from '@core/container/SimpleContainer';
+import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import useInnovationFlowStates, {
   UseInnovationFlowStatesProvided,
 } from '../../../collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
-import { SubspacePageSpaceFragment } from '@core/apollo/generated/graphql-schema';
+import { SubspacePageSpaceFragment } from '@/core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../JourneyTypeName';
-import { useSubspacePageQuery } from '@core/apollo/generated/apollo-hooks';
+import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useCanReadSpace, { SpaceReadAccess } from '../../common/authorization/useCanReadSpace';
 
 interface SubspaceHomeContainerProvided {

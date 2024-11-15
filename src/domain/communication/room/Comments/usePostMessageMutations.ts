@@ -1,9 +1,9 @@
-import ensurePresence from '@core/utils/ensurePresence';
+import ensurePresence from '@/core/utils/ensurePresence';
 import {
   MessageDetailsFragmentDoc,
   useReplyToMessageMutation,
   useSendMessageToRoomMutation,
-} from '@core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 
 interface UsePostMessageMutationsOptions {
   roomId: string | undefined;

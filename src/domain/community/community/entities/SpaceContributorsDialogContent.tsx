@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import useOrganizationCardProps from '../utils/useOrganizationCardProps';
-import { useSpaceCommunityContributorsQuery } from '@core/apollo/generated/apollo-hooks';
+import { useSpaceCommunityContributorsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useUserCardProps from '../utils/useUserCardProps';
 import CommunityContributorsView from '../CommunityContributors/CommunityContributorsView';
 import NoOrganizations from '../CommunityContributors/NoOrganizations';

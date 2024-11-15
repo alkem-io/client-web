@@ -3,12 +3,12 @@ import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { FormikProps } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
-import { TemplateType } from '@core/apollo/generated/graphql-schema';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfile } from './common/mappings';
-import { BlockSectionTitle } from '@core/ui/typography';
+import { BlockSectionTitle } from '@/core/ui/typography';
 import { CollaborationTemplate } from '../../models/CollaborationTemplate';
 import CollaborationTemplatePreview from '../Previews/CollabTemplatePreview';
-import { useCollaborationTemplateContentQuery } from '@core/apollo/generated/apollo-hooks';
+import { useCollaborationTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
 import CollaborationFromSpaceUrlForm from './CollaborationFromSpaceUrlForm';
 
 export interface CollaborationTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {

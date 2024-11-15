@@ -9,16 +9,16 @@ import {
   useUpdateCalloutTemplateMutation,
   useUpdateCommunityGuidelinesMutation,
   useUpdateTemplateMutation,
-} from '@core/apollo/generated/apollo-hooks';
-import PageContentBlockSeamless from '@core/ui/content/PageContentBlockSeamless';
+} from '@/core/apollo/generated/apollo-hooks';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { useTranslation } from 'react-i18next';
 import EditTemplateDialog from '../Dialogs/CreateEditTemplateDialog/EditTemplateDialog';
 import { AnyTemplate } from '../../models/TemplateBase';
 import useLoadingState from '../../../shared/utils/useLoadingState';
-import ConfirmationDialog from '@core/ui/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { AnyTemplateFormSubmittedValues } from '../Forms/TemplateForm';
-import useBackToPath from '@core/routing/useBackToPath';
-import { TemplateType } from '@core/apollo/generated/graphql-schema';
+import useBackToPath from '@/core/routing/useBackToPath';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Button, ButtonProps } from '@mui/material';
 import CreateTemplateDialog from '../Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import {
@@ -33,7 +33,7 @@ import { LibraryIcon } from '../../LibraryIcon';
 import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LoadingButton } from '@mui/lab';
-import useBackToParentPage from '@core/routing/deprecated/useBackToParentPage';
+import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
 import { CollaborationTemplateFormSubmittedValues } from '../Forms/CollaborationTemplateForm';
 import { CollaborationTemplate } from '../../models/CollaborationTemplate';
 

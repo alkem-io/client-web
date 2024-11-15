@@ -1,7 +1,20 @@
 {
   "compilerOptions": {
+    // Basic settings
     "target": "ES2016",
+    "module": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext"],
+    "jsx": "react-jsx",
+
+    // Paths & modules
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+
+    // Types & checks
     "types": ["vite/client", "vite-plugin-svgr/client", "jest"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -9,22 +22,13 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
-    "resolveJsonModule": true,
-    "moduleResolution": "Node",
-    "isolatedModules": true,
-    "noEmit": true,
     "noImplicitAny": false,
-    "jsx": "react-jsx",
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": "src",
-    "paths": {
-      "@core/*": ["core/*"],
-      "@main/*": ["main/*"],
-      "@dev/*": ["dev/*"],
-      "@domain/*": ["domain/*"]
-    }
+
+    // Other settings
+    "isolatedModules": true,
+    "noEmit": true
   },
-  "include": ["src", "@types"],
+  "include": ["src", "@types", "vite.config.mjs", ".eslintrc.js"],
   "exclude": ["node_modules"]
 }

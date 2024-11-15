@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { CalloutFragmentDoc, useCreateCalloutMutation } from '@core/apollo/generated/apollo-hooks';
+import { CalloutFragmentDoc, useCreateCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
   CalloutGroupName,
   CalloutState,
@@ -8,7 +8,7 @@ import {
   CreateCalloutMutation,
   CreateReferenceInput,
   CreateTagsetInput,
-} from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import { WhiteboardFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardField';
 import { useCollaborationAuthorization } from '../../../authorization/useCollaborationAuthorization';
 

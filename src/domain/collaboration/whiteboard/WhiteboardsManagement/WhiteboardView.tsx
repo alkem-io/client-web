@@ -1,10 +1,10 @@
 import React, { FC, ReactNode } from 'react';
 import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
-import { AuthorizationPrivilege } from '@core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import WhiteboardDialog, { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
-import { useFullscreen } from '@core/ui/fullscreen/useFullscreen';
-import FullscreenButton from '@core/ui/button/FullscreenButton';
+import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
+import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 import useWhiteboardContentUpdatePolicy from '../contentUpdatePolicy/WhiteboardContentUpdatePolicy';
 import WhiteboardShareSettings from '../share/WhiteboardShareSettings';

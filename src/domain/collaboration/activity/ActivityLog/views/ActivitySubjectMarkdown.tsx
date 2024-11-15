@@ -1,5 +1,5 @@
 import React from 'react';
-import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 
 interface ActivitySubjectMarkdownProps {
   children: string;

@@ -3,7 +3,7 @@ import {
   AuthorizationPrivilege,
   DiscussionCardFragment,
   ForumDiscussionCategory,
-} from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import { Author } from '../../../shared/components/AuthorAvatar/models/author';
 import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
 import { Room } from '../../room/models/Room';

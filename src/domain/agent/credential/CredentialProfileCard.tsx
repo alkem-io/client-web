@@ -2,7 +2,7 @@ import { Box, Card, CardContent, CardHeader, Typography } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { FC, forwardRef } from 'react';
-import HelpButton from '@core/ui/button/HelpButton';
+import HelpButton from '@/core/ui/button/HelpButton';
 
 export interface ProfileCardProps {
   title: string;

@@ -6,8 +6,8 @@ import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
 import { EmptyLayout, EntityPageLayoutProps } from '../../../../journey/common/EntityPageLayout';
 import SettingsPageContent from './SettingsPageContent';
 import EntityPageLayout from '../../../../journey/common/EntityPageLayout/EntityPageLayout';
-import PageContent from '@core/ui/content/PageContent';
-import { PlatformNavigationBarProps } from '@main/ui/platformNavigation/PlatformNavigationBar';
+import PageContent from '@/core/ui/content/PageContent';
+import { PlatformNavigationBarProps } from '@/main/ui/platformNavigation/PlatformNavigationBar';
 import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
 
 type EntityTypeName = JourneyTypeName | 'organization' | 'user';

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Skeleton } from '@mui/material';
-import { useRouteResolver } from '@main/routing/resolvers/RouteResolver';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import SpaceSettingsLayout from '../../../../platform/admin/space/SpaceSettingsLayout';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';

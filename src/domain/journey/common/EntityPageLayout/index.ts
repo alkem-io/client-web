@@ -1,5 +1,5 @@
 import { default as EntityPageLayoutImpl } from './EntityPageLayout';
-import createLayoutHolderWithOutlet from '@core/ui/layout/layoutHolder/LayoutHolderWithOutlet';
+import createLayoutHolderWithOutlet from '@/core/ui/layout/layoutHolder/LayoutHolderWithOutlet';
 import { EntityPageLayoutProps, EntityTabsProps } from './EntityPageLayoutTypes';
 import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
 import SubspacePageLayoutImpl from '../../subspace/layout/SubspacePageLayout';

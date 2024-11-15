@@ -11,12 +11,12 @@ import {
   StorageBucket,
   Tagset,
   User,
-} from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import { GroupFormInput } from './GroupFormInput';
-import FormikInputField from '@core/ui/forms/FormikInputField/FormikInputField';
-import WrapperButton from '@core/ui/button/deprecated/WrapperButton';
-import Section, { Header } from '@core/ui/content/deprecated/Section';
-import VisualUpload from '@core/ui/upload/VisualUpload/VisualUpload';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import WrapperButton from '@/core/ui/button/deprecated/WrapperButton';
+import Section, { Header } from '@/core/ui/content/deprecated/Section';
+import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import ProfileReferenceSegment from '../../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../../Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '../../Common/TagsetSegment';

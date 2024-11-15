@@ -1,4 +1,4 @@
-import { Identifiable } from '@core/utils/Identifiable';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 export interface ActivityCalloutValues extends Identifiable {
   framing: {

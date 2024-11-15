@@ -1,11 +1,11 @@
-import { SubspaceCreatedDocument } from '@core/apollo/generated/apollo-hooks';
+import { SubspaceCreatedDocument } from '@/core/apollo/generated/apollo-hooks';
 import {
   SubspacesOnSpaceFragment,
   Space,
   SubspaceCreatedSubscription,
   SubspaceCreatedSubscriptionVariables,
-} from '@core/apollo/generated/graphql-schema';
-import createUseSubscriptionToSubEntityHook from '@core/apollo/subscriptions/useSubscriptionToSubEntity';
+} from '@/core/apollo/generated/graphql-schema';
+import createUseSubscriptionToSubEntityHook from '@/core/apollo/subscriptions/useSubscriptionToSubEntity';
 
 const useSubSpaceCreatedSubscription = createUseSubscriptionToSubEntityHook<
   SubspacesOnSpaceFragment,

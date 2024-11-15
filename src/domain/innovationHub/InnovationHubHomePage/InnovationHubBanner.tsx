@@ -1,8 +1,8 @@
 import { Visual } from '../../common/visual/Visual';
 import { Box, Paper } from '@mui/material';
-import ImageBlurredSides from '@core/ui/image/ImageBlurredSides';
-import { gutters } from '@core/ui/grid/utils';
-import { PlatformTitle, Tagline } from '@core/ui/typography';
+import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
+import { gutters } from '@/core/ui/grid/utils';
+import { PlatformTitle, Tagline } from '@/core/ui/typography';
 
 interface InnovationHubBannerProps {
   banner: Visual | undefined;

@@ -1,4 +1,4 @@
-import { BlockSectionTitle } from '@core/ui/typography';
+import { BlockSectionTitle } from '@/core/ui/typography';
 import { Box } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';

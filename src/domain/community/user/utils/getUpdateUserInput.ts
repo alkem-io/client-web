@@ -1,5 +1,5 @@
 import { UserModel } from '../models/User';
-import { Maybe, UpdateProfileInput, UpdateUserInput } from '@core/apollo/generated/graphql-schema';
+import { Maybe, UpdateProfileInput, UpdateUserInput } from '@/core/apollo/generated/graphql-schema';
 
 type HavingId<Entity extends { id?: unknown }> = Entity & { id: Exclude<Entity['id'], undefined> };
 const doesHaveId = <Entity extends { id?: unknown }>(entity: Entity): entity is HavingId<Entity> => !!entity.id;

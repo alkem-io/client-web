@@ -3,9 +3,9 @@ import { useMemo, useState } from 'react';
 import { useTheme } from '@mui/material';
 import { Theme, useMediaQuery } from '@mui/material';
 
-import { useColumns } from '@core/ui/grid/GridContext';
-import { useDashboardWithMembershipsQuery } from '@core/apollo/generated/apollo-hooks';
-import { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@domain/journey/common/JourneyTile/JourneyTile';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import { useDashboardWithMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@/domain/journey/common/JourneyTile/JourneyTile';
 
 export const useDashboardSpaces = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);

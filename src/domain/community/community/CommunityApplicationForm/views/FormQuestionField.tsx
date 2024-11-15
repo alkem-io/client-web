@@ -2,14 +2,14 @@ import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import * as yup from 'yup';
-import { gutters } from '@core/ui/grid/utils';
-import FormikInputField from '@core/ui/forms/FormikInputField/FormikInputField';
-import FormikCheckboxField from '@core/ui/forms/FormikCheckboxField';
-import RoundedBadge from '@core/ui/icon/RoundedBadge';
+import { gutters } from '@/core/ui/grid/utils';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import FormikCheckboxField from '@/core/ui/forms/FormikCheckboxField';
+import RoundedBadge from '@/core/ui/icon/RoundedBadge';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowUpwardIcon from '@mui/icons-material/KeyboardArrowUp';
 import ArrowDownwardIcon from '@mui/icons-material/KeyboardArrowDown';
-import { MID_TEXT_LENGTH } from '@core/ui/forms/field-length.constants';
+import { MID_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
 interface FormQuestionFieldProps {
   index: number;

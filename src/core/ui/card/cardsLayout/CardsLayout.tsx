@@ -1,7 +1,7 @@
 import React, { cloneElement, FC, ReactElement, ReactNode, useMemo } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import { Identifiable } from '../../../utils/Identifiable';
-import getDepsValueFromObject from '@domain/shared/utils/getDepsValueFromObject';
+import getDepsValueFromObject from '@/domain/shared/utils/getDepsValueFromObject';
 import PageContentBlockGrid, { PageContentBlockGridProps } from '../../content/PageContentBlockGrid';
 
 export interface CardsLayoutProps<Item extends Identifiable | null | undefined> extends CardLayoutContainerProps {

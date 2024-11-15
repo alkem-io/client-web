@@ -3,7 +3,7 @@ import { useField } from 'formik';
 import { FormikInputProps } from '../FormikInputProps';
 import AlkemioTimePicker, { AlkemioTimePickerProps } from './AlkemioTimePicker';
 import TranslationKey from '../../../i18n/utils/TranslationKey';
-import { useValidationMessageTranslation } from '@domain/shared/i18n/ValidationMessageTranslation';
+import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
 
 interface FormikTimePickerProps extends FormikInputProps, Omit<AlkemioTimePickerProps, 'value' | 'onChange'> {}
 

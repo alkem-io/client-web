@@ -4,11 +4,11 @@ import { SettingsSection } from '../../../../platform/admin/layout/EntitySetting
 import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
 import { Trans, useTranslation } from 'react-i18next';
 import { useSubSpace } from '../../hooks/useSubSpace';
-import { CommunityMembershipPolicy, SpacePrivacyMode } from '@core/apollo/generated/graphql-schema';
-import { useSpaceSettingsQuery, useUpdateSpaceSettingsMutation } from '@core/apollo/generated/apollo-hooks';
-import { BlockTitle } from '@core/ui/typography/components';
-import PageContentBlock from '@core/ui/content/PageContentBlock';
-import RadioSettingsGroup from '@core/ui/forms/SettingsGroups/RadioSettingsGroup';
+import { CommunityMembershipPolicy, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+import { useSpaceSettingsQuery, useUpdateSpaceSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
+import { BlockTitle } from '@/core/ui/typography/components';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import RadioSettingsGroup from '@/core/ui/forms/SettingsGroups/RadioSettingsGroup';
 
 interface SubspaceAuthorizationPageProps extends SettingsPageProps {}
 

@@ -1,12 +1,12 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUrlParams } from '@core/routing/useUrlParams';
+import { useUrlParams } from '@/core/routing/useUrlParams';
 import { ContributionsView } from '../../profile/views/ProfileView';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
 import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
-import { AuthorizationPrivilege, CommunityContributorType, SpaceLevel } from '@core/apollo/generated/graphql-schema';
-import { useVcMembershipsQuery } from '@core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, CommunityContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { useVcMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   PendingMembershipsDialogType,
   usePendingMembershipsDialog,

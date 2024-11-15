@@ -1,9 +1,9 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import useSubSpaceCreatedSubscription from '../hooks/useSubSpaceCreatedSubscription';
-import { useSpaceSubspaceCardsQuery } from '@core/apollo/generated/apollo-hooks';
-import { ContainerChildProps } from '@core/container/container';
-import { SubspaceCardFragment } from '@core/apollo/generated/graphql-schema';
+import { useSpaceSubspaceCardsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '@/core/container/container';
+import { SubspaceCardFragment } from '@/core/apollo/generated/graphql-schema';
 
 export interface SubspaceCardContainerEntities {
   subspaces: SubspaceCardFragment[];

@@ -1,5 +1,5 @@
-import { CommunityContributorType, SpaceLevel } from '@core/apollo/generated/graphql-schema';
-import { Identifiable } from '@core/utils/Identifiable';
+import { CommunityContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 export interface InvitationItem extends Identifiable {
   spacePendingMembershipInfo: Identifiable & {

@@ -1,8 +1,8 @@
 import { Box, BoxProps } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { gutters } from '@core/ui/grid/utils';
-import { BlockSectionTitle } from '@core/ui/typography';
+import { gutters } from '@/core/ui/grid/utils';
+import { BlockSectionTitle } from '@/core/ui/typography';
 import VirtualContributorLabel from '../../virtualContributor/VirtualContributorLabel';
 
 export interface ProfileChipViewProps extends BoxProps {

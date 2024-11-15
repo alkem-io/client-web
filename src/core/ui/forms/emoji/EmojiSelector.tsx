@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { ClickAwayListener, Paper, Popper, PopperProps } from '@mui/material';
-import { POPPER_Z_INDEX } from '@domain/communication/room/Comments/CommentInputField';
+import { POPPER_Z_INDEX } from '@/domain/communication/room/Comments/CommentInputField';
 import EmojiPicker, { EmojiStyle, SkinTonePickerLocation } from 'emoji-picker-react';
 
 interface EmojiSelectorProps {

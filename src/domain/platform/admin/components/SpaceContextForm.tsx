@@ -1,7 +1,7 @@
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import * as yup from 'yup';
-import { Context, Profile } from '@core/apollo/generated/graphql-schema';
+import { Context, Profile } from '@/core/apollo/generated/graphql-schema';
 import { contextSegmentSchema } from './Common/ContextSegment';
 import { SpaceContextSegment } from '../space/SpaceContextSegment';
 

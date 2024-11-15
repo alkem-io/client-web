@@ -1,7 +1,7 @@
 import React, { ComponentType, PropsWithChildren } from 'react';
-import CardSegmentCaption from '@core/ui/card/CardSegmentCaption';
+import CardSegmentCaption from '@/core/ui/card/CardSegmentCaption';
 import { SvgIconProps } from '@mui/material';
-import RouterLink from '@core/ui/link/RouterLink';
+import RouterLink from '@/core/ui/link/RouterLink';
 import { LockOutlined } from '@mui/icons-material';
 
 interface CardParentJourneySegmentProps {

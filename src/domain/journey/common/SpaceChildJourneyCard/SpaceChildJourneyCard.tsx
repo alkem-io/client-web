@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
-import { BlockTitle } from '@core/ui/typography';
-import webkitLineClamp from '@core/ui/utils/webkitLineClamp';
+import { BlockTitle } from '@/core/ui/typography';
+import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import JourneyCard, { JourneyCardProps } from '../JourneyCard/JourneyCard';
 import InnovationFlowCardSegment from '../JourneyCard/InnovationFlowCardSegment';
 import JourneyCardTagline from '../JourneyCard/JourneyCardTagline';

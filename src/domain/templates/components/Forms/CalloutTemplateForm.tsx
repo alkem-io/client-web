@@ -3,19 +3,19 @@ import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { FormikProps } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
-import MarkdownValidator from '@core/ui/forms/MarkdownInput/MarkdownValidator';
-import { MARKDOWN_TEXT_LENGTH } from '@core/ui/forms/field-length.constants';
-import { CalloutType, TemplateType } from '@core/apollo/generated/graphql-schema';
-import FormikMarkdownField from '@core/ui/forms/MarkdownInput/FormikMarkdownField';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { CalloutType, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { CalloutTemplate } from '../../models/CalloutTemplate';
-import { displayNameValidator } from '@core/ui/forms/validator';
+import { displayNameValidator } from '@/core/ui/forms/validator';
 import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
-import { RadioButtonOption } from '@core/ui/forms/radioButtons/RadioButtonsGroup';
-import FormikInputField from '@core/ui/forms/FormikInputField/FormikInputField';
+import { RadioButtonOption } from '@/core/ui/forms/radioButtons/RadioButtonsGroup';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { Box } from '@mui/material';
-import { gutters } from '@core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { TagsetField } from '../../../platform/admin/components/Common/TagsetSegment';
-import FormikRadioButtonsGroup from '@core/ui/forms/radioButtons/FormikRadioButtonsGroup';
+import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioButtonsGroup';
 import FormikWhiteboardPreview from '../../../collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
 import {
@@ -23,7 +23,7 @@ import {
   mapTagsetsToUpdateTagsets,
   mapTemplateProfileToUpdateProfile,
 } from './common/mappings';
-import { Caption } from '@core/ui/typography';
+import { Caption } from '@/core/ui/typography';
 
 export interface CalloutTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   callout?: {

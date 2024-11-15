@@ -7,12 +7,12 @@ import {
   useDeleteUserMutation,
   useRevokeLicensePlanFromAccountMutation,
   useUserListQuery,
-} from '@core/apollo/generated/apollo-hooks';
-import { useNotification } from '@core/ui/notifications/useNotification';
+} from '@/core/apollo/generated/apollo-hooks';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
-import { LicensePlanType, UserListQuery, UserListQueryVariables } from '@core/apollo/generated/graphql-schema';
+import { LicensePlanType, UserListQuery, UserListQueryVariables } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
-import clearCacheForQuery from '@core/apollo/utils/clearCacheForQuery';
+import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { buildSettingsUrl } from '../../../../main/routing/urlBuilders';
 import { ContributorLicensePlan } from '../../contributor/organization/adminOrganizations/useAdminGlobalOrganizationsList';
 

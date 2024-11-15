@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Tooltip } from '@mui/material';
 import { HowToRegOutlined } from '@mui/icons-material';
-import { Caption } from '@core/ui/typography';
+import { Caption } from '@/core/ui/typography';
 
 interface DashboardMemberIconProps {
   journeyTypeName: 'space' | 'subspace';

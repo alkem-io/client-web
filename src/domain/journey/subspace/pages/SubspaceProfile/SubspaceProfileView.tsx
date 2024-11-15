@@ -1,8 +1,8 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNotification } from '@core/ui/notifications/useNotification';
-import { useUrlParams } from '@core/routing/useUrlParams';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { useUrlParams } from '@/core/routing/useUrlParams';
 import {
   refetchAdminSpaceSubspacesPageQuery,
   refetchDashboardWithMembershipsQuery,
@@ -10,18 +10,18 @@ import {
   useCreateSubspaceMutation,
   useSubspaceProfileInfoQuery,
   useUpdateSpaceMutation,
-} from '@core/apollo/generated/apollo-hooks';
-import SaveButton from '@core/ui/actions/SaveButton';
-import WrapperTypography from '@core/ui/typography/deprecated/WrapperTypography';
+} from '@/core/apollo/generated/apollo-hooks';
+import SaveButton from '@/core/ui/actions/SaveButton';
+import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
 import FormMode from '../../../../platform/admin/components/FormMode';
 import ProfileForm, { ProfileFormValues } from '../../../../common/profile/ProfileForm';
 import EditVisualsView from '../../../../common/visual/EditVisuals/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
-import Gutters from '@core/ui/grid/Gutters';
-import { VisualType } from '@core/apollo/generated/graphql-schema';
-import { useRouteResolver } from '@main/routing/resolvers/RouteResolver';
-import useNavigate from '@core/routing/useNavigate';
-import { buildSettingsUrl } from '@main/routing/urlBuilders';
+import Gutters from '@/core/ui/grid/Gutters';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useNavigate from '@/core/routing/useNavigate';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 
 interface ChallengeProfileViewProps {
   mode: FormMode;

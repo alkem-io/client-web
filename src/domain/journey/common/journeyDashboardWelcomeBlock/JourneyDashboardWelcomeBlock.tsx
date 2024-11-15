@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
-import OverflowGradient from '@core/ui/overflow/OverflowGradient';
-import { gutters } from '@core/ui/grid/utils';
+import OverflowGradient from '@/core/ui/overflow/OverflowGradient';
+import { gutters } from '@/core/ui/grid/utils';
 import DashboardMemberIcon from '../../../community/membership/DashboardMemberIcon/DashboardMemberIcon';
-import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
-import Gutters from '@core/ui/grid/Gutters';
-import ContributorCardHorizontal from '@core/ui/card/ContributorCardHorizontal';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import Gutters from '@/core/ui/grid/Gutters';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import { MessageReceiverChipData } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
-import SeeMore from '@core/ui/content/SeeMore';
+import SeeMore from '@/core/ui/content/SeeMore';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 
 export interface JourneyDashboardWelcomeBlockProps {

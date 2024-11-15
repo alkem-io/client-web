@@ -1,4 +1,4 @@
-import { CalloutGroupName } from '@core/apollo/generated/graphql-schema';
+import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 
 export enum CalloutGroupNameValuesMap {

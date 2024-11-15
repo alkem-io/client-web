@@ -1,7 +1,7 @@
 import { FC, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import scrollToTop from '@core/ui/utils/scrollToTop';
+import scrollToTop from '@/core/ui/utils/scrollToTop';
 import {
   refetchAdminSpaceSubspacesPageQuery,
   useDeleteSpaceMutation,
@@ -9,33 +9,33 @@ import {
   useSpacePrivilegesQuery,
   useSpaceSettingsQuery,
   useUpdateSpaceSettingsMutation,
-} from '@core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CommunityMembershipPolicy,
   SpacePrivacyMode,
   SpaceSettingsCollaboration,
   TemplateType,
-} from '@core/apollo/generated/graphql-schema';
-import PageContent from '@core/ui/content/PageContent';
-import PageContentBlock from '@core/ui/content/PageContentBlock';
-import PageContentBlockCollapsible from '@core/ui/content/PageContentBlockCollapsible';
-import RadioSettingsGroup from '@core/ui/forms/SettingsGroups/RadioSettingsGroup';
-import SwitchSettingsGroup from '@core/ui/forms/SettingsGroups/SwitchSettingsGroup';
-import { gutters } from '@core/ui/grid/utils';
-import RouterLink from '@core/ui/link/RouterLink';
-import { useNotification } from '@core/ui/notifications/useNotification';
-import { BlockSectionTitle, BlockTitle, Caption, Text } from '@core/ui/typography';
+} from '@/core/apollo/generated/graphql-schema';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
+import RadioSettingsGroup from '@/core/ui/forms/SettingsGroups/RadioSettingsGroup';
+import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { BlockSectionTitle, BlockTitle, Caption, Text } from '@/core/ui/typography';
 import CommunityApplicationForm from '../../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
 import { Box, Button, CircularProgress } from '@mui/material';
 import { JourneyTypeName } from '../../../JourneyTypeName';
-import PageContentBlockHeader from '@core/ui/content/PageContentBlockHeader';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import DeleteIcon from './icon/DeleteIcon';
 import EntityConfirmDeleteDialog from './EntityConfirmDeleteDialog';
 import { useSubSpace } from '../../../subspace/hooks/useSubSpace';
 import { useSpace } from '../../SpaceContext/useSpace';
-import Gutters from '@core/ui/grid/Gutters';
+import Gutters from '@/core/ui/grid/Gutters';
 import CreateTemplateDialog from '../../../../templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { useCreateCollaborationTemplate } from '../../../../templates/hooks/useCreateCollaborationTemplate';
 import { CollaborationTemplateFormSubmittedValues } from '../../../../templates/components/Forms/CollaborationTemplateForm';

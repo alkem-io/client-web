@@ -1,5 +1,5 @@
-import { useUserContributionsQuery } from '@core/apollo/generated/apollo-hooks';
-import { CommunityContributorType, SpaceLevel } from '@core/apollo/generated/graphql-schema';
+import { useUserContributionsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { CommunityContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
 import { useMemo } from 'react';
 

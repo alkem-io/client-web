@@ -1,17 +1,17 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, styled } from '@mui/material';
 import { FC, useEffect, useState } from 'react';
-import PageContentBlock from '@core/ui/content/PageContentBlock';
-import Loading from '@core/ui/loading/Loading';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import Loading from '@/core/ui/loading/Loading';
 import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
 import InnovationFlowChips from '../../../collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
-import { CalloutType } from '@core/apollo/generated/graphql-schema';
+import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Text, CaptionSmall } from '@core/ui/typography';
+import { Text, CaptionSmall } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { getCalloutTypeIcon } from '../../../collaboration/callout/calloutCard/calloutIcons';
-import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
-import RoundedIcon from '@core/ui/icon/RoundedIcon';
-import { gutters } from '@core/ui/grid/utils';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import RoundedIcon from '@/core/ui/icon/RoundedIcon';
+import { gutters } from '@/core/ui/grid/utils';
 import WhiteboardPreview from '../../../collaboration/whiteboard/WhiteboardPreview/WhiteboardPreview';
 
 interface CalloutPreview {

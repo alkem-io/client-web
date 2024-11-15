@@ -1,22 +1,22 @@
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import { Box, Skeleton, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import CardFooterCountWithBadge from '@core/ui/card/CardFooterCountWithBadge';
-import { gutters } from '@core/ui/grid/utils';
-import RouterLink from '@core/ui/link/RouterLink';
-import BadgeCardView from '@core/ui/list/BadgeCardView';
-import { Caption, CardTitle } from '@core/ui/typography';
+import CardFooterCountWithBadge from '@/core/ui/card/CardFooterCountWithBadge';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import { Caption, CardTitle } from '@/core/ui/typography';
 import { CommunityGuidelinesIcon } from '../../community/communityGuidelines/icon/CommunityGuidelinesIcon';
 import { InnovationFlowIcon } from '../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import { PostIcon } from '../../collaboration/post/icon/PostIcon';
 import { WhiteboardIcon } from '../../collaboration/whiteboard/icon/WhiteboardIcon';
 import InnovationPackIcon from '../InnovationPackIcon';
-import RoundedIcon from '@core/ui/icon/RoundedIcon';
-import ActionsMenu from '@core/ui/card/ActionsMenu';
-import OneLineMarkdown from '@core/ui/markdown/OneLineMarkdown';
-import { TemplateType } from '@core/apollo/generated/graphql-schema';
+import RoundedIcon from '@/core/ui/icon/RoundedIcon';
+import ActionsMenu from '@/core/ui/card/ActionsMenu';
+import OneLineMarkdown from '@/core/ui/markdown/OneLineMarkdown';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { SpaceIcon } from '../../journey/space/icon/SpaceIcon';
-import { RoundedBadgeSize } from '@core/ui/icon/RoundedBadge';
+import { RoundedBadgeSize } from '@/core/ui/icon/RoundedBadge';
 
 export interface InnovationPackCardHorizontalProps {
   profile: {

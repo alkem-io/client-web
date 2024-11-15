@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import useBackToParentPage from '@core/routing/deprecated/useBackToParentPage';
+import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import { useCalloutIdQuery } from '@core/apollo/generated/apollo-hooks';
+import { useCalloutIdQuery } from '@/core/apollo/generated/apollo-hooks';
 import WhiteboardView from '../WhiteboardsManagement/WhiteboardView';
 import { WhiteboardProvider } from '../containers/WhiteboardProvider';
 

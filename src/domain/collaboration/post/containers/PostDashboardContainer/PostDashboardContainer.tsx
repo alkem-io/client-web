@@ -1,11 +1,11 @@
 import { FC, useCallback, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
-import { AuthorizationPrivilege, PostDashboardFragment } from '@core/apollo/generated/graphql-schema';
-import { usePostQuery, useRemoveMessageOnRoomMutation } from '@core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, PostDashboardFragment } from '@/core/apollo/generated/graphql-schema';
+import { usePostQuery, useRemoveMessageOnRoomMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../../../community/user';
 import { Message } from '../../../../communication/room/models/Message';
-import { evictFromCache } from '@core/apollo/utils/removeFromCache';
-import { ContainerPropsWithProvided, renderComponentOrChildrenFn } from '@core/container/ComponentOrChildrenFn';
+import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
+import { ContainerPropsWithProvided, renderComponentOrChildrenFn } from '@/core/container/ComponentOrChildrenFn';
 import { buildAuthorFromUser } from '../../../../community/user/utils/buildAuthorFromUser';
 import usePostMessageMutations from '../../../../communication/room/Comments/usePostMessageMutations';
 import useSubscribeOnRoomEvents from '../../../callout/useSubscribeOnRoomEvents';

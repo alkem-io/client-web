@@ -1,18 +1,18 @@
 import React, { FC, useCallback, useState } from 'react';
 
-import useNavigate from '@core/routing/useNavigate';
+import useNavigate from '@/core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import SearchableList, { SearchableListItem } from '../../components/SearchableList';
-import Loading from '@core/ui/loading/Loading';
-import { useNotification } from '@core/ui/notifications/useNotification';
+import Loading from '@/core/ui/loading/Loading';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
 import { useSubSpace } from '../../../../journey/subspace/hooks/useSubSpace';
-import { useUrlParams } from '@core/routing/useUrlParams';
+import { useUrlParams } from '@/core/routing/useUrlParams';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
 import { CreateOpportunityForm } from '../../../../journey/opportunity/forms/CreateOpportunityForm';
-import { buildSettingsUrl } from '@main/routing/urlBuilders';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { OpportunityIcon } from '../../../../journey/opportunity/icon/OpportunityIcon';
 import {
@@ -21,15 +21,15 @@ import {
   useDeleteSpaceMutation,
   useSpaceCollaborationIdLazyQuery,
   useSubspacesInSpaceQuery,
-} from '@core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import { ContentCopyOutlined, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
-import MenuItemWithIcon from '@core/ui/menu/MenuItemWithIcon';
+import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import EntityConfirmDeleteDialog from '../../../../journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
-import Gutters from '@core/ui/grid/Gutters';
+import Gutters from '@/core/ui/grid/Gutters';
 import { useCreateCollaborationTemplate } from '../../../../templates/hooks/useCreateCollaborationTemplate';
 import { CollaborationTemplateFormSubmittedValues } from '../../../../templates/components/Forms/CollaborationTemplateForm';
 import CreateTemplateDialog from '../../../../templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { TemplateType } from '@core/apollo/generated/graphql-schema';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 
 export const OpportunityList: FC = () => {
   const { t } = useTranslation();

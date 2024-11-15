@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import CredentialCard from '../../../../agent/credential/CredentialCard';
 import CredentialProfileCard, { ProfileCardProps } from '../../../../agent/credential/CredentialProfileCard';
-import { CardLayoutContainer, CardLayoutItem } from '@core/ui/card/cardsLayout/CardsLayout';
+import { CardLayoutContainer, CardLayoutItem } from '@/core/ui/card/cardsLayout/CardsLayout';
 import UserCredentialsContainer from '../../../../agent/credential/verifiedCredentials/UserCredentialsContainer';
 
 interface CredentialsViewProps extends ProfileCardProps {

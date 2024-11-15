@@ -1,7 +1,7 @@
 import { Box, BoxProps } from '@mui/material';
 import { PlaceOutlined } from '@mui/icons-material';
 import { Caption } from '../typography';
-import { COUNTRIES } from '@domain/common/location/countries.constants';
+import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import getLocationString from './getLocationString';
 
 interface LocationCardSegmentProps {

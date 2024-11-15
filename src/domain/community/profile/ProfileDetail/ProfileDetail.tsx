@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
-import { BlockTitle } from '@core/ui/typography';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { BlockTitle } from '@/core/ui/typography';
 
 interface ProfileDetailProps {
   title: string;

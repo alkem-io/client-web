@@ -1,7 +1,7 @@
 import { FC } from 'react';
-import PageContent from '@core/ui/content/PageContent';
-import PageContentBlock from '@core/ui/content/PageContentBlock';
-import PageContentColumn from '@core/ui/content/PageContentColumn';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import CommunityOrganizations from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import CommunityUsers from '../../../community/community/CommunityAdmin/CommunityUsers';
 import useRoleSetAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
@@ -11,7 +11,7 @@ import { useOpportunity } from '../hooks/useOpportunity';
 import SubspaceSettingsLayout from '../../../platform/admin/subspace/SubspaceSettingsLayout';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
 import { useSpace } from '../../space/SpaceContext/useSpace';
-import { SpaceLevel } from '@core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { loading: isLoadingChallenge, roleSetId, opportunityId } = useOpportunity();

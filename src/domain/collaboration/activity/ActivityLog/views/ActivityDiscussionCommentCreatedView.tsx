@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { ActivityCalloutValues } from '../../../../shared/types/ActivityCalloutValues';
-import { ActivityEventType } from '@core/apollo/generated/graphql-schema';
+import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
 import ActivitySubjectMarkdown from './ActivitySubjectMarkdown';
 
 interface ActivityDiscussionCommentCreatedViewProps extends ActivityViewProps {

@@ -5,11 +5,11 @@ import { Close } from '@mui/icons-material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
-import Authorship from '@core/ui/authorship/Authorship';
-import { BlockTitle } from '@core/ui/typography';
-import SkipLink from '@core/ui/keyboardNavigation/SkipLink';
-import DialogHeader from '@core/ui/dialog/DialogHeader';
-import { useNextBlockAnchor } from '@core/ui/keyboardNavigation/NextBlockAnchor';
+import Authorship from '@/core/ui/authorship/Authorship';
+import { BlockTitle } from '@/core/ui/typography';
+import SkipLink from '@/core/ui/keyboardNavigation/SkipLink';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { useNextBlockAnchor } from '@/core/ui/keyboardNavigation/NextBlockAnchor';
 
 interface CalloutHeaderProps {
   callout: {

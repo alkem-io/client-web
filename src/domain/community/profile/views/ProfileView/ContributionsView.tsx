@@ -4,12 +4,12 @@ import ContributionDetailsContainer, {
   ContributionDetails,
 } from '../../ContributionDetails/ContributionDetailsContainer';
 import { SpaceHostedItem } from '../../../../journey/utils/SpaceHostedItem';
-import { Caption } from '@core/ui/typography';
-import PageContentBlockGrid, { PageContentBlockGridProps } from '@core/ui/content/PageContentBlockGrid';
-import PageContentBlock from '@core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '@core/ui/content/PageContentBlockHeader';
+import { Caption } from '@/core/ui/typography';
+import PageContentBlockGrid, { PageContentBlockGridProps } from '@/core/ui/content/PageContentBlockGrid';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import ContributionDetailsCard from '../../ContributionDetails/ContributionDetailsCard';
-import ScrollableCardsLayoutContainer from '@core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 
 interface ContributionViewProps {
   title: string;

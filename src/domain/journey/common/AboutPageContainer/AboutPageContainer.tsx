@@ -8,14 +8,14 @@ import {
   ReferenceDetailsFragment,
   SearchVisibility,
   Tagset,
-} from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import { ContributorCardSquareProps } from '../../../community/contributor/ContributorCardSquare/ContributorCardSquare';
-import { WithId } from '@core/utils/WithId';
+import { WithId } from '@/core/utils/WithId';
 import useCommunityMembersAsCardProps, {
   RoleSetMembers,
 } from '../../../community/community/utils/useCommunityMembersAsCardProps';
-import { ContainerChildProps } from '@core/container/container';
-import { useAboutPageMembersQuery, useAboutPageNonMembersQuery } from '@core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '@/core/container/container';
+import { useAboutPageMembersQuery, useAboutPageNonMembersQuery } from '@/core/apollo/generated/apollo-hooks';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { InnovationFlowDetails } from '../../../collaboration/InnovationFlow/InnovationFlow';

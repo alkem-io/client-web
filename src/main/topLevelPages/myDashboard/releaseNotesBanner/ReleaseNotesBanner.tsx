@@ -1,12 +1,12 @@
 import { Trans, useTranslation } from 'react-i18next';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
-import { BlockTitle, Caption } from '@core/ui/typography';
+import { BlockTitle, Caption } from '@/core/ui/typography';
 import React from 'react';
-import DashboardBanner from '@core/ui/content/DashboardBanner';
-import useReleaseNotes from '@domain/platform/metadata/useReleaseNotes';
-import RouterLink from '@core/ui/link/RouterLink';
-import { useConfig } from '@domain/platform/config/useConfig';
-import { gutters } from '@core/ui/grid/utils';
+import DashboardBanner from '@/core/ui/content/DashboardBanner';
+import useReleaseNotes from '@/domain/platform/metadata/useReleaseNotes';
+import RouterLink from '@/core/ui/link/RouterLink';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import { gutters } from '@/core/ui/grid/utils';
 
 const IS_CLICKABLE = 'true';
 

@@ -12,7 +12,7 @@ import {
 import { SvgIconProps } from '@mui/material';
 import { createElement, FC, useMemo } from 'react';
 import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscusionCategories';
-import { ForumDiscussionCategory } from '@core/apollo/generated/graphql-schema';
+import { ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
 
 export interface DiscussionIconProps extends SvgIconProps {
   category: DiscussionCategoryExt;

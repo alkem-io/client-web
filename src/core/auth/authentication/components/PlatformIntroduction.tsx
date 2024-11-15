@@ -1,7 +1,7 @@
-import { useConfig } from '@domain/platform/config/useConfig';
+import { useConfig } from '@/domain/platform/config/useConfig';
 import { Box, BoxProps } from '@mui/material';
 import { Trans } from 'react-i18next';
-import Paragraph from '@domain/shared/components/Text/Paragraph';
+import Paragraph from '@/domain/shared/components/Text/Paragraph';
 import TranslationKey from '../../../i18n/utils/TranslationKey';
 
 interface PlatformIntroductionProps {

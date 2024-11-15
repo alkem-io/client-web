@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { groupBy } from 'lodash';
-import { Identifiable } from '@core/utils/Identifiable';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 const ROOT_THREAD = Symbol('root');
 

@@ -1,8 +1,8 @@
 import { FC } from 'react';
-import { BlockSectionTitle, Caption } from '@core/ui/typography';
+import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
-import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
-import PageContentBlock from '@core/ui/content/PageContentBlock';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import References from '../../../shared/components/References/References';
 import { Skeleton } from '@mui/material';
 import { ReferenceWithAuthorization } from '../../../common/profile/Profile';

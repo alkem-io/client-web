@@ -1,13 +1,13 @@
 import React from 'react';
-import DialogHeader from '@core/ui/dialog/DialogHeader';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Button, DialogActions, DialogContent } from '@mui/material';
-import { Caption } from '@core/ui/typography';
+import { Caption } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
-import Gutters from '@core/ui/grid/Gutters';
+import Gutters from '@/core/ui/grid/Gutters';
 import { LoadingButton } from '@mui/lab';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import FormikSelect from '@core/ui/forms/FormikSelect';
+import FormikSelect from '@/core/ui/forms/FormikSelect';
 
 export interface SelectableKnowledgeProps {
   id: string;

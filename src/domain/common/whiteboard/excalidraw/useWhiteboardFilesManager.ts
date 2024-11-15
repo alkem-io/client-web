@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
-import { useUploadFileMutation } from '@core/apollo/generated/apollo-hooks';
+import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
   BinaryFileData,
   BinaryFiles,
@@ -8,7 +8,7 @@ import {
 } from '@alkemio/excalidraw/dist/excalidraw/types';
 import { excalidrawFileMimeType, generateIdFromFile } from './collab/utils';
 import Semaphore from 'ts-semaphore';
-import { error } from '@core/logging/sentry/log';
+import { error } from '@/core/logging/sentry/log';
 
 export type BinaryFileDataWithUrl = BinaryFileData & { url: string };
 export type BinaryFileDataWithOptionalUrl = BinaryFileData & { url?: string };

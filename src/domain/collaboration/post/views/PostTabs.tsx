@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { Tabs } from '@mui/material';
 import { DashboardOutlined, SettingsOutlined, ShareOutlined } from '@mui/icons-material';
-import NavigationTab from '@core/ui/tabs/NavigationTab';
+import NavigationTab from '@/core/ui/tabs/NavigationTab';
 import { usePost } from '../context/PostProvider';
 import { PostDialogSection } from './PostDialogSection';
 import { styled } from '@mui/styles';
-import { gutters } from '@core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
 
 export interface PostTabsProps {

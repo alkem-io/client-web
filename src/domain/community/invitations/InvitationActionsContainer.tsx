@@ -2,8 +2,8 @@ import useLoadingState from '../../shared/utils/useLoadingState';
 import {
   refetchLatestContributionsSpacesFlatQuery,
   useInvitationStateEventMutation,
-} from '@core/apollo/generated/apollo-hooks';
-import { SimpleContainerProps } from '@core/container/SimpleContainer';
+} from '@/core/apollo/generated/apollo-hooks';
+import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 
 interface InvitationActionsContainerProvided {
   updating: boolean;

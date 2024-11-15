@@ -4,13 +4,13 @@ import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import PersonIcon from '@mui/icons-material/Person';
 import { Box, Grid, IconButton, Skeleton, SvgIcon } from '@mui/material';
-import Avatar from '@core/ui/avatar/Avatar';
-import ContributeCard from '@core/ui/card/ContributeCard';
-import BadgeCardView from '@core/ui/list/BadgeCardView';
-import { gutters } from '@core/ui/grid/utils';
-import ExpandableCardFooter from '@core/ui/card/ExpandableCardFooter';
-import { Caption } from '@core/ui/typography';
-import ImageBlurredSides from '@core/ui/image/ImageBlurredSides';
+import Avatar from '@/core/ui/avatar/Avatar';
+import ContributeCard from '@/core/ui/card/ContributeCard';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import { gutters } from '@/core/ui/grid/utils';
+import ExpandableCardFooter from '@/core/ui/card/ExpandableCardFooter';
+import { Caption } from '@/core/ui/typography';
+import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
 
 /* todo add jobTitle */

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useSubSpace } from '../../subspace/hooks/useSubSpace';
-import { Error404 } from '@core/pages/Errors/Error404';
+import { Error404 } from '@/core/pages/Errors/Error404';
 import AdminOpportunityCommunityPage from '../../opportunity/pages/AdminOpportunityCommunityPage';
 import OpportunityCommunicationsPage from '../../../platform/admin/opportunity/pages/OpportunityCommunications/OpportunityCommunicationsPage';
 import OpportunityContextPage from '../../../platform/admin/opportunity/pages/OpportunityContext/OpportunityContextPage';

@@ -4,7 +4,7 @@ import React, { FC } from 'react';
 import { Filter } from '../../../platform/admin/components/Common/Filter';
 import DiscussionOverview from './DiscussionOverview';
 import { Discussion } from '../models/Discussion';
-import { ViewProps } from '@core/container/view';
+import { ViewProps } from '@/core/container/view';
 
 interface DiscussionListViewEntities {
   discussions: Discussion[];

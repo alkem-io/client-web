@@ -2,8 +2,8 @@ import { SettingsOutlined } from '@mui/icons-material';
 import { Box, styled, Tabs, TabsProps } from '@mui/material';
 import { FC } from 'react';
 import HeaderNavigationTab from './HeaderNavigationTab';
-import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX } from '@core/ui/grid/constants';
-import { gutters } from '@core/ui/grid/utils';
+import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX } from '@/core/ui/grid/constants';
+import { gutters } from '@/core/ui/grid/utils';
 import { EntityPageSection } from '../../layout/EntityPageSection';
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({

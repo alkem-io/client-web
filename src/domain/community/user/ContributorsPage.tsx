@@ -6,14 +6,14 @@ import SearchIcon from '@mui/icons-material/Search';
 import { debounce } from 'lodash';
 import { useUserContext } from './index';
 import ContributorsView, { ITEMS_PER_PAGE } from './ContributorsView';
-import TopLevelPageLayout from '@main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
-import PageContentColumn from '@core/ui/content/PageContentColumn';
-import PageContentBlockSeamless from '@core/ui/content/PageContentBlockSeamless';
+import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import useInnovationHubOutsideRibbon from '../../innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
 import { GroupOutlined } from '@mui/icons-material';
-import TopLevelPageBreadcrumbs from '@main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-import BreadcrumbsItem from '@core/ui/navigation/BreadcrumbsItem';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 
 export interface ContributorsPageProps {}
 

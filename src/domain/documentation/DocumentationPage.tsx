@@ -1,12 +1,12 @@
-import TopLevelLayout from '@main/ui/layout/TopLevelLayout';
-import TopLevelPageBreadcrumbs from '@main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
-import PageContent from '@core/ui/content/PageContent';
-import PageContentBlock from '@core/ui/content/PageContentBlock';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import SpacePageBanner from '../journey/space/layout/SpacePageBanner';
 import { useLocation } from 'react-router-dom';
-import Gutters from '@core/ui/grid/Gutters';
+import Gutters from '@/core/ui/grid/Gutters';
 import { useConfig } from '../platform/config/useConfig';
-import { TopLevelRoutePath } from '@main/routing/TopLevelRoutePath';
+import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { useTranslation } from 'react-i18next';
 
 const DocumentationPage = () => {

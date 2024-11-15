@@ -2,8 +2,8 @@ import React, { PropsWithChildren } from 'react';
 import TabDescriptionHeader from '../../../../shared/layout/TabDescriptionHeader/TabDescriptionHeader';
 import { useTranslation } from 'react-i18next';
 import { EntityTypeName } from '../../../constants/EntityTypeName';
-import PageContentColumn from '@core/ui/content/PageContentColumn';
-import PageContentBlockSeamless from '@core/ui/content/PageContentBlockSeamless';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 
 interface SettingsPageContentProps<Section extends string | number> {
   currentSection: Section;

@@ -1,5 +1,5 @@
 import { useLayoutEffect } from 'react';
-import { useConfig } from '@domain/platform/config/useConfig';
+import { useConfig } from '@/domain/platform/config/useConfig';
 
 const IdentityLocations = [
   '/login',

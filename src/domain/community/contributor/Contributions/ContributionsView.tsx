@@ -1,9 +1,9 @@
 import React from 'react';
 import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
-import PageContentBlock from '@core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '@core/ui/content/PageContentBlockHeader';
-import PageContentBlockGrid from '@core/ui/content/PageContentBlockGrid';
-import ScrollableCardsLayoutContainer from '@core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
+import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import ContributionDetailsContainer from '../../profile/ContributionDetails/ContributionDetailsContainer';
 import JourneyTile from '../../../journey/common/JourneyTile/JourneyTile';
 

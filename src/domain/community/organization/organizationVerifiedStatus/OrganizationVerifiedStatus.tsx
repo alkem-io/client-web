@@ -4,7 +4,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import { Help } from '@mui/icons-material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import WrapperTypography from '@core/ui/typography/deprecated/WrapperTypography';
+import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
 
 interface VerifiedStatusProps {
   verified: boolean;

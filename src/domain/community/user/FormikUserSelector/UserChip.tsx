@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useUserSelectorUserDetailsQuery } from '@core/apollo/generated/apollo-hooks';
+import { useUserSelectorUserDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ProfileChip } from '../../contributor/ProfileChip/ProfileChip';
 
 interface UserChipProps {

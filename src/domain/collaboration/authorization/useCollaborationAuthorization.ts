@@ -1,8 +1,8 @@
 import {
   useCollaborationAuthorizationQuery,
   useCollaborationPrivilegesQuery,
-} from '@core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
 interface CollaborationAuthorizationParams {
   journeyId: string | undefined;

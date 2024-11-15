@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import { useAccountInformationQuery, useUserAccountQuery } from '@core/apollo/generated/apollo-hooks';
+import { useAccountInformationQuery, useUserAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettingsLayout';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
-import { useUrlParams } from '@core/routing/useUrlParams';
+import { useUrlParams } from '@/core/routing/useUrlParams';
 import ContributorAccountView from '../../contributor/Account/ContributorAccountView';
 
 interface UserAccountPageProps {}

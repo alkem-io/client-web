@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { Error404 } from '@core/pages/Errors/Error404';
+import { Error404 } from '@/core/pages/Errors/Error404';
 import { PageLayoutHolderWithOutlet } from '../../journey/common/EntityPageLayout';
 import VCEditProfilePage from './vcSettingsPage/VCEditProfilePage';
 import VCMembershipPage from './vcMembershipPage/VCMembershipPage';

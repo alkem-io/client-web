@@ -2,17 +2,17 @@ import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LoadingButton } from '@mui/lab';
 import calloutIcons from '../../utils/calloutIcons';
-import { DialogActions, DialogContent } from '@core/ui/dialog/deprecated';
-import DialogHeader from '@core/ui/dialog/DialogHeader';
+import { DialogActions, DialogContent } from '@/core/ui/dialog/deprecated';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
 import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
-import { CalloutType, TagsetType } from '@core/apollo/generated/graphql-schema';
+import { CalloutType, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import { CalloutLayoutProps } from '../../calloutBlock/CalloutLayout';
 import { EmptyWhiteboardString } from '../../../../common/whiteboard/EmptyWhiteboard';
 import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
 import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
 import { DEFAULT_TAGSET } from '../../../../common/tags/tagset.constants';
-import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 
 export interface CalloutEditDialogProps {
   open: boolean;

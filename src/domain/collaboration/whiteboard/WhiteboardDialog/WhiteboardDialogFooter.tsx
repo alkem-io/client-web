@@ -1,30 +1,30 @@
 import React, { MouseEventHandler, useEffect, useState } from 'react';
-import { gutters } from '@core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { Button, DialogContent } from '@mui/material';
-import { Caption } from '@core/ui/typography';
+import { Caption } from '@/core/ui/typography';
 import { DeleteOutline } from '@mui/icons-material';
-import { Actions } from '@core/ui/actions/Actions';
+import { Actions } from '@/core/ui/actions/Actions';
 import { Trans, useTranslation } from 'react-i18next';
-import { useAuthenticationContext } from '@core/auth/authentication/hooks/useAuthenticationContext';
-import { CommunityMembershipStatus, ContentUpdatePolicy } from '@core/apollo/generated/graphql-schema';
+import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
+import { CommunityMembershipStatus, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
 import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import { useSubSpace } from '../../../journey/subspace/hooks/useSubSpace';
 import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
 import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
-import RouterLink from '@core/ui/link/RouterLink';
+import RouterLink from '@/core/ui/link/RouterLink';
 import { useLocation } from 'react-router-dom';
 import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
-import { Identifiable } from '@core/utils/Identifiable';
+import { Identifiable } from '@/core/utils/Identifiable';
 import { Visual } from '../../../common/visual/Visual';
 import {
   CollaboratorMode,
   CollaboratorModeReasons,
 } from '../../../common/whiteboard/excalidraw/collab/excalidrawAppConstants';
-import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@core/ui/dialog/DialogHeader';
-import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 
 interface WhiteboardDialogFooterProps {
   lastSavedDate: Date | undefined;

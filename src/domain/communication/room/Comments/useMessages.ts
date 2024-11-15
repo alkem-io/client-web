@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFromUser';
-import { ProfileType } from '@core/apollo/generated/graphql-schema';
+import { ProfileType } from '@/core/apollo/generated/graphql-schema';
 
 interface FetchedMessage {
   id: string;

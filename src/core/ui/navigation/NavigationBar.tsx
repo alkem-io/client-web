@@ -7,7 +7,7 @@ import { useScrolledUp, useScrollTop } from '../scroll/utils';
 import {
   PLATFORM_NAVIGATION_ITEM_ELEVATION,
   PLATFORM_NAVIGATION_MENU_ELEVATION,
-} from '@main/ui/platformNavigation/constants';
+} from '@/main/ui/platformNavigation/constants';
 import { ElevationContextProvider } from '../utils/ElevationContext';
 
 interface NavigationBarContentProps {

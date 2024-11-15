@@ -1,16 +1,16 @@
 import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUrlParams } from '@core/routing/useUrlParams';
+import { useUrlParams } from '@/core/routing/useUrlParams';
 import { ContributionsView } from '../../profile/views/ProfileView';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
 import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettingsLayout';
 import { useUserMetadata } from '../hooks/useUserMetadata';
-import GridProvider from '@core/ui/grid/GridProvider';
+import GridProvider from '@/core/ui/grid/GridProvider';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
-import { CommunityContributorType, SpaceLevel } from '@core/apollo/generated/graphql-schema';
-import { useUserContributionsQuery, useUserPendingMembershipsQuery } from '@core/apollo/generated/apollo-hooks';
+import { CommunityContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { useUserContributionsQuery, useUserPendingMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export interface UserMembershipPageProps {}
 

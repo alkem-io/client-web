@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 import { ActivityLogResultType } from '../ActivityLog/ActivityComponent';
-import { ActivityCreatedDocument, useActivityLogOnCollaborationQuery } from '@core/apollo/generated/apollo-hooks';
-import createUseSubscriptionToSubEntityHook from '@core/apollo/subscriptions/useSubscriptionToSubEntity';
+import { ActivityCreatedDocument, useActivityLogOnCollaborationQuery } from '@/core/apollo/generated/apollo-hooks';
+import createUseSubscriptionToSubEntityHook from '@/core/apollo/subscriptions/useSubscriptionToSubEntity';
 import {
   ActivityCreatedSubscription,
   ActivityCreatedSubscriptionVariables,
   ActivityEventType,
   ActivityLogOnCollaborationFragment,
-} from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 
 const useActivityOnCollaborationSubscription = (collaborationID: string, { types }: { types?: ActivityEventType[] }) =>
   createUseSubscriptionToSubEntityHook<

@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useApolloErrorHandler } from '../hooks/useApolloErrorHandler';
-import { useConfig } from '@domain/platform/config/useConfig';
-import { useUserContext } from '@domain/community/user';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import { useUserContext } from '@/domain/community/user';
 import { ApolloError, OperationVariables, SubscribeToMoreOptions } from '@apollo/client';
-import getDepsValueFromObject from '@domain/shared/utils/getDepsValueFromObject';
+import getDepsValueFromObject from '@/domain/shared/utils/getDepsValueFromObject';
 import { PlatformFeatureFlagName } from '../generated/graphql-schema';
 
 export interface SubscribeToMore<QueryData> {

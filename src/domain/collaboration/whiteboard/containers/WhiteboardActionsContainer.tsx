@@ -4,12 +4,12 @@ import {
   useCreateWhiteboardOnCalloutMutation,
   useDeleteWhiteboardMutation,
   useUpdateWhiteboardMutation,
-} from '@core/apollo/generated/apollo-hooks';
-import { ContainerChildProps } from '@core/container/container';
-import { CreateContributionOnCalloutInput } from '@core/apollo/generated/graphql-schema';
-import { evictFromCache } from '@core/apollo/utils/removeFromCache';
+} from '@/core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '@/core/container/container';
+import { CreateContributionOnCalloutInput } from '@/core/apollo/generated/graphql-schema';
+import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { WhiteboardPreviewImage, useUploadWhiteboardVisuals } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
-import { Identifiable } from '@core/utils/Identifiable';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 interface WhiteboardWithPreviewVisuals {
   nameID: string; // Whiteboard nameID is used to name the files uploaded as visuals

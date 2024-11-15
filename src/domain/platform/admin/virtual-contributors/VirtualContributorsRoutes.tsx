@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { Error404 } from '@core/pages/Errors/Error404';
+import { Error404 } from '@/core/pages/Errors/Error404';
 import VirtualContributorsPage from './VirtualContributorsPage';
 
 const VirtualContributorsRoutes: FC = () => {

@@ -2,20 +2,20 @@ import { Add } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useNavigate from '@core/routing/useNavigate';
-import RoundedIcon from '@core/ui/icon/RoundedIcon';
-import { CalendarEventDetailsFragment, TagsetType } from '@core/apollo/generated/graphql-schema';
-import { useQueryParams } from '@core/routing/useQueryParams';
-import BackButton from '@core/ui/actions/BackButton';
-import { dateRounded } from '@core/utils/time/utils';
+import useNavigate from '@/core/routing/useNavigate';
+import RoundedIcon from '@/core/ui/icon/RoundedIcon';
+import { CalendarEventDetailsFragment, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { useQueryParams } from '@/core/routing/useQueryParams';
+import BackButton from '@/core/ui/actions/BackButton';
+import { dateRounded } from '@/core/utils/time/utils';
 import CalendarEventDetailContainer, { CalendarEventDetailData } from './CalendarEventDetailContainer';
 import { CalendarEventFormData, CalendarEventsContainer } from './CalendarEventsContainer';
 import CalendarEventDetail from './views/CalendarEventDetail';
 import CalendarEventForm from './views/CalendarEventForm';
 import CalendarEventsList from './views/CalendarEventsList';
 import dayjs from 'dayjs';
-import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
-import ConfirmationDialog from '@core/ui/dialogs/ConfirmationDialog';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 // If url params contains `highlight=YYYY-MM-DD` events in that date will be highlighted
 export const HIGHLIGHT_PARAM_NAME = 'highlight';

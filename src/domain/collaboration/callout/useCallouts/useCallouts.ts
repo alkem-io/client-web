@@ -2,7 +2,7 @@ import {
   useCalloutsLazyQuery,
   useCalloutsQuery,
   useUpdateCalloutsSortOrderMutation,
-} from '@core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   Callout,
@@ -14,7 +14,7 @@ import {
   CommentsWithMessagesFragment,
   CalloutContributionPolicy,
   CalloutContribution,
-} from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import { useCallback, useMemo } from 'react';
 import { groupBy } from 'lodash';
 import { Tagset } from '../../../common/profile/Profile';

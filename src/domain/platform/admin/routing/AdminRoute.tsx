@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useTransactionScope } from '@core/analytics/SentryTransactionScopeContext';
-import { Error404 } from '@core/pages/Errors/Error404';
+import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
+import { Error404 } from '@/core/pages/Errors/Error404';
 import NonPlatformAdminRedirect from '../../../../main/admin/NonPlatformAdminRedirect';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
 import { AdminOrganizationsRoutes } from '../organization';
 import { UsersRoute } from '../user/routing/UsersRoute';
 import { SpacesRoute } from '../space/routing/SpacesRoute';
-import NoIdentityRedirect from '@core/routing/NoIdentityRedirect';
+import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import AdminInnovationPacksRoutes from '../../../InnovationPack/admin/AdminInnovationPackRoutes';
 import AdminInnovationHubsRoutes from '../../../innovationHub/InnovationHubsAdmin/InnovationHubsAdminRoutes';
 import VirtualContributorsRoutes from '../virtual-contributors/VirtualContributorsRoutes';

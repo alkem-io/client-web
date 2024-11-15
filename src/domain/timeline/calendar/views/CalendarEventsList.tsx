@@ -1,24 +1,24 @@
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useNavigate from '@core/routing/useNavigate';
-import { Actions } from '@core/ui/actions/Actions';
-import DialogHeader, { DialogHeaderProps } from '@core/ui/dialog/DialogHeader';
-import GridProvider from '@core/ui/grid/GridProvider';
-import { gutters } from '@core/ui/grid/utils';
-import { BlockSectionTitle, BlockTitle, Caption } from '@core/ui/typography';
+import useNavigate from '@/core/routing/useNavigate';
+import { Actions } from '@/core/ui/actions/Actions';
+import DialogHeader, { DialogHeaderProps } from '@/core/ui/dialog/DialogHeader';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import { gutters } from '@/core/ui/grid/utils';
+import { BlockSectionTitle, BlockTitle, Caption } from '@/core/ui/typography';
 import CalendarEventCard from './CalendarEventCard';
-import Gutters from '@core/ui/grid/Gutters';
-import ScrollerWithGradient from '@core/ui/overflow/ScrollerWithGradient';
-import PageContentBlockGrid from '@core/ui/content/PageContentBlockGrid';
-import { startOfDay } from '@core/utils/time/utils';
+import Gutters from '@/core/ui/grid/Gutters';
+import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
+import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
+import { startOfDay } from '@/core/utils/time/utils';
 import { first, groupBy, sortBy } from 'lodash';
 import dayjs from 'dayjs';
-import { CalendarEvent } from '@core/apollo/generated/graphql-schema';
+import { CalendarEvent } from '@/core/apollo/generated/graphql-schema';
 import FullCalendar, { INTERNAL_DATE_FORMAT } from '../components/FullCalendar';
 import useScrollToElement from '../../../shared/utils/scroll/useScrollToElement';
-import useCurrentBreakpoint from '@core/ui/utils/useCurrentBreakpoint';
+import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import { HIGHLIGHT_PARAM_NAME } from '../CalendarDialog';
-import { useQueryParams } from '@core/routing/useQueryParams';
+import { useQueryParams } from '@/core/routing/useQueryParams';
 import { useLocation } from 'react-router-dom';
 
 interface CalendarEventsListProps {

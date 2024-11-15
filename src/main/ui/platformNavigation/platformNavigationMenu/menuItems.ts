@@ -1,9 +1,9 @@
 import { ComponentType } from 'react';
 import { SvgIconProps } from '@mui/material';
-import TranslationKey from '@core/i18n/utils/TranslationKey';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import InnovationLibraryIcon from '../../../topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
-import { SpaceIcon } from '@domain/journey/space/icon/SpaceIcon';
+import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 
 interface MenuItem {

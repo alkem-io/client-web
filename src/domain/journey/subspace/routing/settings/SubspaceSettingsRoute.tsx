@@ -1,10 +1,10 @@
 import React from 'react';
-import { useRouteResolver } from '@main/routing/resolvers/RouteResolver';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import { ChallengeRoute } from '../../../settings/routes/ChallengeRoute';
-import { useSubspaceCommunityAndRoleSetIdQuery } from '@core/apollo/generated/apollo-hooks';
+import { useSubspaceCommunityAndRoleSetIdQuery } from '@/core/apollo/generated/apollo-hooks';
 import { OpportunityRoute } from '../../../settings/routes/OpportunityRoute';
 import { OpportunityProvider } from '../../../opportunity/context/OpportunityProvider';
-import { SpaceLevel } from '@core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 const SubspaceSettingsRoute = () => {
   const { spaceLevel, parentJourneyId } = useRouteResolver();

@@ -1,4 +1,4 @@
-import CalloutCard, { CalloutCardCallout } from '@domain/collaboration/callout/calloutCard/CalloutCard';
+import CalloutCard, { CalloutCardCallout } from '@/domain/collaboration/callout/calloutCard/CalloutCard';
 import SearchResultsCalloutCardFooter, { SearchResultsCalloutCardFooterProps } from './SearchResultsCalloutCardFooter';
 
 interface SearchResultsCalloutCardProps {

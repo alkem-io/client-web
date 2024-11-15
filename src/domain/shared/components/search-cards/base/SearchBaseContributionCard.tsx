@@ -1,11 +1,11 @@
 import { Box, SvgIconProps } from '@mui/material';
 import { FC, PropsWithChildren } from 'react';
-import CardFooter from '@core/ui/card/CardFooter';
-import CardHeader from '@core/ui/card/CardHeader';
-import CardHeaderCaption from '@core/ui/card/CardHeaderCaption';
-import ContributeCard from '@core/ui/card/ContributeCard';
-import RouterLink from '@core/ui/link/RouterLink';
-import { gutters } from '@core/ui/grid/utils';
+import CardFooter from '@/core/ui/card/CardFooter';
+import CardHeader from '@/core/ui/card/CardHeader';
+import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
+import ContributeCard from '@/core/ui/card/ContributeCard';
+import RouterLink from '@/core/ui/link/RouterLink';
+import { gutters } from '@/core/ui/grid/utils';
 
 export interface SearchBaseContributionCardProps {
   icon: React.ComponentType<SvgIconProps>;

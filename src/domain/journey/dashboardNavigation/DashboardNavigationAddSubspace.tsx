@@ -1,10 +1,10 @@
 import React, { MouseEventHandler } from 'react';
-import BadgeCardView from '@core/ui/list/BadgeCardView';
-import RouterLink from '@core/ui/link/RouterLink';
-import Avatar from '@core/ui/avatar/Avatar';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import RouterLink from '@/core/ui/link/RouterLink';
+import Avatar from '@/core/ui/avatar/Avatar';
 import { AddCircleOutlineOutlined } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { CaptionSmall } from '@core/ui/typography';
+import { CaptionSmall } from '@/core/ui/typography';
 import { getIndentStyle } from './utils';
 import { ButtonBase } from '@mui/material';
 

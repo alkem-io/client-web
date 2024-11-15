@@ -1,15 +1,15 @@
 import { Skeleton } from '@mui/material';
 import React, { FC } from 'react';
-import CardHeader from '@core/ui/card/CardHeader';
-import CardHeaderCaption from '@core/ui/card/CardHeaderCaption';
-import CardImage from '@core/ui/card/CardImage';
-import CardSegmentCaption from '@core/ui/card/CardSegmentCaption';
-import ContributeCard from '@core/ui/card/ContributeCard';
-import { Caption } from '@core/ui/typography/components';
+import CardHeader from '@/core/ui/card/CardHeader';
+import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
+import CardImage from '@/core/ui/card/CardImage';
+import CardSegmentCaption from '@/core/ui/card/CardSegmentCaption';
+import ContributeCard from '@/core/ui/card/ContributeCard';
+import { Caption } from '@/core/ui/typography/components';
 import InnovationPackIcon from '../../../InnovationPack/InnovationPackIcon';
 import { WhiteboardIcon } from '../../../collaboration/whiteboard/icon/WhiteboardIcon';
-import CardTags from '@core/ui/card/CardTags';
-import { gutters } from '@core/ui/grid/utils';
+import CardTags from '@/core/ui/card/CardTags';
+import { gutters } from '@/core/ui/grid/utils';
 import { WhiteboardTemplate } from '../../models/WhiteboardTemplate';
 import { TemplateCardProps } from './TemplateCard';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import EllipsableWithCount from '@core/ui/typography/EllipsableWithCount';
-import TranslationKey from '@core/i18n/utils/TranslationKey';
+import EllipsableWithCount from '@/core/ui/typography/EllipsableWithCount';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 interface JourneyCalloutsListItemTitleProps {
   callout: {

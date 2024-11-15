@@ -3,7 +3,7 @@ import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
 import { ActivitySubject } from '../types/ActivitySubject';
 import ActivityDescriptionByType from '../../../../shared/components/ActivityDescription/ActivityDescriptionByType';
-import { ActivityEventType } from '@core/apollo/generated/graphql-schema';
+import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
 
 interface ActivityChallengeCreatedViewProps extends ActivityViewProps {
   subspace: ActivitySubject;

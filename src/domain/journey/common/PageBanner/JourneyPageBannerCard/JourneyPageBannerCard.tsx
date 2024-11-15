@@ -1,7 +1,7 @@
 import React from 'react';
 import JourneyAvatar from '../../JourneyAvatar/JourneyAvatar';
 import { Visual } from '../../../../common/visual/Visual';
-import { PageBannerCardWrapperProps } from '@core/ui/layout/pageBannerCard/PageBannerCardWrapper';
+import { PageBannerCardWrapperProps } from '@/core/ui/layout/pageBannerCard/PageBannerCardWrapper';
 import PageBannerCardWithVisual from './PageBannerCardWithVisual';
 
 export interface JourneyPageBannerCardProps extends PageBannerCardWrapperProps {

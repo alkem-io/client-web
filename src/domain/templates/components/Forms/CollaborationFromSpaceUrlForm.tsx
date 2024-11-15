@@ -1,16 +1,16 @@
 import { Box, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text } from '@core/ui/typography';
+import { Text } from '@/core/ui/typography';
 import { LoadingButton } from '@mui/lab';
 import useLoadingState from '../../../shared/utils/useLoadingState';
-import PageContentBlock from '@core/ui/content/PageContentBlock';
-import { gutters } from '@core/ui/grid/utils';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { gutters } from '@/core/ui/grid/utils';
 import useUrlParser from '../../../../main/routing/resolvers/useUrlParser';
 import {
   useJourneyRouteResolverLazyQuery,
   useSpaceCollaborationIdLazyQuery,
-} from '@core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 
 interface CollaborationFromSpaceUrlFormProps {
   onUseCollaboration: (url: string) => Promise<unknown>;

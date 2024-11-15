@@ -1,7 +1,7 @@
 import { Card, CardProps } from '@mui/material';
 import React, { FC } from 'react';
 import ConditionalLink from '../link/ConditionalLink';
-import withElevationOnHover from '@domain/shared/components/withElevationOnHover';
+import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
 
 interface LinkCardProps extends CardProps {
   to?: string;

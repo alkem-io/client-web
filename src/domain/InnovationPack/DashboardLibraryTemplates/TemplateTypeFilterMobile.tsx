@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Button, Checkbox, ClickAwayListener, FormControlLabel, Paper, Popper } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { POPPER_Z_INDEX } from '../../communication/room/Comments/CommentInputField';
-import { Caption } from '@core/ui/typography';
-import { TemplateType } from '@core/apollo/generated/graphql-schema';
+import { Caption } from '@/core/ui/typography';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 
 interface TemplateTypeFilterMobileProps {
   value: TemplateType[];

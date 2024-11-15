@@ -1,6 +1,6 @@
 import { ComponentType } from 'react';
 import { SvgIconProps } from '@mui/material';
-import { CalloutType } from '@core/apollo/generated/graphql-schema';
+import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import {
   FormatListBulletedOutlined,
   ForumOutlined,

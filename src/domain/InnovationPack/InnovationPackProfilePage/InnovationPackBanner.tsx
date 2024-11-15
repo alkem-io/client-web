@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react';
 import { Box, styled } from '@mui/material';
-import hexToRGBA from '@core/utils/hexToRGBA';
-import PageContent from '@core/ui/content/PageContent';
-import { PageTitle, Tagline } from '@core/ui/typography';
-import ContributorCardHorizontal from '@core/ui/card/ContributorCardHorizontal';
+import hexToRGBA from '@/core/utils/hexToRGBA';
+import PageContent from '@/core/ui/content/PageContent';
+import { PageTitle, Tagline } from '@/core/ui/typography';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 
 const BANNER_URL = '/alkemio-banner/alkemio-banner-xl.png';
 

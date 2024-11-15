@@ -2,7 +2,7 @@ import getMetricCount, { Metric } from './getMetricCount';
 import { useTranslation } from 'react-i18next';
 import { ReactNode, useMemo } from 'react';
 import { MetricType } from '../MetricType';
-import TranslationKey from '@core/i18n/utils/TranslationKey';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 export interface MetricItem {
   name: ReactNode;

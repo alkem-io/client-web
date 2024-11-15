@@ -4,13 +4,13 @@ import { journeyCardValueGetter } from '../../common/utils/journeyCardValueGette
 import { useSpace } from '../../space/SpaceContext/useSpace';
 import SubspaceCard from '../../subspace/subspaceCard/SubspaceCard';
 import SubspacesContainer from '../../space/containers/SubspacesContainer';
-import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { DialogContent } from '@mui/material';
-import { CommunityMembershipStatus, SpacePrivacyMode } from '@core/apollo/generated/graphql-schema';
-import { CardLayoutContainer } from '@core/ui/card/cardsLayout/CardsLayout';
+import { CommunityMembershipStatus, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+import { CardLayoutContainer } from '@/core/ui/card/cardsLayout/CardsLayout';
 import JourneyFilter from '../../common/JourneyFilter/JourneyFilter';
-import Loading from '@core/ui/loading/Loading';
+import Loading from '@/core/ui/loading/Loading';
 
 export interface SubspacesListDialogProps {
   open?: boolean;

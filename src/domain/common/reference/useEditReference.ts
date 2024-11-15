@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { useCreateReferenceOnProfileMutation, useDeleteReferenceMutation } from '@core/apollo/generated/apollo-hooks';
+import { useCreateReferenceOnProfileMutation, useDeleteReferenceMutation } from '@/core/apollo/generated/apollo-hooks';
 
 export type PushFunc = (success: boolean) => void;
 // TODO this hook needs refactoring - something weird is going on with types here

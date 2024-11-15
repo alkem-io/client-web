@@ -1,16 +1,16 @@
 import React, { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
-import { AuthorizationPrivilege } from '@core/apollo/generated/graphql-schema';
-import WrapperMarkdown from '@core/ui/markdown/WrapperMarkdown';
-import { BlockTitle } from '@core/ui/typography';
-import { Ribbon } from '@core/ui/card/Ribbon';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { BlockTitle } from '@/core/ui/typography';
+import { Ribbon } from '@/core/ui/card/Ribbon';
 import References from '../../../shared/components/References/References';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
 import CalloutHeader from '../calloutBlock/CalloutHeader';
 import CalloutClosedMarginal from '../calloutBlock/CalloutClosedMarginal';
 import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
-import { gutters } from '@core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 
 const CommentsCalloutLayout = ({
   callout,

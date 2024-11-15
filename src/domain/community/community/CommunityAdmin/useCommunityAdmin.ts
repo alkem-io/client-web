@@ -16,18 +16,18 @@ import {
   useAvailableVirtualContributorsLazyQuery,
   useAvailableVirtualContributorsInLibraryLazyQuery,
   useRoleSetAvailableMembersLazyQuery,
-} from '@core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CommunityRoleType,
   SearchVisibility,
   SpaceLevel,
-} from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import { OrganizationDetailsFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityOrganizations';
 import { CommunityMemberUserFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityUsers';
 import useInviteUsers from '../../../community/invitations/useInviteUsers';
 import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
-import { Identifiable } from '@core/utils/Identifiable';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 const MAX_AVAILABLE_MEMBERS = 100;
 const buildUserFilterObject = (filter: string | undefined) =>

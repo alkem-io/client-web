@@ -1,6 +1,6 @@
 import 'react-chat-widget/lib/styles.css';
 import { Box, BoxProps } from '@mui/material';
-import { gutters } from '@core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { SOURCES_HEADING_TAG_HTML } from './formatChatGuidanceResponseAsMarkdown';
 import { forwardRef } from 'react';
 

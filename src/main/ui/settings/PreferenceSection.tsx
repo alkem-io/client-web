@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import DashboardGenericSection from '@domain/shared/components/DashboardSections/DashboardGenericSection';
+import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
 import { FormControl, FormControlLabel, FormGroup, Skeleton, Switch } from '@mui/material';
-import { Preference } from '@core/apollo/generated/graphql-schema';
-import { PreferenceTypes } from '@domain/common/preference/preference-types';
+import { Preference } from '@/core/apollo/generated/graphql-schema';
+import { PreferenceTypes } from '@/domain/common/preference/preference-types';
 
 export interface PreferenceSectionProps {
   headerText: string;

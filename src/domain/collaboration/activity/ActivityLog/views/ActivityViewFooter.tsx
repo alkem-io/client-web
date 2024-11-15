@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { Caption } from '@core/ui/typography';
+import { Caption } from '@/core/ui/typography';
 import { ReactNode } from 'react';
 
 interface ActivityViewFooterProps {

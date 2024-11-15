@@ -3,7 +3,7 @@ import { CollaborationTemplateFormSubmittedValues } from '../components/Forms/Co
 import {
   useCreateTemplateFromCollaborationMutation,
   useSpaceTemplatesSetIdLazyQuery,
-} from '@core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import { toCreateTemplateFromCollaborationMutationVariables } from '../components/Forms/common/mappings';
 
 export interface CollaborationCreationUtils {

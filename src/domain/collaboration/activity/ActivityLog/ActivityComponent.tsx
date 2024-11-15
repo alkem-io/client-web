@@ -14,7 +14,7 @@ import {
   ActivityLogMemberJoinedFragment,
   ActivityLogOpportunityCreatedFragment,
   ActivityLogUpdateSentFragment,
-} from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import {
   ActivityCalloutLinkCreatedView,
   ActivityCalloutPostCommentCreatedView,

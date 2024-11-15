@@ -5,12 +5,12 @@ import { Box, Button } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import FormikWhiteboardPreview from '../../../collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
-import { gutters } from '@core/ui/grid/utils';
-import { useTemplateContentLazyQuery } from '@core/apollo/generated/apollo-hooks';
-import { Identifiable } from '@core/utils/Identifiable';
+import { gutters } from '@/core/ui/grid/utils';
+import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import { Identifiable } from '@/core/utils/Identifiable';
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { LoadingButton } from '@mui/lab';
-import { TemplateType } from '@core/apollo/generated/graphql-schema';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LibraryIcon } from '../../LibraryIcon';
 

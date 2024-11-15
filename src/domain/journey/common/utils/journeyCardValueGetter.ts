@@ -1,4 +1,4 @@
-import { ValueType } from '@core/utils/filtering/filterFn';
+import { ValueType } from '@/core/utils/filtering/filterFn';
 
 interface JourneyCard {
   id: string;

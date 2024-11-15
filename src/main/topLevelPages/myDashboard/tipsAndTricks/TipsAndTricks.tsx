@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import SeeMore from '@core/ui/content/SeeMore';
-import BadgeCardView from '@core/ui/list/BadgeCardView';
-import Avatar from '@core/ui/avatar/Avatar';
-import RouterLink from '@core/ui/link/RouterLink';
-import { Caption } from '@core/ui/typography';
-import Gutters from '@core/ui/grid/Gutters';
+import SeeMore from '@/core/ui/content/SeeMore';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import Avatar from '@/core/ui/avatar/Avatar';
+import RouterLink from '@/core/ui/link/RouterLink';
+import { Caption } from '@/core/ui/typography';
+import Gutters from '@/core/ui/grid/Gutters';
 
 export const TipsAndTricks = () => {
   const { t } = useTranslation();

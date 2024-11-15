@@ -4,12 +4,12 @@ import {
   refetchAdminInnovationPacksListQuery,
   useAdminInnovationPacksListQuery,
   useDeleteInnovationPackMutation,
-} from '@core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import SearchableListLayout from '../../shared/components/SearchableList/SearchableListLayout';
 import SimpleSearchableTable from '../../shared/components/SearchableList/SimpleSearchableTable';
 import AdminLayout from '../../platform/admin/layout/toplevel/AdminLayout';
 import { AdminSection } from '../../platform/admin/layout/toplevel/constants';
-import { buildInnovationPackSettingsUrl } from '@main/routing/urlBuilders';
+import { buildInnovationPackSettingsUrl } from '@/main/routing/urlBuilders';
 
 interface AdminInnovationPacksPageProps {}
 

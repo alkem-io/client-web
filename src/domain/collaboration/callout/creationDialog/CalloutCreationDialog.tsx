@@ -7,22 +7,22 @@ import {
   CalloutVisibility,
   CalloutGroupName,
   TemplateType,
-} from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import { CalloutCreationTypeWithPreviewImages } from './useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
-import { DialogContent } from '@core/ui/dialog/deprecated';
+import { DialogContent } from '@/core/ui/dialog/deprecated';
 import { LoadingButton } from '@mui/lab';
 import calloutIcons from '../utils/calloutIcons';
 import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
-import { useTemplateContentLazyQuery } from '@core/apollo/generated/apollo-hooks';
-import DialogHeader from '@core/ui/dialog/DialogHeader';
-import { Actions } from '@core/ui/actions/Actions';
-import { gutters } from '@core/ui/grid/utils';
+import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { Actions } from '@/core/ui/actions/Actions';
+import { gutters } from '@/core/ui/grid/utils';
 import CalloutTypeSelect from './CalloutType/CalloutTypeSelect';
 import { Reference } from '../../../common/profile/Profile';
-import { Identifiable } from '@core/utils/Identifiable';
-import FlexSpacer from '@core/ui/utils/FlexSpacer';
-import Gutters from '@core/ui/grid/Gutters';
+import { Identifiable } from '@/core/utils/Identifiable';
+import FlexSpacer from '@/core/ui/utils/FlexSpacer';
+import Gutters from '@/core/ui/grid/Gutters';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';

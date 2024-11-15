@@ -2,7 +2,7 @@ import { Container } from '@mui/material';
 import React, { FC } from 'react';
 import { SettingsSection } from '../../layout/EntitySettingsLayout/constants';
 import OrganizationAdminLayout from '../../organization/OrganizationAdminLayout';
-import { AuthorizationCredential } from '@core/apollo/generated/graphql-schema';
+import { AuthorizationCredential } from '@/core/apollo/generated/graphql-schema';
 import EditGroupCredentials from '../Authorization/EditGroupCredentials';
 
 interface EditMembersPageProps {

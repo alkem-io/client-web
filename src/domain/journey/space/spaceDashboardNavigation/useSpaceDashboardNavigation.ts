@@ -1,14 +1,14 @@
 import {
   useSpaceDashboardNavigationChallengesQuery,
   useSpaceDashboardNavigationOpportunitiesQuery,
-} from '@core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   Authorization,
   AuthorizationPrivilege,
   CommunityMembershipStatus,
   MyMembershipsRoleSetFragment,
   SpaceDashboardNavigationProfileFragment,
-} from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import { keyBy } from 'lodash';
 import { useCallback, useMemo } from 'react';
 

@@ -1,6 +1,6 @@
 import { Box, BoxProps } from '@mui/material';
-import { gutters } from '@core/ui/grid/utils';
-import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX } from '@core/ui/grid/constants';
+import { gutters } from '@/core/ui/grid/utils';
+import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX } from '@/core/ui/grid/constants';
 
 const AuthPageContentContainer = (props: BoxProps) => {
   return (

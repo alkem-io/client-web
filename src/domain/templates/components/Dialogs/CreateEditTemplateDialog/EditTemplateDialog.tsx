@@ -1,11 +1,11 @@
 import React from 'react';
-import { DialogHeaderProps } from '@core/ui/dialog/DialogHeader';
+import { DialogHeaderProps } from '@/core/ui/dialog/DialogHeader';
 
 import CreateEditTemplateDialogBase from './CreateEditTemplateDialogBase';
-import { TemplateType } from '@core/apollo/generated/graphql-schema';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { AnyTemplate } from '../../../models/TemplateBase';
 import TemplateForm, { AnyTemplateFormSubmittedValues } from '../../Forms/TemplateForm';
-import { useTemplateContentQuery } from '@core/apollo/generated/apollo-hooks';
+import { useTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CircularProgress } from '@mui/material';
 
 interface EditTemplateDialogProps {

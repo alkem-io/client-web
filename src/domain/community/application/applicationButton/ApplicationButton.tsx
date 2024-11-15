@@ -1,20 +1,20 @@
 import { Button as MuiButton, CircularProgress } from '@mui/material';
 import React, { forwardRef, Ref, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import RouterLink from '@core/ui/link/RouterLink';
+import RouterLink from '@/core/ui/link/RouterLink';
 import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
 import PreApplicationDialog from './PreApplicationDialog';
 import isApplicationPending from './isApplicationPending';
 import ApplicationSubmittedDialog from './ApplicationSubmittedDialog';
 import PreJoinParentDialog from './PreJoinParentDialog';
 import { AddOutlined, PersonOutlined } from '@mui/icons-material';
-import RootThemeProvider from '@core/ui/themes/RootThemeProvider';
+import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { InvitationItem } from '../../user/providers/UserProvider/InvitationItem';
 import InvitationActionsContainer from '../../invitations/InvitationActionsContainer';
 import InvitationDialog from '../../invitations/InvitationDialog';
-import useNavigate from '@core/routing/useNavigate';
+import useNavigate from '@/core/routing/useNavigate';
 import ApplicationDialog from './ApplicationDialog';
-import { SpaceLevel } from '@core/apollo/generated/graphql-schema';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface ApplicationButtonProps {
   journeyId: string | undefined;

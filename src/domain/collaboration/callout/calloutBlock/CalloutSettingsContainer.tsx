@@ -12,14 +12,14 @@ import {
   MessageDetailsFragment,
   TemplateType,
   WhiteboardDetailsFragment,
-} from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import { CalloutSummary } from '../CalloutSummary';
 import CalloutVisibilityChangeDialog from '../edit/visibilityChangeDialog/CalloutVisibilityChangeDialog';
 import CalloutEditDialog from '../edit/editDialog/CalloutEditDialog';
 import { CalloutEditType } from '../edit/CalloutEditType';
 import { CalloutLayoutEvents, CalloutSortProps } from '../CalloutViewTypes';
-import { useUrlParams } from '@core/routing/useUrlParams';
-import MenuItemWithIcon from '@core/ui/menu/MenuItemWithIcon';
+import { useUrlParams } from '@/core/routing/useUrlParams';
+import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import {
   ArrowDownwardOutlined,
   ArrowUpwardOutlined,
@@ -38,17 +38,17 @@ import { Reference, Tagset } from '../../../common/profile/Profile';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import { WhiteboardFragmentWithCallout } from '../useCallouts/useCallouts';
 import { FormatedLink, LinkDetails } from '../links/LinkCollectionCallout';
-import ConfirmationDialog from '@core/ui/dialogs/ConfirmationDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '../../../shared/utils/useLoadingState';
-import { SimpleContainerProps } from '@core/container/SimpleContainer';
-import ExpandContentIcon from '@core/ui/content/ExpandContent/ExpandContentIcon';
+import { SimpleContainerProps } from '@/core/container/SimpleContainer';
+import ExpandContentIcon from '@/core/ui/content/ExpandContent/ExpandContentIcon';
 import { ShareDialog } from '../../../shared/components/ShareDialog/ShareDialog';
-import { gutters } from '@core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import SortDialog from './sort/SortDialog';
 import {
   useCalloutContentLazyQuery,
   useUpdateContributionsSortOrderMutation,
-} from '@core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import { WhiteboardCardWhiteboard } from '../whiteboard/WhiteboardCard';
 import { PostCardPost } from '../post/PostCard';
 import { useCreateCalloutTemplate } from '../../../templates/hooks/useCreateCalloutTemplate';

@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
-import FullWidthButton from '@core/ui/button/FullWidthButton';
-import RouterLink from '@core/ui/link/RouterLink';
-import { Caption } from '@core/ui/typography';
+import FullWidthButton from '@/core/ui/button/FullWidthButton';
+import RouterLink from '@/core/ui/link/RouterLink';
+import { Caption } from '@/core/ui/typography';
 import { Button, ButtonProps } from '@mui/material';
-import { useContactSupportLocationQuery } from '@core/apollo/generated/apollo-hooks';
+import { useContactSupportLocationQuery } from '@/core/apollo/generated/apollo-hooks';
 
 interface SelectPlanButtonProps extends ButtonProps {
   plan: {

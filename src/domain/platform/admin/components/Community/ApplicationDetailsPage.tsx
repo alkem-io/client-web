@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useUrlParams } from '@core/routing/useUrlParams';
+import { useUrlParams } from '@/core/routing/useUrlParams';
 
 export const ApplicationDetailsPage: FC = () => {
   const { applicationId } = useUrlParams();

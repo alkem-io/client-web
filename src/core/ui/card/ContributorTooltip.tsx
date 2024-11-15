@@ -1,5 +1,5 @@
 import { Tooltip, TooltipProps } from '@mui/material';
-import UserCard, { UserCardProps } from '@domain/community/user/userCard/UserCard';
+import UserCard, { UserCardProps } from '@/domain/community/user/userCard/UserCard';
 import RootThemeProvider from '../themes/RootThemeProvider';
 import GridProvider from '../grid/GridProvider';
 import { CONTRIBUTE_CARD_COLUMNS } from './ContributeCard';

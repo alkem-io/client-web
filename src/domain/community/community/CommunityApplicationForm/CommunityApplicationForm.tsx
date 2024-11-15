@@ -5,19 +5,19 @@ import { useTranslation } from 'react-i18next';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { max, pullAt, slice, sortBy } from 'lodash';
-import { BlockSectionTitle } from '@core/ui/typography';
+import { BlockSectionTitle } from '@/core/ui/typography';
 import {
   refetchRoleSetApplicationFormQuery,
   useRoleSetApplicationFormQuery,
   useUpdateApplicationFormOnRoleSetMutation,
-} from '@core/apollo/generated/apollo-hooks';
-import FormikMarkdownField from '@core/ui/forms/MarkdownInput/FormikMarkdownField';
+} from '@/core/apollo/generated/apollo-hooks';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import FormQuestionField, { questionSchema } from './views/FormQuestionField';
 import FormikSubmitButton from '../../../shared/components/forms/FormikSubmitButton';
-import { useNotification } from '@core/ui/notifications/useNotification';
-import Gutters from '@core/ui/grid/Gutters';
-import MarkdownValidator from '@core/ui/forms/MarkdownInput/MarkdownValidator';
-import { MARKDOWN_TEXT_LENGTH } from '@core/ui/forms/field-length.constants';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import Gutters from '@/core/ui/grid/Gutters';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
 interface CommunityApplicationFormProps {
   roleSetId: string;

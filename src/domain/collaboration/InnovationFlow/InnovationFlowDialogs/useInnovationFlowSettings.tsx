@@ -8,8 +8,13 @@ import {
   useUpdateInnovationFlowStatesMutation,
   useUpdateInnovationFlowSingleStateMutation,
   useUpdateCollaborationFromTemplateMutation,
-} from '@core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, CalloutType, Tagset, UpdateProfileInput } from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/apollo-hooks';
+import {
+  AuthorizationPrivilege,
+  CalloutType,
+  Tagset,
+  UpdateProfileInput,
+} from '@/core/apollo/generated/graphql-schema';
 import { CalloutGroupNameValuesMap } from '../../callout/CalloutsInContext/CalloutsGroup';
 import { InnovationFlowState } from '../InnovationFlow';
 import { sortCallouts } from '../utils/sortCallouts';

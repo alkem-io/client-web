@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { ActivityEventType } from '@core/apollo/generated/graphql-schema';
+import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
 
 interface ActivityDescriptionByTypeProps {
   activityType: ActivityEventType;

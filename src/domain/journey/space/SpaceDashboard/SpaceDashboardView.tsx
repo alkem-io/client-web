@@ -5,9 +5,9 @@ import {
   CalloutsQueryVariables,
   CommunityMembershipStatus,
   SpaceLevel,
-} from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
-import PageContent from '@core/ui/content/PageContent';
+import PageContent from '@/core/ui/content/PageContent';
 import { JourneyTypeName } from '../../JourneyTypeName';
 import DashboardCalendarSection from '../../../shared/components/DashboardSections/DashboardCalendarSection';
 import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
@@ -18,18 +18,18 @@ import { InfoOutlined } from '@mui/icons-material';
 import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
 import DashboardNavigation from '../../dashboardNavigation/DashboardNavigation';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
-import FullWidthButton from '@core/ui/button/FullWidthButton';
+import FullWidthButton from '@/core/ui/button/FullWidthButton';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
 import JourneyDashboardWelcomeBlock, {
   JourneyDashboardWelcomeBlockProps,
 } from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
-import RouterLink from '@core/ui/link/RouterLink';
+import RouterLink from '@/core/ui/link/RouterLink';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import InfoColumn from '@core/ui/content/InfoColumn';
-import ContentColumn from '@core/ui/content/ContentColumn';
-import PageContentBlock from '@core/ui/content/PageContentBlock';
-import PageContentColumn from '@core/ui/content/PageContentColumn';
+import InfoColumn from '@/core/ui/content/InfoColumn';
+import ContentColumn from '@/core/ui/content/ContentColumn';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
 import {
   getVCCreationCache,

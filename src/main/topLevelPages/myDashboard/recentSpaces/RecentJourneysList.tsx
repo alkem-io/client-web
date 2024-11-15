@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Paper, Theme, useMediaQuery } from '@mui/material';
 import { DoubleArrowOutlined } from '@mui/icons-material';
-import { useRecentSpacesQuery } from '@core/apollo/generated/apollo-hooks';
-import { Caption } from '@core/ui/typography';
-import { useColumns } from '@core/ui/grid/GridContext';
-import PageContentBlockSeamless from '@core/ui/content/PageContentBlockSeamless';
-import GridItem from '@core/ui/grid/GridItem';
-import JourneyTile, { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@domain/journey/common/JourneyTile/JourneyTile';
+import { useRecentSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { Caption } from '@/core/ui/typography';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import GridItem from '@/core/ui/grid/GridItem';
+import JourneyTile, { RECENT_JOURNEY_CARD_ASPECT_RATIO } from '@/domain/journey/common/JourneyTile/JourneyTile';
 import { useMemo } from 'react';
-import { SpacePrivacyMode } from '@core/apollo/generated/graphql-schema';
+import { SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
 
 interface RecentJourneysListProps {
   onSeeMore?: () => void;

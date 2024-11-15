@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { delay } from 'lodash';
-import { gutters } from '@core/ui/grid/utils';
-import { Text } from '@core/ui/typography';
+import { gutters } from '@/core/ui/grid/utils';
+import { Text } from '@/core/ui/typography';
 import { ShareButton, ShareOnPlatformButtonProps, ShareOnPlatformHandlerProps } from '../ShareDialog';
 
 export const ShareOnClipboardButton: FC<ShareOnPlatformButtonProps> = ({ setShareHandler, ...props }) => {

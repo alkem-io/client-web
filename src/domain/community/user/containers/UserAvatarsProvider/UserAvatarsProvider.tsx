@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import Loading from '@core/ui/loading/Loading';
-import { useUserAvatarsQuery } from '@core/apollo/generated/apollo-hooks';
-import { User } from '@core/apollo/generated/graphql-schema';
+import Loading from '@/core/ui/loading/Loading';
+import { useUserAvatarsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { User } from '@/core/apollo/generated/graphql-schema';
 
 interface UserAvatarsProviderProps {
   users?: Pick<User, 'id'>[];

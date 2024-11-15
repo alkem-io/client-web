@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { privateGraphQLEndpoint } from '@main/constants/endpoints';
+import { privateGraphQLEndpoint } from '@/main/constants/endpoints';
 import WrapperButton from '../../ui/button/deprecated/WrapperButton';
 import Section from '../../ui/content/deprecated/Section';
 import WrapperTypography from '../../ui/typography/deprecated/WrapperTypography';

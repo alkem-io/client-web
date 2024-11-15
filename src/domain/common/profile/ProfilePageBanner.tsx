@@ -1,18 +1,18 @@
 import React, { useMemo, useState } from 'react';
-import PageBanner from '@core/ui/layout/pageBanner/PageBanner';
+import PageBanner from '@/core/ui/layout/pageBanner/PageBanner';
 import PageBannerCardWithVisual from '../../journey/common/PageBanner/JourneyPageBannerCard/PageBannerCardWithVisual';
-import Avatar from '@core/ui/avatar/Avatar';
-import { PageTitle } from '@core/ui/typography';
-import LocationCaption from '@core/ui/location/LocationCaption';
-import { Actions } from '@core/ui/actions/Actions';
+import Avatar from '@/core/ui/avatar/Avatar';
+import { PageTitle } from '@/core/ui/typography';
+import LocationCaption from '@/core/ui/location/LocationCaption';
+import { Actions } from '@/core/ui/actions/Actions';
 import { IconButton, Theme, useMediaQuery } from '@mui/material';
 import { MailOutlined, SettingsOutlined } from '@mui/icons-material';
-import RouterLink from '@core/ui/link/RouterLink';
+import RouterLink from '@/core/ui/link/RouterLink';
 import { DirectMessageDialog } from '../../communication/messaging/DirectMessaging/DirectMessageDialog';
 import { Visual } from '../visual/Visual';
-import { Location } from '@core/ui/location/getLocationString';
+import { Location } from '@/core/ui/location/getLocationString';
 import { useTranslation } from 'react-i18next';
-import PageBannerWatermark from '@main/ui/platformNavigation/PageBannerWatermark';
+import PageBannerWatermark from '@/main/ui/platformNavigation/PageBannerWatermark';
 import VirtualContributorLabel from '../../community/virtualContributor/VirtualContributorLabel';
 
 const banner: Visual = {

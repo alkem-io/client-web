@@ -1,12 +1,12 @@
 import React, { cloneElement, PropsWithChildren, useState } from 'react';
 import { EntityPageLayoutProps } from './EntityPageLayoutTypes';
 import { Theme, useMediaQuery } from '@mui/material';
-import { Error404 } from '@core/pages/Errors/Error404';
-import { NotFoundErrorBoundary } from '@core/notFound/NotFoundErrorBoundary';
+import { Error404 } from '@/core/pages/Errors/Error404';
+import { NotFoundErrorBoundary } from '@/core/notFound/NotFoundErrorBoundary';
 import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
-import FloatingActionButtons from '@core/ui/button/FloatingActionButtons';
+import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
 import PlatformHelpButton from '../../../../main/ui/helpButton/PlatformHelpButton';
-import { gutters } from '@core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import PageBannerWatermark from '../../../../main/ui/platformNavigation/PageBannerWatermark';
 
 const EntityPageLayout = ({

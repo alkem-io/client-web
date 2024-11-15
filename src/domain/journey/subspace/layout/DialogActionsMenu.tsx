@@ -1,9 +1,9 @@
 import { MenuList } from '@mui/material';
 import React, { Children, PropsWithChildren } from 'react';
 import { isDialogDef } from './DialogDefinition';
-import NavigatableMenuItem from '@core/ui/menu/NavigatableMenuItem';
-import unwrapFragment from '@core/ui/utils/unwrapFragment';
-import { Caption } from '@core/ui/typography';
+import NavigatableMenuItem from '@/core/ui/menu/NavigatableMenuItem';
+import unwrapFragment from '@/core/ui/utils/unwrapFragment';
+import { Caption } from '@/core/ui/typography';
 
 interface DialogActionsMenuProps {
   onClose: () => void;

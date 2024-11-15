@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Caption } from '../typography';
-import { LocationIcon } from '@domain/timeline/calendar/icons/LocationIcon';
+import { LocationIcon } from '@/domain/timeline/calendar/icons/LocationIcon';
 
 interface LocationCaptionProps {
   city?: string | undefined;

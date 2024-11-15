@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { useUrlParams } from '@core/routing/useUrlParams';
-import { useSpaceGroupQuery } from '@core/apollo/generated/apollo-hooks';
+import { useUrlParams } from '@/core/routing/useUrlParams';
+import { useSpaceGroupQuery } from '@/core/apollo/generated/apollo-hooks';
 import { GroupRoute } from '../../routing/GroupRoute';
 
 interface GroupRouteProps {

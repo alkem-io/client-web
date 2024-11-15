@@ -1,6 +1,6 @@
 import { Author } from '../../../shared/components/AuthorAvatar/models/author';
-import { Identifiable } from '@core/utils/Identifiable';
-import { ProfileType } from '@core/apollo/generated/graphql-schema';
+import { Identifiable } from '@/core/utils/Identifiable';
+import { ProfileType } from '@/core/apollo/generated/graphql-schema';
 
 interface AuthorData extends Identifiable {
   firstName?: string;

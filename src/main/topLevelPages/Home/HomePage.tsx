@@ -1,9 +1,9 @@
 import React, { Suspense } from 'react';
 import HomePageLayout from './HomePageLayout';
-import InnovationHubHomePage from '@domain/innovationHub/InnovationHubHomePage/InnovationHubHomePage';
-import Loading from '@core/ui/loading/Loading';
-import useInnovationHub from '@domain/innovationHub/useInnovationHub/useInnovationHub';
-import PageContent from '@core/ui/content/PageContent';
+import InnovationHubHomePage from '@/domain/innovationHub/InnovationHubHomePage/InnovationHubHomePage';
+import Loading from '@/core/ui/loading/Loading';
+import useInnovationHub from '@/domain/innovationHub/useInnovationHub/useInnovationHub';
+import PageContent from '@/core/ui/content/PageContent';
 
 const MyDashboard = React.lazy(() => import('../myDashboard/MyDashboard'));
 

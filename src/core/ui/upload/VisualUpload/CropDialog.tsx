@@ -10,9 +10,9 @@ import Gutters from '../../grid/Gutters';
 import FormikInputField from '../../forms/FormikInputField/FormikInputField';
 import { Actions } from '../../actions/Actions';
 import { ALT_TEXT_LENGTH } from '../../forms/field-length.constants';
-import { MessageWithPayload } from '@domain/shared/i18n/ValidationMessageTranslation';
-import { TranslateWithElements } from '@domain/shared/i18n/TranslateWithElements';
-import { useConfig } from '@domain/platform/config/useConfig';
+import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
+import { useConfig } from '@/domain/platform/config/useConfig';
 
 interface CropDialogConfig {
   aspectRatio?: number;

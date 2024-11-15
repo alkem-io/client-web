@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { gutters } from '@core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import JourneyAvatar from '../../common/JourneyAvatar/JourneyAvatar';
 
 interface StackedAvatarProps {

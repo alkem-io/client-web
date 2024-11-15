@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import useNavigate from '@core/routing/useNavigate';
+import useNavigate from '@/core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
 import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
 import { CreateOpportunityForm } from '../../../opportunity/forms/CreateOpportunityForm';
@@ -8,7 +8,7 @@ import {
   useCreateSubspaceMutation,
   refetchSubspacesInSpaceQuery,
   refetchDashboardWithMembershipsQuery,
-} from '@core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 
 export interface CreateJourneyProps {
   isVisible: boolean;

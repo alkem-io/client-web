@@ -6,18 +6,18 @@ import {
   useDeleteSpaceMutation,
   useOrganizationAuthorizationLazyQuery,
   useSpaceAccountQuery,
-} from '@core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, LicensePlanType } from '@core/apollo/generated/graphql-schema';
-import useNavigate from '@core/routing/useNavigate';
-import ContributorCardHorizontal from '@core/ui/card/ContributorCardHorizontal';
-import PageContent from '@core/ui/content/PageContent';
-import PageContentBlock from '@core/ui/content/PageContentBlock';
-import SeeMore from '@core/ui/content/SeeMore';
-import Gutters from '@core/ui/grid/Gutters';
-import { gutters } from '@core/ui/grid/utils';
-import RouterLink from '@core/ui/link/RouterLink';
-import { useNotification } from '@core/ui/notifications/useNotification';
-import { BlockTitle, Caption, CaptionSmall } from '@core/ui/typography';
+} from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, LicensePlanType } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import SeeMore from '@/core/ui/content/SeeMore';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { BlockTitle, Caption, CaptionSmall } from '@/core/ui/typography';
 import { PlanFeatures, PlanFooter, PlanName } from '../../../../license/plans/ui/PlanCardsComponents';
 import { getPlanTranslations } from '../../../../license/plans/utils/getPlanTranslations';
 import { ROUTE_HOME } from '../../../../platform/routes/constants';

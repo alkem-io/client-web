@@ -12,7 +12,7 @@ import {
   CreateCalloutMutation,
   CreateReferenceInput,
   CreateTagsetInput,
-} from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 
 export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationType {
   framing: {

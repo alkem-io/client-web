@@ -1,26 +1,32 @@
 import React, { FC, useMemo } from 'react';
 import { Formik, FormikConfig } from 'formik';
-import { CalloutGroupName, CalloutState, CalloutType, Tagset, TagsetType } from '@core/apollo/generated/graphql-schema';
+import {
+  CalloutGroupName,
+  CalloutState,
+  CalloutType,
+  Tagset,
+  TagsetType,
+} from '@/core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { MARKDOWN_TEXT_LENGTH } from '@core/ui/forms/field-length.constants';
-import FormikInputField from '@core/ui/forms/FormikInputField/FormikInputField';
-import FormikEffectFactory from '@core/ui/forms/FormikEffect';
-import { FormikSwitch } from '@core/ui/forms/FormikSwitch';
-import { displayNameValidator } from '@core/ui/forms/validator/displayNameValidator';
-import MarkdownValidator from '@core/ui/forms/MarkdownInput/MarkdownValidator';
-import FormikMarkdownField from '@core/ui/forms/MarkdownInput/FormikMarkdownField';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
+import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
+import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValidator';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { TagsetSegment } from '../../platform/admin/components/Common/TagsetSegment';
 import ReferenceSegment, { referenceSegmentSchema } from '../../platform/admin/components/Common/ReferenceSegment';
 import { Reference } from '../../common/profile/Profile';
 import { ProfileReferenceSegment } from '../../platform/admin/components/Common/ProfileReferenceSegment';
-import Gutters from '@core/ui/grid/Gutters';
-import { gutters } from '@core/ui/grid/utils';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
 import { EmptyWhiteboardString } from '../../common/whiteboard/EmptyWhiteboard';
-import FormikSelect from '@core/ui/forms/FormikSelect';
-import { FormikSelectValue } from '@core/ui/forms/FormikAutocomplete';
+import FormikSelect from '@/core/ui/forms/FormikSelect';
+import { FormikSelectValue } from '@/core/ui/forms/FormikAutocomplete';
 import { FormControlLabel } from '@mui/material';
-import { Caption } from '@core/ui/typography';
+import { Caption } from '@/core/ui/typography';
 import CalloutWhiteboardField, {
   WhiteboardFieldSubmittedValues,
   WhiteboardFieldSubmittedValuesWithPreviewImages,

@@ -4,13 +4,13 @@ import {
   refetchUsersWithCredentialsQuery,
   useAssignOrganizationRoleToUserMutation,
   useRemoveOrganizationRoleFromUserMutation,
-} from '@core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationCredential,
   Organization,
   OrganizationRole,
   UserDisplayNameFragment,
-} from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import { Member } from '../../../user/models/User';
 import { useAvailableMembersWithCredential } from '../../../community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
 import { AvailableMembersResults } from '../../../community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';

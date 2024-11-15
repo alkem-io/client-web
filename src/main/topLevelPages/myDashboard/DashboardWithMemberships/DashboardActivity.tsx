@@ -3,14 +3,14 @@ import RecentJourneysList from '../recentSpaces/RecentJourneysList';
 import LatestContributions from '../latestContributions/LatestContributions';
 import MyLatestContributions from '../latestContributions/myLatestContributions/MyLatestContributions';
 import { MyMembershipsDialog } from '../myMemberships/MyMembershipsDialog';
-import { useLatestContributionsSpacesFlatQuery, useMyMembershipsQuery } from '@core/apollo/generated/apollo-hooks';
-import { useColumns } from '@core/ui/grid/GridContext';
-import PageContentColumn from '@core/ui/content/PageContentColumn';
-import PageContentBlock from '@core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '@core/ui/content/PageContentBlockHeader';
+import { useLatestContributionsSpacesFlatQuery, useMyMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
 import { Theme, useMediaQuery } from '@mui/material';
-import { SpaceIcon } from '@domain/journey/space/icon/SpaceIcon';
+import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
 
 const DashboardActivity = () => {
   const { t } = useTranslation();

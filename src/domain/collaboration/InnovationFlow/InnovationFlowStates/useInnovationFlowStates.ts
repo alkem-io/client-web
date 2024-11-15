@@ -1,5 +1,5 @@
-import { useInnovationFlowDetailsQuery } from '@core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '@core/apollo/generated/graphql-schema';
+import { useInnovationFlowDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { InnovationFlowState } from '../InnovationFlow';
 
 interface UseInnovationFlowStatesParams {

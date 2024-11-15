@@ -1,11 +1,11 @@
 import React, { FC, useCallback } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerChildProps } from '@core/container/container';
+import { ContainerChildProps } from '@/core/container/container';
 import {
   useOrganizationPreferencesQuery,
   useUpdatePreferenceOnOrganizationMutation,
-} from '@core/apollo/generated/apollo-hooks';
-import { OrganizationPreferenceType, Preference } from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/apollo-hooks';
+import { OrganizationPreferenceType, Preference } from '@/core/apollo/generated/graphql-schema';
 
 export interface OrganizationPreferenceContainerEntities {
   preferences: Preference[];

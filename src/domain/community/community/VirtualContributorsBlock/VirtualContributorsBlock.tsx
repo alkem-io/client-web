@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ListItemButton, ListItemButtonProps, ListItemButtonTypeMap } from '@mui/material';
-import PageContentBlock from '@core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '@core/ui/content/PageContentBlockHeader';
-import SeeMore from '@core/ui/content/SeeMore';
-import Loading from '@core/ui/loading/Loading';
-import BadgeCardView from '@core/ui/list/BadgeCardView';
-import Avatar from '@core/ui/avatar/Avatar';
-import { BlockSectionTitle } from '@core/ui/typography';
-import RouterLink, { RouterLinkProps } from '@core/ui/link/RouterLink';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import SeeMore from '@/core/ui/content/SeeMore';
+import Loading from '@/core/ui/loading/Loading';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import Avatar from '@/core/ui/avatar/Avatar';
+import { BlockSectionTitle } from '@/core/ui/typography';
+import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
 import VirtualContributorsDialog, { VirtualContributorProps } from './VirtualContributorsDialog';
 import VCIcon from '../../virtualContributor/VirtualContributorsIcons';
 

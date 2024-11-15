@@ -2,9 +2,9 @@ import { Button, Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import WrapperTypography from '@core/ui/typography/deprecated/WrapperTypography';
-import RouterLink from '@core/ui/link/RouterLink';
-import { gutters } from '@core/ui/grid/utils';
+import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
+import RouterLink from '@/core/ui/link/RouterLink';
+import { gutters } from '@/core/ui/grid/utils';
 
 interface ListPageProps {
   title?: string;

@@ -2,7 +2,7 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Profile, Reference, Tagset, TagsetType } from '@core/apollo/generated/graphql-schema';
+import { Profile, Reference, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '../../platform/admin/components/Common/ContextReferenceSegment';
 import { contextSegmentSchema } from '../../platform/admin/components/Common/ContextSegment';
 import { NameSegment, nameSegmentSchema } from '../../platform/admin/components/Common/NameSegment';
@@ -12,10 +12,10 @@ import { LocationSegment } from '../location/LocationSegment';
 import { EmptyLocation, Location } from '../location/Location';
 import { formatLocation } from '../location/LocationUtils';
 import { JourneyTypeName } from '../../journey/JourneyTypeName';
-import FormikInputField from '@core/ui/forms/FormikInputField/FormikInputField';
-import { SMALL_TEXT_LENGTH } from '@core/ui/forms/field-length.constants';
-import { BlockSectionTitle } from '@core/ui/typography';
-import Gutters from '@core/ui/grid/Gutters';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { BlockSectionTitle } from '@/core/ui/typography';
+import Gutters from '@/core/ui/grid/Gutters';
 import { DEFAULT_TAGSET } from '../tags/tagset.constants';
 
 export interface ProfileFormValues {

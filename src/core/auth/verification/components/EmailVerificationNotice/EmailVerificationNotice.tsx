@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { BlockTitle } from '../../../../ui/typography';
-import translateWithElements from '@domain/shared/i18n/TranslateWithElements/TranslateWithElements';
+import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
 import { AUTH_VERIFY_PATH } from '../../../authentication/constants/authentication.constants';
 import { Button, Link } from '@mui/material';
 

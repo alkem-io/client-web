@@ -5,14 +5,14 @@ import {
   useBeginCredentialRequestInteractionMutation,
   useGetSupportedCredentialMetadataQuery,
   useUserSsiQuery,
-} from '@core/apollo/generated/apollo-hooks';
-import { ContainerChildProps } from '@core/container/container';
+} from '@/core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '@/core/container/container';
 import {
   AgentBeginVerifiedCredentialOfferOutput,
   AgentBeginVerifiedCredentialRequestOutput,
   CredentialMetadataOutput,
   VerifiedCredential,
-} from '@core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 
 interface UserCredentialsContainerEntities {
   credentialMetadata: CredentialMetadataOutput[] | undefined;

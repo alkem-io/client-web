@@ -1,4 +1,4 @@
-import { AuthorizationPrivilege } from '@core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { Message } from './Message';
 
 export interface Room {

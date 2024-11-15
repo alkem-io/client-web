@@ -4,15 +4,15 @@ import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { Close } from '@mui/icons-material';
 import JourneyCard, { JourneyCardProps } from '../../../journey/common/JourneyCard/JourneyCard';
-import { BlockTitle } from '@core/ui/typography';
-import webkitLineClamp from '@core/ui/utils/webkitLineClamp';
-import CardActions from '@core/ui/card/CardActions';
+import { BlockTitle } from '@/core/ui/typography';
+import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
+import CardActions from '@/core/ui/card/CardActions';
 import JourneyCardTagline from '../../../journey/common/JourneyCard/JourneyCardTagline';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import spaceIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
-import CardRibbon from '@core/ui/card/CardRibbon';
-import { SpaceVisibility } from '@core/apollo/generated/graphql-schema';
-import DialogHeader from '@core/ui/dialog/DialogHeader';
+import CardRibbon from '@/core/ui/card/CardRibbon';
+import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 
 interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconComponent' | 'header'> {
   tagline: string;

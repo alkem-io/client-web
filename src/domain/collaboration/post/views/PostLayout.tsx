@@ -2,8 +2,8 @@ import React, { FC, PropsWithChildren } from 'react';
 import { DialogContent } from '@mui/material';
 import PostTabs from './PostTabs';
 import { PostDialogSection } from './PostDialogSection';
-import DialogWithGrid from '@core/ui/dialog/DialogWithGrid';
-import DialogHeader from '@core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 
 export interface PostLayoutProps {
   currentSection: PostDialogSection;
