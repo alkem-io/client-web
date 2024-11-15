@@ -22,6 +22,7 @@ import CreateInnovationHubDialog from '../../../innovationHub/CreateInnovationHu
 import {
   AuthorizationPrivilege,
   LicenseEntitlement,
+  LicenseEntitlementDataType,
   LicenseEntitlementType,
   SpaceLevel,
   SpaceType,
@@ -85,6 +86,10 @@ export interface AccountTabResourcesProps {
         id: string;
         type: LicenseEntitlementType;
         enabled: boolean;
+        limit: number;
+        usage: number;
+        isAvailable: boolean;
+        dataType: LicenseEntitlementDataType;
       }>;
     };
     subspaces: {
