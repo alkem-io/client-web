@@ -33,6 +33,7 @@ import { useSubscribeOnVirtualContributorEvents } from '../../../../domain/commu
 
 interface TryVirtualContributorDialogProps {
   spaceId: string;
+  collaborationId: string;
   vcNameId: string;
   open: boolean;
   onClose: () => void;
@@ -40,6 +41,7 @@ interface TryVirtualContributorDialogProps {
 
 const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = ({
   spaceId,
+  collaborationId,
   vcNameId,
   open,
   onClose,
@@ -50,7 +52,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
   const [calloutId, setCalloutId] = useState<string | undefined>(undefined);
 
   const options: CalloutCreationParams = {
-    collaborationId: spaceId,
+    collaborationId,
   };
 
   const calloutDetails: CalloutCreationType = {
