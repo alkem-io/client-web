@@ -186,6 +186,7 @@ const SpaceDashboardView = ({
             open={tryVirtualContributorOpen}
             onClose={onCloseTryVirtualContributor}
             spaceId={spaceId}
+            collaborationId={collaborationId}
             vcNameId={vcNameId}
           />
         )}
