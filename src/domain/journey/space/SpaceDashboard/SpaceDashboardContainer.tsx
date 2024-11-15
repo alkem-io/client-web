@@ -104,6 +104,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
   const references = referencesData?.lookup.space?.profile.references;
 
   const communityId = space?.community?.id ?? '';
+  const collaborationId = space?.collaboration?.id ?? '';
 
   const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();
 
@@ -122,8 +123,9 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
   );
 
   const callouts = useCallouts({
-    journeyId: spaceId,
+    collaborationId,
     journeyTypeName: 'space',
+    canReadCollaboration: true,
     groupNames: [CalloutGroupName.Home],
   });
 

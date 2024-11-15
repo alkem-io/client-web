@@ -6,7 +6,11 @@ import {
   useUserProviderQuery,
 } from '../../../../../core/apollo/generated/apollo-hooks';
 import { ErrorPage } from '../../../../../core/pages/Errors/ErrorPage';
-import { User } from '../../../../../core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  LicenseEntitlementType,
+  User,
+} from '../../../../../core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '../../../../../core/auth/authentication/hooks/useAuthenticationContext';
 import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
 
@@ -17,7 +21,8 @@ export interface UserContextValue {
   loadingMe: boolean; // Loading Authentication and Profile data. Once it's false that's enough for showing the page header and avatar.
   verified: boolean;
   isAuthenticated: boolean;
-  accountPrivileges: string[];
+  accountPrivileges: AuthorizationPrivilege[];
+  accountEntitlements: LicenseEntitlementType[];
 }
 
 const UserContext = React.createContext<UserContextValue>({
@@ -28,6 +33,7 @@ const UserContext = React.createContext<UserContextValue>({
   verified: false,
   isAuthenticated: false,
   accountPrivileges: [],
+  accountEntitlements: [],
 });
 
 const UserProvider: FC<{}> = ({ children }) => {
@@ -76,6 +82,9 @@ const UserProvider: FC<{}> = ({ children }) => {
       verified,
       isAuthenticated,
       accountPrivileges: meData?.me.user?.account?.authorization?.myPrivileges ?? [],
+      accountEntitlements: (meData?.me.user?.account?.license?.entitlements ?? [])
+        .filter(entitlement => entitlement.enabled)
+        .map(entitlement => entitlement.type), // Extract only the type of enabled entitlements
     }),
     [userMetadata, loading, loadingMeAndParentQueries, verified, isAuthenticated]
   );
