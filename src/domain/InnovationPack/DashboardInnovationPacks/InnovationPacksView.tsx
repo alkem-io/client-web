@@ -51,7 +51,7 @@ const InnovationPacksView = ({
 
       <ScrollableCardsLayoutContainer minHeight={0} orientation={expanded ? 'vertical' : undefined} sameHeight>
         {loading
-          ? Array.from({ length: 5 }).map((_, idx) => (
+          ? Array.from({ length: isMobile ? 2 : 5 }).map((_, idx) => (
               <Skeleton
                 key={idx}
                 width={240}
@@ -63,7 +63,7 @@ const InnovationPacksView = ({
             ))
           : innovationPacks?.map(({ id, ...cardProps }) => <InnovationPackCard key={id} {...cardProps} />)}
 
-        {isMobile && hasMore && (
+        {isMobile && hasMore && !loading && (
           <GridItem columns={CONTRIBUTE_CARD_COLUMNS}>
             <Box
               sx={{
