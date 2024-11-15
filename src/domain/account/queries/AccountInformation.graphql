@@ -6,6 +6,12 @@ query AccountInformation($accountId: UUID!) {
         id
         myPrivileges
       }
+      license {
+        id
+        entitlements {
+          ...EntitlementDetails
+        }
+      }
       host {
         id
       }
@@ -22,6 +28,12 @@ query AccountInformation($accountId: UUID!) {
             ...VisualUri
           }
           tagline
+        }
+        license {
+          id
+          entitlements {
+            ...EntitlementDetails
+          }
         }
         community {
           id

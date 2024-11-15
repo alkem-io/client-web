@@ -25,6 +25,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     memberRoleDefinition,
     leadRoleDefinition,
     permissions,
+    entitlements,
     onUserLeadChange,
     onUserAuthorizationChange,
     onOrganizationLeadChange,
@@ -80,7 +81,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
             />
           </PageContentBlock>
         </PageContentColumn>
-        {permissions.virtualContributorsEnabled && (
+        {entitlements.virtualContributorsEnabled && (
           <PageContentColumn columns={6}>
             <PageContentBlock>
               <CommunityVirtualContributors
