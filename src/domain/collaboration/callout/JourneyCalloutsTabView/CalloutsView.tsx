@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useCalloutEdit } from '../edit/useCalloutEdit/useCalloutEdit';
 import { OrderUpdate, TypedCallout, TypedCalloutDetails } from '../useCallouts/useCallouts';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';

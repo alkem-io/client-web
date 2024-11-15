@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import { Box, IconButton, Tooltip, styled, useTheme } from '@mui/material';
 import { Reference } from '../../../common/profile/Profile';
 import { BlockSectionTitle, CardText } from '@/core/ui/typography';
@@ -30,11 +29,11 @@ const Root = styled(Box)(() => ({
   },
 }));
 
-interface ReferenceDescriptionProps {
+type ReferenceDescriptionProps = {
   children: string | undefined;
-}
+};
 
-const ReferenceDescription: FC<ReferenceDescriptionProps> = ({ children }) => {
+const ReferenceDescription = ({ children }: ReferenceDescriptionProps) => {
   if (!children) {
     return null;
   }
@@ -46,7 +45,7 @@ const ReferenceDescription: FC<ReferenceDescriptionProps> = ({ children }) => {
   );
 };
 
-const ReferenceView: FC<ReferenceViewProps> = ({ reference, canEdit, onClickEdit }) => {
+const ReferenceView = ({ reference, canEdit, onClickEdit }: ReferenceViewProps) => {
   const { t } = useTranslation();
   const theme = useTheme();
   return (
@@ -66,7 +65,8 @@ const ReferenceView: FC<ReferenceViewProps> = ({ reference, canEdit, onClickEdit
         </Tooltip>
         <ReferenceDescription>{reference.description}</ReferenceDescription>
       </BadgeCardView>
-      {onClickEdit && (
+
+      {canEdit && onClickEdit && (
         <IconButton
           size="small"
           onClick={onClickEdit}
