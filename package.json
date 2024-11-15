@@ -2,28 +2,77 @@
   "name": "@alkemio/client-web",
   "version": "0.76.3",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
-  "author": "Alkemio Foundation",
   "repository": {
     "type": "git",
     "url": "https://github.com/alkem-io/client-web.git"
   },
   "license": "EUPL-1.2",
+  "author": "Alkemio Foundation",
   "scripts": {
-    "start": "cross-env NODE_ENV=development node buildConfiguration && vite --host",
-    "ts:watch": "tsc --noEmit --watch",
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "build": "cross-env NODE_ENV=production node buildConfiguration && cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 vite build",
     "build:dev": "cross-env NODE_ENV=development node buildConfiguration && cross-env NODE_ENV=development NODE_OPTIONS=--max-old-space-size=8192 vite build",
     "build:sentry": "cross-env NODE_ENV=production node buildConfiguration && cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 vite -c vite.sentry.config.mjs build",
+    "codegen": "graphql-codegen --config codegen.yml",
+    "format": "prettier --write src/**/*.ts{,x}",
+    "gulp": "gulp",
+    "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
+    "lint:fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
+    "lint:prod": "tsc --noEmit && cross-env NODE_ENV=production eslint src/**/*.ts{,x}",
+    "start": "cross-env NODE_ENV=development node buildConfiguration && vite --host",
     "test": "vitest",
     "test:coverage": "cross-env NODE_ENV=test node buildConfiguration && vitest run --coverage.enabled --coverage.provider=istanbul --coverage.all --coverage.reporter=lcov",
     "test:upload:coverage": "npm run test:coverage && cat ./coverage/lcov.info | coveralls ",
-    "codegen": "graphql-codegen --config codegen.yml",
-    "format": "prettier --write src/**/*.ts{,x}",
-    "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
-    "lint:prod": "tsc --noEmit && cross-env NODE_ENV=production eslint src/**/*.ts{,x}",
-    "lint:fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
-    "gulp": "gulp",
-    "analyze": "source-map-explorer 'build/static/js/*.js'"
+    "ts:watch": "tsc --noEmit --watch"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "babel": {
+    "env": {
+      "test": {
+        "plugins": [
+          "@babel/plugin-transform-modules-commonjs",
+          "@babel/plugin-transform-react-jsx"
+        ],
+        "presets": [
+          "@babel/preset-typescript"
+        ]
+      }
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "eslintIgnore": [
+    "src/generated/graphql.tsx",
+    "**/node_modules/**",
+    "**/build**"
+  ],
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/src/graphql",
+      "<rootDir>/src/generated",
+      "<rootDir>/src/sentry"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setupTests.js"
+    ],
+    "testEnvironment": "jsdom"
+  },
+  "resolutions": {
+    "**/@emotion/styled": "^11.0.0"
   },
   "dependencies": {
     "@alkemio/excalidraw": "0.17.1-alkemio-8",
@@ -115,27 +164,6 @@
     "xstate": "^4.23.1",
     "yup": "^0.31.1"
   },
-  "resolutions": {
-    "**/@emotion/styled": "^11.0.0"
-  },
-  "overrides": {
-    "glob-parent": "^5.1.2",
-    "got": "11.8.5",
-    "nth-check": "^2.0.1",
-    "chokidar": "^3.5.3"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
   "devDependencies": {
     "@graphql-codegen/cli": "^2.16.5",
     "@graphql-codegen/import-types-preset": "^2.1.12",
@@ -171,45 +199,17 @@
     "vitest": "^2.0.3",
     "webpack": "^5.88.1"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "eslintIgnore": [
-    "src/generated/graphql.tsx",
-    "**/node_modules/**",
-    "**/build**"
-  ],
-  "jest": {
-    "coveragePathIgnorePatterns": [
-      "<rootDir>/src/graphql",
-      "<rootDir>/src/generated",
-      "<rootDir>/src/sentry"
-    ],
-    "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": [
-      "<rootDir>/src/setupTests.js"
-    ]
-  },
-  "babel": {
-    "env": {
-      "test": {
-        "plugins": [
-          "@babel/plugin-transform-modules-commonjs",
-          "@babel/plugin-transform-react-jsx"
-        ],
-        "presets": [
-          "@babel/preset-typescript"
-        ]
-      }
-    }
-  },
   "engines": {
     "node": ">=20.9.0",
     "npm": ">=10"
   },
   "volta": {
     "node": "20.15.1"
+  },
+  "overrides": {
+    "glob-parent": "^5.1.2",
+    "got": "11.8.5",
+    "nth-check": "^2.0.1",
+    "chokidar": "^3.5.3"
   }
 }
