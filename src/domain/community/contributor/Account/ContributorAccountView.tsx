@@ -81,7 +81,7 @@ export interface AccountTabResourcesProps {
     };
     license: {
       id: string;
-      entitlements?: Array<{
+      entitlements: Array<{
         id: string;
         type: LicenseEntitlementType;
         enabled: boolean;
