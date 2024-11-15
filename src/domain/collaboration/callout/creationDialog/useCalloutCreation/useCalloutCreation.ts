@@ -10,7 +10,7 @@ import {
   CreateTagsetInput,
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { WhiteboardFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardField';
-import { useCollaborationAuthorization } from '../../../authorization/useCollaborationAuthorization';
+import { useCollaborationAuthorizationEntitlements } from '../../../authorization/useCollaborationAuthorization';
 
 export interface CalloutCreationType {
   framing: {
@@ -37,7 +37,7 @@ export interface CalloutCreationType {
 }
 
 export interface CalloutCreationParams {
-  journeyId: string | undefined;
+  collaborationId: string | undefined;
   overrideCollaborationId?: string;
   initialOpened?: boolean;
 }
@@ -57,13 +57,13 @@ export interface CalloutCreationUtils {
 const CALLOUTS_WITH_COMMENTS = [CalloutType.Post];
 
 export const useCalloutCreation = ({
-  journeyId,
+  collaborationId,
   overrideCollaborationId,
   initialOpened = false,
 }: CalloutCreationParams): CalloutCreationUtils => {
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
   const [isCreating, setIsCreating] = useState(false);
-  const { collaborationId, canCreateCallout, loading } = useCollaborationAuthorization({ journeyId });
+  const { canCreateCallout, loading } = useCollaborationAuthorizationEntitlements({ collaborationId });
 
   const collaborationID = overrideCollaborationId ?? collaborationId;
 

@@ -8,6 +8,13 @@ query UserProvider {
           id
           myPrivileges
         }
+        license {
+          id
+          type
+          entitlements {
+            ...EntitlementDetails
+          }
+        }
       }
     }
   }
@@ -67,4 +74,14 @@ fragment InvitationData on CommunityInvitationResult {
     }
     contributorType
   }
+}
+
+fragment EntitlementDetails on LicenseEntitlement {
+  id
+  type
+  limit
+  usage
+  isAvailable
+  dataType
+  enabled
 }
