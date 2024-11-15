@@ -1,21 +1,16 @@
-import React, { FC } from 'react';
-import { useUrlParams } from '@/core/routing/useUrlParams';
 import PostDashboardView from '../views/PostDashboardView';
 import PostDashboardContainer from '../containers/PostDashboardContainer/PostDashboardContainer';
 import { PostLayout } from '../views/PostLayoutWithOutlet';
 import { PostDialogSection } from '../views/PostDialogSection';
 import { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface PostDashboardPageProps {
   onClose: () => void;
+  calloutId: string | undefined;
+  postNameId: string | undefined;
 }
 
-const PostDashboardPage: FC<PostDashboardPageProps> = ({ onClose }) => {
-  const { postNameId } = useUrlParams();
-
-  const { calloutId } = useRouteResolver();
-
+const PostDashboardPage = ({ onClose, postNameId, calloutId }: PostDashboardPageProps) => {
   return (
     <PostLayout currentSection={PostDialogSection.Dashboard} onClose={onClose}>
       <PostDashboardContainer postNameId={postNameId} calloutId={calloutId}>

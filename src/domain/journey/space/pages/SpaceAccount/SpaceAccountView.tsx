@@ -124,7 +124,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     const activeSubscription = space?.activeSubscription;
 
     // Need to clone the array to be able to sort it:
-    const plans = [...(data?.platform.licensing.plans ?? [])]
+    const plans = [...(data?.platform.licensingFramework.plans ?? [])]
       .filter(plan => plan.type === LicensePlanType.SpacePlan)
       .sort((a, b) => a.sortOrder - b.sortOrder)
       .map(plan => ({

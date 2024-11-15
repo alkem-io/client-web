@@ -20,10 +20,10 @@ export interface TemplateCardProps extends AnyTemplateWithInnovationPack, Contri
 
 const TemplateCard: FC<TemplateCardProps> = ({ template, link, ...rest }) => {
   switch (template.type) {
-    case TemplateType.Callout:
-      return <CalloutTemplateCard template={template} {...link} {...rest} />;
     case TemplateType.Collaboration:
       return <CollaborationTemplateCard template={template} {...link} {...rest} />;
+    case TemplateType.Callout:
+      return <CalloutTemplateCard template={template} {...link} {...rest} />;
     case TemplateType.CommunityGuidelines:
       return <CommunityGuidelinesTemplateCard template={template} {...link} {...rest} />;
     case TemplateType.InnovationFlow:

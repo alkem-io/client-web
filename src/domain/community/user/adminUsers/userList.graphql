@@ -26,7 +26,7 @@ query userList($first: Int!, $after: UUID, $filter: UserFilterInput) {
   }
   platform {
     id
-    licensing {
+    licensingFramework {
       id
       plans {
         id

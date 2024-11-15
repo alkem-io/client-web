@@ -29,7 +29,7 @@ import { useUserContext } from '../../../community/user';
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
   const { isAuthenticated } = useUserContext();
-  const { spaceId, journeyPath } = useRouteResolver();
+  const { spaceId, collaborationId, journeyPath } = useRouteResolver();
   const { communityId } = useSpace();
 
   const { t } = useTranslation();
@@ -84,7 +84,7 @@ const SpaceCommunityPage = () => {
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Community}>
-      <SpaceCommunityContainer spaceId={spaceId}>
+      <SpaceCommunityContainer collaborationId={collaborationId}>
         {({ callouts }) => (
           <PageContent>
             <InfoColumn>
@@ -113,6 +113,7 @@ const SpaceCommunityPage = () => {
               <CommunityContributorsBlockWide users={memberUsers} organizations={memberOrganizations} />
               <CalloutsGroupView
                 journeyId={spaceId}
+                collaborationId={collaborationId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Community]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}

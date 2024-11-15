@@ -56,7 +56,7 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({ calloutId, po
 
   const post = parentCallout?.contributions?.find(x => x.post && x.post.nameID === postNameId)?.post;
 
-  const roomId = parentCallout?.contributions?.find(x => x.post && x.post.nameID === postNameId)?.post?.comments.id;
+  const roomId = post?.comments.id;
 
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId);
 

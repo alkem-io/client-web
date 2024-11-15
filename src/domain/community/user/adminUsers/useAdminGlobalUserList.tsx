@@ -79,7 +79,7 @@ const useAdminGlobalUserList = ({
         value: `${profile.displayName} (${email})`,
         url: buildSettingsUrl(profile.url),
         avatar: profile.visual,
-        activeLicensePlanIds: data?.platform.licensing.plans
+        activeLicensePlanIds: data?.platform.licensingFramework.plans
           .filter(({ licenseCredential }) =>
             account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
           )
@@ -109,7 +109,7 @@ const useAdminGlobalUserList = ({
       variables: {
         accountId,
         licensePlanId,
-        licensingId: data?.platform.licensing.id ?? '',
+        licensingId: data?.platform.licensingFramework.id ?? '',
       },
       refetchQueries: [
         refetchUserListQuery({
@@ -127,7 +127,7 @@ const useAdminGlobalUserList = ({
       variables: {
         accountId,
         licensePlanId,
-        licensingId: data?.platform.licensing.id ?? '',
+        licensingId: data?.platform.licensingFramework.id ?? '',
       },
       refetchQueries: [
         refetchUserListQuery({
@@ -141,7 +141,7 @@ const useAdminGlobalUserList = ({
 
   const licensePlans = useMemo<ContributorLicensePlan[]>(
     () =>
-      data?.platform.licensing.plans
+      data?.platform.licensingFramework.plans
         .filter(plan => plan.type === LicensePlanType.AccountPlan)
         .map(licensePlan => ({
           id: licensePlan.id,

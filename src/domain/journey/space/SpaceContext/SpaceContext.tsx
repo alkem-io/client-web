@@ -6,7 +6,7 @@ import { useSpaceProviderQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
-  SpacePendingMembershipInfoFragment,
+  SpaceInfoFragment,
   SpacePrivacyMode,
   SpaceVisibility,
 } from '@/core/apollo/generated/graphql-schema';
@@ -19,6 +19,7 @@ export interface SpacePermissions {
   canCreateSubspaces: boolean;
   canCreate: boolean;
   communityReadAccess: boolean;
+  canReadCollaboration: boolean;
   contextPrivileges: AuthorizationPrivilege[];
 }
 
@@ -26,6 +27,7 @@ interface SpaceContextProps {
   spaceId: string;
   spaceNameId: string;
   communityId: string;
+  collaborationId: string;
   roleSetId: string;
   isPrivate?: boolean;
   loading: boolean;
@@ -34,8 +36,8 @@ interface SpaceContextProps {
   refetchSpace: () => void;
   // TODO Some components just randomly access SpaceContext instead of just querying the data the usual way.
   // TODO This Context should provide as little data as possible or just be removed.
-  context?: SpacePendingMembershipInfoFragment['context'];
-  profile: SpacePendingMembershipInfoFragment['profile'];
+  context?: SpaceInfoFragment['context'];
+  profile: SpaceInfoFragment['profile'];
   visibility: SpaceVisibility;
   myMembershipStatus: CommunityMembershipStatus | undefined;
 }
@@ -46,6 +48,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
   spaceId: '',
   spaceNameId: '',
   communityId: '',
+  collaborationId: '',
   roleSetId: '',
   permissions: {
     canRead: false,
@@ -55,6 +58,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
     canReadPosts: false,
     canReadSubspaces: false,
     communityReadAccess: false,
+    canReadCollaboration: false,
     contextPrivileges: [],
   },
   profile: {
@@ -94,12 +98,14 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const visibility = space?.visibility || SpaceVisibility.Active;
 
   const communityId = space?.community?.id ?? '';
+  const collaborationId = space?.collaboration?.id ?? '';
   const roleSetId = space?.community?.roleSet?.id ?? '';
   const isPrivate = space && space.settings.privacy?.mode === SpacePrivacyMode.Private;
   const error = configError || spaceError;
 
   const contextPrivileges = space?.context?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const spacePrivileges = space?.authorization?.myPrivileges ?? NO_PRIVILEGES;
+  const collaborationPrivileges = space?.collaboration?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const canReadSubspaces = spacePrivileges.includes(AuthorizationPrivilege.Read);
   const canCreateSubspaces = spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace);
@@ -115,10 +121,19 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       canCreateSubspaces: canCreateSubspaces,
       canCreate,
       communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
+      canReadCollaboration: collaborationPrivileges.includes(AuthorizationPrivilege.Read),
       canReadPosts: contextPrivileges.includes(AuthorizationPrivilege.Read),
       contextPrivileges,
     };
-  }, [spacePrivileges, contextPrivileges, canReadSubspaces, communityPrivileges, canCreate, canCreateSubspaces]);
+  }, [
+    spacePrivileges,
+    contextPrivileges,
+    canReadSubspaces,
+    communityPrivileges,
+    canCreate,
+    canCreateSubspaces,
+    collaborationPrivileges,
+  ]);
 
   const profile = useMemo(() => {
     return {
@@ -141,6 +156,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
         spaceId,
         spaceNameId,
         communityId,
+        collaborationId,
         roleSetId,
         permissions,
         isPrivate,

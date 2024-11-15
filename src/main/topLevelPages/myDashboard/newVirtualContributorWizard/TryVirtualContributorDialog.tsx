@@ -50,7 +50,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
   const [calloutId, setCalloutId] = useState<string | undefined>(undefined);
 
   const options: CalloutCreationParams = {
-    journeyId: spaceId,
+    collaborationId: spaceId,
   };
 
   const calloutDetails: CalloutCreationType = {
@@ -117,6 +117,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
       editable: false,
       movable: false,
       canSaveAsTemplate: false,
+      entitledToSaveAsTemplate: false,
       flowStates: undefined,
       groupName: CalloutGroupName.Home,
       authorization: {

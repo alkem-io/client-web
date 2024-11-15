@@ -29,7 +29,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
-  const { spaceId, journeyPath } = useRouteResolver();
+  const { spaceId, collaborationId, journeyPath } = useRouteResolver();
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Dashboard}>
@@ -38,6 +38,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
           <>
             <SpaceDashboardView
               spaceId={spaceId}
+              collaborationId={collaborationId}
               vision={entities.space?.context?.vision}
               dashboardNavigation={dashboardNavigation}
               dashboardNavigationLoading={state.loading}
@@ -71,7 +72,7 @@ const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
                 open={dialog === 'calendar'}
                 onClose={backToDashboard}
                 journeyId={spaceId}
-                parentJourneyId={undefined}
+                parentSpaceId={undefined}
                 parentPath={entities.space?.profile.url ?? ''}
                 calendarEventNameId={calendarEventNameId}
               />
