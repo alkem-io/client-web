@@ -6,7 +6,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import PostForm, { PostFormInput, PostFormOutput } from '../PostForm/PostForm';
 import usePostSettings from '../containers/PostSettings/usePostSettings';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { useNotification } from '../../../../core/ui/notifications/useNotification';
 import {
   PostSettingsFragment,
@@ -28,17 +27,23 @@ import useLoadingState from '../../../shared/utils/useLoadingState';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import { normalizeLink } from '../../../../core/utils/links';
 import { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
 
 export interface PostSettingsPageProps {
   onClose: () => void;
   journeyTypeName: JourneyTypeName;
+  collaborationId: string | undefined;
+  calloutId: string | undefined;
+  postNameId: string | undefined;
 }
 
-const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose }) => {
+const PostSettingsPage: FC<PostSettingsPageProps> = ({
+  journeyTypeName,
+  collaborationId,
+  postNameId,
+  calloutId,
+  onClose,
+}) => {
   const { t } = useTranslation();
-  const { postNameId } = useUrlParams();
-  const { calloutId } = useRouteResolver();
 
   const navigate = useNavigate();
 
@@ -75,11 +80,10 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
 
   const isMoveEnabled = Boolean(targetCalloutId) && targetCalloutId !== postSettings.parentCallout?.id;
 
-  const { journeyId } = useRouteResolver();
-
   const { callouts, refetchCallouts } = useCallouts({
-    journeyId,
+    collaborationId,
     journeyTypeName,
+    canReadCollaboration: true,
   });
 
   const calloutsOfTypePost = callouts?.filter(({ type }) => type === CalloutType.PostCollection);

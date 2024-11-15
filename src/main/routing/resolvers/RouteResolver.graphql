@@ -15,3 +15,28 @@ query JourneyRouteResolver(
     }
   }
 }
+
+query SpaceKeyEntitiesIDs($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      community {
+        id
+      }
+      collaboration {
+        id
+      }
+    }
+  }
+}
+
+query CalloutId($calloutNameId: UUID_NAMEID!, $collaborationId: UUID!) {
+  lookup {
+    collaboration(ID: $collaborationId) {
+      id
+      callouts(IDs: [$calloutNameId]) {
+        id
+      }
+    }
+  }
+}

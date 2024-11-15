@@ -10,6 +10,12 @@ query NewVirtualContributorMySpaces {
         }
         spaces {
           id
+          license {
+            id
+            entitlements {
+              ...EntitlementDetails
+            }
+          }
           community {
             id
             roleSet {
@@ -29,6 +35,7 @@ query NewVirtualContributorMySpaces {
             id
             myPrivileges
           }
+
           subspaces {
             id
             type

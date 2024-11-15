@@ -112,7 +112,7 @@ export const useAdminGlobalOrganizationsList = () => {
       variables: {
         accountId,
         licensePlanId,
-        licensingId: data?.platform.licensing.id ?? '',
+        licensingId: data?.platform.licensingFramework.id ?? '',
       },
       refetchQueries: [
         refetchAdminGlobalOrganizationsListQuery({
@@ -130,7 +130,7 @@ export const useAdminGlobalOrganizationsList = () => {
       variables: {
         accountId,
         licensePlanId,
-        licensingId: data?.platform.licensing.id ?? '',
+        licensingId: data?.platform.licensingFramework.id ?? '',
       },
       refetchQueries: [
         refetchAdminGlobalOrganizationsListQuery({
@@ -151,7 +151,7 @@ export const useAdminGlobalOrganizationsList = () => {
         url: buildSettingsUrl(org.profile.url),
         verified: org.verification.state === OrgVerificationLifecycleStates.manuallyVerified,
         avatar: org.profile.visual,
-        activeLicensePlanIds: data?.platform.licensing.plans
+        activeLicensePlanIds: data?.platform.licensingFramework.plans
           .filter(({ licenseCredential }) =>
             org.account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
           )
@@ -162,7 +162,7 @@ export const useAdminGlobalOrganizationsList = () => {
 
   const licensePlans = useMemo<ContributorLicensePlan[]>(
     () =>
-      data?.platform.licensing.plans
+      data?.platform.licensingFramework.plans
         .filter(plan => plan.type === LicensePlanType.AccountPlan)
         .map(licensePlan => ({
           id: licensePlan.id,

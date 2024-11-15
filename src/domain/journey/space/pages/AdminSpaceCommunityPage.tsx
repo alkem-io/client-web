@@ -52,6 +52,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     memberRoleDefinition,
     leadRoleDefinition,
     permissions,
+    entitlements,
     onApplicationStateChange,
     onInvitationStateChange,
     onDeleteInvitation,
@@ -255,7 +256,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
             />
           </PageContentBlock>
         </PageContentColumn>
-        {permissions.virtualContributorsEnabled && (
+        {entitlements.virtualContributorsEnabled && (
           <PageContentColumn columns={6}>
             <PageContentBlock>
               <CommunityVirtualContributors
