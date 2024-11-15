@@ -103,6 +103,7 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE, al
                 border: 1,
                 width,
                 height,
+                cursor: 'pointer',
                 borderColor: theme => theme.palette.grey[400],
               }}
               src={visual?.uri}

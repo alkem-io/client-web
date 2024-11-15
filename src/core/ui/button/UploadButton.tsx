@@ -21,16 +21,17 @@ interface UploadButtonProps {
 
 const UploadButton: FC<UploadButtonProps> = ({ onFileSelected, allowedTypes, icon, text, disabled }) => {
   const { t } = useTranslation();
+  const label = text ?? t('components.file-upload.uploadFile');
 
   return (
     <FileUploadWrapper onFileSelected={onFileSelected} allowedTypes={allowedTypes}>
       {icon ? (
-        <IconButton aria-label={t('components.file-upload.uploadFile')} disabled={disabled}>
+        <IconButton aria-label={label} disabled={disabled}>
           {icon}
         </IconButton>
       ) : (
-        <Button aria-label={text} disabled={disabled}>
-          {text}
+        <Button aria-label={label} disabled={disabled}>
+          {label}
         </Button>
       )}
     </FileUploadWrapper>
