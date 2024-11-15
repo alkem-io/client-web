@@ -47,7 +47,7 @@ const SubspaceHomeView = ({
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
   const { isCalloutCreationDialogOpen, handleCreateCalloutOpened, handleCreateCalloutClosed, handleCreateCallout } =
-    useCalloutCreationWithPreviewImages({ journeyId });
+    useCalloutCreationWithPreviewImages({ collaborationId });
 
   const createButton = (
     <Button
@@ -122,6 +122,7 @@ const SubspaceHomeView = ({
       </SubspaceInnovationFlow>
       <CalloutsGroupView
         journeyId={journeyId}
+        collaborationId={collaborationId}
         callouts={selectedFlowStateCallouts}
         canCreateCallout={canCreateCallout && isMobile}
         loading={loading}

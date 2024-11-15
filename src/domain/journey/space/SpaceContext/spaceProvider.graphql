@@ -1,6 +1,6 @@
 query SpaceProvider($spaceNameId: UUID_NAMEID!) {
   space(ID: $spaceNameId) {
-    ...SpacePendingMembershipInfo
+    ...SpaceInfo
   }
 }
 
@@ -14,7 +14,7 @@ query SpaceUrl($spaceNameId: UUID_NAMEID!) {
   }
 }
 
-fragment SpacePendingMembershipInfo on Space {
+fragment SpaceInfo on Space {
   ...SpaceDetails
   authorization {
     id
@@ -37,6 +37,13 @@ fragment SpacePendingMembershipInfo on Space {
       id
       myPrivileges
       type
+    }
+  }
+  collaboration {
+    id
+    authorization {
+      id
+      myPrivileges
     }
   }
 
