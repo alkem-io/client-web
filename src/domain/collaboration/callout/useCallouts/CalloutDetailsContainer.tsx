@@ -4,11 +4,11 @@ import { useCalloutDetailsQuery } from '../../../../core/apollo/generated/apollo
 import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
 import { TypedCallout, TypedCalloutDetails } from '../useCallouts/useCallouts';
 
-interface CalloutDetailsContainerProvided {
+type CalloutDetailsContainerProvided = {
   ref: Ref<Element>;
   callout: TypedCalloutDetails | undefined;
   loading: boolean;
-}
+};
 
 interface CalloutDetailsContainerProps extends SimpleContainerProps<CalloutDetailsContainerProvided> {
   callout: TypedCallout;
