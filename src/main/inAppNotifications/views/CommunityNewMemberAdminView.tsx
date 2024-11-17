@@ -2,7 +2,7 @@ import { InAppNotificationProps } from '../useInAppNotifications';
 import { InAppNotificationBaseView, InAppNotificationBaseViewProps } from './InAppNotificationBaseView';
 import { useMemo } from 'react';
 
-export const CommunityNewMemberAdminView = ({ state, space, triggeredAt, contributor }: InAppNotificationProps) => {
+export const CommunityNewMemberAdminView = ({ id, state, space, triggeredAt, contributor }: InAppNotificationProps) => {
   const notification: InAppNotificationBaseViewProps = useMemo(() => {
     const notificationTextValues = {
       defaultValue: '',
@@ -12,6 +12,7 @@ export const CommunityNewMemberAdminView = ({ state, space, triggeredAt, contrib
     };
 
     return {
+      id,
       type: 'communityNewMemberAdmin',
       state,
       space: {
@@ -23,7 +24,7 @@ export const CommunityNewMemberAdminView = ({ state, space, triggeredAt, contrib
       triggeredAt: triggeredAt,
       values: notificationTextValues,
     };
-  }, [state, space, contributor, triggeredAt]);
+  }, [id, state]);
 
   return <InAppNotificationBaseView {...notification} />;
 };

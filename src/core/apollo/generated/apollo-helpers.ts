@@ -2127,6 +2127,7 @@ export type MutationKeySpecifier = (
   | 'updateInnovationPack'
   | 'updateLicensePlan'
   | 'updateLink'
+  | 'updateNotificationState'
   | 'updateOrganization'
   | 'updateOrganizationPlatformSettings'
   | 'updatePost'
@@ -2288,6 +2289,7 @@ export type MutationFieldPolicy = {
   updateInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   updateLicensePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   updateLink?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateNotificationState?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganizationPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePost?: FieldPolicy<any> | FieldReadFunction<any>;

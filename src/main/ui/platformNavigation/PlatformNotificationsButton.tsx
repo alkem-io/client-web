@@ -2,8 +2,9 @@ import { IconButton, Paper } from '@mui/material';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import { useTranslation } from 'react-i18next';
 import BadgeCounter from '../../../core/ui/icon/BadgeCounter';
-import { InAppNotificationState, useInAppNotifications } from '../../inAppNotifications/useInAppNotifications';
+import { useInAppNotifications } from '../../inAppNotifications/useInAppNotifications';
 import { useInAppNotificationsContext } from '../../inAppNotifications/InAppNotificationsContext';
+import { InAppNotificationState } from '../../../core/apollo/generated/graphql-schema';
 
 export const PlaformNotificationsButton = () => {
   const { t } = useTranslation();

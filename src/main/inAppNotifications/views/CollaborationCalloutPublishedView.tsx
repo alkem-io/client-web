@@ -3,6 +3,7 @@ import { InAppNotificationBaseView, InAppNotificationBaseViewProps } from './InA
 import { useMemo } from 'react';
 
 export const CollaborationCalloutPublishedView = ({
+  id,
   type,
   state,
   space,
@@ -21,6 +22,7 @@ export const CollaborationCalloutPublishedView = ({
     };
 
     return {
+      id,
       type,
       state,
       space: {
@@ -35,7 +37,7 @@ export const CollaborationCalloutPublishedView = ({
       triggeredAt: triggeredAt,
       values: notificationTextValues,
     };
-  }, [state, space, callout, triggeredBy, triggeredAt]);
+  }, [id, state]);
 
   return <InAppNotificationBaseView {...notification} />;
 };

@@ -3574,6 +3574,8 @@ export type Mutation = {
   updateLicensePlan: LicensePlan;
   /** Updates the specified Link. */
   updateLink: Link;
+  /** Update notification state and return the notification. */
+  updateNotificationState: InAppNotificationState;
   /** Updates the specified Organization. */
   updateOrganization: Organization;
   /** Updates the specified Organization platform settings. */
@@ -4124,6 +4126,10 @@ export type MutationUpdateLicensePlanArgs = {
 
 export type MutationUpdateLinkArgs = {
   linkData: UpdateLinkInput;
+};
+
+export type MutationUpdateNotificationStateArgs = {
+  notificationData: UpdateNotificationStateInput;
 };
 
 export type MutationUpdateOrganizationArgs = {
@@ -6392,6 +6398,13 @@ export type UpdateLocationInput = {
   country?: InputMaybe<Scalars['String']>;
   postalCode?: InputMaybe<Scalars['String']>;
   stateOrProvince?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateNotificationStateInput = {
+  /** The ID of the notification to update. */
+  ID: Scalars['UUID'];
+  /** The new state of the notification. */
+  state: InAppNotificationState;
 };
 
 export type UpdateOrganizationInput = {
@@ -27855,6 +27868,16 @@ export type InAppNotificationsQuery = {
           | undefined;
       }
   >;
+};
+
+export type UpdateNotificationStateMutationVariables = Exact<{
+  ID: Scalars['UUID'];
+  state: InAppNotificationState;
+}>;
+
+export type UpdateNotificationStateMutation = {
+  __typename?: 'Mutation';
+  updateNotificationState: InAppNotificationState;
 };
 
 export type InAppNotificationCalloutPublishedFragment = {

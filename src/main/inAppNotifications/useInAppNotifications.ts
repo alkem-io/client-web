@@ -1,6 +1,14 @@
 import { useEffect, useMemo } from 'react';
-import { CommunityContributorType, SpaceLevel } from '../../core/apollo/generated/graphql-schema';
-import { useInAppNotificationsQuery } from '../../core/apollo/generated/apollo-hooks';
+import {
+  CommunityContributorType,
+  InAppNotificationState,
+  SpaceLevel,
+} from '../../core/apollo/generated/graphql-schema';
+import {
+  refetchInAppNotificationsQuery,
+  useInAppNotificationsQuery,
+  useUpdateNotificationStateMutation,
+} from '../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../domain/community/user';
 
 const POLLING_INTERVAL = 30 * 1000; // 30 seconds
@@ -9,12 +17,6 @@ export enum InAppNotificationType {
   COLLABORATION_CALLOUT_PUBLISHED = 'collaborationCalloutPublished',
   COMMUNICATION_USER_MENTION = 'communicationUserMention',
   COMMUNITY_NEW_MEMBER = 'communityNewMember',
-}
-
-export enum InAppNotificationState {
-  Read = 'READ',
-  Unread = 'UNREAD',
-  Archived = 'ARCHIVED',
 }
 
 export enum InAppNotificationCategory {
@@ -80,6 +82,8 @@ export interface InAppNotificationProps {
 export const useInAppNotifications = () => {
   const { user } = useUserContext();
 
+  const [updateState] = useUpdateNotificationStateMutation();
+
   const { data, startPolling, stopPolling } = useInAppNotificationsQuery({
     variables: {
       receiverID: user?.user.id!,
@@ -97,5 +101,15 @@ export const useInAppNotifications = () => {
 
   const items: InAppNotificationProps[] = useMemo(() => data?.notifications ?? [], [data]);
 
-  return { items };
+  const updateNotificationState = async (id: string, status: InAppNotificationState) => {
+    await updateState({
+      variables: {
+        ID: id,
+        state: status,
+      },
+      refetchQueries: [refetchInAppNotificationsQuery({ receiverID: user?.user.id! })],
+    });
+  };
+
+  return { items, updateNotificationState };
 };

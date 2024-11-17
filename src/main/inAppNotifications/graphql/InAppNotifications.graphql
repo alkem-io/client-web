@@ -16,3 +16,10 @@ query InAppNotifications ($receiverID: UUID_NAMEID!) {
     }
   }
 }
+
+mutation UpdateNotificationState ($ID: UUID!, $state: InAppNotificationState!) {
+  updateNotificationState ( notificationData:  {
+     ID: $ID,
+     state: $state,
+  })
+}

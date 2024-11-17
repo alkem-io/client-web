@@ -3,6 +3,7 @@ import { InAppNotificationBaseView, InAppNotificationBaseViewProps } from './InA
 import { useMemo } from 'react';
 
 export const CommunicationUserMentionView = ({
+  id,
   type,
   state,
   space,
@@ -18,6 +19,7 @@ export const CommunicationUserMentionView = ({
     };
 
     return {
+      id,
       type,
       state: state,
       space: {
@@ -32,7 +34,7 @@ export const CommunicationUserMentionView = ({
       triggeredAt: triggeredAt,
       values: notificationTextValues,
     };
-  }, [state, space, callout, triggeredBy, triggeredAt]);
+  }, [id, state]);
 
   return <InAppNotificationBaseView {...notification} />;
 };

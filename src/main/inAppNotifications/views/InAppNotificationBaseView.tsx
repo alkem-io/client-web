@@ -1,8 +1,9 @@
 import { Trans, useTranslation } from 'react-i18next';
 import { Badge, ListItemButtonProps } from '@mui/material';
 import ListItemButton, { ListItemButtonTypeMap } from '@mui/material/ListItemButton/ListItemButton';
+import MarkEmailUnreadOutlinedIcon from '@mui/icons-material/MarkEmailUnreadOutlined';
+import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
 import RouterLink, { RouterLinkProps } from '../../../core/ui/link/RouterLink';
-import { InAppNotificationState } from '../useInAppNotifications';
 import BadgeCardView from '../../../core/ui/list/BadgeCardView';
 import Avatar from '../../../core/ui/avatar/Avatar';
 import Gutters from '../../../core/ui/grid/Gutters';
@@ -11,8 +12,13 @@ import { formatTimeElapsed } from '../../../domain/shared/utils/formatTimeElapse
 import defaultJourneyAvatar from '../../../domain/journey/defaultVisuals/Avatar.jpg';
 import { gutters } from '../../../core/ui/grid/utils';
 import { Actions } from '../../../core/ui/actions/Actions';
+import ActionsMenu from '../../../core/ui/card/ActionsMenu';
+import MenuItemWithIcon from '../../../core/ui/menu/MenuItemWithIcon';
+import { InAppNotificationState } from '../../../core/apollo/generated/graphql-schema';
+import { useInAppNotifications } from '../useInAppNotifications';
 
 export interface InAppNotificationBaseViewProps {
+  id: string;
   type: string; // to support _ADMIN
   state: InAppNotificationState;
   space?: {
@@ -34,6 +40,7 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
 ) => <ListItemButton component={RouterLink} {...props} />;
 
 export const InAppNotificationBaseView = ({
+  id,
   type,
   state,
   space,
@@ -43,6 +50,32 @@ export const InAppNotificationBaseView = ({
   values,
 }: InAppNotificationBaseViewProps) => {
   const { t } = useTranslation();
+  const { updateNotificationState } = useInAppNotifications();
+
+  const renderAction = () => {
+    switch (state) {
+      case InAppNotificationState.Unread:
+        return (
+          <MenuItemWithIcon
+            iconComponent={DraftsOutlinedIcon}
+            onClick={() => updateNotificationState(id, InAppNotificationState.Read)}
+          >
+            Mark as Read
+          </MenuItemWithIcon>
+        );
+      case InAppNotificationState.Read:
+        return (
+          <MenuItemWithIcon
+            iconComponent={MarkEmailUnreadOutlinedIcon}
+            onClick={() => updateNotificationState(id, InAppNotificationState.Unread)}
+          >
+            Mark as Unread
+          </MenuItemWithIcon>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <BadgeCardView
@@ -96,6 +129,7 @@ export const InAppNotificationBaseView = ({
         </Gutters>
         <Actions>
           <Caption>{formatTimeElapsed(triggeredAt, t)}</Caption>
+          <ActionsMenu>{renderAction()}</ActionsMenu>
         </Actions>
       </Gutters>
     </BadgeCardView>

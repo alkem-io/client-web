@@ -21980,6 +21980,53 @@ export function refetchInAppNotificationsQuery(variables: SchemaTypes.InAppNotif
   return { query: InAppNotificationsDocument, variables: variables };
 }
 
+export const UpdateNotificationStateDocument = gql`
+  mutation UpdateNotificationState($ID: UUID!, $state: InAppNotificationState!) {
+    updateNotificationState(notificationData: { ID: $ID, state: $state })
+  }
+`;
+export type UpdateNotificationStateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateNotificationStateMutation,
+  SchemaTypes.UpdateNotificationStateMutationVariables
+>;
+
+/**
+ * __useUpdateNotificationStateMutation__
+ *
+ * To run a mutation, you first call `useUpdateNotificationStateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateNotificationStateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateNotificationStateMutation, { data, loading, error }] = useUpdateNotificationStateMutation({
+ *   variables: {
+ *      ID: // value for 'ID'
+ *      state: // value for 'state'
+ *   },
+ * });
+ */
+export function useUpdateNotificationStateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateNotificationStateMutation,
+    SchemaTypes.UpdateNotificationStateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateNotificationStateMutation,
+    SchemaTypes.UpdateNotificationStateMutationVariables
+  >(UpdateNotificationStateDocument, options);
+}
+
+export type UpdateNotificationStateMutationHookResult = ReturnType<typeof useUpdateNotificationStateMutation>;
+export type UpdateNotificationStateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateNotificationStateMutation>;
+export type UpdateNotificationStateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateNotificationStateMutation,
+  SchemaTypes.UpdateNotificationStateMutationVariables
+>;
 export const JourneyRouteResolverDocument = gql`
   query JourneyRouteResolver(
     $spaceNameId: UUID_NAMEID!
