@@ -33,7 +33,7 @@ import { useSubscribeOnVirtualContributorEvents } from '../../../../domain/commu
 
 interface TryVirtualContributorDialogProps {
   spaceId: string;
-  collaborationId: string;
+  collaborationId: string | undefined;
   vcNameId: string;
   open: boolean;
   onClose: () => void;
