@@ -34,7 +34,6 @@ public/*config.js
 # eslint
 .eslintcache
 
-
 # Ignores homeserver.db file
 **/*.db
 *.session.sql
