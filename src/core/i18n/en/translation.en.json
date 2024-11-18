@@ -957,8 +957,8 @@
       "name": "$t(common.enums.templateType.COLLABORATION)",
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
       "findByUrl": {
-        "title": "Space URL",
-        "description": "Enter the URL of the Space or Subspace you want to copy as a template.",
+        "title": "Subspace URL",
+        "description": "Enter the URL of the Subspace you want to copy as a template.",
         "use": "Use this space",
         "spaceNotFoundError": "Space not found",
         "collaborationNotFoundError": "Collaboration not found"
