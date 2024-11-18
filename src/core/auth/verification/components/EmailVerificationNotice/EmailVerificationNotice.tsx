@@ -1,15 +1,10 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { BlockTitle } from '../../../../ui/typography';
+import { BlockTitle } from '@/core/ui/typography';
 import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
-import { AUTH_VERIFY_PATH } from '../../../authentication/constants/authentication.constants';
+import { AUTH_VERIFY_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { Button, Link } from '@mui/material';
 
-interface EmailVerificationNoticeProps {
-  returnUrl: string;
-}
-
-const EmailVerificationNotice = ({ returnUrl }: EmailVerificationNoticeProps) => {
+const EmailVerificationNotice = ({ returnUrl }: { returnUrl: string }) => {
   const { t } = useTranslation();
   const tLink = translateWithElements(<Link />);
 

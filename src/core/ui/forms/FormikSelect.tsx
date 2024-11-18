@@ -10,9 +10,9 @@ import {
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { useField } from 'formik';
-import React, { FC, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import TranslationKey from '../../i18n/utils/TranslationKey';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 const useStyles = makeStyles(theme => ({
   icon: {
@@ -47,7 +47,7 @@ export interface FormikSelectProps extends SelectProps {
   helpText?: string;
 }
 
-export const FormikSelect: FC<FormikSelectProps> = ({
+export const FormikSelect = ({
   title,
   name,
   required = false,
@@ -56,7 +56,7 @@ export const FormikSelect: FC<FormikSelectProps> = ({
   placeholder,
   endAdornment,
   helpText: _helperText,
-}) => {
+}: FormikSelectProps) => {
   const tErr = useValidationMessageTranslation();
 
   const [field, meta] = useField(name);
@@ -64,13 +64,10 @@ export const FormikSelect: FC<FormikSelectProps> = ({
 
   const isError = Boolean(meta.error) && meta.touched;
 
-  const helperText = useMemo(() => {
-    if (!isError) {
-      return _helperText;
-    }
-
-    return tErr(meta.error as TranslationKey, { field: name });
-  }, [isError, meta.error, _helperText, name, tErr]);
+  const helperText = useMemo(
+    () => (isError ? tErr(meta.error as TranslationKey, { field: name }) : _helperText),
+    [isError, meta.error, _helperText, name, tErr]
+  );
 
   return (
     <FormControl required={required} disabled={disabled} fullWidth error={isError}>

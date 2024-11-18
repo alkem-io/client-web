@@ -1,18 +1,13 @@
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import KratosUI from '../components/KratosUI';
-import Loading from '../../../ui/loading/Loading';
+import Loading from '@/core/ui/loading/Loading';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
 import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
 import KratosForm from '../components/Kratos/KratosForm';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
 import FixedHeightLogo from '../components/FixedHeightLogo';
-import { PageTitle } from '../../../ui/typography';
+import { PageTitle } from '@/core/ui/typography';
 import { KRATOS_REMOVED_FIELDS_DEFAULT, KratosRemovedFieldAttributes } from '../components/Kratos/constants';
-
-interface SettingsPageProps {
-  flow: string;
-}
 
 const REMOVED_FIELDS: readonly KratosRemovedFieldAttributes[] = [
   ...KRATOS_REMOVED_FIELDS_DEFAULT,
@@ -23,7 +18,7 @@ const REMOVED_FIELDS: readonly KratosRemovedFieldAttributes[] = [
   { name: 'traits.email' },
 ];
 
-export const SettingsPage: FC<SettingsPageProps> = ({ flow }) => {
+export const SettingsPage = ({ flow }: { flow: string }) => {
   const { t } = useTranslation();
   const { flow: settingsFlow, loading, error } = useKratosFlow(FlowTypeName.Settings, flow);
 

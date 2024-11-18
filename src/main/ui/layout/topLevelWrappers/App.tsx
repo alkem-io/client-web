@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { NotificationHandler } from '@/core/ui/notifications/NotificationHandler';
 import { useUserContext } from '@/domain/community/user';

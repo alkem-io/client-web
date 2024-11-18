@@ -1,8 +1,8 @@
-import { FC, MouseEventHandler, ReactNode } from 'react';
+import { MouseEventHandler, ReactNode } from 'react';
 import { Box, BoxProps, ButtonBase, styled } from '@mui/material';
 import ImageFadeIn from './ImageFadeIn';
 import { gutters } from '../grid/utils';
-import hexToRGBA from '../../utils/hexToRGBA';
+import hexToRGBA from '@/core/utils/hexToRGBA';
 import { Caption } from '../typography';
 import Centered from '../utils/Centered';
 
@@ -33,13 +33,13 @@ const CaptionContainer = styled(Box)(({ theme }) => ({
   backgroundColor: hexToRGBA(theme.palette.common.white, 0.8),
 }));
 
-const ImageWithCaption: FC<ImageWithCaptionProps> = ({
+const ImageWithCaption = ({
   caption,
   captionPosition = 'bottom',
   onClick,
   defaultImage,
   ...imgProps
-}) => {
+}: ImageWithCaptionProps) => {
   return (
     <Container onClick={onClick} sx={{ cursor: onClick ? 'pointer' : 'default' }}>
       {!imgProps.src && defaultImage && <Centered>{defaultImage}</Centered>}

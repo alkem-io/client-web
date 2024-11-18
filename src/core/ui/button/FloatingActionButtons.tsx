@@ -1,5 +1,5 @@
 import { BoxProps, Fade } from '@mui/material';
-import React, { FC, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import ScrollToTop from './ScrollToTop';
 import Gutters from '../grid/Gutters';
 
@@ -9,7 +9,7 @@ export interface FloatingActionButtonsProps extends BoxProps {
   floatingActions?: ReactNode;
 }
 
-const FloatingActionButtons: FC<FloatingActionButtonsProps> = ({ visible = true, floatingActions, ...boxProps }) => {
+const FloatingActionButtons = ({ visible = true, floatingActions, ...boxProps }: FloatingActionButtonsProps) => {
   return (
     <Fade in={visible}>
       <Gutters

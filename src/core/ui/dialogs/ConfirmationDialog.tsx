@@ -1,8 +1,8 @@
-import React, { FC, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { LoadingButton } from '@mui/lab';
-import TranslationKey from '../../i18n/utils/TranslationKey';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { DialogContent } from '../dialog/deprecated';
 import DialogHeader from '../dialog/DialogHeader';
 import { BlockTitle } from '../typography';
@@ -15,7 +15,7 @@ import { Button } from '@mui/material';
 export interface ConfirmationDialogProps {
   entities: {
     titleId?: TranslationKey;
-    title?: string | React.ReactNode;
+    title?: string | ReactNode;
     contentId?: TranslationKey;
     content?: ReactNode;
     confirmButtonTextId?: TranslationKey;
@@ -33,7 +33,7 @@ export interface ConfirmationDialogProps {
   };
 }
 
-const ConfirmationDialog: FC<ConfirmationDialogProps> = ({ entities, actions, options, state }) => {
+const ConfirmationDialog = ({ entities, actions, options, state }: ConfirmationDialogProps) => {
   const { t } = useTranslation();
 
   const title = entities.titleId ? t(entities.titleId) : entities.title;

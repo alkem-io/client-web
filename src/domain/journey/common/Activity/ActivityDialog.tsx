@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogContent } from '@mui/material';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';

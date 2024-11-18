@@ -1,5 +1,5 @@
 import { Components, Theme } from '@mui/material/styles';
-import { gutters } from '../../../grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 
 const MuiDialogContent: Components<Theme>['MuiDialogContent'] = {
   styleOverrides: {

@@ -3,7 +3,7 @@ import linkedInTheme from '../AuthProviders/LinkedInTheme';
 import LinkedInIcon from '../AuthProviders/LinkedIn.svg?react';
 import microsoftTheme from '../AuthProviders/MicrosoftTheme';
 import MicrosoftIcon from '../AuthProviders/Microsoft.svg?react';
-import TranslationKey from '../../../../i18n/utils/TranslationKey';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import ButtonStyling from '../AuthProviders/ButtonStyling';
 import { UiNodeInput } from './UiNodeTypes';
 import { useTranslation } from 'react-i18next';

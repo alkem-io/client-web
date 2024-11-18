@@ -27,7 +27,7 @@ import { UiContainer } from '@ory/kratos-client';
 import { KRATOS_INPUT_NAME_CSRF, KRATOS_TRAIT_NAME_ACCEPTED_TERMS } from '../components/Kratos/constants';
 import { isInputNode } from '../components/Kratos/helpers';
 import { useStoreSignUpReturnUrl } from '../utils/SignUpReturnUrl';
-import { useQueryParams } from '../../../routing/useQueryParams';
+import { useQueryParams } from '@/core/routing/useQueryParams';
 
 const EmailIcon = () => {
   const size = (theme: Theme) => theme.spacing(3);

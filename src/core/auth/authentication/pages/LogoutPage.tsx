@@ -1,12 +1,10 @@
 import { Typography } from '@mui/material';
-import React, { FC, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import Loading from '../../../ui/loading/Loading';
+import Loading from '@/core/ui/loading/Loading';
 import { useLogoutUrl } from '@/core/auth/authentication/hooks/useLogoutUrl';
 
-interface LogoutPageProps {}
-
-const LogoutPage: FC<LogoutPageProps> = () => {
+const LogoutPage = () => {
   const { t } = useTranslation();
 
   const { getLogoutUrl, logoutUrl, error } = useLogoutUrl();

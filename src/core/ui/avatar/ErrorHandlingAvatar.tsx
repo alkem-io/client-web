@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { Avatar as MUIAvatar, AvatarProps } from '@mui/material';
 import useImageErrorHandler from '../image/useImageErrorHandler';
 

@@ -4,10 +4,10 @@ import { Caption } from '../typography';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import getLocationString from './getLocationString';
 
-interface LocationCardSegmentProps {
+type LocationCardSegmentProps = {
   city?: string;
   countryCode?: string;
-}
+};
 
 const LocationCardSegment = ({ city, countryCode, ...containerProps }: LocationCardSegmentProps & BoxProps) => {
   const countryName = COUNTRIES.find(({ code }) => code === countryCode)?.name;

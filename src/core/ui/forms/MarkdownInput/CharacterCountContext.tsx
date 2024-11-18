@@ -9,10 +9,10 @@ import {
   useState,
 } from 'react';
 
-interface CharacterCountContextValue {
+type CharacterCountContextValue = {
   characterCount: number;
   setCharacterCount: Dispatch<number>;
-}
+};
 
 const CharacterCountContext = createContext<CharacterCountContextValue | null>(null);
 

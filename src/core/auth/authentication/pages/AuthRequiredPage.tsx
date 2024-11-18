@@ -1,11 +1,11 @@
 import ErrorOutline from '@mui/icons-material/ErrorOutline';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import WrapperTypography from '../../../ui/typography/deprecated/WrapperTypography';
-import { useQueryParams } from '../../../routing/useQueryParams';
+import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
+import { useQueryParams } from '@/core/routing/useQueryParams';
 import AuthenticationLayout from '@/main/ui/layout/AuthenticationLayout';
-import { _AUTH_LOGIN_PATH, AUTH_SIGN_UP_PATH } from '../constants/authentication.constants';
+import { _AUTH_LOGIN_PATH, AUTH_SIGN_UP_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { Box, Button } from '@mui/material';
 import { buildReturnUrlParam } from '@/main/routing/urlBuilders';
 
@@ -28,23 +28,25 @@ export const AuthRequiredPage: FC<AuthRequiredPageProps> = () => {
   const signUpUrl = `${AUTH_SIGN_UP_PATH}${returnUrlParam}`;
 
   return (
-    <AuthenticationLayout>
-      <Box textAlign={'center'}>
-        <WrapperTypography variant={'h2'}>
-          <ErrorOutline color={'primary'} fontSize={'large'} />
-        </WrapperTypography>
-        <WrapperTypography variant={'h2'}>{t('pages.authentication-required.header')}</WrapperTypography>
-        <WrapperTypography variant={'h3'}>{t('pages.authentication-required.subheader')}</WrapperTypography>
-      </Box>
-      <Box display="flex" marginTop={4} gap={2} justifyContent="center">
-        <Button component={Link} to={loginUrl} variant="outlined" color="primary">
-          {t('authentication.sign-in')}
-        </Button>
-        <Button component={Link} to={signUpUrl} variant="outlined">
-          {t('authentication.sign-up')}
-        </Button>
-      </Box>
-    </AuthenticationLayout>
+    <>
+      <AuthenticationLayout>
+        <Box textAlign={'center'}>
+          <WrapperTypography variant={'h2'}>
+            <ErrorOutline color={'primary'} fontSize={'large'} />
+          </WrapperTypography>
+          <WrapperTypography variant={'h2'}>{t('pages.authentication-required.header')}</WrapperTypography>
+          <WrapperTypography variant={'h3'}>{t('pages.authentication-required.subheader')}</WrapperTypography>
+        </Box>
+        <Box display="flex" marginTop={4} gap={2} justifyContent="center">
+          <Button component={Link} to={loginUrl} variant="outlined" color="primary">
+            {t('authentication.sign-in')}
+          </Button>
+          <Button component={Link} to={signUpUrl} variant="outlined">
+            {t('authentication.sign-up')}
+          </Button>
+        </Box>
+      </AuthenticationLayout>
+    </>
   );
 };
 

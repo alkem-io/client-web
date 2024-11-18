@@ -1,26 +1,26 @@
 import { Box, Button, Dialog, DialogContent, DialogProps, FormHelperText, Link } from '@mui/material';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactCrop, { Crop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import Resizer from 'react-image-file-resizer';
-import Gutters from '../../grid/Gutters';
-import FormikInputField from '../../forms/FormikInputField/FormikInputField';
-import { Actions } from '../../actions/Actions';
-import { ALT_TEXT_LENGTH } from '../../forms/field-length.constants';
+import Gutters from '@/core/ui/grid/Gutters';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { Actions } from '@/core/ui/actions/Actions';
+import { ALT_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { useConfig } from '@/domain/platform/config/useConfig';
 
-interface CropDialogConfig {
+type CropDialogConfig = {
   aspectRatio?: number;
   maxHeight?: number;
   minHeight?: number;
   maxWidth?: number;
   minWidth?: number;
-}
+};
 
 interface CropDialogInterface extends DialogProps {
   file?: File;
@@ -38,7 +38,7 @@ const MIN_WIDTH = 200;
 const MAX_HEIGHT = 400;
 const MIN_HEIGHT = 200;
 
-export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...rest }) => {
+export const CropDialog = ({ file, onSave, config, ...rest }: CropDialogInterface) => {
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { locations } = useConfig();

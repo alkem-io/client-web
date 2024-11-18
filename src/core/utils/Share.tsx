@@ -1,10 +1,10 @@
-import React, { ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { ShareDialog, ShareDialogProps } from '@/domain/shared/components/ShareDialog/ShareDialog';
 
-interface ShareOptions {
+type ShareOptions = {
   url: string | undefined;
   entityTypeName: ShareDialogProps['entityTypeName'];
-}
+};
 
 interface ShareProvided {
   share: () => Promise<void>;

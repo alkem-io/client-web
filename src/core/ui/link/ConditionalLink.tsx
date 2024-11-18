@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { PropsWithChildren } from 'react';
 import { Link } from '@mui/material';
 import RouterLink from './RouterLink';
 
@@ -8,7 +8,12 @@ export interface ConditionalLinkProps {
   keepScroll?: boolean;
 }
 
-const ConditionalLink: FC<ConditionalLinkProps> = ({ children, to, condition = false, keepScroll = false }) =>
+const ConditionalLink = ({
+  children,
+  to,
+  condition = false,
+  keepScroll = false,
+}: PropsWithChildren<ConditionalLinkProps>) =>
   condition && to ? (
     <Link component={RouterLink} to={to} underline="none" state={{ keepScroll }}>
       {children}

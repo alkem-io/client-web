@@ -1,13 +1,13 @@
 import { Autocomplete, AutocompleteValue, TextField, TextFieldProps } from '@mui/material';
 import { useField } from 'formik';
-import React, { FC, useMemo } from 'react';
+import { useMemo, ReactElement, SyntheticEvent } from 'react';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import TranslationKey from '../../i18n/utils/TranslationKey';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 export interface FormikSelectValue {
   id: string;
   name: string;
-  icon?: React.ReactElement;
+  icon?: ReactElement;
 }
 
 export type FormikAutocompleteProps = TextFieldProps & {
@@ -19,7 +19,7 @@ export type FormikAutocompleteProps = TextFieldProps & {
   onChange?: (value: FormikSelectValue | undefined) => void;
 };
 
-export const FormikAutocomplete: FC<FormikAutocompleteProps> = ({
+export const FormikAutocomplete = ({
   name,
   values,
   helpText,
@@ -28,23 +28,20 @@ export const FormikAutocomplete: FC<FormikAutocompleteProps> = ({
   disabled,
   onChange,
   ...textFieldProps
-}) => {
+}: FormikAutocompleteProps) => {
   const tErr = useValidationMessageTranslation();
 
   const [field, meta, helpers] = useField(name);
 
   const isError = Boolean(meta.error);
 
-  const helperText = useMemo(() => {
-    if (!isError) {
-      return helpText;
-    }
-
-    return tErr(meta.error as TranslationKey, { field: name });
-  }, [isError, meta.error, helpText, name, tErr]);
+  const helperText = useMemo(
+    () => (isError ? tErr(meta.error as TranslationKey, { field: name }) : helpText),
+    [isError, meta.error, helpText, name, tErr]
+  );
 
   const handleChange = (
-    event: React.SyntheticEvent,
+    event: SyntheticEvent,
     value: AutocompleteValue<FormikSelectValue | undefined, false, false, false>
   ) => {
     helpers.setValue(value?.id);

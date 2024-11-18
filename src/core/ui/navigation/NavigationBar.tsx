@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useLayoutEffect, useState } from 'react';
+import { PropsWithChildren, useLayoutEffect, useState } from 'react';
 import { alpha, AppBar, Box, Paper, Slide } from '@mui/material';
 import { gutters } from '../grid/utils';
 import { GUTTER_PX, MAX_CONTENT_WIDTH_GUTTERS, useGlobalGridColumns } from '../grid/constants';

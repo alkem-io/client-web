@@ -1,10 +1,9 @@
-import React, { FC } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import useImageErrorHandler from './useImageErrorHandler';
 
 export type ImageProps = BoxProps<'img'>;
 
-const Image: FC<ImageProps> = ({ onError, ...props }) => {
+const Image = ({ onError, ...props }: ImageProps) => {
   const reportImageError = useImageErrorHandler();
 
   const handleError = err => {

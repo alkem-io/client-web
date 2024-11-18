@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import Loading from '../ui/loading/Loading';
 import { useAuthenticationContext } from '../auth/authentication/hooks/useAuthenticationContext';

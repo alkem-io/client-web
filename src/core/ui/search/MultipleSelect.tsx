@@ -2,10 +2,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import Box, { BoxProps } from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import React, {
+import {
   ChangeEventHandler,
-  FC,
   KeyboardEventHandler,
+  PropsWithChildren,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -35,42 +35,34 @@ const filterTerms = (values: string[] | undefined) => {
   return uniq(values?.map(item => item?.trim()).filter(item => item)) ?? [];
 };
 
-interface SelectedTermsProps {
+type SelectedTermsProps = {
   selectedTerms: string[];
   disabled?: boolean;
   handleRemove: (term: string) => void;
   maxTermsVisible?: number;
   inlineTerms?: boolean;
-}
+};
 
-const SelectedTerms: FC<SelectedTermsProps> = ({
+const SelectedTerms = ({
   selectedTerms,
   maxTermsVisible = selectedTerms.length,
   disabled,
   handleRemove,
   inlineTerms,
-}) => {
-  return (
-    <Box
-      display="flex"
-      flexWrap="wrap"
-      gap={gutters(0.5)}
-      margin={gutters(0.5)}
-      maxWidth={inlineTerms ? '40%' : '100%'}
-    >
-      {selectedTerms.slice(0, maxTermsVisible).map((term, index) => (
-        <Chip key={index} label={term} color="primary" onDelete={() => (disabled ? undefined : handleRemove(term))} />
-      ))}
-      {selectedTerms.length > maxTermsVisible && (
-        <Tooltip title={selectedTerms.join(', ')} arrow>
-          <Chip key="ellipsis" label="..." />
-        </Tooltip>
-      )}
-    </Box>
-  );
-};
+}: SelectedTermsProps) => (
+  <Box display="flex" flexWrap="wrap" gap={gutters(0.5)} margin={gutters(0.5)} maxWidth={inlineTerms ? '40%' : '100%'}>
+    {selectedTerms.slice(0, maxTermsVisible).map((term, index) => (
+      <Chip key={index} label={term} color="primary" onDelete={() => (disabled ? undefined : handleRemove(term))} />
+    ))}
+    {selectedTerms.length > maxTermsVisible && (
+      <Tooltip title={selectedTerms.join(', ')} arrow>
+        <Chip key="ellipsis" label="..." />
+      </Tooltip>
+    )}
+  </Box>
+);
 
-const MultipleSelect: FC<MultipleSelectProps> = ({
+const MultipleSelect = ({
   value,
   onChange,
   onSearchClick,
@@ -83,7 +75,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   placeholder,
   containerProps,
   children,
-}) => {
+}: PropsWithChildren<MultipleSelectProps>) => {
   const { t } = useTranslation();
 
   const normalizedValue = value.slice(0, MAX_TERMS_SEARCH);

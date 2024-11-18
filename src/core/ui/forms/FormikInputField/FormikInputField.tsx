@@ -1,11 +1,11 @@
-import React, { FC, ReactNode, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { useField } from 'formik';
 import { Box, FormHelperText, TextField, TextFieldProps } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
 import { DistributiveOmit } from '@mui/types';
-import TranslationKey from '../../../i18n/utils/TranslationKey';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
-import HelpButton from '../../button/HelpButton';
+import HelpButton from '@/core/ui/button/HelpButton';
 import CharacterCounter from '../characterCounter/CharacterCounter';
 
 export type FormikInputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
@@ -24,7 +24,7 @@ export type FormikInputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> 
   endAdornment?: ReactNode;
 };
 
-export const FormikInputField: FC<FormikInputFieldProps> = ({
+export const FormikInputField = ({
   title,
   name,
   required = false,
@@ -43,7 +43,7 @@ export const FormikInputField: FC<FormikInputFieldProps> = ({
   fullWidth,
   endAdornment,
   ...rest
-}) => {
+}: FormikInputFieldProps) => {
   const tErr = useValidationMessageTranslation();
   const [field, meta, helpers] = useField(name);
   const isError = Boolean(meta.error) && meta.touched;

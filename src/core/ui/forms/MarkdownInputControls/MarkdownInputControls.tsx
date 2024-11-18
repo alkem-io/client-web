@@ -1,5 +1,5 @@
 import { Editor } from '@tiptap/react';
-import React, { forwardRef, memo, useEffect, useState } from 'react';
+import { forwardRef, memo, useEffect, useState } from 'react';
 import {
   Code,
   FormatBold,
@@ -21,14 +21,14 @@ import ToggleLinkButton from './ToggleLinkButton';
 import InsertEmojiButton from './InsertEmojiButton';
 import produce from 'immer';
 
-interface MarkdownInputControlsProps {
+type MarkdownInputControlsProps = {
   editor: Editor | null;
   visible?: boolean;
   hideImageOptions?: boolean;
   onDialogOpen?: () => void;
   onDialogClose?: () => void;
   temporaryLocation?: boolean;
-}
+};
 
 interface ControlsButtonProps extends IconButtonProps {
   editor: Editor | null;

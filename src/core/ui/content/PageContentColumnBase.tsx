@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import GridProvider from '../grid/GridProvider';
 import { GUTTER_MUI } from '../grid/constants';

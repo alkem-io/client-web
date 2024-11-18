@@ -2,7 +2,7 @@ import { Palette, TypographyVariant } from '@mui/material/styles';
 import makeStyles from '@mui/styles/makeStyles';
 import clsx from 'clsx';
 import React, { FC, useMemo, useRef } from 'react';
-import { replaceAll } from '../../../utils/replaceAll';
+import { replaceAll } from '@/core/utils/replaceAll';
 
 const useTypographyStyles = makeStyles(theme => ({
   h1: {

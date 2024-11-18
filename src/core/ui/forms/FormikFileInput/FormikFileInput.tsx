@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useField } from 'formik';
 import FormikInputField, { FormikInputFieldProps } from '../FormikInputField/FormikInputField';
-import FileUploadButton, { FileUploadEntityType } from '../../upload/FileUpload/FileUpload';
+import FileUploadButton, { FileUploadEntityType } from '@/core/ui/upload/FileUpload/FileUpload';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 
 const DEFAULT_PROTOCOL = 'https';

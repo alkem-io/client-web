@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import Dialog from '@mui/material/Dialog';
 import { LoadingButton } from '@mui/lab';
 import { DialogContent } from '../dialog/deprecated';
@@ -9,9 +9,9 @@ import { gutters } from '../grid/utils';
 
 // could be merged with ConfirmationDialog
 // however there's no need of this entities, actions, etc. structure
-interface InfoDialogProps {
+type InfoDialogProps = {
   entities: {
-    title: string | React.ReactNode;
+    title: string | ReactNode;
     content: ReactNode;
     buttonCaption: string;
   };
@@ -24,9 +24,9 @@ interface InfoDialogProps {
   state?: {
     isLoading: boolean;
   };
-}
+};
 
-const InfoDialog: FC<InfoDialogProps> = ({ entities, actions, options, state }) => {
+const InfoDialog = ({ entities, actions, options, state }: InfoDialogProps) => {
   const { title, content, buttonCaption } = entities;
 
   return (

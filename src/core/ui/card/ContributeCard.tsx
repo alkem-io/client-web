@@ -1,4 +1,4 @@
-import React, { forwardRef, MouseEventHandler, PropsWithChildren } from 'react';
+import { forwardRef, MouseEventHandler, PropsWithChildren } from 'react';
 import { Paper, SxProps } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';

@@ -1,9 +1,9 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import EmailVerificationNotice from '../../verification/components/EmailVerificationNotice/EmailVerificationNotice';
+import EmailVerificationNotice from '@/core/auth/verification/components/EmailVerificationNotice/EmailVerificationNotice';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
 import FixedHeightLogo from '../components/FixedHeightLogo';
-import { PageTitle } from '../../../ui/typography';
+import { PageTitle } from '@/core/ui/typography/index';
 import { useReturnUrl } from '../utils/SignUpReturnUrl';
 
 export const EmailVerificationRequiredPage: FC = () => {

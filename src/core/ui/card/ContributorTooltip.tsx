@@ -8,22 +8,20 @@ interface ContributorTooltipProps extends UserCardProps {
   children: TooltipProps['children'];
 }
 
-const ContributorTooltip = ({ children, ...props }: ContributorTooltipProps) => {
-  return (
-    <Tooltip
-      arrow
-      title={
-        <RootThemeProvider>
-          <GridProvider columns={CONTRIBUTE_CARD_COLUMNS}>
-            <UserCard {...props} />
-          </GridProvider>
-        </RootThemeProvider>
-      }
-      componentsProps={{ popper: { sx: { '.MuiTooltip-tooltip': { backgroundColor: 'transparent' } } } }}
-    >
-      {children}
-    </Tooltip>
-  );
-};
+const ContributorTooltip = ({ children, ...props }: ContributorTooltipProps) => (
+  <Tooltip
+    arrow
+    title={
+      <RootThemeProvider>
+        <GridProvider columns={CONTRIBUTE_CARD_COLUMNS}>
+          <UserCard {...props} />
+        </GridProvider>
+      </RootThemeProvider>
+    }
+    componentsProps={{ popper: { sx: { '.MuiTooltip-tooltip': { backgroundColor: 'transparent' } } } }}
+  >
+    {children}
+  </Tooltip>
+);
 
 export default ContributorTooltip;
