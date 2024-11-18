@@ -191,8 +191,8 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
   const isSpaceLimitReached = isSpaceFreeLimitReached || isSpacePlusLimitReached || isSpacePremiumLimitReached;
 
   const isVCLimitReached = !vcEntitlement?.isAvailable;
-  const isInnovationHubLimitReached = innovationHubEntitlement?.isAvailable;
-  const isInnovationPackLimitReached = innovationPackEntitlement?.isAvailable;
+  const isInnovationHubLimitReached = !innovationHubEntitlement?.isAvailable;
+  const isInnovationPackLimitReached = !innovationPackEntitlement?.isAvailable;
 
   const { virtualContributors, innovationPacks, innovationHubs } = useMemo(
     () => ({
