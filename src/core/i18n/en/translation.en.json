@@ -705,7 +705,7 @@
     "saveAsTemplate": "Save as Template",
     "alkemio-link": "Click here to read more about Alkemio's collaboration tools",
     "link-collection": {
-      "add-link": "Add link to {{title}}",
+      "add-link": "Add links or documents to {{title}}",
       "edit-link": "Edit {{title}}",
       "add-another": "Add another link",
       "delete-link": "Click here to delete this link",
@@ -1445,7 +1445,7 @@
         "remove-reference": "Remove the reference"
       },
       "url-helper-text": "<terms>Click here</terms> for the terms and conditions.",
-      "plaintext-helper-text": "Click here for the terms and conditions.",
+      "plaintext-helper-text": "Click here for the terms and conditions. You can upload Word, PDF, Excel, or images up to 15 MB",
       "newReference": "New reference",
       "newReference_plural": "New reference ({{count}})",
       "newLink": "New link",
@@ -3051,7 +3051,7 @@
       "title": "Create a Virtual Contributor",
       "profileDescription": "Choose a name and enrich your Virtual Contributors profile below.",
       "description": "A Virtual Contributor allows you to interact with AI on Alkemio. What do you want to make available through your Virtual Contributor?",
-      "createSpace": "Written knowledge in text and documents",
+      "createSpace": "Written knowledge in text",
       "useExistingSpace": "The content of a (Sub)Space on Alkemio",
       "useExternalAI": "An external AI",
       "ownAI": "AI Powered by Alkemio",
