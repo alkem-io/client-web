@@ -72,7 +72,7 @@ export const InAppNotificationBaseView = ({
             iconComponent={DraftsOutlinedIcon}
             onClick={() => updateNotificationState(id, InAppNotificationState.Read)}
           >
-            Mark as Read
+            {t('components.inAppNotifications.action.read')}
           </MenuItemWithIcon>
         );
       case InAppNotificationState.Read:
@@ -82,7 +82,7 @@ export const InAppNotificationBaseView = ({
             iconComponent={MarkEmailUnreadOutlinedIcon}
             onClick={() => updateNotificationState(id, InAppNotificationState.Unread)}
           >
-            Mark as Unread
+            {t('components.inAppNotifications.action.unread')}
           </MenuItemWithIcon>
         );
       default:
@@ -98,7 +98,7 @@ export const InAppNotificationBaseView = ({
         iconComponent={DeleteOutline}
         onClick={() => updateNotificationState(id, InAppNotificationState.Archived)}
       >
-        Delеte
+        {t('components.inAppNotifications.action.delete')}
       </MenuItemWithIcon>,
     ],
     [getReadAction, id]
@@ -144,8 +144,8 @@ export const InAppNotificationBaseView = ({
     >
       <Gutters row disablePadding>
         <Gutters column flexGrow={1}>
-          <Caption>{renderFormattedTranslation(`components.inAppNotifications.${type}.subject`)}</Caption>
-          <Caption>{renderFormattedTranslation(`components.inAppNotifications.${type}.description`)}</Caption>
+          <Caption>{renderFormattedTranslation(`components.inAppNotifications.type.${type}.subject`)}</Caption>
+          <Caption>{renderFormattedTranslation(`components.inAppNotifications.type.${type}.description`)}</Caption>
         </Gutters>
         <Actions>
           <Caption>{formatTimeElapsed(triggeredAt, t)}</Caption>

@@ -1,3 +1,4 @@
+import { warn as logWarn, TagCategoryValues } from '../../core/logging/sentry/log';
 import { InAppNotificationCategory, InAppNotificationProps, InAppNotificationType } from './useInAppNotifications';
 import { CollaborationCalloutPublishedView } from './views/CollaborationCalloutPublishedView';
 import { CommunicationUserMentionView } from './views/CommunicationUserMentionView';
@@ -16,7 +17,10 @@ export const InAppNotificationItem = ({ ...item }: InAppNotificationProps) => {
       }
       return <CommunityNewMemberView {...item} />;
     default:
-      // todo: sent warning to Sentry
+      logWarn(`Unsupported Notification type: ${item.type}`, {
+        category: TagCategoryValues.NOTIFICATIONS,
+        label: item.type,
+      });
       return null;
   }
 };
