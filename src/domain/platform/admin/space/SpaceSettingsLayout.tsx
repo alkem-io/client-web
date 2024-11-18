@@ -19,7 +19,7 @@ import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from '../../../journey/space/layout/SpacePageBanner';
 import JourneyBreadcrumbs from '../../../journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import BackButton from '@/core/ui/actions/BackButton';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 

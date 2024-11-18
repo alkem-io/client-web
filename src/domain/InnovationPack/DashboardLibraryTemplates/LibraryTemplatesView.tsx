@@ -13,7 +13,7 @@ import TemplateTypeFilterMobile from './TemplateTypeFilterMobile';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import TemplateCard from '../../templates/components/cards/TemplateCard';
 import { AnyTemplate, AnyTemplateWithInnovationPack } from '../../templates/models/TemplateBase';
-import { gutters } from '../../../core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { useTheme } from '@mui/styles';
 
 export interface LibraryTemplatesFilter {

@@ -11,7 +11,7 @@ import { Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';
 import Loading from '@/core/ui/loading/Loading';
-import LogoSmallImage from '../../../../main/ui/logo/logoSmall.svg?react';
+import LogoSmallImage from '@/main/ui/logo/logoSmall.svg?react';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import GridItem from '@/core/ui/grid/GridItem';

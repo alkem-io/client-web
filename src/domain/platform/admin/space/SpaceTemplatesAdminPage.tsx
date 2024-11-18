@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { useSpaceTemplatesAdminQuery, useTemplateUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '@/core/routing/useUrlParams';
 import Loading from '@/core/ui/loading/Loading';
-import { buildSettingsUrl } from '../../../../main/routing/urlBuilders';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import TemplatesAdmin from '../../../templates/components/TemplatesAdmin/TemplatesAdmin';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';

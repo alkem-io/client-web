@@ -11,7 +11,7 @@ import { Box, Button, Theme, useMediaQuery } from '@mui/material';
 import { CONTRIBUTE_CARD_COLUMNS } from '@/core/ui/card/ContributeCard';
 import GridItem from '@/core/ui/grid/GridItem';
 import { Skeleton } from '@mui/material';
-import { gutters } from '../../../core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { useTheme } from '@mui/styles';
 
 interface InnovationPacksViewProps extends PageContentBlockProps {

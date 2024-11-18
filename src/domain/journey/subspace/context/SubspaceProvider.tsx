@@ -4,7 +4,7 @@ import {
   CommunityMembershipStatus,
   SubspacePendingMembershipInfoFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import { useSubspacePendingMembershipInfoQuery } from '@/core/apollo/generated/apollo-hooks';
 
 interface SubspacePermissions {

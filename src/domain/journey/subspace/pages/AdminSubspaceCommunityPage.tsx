@@ -12,8 +12,8 @@ import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLa
 import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
 import { useSubSpace } from '../hooks/useSubSpace';
 import SubspaceSettingsLayout from '../../../platform/admin/subspace/SubspaceSettingsLayout';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
-import InnovationLibraryIcon from '../../../../main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
 import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import InvitationOptionsBlock from '../../../community/invitations/InvitationOptionsBlock';

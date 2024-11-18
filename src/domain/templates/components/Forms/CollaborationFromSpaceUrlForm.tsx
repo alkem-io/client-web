@@ -6,7 +6,7 @@ import { LoadingButton } from '@mui/lab';
 import useLoadingState from '../../../shared/utils/useLoadingState';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { gutters } from '@/core/ui/grid/utils';
-import useUrlParser from '../../../../main/routing/resolvers/useUrlParser';
+import useUrlParser from '@/main/routing/resolvers/useUrlParser';
 import {
   useJourneyRouteResolverLazyQuery,
   useSpaceCollaborationIdLazyQuery,

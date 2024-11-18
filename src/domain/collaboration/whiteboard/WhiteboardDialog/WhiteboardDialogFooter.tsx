@@ -14,7 +14,7 @@ import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunit
 import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { useLocation } from 'react-router-dom';
-import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
+import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { Visual } from '../../../common/visual/Visual';

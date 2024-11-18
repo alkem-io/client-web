@@ -5,7 +5,7 @@ import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import useUserCardProps from '../utils/useUserCardProps';
 import NoOrganizations from '../CommunityContributors/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 
 const SubspaceContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ dialogOpen }) => {
   const { journeyId } = useRouteResolver();

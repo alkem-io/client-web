@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import NonPlatformAdminRedirect from '../../../../main/admin/NonPlatformAdminRedirect';
+import NonPlatformAdminRedirect from '@/main/admin/NonPlatformAdminRedirect';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
 import { AdminOrganizationsRoutes } from '../organization';
 import { UsersRoute } from '../user/routing/UsersRoute';
@@ -11,7 +11,7 @@ import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import AdminInnovationPacksRoutes from '../../../InnovationPack/admin/AdminInnovationPackRoutes';
 import AdminInnovationHubsRoutes from '../../../innovationHub/InnovationHubsAdmin/InnovationHubsAdminRoutes';
 import VirtualContributorsRoutes from '../virtual-contributors/VirtualContributorsRoutes';
-import AuthorizationPoliciesPage from '../../../../main/admin/authorizationPolicies/AuthorizationPoliciesPage';
+import AuthorizationPoliciesPage from '@/main/admin/authorizationPolicies/AuthorizationPoliciesPage';
 
 const AdminRoute: FC = () => {
   useTransactionScope({ type: 'admin' });

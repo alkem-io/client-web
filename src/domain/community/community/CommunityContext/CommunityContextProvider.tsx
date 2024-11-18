@@ -4,7 +4,7 @@ import { CommunityContext, CommunityContextValue } from './CommunityContext';
 import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
 import { useSubSpace } from '../../../journey/subspace/hooks/useSubSpace';
 import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 
 /**
  * @deprecated

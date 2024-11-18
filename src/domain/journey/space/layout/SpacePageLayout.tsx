@@ -11,7 +11,7 @@ import { VisualName } from '../../../common/visual/constants/visuals.constants';
 import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from './SpacePageBanner';
 import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
-import { JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
+import { JourneyPath } from '@/main/routing/resolvers/RouteResolver';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import useCanReadSpace from '../../common/authorization/useCanReadSpace';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';

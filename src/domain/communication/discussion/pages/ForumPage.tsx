@@ -6,7 +6,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import CategorySelector from '../components/CategorySelector';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
 import { DiscussionListView } from '../views/DiscussionsListView';
-import TopLevelPageLayout from '../../../../main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
+import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import { ForumDiscussionUpdatedDocument, usePlatformDiscussionsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Discussion, useDiscussionMapper } from '../models/Discussion';
 import { compact } from 'lodash';
@@ -27,7 +27,7 @@ import useInnovationHubOutsideRibbon from '../../../innovationHub/InnovationHubO
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import { ForumOutlined } from '@mui/icons-material';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
-import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { BlockTitle } from '@/core/ui/typography';
 
 const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;

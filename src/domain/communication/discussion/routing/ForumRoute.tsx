@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import { nameOfUrl } from '../../../../main/routing/urlParams';
+import { nameOfUrl } from '@/main/routing/urlParams';
 import ForumPage from '../pages/ForumPage';
-import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import LastReleaseDiscussion from '../pages/LastReleaseDiscussion';
 import Discussion from '../pages/Discussion';
 

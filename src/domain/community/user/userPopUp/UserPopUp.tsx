@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@mui/styles';
-import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
+import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
 import Loading from '@/core/ui/loading/Loading';
 import AlkemioAvatar from '@/core/ui/image/AlkemioAvatar';
 import WrapperButton from '@/core/ui/button/deprecated/WrapperButton';

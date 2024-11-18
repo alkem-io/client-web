@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import SubspaceHomeView from './SubspaceHomeView';
 import SubspaceHomeContainer from './SubspaceHomeContainer';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { useTranslation } from 'react-i18next';
 import { SubspacePageLayout } from '../../common/EntityPageLayout';

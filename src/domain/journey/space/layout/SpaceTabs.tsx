@@ -2,7 +2,7 @@ import React from 'react';
 import { EntityTabsProps } from '../../common/EntityPageLayout';
 import SpacePageTabs from '../SpacePageTabs';
 import { useSpace } from '../SpaceContext/useSpace';
-import { buildSettingsUrl } from '../../../../main/routing/urlBuilders';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import { useTranslation } from 'react-i18next';
 import { SubspaceIcon } from '../../subspace/icon/SubspaceIcon';

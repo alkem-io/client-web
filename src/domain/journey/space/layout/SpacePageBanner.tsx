@@ -12,7 +12,7 @@ import { useConfig } from '../../../platform/config/useConfig';
 import { TranslateWithElements } from '../../../shared/i18n/TranslateWithElements';
 import { BoxProps } from '@mui/system';
 import { useTranslation } from 'react-i18next';
-import { env } from '../../../../main/env';
+import { env } from '@/main/env';
 import { BasePageBannerProps } from '../../common/EntityPageLayout/EntityPageLayoutTypes';
 import defaultJourneyBanner from '../../defaultVisuals/Banner.jpg';
 

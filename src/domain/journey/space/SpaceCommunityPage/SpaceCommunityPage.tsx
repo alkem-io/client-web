@@ -17,7 +17,7 @@ import useCommunityMembersAsCardProps from '../../../community/community/utils/u
 import { AuthorizationPrivilege, CalloutGroupName, SearchVisibility } from '@/core/apollo/generated/graphql-schema';
 import SpaceCommunityContainer from './SpaceCommunityContainer';
 import SpacePageLayout from '../layout/SpacePageLayout';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { useSpace } from '../SpaceContext/useSpace';
 import InfoColumn from '@/core/ui/content/InfoColumn';

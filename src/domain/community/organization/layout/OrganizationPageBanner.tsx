@@ -1,7 +1,7 @@
 import React from 'react';
 import { Identifiable } from '@/core/utils/Identifiable';
 import ProfilePageBanner, { ProfilePageBannerProps } from '../../../common/profile/ProfilePageBanner';
-import { buildSettingsUrl } from '../../../../main/routing/urlBuilders';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 
 interface OrganizationPageBannerProps {
   organization:

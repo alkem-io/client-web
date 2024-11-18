@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import { useUrlParams } from '@/core/routing/useUrlParams';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
 import WhiteboardPage from '../EntityWhiteboardPage/WhiteboardPage';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 
 export interface WhiteboardRouteProps {
   parentPagePath: string;

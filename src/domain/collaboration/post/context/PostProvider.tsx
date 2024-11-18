@@ -3,7 +3,7 @@ import { useUrlParams } from '@/core/routing/useUrlParams';
 import { usePostProviderQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ApolloError } from '@apollo/client';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 
 interface PostPermissions {
   canUpdate: boolean;

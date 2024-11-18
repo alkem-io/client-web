@@ -12,7 +12,7 @@ import { useSpace } from '../SpaceContext/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
 import { CalloutGroupName, CommunityMembershipStatus, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import { SubspaceIcon } from '../../subspace/icon/SubspaceIcon';
 import SubspaceCard from '../../subspace/subspaceCard/SubspaceCard';
 import { CreateSubspaceForm } from '../../subspace/forms/CreateSubspaceForm';

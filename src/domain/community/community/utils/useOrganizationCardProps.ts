@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { OrganizationCardFragment, OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
-import { buildOrganizationUrl } from '../../../../main/routing/urlBuilders';
+import { buildOrganizationUrl } from '@/main/routing/urlBuilders';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import { OrganizationCardProps } from '../CommunityContributors/ContributingOrganizations';

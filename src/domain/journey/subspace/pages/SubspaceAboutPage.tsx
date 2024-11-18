@@ -11,8 +11,8 @@ import ContributorsDialog from '../../../community/community/ContributorsDialog/
 import SubspaceContributorsDialogContent from '../../../community/community/entities/SubspaceContributorsDialogContent';
 import SeeMore from '@/core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
-import { buildAboutUrl } from '../../../../main/routing/urlBuilders';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { buildAboutUrl } from '@/main/routing/urlBuilders';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 
 const SubspaceAboutPage: FC = () => {

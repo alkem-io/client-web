@@ -12,7 +12,7 @@ import SeeMore from '@/core/ui/content/SeeMore';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { Caption } from '@/core/ui/typography';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { buildSettingsUrl } from '../../../../main/routing/urlBuilders';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 
 const CommunityGuidelinesSkeleton = () => {
   const theme = useTheme();

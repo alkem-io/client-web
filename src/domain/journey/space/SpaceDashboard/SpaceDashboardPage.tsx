@@ -12,9 +12,9 @@ import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
 import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
-import { buildAboutUrl, buildUpdatesUrl } from '../../../../main/routing/urlBuilders';
+import { buildAboutUrl, buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { useTranslation } from 'react-i18next';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 

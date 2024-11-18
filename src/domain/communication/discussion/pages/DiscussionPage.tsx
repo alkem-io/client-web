@@ -16,7 +16,7 @@ import { compact } from 'lodash';
 import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
 import { Message } from '../../room/models/Message';
 import { Skeleton } from '@mui/material';
-import TopLevelPageLayout from '../../../../main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
+import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import RouterLink from '@/core/ui/link/RouterLink';
 import BackButton from '@/core/ui/actions/BackButton';
 import { useLocation } from 'react-router-dom';
@@ -24,7 +24,7 @@ import usePostMessageMutations from '../../room/Comments/usePostMessageMutations
 import useSubscribeOnRoomEvents from '../../../collaboration/callout/useSubscribeOnRoomEvents';
 import { ForumOutlined } from '@mui/icons-material';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
-import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import UpdateDiscussionDialog from '../views/UpdateDiscussionDialog';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import useNavigate from '@/core/routing/useNavigate';

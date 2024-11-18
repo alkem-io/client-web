@@ -12,7 +12,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { EditMode } from '@/core/ui/forms/editMode';
 import { UserModel } from '../models/User';
-import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
+import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
 import { getUpdateUserInput } from '../utils/getUpdateUserInput';
 import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';

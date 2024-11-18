@@ -5,7 +5,7 @@ import {
   CommunityMembershipStatus,
   SubspaceProviderFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 
 interface OpportunityViewerPermissions {
   viewerCanUpdate: boolean;

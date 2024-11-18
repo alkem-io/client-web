@@ -4,7 +4,7 @@ import PostProvider from '../../post/context/PostProvider';
 import PostRoute from '../../post/views/PostRoute';
 import WhiteboardRoute from '../../whiteboard/views/WhiteboardRoute';
 import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import { nameOfUrl } from '../../../../main/routing/urlParams';
+import { nameOfUrl } from '@/main/routing/urlParams';
 
 export interface CalloutRouteProps {
   parentPagePath: string;

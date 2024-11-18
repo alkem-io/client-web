@@ -4,7 +4,7 @@ import {
   useJourneyRouteResolverQuery,
   useSpaceKeyEntitiesIDsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { getJourneyTypeName, JourneyTypeName } from '../../../domain/journey/JourneyTypeName';
+import { getJourneyTypeName, JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { takeWhile } from 'lodash';
 import { useMemo } from 'react';
 import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';

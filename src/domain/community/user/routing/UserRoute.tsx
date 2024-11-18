@@ -4,8 +4,8 @@ import UserProfilePage from '../userProfilePage/UserProfilePage';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import UserSettingsRoute from './UserSettingsRoute';
 import { PageLayoutHolderWithOutlet } from '../../../journey/common/EntityPageLayout';
-import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
-import { nameOfUrl } from '../../../../main/routing/urlParams';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import { nameOfUrl } from '@/main/routing/urlParams';
 
 export const UserRoute: FC = () => {
   return (

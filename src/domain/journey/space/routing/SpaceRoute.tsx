@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import SubspaceProvider from '../../subspace/context/SubspaceProvider';
 import { CommunityContextProvider } from '../../../community/community/CommunityContext';
-import { nameOfUrl } from '../../../../main/routing/urlParams';
+import { nameOfUrl } from '@/main/routing/urlParams';
 import SubspaceRoute from '../../subspace/routing/SubspaceRoute';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import SpaceSubspacesPage from '../pages/SpaceSubspacesPage';
@@ -16,7 +16,7 @@ import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 import KnowledgeBasePage from '../../../collaboration/KnowledgeBase/KnowedgeBasePage';
 import { SpaceRoute as SpaceSettingsRoute } from '../../settings/routes/SpaceRoute';
 import { useUrlParams } from '@/core/routing/useUrlParams';
-import { reservedTopLevelRoutePaths } from '../../../../main/routing/TopLevelRoutePath';
+import { reservedTopLevelRoutePaths } from '@/main/routing/TopLevelRoutePath';
 import { ROUTE_HOME } from '../../../platform/routes/constants';
 
 const SpaceRoute = () => {

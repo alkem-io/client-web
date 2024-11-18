@@ -8,7 +8,7 @@ import { BlockTitle } from '@/core/ui/typography';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
 import { gutters } from '@/core/ui/grid/utils';
 import { uniq } from 'lodash';
-import { MAX_TERMS_SEARCH } from '../../../../main/search/SearchView';
+import { MAX_TERMS_SEARCH } from '@/main/search/SearchView';
 
 export interface CardFilterProps<T extends Identifiable> extends Omit<SearchTagsInputProps, 'value' | 'availableTags'> {
   data: T[];

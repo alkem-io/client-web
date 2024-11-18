@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { AssignmentIndOutlined } from '@mui/icons-material';
 import { useUrlParams } from '@/core/routing/useUrlParams';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';

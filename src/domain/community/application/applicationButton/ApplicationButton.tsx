@@ -2,7 +2,7 @@ import { Button as MuiButton, CircularProgress } from '@mui/material';
 import React, { forwardRef, Ref, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { buildLoginUrl } from '../../../../main/routing/urlBuilders';
+import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import PreApplicationDialog from './PreApplicationDialog';
 import isApplicationPending from './isApplicationPending';
 import ApplicationSubmittedDialog from './ApplicationSubmittedDialog';

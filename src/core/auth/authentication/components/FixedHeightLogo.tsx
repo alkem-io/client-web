@@ -1,4 +1,4 @@
-import LogoComponent from '../../../../main/ui/layout/topBar/LogoComponent';
+import LogoComponent from '@/main/ui/layout/topBar/LogoComponent';
 import { gutters } from '../../../ui/grid/utils';
 
 /**
