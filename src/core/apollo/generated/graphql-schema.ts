@@ -974,7 +974,6 @@ export enum AuthorizationPrivilege {
   CreateSubspace = 'CREATE_SUBSPACE',
   CreateVirtualContributor = 'CREATE_VIRTUAL_CONTRIBUTOR',
   CreateWhiteboard = 'CREATE_WHITEBOARD',
-  CreateWhiteboardRt = 'CREATE_WHITEBOARD_RT',
   Delete = 'DELETE',
   FileDelete = 'FILE_DELETE',
   FileUpload = 'FILE_UPLOAD',
@@ -988,7 +987,6 @@ export enum AuthorizationPrivilege {
   ReadUsers = 'READ_USERS',
   ReadUserPii = 'READ_USER_PII',
   ReadUserSettings = 'READ_USER_SETTINGS',
-  SaveAsTemplate = 'SAVE_AS_TEMPLATE',
   TransferResource = 'TRANSFER_RESOURCE',
   Update = 'UPDATE',
   UpdateCalloutPublisher = 'UPDATE_CALLOUT_PUBLISHER',
@@ -3025,6 +3023,8 @@ export type LookupQueryResults = {
   innovationPack?: Maybe<InnovationPack>;
   /** Lookup the specified Invitation */
   invitation?: Maybe<Invitation>;
+  /** Lookup the specified License */
+  license?: Maybe<License>;
   /** Lookup the specified Post */
   post?: Maybe<Post>;
   /** Lookup the specified Profile */
@@ -3115,6 +3115,10 @@ export type LookupQueryResultsInnovationPackArgs = {
 };
 
 export type LookupQueryResultsInvitationArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsLicenseArgs = {
   ID: Scalars['UUID'];
 };
 

@@ -1,5 +1,6 @@
 import { useCollaborationAuthorizationEntitlementsQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, LicenseEntitlementType } from '../../../core/apollo/generated/graphql-schema';
+import { filterAndMapEnabledEntitlements } from '../../license/plans/utils/filterAndMapEnabledEntitlements';
 
 interface CollaborationAuthorizationEntitlementsParams {
   collaborationId: string | undefined;
@@ -25,10 +26,12 @@ export const useCollaborationAuthorizationEntitlements = ({
   });
 
   const collaborationPrivileges = collaborationData?.lookup.collaboration?.authorization?.myPrivileges ?? [];
+  const collaborationEntitlements = filterAndMapEnabledEntitlements(
+    collaborationData?.lookup.collaboration?.license?.entitlements
+  );
 
   const canCreateCallout = collaborationPrivileges.includes(AuthorizationPrivilege.CreateCallout);
-  // TODO: For now Create Callout from template will use the same permission as to save a template from an existing callout
-  const canSaveAsTemplate = collaborationPrivileges.includes(AuthorizationPrivilege.SaveAsTemplate);
+  const canSaveAsTemplate = collaborationEntitlements.includes(LicenseEntitlementType.SpaceFlagSaveAsTemplate);
   const canReadCallout = collaborationPrivileges.includes(AuthorizationPrivilege.Read);
 
   const license = collaborationData?.lookup.collaboration?.license;
