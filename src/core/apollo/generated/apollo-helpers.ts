@@ -1833,6 +1833,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'innovationHub'
   | 'innovationPack'
   | 'invitation'
+  | 'license'
   | 'post'
   | 'profile'
   | 'roleSet'
@@ -1865,6 +1866,7 @@ export type LookupQueryResultsFieldPolicy = {
   innovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  license?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSet?: FieldPolicy<any> | FieldReadFunction<any>;

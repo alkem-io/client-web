@@ -13,6 +13,7 @@ import {
 } from '../../../../../core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '../../../../../core/auth/authentication/hooks/useAuthenticationContext';
 import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
+import { filterAndMapEnabledEntitlements } from '../../../../license/plans/utils/filterAndMapEnabledEntitlements';
 
 export interface UserContextValue {
   user: UserMetadata | undefined;
@@ -82,9 +83,7 @@ const UserProvider: FC<{}> = ({ children }) => {
       verified,
       isAuthenticated,
       accountPrivileges: meData?.me.user?.account?.authorization?.myPrivileges ?? [],
-      accountEntitlements: (meData?.me.user?.account?.license?.entitlements ?? [])
-        .filter(entitlement => entitlement.enabled)
-        .map(entitlement => entitlement.type), // Extract only the type of enabled entitlements
+      accountEntitlements: filterAndMapEnabledEntitlements(meData?.me.user?.account?.license?.entitlements),
     }),
     [userMetadata, loading, loadingMeAndParentQueries, verified, isAuthenticated]
   );
