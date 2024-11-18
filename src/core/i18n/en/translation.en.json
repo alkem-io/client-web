@@ -651,13 +651,13 @@
       "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
     },
     "pendingMembership": {
-      "pendingMemberships": "Pending Memberships",
-      "pendingMembershipsWithCount": "Pending Memberships ({{count}})",
+      "pendingMemberships": "My Pending Memberships",
+      "pendingMembershipsWithCount": "My Pending Memberships ({{count}})",
       "invitationsSectionTitle": "Invitations",
       "virtualInvitationsSectionTitle": "Invitations for my Virtual Contributor",
       "applicationsSectionTitle": "Open applications",
       "invitationDialog": {
-        "title": "Pending Membership: {{journey}}",
+        "title": "My Pending Membership: {{journey}}",
         "vc": {
           "title": "Pending Virtual Contributor membership: {{journey}}"
         },
