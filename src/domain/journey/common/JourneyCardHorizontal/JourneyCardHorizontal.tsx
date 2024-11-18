@@ -54,7 +54,7 @@ export interface JourneyCardHorizontalProps {
   };
   deepness?: number;
   seamless?: boolean;
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: JourneyTypeName | undefined;
   sx?: PaperProps['sx'];
   actions?: ReactNode;
   size?: AvatarSize;
@@ -72,14 +72,14 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
 const JourneyCardHorizontal = ({
   journey,
   journeyTypeName,
-  deepness = journeyTypeName === 'subspace' ? 0 : 1,
+  deepness = !journeyTypeName || journeyTypeName === 'subspace' ? 0 : 1,
   seamless,
   sx,
   actions,
   size,
   disableHoverState = false,
 }: JourneyCardHorizontalProps) => {
-  const Icon = spaceIcon[journeyTypeName];
+  const Icon = journeyTypeName ? spaceIcon[journeyTypeName] : undefined;
 
   const { t } = useTranslation();
 
@@ -100,7 +100,11 @@ const JourneyCardHorizontal = ({
         to={journey.profile.url}
         actions={actions && <ActionsMenu>{actions}</ActionsMenu>}
       >
-        <BlockTitleWithIcon title={journey.profile.displayName} icon={<Icon />} sx={{ height: gutters(1.5) }}>
+        <BlockTitleWithIcon
+          title={journey.profile.displayName}
+          icon={Icon ? <Icon /> : undefined}
+          sx={{ height: gutters(1.5) }}
+        >
           <FlexSpacer />
           {communityRole && (
             <Chip

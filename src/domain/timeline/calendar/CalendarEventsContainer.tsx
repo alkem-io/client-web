@@ -17,7 +17,10 @@ import { MutationBaseOptions } from '@apollo/client/core/watchQueryOptions';
 import { isSameDay } from '../../../core/utils/time/utils';
 
 export interface CalendarEventFormData
-  extends Pick<CalendarEvent, 'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay'> {
+  extends Pick<
+    CalendarEvent,
+    'durationDays' | 'durationMinutes' | 'multipleDays' | 'startDate' | 'type' | 'wholeDay' | 'visibleOnParentCalendar'
+  > {
   endDate: number | Date;
   displayName: Profile['displayName'];
   description: Profile['description'];
@@ -28,6 +31,7 @@ export interface CalendarEventFormData
 
 export interface CalendarEventsContainerProps {
   journeyId: string | undefined;
+  parentSpaceId: string | undefined;
   children: (
     entities: CalendarEventsEntities,
     actions: CalendarEventsActions,
@@ -62,9 +66,9 @@ export interface CalendarEventsEntities {
   };
 }
 
-export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ journeyId, children }) => {
+export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ journeyId, parentSpaceId, children }) => {
   const { data: spaceData, loading } = useSpaceCalendarEventsQuery({
-    variables: { spaceId: journeyId! },
+    variables: { spaceId: journeyId!, includeSubspace: !Boolean(parentSpaceId) },
     skip: !journeyId,
   });
 
@@ -91,6 +95,10 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ jour
   let refetchQueriesList: MutationBaseOptions['refetchQueries'] = [];
 
   refetchQueriesList = [refetchSpaceCalendarEventsQuery({ spaceId: journeyId! })];
+
+  if (parentSpaceId) {
+    refetchQueriesList.push(refetchSpaceCalendarEventsQuery({ spaceId: parentSpaceId! }));
+  }
 
   const createEvent = useCallback(
     (event: CalendarEventFormData) => {

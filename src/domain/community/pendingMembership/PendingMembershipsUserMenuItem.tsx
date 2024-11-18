@@ -21,7 +21,6 @@ import InvitationActionsContainer from '../invitations/InvitationActionsContaine
 import { CommunityContributorType, VisualType } from '../../../core/apollo/generated/graphql-schema';
 import BackButton from '../../../core/ui/actions/BackButton';
 import useNavigate from '../../../core/routing/useNavigate';
-import { useNewMembershipsQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
 import { defer } from 'lodash';
 import { getChildJourneyTypeName } from '../../shared/utils/spaceLevel';
@@ -39,8 +38,6 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
   const { t } = useTranslation();
 
   const navigate = useNavigate();
-
-  const { refetch: refetchNewMembershipsQuery } = useNewMembershipsQuery();
 
   const { openDialog, setOpenDialog } = usePendingMembershipsDialog();
 
@@ -72,8 +69,6 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
   const pendingMembershipsCount = invitations && applications ? invitations.length + applications.length : undefined;
 
   const onInvitationAccept = () => {
-    refetchNewMembershipsQuery();
-
     if (openDialog?.journeyUri) {
       navigate(openDialog?.journeyUri);
       defer(closeDialog); // Deferring for appearance purpose only
@@ -83,7 +78,6 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
   };
 
   const onInvitationReject = () => {
-    refetchNewMembershipsQuery();
     setOpenDialog({ type: PendingMembershipsDialogType.PendingMembershipsList });
   };
 

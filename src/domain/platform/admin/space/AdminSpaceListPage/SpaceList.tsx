@@ -54,7 +54,7 @@ export const SpaceList: FC = () => {
         .map(space => {
           const activeLicenseCredentials = space.subscriptions.map(subscription => subscription.name);
           // TODO filter out expired ones
-          const activeLicensePlanIds = spacesData?.platform.licensing.plans
+          const activeLicensePlanIds = spacesData?.platform.licensingFramework.plans
             .filter(({ licenseCredential }) => activeLicenseCredentials.includes(licenseCredential))
             .map(({ id }) => id);
 
@@ -64,7 +64,7 @@ export const SpaceList: FC = () => {
             nameId: space.nameID,
             visibility: space.visibility,
             activeLicensePlanIds,
-            licensePlans: spacesData?.platform.licensing.plans,
+            licensePlans: spacesData?.platform.licensingFramework.plans,
           };
         }) ?? []
     );

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { Visual } from '../../../common/visual/Visual';
 import { Avatar, Box, Paper, Skeleton } from '@mui/material';
 import RouterLink from '../../../../core/ui/link/RouterLink';
@@ -11,8 +11,9 @@ import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
 import { BlockTitle } from '../../../../core/ui/typography';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
 import defaultJourneyCardBanner from '../../../../domain/journey/defaultVisuals/Card.jpg';
+import { PrivacyIcon } from './PrivacyIcon';
 
-interface JourneyTileProps {
+type JourneyTileProps = {
   journey:
     | {
         profile: {
@@ -23,17 +24,19 @@ interface JourneyTileProps {
       }
     | undefined;
   journeyTypeName: JourneyTypeName;
-}
+
+  columns?: number;
+  isPrivate?: boolean;
+};
 
 export const RECENT_JOURNEY_CARD_ASPECT_RATIO = '175/100';
 
 const JOURNEY_TITLE_CLASS_NAME = 'JourneyTitle';
-
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
-const JourneyTile = ({ journey }: JourneyTileProps) => {
+const JourneyTile = ({ journey, isPrivate, columns = 3 }: JourneyTileProps) => {
   return (
-    <GridItem columns={3}>
+    <GridItem columns={columns}>
       <ElevatedPaper
         component={RouterLink}
         to={journey?.profile.url ?? ''}
@@ -48,6 +51,8 @@ const JourneyTile = ({ journey }: JourneyTileProps) => {
           />
         ) : (
           <>
+            {isPrivate && <PrivacyIcon />}
+
             <Avatar
               src={journey.profile.cardBanner?.uri || defaultJourneyCardBanner}
               sx={{ width: '100%', height: 'auto', aspectRatio: RECENT_JOURNEY_CARD_ASPECT_RATIO }}
