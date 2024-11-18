@@ -174,6 +174,7 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
   const spacePremiumEntitlement = accountEntitlements.find(
     entitlement => entitlement.type === LicenseEntitlementType.AccountSpacePremium
   );
+
   const vcEntitlement = accountEntitlements.find(
     entitlement => entitlement.type === LicenseEntitlementType.AccountVirtualContributor
   );
@@ -183,12 +184,13 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
   const innovationPackEntitlement = accountEntitlements.find(
     entitlement => entitlement.type === LicenseEntitlementType.AccountInnovationPack
   );
-  const isSpaceFreeLimitReached = spaceFreeEntitlement?.isAvailable;
-  const isSpacePlusLimitReached = spacePlusEntitlement?.isAvailable;
-  const isSpacePremiumLimitReached = spacePremiumEntitlement?.isAvailable;
+
+  const isSpaceFreeLimitReached = spaceFreeEntitlement?.enabled && !spaceFreeEntitlement?.isAvailable;
+  const isSpacePlusLimitReached = spacePlusEntitlement?.enabled && !spacePlusEntitlement?.isAvailable;
+  const isSpacePremiumLimitReached = spacePremiumEntitlement?.enabled && !spacePremiumEntitlement?.isAvailable;
   const isSpaceLimitReached = isSpaceFreeLimitReached || isSpacePlusLimitReached || isSpacePremiumLimitReached;
 
-  const isVCLimitReached = vcEntitlement?.isAvailable;
+  const isVCLimitReached = !vcEntitlement?.isAvailable;
   const isInnovationHubLimitReached = innovationHubEntitlement?.isAvailable;
   const isInnovationPackLimitReached = innovationPackEntitlement?.isAvailable;
 
