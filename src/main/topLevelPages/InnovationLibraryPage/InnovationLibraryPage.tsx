@@ -14,7 +14,7 @@ import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import TopLevelPageBreadcrumbs from '../topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 
 const InnovationLibraryPage = () => {
-  const { data: innovationLibraryData } = useInnovationLibraryQuery();
+  const { data: innovationLibraryData, loading: innovationLibraryLoading } = useInnovationLibraryQuery();
 
   const innovationPacks = useInnovationPackCardProps(innovationLibraryData?.platform.library.innovationPacks);
   const templates = innovationLibraryData?.platform.library.templates;
@@ -44,11 +44,14 @@ const InnovationLibraryPage = () => {
           headerTitle={t('pages.innovationLibrary.innovationPacks.headerTitle')}
           dialogTitle={t('pages.innovationLibrary.innovationPacks.dialogTitle')}
           innovationPacks={innovationPacks}
+          loading={innovationLibraryLoading}
         />
+
         <DashboardLibraryTemplates
           headerTitle={t('pages.innovationLibrary.libraryTemplates.headerTitle')}
           dialogTitle={t('pages.innovationLibrary.libraryTemplates.dialogTitle')}
           templates={templates}
+          loading={innovationLibraryLoading}
         />
       </PageContentColumn>
     </TopLevelPageLayout>

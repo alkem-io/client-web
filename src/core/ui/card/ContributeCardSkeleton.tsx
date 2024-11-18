@@ -1,5 +1,4 @@
 import { Skeleton } from '@mui/material';
-import React from 'react';
 import ContributeCard, { ContributeCardProps } from './ContributeCard';
 import CardHeader from './CardHeader';
 import { gutters } from '../grid/utils';

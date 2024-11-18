@@ -1,24 +1,25 @@
-import React, { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 import { InnovationPackCardProps } from '../InnovationPackCard/InnovationPackCard';
 import { Identifiable } from '@/core/utils/Identifiable';
 import filterFn, { ValueType } from '@/core/utils/filtering/filterFn';
 import InnovationPacksView from './InnovationPacksView';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 
-interface DashboardInnovationPacksProps {
+type DashboardInnovationPacksProps = {
   headerTitle: ReactNode;
   dialogTitle: ReactNode;
   innovationPacks: (Identifiable & InnovationPackCardProps)[] | undefined;
-}
-
-const innovationPackValueGetter = (innovationPack: Identifiable & InnovationPackCardProps): ValueType => ({
-  id: innovationPack.id,
-  values: [innovationPack.displayName, ...(innovationPack.tags ?? [])],
-});
+  loading?: boolean;
+};
 
 const MAX_PACKS_WHEN_NOT_EXPANDED = 10;
 
-const DashboardInnovationPacks = ({ headerTitle, dialogTitle, innovationPacks }: DashboardInnovationPacksProps) => {
+const DashboardInnovationPacks = ({
+  loading,
+  headerTitle,
+  dialogTitle,
+  innovationPacks,
+}: DashboardInnovationPacksProps) => {
   const [filter, onFilterChange] = useState<string[]>([]);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -38,7 +39,9 @@ const DashboardInnovationPacks = ({ headerTitle, dialogTitle, innovationPacks }:
         expanded={isDialogOpen}
         onDialogOpen={() => setIsDialogOpen(true)}
         hasMore={filteredInnovationPacks.length > MAX_PACKS_WHEN_NOT_EXPANDED}
+        loading={loading}
       />
+
       <DialogWithGrid open={isDialogOpen} onClose={() => setIsDialogOpen(false)} columns={12}>
         <InnovationPacksView
           filter={filter}
@@ -48,6 +51,7 @@ const DashboardInnovationPacks = ({ headerTitle, dialogTitle, innovationPacks }:
           expanded={isDialogOpen}
           onDialogClose={() => setIsDialogOpen(false)}
           sx={{ flexShrink: 1 }}
+          loading={loading}
         />
       </DialogWithGrid>
     </>
@@ -55,3 +59,10 @@ const DashboardInnovationPacks = ({ headerTitle, dialogTitle, innovationPacks }:
 };
 
 export default DashboardInnovationPacks;
+
+function innovationPackValueGetter(innovationPack: Identifiable & InnovationPackCardProps): ValueType {
+  return {
+    id: innovationPack.id,
+    values: [innovationPack.displayName, ...(innovationPack.tags ?? [])],
+  };
+}

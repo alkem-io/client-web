@@ -11,12 +11,9 @@ import {
   InputProps,
   OutlinedInput,
   OutlinedInputProps,
-  Popper,
-  styled,
-  Tooltip,
 } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
-import React, { FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import CharacterCounter from '@/core/ui/forms/characterCounter/CharacterCounter';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useValidationMessageTranslation } from '../../../shared/i18n/ValidationMessageTranslation';
@@ -24,8 +21,6 @@ import { CommentInputField, CommentInputFieldProps, MENTION_SYMBOL } from './Com
 import { CursorPositionInMarkdown, findCursorPositionInMarkdown, MentionMatch } from './utils';
 import EmojiSelector from '@/core/ui/forms/emoji/EmojiSelector';
 import { gutters } from '@/core/ui/grid/utils';
-import { Caption } from '@/core/ui/typography';
-import HelpIcon from '@mui/icons-material/Help';
 import { useTranslation } from 'react-i18next';
 
 const MENTION_WITH_SPACE = ` ${MENTION_SYMBOL}`;
@@ -42,10 +37,6 @@ const getCursorPositionInMention = (
     plainText: plainTextPositionAfterMention,
   };
 };
-
-const PreFormatedPopper = styled(Popper)(() => ({
-  whiteSpace: 'pre-wrap',
-}));
 
 /**
  * Material styles wrapper, with the border and the Send arrow IconButton and the char counter
@@ -93,13 +84,10 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
   const { t } = useTranslation();
 
   const isError = Boolean(meta.error);
-  const helperText = useMemo(() => {
-    if (!isError) {
-      return helpText;
-    }
-
-    return tErr(meta.error as TranslationKey, { field: name });
-  }, [isError, meta.error, helpText, name, tErr]);
+  const helperText = useMemo(
+    () => (isError ? tErr(meta.error as TranslationKey, { field: name }) : helpText),
+    [isError, meta.error, helpText, name, tErr]
+  );
 
   const inactive = disabled || submitting;
   const submitDisabled = inactive || (maxLength ? field.value?.length > maxLength : false);
@@ -175,22 +163,6 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
         <AlternateEmailIcon fontSize="small" />
       </IconButton>
     </>
-  );
-
-  const helpButton = (
-    <Tooltip
-      title={
-        <Box padding={gutters(0.5)}>
-          <Caption>{t('components.post-comment.tooltip.markdown-help')}</Caption>
-        </Box>
-      }
-      arrow
-      placement="right"
-      PopperComponent={PreFormatedPopper}
-      aria-label={t('messaging.formattingHelp')}
-    >
-      <HelpIcon color="primary" />
-    </Tooltip>
   );
 
   return (
@@ -274,9 +246,6 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
               borderRadius={theme => `${theme.shape.borderRadius}px`}
             >
               {buttons}
-              <Box display="flex" width={gutters(1.5)} justifyContent="center">
-                {helpButton}
-              </Box>
             </Box>
           )}
           <FormHelperText error={isError} sx={{ order: compactMode ? 1 : 0 }}>
@@ -284,11 +253,6 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
           </FormHelperText>
         </CharacterCounter>
       </FormGroup>
-      {!compactMode && (
-        <Box display="flex" alignItems="center" height={gutters(2)}>
-          {helpButton}
-        </Box>
-      )}
     </Box>
   );
 };
