@@ -19,7 +19,7 @@ import { useUrlParams } from '../../../../core/routing/useUrlParams';
 import { reservedTopLevelRoutePaths } from '../../../../main/routing/TopLevelRoutePath';
 import { ROUTE_HOME } from '../../../platform/routes/constants';
 
-export const SpaceRoute = () => {
+const SpaceRoute = () => {
   const { spaceNameId } = useUrlParams();
 
   if (reservedTopLevelRoutePaths.includes(spaceNameId!)) {
@@ -66,3 +66,5 @@ export const SpaceRoute = () => {
     </Routes>
   );
 };
+
+export default SpaceRoute;

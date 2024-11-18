@@ -17,7 +17,7 @@ export const useDeleteUserGroup = (options?: Options) => {
 
   const [deleteGroup, { loading, error }] = useDeleteGroupMutation({
     onCompleted: data => {
-      success(t('operations.user-group.deleted-successfuly', { name: data.deleteUserGroup.profile?.displayName }));
+      success(t('operations.user-group.deleted-successfully', { name: data.deleteUserGroup.profile?.displayName }));
       options && options.onComplete && options.onComplete(data);
     },
     onError: options && options.onError && options.onError,

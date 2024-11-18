@@ -1,10 +1,13 @@
 import useLoadingState from '../../shared/utils/useLoadingState';
-import { useInvitationStateEventMutation } from '../../../core/apollo/generated/apollo-hooks';
+import {
+  refetchLatestContributionsSpacesFlatQuery,
+  useInvitationStateEventMutation,
+} from '../../../core/apollo/generated/apollo-hooks';
 import { SimpleContainerProps } from '../../../core/container/SimpleContainer';
 
 interface InvitationActionsContainerProvided {
   updating: boolean;
-  acceptInvitation: (invitationId: string) => void;
+  acceptInvitation: (invitationId: string, spaceUrl: string) => void;
   accepting: boolean;
   rejectInvitation: (invitationId: string) => void;
   rejecting: boolean;
@@ -12,7 +15,7 @@ interface InvitationActionsContainerProvided {
 
 interface InvitationActionsContainerProps extends SimpleContainerProps<InvitationActionsContainerProvided> {
   onUpdate?: () => void;
-  onAccept?: () => void;
+  onAccept?: (spaceUrl: string) => void;
   onReject?: () => void;
 }
 
@@ -26,15 +29,16 @@ const InvitationActionsContainer = ({ onUpdate, onAccept, onReject, children }: 
     }
   );
 
-  const [acceptInvitation, isAccepting] = useLoadingState((invitationId: string) =>
+  const [acceptInvitation, isAccepting] = useLoadingState((invitationId: string, spaceUrl: string) =>
     updateInvitationState({
       variables: {
         invitationId,
         eventName: 'ACCEPT',
       },
       onCompleted: () => {
-        onAccept?.();
+        onAccept?.(spaceUrl);
       },
+      refetchQueries: [refetchLatestContributionsSpacesFlatQuery()],
     })
   );
 

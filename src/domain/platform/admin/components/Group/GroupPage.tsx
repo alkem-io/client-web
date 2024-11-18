@@ -40,7 +40,7 @@ export const GroupPage: FC<GroupPageProps> = ({ group }) => {
 
   const [updateGroup] = useUpdateGroupMutation({
     onCompleted: data =>
-      success(t('operations.user-group.updated-successfuly', { name: data.updateUserGroup.profile?.displayName })),
+      success(t('operations.user-group.updated-successfully', { name: data.updateUserGroup.profile?.displayName })),
   });
 
   const [createTagset] = useCreateTagsetOnProfileMutation({

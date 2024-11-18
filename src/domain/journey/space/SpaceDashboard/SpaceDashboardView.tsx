@@ -39,6 +39,7 @@ import TryVirtualContributorDialog from '../../../../main/topLevelPages/myDashbo
 
 interface SpaceDashboardViewProps {
   spaceId: string | undefined;
+  collaborationId: string | undefined;
   dashboardNavigation: DashboardNavigationItem | undefined;
   dashboardNavigationLoading: boolean;
   vision?: string;
@@ -68,6 +69,7 @@ interface SpaceDashboardViewProps {
 
 const SpaceDashboardView = ({
   spaceId,
+  collaborationId,
   vision = '',
   dashboardNavigation,
   dashboardNavigationLoading,
@@ -169,6 +171,7 @@ const SpaceDashboardView = ({
         <ContentColumn>
           <CalloutsGroupView
             journeyId={spaceId}
+            collaborationId={collaborationId}
             callouts={callouts.groupedCallouts[CalloutGroupName.Home]}
             canCreateCallout={callouts.canCreateCallout}
             loading={callouts.loading}
@@ -183,6 +186,7 @@ const SpaceDashboardView = ({
             open={tryVirtualContributorOpen}
             onClose={onCloseTryVirtualContributor}
             spaceId={spaceId}
+            collaborationId={collaborationId}
             vcNameId={vcNameId}
           />
         )}

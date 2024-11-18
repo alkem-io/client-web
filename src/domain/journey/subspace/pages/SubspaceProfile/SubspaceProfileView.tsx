@@ -5,6 +5,7 @@ import { useNotification } from '../../../../../core/ui/notifications/useNotific
 import { useUrlParams } from '../../../../../core/routing/useUrlParams';
 import {
   refetchAdminSpaceSubspacesPageQuery,
+  refetchDashboardWithMembershipsQuery,
   refetchSubspaceProfileInfoQuery,
   useCreateSubspaceMutation,
   useSubspaceProfileInfoQuery,
@@ -41,7 +42,10 @@ const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
       onSuccess('Successfully created');
       navigate(buildSettingsUrl(data.createSubspace.profile.url), { replace: true });
     },
-    refetchQueries: [refetchAdminSpaceSubspacesPageQuery({ spaceId: spaceNameId })],
+    refetchQueries: [
+      refetchAdminSpaceSubspacesPageQuery({ spaceId: spaceNameId }),
+      refetchDashboardWithMembershipsQuery(),
+    ],
     awaitRefetchQueries: true,
   });
 

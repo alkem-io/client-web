@@ -24,6 +24,7 @@ export const INIT_CREATING_EVENT_PARAM = 'new';
 export interface CalendarDialogProps {
   open: boolean;
   journeyId: string | undefined;
+  parentSpaceId: string | undefined;
   onClose: () => void;
   parentPath: string;
   calendarEventNameId?: string;
@@ -33,6 +34,7 @@ export interface CalendarDialogProps {
 const CalendarDialog: FC<CalendarDialogProps> = ({
   open,
   journeyId,
+  parentSpaceId,
   onClose,
   parentPath,
   calendarEventNameId,
@@ -51,6 +53,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
         : null,
     [highlightedDayParam]
   );
+  const isSubspace = Boolean(parentSpaceId);
 
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
   const [editingEventId, setEditingEventId] = useState<string>();
@@ -94,7 +97,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
       aria-labelledby="calendar-events-dialog-title"
       PaperProps={{ sx: { padding: 0, display: `${deletingEvent ? 'none' : 'flex'}`, flexDirection: 'column' } }}
     >
-      <CalendarEventsContainer journeyId={journeyId}>
+      <CalendarEventsContainer journeyId={journeyId} parentSpaceId={parentSpaceId}>
         {(
           { events, privileges },
           { createEvent, updateEvent, deleteEvent },
@@ -120,7 +123,10 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
                 }}
                 entities={{
                   confirmButtonTextId: 'buttons.delete',
-                  content: t('calendar.delete-confirmation', { title: deletingEvent.profile.displayName }),
+                  content: t('calendar.delete-confirmation', {
+                    title: deletingEvent.profile.displayName,
+                    entity: t(`common.${parentSpaceId ? 'subspace' : 'space'}`),
+                  }),
                   titleId: 'calendar.delete-event',
                 }}
                 options={{
@@ -148,6 +154,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
                   isCreatingEventInit ? <div>&nbsp;</div> : <BackButton onClick={() => setIsCreatingEvent(false)} />
                 }
                 temporaryLocation={temporaryLocation}
+                isSubspace={isSubspace}
               />
             );
 
@@ -180,6 +187,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
                     onClose={handleClose}
                     isSubmitting={updatingCalendarEvent}
                     actions={<BackButton onClick={() => setEditingEventId(undefined)} />}
+                    isSubspace={isSubspace}
                   />
                 )}
               </CalendarEventDetailContainer>

@@ -52,7 +52,7 @@ import { SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
 
 export interface SubspacePageLayoutProps {
   journeyId: string | undefined;
-  parentJourneyId: string | undefined;
+  parentSpaceId: string | undefined;
   spaceReadAccess: SpaceReadAccess;
   journeyPath: JourneyPath;
   journeyUrl?: string | undefined; // TODO make required
@@ -111,7 +111,7 @@ const SubspacePageLayout = ({
   unauthorizedDialogDisabled = false,
   welcome,
   actions,
-  parentJourneyId,
+  parentSpaceId,
   children,
   infoColumnChildren,
 }: PropsWithChildren<SubspacePageLayoutProps>) => {
@@ -231,7 +231,7 @@ const SubspacePageLayout = ({
                     flexShrink={1}
                     minWidth={0}
                   >
-                    <ApplicationButtonContainer journeyId={journeyId} parentSpaceId={parentJourneyId}>
+                    <ApplicationButtonContainer journeyId={journeyId} parentSpaceId={parentSpaceId}>
                       {({ applicationButtonProps }, { loading }) => {
                         if (loading || applicationButtonProps.isMember) {
                           return null;
@@ -287,7 +287,7 @@ const SubspacePageLayout = ({
                 {({ vision, ...props }) => (
                   <JourneyUnauthorizedDialog
                     journeyId={journeyId}
-                    parentSpaceId={parentJourneyId}
+                    parentSpaceId={parentSpaceId}
                     description={vision}
                     disabled={unauthorizedDialogDisabled}
                     spaceLevel={spaceLevel}

@@ -3,13 +3,13 @@ import { CircularProgress } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import 'react-image-crop/dist/ReactCrop.css';
-import UploadButton from '../../button/UploadButton';
 import { StorageConfig } from '../../../../domain/storage/StorageBucket/useStorageConfig';
 import {
   useUploadFileMutation,
   useUploadFileOnLinkMutation,
   useUploadFileOnReferenceMutation,
 } from '../../../apollo/generated/apollo-hooks';
+import UploadButton from '../../button/UploadButton';
 import { useNotification } from '../../notifications/useNotification';
 
 const DEFAULT_REFERENCE_TYPE = 'reference';
@@ -36,7 +36,6 @@ const FileUploadButton: FC<FileUploadProps> = ({
   const { t } = useTranslation();
   const notify = useNotification();
 
-  const acceptedFileTypes = storageConfig.allowedMimeTypes.join(',');
   const maxFileSizeMb = storageConfig.maxFileSize ? storageConfig.maxFileSize / bytesInMegabyte : 0;
 
   const [uploadFileOnReference, { loading: loadingOnReference }] = useUploadFileOnReferenceMutation({
@@ -105,13 +104,10 @@ const FileUploadButton: FC<FileUploadProps> = ({
     <UploadButton
       icon={loading ? <CircularProgress size={20} /> : <AttachFileIcon />}
       disabled={loading}
-      accept={acceptedFileTypes}
-      onChange={e => {
-        const file = e && e.target && e.target.files && e.target.files[0];
-        if (file) {
-          handleSubmit(file);
-          onChange?.(file.name);
-        }
+      allowedTypes={storageConfig.allowedMimeTypes}
+      onFileSelected={file => {
+        handleSubmit(file);
+        onChange?.(file.name);
       }}
     />
   );

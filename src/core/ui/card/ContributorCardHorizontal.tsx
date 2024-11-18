@@ -1,7 +1,7 @@
 import React, { ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
-import Avatar from '../avatar/Avatar';
+import Avatar, { AvatarSize } from '../avatar/Avatar';
 import getLocationString, { Location } from '../location/getLocationString';
 import BadgeCardView from '../list/BadgeCardView';
 import GridItem from '../grid/GridItem';
@@ -29,6 +29,7 @@ export interface ContributorCardHorizontalProps {
   actions?: ReactNode;
   titleEndAmendment?: ReactNode;
   menuActions?: ReactNode;
+  size?: AvatarSize;
 }
 
 const ContributorCardHorizontal = ({
@@ -38,6 +39,7 @@ const ContributorCardHorizontal = ({
   actions,
   menuActions,
   titleEndAmendment,
+  size,
 }: ContributorCardHorizontalProps) => {
   const { t } = useTranslation();
 
@@ -72,6 +74,7 @@ const ContributorCardHorizontal = ({
                 src={profile?.avatar?.uri}
                 aria-label="User avatar"
                 alt={t('common.avatar-of', { user: profile?.displayName })}
+                size={size}
               >
                 {profile?.displayName?.[0]}
               </Avatar>
