@@ -69,7 +69,7 @@ interface SpaceDashboardViewProps {
 
 const SpaceDashboardView = ({
   spaceId,
-  collaborationId,
+  collaborationId = '',
   vision = '',
   dashboardNavigation,
   dashboardNavigationLoading,
