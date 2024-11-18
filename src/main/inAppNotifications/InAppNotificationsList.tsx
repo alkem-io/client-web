@@ -6,8 +6,8 @@ export const InAppNotificationsList = () => {
 
   return (
     <>
-      {items.map((item, idx) => (
-        <InAppNotificationItem key={item.type + idx} {...item} />
+      {items.map(item => (
+        <InAppNotificationItem key={`${item.id}-notificaion`} {...item} />
       ))}
     </>
   );

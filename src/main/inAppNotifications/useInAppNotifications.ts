@@ -99,7 +99,10 @@ export const useInAppNotifications = () => {
     return stopPolling;
   }, [data, startPolling, stopPolling]);
 
-  const items: InAppNotificationProps[] = useMemo(() => data?.notifications ?? [], [data]);
+  const items: InAppNotificationProps[] = useMemo(
+    () => (data?.notifications ?? []).filter(item => item.state !== InAppNotificationState.Archived),
+    [data]
+  );
 
   const updateNotificationState = async (id: string, status: InAppNotificationState) => {
     await updateState({

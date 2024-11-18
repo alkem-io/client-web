@@ -1,8 +1,10 @@
+import { useCallback } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Badge, ListItemButtonProps } from '@mui/material';
 import ListItemButton, { ListItemButtonTypeMap } from '@mui/material/ListItemButton/ListItemButton';
 import MarkEmailUnreadOutlinedIcon from '@mui/icons-material/MarkEmailUnreadOutlined';
 import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
+import { DeleteOutline } from '@mui/icons-material';
 import RouterLink, { RouterLinkProps } from '../../../core/ui/link/RouterLink';
 import BadgeCardView from '../../../core/ui/list/BadgeCardView';
 import Avatar from '../../../core/ui/avatar/Avatar';
@@ -16,6 +18,7 @@ import ActionsMenu from '../../../core/ui/card/ActionsMenu';
 import MenuItemWithIcon from '../../../core/ui/menu/MenuItemWithIcon';
 import { InAppNotificationState } from '../../../core/apollo/generated/graphql-schema';
 import { useInAppNotifications } from '../useInAppNotifications';
+import { useInAppNotificationsContext } from '../InAppNotificationsContext';
 
 export interface InAppNotificationBaseViewProps {
   id: string;
@@ -51,12 +54,21 @@ export const InAppNotificationBaseView = ({
 }: InAppNotificationBaseViewProps) => {
   const { t } = useTranslation();
   const { updateNotificationState } = useInAppNotifications();
+  const { setIsOpen } = useInAppNotificationsContext();
 
-  const renderAction = () => {
+  const onNotificationClick = useCallback(() => {
+    if (state === InAppNotificationState.Unread) {
+      updateNotificationState(id, InAppNotificationState.Read);
+    }
+    setIsOpen(false);
+  }, [id]);
+
+  const getReadAction = useCallback(() => {
     switch (state) {
       case InAppNotificationState.Unread:
         return (
           <MenuItemWithIcon
+            key={`${id}-mark-as-read`}
             iconComponent={DraftsOutlinedIcon}
             onClick={() => updateNotificationState(id, InAppNotificationState.Read)}
           >
@@ -66,6 +78,7 @@ export const InAppNotificationBaseView = ({
       case InAppNotificationState.Read:
         return (
           <MenuItemWithIcon
+            key={`${id}-mark-as-unread`}
             iconComponent={MarkEmailUnreadOutlinedIcon}
             onClick={() => updateNotificationState(id, InAppNotificationState.Unread)}
           >
@@ -75,12 +88,43 @@ export const InAppNotificationBaseView = ({
       default:
         return null;
     }
+  }, [id, state]);
+
+  const renderActions = useCallback(
+    () => [
+      getReadAction(),
+      <MenuItemWithIcon
+        key={`${id}-delete`}
+        iconComponent={DeleteOutline}
+        onClick={() => updateNotificationState(id, InAppNotificationState.Archived)}
+      >
+        Delеte
+      </MenuItemWithIcon>,
+    ],
+    [getReadAction, id]
+  );
+
+  const renderFormattedTranslation = (key: string) => {
+    return (
+      <Trans
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        i18nKey={key as any}
+        values={values}
+        components={{
+          b: <strong />,
+          br: <br />,
+          pre: <pre />,
+          i: <em />,
+        }}
+      />
+    );
   };
 
   return (
     <BadgeCardView
       component={Wrapper}
       to={resource.url ?? ''}
+      onClick={onNotificationClick}
       padding
       paddingY={gutters(2)}
       sx={{
@@ -100,36 +144,12 @@ export const InAppNotificationBaseView = ({
     >
       <Gutters row disablePadding>
         <Gutters column flexGrow={1}>
-          <Caption>
-            <Trans
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              i18nKey={`components.inAppNotifications.${type}.subject` as any}
-              values={values}
-              components={{
-                b: <strong />,
-                br: <br />,
-                pre: <pre />,
-                i: <em />,
-              }}
-            />
-          </Caption>
-          <Caption>
-            <Trans
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              i18nKey={`components.inAppNotifications.${type}.description` as any}
-              values={values}
-              components={{
-                b: <strong />,
-                br: <br />,
-                pre: <pre />,
-                i: <em />,
-              }}
-            />
-          </Caption>
+          <Caption>{renderFormattedTranslation(`components.inAppNotifications.${type}.subject`)}</Caption>
+          <Caption>{renderFormattedTranslation(`components.inAppNotifications.${type}.description`)}</Caption>
         </Gutters>
         <Actions>
           <Caption>{formatTimeElapsed(triggeredAt, t)}</Caption>
-          <ActionsMenu>{renderAction()}</ActionsMenu>
+          <ActionsMenu>{renderActions()}</ActionsMenu>
         </Actions>
       </Gutters>
     </BadgeCardView>
