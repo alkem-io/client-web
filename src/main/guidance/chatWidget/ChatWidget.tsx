@@ -1,5 +1,15 @@
 import { cloneElement, ReactElement, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Box, IconButton, IconButtonProps, Paper, SvgIconProps, Theme, Tooltip } from '@mui/material';
+import {
+  Box,
+  IconButton,
+  IconButtonProps,
+  Paper,
+  Skeleton,
+  SvgIconProps,
+  Theme,
+  Tooltip,
+  useTheme,
+} from '@mui/material';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import {
@@ -147,11 +157,21 @@ const Feedback = ({ answerId }: FeedbackProps) => {
   );
 };
 
+const Loading = () => {
+  const theme = useTheme();
+  return (
+    <Box width="100%" display="flex" flexDirection="row" gap={gutters()}>
+      <Skeleton width={gutters(3)(theme)} height={gutters(4)(theme)} />
+      <Skeleton width="100%" height={gutters(4)(theme)} />
+    </Box>
+  );
+};
+
 const ChatWidget = () => {
   const { t } = useTranslation();
   const [isChatPopupOpen, setChatPopupOpen] = useState(false);
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
-  const { messages, sendMessage, clearChat } = useChatGuidanceCommunication({ skip: !isChatPopupOpen });
+  const { messages, sendMessage, clearChat, loading } = useChatGuidanceCommunication({ skip: !isChatPopupOpen });
   const { user } = useUserContext();
   const userId = user?.user.id;
 
@@ -217,9 +237,12 @@ const ChatWidget = () => {
         }
       });
       const lastMessage = messages[messages.length - 1];
-      if (lastMessage.author?.id !== userId) {
+      if (lastMessage.author?.id && lastMessage.author.id !== userId) {
         renderCustomComponent(Feedback, { answerId: lastMessage.id });
       }
+    }
+    if (loading) {
+      renderCustomComponent(Loading, undefined);
     }
   }, [isChatPopupOpen, messages]);
 

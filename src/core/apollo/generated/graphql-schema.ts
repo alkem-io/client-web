@@ -27563,6 +27563,13 @@ export type ResetChatGuidanceMutationVariables = Exact<{ [key: string]: never }>
 
 export type ResetChatGuidanceMutation = { __typename?: 'Mutation'; resetChatGuidance: boolean };
 
+export type CreateGuidanceRoomMutationVariables = Exact<{ [key: string]: never }>;
+
+export type CreateGuidanceRoomMutation = {
+  __typename?: 'Mutation';
+  createChatGuidanceRoom?: { __typename?: 'MessageAnswerQuestion'; id?: string | undefined } | undefined;
+};
+
 export type AskChatGuidanceQuestionMutationVariables = Exact<{
   chatData: ChatGuidanceInput;
 }>;

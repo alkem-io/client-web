@@ -21653,6 +21653,53 @@ export type ResetChatGuidanceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ResetChatGuidanceMutation,
   SchemaTypes.ResetChatGuidanceMutationVariables
 >;
+export const CreateGuidanceRoomDocument = gql`
+  mutation createGuidanceRoom {
+    createChatGuidanceRoom {
+      id
+    }
+  }
+`;
+export type CreateGuidanceRoomMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateGuidanceRoomMutation,
+  SchemaTypes.CreateGuidanceRoomMutationVariables
+>;
+
+/**
+ * __useCreateGuidanceRoomMutation__
+ *
+ * To run a mutation, you first call `useCreateGuidanceRoomMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGuidanceRoomMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGuidanceRoomMutation, { data, loading, error }] = useCreateGuidanceRoomMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCreateGuidanceRoomMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateGuidanceRoomMutation,
+    SchemaTypes.CreateGuidanceRoomMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CreateGuidanceRoomMutation, SchemaTypes.CreateGuidanceRoomMutationVariables>(
+    CreateGuidanceRoomDocument,
+    options
+  );
+}
+
+export type CreateGuidanceRoomMutationHookResult = ReturnType<typeof useCreateGuidanceRoomMutation>;
+export type CreateGuidanceRoomMutationResult = Apollo.MutationResult<SchemaTypes.CreateGuidanceRoomMutation>;
+export type CreateGuidanceRoomMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateGuidanceRoomMutation,
+  SchemaTypes.CreateGuidanceRoomMutationVariables
+>;
 export const AskChatGuidanceQuestionDocument = gql`
   mutation askChatGuidanceQuestion($chatData: ChatGuidanceInput!) {
     askChatGuidanceQuestion(chatData: $chatData) {
