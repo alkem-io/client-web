@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import {
   useAskChatGuidanceQuestionMutation,
+  useCreateGuidanceRoomMutation,
   useGuidanceRoomIdQuery,
   useGuidanceRoomMessagesQuery,
   useResetChatGuidanceMutation,
@@ -21,12 +22,13 @@ interface Provided {
 const useChatGuidanceCommunication = ({ skip }: { skip?: boolean }): Provided => {
   const { t, i18n } = useTranslation();
   const [askQuestion] = useAskChatGuidanceQuestionMutation();
+  const [createGuidanceRoom] = useCreateGuidanceRoomMutation();
   const [resetChatGuidance] = useResetChatGuidanceMutation();
 
   const { data: roomIdData, loading: roomIdLoading } = useGuidanceRoomIdQuery({
     skip,
   });
-  const roomId = roomIdData?.me.guidanceRoomID;
+  const roomId = roomIdData?.me.user?.guidanceRoom?.id;
 
   const { data: messagesData, loading: messagesLoading } = useGuidanceRoomMessagesQuery({
     variables: {
@@ -68,6 +70,11 @@ const useChatGuidanceCommunication = ({ skip }: { skip?: boolean }): Provided =>
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId, skip);
 
   const handleSendMessage = async (message: string): Promise<unknown> => {
+    if (!roomId) {
+      await createGuidanceRoom({
+        refetchQueries: ['GuidanceRoomId'],
+      });
+    }
     return askQuestion({
       variables: {
         chatData: { question: message!, language: i18n.language.toUpperCase() },

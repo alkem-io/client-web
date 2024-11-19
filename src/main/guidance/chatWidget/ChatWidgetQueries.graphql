@@ -1,6 +1,11 @@
 query GuidanceRoomId {
   me {
-    guidanceRoomID
+    user {
+      id
+      guidanceRoom {
+        id
+      }
+    }
   }
 }
 

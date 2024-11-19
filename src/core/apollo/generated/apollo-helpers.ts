@@ -1831,6 +1831,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'innovationHub'
   | 'innovationPack'
   | 'invitation'
+  | 'license'
   | 'post'
   | 'profile'
   | 'roleSet'
@@ -1863,6 +1864,7 @@ export type LookupQueryResultsFieldPolicy = {
   innovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  license?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSet?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1880,7 +1882,6 @@ export type LookupQueryResultsFieldPolicy = {
 export type MeQueryResultsKeySpecifier = (
   | 'communityApplications'
   | 'communityInvitations'
-  | 'guidanceRoomID'
   | 'id'
   | 'mySpaces'
   | 'spaceMembershipsFlat'
@@ -1891,7 +1892,6 @@ export type MeQueryResultsKeySpecifier = (
 export type MeQueryResultsFieldPolicy = {
   communityApplications?: FieldPolicy<any> | FieldReadFunction<any>;
   communityInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
-  guidanceRoomID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   spaceMembershipsFlat?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1981,6 +1981,7 @@ export type MutationKeySpecifier = (
   | 'createActor'
   | 'createActorGroup'
   | 'createCalloutOnCollaboration'
+  | 'createChatGuidanceRoom'
   | 'createContributionOnCallout'
   | 'createDiscussion'
   | 'createEventOnCalendar'
@@ -2145,6 +2146,7 @@ export type MutationFieldPolicy = {
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  createChatGuidanceRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   createContributionOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   createEventOnCalendar?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3531,6 +3533,7 @@ export type UserKeySpecifier = (
   | 'directRooms'
   | 'email'
   | 'firstName'
+  | 'guidanceRoom'
   | 'id'
   | 'isContactable'
   | 'lastName'
@@ -3553,6 +3556,7 @@ export type UserFieldPolicy = {
   directRooms?: FieldPolicy<any> | FieldReadFunction<any>;
   email?: FieldPolicy<any> | FieldReadFunction<any>;
   firstName?: FieldPolicy<any> | FieldReadFunction<any>;
+  guidanceRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isContactable?: FieldPolicy<any> | FieldReadFunction<any>;
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
