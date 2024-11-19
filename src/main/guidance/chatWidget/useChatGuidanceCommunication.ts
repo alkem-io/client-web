@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
+  AskChatGuidanceQuestionMutationOptions,
   useAskChatGuidanceQuestionMutation,
   useCreateGuidanceRoomMutation,
   useGuidanceRoomIdQuery,
@@ -22,14 +23,23 @@ interface Provided {
 
 const useChatGuidanceCommunication = (): Provided => {
   const { t, i18n } = useTranslation();
-  const [askQuestion] = useAskChatGuidanceQuestionMutation();
   const [createGuidanceRoom] = useCreateGuidanceRoomMutation();
   const [resetChatGuidance] = useResetChatGuidanceMutation();
 
-  const { data: roomIdData, loading: roomIdLoading } = useGuidanceRoomIdQuery({});
-  const roomId = roomIdData?.me.user?.guidanceRoom?.id;
+  const [roomId, setRoomId] = useState<string | undefined>(undefined);
 
-  const { data: messagesData, loading: messagesLoading } = useGuidanceRoomMessagesQuery({
+  const { data: roomIdData, loading: roomIdLoading } = useGuidanceRoomIdQuery({});
+  useEffect(() => {
+    if (roomId !== roomIdData?.me.user?.guidanceRoom?.id) {
+      setRoomId(roomIdData?.me.user?.guidanceRoom?.id);
+    }
+  }, [roomIdData]);
+
+  const {
+    data: messagesData,
+    loading: messagesLoading,
+    refetch: refetchMessages,
+  } = useGuidanceRoomMessagesQuery({
     variables: {
       roomId: roomId!,
     },
@@ -68,22 +78,39 @@ const useChatGuidanceCommunication = (): Provided => {
 
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId, !roomId);
 
-  const handleSendMessage = async (message: string): Promise<unknown> => {
-    if (!roomId) {
-      await createGuidanceRoom({
-        refetchQueries: ['GuidanceRoomId'],
-      });
-    }
-    return askQuestion({
+  const [askChatGuidanceQuestion] = useAskChatGuidanceQuestionMutation();
+  const askQuestion = async (
+    question: string,
+    refetchQueries?: AskChatGuidanceQuestionMutationOptions['refetchQueries']
+  ) =>
+    askChatGuidanceQuestion({
       variables: {
-        chatData: { question: message!, language: i18n.language.toUpperCase() },
+        chatData: { question, language: i18n.language.toUpperCase() },
       },
-      refetchQueries: ['GuidanceRoomId'],
+      refetchQueries,
       awaitRefetchQueries: true,
     });
+
+  const handleSendMessage = async (message: string): Promise<void> => {
+    if (!roomId) {
+      const { data } = await createGuidanceRoom({
+        refetchQueries: ['GuidanceRoomId'],
+      });
+      const newRoomId = data?.createChatGuidanceRoom?.id;
+      if (newRoomId) {
+        await askQuestion(message);
+        setRoomId(newRoomId);
+        await refetchMessages({
+          roomId: newRoomId,
+        });
+      }
+    } else {
+      await askQuestion(message, ['GuidanceRoomMessages']);
+    }
   };
 
   const [clearChat, loadingClearChat] = useLoadingState(async () => {
+    setRoomId(undefined);
     await resetChatGuidance({
       refetchQueries: ['GuidanceRoomId'],
       awaitRefetchQueries: true,
