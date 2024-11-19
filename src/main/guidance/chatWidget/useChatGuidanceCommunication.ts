@@ -78,7 +78,7 @@ const useChatGuidanceCommunication = (): Provided => {
       variables: {
         chatData: { question: message!, language: i18n.language.toUpperCase() },
       },
-      refetchQueries: ['GuidanceRoomId' /*, 'GuidanceRoomMessages'*/],
+      refetchQueries: ['GuidanceRoomId'],
       awaitRefetchQueries: true,
     });
   };

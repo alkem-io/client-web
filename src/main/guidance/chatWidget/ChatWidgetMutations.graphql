@@ -5,11 +5,13 @@ mutation updateAnswerRelevance($input: ChatGuidanceAnswerRelevanceInput!) {
 mutation resetChatGuidance {
   resetChatGuidance
 }
+
 mutation createGuidanceRoom {
   createChatGuidanceRoom {
     id
   }
 }
+
 mutation askChatGuidanceQuestion($chatData: ChatGuidanceInput!) {
   askChatGuidanceQuestion(chatData: $chatData) {
     id

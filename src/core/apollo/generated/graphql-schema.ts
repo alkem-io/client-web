@@ -1211,7 +1211,7 @@ export enum CalloutVisibility {
 
 export type ChatGuidanceAnswerRelevanceInput = {
   /** The answer id. */
-  id: Scalars['UUID'];
+  id: Scalars['String'];
   /** Is the answer relevant or not. */
   relevant: Scalars['Boolean'];
 };
