@@ -251,7 +251,7 @@ const ChatWidget = () => {
         <Widget
           profileAvatar={logoSrc}
           title={<ChatWidgetTitle key="title" onClickInfo={() => setIsHelpDialogOpen(true)} />}
-          subtitle={<></>}
+          subtitle={null}
           handleNewUserMessage={handleNewUserMessage}
           handleToggle={() => {
             setChatToggleTime(Date.now());
