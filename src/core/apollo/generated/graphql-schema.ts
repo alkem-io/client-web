@@ -28904,6 +28904,26 @@ export type CampaignBlockCredentialsQuery = {
             id: string;
             credentials?: Array<{ __typename?: 'Credential'; resourceID: string; type: CredentialType }> | undefined;
           };
+          account?:
+            | {
+                __typename?: 'Account';
+                id: string;
+                license: {
+                  __typename?: 'License';
+                  id: string;
+                  entitlements: Array<{
+                    __typename?: 'LicenseEntitlement';
+                    id: string;
+                    type: LicenseEntitlementType;
+                    limit: number;
+                    usage: number;
+                    isAvailable: boolean;
+                    dataType: LicenseEntitlementDataType;
+                    enabled: boolean;
+                  }>;
+                };
+              }
+            | undefined;
         }
       | undefined;
   };

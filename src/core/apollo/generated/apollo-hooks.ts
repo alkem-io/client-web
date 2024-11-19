@@ -22437,9 +22437,19 @@ export const CampaignBlockCredentialsDocument = gql`
             type
           }
         }
+        account {
+          id
+          license {
+            id
+            entitlements {
+              ...EntitlementDetails
+            }
+          }
+        }
       }
     }
   }
+  ${EntitlementDetailsFragmentDoc}
 `;
 
 /**
