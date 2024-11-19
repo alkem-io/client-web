@@ -21704,12 +21704,7 @@ export const AskChatGuidanceQuestionDocument = gql`
   mutation askChatGuidanceQuestion($chatData: ChatGuidanceInput!) {
     askChatGuidanceQuestion(chatData: $chatData) {
       id
-      answer
-      question
-      sources {
-        uri
-        title
-      }
+      success
     }
   }
 `;

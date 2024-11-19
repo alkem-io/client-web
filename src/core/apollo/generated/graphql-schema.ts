@@ -3199,25 +3199,14 @@ export type Message = {
 /** A detailed answer to a question, typically from an AI service. */
 export type MessageAnswerQuestion = {
   __typename?: 'MessageAnswerQuestion';
-  /** The answer to the question */
-  answer?: Maybe<Scalars['String']>;
+  /** Error message if an error occurred */
+  error?: Maybe<Scalars['String']>;
   /** The id of the answer; null if an error was returned */
   id?: Maybe<Scalars['String']>;
   /** The original question */
-  question?: Maybe<Scalars['String']>;
-  /** Message sent OK */
-  result: Scalars['Boolean'];
-  /** The sources used to answer the question */
-  sources?: Maybe<Array<MessageAnswerToQuestionSource>>;
-};
-
-/** A source used in a detailed answer to a question. */
-export type MessageAnswerToQuestionSource = {
-  __typename?: 'MessageAnswerToQuestionSource';
-  /** The title of the source */
-  title?: Maybe<Scalars['String']>;
-  /** The URI of the source */
-  uri?: Maybe<Scalars['String']>;
+  question: Scalars['String'];
+  /** Message successfully sent. If false, error will have the reason. */
+  success: Scalars['Boolean'];
 };
 
 export type Metadata = {
@@ -3335,7 +3324,7 @@ export type Mutation = {
   /** Create a new Callout on the Collaboration. */
   createCalloutOnCollaboration: Callout;
   /** Create a guidance chat room. */
-  createChatGuidanceRoom?: Maybe<MessageAnswerQuestion>;
+  createChatGuidanceRoom?: Maybe<Room>;
   /** Create a new Contribution on the Callout. */
   createContributionOnCallout: CalloutContribution;
   /** Creates a new Discussion as part of this Forum. */
@@ -27567,7 +27556,7 @@ export type CreateGuidanceRoomMutationVariables = Exact<{ [key: string]: never }
 
 export type CreateGuidanceRoomMutation = {
   __typename?: 'Mutation';
-  createChatGuidanceRoom?: { __typename?: 'MessageAnswerQuestion'; id?: string | undefined } | undefined;
+  createChatGuidanceRoom?: { __typename?: 'Room'; id: string } | undefined;
 };
 
 export type AskChatGuidanceQuestionMutationVariables = Exact<{
@@ -27576,15 +27565,7 @@ export type AskChatGuidanceQuestionMutationVariables = Exact<{
 
 export type AskChatGuidanceQuestionMutation = {
   __typename?: 'Mutation';
-  askChatGuidanceQuestion: {
-    __typename?: 'MessageAnswerQuestion';
-    id?: string | undefined;
-    answer?: string | undefined;
-    question?: string | undefined;
-    sources?:
-      | Array<{ __typename?: 'MessageAnswerToQuestionSource'; uri?: string | undefined; title?: string | undefined }>
-      | undefined;
-  };
+  askChatGuidanceQuestion: { __typename?: 'MessageAnswerQuestion'; id?: string | undefined; success: boolean };
 };
 
 export type GuidanceRoomIdQueryVariables = Exact<{ [key: string]: never }>;

@@ -10,6 +10,7 @@ import useSubscribeOnRoomEvents from '../../../domain/collaboration/callout/useS
 import { Message } from '../../../domain/communication/room/models/Message';
 import { buildAuthorFromUser } from '../../../domain/community/user/utils/buildAuthorFromUser';
 import { useTranslation } from 'react-i18next';
+import useLoadingState from '../../../domain/shared/utils/useLoadingState';
 
 interface Provided {
   loading?: boolean;
@@ -19,22 +20,20 @@ interface Provided {
   isSubscribedToMessages: boolean;
 }
 
-const useChatGuidanceCommunication = ({ skip }: { skip?: boolean }): Provided => {
+const useChatGuidanceCommunication = (): Provided => {
   const { t, i18n } = useTranslation();
   const [askQuestion] = useAskChatGuidanceQuestionMutation();
   const [createGuidanceRoom] = useCreateGuidanceRoomMutation();
   const [resetChatGuidance] = useResetChatGuidanceMutation();
 
-  const { data: roomIdData, loading: roomIdLoading } = useGuidanceRoomIdQuery({
-    skip,
-  });
+  const { data: roomIdData, loading: roomIdLoading } = useGuidanceRoomIdQuery({});
   const roomId = roomIdData?.me.user?.guidanceRoom?.id;
 
   const { data: messagesData, loading: messagesLoading } = useGuidanceRoomMessagesQuery({
     variables: {
       roomId: roomId!,
     },
-    skip: !roomId || skip,
+    skip: !roomId,
   });
 
   const messages: Message[] = useMemo(() => {
@@ -65,9 +64,9 @@ const useChatGuidanceCommunication = ({ skip }: { skip?: boolean }): Provided =>
       // No messages or just no room at all => Return just one message with the intro text
       return [introMessage];
     }
-  }, [messagesData, roomId, roomIdLoading, messagesLoading, skip]);
+  }, [messagesData?.lookup.room?.messages, roomId, roomIdLoading, messagesLoading]);
 
-  const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId, skip);
+  const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId, !roomId);
 
   const handleSendMessage = async (message: string): Promise<unknown> => {
     if (!roomId) {
@@ -79,18 +78,20 @@ const useChatGuidanceCommunication = ({ skip }: { skip?: boolean }): Provided =>
       variables: {
         chatData: { question: message!, language: i18n.language.toUpperCase() },
       },
-      refetchQueries: ['GuidanceRoomId', 'GuidanceRoomMessages'],
+      refetchQueries: ['GuidanceRoomId' /*, 'GuidanceRoomMessages'*/],
+      awaitRefetchQueries: true,
     });
   };
 
-  const clearChat = async () => {
-    resetChatGuidance({
+  const [clearChat, loadingClearChat] = useLoadingState(async () => {
+    await resetChatGuidance({
       refetchQueries: ['GuidanceRoomId'],
+      awaitRefetchQueries: true,
     });
-  };
+  });
 
   return {
-    loading: roomIdLoading || messagesLoading,
+    loading: roomIdLoading || messagesLoading || loadingClearChat,
     messages,
     isSubscribedToMessages,
     clearChat,

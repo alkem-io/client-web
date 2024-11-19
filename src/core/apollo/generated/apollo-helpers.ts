@@ -1916,24 +1916,17 @@ export type MessageFieldPolicy = {
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageAnswerQuestionKeySpecifier = (
-  | 'answer'
+  | 'error'
   | 'id'
   | 'question'
-  | 'result'
-  | 'sources'
+  | 'success'
   | MessageAnswerQuestionKeySpecifier
 )[];
 export type MessageAnswerQuestionFieldPolicy = {
-  answer?: FieldPolicy<any> | FieldReadFunction<any>;
+  error?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   question?: FieldPolicy<any> | FieldReadFunction<any>;
-  result?: FieldPolicy<any> | FieldReadFunction<any>;
-  sources?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type MessageAnswerToQuestionSourceKeySpecifier = ('title' | 'uri' | MessageAnswerToQuestionSourceKeySpecifier)[];
-export type MessageAnswerToQuestionSourceFieldPolicy = {
-  title?: FieldPolicy<any> | FieldReadFunction<any>;
-  uri?: FieldPolicy<any> | FieldReadFunction<any>;
+  success?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MetadataKeySpecifier = ('services' | MetadataKeySpecifier)[];
 export type MetadataFieldPolicy = {
@@ -4271,13 +4264,6 @@ export type StrictTypedTypePolicies = {
   MessageAnswerQuestion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageAnswerQuestionKeySpecifier | (() => undefined | MessageAnswerQuestionKeySpecifier);
     fields?: MessageAnswerQuestionFieldPolicy;
-  };
-  MessageAnswerToQuestionSource?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | MessageAnswerToQuestionSourceKeySpecifier
-      | (() => undefined | MessageAnswerToQuestionSourceKeySpecifier);
-    fields?: MessageAnswerToQuestionSourceFieldPolicy;
   };
   Metadata?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MetadataKeySpecifier | (() => undefined | MetadataKeySpecifier);
