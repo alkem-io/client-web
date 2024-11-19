@@ -1,7 +1,7 @@
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import useCallouts, { UseCalloutsProvided } from '../callout/useCallouts/useCallouts';
 import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
-import { JourneyTypeName } from '../../journey/JourneyTypeName';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 
 interface KnowledgeBaseContainerProps
   extends SimpleContainerProps<{

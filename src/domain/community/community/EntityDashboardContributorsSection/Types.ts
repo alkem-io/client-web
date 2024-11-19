@@ -1,5 +1,5 @@
 import { WithId } from '@/core/utils/WithId';
-import { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
+import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
 import { Identifiable } from '@/core/utils/Identifiable';
 
 export interface EntityDashboardContributors {

@@ -3,7 +3,7 @@ import { InnovationFlowState } from '../InnovationFlow';
 import InnovationFlowChips from '../InnovationFlowVisualizers/InnovationFlowChips';
 import { InnovationFlowVisualizerProps } from '../InnovationFlowVisualizers/InnovationFlowVisualizer';
 
-interface InnovationFlowStatesProps {
+type InnovationFlowStatesProps = {
   states: InnovationFlowState[] | undefined;
   currentState?: string;
   selectedState: string | undefined;
@@ -11,7 +11,7 @@ interface InnovationFlowStatesProps {
   visualizer?: ComponentType<InnovationFlowVisualizerProps>;
   createButton?: ReactNode;
   settingsButton?: ReactNode;
-}
+};
 
 const InnovationFlowStates = ({
   states = [],

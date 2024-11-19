@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { PropsWithChildren } from 'react';
 import { useWhiteboardFromCalloutQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   WhiteboardDetailsFragment,
@@ -24,7 +24,11 @@ export interface IProvidedEntitiesState {
   loadingWhiteboards: boolean;
 }
 
-const WhiteboardProvider: FC<WhiteboardProviderProps> = ({ calloutId, whiteboardNameId: whiteboardId, children }) => {
+const WhiteboardProvider = ({
+  calloutId,
+  whiteboardNameId: whiteboardId,
+  children,
+}: PropsWithChildren<WhiteboardProviderProps>) => {
   const { data, loading } = useWhiteboardFromCalloutQuery({
     variables: { calloutId: calloutId!, whiteboardId },
     skip: !calloutId || !whiteboardId,

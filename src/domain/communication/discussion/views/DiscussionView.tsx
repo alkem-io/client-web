@@ -1,19 +1,19 @@
 import { FetchResult } from '@apollo/client';
 import { Box, Grid, Typography } from '@mui/material';
-import React, { FC, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import Filter from '../../../platform/admin/components/Common/Filter';
-import MessageView from '../../room/Comments/MessageView';
-import PostMessageToCommentsForm from '../../room/Comments/PostMessageToCommentsForm';
-import { Message } from '../../room/models/Message';
+import Filter from '@/domain/platform/admin/components/Common/Filter';
+import MessageView from '@/domain/communication/room/Comments/MessageView';
+import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
+import { Message } from '@/domain/communication/room/models/Message';
 import { Discussion } from '../models/Discussion';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { BlockSectionTitle, BlockTitle } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
-import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
-import useCommentReactionsMutations from '../../room/Comments/useCommentReactionsMutations';
+import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
+import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
 import Gutters from '@/core/ui/grid/Gutters';
-import MessagesThread from '../../room/Comments/MessagesThread';
+import MessagesThread from '@/domain/communication/room/Comments/MessagesThread';
 
 export interface DiscussionViewProps {
   discussion: Discussion;
@@ -25,7 +25,7 @@ export interface DiscussionViewProps {
   onDeleteComment?: (id: string) => void;
 }
 
-export const DiscussionView: FC<DiscussionViewProps> = ({
+export const DiscussionView = ({
   discussion,
   currentUserId,
   postMessage,
@@ -33,7 +33,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
   onUpdateDiscussion,
   onDeleteDiscussion,
   onDeleteComment,
-}) => {
+}: DiscussionViewProps) => {
   const { t } = useTranslation();
 
   const { id, description, author, createdAt, comments, myPrivileges } = discussion;

@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import { PropsWithChildren, useCallback } from 'react';
 import {
   useBeginAlkemioUserCredentialOfferInteractionMutation,
   useBeginCommunityMemberCredentialOfferInteractionMutation,
@@ -42,7 +42,9 @@ interface UserCredentialsContainerProps
   userID: string;
 }
 
-export const UserCredentialsContainer: FC<UserCredentialsContainerProps> = ({ children /* userID */ }) => {
+export const UserCredentialsContainer = ({
+  children /* userID */,
+}: PropsWithChildren<UserCredentialsContainerProps>) => {
   // TODO - the container should retrieve specific users VCs, hence the userID
   const { data: userData, loading: getUserCredentialsLoading } = useUserSsiQuery({
     fetchPolicy: 'network-only',

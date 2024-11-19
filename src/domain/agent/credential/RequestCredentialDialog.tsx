@@ -9,7 +9,7 @@ import {
   Slide,
 } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   AgentBeginVerifiedCredentialRequestOutput,
@@ -62,7 +62,7 @@ const useStyles = makeStyles({
   },
 });
 
-const RequestCredentialDialog: FC<RequestCredentialDialogProps> = ({ entities, actions, options, state }) => {
+const RequestCredentialDialog = ({ entities, actions, options, state }: RequestCredentialDialogProps) => {
   const { t } = useTranslation();
   const styles = useStyles();
   const { credentialMetadata } = entities;

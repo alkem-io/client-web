@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, CircularProgress } from '@mui/material';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
@@ -6,7 +6,7 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import Gutters from '@/core/ui/grid/Gutters';
-import RadioButton from '../../shared/components/RadioButtons/RadioButton';
+import RadioButton from '@/domain/shared/components/RadioButtons/RadioButton';
 import { Caption } from '@/core/ui/typography';
 import { useSpaceSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import InviteExistingUserDialog from './InviteExistingUserDialog';
@@ -14,7 +14,7 @@ import { InviteContributorsData, InviteExternalUserData } from './useInviteUsers
 import InviteExternalUserDialog from './InviteExternalUserDialog';
 import { CommunityRoleType } from '@/core/apollo/generated/graphql-schema';
 
-interface InvitationOptionsBlockProps {
+type InvitationOptionsBlockProps = {
   spaceDisplayName: string | undefined;
   inviteExistingUser: (params: InviteContributorsData) => Promise<void>;
   inviteExternalUser: (params: InviteExternalUserData) => Promise<void>;
@@ -23,7 +23,7 @@ interface InvitationOptionsBlockProps {
   currentMembersIds: string[];
   spaceId: string | undefined;
   isSubspace?: boolean;
-}
+};
 
 enum UserInvite {
   Existing,

@@ -1,4 +1,3 @@
-import React from 'react';
 import PostMessageToCommentsForm, { PostMessageToCommentsFormProps } from './PostMessageToCommentsForm';
 import MessageView, { MessageViewProps } from './MessageView';
 import MessageWithRepliesView from './MessageWithRepliesView';

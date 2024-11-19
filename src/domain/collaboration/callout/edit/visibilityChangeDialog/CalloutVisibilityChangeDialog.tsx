@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import { PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
@@ -40,13 +40,13 @@ type FormValueType = {
   sendNotifications: boolean;
 };
 
-const CalloutVisibilityChangeDialog: FC<CalloutVisibilityChangeDialogProps> = ({
+const CalloutVisibilityChangeDialog = ({
   open,
   title,
   callout,
   onClose,
   onVisibilityChanged,
-}) => {
+}: PropsWithChildren<CalloutVisibilityChangeDialogProps>) => {
   const { t } = useTranslation();
 
   const [loading, setLoading] = useState(false);

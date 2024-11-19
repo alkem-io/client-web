@@ -5,7 +5,7 @@ import {
   useUserPendingMembershipsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { PendingApplication } from '../user';
-import { Visual } from '../../common/visual/Visual';
+import { Visual } from '@/domain/common/visual/Visual';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { CommunityGuidelinesSummaryFragment, SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';

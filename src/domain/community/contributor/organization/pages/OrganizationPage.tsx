@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import OrganizationPageContainer from '../OrganizationPageContainer/OrganizationPageContainer';
 import OrganizationPageLayout from '../layout/OrganizationPageLayout';
 import OrganizationPageView from '../views/OrganizationPageView';
@@ -7,11 +6,9 @@ import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { useOrganization } from '../hooks/useOrganization';
 import { useOrganizationAccountQuery } from '@/core/apollo/generated/apollo-hooks';
-import useAccountResources from '../../useAccountResources/useAccountResources';
+import useAccountResources from '@/domain/community/contributor/useAccountResources/useAccountResources';
 
-interface OrganizationPageProps {}
-
-export const OrganizationPage: FC<OrganizationPageProps> = () => {
+export const OrganizationPage = () => {
   const { organization, loading } = useOrganization();
 
   const { data: organizationData, loading: loadingOrganization } = useOrganizationAccountQuery({

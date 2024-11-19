@@ -9,10 +9,10 @@ import {
   NotesOutlined,
   PersonOutlined,
 } from '@mui/icons-material';
-import { SubspaceIcon } from '../../../../journey/subspace/icon/SubspaceIcon';
-import { OpportunityIcon } from '../../../../journey/opportunity/icon/OpportunityIcon';
-import calloutIcons from '../../../callout/utils/calloutIcons';
-import { WhiteboardIcon } from '../../../whiteboard/icon/WhiteboardIcon';
+import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
+import { OpportunityIcon } from '@/domain/journey/opportunity/icon/OpportunityIcon';
+import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
+import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 
 const ActivityIcon: Record<
   Exclude<ActivityEventType, ActivityEventType.CalloutPublished>,

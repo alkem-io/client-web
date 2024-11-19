@@ -9,14 +9,14 @@ interface PostPermissions {
   canUpdate: boolean;
 }
 
-interface PostContextProps {
+type PostContextProps = {
   id?: string;
   nameId?: string;
   displayName?: string;
   permissions: PostPermissions;
   loading: boolean;
   error?: ApolloError;
-}
+};
 
 const PostContext = React.createContext<PostContextProps>({
   loading: false,

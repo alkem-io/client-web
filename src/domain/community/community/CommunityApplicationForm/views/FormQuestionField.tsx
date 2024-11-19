@@ -1,4 +1,3 @@
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import * as yup from 'yup';
@@ -28,7 +27,7 @@ export const questionSchema = yup.object().shape({
   required: yup.boolean().required(),
 });
 
-const FormQuestionField: FC<FormQuestionFieldProps> = ({
+const FormQuestionField = ({
   index,
   onDelete,
   canMoveUp,
@@ -37,7 +36,7 @@ const FormQuestionField: FC<FormQuestionFieldProps> = ({
   onMoveDownClick,
   disabled,
   readOnly,
-}) => {
+}: FormQuestionFieldProps) => {
   const { t } = useTranslation();
   return (
     <Box key={index} display="flex" flexDirection="row" alignItems="center" marginY={gutters(1)} gap={1}>

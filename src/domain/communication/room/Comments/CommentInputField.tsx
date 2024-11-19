@@ -1,13 +1,13 @@
 import { Box, IconButton, InputBaseComponentProps, Paper, Popper, PopperProps, styled, Tooltip } from '@mui/material';
-import React, { FC, forwardRef, PropsWithChildren, ReactNode, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, PropsWithChildren, ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mention, MentionsInput, OnChangeHandlerFunc, SuggestionDataItem } from 'react-mentions';
 import { useMentionableUsersLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
-import { ProfileChipView } from '../../../community/contributor/ProfileChip/ProfileChipView';
-import { useCombinedRefs } from '../../../shared/utils/useCombinedRefs';
-import { useCommunityContext } from '../../../community/community/CommunityContext';
+import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
+import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
+import { useCommunityContext } from '@/domain/community/community/CommunityContext';
 import { HelpOutlineOutlined } from '@mui/icons-material';
 import Gutters from '@/core/ui/grid/Gutters';
 
@@ -55,16 +55,16 @@ const SuggestionsVCDisclaimer = () => {
 /**
  * Rounded paper that pops under the input field showing the mentions
  */
-interface SuggestionsContainerProps {
+type SuggestionsContainerProps = {
   anchorElement: PopperProps['anchorEl'];
   disclaimer?: ReactNode;
-}
+};
 
-const SuggestionsContainer: FC<PropsWithChildren<SuggestionsContainerProps>> = ({
+const SuggestionsContainer = ({
   anchorElement,
   children,
   disclaimer = null,
-}) => {
+}: PropsWithChildren<SuggestionsContainerProps>) => {
   return (
     <Popper open placement="bottom-start" anchorEl={anchorElement} sx={{ zIndex: POPPER_Z_INDEX }}>
       <Paper elevation={3}>
@@ -130,10 +130,7 @@ const StyledCommentInput = styled(Box)(({ theme }) => ({
 
 const hasExcessiveSpaces = (searchTerm: string) => searchTerm.trim().split(' ').length > MAX_SPACES_IN_MENTION + 1;
 
-export const CommentInputField: FC<InputBaseComponentProps> = forwardRef<
-  HTMLDivElement | null,
-  InputBaseComponentProps
->((props, ref) => {
+export const CommentInputField = forwardRef<HTMLDivElement | null, InputBaseComponentProps>((props, ref) => {
   // Need to extract the properties like this because OutlinedInput doesn't accept an ElementType<CommentInputFieldProps>
   const {
     value,

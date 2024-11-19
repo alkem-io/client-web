@@ -1,9 +1,9 @@
 import { UserDisplayNameFragment } from '@/core/apollo/generated/graphql-schema';
 import useUsersSearch, { UseUsersSearchResult } from '../useAvailableMembersWithCredential/useUsersSearch';
-import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
+import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
 import { useAvailableUsersQuery, useRoleSetMembersQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
-import useLocalSearch from '../../../shared/utils/useLocalSearch';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import useLocalSearch from '@/domain/shared/utils/useLocalSearch';
 
 export interface UseAllPossibleMemberUsersProvided {
   allPossibleMemberUsers: UserDisplayNameFragment[] | undefined;

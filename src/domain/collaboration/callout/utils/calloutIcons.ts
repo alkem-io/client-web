@@ -7,7 +7,7 @@ import {
   LibraryBooksOutlined,
   PhotoLibraryOutlined,
 } from '@mui/icons-material';
-import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
+import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 
 const calloutIcons: Record<CalloutType, ComponentType<SvgIconProps>> = {
   [CalloutType.PostCollection]: LibraryBooksOutlined,

@@ -1,12 +1,11 @@
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { Box, Button, DialogActions } from '@mui/material';
 import { DialogContent } from '@/core/ui/dialog/deprecated';
-import { CommunityUpdatesContainer } from '../../../communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
+import { CommunityUpdatesContainer } from '@/domain/communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
 import { CommunityUpdatesView } from '../views/CommunityUpdates/CommunityUpdatesView';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
+import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 
 export interface CommunityUpdatesDialogProps {
   open: boolean;
@@ -16,13 +15,13 @@ export interface CommunityUpdatesDialogProps {
   loading?: boolean;
 }
 
-const CommunityUpdatesDialog: FC<CommunityUpdatesDialogProps> = ({
+const CommunityUpdatesDialog = ({
   open,
   onClose,
   communityId = '',
   shareUrl,
   loading = false,
-}) => {
+}: CommunityUpdatesDialogProps) => {
   const { t } = useTranslation();
 
   return (

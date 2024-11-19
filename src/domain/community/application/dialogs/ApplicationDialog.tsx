@@ -1,9 +1,8 @@
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
 import { makeStyles } from '@mui/styles';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { ProfileChip } from '../../contributor/ProfileChip/ProfileChip';
+import { ProfileChip } from '@/domain/community/contributor/ProfileChip/ProfileChip';
 import { Actions } from '@/core/ui/actions/Actions';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CommunityContributorType } from '@/core/apollo/generated/graphql-schema';
@@ -113,7 +112,7 @@ export interface ApplicationDialogProps {
  * // TODO:
  * @deprecated Rewrite this with new components and put it somewhere else
  */
-export const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onClose, onSetNewState, loading }) => {
+export const ApplicationDialog = ({ app, onClose, onSetNewState, loading }: ApplicationDialogProps) => {
   const { t } = useTranslation();
   const styles = appStyles();
 

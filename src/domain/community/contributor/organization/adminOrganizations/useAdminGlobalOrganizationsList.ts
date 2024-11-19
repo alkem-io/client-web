@@ -9,8 +9,8 @@ import {
   useRevokeLicensePlanFromAccountMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import usePaginatedQuery from '../../../../shared/pagination/usePaginatedQuery';
-import { SearchableListItem } from '../../../../shared/components/SearchableList/SimpleSearchableTable';
+import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
+import { SearchableListItem } from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { useTranslation } from 'react-i18next';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';

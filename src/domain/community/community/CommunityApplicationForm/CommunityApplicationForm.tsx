@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +13,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import FormQuestionField, { questionSchema } from './views/FormQuestionField';
-import FormikSubmitButton from '../../../shared/components/forms/FormikSubmitButton';
+import FormikSubmitButton from '@/domain/shared/components/forms/FormikSubmitButton';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import Gutters from '@/core/ui/grid/Gutters';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
@@ -45,7 +45,7 @@ const newQuestion = (currentQuestions: FormValues['questions']) => ({
   sortOrder: (max(currentQuestions.map(q => q.sortOrder)) ?? 0) + 1,
 });
 
-const CommunityApplicationForm: FC<CommunityApplicationFormProps> = ({ roleSetId, disabled }) => {
+const CommunityApplicationForm = ({ roleSetId, disabled }: CommunityApplicationFormProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
 

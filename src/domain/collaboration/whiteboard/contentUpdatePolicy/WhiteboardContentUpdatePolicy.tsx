@@ -4,10 +4,10 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
 
-interface WhiteboardContentUpdatePolicyProviderProps {
+type WhiteboardContentUpdatePolicyProviderProps = {
   whiteboardId: string | undefined;
   skip?: boolean;
-}
+};
 
 const useWhiteboardContentUpdatePolicy = ({
   whiteboardId,

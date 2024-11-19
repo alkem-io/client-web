@@ -14,16 +14,16 @@ import {
   Visual,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
-import EditVisualsView from '../../../common/visual/EditVisuals/EditVisualsView';
-import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
+import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
+import SectionSpacer from '@/domain/shared/components/Section/SectionSpacer';
 import { PostDialogSection } from '../views/PostDialogSection';
 import { PostLayout } from '../views/PostLayoutWithOutlet';
-import useCallouts from '../../callout/useCallouts/useCallouts';
+import useCallouts from '@/domain/collaboration/callout/useCallouts/useCallouts';
 import { useMoveContributionToCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
-import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { LoadingButton } from '@mui/lab';
-import useLoadingState from '../../../shared/utils/useLoadingState';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { normalizeLink } from '@/core/utils/links';
 import { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';

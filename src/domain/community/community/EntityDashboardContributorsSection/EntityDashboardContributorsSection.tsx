@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EntityDashboardContributors } from './Types';
 import DashboardContributingUsers from './DashboardContributingUsers';
@@ -6,7 +6,7 @@ import DashboardContributingOrganizations from './DashboardContributingOrganizat
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { BlockSectionTitle } from '@/core/ui/typography';
-import withOptionalCount from '../../../shared/utils/withOptionalCount';
+import withOptionalCount from '@/domain/shared/utils/withOptionalCount';
 
 const EntityDashboardContributorsSection = ({
   memberUsers,

@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Form, Formik } from 'formik';
 import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +26,7 @@ export interface DiscussionFormProps {
   editMode?: boolean;
 }
 
-const DiscussionForm: FC<DiscussionFormProps> = ({ onSubmit, discussion, categories, editMode }) => {
+const DiscussionForm = ({ onSubmit, discussion, categories, editMode }: DiscussionFormProps) => {
   const { t } = useTranslation();
 
   const initialValues: DiscussionFormValues = {

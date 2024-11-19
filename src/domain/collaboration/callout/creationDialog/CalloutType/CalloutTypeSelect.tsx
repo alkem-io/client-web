@@ -1,17 +1,17 @@
-import React, { FC } from 'react';
+import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutType } from '@/core/apollo/generated/graphql-schema';
-import calloutIcons from '../../utils/calloutIcons';
+import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
 import RouterLink from '@/core/ui/link/RouterLink';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Caption } from '@/core/ui/typography';
-import { useConfig } from '../../../../platform/config/useConfig';
+import { useConfig } from '@/domain/platform/config/useConfig';
 import { Button } from '@mui/material';
 
 interface CalloutTypeSelectProps {
   onSelect: (value: CalloutType | undefined) => void;
   disabled?: boolean;
-  extraButtons?: React.ReactNode;
+  extraButtons?: ReactNode;
 }
 
 export const AVAILABLE_CALLOUT_TYPES = [
@@ -22,7 +22,7 @@ export const AVAILABLE_CALLOUT_TYPES = [
   CalloutType.WhiteboardCollection,
 ];
 
-export const CalloutTypeSelect: FC<CalloutTypeSelectProps> = ({ onSelect, disabled = false, extraButtons }) => {
+export const CalloutTypeSelect = ({ onSelect, disabled = false, extraButtons }: CalloutTypeSelectProps) => {
   const { t } = useTranslation();
   const { locations } = useConfig();
 

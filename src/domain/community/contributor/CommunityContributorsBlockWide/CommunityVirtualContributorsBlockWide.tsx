@@ -8,15 +8,15 @@ import MultipleSelect from '@/core/ui/search/MultipleSelect';
 import ContributorCardSquare from '../ContributorCardSquare/ContributorCardSquare';
 import { useState } from 'react';
 import { useColumns } from '@/core/ui/grid/GridContext';
-import { VirtualContributorProps } from '../../community/VirtualContributorsBlock/VirtualContributorsDialog';
+import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import Loading from '@/core/ui/loading/Loading';
-import usePlatformOrigin from '../../../platform/routes/usePlatformOrigin';
+import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import { CommunityContributorType } from '@/core/apollo/generated/graphql-schema';
 
-interface CommunityContributorsBlockWideProps {
+type CommunityContributorsBlockWideProps = {
   virtualContributors: VirtualContributorProps[];
   isLoading?: boolean;
-}
+};
 
 const COMPACT_VIEW_ROWS = 3;
 

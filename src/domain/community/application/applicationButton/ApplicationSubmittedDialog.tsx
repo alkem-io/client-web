@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
@@ -10,7 +9,7 @@ export interface ApplicationSubmitedDialogProps {
   onClose: () => void;
 }
 
-const ApplicationSubmitedDialog: FC<ApplicationSubmitedDialogProps> = ({ open, onClose }) => {
+const ApplicationSubmitedDialog = ({ open, onClose }: ApplicationSubmitedDialogProps) => {
   const { t } = useTranslation();
   return (
     <Dialog open={open} maxWidth={'sm'} fullWidth>

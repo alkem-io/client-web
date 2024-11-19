@@ -1,5 +1,5 @@
-import { FC, useCallback } from 'react';
-import { useUserContext } from '../../../user';
+import { useCallback } from 'react';
+import { useUserContext } from '@/domain/community/user';
 import {
   refetchUserOrganizationIdsQuery,
   useAssociatedOrganizationQuery,
@@ -20,11 +20,11 @@ export type OrganizationDetailsContainerProps = ContainerPropsWithProvided<
   }
 >;
 
-export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerProps> = ({
+export const AssociatedOrganizationContainer = ({
   organizationId,
   enableLeave,
   ...rendered
-}) => {
+}: OrganizationDetailsContainerProps) => {
   const { user } = useUserContext();
 
   const { data, loading, error } = useAssociatedOrganizationQuery({

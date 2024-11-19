@@ -5,14 +5,14 @@ import { useTranslation } from 'react-i18next';
 import { AddCircleOutline, DeleteOutlined, EditOutlined, ToggleOn } from '@mui/icons-material';
 import PageContentBlockContextualMenu from '@/core/ui/content/PageContentBlockContextualMenu';
 
-interface InnovationFlowStateMenuProps {
+type InnovationFlowStateMenuProps = {
   state: string;
   isCurrentState: boolean;
   onUpdateCurrentState?: (state: string) => void;
   onEdit: (state: string) => void;
   onDelete: (state: string) => void;
   onAddStateAfter: (stateBefore: string) => void;
-}
+};
 
 export default function InnovationFlowStateMenu({
   state,

@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo } from 'react';
+import { PropsWithChildren, useCallback, useMemo } from 'react';
 import {
   WhiteboardDetailsFragmentDoc,
   useCreateWhiteboardOnCalloutMutation,
@@ -49,7 +49,7 @@ export interface WhiteboardActionsContainerState {
 export interface WhiteboardActionsContainerProps
   extends ContainerChildProps<{}, IWhiteboardActions, WhiteboardActionsContainerState> {}
 
-const WhiteboardActionsContainer: FC<WhiteboardActionsContainerProps> = ({ children }) => {
+const WhiteboardActionsContainer = ({ children }: PropsWithChildren<WhiteboardActionsContainerProps>) => {
   const [createWhiteboard, { loading: creatingWhiteboard }] = useCreateWhiteboardOnCalloutMutation({});
   const { uploadVisuals, loading: uploadingVisuals } = useUploadWhiteboardVisuals();
 

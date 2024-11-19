@@ -1,5 +1,5 @@
 import { ApolloError } from '@apollo/client';
-import { PushFunc, RemoveFunc, useEditReference } from '../../../../common/reference/useEditReference';
+import { PushFunc, RemoveFunc, useEditReference } from '@/domain/common/reference/useEditReference';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   useDeletePostMutation,
@@ -12,8 +12,8 @@ import {
   PostSettingsFragment,
   Profile,
 } from '@/core/apollo/generated/graphql-schema';
-import { Reference } from '../../../../common/profile/Profile';
-import { newReferenceName } from '../../../../common/reference/newReferenceName';
+import { Reference } from '@/domain/common/profile/Profile';
+import { newReferenceName } from '@/domain/common/reference/newReferenceName';
 import removeFromCache from '@/core/apollo/utils/removeFromCache';
 import { compact } from 'lodash';
 import { useTranslation } from 'react-i18next';

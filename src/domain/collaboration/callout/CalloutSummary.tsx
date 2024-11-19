@@ -1,4 +1,4 @@
-import React, { ComponentType, FC } from 'react';
+import { ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
 import { styled, Typography, Box } from '@mui/material';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
@@ -19,10 +19,13 @@ export interface CalloutSumaryProps {
   callout: CalloutSummaryFields;
 }
 
-export const CalloutSummary: FC<{
+export const CalloutSummary = ({
+  callout,
+  templatePreviewComponent: TemplatePreview,
+}: {
   callout: CalloutSummaryFields;
   templatePreviewComponent?: ComponentType<CalloutSumaryProps> | null;
-}> = ({ callout, templatePreviewComponent: TemplatePreview }) => {
+}) => {
   const { t } = useTranslation();
 
   return (

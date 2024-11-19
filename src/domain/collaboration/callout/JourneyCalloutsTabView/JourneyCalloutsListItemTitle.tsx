@@ -1,9 +1,8 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import EllipsableWithCount from '@/core/ui/typography/EllipsableWithCount';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
-interface JourneyCalloutsListItemTitleProps {
+type JourneyCalloutsListItemTitleProps = {
   callout: {
     activity: number;
     framing: {
@@ -13,7 +12,7 @@ interface JourneyCalloutsListItemTitleProps {
     };
     flowStates?: string[];
   };
-}
+};
 
 const SEPARATOR = ' — ';
 

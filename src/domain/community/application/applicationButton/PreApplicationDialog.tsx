@@ -1,11 +1,10 @@
 import { Button, Dialog, DialogContent } from '@mui/material';
-import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import RouterLink from '@/core/ui/link/RouterLink';
 import isApplicationPending from './isApplicationPending';
-import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
-import { useSubSpace } from '../../../journey/subspace/hooks/useSubSpace';
-import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
+import { useOpportunity } from '@/domain/journey/opportunity/hooks/useOpportunity';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { BlockTitle } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
@@ -22,7 +21,7 @@ export interface PreApplicationDialogProps {
   parentApplyUrl?: string;
 }
 
-const PreApplicationDialog: FC<PreApplicationDialogProps> = ({
+const PreApplicationDialog = ({
   open,
   onClose,
   dialogVariant,
@@ -31,7 +30,7 @@ const PreApplicationDialog: FC<PreApplicationDialogProps> = ({
   parentApplicationState,
   applyUrl,
   parentApplyUrl,
-}) => {
+}: PreApplicationDialogProps) => {
   const { t } = useTranslation();
   const { profile: spaceProfile } = useSpace();
   const { profile: challengeProfile } = useSubSpace();

@@ -7,9 +7,9 @@ import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal'
 import { Location } from '@/core/ui/location/getLocationString';
 import { useEffect, useState } from 'react';
 import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 
-interface WhiteboardShareSettingsProps {
+type WhiteboardShareSettingsProps = {
   createdBy:
     | {
         profile: {
@@ -27,7 +27,7 @@ interface WhiteboardShareSettingsProps {
   loading?: boolean;
   updating?: boolean;
   journeyTypeName: JourneyTypeName;
-}
+};
 
 const OPTIONS = [ContentUpdatePolicy.Contributors, ContentUpdatePolicy.Admins, ContentUpdatePolicy.Owner];
 

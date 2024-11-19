@@ -1,4 +1,4 @@
-import React, { ComponentType, FC } from 'react';
+import { ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, DialogActions } from '@mui/material';
 import { DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
@@ -14,7 +14,7 @@ export interface ContributorsDialogProps {
   dialogContent: ComponentType<ContributorsDialogContentProps>;
 }
 
-const ContributorsDialog: FC<ContributorsDialogProps> = ({ open, onClose, dialogContent: Content }) => {
+const ContributorsDialog = ({ open, onClose, dialogContent: Content }: ContributorsDialogProps) => {
   const { t } = useTranslation();
 
   const handleClose = () => {

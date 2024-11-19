@@ -1,6 +1,6 @@
 import { Callout, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { CalloutDeleteType, CalloutEditType } from './edit/CalloutEditType';
-import { JourneyTypeName } from '../../journey/JourneyTypeName';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 
 export interface CalloutSortEvents {
   onMoveUp: (calloutId: string) => void;

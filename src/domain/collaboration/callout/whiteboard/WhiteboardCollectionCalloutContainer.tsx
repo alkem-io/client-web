@@ -7,7 +7,7 @@ import {
 import { useInView } from 'react-intersection-observer';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { useTranslation } from 'react-i18next';
-import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
+import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { Ref, useMemo } from 'react';
 import { compact } from 'lodash';
 

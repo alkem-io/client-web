@@ -1,5 +1,5 @@
 import { Formik } from 'formik';
-import React, { FC, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
@@ -9,7 +9,7 @@ import { CreateNvpInput } from '@/core/apollo/generated/graphql-schema';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { BlockTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
-import References from '../../../shared/components/References/References';
+import References from '@/domain/shared/components/References/References';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { DialogContent } from '@mui/material';
@@ -20,23 +20,23 @@ import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 
 const FormikEffect = FormikEffectFactory<Record<string, string>>();
 
-interface ApplicationDialogProps {
+type ApplicationDialogProps = {
   open: boolean;
   onClose: () => void;
   journeyId: string | undefined;
   canJoinCommunity?: boolean;
   onJoin: () => void;
   onApply?: () => void;
-}
+};
 
-const ApplicationDialog: FC<ApplicationDialogProps> = ({
+const ApplicationDialog = ({
   open,
   journeyId,
   onJoin,
   onClose,
   onApply,
   canJoinCommunity = false,
-}) => {
+}: ApplicationDialogProps) => {
   const { t } = useTranslation();
   const [applicationQuestions, setApplicationQuestions] = useState<CreateNvpInput[]>([]);
   const [isValid, setIsValid] = useState(false);

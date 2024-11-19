@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   ActivityEventType,
   ActivityLogCalendarEventCreatedFragment,
@@ -70,7 +70,7 @@ export interface ActivityComponentProps {
   limit?: number;
 }
 
-export const ActivityComponent: FC<ActivityComponentProps> = ({ activities, limit }) => {
+export const ActivityComponent = ({ activities, limit }: ActivityComponentProps) => {
   const display = useMemo(() => {
     if (!activities) {
       return null;

@@ -2,9 +2,9 @@ import { useTranslation } from 'react-i18next';
 import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
 import PageContent from '@/core/ui/content/PageContent';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
-import { ContributeCreationBlock } from '../../journey/common/tabs/Contribute/ContributeCreationBlock';
-import MembershipBackdrop from '../../shared/components/Backdrops/MembershipBackdrop';
-import { EntityPageSection } from '../../shared/layout/EntityPageSection';
+import { ContributeCreationBlock } from '@/domain/journey/common/tabs/Contribute/ContributeCreationBlock';
+import MembershipBackdrop from '@/domain/shared/components/Backdrops/MembershipBackdrop';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import CalloutsGroupView from '../callout/CalloutsInContext/CalloutsGroupView';
 import CalloutCreationDialog from '../callout/creationDialog/CalloutCreationDialog';
 import { useCalloutCreationWithPreviewImages } from '../callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
@@ -13,7 +13,7 @@ import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import CalloutsList from '../callout/calloutsList/CalloutsList';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import SpacePageLayout from '../../journey/space/layout/SpacePageLayout';
+import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
 
 const KnowledgeBasePage = () => {
   const { journeyId, journeyPath, collaborationId } = useRouteResolver();

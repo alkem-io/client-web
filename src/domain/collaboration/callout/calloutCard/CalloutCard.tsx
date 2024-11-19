@@ -1,5 +1,5 @@
 import { Skeleton } from '@mui/material';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import CardHeader from '@/core/ui/card/CardHeader';
 import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
 import ContributeCard, { ContributeCardProps } from '@/core/ui/card/ContributeCard';
@@ -7,7 +7,7 @@ import { CalloutContributionType, CalloutState, CalloutType } from '@/core/apoll
 import { DesignServicesOutlined } from '@mui/icons-material';
 import CardDetails from '@/core/ui/card/CardDetails';
 import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
-import { Visual } from '../../../common/visual/Visual';
+import { Visual } from '@/domain/common/visual/Visual';
 import { getCalloutTypeIcon } from './calloutIcons';
 
 interface ContributionPolicy {

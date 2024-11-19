@@ -8,7 +8,7 @@ import {
   GridValueGetterParams,
 } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
-import { FC, useState } from 'react';
+import { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import { gutters } from '@/core/ui/grid/utils';
@@ -59,7 +59,7 @@ interface CommunityOrganizationsProps {
   loading?: boolean;
 }
 
-const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
+const CommunityOrganizations = ({
   organizations = [],
   onOrganizationLeadChange,
   canAddMembers,
@@ -69,7 +69,7 @@ const CommunityOrganizations: FC<CommunityOrganizationsProps> = ({
   memberRoleDefinition,
   leadRoleDefinition,
   loading,
-}) => {
+}: CommunityOrganizationsProps) => {
   const { t } = useTranslation();
   const { canAddLeadOrganization, canRemoveLeadOrganization } = useCommunityPolicyChecker(
     memberRoleDefinition,

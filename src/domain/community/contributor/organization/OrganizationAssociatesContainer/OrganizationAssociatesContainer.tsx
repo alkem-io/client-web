@@ -1,5 +1,5 @@
-import React, { FC, useCallback, useMemo } from 'react';
-import { useUserContext } from '../../../user';
+import React, { PropsWithChildren, useCallback, useMemo } from 'react';
+import { useUserContext } from '@/domain/community/user';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignOrganizationRoleToUserMutation,
@@ -11,9 +11,9 @@ import {
   OrganizationRole,
   UserDisplayNameFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import { Member } from '../../../user/models/User';
-import { useAvailableMembersWithCredential } from '../../../community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
-import { AvailableMembersResults } from '../../../community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
+import { Member } from '@/domain/community/user/models/User';
+import { useAvailableMembersWithCredential } from '@/domain/community/community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
+import { AvailableMembersResults } from '@/domain/community/community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
 
 const organizationAssociateCredential = AuthorizationCredential.OrganizationAssociate;
 const organizationAdminCredential = AuthorizationCredential.OrganizationAdmin;
@@ -60,7 +60,10 @@ export interface OrganizationAssociatesEntities {
   currentMember?: Member;
 }
 
-export const OrganizationAssociatesContainer: FC<OrganizationAssociatesProps> = ({ children, entities }) => {
+export const OrganizationAssociatesContainer = ({
+  children,
+  entities,
+}: PropsWithChildren<OrganizationAssociatesProps>) => {
   const { user } = useUserContext();
 
   const [assignOrganizationRoleToUser, { loading: loadingAssign }] = useAssignOrganizationRoleToUserMutation();

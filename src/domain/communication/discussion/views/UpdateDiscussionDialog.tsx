@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -13,7 +12,7 @@ export interface UpdateDiscussionDialogProps {
   discussion: Discussion;
 }
 
-const UpdateDiscussionDialog: FC<UpdateDiscussionDialogProps> = ({ open, onClose, discussion }) => {
+const UpdateDiscussionDialog = ({ open, onClose, discussion }: UpdateDiscussionDialogProps) => {
   const { t } = useTranslation();
 
   const [updateDiscussion] = useUpdateDiscussionMutation({

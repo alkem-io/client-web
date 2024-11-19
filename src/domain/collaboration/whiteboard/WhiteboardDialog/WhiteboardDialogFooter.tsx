@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useEffect, useState } from 'react';
+import { MouseEventHandler, useEffect, useState } from 'react';
 import { gutters } from '@/core/ui/grid/utils';
 import { Button, DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
@@ -7,21 +7,21 @@ import { Actions } from '@/core/ui/actions/Actions';
 import { Trans, useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { CommunityMembershipStatus, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
-import { formatTimeElapsed } from '../../../shared/utils/formatTimeElapsed';
-import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
-import { useSubSpace } from '../../../journey/subspace/hooks/useSubSpace';
-import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
-import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
+import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
+import { useOpportunity } from '@/domain/journey/opportunity/hooks/useOpportunity';
+import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { useLocation } from 'react-router-dom';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
-import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
+import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { Visual } from '../../../common/visual/Visual';
+import { Visual } from '@/domain/common/visual/Visual';
 import {
   CollaboratorMode,
   CollaboratorModeReasons,
-} from '../../../common/whiteboard/excalidraw/collab/excalidrawAppConstants';
+} from '@/domain/common/whiteboard/excalidraw/collab/excalidrawAppConstants';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';

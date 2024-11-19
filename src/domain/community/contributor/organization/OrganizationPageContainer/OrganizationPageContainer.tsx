@@ -1,18 +1,18 @@
 import { ApolloError } from '@apollo/client';
-import React, { FC, useCallback, useMemo } from 'react';
-import { ContributorCardSquareProps } from '../../ContributorCardSquare/ContributorCardSquare';
-import { isSocialLink, SocialLinkItem } from '../../../../shared/components/SocialLinks/SocialLinks';
+import { PropsWithChildren, useCallback, useMemo } from 'react';
+import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
+import { isSocialLink, SocialLinkItem } from '@/domain/shared/components/SocialLinks/SocialLinks';
 import { useOrganization } from '../hooks/useOrganization';
 import { useRolesOrganizationQuery, useSendMessageToOrganizationMutation } from '@/core/apollo/generated/apollo-hooks';
-import { COUNTRIES_BY_CODE } from '../../../../common/location/countries.constants';
-import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '../../../../common/tags/tagset.constants';
+import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
+import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '@/domain/common/tags/tagset.constants';
 import { ContainerChildProps } from '@/core/container/container';
-import { SpaceHostedItem } from '../../../../journey/utils/SpaceHostedItem';
+import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
 import {
   isSocialNetworkSupported,
   SocialNetworkEnum,
   toSocialNetworkEnum,
-} from '../../../../shared/components/SocialLinks/models/SocialNetworks';
+} from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import {
   AuthorizationPrivilege,
   CommunityContributorType,
@@ -70,7 +70,7 @@ const roleChecks = [
   },
 ] as const;
 
-export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ children }) => {
+export const OrganizationPageContainer = ({ children }: PropsWithChildren<OrganizationPageContainerProps>) => {
   const { organizationId, organizationNameId, loading, organization, canReadUsers } = useOrganization();
 
   const { t } = useTranslation();

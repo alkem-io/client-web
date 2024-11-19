@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { Skeleton } from '@mui/material';
 import { PostIcon } from '../../post/icon/PostIcon';
 import ContributeCard from '@/core/ui/card/ContributeCard';

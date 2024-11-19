@@ -2,15 +2,14 @@ import { Tooltip } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import { Help } from '@mui/icons-material';
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
 
-interface VerifiedStatusProps {
+type VerifiedStatusProps = {
   verified: boolean;
   to?: string;
   helpText?: string;
-}
+};
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -20,7 +19,7 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-export const OrganizationVerifiedStatus: FC<VerifiedStatusProps> = ({ verified, helpText }) => {
+export const OrganizationVerifiedStatus = ({ verified, helpText }: VerifiedStatusProps) => {
   const { t } = useTranslation();
   const styles = useStyles();
 

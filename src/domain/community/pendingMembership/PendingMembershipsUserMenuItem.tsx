@@ -12,10 +12,10 @@ import {
   usePendingMemberships,
 } from './PendingMemberships';
 import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/InvitationCardHorizontal';
-import JourneyCard from '../../journey/common/JourneyCard/JourneyCard';
-import spaceIcon from '../../shared/components/JourneyIcon/JourneyIcon';
+import JourneyCard from '@/domain/journey/common/JourneyCard/JourneyCard';
+import spaceIcon from '@/domain/shared/components/JourneyIcon/JourneyIcon';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import JourneyCardTagline from '../../journey/common/JourneyCard/JourneyCardTagline';
+import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
 import InvitationDialog from '../invitations/InvitationDialog';
 import InvitationActionsContainer from '../invitations/InvitationActionsContainer';
 import { CommunityContributorType, VisualType } from '@/core/apollo/generated/graphql-schema';
@@ -23,16 +23,16 @@ import BackButton from '@/core/ui/actions/BackButton';
 import useNavigate from '@/core/routing/useNavigate';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
 import { defer } from 'lodash';
-import { getChildJourneyTypeName } from '../../shared/utils/spaceLevel';
+import { getChildJourneyTypeName } from '@/domain/shared/utils/spaceLevel';
 
-interface ButtonImplementationParams {
+type ButtonImplementationParams = {
   header: ReactNode;
   openDialog: () => void;
-}
+};
 
-interface PendingMembershipsUserMenuItemProps {
+type PendingMembershipsUserMenuItemProps = {
   children: ({ header, openDialog }: ButtonImplementationParams) => ReactNode;
-}
+};
 
 const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenuItemProps) => {
   const { t } = useTranslation();

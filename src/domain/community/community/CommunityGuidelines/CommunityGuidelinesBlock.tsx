@@ -1,5 +1,5 @@
 import { Box, Skeleton, useTheme } from '@mui/material';
-import { FC, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCommunityGuidelinesQuery } from '@/core/apollo/generated/apollo-hooks';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -30,7 +30,7 @@ export interface CommunityGuidelinesBlockProps {
   journeyUrl: string | undefined;
 }
 
-const CommunityGuidelinesBlock: FC<CommunityGuidelinesBlockProps> = ({ communityId, journeyUrl }) => {
+const CommunityGuidelinesBlock = ({ communityId, journeyUrl }: CommunityGuidelinesBlockProps) => {
   const [isCommunityGuidelinesInfoDialogOpen, setIsCommunityGuidelinesInfoDialogOpen] = useState(false);
 
   const { data, loading } = useCommunityGuidelinesQuery({

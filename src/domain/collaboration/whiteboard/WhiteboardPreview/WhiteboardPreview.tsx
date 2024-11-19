@@ -1,21 +1,21 @@
 import ImageWithCaption from '@/core/ui/image/ImageWithCaption';
 import { WhiteboardIcon } from '../icon/WhiteboardIcon';
 import { useTranslation } from 'react-i18next';
-import { Visual } from '../../../common/visual/Visual';
+import { Visual } from '@/domain/common/visual/Visual';
 import { MouseEventHandler } from 'react';
 
-interface Whiteboard {
+type Whiteboard = {
   profile: {
     preview?: Visual;
   };
-}
+};
 
-interface WhiteboardPreviewProps {
+type WhiteboardPreviewProps = {
   displayName?: string;
   whiteboard: Whiteboard | undefined;
   onClick?: MouseEventHandler;
   onClose?: () => void;
-}
+};
 
 const WhiteboardPreview = ({ displayName, whiteboard, onClick, onClose, ...props }: WhiteboardPreviewProps) => {
   const { t } = useTranslation();

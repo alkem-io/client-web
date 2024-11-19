@@ -1,14 +1,14 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Dialog, DialogActions } from '@mui/material';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import useLoadingState from '../../shared/utils/useLoadingState';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { BlockTitle, Caption, Text } from '@/core/ui/typography';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import SendButton from '../../shared/components/SendButton';
+import SendButton from '@/domain/shared/components/SendButton';
 import Gutters from '@/core/ui/grid/Gutters';
 import { InviteContributorsData, InviteUserData } from './useInviteUsers';
 import GridContainer from '@/core/ui/grid/GridContainer';
@@ -18,7 +18,7 @@ import { useVirtualContributorProfileQuery } from '@/core/apollo/generated/apoll
 import { ProfileChip } from '../contributor/ProfileChip/ProfileChip';
 import { useColumns } from '@/core/ui/grid/GridContext';
 
-interface MessageDialogProps {
+type MessageDialogProps = {
   open: boolean;
   spaceDisplayName: string;
   onClose: () => void;
@@ -26,7 +26,7 @@ interface MessageDialogProps {
   title?: ReactNode;
   subtitle?: ReactNode;
   contributorId: string;
-}
+};
 
 const InviteVirtualContributorDialog = ({
   open,

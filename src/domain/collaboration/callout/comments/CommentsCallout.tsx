@@ -1,8 +1,8 @@
 import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts/useCallouts';
-import CommentsComponent from '../../../communication/room/Comments/CommentsComponent';
-import { useUserContext } from '../../../community/user';
+import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
+import { useUserContext } from '@/domain/community/user';
 import { useRemoveCommentFromCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -13,11 +13,11 @@ import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
 import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import useSubscribeOnRoomEvents from '../useSubscribeOnRoomEvents';
-import usePostMessageMutations from '../../../communication/room/Comments/usePostMessageMutations';
-import { useMessages } from '../../../communication/room/Comments/useMessages';
+import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
+import { useMessages } from '@/domain/communication/room/Comments/useMessages';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 import CommentsCalloutLayout from './CommentsCalloutLayout';
-import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId' | 'vcInteractions';
 export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;

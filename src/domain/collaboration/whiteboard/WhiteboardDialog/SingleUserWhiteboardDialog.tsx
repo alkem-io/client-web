@@ -8,7 +8,7 @@ import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import Loading from '@/core/ui/loading/Loading';
 import { DialogContent } from '@/core/ui/dialog/deprecated';
-import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
+import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Box, Button } from '@mui/material';
@@ -19,7 +19,7 @@ import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import whiteboardSchema from '../validation/whiteboardSchema';
 import isWhiteboardContentEqual from '../utils/isWhiteboardContentEqual';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import WhiteboardDialogTemplatesLibrary from '../../../templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
+import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -27,8 +27,8 @@ import {
   generateWhiteboardPreviewImages,
   WhiteboardPreviewImage,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
-import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import { WhiteboardTemplateContent } from '../../../templates/models/WhiteboardTemplate';
+import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
 import { WhiteboardDetails } from './WhiteboardDialog';
 import { Identifiable } from '@/core/utils/Identifiable';
 
@@ -36,7 +36,7 @@ export interface WhiteboardWithContent extends WhiteboardDetails {
   content: string;
 }
 
-interface SingleUserWhiteboardDialogProps {
+type SingleUserWhiteboardDialogProps = {
   entities: {
     whiteboard?: WhiteboardWithContent;
   };
@@ -59,7 +59,7 @@ interface SingleUserWhiteboardDialogProps {
     loadingWhiteboardContent?: boolean;
     changingWhiteboardLockState?: boolean;
   };
-}
+};
 
 const useStyles = makeStyles(theme => ({
   dialogRoot: {

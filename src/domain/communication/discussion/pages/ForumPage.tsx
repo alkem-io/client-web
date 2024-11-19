@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Theme, useMediaQuery } from '@mui/material';
 import { useLocation } from 'react-router-dom';
@@ -20,11 +20,11 @@ import {
 import DiscussionIcon from '../views/DiscussionIcon';
 import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscusionCategories';
 import NewDiscussionDialog from '../views/NewDiscussionDialog';
-import { useUserContext } from '../../../community/user';
-import ImageBackdrop from '../../../shared/components/Backdrops/ImageBackdrop';
+import { useUserContext } from '@/domain/community/user';
+import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
 import UseSubscriptionToSubEntity from '@/core/apollo/subscriptions/useSubscriptionToSubEntity';
-import useInnovationHubOutsideRibbon from '../../../innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
-import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import useInnovationHubOutsideRibbon from '@/domain/innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { ForumOutlined } from '@mui/icons-material';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
@@ -52,10 +52,6 @@ const useSubscriptionToForum = UseSubscriptionToSubEntity<
   },
 });
 
-interface ForumPageProps {
-  dialog?: 'new';
-}
-
 enum DiscussionCategoryPlatform {
   RELEASES = 'releases',
   PLATFORM_FUNCTIONALITIES = 'platform-functionalities',
@@ -65,7 +61,7 @@ enum DiscussionCategoryPlatform {
   OTHER = 'other',
 }
 
-export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
+export const ForumPage = ({ dialog }: { dialog?: 'new' }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user: { hasPlatformPrivilege } = {}, isAuthenticated, loading: loadingUser } = useUserContext();

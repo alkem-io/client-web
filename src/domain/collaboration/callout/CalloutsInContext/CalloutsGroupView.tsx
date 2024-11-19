@@ -1,4 +1,3 @@
-import React from 'react';
 import CalloutCreationDialog from '../creationDialog/CalloutCreationDialog';
 import { useCalloutCreationWithPreviewImages } from '../creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import AddContentButton from '@/core/ui/content/AddContentButton';

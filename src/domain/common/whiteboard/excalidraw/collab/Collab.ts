@@ -28,11 +28,11 @@ import {
 } from '@alkemio/excalidraw/dist/excalidraw/data/reconcile';
 import { Mutable } from '@alkemio/excalidraw/dist/excalidraw/utility-types';
 
-interface CollabState {
+type CollabState = {
   errorMessage: string;
   username: string;
   activeRoomLink: string;
-}
+};
 
 export interface CollabProps {
   excalidrawApi: ExcalidrawImperativeAPI;

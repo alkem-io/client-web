@@ -1,8 +1,8 @@
 import { Box, Button, IconButton, TextField } from '@mui/material';
-import React, { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
-import useLoadingState from '../../../shared/utils/useLoadingState';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { LoadingButton } from '@mui/lab';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
@@ -10,19 +10,19 @@ import { BlockTitle } from '@/core/ui/typography';
 import { Edit } from '@mui/icons-material';
 import { useGlobalGridColumns } from '@/core/ui/grid/constants';
 
-interface WhiteboardDisplayNameProps {
+type WhiteboardDisplayNameProps = {
   displayName: string | undefined;
   readOnlyDisplayName?: boolean;
   editDisplayName?: boolean;
   onChangeDisplayName?: (displayName: string) => Promise<void>;
-}
+};
 
-const WhiteboardDisplayName: FC<WhiteboardDisplayNameProps> = ({
+const WhiteboardDisplayName = ({
   displayName = '',
   readOnlyDisplayName,
   editDisplayName = false,
   onChangeDisplayName,
-}) => {
+}: WhiteboardDisplayNameProps) => {
   const { t } = useTranslation();
   const columns = useGlobalGridColumns();
 

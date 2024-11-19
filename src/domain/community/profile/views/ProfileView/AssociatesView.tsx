@@ -1,28 +1,28 @@
 import { Grid, Link } from '@mui/material';
-import React, { FC, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ContributorCardSquare, {
   ContributorCardSquareProps,
-} from '../../../contributor/ContributorCardSquare/ContributorCardSquare';
+} from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { BlockSectionTitle } from '@/core/ui/typography';
 
 const ASSOCIATE_CARDS_COUNT = 12;
 
-interface AssociatesViewProps {
+type AssociatesViewProps = {
   canReadUsers: boolean;
   associates: ContributorCardSquareProps[];
   totalCount: number;
   count?: number;
-}
+};
 
-export const AssociatesView: FC<AssociatesViewProps> = ({
+export const AssociatesView = ({
   canReadUsers,
   associates,
   totalCount,
   count = ASSOCIATE_CARDS_COUNT,
-}) => {
+}: AssociatesViewProps) => {
   const { t } = useTranslation();
   const [showAll, setShowAll] = useState(false);
   const toggleShowAll = () => setShowAll(prevValue => !prevValue);

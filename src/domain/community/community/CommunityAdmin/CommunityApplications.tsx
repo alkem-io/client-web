@@ -1,5 +1,5 @@
 import { Box, IconButton, Link, Tooltip } from '@mui/material';
-import { FC, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { TFunction, useTranslation } from 'react-i18next';
 import { BlockTitle } from '@/core/ui/typography';
 import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
@@ -16,10 +16,10 @@ import {
   CommunityContributorType,
   User,
 } from '@/core/apollo/generated/graphql-schema';
-import { ApplicationDialog } from '../../application/dialogs/ApplicationDialog';
+import { ApplicationDialog } from '@/domain/community/application/dialogs/ApplicationDialog';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { formatDateTime } from '@/core/utils/time/utils';
-import useLoadingState from '../../../shared/utils/useLoadingState';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import RemoveIcon from '@mui/icons-material/Remove';
 
 enum MembershipType {
@@ -198,7 +198,7 @@ const CreatePendingMembershipForPlatformInvitation = (invitation: AdminPlatformI
   return result;
 };
 
-const CommunityApplications: FC<CommunityApplicationsProps> = ({
+const CommunityApplications = ({
   applications = [],
   onApplicationStateChange,
   canHandleInvitations = false,
@@ -208,7 +208,7 @@ const CommunityApplications: FC<CommunityApplicationsProps> = ({
   onDeleteInvitation,
   onDeletePlatformInvitation,
   loading,
-}) => {
+}: CommunityApplicationsProps) => {
   const { t } = useTranslation();
   const [selectedItem, setSelectedItem] = useState<MembershipTableItem>();
   const [deletingItem, setDeletingItem] = useState<MembershipTableItem>();

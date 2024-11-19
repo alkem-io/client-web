@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import PageBanner from '@/core/ui/layout/pageBanner/PageBanner';
-import PageBannerCardWithVisual from '../../journey/common/PageBanner/JourneyPageBannerCard/PageBannerCardWithVisual';
+import PageBannerCardWithVisual from '@/domain/journey/common/PageBanner/JourneyPageBannerCard/PageBannerCardWithVisual';
 import Avatar from '@/core/ui/avatar/Avatar';
 import { PageTitle } from '@/core/ui/typography';
 import LocationCaption from '@/core/ui/location/LocationCaption';
@@ -8,12 +8,12 @@ import { Actions } from '@/core/ui/actions/Actions';
 import { IconButton, Theme, useMediaQuery } from '@mui/material';
 import { MailOutlined, SettingsOutlined } from '@mui/icons-material';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { DirectMessageDialog } from '../../communication/messaging/DirectMessaging/DirectMessageDialog';
+import { DirectMessageDialog } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
 import { Visual } from '../visual/Visual';
 import { Location } from '@/core/ui/location/getLocationString';
 import { useTranslation } from 'react-i18next';
 import PageBannerWatermark from '@/main/ui/platformNavigation/PageBannerWatermark';
-import VirtualContributorLabel from '../../community/virtualContributor/VirtualContributorLabel';
+import VirtualContributorLabel from '@/domain/community/virtualContributor/VirtualContributorLabel';
 
 const banner: Visual = {
   uri: '/alkemio-banner/global-banner.jpg',

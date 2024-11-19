@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Box, DialogContent, IconButton, IconButtonProps } from '@mui/material';
-import { FC, useState } from 'react';
+import { PropsWithChildren, useState } from 'react';
 import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from 'react-beautiful-dnd';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/core/i18n/config';
@@ -19,7 +19,7 @@ import { EditOutlined } from '@mui/icons-material';
 import InnovationFlowStateForm from './InnovationFlowStateForm';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import { MAX_INNOVATIONFLOW_STATES } from '../../../templates/models/CollaborationTemplate';
+import { MAX_INNOVATIONFLOW_STATES } from '@/domain/templates/models/CollaborationTemplate';
 
 const STATES_DROPPABLE_ID = '__states';
 
@@ -55,7 +55,7 @@ const AddButton = (props: IconButtonProps) => {
   );
 };
 
-const InnovationFlowDragNDropEditor: FC<InnovationFlowDragNDropEditorProps> = ({
+const InnovationFlowDragNDropEditor = ({
   innovationFlowStates,
   children,
   currentState,
@@ -66,7 +66,7 @@ const InnovationFlowDragNDropEditor: FC<InnovationFlowDragNDropEditorProps> = ({
   onCreateFlowState,
   onEditFlowState,
   onDeleteFlowState,
-}) => {
+}: PropsWithChildren<InnovationFlowDragNDropEditorProps>) => {
   const { t } = useTranslation();
 
   // Dialogs for Flow States management:

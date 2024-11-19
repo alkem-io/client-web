@@ -1,7 +1,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import { TextField } from '@mui/material';
 import { GridColDef, GridInitialState, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
@@ -45,12 +45,12 @@ const initialState: GridInitialState = {
   },
 };
 
-const CommunityAddMembersDialog: FC<CommunityAddMembersDialogProps> = ({
+const CommunityAddMembersDialog = ({
   onClose,
   onAdd,
   fetchAvailableEntities,
   allowSearchByURL = false,
-}) => {
+}: CommunityAddMembersDialogProps) => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<string>();
   const [availableEntities, setData] = useState<Entity[]>();

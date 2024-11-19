@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FetchResult } from '@apollo/client';
 import { last } from 'lodash';
@@ -50,7 +50,7 @@ const isScrolledToBottom = ({
   return Math.abs(scrollHeight - containerHeight - scrollTop) < SCROLL_BOTTOM_MISTAKE_TOLERANCE;
 };
 
-const CommentsComponent: FC<CommentsComponentProps> = ({
+const CommentsComponent = ({
   last: isShowingLastMessage,
   messages = [],
   vcInteractions = [],
@@ -64,7 +64,7 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
   maxHeight,
   loading,
   onClickMore,
-}) => {
+}: CommentsComponentProps) => {
   const { t } = useTranslation();
 
   const commentsContainerRef = useRef<HTMLElement>(null);

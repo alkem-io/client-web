@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ViewProps } from '@/core/container/view';
 import { OrganizationPreferenceType, Preference } from '@/core/apollo/generated/graphql-schema';
@@ -28,11 +27,11 @@ export interface OrganizationAuthorizationPreferencesViewProps
     OrganizationAuthorizationPreferencesViewOptions
   > {}
 
-const OrganizationAuthorizationPreferencesView: FC<OrganizationAuthorizationPreferencesViewProps> = ({
+const OrganizationAuthorizationPreferencesView = ({
   entities,
   state,
   actions,
-}) => {
+}: OrganizationAuthorizationPreferencesViewProps) => {
   const { t } = useTranslation();
   const { preferences } = entities;
   const { loading } = state;

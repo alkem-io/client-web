@@ -10,14 +10,14 @@ import Avatar from '@/core/ui/avatar/Avatar';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
 import VirtualContributorsDialog, { VirtualContributorProps } from './VirtualContributorsDialog';
-import VCIcon from '../../virtualContributor/VirtualContributorsIcons';
+import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
 
 export const VIRTUAL_CONTRIBUTORS_LIMIT = 3;
 
-interface VirtualContributorsBlockProps {
+type VirtualContributorsBlockProps = {
   virtualContributors: VirtualContributorProps[];
   loading: boolean;
-}
+};
 
 const VirtualContributorsBlock = ({ virtualContributors, loading }: VirtualContributorsBlockProps) => {
   const { t } = useTranslation();

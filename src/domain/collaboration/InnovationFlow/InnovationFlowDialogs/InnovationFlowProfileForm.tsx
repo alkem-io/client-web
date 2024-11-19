@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 import { Formik } from 'formik';
-import { ComponentType, FC, Fragment, ReactElement } from 'react';
+import { ComponentType, Fragment, ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Reference, Tagset } from '@/core/apollo/generated/graphql-schema';
@@ -12,7 +12,7 @@ import { tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/
 import { InnovationFlowProfile } from './InnovationFlowProfileBlock';
 import { Actions } from '@/core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
-import useLoadingState from '../../../shared/utils/useLoadingState';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 
 export interface InnovationFlowProfileFormValues {
@@ -29,12 +29,12 @@ interface InnovationFlowProfileFormProps {
   actionsRenderer?: ComponentType<{ children: ReactElement }>;
 }
 
-const InnovationFlowProfileForm: FC<InnovationFlowProfileFormProps> = ({
+const InnovationFlowProfileForm = ({
   profile,
   onSubmit,
   onCancel,
   actionsRenderer: ActionsRenderer = Fragment,
-}) => {
+}: InnovationFlowProfileFormProps) => {
   const { t } = useTranslation();
 
   const initialValues: InnovationFlowProfileFormValues = {

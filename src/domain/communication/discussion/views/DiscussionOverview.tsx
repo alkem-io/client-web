@@ -1,6 +1,5 @@
 import { AvatarGroup, Box, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import Avatar from '@/core/ui/avatar/Avatar';
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Discussion } from '../models/Discussion';
 import DiscussionIcon from './DiscussionIcon';
@@ -14,7 +13,7 @@ export interface DiscussionOverviewProps {
 
 const SHOW_AVATARS = false;
 
-const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion, onClick }) => {
+const DiscussionOverview = ({ discussion, onClick }: DiscussionOverviewProps) => {
   const { t } = useTranslation();
 
   const { title, createdAt, author, authors = [], comments, category } = discussion;

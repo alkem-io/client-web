@@ -1,11 +1,11 @@
-import React, { FC, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import WhiteboardActionsContainer from '../containers/WhiteboardActionsContainer';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import WhiteboardDialog, { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import FullscreenButton from '@/core/ui/button/FullscreenButton';
-import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
+import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import useWhiteboardContentUpdatePolicy from '../contentUpdatePolicy/WhiteboardContentUpdatePolicy';
 import WhiteboardShareSettings from '../share/WhiteboardShareSettings';
 
@@ -27,7 +27,7 @@ export interface WhiteboardViewProps extends ActiveWhiteboardIdHolder, Whiteboar
   preventWhiteboardDeletion?: boolean; // TODO: Temporary solution to avoid single-whiteboard callouts to lose their whiteboard
 }
 
-const WhiteboardView: FC<WhiteboardViewProps> = ({
+const WhiteboardView = ({
   whiteboardId,
   whiteboard,
   authorization,
@@ -39,7 +39,7 @@ const WhiteboardView: FC<WhiteboardViewProps> = ({
   readOnlyDisplayName,
   preventWhiteboardDeletion,
   ...whiteboardsState
-}) => {
+}: WhiteboardViewProps) => {
   const { fullscreen, setFullscreen } = useFullscreen();
 
   const handleCancel = () => {

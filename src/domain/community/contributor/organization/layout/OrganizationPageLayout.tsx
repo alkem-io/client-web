@@ -1,4 +1,4 @@
-import OrganizationPageBanner from '../../../organization/layout/OrganizationPageBanner';
+import OrganizationPageBanner from '@/domain/community/organization/layout/OrganizationPageBanner';
 import React, { PropsWithChildren } from 'react';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { Diversity3Outlined } from '@mui/icons-material';

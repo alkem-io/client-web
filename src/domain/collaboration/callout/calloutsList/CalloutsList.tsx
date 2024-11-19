@@ -1,5 +1,5 @@
 import { List, ListItem, ListItemIcon, Skeleton, useTheme } from '@mui/material';
-import React, { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 import calloutIcons from '../utils/calloutIcons';
 import { useTranslation } from 'react-i18next';
 import { times } from 'lodash';

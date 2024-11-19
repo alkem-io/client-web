@@ -1,7 +1,6 @@
-import React, { FC } from 'react';
 import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
-import ActivityDescriptionByType from '../../../../shared/components/ActivityDescription/ActivityDescriptionByType';
+import ActivityDescriptionByType from '@/domain/shared/components/ActivityDescription/ActivityDescriptionByType';
 import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
 
 export interface ActivityCalendarEventCreatedViewProps extends ActivityViewProps {
@@ -14,19 +13,17 @@ export interface ActivityCalendarEventCreatedViewProps extends ActivityViewProps
   type: ActivityEventType.CalendarEventCreated;
 }
 
-export const ActivityCalendarEventCreatedView: FC<ActivityCalendarEventCreatedViewProps> = ({
+export const ActivityCalendarEventCreatedView = ({
   journeyDisplayName,
   calendarEvent,
   type,
   ...rest
-}) => {
-  return (
-    <ActivityBaseView
-      type={type}
-      title={<ActivityDescriptionByType activityType={type} subject={calendarEvent.profile.displayName} />}
-      url={calendarEvent.profile.url}
-      contextDisplayName={journeyDisplayName}
-      {...rest}
-    />
-  );
-};
+}: ActivityCalendarEventCreatedViewProps) => (
+  <ActivityBaseView
+    type={type}
+    title={<ActivityDescriptionByType activityType={type} subject={calendarEvent.profile.displayName} />}
+    url={calendarEvent.profile.url}
+    contextDisplayName={journeyDisplayName}
+    {...rest}
+  />
+);

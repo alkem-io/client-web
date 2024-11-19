@@ -1,11 +1,14 @@
 import { useMemo } from 'react';
 import { useCalloutEdit } from '../edit/useCalloutEdit/useCalloutEdit';
 import { OrderUpdate, TypedCallout, TypedCalloutDetails } from '../useCallouts/useCallouts';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { CalloutSortEvents, CalloutSortProps } from '../CalloutViewTypes';
 import CalloutView from '../CalloutView/CalloutView';
 import useNavigate from '@/core/routing/useNavigate';
-import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import {
+  LocationStateCachedCallout,
+  LocationStateKeyCachedCallout,
+} from '@/domain/collaboration/CalloutPage/CalloutPage';
 import { Box, CardHeader, Skeleton } from '@mui/material';
 import PageContentBlock, { PageContentBlockProps } from '@/core/ui/content/PageContentBlock';
 import ContributeCard from '@/core/ui/card/ContributeCard';

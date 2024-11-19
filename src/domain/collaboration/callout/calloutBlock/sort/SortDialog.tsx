@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isNumber } from 'lodash';
 import { Box, DialogContent, Paper } from '@mui/material';
@@ -24,13 +24,7 @@ interface SortDialogProps {
   onUpdateContributionsOrder: (contributions: CollectionItems[]) => void;
 }
 
-const SortDialog: FC<SortDialogProps> = ({
-  open,
-  onClose,
-  collaborationId,
-  contributions,
-  onUpdateContributionsOrder,
-}) => {
+const SortDialog = ({ open, onClose, collaborationId, contributions, onUpdateContributionsOrder }: SortDialogProps) => {
   const { t } = useTranslation();
   const [items, setItems] = useState(contributions);
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { forwardRef, useMemo } from 'react';
+import { forwardRef, useMemo } from 'react';
 import { sortBy } from 'lodash';
 import useNavigate from '@/core/routing/useNavigate';
 import CalloutLayout, { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
@@ -13,7 +13,7 @@ import CalloutBlockFooter from '../calloutBlock/CalloutBlockFooter';
 import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { normalizeLink } from '@/core/utils/links';
-import { LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';
 
 interface WhiteboardCollectionCalloutProps extends BaseCalloutViewProps {

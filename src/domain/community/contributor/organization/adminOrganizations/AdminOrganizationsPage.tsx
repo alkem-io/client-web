@@ -1,19 +1,19 @@
-import React, { FC, useState } from 'react';
+import { useState } from 'react';
 import { useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import AdminLayout from '../../../../platform/admin/layout/toplevel/AdminLayout';
-import { AdminSection } from '../../../../platform/admin/layout/toplevel/constants';
+import AdminLayout from '@/domain/platform/admin/layout/toplevel/AdminLayout';
+import { AdminSection } from '@/domain/platform/admin/layout/toplevel/constants';
 import useAdminGlobalOrganizationsList from './useAdminGlobalOrganizationsList';
-import SearchableListLayout from '../../../../shared/components/SearchableList/SearchableListLayout';
+import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
 import SimpleSearchableTable, {
   SearchableListItem,
-} from '../../../../shared/components/SearchableList/SimpleSearchableTable';
+} from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
 import { IconButton } from '@mui/material';
 import { TuneOutlined, VerifiedUser, VerifiedUserOutlined } from '@mui/icons-material';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import LicensePlanDialog from './LicensePlanDialog';
 
-const AdminOrganizationsPage: FC = () => {
+const AdminOrganizationsPage = () => {
   const { t } = useTranslation();
   const { organizations, licensePlans, ...listProps } = useAdminGlobalOrganizationsList();
 

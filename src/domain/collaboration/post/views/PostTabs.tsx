@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import { Tabs } from '@mui/material';
 import { DashboardOutlined, SettingsOutlined, ShareOutlined } from '@mui/icons-material';
 import NavigationTab from '@/core/ui/tabs/NavigationTab';
@@ -8,10 +7,6 @@ import { styled } from '@mui/styles';
 import { gutters } from '@/core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
 
-export interface PostTabsProps {
-  currentTab: PostDialogSection;
-}
-
 const DialogHeaderTabs = styled(Tabs)(({ theme }) => ({
   marginTop: theme.spacing(-0.4),
   marginBottom: theme.spacing(-0.8),
@@ -19,7 +14,7 @@ const DialogHeaderTabs = styled(Tabs)(({ theme }) => ({
   '& .MuiTabs-flexContainer': { justifyContent: 'end', gap: gutters(1)(theme) },
 }));
 
-const PostTabs: FC<PostTabsProps> = ({ currentTab }) => {
+const PostTabs = ({ currentTab }: { currentTab: PostDialogSection }) => {
   const { t } = useTranslation();
   const { permissions } = usePost();
 

@@ -1,8 +1,8 @@
-interface Tagset {
+type Tagset = {
   id?: string;
   name?: string;
   tags?: string[];
-}
+};
 
 export const findDefaultTagset = <T extends Tagset>(tagsets: T[] | undefined): T | undefined => {
   if (!tagsets) return undefined;

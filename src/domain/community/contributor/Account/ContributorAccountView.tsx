@@ -8,17 +8,17 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { BlockTitle } from '@/core/ui/typography';
 import JourneyCardHorizontal, {
   JourneyCardHorizontalSkeleton,
-} from '../../../journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
+} from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
 import Gutters from '@/core/ui/grid/Gutters';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import InnovationHubCardHorizontal, {
   InnovationHubCardHorizontalSkeleton,
-} from '../../../innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
+} from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
 import { Actions } from '@/core/ui/actions/Actions';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
-import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDialog';
+import CreateSpaceDialog from '@/domain/journey/space/createSpace/CreateSpaceDialog';
 import useNewVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
-import CreateInnovationHubDialog from '../../../innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
+import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
 import {
   AuthorizationPrivilege,
   LicenseEntitlement,

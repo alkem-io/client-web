@@ -1,16 +1,11 @@
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useField } from 'formik';
 import { Caption } from '@/core/ui/typography/components';
 import { Box } from '@mui/material';
-import FormikWhiteboardPreview from '../../../whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
+import FormikWhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import { gutters } from '@/core/ui/grid/utils';
 import { CreateProfileInput } from '@/core/apollo/generated/graphql-schema';
-import { WhiteboardPreviewImage } from '../../../whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
-
-interface CalloutWhiteboardFieldProps {
-  name: string;
-}
+import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 export interface WhiteboardFieldSubmittedValues {
   content: string;
@@ -22,7 +17,7 @@ export interface WhiteboardFieldSubmittedValuesWithPreviewImages extends Whitebo
   previewImages: WhiteboardPreviewImage[] | undefined;
 }
 
-export const CalloutWhiteboardField: FC<CalloutWhiteboardFieldProps> = ({ name }) => {
+export const CalloutWhiteboardField = ({ name }: { name: string }) => {
   const { t } = useTranslation();
   const [, , helpers] = useField<WhiteboardFieldSubmittedValuesWithPreviewImages>(name);
 

@@ -1,5 +1,4 @@
-import React, { FC } from 'react';
-import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import { useSpaceCommunityContributorsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useUserCardProps from '../utils/useUserCardProps';
@@ -7,7 +6,7 @@ import CommunityContributorsView from '../CommunityContributors/CommunityContrib
 import NoOrganizations from '../CommunityContributors/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
 
-const SpaceContributorsDialogContent: FC<ContributorsDialogContentProps> = ({ dialogOpen }) => {
+const SpaceContributorsDialogContent = ({ dialogOpen }: ContributorsDialogContentProps) => {
   const { spaceId, permissions } = useSpace();
 
   const { loading, data } = useSpaceCommunityContributorsQuery({

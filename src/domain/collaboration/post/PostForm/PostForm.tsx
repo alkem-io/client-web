@@ -1,29 +1,29 @@
-import React, { FC, useMemo } from 'react';
+import { PropsWithChildren, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Formik, FormikConfig } from 'formik';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { TagsetSegment, tagsetsSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import { PostCreationType } from '../PostCreationDialog/PostCreationDialog';
 import { Post, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
-import ReferenceSegment, { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
-import { PushFunc, RemoveFunc } from '../../../common/reference/useEditReference';
-import { Reference } from '../../../common/profile/Profile';
+import ReferenceSegment, { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
+import { PushFunc, RemoveFunc } from '@/domain/common/reference/useEditReference';
+import { Reference } from '@/domain/common/profile/Profile';
 import { displayNameValidator } from '@/core/ui/forms/validator';
 import { LONG_MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import Gutters from '@/core/ui/grid/Gutters';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
+import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 
-interface FormValue {
+type FormValue = {
   name: string;
   description: string;
   tagsets: Tagset[];
   postNames: string[];
   references: Reference[];
-}
+};
 
 const FormikEffect = FormikEffectFactory<FormValue>();
 
@@ -50,7 +50,7 @@ export interface PostFormProps {
   children?: FormikConfig<FormValue>['children'];
 }
 
-const PostForm: FC<PostFormProps> = ({
+const PostForm = ({
   post,
   postNames,
   descriptionTemplate,
@@ -62,7 +62,7 @@ const PostForm: FC<PostFormProps> = ({
   onAddReference,
   onRemoveReference,
   children,
-}) => {
+}: PropsWithChildren<PostFormProps>) => {
   const { t } = useTranslation();
 
   const tagsets: Tagset[] = [

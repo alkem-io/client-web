@@ -4,7 +4,7 @@ import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
+import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 import Authorship from '@/core/ui/authorship/Authorship';
 import { BlockTitle } from '@/core/ui/typography';
 import SkipLink from '@/core/ui/keyboardNavigation/SkipLink';

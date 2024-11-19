@@ -1,14 +1,14 @@
-import React, { ReactNode, useCallback, useState } from 'react';
+import { ReactNode, useCallback, useState } from 'react';
 import { Alert, Dialog, DialogActions } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import useLoadingState from '../../shared/utils/useLoadingState';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { BlockTitle, Caption, Text } from '@/core/ui/typography';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import SendButton from '../../shared/components/SendButton';
+import SendButton from '@/domain/shared/components/SendButton';
 import Gutters from '@/core/ui/grid/Gutters';
 import { FormikUserSelector } from '../user/FormikUserSelector/FormikUserSelector';
 import { InviteContributorsData } from './useInviteUsers';
@@ -19,7 +19,7 @@ import FormikSelect from '@/core/ui/forms/FormikSelect';
 import { gutters } from '@/core/ui/grid/utils';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
-interface MessageDialogProps {
+type MessageDialogProps = {
   open: boolean;
   spaceDisplayName: string;
   onClose: () => void;
@@ -30,7 +30,7 @@ interface MessageDialogProps {
   currentInvitationsUserIds: string[];
   currentMembersIds: string[];
   communityRoles: readonly CommunityRoleType[];
-}
+};
 
 enum SortCriteria {
   HasApplication,

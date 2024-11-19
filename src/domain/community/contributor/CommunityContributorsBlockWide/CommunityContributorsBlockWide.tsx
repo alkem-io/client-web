@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ContributorCardSquareProps } from '../ContributorCardSquare/ContributorCardSquare';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeaderWithDialogAction from '@/core/ui/content/PageContentBlockHeaderWithDialogAction';
@@ -17,12 +17,12 @@ import { gutters } from '@/core/ui/grid/utils';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import Loading from '@/core/ui/loading/Loading';
 
-interface CommunityContributorsBlockWideProps {
+type CommunityContributorsBlockWideProps = {
   users: ContributorCardSquareProps[] | undefined;
   organizations: ContributorCardSquareProps[] | undefined;
   isDialogView?: boolean;
   isLoading?: boolean;
-}
+};
 
 const config = [
   {

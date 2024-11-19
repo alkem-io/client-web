@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, IconButton, lighten } from '@mui/material';
 import { Add } from '@mui/icons-material';

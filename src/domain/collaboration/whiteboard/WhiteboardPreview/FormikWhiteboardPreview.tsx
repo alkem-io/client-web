@@ -1,14 +1,14 @@
 import { Box, BoxProps, Button, Skeleton, styled } from '@mui/material';
 import { useField } from 'formik';
-import React, { FC, MouseEventHandler, useMemo, useState } from 'react';
-import ExcalidrawWrapper from '../../../common/whiteboard/excalidraw/ExcalidrawWrapper';
+import { MouseEventHandler, useMemo, useState } from 'react';
+import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
 import SingleUserWhiteboardDialog from '../WhiteboardDialog/SingleUserWhiteboardDialog';
 import { useTranslation } from 'react-i18next';
 import { BlockTitle } from '@/core/ui/typography';
 import { WhiteboardPreviewImage } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
-import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 
 interface FormikWhiteboardPreviewProps extends BoxProps {
   name: string; // Formik fieldName of the Whiteboard content
@@ -28,7 +28,7 @@ const EditTemplateButtonContainer = styled(Box)(({ theme }) => ({
   zIndex: 10,
 }));
 
-const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
+const FormikWhiteboardPreview = ({
   name = 'content',
   previewImagesName,
   canEdit,
@@ -36,7 +36,7 @@ const FormikWhiteboardPreview: FC<FormikWhiteboardPreviewProps> = ({
   loading,
   dialogProps,
   ...containerProps
-}) => {
+}: FormikWhiteboardPreviewProps) => {
   const { t } = useTranslation();
 
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);

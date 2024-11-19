@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import { Box } from '@mui/material';
 import { Visual, VisualType } from '@/core/apollo/generated/graphql-schema';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
@@ -12,7 +11,7 @@ export interface EditVisualsViewProps {
   visualTypes?: VisualType[];
 }
 
-const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals, visualTypes }) => {
+const EditVisualsView = ({ visuals, visualTypes }: EditVisualsViewProps) => {
   const { t } = useTranslation();
   const avatar = getVisualByType(VisualName.AVATAR, visuals);
   const banner = getVisualByType(VisualName.BANNER, visuals);

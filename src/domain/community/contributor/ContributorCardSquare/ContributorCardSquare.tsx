@@ -2,25 +2,25 @@ import { Box, Paper, Skeleton, Tooltip } from '@mui/material';
 import Avatar from '@/core/ui/avatar/Avatar';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { FC, ReactNode, useCallback, useMemo, useState } from 'react';
+import { ReactNode, useCallback, useMemo, useState } from 'react';
 import ConditionalLink from '@/core/ui/link/ConditionalLink';
-import UserCard from '../../user/userCard/UserCard';
-import withElevationOnHover from '../../../shared/components/withElevationOnHover';
+import UserCard from '@/domain/community/user/userCard/UserCard';
+import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
 import { useTranslation } from 'react-i18next';
 import {
   useSendMessageToOrganizationMutation,
   useSendMessageToUserMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { DirectMessageDialog } from '../../../communication/messaging/DirectMessaging/DirectMessageDialog';
+import { DirectMessageDialog } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { CommunityContributorType } from '@/core/apollo/generated/graphql-schema';
 
-interface ContributorCardTooltip {
+type ContributorCardTooltip = {
   tags: string[];
   roleName?: string;
   city?: string;
   country?: string;
-}
+};
 
 export interface ContributorCardSquareProps {
   id: string;
@@ -63,7 +63,7 @@ const useStyles = makeStyles(_ =>
 
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
-export const ContributorCardSquare: FC<ContributorCardSquareProps> = props => {
+export const ContributorCardSquare = (props: ContributorCardSquareProps) => {
   const styles = useStyles();
   const { id, displayName, avatar, avatarAltText, url, tooltip, isContactable, roleName, contributorType } = props;
   const { t } = useTranslation();
