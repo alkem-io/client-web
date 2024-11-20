@@ -23,7 +23,6 @@ import {
   CalloutVisibility,
   CommunityRoleType,
   CreateVirtualContributorOnAccountMutationVariables,
-  LicenseEntitlementType,
   LicensePlanType,
   SpaceType,
 } from '@/core/apollo/generated/graphql-schema';
@@ -121,7 +120,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   // selectableSpaces are space and subspaces
   // subspaces has communityId in order to manually add the VC to it
-  const { selectedExistingSpaceId, spacePrivileges, spaceEntitlements, myAccountId, selectableSpaces } = useMemo(() => {
+  const { selectedExistingSpaceId, spacePrivileges, myAccountId, selectableSpaces } = useMemo(() => {
     const account = targetAccount ?? data?.me.user?.account;
     const accountId = account?.id;
     const mySpaces = compact(account?.spaces);
@@ -160,9 +159,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         collaboration: {
           myPrivileges: mySpace?.community?.roleSet.authorization?.myPrivileges,
         },
-      },
-      spaceEntitlements: {
-        myEntitlements: mySpace?.license?.entitlements,
       },
       selectableSpaces,
     };
@@ -223,21 +219,24 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
     // todo: check create callout privilege (community) if needed
     const { myPrivileges: spaceMyPrivileges } = spacePrivileges;
-    const { myEntitlements: spaceMyEntitlements } = spaceEntitlements;
     const { myPrivileges: collaborationMyPrivileges } = spacePrivileges.collaboration;
 
     const hasRequiredPrivileges =
       spaceMyPrivileges?.includes(AuthorizationPrivilege.CreateSubspace) &&
       collaborationMyPrivileges?.includes(AuthorizationPrivilege.CommunityAddMemberVcFromAccount);
 
-    const hasRequiredEntitlements =
-      Array.isArray(spaceMyEntitlements) &&
-      spaceMyEntitlements.some(t => t.type === LicenseEntitlementType.AccountVirtualContributor);
-
-    if (!(hasRequiredPrivileges && hasRequiredEntitlements)) {
-      logInfo(`Insuficient privileges to create a VC: ${JSON.stringify(spacePrivileges)}`, {
+    if (!hasRequiredPrivileges) {
+      logInfo(`Insufficient privileges to create a VC, Space Privileges: ${JSON.stringify(spacePrivileges)}`, {
         category: TagCategoryValues.VC,
       });
+      logInfo(
+        `Insufficient privileges to create a VC, Collaboration Privileges: ${JSON.stringify(
+          collaborationMyPrivileges
+        )}`,
+        {
+          category: TagCategoryValues.VC,
+        }
+      );
     }
 
     return hasRequiredPrivileges;
@@ -367,8 +366,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   // load the following hook either with bokId (created subspace) or spaceId (created/existing space)
   const { handleCreateCallout, canCreateCallout } = useCalloutCreation({
-    collaborationId: bokId,
-    overrideCollaborationId: collaborationId,
+    collaborationId,
   });
 
   const calloutDetails: CalloutCreationType = {

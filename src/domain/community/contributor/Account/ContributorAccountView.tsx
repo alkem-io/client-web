@@ -21,8 +21,6 @@ import useNewVirtualContributorWizard from '@/main/topLevelPages/myDashboard/new
 import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
 import {
   AuthorizationPrivilege,
-  LicenseEntitlement,
-  LicenseEntitlementDataType,
   LicenseEntitlementType,
   SpaceLevel,
   SpaceType,
@@ -65,7 +63,7 @@ export interface AccountTabResourcesProps {
   authorization?: { myPrivileges?: AuthorizationPrivilege[] };
   license?: {
     id: string;
-    entitlements?: LicenseEntitlement[];
+    myLicensePrivileges?: LicenseEntitlementType[];
   };
   spaces: {
     id: string;
@@ -82,15 +80,7 @@ export interface AccountTabResourcesProps {
     };
     license: {
       id: string;
-      entitlements: Array<{
-        id: string;
-        type: LicenseEntitlementType;
-        enabled: boolean;
-        limit: number;
-        usage: number;
-        isAvailable: boolean;
-        dataType: LicenseEntitlementDataType;
-      }>;
+      myLicensePrivileges?: LicenseEntitlementType[];
     };
     subspaces: {
       id: string;
@@ -164,35 +154,17 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const [entity, setSelectedEntity] = useState<Entities | undefined>(undefined);
   const styles = useStyles();
-  const accountEntitlements = account?.license?.entitlements || [];
-  const spaceFreeEntitlement = accountEntitlements.find(
-    entitlement => entitlement.type === LicenseEntitlementType.AccountSpaceFree
-  );
-  const spacePlusEntitlement = accountEntitlements.find(
-    entitlement => entitlement.type === LicenseEntitlementType.AccountSpacePlus
-  );
-  const spacePremiumEntitlement = accountEntitlements.find(
-    entitlement => entitlement.type === LicenseEntitlementType.AccountSpacePremium
-  );
+  const myAccountEntitlements = account?.license?.myLicensePrivileges || [];
 
-  const vcEntitlement = accountEntitlements.find(
-    entitlement => entitlement.type === LicenseEntitlementType.AccountVirtualContributor
-  );
-  const innovationHubEntitlement = accountEntitlements.find(
-    entitlement => entitlement.type === LicenseEntitlementType.AccountInnovationHub
-  );
-  const innovationPackEntitlement = accountEntitlements.find(
-    entitlement => entitlement.type === LicenseEntitlementType.AccountInnovationPack
-  );
+  const isEntitledToCreateSpace = [
+    LicenseEntitlementType.AccountSpaceFree,
+    LicenseEntitlementType.AccountSpacePlus,
+    LicenseEntitlementType.AccountSpacePremium,
+  ].some(entitlement => myAccountEntitlements.includes(entitlement));
 
-  const isSpaceFreeLimitReached = spaceFreeEntitlement?.enabled && !spaceFreeEntitlement?.isAvailable;
-  const isSpacePlusLimitReached = spacePlusEntitlement?.enabled && !spacePlusEntitlement?.isAvailable;
-  const isSpacePremiumLimitReached = spacePremiumEntitlement?.enabled && !spacePremiumEntitlement?.isAvailable;
-  const isSpaceLimitReached = isSpaceFreeLimitReached || isSpacePlusLimitReached || isSpacePremiumLimitReached;
-
-  const isVCLimitReached = !vcEntitlement?.isAvailable;
-  const isInnovationHubLimitReached = !innovationHubEntitlement?.isAvailable;
-  const isInnovationPackLimitReached = !innovationPackEntitlement?.isAvailable;
+  const isEntitledToCreateInnovationPack = myAccountEntitlements.includes(LicenseEntitlementType.AccountInnovationPack);
+  const isEntitledToCreateInnovationHub = myAccountEntitlements.includes(LicenseEntitlementType.AccountInnovationHub);
+  const isEntitledToCreateVC = myAccountEntitlements.includes(LicenseEntitlementType.AccountVirtualContributor);
 
   const { virtualContributors, innovationPacks, innovationHubs } = useMemo(
     () => ({
@@ -208,15 +180,15 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
 
   // Note: have information about whether it is the privilege or entitlement that blocks the enabling of the creation, give user more feedback.
   const canCreateSpace =
-    privileges.includes(AuthorizationPrivilege.CreateSpace) && (!isSpaceLimitReached || isPlatformAdmin);
+    privileges.includes(AuthorizationPrivilege.CreateSpace) && (isEntitledToCreateSpace || isPlatformAdmin);
   const canCreateInnovationPack =
     privileges.includes(AuthorizationPrivilege.CreateInnovationPack) &&
-    (!isInnovationPackLimitReached || isPlatformAdmin);
+    (isEntitledToCreateInnovationPack || isPlatformAdmin);
   const canCreateInnovationHub =
     privileges.includes(AuthorizationPrivilege.CreateInnovationHub) &&
-    (!isInnovationHubLimitReached || isPlatformAdmin);
+    (isEntitledToCreateInnovationHub || isPlatformAdmin);
   const canCreateVirtualContributor =
-    privileges.includes(AuthorizationPrivilege.CreateVirtualContributor) && (!isVCLimitReached || isPlatformAdmin);
+    privileges.includes(AuthorizationPrivilege.CreateVirtualContributor) && (isEntitledToCreateVC || isPlatformAdmin);
 
   const canDeleteEntities = privileges.includes(AuthorizationPrivilege.Delete);
 

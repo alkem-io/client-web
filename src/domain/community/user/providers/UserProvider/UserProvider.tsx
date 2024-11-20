@@ -9,7 +9,6 @@ import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
 import { AuthorizationPrivilege, LicenseEntitlementType, User } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
-import { filterAndMapEnabledEntitlements } from '@/domain/license/plans/utils/filterAndMapEnabledEntitlements';
 
 export interface UserContextValue {
   user: UserMetadata | undefined;
@@ -77,7 +76,7 @@ const UserProvider: FC = ({ children }) => {
       verified,
       isAuthenticated,
       accountPrivileges: meData?.me.user?.account?.authorization?.myPrivileges ?? [],
-      accountEntitlements: filterAndMapEnabledEntitlements(meData?.me.user?.account?.license?.entitlements),
+      accountEntitlements: meData?.me.user?.account?.license?.myLicensePrivileges ?? [],
     }),
     [userMetadata, loading, loadingMeAndParentQueries, verified, isAuthenticated]
   );

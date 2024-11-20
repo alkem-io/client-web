@@ -8,9 +8,7 @@ query CollaborationAuthorizationEntitlements($collaborationId: UUID!) {
       }
       license {
         id
-        entitlements {
-          ...EntitlementDetails
-        }
+        myLicensePrivileges
       }
     }
   }
