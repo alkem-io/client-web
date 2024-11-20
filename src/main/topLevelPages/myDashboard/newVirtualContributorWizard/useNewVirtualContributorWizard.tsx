@@ -234,13 +234,15 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       LicenseEntitlementType.SpaceFlagVirtualContributorAccess
     );
 
-    if (!(hasRequiredPrivileges && hasRequiredEntitlements)) {
-      logInfo(`Insuficient privileges to create a VC: ${JSON.stringify(spacePrivileges)}`, {
+    const hasAllPrivileges = hasRequiredPrivileges && hasRequiredEntitlements;
+
+    if (!hasAllPrivileges) {
+      logInfo(`Insufficient privileges to create a VC: ${JSON.stringify(spacePrivileges)}`, {
         category: TagCategoryValues.VC,
       });
     }
 
-    return hasRequiredPrivileges;
+    return hasAllPrivileges;
   };
 
   const [CreateNewSpace] = useCreateSpaceMutation({
