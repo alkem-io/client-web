@@ -3,7 +3,7 @@ import { Dialog, DialogActions, Button, DialogContent, RadioGroup, FormControlLa
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Trans, useTranslation } from 'react-i18next';
 import { Caption, Text } from '@/core/ui/typography';
-import useLoadingState from '../../../shared/utils/useLoadingState';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { LoadingButton } from '@mui/lab';
 import Gutters from '@/core/ui/grid/Gutters';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';

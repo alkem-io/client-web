@@ -1,10 +1,9 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import { Caption } from '@/core/ui/typography';
 import GridProvider from '@/core/ui/grid/GridProvider';
-import { AnyTemplate, AnyTemplateWithInnovationPack } from '../../../models/TemplateBase';
-import TemplateCard from '../../cards/TemplateCard';
+import { AnyTemplate, AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
+import TemplateCard from '@/domain/templates/components/cards/TemplateCard';
 import ContributeCardSkeleton from '@/core/ui/card/ContributeCardSkeleton';
 import { times } from 'lodash';
 import { gutters } from '@/core/ui/grid/utils';

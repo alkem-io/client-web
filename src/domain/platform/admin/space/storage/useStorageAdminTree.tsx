@@ -15,10 +15,10 @@ import {
   StorageBucketFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import ImageIcon from '@mui/icons-material/Image';
-import { getProfileIcon } from '../../../../shared/icons/profileIcons';
-import { SpaceIcon } from '../../../../journey/space/icon/SpaceIcon';
-import { SubspaceIcon } from '../../../../journey/subspace/icon/SubspaceIcon';
-import { OpportunityIcon } from '../../../../journey/opportunity/icon/OpportunityIcon';
+import { getProfileIcon } from '@/domain/shared/icons/profileIcons';
+import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
+import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
+import { OpportunityIcon } from '@/domain/journey/opportunity/icon/OpportunityIcon';
 import { FolderCopyOutlined } from '@mui/icons-material';
 
 export interface StorageAdminTreeItem {

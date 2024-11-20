@@ -1,19 +1,19 @@
 import { Box, Link, Skeleton, styled, useTheme } from '@mui/material';
-import { FC, ReactNode, useState } from 'react';
-import useAutomaticTooltip from '../../../shared/utils/useAutomaticTooltip';
-import { JourneyTypeName } from '../../JourneyTypeName';
+import { ReactNode, useState } from 'react';
+import useAutomaticTooltip from '@/domain/shared/utils/useAutomaticTooltip';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { Caption, PageTitle, Tagline } from '@/core/ui/typography';
 import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
 import { MAX_CONTENT_WIDTH_GUTTERS } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { useSpace } from '../SpaceContext/useSpace';
-import { useConfig } from '../../../platform/config/useConfig';
-import { TranslateWithElements } from '../../../shared/i18n/TranslateWithElements';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { BoxProps } from '@mui/system';
 import { useTranslation } from 'react-i18next';
 import { env } from '@/main/env';
-import { BasePageBannerProps } from '../../common/EntityPageLayout/EntityPageLayoutTypes';
+import { BasePageBannerProps } from '@/domain/journey/common/EntityPageLayout/EntityPageLayoutTypes';
 import defaultJourneyBanner from '../../defaultVisuals/Banner.jpg';
 
 export const TITLE_HEIGHT = 6;
@@ -51,7 +51,7 @@ interface PageNoticeProps extends BoxProps {
   journeyTypeName: JourneyPageBannerProps['journeyTypeName'];
 }
 
-const PageNotice: FC<PageNoticeProps> = ({ journeyTypeName, sx, ...boxProps }) => {
+const PageNotice = ({ journeyTypeName, sx, ...boxProps }: PageNoticeProps) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const tLinks = TranslateWithElements(
@@ -123,11 +123,9 @@ const PageNotice: FC<PageNoticeProps> = ({ journeyTypeName, sx, ...boxProps }) =
   );
 };
 
-const WatermarkContainer = (props: BoxProps) => {
-  return (
-    <Box width={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)} maxWidth="100%" margin="auto" position="relative" {...props} />
-  );
-};
+const WatermarkContainer = (props: BoxProps) => (
+  <Box width={gutters(MAX_CONTENT_WIDTH_GUTTERS - 2)} maxWidth="100%" margin="auto" position="relative" {...props} />
+);
 
 export interface JourneyPageBannerProps extends BasePageBannerProps {
   title?: string;
@@ -139,7 +137,7 @@ export interface JourneyPageBannerProps extends BasePageBannerProps {
   journeyTypeName: JourneyTypeName | 'admin';
 }
 
-const SpacePageBanner: FC<JourneyPageBannerProps> = ({
+const SpacePageBanner = ({
   title,
   tagline,
   bannerUrl,
@@ -148,7 +146,7 @@ const SpacePageBanner: FC<JourneyPageBannerProps> = ({
   journeyTypeName,
   loading: dataLoading = false,
   watermark,
-}) => {
+}: JourneyPageBannerProps) => {
   const { t } = useTranslation();
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
 

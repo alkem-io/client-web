@@ -3,11 +3,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import PageContentRibbon from '@/core/ui/content/PageContentRibbon';
 
-interface UseInnovationHubOutsideRibbonOptions {
-  label: TranslationKey;
-}
-
-const useInnovationHubOutsideRibbon = ({ label }: UseInnovationHubOutsideRibbonOptions) => {
+const useInnovationHubOutsideRibbon = ({ label }: { label: TranslationKey }) => {
   const { t } = useTranslation();
 
   const { data: innovationHubData } = useBannerInnovationHubQuery();

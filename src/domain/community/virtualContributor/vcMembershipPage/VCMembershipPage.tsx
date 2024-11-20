@@ -1,20 +1,18 @@
-import React, { FC, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUrlParams } from '@/core/routing/useUrlParams';
-import { ContributionsView } from '../../profile/views/ProfileView';
-import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
+import { ContributionsView } from '@/domain/community/profile/views/ProfileView';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
 import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
-import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
+import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
 import { AuthorizationPrivilege, CommunityContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useVcMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   PendingMembershipsDialogType,
   usePendingMembershipsDialog,
-} from '../../pendingMembership/PendingMembershipsDialogContext';
+} from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 
-export interface UserMembershipPageProps {}
-
-const UserMembershipPage: FC<UserMembershipPageProps> = () => {
+const UserMembershipPage = () => {
   const { t } = useTranslation();
   const { vcNameId = '' } = useUrlParams();
 

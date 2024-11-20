@@ -1,5 +1,5 @@
 import { Box, IconButton, Tooltip, styled, useTheme } from '@mui/material';
-import { Reference } from '../../../common/profile/Profile';
+import { Reference } from '@/domain/common/profile/Profile';
 import { BlockSectionTitle, CardText } from '@/core/ui/typography';
 import { RoundedIconProps } from '@/core/ui/icon/RoundedIcon';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';

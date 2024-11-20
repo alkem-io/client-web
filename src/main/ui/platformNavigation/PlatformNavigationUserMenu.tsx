@@ -1,9 +1,9 @@
-import React, { forwardRef, PropsWithChildren, ReactNode, useMemo, useState } from 'react';
+import { forwardRef, PropsWithChildren, ReactNode, useMemo, useState } from 'react';
 import { Box, Divider, MenuList, Typography } from '@mui/material';
 import AlkemioAvatar from '@/core/ui/image/AlkemioAvatar';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
-import { buildLoginUrl, buildUserProfileUrl } from '../../routing/urlBuilders';
+import { buildLoginUrl, buildUserProfileUrl } from '@/main/routing/urlBuilders';
 import PendingMembershipsUserMenuItem from '@/domain/community/pendingMembership/PendingMembershipsUserMenuItem';
 import {
   AssignmentIndOutlined,

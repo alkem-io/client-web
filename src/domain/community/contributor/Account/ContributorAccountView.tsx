@@ -37,11 +37,11 @@ import {
   useDeleteVirtualContributorOnAccountMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import EntityConfirmDeleteDialog from '../../../journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
+import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
 import InnovationPackCardHorizontal, {
   InnovationPackCardHorizontalSkeleton,
-} from '../../../InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
-import CreateInnovationPackDialog from '../../../InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
+} from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
+import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
 
 const enum Entities {
   Space = 'Space',

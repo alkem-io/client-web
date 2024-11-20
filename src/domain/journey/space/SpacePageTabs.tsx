@@ -1,10 +1,10 @@
-import React, { FC, ReactNode, useLayoutEffect, useState } from 'react';
+import { ReactNode, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import HeaderNavigationTabs from '../../shared/components/PageHeader/HeaderNavigationTabs';
-import HeaderNavigationTab from '../../shared/components/PageHeader/HeaderNavigationTab';
-import { EntityPageSection } from '../../shared/layout/EntityPageSection';
-import { EntityTypeName } from '../../platform/constants/EntityTypeName';
-import HeaderNavigationButton from '../../shared/components/PageHeader/HeaderNavigationButton';
+import HeaderNavigationTabs from '@/domain/shared/components/PageHeader/HeaderNavigationTabs';
+import HeaderNavigationTab from '@/domain/shared/components/PageHeader/HeaderNavigationTab';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import { EntityTypeName } from '@/domain/platform/constants/EntityTypeName';
+import HeaderNavigationButton from '@/domain/shared/components/PageHeader/HeaderNavigationButton';
 import {
   BottomNavigation,
   BottomNavigationAction,
@@ -27,20 +27,20 @@ import {
   SettingsOutlined,
   ShareOutlined,
 } from '@mui/icons-material';
-import { CalloutIcon } from '../../collaboration/callout/icon/CalloutIcon';
+import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
 import useNavigate from '@/core/routing/useNavigate';
-import getEntityColor from '../../shared/utils/getEntityColor';
+import getEntityColor from '@/domain/shared/utils/getEntityColor';
 import useShare from '@/core/utils/Share';
 import { EntityTabsProps } from '../common/EntityPageLayout';
 import { gutters } from '@/core/ui/grid/utils';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import ActivityDialog from '../common/Activity/ActivityDialog';
 
-interface TabDefinition {
+type TabDefinition = {
   label: ReactNode;
   icon: TabProps['icon'];
   section?: EntityPageSection;
-}
+};
 
 export interface ActionDefinition extends TabDefinition {
   onClick: () => void;
@@ -68,7 +68,7 @@ enum NavigationActions {
   More = 'more',
 }
 
-const SpacePageTabs: FC<EntityPageTabsProps> = ({
+const SpacePageTabs = ({
   currentTab,
   showSettings,
   settingsUrl,
@@ -79,7 +79,7 @@ const SpacePageTabs: FC<EntityPageTabsProps> = ({
   mobile,
   actions,
   onMenuOpen,
-}) => {
+}: EntityPageTabsProps) => {
   const { t } = useTranslation();
 
   const { share, shareDialog } = useShare({ url: shareUrl, entityTypeName });

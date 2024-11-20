@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { InnovationHubHomeInnovationHubFragment } from '@/core/apollo/generated/graphql-schema';
-import { Visual } from '../../common/visual/Visual';
+import { Visual } from '@/domain/common/visual/Visual';
 
 export interface InnovationHubAttrs {
   displayName: string;

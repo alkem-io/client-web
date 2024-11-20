@@ -1,6 +1,6 @@
-import { CountryType } from '../../../common/location/countries.constants';
+import { CountryType } from '@/domain/common/location/countries.constants';
 import { Organization } from '@/core/apollo/generated/graphql-schema';
-import { Reference, Tagset } from '../../../common/profile/Profile';
+import { Reference, Tagset } from '@/domain/common/profile/Profile';
 
 export interface UserModel {
   id: string;

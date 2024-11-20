@@ -1,4 +1,4 @@
-import React, { ComponentType, FC, ReactNode, Ref } from 'react';
+import { ComponentType, ReactNode, Ref } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
 import { times } from 'lodash';
@@ -12,8 +12,8 @@ import {
   OrganizationContributorFragment,
   UserContributorFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import useLazyLoading from '../../shared/pagination/useLazyLoading';
-import ImageBackdrop from '../../shared/components/Backdrops/ImageBackdrop';
+import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
+import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
 import { buildOrganizationUrl, buildUserProfileUrl } from '@/main/routing/urlBuilders';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
@@ -99,11 +99,11 @@ const ContributorsList = <Item extends Identifiable>({
   );
 };
 
-const ContributorsView: FC<ContributorsViewProps> = ({
+const ContributorsView = ({
   showUsers,
   usersPaginated: users,
   organizationsPaginated: orgs,
-}) => {
+}: ContributorsViewProps) => {
   const { t } = useTranslation();
 
   const usersLoader = useLazyLoading(Box, {

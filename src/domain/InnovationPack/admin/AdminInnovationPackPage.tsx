@@ -1,4 +1,3 @@
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useAdminInnovationPackQuery,
@@ -13,13 +12,11 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import InnovationPackForm, { InnovationPackFormValues } from './InnovationPackForm';
-import { StorageConfigContextProvider } from '../../storage/StorageBucket/StorageConfigContext';
-import TemplatesAdmin from '../../templates/components/TemplatesAdmin/TemplatesAdmin';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import TemplatesAdmin from '@/domain/templates/components/TemplatesAdmin/TemplatesAdmin';
 import InnovationPackProfileLayout from '../InnovationPackProfilePage/InnovationPackProfileLayout';
 import { buildInnovationPackSettingsUrl } from '@/main/routing/urlBuilders';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-
-interface AdminInnovationPackPageProps {}
 
 const TemplateTypePermissions = {
   create: [
@@ -47,7 +44,7 @@ const TemplateTypePermissions = {
   ],
 };
 
-const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = () => {
+const AdminInnovationPackPage = () => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { innovationPackNameId, templateNameId } = useUrlParams();

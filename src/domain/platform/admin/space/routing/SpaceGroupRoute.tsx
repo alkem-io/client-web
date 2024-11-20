@@ -1,13 +1,8 @@
-import React, { FC } from 'react';
 import { useUrlParams } from '@/core/routing/useUrlParams';
 import { useSpaceGroupQuery } from '@/core/apollo/generated/apollo-hooks';
-import { GroupRoute } from '../../routing/GroupRoute';
+import { GroupRoute } from '@/domain/platform/admin/routing/GroupRoute';
 
-interface GroupRouteProps {
-  parentCommunityId: string | undefined;
-}
-
-export const SpaceGroupRoute: FC<GroupRouteProps> = ({ parentCommunityId }) => {
+export const SpaceGroupRoute = ({ parentCommunityId }: { parentCommunityId: string | undefined }) => {
   const { groupId = '', spaceNameId = '' } = useUrlParams();
 
   const { data, loading } = useSpaceGroupQuery({

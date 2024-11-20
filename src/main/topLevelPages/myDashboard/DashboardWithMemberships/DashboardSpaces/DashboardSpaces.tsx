@@ -9,7 +9,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { PageTitle } from '@/core/ui/typography';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { Caption, Tagline } from '@/core/ui/typography';
-import { MyMembershipsDialog } from '../../myMemberships/MyMembershipsDialog';
+import { MyMembershipsDialog } from '@/main/topLevelPages/myDashboard/myMemberships/MyMembershipsDialog';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import JourneyTile from '@/domain/journey/common/JourneyTile/JourneyTile';
 import defaultJourneyBanner from '@/domain/journey/defaultVisuals/Banner.jpg';

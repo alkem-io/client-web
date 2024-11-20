@@ -1,19 +1,17 @@
-import { FC, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { sortBy } from 'lodash';
 import {
   refetchAdminInnovationPacksListQuery,
   useAdminInnovationPacksListQuery,
   useDeleteInnovationPackMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import SearchableListLayout from '../../shared/components/SearchableList/SearchableListLayout';
-import SimpleSearchableTable from '../../shared/components/SearchableList/SimpleSearchableTable';
-import AdminLayout from '../../platform/admin/layout/toplevel/AdminLayout';
-import { AdminSection } from '../../platform/admin/layout/toplevel/constants';
+import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
+import SimpleSearchableTable from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
+import AdminLayout from '@/domain/platform/admin/layout/toplevel/AdminLayout';
+import { AdminSection } from '@/domain/platform/admin/layout/toplevel/constants';
 import { buildInnovationPackSettingsUrl } from '@/main/routing/urlBuilders';
 
-interface AdminInnovationPacksPageProps {}
-
-const AdminInnovationPacksPage: FC<AdminInnovationPacksPageProps> = () => {
+const AdminInnovationPacksPage = () => {
   const { data, loading } = useAdminInnovationPacksListQuery();
   const [deleteInnovationPack] = useDeleteInnovationPackMutation({
     refetchQueries: [refetchAdminInnovationPacksListQuery()],

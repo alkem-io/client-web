@@ -9,8 +9,7 @@ import {
   SpacePrivacyMode,
   UserRolesSearchCardsQuery,
 } from '@/core/apollo/generated/graphql-schema';
-import React from 'react';
-import { buildOrganizationUrl, buildUserProfileUrl } from '../../routing/urlBuilders';
+import { buildOrganizationUrl, buildUserProfileUrl } from '@/main/routing/urlBuilders';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '@/core/apollo/generated/apollo-hooks';

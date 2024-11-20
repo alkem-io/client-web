@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Form, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { Box, DialogContent, FormControlLabel, Switch } from '@mui/material';
@@ -12,9 +12,9 @@ import FormikDatePicker from '@/core/ui/forms/DatePicker/FormikDatePicker';
 import FormikTimePicker from '@/core/ui/forms/DatePicker/FormikTimePicker';
 import dayjs from 'dayjs';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { TagsetField } from '../../../../platform/admin/components/Common/TagsetSegment';
+import { TagsetField } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { CalendarEventFormData } from '../../CalendarEventsContainer';
+import { CalendarEventFormData } from '@/domain/timeline/calendar/CalendarEventsContainer';
 import { Actions } from '@/core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
 import { EventFormProps } from './EventForm.model';

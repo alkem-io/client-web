@@ -5,7 +5,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { ConfigurationDocument } from '@/core/apollo/generated/apollo-hooks';
 import { ConfigurationQuery } from '@/core/apollo/generated/graphql-schema';
 import { Configuration } from './configuration';
-import useLoadingStateWithHandlers from '../../shared/utils/useLoadingStateWithHandlers';
+import useLoadingStateWithHandlers from '@/domain/shared/utils/useLoadingStateWithHandlers';
 import { TagCategoryValues, warn as logWarn } from '@/core/logging/sentry/log';
 
 export interface ConfigContextProps {

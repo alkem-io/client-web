@@ -25,7 +25,7 @@ import {
   ADMIN_TRANSLATION_KEY,
   MEMBER_TRANSLATION_KEY,
   OWNER_TRANSLATION_KEY,
-} from '../../../user/constants/translation.constants';
+} from '@/domain/community/user/constants/translation.constants';
 
 export interface OrganizationContainerEntities {
   organization?: OrganizationInfoFragment;

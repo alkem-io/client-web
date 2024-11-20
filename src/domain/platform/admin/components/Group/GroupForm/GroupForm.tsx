@@ -1,8 +1,6 @@
 import { Grid } from '@mui/material';
 import { Form, Formik } from 'formik';
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import {} from 'react-router-dom';
 import * as yup from 'yup';
 import {
   GroupInfoFragment,
@@ -17,26 +15,26 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import WrapperButton from '@/core/ui/button/deprecated/WrapperButton';
 import Section, { Header } from '@/core/ui/content/deprecated/Section';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
-import ProfileReferenceSegment from '../../Common/ProfileReferenceSegment';
-import { referenceSegmentSchema } from '../../Common/ReferenceSegment';
-import { TagsetSegment, tagsetsSegmentSchema } from '../../Common/TagsetSegment';
+import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
+import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import GroupMembersDetails from '../GroupMembersDetails';
 
-interface GroupFormProps {
+type GroupFormProps = {
   title?: string;
   members?: User[];
   group: GroupInfoFragment;
   onSave?: (group: UserGroupUpdateInput) => Promise<void>;
   onCancel?: () => void;
   onDelete?: (groupId: string) => void;
-}
+};
 
 export interface UserGroupUpdateInput {
   id: string;
   profile: Omit<Profile, 'url'>;
 }
 
-export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, onCancel, onDelete }) => {
+export const GroupForm = ({ title, group, members, onSave, onCancel, onDelete }: GroupFormProps) => {
   const isReadOnlyMode = false;
   const isEditMode = true;
   const { t } = useTranslation();

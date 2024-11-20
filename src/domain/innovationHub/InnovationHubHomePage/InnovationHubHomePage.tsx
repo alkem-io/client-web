@@ -11,24 +11,20 @@ import { useTranslation } from 'react-i18next';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import { useDashboardSpacesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
-import SpaceCard from '../../journey/space/SpaceCard/SpaceCard';
-import getMetricCount from '../../platform/metrics/utils/getMetricCount';
-import { MetricType } from '../../platform/metrics/MetricType';
+import SpaceCard from '@/domain/journey/space/SpaceCard/SpaceCard';
+import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
+import { MetricType } from '@/domain/platform/metrics/MetricType';
 import RouterLink from '@/core/ui/link/RouterLink';
 import Gutters from '@/core/ui/grid/Gutters';
-import { ROUTE_HOME } from '../../platform/routes/constants';
-import { useConfig } from '../../platform/config/useConfig';
+import { ROUTE_HOME } from '@/domain/platform/routes/constants';
+import { useConfig } from '@/domain/platform/config/useConfig';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
-
-interface InnovationHubHomePageProps {
-  innovationHub: InnovationHubAttrs;
-}
 
 const isMember = (journey: { community?: { roleSet?: { myMembershipStatus?: CommunityMembershipStatus } } }) =>
   journey.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
 
-const InnovationHubHomePage = ({ innovationHub }: InnovationHubHomePageProps) => {
+const InnovationHubHomePage = ({ innovationHub }: { innovationHub: InnovationHubAttrs }) => {
   const { t } = useTranslation();
 
   const { data: spacesData } = useDashboardSpacesQuery();

@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { Metadata, ServerMetadataQuery } from '@/core/apollo/generated/graphql-schema';
 import { ServerMetadataDocument } from '@/core/apollo/generated/apollo-hooks';
 import queryRequest from '@/core/http/queryRequest';
-import useLoadingStateWithHandlers from '../../shared/utils/useLoadingStateWithHandlers';
+import useLoadingStateWithHandlers from '@/domain/shared/utils/useLoadingStateWithHandlers';
 import { TagCategoryValues, warn as logWarn } from '@/core/logging/sentry/log';
 
 interface ServerMetadataContextProps {

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { Skeleton } from '@mui/material';
-import { PostIcon } from '../../post/icon/PostIcon';
+import { PostIcon } from '@/domain/collaboration/post/icon/PostIcon';
 import ContributeCard from '@/core/ui/card/ContributeCard';
 import CardHeader from '@/core/ui/card/CardHeader';
 import CardDetails from '@/core/ui/card/CardDetails';

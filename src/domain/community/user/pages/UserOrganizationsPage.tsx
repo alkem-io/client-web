@@ -1,10 +1,9 @@
 import { Grid } from '@mui/material';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUrlParams } from '@/core/routing/useUrlParams';
-import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
-import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettingsLayout';
-import AssociatedOrganizationsLazilyFetched from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import UserSettingsLayout from '@/domain/platform/admin/user/layout/UserSettingsLayout';
+import AssociatedOrganizationsLazilyFetched from '@/domain/community/contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import { useUserMetadata } from '../hooks/useUserMetadata';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import useUserOrganizationIds from '../userContributions/useUserOrganizationIds';

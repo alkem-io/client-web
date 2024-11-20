@@ -18,7 +18,7 @@ import AdminBreadcrumbs from '../AdminBreadcrumbs';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import TopLevelLayout from '../../ui/layout/TopLevelLayout';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import AuthorizationPrivilegesForUser from './AuthorizationPrivilegesForUser';

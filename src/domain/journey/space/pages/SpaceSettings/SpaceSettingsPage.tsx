@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import SpaceSettingsView from './SpaceSettingsView';
-import SpaceSettingsLayout from '../../../../platform/admin/space/SpaceSettingsLayout';
-import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
-import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
+import SpaceSettingsLayout from '@/domain/platform/admin/space/SpaceSettingsLayout';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import { Skeleton } from '@mui/material';
-import SubspaceSettingsLayout from '../../../../platform/admin/subspace/SubspaceSettingsLayout';
+import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
 
 const SpaceSettingsPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { journeyId, journeyTypeName, loading } = useRouteResolver();

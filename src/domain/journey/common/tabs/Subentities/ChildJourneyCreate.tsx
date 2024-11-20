@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@mui/material';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { JourneyTypeName } from '../../../JourneyTypeName';
-import getJourneyChildrenTranslation from '../../../subspace/getJourneyChildrenTranslation';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import getJourneyChildrenTranslation from '@/domain/journey/subspace/getJourneyChildrenTranslation';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
 interface ChildJourneyCreateProps {

@@ -6,7 +6,7 @@ import {
   useWelcomeSpaceQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { ExploreSpacesSearchFragment, SearchResultType } from '@/core/apollo/generated/graphql-schema';
-import { TypedSearchResult } from '../../../search/SearchView';
+import { TypedSearchResult } from '@/main/search/SearchView';
 import { SpacesExplorerMembershipFilter } from './ExploreSpacesView';
 import { ExploreSpacesContainerProps, SpaceWithParent } from './ExploreSpacesTypes';
 

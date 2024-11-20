@@ -1,4 +1,4 @@
-import { useUserContext } from '../../../../community/user';
+import { useUserContext } from '@/domain/community/user';
 import { useFreePlanAvailabilityQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, LicenseCredential } from '@/core/apollo/generated/graphql-schema';
 

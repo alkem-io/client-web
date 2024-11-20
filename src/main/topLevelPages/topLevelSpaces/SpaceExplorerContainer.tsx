@@ -16,7 +16,7 @@ import {
   SpaceExplorerSearchSpaceFragment,
   SpacePrivacyMode,
 } from '@/core/apollo/generated/graphql-schema';
-import { TypedSearchResult } from '../../search/SearchView';
+import { TypedSearchResult } from '@/main/search/SearchView';
 import { ITEMS_LIMIT, SpacesExplorerMembershipFilter, SpaceWithParent } from './SpaceExplorerView';
 import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';

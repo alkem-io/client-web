@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
-import { useConfig } from '../../../config/useConfig';
-import { useUserContext } from '../../../../community/user';
-import UserPageBanner from '../../../../community/user/layout/UserPageBanner';
-import { UserProfileTabs, SettingsSection } from '../../layout/EntitySettingsLayout/constants';
-import EntitySettingsLayout from '../../layout/EntitySettingsLayout/EntitySettingsLayout';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import { useUserContext } from '@/domain/community/user';
+import UserPageBanner from '@/domain/community/user/layout/UserPageBanner';
+import { UserProfileTabs, SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import EntitySettingsLayout from '@/domain/platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import { AssignmentIndOutlined, Settings } from '@mui/icons-material';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from '@mui/material';
-import TopLevelPageLayout from '../../ui/layout/topLevelPageLayout/TopLevelPageLayout';
+import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { useInnovationLibraryQuery } from '@/core/apollo/generated/apollo-hooks';
 import DashboardInnovationPacks from '@/domain/InnovationPack/DashboardInnovationPacks/DashboardInnovationPacks';

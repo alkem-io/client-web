@@ -1,32 +1,36 @@
-import React, { FC } from 'react';
+import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Form, Formik } from 'formik';
-import { MessageWithPayload } from '../../../shared/i18n/ValidationMessageTranslation';
+import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import Gutters from '@/core/ui/grid/Gutters';
-import { TagsetField } from '../../../platform/admin/components/Common/TagsetSegment';
+import { TagsetField } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
-import { JourneyCreationForm } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
+import { JourneyCreationForm } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationForm';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
 
 const FormikEffect = FormikEffectFactory<FormValues>();
 
-interface FormValues {
+type FormValues = {
   displayName: string;
   tagline: string;
   vision: string;
   tags: string[];
   addTutorialCallouts: boolean;
   addCallouts: boolean;
-}
+};
 
 interface CreateOpportunityFormProps extends JourneyCreationForm {}
 
-export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmitting, onValidChanged, onChanged }) => {
+export const CreateOpportunityForm = ({
+  isSubmitting,
+  onValidChanged,
+  onChanged,
+}: PropsWithChildren<CreateOpportunityFormProps>) => {
   const { t } = useTranslation();
 
   const validationRequiredString = t('forms.validations.required');

@@ -7,12 +7,12 @@ import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader, { DialogHeaderProps } from '@/core/ui/dialog/DialogHeader';
 import { gutters } from '@/core/ui/grid/utils';
 import { BlockTitle } from '@/core/ui/typography';
-import PostDashboardView from '../../../collaboration/post/views/PostDashboardView';
+import PostDashboardView from '@/domain/collaboration/post/views/PostDashboardView';
 import CalendarEventDetailContainer from '../CalendarEventDetailContainer';
 import EventCardHeader from './EventCardHeader';
-import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
+import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
 
-interface CalendarEventDetailProps {
+type CalendarEventDetailProps = {
   eventId: string | undefined;
   onClose: DialogHeaderProps['onClose'];
   canEdit?: boolean;
@@ -20,7 +20,7 @@ interface CalendarEventDetailProps {
   canDelete?: boolean;
   onDelete?: () => void;
   actions?: ReactNode;
-}
+};
 
 const CalendarEventDetail = ({
   eventId,

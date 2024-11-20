@@ -11,10 +11,10 @@ import { useCreateInnovationHubMutation } from '@/core/apollo/generated/apollo-h
 import { InnovationHubType } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 
-interface CreateInnovationHubDialogProps {
+type CreateInnovationHubDialogProps = {
   accountId: string | undefined;
   accountHostName: string | undefined;
-}
+};
 
 const CreateInnovationHubDialog = ({ accountId, accountHostName = '' }: CreateInnovationHubDialogProps) => {
   const { t } = useTranslation();

@@ -1,18 +1,16 @@
-import { FC, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { sortBy } from 'lodash';
-import AdminLayout from '../../platform/admin/layout/toplevel/AdminLayout';
-import SearchableListLayout from '../../shared/components/SearchableList/SearchableListLayout';
-import { AdminSection } from '../../platform/admin/layout/toplevel/constants';
+import AdminLayout from '@/domain/platform/admin/layout/toplevel/AdminLayout';
+import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
+import { AdminSection } from '@/domain/platform/admin/layout/toplevel/constants';
 import {
   refetchAdminInnovationHubsListQuery,
   useAdminInnovationHubsListQuery,
   useDeleteInnovationHubMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import SimpleSearchableTable from '../../shared/components/SearchableList/SimpleSearchableTable';
+import SimpleSearchableTable from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
 
-interface AdminInnovationHubsPageProps {}
-
-const AdminInnovationHubsPage: FC<AdminInnovationHubsPageProps> = () => {
+const AdminInnovationHubsPage = () => {
   const { data, loading } = useAdminInnovationHubsListQuery();
   const [deleteInnovationHub] = useDeleteInnovationHubMutation({
     refetchQueries: [refetchAdminInnovationHubsListQuery()],

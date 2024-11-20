@@ -1,8 +1,7 @@
-import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useConfig } from '../../../platform/config/useConfig';
+import { useConfig } from '@/domain/platform/config/useConfig';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import { PageLayoutHolderWithOutlet } from '../../../journey/common/EntityPageLayout';
+import { PageLayoutHolderWithOutlet } from '@/domain/journey/common/EntityPageLayout';
 import UserProfilePage from '../pages/UserProfilePage';
 import UserAccountPage from '../pages/UserAccountPage';
 import UserCredentialsPage from '../pages/UserCredentialsPage';

@@ -1,11 +1,11 @@
 import { memo } from 'react';
-import { Visual } from '../../../common/visual/Visual';
+import { Visual } from '@/domain/common/visual/Visual';
 import { Avatar, Box, Paper, Skeleton } from '@mui/material';
 import RouterLink from '@/core/ui/link/RouterLink';
 import GridItem from '@/core/ui/grid/GridItem';
-import withElevationOnHover from '../../../shared/components/withElevationOnHover';
+import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
 import { gutters } from '@/core/ui/grid/utils';
-import { JourneyTypeName } from '../../JourneyTypeName';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { alpha } from '@mui/material/styles';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import { BlockTitle } from '@/core/ui/typography';

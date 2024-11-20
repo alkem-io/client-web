@@ -14,7 +14,7 @@ import {
 } from '@mui/icons-material';
 import { Collapse, IconButton, IconButtonProps, Tabs } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { gutters } from '../../grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { ChainedCommands } from '@tiptap/core/dist/packages/core/src/types';
 import InsertImageButton from './InsertImageButton';
 import ToggleLinkButton from './ToggleLinkButton';

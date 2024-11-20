@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import InnovationPackForm, { InnovationPackFormValues } from '../admin/InnovationPackForm'; // Assuming InnovationPackForm is in the same directory
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useTranslation } from 'react-i18next';
@@ -9,11 +9,7 @@ import { BlockTitle } from '@/core/ui/typography';
 import AddIcon from '@mui/icons-material/Add';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 
-interface CreateInnovationPackDialogProps {
-  accountId: string | undefined;
-}
-
-const CreateInnovationPackDialog = ({ accountId }: CreateInnovationPackDialogProps) => {
+const CreateInnovationPackDialog = ({ accountId }: { accountId: string | undefined }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 

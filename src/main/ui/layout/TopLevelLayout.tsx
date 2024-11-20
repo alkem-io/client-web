@@ -5,7 +5,7 @@ import FloatingActionButtons from '@/core/ui/button/FloatingActionButtons';
 import PlatformHelpButton from '../helpButton/PlatformHelpButton';
 import PoweredBy from '../poweredBy/PoweredBy';
 import { Box, Paper } from '@mui/material';
-import SearchDialog from '../../search/SearchDialog';
+import SearchDialog from '@/main/search/SearchDialog';
 
 interface TopLevelDesktopLayoutProps {
   breadcrumbs?: PlatformNavigationBarProps['breadcrumbs'];

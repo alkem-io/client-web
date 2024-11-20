@@ -1,9 +1,9 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
-import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
-import { CreateOpportunityForm } from '../../../opportunity/forms/CreateOpportunityForm';
-import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
+import { JourneyCreationDialog } from '@/domain/shared/components/JorneyCreationDialog';
+import { CreateOpportunityForm } from '@/domain/journey/opportunity/forms/CreateOpportunityForm';
+import { JourneyFormValues } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationForm';
 import {
   useCreateSubspaceMutation,
   refetchSubspacesInSpaceQuery,

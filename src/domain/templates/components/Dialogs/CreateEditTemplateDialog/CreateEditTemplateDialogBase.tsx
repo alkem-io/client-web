@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { FormikProps } from 'formik/dist/types';
 import DialogHeader, { DialogHeaderProps } from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
-import { FormikSubmitButtonPure } from '../../../../shared/components/forms/FormikSubmitButton';
-import DeleteButton from '../../../../shared/components/DeleteButton';
+import { FormikSubmitButtonPure } from '@/domain/shared/components/forms/FormikSubmitButton';
+import DeleteButton from '@/domain/shared/components/DeleteButton';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 
 interface TemplateDialogBaseProps<Values extends {}> {

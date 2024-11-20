@@ -1,15 +1,14 @@
 import { Box, FormGroup } from '@mui/material';
 import { Formik } from 'formik';
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Tagset, TagsetType, Visual } from '@/core/apollo/generated/graphql-schema';
-import { NameSegment, nameSegmentSchema } from '../../platform/admin/components/Common/NameSegment';
+import { NameSegment, nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MID_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { BlockSectionTitle } from '@/core/ui/typography';
-import { TagsetSegment, tagsetsSegmentSchema } from '../../platform/admin/components/Common/TagsetSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import SaveButton from '@/core/ui/actions/SaveButton';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { nameIdValidator } from '@/core/ui/forms/validator';
@@ -29,7 +28,7 @@ export interface InnovationHubFormValues {
   accountId: string;
 }
 
-interface InnovationHubFormProps {
+type InnovationHubFormProps = {
   isNew?: boolean;
   nameID?: string;
   subdomain?: string;
@@ -47,9 +46,9 @@ interface InnovationHubFormProps {
 
   loading?: boolean;
   onSubmit: (formData: InnovationHubFormValues) => void;
-}
+};
 
-const InnovationHubForm: FC<InnovationHubFormProps> = ({
+const InnovationHubForm = ({
   isNew = false,
   nameID,
   subdomain,
@@ -58,7 +57,7 @@ const InnovationHubForm: FC<InnovationHubFormProps> = ({
   accounts,
   loading,
   onSubmit,
-}) => {
+}: InnovationHubFormProps) => {
   const { t } = useTranslation();
 
   const profileId = profile?.id ?? '';

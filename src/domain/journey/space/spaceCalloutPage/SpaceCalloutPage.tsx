@@ -1,10 +1,9 @@
-import React from 'react';
-import CalloutPage from '../../../collaboration/CalloutPage/CalloutPage';
+import CalloutPage from '@/domain/collaboration/CalloutPage/CalloutPage';
 import SpaceDashboardPage from '../SpaceDashboard/SpaceDashboardPage';
 import SpaceSubspacesPage from '../pages/SpaceSubspacesPage';
-import KnowedgeBasePage from '../../../collaboration/KnowledgeBase/KnowedgeBasePage';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import { JourneyCalloutDialogProps } from '../../common/JourneyCalloutDialog/JourneyCalloutDialog';
+import KnowedgeBasePage from '@/domain/collaboration/KnowledgeBase/KnowedgeBasePage';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import { JourneyCalloutDialogProps } from '@/domain/journey/common/JourneyCalloutDialog/JourneyCalloutDialog';
 import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 import { useSpace } from '../SpaceContext/useSpace';

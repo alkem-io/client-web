@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { useField } from 'formik';
 import { Box, Button } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import FormikWhiteboardPreview from '../../../collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
-import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
+import FormikWhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
+import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { gutters } from '@/core/ui/grid/utils';
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Identifiable } from '@/core/utils/Identifiable';
@@ -12,7 +12,7 @@ import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplat
 import { LoadingButton } from '@mui/lab';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { LibraryIcon } from '../../LibraryIcon';
+import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 
 interface WhiteboardTemplatesSelectorProps {
   name: string;

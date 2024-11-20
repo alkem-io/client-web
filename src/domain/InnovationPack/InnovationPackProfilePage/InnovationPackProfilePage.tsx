@@ -17,10 +17,10 @@ import { gutters } from '@/core/ui/grid/utils';
 import Loading from '@/core/ui/loading/Loading';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { BlockSectionTitle, Text } from '@/core/ui/typography';
-import ReferencesListSmallItem from '../../profile/Reference/ReferencesListSmallItem/ReferencesListSmallItem';
-import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
-import {} from '../../templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
-import TemplatesAdmin from '../../templates/components/TemplatesAdmin/TemplatesAdmin';
+import ReferencesListSmallItem from '@/domain/profile/Reference/ReferencesListSmallItem/ReferencesListSmallItem';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
+import {} from '@/domain/templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
+import TemplatesAdmin from '@/domain/templates/components/TemplatesAdmin/TemplatesAdmin';
 import InnovationPackProfileLayout from './InnovationPackProfileLayout';
 
 const InnovationPackProfilePage = () => {

@@ -1,36 +1,34 @@
-import React, { FC, useState } from 'react';
+import { useState, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import ContributorsSearchContainer from '../contributor/ContributorsSearch/ContributorsSearchContainer';
 import { InputAdornment, OutlinedInput } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { debounce } from 'lodash';
-import { useUserContext } from './index';
+import { useUserContext } from './';
 import ContributorsView, { ITEMS_PER_PAGE } from './ContributorsView';
 import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import useInnovationHubOutsideRibbon from '../../innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
+import useInnovationHubOutsideRibbon from '@/domain/innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
 import { GroupOutlined } from '@mui/icons-material';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 
-export interface ContributorsPageProps {}
-
-const ContributorsPage: FC<ContributorsPageProps> = () => {
+const ContributorsPage = () => {
   const { t } = useTranslation();
 
   // temporary disable the search (server #4545)
   const [searchEnabled] = useState(false);
 
-  const [searchTerms, setSearchTerms] = useState<string>('');
-  const [searchTermsDebounced, setSearchTermsDebounced] = useState<string>('');
+  const [searchTerms, setSearchTerms] = useState('');
+  const [searchTermsDebounced, setSearchTermsDebounced] = useState('');
 
   const { isAuthenticated } = useUserContext();
 
   const onSearchHandlerDebounced = debounce((value: string) => setSearchTermsDebounced(value), 500);
 
-  const onSearchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onSearchHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchTerms(e.target.value);
     onSearchHandlerDebounced(e.target.value);
   };

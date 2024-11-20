@@ -1,23 +1,23 @@
-import React, { useEffect } from 'react';
-import CalloutsListDialog from '../../../../collaboration/callout/calloutsList/CalloutsListDialog';
+import { useEffect } from 'react';
+import CalloutsListDialog from '@/domain/collaboration/callout/calloutsList/CalloutsListDialog';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import { useTranslation } from 'react-i18next';
-import { UseCalloutsProvided } from '../../../../collaboration/callout/useCallouts/useCallouts';
-import { SubspaceDialog } from '../../layout/SubspaceDialog';
-import SubspacesListDialog from '../../dialogs/SubspacesListDialog';
-import ContributorsToggleDialog from '../../dialogs/ContributorsToggleDialog';
-import ActivityDialog from '../../../common/Activity/ActivityDialog';
-import CalendarDialog from '../../../../timeline/calendar/CalendarDialog';
+import { UseCalloutsProvided } from '@/domain/collaboration/callout/useCallouts/useCallouts';
+import { SubspaceDialog } from '@/domain/journey/subspace/layout/SubspaceDialog';
+import SubspacesListDialog from '@/domain/journey/subspace/dialogs/SubspacesListDialog';
+import ContributorsToggleDialog from '@/domain/journey/subspace/dialogs/ContributorsToggleDialog';
+import ActivityDialog from '@/domain/journey/common/Activity/ActivityDialog';
+import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import { useParams } from 'react-router-dom';
-import { ShareDialog } from '../../../../shared/components/ShareDialog/ShareDialog';
-import InnovationFlowSettingsDialog from '../../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog';
-import DashboardNavigation from '../../../dashboardNavigation/DashboardNavigation';
+import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
+import InnovationFlowSettingsDialog from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog';
+import DashboardNavigation from '@/domain/journey/dashboardNavigation/DashboardNavigation';
 import Dialog from '@mui/material/Dialog';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { GRID_COLUMNS_MOBILE } from '@/core/ui/grid/constants';
 import { Theme, useMediaQuery } from '@mui/material';
-import { DashboardNavigationItem } from '../../../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
-import CommunityUpdatesDialog from '../../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
+import { DashboardNavigationItem } from '@/domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 
 export interface SubspaceDialogsProps {

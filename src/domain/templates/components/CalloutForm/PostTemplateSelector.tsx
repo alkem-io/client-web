@@ -8,7 +8,7 @@ import { Caption, CardText } from '@/core/ui/typography';
 import ImportTemplatesDialog from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import { LibraryIcon } from '../../LibraryIcon';
+import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { useTemplateContentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Identifiable } from '@/core/utils/Identifiable';

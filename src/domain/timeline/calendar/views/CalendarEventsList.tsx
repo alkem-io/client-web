@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -15,13 +15,13 @@ import { first, groupBy, sortBy } from 'lodash';
 import dayjs from 'dayjs';
 import { CalendarEvent } from '@/core/apollo/generated/graphql-schema';
 import FullCalendar, { INTERNAL_DATE_FORMAT } from '../components/FullCalendar';
-import useScrollToElement from '../../../shared/utils/scroll/useScrollToElement';
+import useScrollToElement from '@/domain/shared/utils/scroll/useScrollToElement';
 import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import { HIGHLIGHT_PARAM_NAME } from '../CalendarDialog';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { useLocation } from 'react-router-dom';
 
-interface CalendarEventsListProps {
+type CalendarEventsListProps = {
   events: {
     id: string;
     nameID: string;
@@ -42,7 +42,7 @@ interface CalendarEventsListProps {
   highlightedDay?: Date | null;
   actions?: ReactNode;
   onClose?: DialogHeaderProps['onClose'];
-}
+};
 
 const CalendarEventsList = ({ events, highlightedDay, actions, onClose }: CalendarEventsListProps) => {
   const { t } = useTranslation();

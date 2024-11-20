@@ -8,7 +8,7 @@ import { Actions } from '@/core/ui/actions/Actions';
 import { Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import useLoadingState from '../../../../shared/utils/useLoadingState';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
 interface EntityConfirmDeleteDialogProps {
   entity: string;

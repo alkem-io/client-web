@@ -1,6 +1,6 @@
 import { Box, FormControlLabel, IconButton, Skeleton, Switch, useTheme } from '@mui/material';
 import { Add } from '@mui/icons-material';
-import { FC, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import useNavigate from '@/core/routing/useNavigate';
@@ -10,13 +10,13 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeaderWithDialogAction from '@/core/ui/content/PageContentBlockHeaderWithDialogAction';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption, Text } from '@/core/ui/typography';
-import CalendarEventView from '../../../timeline/calendar/views/CalendarEventView';
+import CalendarEventView from '@/domain/timeline/calendar/views/CalendarEventView';
 import PageContentBlockFooter from '@/core/ui/content/PageContentBlockFooter';
-import FullCalendar, { INTERNAL_DATE_FORMAT } from '../../../timeline/calendar/components/FullCalendar';
-import { HIGHLIGHT_PARAM_NAME, INIT_CREATING_EVENT_PARAM } from '../../../timeline/calendar/CalendarDialog';
+import FullCalendar, { INTERNAL_DATE_FORMAT } from '@/domain/timeline/calendar/components/FullCalendar';
+import { HIGHLIGHT_PARAM_NAME, INIT_CREATING_EVENT_PARAM } from '@/domain/timeline/calendar/CalendarDialog';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { Actions } from '@/core/ui/actions/Actions';
 
@@ -42,7 +42,7 @@ export interface DashboardCalendarSectionProps {
   journeyTypeName: JourneyTypeName;
 }
 
-const DashboardCalendarSection: FC<DashboardCalendarSectionProps> = ({ journeyId, journeyTypeName }) => {
+const DashboardCalendarSection = ({ journeyId, journeyTypeName }: DashboardCalendarSectionProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const urlQueryParams = useQueryParams();

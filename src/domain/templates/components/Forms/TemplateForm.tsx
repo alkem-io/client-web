@@ -1,7 +1,7 @@
 import { FormikProps } from 'formik';
 import { ReactNode } from 'react';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { AnyTemplate } from '../../models/TemplateBase';
+import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import CalloutTemplateForm, { CalloutTemplateFormSubmittedValues } from './CalloutTemplateForm';
 import CollaborationTemplateForm, { CollaborationTemplateFormSubmittedValues } from './CollaborationTemplateForm';
 import CommunityGuidelinesTemplateForm, {

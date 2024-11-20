@@ -3,9 +3,9 @@ import PageBanner, { PageBannerProps } from '@/core/ui/layout/pageBanner/PageBan
 import { useMemo } from 'react';
 import defaultJourneyBanner from '../../defaultVisuals/Banner.jpg';
 import { useChildJourneyPageBannerQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useSpace } from '../../space/SpaceContext/useSpace';
-import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
-import { VisualName } from '../../../common/visual/constants/visuals.constants';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
+import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 
 interface ChildJourneyPageBannerProps extends Omit<PageBannerProps, 'banner'> {
   journeyId: string | undefined;

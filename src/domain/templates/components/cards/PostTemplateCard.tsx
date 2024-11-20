@@ -5,11 +5,11 @@ import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
 import CardSegmentCaption from '@/core/ui/card/CardSegmentCaption';
 import ContributeCard from '@/core/ui/card/ContributeCard';
 import { Caption } from '@/core/ui/typography/components';
-import InnovationPackIcon from '../../../InnovationPack/InnovationPackIcon';
+import InnovationPackIcon from '@/domain/InnovationPack/InnovationPackIcon';
 import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
 import CardDetails from '@/core/ui/card/CardDetails';
-import { PostIcon } from '../../../collaboration/post/icon/PostIcon';
-import { PostTemplate } from '../../models/PostTemplate';
+import { PostIcon } from '@/domain/collaboration/post/icon/PostIcon';
+import { PostTemplate } from '@/domain/templates/models/PostTemplate';
 import { TemplateCardProps } from './TemplateCard';
 
 interface PostTemplateCardProps extends TemplateCardProps {

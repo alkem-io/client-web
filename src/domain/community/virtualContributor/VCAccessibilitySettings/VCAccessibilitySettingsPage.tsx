@@ -1,4 +1,3 @@
-import React from 'react';
 import { useUrlParams } from '@/core/routing/useUrlParams';
 import {
   useUpdateVirtualContributorMutation,
@@ -8,9 +7,9 @@ import {
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContent from '@/core/ui/content/PageContent';
-import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { Trans, useTranslation } from 'react-i18next';
-import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
 import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
 import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -20,10 +19,10 @@ import { BlockTitle, Caption } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
 
-interface VCAccessibilityProps {
+type VCAccessibilityProps = {
   listedInStore?: boolean;
   searchVisibility?: SearchVisibility;
-}
+};
 
 export const VCAccessibilitySettingsPage = () => {
   const { t } = useTranslation();

@@ -6,7 +6,7 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { useTranslation } from 'react-i18next';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 import { Form, Formik } from 'formik';
-import useLoadingState from '../../shared/utils/useLoadingState';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { LoadingButton } from '@mui/lab';
 import { useSpaceCollaborationTemplatesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';

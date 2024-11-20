@@ -1,5 +1,5 @@
 import Breadcrumbs, { BreadcrumbsProps } from '@/core/ui/navigation/Breadcrumbs';
-import BreadcrumbsRootItem from '../../ui/breadcrumbs/BreadcrumbsRootItem';
+import BreadcrumbsRootItem from '@/main/ui/breadcrumbs/BreadcrumbsRootItem';
 import { forwardRef } from 'react';
 import { Collapsible } from '@/core/ui/navigation/Collapsible';
 import { Expandable } from '@/core/ui/navigation/Expandable';

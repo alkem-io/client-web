@@ -1,12 +1,12 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import SpaceChildJourneyCard, {
   SpaceChildJourneyCardProps,
-} from '../../common/SpaceChildJourneyCard/SpaceChildJourneyCard';
+} from '@/domain/journey/common/SpaceChildJourneyCard/SpaceChildJourneyCard';
 import { SubspaceIcon } from '../icon/SubspaceIcon';
-import CardParentJourneySegment from '../../common/SpaceChildJourneyCard/CardParentJourneySegment';
-import { SpaceIcon } from '../../space/icon/SpaceIcon';
+import CardParentJourneySegment from '@/domain/journey/common/SpaceChildJourneyCard/CardParentJourneySegment';
+import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
 import CardActions from '@/core/ui/card/CardActions';
-import JourneyCardGoToButton from '../../common/JourneyCard/JourneyCardGoToButton';
+import JourneyCardGoToButton from '@/domain/journey/common/JourneyCard/JourneyCardGoToButton';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import CardRibbon from '@/core/ui/card/CardRibbon';
 import { useTranslation } from 'react-i18next';

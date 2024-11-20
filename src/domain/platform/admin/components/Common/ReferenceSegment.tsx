@@ -4,19 +4,19 @@ import { Box, BoxProps, Link } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { FieldArray } from 'formik';
-import React, { FC, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { useConfig } from '../../../config/useConfig';
-import { PushFunc, RemoveFunc } from '../../../../common/reference/useEditReference';
-import { Reference } from '../../../../common/profile/Profile';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import { PushFunc, RemoveFunc } from '@/domain/common/reference/useEditReference';
+import { Reference } from '@/domain/common/profile/Profile';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import { TranslateWithElements } from '../../../../shared/i18n/TranslateWithElements';
+import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
 import { Caption, BlockSectionTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
 import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
-import { MessageWithPayload } from '../../../../shared/i18n/ValidationMessageTranslation';
+import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
 export interface ReferenceSegmentProps extends BoxProps {
@@ -40,7 +40,7 @@ export const referenceSegmentValidationObject = yup.object().shape({
 });
 export const referenceSegmentSchema = yup.array().of(referenceSegmentValidationObject);
 
-export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
+export const ReferenceSegment = ({
   fieldName = 'references',
   references,
   readOnly = false,
@@ -50,7 +50,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
   onRemove,
   temporaryLocation = false,
   ...props
-}) => {
+}: ReferenceSegmentProps) => {
   const { t } = useTranslation();
   const tLinks = TranslateWithElements(<Link target="_blank" />);
   const { locations } = useConfig();

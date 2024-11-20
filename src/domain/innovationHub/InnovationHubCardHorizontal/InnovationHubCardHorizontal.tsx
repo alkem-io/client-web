@@ -1,6 +1,6 @@
 import { Box, Skeleton } from '@mui/material';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import JourneyAvatar from '../../journey/common/JourneyAvatar/JourneyAvatar';
+import JourneyAvatar from '@/domain/journey/common/JourneyAvatar/JourneyAvatar';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { Caption, CardTitle } from '@/core/ui/typography';
 import OneLineMarkdown from '@/core/ui/markdown/OneLineMarkdown';
@@ -37,7 +37,7 @@ export interface InnovationHubCardHorizontalProps extends InnovationHubSpacesPro
   size?: AvatarSize;
 }
 
-interface InnovationHubSpacesProps {
+type InnovationHubSpacesProps = {
   spaceVisibilityFilter?: SpaceVisibility;
   spaceListFilter?: {
     id: string;
@@ -46,7 +46,7 @@ interface InnovationHubSpacesProps {
     };
   }[];
   actions?: React.ReactNode;
-}
+};
 
 const InnovationHubSpaces = ({ spaceVisibilityFilter, spaceListFilter }: InnovationHubSpacesProps) => {
   const { t } = useTranslation();

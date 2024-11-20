@@ -1,5 +1,5 @@
 import { TemplateBase } from './TemplateBase';
-import { Reference } from '../../common/profile/Profile';
+import { Reference } from '@/domain/common/profile/Profile';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 
 export interface CommunityGuidelinesTemplate extends TemplateBase {

@@ -14,11 +14,7 @@ export const VCProfilePage = () => {
   const { t } = useTranslation();
   const { vcNameId = '' } = useUrlParams();
 
-  const { data, loading, error } = useVirtualContributorQuery({
-    variables: {
-      id: vcNameId,
-    },
-  });
+  const { data, loading, error } = useVirtualContributorQuery({ variables: { id: vcNameId } });
 
   const isBokSpace =
     data?.virtualContributor?.aiPersona?.bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;

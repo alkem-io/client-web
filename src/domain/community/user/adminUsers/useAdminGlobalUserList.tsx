@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ApolloError } from '@apollo/client';
-import { SearchableTableItem } from '../../../platform/admin/components/SearchableTable';
+import { SearchableTableItem } from '@/domain/platform/admin/components/SearchableTable';
 import {
   refetchUserListQuery,
   useAssignLicensePlanToAccountMutation,
@@ -9,14 +9,14 @@ import {
   useUserListQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
+import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
 import { LicensePlanType, UserListQuery, UserListQueryVariables } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { ContributorLicensePlan } from '../../contributor/organization/adminOrganizations/useAdminGlobalOrganizationsList';
+import { ContributorLicensePlan } from '@/domain/community/contributor/organization/adminOrganizations/useAdminGlobalOrganizationsList';
 
-interface Provided {
+type Provided = {
   loading: boolean;
   deleting: boolean;
   error?: ApolloError;
@@ -31,14 +31,14 @@ interface Provided {
   assignLicensePlan: (accountId: string, planId: string) => Promise<void>;
   revokeLicensePlan: (accountId: string, planId: string) => Promise<void>;
   onSearchTermChange: (filterTerm: string) => void;
-}
+};
 
 const DEFAULT_PAGE_SIZE = 10;
 
-interface UseAdminGlobalUserListOptions {
+type UseAdminGlobalUserListOptions = {
   skip?: boolean;
   pageSize?: number;
-}
+};
 
 const useAdminGlobalUserList = ({
   skip = false,

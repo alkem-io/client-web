@@ -1,18 +1,18 @@
 import { Grid } from '@mui/material';
-import React, { FC, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import ProfileDetail from '../../ProfileDetail/ProfileDetail';
-import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
-import References from '../../../../shared/components/References/References';
+import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
+import References from '@/domain/shared/components/References/References';
 import { styled } from '@mui/styles';
-import { UserMetadata } from '../../../user/hooks/useUserMetadataWrapper';
+import { UserMetadata } from '@/domain/community/user/hooks/useUserMetadataWrapper';
 import {
   SocialNetworkEnum,
   isSocialNetworkSupported,
-} from '../../../../shared/components/SocialLinks/models/SocialNetworks';
+} from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { BlockSectionTitle, CardText } from '@/core/ui/typography';
-import SocialLinks from '../../../../shared/components/SocialLinks/SocialLinks';
+import SocialLinks from '@/domain/shared/components/SocialLinks/SocialLinks';
 import { groupBy } from 'lodash';
 
 export interface UserProfileViewProps {
@@ -22,14 +22,12 @@ export interface UserProfileViewProps {
   };
 }
 
-const TagsWithOffset = styled(TagsComponent)({
-  marginTop: 5,
-});
+const TagsWithOffset = styled(TagsComponent)({ marginTop: 5 });
 
 const SOCIAL_LINK_GROUP = 'social';
 const OTHER_LINK_GROUP = 'other';
 
-export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMetadata } }) => {
+export const UserProfileView = ({ entities: { userMetadata } }: UserProfileViewProps) => {
   const { t } = useTranslation();
   const { user, keywords, skills } = userMetadata;
   const references = user.profile.references;

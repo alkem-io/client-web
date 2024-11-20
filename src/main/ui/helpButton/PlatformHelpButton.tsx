@@ -6,7 +6,7 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 import { useUserContext } from '@/domain/community/user';
 import { AuthorizationPrivilege, PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
-import ChatWidget from '../../guidance/chatWidget/ChatWidget';
+import ChatWidget from '@/main/guidance/chatWidget/ChatWidget';
 import { useTranslation } from 'react-i18next';
 
 const PlatformHelpButton = () => {

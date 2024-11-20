@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import { useUserContext } from '../../../../community/user';
+import { useUserContext } from '@/domain/community/user';
 import { AuthorizationCredential } from '@/core/apollo/generated/graphql-schema';
 import EditMemberUsers, { EditMemberUsersProps } from '../Community/EditMembersUsers';
-import { useAvailableMembersWithCredential } from '../../../../community/community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
+import { useAvailableMembersWithCredential } from '@/domain/community/community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
 
 interface EditAdminCredentialsProps extends Pick<EditMemberUsersProps, 'onAdd' | 'onRemove' | 'updating'> {
   credential: AuthorizationCredential;

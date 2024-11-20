@@ -1,6 +1,6 @@
 import React, { FC, ReactNode } from 'react';
 import SearchBaseContributionCard, { SearchBaseContributionCardProps } from './base/SearchBaseContributionCard';
-import { PostIcon } from '../../../collaboration/post/icon/PostIcon';
+import { PostIcon } from '@/domain/collaboration/post/icon/PostIcon';
 import CardFooterDate from '@/core/ui/card/CardFooterDate';
 import MessageCounter from '@/core/ui/card/MessageCounter';
 import CardFooter from '@/core/ui/card/CardFooter';

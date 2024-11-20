@@ -1,18 +1,17 @@
-import React from 'react';
-import { InvitationWithMeta } from '../../pendingMembership/PendingMemberships';
-import JourneyAvatar from '../../../journey/common/JourneyAvatar/JourneyAvatar';
+import { InvitationWithMeta } from '@/domain/community/pendingMembership/PendingMemberships';
+import JourneyAvatar from '@/domain/journey/common/JourneyAvatar/JourneyAvatar';
 import { BlockSectionTitle, CardText } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import DetailedActivityDescription from '../../../shared/components/ActivityDescription/DetailedActivityDescription';
+import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
 import LinkButton from '@/core/ui/button/LinkButton';
-import { getChildJourneyTypeName } from '../../../shared/utils/spaceLevel';
+import { getChildJourneyTypeName } from '@/domain/shared/utils/spaceLevel';
 
-interface InvitationCardHorizontalProps {
+type InvitationCardHorizontalProps = {
   invitation: InvitationWithMeta | undefined;
   onClick?: () => void;
-}
+};
 
 const InvitationCardHorizontal = ({ invitation, onClick }: InvitationCardHorizontalProps) => {
   if (!invitation) {

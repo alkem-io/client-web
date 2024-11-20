@@ -15,7 +15,7 @@ import DeleteOutline from '@mui/icons-material/DeleteOutline';
 import React, { forwardRef, ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import RemoveModal from '@/core/ui/dialogs/RemoveModal';
-import useLazyLoading from '../../pagination/useLazyLoading';
+import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import LoadingListItem from './LoadingListItem';
 import { times } from 'lodash';
 import { Actions } from '@/core/ui/actions/Actions';

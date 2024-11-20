@@ -1,15 +1,14 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { journeyCardValueGetter } from '../../common/utils/journeyCardValueGetter';
-import { useSpace } from '../../space/SpaceContext/useSpace';
-import SubspaceCard from '../../subspace/subspaceCard/SubspaceCard';
-import SubspacesContainer from '../../space/containers/SubspacesContainer';
+import { journeyCardValueGetter } from '@/domain/journey/common/utils/journeyCardValueGetter';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
+import SubspacesContainer from '@/domain/journey/space/containers/SubspacesContainer';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { DialogContent } from '@mui/material';
 import { CommunityMembershipStatus, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
 import { CardLayoutContainer } from '@/core/ui/card/cardsLayout/CardsLayout';
-import JourneyFilter from '../../common/JourneyFilter/JourneyFilter';
+import JourneyFilter from '@/domain/journey/common/JourneyFilter/JourneyFilter';
 import Loading from '@/core/ui/loading/Loading';
 
 export interface SubspacesListDialogProps {

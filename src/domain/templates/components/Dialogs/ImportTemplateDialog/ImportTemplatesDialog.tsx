@@ -1,11 +1,11 @@
 import { Button, CircularProgress, DialogActions, DialogContent, Link } from '@mui/material';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import React, { cloneElement, ReactElement, useEffect, useMemo, useState } from 'react';
+import { cloneElement, ReactElement, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ImportTemplatesDialogGallery from './ImportTemplatesDialogGallery';
-import { LibraryIcon } from '../../../LibraryIcon';
-import { AnyTemplate } from '../../../models/TemplateBase';
-import useLoadingState from '../../../../shared/utils/useLoadingState';
+import { LibraryIcon } from '@/domain/templates/LibraryIcon';
+import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { LoadingButtonProps } from '@mui/lab';
 import { BlockTitle, Caption } from '@/core/ui/typography';

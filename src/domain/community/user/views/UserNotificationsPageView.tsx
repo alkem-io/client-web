@@ -1,5 +1,4 @@
 import { Grid, Box } from '@mui/material';
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AuthorizationPrivilege, Preference, UserPreferenceType } from '@/core/apollo/generated/graphql-schema';
 import { ViewProps } from '@/core/container/view';
@@ -27,7 +26,7 @@ export interface UserNotificationsPageViewProps
     UserNotificationsPageViewState
   > {}
 
-const UserNotificationsPageView: FC<UserNotificationsPageViewProps> = ({ entities, actions, state }) => {
+const UserNotificationsPageView = ({ entities, actions, state }: UserNotificationsPageViewProps) => {
   const { t } = useTranslation();
   const { user: userMetadata } = useUserContext();
   const isPlatformAdmin = userMetadata?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;

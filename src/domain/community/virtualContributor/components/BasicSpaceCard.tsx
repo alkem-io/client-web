@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import Avatar from '@/core/ui/avatar/Avatar';
 import { BlockSectionTitle } from '@/core/ui/typography';
@@ -16,11 +15,7 @@ export interface BasicSpaceProps {
   url: string;
 }
 
-interface Props {
-  space: BasicSpaceProps | undefined;
-}
-
-const BasicSpaceCard: FC<Props> = ({ space }) => {
+const BasicSpaceCard = ({ space }: { space: BasicSpaceProps | undefined }) => {
   const { t } = useTranslation();
 
   if (!space) {

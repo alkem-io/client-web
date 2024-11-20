@@ -1,7 +1,7 @@
 import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
-import React, { MouseEventHandler } from 'react';
+import { MouseEventHandler } from 'react';
 import SwapColors from '@/core/ui/palette/SwapColors';
-import { buildLoginUrl } from '../../routing/urlBuilders';
+import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import { Box, Button, Grow } from '@mui/material';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { Link } from 'react-router-dom';

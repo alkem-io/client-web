@@ -12,11 +12,11 @@ import {
   Typography,
 } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
-import { Visual } from '../../../common/visual/Visual';
-import withElevationOnHover from '../../../shared/components/withElevationOnHover';
+import { Visual } from '@/domain/common/visual/Visual';
+import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
 import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
-import { JourneyTypeName } from '../../JourneyTypeName';
-import spaceIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import spaceIcon from '@/domain/shared/components/JourneyIcon/JourneyIcon';
 import BlockTitleWithIcon from '@/core/ui/content/BlockTitleWithIcon';
 import { CommunityRoleType } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';

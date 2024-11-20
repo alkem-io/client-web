@@ -28,7 +28,7 @@ import {
   ActivityOpportunityCreatedView,
   ActivityViewProps,
 } from './views';
-import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFromUser';
+import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
 import { ActivityCalendarEventCreatedView } from './views/ActivityCalendarEventCreatedView';
 

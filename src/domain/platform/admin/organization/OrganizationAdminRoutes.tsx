@@ -7,7 +7,7 @@ import { OrganizationGroupsRoute } from './OrganizationGroupsRoute';
 import OrganizationCommunityPage from './OrganizationCommunityPage';
 import OrganizationAuthorizationPage from './OrganizationAuthorizationPage';
 import NonAdminRedirect from '@/main/admin/NonAdminRedirect';
-import { useOrganization } from '../../../community/contributor/organization/hooks/useOrganization';
+import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import Loading from '@/core/ui/loading/Loading';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';

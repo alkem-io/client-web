@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, PropsWithChildren } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 import {
   refetchUserProviderQuery,
   useCreateUserNewRegistrationMutation,
@@ -8,7 +8,7 @@ import {
 import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
 import { AuthorizationPrivilege, LicenseEntitlementType, User } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
-import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
+import { toUserMetadata, UserMetadata } from '@/domain/community/user/hooks/useUserMetadataWrapper';
 
 export interface UserContextValue {
   user: UserMetadata | undefined;
@@ -32,12 +32,10 @@ const UserContext = React.createContext<UserContextValue>({
   accountEntitlements: [],
 });
 
-const UserProvider = ({ children }: PropsWithChildren<{}>) => {
+const UserProvider: FC = ({ children }) => {
   const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
 
-  const { data: meData, loading: loadingMe } = useUserProviderQuery({
-    skip: !isAuthenticated,
-  });
+  const { data: meData, loading: loadingMe } = useUserProviderQuery({ skip: !isAuthenticated });
 
   const { data: platformLevelAuthorizationData, loading: isLoadingPlatformLevelAuthorization } =
     usePlatformLevelAuthorizationQuery({ skip: !isAuthenticated });

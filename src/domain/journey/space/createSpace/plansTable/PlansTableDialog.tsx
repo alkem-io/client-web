@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Dialog, DialogActions, DialogContent, Theme, useMediaQuery } from '@mui/material';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -15,8 +15,8 @@ import Loading from '@/core/ui/loading/Loading';
 import SelectPlanButton from './SelectPlanButton';
 import { usePlanAvailability } from './usePlanAvailability';
 import { TagCategoryValues, error } from '@/core/logging/sentry/log';
-import { getPlanTranslations } from '../../../../license/plans/utils/getPlanTranslations';
-import { PlanFeatures, PlanName, PlanPrice } from '../../../../license/plans/ui/PlanCardsComponents';
+import { getPlanTranslations } from '@/domain/license/plans/utils/getPlanTranslations';
+import { PlanFeatures, PlanName, PlanPrice } from '@/domain/license/plans/ui/PlanCardsComponents';
 import { LicenseCredential, LicensePlanType } from '@/core/apollo/generated/graphql-schema';
 
 const lines = (theme: Theme) => `1px solid ${theme.palette.divider}`;

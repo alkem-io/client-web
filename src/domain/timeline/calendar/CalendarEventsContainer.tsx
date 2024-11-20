@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { PropsWithChildren, useCallback } from 'react';
 import {
   refetchSpaceCalendarEventsQuery,
   useCreateCalendarEventMutation,
@@ -12,7 +12,7 @@ import {
   CalendarEventInfoFragment,
   Profile,
 } from '@/core/apollo/generated/graphql-schema';
-import { StorageConfigContextProvider } from '../../storage/StorageBucket/StorageConfigContext';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { MutationBaseOptions } from '@apollo/client/core/watchQueryOptions';
 import { isSameDay } from '@/core/utils/time/utils';
 
@@ -66,7 +66,11 @@ export interface CalendarEventsEntities {
   };
 }
 
-export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ journeyId, parentSpaceId, children }) => {
+export const CalendarEventsContainer = ({
+  journeyId,
+  parentSpaceId,
+  children,
+}: PropsWithChildren<CalendarEventsContainerProps>) => {
   const { data: spaceData, loading } = useSpaceCalendarEventsQuery({
     variables: { spaceId: journeyId!, includeSubspace: !Boolean(parentSpaceId) },
     skip: !journeyId,

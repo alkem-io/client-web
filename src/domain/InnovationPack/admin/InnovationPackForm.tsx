@@ -1,6 +1,5 @@
 import { Box, TextField } from '@mui/material';
 import { Formik } from 'formik';
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Reference, SearchVisibility, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
@@ -8,13 +7,13 @@ import SaveButton from '@/core/ui/actions/SaveButton';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { BlockSectionTitle } from '@/core/ui/typography';
-import ContextReferenceSegment from '../../platform/admin/components/Common/ContextReferenceSegment';
-import { NameSegment, nameSegmentSchema } from '../../platform/admin/components/Common/NameSegment';
-import { referenceSegmentSchema } from '../../platform/admin/components/Common/ReferenceSegment';
-import { TagsetSegment, tagsetsSegmentSchema } from '../../platform/admin/components/Common/TagsetSegment';
+import ContextReferenceSegment from '@/domain/platform/admin/components/Common/ContextReferenceSegment';
+import { NameSegment, nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
+import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import Gutters from '@/core/ui/grid/Gutters';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { DEFAULT_TAGSET } from '../../common/tags/tagset.constants';
+import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import FormikCheckboxField from '@/core/ui/forms/FormikCheckboxField';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 
@@ -30,7 +29,7 @@ export interface InnovationPackFormValues {
   searchVisibility: SearchVisibility;
 }
 
-interface InnovationPackFormProps {
+type InnovationPackFormProps = {
   isNew?: boolean;
   nameID?: string;
   profile?: {
@@ -45,9 +44,9 @@ interface InnovationPackFormProps {
   searchVisibility?: SearchVisibility;
   loading?: boolean;
   onSubmit: (formData: InnovationPackFormValues) => void;
-}
+};
 
-const InnovationPackForm: FC<InnovationPackFormProps> = ({
+const InnovationPackForm = ({
   isNew = false,
   nameID,
   profile,
@@ -56,7 +55,7 @@ const InnovationPackForm: FC<InnovationPackFormProps> = ({
   provider,
   loading,
   onSubmit,
-}) => {
+}: InnovationPackFormProps) => {
   const { t } = useTranslation();
 
   const profileId = profile?.id ?? '';

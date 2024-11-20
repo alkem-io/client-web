@@ -1,21 +1,21 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Theme, useMediaQuery } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { JourneyTypeName } from '../../JourneyTypeName';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
-import InnovationFlowStates from '../../../collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
-import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
-import { OrderUpdate, TypedCallout } from '../../../collaboration/callout/useCallouts/useCallouts';
-import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
+import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
+import CalloutsGroupView from '@/domain/collaboration/callout/CalloutsInContext/CalloutsGroupView';
+import { OrderUpdate, TypedCallout } from '@/domain/collaboration/callout/useCallouts/useCallouts';
+import { InnovationFlowState } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
 import React, { useEffect, useMemo, useState } from 'react';
 import { SubspaceInnovationFlow, useConsumeAction } from '../layout/SubspacePageLayout';
-import { useCalloutCreationWithPreviewImages } from '../../../collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
-import CalloutCreationDialog from '../../../collaboration/callout/creationDialog/CalloutCreationDialog';
+import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import CalloutCreationDialog from '@/domain/collaboration/callout/creationDialog/CalloutCreationDialog';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
-import InnovationFlowVisualizerMobile from '../../../collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
-import InnovationFlowChips from '../../../collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
-import InnovationFlowSettingsButton from '../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
-import { CalloutGroupNameValuesMap } from '../../../collaboration/callout/CalloutsInContext/CalloutsGroup';
+import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
+import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
+import InnovationFlowSettingsButton from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
+import { CalloutGroupNameValuesMap } from '@/domain/collaboration/callout/CalloutsInContext/CalloutsGroup';
 
 interface SubspaceHomeViewProps {
   journeyId: string | undefined;

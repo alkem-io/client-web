@@ -1,18 +1,13 @@
-import React from 'react';
 import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '@/core/routing/useUrlParams';
-import ProfilePageBanner from '../../../common/profile/ProfilePageBanner';
+import ProfilePageBanner from '@/domain/common/profile/ProfilePageBanner';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { buildSettingsProfileUrl } from '@/main/routing/urlBuilders';
 
 const VCPageBanner = () => {
   const { vcNameId = '' } = useUrlParams();
 
-  const { data, loading } = useVirtualContributorQuery({
-    variables: {
-      id: vcNameId,
-    },
-  });
+  const { data, loading } = useVirtualContributorQuery({ variables: { id: vcNameId } });
 
   const profile = data?.virtualContributor.profile;
 

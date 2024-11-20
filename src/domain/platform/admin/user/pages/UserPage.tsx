@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
-import UserRemoveModal from '../../components/User/UserRemoveModal';
-import UserForm from '../../../../community/user/userForm/UserForm';
+import UserRemoveModal from '@/domain/platform/admin/components/User/UserRemoveModal';
+import UserForm from '@/domain/community/user/userForm/UserForm';
 import { Loading } from '@/core/ui/loading/Loading';
 import {
   useCreateTagsetOnProfileMutation,
@@ -13,9 +13,9 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { EditMode } from '@/core/ui/forms/editMode';
 import { CreateUserInput } from '@/core/apollo/generated/graphql-schema';
-import { UserModel } from '../../../../community/user/models/User';
-import { createUserNameID } from '../../../../community/user/utils/createUserNameId';
-import { getUpdateUserInput } from '../../../../community/user/utils/getUpdateUserInput';
+import { UserModel } from '@/domain/community/user/models/User';
+import { createUserNameID } from '@/domain/community/user/utils/createUserNameId';
+import { getUpdateUserInput } from '@/domain/community/user/utils/getUpdateUserInput';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useUrlParams } from '@/core/routing/useUrlParams';
 

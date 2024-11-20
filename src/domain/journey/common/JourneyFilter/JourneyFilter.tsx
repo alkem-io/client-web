@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from 'react';
-import { SearchTagsInputProps } from '../../../shared/components/SearchTagsInput/SearchTagsInput';
+import { SearchTagsInputProps } from '@/domain/shared/components/SearchTagsInput/SearchTagsInput';
 import { Identifiable } from '@/core/utils/Identifiable';
 import MultipleSelect from '@/core/ui/search/MultipleSelect';
 import filterFn, { MatchInformation, ValueType, getAllValues } from '@/core/utils/filtering/filterFn';
 import { Box } from '@mui/material';
 import { BlockTitle } from '@/core/ui/typography';
-import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import { gutters } from '@/core/ui/grid/utils';
 import { uniq } from 'lodash';
 import { MAX_TERMS_SEARCH } from '@/main/search/SearchView';

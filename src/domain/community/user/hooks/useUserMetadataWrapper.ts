@@ -1,4 +1,4 @@
-import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '../../../common/tags/tagset.constants';
+import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '@/domain/common/tags/tagset.constants';
 import {
   AuthorizationPrivilege,
   MyPrivilegesFragment,

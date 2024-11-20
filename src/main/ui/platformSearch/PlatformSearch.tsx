@@ -9,7 +9,7 @@ import { useQueryParams } from '@/core/routing/useQueryParams';
 import { gutters } from '@/core/ui/grid/utils';
 import { Collapsible } from '@/core/ui/navigation/Collapsible';
 import { UncontrolledExpandable } from '@/core/ui/navigation/UncontrolledExpandable';
-import { SEARCH_SPACE_URL_PARAM, SEARCH_TERMS_URL_PARAM } from '../../search/constants';
+import { SEARCH_SPACE_URL_PARAM, SEARCH_TERMS_URL_PARAM } from '@/main/search/constants';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 
 enum SearchScope {

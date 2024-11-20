@@ -10,9 +10,9 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Form, Formik } from 'formik';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
-import useLoadingState from '../../../../shared/utils/useLoadingState';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { Caption } from '@/core/ui/typography';
-import { nameSegmentSchema } from '../../../../platform/admin/components/Common/NameSegment';
+import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 
 export interface VirtualContributorFormValues {
   displayName: string;

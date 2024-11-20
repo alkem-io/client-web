@@ -3,14 +3,14 @@ import { FormHelperText, SxProps, TextField, Theme } from '@mui/material';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import { useField } from 'formik';
 import { without } from 'lodash';
-import { FC, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useUserSelectorQuery } from '@/core/apollo/generated/apollo-hooks';
 import { User, UserFilterInput } from '@/core/apollo/generated/graphql-schema';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { gutters } from '@/core/ui/grid/utils';
 import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
-import { ProfileChipView } from '../../contributor/ProfileChip/ProfileChipView';
+import { ProfileChipView } from '@/domain/community/contributor/ProfileChip/ProfileChipView';
 import { UserChip } from './UserChip';
 import { useUserContext } from '../hooks/useUserContext';
 import { useTranslation } from 'react-i18next';
@@ -24,7 +24,7 @@ const GRID_COLUMNS_MOBILE = 3;
 
 type HydratorFn = <U extends Identifiable>(users: U[]) => (U & { message?: string; disabled?: boolean })[];
 
-interface FormikUserSelectorProps {
+type FormikUserSelectorProps = {
   name: string;
   required?: boolean;
   readonly?: boolean;
@@ -32,11 +32,11 @@ interface FormikUserSelectorProps {
   sortUsers?: <U extends Identifiable>(results: U[]) => U[];
   hydrateUsers?: HydratorFn;
   sx?: SxProps<Theme>;
-}
+};
 
 const identityFn = <U extends Identifiable>(results: U[]) => results;
 
-export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
+export const FormikUserSelector = ({
   name,
   required,
   readonly,
@@ -45,7 +45,7 @@ export const FormikUserSelector: FC<FormikUserSelectorProps> = ({
   hydrateUsers = identityFn as HydratorFn,
   sx,
   ...containerProps
-}) => {
+}: FormikUserSelectorProps) => {
   // This field is the array of user Ids
   const [field, meta, helpers] = useField<string[] | undefined>(name);
   const validationError = Boolean(meta.error) && meta.touched;

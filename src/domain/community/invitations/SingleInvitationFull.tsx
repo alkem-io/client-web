@@ -17,7 +17,7 @@ import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import References from '@/domain/shared/components/References/References';
 import { gutters } from '@/core/ui/grid/utils';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
-import { getChildJourneyTypeName } from '../../shared/utils/spaceLevel';
+import { getChildJourneyTypeName } from '@/domain/shared/utils/spaceLevel';
 import { Actions } from '@/core/ui/actions/Actions';
 
 type SingleInvitationFullProps = {

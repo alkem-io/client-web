@@ -1,13 +1,10 @@
-import React, { FC } from 'react';
 import { useAccountInformationQuery, useUserAccountQuery } from '@/core/apollo/generated/apollo-hooks';
-import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettingsLayout';
-import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
+import UserSettingsLayout from '@/domain/platform/admin/user/layout/UserSettingsLayout';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
 import { useUrlParams } from '@/core/routing/useUrlParams';
-import ContributorAccountView from '../../contributor/Account/ContributorAccountView';
+import ContributorAccountView from '@/domain/community/contributor/Account/ContributorAccountView';
 
-interface UserAccountPageProps {}
-
-export const UserAccountPage: FC<UserAccountPageProps> = () => {
+export const UserAccountPage = () => {
   const { userNameId = '' } = useUrlParams();
 
   const { data: userData, loading: loadingUser } = useUserAccountQuery({

@@ -1,12 +1,12 @@
 import { useBannerInnovationHubQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Trans, useTranslation } from 'react-i18next';
-import { JourneyTypeName } from '../../journey/JourneyTypeName';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import PageContentRibbon from '@/core/ui/content/PageContentRibbon';
 
-interface UseInnovationHubJourneyBannerRibbonOptions {
+type UseInnovationHubJourneyBannerRibbonOptions = {
   spaceId: string | undefined;
   journeyTypeName: JourneyTypeName;
-}
+};
 
 const useInnovationHubJourneyBannerRibbon = ({
   spaceId,

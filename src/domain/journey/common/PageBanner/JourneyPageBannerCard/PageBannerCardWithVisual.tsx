@@ -9,7 +9,7 @@ import PageBannerCardWrapper, {
   PageBannerCardWrapperProps,
 } from '@/core/ui/layout/pageBannerCard/PageBannerCardWrapper';
 import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
-import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 
 export interface PageBannerCardWithVisualProps extends PageBannerCardWrapperProps {
   header?: ReactNode;

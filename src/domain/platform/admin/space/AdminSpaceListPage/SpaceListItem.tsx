@@ -11,16 +11,16 @@ import {
   useRevokeLicensePlanFromSpaceMutation,
   useUpdateSpacePlatformSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import ListItemLink, { ListItemLinkProps } from '../../../../shared/components/SearchableList/ListItemLink';
+import ListItemLink, { ListItemLinkProps } from '@/domain/shared/components/SearchableList/ListItemLink';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { BlockTitle } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
-import { nameSegmentSchema } from '../../components/Common/NameSegment';
+import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { LoadingButton } from '@mui/lab';
 import { gutters } from '@/core/ui/grid/utils';
-import useLoadingState from '../../../../shared/utils/useLoadingState';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import PlansTable, { LicensePlan } from './PlansTable';
 import AssignPlan from './AssignPlan';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';

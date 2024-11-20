@@ -1,8 +1,8 @@
 import { Formik } from 'formik';
-import React, { ElementType, FC } from 'react';
+import { ElementType } from 'react';
 import * as yup from 'yup';
 import { Context, Profile } from '@/core/apollo/generated/graphql-schema';
-import { ContextSegmentProps, contextSegmentSchema } from '../../platform/admin/components/Common/ContextSegment';
+import { ContextSegmentProps, contextSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
 
 export interface ContextFormValues {
   background: string;
@@ -11,23 +11,23 @@ export interface ContextFormValues {
   who: string;
 }
 
-interface ContextFormProps {
+type ContextFormProps = {
   context?: Context;
   profile?: Omit<Profile, 'storageBucket' | 'url'>;
   onSubmit: (formData: ContextFormValues) => void;
   wireSubmit: (setter: () => void) => void;
   contextSegment: ElementType<ContextSegmentProps>;
   loading: boolean;
-}
+};
 
-export const ContextForm: FC<ContextFormProps> = ({
+export const ContextForm = ({
   context,
   profile,
   onSubmit,
   wireSubmit,
   loading,
   contextSegment: ContextSegment,
-}) => {
+}: ContextFormProps) => {
   const initialValues: ContextFormValues = {
     background: profile?.description || '',
     impact: context?.impact || '',

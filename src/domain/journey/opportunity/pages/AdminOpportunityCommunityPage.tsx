@@ -2,15 +2,15 @@ import { FC } from 'react';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import CommunityOrganizations from '../../../community/community/CommunityAdmin/CommunityOrganizations';
-import CommunityUsers from '../../../community/community/CommunityAdmin/CommunityUsers';
-import useRoleSetAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
-import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
-import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
+import CommunityOrganizations from '@/domain/community/community/CommunityAdmin/CommunityOrganizations';
+import CommunityUsers from '@/domain/community/community/CommunityAdmin/CommunityUsers';
+import useRoleSetAdmin from '@/domain/community/community/CommunityAdmin/useCommunityAdmin';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import { useOpportunity } from '../hooks/useOpportunity';
-import SubspaceSettingsLayout from '../../../platform/admin/subspace/SubspaceSettingsLayout';
-import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
-import { useSpace } from '../../space/SpaceContext/useSpace';
+import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
+import CommunityVirtualContributors from '@/domain/community/community/CommunityAdmin/CommunityVirtualContributors';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {

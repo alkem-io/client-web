@@ -4,7 +4,7 @@ import {
   useJourneyDataQuery,
   useSendMessageToCommunityLeadsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { EntityDashboardLeads } from '../../../community/community/EntityDashboardContributorsSection/Types';
+import { EntityDashboardLeads } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import { AuthorizationPrivilege, MetricsItemFragment, Reference } from '@/core/apollo/generated/graphql-schema';
 import mainQuery from '@/core/apollo/utils/mainQuery';
 

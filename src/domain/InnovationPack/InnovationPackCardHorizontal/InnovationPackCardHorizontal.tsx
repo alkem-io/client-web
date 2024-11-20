@@ -6,16 +6,16 @@ import { gutters } from '@/core/ui/grid/utils';
 import RouterLink from '@/core/ui/link/RouterLink';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import { Caption, CardTitle } from '@/core/ui/typography';
-import { CommunityGuidelinesIcon } from '../../community/communityGuidelines/icon/CommunityGuidelinesIcon';
-import { InnovationFlowIcon } from '../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
-import { PostIcon } from '../../collaboration/post/icon/PostIcon';
-import { WhiteboardIcon } from '../../collaboration/whiteboard/icon/WhiteboardIcon';
+import { CommunityGuidelinesIcon } from '@/domain/community/communityGuidelines/icon/CommunityGuidelinesIcon';
+import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
+import { PostIcon } from '@/domain/collaboration/post/icon/PostIcon';
+import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 import InnovationPackIcon from '../InnovationPackIcon';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import ActionsMenu from '@/core/ui/card/ActionsMenu';
 import OneLineMarkdown from '@/core/ui/markdown/OneLineMarkdown';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { SpaceIcon } from '../../journey/space/icon/SpaceIcon';
+import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
 import { RoundedBadgeSize } from '@/core/ui/icon/RoundedBadge';
 
 export interface InnovationPackCardHorizontalProps {

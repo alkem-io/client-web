@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -10,15 +9,11 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationCredential, GroupInfoFragment, User } from '@/core/apollo/generated/graphql-schema';
 import GroupForm, { UserGroupUpdateInput } from './GroupForm/GroupForm';
-import { getUpdateProfileInput } from '../../../../community/user/utils/getUpdateUserInput';
-import OrganizationAdminLayout from '../../organization/OrganizationAdminLayout';
-import { SettingsSection } from '../../layout/EntitySettingsLayout/constants';
+import { getUpdateProfileInput } from '@/domain/community/user/utils/getUpdateUserInput';
+import OrganizationAdminLayout from '@/domain/platform/admin/organization/OrganizationAdminLayout';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
 
-interface GroupPageProps {
-  group?: GroupInfoFragment;
-}
-
-export const GroupPage: FC<GroupPageProps> = ({ group }) => {
+export const GroupPage = ({ group }: { group?: GroupInfoFragment }) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const success = (message: string) => notify(message, 'success');

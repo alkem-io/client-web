@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from 'react';
-import { Reference, ReferenceWithAuthorization } from '../../../common/profile/Profile';
+import { Reference, ReferenceWithAuthorization } from '@/domain/common/profile/Profile';
 import ReferenceView, { ReferenceViewProps } from './ReferenceView';
 import { Box } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';

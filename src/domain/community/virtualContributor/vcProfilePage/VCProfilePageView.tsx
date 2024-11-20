@@ -10,7 +10,7 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import Spacer from '@/core/ui/content/Spacer';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { BlockTitle, Text } from '@/core/ui/typography';
-import ProfileDetail from '../../profile/ProfileDetail/ProfileDetail';
+import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
 import BasicSpaceCard from '../components/BasicSpaceCard';
 
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';

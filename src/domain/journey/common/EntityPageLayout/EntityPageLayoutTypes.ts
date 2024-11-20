@@ -1,4 +1,4 @@
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { ComponentType, ReactElement, ReactNode } from 'react';
 import { PlatformNavigationBarProps } from '@/main/ui/platformNavigation/PlatformNavigationBar';
 

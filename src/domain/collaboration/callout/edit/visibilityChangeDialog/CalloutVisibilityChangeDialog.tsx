@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import Button from '@mui/material/Button';
 import { LoadingButton } from '@mui/lab';
-import { CalloutIcon } from '../../icon/CalloutIcon';
+import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
 import { DialogContent } from '@/core/ui/dialog/deprecated';
 import { CalloutType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { Formik } from 'formik';

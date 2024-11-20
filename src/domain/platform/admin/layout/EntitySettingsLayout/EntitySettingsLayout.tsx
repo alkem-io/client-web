@@ -2,13 +2,13 @@ import React, { FC, ReactNode, useCallback } from 'react';
 import { SettingsSection } from './constants';
 import EntitySettingsTabs, { TabDefinition } from './EntitySettingsTabs';
 import { useTranslation } from 'react-i18next';
-import { EntityPageSection } from '../../../../shared/layout/EntityPageSection';
-import { EmptyLayout, EntityPageLayoutProps } from '../../../../journey/common/EntityPageLayout';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import { EmptyLayout, EntityPageLayoutProps } from '@/domain/journey/common/EntityPageLayout';
 import SettingsPageContent from './SettingsPageContent';
-import EntityPageLayout from '../../../../journey/common/EntityPageLayout/EntityPageLayout';
+import EntityPageLayout from '@/domain/journey/common/EntityPageLayout/EntityPageLayout';
 import PageContent from '@/core/ui/content/PageContent';
 import { PlatformNavigationBarProps } from '@/main/ui/platformNavigation/PlatformNavigationBar';
-import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 
 type EntityTypeName = JourneyTypeName | 'organization' | 'user';
 

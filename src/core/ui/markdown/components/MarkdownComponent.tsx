@@ -1,6 +1,6 @@
 import { ElementType } from 'react';
 import { ReactMarkdownProps } from 'react-markdown/lib/complex-types';
-import { Caption, CardText, Text } from '../../typography';
+import { Caption, CardText, Text } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import { useMarkdownOptions } from '../MarkdownOptionsContext';
 import { SxProps } from '@mui/material';

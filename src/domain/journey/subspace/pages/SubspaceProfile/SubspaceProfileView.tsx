@@ -13,10 +13,10 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import SaveButton from '@/core/ui/actions/SaveButton';
 import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
-import FormMode from '../../../../platform/admin/components/FormMode';
-import ProfileForm, { ProfileFormValues } from '../../../../common/profile/ProfileForm';
-import EditVisualsView from '../../../../common/visual/EditVisuals/EditVisualsView';
-import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
+import FormMode from '@/domain/platform/admin/components/FormMode';
+import ProfileForm, { ProfileFormValues } from '@/domain/common/profile/ProfileForm';
+import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
+import { formatDatabaseLocation } from '@/domain/common/location/LocationUtils';
 import Gutters from '@/core/ui/grid/Gutters';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';

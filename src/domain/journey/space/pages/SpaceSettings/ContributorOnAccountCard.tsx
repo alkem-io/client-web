@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import IconButton from '@mui/material/IconButton';
-import BasicSpaceCard from '../../../../community/virtualContributor/components/BasicSpaceCard';
+import BasicSpaceCard from '@/domain/community/virtualContributor/components/BasicSpaceCard';
 import DeleteIcon from '../SpaceSettings/icon/DeleteIcon';
 import Gutters from '@/core/ui/grid/Gutters';
 import { theme } from '@/core/ui/themes/default/Theme';

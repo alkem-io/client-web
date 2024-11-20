@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
-import EditMemberUsers from '../../components/Community/EditMembersUsers';
-import OrganizationAssociates from '../../../../community/contributor/organization/OrganizationAssociatesContainer/OrganizationAssociatesContainer';
-import { useOrganization } from '../../../../community/contributor/organization/hooks/useOrganization';
+import EditMemberUsers from '@/domain/platform/admin/components/Community/EditMembersUsers';
+import OrganizationAssociates from '@/domain/community/contributor/organization/OrganizationAssociatesContainer/OrganizationAssociatesContainer';
+import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
 import { AuthorizationCredential } from '@/core/apollo/generated/graphql-schema';
-import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
+import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
 import Loading from '@/core/ui/loading/Loading';
 

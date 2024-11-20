@@ -1,8 +1,8 @@
-import React, { ReactElement, useMemo } from 'react';
+import { ReactElement, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import { formatTimeElapsed } from '../../utils/formatTimeElapsed';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import spaceIcon from '../JourneyIcon/JourneyIcon';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { CommunityContributorType } from '@/core/apollo/generated/graphql-schema';

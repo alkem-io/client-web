@@ -18,16 +18,16 @@ import { gutters } from '@/core/ui/grid/utils';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { BlockTitle, Caption, CaptionSmall } from '@/core/ui/typography';
-import { PlanFeatures, PlanFooter, PlanName } from '../../../../license/plans/ui/PlanCardsComponents';
-import { getPlanTranslations } from '../../../../license/plans/utils/getPlanTranslations';
-import { ROUTE_HOME } from '../../../../platform/routes/constants';
+import { PlanFeatures, PlanFooter, PlanName } from '@/domain/license/plans/ui/PlanCardsComponents';
+import { getPlanTranslations } from '@/domain/license/plans/utils/getPlanTranslations';
+import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CachedIcon from '@mui/icons-material/Cached';
 import EntityConfirmDeleteDialog from '../SpaceSettings/EntityConfirmDeleteDialog';
 import { SvgIconComponent } from '@mui/icons-material';
-import { useUserContext } from '../../../../community/user';
-import translateWithElements from '../../../../shared/i18n/TranslateWithElements/TranslateWithElements';
-import { useConfig } from '../../../../platform/config/useConfig';
+import { useUserContext } from '@/domain/community/user';
+import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
+import { useConfig } from '@/domain/platform/config/useConfig';
 
 interface SpaceAccountPageProps {
   journeyId: string;

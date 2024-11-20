@@ -7,17 +7,17 @@ import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { CalloutType, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { CalloutTemplate } from '../../models/CalloutTemplate';
+import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
 import { displayNameValidator } from '@/core/ui/forms/validator';
-import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
+import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
 import { RadioButtonOption } from '@/core/ui/forms/radioButtons/RadioButtonsGroup';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { Box } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
-import { TagsetField } from '../../../platform/admin/components/Common/TagsetSegment';
+import { TagsetField } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import FormikRadioButtonsGroup from '@/core/ui/forms/radioButtons/FormikRadioButtonsGroup';
-import FormikWhiteboardPreview from '../../../collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
-import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
+import FormikWhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
+import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 import {
   mapReferencesToUpdateReferences,
   mapTagsetsToUpdateTagsets,

@@ -1,15 +1,15 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { NotificationHandler } from '@/core/ui/notifications/NotificationHandler';
 import { useUserContext } from '@/domain/community/user';
 import { useUserScope } from '@/core/analytics/SentryTransactionScopeContext';
 import useServerMetadata from '@/domain/platform/metadata/useServerMetadata';
 import { useCookies } from 'react-cookie';
-import { ALKEMIO_COOKIE_NAME } from '../../../cookies/useAlkemioCookies';
-import CookieConsent from '../../../cookies/CookieConsent';
+import { ALKEMIO_COOKIE_NAME } from '@/main/cookies/useAlkemioCookies';
+import CookieConsent from '@/main/cookies/CookieConsent';
 import { Box } from '@mui/material';
 
-const App: FC = () => {
+const App = () => {
   const [cookies] = useCookies([ALKEMIO_COOKIE_NAME]);
   const { user } = useUserContext();
 

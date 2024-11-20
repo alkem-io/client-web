@@ -6,7 +6,6 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@mui/styles';
 import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
@@ -97,15 +96,15 @@ const useUserPopUpStyles = makeStyles(theme => ({
   },
 }));
 
-interface UserPopUpProps {
+type UserPopUpProps = {
   id: string;
   onHide: () => void;
   terms?: Array<string>;
-}
+};
 
 const getStringOfNames = (arr: string[]) => arr.join(', ');
 
-const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
+const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
   const { t } = useTranslation();
   const styles = useUserPopUpStyles();
 

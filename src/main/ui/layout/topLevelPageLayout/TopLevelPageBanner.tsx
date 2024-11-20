@@ -1,6 +1,6 @@
 import { Visual } from '@/domain/common/visual/Visual';
 import PageBanner from '@/core/ui/layout/pageBanner/PageBanner';
-import PageBannerCard, { PageBannerCardProps } from '../../../topLevelPages/pageBannerCard/PageBannerCard';
+import PageBannerCard, { PageBannerCardProps } from '@/main/topLevelPages/pageBannerCard/PageBannerCard';
 
 const banner: Visual = {
   uri: '/alkemio-banner/global-banner.jpg',
@@ -8,8 +8,8 @@ const banner: Visual = {
 
 interface TopLevelPageBannerProps extends PageBannerCardProps {}
 
-const TopLevelPageBanner = (props: TopLevelPageBannerProps) => {
-  return <PageBanner {...props} banner={banner} cardComponent={PageBannerCard} />;
-};
+const TopLevelPageBanner = (props: TopLevelPageBannerProps) => (
+  <PageBanner {...props} banner={banner} cardComponent={PageBannerCard} />
+);
 
 export default TopLevelPageBanner;

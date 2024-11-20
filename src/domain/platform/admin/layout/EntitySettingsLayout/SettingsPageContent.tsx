@@ -1,7 +1,7 @@
-import React, { PropsWithChildren } from 'react';
-import TabDescriptionHeader from '../../../../shared/layout/TabDescriptionHeader/TabDescriptionHeader';
+import { PropsWithChildren } from 'react';
+import TabDescriptionHeader from '@/domain/shared/layout/TabDescriptionHeader/TabDescriptionHeader';
 import { useTranslation } from 'react-i18next';
-import { EntityTypeName } from '../../../constants/EntityTypeName';
+import { EntityTypeName } from '@/domain/platform/constants/EntityTypeName';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 

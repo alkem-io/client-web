@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Box, styled } from '@mui/material';
 import hexToRGBA from '@/core/utils/hexToRGBA';
 import PageContent from '@/core/ui/content/PageContent';

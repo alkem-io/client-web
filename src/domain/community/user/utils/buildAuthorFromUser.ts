@@ -1,4 +1,4 @@
-import { Author } from '../../../shared/components/AuthorAvatar/models/author';
+import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { ProfileType } from '@/core/apollo/generated/graphql-schema';
 

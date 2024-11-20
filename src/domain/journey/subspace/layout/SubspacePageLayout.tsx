@@ -1,17 +1,8 @@
-import React, {
-  Children,
-  createContext,
-  PropsWithChildren,
-  ReactNode,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import ChildJourneyPageBanner from '../../common/childJourneyPageBanner/ChildJourneyPageBanner';
-import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
-import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
-import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
+import { Children, createContext, PropsWithChildren, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+import ChildJourneyPageBanner from '@/domain/journey/common/childJourneyPageBanner/ChildJourneyPageBanner';
+import JourneyUnauthorizedDialog from '@/domain/journey/common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
+import JourneyUnauthorizedDialogContainer from '@/domain/journey/common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
+import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
 import PageContent from '@/core/ui/content/PageContent';
 import { JourneyPath } from '@/main/routing/resolvers/RouteResolver';
 import PageContentColumnBase from '@/core/ui/content/PageContentColumnBase';
@@ -43,11 +34,11 @@ import WelcomeBlock from './WelcomeBlock';
 import { UrlBaseProvider } from '@/core/ui/link/UrlBase';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import { theme } from '@/core/ui/themes/default/Theme';
-import ApplicationButton from '../../../community/application/applicationButton/ApplicationButton';
-import ApplicationButtonContainer from '../../../community/application/containers/ApplicationButtonContainer';
+import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
+import ApplicationButtonContainer from '@/domain/community/application/containers/ApplicationButtonContainer';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import { SpaceReadAccess } from '../../common/authorization/useCanReadSpace';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { SpaceReadAccess } from '@/domain/journey/common/authorization/useCanReadSpace';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface SubspacePageLayoutProps {

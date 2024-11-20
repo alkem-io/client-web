@@ -1,21 +1,21 @@
-import { FC, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { BlockSectionTitle, BlockTitle, CardText } from '@/core/ui/typography';
-import { AnyTemplateWithInnovationPack } from '../../../models/TemplateBase';
-import TemplatePreview from '../../Previews/TemplatePreview';
+import { AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
+import TemplatePreview from '@/domain/templates/components/Previews/TemplatePreview';
 import { Avatar, Button, DialogContent } from '@mui/material';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import TemplateCard from '../../cards/TemplateCard';
+import TemplateCard from '@/domain/templates/components/cards/TemplateCard';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { Actions } from '@/core/ui/actions/Actions';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import { gutters } from '@/core/ui/grid/utils';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import LinkNoUnderline from '../../../../shared/components/LinkNoUnderline';
+import LinkNoUnderline from '@/domain/shared/components/LinkNoUnderline';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 
 export interface PreviewTemplateDialogProps extends AnyTemplateWithInnovationPack {
@@ -25,14 +25,14 @@ export interface PreviewTemplateDialogProps extends AnyTemplateWithInnovationPac
   actions?: ReactNode;
 }
 
-const PreviewTemplateDialog: FC<PreviewTemplateDialogProps> = ({
+const PreviewTemplateDialog = ({
   open = false,
   template,
   innovationPack,
   templateInfo,
   onClose,
   actions,
-}) => {
+}: PreviewTemplateDialogProps) => {
   const { t } = useTranslation();
 
   return (

@@ -1,5 +1,5 @@
 import { sortBy } from 'lodash';
-import React, { FC, useMemo } from 'react';
+import { PropsWithChildren, useMemo } from 'react';
 import { useUrlParams } from '@/core/routing/useUrlParams';
 import {
   useUpdatePreferenceOnUserMutation,
@@ -27,7 +27,7 @@ export interface UserNotificationsContainerProps
     UserNotificationsContainerState
   > {}
 
-const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ children }) => {
+const UserNotificationsContainer = ({ children }: PropsWithChildren<UserNotificationsContainerProps>) => {
   const { userNameId = '' } = useUrlParams();
 
   const { data, loading } = useUserNotificationsPreferencesQuery({

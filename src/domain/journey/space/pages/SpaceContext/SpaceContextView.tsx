@@ -1,12 +1,11 @@
-import React, { FC } from 'react';
 import SaveButton from '@/core/ui/actions/SaveButton';
 import { useUpdateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useSpace } from '../../SpaceContext/useSpace';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Box, Container, Grid } from '@mui/material';
-import SpaceContextForm, { SpaceEditFormValuesType } from '../../../../platform/admin/components/SpaceContextForm';
+import SpaceContextForm, { SpaceEditFormValuesType } from '@/domain/platform/admin/components/SpaceContextForm';
 
-export const SpaceContextView: FC = () => {
+export const SpaceContextView = () => {
   const { spaceNameId, ...space } = useSpace();
   const notify = useNotification();
 

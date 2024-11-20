@@ -2,8 +2,8 @@ import { Box } from '@mui/material';
 import { FC, useState } from 'react';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import Loading from '@/core/ui/loading/Loading';
-import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
-import InnovationFlowChips from '../../../collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
+import { InnovationFlowState } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
+import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 
 interface InnovationFlowTemplatePreviewProps {
   loading?: boolean;

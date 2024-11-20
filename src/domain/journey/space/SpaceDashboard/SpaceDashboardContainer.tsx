@@ -1,7 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useCallback } from 'react';
 import { useSpace } from '../SpaceContext/useSpace';
-import { useUserContext } from '../../../community/user';
+import { useUserContext } from '@/domain/community/user';
 import {
   useSendMessageToCommunityLeadsMutation,
   useSpaceDashboardReferencesQuery,
@@ -15,11 +15,11 @@ import {
   Reference,
   SpacePageFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import useCallouts, { UseCalloutsProvided } from '../../../collaboration/callout/useCallouts/useCallouts';
+import useCallouts, { UseCalloutsProvided } from '@/domain/collaboration/callout/useCallouts/useCallouts';
 import useSpaceDashboardNavigation, {
   DashboardNavigationItem,
 } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
-import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
+import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 
 export interface SpaceContainerEntities {
   space: SpacePageFragment | undefined;

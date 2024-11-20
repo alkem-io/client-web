@@ -1,15 +1,14 @@
 import { Box, Chip } from '@mui/material';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import CheckIcon from '@mui/icons-material/Check';
 
-interface TemplateTypeFilterProps {
+type TemplateTypeFilterProps = {
   value: TemplateType[];
   onChange: (templateTypes: TemplateType[]) => void;
-}
+};
 
-const TemplateTypeFilter: FC<TemplateTypeFilterProps> = ({ value, onChange }) => {
+const TemplateTypeFilter = ({ value, onChange }: TemplateTypeFilterProps) => {
   const { t } = useTranslation();
 
   const onClick = (templateType: TemplateType) => {

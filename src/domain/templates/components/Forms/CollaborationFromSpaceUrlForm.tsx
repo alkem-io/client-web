@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text } from '@/core/ui/typography';
 import { LoadingButton } from '@mui/lab';
-import useLoadingState from '../../../shared/utils/useLoadingState';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { gutters } from '@/core/ui/grid/utils';
 import useUrlParser from '@/main/routing/resolvers/useUrlParser';

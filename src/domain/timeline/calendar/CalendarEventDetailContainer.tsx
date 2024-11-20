@@ -1,23 +1,19 @@
-import { FC, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
 import { AuthorizationPrivilege, CalendarEventDetailsFragment } from '@/core/apollo/generated/graphql-schema';
 import { useCalendarEventDetailsQuery, useRemoveMessageOnRoomMutation } from '@/core/apollo/generated/apollo-hooks';
 import { ContainerPropsWithProvided, renderComponentOrChildrenFn } from '@/core/container/ComponentOrChildrenFn';
-import { useUserContext } from '../../community/user';
-import { Message } from '../../communication/room/models/Message';
+import { useUserContext } from '@/domain/community/user';
+import { Message } from '@/domain/communication/room/models/Message';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
-import { buildAuthorFromUser } from '../../community/user/utils/buildAuthorFromUser';
-import usePostMessageMutations from '../../communication/room/Comments/usePostMessageMutations';
-import useSubscribeOnRoomEvents from '../../collaboration/callout/useSubscribeOnRoomEvents';
-import { PostDashboardViewProps } from '../../collaboration/post/views/PostDashboardView';
+import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
+import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
+import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
+import { PostDashboardViewProps } from '@/domain/collaboration/post/views/PostDashboardView';
 
 export type CalendarEventDetailData = CalendarEventDetailsFragment;
 
-interface EventIds {
-  eventId: string | undefined;
-}
-
-interface Provided {
+type Provided = {
   canReadComments: boolean;
   canPostComments: boolean;
   canDeleteComment: (authorId: string | undefined) => boolean;
@@ -37,13 +33,13 @@ interface Provided {
   deletingComment?: boolean;
   postingMessage: boolean;
   postingReply: boolean;
-}
+};
 
-export type CalendarEventDetailContainerProps = ContainerPropsWithProvided<EventIds, Provided>;
+export type CalendarEventDetailContainerProps = ContainerPropsWithProvided<{ eventId: string | undefined }, Provided>;
 
 // TODO: VERY BASED ON domain/collaboration/post/containers/PostDashboardContainer/PostDashboardContainer.tsx
 // Maybe put common logic together
-const CalendarEventDetailContainer: FC<CalendarEventDetailContainerProps> = ({ eventId, ...rendered }) => {
+const CalendarEventDetailContainer = ({ eventId, ...rendered }: CalendarEventDetailContainerProps) => {
   const { user: userMetadata, isAuthenticated } = useUserContext();
   const user = userMetadata?.user;
 

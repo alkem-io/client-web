@@ -13,15 +13,15 @@ import AddIcon from '@mui/icons-material/Add';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import { gutters } from '@/core/ui/grid/utils';
-import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
+import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
-import { useConfig } from '../../../platform/config/useConfig';
+import { useConfig } from '@/domain/platform/config/useConfig';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { newLinkName } from '../../../common/link/newLinkName';
+import { newLinkName } from '@/domain/common/link/newLinkName';
 
 export interface CreateLinkFormValues {
   id: string;

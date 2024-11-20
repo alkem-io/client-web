@@ -23,9 +23,9 @@ import { WhiteboardTemplateFormSubmittedValues } from '../WhiteboardTemplateForm
 import { CalloutTemplateFormSubmittedValues } from '../CalloutTemplateForm';
 import { CollaborationTemplateFormSubmittedValues } from '../CollaborationTemplateForm';
 import { PostTemplateFormSubmittedValues } from '../PostTemplateForm';
-import { AnyTemplate } from '../../../models/TemplateBase';
-import { CommunityGuidelinesTemplate } from '../../../models/CommunityGuidelinesTemplate';
-import { CalloutTemplate } from '../../../models/CalloutTemplate';
+import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
+import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
+import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
 
 interface EntityWithProfile {
   profile: {
