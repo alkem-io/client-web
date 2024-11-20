@@ -5,7 +5,7 @@ import CardFooterCountWithBadge from '@/core/ui/card/CardFooterCountWithBadge';
 import { gutters } from '@/core/ui/grid/utils';
 import RouterLink from '@/core/ui/link/RouterLink';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
-import { Caption, CardTitle } from '@/core/ui/typography';
+import { Caption, BlockTitle } from '@/core/ui/typography';
 import { CommunityGuidelinesIcon } from '@/domain/community/communityGuidelines/icon/CommunityGuidelinesIcon';
 import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import { PostIcon } from '@/domain/collaboration/post/icon/PostIcon';
@@ -89,7 +89,7 @@ const InnovationPackCardHorizontal = ({
     >
       <Box display="flex" flexDirection="row" justifyContent="space-between">
         <Box display="flex" flexDirection="column">
-          <CardTitle>{displayName}</CardTitle>
+          <BlockTitle>{displayName}</BlockTitle>
           <OneLineMarkdown>{description ?? ''}</OneLineMarkdown>
         </Box>
       </Box>

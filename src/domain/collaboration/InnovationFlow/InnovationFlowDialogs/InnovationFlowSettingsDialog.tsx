@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { InnovationFlowIcon } from '../InnovationFlowIcon/InnovationFlowIcon';
-import InnovationFlowProfileBlock from './InnovationFlowProfileBlock';
 import useInnovationFlowSettings from './useInnovationFlowSettings';
 import InnovationFlowCollaborationToolsBlock from './InnovationFlowCollaborationToolsBlock';
 import PageContentBlockContextualMenu from '@/core/ui/content/PageContentBlockContextualMenu';
@@ -34,7 +33,7 @@ const InnovationFlowSettingsDialog = ({
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
-  const { data, actions, authorization, state } = useInnovationFlowSettings({
+  const { data, actions, state } = useInnovationFlowSettings({
     collaborationId,
     filterCalloutGroups,
     skip: !open,
@@ -79,25 +78,18 @@ const InnovationFlowSettingsDialog = ({
           }
         />
         <DialogContent>
-          <InnovationFlowProfileBlock
-            innovationFlow={innovationFlow}
+          <InnovationFlowCollaborationToolsBlock
+            callouts={callouts}
             loading={state.loading}
-            onUpdate={actions.updateInnovationFlowProfile}
-            canEdit={authorization.canEditInnovationFlow}
-          >
-            <InnovationFlowCollaborationToolsBlock
-              callouts={callouts}
-              loading={state.loading}
-              innovationFlowStates={innovationFlow?.states}
-              currentState={innovationFlow?.currentState.displayName}
-              onUpdateCurrentState={actions.updateInnovationFlowCurrentState}
-              onUpdateFlowStateOrder={actions.updateInnovationFlowStateOrder}
-              onUpdateCalloutFlowState={actions.updateCalloutFlowState}
-              onCreateFlowState={(state, options) => actions.createState(state, options.after)}
-              onEditFlowState={actions.editState}
-              onDeleteFlowState={actions.deleteState}
-            />
-          </InnovationFlowProfileBlock>
+            innovationFlowStates={innovationFlow?.states}
+            currentState={innovationFlow?.currentState.displayName}
+            onUpdateCurrentState={actions.updateInnovationFlowCurrentState}
+            onUpdateFlowStateOrder={actions.updateInnovationFlowStateOrder}
+            onUpdateCalloutFlowState={actions.updateCalloutFlowState}
+            onCreateFlowState={(state, options) => actions.createState(state, options.after)}
+            onEditFlowState={actions.editState}
+            onDeleteFlowState={actions.deleteState}
+          />
         </DialogContent>
       </DialogWithGrid>
       <ConfirmationDialog

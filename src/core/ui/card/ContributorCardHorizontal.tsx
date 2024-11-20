@@ -7,7 +7,7 @@ import BadgeCardView from '../list/BadgeCardView';
 import GridItem from '../grid/GridItem';
 import SwapColors from '../palette/SwapColors';
 import RouterLink from '../link/RouterLink';
-import { BlockSectionTitle, Caption } from '../typography';
+import { BlockSectionTitle, BlockTitle, Caption } from '../typography';
 import ContributorTooltip from './ContributorTooltip';
 import ActionsMenu from './ActionsMenu';
 
@@ -30,6 +30,7 @@ export interface ContributorCardHorizontalProps {
   titleEndAmendment?: ReactNode;
   menuActions?: ReactNode;
   size?: AvatarSize;
+  withUnifiedTitle?: boolean;
 }
 
 const ContributorCardHorizontal = ({
@@ -40,6 +41,7 @@ const ContributorCardHorizontal = ({
   menuActions,
   titleEndAmendment,
   size,
+  withUnifiedTitle = false,
 }: ContributorCardHorizontalProps) => {
   const { t } = useTranslation();
 
@@ -85,7 +87,11 @@ const ContributorCardHorizontal = ({
           >
             <Box display="flex" flexDirection="row" justifyContent="space-between">
               <Box display="flex" flexDirection="column">
-                <BlockSectionTitle>{profile?.displayName}</BlockSectionTitle>
+                {withUnifiedTitle ? (
+                  <BlockTitle>{profile?.displayName}</BlockTitle>
+                ) : (
+                  <BlockSectionTitle>{profile?.displayName}</BlockSectionTitle>
+                )}
                 <BlockSectionTitle>{profile?.location && getLocationString(profile.location)}</BlockSectionTitle>
                 {profile?.tagline && <Caption>{profile.tagline}</Caption>}
               </Box>

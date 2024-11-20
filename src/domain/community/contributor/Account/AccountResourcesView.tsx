@@ -128,7 +128,7 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
               <BlockTitle>{t('pages.admin.generic.sections.account.virtualContributors')}</BlockTitle>
               <Gutters disablePadding>
                 {accountResources?.virtualContributors?.map(vc => (
-                  <ContributorCardHorizontal key={vc.id} profile={vc.profile} seamless />
+                  <ContributorCardHorizontal key={vc.id} profile={vc.profile} withUnifiedTitle seamless />
                 ))}
               </Gutters>
             </Gutters>
