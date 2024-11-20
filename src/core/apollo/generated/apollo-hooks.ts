@@ -21704,12 +21704,7 @@ export const AskChatGuidanceQuestionDocument = gql`
   mutation askChatGuidanceQuestion($chatData: ChatGuidanceInput!) {
     askChatGuidanceQuestion(chatData: $chatData) {
       id
-      answer
-      question
-      sources {
-        uri
-        title
-      }
+      success
     }
   }
 `;
@@ -22442,9 +22437,19 @@ export const CampaignBlockCredentialsDocument = gql`
             type
           }
         }
+        account {
+          id
+          license {
+            id
+            entitlements {
+              ...EntitlementDetails
+            }
+          }
+        }
       }
     }
   }
+  ${EntitlementDetailsFragmentDoc}
 `;
 
 /**

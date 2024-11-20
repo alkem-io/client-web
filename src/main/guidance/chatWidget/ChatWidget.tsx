@@ -169,9 +169,8 @@ const Loading = () => {
 
 const ChatWidget = () => {
   const { t } = useTranslation();
-  const [isChatPopupOpen, setChatPopupOpen] = useState(false);
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
-  const { messages, sendMessage, clearChat, loading } = useChatGuidanceCommunication({ skip: !isChatPopupOpen });
+  const { messages, sendMessage, clearChat, loading } = useChatGuidanceCommunication();
   const { user } = useUserContext();
   const userId = user?.user.id;
 
@@ -228,7 +227,7 @@ const ChatWidget = () => {
 
   useEffect(() => {
     dropMessages();
-    if (isChatPopupOpen && messages && messages.length > 0) {
+    if (messages && messages.length > 0) {
       messages?.forEach(message => {
         if (message.author?.id === userId) {
           addUserMessage(message.message);
@@ -244,7 +243,7 @@ const ChatWidget = () => {
     if (loading) {
       renderCustomComponent(Loading, undefined);
     }
-  }, [isChatPopupOpen, messages]);
+  }, [messages, loading]);
 
   return (
     <>
@@ -252,10 +251,9 @@ const ChatWidget = () => {
         <Widget
           profileAvatar={logoSrc}
           title={<ChatWidgetTitle key="title" onClickInfo={() => setIsHelpDialogOpen(true)} />}
-          subtitle={<></>}
+          subtitle={null}
           handleNewUserMessage={handleNewUserMessage}
           handleToggle={() => {
-            setChatPopupOpen(!isChatPopupOpen);
             setChatToggleTime(Date.now());
           }}
         />

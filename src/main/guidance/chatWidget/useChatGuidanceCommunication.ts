@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
+  AskChatGuidanceQuestionMutationOptions,
   useAskChatGuidanceQuestionMutation,
   useCreateGuidanceRoomMutation,
   useGuidanceRoomIdQuery,
@@ -10,6 +11,7 @@ import useSubscribeOnRoomEvents from '../../../domain/collaboration/callout/useS
 import { Message } from '../../../domain/communication/room/models/Message';
 import { buildAuthorFromUser } from '../../../domain/community/user/utils/buildAuthorFromUser';
 import { useTranslation } from 'react-i18next';
+import useLoadingState from '../../../domain/shared/utils/useLoadingState';
 
 interface Provided {
   loading?: boolean;
@@ -19,22 +21,29 @@ interface Provided {
   isSubscribedToMessages: boolean;
 }
 
-const useChatGuidanceCommunication = ({ skip }: { skip?: boolean }): Provided => {
+const useChatGuidanceCommunication = (): Provided => {
   const { t, i18n } = useTranslation();
-  const [askQuestion] = useAskChatGuidanceQuestionMutation();
   const [createGuidanceRoom] = useCreateGuidanceRoomMutation();
   const [resetChatGuidance] = useResetChatGuidanceMutation();
 
-  const { data: roomIdData, loading: roomIdLoading } = useGuidanceRoomIdQuery({
-    skip,
-  });
-  const roomId = roomIdData?.me.user?.guidanceRoom?.id;
+  const [roomId, setRoomId] = useState<string | undefined>(undefined);
 
-  const { data: messagesData, loading: messagesLoading } = useGuidanceRoomMessagesQuery({
+  const { data: roomIdData, loading: roomIdLoading } = useGuidanceRoomIdQuery({});
+  useEffect(() => {
+    if (roomId !== roomIdData?.me.user?.guidanceRoom?.id) {
+      setRoomId(roomIdData?.me.user?.guidanceRoom?.id);
+    }
+  }, [roomIdData]);
+
+  const {
+    data: messagesData,
+    loading: messagesLoading,
+    refetch: refetchMessages,
+  } = useGuidanceRoomMessagesQuery({
     variables: {
       roomId: roomId!,
     },
-    skip: !roomId || skip,
+    skip: !roomId,
   });
 
   const messages: Message[] = useMemo(() => {
@@ -65,32 +74,51 @@ const useChatGuidanceCommunication = ({ skip }: { skip?: boolean }): Provided =>
       // No messages or just no room at all => Return just one message with the intro text
       return [introMessage];
     }
-  }, [messagesData, roomId, roomIdLoading, messagesLoading, skip]);
+  }, [messagesData?.lookup.room?.messages, roomId, roomIdLoading, messagesLoading]);
 
-  const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId, skip);
+  const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId, !roomId);
 
-  const handleSendMessage = async (message: string): Promise<unknown> => {
+  const [askChatGuidanceQuestion] = useAskChatGuidanceQuestionMutation();
+  const askQuestion = async (
+    question: string,
+    refetchQueries?: AskChatGuidanceQuestionMutationOptions['refetchQueries']
+  ) =>
+    askChatGuidanceQuestion({
+      variables: {
+        chatData: { question, language: i18n.language.toUpperCase() },
+      },
+      refetchQueries,
+      awaitRefetchQueries: true,
+    });
+
+  const handleSendMessage = async (message: string): Promise<void> => {
     if (!roomId) {
-      await createGuidanceRoom({
+      const { data } = await createGuidanceRoom({
         refetchQueries: ['GuidanceRoomId'],
       });
+      const newRoomId = data?.createChatGuidanceRoom?.id;
+      if (newRoomId) {
+        await askQuestion(message);
+        setRoomId(newRoomId);
+        await refetchMessages({
+          roomId: newRoomId,
+        });
+      }
+    } else {
+      await askQuestion(message, ['GuidanceRoomMessages']);
     }
-    return askQuestion({
-      variables: {
-        chatData: { question: message!, language: i18n.language.toUpperCase() },
-      },
-      refetchQueries: ['GuidanceRoomId', 'GuidanceRoomMessages'],
-    });
   };
 
-  const clearChat = async () => {
-    resetChatGuidance({
+  const [clearChat, loadingClearChat] = useLoadingState(async () => {
+    setRoomId(undefined);
+    await resetChatGuidance({
       refetchQueries: ['GuidanceRoomId'],
+      awaitRefetchQueries: true,
     });
-  };
+  });
 
   return {
-    loading: roomIdLoading || messagesLoading,
+    loading: roomIdLoading || messagesLoading || loadingClearChat,
     messages,
     isSubscribedToMessages,
     clearChat,

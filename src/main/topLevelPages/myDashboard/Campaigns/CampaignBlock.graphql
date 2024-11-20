@@ -9,6 +9,15 @@ query CampaignBlockCredentials {
           type
         }
       }
+      account {
+        id
+        license {
+          id
+          entitlements {
+            ...EntitlementDetails
+          }
+        }
+      }
     }
   }
 }
