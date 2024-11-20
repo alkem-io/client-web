@@ -2164,10 +2164,8 @@
           "message": "<big>🚀 Klik hier om je account aan te maken en aan de slag te gaan!</big> <small>Ben je al lid? <signin>Meld je hier aan</signin></small>"
         },
         "recentJourneys": {
-          "seeMore": {
-            "full": "Bekijk al je Spaces",
-            "short": "Bekijk al je Spaces"
-          }
+          "seeMore": "Bekijk al je Spaces",
+          "seeMoreSubspaces": "Bekijk al je {{spaceName}} Subspaces"
         },
         "myAccount": {
           "title": "Mijn Account",

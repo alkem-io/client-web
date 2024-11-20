@@ -13,9 +13,7 @@ query CampaignBlockCredentials {
         id
         license {
           id
-          entitlements {
-            ...EntitlementDetails
-          }
+          myLicensePrivileges
         }
       }
     }

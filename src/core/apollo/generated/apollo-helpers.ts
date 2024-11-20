@@ -1646,6 +1646,7 @@ export type LicenseKeySpecifier = (
   | 'createdDate'
   | 'entitlements'
   | 'id'
+  | 'myLicensePrivileges'
   | 'type'
   | 'updatedDate'
   | LicenseKeySpecifier
@@ -1655,6 +1656,7 @@ export type LicenseFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   entitlements?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  myLicensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };

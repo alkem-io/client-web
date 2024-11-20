@@ -162,7 +162,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         },
       },
       spaceEntitlements: {
-        myEntitlements: mySpace?.license?.entitlements,
+        myEntitlements: mySpace?.license?.myLicensePrivileges,
       },
       selectableSpaces,
     };
@@ -230,17 +230,19 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       spaceMyPrivileges?.includes(AuthorizationPrivilege.CreateSubspace) &&
       collaborationMyPrivileges?.includes(AuthorizationPrivilege.CommunityAddMemberVcFromAccount);
 
-    const hasRequiredEntitlements =
-      Array.isArray(spaceMyEntitlements) &&
-      spaceMyEntitlements.some(t => t.type === LicenseEntitlementType.AccountVirtualContributor);
+    const hasRequiredEntitlements = spaceMyEntitlements?.includes(
+      LicenseEntitlementType.SpaceFlagVirtualContributorAccess
+    );
 
-    if (!(hasRequiredPrivileges && hasRequiredEntitlements)) {
-      logInfo(`Insuficient privileges to create a VC: ${JSON.stringify(spacePrivileges)}`, {
+    const hasAllPrivileges = hasRequiredPrivileges && hasRequiredEntitlements;
+
+    if (!hasAllPrivileges) {
+      logInfo(`Insufficient privileges to create a VC: ${JSON.stringify(spacePrivileges)}`, {
         category: TagCategoryValues.VC,
       });
     }
 
-    return hasRequiredPrivileges;
+    return hasAllPrivileges;
   };
 
   const [CreateNewSpace] = useCreateSpaceMutation({
