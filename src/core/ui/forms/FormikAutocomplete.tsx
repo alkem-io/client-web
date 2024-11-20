@@ -35,10 +35,13 @@ export const FormikAutocomplete = ({
 
   const isError = Boolean(meta.error);
 
-  const helperText = useMemo(
-    () => (isError ? tErr(meta.error as TranslationKey, { field: name }) : helpText),
-    [isError, meta.error, helpText, name, tErr]
-  );
+  const helperText = useMemo(() => {
+    if (!isError) {
+      return helpText;
+    }
+
+    return tErr(meta.error as TranslationKey, { field: name });
+  }, [isError, meta.error, helpText, name, tErr]);
 
   const handleChange = (
     event: SyntheticEvent,
