@@ -469,6 +469,7 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
                   key={vc.id}
                   profile={vc.profile}
                   seamless
+                  withUnifiedTitle
                   menuActions={getVCActions(vc.id)}
                 />
               ))}

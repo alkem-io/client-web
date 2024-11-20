@@ -52,7 +52,7 @@ const MyResources = () => {
         />
       ))}
       {virtualContributors?.map(vc => (
-        <ContributorCardHorizontal key={vc.id} profile={vc.profile} size="small" seamless />
+        <ContributorCardHorizontal key={vc.id} profile={vc.profile} size="small" withUnifiedTitle seamless />
       ))}
       {innovationPacks?.map(pack => (
         <InnovationPackCardHorizontal key={pack.id} {...pack} size="small" />
