@@ -10,10 +10,7 @@ query UserProvider {
         }
         license {
           id
-          type
-          entitlements {
-            ...EntitlementDetails
-          }
+          myLicensePrivileges
         }
       }
     }

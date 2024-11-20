@@ -6204,14 +6204,11 @@ export const CollaborationAuthorizationEntitlementsDocument = gql`
         }
         license {
           id
-          entitlements {
-            ...EntitlementDetails
-          }
+          myLicensePrivileges
         }
       }
     }
   }
-  ${EntitlementDetailsFragmentDoc}
 `;
 
 /**
@@ -13602,17 +13599,13 @@ export const UserProviderDocument = gql`
           }
           license {
             id
-            type
-            entitlements {
-              ...EntitlementDetails
-            }
+            myLicensePrivileges
           }
         }
       }
     }
   }
   ${UserDetailsFragmentDoc}
-  ${EntitlementDetailsFragmentDoc}
 `;
 
 /**
@@ -22290,15 +22283,12 @@ export const CampaignBlockCredentialsDocument = gql`
           id
           license {
             id
-            entitlements {
-              ...EntitlementDetails
-            }
+            myLicensePrivileges
           }
         }
       }
     }
   }
-  ${EntitlementDetailsFragmentDoc}
 `;
 
 /**
@@ -23255,9 +23245,7 @@ export const NewVirtualContributorMySpacesDocument = gql`
             id
             license {
               id
-              entitlements {
-                ...EntitlementDetails
-              }
+              myLicensePrivileges
             }
             community {
               id
@@ -23298,7 +23286,6 @@ export const NewVirtualContributorMySpacesDocument = gql`
       }
     }
   }
-  ${EntitlementDetailsFragmentDoc}
 `;
 
 /**

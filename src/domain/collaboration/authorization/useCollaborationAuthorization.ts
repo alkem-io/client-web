@@ -1,6 +1,5 @@
 import { useCollaborationAuthorizationEntitlementsQuery } from '../../../core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, LicenseEntitlementType } from '../../../core/apollo/generated/graphql-schema';
-import { filterAndMapEnabledEntitlements } from '../../license/plans/utils/filterAndMapEnabledEntitlements';
 
 interface CollaborationAuthorizationEntitlementsParams {
   collaborationId: string | undefined;
@@ -26,19 +25,14 @@ export const useCollaborationAuthorizationEntitlements = ({
   });
 
   const collaborationPrivileges = collaborationData?.lookup.collaboration?.authorization?.myPrivileges ?? [];
-  const collaborationEntitlements = filterAndMapEnabledEntitlements(
-    collaborationData?.lookup.collaboration?.license?.entitlements
-  );
-
+  const collaborationEntitlements = collaborationData?.lookup.collaboration?.license?.myLicensePrivileges ?? [];
   const canCreateCallout = collaborationPrivileges.includes(AuthorizationPrivilege.CreateCallout);
   const canSaveAsTemplate = collaborationEntitlements.includes(LicenseEntitlementType.SpaceFlagSaveAsTemplate);
   const canReadCallout = collaborationPrivileges.includes(AuthorizationPrivilege.Read);
 
   const license = collaborationData?.lookup.collaboration?.license;
-  const saveAsEntitlement = license?.entitlements.find(
-    entitlement => entitlement.type === LicenseEntitlementType.SpaceFlagSaveAsTemplate
-  );
-  const entitledToSaveAsTemplate = saveAsEntitlement?.enabled ?? false;
+  const entitledToSaveAsTemplate =
+    license?.myLicensePrivileges?.includes(LicenseEntitlementType.SpaceFlagSaveAsTemplate) ?? false;
 
   return {
     collaborationPrivileges,
