@@ -1063,10 +1063,10 @@
       "currentStateName": "Current Phase: {{state}}"
     },
     "innovationFlowSettings": {
-      "title": "Innovation Flow Settings",
-      "buttonTooltip": "Manage Innovation Flow",
+      "title": "Manage Flow",
+      "buttonTooltip": "Manage Flow",
       "editProfileDialog": {
-        "title": "Edit Details: Innovation Flow"
+        "title": "Edit Details: Flow"
       },
       "stateEditor": {
         "activeState": "Active Phase",
