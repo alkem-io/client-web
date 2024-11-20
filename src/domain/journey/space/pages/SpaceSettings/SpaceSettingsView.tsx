@@ -39,10 +39,13 @@ import Gutters from '@/core/ui/grid/Gutters';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
 import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
+import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
+import { noop } from 'lodash';
 
 type SpaceSettingsViewProps = {
   journeyId: string;
   journeyTypeName: JourneyTypeName; // TODO: The idea is to just pass isSubspace as a boolean here
+  spaceId?: string;
 };
 
 const defaultSpaceSettings = {
@@ -66,7 +69,7 @@ const defaultSpaceSettings = {
 
 const errorColor = '#940000';
 
-export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsViewProps) => {
+export const SpaceSettingsView = ({ journeyId, journeyTypeName, spaceId }: SpaceSettingsViewProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const navigate = useNavigate();
@@ -126,6 +129,16 @@ export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsV
   });
   const roleSetId = settingsData?.lookup.space?.community?.roleSet.id;
   const collaborationId = settingsData?.lookup.space?.collaboration.id;
+
+  // Subspace Template, check for privileges in the parent space
+  const { data: spaceData } = useSpacePrivilegesQuery({
+    variables: {
+      spaceId: spaceId ?? '',
+    },
+    skip: !spaceId,
+  });
+  const spacePrivileges = spaceData?.lookup.space?.authorization?.myPrivileges ?? [];
+  const canCreateTemplate = spacePrivileges?.includes(AuthorizationPrivilege.Update); // admin of the space
 
   const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
   const handleSaveAsTemplate = async (values: CollaborationTemplateFormSubmittedValues) => {
@@ -417,9 +430,20 @@ export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsV
               <PageContentBlockHeader title={t('pages.admin.space.settings.copySpace.title')} />
               <Text>{t('pages.admin.space.settings.copySpace.description')}</Text>
               <Gutters disablePadding row>
-                <Button variant="contained" onClick={() => setSaveAsTemplateDialogOpen(true)}>
-                  {t('pages.admin.space.settings.copySpace.createTemplate')}
-                </Button>
+                {canCreateTemplate ? (
+                  <Button variant="contained" onClick={() => setSaveAsTemplateDialogOpen(true)}>
+                    {t('pages.admin.space.settings.copySpace.createTemplate')}
+                  </Button>
+                ) : (
+                  <ButtonWithTooltip
+                    tooltip={t('pages.admin.space.settings.copySpace.createTemplateTooltip')}
+                    tooltipPlacement="right"
+                    variant="outlined"
+                    onClick={noop}
+                  >
+                    {t('pages.admin.space.settings.copySpace.createTemplate')}
+                  </ButtonWithTooltip>
+                )}
                 <Button variant="outlined" onClick={/* PENDING */ () => {}} disabled>
                   {t('pages.admin.space.settings.copySpace.duplicate')}
                 </Button>
