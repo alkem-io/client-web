@@ -5,7 +5,6 @@ import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from 'react
 import { useTranslation } from 'react-i18next';
 import i18n from '../../../../core/i18n/config';
 import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
-import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
 import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
@@ -20,6 +19,7 @@ import InnovationFlowStateForm from './InnovationFlowStateForm';
 import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
 import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
 import { MAX_INNOVATIONFLOW_STATES } from '../../../templates/models/CollaborationTemplate';
+import { gutters } from '../../../../core/ui/grid/utils';
 
 const STATES_DROPPABLE_ID = '__states';
 
@@ -101,7 +101,7 @@ const InnovationFlowDragNDropEditor: FC<InnovationFlowDragNDropEditorProps> = ({
         <Droppable droppableId={STATES_DROPPABLE_ID} type="droppableItem" direction="horizontal">
           {parentDroppableProvided => (
             <Box ref={parentDroppableProvided.innerRef} sx={{ userSelect: 'none' }}>
-              <ScrollableCardsLayoutContainer orientation="horizontal" alignItems="stretch">
+              <Box display="flex" flexDirection="row" gap={gutters()} alignItems="stretch">
                 {innovationFlowStates?.map((state, index) => (
                   <Draggable key={state.displayName} draggableId={state.displayName} index={index}>
                     {parentProvider => {
@@ -148,7 +148,7 @@ const InnovationFlowDragNDropEditor: FC<InnovationFlowDragNDropEditorProps> = ({
                   onClick={() => setCreateFlowState({ last: true })}
                   disabled={(innovationFlowStates ?? [])?.length >= MAX_INNOVATIONFLOW_STATES}
                 />
-              </ScrollableCardsLayoutContainer>
+              </Box>
             </Box>
           )}
         </Droppable>
