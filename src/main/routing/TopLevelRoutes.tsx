@@ -18,22 +18,27 @@ import { EntityPageLayoutHolder, NotFoundPageLayout, RenderPoint } from '../../d
 import RedirectToWelcomeSite from '../../domain/platform/routes/RedirectToWelcomeSite';
 import { TopLevelRoutePath } from './TopLevelRoutePath';
 import Loading from '../../core/ui/loading/Loading';
+import { lazyWithGlobalErrorHandler } from '../../core/lazyLoading/lazyWithGlobalErrorHandler';
 
-const DocumentationPage = React.lazy(() => import('../../domain/documentation/DocumentationPage'));
-const SpaceExplorerPage = React.lazy(() => import('../topLevelPages/topLevelSpaces/SpaceExplorerPage'));
-const InnovationLibraryPage = React.lazy(() => import('../topLevelPages/InnovationLibraryPage/InnovationLibraryPage'));
-const ContributorsPage = React.lazy(() => import('../../domain/community/user/ContributorsPage'));
-const AdminRoute = React.lazy(() => import('../../domain/platform/admin/routing/AdminRoute'));
-const UserRoute = React.lazy(() => import('../../domain/community/user/routing/UserRoute'));
-const OrganizationRoute = React.lazy(
+const DocumentationPage = lazyWithGlobalErrorHandler(() => import('../../domain/documentation/DocumentationPage'));
+const SpaceExplorerPage = lazyWithGlobalErrorHandler(() => import('../topLevelPages/topLevelSpaces/SpaceExplorerPage'));
+const InnovationLibraryPage = lazyWithGlobalErrorHandler(
+  () => import('../topLevelPages/InnovationLibraryPage/InnovationLibraryPage')
+);
+const ContributorsPage = lazyWithGlobalErrorHandler(() => import('../../domain/community/user/ContributorsPage'));
+const AdminRoute = lazyWithGlobalErrorHandler(() => import('../../domain/platform/admin/routing/AdminRoute'));
+const UserRoute = lazyWithGlobalErrorHandler(() => import('../../domain/community/user/routing/UserRoute'));
+const OrganizationRoute = lazyWithGlobalErrorHandler(
   () => import('../../domain/community/contributor/organization/routing/OrganizationRoute')
 );
-const VCRoute = React.lazy(() => import('../../domain/community/virtualContributor/VCRoute'));
-const ForumRoute = React.lazy(() => import('../../domain/communication/discussion/routing/ForumRoute'));
-const InnovationPackRoute = React.lazy(() => import('../../domain/InnovationPack/InnovationPackRoute'));
-const ProfileRoute = React.lazy(() => import('../../domain/community/profile/routing/ProfileRoute'));
-const CreateSpaceDialog = React.lazy(() => import('../../domain/journey/space/createSpace/CreateSpaceDialog'));
-const SpaceRoute = React.lazy(() => import('../../domain/journey/space/routing/SpaceRoute'));
+const VCRoute = lazyWithGlobalErrorHandler(() => import('../../domain/community/virtualContributor/VCRoute'));
+const ForumRoute = lazyWithGlobalErrorHandler(() => import('../../domain/communication/discussion/routing/ForumRoute'));
+const InnovationPackRoute = lazyWithGlobalErrorHandler(() => import('../../domain/InnovationPack/InnovationPackRoute'));
+const ProfileRoute = lazyWithGlobalErrorHandler(() => import('../../domain/community/profile/routing/ProfileRoute'));
+const CreateSpaceDialog = lazyWithGlobalErrorHandler(
+  () => import('../../domain/journey/space/createSpace/CreateSpaceDialog')
+);
+const SpaceRoute = lazyWithGlobalErrorHandler(() => import('../../domain/journey/space/routing/SpaceRoute'));
 
 export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();

@@ -24,6 +24,8 @@ import { PendingMembershipsDialogProvider } from './domain/community/pendingMemb
 import { NotFoundErrorBoundary } from './core/notFound/NotFoundErrorBoundary';
 import { Error404 } from './core/pages/Errors/Error404';
 import TopLevelLayout from './main/ui/layout/TopLevelLayout';
+import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
+import { GlobalErrorDialog } from './core/lazyLoading/GlobalErrorDialog';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
@@ -75,35 +77,38 @@ const Root: FC = () => {
             <ConfigProvider url={publicGraphQLEndpoint}>
               <ServerMetadataProvider url={publicGraphQLEndpoint}>
                 <SentryTransactionScopeContextProvider>
-                  <SentryErrorBoundaryProvider>
-                    <GlobalStateProvider>
-                      <BrowserRouter>
-                        <AuthenticationProvider>
-                          <UserGeoProvider>
-                            <ApmProvider>
-                              <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
-                                <UserProvider>
-                                  <PendingMembershipsDialogProvider>
-                                    <ApmUserSetter />
-                                    <ScrollToTop />
-                                    <NotFoundErrorBoundary
-                                      errorComponent={
-                                        <TopLevelLayout>
-                                          <Error404 />
-                                        </TopLevelLayout>
-                                      }
-                                    >
-                                      <TopLevelRoutes />
-                                    </NotFoundErrorBoundary>
-                                  </PendingMembershipsDialogProvider>
-                                </UserProvider>
-                              </AlkemioApolloProvider>
-                            </ApmProvider>
-                          </UserGeoProvider>
-                        </AuthenticationProvider>
-                      </BrowserRouter>
-                    </GlobalStateProvider>
-                  </SentryErrorBoundaryProvider>
+                  <GlobalErrorProvider>
+                    <SentryErrorBoundaryProvider>
+                      <GlobalStateProvider>
+                        <BrowserRouter>
+                          <AuthenticationProvider>
+                            <UserGeoProvider>
+                              <ApmProvider>
+                                <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
+                                  <UserProvider>
+                                    <PendingMembershipsDialogProvider>
+                                      <ApmUserSetter />
+                                      <ScrollToTop />
+                                      <NotFoundErrorBoundary
+                                        errorComponent={
+                                          <TopLevelLayout>
+                                            <Error404 />
+                                          </TopLevelLayout>
+                                        }
+                                      >
+                                        <TopLevelRoutes />
+                                        <GlobalErrorDialog />
+                                      </NotFoundErrorBoundary>
+                                    </PendingMembershipsDialogProvider>
+                                  </UserProvider>
+                                </AlkemioApolloProvider>
+                              </ApmProvider>
+                            </UserGeoProvider>
+                          </AuthenticationProvider>
+                        </BrowserRouter>
+                      </GlobalStateProvider>
+                    </SentryErrorBoundaryProvider>
+                  </GlobalErrorProvider>
                 </SentryTransactionScopeContextProvider>
               </ServerMetadataProvider>
             </ConfigProvider>

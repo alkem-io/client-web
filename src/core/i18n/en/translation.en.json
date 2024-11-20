@@ -2556,7 +2556,8 @@
       "line3": "If the error persists please contact support.",
       "buttons": {
         "reload": "Reload"
-      }
+      },
+      "dynamicError": "network error or a newer version available. Please reload the page."
     },
     "four-ou-four": {
       "title": "Something went wrong...",
