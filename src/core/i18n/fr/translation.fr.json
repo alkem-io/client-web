@@ -2164,10 +2164,8 @@
           "message": "<big>🚀 Click here to create your account and get started!</big> <small>Already a member? <signin>Sign in here</signin></small>"
         },
         "recentJourneys": {
-          "seeMore": {
-            "full": "Explore all your Spaces",
-            "short": "Explore all your Spaces"
-          }
+          "seeMore": "Explore all your Spaces",
+          "seeMoreSubspaces": "Explore all {{spaceName}} Subspaces"
         },
         "myAccount": {
           "title": "My Account",
