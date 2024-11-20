@@ -2195,7 +2195,7 @@
         "myMemberships": {
           "title": "Mijn Lidmaatschappen",
           "noChildMemberships": "U bent geen lid van een Challenge in deze Space. Sommige Challenges vereisen niet dat je lid hoeft te zijn om bij te dragen, maar als je updates wilt ontvangen of de Challenge hier wilt weergeven, word dan toch lid!",
-          "seeMore": "Dat is alles! Op zoek naar andere Spaces om in mee te werken? <challenges>Klik hier</challenges> om alle Challenges op het platform te ontdekken, of <landing>klik hier</landing> om je eigen Space te openen!"
+          "seeMore": "Dat is alles! Op zoek naar andere Spaces om in mee te werken? <spaces>Klik hier</spaces> om alle Challenges op het platform te ontdekken, of <landing>klik hier</landing> om je eigen Space te openen!"
         },
         "membershipSuggestions": {
           "title": "Lid worden",
