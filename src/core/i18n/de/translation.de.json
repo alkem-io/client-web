@@ -33,8 +33,9 @@
     ]
   },
   "releaseNotes": {
-    "title": "<big>🎉 Platform update!</big> <small>We have some exciting news for you… Click here to read all about it!</small>",
-    "url": "/forum/releases/latest"
+    "title": "<small><icon/>Our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy> have been updated. Click on the titles to review them, or dismiss this notification.</small>",
+    "url": "NotClickableTermsUpdate-Oct-2024",
+    "isClickable": "FALSE"
   },
   "cookie": {
     "consent": "Wenn Sie auf \"Alle Cookies akzeptieren\" klicken, stimmen Sie der Speicherung von Cookies auf Ihrem Gerät zu, um die Website-Navigation zu verbessern und die Nutzung der Website zu analysieren.",
@@ -66,11 +67,12 @@
     "add-event": "Termin hinzufügen",
     "edit-event": "Eintrag ändern",
     "delete-event": "Supprimer event",
-    "delete-confirmation": "Möchtest du den Artikel {{title}} wirklich löschen?",
+    "delete-confirmation": "Are you sure you want to delete event: '{{title}}' from the {{entity}}?",
     "event": {
       "type": "Art der Veranstaltung",
       "multiple-days": "{{days}} Tage",
-      "whole-day": "Ganztägig"
+      "whole-day": "All Day",
+      "visibleOnParentCalendar": "Also visible on the parent Space calendar"
     },
     "validation": {
       "durationMinutes": {
@@ -81,7 +83,7 @@
     "no-upcoming-events": "Zur Zeit gibt es keine anstehenden Events zum Anzeigen",
     "past-events": "Vergangene Termine",
     "show-calendar": "Kalender anzeigen",
-    "defaultEventDescription": "$t(common.location):\n\n$t(common.url):\n\n$t(common.description):",
+    "defaultEventDescription": "",
     "adminsOnly": "Since there are no events, this block is only visible for admins and leads"
   },
   "buttons": {
@@ -111,9 +113,11 @@
     "home": "Zurück",
     "take-me-home": "Zurück zur Hauptseite",
     "close": "Schließen",
+    "yes": "Yes",
     "yes-close": "Yes, close",
     "yesReplace": "Yes, replace",
     "yesStop": "Yes, stop",
+    "yesDiscard": "Yes, Discard",
     "delete": "Löschen",
     "submit": "Einreichen",
     "remove": "Entfernen",
@@ -165,7 +169,8 @@
     "userMenu": "User Menu",
     "scrollToTop": "Scroll to top",
     "addSubject": "Add {{subject}}",
-    "toolPosition": "Position of tool"
+    "toolPosition": "Position of tool",
+    "createOwnSpace": "...or click here to create your own Space"
   },
   "tooltips": {
     "click-more-info": "Hier tippen für weitere Informationen",
@@ -233,8 +238,10 @@
     "create": "Erstellen",
     "create-new": "Neu erstellen",
     "create-new-entity": "Neue Datensätze erstellen",
+    "category": "Category",
     "date": "Datum",
     "description": "Beschreibung",
+    "noDescription": "No description",
     "event": "Ereignisse",
     "events": "Ereignisse",
     "fullScreen": "Full screen",
@@ -291,7 +298,7 @@
     "field-required": "Dieses Feld ist erforderlich",
     "field-min-length": "Dieses Feld muss mindestens {{count}} Zeichen enthalten",
     "field-max-length": "Dieses Feld muss mindestens {{count}} Zeichen enthalten",
-    "last-saved": "Last saved: {{datetime}}",
+    "last-saved": "Auto-saved last changes: {{datetime}}",
     "membership": "Mitgliedschaft",
     "owner": "Besitzer",
     "admin": "Admin",
@@ -306,6 +313,7 @@
     "context": "Kontext",
     "community": "Community",
     "library": "Library",
+    "templateLibrary": "Template Library",
     "people": "Menschen",
     "settings": "Einstellungen",
     "space-settings": "$t(common.settings)",
@@ -353,6 +361,7 @@
     "virtual-contributor": "Virtual Contributor",
     "collaborationTool": "Collaboration tool",
     "optional": "optional",
+    "menu": "Menu",
     "genders": {
       "notSpecified": "keine Angabe",
       "male": "männlich",
@@ -511,17 +520,19 @@
         "HELP": "Brauchen Sie Hilfe?",
         "OTHER": "Sonstiges"
       },
-      "templateTypes": {
-        "WhiteboardTemplate": "Whiteboard-Template",
-        "WhiteboardTemplate_plural": "Whiteboard Templates",
-        "PostTemplate": "Beitragsvorlage",
-        "PostTemplate_plural": "Post Templates",
-        "InnovationFlowTemplate": "Innovationsfluss",
-        "InnovationFlowTemplate_plural": "Innovation Flows",
-        "CalloutTemplate": "Callout Template",
-        "CollaborationToolTemplate_plural": "Collaboration Tool Templates",
-        "CommunityGuidelinesTemplate": "Community Guidelines Template",
-        "CommunityGuidelinesTemplate_plural": "Community Guidelines Templates"
+      "templateType": {
+        "CALLOUT": "Collaboration Tool Template",
+        "CALLOUT_plural": "Collaboration Tool Templates",
+        "COLLABORATION": "Subspace Template",
+        "COLLABORATION_plural": "Subspace Templates",
+        "COMMUNITY_GUIDELINES": "Community Guidelines Template",
+        "COMMUNITY_GUIDELINES_plural": "Community Guidelines Templates",
+        "INNOVATION_FLOW": "Innovation Flow",
+        "INNOVATION_FLOW_plural": "Innovation Flow Templates",
+        "POST": "Post Template",
+        "POST_plural": "Post Templates",
+        "WHITEBOARD": "Whiteboard Template",
+        "WHITEBOARD_plural": "Whiteboard Templates"
       },
       "calloutType": {
         "LINK_COLLECTION": "Link Collection",
@@ -640,13 +651,13 @@
       "content": "Bist du sicher, dass du diese Einladung archivieren möchtest? Die Einladung wird abgelehnt, falls sie noch nicht vorhanden ist."
     },
     "pendingMembership": {
-      "pendingMemberships": "Ausstehende Mitgliedschaften",
-      "pendingMembershipsWithCount": "Ausstehende Mitgliedschaften ({{count}})",
+      "pendingMemberships": "My Pending Memberships",
+      "pendingMembershipsWithCount": "My Pending Memberships ({{count}})",
       "invitationsSectionTitle": "Einladungen",
       "virtualInvitationsSectionTitle": "Invitations for my Virtual Contributor",
       "applicationsSectionTitle": "Ausstehende Anträge",
       "invitationDialog": {
-        "title": "Ausstehende Mitgliedschaften ({{journey}}",
+        "title": "My Pending Membership: {{journey}}",
         "vc": {
           "title": "Pending Virtual Contributor membership: {{journey}}"
         },
@@ -691,10 +702,10 @@
     "permission-helptext": "Benutzen Sie den Schalter unten, um diesen Aufruf für neue Einträge zu schließen.",
     "callout-location": "Standort: ",
     "sortContributions": "Sort contributions",
-    "saveAsCallout": "Save as callout",
+    "saveAsTemplate": "Save as Template",
     "alkemio-link": "Klicken Sie hier, um mehr über Alkemios Kollaborationstools zu erfahren",
     "link-collection": {
-      "add-link": "Link zu {{title}} hinzufügen",
+      "add-link": "Add links or documents to {{title}}",
       "edit-link": "%{title} bearbeiten",
       "add-another": "Einen weiteren Link hinzufügen",
       "delete-link": "Klicken Sie hier, um diesen Benutzer löschen",
@@ -839,8 +850,11 @@
         "description": "Enter words that are key to the Subspace to make it stand out and easier to find.",
         "placeholder": ""
       },
-      "addDefaultCallouts": {
-        "title": "Add default collaboration tools"
+      "addCallouts": {
+        "title": "Add default template's collaboration tools"
+      },
+      "addTutorialCallouts": {
+        "title": "Add tutorials collaboration tools"
       },
       "innovationFlow": {
         "title": "Subspace Flow"
@@ -882,8 +896,11 @@
         "description": "Enter words that are key to your Subspace to make it stand out and easier to find.",
         "placeholder": ""
       },
-      "addDefaultCallouts": {
-        "title": "Add default collaboration tools"
+      "addCallouts": {
+        "title": "Add default template's collaboration tools"
+      },
+      "addTutorialCallouts": {
+        "title": "Add tutorials collaboration tools"
       },
       "innovationFlow": {
         "title": "Subspace Flow"
@@ -915,30 +932,41 @@
   },
   "templateLibrary": {
     "calloutTemplates": {
-      "name": "Callout template",
-      "title": "Template Library: Collaboration Tools",
+      "name": "$t(common.enums.templateType.CALLOUT)",
+      "title": "$t(common.templateLibrary): $t(common.enums.templateType.CALLOUT_plural)",
       "type": "Callout type",
       "description": "Description"
     },
     "postTemplates": {
-      "name": "Post template",
-      "title": "Template Library: Posts",
+      "name": "$t(common.enums.templateType.POST)",
+      "title": "$t(common.templateLibrary): $t(common.enums.templateType.POST_plural)",
       "defaultDescription": "Default Post content"
     },
     "whiteboardTemplates": {
-      "name": "Whiteboard template",
-      "title": "Template Library: Whiteboards",
+      "name": "$t(common.enums.templateType.WHITEBOARD)",
+      "title": "$t(common.templateLibrary): $t(common.enums.templateType.WHITEBOARD_plural)",
       "editTemplateButton": "Edit Template",
       "editDialogTitle": "Edit Whiteboard Template",
       "errorImporting": "Error importing Whiteboard Template"
     },
     "innovationFlowTemplates": {
-      "name": "Innovation Flow template",
-      "title": "Template Library: Innovation Flows"
+      "name": "$t(common.enums.templateType.INNOVATION_FLOW)",
+      "title": "$t(common.templateLibrary): $t(common.enums.templateType.INNOVATION_FLOW_plural)"
+    },
+    "collaborationTemplates": {
+      "name": "$t(common.enums.templateType.COLLABORATION)",
+      "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
+      "findByUrl": {
+        "title": "Subspace URL",
+        "description": "Enter the URL of the Subspace you want to copy as a template.",
+        "use": "Use this space",
+        "spaceNotFoundError": "Space not found",
+        "collaborationNotFoundError": "Collaboration not found"
+      }
     },
     "communityGuidelinesTemplates": {
-      "name": "Community Guidelines",
-      "title": "Template Library: Community Guidelines",
+      "name": "$t(common.enums.templateType.COMMUNITY_GUIDELINES)",
+      "title": "$t(common.templateLibrary):  $t(common.enums.templateType.COMMUNITY_GUIDELINES_plural)",
       "content": "Guidelines",
       "guidelinesTitle": "Title",
       "guidelinesDescription": "Guidelines"
@@ -947,7 +975,13 @@
     "platformTemplates": "Platform Templates",
     "loadPlatformTemplates": "Or click here to browse through all platform templates",
     "platformUseDisabled": "Please note that you can only use the templates that are selected for this community (see above). If you would like to use any of the templates below, please ask the administrator or the lead of the Space to add these in the template section of the Space Settings.",
-    "disabledTemplateInfo": "Please note that you can only use the templates that are selected for this community, which this is not. If you would like to use this template, please ask the administrator or the lead of the Space to add it in the template section of the Space Settings."
+    "disabledTemplateInfo": "Please note that you can only use the templates that are selected for this community, which this is not. If you would like to use this template, please ask the administrator or the lead of the Space to add it in the template section of the Space Settings.",
+    "importTemplateDialog": {
+      "confirmClose": {
+        "title": "Discard template",
+        "description": "Are you sure you want to close this template? Unsaved changes will be lost."
+      }
+    }
   },
   "innovation-templates": {
     "states": {
@@ -1052,10 +1086,19 @@
           "text": "This action cannot be undone."
         },
         "selectDifferentFlow": {
-          "title": "Select different Flow",
+          "title": "Find subspace template",
           "confirmationDialog": {
             "title": "Be careful when changing the flow!",
             "description": "- By changing the Innovation Flow, **all changes made to the current flow will be lost**.\n- All existing collaboration tools will be grouped under the first phase of the new flow."
+          },
+          "importCalloutsDialog": {
+            "title": "Apply New Template",
+            "description": "You are about to apply a new template. This action will <b>permanently delete</b> your current Innovation Flow. However, the existing collaboration tools linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+            "yes": "Add Collaboration Tools from Template",
+            "yesDescription": "This will include the new collaboration tools from the template in addition to your existing ones.",
+            "no": "Only Change the Innovation Flow",
+            "noDescription": "This will replace only the Innovation Flow, keeping your current collaboration tools as they are.",
+            "apply": "Apply new template"
           }
         }
       }
@@ -1081,7 +1124,8 @@
       },
       "inviteExternalUserDialog": {
         "title": "Einladung per E-Mail senden"
-      }
+      },
+      "inviteToRole": "Invite to be a: "
     },
     "confirmation-dialog": {
       "delete-comment": {
@@ -1158,6 +1202,13 @@
         "contact-support": "Kontaktiere den Support"
       }
     },
+    "urlResolver": {
+      "errors": {
+        "invalidUrl": "Invalid URL",
+        "invalidUrlOrigin": "Invalid URL origin",
+        "invalidUrlFormat": "Invalid URL format"
+      }
+    },
     "search-cards": {
       "matched-terms": "Übereinstimmende Begriffe"
     },
@@ -1223,7 +1274,6 @@
       },
       "template-step": {
         "title": "Vorlagen",
-        "no-templates": "Keine Vorlagen verfügbar",
         "post-template-label": "Standardtext",
         "post-template-text": "Fügen Sie Standardtext zu den Beiträgen hinzu, zum Beispiel Fragen, die Sie gerne beantworten möchten.",
         "post-template-default-description": "Standard Beschreibung",
@@ -1395,7 +1445,7 @@
         "remove-reference": "Referenz entfernen"
       },
       "url-helper-text": "Keep in mind that all uploaded files become accessible to everyone with the link and can only be deleted by the Alkemio team. <terms>Click here</terms> for the terms and conditions.",
-      "plaintext-helper-text": "Click here for the terms and conditions.",
+      "plaintext-helper-text": "Click here for the terms and conditions. You can upload Word, PDF, Excel, or images up to 15 MB",
       "newReference": "New reference",
       "newReference_plural": "New reference ({{count}})",
       "newLink": "New link",
@@ -1594,6 +1644,8 @@
     },
     "contributions": {
       "title": "Konten",
+      "leadSpacesTitle": "(Sub)Spaces we lead",
+      "allMembershipsTitle": "(Sub)Spaces we're in",
       "help": "Die Hubs und Herausforderungen, zu denen diese Organisation beiträgt"
     },
     "discussions-list": {
@@ -1799,12 +1851,13 @@
           },
           "templates": {
             "description": "Hier können Sie Vorlagen für {{entity}} erstellen und bearbeiten.",
-            "delete-confirmation": "Sind Sie sicher, dass Sie {{template}} aus dem Hub löschen möchten? Sie können auch die Informationen dieser Vorlage bearbeiten.",
+            "delete-confirmation": "Are you sure you want to delete the template '{{template}}'?",
             "import": {
-              "title": "Vorlagen-Bibliothek: {{templateType}}",
+              "defaultTitle": "Templates Library",
+              "title": "$t(common.templateLibrary): {{templateType}}",
               "subtitle": "Finden Sie Vorlagen für Hub, Challenge oder Chance. Wählen Sie die Vorlage aus und klicken Sie auf \"Auswählen\", um sie zu Ihrem Template-Set hinzuzufügen.",
               "callout-template-import-subtitle": "Finde eine Vorlage für Leute, die verwendet werden sollen, wenn sie zu deiner $tbeitragen (common.callout)",
-              "no-templates": "Keine Hub Vorlagen gefunden, weitere Plattformvorlagen finden",
+              "noTemplates": "No templates found.",
               "imported-successfully-notification": "Template erfolgreich importiert."
             }
           },
@@ -1849,7 +1902,7 @@
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
             "noTemplates": "This Innovation Pack doesn't have any template yet",
-            "customHomepages": "Your Custom Homepages",
+            "customHomepages": "Custom Homepages",
             "hostTitle": "Host",
             "contactsLink": "If you want to change any of these settings, please contact the Alkemio team here.",
             "freeTrialNotice": {
@@ -1865,7 +1918,8 @@
             "deleteSpace_description": "Click here to delete this Space. Be careful, this action cannot be undone.",
             "deleteSpace_disallowed": "The Space can only be deleted by the host of this Space.",
             "moreInfo": "More about Alkemio licenses can be found <moreinfo>here</moreinfo>.",
-            "moreInfoUrl": "$t(plansTable.seeMoreUrl)"
+            "moreInfoUrl": "$t(plansTable.seeMoreUrl)",
+            "licenseUpdated": "License updated successfully"
           },
           "settings": {
             "description": "Here you can edit the visibility settings of your {{entity}}."
@@ -1883,6 +1937,20 @@
         "notifications": {
           "organization-created": "Organisation erfolgreich erstellt",
           "organization-removed": "Organisation erfolgreich erstellt"
+        },
+        "verification": {
+          "confirm": {
+            "title": "{{action}} {{name}}",
+            "description": "This organization is currently {{status}}. Do you want to {{action}} it?",
+            "status": {
+              "verified": "verified",
+              "notVerified": "not verified"
+            },
+            "action": {
+              "verify": "Verify",
+              "unverify": "Unverify"
+            }
+          }
         }
       },
       "subsubspace": {
@@ -1918,7 +1986,8 @@
         "notifications": {
           "subspace-created": "Subspace created successfully.",
           "subspace-removed": "Subspace removed successfully.",
-          "subspace-updated": "Subspace updated successfully."
+          "subspace-updated": "Subspace updated successfully.",
+          "templateSaved": "Template saved successfully"
         }
       },
       "space": {
@@ -1928,10 +1997,10 @@
             "defaultSettings": {
               "title": "Default settings",
               "description": "Choose the default settings that will apply when creating a new Subspace within this Space. These settings can be modified during the creation process or at a later time.",
-              "defaultInnovationFlow": {
-                "selectDifferentFlow": "Select different Flow",
-                "title": "Selecting the Default Innovation Flow",
-                "description": "Customize the default flow for newly created Subspaces. Admins can modify it later in the Innovation flow settings. \n\nBelow you can choose between the templates collected in the Space Templates library. If you’re looking to create new flows or explore additional templates, click here to access this library."
+              "defaultCollaborationTemplate": {
+                "selectDifferentTemplate": "Select Collaboration Template",
+                "title": "Selecting the Default Collaboration Template",
+                "description": "Customize the default template for newly created Subspaces. Admins can modify it later in the Innovation flow settings. \n\nBelow you can choose between the templates collected in the Space Templates library."
               }
             }
           }
@@ -1956,8 +2025,8 @@
           "savedSuccessfully": "Einstellungen erfolgreich gespeichert",
           "visibility": {
             "title": "Sichtbarkeit",
-            "public": "<b>Öffentlich:</b> dieser Raum und dessen Inhalt sind für alle auf der Plattform sichtbar. Benutzer können nur einen Beitrag leisten, wenn sie Mitglied sind.",
-            "private": "<b>Private:</b> dieser Raum ist für alle auf der Plattform sichtbar, aber der Inhalt ist nur für Mitglieder sichtbar."
+            "public": "<b>Public:</b> This space and its contents are visible for everyone on the platform. Users can only contribute if they are a member.",
+            "private": "<b>Private:</b> This space is visible to everyone on the platform, but the content is only visible to members. Please note that both the information in the profile and the context are publicly visible."
           },
           "license-features": {
             "title": "Space Features",
@@ -1969,19 +2038,26 @@
           },
           "membership": {
             "title": "Mitgliedschaft",
-            "open": "<b>No Application required:</b> all Alkemio users can directly join, without you having to review their application. Others will first have to create an Alkemio account, but can then also join this Space directly.",
-            "applications": "<b>Application required:</b> if people want to become a member, they have to fill in the application form. You receive their applications (<community>see Community tab here</community>) and can choose to accept these or not. If you want, you can choose to leave the form empty.",
-            "invitations": "<b>Invitation only:</b> users can only become a member after you’ve invited them (<community>which you can do from the Community tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
+            "open": "<b>No Application required:</b> All Alkemio users can directly join, without you having to review their application. Others will first have to create an Alkemio account, but can then also join this Space directly.",
+            "applications": "<b>Application required:</b> If people want to become a member, they have to fill in the application form. You receive their applications (<community>see Community tab here</community>) and can choose to accept these or not. If you want, you can choose to leave the form empty.",
+            "invitations": "<b>Invitation only:</b> Users can only become a member after you’ve invited them (<community>which you can do from the Community tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
             "trustedApplicants": "Vertrauenswürdige Bewerber",
-            "hostOrganizationJoin": "<b>Host-Organisation:</b> Erlaubt Personen, die mit <i>{{host}}</i> verbunden sind, sich direkt anzumelden, ohne sich zu bewerben oder eingeladen zu werden.",
-            "allowSubspaceAdminsToInviteMembers": "Allow admins of Subspaces to invite users to their Subspace. Users who were not yet a member of this Space, will become so when they accept the Subspace invitation."
+            "hostOrganizationJoin": "<b>Host organization:</b> Allow people who are associated with <i>{{host}}</i> to directly join, without having to apply or be invited.",
+            "allowSubspaceAdminsToInviteMembers": "<b>Space invitations</b>: Allow admins of Subspaces to invite users to their Subspace. Users who were not yet a member of this Space, will become so when they accept the Subspace invitation."
           },
           "memberActions": {
             "title": "Mitglieder-Aktionen",
-            "createBlocks": "<b>Create Blocks</b>: allow members to create blocks for collaboration tools & posts. If you deactivate this, members will still be able to contribute to existing posts and calls, but will not be able to create new blocks.",
-            "createSubspaces": "<b>Create Subspaces</b>: allow members to create Subspaces in this Space. If you deactivate this, you can still create Subspaces yourself and add other people as an admin inside the Subspace.",
+            "createBlocks": "<b>Create Blocks</b>: Allow members to create blocks for collaboration tools & posts. If you deactivate this, members will still be able to contribute to existing posts and calls, but will not be able to create new blocks.",
+            "createSubspaces": "<b>Create Subspaces</b>: Allow members to create Subspaces in this Space. If you deactivate this, you can still create Subspaces yourself and add other people as an admin inside the Subspace.",
+            "eventsFromSubspaces": "<b>Subspace events</b>: Allow events from Subspaces to be visible on this Space calendar as well.",
             "inheritRights": "Allow Space members to contribute.",
             "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an admin in this Space."
+          },
+          "copySpace": {
+            "title": "Copy Subspace",
+            "description": "To utilize this Subspace setup, you can either duplicate it within the same Space or save it as a template for use across the platform. In both scenarios, the innovation flow and all collaboration tools will be replicated. Please note that comments or contributions to a tool will not be included in the template or duplicated Subspace.",
+            "createTemplate": "Create Template",
+            "duplicate": "Duplicate"
           },
           "account": {
             "vc-section-title": "Virtual Contributors created from this Space",
@@ -2115,9 +2191,10 @@
     },
     "exploreSpaces": {
       "fullName": "Explore Spaces",
+      "title": "Explore Spaces of Your Interest",
       "shortName": "$t(common.spaces)",
       "subtitle": "All activity on Alkemio happens inside Spaces and their corresponding Subspaces. Explore both to find topics where you can contribute!",
-      "caption": "Discover a diverse range of Spaces awaiting your exploration. Whether you’re an experienced member or a curious newcomer, there’s something here for everyone. Let’s delve into the details:\n1. Member Spaces: These are spaces where you already hold membership.\n2. Public Spaces: These spaces have visible content, and you can request to join them.\n3. All Spaces: This category includes both public and private spaces. In private spaces, only limited content is visible, but you can still apply for membership.",
+      "caption": "Discover a diverse range of Spaces awaiting your exploration. Whether you're an experienced member or a curious newcomer, there's something here for everyone. Let's delve into the details:<ol><li><strong>Member Spaces:</strong> These are spaces where you already hold membership.</li><li><strong>Public Spaces:</strong> These spaces have visible content, and you can request to join them.</li><li><strong>All Spaces:</strong> This category includes both public and private spaces. In private spaces, only limited content is visible, but you can still apply for membership.</li></ol>",
       "membershipFilter": {
         "all": "All Spaces",
         "member": "Member Spaces",
@@ -2128,7 +2205,8 @@
         "placeholder": "Search…",
         "noResults": "No results matched your search terms."
       },
-      "seeAll": "Show all Spaces on the platform"
+      "seeAll": "Show more",
+      "activeSpacesFilter": "Most Active Spaces"
     },
     "lead-organization": {
       "search": {
@@ -2139,9 +2217,18 @@
     "home": {
       "title": "My Dashboard",
       "subtitle": "Ready to make some impact?",
+      "mainNavigation": {
+        "invitations": "Invitations",
+        "myLatestActivity": "My Latest Activity",
+        "myLatestSpacesActivity": "Latest Activity In My Spaces",
+        "tipsAndTricks": "Tips & Tricks",
+        "myAccount": "My Account",
+        "createSpace": "Create my own Space",
+        "activityView": "Activity View"
+      },
       "sections": {
         "latestContributions": {
-          "title": "Latest Contributions in my Spaces",
+          "title": "Latest Activity in my Spaces",
           "filter": {
             "space": {
               "label": "Space:",
@@ -2154,7 +2241,7 @@
           }
         },
         "myLatestContributions": {
-          "title": "My Latest Contributions",
+          "title": "My Latest Activity",
           "card": {
             "journey": "in: <journeyicon /> {{journey}}"
           },
@@ -2167,35 +2254,17 @@
           "seeMore": "Explore all your Spaces",
           "seeMoreSubspaces": "Explore all {{spaceName}} Subspaces"
         },
-        "myAccount": {
-          "title": "My Account",
-          "hostedSpaces": "Space",
-          "virtualContributors": "Virtual Contributor(s)",
-          "createSpaceButton": "🎉 Click here to start your own Space!",
-          "createVCButton": "Or start by creating your Virtual Contributor",
-          "createVCButtonDisabled": "You must create a space before you create a Virtual Contributor!",
-          "createYourVCButton": "🎉 Create your Virtual Contributor!",
-          "globalRoleUser": {
-            "createSpaceButton": "🎉 Create a Space and get started with Alkemio",
-            "createAnotherVCButton": "Create another Virtual Contributor"
-          },
-          "noGlobalRoleUser": {
-            "spaceSection": "You don’t host a Space yet. Click <pricing>here</pricing> to learn more about the different plans.",
-            "vcSectionLink": "Turn your knowledge into a Virtual Contributor powered by AI in your own space. Read more about Alkemio’s Virtual Contributor <vc>here</vc>.",
-            "vcSection": "Do you want to be part of the first group of people to test our Virtual Contributor?",
-            "joinButton": "Sign up and join the Early Access Program for free!",
-            "joinSection": "Do you want to be part of the first group of people to test our Virtual Contributor?",
-            "limitReached": "You've reached the maximum of 3 VCs"
-          },
-          "vcCampaignUser": {
-            "welcome": "Welcome to the Virtual Contributors - Early Access Program!",
-            "clickHere": "Click below to create your Virtual Contributor. Once finished, this block will give you access to both your Virtual Contributor and your Space in which you can interact with it. Enjoy!"
+        "campaignBlock": {
+          "createYourVCButton": "Create your Virtual Contributor!",
+          "vcCampaign": {
+            "welcome": "🎉  Welcome to the  Virtual Contributors - Early Access Program!",
+            "clickHere": "Click below to create your Virtual Contributors—up to three available. The ones you created can be found under My Account, along with the Space where you can interact with them. Enjoy!"
           }
         },
         "myMemberships": {
           "title": "My Memberships",
           "noChildMemberships": "You are not a member of a Challenge in this Space. Some Challenges do not require you to be a member to contribute, but if you want to receive updates or show the Challenge here, become a member anyway!",
-          "seeMore": "That’s all! Looking for other Spaces to collaborate in? <challenges>Click here</challenges> to explore all Challenges on the platform, or <landing>click here</landing> to create your own!"
+          "seeMore": "That's all! Looking for other Spaces to collaborate in? <spaces>Click here</spaces> to explore all Challenges on the platform, or <landing>click here</landing> to create your own!"
         },
         "membershipSuggestions": {
           "title": "Become a member",
@@ -2232,8 +2301,9 @@
           }
         },
         "welcome": {
-          "welcomeUnauthenticated": "Welcome at Alkemio!",
-          "welcome-back": "Hallo, willkommen zurück bei Consentio!",
+          "welcomeUnauthenticated": "Welcome to Alkemio!",
+          "welcomeUnauthenticatedSubtitle": "Safe Spaces for Collaboration",
+          "welcome-back": "Welcome back, {{username}}!",
           "join": "Willst du der Community beitreten und mehr sehen?",
           "existing-user": {
             "header": "Vorhandener Benutzer? Springe zurück!",
@@ -2329,6 +2399,11 @@
       }
     },
     "organization": {
+      "profile": {
+        "accountResources": {
+          "sectionTitle": "Resources we host"
+        }
+      },
       "settings": {
         "tooltip": "Firmendaten"
       },
@@ -2419,8 +2494,7 @@
       "editDisplayName": "Edit title",
       "no-whiteboards": "Es wurden noch keine Whiteboards erstellt. Seien Sie der erste, der eins hinzufügt.",
       "locked-by": "{{user}} bearbeitet gerade dieses Whiteboard",
-      "savingWhiteboard": "Saving whiteboard...",
-      "saveTooltip": "Please note that the whiteboards are also automatically saved",
+      "loadingScene": "Loading scene",
       "state-actions": {
         "save-as-template": "Als Vorlage speichern",
         "save-and-check-in": "Speichern & Bearbeiten beenden",
@@ -2433,7 +2507,6 @@
       },
       "template": {
         "header": "Vorlagen definiert in Alkemio",
-        "no-templates": "Es sind noch keine Vorlagen definiert. Seien Sie die ersten, die eine hinzufügen.",
         "how-to": "Um eine Vorlage zu erstellen, erstellen Sie ein neues Whiteboard oder verwenden Sie ein vorhandenes Whiteboard und speichern Sie es als Vorlage."
       },
       "space": {
@@ -2505,7 +2578,7 @@
     },
     "accept-terms": {
       "introduction": "<p>Willkommen bei Alkemio! Alkemio macht es einfach, Herausforderungen zu bewältigen und Mitwirkende zu haben, von überall aus gemeinsam an Lösungen zu arbeiten. Im Mittelpunkt stehen Herausforderungen. Der Fokus liegt auf dem Ziel.</p><p>Um die Plattform sicher zu halten, öffnen und konstruktiv jeder Benutzer muss die <terms>Nutzungsbedingungen</terms> und <privacy>Datenschutzerklärung</privacy>akzeptieren. Bitte lies diese Dokumente und akzeptiere sie unten, bevor du fortfährst.</p>",
-      "greeting": "Hallo {{user}}, willkommen bei Alkemio!",
+      "greeting": "Hi {{user}}, welcome to Alkemio!",
       "continue": "Weiter zum Formular",
       "tooltip": "Bitte lesen und akzeptieren Sie die Nutzungsbedingungen und die Datenschutzrichtlinie, bevor Sie fortfahren"
     },
@@ -2545,9 +2618,15 @@
       "applications": {
         "title": "Ausstehende Anträge"
       },
+      "accountResources": {
+        "sectionTitle": "Resources I host"
+      },
       "communities": {
         "title": "Communities",
-        "help": "Gemeinschaften, zu denen der Benutzer gehört"
+        "help": "Gemeinschaften, zu denen der Benutzer gehört",
+        "leadSpacesTitle": "(Sub)Spaces I lead",
+        "allMembershipsTitle": "(Sub)Spaces I'm in",
+        "noMembership": "Not a member of any Space or SubSpace yet."
       },
       "pending-applications": {
         "title": "Ausstehende Bewerbungen",
@@ -2564,7 +2643,7 @@
     },
     "virtualContributorProfile": {
       "title": "Virtual Contributor Profile",
-      "default-name": "Alkemio Help",
+      "defaultName": "Alkemio Help",
       "description": "Description",
       "references": "References",
       "host": "Host",
@@ -2587,6 +2666,15 @@
           "title": "Privacy",
           "description": "For Alkemio, safeguarding your data is of utmost importance. We are committed to maintaining the security and privacy of your information.",
           "bullets": "<ul><li>When interacting with a Virtual Contributor, only the data explicitly specified on the left (Context) is used to generate meaningful answers.</li><li>Importantly, your (Space) data is not utilized for training the Virtual Contributor.</li><li>Additionally, please note that questions and answers exchanged with the Virtual Contributor may be visible to the Alkemio team.</li></ul>"
+        },
+        "external": {
+          "personality": {
+            "description": "This Virtual Contributor operates using the following external AI service: <strong>OpenAI</strong>. All questions submitted to this Virtual Contributor, along with any related comments in a threaded conversation, will be sent to <strong>OpenAI</strong>. Please be aware that this data may be used to train and improve their model."
+          },
+          "privacy": {
+            "description": "At Alkemio, protecting your data is our top priority. We are fully committed to ensuring the security and privacy of your information. Here’s how we handle your data when interacting with a Virtual Contributor (VC):",
+            "bullets": "<ul><li>Only the content of your question and any related comments in a threaded conversation are shared with the AI service that powers the Virtual Contributor.</li><li>Please be aware that if the Virtual Contributor is based on an external AI service, such as OpenAI, the data shared may be used to further train and improve that service.</li><li>Additionally, note that questions and answers exchanged with the Virtual Contributor may be accessible to the Alkemio team for monitoring or support purposes.</li></ul>"
+          }
         }
       },
       "membership": {
@@ -2669,12 +2757,15 @@
       "shortName": "$t(common.forum)",
       "new-title": "Alkemio Forum - Diskussion initiieren",
       "back": "mehr Diskussionen anzeigen"
+    },
+    "documentation": {
+      "title": "Documentation"
     }
   },
   "operations": {
     "user-group": {
-      "updated-successfully": "Die Gruppe %name% wurde aktuallisiert!",
-      "deleted-successfully": "Die Gruppe wurde erfolgreich gelöscht"
+      "updated-successfully": "Group {{name}} has been updated!",
+      "deleted-successfully": "Group {{name}} deleted successfully"
     }
   },
   "kratos": {
@@ -2960,7 +3051,7 @@
       "title": "Create a Virtual Contributor",
       "profileDescription": "Choose a name and enrich your Virtual Contributors profile below.",
       "description": "A Virtual Contributor allows you to interact with AI on Alkemio. What do you want to make available through your Virtual Contributor?",
-      "createSpace": "Written knowledge in text and documents",
+      "createSpace": "Written knowledge in text",
       "useExistingSpace": "The content of a (Sub)Space on Alkemio",
       "useExternalAI": "An external AI",
       "ownAI": "AI Powered by Alkemio",
@@ -2974,7 +3065,7 @@
     "cancel": {
       "title": "Discard Virtual Contributor",
       "description": "Are you sure you want to stop creating your Virtual Contributor? Your work will not be saved. A space/subspace might already be created for you. Please, reload the page if you confirm the cancellation.",
-      "deleted": "Virtual Contributor deleted successfuly!"
+      "deleted": "Virtual Contributor deleted successfully!"
     },
     "addContent": {
       "title": "Add knowledge",
@@ -2991,12 +3082,30 @@
       },
       "submitDisabled": "Add at least one Post to continue"
     },
-    "externalAICommingSoon": {
-      "title": "🚀 Coming soon!",
-      "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
-      "input": {
-        "label": "AI Service",
-        "placeholder": "E.g. the AI that xx created to xx"
+    "externalAI": {
+      "create": {
+        "title": "Create Virtual Contributor with an External AI",
+        "subTitle": "Choose a provider and enter your API Key or token to connect your external AI to a Virtual Contributor",
+        "apiKey": {
+          "label": "API Key",
+          "placeholder": "E.g. sk-proj-Uq3zU..."
+        },
+        "assistantId": {
+          "label": "Assistant ID",
+          "placeholder": "E.g. asst_wTLKgGkKryqR5FlEFleLy5Uq"
+        },
+        "provider": {
+          "title": "Provider",
+          "placeholder": "Select a provider from this list"
+        }
+      },
+      "commingSoon": {
+        "title": "🚀 Coming soon!",
+        "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
+        "input": {
+          "label": "AI Service",
+          "placeholder": "E.g. the AI that xx created to xx"
+        }
       },
       "contactOptions": {
         "title": "May we contact you if we have questions about the way you want to use this AI service?",
@@ -3007,7 +3116,7 @@
     },
     "trySection": {
       "title": "🎉 Try it out!",
-      "subTitle": "Your Virtual Contributor is successfully created and we added it to your Personal Space <tooltip><icon /></tooltip>. You can interact with it by typing <b>@{{vcName}}</b> in a comment on any post in your Space. Give it a try in the preview below!",
+      "subTitle": "Your Virtual Contributor is successfully created and we added it to your Personal Space <tooltip><icon /></tooltip>.<br/>You can interact with it by typing <b>@{{vcName}}</b> in a comment on any post in your Space. Give it a try in the preview below!",
       "subTitleInfo": "When you create your first VC, we automatically generate a Space for you. This Space functions like any other Space on Alkemio, and you can customize the settings according to your preferences.",
       "postTitle": "Example post",
       "postDescription": "At Alkemio, we utilize Posts to facilitate collaborative interactions with AI. Unlike private chats, other members within a Space can learn from and contribute to these interactions.\n\nSimilar to mentioning a human contributor, you can use the \"@\" symbol followed by the Virtual Contributor's name.",
@@ -3019,6 +3128,10 @@
       "description": "Which Space or Subspace do you want to bring to life with the Virtual Contributor? Below you'll be able to choose from all Spaces and Subspaces that you are host of.",
       "label": "(Sub)Space",
       "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor, please go back and follow the Written Knowledge flow."
+    },
+    "insufficientPrivileges": {
+      "title": "Insufficient Privileges",
+      "description": "You don't have the necessary privileges to complete the creation. Please contact the owners of this account."
     }
   }
 }
