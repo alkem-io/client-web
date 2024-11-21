@@ -64,10 +64,13 @@ export const FormikSelect = ({
 
   const isError = Boolean(meta.error) && meta.touched;
 
-  const helperText = useMemo(
-    () => (isError ? tErr(meta.error as TranslationKey, { field: name }) : _helperText),
-    [isError, meta.error, _helperText, name, tErr]
-  );
+  const helperText = useMemo(() => {
+    if (!isError) {
+      return _helperText;
+    }
+
+    return tErr(meta.error as TranslationKey, { field: name });
+  }, [isError, meta.error, _helperText, name, tErr]);
 
   return (
     <FormControl required={required} disabled={disabled} fullWidth error={isError}>
