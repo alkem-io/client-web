@@ -84,10 +84,13 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
   const { t } = useTranslation();
 
   const isError = Boolean(meta.error);
-  const helperText = useMemo(
-    () => (isError ? tErr(meta.error as TranslationKey, { field: name }) : helpText),
-    [isError, meta.error, helpText, name, tErr]
-  );
+  const helperText = useMemo(() => {
+    if (!isError) {
+      return helpText;
+    }
+
+    return tErr(meta.error as TranslationKey, { field: name });
+  }, [isError, meta.error, helpText, name, tErr]);
 
   const inactive = disabled || submitting;
   const submitDisabled = inactive || (maxLength ? field.value?.length > maxLength : false);
