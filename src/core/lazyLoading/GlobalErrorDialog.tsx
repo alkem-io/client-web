@@ -21,7 +21,9 @@ export const GlobalErrorDialog: React.FC = () => {
           <Trans
             i18nKey="pages.error.line1"
             values={{
-              message: error.message?.includes('dynamic') ? t('pages.error.dynamicError') : null,
+              message: error.message?.toLowerCase().includes('failed to fetch dynamically imported module')
+                ? t('pages.error.dynamicError')
+                : null,
             }}
             components={{
               italic: <i />,
