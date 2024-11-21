@@ -23,3 +23,21 @@ export const lazyWithGlobalErrorHandler = <T>(
     }
   });
 };
+
+class ContentUnavailableError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ContentUnavailableError';
+    Object.setPrototypeOf(this, ContentUnavailableError.prototype);
+  }
+}
+
+export const lazyImportWithErrorHandler = async <T>(importFunc: () => Promise<T>): Promise<T> => {
+  try {
+    return await importFunc();
+  } catch (error) {
+    const setError = getGlobalErrorSetter();
+    setError(error as Error);
+    throw new ContentUnavailableError((error as Error)?.message);
+  }
+};
