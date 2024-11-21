@@ -20033,6 +20033,9 @@ export const SpaceTemplatesSetIdDocument = gql`
         id
         templatesSet {
           id
+          authorization {
+            myPrivileges
+          }
         }
       }
     }

@@ -2057,6 +2057,7 @@
             "title": "Copy Subspace",
             "description": "To utilize this Subspace setup, you can either duplicate it within the same Space or save it as a template for use across the platform. In both scenarios, the innovation flow and all collaboration tools will be replicated. Please note that comments or contributions to a tool will not be included in the template or duplicated Subspace.",
             "createTemplate": "Create Template",
+            "createTemplateTooltip": "To create a template from this Subspace, you need Space admin permissions.",
             "duplicate": "Duplicate"
           },
           "account": {

@@ -8,6 +8,7 @@ import {
   useSpaceHostQuery,
   useSpacePrivilegesQuery,
   useSpaceSettingsQuery,
+  useSpaceTemplatesSetIdQuery,
   useUpdateSpaceSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
@@ -39,6 +40,8 @@ import Gutters from '@/core/ui/grid/Gutters';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
 import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
+import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
+import { noop } from 'lodash';
 
 type SpaceSettingsViewProps = {
   journeyId: string;
@@ -126,6 +129,14 @@ export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsV
   });
   const roleSetId = settingsData?.lookup.space?.community?.roleSet.id;
   const collaborationId = settingsData?.lookup.space?.collaboration.id;
+
+  const { data: templateData } = useSpaceTemplatesSetIdQuery({
+    variables: { spaceNameId },
+    skip: !spaceNameId,
+  });
+
+  const templateSetPrivileges = templateData?.space.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
+  const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
 
   const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
   const handleSaveAsTemplate = async (values: CollaborationTemplateFormSubmittedValues) => {
@@ -417,9 +428,20 @@ export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsV
               <PageContentBlockHeader title={t('pages.admin.space.settings.copySpace.title')} />
               <Text>{t('pages.admin.space.settings.copySpace.description')}</Text>
               <Gutters disablePadding row>
-                <Button variant="contained" onClick={() => setSaveAsTemplateDialogOpen(true)}>
-                  {t('pages.admin.space.settings.copySpace.createTemplate')}
-                </Button>
+                {canCreateTemplate ? (
+                  <Button variant="contained" onClick={() => setSaveAsTemplateDialogOpen(true)}>
+                    {t('pages.admin.space.settings.copySpace.createTemplate')}
+                  </Button>
+                ) : (
+                  <ButtonWithTooltip
+                    tooltip={t('pages.admin.space.settings.copySpace.createTemplateTooltip')}
+                    tooltipPlacement="right"
+                    variant="outlined"
+                    onClick={noop}
+                  >
+                    {t('pages.admin.space.settings.copySpace.createTemplate')}
+                  </ButtonWithTooltip>
+                )}
                 <Button variant="outlined" onClick={/* PENDING */ () => {}} disabled>
                   {t('pages.admin.space.settings.copySpace.duplicate')}
                 </Button>

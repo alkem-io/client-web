@@ -25137,7 +25137,15 @@ export type SpaceTemplatesSetIdQuery = {
       | {
           __typename?: 'TemplatesManager';
           id: string;
-          templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
+          templatesSet?:
+            | {
+                __typename?: 'TemplatesSet';
+                id: string;
+                authorization?:
+                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                  | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };
