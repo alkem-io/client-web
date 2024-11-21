@@ -136,13 +136,14 @@ const ImportTemplatesDialog = ({
           icon={<LibraryIcon />}
         />
         <DialogContent>
-          {subtitle && <Caption marginBottom={gutters()}>{subtitle}</Caption>}
           {canUseSpaceTemplates && (
             <ImportTemplatesDialogGallery
               templates={templates}
               onClickTemplate={template => setPreviewTemplate(template)}
               loading={loadingTemplates}
-            />
+            >
+              {subtitle && <Caption marginBottom={gutters()}>{subtitle}</Caption>}
+            </ImportTemplatesDialogGallery>
           )}
           {canUseSpaceTemplates && enablePlatformTemplates && !loadPlatformTemplates && (
             <Link
@@ -159,15 +160,16 @@ const ImportTemplatesDialog = ({
           )}
           {loadPlatformTemplates && (
             <>
-              <BlockTitle marginY={gutters()}>
-                {loadingPlatform && <CircularProgress size={15} sx={{ marginRight: gutters() }} />}
-                {t('templateLibrary.platformTemplates')}
-              </BlockTitle>
               <ImportTemplatesDialogGallery
                 templates={platformTemplates}
                 onClickTemplate={template => setPreviewTemplate(template)}
                 loading={loadingPlatform}
-              />
+              >
+                <BlockTitle marginY={gutters()}>
+                  {loadingPlatform && <CircularProgress size={15} sx={{ marginRight: gutters() }} />}
+                  {t('templateLibrary.platformTemplates')}
+                </BlockTitle>
+              </ImportTemplatesDialogGallery>
             </>
           )}
         </DialogContent>
