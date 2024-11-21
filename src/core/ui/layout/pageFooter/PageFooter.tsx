@@ -1,12 +1,12 @@
 import { Box, BoxProps, Theme, useMediaQuery } from '@mui/material';
-import React, { Children, PropsWithChildren, ReactNode } from 'react';
-import { Caption } from '../../typography';
-import { gutters } from '../../grid/utils';
+import { Children, PropsWithChildren, ReactNode } from 'react';
+import { Caption } from '@/core/ui/typography';
+import { gutters } from '@/core/ui/grid/utils';
 
-interface PageFooterProps {
+type PageFooterProps = {
   logo: ReactNode;
   copyright: ReactNode;
-}
+};
 
 const wrapChild = (child: ReactNode, index: number) => <Box key={`_footer_item_${index}`}>{child}</Box>;
 

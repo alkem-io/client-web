@@ -1,7 +1,7 @@
 import { LockOutlined } from '@mui/icons-material';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { Chip } from '@mui/material';
-import { ProfileType } from '../../../../core/apollo/generated/graphql-schema';
+import { ProfileType } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 
 interface SpaceSubspaceCardLabelProps {

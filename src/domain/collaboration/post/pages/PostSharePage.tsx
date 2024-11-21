@@ -1,9 +1,8 @@
-import React, { FC } from 'react';
 import { PostLayout } from '../views/PostLayoutWithOutlet';
 import { PostDialogSection } from '../views/PostDialogSection';
 import PostDashboardContainer from '../containers/PostDashboardContainer/PostDashboardContainer';
 import PostDashboardView from '../views/PostDashboardView';
-import { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
+import { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
 
 export interface PostSharePageProps {
   onClose: () => void;
@@ -11,7 +10,7 @@ export interface PostSharePageProps {
   postNameId: string | undefined;
 }
 
-const PostSharePage: FC<PostSharePageProps> = ({ onClose, postNameId, calloutId }) => {
+const PostSharePage = ({ onClose, postNameId, calloutId }: PostSharePageProps) => {
   if (!postNameId) {
     throw new Error('Must be within a Post route');
   }

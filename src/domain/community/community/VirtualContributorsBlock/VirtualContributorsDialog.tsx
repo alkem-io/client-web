@@ -1,16 +1,16 @@
-import { FC, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogContent, ListItemButton, ListItemButtonProps, ListItemButtonTypeMap } from '@mui/material';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import Avatar from '../../../../core/ui/avatar/Avatar';
-import RouterLink, { RouterLinkProps } from '../../../../core/ui/link/RouterLink';
-import { BlockSectionTitle } from '../../../../core/ui/typography';
-import { SearchVisibility } from '../../../../core/apollo/generated/graphql-schema';
-import SearchField from '../../../../core/ui/search/SearchField';
-import VCIcon from '../../virtualContributor/VirtualContributorsIcons';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import Gutters from '@/core/ui/grid/Gutters';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import Avatar from '@/core/ui/avatar/Avatar';
+import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
+import { BlockSectionTitle } from '@/core/ui/typography';
+import { SearchVisibility } from '@/core/apollo/generated/graphql-schema';
+import SearchField from '@/core/ui/search/SearchField';
+import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
 
 export interface VirtualContributorProps {
   id: string;
@@ -25,13 +25,13 @@ export interface VirtualContributorProps {
   };
 }
 
-interface VirtualContributorsDialogProps {
+type VirtualContributorsDialogProps = {
   open: boolean;
   onClose: () => void;
   virtualContributors: VirtualContributorProps[];
-}
+};
 
-const VirtualContributorsDialog: FC<VirtualContributorsDialogProps> = ({ open, onClose, virtualContributors }) => {
+const VirtualContributorsDialog = ({ open, onClose, virtualContributors }: VirtualContributorsDialogProps) => {
   const { t } = useTranslation();
 
   const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultComponent'], P = {}>(

@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { ActivityBaseView } from './ActivityBaseView';
 import { ActivityViewProps } from './ActivityViewProps';
-import { buildUpdatesUrl } from '../../../../../main/routing/urlBuilders';
-import { ActivityEventType } from '../../../../../core/apollo/generated/graphql-schema';
+import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
+import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
 import ActivitySubjectMarkdown from './ActivitySubjectMarkdown';
 
 export interface ActivityUpdateSentViewProps extends ActivityViewProps {

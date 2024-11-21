@@ -1,12 +1,11 @@
-import React, { FC } from 'react';
 import { Box, Skeleton } from '@mui/material';
-import Avatar from '../../../../core/ui/avatar/Avatar';
-import { Author } from '../../../shared/components/AuthorAvatar/models/author';
-import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import { Caption } from '../../../../core/ui/typography';
-import { gutters } from '../../../../core/ui/grid/utils';
-import OverflowGradient from '../../../../core/ui/overflow/OverflowGradient';
+import Avatar from '@/core/ui/avatar/Avatar';
+import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import { Caption } from '@/core/ui/typography';
+import { gutters } from '@/core/ui/grid/utils';
+import OverflowGradient from '@/core/ui/overflow/OverflowGradient';
 
 export interface SingleUpdateViewProps {
   author?: Author;
@@ -15,7 +14,7 @@ export interface SingleUpdateViewProps {
   loading?: boolean;
 }
 
-const SingleUpdateView: FC<SingleUpdateViewProps> = ({ author, createdDate, content = '', loading }) => {
+const SingleUpdateView = ({ author, createdDate, content = '', loading }: SingleUpdateViewProps) => {
   const visual = loading ? (
     <Skeleton variant="rectangular">
       <Avatar />

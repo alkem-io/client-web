@@ -1,8 +1,8 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import useNavigate from '../../core/routing/useNavigate';
-import { useSearchQuery, useSearchScopeDetailsSpaceQuery } from '../../core/apollo/generated/apollo-hooks';
+import useNavigate from '@/core/routing/useNavigate';
+import { useSearchQuery, useSearchScopeDetailsSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   SearchQuery,
   SearchResult,
@@ -12,9 +12,9 @@ import {
   SearchResultSpaceFragment,
   SearchResultType,
   SearchResultUserFragment,
-} from '../../core/apollo/generated/graphql-schema';
-import PageContentColumn from '../../core/ui/content/PageContentColumn';
-import { useUserContext } from '../../domain/community/user';
+} from '@/core/apollo/generated/graphql-schema';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import { useUserContext } from '@/domain/community/user';
 import {
   calloutFilterConfig,
   contributionFilterConfig,
@@ -22,16 +22,16 @@ import {
   FilterConfig,
   FilterDefinition,
 } from './Filter';
-import MultipleSelect from '../../core/ui/search/MultipleSelect';
+import MultipleSelect from '@/core/ui/search/MultipleSelect';
 import SearchResultSection from './SearchResultSection';
-import { useQueryParams } from '../../core/routing/useQueryParams';
+import { useQueryParams } from '@/core/routing/useQueryParams';
 import { buildLoginUrl } from '../routing/urlBuilders';
 import { SEARCH_SPACE_URL_PARAM, SEARCH_TERMS_URL_PARAM } from './constants';
-import PageContentBlockSeamless from '../../core/ui/content/PageContentBlockSeamless';
-import SearchResultsScope from '../../core/ui/search/SearchResultsScope';
-import SearchResultsScopeCard from '../../core/ui/search/SearchResultsScopeCard';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import SearchResultsScope from '@/core/ui/search/SearchResultsScope';
+import SearchResultsScopeCard from '@/core/ui/search/SearchResultsScopeCard';
 import AlkemioLogo from '../ui/logo/logoSmall.svg?react';
-import { SpaceIcon } from '../../domain/journey/space/icon/SpaceIcon';
+import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
 import { findKey, groupBy, identity } from 'lodash';
 import SearchResultPostChooser from './searchResults/SearchResultPostChooser';
 import SearchResultsCalloutCard from './searchResults/searchResultsCallout/SearchResultsCalloutCard';

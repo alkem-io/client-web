@@ -2,8 +2,8 @@ import { CloseOutlined, DeleteOutlined, MoreVertOutlined } from '@mui/icons-mate
 import { IconButton, ListItemIcon, Menu, MenuItem } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useCallback, useState } from 'react';
-import { Caption } from '../../../core/ui/typography';
-import { gutters } from '../../../core/ui/grid/utils';
+import { Caption } from '@/core/ui/typography';
+import { gutters } from '@/core/ui/grid/utils';
 
 interface ChatWidgetMenuProps {
   onClear: () => void;

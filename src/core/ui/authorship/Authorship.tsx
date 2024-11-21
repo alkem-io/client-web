@@ -1,17 +1,17 @@
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { Box } from '@mui/material';
 import { Caption } from '../typography';
 import { gutters } from '../grid/utils';
 import dayjs from 'dayjs';
-import { DAYJS_DATEFORMAT } from '../../utils/time/utils';
+import { DAYJS_DATEFORMAT } from '@/core/utils/time/utils';
 import { useTranslation } from 'react-i18next';
 
-interface AuthorshipProps {
+type AuthorshipProps = {
   authorAvatarUri?: string;
   authorName?: string;
   date?: string | Date;
   dateFormat?: string;
-}
+};
 
 const Authorship = ({
   authorAvatarUri,

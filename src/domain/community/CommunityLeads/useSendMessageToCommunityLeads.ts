@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useSendMessageToCommunityLeadsMutation } from '../../../core/apollo/generated/apollo-hooks';
+import { useSendMessageToCommunityLeadsMutation } from '@/core/apollo/generated/apollo-hooks';
 
 const useSendMessageToCommunityLeads = (communityId: string | undefined) => {
   const [sendMessageToCommunityLeads] = useSendMessageToCommunityLeadsMutation();

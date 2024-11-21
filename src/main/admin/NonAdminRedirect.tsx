@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import Loading from '../../core/ui/loading/Loading';
-import { AuthorizationPrivilege } from '../../core/apollo/generated/graphql-schema';
+import Loading from '@/core/ui/loading/Loading';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
 interface NonAdminRedirectProps {
   privileges: AuthorizationPrivilege[] | undefined;

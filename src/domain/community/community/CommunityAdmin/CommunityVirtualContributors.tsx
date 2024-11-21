@@ -8,19 +8,19 @@ import {
   GridRenderCellParams,
   GridValueGetterParams,
 } from '@mui/x-data-grid';
-import { FC, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { gutters } from '../../../../core/ui/grid/utils';
-import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
-import DataGridTable from '../../../../core/ui/table/DataGridTable';
-import { BlockTitle } from '../../../../core/ui/typography';
+import { gutters } from '@/core/ui/grid/utils';
+import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
+import DataGridTable from '@/core/ui/table/DataGridTable';
+import { BlockTitle } from '@/core/ui/typography';
 import CommunityAddMembersDialog from './CommunityAddMembersDialog';
 import { Remove } from '@mui/icons-material';
-import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import { Identifiable } from '../../../../core/utils/Identifiable';
-import InviteVirtualContributorDialog from '../../invitations/InviteVirtualContributorDialog';
-import { InviteContributorsData } from '../../invitations/useInviteUsers';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { Actions } from '@/core/ui/actions/Actions';
+import { Identifiable } from '@/core/utils/Identifiable';
+import InviteVirtualContributorDialog from '@/domain/community/invitations/InviteVirtualContributorDialog';
+import { InviteContributorsData } from '@/domain/community/invitations/useInviteUsers';
 import { ContributorViewProps } from '../EntityDashboardContributorsSection/Types';
 
 type RenderParams = GridRenderCellParams<string, ContributorViewProps>;
@@ -50,7 +50,7 @@ interface Entity extends Identifiable {
   };
 }
 
-interface CommunityVirtualContributorsProps {
+type CommunityVirtualContributorsProps = {
   virtualContributors: ContributorViewProps[] | undefined;
   onRemoveMember: (memberId: string) => Promise<unknown> | void;
   canAddVirtualContributors: boolean;
@@ -60,9 +60,9 @@ interface CommunityVirtualContributorsProps {
   loading?: boolean;
   inviteExistingUser: (params: InviteContributorsData) => Promise<void>;
   spaceDisplayName?: string;
-}
+};
 
-const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
+const CommunityVirtualContributors = ({
   virtualContributors = [],
   onRemoveMember,
   canAddVirtualContributors,
@@ -72,7 +72,7 @@ const CommunityVirtualContributors: FC<CommunityVirtualContributorsProps> = ({
   loading,
   inviteExistingUser,
   spaceDisplayName = '',
-}) => {
+}: CommunityVirtualContributorsProps) => {
   const { t } = useTranslation();
 
   const usersColumns: GridColDef[] = [

@@ -1,21 +1,21 @@
-import React, { FC, useState } from 'react';
+import { useState } from 'react';
 import { useSubSpace } from '../hooks/useSubSpace';
-import AboutPageContainer from '../../common/AboutPageContainer/AboutPageContainer';
-import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
-import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
+import AboutPageContainer from '@/domain/journey/common/AboutPageContainer/AboutPageContainer';
+import { useBackToStaticPath } from '@/core/routing/useBackToPath';
+import JourneyAboutDialog from '@/domain/journey/common/JourneyAboutDialog/JourneyAboutDialog';
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
-import useSendMessageToCommunityLeads from '../../../community/CommunityLeads/useSendMessageToCommunityLeads';
-import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
-import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
-import SubspaceContributorsDialogContent from '../../../community/community/entities/SubspaceContributorsDialogContent';
-import SeeMore from '../../../../core/ui/content/SeeMore';
+import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/useSendMessageToCommunityLeads';
+import EntityDashboardContributorsSection from '@/domain/community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
+import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
+import SubspaceContributorsDialogContent from '@/domain/community/community/entities/SubspaceContributorsDialogContent';
+import SeeMore from '@/core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
-import { buildAboutUrl } from '../../../../main/routing/urlBuilders';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
-import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
+import { buildAboutUrl } from '@/main/routing/urlBuilders';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
 
-const SubspaceAboutPage: FC = () => {
+const SubspaceAboutPage = () => {
   const { communityId, profile } = useSubSpace();
 
   const backToParentPage = useBackToStaticPath(profile.url);

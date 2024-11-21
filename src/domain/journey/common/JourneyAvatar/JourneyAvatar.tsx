@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import { SxProps, Theme } from '@mui/material';
-import Avatar, { AvatarSize, SizeableAvatarProps } from '../../../../core/ui/avatar/Avatar';
+import Avatar, { AvatarSize, SizeableAvatarProps } from '@/core/ui/avatar/Avatar';
 import defaultJourneyAvatar from '../../defaultVisuals/Avatar.jpg';
 
 interface JourneyAvatarProps extends SizeableAvatarProps {

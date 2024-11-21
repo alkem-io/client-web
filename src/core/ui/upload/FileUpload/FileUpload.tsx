@@ -1,38 +1,37 @@
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { CircularProgress } from '@mui/material';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import 'react-image-crop/dist/ReactCrop.css';
-import { StorageConfig } from '../../../../domain/storage/StorageBucket/useStorageConfig';
+import { StorageConfig } from '@/domain/storage/StorageBucket/useStorageConfig';
 import {
   useUploadFileMutation,
   useUploadFileOnLinkMutation,
   useUploadFileOnReferenceMutation,
-} from '../../../apollo/generated/apollo-hooks';
-import UploadButton from '../../button/UploadButton';
-import { useNotification } from '../../notifications/useNotification';
+} from '@/core/apollo/generated/apollo-hooks';
+import UploadButton from '@/core/ui/button/UploadButton';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 
 const DEFAULT_REFERENCE_TYPE = 'reference';
 
 export type FileUploadEntityType = 'reference' | 'link';
 
-interface FileUploadProps {
+type FileUploadProps = {
   onUpload?: (fileCID: string) => void;
   onChange?: (fileName: string) => void;
   entityID?: string;
   entityType?: FileUploadEntityType;
   storageConfig: StorageConfig;
-}
+};
 
 const bytesInMegabyte = Math.pow(1024, 2);
 
-const FileUploadButton: FC<FileUploadProps> = ({
+const FileUploadButton = ({
   onUpload,
   onChange,
   entityID,
   entityType = DEFAULT_REFERENCE_TYPE,
   storageConfig,
-}) => {
+}: FileUploadProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
 

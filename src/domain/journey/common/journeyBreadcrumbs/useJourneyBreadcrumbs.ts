@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import { useJourneyBreadcrumbsSpaceQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
-import { VisualType } from '../../../../core/apollo/generated/graphql-schema';
+import { useJourneyBreadcrumbsSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
+import { JourneyPath } from '@/main/routing/resolvers/RouteResolver';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 
 export interface BreadcrumbsItem {
   displayName: string;

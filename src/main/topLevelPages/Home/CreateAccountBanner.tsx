@@ -1,13 +1,13 @@
-import RouterLink, { RouterLinkProps } from '../../../core/ui/link/RouterLink';
-import React, { MouseEventHandler } from 'react';
-import SwapColors from '../../../core/ui/palette/SwapColors';
-import { buildLoginUrl } from '../../routing/urlBuilders';
+import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
+import { MouseEventHandler } from 'react';
+import SwapColors from '@/core/ui/palette/SwapColors';
+import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import { Box, Button, Grow } from '@mui/material';
-import PageContentBlockSeamless from '../../../core/ui/content/PageContentBlockSeamless';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { Link } from 'react-router-dom';
-import { AUTH_SIGN_UP_PATH } from '../../../core/auth/authentication/constants/authentication.constants';
+import { AUTH_SIGN_UP_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { Trans } from 'react-i18next';
-import { CardText, PageTitle } from '../../../core/ui/typography';
+import { CardText, PageTitle } from '@/core/ui/typography';
 
 const SignInLink = ({ onClick, ...props }: Omit<RouterLinkProps, 'to'>) => {
   const handleClick: MouseEventHandler<HTMLAnchorElement> = event => {

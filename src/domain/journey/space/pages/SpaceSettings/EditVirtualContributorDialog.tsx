@@ -1,10 +1,10 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogContent } from '@mui/material';
-import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
-import VirtualContributorForm from '../../../../community/virtualContributor/vcSettingsPage/VirtualContributorForm';
-import { UpdateVirtualContributorInput, Visual } from '../../../../../core/apollo/generated/graphql-schema';
-import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import VirtualContributorForm from '@/domain/community/virtualContributor/vcSettingsPage/VirtualContributorForm';
+import { UpdateVirtualContributorInput, Visual } from '@/core/apollo/generated/graphql-schema';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 
 export interface VirtualContributorUpdateFormValues {
   id: string;
@@ -52,7 +52,7 @@ const EditVirtualContributorDialog: FC<EditVirtualContributorDialogProps> = ({
           bokProfile={bok?.profile}
           avatar={virtualContributor.profile.avatar}
           onSave={onSave}
-          hasBackNavitagion={false}
+          hasBackNavigation={false}
         />
       </DialogContent>
     </DialogWithGrid>

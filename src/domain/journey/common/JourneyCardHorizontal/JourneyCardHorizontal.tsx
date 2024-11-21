@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
-import { gutters } from '../../../../core/ui/grid/utils';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
+import { gutters } from '@/core/ui/grid/utils';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import {
   Chip,
   ListItemButton,
@@ -11,20 +11,20 @@ import {
   Skeleton,
   Typography,
 } from '@mui/material';
-import { Caption } from '../../../../core/ui/typography';
-import { Visual } from '../../../common/visual/Visual';
-import withElevationOnHover from '../../../shared/components/withElevationOnHover';
-import RouterLink, { RouterLinkProps } from '../../../../core/ui/link/RouterLink';
-import { JourneyTypeName } from '../../JourneyTypeName';
-import spaceIcon from '../../../shared/components/JourneyIcon/JourneyIcon';
-import BlockTitleWithIcon from '../../../../core/ui/content/BlockTitleWithIcon';
-import { CommunityRoleType } from '../../../../core/apollo/generated/graphql-schema';
+import { Caption } from '@/core/ui/typography';
+import { Visual } from '@/domain/common/visual/Visual';
+import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
+import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import spaceIcon from '@/domain/shared/components/JourneyIcon/JourneyIcon';
+import BlockTitleWithIcon from '@/core/ui/content/BlockTitleWithIcon';
+import { CommunityRoleType } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import { intersection } from 'lodash';
-import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
+import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import JourneyAvatar from '../JourneyAvatar/JourneyAvatar';
-import ActionsMenu from '../../../../core/ui/card/ActionsMenu';
-import { AvatarSize } from '../../../../core/ui/avatar/Avatar';
+import ActionsMenu from '@/core/ui/card/ActionsMenu';
+import { AvatarSize } from '@/core/ui/avatar/Avatar';
 
 export const JourneyCardHorizontalSkeleton = () => (
   <ElevatedPaper sx={{ padding: gutters() }}>

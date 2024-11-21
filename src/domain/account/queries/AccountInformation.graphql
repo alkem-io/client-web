@@ -8,9 +8,7 @@ query AccountInformation($accountId: UUID!) {
       }
       license {
         id
-        entitlements {
-          ...EntitlementDetails
-        }
+        myLicensePrivileges
       }
       host {
         id

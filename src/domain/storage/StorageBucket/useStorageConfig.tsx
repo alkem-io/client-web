@@ -9,9 +9,9 @@ import {
   useTemplateStorageConfigQuery,
   useUserStorageConfigQuery,
   useVirtualContributorStorageConfigQuery,
-} from '../../../core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';
-import { AuthorizationPrivilege } from '../../../core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
 export interface StorageConfig {
   storageBucketId: string;

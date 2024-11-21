@@ -1,7 +1,6 @@
-import React, { FC } from 'react';
-import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import { useCalloutIdQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import { useCalloutIdQuery } from '@/core/apollo/generated/apollo-hooks';
 import WhiteboardView from '../WhiteboardsManagement/WhiteboardView';
 import { WhiteboardProvider } from '../containers/WhiteboardProvider';
 
@@ -13,14 +12,14 @@ export interface WhiteboardPageProps {
   journeyTypeName: JourneyTypeName;
 }
 
-const WhiteboardPage: FC<WhiteboardPageProps> = ({
+const WhiteboardPage = ({
   collaborationId,
   whiteboardNameId,
   parentUrl,
   calloutNameId,
   journeyTypeName,
   ...props
-}) => {
+}: WhiteboardPageProps) => {
   const [backToExplore] = useBackToParentPage(parentUrl, { keepScroll: true });
   const backToWhiteboards = () => backToExplore();
 

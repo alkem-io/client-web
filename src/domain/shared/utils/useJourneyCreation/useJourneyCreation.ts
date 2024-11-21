@@ -4,16 +4,16 @@ import {
   refetchUserProviderQuery,
   SubspaceCardFragmentDoc,
   useCreateSubspaceMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
-import { useConfig } from '../../../platform/config/useConfig';
+} from '@/core/apollo/generated/apollo-hooks';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useConfig } from '@/domain/platform/config/useConfig';
 import {
   CommunityMembershipStatus,
   PlatformFeatureFlagName,
   SpacePrivacyMode,
   TagsetType,
-} from '../../../../core/apollo/generated/graphql-schema';
-import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
+} from '@/core/apollo/generated/graphql-schema';
+import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 
 interface SubspaceCreationInput {
   spaceID: string;

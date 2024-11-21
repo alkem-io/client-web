@@ -1,8 +1,7 @@
-import React, { FC } from 'react';
-import { useQueryParams } from '../../../routing/useQueryParams';
+import { useQueryParams } from '@/core/routing/useQueryParams';
 import SettingsPage from '../pages/SettingsPage';
 
-export const SettingsRoute: FC = () => {
+export const SettingsRoute = () => {
   const params = useQueryParams();
   const flow = params.get('flow');
 

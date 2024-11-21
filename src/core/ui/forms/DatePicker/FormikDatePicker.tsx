@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useField } from 'formik';
 import { FormikInputProps } from '../FormikInputProps';
 import { DatePicker, DatePickerProps, LocalizationProvider } from '@mui/lab';

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { Button, ButtonProps, Tooltip, TooltipProps, useTheme } from '@mui/material';
 import { gutters } from '../grid/utils';
 import { ButtonTypeMap } from '@mui/material/Button/Button';
@@ -17,7 +17,7 @@ const ButtonWithTooltip = <D extends React.ElementType = ButtonTypeMap['defaultC
   sx,
   children,
   ...props
-}: ButtonWithTooltipProps & ButtonProps<D, P>) => {
+}: PropsWithChildren<ButtonWithTooltipProps & ButtonProps<D, P>>) => {
   const theme = useTheme();
 
   const isContained = props.variant === 'contained';

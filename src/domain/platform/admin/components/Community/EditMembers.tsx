@@ -13,10 +13,10 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import React, { ComponentType, forwardRef, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Filter } from '../Common/Filter';
-import TableRowLoading from '../../../../shared/pagination/TableRowLoading';
-import useLazyLoading from '../../../../shared/pagination/useLazyLoading';
+import TableRowLoading from '@/domain/shared/pagination/TableRowLoading';
+import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import { times } from 'lodash';
-import { Identifiable } from '../../../../../core/utils/Identifiable';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 const StyledTableHead = styled(TableHead)(({ theme }) => ({
   '& th': { background: theme.palette.divider },

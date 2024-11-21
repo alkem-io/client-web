@@ -1,22 +1,22 @@
 import React, { FC, useContext } from 'react';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { usePostProviderQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useUrlParams } from '@/core/routing/useUrlParams';
+import { usePostProviderQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ApolloError } from '@apollo/client';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 
 interface PostPermissions {
   canUpdate: boolean;
 }
 
-interface PostContextProps {
+type PostContextProps = {
   id?: string;
   nameId?: string;
   displayName?: string;
   permissions: PostPermissions;
   loading: boolean;
   error?: ApolloError;
-}
+};
 
 const PostContext = React.createContext<PostContextProps>({
   loading: false,

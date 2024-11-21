@@ -1,4 +1,4 @@
-import React, {
+import {
   cloneElement,
   forwardRef,
   MouseEventHandler,
@@ -28,22 +28,20 @@ interface BreadcrumbsInternalProps<ItemProps extends Expandable> extends Uncontr
   children?: OneOrMany<BreadcrumbsProps<ItemProps>['children']>;
 }
 
-const BreadcrumbsSeparator = () => {
-  return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      height={gutters(0.5)}
-      width={gutters(0.5)}
-      fontSize={8}
-      borderRadius={0.5}
-      sx={{ backgroundColor: theme => theme.palette.divider }}
-    >
-      <DoubleArrow fontSize="inherit" color="primary" />
-    </Box>
-  );
-};
+const BreadcrumbsSeparator = () => (
+  <Box
+    display="flex"
+    justifyContent="center"
+    alignItems="center"
+    height={gutters(0.5)}
+    width={gutters(0.5)}
+    fontSize={8}
+    borderRadius={0.5}
+    sx={{ backgroundColor: theme => theme.palette.divider }}
+  >
+    <DoubleArrow fontSize="inherit" color="primary" />
+  </Box>
+);
 
 type JourneyBreadcrumbsExpandedState = Record<string | number, boolean>;
 

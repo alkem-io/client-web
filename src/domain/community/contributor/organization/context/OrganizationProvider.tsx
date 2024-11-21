@@ -1,17 +1,17 @@
 import React, { FC } from 'react';
-import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import { useOrganizationInfoQuery } from '../../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, OrganizationInfoFragment } from '../../../../../core/apollo/generated/graphql-schema';
-import { useUserContext } from '../../../user/hooks/useUserContext';
+import { useUrlParams } from '@/core/routing/useUrlParams';
+import { useOrganizationInfoQuery } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, OrganizationInfoFragment } from '@/core/apollo/generated/graphql-schema';
+import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 
-interface OrganizationContextProps {
+type OrganizationContextProps = {
   organization?: OrganizationInfoFragment;
   organizationId: string;
   organizationNameId: string | undefined;
   canReadUsers: boolean;
   displayName: string;
   loading: boolean;
-}
+};
 
 const OrganizationContext = React.createContext<OrganizationContextProps>({
   loading: true,

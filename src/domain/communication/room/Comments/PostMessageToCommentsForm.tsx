@@ -1,15 +1,14 @@
-import React from 'react';
 import { FetchResult } from '@apollo/client';
 import { AvatarProps, Box, BoxProps, styled } from '@mui/material';
-import Avatar from '../../../../core/ui/avatar/Avatar';
+import Avatar from '@/core/ui/avatar/Avatar';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { useUserContext } from '../../../community/user';
+import { useUserContext } from '@/domain/community/user';
 import FormikCommentInputField, { FormikCommentInputFieldProps } from './FormikCommentInputField';
-import { gutters } from '../../../../core/ui/grid/utils';
-import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import { COMMENTS_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import { gutters } from '@/core/ui/grid/utils';
+import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
+import { COMMENTS_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
   height: theme.avatarSizeXs,
@@ -27,9 +26,9 @@ export interface PostMessageToCommentsFormProps {
   threadId?: string;
 }
 
-interface formValues {
+type formValues = {
   post: string;
-}
+};
 
 const PostMessageToCommentsForm = ({
   onPostComment,

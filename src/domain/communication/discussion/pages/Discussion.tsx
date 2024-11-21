@@ -1,10 +1,7 @@
-import { FC } from 'react';
 import DiscussionPage from './DiscussionPage';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useUrlParams } from '@/core/routing/useUrlParams';
 
-interface DiscussionPageProps {}
-
-export const Discussion: FC<DiscussionPageProps> = () => {
+export const Discussion = () => {
   const { discussionNameId } = useUrlParams();
 
   if (!discussionNameId) {

@@ -1,21 +1,20 @@
-import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
 import PostDashboardPage from '../pages/PostDashboardPage';
 import PostSettingsPage from '../pages/PostSettingsPage';
 import PostSharePage from '../pages/PostSharePage';
 import { PostDialogSection } from './PostDialogSection';
 import { PostLayoutHolder } from './PostLayoutWithOutlet';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { useUrlParams } from '@/core/routing/useUrlParams';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 
 export interface PostRouteProps {
   parentPagePath: string;
   journeyTypeName: JourneyTypeName;
 }
 
-const PostRoute: FC<PostRouteProps> = ({ parentPagePath, journeyTypeName }) => {
+const PostRoute = ({ parentPagePath, journeyTypeName }: PostRouteProps) => {
   const [backToExplore] = useBackToParentPage(parentPagePath, { keepScroll: true });
   const onClose = () => backToExplore();
 

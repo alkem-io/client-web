@@ -1,21 +1,21 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, CardContent, Skeleton } from '@mui/material';
-import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
-import ContributeCard from '../../../../core/ui/card/ContributeCard';
-import CardHeader from '../../../../core/ui/card/CardHeader';
-import CardHeaderCaption from '../../../../core/ui/card/CardHeaderCaption';
-import CardDetails from '../../../../core/ui/card/CardDetails';
-import CardDescription, { DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from '../../../../core/ui/card/CardDescription';
-import { Caption } from '../../../../core/ui/typography';
-import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
-import InnovationPackIcon from '../../../InnovationPack/InnovationPackIcon';
-import CardTags from '../../../../core/ui/card/CardTags';
-import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
-import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
-import { CalloutIcon } from '../../../collaboration/callout/icon/CalloutIcon';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { CalloutTemplate } from '../../models/CalloutTemplate';
+import { CalloutType } from '@/core/apollo/generated/graphql-schema';
+import ContributeCard from '@/core/ui/card/ContributeCard';
+import CardHeader from '@/core/ui/card/CardHeader';
+import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
+import CardDetails from '@/core/ui/card/CardDetails';
+import CardDescription, { DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from '@/core/ui/card/CardDescription';
+import { Caption } from '@/core/ui/typography';
+import CardSegmentCaption from '@/core/ui/card/CardSegmentCaption';
+import InnovationPackIcon from '@/domain/InnovationPack/InnovationPackIcon';
+import CardTags from '@/core/ui/card/CardTags';
+import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
+import RoundedIcon from '@/core/ui/icon/RoundedIcon';
+import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
+import { gutters } from '@/core/ui/grid/utils';
+import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
 import { TemplateCardProps } from './TemplateCard';
 
 interface CalloutTemplateCardProps extends TemplateCardProps {

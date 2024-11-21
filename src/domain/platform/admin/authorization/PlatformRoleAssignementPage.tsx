@@ -4,8 +4,8 @@ import {
   refetchUsersWithCredentialsQuery,
   useAssignPlatformRoleToUserMutation,
   useRemovePlatformRoleFromUserMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationCredential, PlatformRole } from '../../../../core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationCredential, PlatformRole } from '@/core/apollo/generated/graphql-schema';
 
 interface PlatformRoleAssignementPageProps {
   role: PlatformRole;

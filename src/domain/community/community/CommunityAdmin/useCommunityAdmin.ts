@@ -16,20 +16,20 @@ import {
   useAvailableVirtualContributorsLazyQuery,
   useAvailableVirtualContributorsInLibraryLazyQuery,
   useRoleSetAvailableMembersLazyQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CommunityRoleType,
   LicenseEntitlementType,
   SearchVisibility,
   SpaceLevel,
-} from '../../../../core/apollo/generated/graphql-schema';
-import { OrganizationDetailsFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityOrganizations';
-import { CommunityMemberUserFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityUsers';
-import useInviteUsers from '../../../community/invitations/useInviteUsers';
-import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
-import { Identifiable } from '../../../../core/utils/Identifiable';
-import { useUserContext } from '../../user';
+} from '@/core/apollo/generated/graphql-schema';
+import { OrganizationDetailsFragmentWithRoles } from '@/domain/community/community/CommunityAdmin/CommunityOrganizations';
+import { CommunityMemberUserFragmentWithRoles } from '@/domain/community/community/CommunityAdmin/CommunityUsers';
+import useInviteUsers from '@/domain/community/invitations/useInviteUsers';
+import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import { Identifiable } from '@/core/utils/Identifiable';
+import { useUserContext } from '@/domain/community/user';
 
 const MAX_AVAILABLE_MEMBERS = 100;
 const buildUserFilterObject = (filter: string | undefined) =>

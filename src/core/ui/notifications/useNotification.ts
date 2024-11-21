@@ -1,5 +1,5 @@
-import { useGlobalState } from '../../state/useGlobalState';
-import { PUSH_NOTIFICATION, Severity } from '../../state/global/notifications/notificationMachine';
+import { useGlobalState } from '@/core/state/useGlobalState';
+import { PUSH_NOTIFICATION, Severity } from '@/core/state/global/notifications/notificationMachine';
 import { useCallback } from 'react';
 
 export const useNotification = () => {

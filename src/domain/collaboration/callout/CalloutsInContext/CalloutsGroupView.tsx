@@ -1,10 +1,9 @@
-import React from 'react';
 import CalloutCreationDialog from '../creationDialog/CalloutCreationDialog';
 import { useCalloutCreationWithPreviewImages } from '../creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
-import AddContentButton from '../../../../core/ui/content/AddContentButton';
+import AddContentButton from '@/core/ui/content/AddContentButton';
 import CalloutsView, { CalloutsViewProps } from '../JourneyCalloutsTabView/CalloutsView';
-import { CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
-import { useColumns } from '../../../../core/ui/grid/GridContext';
+import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
+import { useColumns } from '@/core/ui/grid/GridContext';
 import { useTranslation } from 'react-i18next';
 
 interface CalloutsGroupProps extends CalloutsViewProps {

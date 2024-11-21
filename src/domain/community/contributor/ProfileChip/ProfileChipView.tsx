@@ -1,9 +1,9 @@
+import { PropsWithChildren } from 'react';
 import { Box, BoxProps } from '@mui/material';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { BlockSectionTitle } from '../../../../core/ui/typography';
-import VirtualContributorLabel from '../../virtualContributor/VirtualContributorLabel';
+import { gutters } from '@/core/ui/grid/utils';
+import { BlockSectionTitle } from '@/core/ui/typography';
+import VirtualContributorLabel from '@/domain/community/virtualContributor/VirtualContributorLabel';
 
 export interface ProfileChipViewProps extends BoxProps {
   displayName: string | undefined;
@@ -14,7 +14,7 @@ export interface ProfileChipViewProps extends BoxProps {
   virtualContributor?: boolean;
 }
 
-export const ProfileChipView: FC<ProfileChipViewProps> = ({
+export const ProfileChipView = ({
   displayName,
   city,
   country,
@@ -23,7 +23,7 @@ export const ProfileChipView: FC<ProfileChipViewProps> = ({
   selected,
   children,
   ...containerProps
-}) => {
+}: PropsWithChildren<ProfileChipViewProps>) => {
   const { t } = useTranslation();
 
   return (

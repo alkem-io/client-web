@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { ROUTE_HOME } from '../../../../domain/platform/routes/constants';
+import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { STORAGE_KEY_RETURN_URL } from '../constants/authentication.constants';
-import { useConfig } from '../../../../domain/platform/config/useConfig';
-import usePlatformOrigin from '../../../../domain/platform/routes/usePlatformOrigin';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 
 const STORAGE_KEY_SIGN_UP_RETURN_URL = 'signUpReturnUrl';
 

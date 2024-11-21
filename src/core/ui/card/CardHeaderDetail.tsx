@@ -19,15 +19,13 @@ const CardHeaderDetail = ({
   iconProps,
   children,
   ...containerProps
-}: PropsWithChildren<CardHeaderDetailProps>) => {
-  return (
-    <Box display="flex" alignItems={'center'} gap={gutters(0.5)} {...containerProps}>
-      {iconComponent && React.cloneElement(iconComponent, { sx: { ...iconStyles }, ...iconComponent.props })}
-      <CardText color="inherit" noWrap>
-        {children}
-      </CardText>
-    </Box>
-  );
-};
+}: PropsWithChildren<CardHeaderDetailProps>) => (
+  <Box display="flex" alignItems={'center'} gap={gutters(0.5)} {...containerProps}>
+    {iconComponent && React.cloneElement(iconComponent, { sx: { ...iconStyles }, ...iconComponent.props })}
+    <CardText color="inherit" noWrap>
+      {children}
+    </CardText>
+  </Box>
+);
 
 export default CardHeaderDetail;

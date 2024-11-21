@@ -1,11 +1,10 @@
-import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
-import WrapperButton from '../../ui/button/deprecated/WrapperButton';
-import Section from '../../ui/content/deprecated/Section';
-import WrapperTypography from '../../ui/typography/deprecated/WrapperTypography';
+import WrapperButton from '@/core/ui/button/deprecated/WrapperButton';
+import Section from '@/core/ui/content/deprecated/Section';
+import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
 import { useTranslation } from 'react-i18next';
 
-export const RestrictedPage: FC<{ attemptedTarget: string }> = ({ attemptedTarget }) => {
+export const RestrictedPage = ({ attemptedTarget }: { attemptedTarget: string }) => {
   const { t } = useTranslation();
 
   return (
@@ -14,7 +13,7 @@ export const RestrictedPage: FC<{ attemptedTarget: string }> = ({ attemptedTarge
         Restricted
       </WrapperTypography>
       <WrapperTypography as="h5">
-        To access <b>{attemptedTarget}</b> elevated priviliges are required. Please contact your administrator for
+        To access <b>{attemptedTarget}</b> elevated privileges are required. Please contact your administrator for
         support.
       </WrapperTypography>
       <div>

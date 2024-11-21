@@ -12,11 +12,11 @@ import {
 } from '@mui/material';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import { useTranslation } from 'react-i18next';
-import { BlockTitle } from '../../core/ui/typography';
-import { gutters } from '../../core/ui/grid/utils';
+import { BlockTitle } from '@/core/ui/typography';
+import { gutters } from '@/core/ui/grid/utils';
 import { FilterConfig, FilterDefinition } from './Filter';
-import useCurrentBreakpoint from '../../core/ui/utils/useCurrentBreakpoint';
-import RoundedIcon from '../../core/ui/icon/RoundedIcon';
+import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
+import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 
 interface EntityFilterProps {
   title?: string;

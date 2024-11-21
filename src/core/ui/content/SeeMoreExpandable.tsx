@@ -2,13 +2,13 @@ import { Button } from '@mui/material';
 import { ReactNode, useState } from 'react';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 
-interface SeeMoreExpandableProps {
+type SeeMoreExpandableProps = {
   label?: ReactNode;
   labelExpanded?: ReactNode;
   labelCollapsed?: ReactNode;
   onExpand?: () => void;
   onCollapse?: () => void;
-}
+};
 
 const SeeMoreExpandable = ({
   label,

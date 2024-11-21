@@ -8,25 +8,24 @@ import {
   SpaceLevel,
   SpacePrivacyMode,
   UserRolesSearchCardsQuery,
-} from '../../../core/apollo/generated/graphql-schema';
-import React from 'react';
-import { buildOrganizationUrl, buildUserProfileUrl } from '../../routing/urlBuilders';
-import { RoleType } from '../../../domain/community/user/constants/RoleType';
-import { getVisualByType } from '../../../domain/common/visual/utils/visuals.utils';
-import { useUserRolesSearchCardsQuery } from '../../../core/apollo/generated/apollo-hooks';
-import { useUserContext } from '../../../domain/community/user/hooks/useUserContext';
+} from '@/core/apollo/generated/graphql-schema';
+import { buildOrganizationUrl, buildUserProfileUrl } from '@/main/routing/urlBuilders';
+import { RoleType } from '@/domain/community/user/constants/RoleType';
+import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
+import { useUserRolesSearchCardsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 import { TypedSearchResult } from '../SearchView';
-import { SearchContributionCardCard } from '../../../domain/shared/components/search-cards/SearchContributionPostCard';
-import { SubspaceIcon } from '../../../domain/journey/subspace/icon/SubspaceIcon';
-import { SpaceIcon } from '../../../domain/journey/space/icon/SpaceIcon';
-import ContributingUserCard from '../../../domain/community/user/ContributingUserCard/ContributingUserCard';
-import CardContent from '../../../core/ui/card/CardContent';
-import ContributingOrganizationCard from '../../../domain/community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
-import CardParentJourneySegment from '../../../domain/journey/common/SpaceChildJourneyCard/CardParentJourneySegment';
-import { CalloutIcon } from '../../../domain/collaboration/callout/icon/CalloutIcon';
-import { VisualName } from '../../../domain/common/visual/constants/visuals.constants';
-import SearchBaseJourneyCard from '../../../domain/shared/components/search-cards/base/SearchBaseJourneyCard';
-import { spaceIconByLevel } from '../../../domain/shared/components/JourneyIcon/JourneyIcon';
+import { SearchContributionCardCard } from '@/domain/shared/components/search-cards/SearchContributionPostCard';
+import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
+import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
+import ContributingUserCard from '@/domain/community/user/ContributingUserCard/ContributingUserCard';
+import CardContent from '@/core/ui/card/CardContent';
+import ContributingOrganizationCard from '@/domain/community/contributor/organization/ContributingOrganizationCard/ContributingOrganizationCard';
+import CardParentJourneySegment from '@/domain/journey/common/SpaceChildJourneyCard/CardParentJourneySegment';
+import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
+import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
+import SearchBaseJourneyCard from '@/domain/shared/components/search-cards/base/SearchBaseJourneyCard';
+import { spaceIconByLevel } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
 
 const hydrateUserCard = (data: TypedSearchResult<SearchResultType.User, SearchResultUserFragment>) => {
   const user = data.user;

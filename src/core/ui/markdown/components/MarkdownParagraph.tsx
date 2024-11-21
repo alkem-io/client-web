@@ -1,4 +1,3 @@
-import React from 'react';
 import { ReactMarkdownProps } from 'react-markdown/lib/complex-types';
 import { useMarkdownOptions } from '../MarkdownOptionsContext';
 import createMarkdownComponent from './MarkdownComponent';

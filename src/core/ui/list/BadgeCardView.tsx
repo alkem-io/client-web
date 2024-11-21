@@ -3,7 +3,7 @@ import { Box, BoxProps } from '@mui/material';
 import { BoxTypeMap } from '@mui/system';
 import { gutters } from '../grid/utils';
 
-interface BadgeCardViewProps {
+type BadgeCardViewProps = {
   visual?: ReactElement<{ sx: { flexShrink: number } }>;
   actions?: ReactElement<{ sx: { flexShrink: number } }>;
   visualRight?: ReactElement<{ sx: { flexShrink: number } }>;
@@ -11,7 +11,7 @@ interface BadgeCardViewProps {
   outlined?: boolean;
   square?: boolean;
   padding?: boolean;
-}
+};
 
 const cloneVisual = <Sx extends { flexShrink: number }>(element: ReactElement<{ sx: Partial<Sx> }> | undefined) => {
   if (!element) {
@@ -20,12 +20,7 @@ const cloneVisual = <Sx extends { flexShrink: number }>(element: ReactElement<{ 
 
   const { sx } = element.props;
 
-  return cloneElement(element, {
-    sx: {
-      flexShrink: 0,
-      ...sx,
-    },
-  });
+  return cloneElement(element, { sx: { flexShrink: 0, ...sx } });
 };
 
 const BadgeCardView = forwardRef(

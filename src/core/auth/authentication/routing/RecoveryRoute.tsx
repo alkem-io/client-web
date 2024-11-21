@@ -1,11 +1,8 @@
-import React, { FC } from 'react';
-import { useQueryParams } from '../../../routing/useQueryParams';
+import { useQueryParams } from '@/core/routing/useQueryParams';
 import RecoveryPage from '../pages/RecoveryPage';
 import { AUTH_RESET_PASSWORD_REQUEST } from '../constants/authentication.constants';
 
-interface RecoveryRouteProps {}
-
-export const RecoveryRoute: FC<RecoveryRouteProps> = () => {
+export const RecoveryRoute = () => {
   const params = useQueryParams();
   const flow = params.get('flow');
 

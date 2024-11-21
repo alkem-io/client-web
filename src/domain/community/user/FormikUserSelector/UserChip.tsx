@@ -1,17 +1,14 @@
-import { FC } from 'react';
-import { useUserSelectorUserDetailsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { ProfileChip } from '../../contributor/ProfileChip/ProfileChip';
+import { useUserSelectorUserDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { ProfileChip } from '@/domain/community/contributor/ProfileChip/ProfileChip';
 
-interface UserChipProps {
+type UserChipProps = {
   userId: string;
   removable: boolean;
   onRemove: () => void;
-}
+};
 
-export const UserChip: FC<UserChipProps> = ({ userId, ...props }) => {
-  const { data, loading } = useUserSelectorUserDetailsQuery({
-    variables: { id: userId },
-  });
+export const UserChip = ({ userId, ...props }: UserChipProps) => {
+  const { data, loading } = useUserSelectorUserDetailsQuery({ variables: { id: userId } });
 
   const user = data?.user;
 

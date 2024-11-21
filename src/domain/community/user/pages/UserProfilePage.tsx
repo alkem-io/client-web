@@ -1,28 +1,26 @@
-import React, { FC, useMemo } from 'react';
-import useNavigate from '../../../../core/routing/useNavigate';
+import { useMemo } from 'react';
+import useNavigate from '@/core/routing/useNavigate';
 import { UserForm } from '../userForm/UserForm';
-import Loading from '../../../../core/ui/loading/Loading';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import Loading from '@/core/ui/loading/Loading';
+import { useUrlParams } from '@/core/routing/useUrlParams';
 import { useUserContext } from '../hooks/useUserContext';
-import { useNotification } from '../../../../core/ui/notifications/useNotification';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   useCreateTagsetOnProfileMutation,
   useUpdateUserMutation,
   useUserQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { EditMode } from '../../../../core/ui/forms/editMode';
+} from '@/core/apollo/generated/apollo-hooks';
+import { EditMode } from '@/core/ui/forms/editMode';
 import { UserModel } from '../models/User';
-import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
+import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
 import { getUpdateUserInput } from '../utils/getUpdateUserInput';
-import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettingsLayout';
-import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import UserSettingsLayout from '@/domain/platform/admin/user/layout/UserSettingsLayout';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
 
-interface UserProfilePageProps {}
-
-export const UserProfilePage: FC<UserProfilePageProps> = () => {
+export const UserProfilePage = () => {
   const navigate = useNavigate();
   const { userNameId = '' } = useUrlParams();
 

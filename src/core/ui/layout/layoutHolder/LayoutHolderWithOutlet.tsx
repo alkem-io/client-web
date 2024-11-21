@@ -4,14 +4,12 @@ import { Outlet } from 'react-router-dom';
 const createLayoutHolderWithOutlet = () => {
   const { LayoutHolder, RenderPoint, createLayout } = createLayoutHolder();
 
-  const LayoutHolderWithOutlet = () => {
-    return (
-      <LayoutHolder>
-        <RenderPoint />
-        <Outlet />
-      </LayoutHolder>
-    );
-  };
+  const LayoutHolderWithOutlet = () => (
+    <LayoutHolder>
+      <RenderPoint />
+      <Outlet />
+    </LayoutHolder>
+  );
 
   return {
     LayoutHolder,

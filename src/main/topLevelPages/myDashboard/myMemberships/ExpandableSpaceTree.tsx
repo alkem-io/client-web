@@ -3,22 +3,22 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Theme, Button, useMediaQuery } from '@mui/material';
 
-import Avatar from '../../../../core/ui/avatar/Avatar';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import GridItem from '../../../../core/ui/grid/GridItem';
-import RouterLink from '../../../../core/ui/link/RouterLink';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
+import Avatar from '@/core/ui/avatar/Avatar';
+import Gutters from '@/core/ui/grid/Gutters';
+import GridItem from '@/core/ui/grid/GridItem';
+import RouterLink from '@/core/ui/link/RouterLink';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Caption, BlockTitle, BlockSectionTitle } from '../../../../core/ui/typography';
+import { Caption, BlockTitle, BlockSectionTitle } from '@/core/ui/typography';
 
-import { gutters } from '../../../../core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { MembershipProps } from './MyMembershipsDialog.model';
-import { useColumns } from '../../../../core/ui/grid/GridContext';
-import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
-import { SpaceLevel, CommunityRoleType } from '../../../../core/apollo/generated/graphql-schema';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
+import { SpaceLevel, CommunityRoleType } from '@/core/apollo/generated/graphql-schema';
 
-import defaultCardBanner from '../../../../domain/journey/defaultVisuals/Card.jpg';
+import defaultCardBanner from '@/domain/journey/defaultVisuals/Card.jpg';
 
 const VISIBLE_COMMUNITY_ROLES = [CommunityRoleType.Admin, CommunityRoleType.Lead];
 
