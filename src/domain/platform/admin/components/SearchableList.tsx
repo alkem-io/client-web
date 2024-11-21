@@ -1,11 +1,11 @@
 import { Button, FormControl, InputLabel, OutlinedInput } from '@mui/material';
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import LoadingListItem from '../../../shared/components/SearchableList/LoadingListItem';
-import { ListItemLinkProps } from '../../../shared/components/SearchableList/ListItemLink';
-import JourneyCardHorizontal from '../../../journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
-import { Visual } from '../../../common/visual/Visual';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import LoadingListItem from '@/domain/shared/components/SearchableList/LoadingListItem';
+import { ListItemLinkProps } from '@/domain/shared/components/SearchableList/ListItemLink';
+import JourneyCardHorizontal from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
+import { Visual } from '@/domain/common/visual/Visual';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 
 const MAX_ITEMS_LIMIT = 1000;
 

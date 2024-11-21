@@ -1,11 +1,11 @@
-import React, { FC, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { Box, Button, DialogActions } from '@mui/material';
-import { CalloutIcon } from '../../callout/icon/CalloutIcon';
-import { DialogContent, DialogTitle } from '../../../../core/ui/dialog/deprecated';
+import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
+import { DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
 import PostForm, { PostFormOutput } from '../PostForm/PostForm';
-import { CreatePostInput } from '../../../../core/apollo/generated/graphql-schema';
+import { CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 
 export type PostCreationType = Partial<CreatePostInput>;
 export type PostCreationOutput = CreatePostInput;
@@ -21,7 +21,7 @@ export type PostCreationDialogProps = {
   creating: boolean;
 };
 
-const PostCreationDialog: FC<PostCreationDialogProps> = ({
+const PostCreationDialog = ({
   open,
   postNames,
   onClose,
@@ -29,7 +29,7 @@ const PostCreationDialog: FC<PostCreationDialogProps> = ({
   calloutDisplayName,
   defaultDescription,
   creating,
-}) => {
+}: PostCreationDialogProps) => {
   const { t } = useTranslation();
   const [post, setPost] = useState<PostCreationType>({});
   const [isFormValid, setIsFormValid] = useState(false);

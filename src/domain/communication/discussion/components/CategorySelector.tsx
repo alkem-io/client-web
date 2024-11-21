@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useMemo } from 'react';
+import { ReactElement, useMemo } from 'react';
 import {
   alpha,
   Box,
@@ -18,12 +18,12 @@ export interface CategoryConfig {
   icon?: ReactElement;
 }
 
-interface CategorySelectorProps {
+type CategorySelectorProps = {
   categories: CategoryConfig[];
   value: string | null;
   showLabels?: boolean;
   onSelect?: (category: DiscussionCategoryExt) => void;
-}
+};
 
 const StyledListItemButton = styled(ListItemButton)<ListItemProps>(({ theme }) => ({
   '&.Mui-selected': {
@@ -48,7 +48,7 @@ const StyledListItemButton = styled(ListItemButton)<ListItemProps>(({ theme }) =
   },
 }));
 
-export const CategorySelector: FC<CategorySelectorProps> = ({ categories, value, showLabels = true, onSelect }) => {
+export const CategorySelector = ({ categories, value, showLabels = true, onSelect }: CategorySelectorProps) => {
   const items = useMemo(
     () =>
       categories.map(({ id, title, icon }) => (

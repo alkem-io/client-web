@@ -7993,16 +7993,7 @@ export type AccountInformationQuery = {
           license: {
             __typename?: 'License';
             id: string;
-            entitlements: Array<{
-              __typename?: 'LicenseEntitlement';
-              id: string;
-              type: LicenseEntitlementType;
-              limit: number;
-              usage: number;
-              isAvailable: boolean;
-              dataType: LicenseEntitlementDataType;
-              enabled: boolean;
-            }>;
+            myLicensePrivileges?: Array<LicenseEntitlementType> | undefined;
           };
           host?:
             | { __typename?: 'Organization'; id: string }

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { PushFunc, RemoveFunc, useEditReference } from '../../../../common/reference/useEditReference';
-import { Reference } from '../../../../common/profile/Profile';
-import { newReferenceName } from '../../../../common/reference/newReferenceName';
+import { PushFunc, RemoveFunc, useEditReference } from '@/domain/common/reference/useEditReference';
+import { Reference } from '@/domain/common/profile/Profile';
+import { newReferenceName } from '@/domain/common/reference/newReferenceName';
 import ReferenceSegment, { ReferenceSegmentProps } from './ReferenceSegment';
 import { useTranslation } from 'react-i18next';
 

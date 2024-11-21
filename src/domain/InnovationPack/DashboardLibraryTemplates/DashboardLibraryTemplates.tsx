@@ -1,10 +1,10 @@
 import { ReactNode, useMemo, useState } from 'react';
-import filterFn, { ValueType } from '../../../core/utils/filtering/filterFn';
+import filterFn, { ValueType } from '@/core/utils/filtering/filterFn';
 import { compact } from 'lodash';
-import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
-import PreviewTemplateDialog from '../../templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import PreviewTemplateDialog from '@/domain/templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
 import LibraryTemplatesView, { LibraryTemplatesFilter } from './LibraryTemplatesView';
-import { AnyTemplate, AnyTemplateWithInnovationPack } from '../../templates/models/TemplateBase';
+import { AnyTemplate, AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
 
 type DashboardLibraryTemplatesProps = {
   headerTitle: ReactNode;

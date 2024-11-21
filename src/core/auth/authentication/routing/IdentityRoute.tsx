@@ -1,7 +1,6 @@
-import React from 'react';
 import { Route } from 'react-router-dom';
-import { Error404 } from '../../../pages/Errors/Error404';
-import NoIdentityRedirect from '../../../routing/NoIdentityRedirect';
+import { Error404 } from '@/core/pages/Errors/Error404';
+import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import AuthRequiredPage from '../pages/AuthRequiredPage';
 import ErrorRoute from './ErrorRoute';
 import LoginRoute from './LoginRoute';
@@ -11,7 +10,7 @@ import RegistrationRoute from './RegistrationRoute';
 import SettingsRoute from './SettingsRoute';
 import VerifyRoute from './VerifyRoute';
 import SignUp from '../pages/SignUp';
-import { NotAuthenticatedRoute } from '../../../routing/NotAuthenticatedRoute';
+import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 
 export const IdentityRoute = () => {
   return (

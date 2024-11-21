@@ -1,5 +1,5 @@
 import React, { cloneElement, ReactElement } from 'react';
-import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { mapValues } from 'lodash';
 import { Trans } from 'react-i18next';
 

@@ -1,18 +1,18 @@
-import React, { FC, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { LoadingButton } from '@mui/lab';
-import calloutIcons from '../../utils/calloutIcons';
-import { DialogActions, DialogContent } from '../../../../../core/ui/dialog/deprecated';
-import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
+import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
+import { DialogActions, DialogContent } from '@/core/ui/dialog/deprecated';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { CalloutDeleteType, CalloutEditType } from '../CalloutEditType';
-import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '../../CalloutForm';
-import { CalloutType, TagsetType } from '../../../../../core/apollo/generated/graphql-schema';
-import { CalloutLayoutProps } from '../../calloutBlock/CalloutLayout';
-import { EmptyWhiteboardString } from '../../../../common/whiteboard/EmptyWhiteboard';
-import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
-import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
-import { DEFAULT_TAGSET } from '../../../../common/tags/tagset.constants';
-import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
+import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '@/domain/collaboration/callout/CalloutForm';
+import { CalloutType, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { CalloutLayoutProps } from '@/domain/collaboration/callout/calloutBlock/CalloutLayout';
+import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 
 export interface CalloutEditDialogProps {
   open: boolean;
@@ -25,7 +25,7 @@ export interface CalloutEditDialogProps {
   journeyTypeName: JourneyTypeName;
 }
 
-const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
+const CalloutEditDialog = ({
   open,
   calloutType,
   callout,
@@ -34,7 +34,7 @@ const CalloutEditDialog: FC<CalloutEditDialogProps> = ({
   onCalloutEdit,
   canChangeCalloutLocation,
   journeyTypeName,
-}) => {
+}: CalloutEditDialogProps) => {
   const { t } = useTranslation();
 
   const [loading, setLoading] = useState(false);

@@ -1,5 +1,5 @@
 import { lighten, Typography, TypographyProps } from '@mui/material';
-import provideStaticProps from '../../utils/provideStaticProps';
+import provideStaticProps from '@/core/utils/provideStaticProps';
 
 /**
  * @deprecated - the platform header is Alkemio logo

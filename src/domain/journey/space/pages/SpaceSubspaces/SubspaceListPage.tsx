@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import SpaceSettingsLayout from '../../../../platform/admin/space/SpaceSettingsLayout';
-import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
+import SpaceSettingsLayout from '@/domain/platform/admin/space/SpaceSettingsLayout';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
 import SubspaceListView from './SubspaceListView';
-import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
+import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 
 const SubspaceListPage: FC<SettingsPageProps> = ({ routePrefix }) => {
   return (

@@ -3,14 +3,14 @@ import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { FormikProps } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
-import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfile } from './common/mappings';
-import { InnovationFlowState } from '../../../collaboration/InnovationFlow/InnovationFlow';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import { BlockSectionTitle } from '../../../../core/ui/typography';
-import InnovationFlowDragNDropEditor from '../../../collaboration/InnovationFlow/InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
-import { InnovationFlowTemplate } from '../../models/InnovationFlowTemplate';
-import { MAX_INNOVATIONFLOW_STATES } from '../../models/CollaborationTemplate';
+import { InnovationFlowState } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { BlockSectionTitle } from '@/core/ui/typography';
+import InnovationFlowDragNDropEditor from '@/domain/collaboration/InnovationFlow/InnovationFlowDragNDropEditor/InnovationFlowDragNDropEditor';
+import { InnovationFlowTemplate } from '@/domain/templates/models/InnovationFlowTemplate';
+import { MAX_INNOVATIONFLOW_STATES } from '@/domain/templates/models/CollaborationTemplate';
 
 export interface InnovationFlowTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   innovationFlow: {

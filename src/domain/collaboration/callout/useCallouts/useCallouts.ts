@@ -2,7 +2,7 @@ import {
   useCalloutsLazyQuery,
   useCalloutsQuery,
   useUpdateCalloutsSortOrderMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   Callout,
@@ -14,13 +14,13 @@ import {
   CommentsWithMessagesFragment,
   CalloutContributionPolicy,
   CalloutContribution,
-} from '../../../../core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import { useCallback, useMemo } from 'react';
 import { groupBy } from 'lodash';
-import { Tagset } from '../../../common/profile/Profile';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
-import { useCollaborationAuthorizationEntitlements } from '../../authorization/useCollaborationAuthorization';
-import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '../../InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
+import { Tagset } from '@/domain/common/profile/Profile';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import { useCollaborationAuthorizationEntitlements } from '@/domain/collaboration/authorization/useCollaborationAuthorization';
+import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { getCalloutGroupNameValue } from '../utils/getCalloutGroupValue';
 
 export type WhiteboardFragmentWithCallout = WhiteboardDetailsFragment & { calloutNameId: string };

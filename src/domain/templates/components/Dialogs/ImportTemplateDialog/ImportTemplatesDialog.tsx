@@ -1,24 +1,24 @@
 import { Button, CircularProgress, DialogActions, DialogContent, Link } from '@mui/material';
-import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
-import React, { cloneElement, ReactElement, useEffect, useMemo, useState } from 'react';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { cloneElement, ReactElement, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ImportTemplatesDialogGallery from './ImportTemplatesDialogGallery';
-import { LibraryIcon } from '../../../LibraryIcon';
-import { AnyTemplate } from '../../../models/TemplateBase';
-import useLoadingState from '../../../../shared/utils/useLoadingState';
-import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
+import { LibraryIcon } from '@/domain/templates/LibraryIcon';
+import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { LoadingButtonProps } from '@mui/lab';
-import { BlockTitle, Caption } from '../../../../../core/ui/typography';
+import { BlockTitle, Caption } from '@/core/ui/typography';
 import PreviewTemplateDialog from '../PreviewTemplateDialog/PreviewTemplateDialog';
-import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import {
   useImportTemplateDialogPlatformTemplatesQuery,
   useImportTemplateDialogQuery,
   useSpaceTemplatesSetIdQuery,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import { gutters } from '../../../../../core/ui/grid/utils';
+} from '@/core/apollo/generated/apollo-hooks';
+import { gutters } from '@/core/ui/grid/utils';
 import SearchIcon from '@mui/icons-material/Search';
-import { useUrlParams } from '../../../../../core/routing/useUrlParams';
+import { useUrlParams } from '@/core/routing/useUrlParams';
 
 export interface ImportTemplatesOptions {
   /**

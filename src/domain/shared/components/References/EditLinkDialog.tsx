@@ -1,21 +1,21 @@
 import { FC, ReactNode, useMemo } from 'react';
-import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { Box, Button, Dialog, DialogContent, IconButton } from '@mui/material';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { useTranslation } from 'react-i18next';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
+import Gutters from '@/core/ui/grid/Gutters';
+import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { BlockSectionTitle, BlockTitle } from '../../../../core/ui/typography';
-import calloutIcons from '../../../collaboration/callout/utils/calloutIcons';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { BlockSectionTitle, BlockTitle } from '@/core/ui/typography';
+import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
+import { Actions } from '@/core/ui/actions/Actions';
+import { gutters } from '@/core/ui/grid/utils';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FormikFileInput from '../../../../core/ui/forms/FormikFileInput/FormikFileInput';
-import { MessageWithPayload } from '../../i18n/ValidationMessageTranslation';
-import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
+import FormikFileInput from '@/core/ui/forms/FormikFileInput/FormikFileInput';
+import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
 export interface EditLinkFormValues {
   id: string;

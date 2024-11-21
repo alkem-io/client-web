@@ -10,9 +10,9 @@ import {
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { useField } from 'formik';
-import React, { FC, useMemo } from 'react';
-import { useValidationMessageTranslation } from '../../../domain/shared/i18n/ValidationMessageTranslation';
-import TranslationKey from '../../i18n/utils/TranslationKey';
+import React, { useMemo } from 'react';
+import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 const useStyles = makeStyles(theme => ({
   icon: {
@@ -47,7 +47,7 @@ export interface FormikSelectProps extends SelectProps {
   helpText?: string;
 }
 
-export const FormikSelect: FC<FormikSelectProps> = ({
+export const FormikSelect = ({
   title,
   name,
   required = false,
@@ -56,7 +56,7 @@ export const FormikSelect: FC<FormikSelectProps> = ({
   placeholder,
   endAdornment,
   helpText: _helperText,
-}) => {
+}: FormikSelectProps) => {
   const tErr = useValidationMessageTranslation();
 
   const [field, meta] = useField(name);

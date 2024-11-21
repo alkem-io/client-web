@@ -2,12 +2,9 @@ import React, { FC } from 'react';
 import OrganizationAdminLayout from './OrganizationAdminLayout';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
-import ContributorAccountView from '../../../community/contributor/Account/ContributorAccountView';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import {
-  useAccountInformationQuery,
-  useOrganizationAccountQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import ContributorAccountView from '@/domain/community/contributor/Account/ContributorAccountView';
+import { useUrlParams } from '@/core/routing/useUrlParams';
+import { useAccountInformationQuery, useOrganizationAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 
 const OrganizationAccountPage: FC<SettingsPageProps> = () => {
   const { organizationNameId = '' } = useUrlParams();

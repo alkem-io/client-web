@@ -1,5 +1,5 @@
 import { Grid, GridProps } from '@mui/material';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 
 /**
  * The purpose of this component is to wrap the Grid component and serve as a common

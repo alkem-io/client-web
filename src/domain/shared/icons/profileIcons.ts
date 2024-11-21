@@ -1,11 +1,11 @@
 import { ComponentType } from 'react';
-import { ProfileType } from '../../../core/apollo/generated/graphql-schema';
+import { ProfileType } from '@/core/apollo/generated/graphql-schema';
 import { SvgIconProps } from '@mui/material';
-import { CalendarIcon } from '../../timeline/calendar/icons/CalendarIcon';
-import { SubspaceIcon } from '../../journey/subspace/icon/SubspaceIcon';
-import { OpportunityIcon } from '../../journey/opportunity/icon/OpportunityIcon';
-import { InnovationFlowIcon } from '../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
-import { CalloutIcon } from '../../collaboration/callout/icon/CalloutIcon';
+import { CalendarIcon } from '@/domain/timeline/calendar/icons/CalendarIcon';
+import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
+import { OpportunityIcon } from '@/domain/journey/opportunity/icon/OpportunityIcon';
+import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
+import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
 import {
   Campaign,
   ChatBubbleOutline,
@@ -19,9 +19,9 @@ import {
   PersonOutline,
   SvgIconComponent,
 } from '@mui/icons-material';
-import calloutIcons from '../../collaboration/callout/utils/calloutIcons';
-import { SpaceIcon } from '../../journey/space/icon/SpaceIcon';
-import { warn } from '../../../core/logging/sentry/log';
+import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
+import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
+import { warn } from '@/core/logging/sentry/log';
 
 export const getProfileIcon = (profileType: ProfileType): ComponentType<SvgIconProps> => {
   switch (profileType) {

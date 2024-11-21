@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 
-interface ReconnectableProps {
+type ReconnectableProps = {
   isOnline: boolean;
   skip: boolean;
   reconnect: () => void;
-}
+};
 
 const AUTO_RECONNECT_DEFAULT_INTERVAL = 5000;
 

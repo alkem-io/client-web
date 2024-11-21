@@ -2,8 +2,8 @@ import { ApolloError } from '@apollo/client';
 import { GraphQLError } from 'graphql';
 import { i18n, TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { Severity } from '../../state/global/notifications/notificationMachine';
-import { useNotification } from '../../ui/notifications/useNotification';
+import { Severity } from '@/core/state/global/notifications/notificationMachine';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 
 const getTranslationForCode = (error: GraphQLError, t: TFunction, i18n: i18n) => {
   const { message } = error;

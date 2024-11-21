@@ -1,12 +1,12 @@
-import { Identifiable } from '../../../../core/utils/Identifiable';
+import { Identifiable } from '@/core/utils/Identifiable';
 import { compact, groupBy, sortBy } from 'lodash';
-import React, { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import ReactionView, { ReactionViewProps, ReactionViewReaction } from './ReactionView';
-import { useUserContext } from '../../../community/user';
+import { useUserContext } from '@/domain/community/user';
 import { Box, IconButton } from '@mui/material';
 import { AddReactionOutlined } from '@mui/icons-material';
-import { CardText } from '../../../../core/ui/typography/components';
-import EmojiSelector from '../../../../core/ui/forms/emoji/EmojiSelector';
+import { CardText } from '@/core/ui/typography/components';
+import EmojiSelector from '@/core/ui/forms/emoji/EmojiSelector';
 import { useTranslation } from 'react-i18next';
 
 interface CommentReactionsReaction extends Identifiable {

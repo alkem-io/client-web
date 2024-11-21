@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactMarkdown, { Options as ReactMarkdownOptions } from 'react-markdown';
 import gfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
@@ -18,27 +17,25 @@ export const WrapperMarkdown = ({
   disableParagraphPadding = card,
   caption = false,
   ...props
-}: MarkdownProps) => {
-  return (
-    <MarkdownOptionsProvider
-      card={card}
-      plain={plain}
-      multiline={multiline}
-      disableParagraphPadding={disableParagraphPadding}
-      caption={caption}
-    >
-      <Box sx={{ li: { marginY: caption ? 0 : 1 }, display: plain ? 'inline' : undefined }}>
-        <ReactMarkdown
-          components={components}
-          remarkPlugins={[gfm, [PlainText, { enabled: plain }]]}
-          rehypePlugins={
-            plain ? undefined : ([rehypeRaw, { passThrough: allowedNodeTypes }] as MarkdownProps['rehypePlugins'])
-          }
-          {...props}
-        />
-      </Box>
-    </MarkdownOptionsProvider>
-  );
-};
+}: MarkdownProps) => (
+  <MarkdownOptionsProvider
+    card={card}
+    plain={plain}
+    multiline={multiline}
+    disableParagraphPadding={disableParagraphPadding}
+    caption={caption}
+  >
+    <Box sx={{ li: { marginY: caption ? 0 : 1 }, display: plain ? 'inline' : undefined }}>
+      <ReactMarkdown
+        components={components}
+        remarkPlugins={[gfm, [PlainText, { enabled: plain }]]}
+        rehypePlugins={
+          plain ? undefined : ([rehypeRaw, { passThrough: allowedNodeTypes }] as MarkdownProps['rehypePlugins'])
+        }
+        {...props}
+      />
+    </Box>
+  </MarkdownOptionsProvider>
+);
 
 export default WrapperMarkdown;

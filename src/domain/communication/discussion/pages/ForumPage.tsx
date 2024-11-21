@@ -1,16 +1,13 @@
-import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Theme, useMediaQuery } from '@mui/material';
 import { useLocation } from 'react-router-dom';
-import useNavigate from '../../../../core/routing/useNavigate';
+import useNavigate from '@/core/routing/useNavigate';
 import CategorySelector from '../components/CategorySelector';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
 import { DiscussionListView } from '../views/DiscussionsListView';
-import TopLevelPageLayout from '../../../../main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
-import {
-  ForumDiscussionUpdatedDocument,
-  usePlatformDiscussionsQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
+import { ForumDiscussionUpdatedDocument, usePlatformDiscussionsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Discussion, useDiscussionMapper } from '../models/Discussion';
 import { compact } from 'lodash';
 import {
@@ -19,19 +16,19 @@ import {
   ForumDiscussionUpdatedSubscriptionVariables,
   ForumDiscussionCategory,
   PlatformDiscussionsQuery,
-} from '../../../../core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import DiscussionIcon from '../views/DiscussionIcon';
 import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../constants/DiscusionCategories';
 import NewDiscussionDialog from '../views/NewDiscussionDialog';
-import { useUserContext } from '../../../community/user';
-import ImageBackdrop from '../../../shared/components/Backdrops/ImageBackdrop';
-import UseSubscriptionToSubEntity from '../../../../core/apollo/subscriptions/useSubscriptionToSubEntity';
-import useInnovationHubOutsideRibbon from '../../../innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
-import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import { useUserContext } from '@/domain/community/user';
+import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
+import UseSubscriptionToSubEntity from '@/core/apollo/subscriptions/useSubscriptionToSubEntity';
+import useInnovationHubOutsideRibbon from '@/domain/innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { ForumOutlined } from '@mui/icons-material';
-import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
-import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
-import { BlockTitle } from '../../../../core/ui/typography';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import { BlockTitle } from '@/core/ui/typography';
 
 const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;
 const FORUM_GRAYED_OUT_IMAGE = '/forum/forum-grayed.png';
@@ -55,10 +52,6 @@ const useSubscriptionToForum = UseSubscriptionToSubEntity<
   },
 });
 
-interface ForumPageProps {
-  dialog?: 'new';
-}
-
 enum DiscussionCategoryPlatform {
   RELEASES = 'releases',
   PLATFORM_FUNCTIONALITIES = 'platform-functionalities',
@@ -68,7 +61,7 @@ enum DiscussionCategoryPlatform {
   OTHER = 'other',
 }
 
-export const ForumPage: FC<ForumPageProps> = ({ dialog }) => {
+export const ForumPage = ({ dialog }: { dialog?: 'new' }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user: { hasPlatformPrivilege } = {}, isAuthenticated, loading: loadingUser } = useUserContext();

@@ -1,7 +1,7 @@
 import { useField } from 'formik';
-import React, { useEffect, useState } from 'react';
-import FormikInputField, { FormikInputFieldProps } from '../../ui/forms/FormikInputField/FormikInputField';
-import usePlatformOrigin from '../../../domain/platform/routes/usePlatformOrigin';
+import { useEffect, useState } from 'react';
+import FormikInputField, { FormikInputFieldProps } from '@/core/ui/forms/FormikInputField/FormikInputField';
+import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import { Typography } from '@mui/material';
 import createNameId from './createNameId';
 

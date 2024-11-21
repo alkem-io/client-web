@@ -1,31 +1,26 @@
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useOrganization } from '../../../../community/contributor/organization/hooks/useOrganization';
-import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   useCreateOrganizationMutation,
   useCreateTagsetOnProfileMutation,
   useOrganizationProfileInfoQuery,
   useUpdateOrganizationMutation,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import { EditMode } from '../../../../../core/ui/forms/editMode';
-import {
-  CreateOrganizationInput,
-  Organization,
-  UpdateOrganizationInput,
-} from '../../../../../core/apollo/generated/graphql-schema';
-import Loading from '../../../../../core/ui/loading/Loading';
+} from '@/core/apollo/generated/apollo-hooks';
+import { EditMode } from '@/core/ui/forms/editMode';
+import { CreateOrganizationInput, Organization, UpdateOrganizationInput } from '@/core/apollo/generated/graphql-schema';
+import Loading from '@/core/ui/loading/Loading';
 import OrganizationForm from './OrganizationForm';
-import clearCacheForQuery from '../../../../../core/apollo/utils/clearCacheForQuery';
-import { StorageConfigContextProvider } from '../../../../storage/StorageBucket/StorageConfigContext';
-import useNavigate from '../../../../../core/routing/useNavigate';
+import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import useNavigate from '@/core/routing/useNavigate';
 
-interface Props {
+type Props = {
   title?: string;
   mode: EditMode;
-}
+};
 
-const OrganizationPage: FC<Props> = ({ title, mode }) => {
+const OrganizationPage = ({ title, mode }: Props) => {
   const { t } = useTranslation();
   const { organizationNameId } = useOrganization();
 

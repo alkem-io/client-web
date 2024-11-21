@@ -1,20 +1,20 @@
-import React, { FC } from 'react';
-import CommunityUpdatesPage, { CommunityUpdatesPageProps } from '../../../community/CommunityUpdatesPage';
-import { SettingsSection } from '../../../layout/EntitySettingsLayout/constants';
-import { SettingsPageProps } from '../../../layout/EntitySettingsLayout/types';
-import SubspaceSettingsLayout from '../../../subspace/SubspaceSettingsLayout';
+import { PropsWithChildren } from 'react';
+import CommunityUpdatesPage, {
+  CommunityUpdatesPageProps,
+} from '@/domain/platform/admin/community/CommunityUpdatesPage';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
+import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
 
 interface OpportunityCommunicationsPageProps extends SettingsPageProps, CommunityUpdatesPageProps {}
 
-const OpportunityCommunicationsPage: FC<OpportunityCommunicationsPageProps> = ({
+const OpportunityCommunicationsPage = ({
   communityId,
   routePrefix = '../',
-}) => {
-  return (
-    <SubspaceSettingsLayout currentTab={SettingsSection.Communications} tabRoutePrefix={routePrefix}>
-      <CommunityUpdatesPage communityId={communityId} />
-    </SubspaceSettingsLayout>
-  );
-};
+}: PropsWithChildren<OpportunityCommunicationsPageProps>) => (
+  <SubspaceSettingsLayout currentTab={SettingsSection.Communications} tabRoutePrefix={routePrefix}>
+    <CommunityUpdatesPage communityId={communityId} />
+  </SubspaceSettingsLayout>
+);
 
 export default OpportunityCommunicationsPage;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { error as sentryError } from '../../../core/logging/sentry/log';
+import { error as sentryError } from '@/core/logging/sentry/log';
 
 const LOCALSTORAGE_RELEASE_NOTES_KEY = 'releaseNotes';
 

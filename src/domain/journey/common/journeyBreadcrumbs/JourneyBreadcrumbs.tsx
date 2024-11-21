@@ -1,11 +1,11 @@
 import { useJourneyBreadcrumbs, UseJourneyBreadcrumbsParams } from './useJourneyBreadcrumbs';
-import Breadcrumbs, { BreadcrumbsProps } from '../../../../core/ui/navigation/Breadcrumbs';
-import { spaceIconByLevel } from '../../../shared/components/JourneyIcon/JourneyIcon';
-import BreadcrumbsRootItem from '../../../../main/ui/breadcrumbs/BreadcrumbsRootItem';
-import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
-import { Expandable } from '../../../../core/ui/navigation/Expandable';
+import Breadcrumbs, { BreadcrumbsProps } from '@/core/ui/navigation/Breadcrumbs';
+import { spaceIconByLevel } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
+import BreadcrumbsRootItem from '@/main/ui/breadcrumbs/BreadcrumbsRootItem';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import { Expandable } from '@/core/ui/navigation/Expandable';
 import { forwardRef, ReactElement, Ref } from 'react';
-import { Collapsible } from '../../../../core/ui/navigation/Collapsible';
+import { Collapsible } from '@/core/ui/navigation/Collapsible';
 import { Settings } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 

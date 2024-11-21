@@ -1,13 +1,12 @@
 import { Container } from '@mui/material';
-import React, { FC } from 'react';
-import { CommunityUpdatesContainer } from '../../../communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
-import { CommunityUpdatesView } from '../../../community/community/views/CommunityUpdates/CommunityUpdatesView';
+import { CommunityUpdatesContainer } from '@/domain/communication/updates/CommunityUpdatesContainer/CommunityUpdatesContainer';
+import { CommunityUpdatesView } from '@/domain/community/community/views/CommunityUpdates/CommunityUpdatesView';
 
 export interface CommunityUpdatesPageProps {
   communityId: string | undefined;
 }
 
-export const CommunityUpdatesPage: FC<CommunityUpdatesPageProps> = ({ communityId }) => {
+export const CommunityUpdatesPage = ({ communityId }: { communityId: string | undefined }) => {
   if (!communityId) {
     return <Container maxWidth="xl">No community</Container>;
   }

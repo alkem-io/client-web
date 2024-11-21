@@ -1,29 +1,29 @@
 import { Form, Formik } from 'formik';
-import React, { FC, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Box, Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { Tagset, UpdateVirtualContributorInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
-import { NameSegment, nameSegmentSchema } from '../../../platform/admin/components/Common/NameSegment';
-import { ProfileSegment, profileSegmentSchema } from '../../../platform/admin/components/Common/ProfileSegment';
-import VisualUpload from '../../../../core/ui/upload/VisualUpload/VisualUpload';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import useLoadingState from '../../../shared/utils/useLoadingState';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import { TagsetSegment } from '../../../platform/admin/components/Common/TagsetSegment';
-import { UpdateTagset } from '../../../common/profile/Profile';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { theme } from '../../../../core/ui/themes/default/Theme';
-import GridContainer from '../../../../core/ui/grid/GridContainer';
-import GridProvider from '../../../../core/ui/grid/GridProvider';
-import GridItem from '../../../../core/ui/grid/GridItem';
+import { Tagset, UpdateVirtualContributorInput, Visual } from '@/core/apollo/generated/graphql-schema';
+import { NameSegment, nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
+import { ProfileSegment, profileSegmentSchema } from '@/domain/platform/admin/components/Common/ProfileSegment';
+import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
+import Gutters from '@/core/ui/grid/Gutters';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { Actions } from '@/core/ui/actions/Actions';
+import { TagsetSegment } from '@/domain/platform/admin/components/Common/TagsetSegment';
+import { UpdateTagset } from '@/domain/common/profile/Profile';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { theme } from '@/core/ui/themes/default/Theme';
+import GridContainer from '@/core/ui/grid/GridContainer';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import GridItem from '@/core/ui/grid/GridItem';
 import { BasicSpaceProps } from '../components/BasicSpaceCard';
-import { useColumns } from '../../../../core/ui/grid/GridContext';
-import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
-import { KEYWORDS_TAGSET } from '../../../common/tags/tagset.constants';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import { useBackToStaticPath } from '@/core/routing/useBackToPath';
+import { KEYWORDS_TAGSET } from '@/domain/common/tags/tagset.constants';
 
-interface VirtualContributorProps {
+type VirtualContributorProps = {
   id: string;
   nameID: string;
   account?: {
@@ -42,9 +42,9 @@ interface VirtualContributorProps {
     url: string;
     avatar?: Visual | undefined;
   };
-}
+};
 
-interface VirtualContributorFromProps {
+type VirtualContributorFromProps = {
   name: string;
   nameID: string;
   description: string;
@@ -52,23 +52,23 @@ interface VirtualContributorFromProps {
   tagsets?: Tagset[];
   hostDisplayName: string;
   subSpaceName: string;
-}
+};
 
-interface Props {
+type Props = {
   virtualContributor: VirtualContributorProps;
   bokProfile?: BasicSpaceProps;
   avatar: Visual | undefined;
   onSave?: (virtualContributor: UpdateVirtualContributorInput) => void;
-  hasBackNavitagion?: boolean;
-}
+  hasBackNavigation?: boolean;
+};
 
-export const VirtualContributorForm: FC<Props> = ({
+export const VirtualContributorForm = ({
   virtualContributor,
   bokProfile,
   avatar,
   onSave,
-  hasBackNavitagion = true,
-}) => {
+  hasBackNavigation = true,
+}: Props) => {
   const { t } = useTranslation();
   const handleBack = useBackToStaticPath(virtualContributor.profile.url);
   const cols = useColumns();
@@ -186,7 +186,7 @@ export const VirtualContributorForm: FC<Props> = ({
                       ) : null}
                       {hostDisplayName && <HostFields />}
                       <Actions marginTop={theme.spacing(2)} sx={{ justifyContent: 'end' }}>
-                        {hasBackNavitagion && (
+                        {hasBackNavigation && (
                           <Button onClick={handleBack} variant="text">
                             {t('buttons.back')}
                           </Button>

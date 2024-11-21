@@ -1,12 +1,9 @@
 import React, { FC, useCallback } from 'react';
-import useNavigate from '../../../../../core/routing/useNavigate';
-import { SettingsSection } from '../../layout/EntitySettingsLayout/constants';
-import OrganizationAdminLayout from '../../organization/OrganizationAdminLayout';
-import { useOrganization } from '../../../../community/contributor/organization/hooks/useOrganization';
-import {
-  GroupDetailsFragmentDoc,
-  useCreateGroupOnOrganizationMutation,
-} from '../../../../../core/apollo/generated/apollo-hooks';
+import useNavigate from '@/core/routing/useNavigate';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import OrganizationAdminLayout from '@/domain/platform/admin/organization/OrganizationAdminLayout';
+import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
+import { GroupDetailsFragmentDoc, useCreateGroupOnOrganizationMutation } from '@/core/apollo/generated/apollo-hooks';
 import CreateGroupForm from '../Common/CreateGroupForm';
 
 export const CreateOrganizationGroupPage: FC = () => {

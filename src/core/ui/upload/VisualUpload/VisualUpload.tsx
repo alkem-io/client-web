@@ -1,17 +1,17 @@
 import { Avatar, Box, BoxProps, Skeleton } from '@mui/material';
-import { FC, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import 'react-image-crop/dist/ReactCrop.css';
-import { useUploadVisualMutation } from '../../../apollo/generated/apollo-hooks';
-import UploadButton from '../../button/UploadButton';
-import Image from '../../image/Image';
-import { useNotification } from '../../notifications/useNotification';
+import { useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
+import UploadButton from '@/core/ui/button/UploadButton';
+import Image from '@/core/ui/image/Image';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import FileUploadWrapper from '../FileUploadWrapper';
 import { CropDialog } from './CropDialog';
 
 const DEFAULT_SIZE = 128;
 
-const ImagePlaceholder: FC<BoxProps<'img'>> = ({ src, alt, ...props }) => {
+const ImagePlaceholder = ({ src, alt, ...props }: BoxProps<'img'>) => {
   const { t } = useTranslation();
   return src ? <Image src={src} alt={alt} {...props} /> : <Box {...props}>{t('components.visual-upload.no-data')}</Box>;
 };
@@ -39,7 +39,7 @@ export interface VisualUploadProps {
  * @param width
  * @constructor
  */
-const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE, altText }) => {
+const VisualUpload = ({ visual, height = DEFAULT_SIZE, altText }: VisualUploadProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
 

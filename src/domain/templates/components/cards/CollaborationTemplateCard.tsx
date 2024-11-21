@@ -1,20 +1,20 @@
 import React from 'react';
 import { Skeleton } from '@mui/material';
 import { SvgIconComponent } from '@mui/icons-material';
-import CardHeader from '../../../../core/ui/card/CardHeader';
-import CardHeaderCaption from '../../../../core/ui/card/CardHeaderCaption';
-import CardDetails from '../../../../core/ui/card/CardDetails';
-import CardSegmentCaption from '../../../../core/ui/card/CardSegmentCaption';
-import ContributeCard from '../../../../core/ui/card/ContributeCard';
-import { Caption } from '../../../../core/ui/typography/components';
-import InnovationPackIcon from '../../../InnovationPack/InnovationPackIcon';
-import { InnovationFlowIcon } from '../../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
-import CardDescription, { DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from '../../../../core/ui/card/CardDescription';
-import CardContent from '../../../../core/ui/card/CardContent';
-import CardTags from '../../../../core/ui/card/CardTags';
-import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
+import CardHeader from '@/core/ui/card/CardHeader';
+import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
+import CardDetails from '@/core/ui/card/CardDetails';
+import CardSegmentCaption from '@/core/ui/card/CardSegmentCaption';
+import ContributeCard from '@/core/ui/card/ContributeCard';
+import { Caption } from '@/core/ui/typography/components';
+import InnovationPackIcon from '@/domain/InnovationPack/InnovationPackIcon';
+import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
+import CardDescription, { DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from '@/core/ui/card/CardDescription';
+import CardContent from '@/core/ui/card/CardContent';
+import CardTags from '@/core/ui/card/CardTags';
+import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import { TemplateCardProps } from './TemplateCard';
-import { CollaborationTemplate } from '../../models/CollaborationTemplate';
+import { CollaborationTemplate } from '@/domain/templates/models/CollaborationTemplate';
 
 interface CollaborationTemplateCardProps extends TemplateCardProps {
   template: CollaborationTemplate;

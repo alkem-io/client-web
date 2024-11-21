@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FetchResult } from '@apollo/client';
 import { last } from 'lodash';
@@ -7,13 +7,13 @@ import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
 import MessageView from './MessageView';
 import PostMessageToCommentsForm from './PostMessageToCommentsForm';
-import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradient';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import { CaptionSmall } from '../../../../core/ui/typography';
-import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
+import Gutters from '@/core/ui/grid/Gutters';
+import { CaptionSmall } from '@/core/ui/typography';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import useCommentReactionsMutations from './useCommentReactionsMutations';
 import MessagesThread from './MessagesThread';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { CommentInputFieldProps } from './CommentInputField';
 
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
@@ -50,7 +50,7 @@ const isScrolledToBottom = ({
   return Math.abs(scrollHeight - containerHeight - scrollTop) < SCROLL_BOTTOM_MISTAKE_TOLERANCE;
 };
 
-const CommentsComponent: FC<CommentsComponentProps> = ({
+const CommentsComponent = ({
   last: isShowingLastMessage,
   messages = [],
   vcInteractions = [],
@@ -64,7 +64,7 @@ const CommentsComponent: FC<CommentsComponentProps> = ({
   maxHeight,
   loading,
   onClickMore,
-}) => {
+}: CommentsComponentProps) => {
   const { t } = useTranslation();
 
   const commentsContainerRef = useRef<HTMLElement>(null);

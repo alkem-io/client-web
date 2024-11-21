@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 
-import { SettingsSection } from '../../../../platform/admin/layout/EntitySettingsLayout/constants';
-import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettingsLayout/types';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import ChallengeContextView from './SubspaceContextView';
-import SubspaceSettingsLayout from '../../../../platform/admin/subspace/SubspaceSettingsLayout';
+import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
 
 const SubspaceContextPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   return (

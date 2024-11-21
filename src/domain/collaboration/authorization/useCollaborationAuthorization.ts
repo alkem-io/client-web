@@ -1,18 +1,18 @@
-import { useCollaborationAuthorizationEntitlementsQuery } from '../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, LicenseEntitlementType } from '../../../core/apollo/generated/graphql-schema';
+import { useCollaborationAuthorizationEntitlementsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 
-interface CollaborationAuthorizationEntitlementsParams {
+type CollaborationAuthorizationEntitlementsParams = {
   collaborationId: string | undefined;
-}
+};
 
-interface CollaborationAuthorization {
+type CollaborationAuthorization = {
   collaborationPrivileges: AuthorizationPrivilege[];
   canCreateCallout: boolean;
   canSaveAsTemplate: boolean;
   entitledToSaveAsTemplate: boolean;
   canReadCallout: boolean;
   loading: boolean;
-}
+};
 
 export const useCollaborationAuthorizationEntitlements = ({
   collaborationId,

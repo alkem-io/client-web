@@ -4980,9 +4980,7 @@ export const AccountInformationDocument = gql`
         }
         license {
           id
-          entitlements {
-            ...EntitlementDetails
-          }
+          myLicensePrivileges
         }
         host {
           id
@@ -5074,9 +5072,9 @@ export const AccountInformationDocument = gql`
       }
     }
   }
-  ${EntitlementDetailsFragmentDoc}
   ${AccountItemProfileFragmentDoc}
   ${VisualUriFragmentDoc}
+  ${EntitlementDetailsFragmentDoc}
 `;
 
 /**

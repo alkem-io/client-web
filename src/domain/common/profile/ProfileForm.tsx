@@ -1,21 +1,21 @@
 import { Formik } from 'formik';
-import React, { FC, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Profile, Reference, Tagset, TagsetType } from '../../../core/apollo/generated/graphql-schema';
-import ContextReferenceSegment from '../../platform/admin/components/Common/ContextReferenceSegment';
-import { contextSegmentSchema } from '../../platform/admin/components/Common/ContextSegment';
-import { NameSegment, nameSegmentSchema } from '../../platform/admin/components/Common/NameSegment';
-import { referenceSegmentSchema } from '../../platform/admin/components/Common/ReferenceSegment';
-import { TagsetSegment, tagsetsSegmentSchema } from '../../platform/admin/components/Common/TagsetSegment';
+import { Profile, Reference, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import ContextReferenceSegment from '@/domain/platform/admin/components/Common/ContextReferenceSegment';
+import { contextSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
+import { NameSegment, nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
+import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import { LocationSegment } from '../location/LocationSegment';
 import { EmptyLocation, Location } from '../location/Location';
 import { formatLocation } from '../location/LocationUtils';
-import { JourneyTypeName } from '../../journey/JourneyTypeName';
-import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInputField';
-import { SMALL_TEXT_LENGTH } from '../../../core/ui/forms/field-length.constants';
-import { BlockSectionTitle } from '../../../core/ui/typography';
-import Gutters from '../../../core/ui/grid/Gutters';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { BlockSectionTitle } from '@/core/ui/typography';
+import Gutters from '@/core/ui/grid/Gutters';
 import { DEFAULT_TAGSET } from '../tags/tagset.constants';
 
 export interface ProfileFormValues {
@@ -27,7 +27,7 @@ export interface ProfileFormValues {
   tagsets: Tagset[];
 }
 
-interface ProfileFormProps {
+type ProfileFormProps = {
   profile?: Omit<Profile, 'storageBucket' | 'url'>;
   journeyType: JourneyTypeName;
   name?: string;
@@ -37,9 +37,9 @@ interface ProfileFormProps {
   wireSubmit: (setter: () => void) => void;
   contextOnly?: boolean;
   isEdit: boolean;
-}
+};
 
-const ProfileForm: FC<ProfileFormProps> = ({
+const ProfileForm = ({
   profile,
   journeyType,
   name,
@@ -49,7 +49,7 @@ const ProfileForm: FC<ProfileFormProps> = ({
   wireSubmit,
   isEdit,
   contextOnly = false,
-}) => {
+}: ProfileFormProps) => {
   const { t } = useTranslation();
   const tagsets = useMemo(() => {
     if (tagset) return [tagset];

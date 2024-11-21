@@ -2,13 +2,8 @@ import { Skeleton } from '@mui/material';
 import { StyledDataGrid } from './DataGridTable';
 import { GridColDef } from '@mui/x-data-grid';
 import { times } from 'lodash';
-import { FC } from 'react';
 
-interface DataGridSkeletonProps {
-  rowsCount?: number;
-}
-
-const DataGridSkeleton: FC<DataGridSkeletonProps> = ({ rowsCount = 5 }) => {
+const DataGridSkeleton = ({ rowsCount = 5 }: { rowsCount?: number }) => {
   const columns: GridColDef[] = [
     {
       field: 'loading',

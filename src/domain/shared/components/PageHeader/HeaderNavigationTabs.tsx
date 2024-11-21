@@ -1,10 +1,10 @@
 import { SettingsOutlined } from '@mui/icons-material';
 import { Box, styled, Tabs, TabsProps } from '@mui/material';
-import { FC } from 'react';
+import { PropsWithChildren } from 'react';
 import HeaderNavigationTab from './HeaderNavigationTab';
-import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX } from '../../../../core/ui/grid/constants';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { EntityPageSection } from '../../layout/EntityPageSection';
+import { MAX_CONTENT_WIDTH_WITH_GUTTER_PX } from '@/core/ui/grid/constants';
+import { gutters } from '@/core/ui/grid/utils';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
@@ -59,14 +59,14 @@ export interface NavigationTabsProps extends TabsProps {
   defaultTab: TabsProps['value'];
 }
 
-const HeaderNavigationTabs: FC<NavigationTabsProps> = ({
+const HeaderNavigationTabs = ({
   value,
   defaultTab,
   'aria-label': ariaLabel,
   showSettings = false,
   settingsUrl = '',
   children,
-}) => {
+}: PropsWithChildren<NavigationTabsProps>) => {
   // If cannot show Settings tab show the default tab.
   if (!showSettings && value === 'settings') {
     value = defaultTab;

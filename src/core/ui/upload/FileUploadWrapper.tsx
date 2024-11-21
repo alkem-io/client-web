@@ -1,12 +1,12 @@
-import React, { FC, useRef } from 'react';
+import { ReactNode, PropsWithChildren, useRef } from 'react';
 
-interface FileUploadWrapperProps {
+type FileUploadWrapperProps = {
   onFileSelected: (file: File) => void;
   allowedTypes: string[];
-  children: React.ReactNode;
-}
+  children: ReactNode;
+};
 
-const FileUploadWrapper: FC<FileUploadWrapperProps> = ({ onFileSelected, allowedTypes, children }) => {
+const FileUploadWrapper = ({ onFileSelected, allowedTypes, children }: PropsWithChildren<FileUploadWrapperProps>) => {
   const ref = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {

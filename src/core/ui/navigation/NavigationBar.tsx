@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useLayoutEffect, useState } from 'react';
+import { PropsWithChildren, useLayoutEffect, useState } from 'react';
 import { alpha, AppBar, Box, Paper, Slide } from '@mui/material';
 import { gutters } from '../grid/utils';
 import { GUTTER_PX, MAX_CONTENT_WIDTH_GUTTERS, useGlobalGridColumns } from '../grid/constants';
@@ -7,7 +7,7 @@ import { useScrolledUp, useScrollTop } from '../scroll/utils';
 import {
   PLATFORM_NAVIGATION_ITEM_ELEVATION,
   PLATFORM_NAVIGATION_MENU_ELEVATION,
-} from '../../../main/ui/platformNavigation/constants';
+} from '@/main/ui/platformNavigation/constants';
 import { ElevationContextProvider } from '../utils/ElevationContext';
 
 interface NavigationBarContentProps {

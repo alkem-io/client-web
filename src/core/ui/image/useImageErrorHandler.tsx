@@ -1,5 +1,5 @@
-import { useApm } from '../../analytics/apm/context/useApm';
-import { error as sentryError } from '../../logging/sentry/log';
+import { useApm } from '@/core/analytics/apm/context/useApm';
+import { error as sentryError } from '@/core/logging/sentry/log';
 
 const useImageErrorHandler = () => {
   const apm = useApm();

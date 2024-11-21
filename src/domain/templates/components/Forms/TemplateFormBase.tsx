@@ -1,25 +1,25 @@
 import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { displayNameValidator } from '../../../../core/ui/forms/validator';
+import { displayNameValidator } from '@/core/ui/forms/validator';
 import { Formik, FormikProps } from 'formik';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { TagsetField } from '../../../platform/admin/components/Common/TagsetSegment';
-import VisualUpload from '../../../../core/ui/upload/VisualUpload/VisualUpload';
-import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import { TemplateType, Visual } from '../../../../core/apollo/generated/graphql-schema';
-import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
-import GridContainer from '../../../../core/ui/grid/GridContainer';
-import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { TagsetField } from '@/domain/platform/admin/components/Common/TagsetSegment';
+import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { TemplateType, Visual } from '@/core/apollo/generated/graphql-schema';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import GridContainer from '@/core/ui/grid/GridContainer';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { Box } from '@mui/material';
 import { InfoOutlined } from '@mui/icons-material';
-import BlockSectionTitleWithIcon from '../../../../core/ui/content/BlockSectionTitleWithIcon';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { BlockSectionTitle } from '../../../../core/ui/typography';
-import { AnyTemplate } from '../../models/TemplateBase';
-import { WhiteboardPreviewImage } from '../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import BlockSectionTitleWithIcon from '@/core/ui/content/BlockSectionTitleWithIcon';
+import { gutters } from '@/core/ui/grid/utils';
+import { BlockSectionTitle } from '@/core/ui/typography';
+import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
+import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 
 /**
  * Whiteboards have preview imagesTemplates, they are handled separately and uploaded as the Visual of the Template

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, BoxProps } from '@mui/material';
 
 const CardDetails = ({ transparent = false, sx, ...boxProps }: { transparent?: boolean } & BoxProps) => {

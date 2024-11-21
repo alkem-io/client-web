@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, forwardRef } from 'react';
+import { ChangeEvent, forwardRef } from 'react';
 import {
   Autocomplete,
   Box,
@@ -9,11 +9,11 @@ import {
   TextField,
   TextFieldProps,
 } from '@mui/material';
-import HelpButton from '../../button/HelpButton';
+import HelpButton from '@/core/ui/button/HelpButton';
 
 const DEFAULT_MIN_LENGTH = 2;
 
-// TODO: Do we realy need to extend from OutlinedTextFieldProps?
+// TODO: Do we really need to extend from OutlinedTextFieldProps?
 type TagsInputProps = Omit<OutlinedTextFieldProps, 'onChange'> & {
   onChange?: (tags: (string | string[])[]) => void;
   onBlur?: TextFieldProps['onBlur'];
@@ -26,7 +26,7 @@ type TagsInputProps = Omit<OutlinedTextFieldProps, 'onChange'> & {
   loading?: boolean;
 };
 
-export const TagsInput: FC<TagsInputProps> = forwardRef(
+export const TagsInput = forwardRef(
   (
     {
       onChange,
@@ -41,7 +41,7 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
       helperText,
       loading,
       ...rest
-    },
+    }: TagsInputProps,
     ref
   ) => {
     const handleChange = (e: ChangeEvent<{}>, newValue: (string | string[])[]) => {

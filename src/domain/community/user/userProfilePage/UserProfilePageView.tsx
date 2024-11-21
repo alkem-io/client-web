@@ -1,19 +1,20 @@
 import { Grid } from '@mui/material';
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useConfig } from '../../../platform/config/useConfig';
-import { CredentialsView } from '../../profile/views/ProfileView';
-import UserProfileView, { UserProfileViewProps } from '../../profile/views/ProfileView/UserProfileView';
-import AssociatedOrganizationsLazilyFetched from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
-import PageContent from '../../../../core/ui/content/PageContent';
-import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
-import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
-import { PlatformFeatureFlagName } from '../../../../core/apollo/generated/graphql-schema';
-import ContributionsView from '../../contributor/Contributions/ContributionsView';
-import { CaptionSmall } from '../../../../core/ui/typography';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import AccountResourcesView, { AccountResourcesProps } from '../../contributor/Account/AccountResourcesView';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import { CredentialsView } from '@/domain/community/profile/views/ProfileView';
+import UserProfileView, { UserProfileViewProps } from '@/domain/community/profile/views/ProfileView/UserProfileView';
+import AssociatedOrganizationsLazilyFetched from '@/domain/community/contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
+import { PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
+import ContributionsView from '@/domain/community/contributor/Contributions/ContributionsView';
+import { CaptionSmall } from '@/core/ui/typography';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import AccountResourcesView, {
+  AccountResourcesProps,
+} from '@/domain/community/contributor/Account/AccountResourcesView';
 import useFilteredMemberships from '../hooks/useFilteredMemberships';
 import { RoleType } from '../constants/RoleType';
 
@@ -23,12 +24,12 @@ export interface UserProfileViewPageProps extends UserProfileViewProps {
   accountResources: AccountResourcesProps | undefined;
 }
 
-export const UserProfilePageView: FC<UserProfileViewPageProps> = ({
+export const UserProfilePageView = ({
   contributions = [],
   organizationIds,
   entities,
   accountResources,
-}) => {
+}: UserProfileViewPageProps) => {
   const { t } = useTranslation();
   const { user } = entities.userMetadata;
   const { id } = user;

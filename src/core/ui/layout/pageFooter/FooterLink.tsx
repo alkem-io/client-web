@@ -1,6 +1,5 @@
-import React from 'react';
 import { Link, LinkProps } from '@mui/material';
-import { Caption } from '../../typography';
+import { Caption } from '@/core/ui/typography';
 
 interface FooterLinkProps extends LinkProps {}
 

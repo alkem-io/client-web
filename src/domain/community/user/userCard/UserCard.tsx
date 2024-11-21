@@ -1,17 +1,17 @@
-import { FC, ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import PersonIcon from '@mui/icons-material/Person';
 import { Box, Grid, IconButton, Skeleton, SvgIcon } from '@mui/material';
-import Avatar from '../../../../core/ui/avatar/Avatar';
-import ContributeCard from '../../../../core/ui/card/ContributeCard';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import { gutters } from '../../../../core/ui/grid/utils';
-import ExpandableCardFooter from '../../../../core/ui/card/ExpandableCardFooter';
-import { Caption } from '../../../../core/ui/typography';
-import ImageBlurredSides from '../../../../core/ui/image/ImageBlurredSides';
-import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
+import Avatar from '@/core/ui/avatar/Avatar';
+import ContributeCard from '@/core/ui/card/ContributeCard';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import { gutters } from '@/core/ui/grid/utils';
+import ExpandableCardFooter from '@/core/ui/card/ExpandableCardFooter';
+import { Caption } from '@/core/ui/typography';
+import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 
 /* todo add jobTitle */
 export interface UserCardProps {
@@ -29,7 +29,7 @@ export interface UserCardProps {
   onContact?: () => void;
 }
 
-const UserCard: FC<UserCardProps> = ({
+const UserCard = ({
   avatarSrc,
   avatarAltText,
   displayName = '',
@@ -41,7 +41,7 @@ const UserCard: FC<UserCardProps> = ({
   loading,
   isContactable = true,
   onContact,
-}) => {
+}: UserCardProps) => {
   const { t } = useTranslation();
   const location = [city, country].filter(x => !!x).join(', ');
   const [isExpanded, setIsExpanded] = useState(false);
@@ -116,22 +116,20 @@ const UserCard: FC<UserCardProps> = ({
 
 export default UserCard;
 
-interface InfoRowProps {
+type InfoRowProps = {
   icon: typeof SvgIcon;
   ariaLabel: string;
   text?: ReactNode;
   loading?: boolean;
-}
-
-const InfoRow: FC<InfoRowProps> = ({ icon: Icon, text, ariaLabel, loading }) => {
-  return (
-    <Grid item xs={12} zeroMinWidth>
-      <Box display="flex" alignItems="center">
-        <Icon fontSize="small" />
-        <Caption noWrap aria-label={ariaLabel} display="flex" flexGrow={1}>
-          {loading ? <Skeleton width="70%" /> : text}
-        </Caption>
-      </Box>
-    </Grid>
-  );
 };
+
+const InfoRow = ({ icon: Icon, text, ariaLabel, loading }: InfoRowProps) => (
+  <Grid item xs={12} zeroMinWidth>
+    <Box display="flex" alignItems="center">
+      <Icon fontSize="small" />
+      <Caption noWrap aria-label={ariaLabel} display="flex" flexGrow={1}>
+        {loading ? <Skeleton width="70%" /> : text}
+      </Caption>
+    </Box>
+  </Grid>
+);

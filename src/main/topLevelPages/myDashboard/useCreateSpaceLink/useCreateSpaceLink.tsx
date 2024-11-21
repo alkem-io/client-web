@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { useUserContext } from '../../../../domain/community/user';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
-import { TopLevelRoutePath } from '../../../routing/TopLevelRoutePath';
+import { useUserContext } from '@/domain/community/user';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { useMemo } from 'react';
 
 export const useCreateSpaceLink = () => {

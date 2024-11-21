@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, ReactNode, useState } from 'react';
 import { Box, ButtonBase, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { CardText } from '../../../../core/ui/typography';
+import { CardText } from '@/core/ui/typography';
 import MessageView, { MessageViewProps } from './MessageView';
 
 const ChildMessageContainer = styled(Box)(({ theme }) => ({

@@ -1,23 +1,18 @@
 import { Grid } from '@mui/material';
-import React, { FC, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { ContributionsView } from '../../profile/views/ProfileView';
-import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
-import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettingsLayout';
+import { useUrlParams } from '@/core/routing/useUrlParams';
+import { ContributionsView } from '@/domain/community/profile/views/ProfileView';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import UserSettingsLayout from '@/domain/platform/admin/user/layout/UserSettingsLayout';
 import { useUserMetadata } from '../hooks/useUserMetadata';
-import GridProvider from '../../../../core/ui/grid/GridProvider';
-import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
-import { SpaceHostedItem } from '../../../journey/utils/SpaceHostedItem';
-import { CommunityContributorType, SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
-import {
-  useUserContributionsQuery,
-  useUserPendingMembershipsQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import SectionSpacer from '@/domain/shared/components/Section/SectionSpacer';
+import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
+import { CommunityContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { useUserContributionsQuery, useUserPendingMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
 
-export interface UserMembershipPageProps {}
-
-const UserMembershipPage: FC<UserMembershipPageProps> = () => {
+const UserMembershipPage = () => {
   const { t } = useTranslation();
   const { userNameId = '' } = useUrlParams();
   const { user: userMetadata } = useUserMetadata(userNameId);

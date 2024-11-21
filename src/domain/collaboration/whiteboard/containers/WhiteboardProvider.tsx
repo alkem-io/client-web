@@ -1,9 +1,9 @@
-import React, { FC } from 'react';
-import { useWhiteboardFromCalloutQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import React, { PropsWithChildren } from 'react';
+import { useWhiteboardFromCalloutQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   WhiteboardDetailsFragment,
   CollaborationWithWhiteboardDetailsFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 
 interface WhiteboardLocation {
   calloutId: string | undefined;
@@ -24,7 +24,11 @@ export interface IProvidedEntitiesState {
   loadingWhiteboards: boolean;
 }
 
-const WhiteboardProvider: FC<WhiteboardProviderProps> = ({ calloutId, whiteboardNameId: whiteboardId, children }) => {
+const WhiteboardProvider = ({
+  calloutId,
+  whiteboardNameId: whiteboardId,
+  children,
+}: PropsWithChildren<WhiteboardProviderProps>) => {
   const { data, loading } = useWhiteboardFromCalloutQuery({
     variables: { calloutId: calloutId!, whiteboardId },
     skip: !calloutId || !whiteboardId,

@@ -1,9 +1,9 @@
 import { FieldArray, useField } from 'formik';
 import React, { FC, useMemo } from 'react';
 import * as yup from 'yup';
-import { Tagset } from '../../../../common/profile/Profile';
-import { toTagsetTitle } from '../../../../common/tags/toTagsetTitle';
-import TagsInput from '../../../../../core/ui/forms/tagsInput/TagsInput';
+import { Tagset } from '@/domain/common/profile/Profile';
+import { toTagsetTitle } from '@/domain/common/tags/toTagsetTitle';
+import TagsInput from '@/core/ui/forms/tagsInput/TagsInput';
 
 interface TagsSegmentProps {
   fieldName?: string;

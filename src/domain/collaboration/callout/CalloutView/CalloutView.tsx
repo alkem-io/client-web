@@ -1,4 +1,4 @@
-import { CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutType } from '@/core/apollo/generated/graphql-schema';
 import PostCallout from '../post/PostCallout';
 import WhiteboardCollectionCallout from '../whiteboard/WhiteboardCollectionCallout';
 import CommentsCallout from '../comments/CommentsCallout';

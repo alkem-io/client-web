@@ -1,5 +1,5 @@
-import { useAddReactionMutation, useRemoveReactionMutation } from '../../../../core/apollo/generated/apollo-hooks';
-import ensurePresence from '../../../../core/utils/ensurePresence';
+import { useAddReactionMutation, useRemoveReactionMutation } from '@/core/apollo/generated/apollo-hooks';
+import ensurePresence from '@/core/utils/ensurePresence';
 
 const useCommentReactionsMutations = (roomId: string | undefined) => {
   const [addReaction] = useAddReactionMutation();
