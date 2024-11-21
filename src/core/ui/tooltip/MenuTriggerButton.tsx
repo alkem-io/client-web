@@ -1,4 +1,4 @@
-import React, { cloneElement, MouseEventHandler, ReactElement, Ref, useRef, useState } from 'react';
+import { cloneElement, MouseEventHandler, ReactElement, Ref, useRef, useState } from 'react';
 import { Box, ClickAwayListener, Drawer, Grow, ModalProps, Popper, PopperProps } from '@mui/material';
 import { debounce } from 'lodash';
 import { gutters } from '../grid/utils';
@@ -10,13 +10,9 @@ export interface TriggerProps {
   onMouseLeave?: MouseEventHandler;
 }
 
-interface ContentProps {
-  onClose?: () => void;
-}
-
 interface MenuTriggerButtonProps extends Omit<ModalProps, 'open' | 'children'>, Pick<PopperProps, 'placement'> {
   renderTrigger: ({ onClick }: TriggerProps) => ReactElement;
-  children: ReactElement<ContentProps>;
+  children: ReactElement<{ onClose?: () => void }>;
   mouseLeaveDebounceWait?: number;
   zIndex?: number;
   drawer?: boolean;

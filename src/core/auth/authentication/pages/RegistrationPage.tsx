@@ -1,25 +1,20 @@
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 import produce from 'immer';
 import KratosUI from '../components/KratosUI';
-import Loading from '../../../ui/loading/Loading';
-import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
+import Loading from '@/core/ui/loading/Loading';
+import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
 import { _AUTH_LOGIN_PATH } from '../constants/authentication.constants';
-import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
+import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
 import FixedHeightLogo from '../components/FixedHeightLogo';
-import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
-import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
+import SubHeading from '@/domain/shared/components/Text/SubHeading';
+import Paragraph from '@/domain/shared/components/Text/Paragraph';
 import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 import AcceptTerms from './AcceptTerms';
-import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
+import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
 import { UiNodeInput } from '../components/Kratos/UiNodeTypes';
 import { LocationStateWithKratosErrors } from './LocationStateWithKratosErrors';
 import KratosForm from '../components/Kratos/KratosForm';
-
-interface RegisterPageProps {
-  flow?: string;
-}
 
 // TODO this hack is needed because Kratos resets traits.accepted_terms when the flow has failed to e.g. duplicate identifier
 const readHasAcceptedTermsFromStorage = (flowId: string | undefined) => {
@@ -28,7 +23,7 @@ const readHasAcceptedTermsFromStorage = (flowId: string | undefined) => {
 
 const MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID = 4000007;
 
-export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
+export const RegistrationPage = ({ flow }: { flow?: string }) => {
   const { t } = useTranslation();
   const { flow: registrationFlow, loading, error } = useKratosFlow(FlowTypeName.Registration, flow);
 

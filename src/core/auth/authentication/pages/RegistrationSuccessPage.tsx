@@ -1,17 +1,14 @@
-import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import FixedHeightLogo from '../components/FixedHeightLogo';
-import { BlockTitle, PageTitle } from '../../../ui/typography';
+import { BlockTitle, PageTitle } from '@/core/ui/typography';
 import { useReturnUrl } from '../utils/SignUpReturnUrl';
-import RouterLink from '../../../ui/link/RouterLink';
+import RouterLink from '@/core/ui/link/RouterLink';
 import { AUTH_VERIFY_PATH } from '../constants/authentication.constants';
-import PageContent from '../../../ui/content/PageContent';
-import PageContentColumn from '../../../ui/content/PageContentColumn';
-import PageContentBlockSeamless from '../../../ui/content/PageContentBlockSeamless';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 
-interface RegistrationSuccessPageProps {}
-
-export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
+export const RegistrationSuccessPage = () => {
   const { t } = useTranslation();
 
   const returnUrl = useReturnUrl();

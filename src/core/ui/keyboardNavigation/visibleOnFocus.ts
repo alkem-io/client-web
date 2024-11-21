@@ -2,12 +2,8 @@ import { SystemStyleObject } from '@mui/system/styleFunctionSx/styleFunctionSx';
 import { Theme } from '@mui/material/styles';
 import { SxProps } from '@mui/material';
 
-interface Options {
-  skip?: boolean;
-}
-
 const visibleOnFocus =
-  ({ skip = false }: Options = {}) =>
+  ({ skip = false }: { skip?: boolean } = {}) =>
   (sx: SystemStyleObject<Theme> = {}): SxProps<Theme> =>
     skip
       ? sx

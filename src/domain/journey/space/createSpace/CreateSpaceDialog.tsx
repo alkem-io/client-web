@@ -1,49 +1,46 @@
-import DialogWithGrid, { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { useBackToStaticPath } from '../../../../core/routing/useBackToPath';
-import { ROUTE_HOME } from '../../../platform/routes/constants';
+import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { useBackToStaticPath } from '@/core/routing/useBackToPath';
+import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { Button, Checkbox, Dialog, DialogContent, FormControlLabel, Link } from '@mui/material';
-import { Caption } from '../../../../core/ui/typography';
+import { Caption } from '@/core/ui/typography';
 import { Formik } from 'formik';
 import { Trans, useTranslation } from 'react-i18next';
-import React, { useMemo, useState } from 'react';
-import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
-import { Tagset, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
+import { useMemo, useState } from 'react';
+import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
+import { Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
-import { nameSegmentSchema } from '../../../platform/admin/components/Common/NameSegment';
-import { contextSegmentSchema } from '../../../platform/admin/components/Common/ContextSegment';
-import { TagsetSegment, tagsetsSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
+import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
+import { contextSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import { SpaceEditFormValuesType } from '../spaceEditForm/SpaceEditForm';
-import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { SMALL_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import useLoadingState from '../../../shared/utils/useLoadingState';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { useUserContext } from '../../../community/user';
-import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { Actions } from '@/core/ui/actions/Actions';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { gutters } from '@/core/ui/grid/utils';
+import { useUserContext } from '@/domain/community/user';
+import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { Navigate } from 'react-router-dom';
-import NameIdField from '../../../../core/utils/nameId/NameIdField';
-import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
-import RouterLink from '../../../../core/ui/link/RouterLink';
-import { useConfig } from '../../../platform/config/useConfig';
+import NameIdField from '@/core/utils/nameId/NameIdField';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import RouterLink from '@/core/ui/link/RouterLink';
+import { useConfig } from '@/domain/platform/config/useConfig';
 import PlansTableDialog from './plansTable/PlansTableDialog';
-import {
-  refetchDashboardWithMembershipsQuery,
-  useCreateSpaceMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { useSpaceUrlLazyQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import useNavigate from '../../../../core/routing/useNavigate';
-import Loading from '../../../../core/ui/loading/Loading';
-import { TagCategoryValues, info } from '../../../../core/logging/sentry/log';
+import { refetchDashboardWithMembershipsQuery, useCreateSpaceMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceUrlLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import useNavigate from '@/core/routing/useNavigate';
+import Loading from '@/core/ui/loading/Loading';
+import { TagCategoryValues, info } from '@/core/logging/sentry/log';
 import { compact } from 'lodash';
-import { useNotification } from '../../../../core/ui/notifications/useNotification';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 
 interface FormValues extends SpaceEditFormValuesType {
   licensePlanId: string;
 }
 
-interface CreateSpaceDialogProps {
+type CreateSpaceDialogProps = {
   account?:
     | {
         id: string | undefined;
@@ -52,7 +49,7 @@ interface CreateSpaceDialogProps {
     | undefined;
   redirectOnComplete?: boolean;
   onClose?: () => void;
-}
+};
 
 const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: CreateSpaceDialogProps) => {
   const redirectToHome = useBackToStaticPath(ROUTE_HOME);

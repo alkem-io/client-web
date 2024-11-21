@@ -1,17 +1,20 @@
 import { ApolloError } from '@apollo/client';
-import React, { FC } from 'react';
-import { useUserContext } from '../../../community/user';
-import { ContainerChildProps } from '../../../../core/container/container';
+import { PropsWithChildren } from 'react';
+import { useUserContext } from '@/domain/community/user';
+import { ContainerChildProps } from '@/core/container/container';
 import {
   ActivityEventType,
   AuthorizationPrivilege,
   DashboardTopCalloutFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
-import { ActivityLogResultType } from '../../../collaboration/activity/ActivityLog/ActivityComponent';
-import useActivityOnCollaboration from '../../../collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
-import { RECENT_ACTIVITIES_LIMIT_INITIAL, TOP_CALLOUTS_LIMIT } from '../../common/journeyDashboard/constants';
-import { useSpacePageQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { useSpace } from '../../space/SpaceContext/useSpace';
+} from '@/core/apollo/generated/graphql-schema';
+import { ActivityLogResultType } from '@/domain/collaboration/activity/ActivityLog/ActivityComponent';
+import useActivityOnCollaboration from '@/domain/collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
+import {
+  RECENT_ACTIVITIES_LIMIT_INITIAL,
+  TOP_CALLOUTS_LIMIT,
+} from '@/domain/journey/common/journeyDashboard/constants';
+import { useSpacePageQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 
 export interface ActivityContainerEntities {
   permissions: {
@@ -35,7 +38,7 @@ export interface ActivityContainerProps
   spaceId: string | undefined;
 }
 
-export const ActivityContainer: FC<ActivityContainerProps> = ({ spaceId, children }) => {
+export const ActivityContainer = ({ spaceId, children }: PropsWithChildren<ActivityContainerProps>) => {
   const { user } = useUserContext();
   const { permissions: spacePermissions } = useSpace();
   const { data: _space, loading: loadingSpaceQuery } = useSpacePageQuery({

@@ -1,4 +1,4 @@
-import { CalloutPageProps } from '../../../collaboration/CalloutPage/CalloutPage';
+import { CalloutPageProps } from '@/domain/collaboration/CalloutPage/CalloutPage';
 
 export interface JourneyCalloutDialogProps {
   children?: CalloutPageProps['children'];

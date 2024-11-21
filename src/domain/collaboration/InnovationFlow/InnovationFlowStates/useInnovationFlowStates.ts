@@ -1,10 +1,6 @@
-import { useInnovationFlowDetailsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import { useInnovationFlowDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { InnovationFlowState } from '../InnovationFlow';
-
-interface UseInnovationFlowStatesParams {
-  collaborationId: string | undefined;
-}
 
 export const INNOVATION_FLOW_STATES_TAGSET_NAME = 'flow-state';
 
@@ -16,11 +12,11 @@ export interface UseInnovationFlowStatesProvided {
 
 const useInnovationFlowStates = ({
   collaborationId,
-}: UseInnovationFlowStatesParams): UseInnovationFlowStatesProvided => {
+}: {
+  collaborationId: string | undefined;
+}): UseInnovationFlowStatesProvided => {
   const { data } = useInnovationFlowDetailsQuery({
-    variables: {
-      collaborationId: collaborationId!,
-    },
+    variables: { collaborationId: collaborationId! },
     skip: !collaborationId,
   });
 

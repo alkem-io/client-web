@@ -1,13 +1,13 @@
-import React, { FC, ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import Grid from '@mui/material/Grid';
-import { Identifiable } from '../../../../core/utils/Identifiable';
-import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
-import Loading from '../../../../core/ui/loading/Loading';
-import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
-import GridItem from '../../../../core/ui/grid/GridItem';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import LabeledCount from '../../../../core/ui/content/LabeledCount';
+import { Identifiable } from '@/core/utils/Identifiable';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
+import Loading from '@/core/ui/loading/Loading';
+import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
+import GridItem from '@/core/ui/grid/GridItem';
+import Gutters from '@/core/ui/grid/Gutters';
+import LabeledCount from '@/core/ui/content/LabeledCount';
 
 export interface OrganizationCardProps {
   name?: string;
@@ -26,11 +26,11 @@ export interface ContributingOrganizationsProps {
   noOrganizationsView?: ReactElement;
 }
 
-const ContributingOrganizations: FC<ContributingOrganizationsProps> = ({
+const ContributingOrganizations = ({
   organizations,
   loading = false,
   noOrganizationsView,
-}) => {
+}: ContributingOrganizationsProps) => {
   const { t } = useTranslation();
   const directMessageDialogOptions = {
     dialogTitle: t('send-message-dialog.direct-message-title'),

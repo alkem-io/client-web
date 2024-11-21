@@ -8,23 +8,23 @@ import {
   useUpdateInnovationFlowStatesMutation,
   useUpdateInnovationFlowSingleStateMutation,
   useUpdateCollaborationFromTemplateMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CalloutType,
   Tagset,
   UpdateProfileInput,
-} from '../../../../core/apollo/generated/graphql-schema';
-import { CalloutGroupNameValuesMap } from '../../callout/CalloutsInContext/CalloutsGroup';
+} from '@/core/apollo/generated/graphql-schema';
+import { CalloutGroupNameValuesMap } from '@/domain/collaboration/callout/CalloutsInContext/CalloutsGroup';
 import { InnovationFlowState } from '../InnovationFlow';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';
 
-interface useInnovationFlowSettingsProps {
+type useInnovationFlowSettingsProps = {
   collaborationId: string | undefined;
   filterCalloutGroups?: CalloutGroupNameValuesMap[];
   skip?: boolean;
-}
+};
 
 export interface GroupedCallout {
   id: string;

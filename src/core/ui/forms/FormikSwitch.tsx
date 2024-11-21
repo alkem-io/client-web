@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import { FormControlLabel, FormGroup, Switch, SwitchProps } from '@mui/material';
 import { useField } from 'formik';
 
@@ -8,16 +7,15 @@ interface FormikSwitchProps extends SwitchProps {
   required?: boolean;
 }
 
-export const FormikSwitch: FC<FormikSwitchProps> = ({ title, name, required, ...rest }) => {
+export const FormikSwitch = ({ title, name, required, ...rest }: FormikSwitchProps) => {
   const [field] = useField(name);
-
-  const switchField = (
-    <Switch name={name} checked={field.value} onChange={field.onChange} onBlur={field.onBlur} {...rest} />
-  );
 
   return (
     <FormGroup>
-      <FormControlLabel control={switchField} label={title} />
+      <FormControlLabel
+        control={<Switch name={name} checked={field.value} onChange={field.onChange} onBlur={field.onBlur} {...rest} />}
+        label={title}
+      />
     </FormGroup>
   );
 };

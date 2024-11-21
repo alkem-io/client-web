@@ -1,4 +1,4 @@
-import { useAccountResourcesInfoQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useAccountResourcesInfoQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useMemo } from 'react';
 
 const useAccountResources = (accountId: string | undefined) => {

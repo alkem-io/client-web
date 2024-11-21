@@ -1,12 +1,11 @@
-import React, { FC } from 'react';
 import { Box, CardContent, Grid, Link, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import ProfileDetail from '../../ProfileDetail/ProfileDetail';
-import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
-import OrganizationVerifiedStatus from '../../../organization/organizationVerifiedStatus/OrganizationVerifiedStatus';
-import { Location } from '../../../../../core/apollo/generated/graphql-schema';
-import { BlockTitle } from '../../../../../core/ui/typography';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
+import ProfileDetail from '@/domain/community/profile/ProfileDetail/ProfileDetail';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
+import OrganizationVerifiedStatus from '@/domain/community/organization/organizationVerifiedStatus/OrganizationVerifiedStatus';
+import { Location } from '@/core/apollo/generated/graphql-schema';
+import { BlockTitle } from '@/core/ui/typography';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
 
 export interface OrganizationProfileViewEntity {
   displayName: string;
@@ -19,12 +18,12 @@ export interface OrganizationProfileViewEntity {
   verified?: boolean;
 }
 
-interface OrganizationProfileViewProps {
+type OrganizationProfileViewProps = {
   entity: OrganizationProfileViewEntity;
   permissions: {
     canEdit: boolean;
   };
-}
+};
 
 const VerifiedBadge = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -32,7 +31,7 @@ const VerifiedBadge = styled(Box)(({ theme }) => ({
   top: theme.spacing(3),
 }));
 
-export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ entity }) => {
+export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps) => {
   const { t } = useTranslation();
 
   return (

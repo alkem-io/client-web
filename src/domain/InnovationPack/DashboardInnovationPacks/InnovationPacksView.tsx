@@ -1,17 +1,17 @@
 import { Dispatch, ReactNode } from 'react';
-import PageContentBlockHeaderWithDialogAction from '../../../core/ui/content/PageContentBlockHeaderWithDialogAction';
-import MultipleSelect from '../../../core/ui/search/MultipleSelect';
+import PageContentBlockHeaderWithDialogAction from '@/core/ui/content/PageContentBlockHeaderWithDialogAction';
+import MultipleSelect from '@/core/ui/search/MultipleSelect';
 import InnovationPackCard, { InnovationPackCardProps } from '../InnovationPackCard/InnovationPackCard';
-import PageContentBlock, { PageContentBlockProps } from '../../../core/ui/content/PageContentBlock';
-import { Identifiable } from '../../../core/utils/Identifiable';
-import SeeMore from '../../../core/ui/content/SeeMore';
+import PageContentBlock, { PageContentBlockProps } from '@/core/ui/content/PageContentBlock';
+import { Identifiable } from '@/core/utils/Identifiable';
+import SeeMore from '@/core/ui/content/SeeMore';
 import { useTranslation } from 'react-i18next';
-import ScrollableCardsLayoutContainer from '../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import { Box, Button, Theme, useMediaQuery } from '@mui/material';
-import { CONTRIBUTE_CARD_COLUMNS } from '../../../core/ui/card/ContributeCard';
-import GridItem from '../../../core/ui/grid/GridItem';
+import { CONTRIBUTE_CARD_COLUMNS } from '@/core/ui/card/ContributeCard';
+import GridItem from '@/core/ui/grid/GridItem';
 import { Skeleton } from '@mui/material';
-import { gutters } from '../../../core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { useTheme } from '@mui/styles';
 
 interface InnovationPacksViewProps extends PageContentBlockProps {

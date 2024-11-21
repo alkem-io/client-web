@@ -1,17 +1,17 @@
-import React, { FC, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { log404NotFound } from '../../logging/sentry/log';
-import PageContentBlock from '../../ui/content/PageContentBlock';
+import { log404NotFound } from '@/core/logging/sentry/log';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { Box, Link, LinkProps, styled } from '@mui/material';
-import ImageFadeIn from '../../ui/image/ImageFadeIn';
-import { PageTitle, PlatformTitle, Tagline, Text } from '../../ui/typography';
+import ImageFadeIn from '@/core/ui/image/ImageFadeIn';
+import { PageTitle, PlatformTitle, Tagline, Text } from '@/core/ui/typography';
 import { EastOutlined } from '@mui/icons-material';
-import { useConfig } from '../../../domain/platform/config/useConfig';
-import SearchBar from '../../../main/ui/layout/topBar/SearchBar';
-import PageContent from '../../ui/content/PageContent';
-import PageContentColumn from '../../ui/content/PageContentColumn';
-import { gutters } from '../../ui/grid/utils';
-import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '../../ui/navigation/NavigationBar';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import SearchBar from '@/main/ui/layout/topBar/SearchBar';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import { gutters } from '@/core/ui/grid/utils';
+import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
 import { useLocation } from 'react-router-dom';
 
 const Container = styled(Box)(({ theme }) => ({
@@ -80,7 +80,7 @@ const StyledLink = ({ children, subtitle, ...props }: LinkProps & { subtitle?: s
   );
 };
 
-export const Error404: FC = () => {
+export const Error404 = () => {
   const { pathname } = useLocation();
 
   useEffect(() => log404NotFound(), [pathname]);

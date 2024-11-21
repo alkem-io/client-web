@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, BoxProps } from '@mui/material';
 import { Caption } from '../typography';
 import { gutters } from '../grid/utils';

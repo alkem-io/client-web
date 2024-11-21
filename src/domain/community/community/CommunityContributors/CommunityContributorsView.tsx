@@ -1,16 +1,16 @@
 import Typography from '@mui/material/Typography';
-import React, { ComponentType } from 'react';
+import { ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SectionSpacer } from '../../../shared/components/Section/Section';
+import { SectionSpacer } from '@/domain/shared/components/Section/Section';
 import { styled } from '@mui/styles';
-import withOptionalCount from '../../../shared/utils/withOptionalCount';
+import withOptionalCount from '@/domain/shared/utils/withOptionalCount';
 import ContributingOrganizations, { ContributingOrganizationsProps } from './ContributingOrganizations';
 import DashboardContributingUsers, {
   DashboardContributingUsersProps,
 } from '../EntityDashboardContributorsSection/DashboardContributingUsers';
 import { mapUserCardPropsToContributorCardProps } from '../utils/useCommunityMembersAsCardProps';
-import { Identifiable } from '../../../../core/utils/Identifiable';
-import { UserCardProps } from '../../user/userCard/UserCard';
+import { Identifiable } from '@/core/utils/Identifiable';
+import { UserCardProps } from '@/domain/community/user/userCard/UserCard';
 
 export interface CommunityContributorsViewProps extends ContributingOrganizationsProps {
   loading?: boolean;

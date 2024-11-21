@@ -3,19 +3,19 @@ import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { FormikProps } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
-import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
-import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { CommunityGuidelinesTemplate } from '../../models/CommunityGuidelinesTemplate';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import ProfileReferenceSegment from '../../../platform/admin/components/Common/ProfileReferenceSegment';
-import FormikReferenceSegment from '../../../platform/admin/components/Common/FormikReferenceSegment';
-import { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
-import { tagsetsSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
+import FormikReferenceSegment from '@/domain/platform/admin/components/Common/FormikReferenceSegment';
+import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
+import { tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import { mapReferencesToUpdateReferences, mapTemplateProfileToUpdateProfile } from './common/mappings';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { displayNameValidator } from '../../../../core/ui/forms/validator';
+import { gutters } from '@/core/ui/grid/utils';
+import { displayNameValidator } from '@/core/ui/forms/validator';
 
 export interface CommunityGuidelinesTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {
   communityGuidelines?: {

@@ -1,10 +1,10 @@
-import React, { FC, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useTransactionScope } from '../analytics/SentryTransactionScopeContext';
 import { useQueryParams } from './useQueryParams';
 import { RestrictedPage } from '../pages/Restricted/RestrictedPage';
 import { info as logInfo } from '../logging/sentry/log';
 
-export const Restricted: FC = () => {
+export const Restricted = () => {
   useTransactionScope({ type: 'authentication' });
   const params = useQueryParams();
   const origin = params.get('origin');

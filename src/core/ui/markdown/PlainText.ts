@@ -30,17 +30,13 @@ const collect = (node: HandledNode): Node[] => {
   return [node];
 };
 
-interface Options {
-  enabled?: boolean;
-}
-
 /**
  * Recursively collects node contents from the syntax tree and joins into a single "flat" paragraph.
  * TODO handle lists.
  * @constructor
  */
 const PlainText: Plugin =
-  ({ enabled = true }: Options = {}) =>
+  ({ enabled = true }: { enabled?: boolean } = {}) =>
   tree => {
     if (!enabled) {
       return tree;

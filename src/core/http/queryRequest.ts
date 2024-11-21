@@ -4,13 +4,8 @@ import { DocumentNode, print } from 'graphql';
 const queryRequest = async <TResponseData = unknown>(url: string, queryDocument: DocumentNode) => {
   return axios.post<{ data: TResponseData }>(
     url,
-    {
-      query: print(queryDocument),
-    },
-    {
-      responseType: 'json',
-      withCredentials: true,
-    }
+    { query: print(queryDocument) },
+    { responseType: 'json', withCredentials: true }
   );
 };
 

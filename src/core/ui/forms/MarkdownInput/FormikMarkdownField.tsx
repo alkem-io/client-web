@@ -1,14 +1,14 @@
-import React, { ChangeEvent, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { FormControl, FormHelperText, InputLabel, InputProps, OutlinedInput, useFormControl } from '@mui/material';
 import { useField } from 'formik';
 import CharacterCounter from '../characterCounter/CharacterCounter';
-import TranslationKey from '../../../i18n/utils/TranslationKey';
-import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import MarkdownInput, { MarkdownInputRefApi } from './MarkdownInput';
 import { CharacterCountContainer, CharacterCountContextProvider } from './CharacterCountContext';
-import { gutters } from '../../grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { MarkdownTextMaxLength } from '../field-length.constants';
-import { error as logError } from '../../../logging/sentry/log';
+import { error as logError } from '@/core/logging/sentry/log';
 import { isMarkdownMaxLengthError } from './MarkdownValidator';
 import { useTranslation } from 'react-i18next';
 
@@ -27,11 +27,7 @@ interface MarkdownFieldProps extends InputProps {
   temporaryLocation?: boolean;
 }
 
-interface FilledDetectorProps {
-  value: string | undefined;
-}
-
-const FilledDetector = ({ value }: FilledDetectorProps) => {
+const FilledDetector = ({ value }: { value: string | undefined }) => {
   const formControl = useFormControl();
 
   useLayoutEffect(() => {

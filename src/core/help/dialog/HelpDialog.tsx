@@ -1,14 +1,13 @@
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Dialog, Grid, Link, styled } from '@mui/material';
 import QuizOutlinedIzon from '@mui/icons-material/QuizOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import FiberNewTwoToneIcon from '@mui/icons-material/FiberNewTwoTone';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { DialogContent } from '../../ui/dialog/deprecated';
-import WrapperMarkdown from '../../ui/markdown/WrapperMarkdown';
-import { useConfig } from '../../../domain/platform/config/useConfig';
-import DialogHeader from '../../ui/dialog/DialogHeader';
+import { DialogContent } from '@/core/ui/dialog/deprecated';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 
 interface HelpDialogProps {
   open: boolean;
@@ -52,7 +51,7 @@ const CustomNewIcon = styled(FiberNewTwoToneIcon)(() => ({
   '& > path:nth-of-type(2)': { opacity: 0 },
 }));
 
-const HelpDialog: FC<HelpDialogProps> = ({ open, onClose }) => {
+const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
   const { t } = useTranslation();
   const { locations } = useConfig();
   const handleClose = () => (onClose ? onClose() : undefined);

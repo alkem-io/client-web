@@ -1,9 +1,9 @@
 import React from 'react';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
-import FormikAutocomplete from '../../../../../core/ui/forms/FormikAutocomplete';
-import Gutters from '../../../../../core/ui/grid/Gutters';
-import FormikSubmitButton from '../../../../shared/components/forms/FormikSubmitButton';
+import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
+import Gutters from '@/core/ui/grid/Gutters';
+import FormikSubmitButton from '@/domain/shared/components/forms/FormikSubmitButton';
 
 interface AssignPlanProps {
   onAssignPlan: (licensePlanId: string) => Promise<unknown>;

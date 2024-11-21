@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { styled } from '@mui/styles';
 import {
   Box,
@@ -43,7 +43,7 @@ export interface LinksListProps {
 
 const COLLAPSED_LIST_ITEM_LIMIT = 5;
 
-const LinksList: FC<LinksListProps> = ({ items = [], emptyListCaption, loading = false }) => {
+const LinksList = ({ items = [], emptyListCaption, loading = false }: LinksListProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleExpand = () => {

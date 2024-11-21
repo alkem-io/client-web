@@ -1,4 +1,4 @@
-import { Profile, Visual } from '../../../../core/apollo/generated/graphql-schema';
+import { Profile, Visual } from '@/core/apollo/generated/graphql-schema';
 import { VisualName } from '../constants/visuals.constants';
 
 type VisualNameAndUri = Pick<Visual, 'name' | 'uri'>;

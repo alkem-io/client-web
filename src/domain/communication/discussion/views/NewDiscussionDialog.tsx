@@ -1,14 +1,10 @@
-import React, { FC } from 'react';
 import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { ForumDiscussionCategory } from '../../../../core/apollo/generated/graphql-schema';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import {
-  refetchPlatformDiscussionsQuery,
-  useCreateDiscussionMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import useNavigate from '../../../../core/routing/useNavigate';
+import { ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { refetchPlatformDiscussionsQuery, useCreateDiscussionMutation } from '@/core/apollo/generated/apollo-hooks';
+import useNavigate from '@/core/routing/useNavigate';
 import DiscussionForm, { DiscussionFormValues } from '../forms/DiscussionForm';
 
 export interface NewDiscussionDialogProps {
@@ -18,7 +14,7 @@ export interface NewDiscussionDialogProps {
   categories: ForumDiscussionCategory[];
 }
 
-const NewDiscussionDialog: FC<NewDiscussionDialogProps> = ({ open, onClose, forumId, categories }) => {
+const NewDiscussionDialog = ({ open, onClose, forumId, categories }: NewDiscussionDialogProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 

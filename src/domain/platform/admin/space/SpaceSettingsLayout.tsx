@@ -1,9 +1,9 @@
-import React, { FC } from 'react';
+import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
-import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
-import RouterLink from '../../../../core/ui/link/RouterLink';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import RouterLink from '@/core/ui/link/RouterLink';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
@@ -13,20 +13,20 @@ import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
-import SpaceTabs from '../../../journey/space/layout/SpaceTabs';
-import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
-import { VisualName } from '../../../common/visual/constants/visuals.constants';
-import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
-import SpacePageBanner from '../../../journey/space/layout/SpacePageBanner';
-import JourneyBreadcrumbs from '../../../journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
-import BackButton from '../../../../core/ui/actions/BackButton';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
+import SpaceTabs from '@/domain/journey/space/layout/SpaceTabs';
+import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
+import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
+import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
+import SpacePageBanner from '@/domain/journey/space/layout/SpacePageBanner';
+import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import BackButton from '@/core/ui/actions/BackButton';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 
-interface SpaceSettingsLayoutProps {
+type SpaceSettingsLayoutProps = {
   currentTab: SettingsSection;
   tabRoutePrefix?: string;
-}
+};
 
 const tabs: TabDefinition<SettingsSection>[] = [
   {
@@ -76,7 +76,7 @@ const tabs: TabDefinition<SettingsSection>[] = [
   },
 ];
 
-const SpaceSettingsLayout: FC<SpaceSettingsLayoutProps> = props => {
+const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>) => {
   const entityAttrs = useSpace();
 
   const { t } = useTranslation();

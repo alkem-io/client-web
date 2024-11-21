@@ -1,8 +1,6 @@
-import { FC } from 'react';
 import { CircularProgress, IconButton, IconButtonProps } from '@mui/material';
 
-const LoadingIconButton: FC<IconButtonProps & { loading?: boolean }> = ({ loading, ...props }) => {
-  return loading ? <CircularProgress /> : <IconButton {...props} />;
-};
+const LoadingIconButton = ({ loading, ...props }: IconButtonProps & { loading?: boolean }) =>
+  loading ? <CircularProgress /> : <IconButton {...props} />;
 
 export default LoadingIconButton;

@@ -1,20 +1,20 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useTransactionScope } from '../../../../core/analytics/SentryTransactionScopeContext';
-import { useSpace } from '../../space/SpaceContext/useSpace';
-import { Error404 } from '../../../../core/pages/Errors/Error404';
-import SpaceCommunicationsPage from '../../space/pages/SpaceCommunication/SpaceCommunicationsPage';
-import SpaceProfilePage from '../../space/pages/SpaceProfile/SpaceProfilePage';
-import SpaceSettingsPage from '../../space/pages/SpaceSettings/SpaceSettingsPage';
-import { ApplicationsAdminRoutes } from '../../../platform/admin/community/routes/ApplicationsAdminRoutes';
-import SpaceTemplatesAdminRoutes from '../../../platform/admin/space/SpaceTemplatesAdminRoutes';
-import CommunityGroupsRoute from '../../../platform/admin/community/routes/CommunityGroupsAdminRoutes';
-import SpaceContextPage from '../../space/pages/SpaceContext/SpaceContextPage';
-import SpaceStorageAdminPage from '../../../platform/admin/space/storage/SpaceStorageAdminPage';
-import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import AdminSpaceCommunityPage from '../../space/pages/AdminSpaceCommunityPage';
-import SpaceAccountPage from '../../space/pages/SpaceAccount/SpaceAccountPage';
-import { ChallengesRoute } from '../../../platform/admin/subspace/routing/ChallengesRoute';
+import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { Error404 } from '@/core/pages/Errors/Error404';
+import SpaceCommunicationsPage from '@/domain/journey/space/pages/SpaceCommunication/SpaceCommunicationsPage';
+import SpaceProfilePage from '@/domain/journey/space/pages/SpaceProfile/SpaceProfilePage';
+import SpaceSettingsPage from '@/domain/journey/space/pages/SpaceSettings/SpaceSettingsPage';
+import { ApplicationsAdminRoutes } from '@/domain/platform/admin/community/routes/ApplicationsAdminRoutes';
+import SpaceTemplatesAdminRoutes from '@/domain/platform/admin/space/SpaceTemplatesAdminRoutes';
+import CommunityGroupsRoute from '@/domain/platform/admin/community/routes/CommunityGroupsAdminRoutes';
+import SpaceContextPage from '@/domain/journey/space/pages/SpaceContext/SpaceContextPage';
+import SpaceStorageAdminPage from '@/domain/platform/admin/space/storage/SpaceStorageAdminPage';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import AdminSpaceCommunityPage from '@/domain/journey/space/pages/AdminSpaceCommunityPage';
+import SpaceAccountPage from '@/domain/journey/space/pages/SpaceAccount/SpaceAccountPage';
+import { ChallengesRoute } from '@/domain/platform/admin/subspace/routing/ChallengesRoute';
 import NonSpaceAdminRedirect from '../nonSpaceAdminRedirect/NonSpaceAdminRedirect';
 
 export const SpaceRoute: FC = () => {

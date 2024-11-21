@@ -1,10 +1,10 @@
 import { PreviewImageDimensions } from './WhiteboardPreviewImages';
 
-interface ExcalidrawDimensions {
+type ExcalidrawDimensions = {
   width: number;
   height: number;
   scale?: number;
-}
+};
 
 /**
  *

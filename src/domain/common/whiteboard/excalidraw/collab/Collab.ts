@@ -21,18 +21,18 @@ import { isImageElement, UserIdleState } from './utils';
 import { getCollabServer, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
 import { BinaryFilesWithUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
-import { error as logError, TagCategoryValues } from '../../../../../core/logging/sentry/log';
+import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
 import {
   ReconciledExcalidrawElement,
   RemoteExcalidrawElement,
 } from '@alkemio/excalidraw/dist/excalidraw/data/reconcile';
 import { Mutable } from '@alkemio/excalidraw/dist/excalidraw/utility-types';
 
-interface CollabState {
+type CollabState = {
   errorMessage: string;
   username: string;
   activeRoomLink: string;
-}
+};
 
 export interface CollabProps {
   excalidrawApi: ExcalidrawImperativeAPI;

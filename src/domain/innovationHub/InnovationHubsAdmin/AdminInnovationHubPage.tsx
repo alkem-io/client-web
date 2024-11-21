@@ -1,28 +1,26 @@
 import { sortBy } from 'lodash';
-import React, { FC, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNotification } from '../../../core/ui/notifications/useNotification';
-import { useUrlParams } from '../../../core/routing/useUrlParams';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { useUrlParams } from '@/core/routing/useUrlParams';
 import {
   useAccountsListQuery,
   useAdminInnovationHubQuery,
   useUpdateInnovationHubMutation,
-} from '../../../core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import InnovationHubForm, { InnovationHubFormValues } from './InnovationHubForm';
-import { StorageConfigContextProvider } from '../../storage/StorageBucket/StorageConfigContext';
-import PageContent from '../../../core/ui/content/PageContent';
-import PageContentColumn from '../../../core/ui/content/PageContentColumn';
-import AdminLayout from '../../platform/admin/layout/toplevel/AdminLayout';
-import { AdminSection } from '../../platform/admin/layout/toplevel/constants';
-import RouterLink from '../../../core/ui/link/RouterLink';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import AdminLayout from '@/domain/platform/admin/layout/toplevel/AdminLayout';
+import { AdminSection } from '@/domain/platform/admin/layout/toplevel/constants';
+import RouterLink from '@/core/ui/link/RouterLink';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Button } from '@mui/material';
-import PageContentBlock from '../../../core/ui/content/PageContentBlock';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import InnovationHubSpacesField from './InnovationHubSpacesField';
 
-interface AdminInnovationHubPageProps {}
-
-const AdminInnovationHubPage: FC<AdminInnovationHubPageProps> = () => {
+const AdminInnovationHubPage = () => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { innovationHubNameId } = useUrlParams();

@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { isApolloNotFoundError } from '../hooks/useApolloErrorHandler';
-import { NotFoundError } from '../../notFound/NotFoundErrorBoundary';
+import { NotFoundError } from '@/core/notFound/NotFoundErrorBoundary';
 
 interface WithOptionalError {
   error?: ApolloError;

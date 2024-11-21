@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
-import { useMyResourcesQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import { useUserContext } from '../../../../domain/community/user';
-import InnovationHubCardHorizontal from '../../../../domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
-import InnovationPackCardHorizontal from '../../../../domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
-import JourneyCardHorizontal from '../../../../domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
+import { useMyResourcesQuery } from '@/core/apollo/generated/apollo-hooks';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { useUserContext } from '@/domain/community/user';
+import InnovationHubCardHorizontal from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
+import InnovationPackCardHorizontal from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
+import JourneyCardHorizontal from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
 
 const MyResources = () => {
   const { accountId } = useUserContext();

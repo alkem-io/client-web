@@ -1,45 +1,45 @@
-import React, { FC, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import { IconButton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import { BlockTitle } from '../../../../core/ui/typography';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { BlockTitle } from '@/core/ui/typography';
 import JourneyCardHorizontal, {
   JourneyCardHorizontalSkeleton,
-} from '../../../journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
+} from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
+import Gutters from '@/core/ui/grid/Gutters';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import InnovationHubCardHorizontal, {
   InnovationHubCardHorizontalSkeleton,
-} from '../../../innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
-import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDialog';
-import useNewVirtualContributorWizard from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
-import CreateInnovationHubDialog from '../../../innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
+} from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
+import { Actions } from '@/core/ui/actions/Actions';
+import RoundedIcon from '@/core/ui/icon/RoundedIcon';
+import CreateSpaceDialog from '@/domain/journey/space/createSpace/CreateSpaceDialog';
+import useNewVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
+import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
 import {
   AuthorizationPrivilege,
   LicenseEntitlementType,
   SpaceLevel,
   SpaceType,
   SpaceVisibility,
-} from '../../../../core/apollo/generated/graphql-schema';
-import MenuItemWithIcon from '../../../../core/ui/menu/MenuItemWithIcon';
+} from '@/core/apollo/generated/graphql-schema';
+import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import { DeleteOutline } from '@mui/icons-material';
 import {
   useDeleteInnovationHubMutation,
   useDeleteInnovationPackMutation,
   useDeleteSpaceMutation,
   useDeleteVirtualContributorOnAccountMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import EntityConfirmDeleteDialog from '../../../journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
+} from '@/core/apollo/generated/apollo-hooks';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
 import InnovationPackCardHorizontal, {
   InnovationPackCardHorizontalSkeleton,
-} from '../../../InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
-import CreateInnovationPackDialog from '../../../InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
+} from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
+import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
 
 const enum Entities {
   Space = 'Space',
@@ -145,7 +145,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accountHostName, account, loading }) => {
+export const ContributorAccountView = ({ accountHostName, account, loading }: ContributorAccountViewProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();

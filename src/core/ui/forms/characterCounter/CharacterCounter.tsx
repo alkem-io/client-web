@@ -1,8 +1,8 @@
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { DistributiveOmit } from '@mui/types';
 import { Box, TypographyProps } from '@mui/material';
-import { Caption } from '../../typography';
-import { gutters } from '../../grid/utils';
+import { Caption } from '@/core/ui/typography';
+import { gutters } from '@/core/ui/grid/utils';
 
 type CharacterCounterProps = DistributiveOmit<TypographyProps, 'variant'> & {
   count?: number;

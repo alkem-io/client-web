@@ -1,11 +1,11 @@
 import React, { forwardRef, useCallback } from 'react';
-import ContributeCard from '../../../../core/ui/card/ContributeCard';
-import CardDetails from '../../../../core/ui/card/CardDetails';
-import CardDescription from '../../../../core/ui/card/CardDescription';
-import CardFooter from '../../../../core/ui/card/CardFooter';
+import ContributeCard from '@/core/ui/card/ContributeCard';
+import CardDetails from '@/core/ui/card/CardDetails';
+import CardDescription from '@/core/ui/card/CardDescription';
+import CardFooter from '@/core/ui/card/CardFooter';
 import EventCardHeader, { EventCardHeaderProps } from './EventCardHeader';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { CaptionSmall } from '../../../../core/ui/typography';
+import { gutters } from '@/core/ui/grid/utils';
+import { CaptionSmall } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 
 export interface CalendarEventCardProps {

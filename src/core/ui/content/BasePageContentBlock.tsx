@@ -5,7 +5,7 @@ import GridProvider from '../grid/GridProvider';
 import { useDeclaredColumns } from '../grid/GridContext';
 import { SystemCssProperties } from '@mui/system/styleFunctionSx/styleFunctionSx';
 import { Theme } from '@mui/material/styles';
-import { useCombinedRefs } from '../../../domain/shared/utils/useCombinedRefs';
+import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 import { BlockAnchorProvider } from '../keyboardNavigation/NextBlockAnchor';
 import { v4 as uuid } from 'uuid';
 

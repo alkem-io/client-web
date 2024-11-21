@@ -1,8 +1,8 @@
-import { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
-import { UserCardProps } from '../../user/userCard/UserCard';
+import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
+import { UserCardProps } from '@/domain/community/user/userCard/UserCard';
 import { useMemo } from 'react';
-import { COUNTRIES_BY_CODE } from '../../../common/location/countries.constants';
-import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
+import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
+import { CommunityContributorType } from '@/core/apollo/generated/graphql-schema';
 import { ContributorViewProps, EntityDashboardContributors } from '../EntityDashboardContributorsSection/Types';
 
 export interface RoleSetMembers {
@@ -12,13 +12,13 @@ export interface RoleSetMembers {
 
 const DEFAULT_MEMBERS_LIMIT = 12;
 
-interface Options {
+type Options = {
   membersLimit?: number;
   memberUsersLimit?: number;
   memberOrganizationsLimit?: number;
   memberUsersCount?: number;
   memberOrganizationsCount?: number;
-}
+};
 
 const mapUserToContributorCardProps = (user: ContributorViewProps): ContributorCardSquareProps => ({
   id: user.id,

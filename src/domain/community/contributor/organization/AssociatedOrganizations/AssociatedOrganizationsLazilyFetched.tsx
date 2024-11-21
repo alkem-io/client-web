@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import AssociatedOrganizationsDashboardSection, {
   AssociatedOrganizationsDashboardSectionProps,
 } from './AssociatedOrganizationsDashboardSection';
@@ -32,11 +31,11 @@ const OrganizationCardLazilyFetched = ({ organizationId, enableLeave }: Organiza
   );
 };
 
-export const AssociatedOrganizationsLazilyFetched: FC<AssociatedOrganizationsLazilyFetchedProps> = ({
+export const AssociatedOrganizationsLazilyFetched = ({
   organizationIds,
   enableLeave,
   ...viewProps
-}) => {
+}: AssociatedOrganizationsLazilyFetchedProps) => {
   const organizations = organizationIds.map(
     organizationId => ({ key: organizationId, organizationId, enableLeave }),
     [organizationIds]

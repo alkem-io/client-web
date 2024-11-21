@@ -1,28 +1,26 @@
-import React, { FC } from 'react';
+import { PropsWithChildren } from 'react';
 import { useParams, useResolvedPath } from 'react-router-dom';
 import SpaceDashboardContainer from './SpaceDashboardContainer';
-import CommunityUpdatesDialog from '../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
-import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
-import SpaceContributorsDialogContent from '../../../community/community/entities/SpaceContributorsDialogContent';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
+import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
+import ContributorsDialog from '@/domain/community/community/ContributorsDialog/ContributorsDialog';
+import SpaceContributorsDialogContent from '@/domain/community/community/entities/SpaceContributorsDialogContent';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
 import SpacePageLayout from '../layout/SpacePageLayout';
 import SpaceDashboardView from './SpaceDashboardView';
-import CalendarDialog from '../../../timeline/calendar/CalendarDialog';
-import JourneyAboutDialog from '../../common/JourneyAboutDialog/JourneyAboutDialog';
+import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
+import JourneyAboutDialog from '@/domain/journey/common/JourneyAboutDialog/JourneyAboutDialog';
 import { IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
-import { buildAboutUrl, buildUpdatesUrl } from '../../../../main/routing/urlBuilders';
+import { buildAboutUrl, buildUpdatesUrl } from '@/main/routing/urlBuilders';
 import { useTranslation } from 'react-i18next';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
-import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
-import { SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
-export interface SpaceDashboardPageProps {
-  dialog?: 'about' | 'updates' | 'contributors' | 'calendar';
-}
-
-const SpaceDashboardPage: FC<SpaceDashboardPageProps> = ({ dialog }) => {
+const SpaceDashboardPage = ({
+  dialog,
+}: PropsWithChildren<{ dialog?: 'about' | 'updates' | 'contributors' | 'calendar' }>) => {
   const { t } = useTranslation();
   const currentPath = useResolvedPath('..');
   const { calendarEventNameId } = useParams();

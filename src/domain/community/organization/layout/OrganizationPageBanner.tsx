@@ -1,9 +1,8 @@
-import React from 'react';
-import { Identifiable } from '../../../../core/utils/Identifiable';
-import ProfilePageBanner, { ProfilePageBannerProps } from '../../../common/profile/ProfilePageBanner';
-import { buildSettingsUrl } from '../../../../main/routing/urlBuilders';
+import { Identifiable } from '@/core/utils/Identifiable';
+import ProfilePageBanner, { ProfilePageBannerProps } from '@/domain/common/profile/ProfilePageBanner';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 
-interface OrganizationPageBannerProps {
+type OrganizationPageBannerProps = {
   organization:
     | (Identifiable & {
         nameID: string;
@@ -13,7 +12,7 @@ interface OrganizationPageBannerProps {
   onSendMessage: ProfilePageBannerProps['onSendMessage'];
   canEdit: boolean;
   loading?: boolean;
-}
+};
 
 const OrganizationPageBanner = ({
   organization,

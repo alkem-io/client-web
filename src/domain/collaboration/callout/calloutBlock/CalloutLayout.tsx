@@ -9,14 +9,14 @@ import {
   ContributeTabPostFragment,
   MessageDetailsFragment,
   WhiteboardDetailsFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
-import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
-import { BlockTitle } from '../../../../core/ui/typography';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import { Ribbon } from '../../../../core/ui/card/Ribbon';
-import { Reference, Tagset } from '../../../common/profile/Profile';
-import References from '../../../shared/components/References/References';
-import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
+} from '@/core/apollo/generated/graphql-schema';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { BlockTitle } from '@/core/ui/typography';
+import Gutters from '@/core/ui/grid/Gutters';
+import { Ribbon } from '@/core/ui/card/Ribbon';
+import { Reference, Tagset } from '@/domain/common/profile/Profile';
+import References from '@/domain/shared/components/References/References';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import { WhiteboardFragmentWithCallout } from '../useCallouts/useCallouts';
 import { LinkDetails } from '../links/LinkCollectionCallout';
 import CalloutHeader from './CalloutHeader';

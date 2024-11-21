@@ -1,21 +1,21 @@
-import React, { FC, useState } from 'react';
+import { PropsWithChildren, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import Button from '@mui/material/Button';
 import { LoadingButton } from '@mui/lab';
-import { CalloutIcon } from '../../icon/CalloutIcon';
-import { DialogContent } from '../../../../../core/ui/dialog/deprecated';
-import { CalloutType, CalloutVisibility } from '../../../../../core/apollo/generated/graphql-schema';
+import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
+import { DialogContent } from '@/core/ui/dialog/deprecated';
+import { CalloutType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { Formik } from 'formik';
-import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
-import { Actions } from '../../../../../core/ui/actions/Actions';
-import { BlockTitle, Text } from '../../../../../core/ui/typography/components';
-import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
-import FormRow from '../../../../../core/ui/forms/FormRow';
-import { FormikSwitch } from '../../../../../core/ui/forms/FormikSwitch';
-import { gutters } from '../../../../../core/ui/grid/utils';
-import Gutters from '../../../../../core/ui/grid/Gutters';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { Actions } from '@/core/ui/actions/Actions';
+import { BlockTitle, Text } from '@/core/ui/typography/components';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import FormRow from '@/core/ui/forms/FormRow';
+import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
+import { gutters } from '@/core/ui/grid/utils';
+import Gutters from '@/core/ui/grid/Gutters';
 
 export type CalloutSummaryFields = {
   framing: {
@@ -40,13 +40,13 @@ type FormValueType = {
   sendNotifications: boolean;
 };
 
-const CalloutVisibilityChangeDialog: FC<CalloutVisibilityChangeDialogProps> = ({
+const CalloutVisibilityChangeDialog = ({
   open,
   title,
   callout,
   onClose,
   onVisibilityChanged,
-}) => {
+}: PropsWithChildren<CalloutVisibilityChangeDialogProps>) => {
   const { t } = useTranslation();
 
   const [loading, setLoading] = useState(false);
