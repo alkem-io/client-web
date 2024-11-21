@@ -4,6 +4,15 @@ import { Box, Button, Dialog, DialogContent } from '@mui/material';
 import { useGlobalError } from './GlobalErrorContext';
 import DialogHeader from '../ui/dialog/DialogHeader';
 import { BlockTitle } from '../ui/typography';
+import { LazyLoadError } from './lazyWithGlobalErrorHandler';
+import TranslationKey from '../i18n/utils/TranslationKey';
+
+const ErrorTranslationMapppings = (error: Error): TranslationKey => {
+  if (error instanceof LazyLoadError) {
+    return 'pages.error.errors.LazyLoadError';
+  }
+  return 'pages.error.errors.unknown';
+};
 
 export const GlobalErrorDialog: React.FC = () => {
   const { t } = useTranslation();
@@ -21,9 +30,7 @@ export const GlobalErrorDialog: React.FC = () => {
           <Trans
             i18nKey="pages.error.line1"
             values={{
-              message: error.message?.toLowerCase().includes('failed to fetch dynamically imported module')
-                ? t('pages.error.dynamicError')
-                : null,
+              message: t(ErrorTranslationMapppings(error)),
             }}
             components={{
               italic: <i />,

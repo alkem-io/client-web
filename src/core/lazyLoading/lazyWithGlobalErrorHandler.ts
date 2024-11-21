@@ -3,6 +3,14 @@ import { getGlobalErrorSetter } from './GlobalErrorContext';
 
 type ImportFunc<T> = () => Promise<{ default: React.ComponentType<T> }>;
 
+export class LazyLoadError extends Error {
+  constructor(originalError: Error) {
+    super(originalError.message);
+    this.name = 'LazyLoadError';
+    Object.setPrototypeOf(this, LazyLoadError.prototype);
+  }
+}
+
 export const lazyWithGlobalErrorHandler = <T>(
   importFunc: ImportFunc<T>
 ): React.LazyExoticComponent<React.ComponentType<T>> => {
@@ -11,7 +19,10 @@ export const lazyWithGlobalErrorHandler = <T>(
       return await importFunc();
     } catch (error) {
       const setError = getGlobalErrorSetter();
-      setError(error as Error);
+      const originalError: Error =
+        error instanceof Error ? error : error?.['message'] ? new Error(error['message']) : new Error('Unknown error');
+
+      setError(new LazyLoadError(originalError));
 
       // it looks like this error is already logged by the useErrorLoggerLink (network error)
 
@@ -24,20 +35,15 @@ export const lazyWithGlobalErrorHandler = <T>(
   });
 };
 
-class ContentUnavailableError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'ContentUnavailableError';
-    Object.setPrototypeOf(this, ContentUnavailableError.prototype);
-  }
-}
-
 export const lazyImportWithErrorHandler = async <T>(importFunc: () => Promise<T>): Promise<T> => {
   try {
     return await importFunc();
   } catch (error) {
     const setError = getGlobalErrorSetter();
-    setError(error as Error);
-    throw new ContentUnavailableError((error as Error)?.message);
+    const originalError: Error =
+      error instanceof Error ? error : error?.['message'] ? new Error(error['message']) : new Error('Unknown error');
+
+    setError(new LazyLoadError(originalError));
+    throw new LazyLoadError(originalError);
   }
 };

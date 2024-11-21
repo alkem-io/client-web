@@ -2557,7 +2557,10 @@
       "buttons": {
         "reload": "Reload"
       },
-      "dynamicError": "Network error occurred. Please try reloading the page."
+      "errors": {
+        "LazyLoadError": "Network error occurred. Please try reloading the page.",
+        "unknown": "An unknown error occurred. Please try reloading the page."
+      }
     },
     "four-ou-four": {
       "title": "Something went wrong...",
