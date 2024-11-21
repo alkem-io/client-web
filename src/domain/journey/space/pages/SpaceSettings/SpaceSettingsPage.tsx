@@ -8,7 +8,7 @@ import { Skeleton } from '@mui/material';
 import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
 
 const SpaceSettingsPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  const { spaceId, journeyId, journeyTypeName, loading } = useRouteResolver();
+  const { journeyId, journeyTypeName, loading } = useRouteResolver();
 
   switch (journeyTypeName) {
     case 'space':
@@ -27,7 +27,7 @@ const SpaceSettingsPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
           {!journeyId || loading ? (
             <Skeleton />
           ) : (
-            <SpaceSettingsView journeyId={journeyId} journeyTypeName={journeyTypeName} spaceId={spaceId} />
+            <SpaceSettingsView journeyId={journeyId} journeyTypeName={journeyTypeName} />
           )}
         </SubspaceSettingsLayout>
       );

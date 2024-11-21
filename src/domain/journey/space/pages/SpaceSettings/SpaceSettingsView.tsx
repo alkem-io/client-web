@@ -8,6 +8,7 @@ import {
   useSpaceHostQuery,
   useSpacePrivilegesQuery,
   useSpaceSettingsQuery,
+  useSpaceTemplatesSetIdQuery,
   useUpdateSpaceSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
@@ -45,7 +46,6 @@ import { noop } from 'lodash';
 type SpaceSettingsViewProps = {
   journeyId: string;
   journeyTypeName: JourneyTypeName; // TODO: The idea is to just pass isSubspace as a boolean here
-  spaceId?: string;
 };
 
 const defaultSpaceSettings = {
@@ -69,7 +69,7 @@ const defaultSpaceSettings = {
 
 const errorColor = '#940000';
 
-export const SpaceSettingsView = ({ journeyId, journeyTypeName, spaceId }: SpaceSettingsViewProps) => {
+export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsViewProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const navigate = useNavigate();
@@ -130,15 +130,13 @@ export const SpaceSettingsView = ({ journeyId, journeyTypeName, spaceId }: Space
   const roleSetId = settingsData?.lookup.space?.community?.roleSet.id;
   const collaborationId = settingsData?.lookup.space?.collaboration.id;
 
-  // Subspace Template, check for privileges in the parent space
-  const { data: spaceData } = useSpacePrivilegesQuery({
-    variables: {
-      spaceId: spaceId ?? '',
-    },
-    skip: !spaceId,
+  const { data: templateData } = useSpaceTemplatesSetIdQuery({
+    variables: { spaceNameId },
+    skip: !spaceNameId,
   });
-  const spacePrivileges = spaceData?.lookup.space?.authorization?.myPrivileges ?? [];
-  const canCreateTemplate = spacePrivileges?.includes(AuthorizationPrivilege.Update); // admin of the space
+
+  const templateSetPrivileges = templateData?.space.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
+  const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
 
   const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
   const handleSaveAsTemplate = async (values: CollaborationTemplateFormSubmittedValues) => {
