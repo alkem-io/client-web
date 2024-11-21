@@ -22,7 +22,7 @@ const HomePageLayout = ({ children }: PropsWithChildren<{}>) => {
       setTitle(t('pages.home.sections.welcome.welcome-back', { username: user?.firstName }));
       setSubTitle(t('pages.home.subtitle'));
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user]);
 
   return (
     <>
