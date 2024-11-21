@@ -136,14 +136,13 @@ const ImportTemplatesDialog = ({
           icon={<LibraryIcon />}
         />
         <DialogContent>
+          {subtitle && <Caption marginBottom={gutters()}>{subtitle}</Caption>}
           {canUseSpaceTemplates && (
             <ImportTemplatesDialogGallery
               templates={templates}
               onClickTemplate={template => setPreviewTemplate(template)}
               loading={loadingTemplates}
-            >
-              {subtitle && <Caption marginBottom={gutters()}>{subtitle}</Caption>}
-            </ImportTemplatesDialogGallery>
+            />
           )}
           {canUseSpaceTemplates && enablePlatformTemplates && !loadPlatformTemplates && (
             <Link
