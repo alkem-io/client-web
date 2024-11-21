@@ -2557,7 +2557,7 @@
       "buttons": {
         "reload": "Reload"
       },
-      "dynamicError": "network error or a newer version available. Please reload the page."
+      "dynamicError": "Network error occurred. Please try reloading the page."
     },
     "four-ou-four": {
       "title": "Something went wrong...",
