@@ -2557,6 +2557,10 @@
       "line3": "If the error persists please contact support.",
       "buttons": {
         "reload": "Reload"
+      },
+      "errors": {
+        "LazyLoadError": "Network error occurred. Please try reloading the page.",
+        "unknown": "An unknown error occurred. Please try reloading the page."
       }
     },
     "four-ou-four": {
