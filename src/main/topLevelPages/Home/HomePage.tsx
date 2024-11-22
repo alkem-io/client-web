@@ -4,9 +4,8 @@ import InnovationHubHomePage from '@/domain/innovationHub/InnovationHubHomePage/
 import Loading from '@/core/ui/loading/Loading';
 import useInnovationHub from '@/domain/innovationHub/useInnovationHub/useInnovationHub';
 import PageContent from '@/core/ui/content/PageContent';
-import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
-const MyDashboard = lazyWithGlobalErrorHandler(() => import('../myDashboard/MyDashboard'));
+const MyDashboard = React.lazy(() => import('../myDashboard/MyDashboard'));
 
 const HomePage = () => {
   const { innovationHub, innovationHubLoading } = useInnovationHub();

@@ -9,14 +9,10 @@ import ContentColumn from '@/core/ui/content/ContentColumn';
 import { useDashboardContext } from './DashboardContext';
 import MyResources from './myResources/MyResources';
 import { Theme, useMediaQuery } from '@mui/material';
-import { lazyWithGlobalErrorHandler } from '../../../core/lazyLoading/lazyWithGlobalErrorHandler';
-import Loading from '../../../core/ui/loading/Loading';
 
-const DashboardDialogs = lazyWithGlobalErrorHandler(() => import('./DashboardDialogs/DashboardDialogs'));
-const DashboardActivity = lazyWithGlobalErrorHandler(() => import('./DashboardWithMemberships/DashboardActivity'));
-const DashboardSpaces = lazyWithGlobalErrorHandler(
-  () => import('./DashboardWithMemberships/DashboardSpaces/DashboardSpaces')
-);
+const DashboardDialogs = React.lazy(() => import('./DashboardDialogs/DashboardDialogs'));
+const DashboardActivity = React.lazy(() => import('./DashboardWithMemberships/DashboardActivity'));
+const DashboardSpaces = React.lazy(() => import('./DashboardWithMemberships/DashboardSpaces/DashboardSpaces'));
 
 const MyDashboardWithMemberships = () => {
   const { activityEnabled } = useDashboardContext();
@@ -40,17 +36,17 @@ const MyDashboardWithMemberships = () => {
         {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />}
         <CampaignBlock />
         {!activityEnabled && (
-          <Suspense fallback={<Loading />}>
+          <Suspense fallback={null}>
             <DashboardSpaces />
           </Suspense>
         )}
         {activityEnabled && (
-          <Suspense fallback={<Loading />}>
+          <Suspense fallback={null}>
             <DashboardActivity />
           </Suspense>
         )}
       </ContentColumn>
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={null}>
         <DashboardDialogs />
       </Suspense>
     </PageContentColumn>
