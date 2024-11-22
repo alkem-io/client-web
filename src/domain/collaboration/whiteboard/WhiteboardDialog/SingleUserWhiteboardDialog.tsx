@@ -31,6 +31,12 @@ import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/use
 import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
 import { WhiteboardDetails } from './WhiteboardDialog';
 import { Identifiable } from '@/core/utils/Identifiable';
+import type { serializeAsJSON as ExcalidrawSerializeAsJSON } from '@alkemio/excalidraw';
+import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+
+type ExcalidrawUtils = {
+  serializeAsJSON: typeof ExcalidrawSerializeAsJSON;
+};
 
 export interface WhiteboardWithContent extends WhiteboardDetails {
   content: string;
@@ -116,8 +122,7 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
     if (!state) {
       return;
     }
-
-    const { serializeAsJSON } = await import('@alkemio/excalidraw');
+    const { serializeAsJSON } = await lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
 
     const { appState, elements, files } = await filesManager.convertLocalFilesToRemoteInWhiteboard(state);
 
@@ -153,7 +158,9 @@ const SingleUserWhiteboardDialog = ({ entities, actions, options, state }: Singl
 
   const onClose = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (excalidrawAPI && options.canEdit) {
-      const { serializeAsJSON } = await import('@alkemio/excalidraw');
+      const { serializeAsJSON } = await lazyImportWithErrorHandler<ExcalidrawUtils>(
+        () => import('@alkemio/excalidraw')
+      );
 
       const elements = excalidrawAPI.getSceneElements();
       const appState = excalidrawAPI.getAppState();
