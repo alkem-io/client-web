@@ -1,13 +1,11 @@
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Box, Button, Dialog, DialogContent } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, DialogTitle } from '@mui/material';
 import { useGlobalError } from './GlobalErrorContext';
-import DialogHeader from '../ui/dialog/DialogHeader';
-import { BlockTitle } from '../ui/typography';
 import { LazyLoadError } from './lazyWithGlobalErrorHandler';
 import TranslationKey from '../i18n/utils/TranslationKey';
 
-const ErrorTranslationMapppings = (error: Error): TranslationKey => {
+const ErrorTranslationMappings = (error: Error): TranslationKey => {
   if (error instanceof LazyLoadError) {
     return 'pages.error.errors.LazyLoadError';
   }
@@ -22,15 +20,15 @@ export const GlobalErrorDialog: React.FC = () => {
 
   return (
     <Dialog open={!!error} aria-labelledby="global-error-dialog" onClose={() => setError(null)}>
-      <DialogHeader onClose={() => setError(null)}>
-        <BlockTitle>{t('pages.error.title')}</BlockTitle>
-      </DialogHeader>
+      <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+        {t('pages.error.title')}
+      </DialogTitle>
       <DialogContent>
         <Box>
           <Trans
             i18nKey="pages.error.line1"
             values={{
-              message: t(ErrorTranslationMapppings(error)),
+              message: t(ErrorTranslationMappings(error)),
             }}
             components={{
               italic: <i />,
