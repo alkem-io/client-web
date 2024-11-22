@@ -17,7 +17,9 @@ import {
   addResponseMessage,
   addUserMessage,
   dropMessages,
+  markAllAsRead,
   renderCustomComponent,
+  setBadgeCount,
   toggleWidget,
   Widget,
 } from 'react-chat-widget';
@@ -237,7 +239,19 @@ const ChatWidget = () => {
       });
       const lastMessage = messages[messages.length - 1];
       if (lastMessage.author?.id && lastMessage.author.id !== userId) {
+        // If the last message has an author and is not myself print the feedback buttons
         renderCustomComponent(Feedback, { answerId: lastMessage.id });
+        // And if the message is new, mark it as unread
+        if (lastMessage.createdAt > new Date(chatToggleTime)) {
+          setBadgeCount(1);
+        } else {
+          markAllAsRead();
+        }
+      } else if (messages.length === 1) {
+        // Always mark as unread the intro message
+        setBadgeCount(1);
+      } else {
+        markAllAsRead();
       }
     }
     if (loading) {

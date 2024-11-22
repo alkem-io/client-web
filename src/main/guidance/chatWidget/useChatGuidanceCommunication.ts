@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   AskChatGuidanceQuestionMutationOptions,
   useAskChatGuidanceQuestionMutation,
@@ -23,27 +23,20 @@ interface Provided {
 
 const useChatGuidanceCommunication = (): Provided => {
   const { t, i18n } = useTranslation();
+
   const [createGuidanceRoom] = useCreateGuidanceRoomMutation();
   const [resetChatGuidance] = useResetChatGuidanceMutation();
 
-  const [roomId, setRoomId] = useState<string | undefined>(undefined);
+  const [sendingFirstMessage, setSendingFirstMessage] = useState<boolean>(false);
 
-  const { data: roomIdData, loading: roomIdLoading } = useGuidanceRoomIdQuery({});
-  useEffect(() => {
-    if (roomId !== roomIdData?.me.user?.guidanceRoom?.id) {
-      setRoomId(roomIdData?.me.user?.guidanceRoom?.id);
-    }
-  }, [roomIdData]);
+  const { data: roomIdData, loading: roomIdLoading, refetch: refetchGuidanceRoomId } = useGuidanceRoomIdQuery();
+  const roomId = roomIdData?.me.user?.guidanceRoom?.id;
 
-  const {
-    data: messagesData,
-    loading: messagesLoading,
-    refetch: refetchMessages,
-  } = useGuidanceRoomMessagesQuery({
+  const { data: messagesData, loading: messagesLoading } = useGuidanceRoomMessagesQuery({
     variables: {
       roomId: roomId!,
     },
-    skip: !roomId,
+    skip: !roomId || sendingFirstMessage,
   });
 
   const messages: Message[] = useMemo(() => {
@@ -67,14 +60,11 @@ const useChatGuidanceCommunication = (): Provided => {
           reactions: message.reactions,
         })),
       ];
-    } else if (roomIdLoading || messagesLoading) {
-      // Return an empty array to avoid showing the intro message while loading
-      return [];
     } else {
       // No messages or just no room at all => Return just one message with the intro text
       return [introMessage];
     }
-  }, [messagesData?.lookup.room?.messages, roomId, roomIdLoading, messagesLoading]);
+  }, [messagesData?.lookup.room?.messages, roomId, sendingFirstMessage, roomIdLoading, messagesLoading]);
 
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId, !roomId);
 
@@ -93,28 +83,20 @@ const useChatGuidanceCommunication = (): Provided => {
 
   const handleSendMessage = async (message: string): Promise<void> => {
     if (!roomId) {
-      const { data } = await createGuidanceRoom({
-        refetchQueries: ['GuidanceRoomId'],
+      setSendingFirstMessage(true);
+      await createGuidanceRoom({
+        refetchQueries: ['GuidanceRoomId', 'GuidanceRoomMessages'],
       });
-      const newRoomId = data?.createChatGuidanceRoom?.id;
-      if (newRoomId) {
-        await askQuestion(message);
-        setRoomId(newRoomId);
-        await refetchMessages({
-          roomId: newRoomId,
-        });
-      }
+      await askQuestion(message);
+      setSendingFirstMessage(false);
     } else {
       await askQuestion(message, ['GuidanceRoomMessages']);
     }
   };
 
   const [clearChat, loadingClearChat] = useLoadingState(async () => {
-    setRoomId(undefined);
-    await resetChatGuidance({
-      refetchQueries: ['GuidanceRoomId'],
-      awaitRefetchQueries: true,
-    });
+    await resetChatGuidance();
+    await refetchGuidanceRoomId();
   });
 
   return {
