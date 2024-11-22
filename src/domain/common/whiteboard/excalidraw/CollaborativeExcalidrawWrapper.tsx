@@ -27,12 +27,11 @@ import { useTick } from '@/core/utils/time/tick';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
 import Loading from '@/core/ui/loading/Loading';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
 const FILE_IMPORT_ENABLED = true;
 const SAVE_FILE_TO_DISK = true;
 
-const Excalidraw = lazyWithGlobalErrorHandler(async () => {
+const Excalidraw = React.lazy(async () => {
   const { Excalidraw } = await import('@alkemio/excalidraw');
   await import('@alkemio/excalidraw/index.css');
   return { default: Excalidraw };
