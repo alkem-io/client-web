@@ -1,6 +1,5 @@
 import { PropsWithChildren } from 'react';
 
-import { isNumber } from 'lodash';
 import { Box, Typography } from '@mui/material';
 
 const EllipsableWithCount = ({ count, children }: PropsWithChildren<{ count: number }>) => (
@@ -10,7 +9,7 @@ const EllipsableWithCount = ({ count, children }: PropsWithChildren<{ count: num
     </Typography>
 
     <Box component="span" flexShrink={0}>
-      {isNumber(count) && count > 0 && `(${count})`}
+      {count > 0 && `(${count})`}
     </Box>
   </Box>
 );
