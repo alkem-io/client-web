@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import { MessageWithPayload } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
+import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { SMALL_TEXT_LENGTH } from '../field-length.constants';
 
 export const displayNameValidator = yup

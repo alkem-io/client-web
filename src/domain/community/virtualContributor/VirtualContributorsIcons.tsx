@@ -1,5 +1,3 @@
-import React from 'react';
-
 const VCIcon = ({ fill = '#1C1B1F', ...props }) => (
   <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <mask id="mask0_1_7custom1" maskUnits="userSpaceOnUse" x="0" y="0" width="25" height="25">

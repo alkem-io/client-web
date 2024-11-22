@@ -1,16 +1,16 @@
 import { Trans } from 'react-i18next';
 import { DialogContent } from '@mui/material';
 
-import Gutters from '../../../../core/ui/grid/Gutters';
-import { Caption } from '../../../../core/ui/typography';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import Gutters from '@/core/ui/grid/Gutters';
+import { Caption } from '@/core/ui/typography';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 
-import Loading from '../../../../core/ui/loading/Loading';
+import Loading from '@/core/ui/loading/Loading';
 import { ExpandableSpaceTree } from './ExpandableSpaceTree';
-import RouterLink from '../../../../core/ui/link/RouterLink';
+import RouterLink from '@/core/ui/link/RouterLink';
 
-import { gutters } from '../../../../core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { type MyMembershipsDialogProps } from './MyMembershipsDialog.model';
 import { useCreateSpaceLink } from '../useCreateSpaceLink/useCreateSpaceLink';
 

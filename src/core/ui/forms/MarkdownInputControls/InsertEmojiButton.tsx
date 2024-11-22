@@ -1,8 +1,8 @@
 import { IconButton, IconButtonProps } from '@mui/material';
 import { Editor } from '@tiptap/react';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { EmojiEmotionsOutlined } from '@mui/icons-material';
-import { useNotification } from '../../notifications/useNotification';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import EmojiSelector from '../emoji/EmojiSelector';
 import { useTranslation } from 'react-i18next';
 

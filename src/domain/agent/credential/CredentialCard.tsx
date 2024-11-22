@@ -1,9 +1,9 @@
 import { Box, CardContent, Skeleton } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { FC } from 'react';
-import LinkCard from '../../../core/ui/card/LinkCard';
-import WrapperTypography from '../../../core/ui/typography/deprecated/WrapperTypography';
+import { PropsWithChildren } from 'react';
+import LinkCard from '@/core/ui/card/LinkCard';
+import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
 
 export interface CredentialCardEntities {
   name: string;
@@ -76,7 +76,7 @@ const claimParser = claims => {
   );
 };
 
-const CredentialCard: FC<CredentialCardProps> = ({ entities: details, loading = false, children }) => {
+const CredentialCard = ({ entities: details, loading = false, children }: PropsWithChildren<CredentialCardProps>) => {
   const { claims, description, issued, expires, issuer, name } = details || {};
 
   const url = issuerURLResolver(issuer);

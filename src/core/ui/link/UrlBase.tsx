@@ -1,10 +1,6 @@
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react';
 
-interface UrlBase {
-  base: string;
-}
-
-const UrlBaseContext = createContext<UrlBase | undefined>(undefined);
+const UrlBaseContext = createContext<{ base: string } | undefined>(undefined);
 
 export const UrlBaseProvider = ({ url, children }: PropsWithChildren<{ url: string | undefined }>) => {
   const urlBase = useMemo(() => (url ? { base: url } : undefined), [url]);

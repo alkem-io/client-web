@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { RoleDefinitionPolicyFragment } from '../../../../core/apollo/generated/graphql-schema';
+import { RoleDefinitionPolicyFragment } from '@/core/apollo/generated/graphql-schema';
 
 const useCommunityPolicyChecker = (
   memberRoleDefinition: RoleDefinitionPolicyFragment | undefined,

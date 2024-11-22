@@ -1,15 +1,15 @@
-import React, { FC, useCallback } from 'react';
-import { ListPage } from '../../components/ListPage';
-import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import { useDeleteGroupMutation, useOrganizationGroupsQuery } from '../../../../../core/apollo/generated/apollo-hooks';
-import { SearchableTableItem } from '../../components/SearchableTable';
-import removeFromCache from '../../../../../core/apollo/utils/removeFromCache';
+import { useCallback } from 'react';
+import { ListPage } from '@/domain/platform/admin/components/ListPage';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { useUrlParams } from '@/core/routing/useUrlParams';
+import { useDeleteGroupMutation, useOrganizationGroupsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { SearchableTableItem } from '@/domain/platform/admin/components/SearchableTable';
+import removeFromCache from '@/core/apollo/utils/removeFromCache';
 import { useResolvedPath } from 'react-router-dom';
-import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
+import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
 
-export const OrganizationGroupsView: FC = () => {
+export const OrganizationGroupsView = () => {
   const { t } = useTranslation();
   const notify = useNotification();
   const notifySuccess = () => notify('Group deleted successfully!', 'success');

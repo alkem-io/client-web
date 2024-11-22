@@ -1,6 +1,6 @@
 import { Box, Checkbox, FormControlLabel, FormControlLabelProps } from '@mui/material';
-import { useConfig } from '../../../../domain/platform/config/useConfig';
-import translateWithElements from '../../../../domain/shared/i18n/TranslateWithElements/TranslateWithElements';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
 
 export interface AcceptTermsCheckboxProps
   extends Omit<FormControlLabelProps, 'value' | 'control' | 'label' | 'onChange'> {

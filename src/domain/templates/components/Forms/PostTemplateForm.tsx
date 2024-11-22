@@ -2,11 +2,11 @@ import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FormikProps } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
-import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import { PostTemplate } from '../../models/PostTemplate';
-import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
-import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { PostTemplate } from '@/domain/templates/models/PostTemplate';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { mapTemplateProfileToUpdateProfile } from './common/mappings';
 
 export interface PostTemplateFormSubmittedValues extends TemplateFormProfileSubmittedValues {

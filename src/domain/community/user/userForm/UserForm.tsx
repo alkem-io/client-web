@@ -1,30 +1,30 @@
 import { Box, Button, IconButton, Theme, useMediaQuery } from '@mui/material';
 import { Formik } from 'formik';
-import React, { FC, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { EditMode } from '../../../../core/ui/forms/editMode';
-import { SocialNetworkEnum } from '../../../shared/components/SocialLinks/models/SocialNetworks';
-import { Visual } from '../../../../core/apollo/generated/graphql-schema';
-import { Reference } from '../../../common/profile/Profile';
+import { EditMode } from '@/core/ui/forms/editMode';
+import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
+import { Visual } from '@/core/apollo/generated/graphql-schema';
+import { Reference } from '@/domain/common/profile/Profile';
 import { defaultUser, UserFormGenerated, UserModel } from '../models/User';
-import ProfileReferenceSegment from '../../../platform/admin/components/Common/ProfileReferenceSegment';
-import { referenceSegmentValidationObject } from '../../../platform/admin/components/Common/ReferenceSegment';
-import SocialSegment from '../../../platform/admin/components/Common/SocialSegment';
-import { TagsetSegment, tagsetsSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
-import VisualUpload from '../../../../core/ui/upload/VisualUpload/VisualUpload';
-import { FormikInputField } from '../../../../core/ui/forms/FormikInputField/FormikInputField';
+import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
+import { referenceSegmentValidationObject } from '@/domain/platform/admin/components/Common/ReferenceSegment';
+import SocialSegment from '@/domain/platform/admin/components/Common/SocialSegment';
+import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
+import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
+import { FormikInputField } from '@/core/ui/forms/FormikInputField/FormikInputField';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
-import { COUNTRIES } from '../../../common/location/countries.constants';
-import { LocationSegment } from '../../../common/location/LocationSegment';
-import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import { ALT_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import GridItem from '../../../../core/ui/grid/GridItem';
+import { COUNTRIES } from '@/domain/common/location/countries.constants';
+import { LocationSegment } from '@/domain/common/location/LocationSegment';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import { ALT_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import Gutters from '@/core/ui/grid/Gutters';
+import GridItem from '@/core/ui/grid/GridItem';
 import { LoadingButton } from '@mui/lab';
-import GridProvider from '../../../../core/ui/grid/GridProvider';
-import GridContainer from '../../../../core/ui/grid/GridContainer';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import GridContainer from '@/core/ui/grid/GridContainer';
 
 const socialNames = [
   SocialNetworkEnum.github.toString(),
@@ -40,7 +40,7 @@ const referenceSegmentWithSocialSchema = yup.array().of(
   })
 );
 
-interface UserProps {
+type UserProps = {
   user?: UserModel;
   avatar?: Visual;
   editMode?: EditMode;
@@ -48,16 +48,16 @@ interface UserProps {
   onDelete?: (userId: string) => void;
   onVerify?: (type: string) => Promise<void>;
   title?: string;
-}
+};
 
-export const UserForm: FC<UserProps> = ({
+export const UserForm = ({
   user: currentUser = defaultUser,
   avatar,
   editMode = EditMode.readOnly,
   onSave,
   onDelete,
   onVerify,
-}) => {
+}: UserProps) => {
   const { t } = useTranslation();
   const isEditMode = editMode === EditMode.edit || editMode === EditMode.new;
   const isReadOnlyMode = editMode === EditMode.readOnly;

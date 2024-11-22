@@ -1,37 +1,37 @@
-import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
-import Loading from '../../../../core/ui/loading/Loading';
-import { DialogContent } from '../../../../core/ui/dialog/deprecated';
-import CollaborativeExcalidrawWrapper from '../../../common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
+import Loading from '@/core/ui/loading/Loading';
+import { DialogContent } from '@/core/ui/dialog/deprecated';
+import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import whiteboardSchema from '../validation/whiteboardSchema';
-import { WhiteboardTemplateContent } from '../../../templates/models/WhiteboardTemplate';
+import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
 import mergeWhiteboard from '../utils/mergeWhiteboard';
-import { error as logError, TagCategoryValues } from '../../../../core/logging/sentry/log';
-import { useNotification } from '../../../../core/ui/notifications/useNotification';
+import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   generateWhiteboardPreviewImages,
   PreviewImageDimensions,
   WhiteboardPreviewImage,
 } from '../WhiteboardPreviewImages/WhiteboardPreviewImages';
-import { CollabAPI } from '../../../common/whiteboard/excalidraw/collab/useCollab';
-import useWhiteboardFilesManager from '../../../common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import { CollabAPI } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
+import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import WhiteboardDialogFooter from './WhiteboardDialogFooter';
 import { useLocation } from 'react-router-dom';
 import WhiteboardDisplayName from './WhiteboardDisplayName';
-import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
-import useLoadingState from '../../../shared/utils/useLoadingState';
-import { useGlobalGridColumns } from '../../../../core/ui/grid/constants';
-import WhiteboardDialogTemplatesLibrary from '../../../templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
-import { useWhiteboardLastUpdatedDateQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { ContentUpdatePolicy } from '../../../../core/apollo/generated/graphql-schema';
-import { Identifiable } from '../../../../core/utils/Identifiable';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { useGlobalGridColumns } from '@/core/ui/grid/constants';
+import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
+import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apollo-hooks';
+import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 export interface WhiteboardDetails {
   id: string;

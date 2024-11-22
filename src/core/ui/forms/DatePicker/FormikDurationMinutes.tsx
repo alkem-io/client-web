@@ -1,11 +1,11 @@
-import React, { useLayoutEffect, useMemo, useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useField } from 'formik';
 import { FormikInputProps } from '../FormikInputProps';
-import { addMinutes } from '../../../utils/time/utils';
+import { addMinutes } from '@/core/utils/time/utils';
 import AlkemioTimePicker, { AlkemioTimePickerProps } from './AlkemioTimePicker';
 import dayjs from 'dayjs';
-import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
-import TranslationKey from '../../../i18n/utils/TranslationKey';
+import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 interface FormikTimePickerProps extends FormikInputProps, Omit<AlkemioTimePickerProps, 'value' | 'onChange'> {
   startTimeFieldName: string;

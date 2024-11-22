@@ -1,6 +1,5 @@
-import React, { FC } from 'react';
 import { ApplicationButtonProps } from '../applicationButton/ApplicationButton';
-import { useUserContext } from '../../user';
+import { useUserContext } from '@/domain/community/user';
 import {
   useCommunityUserPrivilegesQuery,
   useJoinRoleSetMutation,
@@ -8,14 +7,15 @@ import {
   useSubspacePageLazyQuery,
   useUserPendingMembershipsQuery,
   useUserProfileLazyQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { ContainerChildProps } from '../../../../core/container/container';
-import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
-import clearCacheForType from '../../../../core/apollo/utils/clearCacheForType';
-import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
-import { useNotification } from '../../../../core/ui/notifications/useNotification';
+} from '@/core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '@/core/container/container';
+import { AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
+import clearCacheForType from '@/core/apollo/utils/clearCacheForType';
+import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useTranslation } from 'react-i18next';
-import useCanReadSpace from '../../../journey/common/authorization/useCanReadSpace';
+import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
+import { PropsWithChildren } from 'react';
 
 interface ApplicationContainerEntities {
   applicationButtonProps: Omit<ApplicationButtonProps, 'journeyId' | 'spaceLevel'>;
@@ -27,25 +27,21 @@ interface ApplicationContainerState {
   loading: boolean;
 }
 
-interface JoinParams {
-  communityId: string;
-}
-
 export interface ApplicationButtonContainerProps
   extends ContainerChildProps<ApplicationContainerEntities, ApplicationContainerActions, ApplicationContainerState> {
   parentSpaceId?: string;
   journeyId?: string;
   loading?: boolean;
-  onJoin?: (params: JoinParams) => void;
+  onJoin?: (params: { communityId: string }) => void;
 }
 
-export const ApplicationButtonContainer: FC<ApplicationButtonContainerProps> = ({
+export const ApplicationButtonContainer = ({
   parentSpaceId,
   journeyId,
   loading: loadingParams = false,
   onJoin,
   children,
-}) => {
+}: PropsWithChildren<ApplicationButtonContainerProps>) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { isAuthenticated } = useAuthenticationContext();

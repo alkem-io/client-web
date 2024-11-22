@@ -1,8 +1,8 @@
 import { Box, Card, CardContent, CardHeader, Typography } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { FC, forwardRef } from 'react';
-import HelpButton from '../../../core/ui/button/HelpButton';
+import { PropsWithChildren, forwardRef } from 'react';
+import HelpButton from '@/core/ui/button/HelpButton';
 
 export interface ProfileCardProps {
   title: string;
@@ -25,8 +25,8 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-export const CredentialProfileCard: FC<ProfileCardProps> = forwardRef<HTMLDivElement | null, ProfileCardProps>(
-  ({ title, subtitle, helpText, children }, ref) => {
+export const CredentialProfileCard = forwardRef<HTMLDivElement | null, ProfileCardProps>(
+  ({ title, subtitle, helpText, children }: PropsWithChildren<ProfileCardProps>, ref) => {
     const styles = useStyles();
 
     return (

@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { useColumns } from '../grid/GridContext';
 import { BoxProps } from '@mui/material';
 import PageContentColumn from './PageContentColumn';

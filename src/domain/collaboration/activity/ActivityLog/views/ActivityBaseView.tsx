@@ -1,16 +1,16 @@
-import React, { FC, ReactNode } from 'react';
+import React, { PropsWithChildren, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Badge, ListItemButtonProps, Paper } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 import ListItemButton, { ListItemButtonTypeMap } from '@mui/material/ListItemButton/ListItemButton';
-import { Caption } from '../../../../../core/ui/typography';
-import BadgeCardView from '../../../../../core/ui/list/BadgeCardView';
-import RouterLink, { RouterLinkProps } from '../../../../../core/ui/link/RouterLink';
-import { gutters } from '../../../../../core/ui/grid/utils';
-import Avatar from '../../../../../core/ui/avatar/Avatar';
-import SwapColors from '../../../../../core/ui/palette/SwapColors';
-import Gutters from '../../../../../core/ui/grid/Gutters';
-import { formatTimeElapsed } from '../../../../shared/utils/formatTimeElapsed';
+import { Caption } from '@/core/ui/typography';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
+import { gutters } from '@/core/ui/grid/utils';
+import Avatar from '@/core/ui/avatar/Avatar';
+import SwapColors from '@/core/ui/palette/SwapColors';
+import Gutters from '@/core/ui/grid/Gutters';
+import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import getActivityIcon, { Activity } from './ActivityIcon';
 import ActivityViewFooter from './ActivityViewFooter';
 
@@ -27,7 +27,7 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
   props: ListItemButtonProps<D, P> & RouterLinkProps
 ) => <ListItemButton component={RouterLink} {...props} />;
 
-export const ActivityBaseView: FC<ActivityBaseViewProps & (Activity | { type: undefined })> = ({
+export const ActivityBaseView = ({
   avatarUrl,
   title,
   loading,
@@ -36,7 +36,7 @@ export const ActivityBaseView: FC<ActivityBaseViewProps & (Activity | { type: un
   createdDate,
   contextDisplayName,
   ...activity
-}) => {
+}: PropsWithChildren<ActivityBaseViewProps & (Activity | { type: undefined })>) => {
   const ActivityIcon = activity.type && getActivityIcon(activity);
   const { t } = useTranslation();
 

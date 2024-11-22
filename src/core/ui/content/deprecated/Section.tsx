@@ -3,12 +3,12 @@ import Grid, { GridSize } from '@mui/material/Grid';
 import { Breakpoints, Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
-import React, { FC } from 'react';
-import { functor } from '../../../utils/functor';
-import Tag from '../../tags/deprecated/Tag';
-import WrapperTypography from '../../typography/deprecated/WrapperTypography';
+import React, { PropsWithChildren } from 'react';
+import { functor } from '@/core/utils/functor';
+import Tag from '@/core/ui/tags/deprecated/Tag';
+import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
 
-interface HeaderProps {
+type HeaderProps = {
   text?: string;
   svg?: React.ReactNode;
   icon?: React.ReactNode;
@@ -16,7 +16,7 @@ interface HeaderProps {
   className?: string;
   classes?: ClassProps;
   editComponent?: React.ReactNode;
-}
+};
 
 const useHeaderStyles = makeStyles<Theme, ClassProps>(theme => ({
   container: {
@@ -34,7 +34,7 @@ const useHeaderStyles = makeStyles<Theme, ClassProps>(theme => ({
   },
 }));
 
-export const Header: FC<HeaderProps> = ({
+export const Header = ({
   text,
   svg,
   icon,
@@ -43,7 +43,7 @@ export const Header: FC<HeaderProps> = ({
   classes = {},
   editComponent,
   children,
-}) => {
+}: PropsWithChildren<HeaderProps>) => {
   const styles = useHeaderStyles(classes);
 
   return (
@@ -100,7 +100,11 @@ const useContentStyles = makeStyles(theme => ({
   },
 }));
 
-const Content: FC<{ gutters?: boolean; classes?: ClassProps }> = ({ children, classes, gutters = true }) => {
+const Content = ({
+  children,
+  classes,
+  gutters = true,
+}: PropsWithChildren<{ gutters?: boolean; classes?: ClassProps }>) => {
   const styles = useContentStyles(classes || {});
 
   return <div className={clsx(gutters && styles.gutters, styles.content)}>{children}</div>;
@@ -112,7 +116,7 @@ interface ClassProps {
   color?: string | ((theme: Theme, media: Partial<Record<keyof Breakpoints, boolean>>) => string);
 }
 
-interface SectionProps {
+type SectionProps = {
   className?: string;
   avatar?: React.ReactNode;
   details?: React.ReactNode;
@@ -125,7 +129,7 @@ interface SectionProps {
     avatar?: boolean;
   };
   classes?: SectionClassProps;
-}
+};
 
 interface SectionClassProps extends ClassProps {
   coverBackground?: string | ((theme: Theme, media: Partial<Record<keyof Breakpoints, boolean>>) => string);
@@ -168,7 +172,7 @@ const useSectionStyles = makeStyles<Theme, SectionClassProps>(theme => ({
 /**
  * @deprecated
  */
-const Section: FC<SectionProps> = ({
+const Section = ({
   className,
   classes = {},
   children,
@@ -182,7 +186,7 @@ const Section: FC<SectionProps> = ({
     details: true,
     avatar: true,
   },
-}) => {
+}: PropsWithChildren<SectionProps>) => {
   const styles = useSectionStyles(classes);
 
   return (

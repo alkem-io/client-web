@@ -1,8 +1,8 @@
-import React, { FC, useState } from 'react';
+import { useState } from 'react';
 import { Box, BoxProps, Fade } from '@mui/material';
 import useImageErrorHandler from './useImageErrorHandler';
 
-export const ImageFadeIn: FC<BoxProps<'img'>> = ({ onLoad, onError, ...props }) => {
+export const ImageFadeIn = ({ onLoad, onError, ...props }: BoxProps<'img'>) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const reportImageError = useImageErrorHandler();
 

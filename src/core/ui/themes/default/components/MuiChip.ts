@@ -1,5 +1,5 @@
 import { Components, Theme } from '@mui/material/styles';
-import { themeTypographyOptions } from '../../../typography/themeTypographyOptions';
+import { themeTypographyOptions } from '@/core/ui/typography/themeTypographyOptions';
 
 const MuiChip: Components<Theme>['MuiChip'] = {
   styleOverrides: {

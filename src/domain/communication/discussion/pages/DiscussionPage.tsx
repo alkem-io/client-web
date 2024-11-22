@@ -1,8 +1,8 @@
-import React, { FC, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DiscussionsLayout from '../layout/DiscussionsLayout';
-import RemoveModal from '../../../../core/ui/dialogs/RemoveModal';
-import { useUserContext } from '../../../community/user';
+import RemoveModal from '@/core/ui/dialogs/RemoveModal';
+import { useUserContext } from '@/domain/community/user';
 import DiscussionView from '../views/DiscussionView';
 import {
   refetchPlatformDiscussionQuery,
@@ -10,30 +10,26 @@ import {
   useDeleteDiscussionMutation,
   usePlatformDiscussionQuery,
   useRemoveMessageOnRoomMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import { Discussion } from '../models/Discussion';
 import { compact } from 'lodash';
-import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
-import { Message } from '../../room/models/Message';
+import { useAuthorsDetails } from '@/domain/communication/communication/useAuthorsDetails';
+import { Message } from '@/domain/communication/room/models/Message';
 import { Skeleton } from '@mui/material';
-import TopLevelPageLayout from '../../../../main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
-import RouterLink from '../../../../core/ui/link/RouterLink';
-import BackButton from '../../../../core/ui/actions/BackButton';
+import TopLevelPageLayout from '@/main/ui/layout/topLevelPageLayout/TopLevelPageLayout';
+import RouterLink from '@/core/ui/link/RouterLink';
+import BackButton from '@/core/ui/actions/BackButton';
 import { useLocation } from 'react-router-dom';
-import usePostMessageMutations from '../../room/Comments/usePostMessageMutations';
-import useSubscribeOnRoomEvents from '../../../collaboration/callout/useSubscribeOnRoomEvents';
+import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
+import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 import { ForumOutlined } from '@mui/icons-material';
-import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
-import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
+import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import UpdateDiscussionDialog from '../views/UpdateDiscussionDialog';
-import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import useNavigate from '../../../../core/routing/useNavigate';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import useNavigate from '@/core/routing/useNavigate';
 
-interface DiscussionPageProps {
-  discussionNameId: string;
-}
-
-export const DiscussionPage: FC<DiscussionPageProps> = ({ discussionNameId }) => {
+export const DiscussionPage = ({ discussionNameId }: { discussionNameId: string }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useUserContext();

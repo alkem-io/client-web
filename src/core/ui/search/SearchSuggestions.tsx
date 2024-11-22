@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import Box from '@mui/material/Box';
-import { gutters } from '../../../core/ui/grid/utils';
-import { Caption } from '../../../core/ui/typography';
+import { gutters } from '@/core/ui/grid/utils';
+import { Caption } from '@/core/ui/typography';
 import { Chip } from '@mui/material';
 import { differenceBy } from 'lodash';
 

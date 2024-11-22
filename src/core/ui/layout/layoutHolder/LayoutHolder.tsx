@@ -11,15 +11,15 @@ import React, {
   useState,
 } from 'react';
 
-interface LayoutState<P> {
+type LayoutState<P> = {
   component: ComponentType<P>;
   props: P;
-}
+};
 
-interface LayoutContext {
+type LayoutContext = {
   layout: LayoutState<Record<string, unknown>> | undefined;
   setLayout: Dispatch<SetStateAction<LayoutState<Record<string, unknown>> | undefined>>;
-}
+};
 
 const createLayoutHolder = () => {
   const LayoutContext = createContext<LayoutContext>({

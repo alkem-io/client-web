@@ -17,9 +17,9 @@ import { CharacterCountContainer, useSetCharacterCount } from './CharacterCountC
 import MarkdownInputControls from '../MarkdownInputControls/MarkdownInputControls';
 import { Image } from '@tiptap/extension-image';
 import { Link } from '@tiptap/extension-link';
-import usePersistentValue from '../../../utils/usePersistentValue';
-import UnifiedConverter from '../../markdown/html/UnifiedConverter';
-import { gutters } from '../../grid/utils';
+import usePersistentValue from '@/core/utils/usePersistentValue';
+import UnifiedConverter from '@/core/ui/markdown/html/UnifiedConverter';
+import { gutters } from '@/core/ui/grid/utils';
 import { EditorState } from '@tiptap/pm/state';
 import { Highlight } from '@tiptap/extension-highlight';
 import { Selection } from 'prosemirror-state';
@@ -32,10 +32,10 @@ interface MarkdownInputProps extends InputBaseComponentProps {
   temporaryLocation?: boolean;
 }
 
-interface Offset {
+type Offset = {
   x: string;
   y: string;
-}
+};
 
 export interface MarkdownInputRefApi {
   focus: () => void;

@@ -1,13 +1,13 @@
-import PageContent from '../../core/ui/content/PageContent';
-import PageContentColumn from '../../core/ui/content/PageContentColumn';
-import PageContentBlock from '../../core/ui/content/PageContentBlock';
-import { GUTTER_MUI } from '../../core/ui/grid/constants';
-import { BlockTitle, PageTitle, Text } from '../../core/ui/typography';
-import DashboardNavigation from '../../domain/journey/dashboardNavigation/DashboardNavigation';
-import { DashboardNavigationItem } from '../../domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { GUTTER_MUI } from '@/core/ui/grid/constants';
+import { BlockTitle, PageTitle, Text } from '@/core/ui/typography';
+import DashboardNavigation from '@/domain/journey/dashboardNavigation/DashboardNavigation';
+import { DashboardNavigationItem } from '@/domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { MouseEventHandler, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import Gutters from '../../core/ui/grid/Gutters';
+import Gutters from '@/core/ui/grid/Gutters';
 
 const loremIpsum =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';

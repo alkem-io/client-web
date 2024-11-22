@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import { makeStyles } from '@mui/styles';
 
 const useIconStyles = makeStyles(theme => ({
@@ -15,9 +15,7 @@ const useIconStyles = makeStyles(theme => ({
   },
 }));
 
-export interface TagContainerProps {}
-
-const UserPopUpTagContainer: React.FC<TagContainerProps> = ({ children }): JSX.Element | null => {
+const UserPopUpTagContainer: FC = ({ children }): JSX.Element | null => {
   const styles = useIconStyles();
 
   return <div className={styles.root}>{children}</div>;

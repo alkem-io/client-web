@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
+import { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import TemplatesGallery from '../TemplatesGallery/TemplatesGallery';
 import {
   useAllTemplatesInTemplatesSetQuery,
@@ -9,16 +9,16 @@ import {
   useUpdateCalloutTemplateMutation,
   useUpdateCommunityGuidelinesMutation,
   useUpdateTemplateMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
+} from '@/core/apollo/generated/apollo-hooks';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
 import { useTranslation } from 'react-i18next';
 import EditTemplateDialog from '../Dialogs/CreateEditTemplateDialog/EditTemplateDialog';
-import { AnyTemplate } from '../../models/TemplateBase';
-import useLoadingState from '../../../shared/utils/useLoadingState';
-import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
+import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { AnyTemplateFormSubmittedValues } from '../Forms/TemplateForm';
-import useBackToPath from '../../../../core/routing/useBackToPath';
-import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
+import useBackToPath from '@/core/routing/useBackToPath';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { Button, ButtonProps } from '@mui/material';
 import CreateTemplateDialog from '../Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import {
@@ -27,20 +27,20 @@ import {
   toUpdateTemplateMutationVariables,
 } from '../Forms/common/mappings';
 import { WhiteboardTemplateFormSubmittedValues } from '../Forms/WhiteboardTemplateForm';
-import { useUploadWhiteboardVisuals } from '../../../collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { useUploadWhiteboardVisuals } from '@/domain/collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import PreviewTemplateDialog from '../Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
-import { LibraryIcon } from '../../LibraryIcon';
+import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import ImportTemplatesDialog, { ImportTemplatesOptions } from '../Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LoadingButton } from '@mui/lab';
-import useBackToParentPage from '../../../../core/routing/deprecated/useBackToParentPage';
+import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
 import { CollaborationTemplateFormSubmittedValues } from '../Forms/CollaborationTemplateForm';
-import { CollaborationTemplate } from '../../models/CollaborationTemplate';
+import { CollaborationTemplate } from '@/domain/templates/models/CollaborationTemplate';
 
 type TemplatePermissionCallback = (templateType: TemplateType) => boolean;
 const defaultPermissionDenied: TemplatePermissionCallback = () => false;
 
-interface TemplatesAdminProps {
+type TemplatesAdminProps = {
   templatesSetId: string;
   templateId?: string; // Template selected, if any
   alwaysEditTemplate?: boolean; // If true, the selected template is editable, if false preview dialog is shown
@@ -50,7 +50,7 @@ interface TemplatesAdminProps {
   canDeleteTemplates?: TemplatePermissionCallback;
   canImportTemplates?: TemplatePermissionCallback;
   importTemplateOptions?: ImportTemplatesOptions;
-}
+};
 
 const CreateTemplateButton = (props: ButtonProps) => {
   const { t } = useTranslation();
@@ -70,7 +70,7 @@ const ImportTemplateButton = (props: ButtonProps) => {
   return <Button {...defaults} {...props} />;
 };
 
-const TemplatesAdmin: FC<TemplatesAdminProps> = ({
+const TemplatesAdmin = ({
   templatesSetId,
   templateId,
   alwaysEditTemplate = false,
@@ -80,7 +80,7 @@ const TemplatesAdmin: FC<TemplatesAdminProps> = ({
   canCreateTemplates = defaultPermissionDenied,
   canEditTemplates = defaultPermissionDenied,
   canDeleteTemplates = defaultPermissionDenied,
-}) => {
+}: PropsWithChildren<TemplatesAdminProps>) => {
   const { t } = useTranslation();
   const backToTemplates = useBackToPath();
 

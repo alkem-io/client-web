@@ -1,4 +1,4 @@
-import React, { ElementType } from 'react';
+import { ElementType } from 'react';
 import { ReactMarkdownProps } from 'react-markdown/lib/complex-types';
 import { Box } from '@mui/material';
 import { useMarkdownOptions } from '../MarkdownOptionsContext';

@@ -1,7 +1,7 @@
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import SpaceTemplatesAdminPage from './SpaceTemplatesAdminPage';
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
-import { nameOfUrl } from '../../../../main/routing/urlParams';
+import { nameOfUrl } from '@/main/routing/urlParams';
 
 interface SpaceTemplatesAdminRoutesProps extends SettingsPageProps {
   spaceId: string;

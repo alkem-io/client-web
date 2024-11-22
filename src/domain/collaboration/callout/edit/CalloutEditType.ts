@@ -1,5 +1,5 @@
-import { Callout, CalloutGroupName } from '../../../../core/apollo/generated/graphql-schema';
-import { Reference, Tagset } from '../../../common/profile/Profile';
+import { Callout, CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
+import { Reference, Tagset } from '@/domain/common/profile/Profile';
 import { CalloutFormInput } from '../CalloutForm';
 
 export type CalloutEditType = Omit<CalloutFormInput, 'type' | 'sortOrder'> & {

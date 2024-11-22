@@ -1,10 +1,10 @@
 import React, { Children, PropsWithChildren } from 'react';
 import { isDialogDef } from './DialogDefinition';
-import unwrapFragment from '../../../../core/ui/utils/unwrapFragment';
-import ButtonWithTooltip from '../../../../core/ui/button/ButtonWithTooltip';
-import RouterLink from '../../../../core/ui/link/RouterLink';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import { gutters } from '../../../../core/ui/grid/utils';
+import unwrapFragment from '@/core/ui/utils/unwrapFragment';
+import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
+import RouterLink from '@/core/ui/link/RouterLink';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { gutters } from '@/core/ui/grid/utils';
 
 interface DialogActionButtonsProps {
   column?: boolean;

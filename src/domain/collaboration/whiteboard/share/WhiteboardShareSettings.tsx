@@ -1,15 +1,15 @@
-import { BlockSectionTitle, BlockTitle, Caption } from '../../../../core/ui/typography';
+import { BlockSectionTitle, BlockTitle, Caption } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
-import Gutters from '../../../../core/ui/grid/Gutters';
+import Gutters from '@/core/ui/grid/Gutters';
 import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
-import GridItem from '../../../../core/ui/grid/GridItem';
-import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
-import { Location } from '../../../../core/ui/location/getLocationString';
+import GridItem from '@/core/ui/grid/GridItem';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
+import { Location } from '@/core/ui/location/getLocationString';
 import { useEffect, useState } from 'react';
-import { ContentUpdatePolicy } from '../../../../core/apollo/generated/graphql-schema';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 
-interface WhiteboardShareSettingsProps {
+type WhiteboardShareSettingsProps = {
   createdBy:
     | {
         profile: {
@@ -27,7 +27,7 @@ interface WhiteboardShareSettingsProps {
   loading?: boolean;
   updating?: boolean;
   journeyTypeName: JourneyTypeName;
-}
+};
 
 const OPTIONS = [ContentUpdatePolicy.Contributors, ContentUpdatePolicy.Admins, ContentUpdatePolicy.Owner];
 

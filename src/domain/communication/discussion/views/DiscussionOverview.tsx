@@ -1,11 +1,10 @@
 import { AvatarGroup, Box, ListItemAvatar, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import Avatar from '../../../../core/ui/avatar/Avatar';
-import React, { FC } from 'react';
+import Avatar from '@/core/ui/avatar/Avatar';
 import { useTranslation } from 'react-i18next';
 import { Discussion } from '../models/Discussion';
 import DiscussionIcon from './DiscussionIcon';
-import { BlockSectionTitle, Caption } from '../../../../core/ui/typography';
-import { formatLongDate } from '../../../../core/utils/time/utils';
+import { BlockSectionTitle, Caption } from '@/core/ui/typography';
+import { formatLongDate } from '@/core/utils/time/utils';
 
 export interface DiscussionOverviewProps {
   discussion: Discussion;
@@ -14,7 +13,7 @@ export interface DiscussionOverviewProps {
 
 const SHOW_AVATARS = false;
 
-const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion, onClick }) => {
+const DiscussionOverview = ({ discussion, onClick }: DiscussionOverviewProps) => {
   const { t } = useTranslation();
 
   const { title, createdAt, author, authors = [], comments, category } = discussion;

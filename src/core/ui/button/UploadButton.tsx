@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import React, { FC } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import FileUploadWrapper from '../upload/FileUploadWrapper';
 
@@ -11,15 +11,15 @@ import FileUploadWrapper from '../upload/FileUploadWrapper';
  * @param text Optional button text (used when icon is not provided)
  * @param disabled Optional flag to disable the button
  */
-interface UploadButtonProps {
+type UploadButtonProps = {
   onFileSelected: (file: File) => void;
   allowedTypes: string[];
   icon?: React.ReactElement;
   text?: string;
   disabled?: boolean;
-}
+};
 
-const UploadButton: FC<UploadButtonProps> = ({ onFileSelected, allowedTypes, icon, text, disabled }) => {
+const UploadButton = ({ onFileSelected, allowedTypes, icon, text, disabled }: UploadButtonProps) => {
   const { t } = useTranslation();
   const label = text ?? t('components.file-upload.uploadFile');
 

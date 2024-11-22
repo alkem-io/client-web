@@ -1,16 +1,14 @@
-import React, { PropsWithChildren, ReactElement, useMemo } from 'react';
+import { PropsWithChildren, ReactElement, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EntityDashboardLeads } from '../EntityDashboardContributorsSection/Types';
-import AssociatedOrganizationsView from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
-import { useUserContext } from '../../user';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
+import AssociatedOrganizationsView from '@/domain/community/contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
+import { useUserContext } from '@/domain/community/user';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { SvgIconProps } from '@mui/material';
 import DashboardLeads from './DashboardLeads';
-import ContributorCardHorizontal, {
-  ContributorCardHorizontalProps,
-} from '../../../../core/ui/card/ContributorCardHorizontal';
-import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
+import ContributorCardHorizontal, { ContributorCardHorizontalProps } from '@/core/ui/card/ContributorCardHorizontal';
+import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 
 const OrganizationCardTransparent = (props: ContributorCardHorizontalProps) => <ContributorCardHorizontal {...props} />;
 

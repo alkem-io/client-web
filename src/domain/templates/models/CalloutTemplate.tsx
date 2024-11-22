@@ -1,6 +1,6 @@
 import { TemplateBase } from './TemplateBase';
-import { Reference, UpdateTagset } from '../../common/profile/Profile';
-import { CalloutType, TemplateType } from '../../../core/apollo/generated/graphql-schema';
+import { Reference, UpdateTagset } from '@/domain/common/profile/Profile';
+import { CalloutType, TemplateType } from '@/core/apollo/generated/graphql-schema';
 
 export interface CalloutTemplate extends TemplateBase {
   type: TemplateType; // TemplateType.Callout

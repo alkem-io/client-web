@@ -1,4 +1,3 @@
-import React from 'react';
 import CardDescription, { CardDescriptionProps, DEFAULT_CARDDESCRIPTION_HEIGHT_GUTTERS } from './CardDescription';
 import CardTags, { CardTagsProps } from './CardTags';
 

@@ -1,6 +1,6 @@
 import { Checkbox, FormControl, FormControlLabel, FormGroup, Grid } from '@mui/material';
 import { UiNodeInputAttributes } from '@ory/kratos-client';
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import { getNodeName, getNodeTitle, getNodeValue, isInvalidNode } from './helpers';
 import KratosFeedback from './KratosFeedback';
 import { KratosProps } from './KratosProps';

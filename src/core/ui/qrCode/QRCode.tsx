@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { makeStyles } from '@mui/styles';
 import { useResizeDetector } from 'react-resize-detector';
 import clsx from 'clsx';
@@ -13,19 +13,17 @@ const useStyles = makeStyles({
   },
 });
 
-interface QRCodeProps {
+type QRCodeProps = {
   qrCodeJwt?: string | null;
   qrCodeImg?: string | null;
   className?: string;
-}
+};
 
-export const QRCode: FC<QRCodeProps> = ({ qrCodeJwt, qrCodeImg, className }) => {
+export const QRCode = ({ qrCodeJwt, qrCodeImg, className }: QRCodeProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const styles = useStyles();
 
-  const { height, width } = useResizeDetector({
-    targetRef: containerRef,
-  });
+  const { height, width } = useResizeDetector({ targetRef: containerRef });
 
   useEffect(() => {
     const container = containerRef.current;

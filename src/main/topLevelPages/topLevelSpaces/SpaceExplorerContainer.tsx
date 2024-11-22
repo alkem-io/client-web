@@ -6,8 +6,8 @@ import {
   useSpaceExplorerSubspacesLazyQuery,
   useSpaceExplorerSearchQuery,
   useSpaceExplorerWelcomeSpaceLazyQuery,
-} from '../../../core/apollo/generated/apollo-hooks';
-import { useUserContext } from '../../../domain/community/user';
+} from '@/core/apollo/generated/apollo-hooks';
+import { useUserContext } from '@/domain/community/user';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
@@ -15,11 +15,11 @@ import {
   SpaceExplorerSubspacesQuery,
   SpaceExplorerSearchSpaceFragment,
   SpacePrivacyMode,
-} from '../../../core/apollo/generated/graphql-schema';
-import { TypedSearchResult } from '../../search/SearchView';
+} from '@/core/apollo/generated/graphql-schema';
+import { TypedSearchResult } from '@/main/search/SearchView';
 import { ITEMS_LIMIT, SpacesExplorerMembershipFilter, SpaceWithParent } from './SpaceExplorerView';
-import usePaginatedQuery from '../../../domain/shared/pagination/usePaginatedQuery';
-import { SimpleContainerProps } from '../../../core/container/SimpleContainer';
+import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
+import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { uniqBy } from 'lodash';
 
 export interface ChallengeExplorerContainerEntities {

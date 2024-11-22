@@ -7942,16 +7942,7 @@ export type AccountInformationQuery = {
           license: {
             __typename?: 'License';
             id: string;
-            entitlements: Array<{
-              __typename?: 'LicenseEntitlement';
-              id: string;
-              type: LicenseEntitlementType;
-              limit: number;
-              usage: number;
-              isAvailable: boolean;
-              dataType: LicenseEntitlementDataType;
-              enabled: boolean;
-            }>;
+            myLicensePrivileges?: Array<LicenseEntitlementType> | undefined;
           };
           host?:
             | { __typename?: 'Organization'; id: string }
@@ -25095,7 +25086,15 @@ export type SpaceTemplatesSetIdQuery = {
       | {
           __typename?: 'TemplatesManager';
           id: string;
-          templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
+          templatesSet?:
+            | {
+                __typename?: 'TemplatesSet';
+                id: string;
+                authorization?:
+                  | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                  | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };

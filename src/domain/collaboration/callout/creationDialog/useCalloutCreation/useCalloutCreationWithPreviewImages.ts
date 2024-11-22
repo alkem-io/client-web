@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from '../CalloutWhiteboardField/CalloutWhiteboardField';
-import { useUploadWhiteboardVisuals } from '../../../whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
+import { useUploadWhiteboardVisuals } from '@/domain/collaboration/whiteboard/WhiteboardPreviewImages/WhiteboardPreviewImages';
 import {
   CalloutCreationParams,
   CalloutCreationType,
@@ -12,7 +12,7 @@ import {
   CreateCalloutMutation,
   CreateReferenceInput,
   CreateTagsetInput,
-} from '../../../../../core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 
 export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationType {
   framing: {

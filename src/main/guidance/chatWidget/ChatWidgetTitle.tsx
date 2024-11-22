@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { Box, IconButton } from '@mui/material';
-import { gutters } from '../../../core/ui/grid/utils';
-import { Caption, PageTitle } from '../../../core/ui/typography';
-import SwapColors from '../../../core/ui/palette/SwapColors';
+import { gutters } from '@/core/ui/grid/utils';
+import { Caption, PageTitle } from '@/core/ui/typography';
+import SwapColors from '@/core/ui/palette/SwapColors';
 import { InfoOutlined } from '@mui/icons-material';
 
 interface ChatWidgetTitleProps {

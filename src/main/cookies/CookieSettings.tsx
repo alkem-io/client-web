@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { FormControl, FormGroup, FormControlLabel, Checkbox, Button } from '@mui/material';
 import { useAlkemioCookies } from './useAlkemioCookies';
 import TextContainer from './components/TextContainer';
-import { Actions } from '../../core/ui/actions/Actions';
-import { Caption } from '../../core/ui/typography';
+import { Actions } from '@/core/ui/actions/Actions';
+import { Caption } from '@/core/ui/typography';
 
 const CookieSettings: FC = () => {
   const { t } = useTranslation();

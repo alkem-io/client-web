@@ -1,6 +1,6 @@
 import { onError } from '@apollo/client/link/error';
 import { ServerParseError } from '@apollo/client';
-import { _AUTH_LOGIN_PATH } from '../../auth/authentication/constants/authentication.constants';
+import { _AUTH_LOGIN_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 
 /**
  * This link handles the flow of a changed cookie secret or an expired cookie:

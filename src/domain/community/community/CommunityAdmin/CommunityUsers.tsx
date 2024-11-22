@@ -9,16 +9,13 @@ import {
   GridRenderCellParams,
   GridValueGetterParams,
 } from '@mui/x-data-grid';
-import { FC, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  CommunityMemberUserFragment,
-  RoleDefinitionPolicyFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
-import { gutters } from '../../../../core/ui/grid/utils';
-import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
-import DataGridTable from '../../../../core/ui/table/DataGridTable';
-import { BlockTitle } from '../../../../core/ui/typography';
+import { CommunityMemberUserFragment, RoleDefinitionPolicyFragment } from '@/core/apollo/generated/graphql-schema';
+import { gutters } from '@/core/ui/grid/utils';
+import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
+import DataGridTable from '@/core/ui/table/DataGridTable';
+import { BlockTitle } from '@/core/ui/typography';
 import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from './CommunityAddMembersDialog';
 import CommunityMemberSettingsDialog from './CommunityMemberSettingsDialog';
 import useCommunityPolicyChecker from './useCommunityPolicyChecker';
@@ -63,7 +60,7 @@ interface CommunityUsersProps {
   loading?: boolean;
 }
 
-const CommunityUsers: FC<CommunityUsersProps> = ({
+const CommunityUsers = ({
   users = [],
   onUserLeadChange,
   onUserAuthorizationChange,
@@ -74,7 +71,7 @@ const CommunityUsers: FC<CommunityUsersProps> = ({
   memberRoleDefinition,
   leadRoleDefinition,
   loading,
-}) => {
+}: CommunityUsersProps) => {
   const { t } = useTranslation();
   const { canAddLeadUser, canRemoveLeadUser } = useCommunityPolicyChecker(
     memberRoleDefinition,

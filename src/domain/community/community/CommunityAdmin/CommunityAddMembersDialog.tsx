@@ -1,16 +1,16 @@
 import AddIcon from '@mui/icons-material/Add';
 import { TextField } from '@mui/material';
 import { GridColDef, GridInitialState, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid';
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import DataGridSkeleton from '../../../../core/ui/table/DataGridSkeleton';
-import DataGridTable from '../../../../core/ui/table/DataGridTable';
-import { Identifiable } from '../../../../core/utils/Identifiable';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import LoadingIconButton from '../../../../core/ui/button/LoadingIconButton';
-import { getURLPath } from '../../../../core/utils/links';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
+import DataGridTable from '@/core/ui/table/DataGridTable';
+import { Identifiable } from '@/core/utils/Identifiable';
+import Gutters from '@/core/ui/grid/Gutters';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import LoadingIconButton from '@/core/ui/button/LoadingIconButton';
+import { getURLPath } from '@/core/utils/links';
 
 interface Entity extends Identifiable {
   nameID?: string;
@@ -45,12 +45,12 @@ const initialState: GridInitialState = {
   },
 };
 
-const CommunityAddMembersDialog: FC<CommunityAddMembersDialogProps> = ({
+const CommunityAddMembersDialog = ({
   onClose,
   onAdd,
   fetchAvailableEntities,
   allowSearchByURL = false,
-}) => {
+}: CommunityAddMembersDialogProps) => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<string>();
   const [availableEntities, setData] = useState<Entity[]>();

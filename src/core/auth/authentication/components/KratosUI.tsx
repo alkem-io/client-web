@@ -12,7 +12,7 @@ import { KratosInputExtraProps } from './Kratos/KratosProps';
 import { useKratosT } from './Kratos/messages';
 import isAcceptTermsCheckbox from '../utils/isAcceptTermsCheckbox';
 import KratosAcceptTermsCheckbox from './Kratos/KratosAcceptTermsCheckbox';
-import { Text } from '../../../ui/typography';
+import { Text } from '@/core/ui/typography';
 import AuthActionButton, { AuthActionButtonProps } from './Button';
 import { UiNodeInput } from './Kratos/UiNodeTypes';
 import { KratosAcceptTermsProps } from '../pages/AcceptTerms';

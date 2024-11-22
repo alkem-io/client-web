@@ -1,17 +1,17 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogContent } from '@mui/material';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import CommunityContributorsBlockWide from '../../../community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWide';
-import { useSpaceCommunityContributorsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { ContributorCardSquareProps } from '../../../community/contributor/ContributorCardSquare/ContributorCardSquare';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import { useUserContext } from '../../../community/user';
-import { BlockTitle, Caption } from '../../../../core/ui/typography';
-import CommunityVirtualContributorsBlockWide from '../../../community/contributor/CommunityContributorsBlockWide/CommunityVirtualContributorsBlockWide';
-import { CommunityContributorType, SearchVisibility } from '../../../../core/apollo/generated/graphql-schema';
-import { VirtualContributorProps } from '../../../community/community/VirtualContributorsBlock/VirtualContributorsDialog';
-import Gutters from '../../../../core/ui/grid/Gutters';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import CommunityContributorsBlockWide from '@/domain/community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWide';
+import { useSpaceCommunityContributorsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { useUserContext } from '@/domain/community/user';
+import { BlockTitle, Caption } from '@/core/ui/typography';
+import CommunityVirtualContributorsBlockWide from '@/domain/community/contributor/CommunityContributorsBlockWide/CommunityVirtualContributorsBlockWide';
+import { CommunityContributorType, SearchVisibility } from '@/core/apollo/generated/graphql-schema';
+import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
+import Gutters from '@/core/ui/grid/Gutters';
 
 export interface ContributorsToggleDialogProps {
   open?: boolean;

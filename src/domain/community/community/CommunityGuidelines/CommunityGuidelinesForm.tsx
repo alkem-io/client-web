@@ -1,26 +1,25 @@
-import { FC } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
-import FormikMarkdownField from '../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import MarkdownValidator from '../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import Gutters from '@/core/ui/grid/Gutters';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import LoadingButton from '@mui/lab/LoadingButton';
-import ProfileReferenceSegment from '../../../platform/admin/components/Common/ProfileReferenceSegment';
+import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
 
-interface CommunityGuidelinesFormProps {
+type CommunityGuidelinesFormProps = {
   data: FormValues | undefined;
   profileId: string | undefined;
   onSubmit: (values: FormValues) => void;
   loading?: boolean;
   disabled?: boolean;
-}
+};
 
-interface FormValues {
+type FormValues = {
   displayName: string;
   description: string | undefined;
   references: {
@@ -29,7 +28,7 @@ interface FormValues {
     description?: string;
     uri: string;
   }[];
-}
+};
 
 const validationSchema = yup.object().shape({
   displayName: yup.string().required(),
@@ -37,13 +36,7 @@ const validationSchema = yup.object().shape({
   references: referenceSegmentSchema,
 });
 
-const CommunityGuidelinesForm: FC<CommunityGuidelinesFormProps> = ({
-  data,
-  profileId,
-  onSubmit,
-  disabled,
-  loading,
-}) => {
+const CommunityGuidelinesForm = ({ data, profileId, onSubmit, disabled, loading }: CommunityGuidelinesFormProps) => {
   const { t } = useTranslation();
 
   const initialValues: FormValues = {

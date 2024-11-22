@@ -9,16 +9,16 @@ import {
   Slide,
 } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   AgentBeginVerifiedCredentialRequestOutput,
   CredentialMetadataOutput,
-} from '../../../core/apollo/generated/graphql-schema';
-import TranslationKey from '../../../core/i18n/utils/TranslationKey';
-import Loading from '../../../core/ui/loading/Loading';
-import { DialogContent, DialogTitle } from '../../../core/ui/dialog/deprecated';
-import QRCode from '../../../core/ui/qrCode/QRCode';
+} from '@/core/apollo/generated/graphql-schema';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import Loading from '@/core/ui/loading/Loading';
+import { DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
+import QRCode from '@/core/ui/qrCode/QRCode';
 import { makeStyles } from '@mui/styles';
 
 interface RequestCredentialDialogProps {
@@ -62,7 +62,7 @@ const useStyles = makeStyles({
   },
 });
 
-const RequestCredentialDialog: FC<RequestCredentialDialogProps> = ({ entities, actions, options, state }) => {
+const RequestCredentialDialog = ({ entities, actions, options, state }: RequestCredentialDialogProps) => {
   const { t } = useTranslation();
   const styles = useStyles();
   const { credentialMetadata } = entities;

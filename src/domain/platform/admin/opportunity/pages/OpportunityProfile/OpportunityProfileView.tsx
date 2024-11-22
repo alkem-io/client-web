@@ -1,33 +1,28 @@
 import { Grid, Typography } from '@mui/material';
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import FormMode from '../../../components/FormMode';
-import ProfileForm, { ProfileFormValues } from '../../../../../common/profile/ProfileForm';
-import { useNotification } from '../../../../../../core/ui/notifications/useNotification';
-import EditVisualsView from '../../../../../common/visual/EditVisuals/EditVisualsView';
-import { formatDatabaseLocation } from '../../../../../common/location/LocationUtils';
-import SaveButton from '../../../../../../core/ui/actions/SaveButton';
-import Gutters from '../../../../../../core/ui/grid/Gutters';
-import { VisualType } from '../../../../../../core/apollo/generated/graphql-schema';
-import { useRouteResolver } from '../../../../../../main/routing/resolvers/RouteResolver';
-import useNavigate from '../../../../../../core/routing/useNavigate';
+import FormMode from '@/domain/platform/admin/components/FormMode';
+import ProfileForm, { ProfileFormValues } from '@/domain/common/profile/ProfileForm';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
+import { formatDatabaseLocation } from '@/domain/common/location/LocationUtils';
+import SaveButton from '@/core/ui/actions/SaveButton';
+import Gutters from '@/core/ui/grid/Gutters';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useNavigate from '@/core/routing/useNavigate';
 import {
   refetchSubspaceProfileInfoQuery,
   refetchSubspacesInSpaceQuery,
   useCreateSubspaceMutation,
   useSubspaceProfileInfoQuery,
   useUpdateSpaceMutation,
-} from '../../../../../../core/apollo/generated/apollo-hooks';
-
-interface Props {
-  mode: FormMode;
-}
+} from '@/core/apollo/generated/apollo-hooks';
 
 // TODO: Probably this file should be removed (subspace?)
 /**
  * @deprecated
  */
-const OpportunityProfileView: FC<Props> = ({ mode }) => {
+const OpportunityProfileView = ({ mode }: { mode: FormMode }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const notify = useNotification();

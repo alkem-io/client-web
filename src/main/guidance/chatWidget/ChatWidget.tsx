@@ -21,7 +21,7 @@ import {
   Widget,
 } from 'react-chat-widget';
 import { useUpdateAnswerRelevanceMutation } from '../../../core/apollo/generated/apollo-hooks';
-import logoSrc from '../../ui/logo/logoSmall.svg';
+import logoSrc from '@/main/ui/logo/logoSmall.svg';
 import { useTranslation } from 'react-i18next';
 import 'react-chat-widget/lib/styles.css';
 import ChatWidgetStyles from './ChatWidgetStyles';
@@ -29,11 +29,11 @@ import ChatWidgetTitle from './ChatWidgetTitle';
 import ChatWidgetHelpDialog from './ChatWidgetHelpDialog';
 import { createPortal } from 'react-dom';
 import ChatWidgetFooter from './ChatWidgetFooter';
-import Gutters from '../../../core/ui/grid/Gutters';
-import { gutters } from '../../../core/ui/grid/utils';
-import { Caption } from '../../../core/ui/typography';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import { Caption } from '@/core/ui/typography';
 import { InfoOutlined } from '@mui/icons-material';
-import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from '../../ui/platformNavigation/constants';
+import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from '@/main/ui/platformNavigation/constants';
 import ChatWidgetMenu from './ChatWidgetMenu';
 import useChatGuidanceCommunication from './useChatGuidanceCommunication';
 import { useUserContext } from '../../../domain/community/user';

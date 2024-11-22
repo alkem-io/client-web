@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IconButton } from '@mui/material';
 import scrollToTop from '../utils/scrollToTop';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';

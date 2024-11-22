@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { newReferenceName } from '../../../../common/reference/newReferenceName';
+import { newReferenceName } from '@/domain/common/reference/newReferenceName';
 import ReferenceSegment, { ReferenceSegmentProps } from './ReferenceSegment';
 import { useTranslation } from 'react-i18next';
 import { useField } from 'formik';

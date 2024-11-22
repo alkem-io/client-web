@@ -1,29 +1,29 @@
-import React, { FC, ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError, FetchResult } from '@apollo/client';
 import { alpha, Box, Grid } from '@mui/material';
-import Avatar from '../../../../core/ui/avatar/Avatar';
+import Avatar from '@/core/ui/avatar/Avatar';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
-import { Reference } from '../../../../core/apollo/generated/graphql-schema';
-import { SectionSpacer } from '../../../shared/components/Section/Section';
-import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
-import { Message } from '../../../communication/room/models/Message';
-import PostMessageToCommentsForm from '../../../communication/room/Comments/PostMessageToCommentsForm';
-import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
-import References from '../../../shared/components/References/References';
+import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
+import { Reference } from '@/core/apollo/generated/graphql-schema';
+import { SectionSpacer } from '@/domain/shared/components/Section/Section';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
+import { Message } from '@/domain/communication/room/models/Message';
+import PostMessageToCommentsForm from '@/domain/communication/room/Comments/PostMessageToCommentsForm';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import References from '@/domain/shared/components/References/References';
 import PostDashboardTagLabel from './PostDashboardTagLabel';
 import DashboardColumn from './DashboardColumn';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
-import { ShareComponent } from '../../../shared/components/ShareDialog/ShareDialog';
-import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import useCommentReactionsMutations from '../../../communication/room/Comments/useCommentReactionsMutations';
-import MessagesThread, { MessagesThreadProps } from '../../../communication/room/Comments/MessagesThread';
-import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradient';
-import LocationCaption from '../../../../core/ui/location/LocationCaption';
+import { ShareComponent } from '@/domain/shared/components/ShareDialog/ShareDialog';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import Gutters from '@/core/ui/grid/Gutters';
+import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
+import MessagesThread, { MessagesThreadProps } from '@/domain/communication/room/Comments/MessagesThread';
+import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
+import LocationCaption from '@/core/ui/location/LocationCaption';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
@@ -73,7 +73,7 @@ const isScrolledToBottom = ({
   return Math.abs(scrollHeight - containerHeight - scrollTop) < SCROLL_BOTTOM_MISTAKE_TOLERANCE;
 };
 
-const PostDashboardView: FC<PostDashboardViewProps> = props => {
+const PostDashboardView = (props: PostDashboardViewProps) => {
   const { t } = useTranslation();
   const { loading, mode } = props;
 
@@ -251,14 +251,14 @@ const PostDashboardView: FC<PostDashboardViewProps> = props => {
 
 export default PostDashboardView;
 
-interface AuthorComponentProps {
+type AuthorComponentProps = {
   avatarSrc: string | undefined;
   name: string | undefined;
   createdDate: string | undefined;
   loading?: boolean;
-}
+};
 
-const AuthorComponent: FC<AuthorComponentProps> = ({ avatarSrc, name, createdDate, loading }) => {
+const AuthorComponent = ({ avatarSrc, name, createdDate, loading }: AuthorComponentProps) => {
   const localeCreatedDate = createdDate && new Date(createdDate)?.toLocaleDateString();
   return (
     <Box

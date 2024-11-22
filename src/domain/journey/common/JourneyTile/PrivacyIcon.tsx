@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { LockOutlined } from '@mui/icons-material';
 import { Paper } from '@mui/material';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 
 type PrivacyIconProps = {
   size?: number;

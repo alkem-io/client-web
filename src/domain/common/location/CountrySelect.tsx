@@ -1,27 +1,26 @@
 import { TextField } from '@mui/material';
 import { Autocomplete } from '@mui/material';
 import { useField } from 'formik';
-import React, { FC } from 'react';
 import { COUNTRIES, CountryType } from './countries.constants';
 
-interface CountrySelectProps {
+type CountrySelectProps = {
   title?: string;
   name?: string;
   required?: boolean;
   readOnly?: boolean;
   disabled?: boolean;
-}
+};
 
 const getCountryName = (option: CountryType) => option.name;
 const compareCountries = (option: CountryType, value: CountryType) => option?.code === value?.code;
 
-export const CountrySelect: FC<CountrySelectProps> = ({
+export const CountrySelect = ({
   title = 'Country',
   name = 'country',
   required,
   readOnly,
   disabled,
-}) => {
+}: CountrySelectProps) => {
   const [field, meta, helper] = useField(name);
 
   return (
