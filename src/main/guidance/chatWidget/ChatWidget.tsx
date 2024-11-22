@@ -20,7 +20,7 @@ import {
   toggleWidget,
   Widget,
 } from 'react-chat-widget';
-import { useUpdateAnswerRelevanceMutation } from '../../../core/apollo/generated/apollo-hooks';
+import { useUpdateAnswerRelevanceMutation } from '@/core/apollo/generated/apollo-hooks';
 import logoSrc from '@/main/ui/logo/logoSmall.svg';
 import { useTranslation } from 'react-i18next';
 import 'react-chat-widget/lib/styles.css';
