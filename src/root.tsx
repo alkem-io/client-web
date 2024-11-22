@@ -77,9 +77,9 @@ const Root: FC = () => {
             <ConfigProvider url={publicGraphQLEndpoint}>
               <ServerMetadataProvider url={publicGraphQLEndpoint}>
                 <SentryTransactionScopeContextProvider>
-                  <GlobalErrorProvider>
-                    <SentryErrorBoundaryProvider>
-                      <GlobalStateProvider>
+                  <SentryErrorBoundaryProvider>
+                    <GlobalStateProvider>
+                      <GlobalErrorProvider>
                         <BrowserRouter>
                           <AuthenticationProvider>
                             <UserGeoProvider>
@@ -106,9 +106,9 @@ const Root: FC = () => {
                             </UserGeoProvider>
                           </AuthenticationProvider>
                         </BrowserRouter>
-                      </GlobalStateProvider>
-                    </SentryErrorBoundaryProvider>
-                  </GlobalErrorProvider>
+                      </GlobalErrorProvider>
+                    </GlobalStateProvider>
+                  </SentryErrorBoundaryProvider>
                 </SentryTransactionScopeContextProvider>
               </ServerMetadataProvider>
             </ConfigProvider>
