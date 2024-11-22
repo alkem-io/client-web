@@ -13,6 +13,7 @@ export const useGlobalError = (): GlobalErrorContextType => {
   if (!context) {
     throw new Error('useGlobalError must be used within a GlobalErrorProvider');
   }
+  console.log('useGlobalError init', context);
   return context;
 };
 

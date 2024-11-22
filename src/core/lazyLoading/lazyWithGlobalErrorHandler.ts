@@ -16,6 +16,7 @@ export const lazyWithGlobalErrorHandler = <T>(
 ): React.LazyExoticComponent<React.ComponentType<T>> => {
   return React.lazy(async () => {
     try {
+      console.log('lazyWithGlobalErrorHandler init 1');
       return await importFunc();
     } catch (error) {
       const setError = getGlobalErrorSetter();
@@ -37,6 +38,7 @@ export const lazyWithGlobalErrorHandler = <T>(
 
 export const lazyImportWithErrorHandler = async <T>(importFunc: () => Promise<T>): Promise<T> => {
   try {
+    console.log('lazyImportWithErrorHandler init 2');
     return await importFunc();
   } catch (error) {
     const setError = getGlobalErrorSetter();

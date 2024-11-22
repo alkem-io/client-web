@@ -15,7 +15,7 @@ const ErrorTranslationMappings = (error: Error): TranslationKey => {
 export const GlobalErrorDialog: React.FC = () => {
   const { t } = useTranslation();
   const { error, setError } = useGlobalError();
-
+  console.log('GlobalErrorDialog init');
   if (!error) return null;
 
   return (
