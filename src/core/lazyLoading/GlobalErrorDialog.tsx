@@ -3,7 +3,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Box, Button, Dialog, DialogContent, DialogTitle } from '@mui/material';
 import { useGlobalError } from './GlobalErrorContext';
 import { LazyLoadError } from './lazyWithGlobalErrorHandler';
-import TranslationKey from '../i18n/utils/TranslationKey';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 const ErrorTranslationMappings = (error: Error): TranslationKey => {
   if (error instanceof LazyLoadError) {
