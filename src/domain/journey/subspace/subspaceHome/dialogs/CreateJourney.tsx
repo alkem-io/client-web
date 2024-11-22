@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
-import { JourneyCreationDialog } from '@/domain/shared/components/JorneyCreationDialog';
+import { JourneyCreationDialog } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationDialog';
 import { CreateOpportunityForm } from '@/domain/journey/opportunity/forms/CreateOpportunityForm';
 import { JourneyFormValues } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationForm';
 import {
@@ -9,6 +9,7 @@ import {
   refetchSubspacesInSpaceQuery,
   refetchDashboardWithMembershipsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import { Box } from '@mui/material';
 
 export interface CreateJourneyProps {
   isVisible: boolean;
@@ -40,7 +41,7 @@ export const CreateJourney = ({ isVisible = false, onClose, parentSpaceId = '' }
             tags: value.tags,
             collaborationData: {
               addTutorialCallouts: value.addTutorialCallouts,
-              addCallouts: value.addCallouts,
+              collaborationTemplateID: value.collaborationTemplateId,
             },
           },
         },
@@ -58,7 +59,8 @@ export const CreateJourney = ({ isVisible = false, onClose, parentSpaceId = '' }
   );
 
   return (
-    <>
+    <Box border="1px solid red">
+      CreateJourney - Where is this used? //!!
       <JourneyCreationDialog
         open={isVisible}
         journeyName={t('common.subspace')}
@@ -66,7 +68,7 @@ export const CreateJourney = ({ isVisible = false, onClose, parentSpaceId = '' }
         onCreate={handleCreate}
         formComponent={CreateOpportunityForm}
       />
-    </>
+    </Box>
   );
 };
 

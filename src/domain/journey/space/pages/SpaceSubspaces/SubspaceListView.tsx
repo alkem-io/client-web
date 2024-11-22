@@ -16,7 +16,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
-import { JourneyCreationDialog } from '@/domain/shared/components/JorneyCreationDialog';
+import { JourneyCreationDialog } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationDialog';
 import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
 import { JourneyFormValues } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
@@ -125,7 +125,7 @@ export const SubspaceListView = () => {
             tags: value.tags,
             collaborationData: {
               addTutorialCallouts: value.addTutorialCallouts,
-              addCallouts: value.addCallouts,
+              collaborationTemplateID: value.collaborationTemplateId,
             },
           },
         },

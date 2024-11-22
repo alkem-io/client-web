@@ -23,7 +23,7 @@ interface SubspaceCreationInput {
   vision: string;
   tags: string[];
   addTutorialCallouts: boolean;
-  addCallouts: boolean;
+  collaborationTemplateId?: string;
 }
 
 export const useSubspaceCreation = () => {
@@ -85,7 +85,8 @@ export const useSubspaceCreation = () => {
             tags: value.tags,
             collaborationData: {
               addTutorialCallouts: value.addTutorialCallouts,
-              addCallouts: value.addCallouts,
+              addCallouts: true, // Always add Callouts from the template
+              collaborationTemplateID: value.collaborationTemplateId,
             },
           },
         },

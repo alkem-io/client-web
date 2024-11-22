@@ -1,15 +1,15 @@
-import React, { FC, useState } from 'react';
+import React, { FC, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dialog } from '@mui/material';
-import Box from '@mui/material/Box';
+import { Dialog, DialogActions, SvgIconProps } from '@mui/material';
 import Button from '@mui/material/Button';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { DialogActions, DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
+import { DialogContent } from '@/core/ui/dialog/deprecated';
 import { JourneyCreationForm, JourneyFormValues } from './JourneyCreationForm';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 
 interface JourneyCreationDialogProps {
   open: boolean;
-  icon?: React.ReactNode;
+  icon?: ReactElement<SvgIconProps>;
   journeyName: string;
   onClose: () => void;
   onCreate: (value: JourneyFormValues) => Promise<void>;
@@ -33,7 +33,7 @@ export const JourneyCreationDialog: FC<JourneyCreationDialogProps> = ({
     vision: '',
     tags: [],
     addTutorialCallouts: false,
-    addCallouts: true,
+    collaborationTemplateId: undefined,
   });
 
   const handleChange = (value: JourneyFormValues) => setValue(value);
@@ -46,13 +46,10 @@ export const JourneyCreationDialog: FC<JourneyCreationDialogProps> = ({
 
   return (
     <Dialog open={open} maxWidth="lg" fullWidth>
-      <DialogTitle onClose={onClose}>
-        <Box display="flex" gap={1}>
-          {icon}
-          {t('journey-creation.dialog-title', { entity: journeyName })}
-        </Box>
-      </DialogTitle>
-      <DialogContent dividers>
+      <DialogHeader onClose={onClose} icon={icon}>
+        {t('journey-creation.dialog-title', { entity: journeyName })}
+      </DialogHeader>
+      <DialogContent>
         <FormComponent isSubmitting={submitting} onChanged={handleChange} onValidChanged={handleValidChange} />
       </DialogContent>
       <DialogActions>

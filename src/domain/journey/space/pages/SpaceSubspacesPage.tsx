@@ -2,10 +2,10 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { journeyCardTagsGetter, journeyCardValueGetter } from '@/domain/journey/common/utils/journeyCardValueGetter';
-import { JourneyCreationDialog } from '@/domain/shared/components/JorneyCreationDialog';
+import { JourneyCreationDialog } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationDialog';
 import { JourneyFormValues } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationForm';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import { useSubspaceCreation } from '@/domain/shared/utils/useJourneyCreation/useJourneyCreation';
+import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
 import ChildJourneyView from '@/domain/journey/common/tabs/Subentities/ChildJourneyView';
 import SubspacesContainer from '../containers/SubspacesContainer';
 import { useSpace } from '../SpaceContext/useSpace';
@@ -38,7 +38,7 @@ const SpaceSubspacesPage = () => {
         vision: value.vision,
         tags: value.tags,
         addTutorialCallouts: value.addTutorialCallouts,
-        addCallouts: value.addCallouts,
+        collaborationTemplateId: value.collaborationTemplateId,
       });
 
       if (!result) {

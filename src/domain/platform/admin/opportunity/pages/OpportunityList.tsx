@@ -10,7 +10,7 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import { useUrlParams } from '@/core/routing/useUrlParams';
-import { JourneyCreationDialog } from '@/domain/shared/components/JorneyCreationDialog';
+import { JourneyCreationDialog } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationDialog';
 import { CreateOpportunityForm } from '@/domain/journey/opportunity/forms/CreateOpportunityForm';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { JourneyFormValues } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationForm';
@@ -105,7 +105,7 @@ export const OpportunityList: FC = () => {
             tags: value.tags,
             collaborationData: {
               addTutorialCallouts: value.addTutorialCallouts,
-              addCallouts: value.addCallouts,
+              collaborationTemplateID: value.collaborationTemplateId,
             },
           },
         },

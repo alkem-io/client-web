@@ -6,12 +6,13 @@ import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTransl
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import Gutters from '@/core/ui/grid/Gutters';
 import { TagsetField } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
 import { JourneyCreationForm } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationForm';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
+import { FormikRadiosSwitch } from '@/core/ui/forms/FormikRadiosSwitch';
+import SubspaceTemplateSelector from '@/domain/templates/components/TemplateSelectors/SubspaceTemplateSelector';
+import Gutters from '@/core/ui/grid/Gutters';
 
 const FormikEffect = FormikEffectFactory<FormValues>();
 
@@ -22,7 +23,7 @@ type FormValues = {
   vision: string;
   tags: string[];
   addTutorialCallouts: boolean;
-  addCallouts: boolean;
+  collaborationTemplateId: string | undefined;
 };
 
 interface CreateSubspaceFormProps extends JourneyCreationForm {}
@@ -44,7 +45,7 @@ export const CreateSubspaceForm = ({
       vision: value.vision,
       tags: value.tags,
       addTutorialCallouts: value.addTutorialCallouts,
-      addCallouts: value.addCallouts,
+      collaborationTemplateId: value.collaborationTemplateId,
     });
 
   const initialValues: FormValues = {
@@ -54,7 +55,7 @@ export const CreateSubspaceForm = ({
     vision: '',
     tags: [],
     addTutorialCallouts: false,
-    addCallouts: true,
+    collaborationTemplateId: undefined,
   };
 
   const validationSchema = yup.object().shape({
@@ -68,10 +69,8 @@ export const CreateSubspaceForm = ({
       .string()
       .trim()
       .min(3, MessageWithPayload('forms.validations.minLength'))
-      .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
-      .required(validationRequiredString),
-    background: MarkdownValidator(MARKDOWN_TEXT_LENGTH).trim().required(validationRequiredString),
-    vision: MarkdownValidator(MARKDOWN_TEXT_LENGTH).trim().required(validationRequiredString),
+      .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+    background: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
   });
 
@@ -85,48 +84,49 @@ export const CreateSubspaceForm = ({
     >
       {() => (
         <Form noValidate>
-          <Gutters disablePadding>
-            <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
-            <FormikInputField
-              name="displayName"
-              title={t('context.subspace.displayName.title')}
-              helperText={t('context.subspace.displayName.description')}
-              disabled={isSubmitting}
-              maxLength={SMALL_TEXT_LENGTH}
+          <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
+          <FormikInputField
+            name="displayName"
+            title={t('context.subspace.displayName.title')}
+            helperText={t('context.subspace.displayName.description')}
+            disabled={isSubmitting}
+            maxLength={SMALL_TEXT_LENGTH}
+          />
+          <FormikInputField
+            name="tagline"
+            title={t('context.subspace.tagline.title')}
+            helperText={t('context.subspace.tagline.description')}
+            disabled={isSubmitting}
+            maxLength={SMALL_TEXT_LENGTH}
+          />
+          <FormikMarkdownField
+            name="background"
+            title={t('context.subspace.background.title')}
+            rows={5}
+            helperText={t('context.subspace.background.description')}
+            disabled={isSubmitting}
+            maxLength={MARKDOWN_TEXT_LENGTH}
+            temporaryLocation
+          />
+          <TagsetField
+            name="tags"
+            disabled={isSubmitting}
+            title={t('context.subspace.tags.title')}
+            helperText={t('context.subspace.tags.description')}
+            helpTextIcon={t('context.subspace.tags.tooltip')}
+          />
+          <Gutters disableHorizontalPadding>
+            <SubspaceTemplateSelector name="" disablePadding />
+            <FormikRadiosSwitch
+              name="addTutorialCallouts"
+              label="Tutorials:"
+              options={[
+                { label: 'On', value: true },
+                { label: 'Off', value: false },
+              ]}
+              row
+              disablePadding
             />
-            <FormikInputField
-              name="tagline"
-              title={t('context.subspace.tagline.title')}
-              helperText={t('context.subspace.tagline.description')}
-              disabled={isSubmitting}
-              maxLength={SMALL_TEXT_LENGTH}
-            />
-            <FormikMarkdownField
-              name="background"
-              title={t('context.subspace.background.title')}
-              rows={5}
-              helperText={t('context.subspace.background.description')}
-              disabled={isSubmitting}
-              maxLength={MARKDOWN_TEXT_LENGTH}
-              temporaryLocation
-            />
-            <FormikMarkdownField
-              name="vision"
-              title={t('context.subspace.vision.title')}
-              rows={5}
-              helperText={t('context.subspace.vision.description')}
-              disabled={isSubmitting}
-              maxLength={MARKDOWN_TEXT_LENGTH}
-              temporaryLocation
-            />
-            <TagsetField
-              name="tags"
-              disabled={isSubmitting}
-              title={t('context.subspace.tags.title')}
-              helperText={t('context.subspace.tags.description')}
-            />
-            <FormikSwitch name="addCallouts" title={t('context.subspace.addCallouts.title')} />
-            <FormikSwitch name="addTutorialCallouts" title={t('context.subspace.addTutorialCallouts.title')} />
           </Gutters>
         </Form>
       )}
