@@ -1,27 +1,27 @@
 import { useTranslation } from 'react-i18next';
-import ScrollerWithGradient from '../../../../core/ui/overflow/ScrollerWithGradient';
-import { useLatestContributionsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import usePaginatedQuery from '../../../../domain/shared/pagination/usePaginatedQuery';
+import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
+import { useLatestContributionsQuery } from '@/core/apollo/generated/apollo-hooks';
+import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
 import {
   ActivityLogResultType,
   ActivityViewChooser,
-} from '../../../../domain/collaboration/activity/ActivityLog/ActivityComponent';
+} from '@/domain/collaboration/activity/ActivityLog/ActivityComponent';
 import {
   ActivityEventType,
   ActivityFeedRoles,
   LatestContributionsQuery,
   LatestContributionsQueryVariables,
-} from '../../../../core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import { Box, SelectChangeEvent, Skeleton, Theme, useMediaQuery, useTheme } from '@mui/material';
 import React, { forwardRef, useMemo, useState } from 'react';
-import SeamlessSelect from '../../../../core/ui/forms/select/SeamlessSelect';
+import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
 import { SelectOption } from '@mui/base';
-import useLazyLoading from '../../../../domain/shared/pagination/useLazyLoading';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import { gutters } from '../../../../core/ui/grid/utils';
-import Gutters from '../../../../core/ui/grid/Gutters';
+import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import { gutters } from '@/core/ui/grid/utils';
+import Gutters from '@/core/ui/grid/Gutters';
 import { LatestContributionsProps, ROLE_OPTION_ALL, SPACE_OPTION_ALL } from './LatestContributionsProps';
-import Loading from '../../../../core/ui/loading/Loading';
+import Loading from '@/core/ui/loading/Loading';
 
 const SELECTABLE_ROLES = [ActivityFeedRoles.Member, ActivityFeedRoles.Admin, ActivityFeedRoles.Lead] as const;
 

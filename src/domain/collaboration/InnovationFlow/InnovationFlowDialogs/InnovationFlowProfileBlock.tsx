@@ -1,16 +1,16 @@
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { DialogActions, DialogContent, IconButton, Skeleton } from '@mui/material';
 import { cloneElement, FC, ReactElement, useState } from 'react';
-import { Reference, TagsetType, UpdateProfileInput, Visual } from '../../../../core/apollo/generated/graphql-schema';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
+import { Reference, TagsetType, UpdateProfileInput, Visual } from '@/core/apollo/generated/graphql-schema';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import InnovationFlowProfileForm, { InnovationFlowProfileFormValues } from './InnovationFlowProfileForm';
 import InnovationFlowProfileView from './InnovationFlowProfileView';
 import { useTranslation } from 'react-i18next';
-import DialogWithGrid, { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
+import DialogWithGrid, { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
 import { useInView } from 'react-intersection-observer';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { gutters } from '../../../../core/ui/grid/utils';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { gutters } from '@/core/ui/grid/utils';
 
 export interface InnovationFlowProfile {
   id: string;

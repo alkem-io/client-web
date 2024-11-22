@@ -5,6 +5,9 @@ query SpaceTemplatesSetId($spaceNameId: UUID_NAMEID!) {
       id
       templatesSet {
         id
+        authorization {
+          myPrivileges
+        }
       }
     }
   }

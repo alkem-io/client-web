@@ -1,19 +1,14 @@
-import React, { FC, useEffect, useMemo } from 'react';
+import { FC, useEffect, useMemo, createContext } from 'react';
 import {
   refetchUserProviderQuery,
   useCreateUserNewRegistrationMutation,
   usePlatformLevelAuthorizationQuery,
   useUserProviderQuery,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import { ErrorPage } from '../../../../../core/pages/Errors/ErrorPage';
-import {
-  AuthorizationPrivilege,
-  LicenseEntitlementType,
-  User,
-} from '../../../../../core/apollo/generated/graphql-schema';
-import { useAuthenticationContext } from '../../../../../core/auth/authentication/hooks/useAuthenticationContext';
+} from '@/core/apollo/generated/apollo-hooks';
+import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
+import { AuthorizationPrivilege, LicenseEntitlementType, User } from '@/core/apollo/generated/graphql-schema';
+import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
-import { filterAndMapEnabledEntitlements } from '../../../../license/plans/utils/filterAndMapEnabledEntitlements';
 
 export interface UserContextValue {
   user: UserMetadata | undefined;
@@ -26,7 +21,7 @@ export interface UserContextValue {
   accountEntitlements: LicenseEntitlementType[];
 }
 
-const UserContext = React.createContext<UserContextValue>({
+const UserContext = createContext<UserContextValue>({
   user: undefined,
   accountId: undefined,
   loading: true,
@@ -37,12 +32,10 @@ const UserContext = React.createContext<UserContextValue>({
   accountEntitlements: [],
 });
 
-const UserProvider: FC<{}> = ({ children }) => {
+const UserProvider: FC = ({ children }) => {
   const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
 
-  const { data: meData, loading: loadingMe } = useUserProviderQuery({
-    skip: !isAuthenticated,
-  });
+  const { data: meData, loading: loadingMe } = useUserProviderQuery({ skip: !isAuthenticated });
 
   const { data: platformLevelAuthorizationData, loading: isLoadingPlatformLevelAuthorization } =
     usePlatformLevelAuthorizationQuery({ skip: !isAuthenticated });
@@ -83,7 +76,7 @@ const UserProvider: FC<{}> = ({ children }) => {
       verified,
       isAuthenticated,
       accountPrivileges: meData?.me.user?.account?.authorization?.myPrivileges ?? [],
-      accountEntitlements: filterAndMapEnabledEntitlements(meData?.me.user?.account?.license?.entitlements),
+      accountEntitlements: meData?.me.user?.account?.license?.myLicensePrivileges ?? [],
     }),
     [userMetadata, loading, loadingMeAndParentQueries, verified, isAuthenticated]
   );

@@ -1,25 +1,22 @@
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useAdminInnovationPackQuery,
   useInnovationPackResolveIdQuery,
   useTemplateUrlResolverQuery,
   useUpdateInnovationPackMutation,
-} from '../../../core/apollo/generated/apollo-hooks';
-import { useUrlParams } from '../../../core/routing/useUrlParams';
-import PageContent from '../../../core/ui/content/PageContent';
-import PageContentBlock from '../../../core/ui/content/PageContentBlock';
-import PageContentColumn from '../../../core/ui/content/PageContentColumn';
-import Loading from '../../../core/ui/loading/Loading';
-import { useNotification } from '../../../core/ui/notifications/useNotification';
+} from '@/core/apollo/generated/apollo-hooks';
+import { useUrlParams } from '@/core/routing/useUrlParams';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import Loading from '@/core/ui/loading/Loading';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import InnovationPackForm, { InnovationPackFormValues } from './InnovationPackForm';
-import { StorageConfigContextProvider } from '../../storage/StorageBucket/StorageConfigContext';
-import TemplatesAdmin from '../../templates/components/TemplatesAdmin/TemplatesAdmin';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import TemplatesAdmin from '@/domain/templates/components/TemplatesAdmin/TemplatesAdmin';
 import InnovationPackProfileLayout from '../InnovationPackProfilePage/InnovationPackProfileLayout';
-import { buildInnovationPackSettingsUrl } from '../../../main/routing/urlBuilders';
-import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
-
-interface AdminInnovationPackPageProps {}
+import { buildInnovationPackSettingsUrl } from '@/main/routing/urlBuilders';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 
 const TemplateTypePermissions = {
   create: [
@@ -47,7 +44,7 @@ const TemplateTypePermissions = {
   ],
 };
 
-const AdminInnovationPackPage: FC<AdminInnovationPackPageProps> = () => {
+const AdminInnovationPackPage = () => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { innovationPackNameId, templateNameId } = useUrlParams();

@@ -1,20 +1,15 @@
-import PageContent from '../../core/ui/content/PageContent';
-import PageContentColumn from '../../core/ui/content/PageContentColumn';
-import PageContentBlock from '../../core/ui/content/PageContentBlock';
-import { GUTTER_MUI } from '../../core/ui/grid/constants';
-import { BlockTitle, PageTitle, Text } from '../../core/ui/typography';
-import PageContentBlockGrid from '../../core/ui/content/PageContentBlockGrid';
-import PageContentBlockHeader from '../../core/ui/content/PageContentBlockHeader';
-import CalloutCard, { CalloutCardCallout } from '../../domain/collaboration/callout/calloutCard/CalloutCard';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { GUTTER_MUI } from '@/core/ui/grid/constants';
+import { BlockTitle, PageTitle, Text } from '@/core/ui/typography';
+import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import CalloutCard, { CalloutCardCallout } from '@/domain/collaboration/callout/calloutCard/CalloutCard';
 import SearchResultsCalloutCardFooter, {
   SearchResultsCalloutCardFooterProps,
-} from '../../main/search/searchResults/searchResultsCallout/SearchResultsCalloutCardFooter';
-import {
-  CalloutContributionType,
-  CalloutState,
-  CalloutType,
-  SpaceLevel,
-} from '../../core/apollo/generated/graphql-schema';
+} from '@/main/search/searchResults/searchResultsCallout/SearchResultsCalloutCardFooter';
+import { CalloutContributionType, CalloutState, CalloutType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 const loremIpsum =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';

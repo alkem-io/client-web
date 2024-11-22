@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 
 type Rendered<Consumed extends {}> = (props: Consumed) => ReactElement | null;
 

@@ -1,12 +1,8 @@
-import React, { FC } from 'react';
 import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import {
-  refetchPlatformDiscussionsQuery,
-  useUpdateDiscussionMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { refetchPlatformDiscussionsQuery, useUpdateDiscussionMutation } from '@/core/apollo/generated/apollo-hooks';
 import { Discussion } from '../models/Discussion';
 import DiscussionForm, { DiscussionFormValues } from '../forms/DiscussionForm';
 
@@ -16,7 +12,7 @@ export interface UpdateDiscussionDialogProps {
   discussion: Discussion;
 }
 
-const UpdateDiscussionDialog: FC<UpdateDiscussionDialogProps> = ({ open, onClose, discussion }) => {
+const UpdateDiscussionDialog = ({ open, onClose, discussion }: UpdateDiscussionDialogProps) => {
   const { t } = useTranslation();
 
   const [updateDiscussion] = useUpdateDiscussionMutation({

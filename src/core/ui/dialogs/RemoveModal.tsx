@@ -1,18 +1,17 @@
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import WrapperButton from '../button/deprecated/WrapperButton';
 import { DialogActions, DialogContent, DialogTitle } from '../dialog/deprecated';
 
-interface RelationRemoveModalProps {
+type RelationRemoveModalProps = {
   show: boolean;
   onCancel: () => void;
   text: string;
   onConfirm: () => void;
   title?: string;
-}
+};
 
-const RemoveModal: FC<RelationRemoveModalProps> = ({ show, text, onCancel, title, onConfirm }) => {
+const RemoveModal = ({ show, text, onCancel, title, onConfirm }: RelationRemoveModalProps) => {
   const { t } = useTranslation();
   const defaultTitle = t('components.remove-modal.title');
 

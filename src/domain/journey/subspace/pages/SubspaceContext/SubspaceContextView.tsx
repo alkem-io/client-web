@@ -1,18 +1,17 @@
 import { Grid } from '@mui/material';
-import React, { FC } from 'react';
-import { useNotification } from '../../../../../core/ui/notifications/useNotification';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 
-import SaveButton from '../../../../../core/ui/actions/SaveButton';
-import { ContextForm, ContextFormValues } from '../../../../context/ContextForm';
-import { useRouteResolver } from '../../../../../main/routing/resolvers/RouteResolver';
+import SaveButton from '@/core/ui/actions/SaveButton';
+import { ContextForm, ContextFormValues } from '@/domain/context/ContextForm';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import {
   refetchSubspaceProfileInfoQuery,
   useSubspaceProfileInfoQuery,
   useUpdateSpaceMutation,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import { SubspaceContextSegment } from '../../../../platform/admin/subspace/SubspaceContextSegment';
+} from '@/core/apollo/generated/apollo-hooks';
+import { SubspaceContextSegment } from '@/domain/platform/admin/subspace/SubspaceContextSegment';
 
-const ChallengeContextView: FC = () => {
+const ChallengeContextView = () => {
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 

@@ -13,14 +13,14 @@ import {
   OutlinedInputProps,
 } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
-import React, { FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import CharacterCounter from '../../../../core/ui/forms/characterCounter/CharacterCounter';
-import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
-import { useValidationMessageTranslation } from '../../../shared/i18n/ValidationMessageTranslation';
+import { FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import CharacterCounter from '@/core/ui/forms/characterCounter/CharacterCounter';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { CommentInputField, CommentInputFieldProps, MENTION_SYMBOL } from './CommentInputField';
 import { CursorPositionInMarkdown, findCursorPositionInMarkdown, MentionMatch } from './utils';
-import EmojiSelector from '../../../../core/ui/forms/emoji/EmojiSelector';
-import { gutters } from '../../../../core/ui/grid/utils';
+import EmojiSelector from '@/core/ui/forms/emoji/EmojiSelector';
+import { gutters } from '@/core/ui/grid/utils';
 import { useTranslation } from 'react-i18next';
 
 const MENTION_WITH_SPACE = ` ${MENTION_SYMBOL}`;
@@ -84,10 +84,13 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
   const { t } = useTranslation();
 
   const isError = Boolean(meta.error);
-  const helperText = useMemo(
-    () => (isError ? tErr(meta.error as TranslationKey, { field: name }) : helpText),
-    [isError, meta.error, helpText, name, tErr]
-  );
+  const helperText = useMemo(() => {
+    if (!isError) {
+      return helpText;
+    }
+
+    return tErr(meta.error as TranslationKey, { field: name });
+  }, [isError, meta.error, helpText, name, tErr]);
 
   const inactive = disabled || submitting;
   const submitDisabled = inactive || (maxLength ? field.value?.length > maxLength : false);

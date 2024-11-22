@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   ActivityEventType,
   ActivityLogCalendarEventCreatedFragment,
@@ -14,7 +14,7 @@ import {
   ActivityLogMemberJoinedFragment,
   ActivityLogOpportunityCreatedFragment,
   ActivityLogUpdateSentFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import {
   ActivityCalloutLinkCreatedView,
   ActivityCalloutPostCommentCreatedView,
@@ -28,7 +28,7 @@ import {
   ActivityOpportunityCreatedView,
   ActivityViewProps,
 } from './views';
-import { buildAuthorFromUser } from '../../../community/user/utils/buildAuthorFromUser';
+import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import { ActivityUpdateSentView } from './views/ActivityUpdateSent';
 import { ActivityCalendarEventCreatedView } from './views/ActivityCalendarEventCreatedView';
 
@@ -70,7 +70,7 @@ export interface ActivityComponentProps {
   limit?: number;
 }
 
-export const ActivityComponent: FC<ActivityComponentProps> = ({ activities, limit }) => {
+export const ActivityComponent = ({ activities, limit }: ActivityComponentProps) => {
   const display = useMemo(() => {
     if (!activities) {
       return null;

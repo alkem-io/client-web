@@ -1,7 +1,7 @@
-import React, { ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { Menu, MenuItem, MenuProps } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { supportedLngs } from '../../i18n/config';
+import { supportedLngs } from '@/core/i18n/config';
 import { Caption } from '../typography';
 
 interface ChildProps {

@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { Grid, Skeleton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 

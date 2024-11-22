@@ -1,16 +1,19 @@
-import React, { forwardRef, useMemo, useState } from 'react';
-import useNavigate from '../../../../core/routing/useNavigate';
+import { forwardRef, useMemo, useState } from 'react';
+import useNavigate from '@/core/routing/useNavigate';
 import CalloutLayout from '../calloutBlock/CalloutLayout';
-import ScrollableCardsLayout from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayout';
-import PostCreationDialog from '../../post/PostCreationDialog/PostCreationDialog';
-import { CalloutState, CreatePostInput } from '../../../../core/apollo/generated/graphql-schema';
+import ScrollableCardsLayout from '@/core/ui/card/cardsLayout/ScrollableCardsLayout';
+import PostCreationDialog from '@/domain/collaboration/post/PostCreationDialog/PostCreationDialog';
+import { CalloutState, CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import PostCard, { PostCardPost } from './PostCard';
 import { BaseCalloutViewProps } from '../CalloutViewTypes';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import CalloutBlockFooter from '../calloutBlock/CalloutBlockFooter';
-import useCurrentBreakpoint from '../../../../core/ui/utils/useCurrentBreakpoint';
-import { LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
+import {
+  LocationStateCachedCallout,
+  LocationStateKeyCachedCallout,
+} from '@/domain/collaboration/CalloutPage/CalloutPage';
 import { TypedCalloutDetails } from '../useCallouts/useCallouts';
 import { buildPostDashboardUrl } from './urlBuilders';
 import CalloutSettingsContainer from '../calloutBlock/CalloutSettingsContainer';

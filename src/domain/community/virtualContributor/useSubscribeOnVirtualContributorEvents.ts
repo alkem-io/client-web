@@ -1,6 +1,6 @@
-import { useVirtualContributorUpdatesSubscription } from '../../../core/apollo/generated/apollo-hooks';
-import { PlatformFeatureFlagName } from '../../../core/apollo/generated/graphql-schema';
-import { useConfig } from '../../platform/config/useConfig';
+import { useVirtualContributorUpdatesSubscription } from '@/core/apollo/generated/apollo-hooks';
+import { PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
+import { useConfig } from '@/domain/platform/config/useConfig';
 import { useUserContext } from '../user';
 
 export const useSubscribeOnVirtualContributorEvents = (virtualContributorID: string, skip?: boolean) => {

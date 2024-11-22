@@ -1,13 +1,13 @@
-import { FC } from 'react';
-import { BlockSectionTitle, Caption } from '../../../../core/ui/typography';
+import { PropsWithChildren } from 'react';
+import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
-import WrapperMarkdown from '../../../../core/ui/markdown/WrapperMarkdown';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import References from '../../../shared/components/References/References';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import References from '@/domain/shared/components/References/References';
 import { Skeleton } from '@mui/material';
-import { ReferenceWithAuthorization } from '../../../common/profile/Profile';
+import { ReferenceWithAuthorization } from '@/domain/common/profile/Profile';
 
-interface CommunityGuidelinesTemplatePreviewProps {
+type CommunityGuidelinesTemplatePreviewProps = {
   loading?: boolean;
   template?: {
     communityGuidelines?: {
@@ -18,9 +18,12 @@ interface CommunityGuidelinesTemplatePreviewProps {
       };
     };
   };
-}
+};
 
-const CommunityGuidelinesTemplatePreview: FC<CommunityGuidelinesTemplatePreviewProps> = ({ template, loading }) => {
+const CommunityGuidelinesTemplatePreview = ({
+  template,
+  loading,
+}: PropsWithChildren<CommunityGuidelinesTemplatePreviewProps>) => {
   const { t } = useTranslation();
   const communityGuidelines = template?.communityGuidelines;
 

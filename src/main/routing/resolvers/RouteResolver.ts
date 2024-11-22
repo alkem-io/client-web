@@ -1,15 +1,15 @@
-import { useUrlParams } from '../../../core/routing/useUrlParams';
+import { useUrlParams } from '@/core/routing/useUrlParams';
 import {
   useCalloutIdQuery,
   useJourneyRouteResolverQuery,
   useSpaceKeyEntitiesIDsQuery,
-} from '../../../core/apollo/generated/apollo-hooks';
-import { getJourneyTypeName, JourneyTypeName } from '../../../domain/journey/JourneyTypeName';
+} from '@/core/apollo/generated/apollo-hooks';
+import { getJourneyTypeName, JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { takeWhile } from 'lodash';
 import { useMemo } from 'react';
-import { isApolloNotFoundError } from '../../../core/apollo/hooks/useApolloErrorHandler';
-import { NotFoundError } from '../../../core/notFound/NotFoundErrorBoundary';
-import { SpaceLevel } from '../../../core/apollo/generated/graphql-schema';
+import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
+import { NotFoundError } from '@/core/notFound/NotFoundErrorBoundary';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 enum RouteType {
   Journey = 'Journey',

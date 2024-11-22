@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import Tag from './Tag';
-import { render } from '../../../../main/test/testUtils';
+import { render } from '@/main/test/testUtils';
 import { test, describe } from 'vitest';
 
 describe('Tag component', () => {

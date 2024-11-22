@@ -1,7 +1,7 @@
 import clsx from 'clsx';
-import React, { FC, forwardRef } from 'react';
+import React, { PropsWithChildren, forwardRef } from 'react';
 import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@mui/material';
-import hexToRGBA from '../../../utils/hexToRGBA';
+import hexToRGBA from '@/core/utils/hexToRGBA';
 import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(theme => ({
@@ -111,7 +111,7 @@ export interface ButtonProps extends Record<string, unknown> {
 /**
  * @deprecated - Please use MUI Button directly
  */
-const WrapperButton: FC<ButtonProps> = forwardRef(
+const WrapperButton = forwardRef(
   (
     {
       className,
@@ -129,7 +129,7 @@ const WrapperButton: FC<ButtonProps> = forwardRef(
       text,
       children,
       ...rest
-    },
+    }: PropsWithChildren<ButtonProps>,
     ref
   ) => {
     const styles = useStyles(classes);

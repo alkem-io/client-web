@@ -1,8 +1,8 @@
 import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
 import type { AppState, CollaboratorPointer, SocketId, UserIdleState } from '@alkemio/excalidraw/dist/excalidraw/types';
 import { DELETED_ELEMENT_TIMEOUT, WS_SCENE_EVENT_TYPES } from '../excalidrawAppConstants';
-import { env } from '../../../../../../main/env';
-import { BinaryFilesWithUrl } from '../../useWhiteboardFilesManager';
+import { env } from '@/main/env';
+import { BinaryFilesWithUrl } from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import { MakeBrand } from '@alkemio/excalidraw/dist/excalidraw/utility-types';
 import { isInvisiblySmallElement } from '@alkemio/excalidraw';
 

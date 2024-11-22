@@ -1,10 +1,9 @@
 import { List, ListItemText } from '@mui/material';
 import { Skeleton } from '@mui/material';
-import React, { FC } from 'react';
-import { Filter } from '../../../platform/admin/components/Common/Filter';
+import { Filter } from '@/domain/platform/admin/components/Common/Filter';
 import DiscussionOverview from './DiscussionOverview';
 import { Discussion } from '../models/Discussion';
-import { ViewProps } from '../../../../core/container/view';
+import { ViewProps } from '@/core/container/view';
 
 interface DiscussionListViewEntities {
   discussions: Discussion[];
@@ -30,7 +29,7 @@ interface DiscussionListViewProps
     DiscussionListViewOptions
   > {}
 
-export const DiscussionListView: FC<DiscussionListViewProps> = ({ entities, state, actions, options }) => {
+export const DiscussionListView = ({ entities, state, actions, options }: DiscussionListViewProps) => {
   const { discussions } = entities;
   const { loading } = state;
 

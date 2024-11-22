@@ -1,18 +1,18 @@
-import React, { FC, useCallback } from 'react';
+import { PropsWithChildren, useCallback } from 'react';
 import {
   useBeginAlkemioUserCredentialOfferInteractionMutation,
   useBeginCommunityMemberCredentialOfferInteractionMutation,
   useBeginCredentialRequestInteractionMutation,
   useGetSupportedCredentialMetadataQuery,
   useUserSsiQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { ContainerChildProps } from '../../../../core/container/container';
+} from '@/core/apollo/generated/apollo-hooks';
+import { ContainerChildProps } from '@/core/container/container';
 import {
   AgentBeginVerifiedCredentialOfferOutput,
   AgentBeginVerifiedCredentialRequestOutput,
   CredentialMetadataOutput,
   VerifiedCredential,
-} from '../../../../core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 
 interface UserCredentialsContainerEntities {
   credentialMetadata: CredentialMetadataOutput[] | undefined;
@@ -42,7 +42,9 @@ interface UserCredentialsContainerProps
   userID: string;
 }
 
-export const UserCredentialsContainer: FC<UserCredentialsContainerProps> = ({ children /* userID */ }) => {
+export const UserCredentialsContainer = ({
+  children /* userID */,
+}: PropsWithChildren<UserCredentialsContainerProps>) => {
   // TODO - the container should retrieve specific users VCs, hence the userID
   const { data: userData, loading: getUserCredentialsLoading } = useUserSsiQuery({
     fetchPolicy: 'network-only',

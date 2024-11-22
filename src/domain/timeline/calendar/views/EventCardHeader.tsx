@@ -1,20 +1,15 @@
 import { Box, Skeleton, Theme, useMediaQuery } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import CardHeaderDetail from '../../../../core/ui/card/CardHeaderDetail';
-import { gutters } from '../../../../core/ui/grid/utils';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import { BlockSectionTitle } from '../../../../core/ui/typography';
-import {
-  formatLongDate,
-  formatTime,
-  formatTimeAndDuration,
-  getEndDateByDuration,
-} from '../../../../core/utils/time/utils';
+import CardHeaderDetail from '@/core/ui/card/CardHeaderDetail';
+import { gutters } from '@/core/ui/grid/utils';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import { BlockSectionTitle } from '@/core/ui/typography';
+import { formatLongDate, formatTime, formatTimeAndDuration, getEndDateByDuration } from '@/core/utils/time/utils';
 import { CalendarIcon } from '../icons/CalendarIcon';
 import { ClockIcon } from '../icons/ClockIcon';
 import CalendarEventBadge from './CalendarEventBadge';
-import SubspaceIcon2 from '../../../../main/ui/icons/SubspaceIcon2';
+import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
 
 export interface EventCardHeaderProps {
   event:

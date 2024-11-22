@@ -1,15 +1,15 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Box, styled } from '@mui/material';
 import AutoGraphOutlinedIcon from '@mui/icons-material/AutoGraphOutlined';
-import ContributeCard from '../../../../core/ui/card/ContributeCard';
-import CardHeader from '../../../../core/ui/card/CardHeader';
-import CardFooter from '../../../../core/ui/card/CardFooter';
-import CardFooterDate from '../../../../core/ui/card/CardFooterDate';
-import CardImage from '../../../../core/ui/card/CardImage';
-import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
+import ContributeCard from '@/core/ui/card/ContributeCard';
+import CardHeader from '@/core/ui/card/CardHeader';
+import CardFooter from '@/core/ui/card/CardFooter';
+import CardFooterDate from '@/core/ui/card/CardFooterDate';
+import CardImage from '@/core/ui/card/CardImage';
+import { WhiteboardIcon } from 'domain/collaboration/whiteboard/icon/WhiteboardIcon';
 import { useTranslation } from 'react-i18next';
-import { Visual } from '../../../common/visual/Visual';
-import { LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import { Visual } from '@/domain/common/visual/Visual';
+import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';
 import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
 
 export interface WhiteboardCardWhiteboard {

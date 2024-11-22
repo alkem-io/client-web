@@ -4,13 +4,13 @@ import { Caption } from '../typography';
 import { gutters } from '../grid/utils';
 import { BoxTypeMap } from '@mui/system';
 
-interface CardSegmentCaptionProps {
+type CardSegmentCaptionProps = {
   align?: 'left' | 'right';
   icon?: ReactNode;
   secondaryIcon?: ReactNode;
   noWrap?: boolean;
   disablePadding?: boolean;
-}
+};
 
 const CardSegmentCaption = <D extends React.ElementType = BoxTypeMap['defaultComponent'], P = {}>({
   icon: mainIcon,

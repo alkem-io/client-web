@@ -1,4 +1,3 @@
-import React from 'react';
 import { IconButton, InputAdornment, TextField, TextFieldProps } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useTranslation } from 'react-i18next';

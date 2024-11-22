@@ -1,3 +1,3 @@
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 
 export const routes = { ...EntityPageSection };

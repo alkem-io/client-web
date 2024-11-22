@@ -1,4 +1,4 @@
-import { Reference, Tagset } from '../../../../../common/profile/Profile';
+import { Reference, Tagset } from '@/domain/common/profile/Profile';
 
 export interface GroupFormInput {
   name: string;

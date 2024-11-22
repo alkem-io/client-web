@@ -6,19 +6,18 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@mui/styles';
-import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
-import Loading from '../../../../core/ui/loading/Loading';
-import AlkemioAvatar from '../../../../core/ui/image/AlkemioAvatar';
-import WrapperButton from '../../../../core/ui/button/deprecated/WrapperButton';
+import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
+import Loading from '@/core/ui/loading/Loading';
+import AlkemioAvatar from '@/core/ui/image/AlkemioAvatar';
+import WrapperButton from '@/core/ui/button/deprecated/WrapperButton';
 import UserPopUpDelimiter from './UserPopUpDelimiter';
-import { DialogActions, DialogContent, DialogTitle } from '../../../../core/ui/dialog/deprecated';
-import { RouterLink } from '../../../../core/ui/link/deprecated/RouterLink';
-import Tag from '../../../../core/ui/tags/deprecated/Tag';
+import { DialogActions, DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
+import { RouterLink } from '@/core/ui/link/deprecated/RouterLink';
+import Tag from '@/core/ui/tags/deprecated/Tag';
 import UserPopUpTagContainer from './UserPopUpTagContainer';
-import WrapperTypography from '../../../../core/ui/typography/deprecated/WrapperTypography';
+import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
 import { useUserMetadata } from '../index';
 import useUserContributionDisplayNames from '../userContributions/useUserContributionDisplayNames';
 
@@ -97,15 +96,15 @@ const useUserPopUpStyles = makeStyles(theme => ({
   },
 }));
 
-interface UserPopUpProps {
+type UserPopUpProps = {
   id: string;
   onHide: () => void;
   terms?: Array<string>;
-}
+};
 
 const getStringOfNames = (arr: string[]) => arr.join(', ');
 
-const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
+const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
   const { t } = useTranslation();
   const styles = useUserPopUpStyles();
 

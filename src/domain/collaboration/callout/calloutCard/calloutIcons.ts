@@ -1,9 +1,9 @@
-import { CalloutContributionType, CalloutState, CalloutType } from '../../../../core/apollo/generated/graphql-schema';
+import { CalloutContributionType, CalloutState, CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { ComponentType } from 'react';
 import { SvgIconProps } from '@mui/material';
-import { ReferenceIcon } from '../../../shared/components/References/icons/ReferenceIcon';
+import { ReferenceIcon } from '@/domain/shared/components/References/icons/ReferenceIcon';
 import { BlockOutlined, ForumOutlined, LibraryBooksOutlined } from '@mui/icons-material';
-import { WhiteboardIcon } from '../../whiteboard/icon/WhiteboardIcon';
+import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 import calloutIcons from '../utils/calloutIcons';
 
 export interface ContributionPolicy {

@@ -2,16 +2,16 @@ import { Grid, Skeleton } from '@mui/material';
 import React, { useState } from 'react';
 import ContributionDetailsContainer, {
   ContributionDetails,
-} from '../../ContributionDetails/ContributionDetailsContainer';
-import { SpaceHostedItem } from '../../../../journey/utils/SpaceHostedItem';
-import { Caption } from '../../../../../core/ui/typography';
-import PageContentBlockGrid, { PageContentBlockGridProps } from '../../../../../core/ui/content/PageContentBlockGrid';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
-import ContributionDetailsCard from '../../ContributionDetails/ContributionDetailsCard';
-import ScrollableCardsLayoutContainer from '../../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+} from '@/domain/community/profile/ContributionDetails/ContributionDetailsContainer';
+import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
+import { Caption } from '@/core/ui/typography';
+import PageContentBlockGrid, { PageContentBlockGridProps } from '@/core/ui/content/PageContentBlockGrid';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import ContributionDetailsCard from '@/domain/community/profile/ContributionDetails/ContributionDetailsCard';
+import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 
-interface ContributionViewProps {
+type ContributionViewProps = {
   title: string;
   subtitle?: string;
   emptyCaption?: string;
@@ -21,7 +21,7 @@ interface ContributionViewProps {
   onLeave?: () => Promise<unknown>;
   onContributionClick?: (event: React.MouseEvent<Element, MouseEvent>, contribution: ContributionDetails) => void;
   cards?: PageContentBlockGridProps['cards'];
-}
+};
 
 const SkeletonItem = () => (
   <Grid item>

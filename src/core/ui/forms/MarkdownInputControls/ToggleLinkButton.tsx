@@ -1,17 +1,17 @@
 import { Button, IconButton, IconButtonProps } from '@mui/material';
 import { Editor } from '@tiptap/react';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
 import FormikInputField from '../FormikInputField/FormikInputField';
 import { LinkOutlined } from '@mui/icons-material';
-import DialogHeader from '../../dialog/DialogHeader';
-import Gutters from '../../grid/Gutters';
-import { Actions } from '../../actions/Actions';
-import DialogWithGrid from '../../dialog/DialogWithGrid';
-import { useNotification } from '../../notifications/useNotification';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import Gutters from '@/core/ui/grid/Gutters';
+import { Actions } from '@/core/ui/actions/Actions';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Selection } from 'prosemirror-state';
-import { BlockTitle } from '../../typography';
+import { BlockTitle } from '@/core/ui/typography';
 
 interface ToggleLinkButtonProps extends IconButtonProps {
   editor: Editor | null;
@@ -19,9 +19,7 @@ interface ToggleLinkButtonProps extends IconButtonProps {
   onDialogClose?: () => void;
 }
 
-interface LinkProps {
-  href: string;
-}
+type LinkProps = { href: string };
 
 const ToggleLinkButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps }: ToggleLinkButtonProps) => {
   const { t } = useTranslation();
@@ -96,9 +94,7 @@ const ToggleLinkButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps 
 
   const unmarkAsLink = () => editor?.chain().focus().unsetLink().run();
 
-  const initialValues: LinkProps = {
-    href: 'https://',
-  };
+  const initialValues: LinkProps = { href: 'https://' };
 
   const isDisabled = !editor || !editor.can().toggleLink(initialValues);
 

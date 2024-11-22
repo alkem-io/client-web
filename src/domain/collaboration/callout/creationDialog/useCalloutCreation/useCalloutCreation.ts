@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { CalloutFragmentDoc, useCreateCalloutMutation } from '../../../../../core/apollo/generated/apollo-hooks';
+import { CalloutFragmentDoc, useCreateCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
   CalloutGroupName,
   CalloutState,
@@ -8,9 +8,9 @@ import {
   CreateCalloutMutation,
   CreateReferenceInput,
   CreateTagsetInput,
-} from '../../../../../core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import { WhiteboardFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardField';
-import { useCollaborationAuthorizationEntitlements } from '../../../authorization/useCollaborationAuthorization';
+import { useCollaborationAuthorizationEntitlements } from '@/domain/collaboration/authorization/useCollaborationAuthorization';
 
 export interface CalloutCreationType {
   framing: {
@@ -37,8 +37,7 @@ export interface CalloutCreationType {
 }
 
 export interface CalloutCreationParams {
-  collaborationId: string | undefined;
-  overrideCollaborationId?: string;
+  collaborationId?: string;
   initialOpened?: boolean;
 }
 
@@ -58,25 +57,22 @@ const CALLOUTS_WITH_COMMENTS = [CalloutType.Post];
 
 export const useCalloutCreation = ({
   collaborationId,
-  overrideCollaborationId,
   initialOpened = false,
 }: CalloutCreationParams): CalloutCreationUtils => {
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
   const [isCreating, setIsCreating] = useState(false);
   const { canCreateCallout, loading } = useCollaborationAuthorizationEntitlements({ collaborationId });
 
-  const collaborationID = overrideCollaborationId ?? collaborationId;
-
   const [createCallout] = useCreateCalloutMutation({
     update: (cache, { data }) => {
-      if (!data || !collaborationID) {
+      if (!data || !collaborationId) {
         return;
       }
       const { createCalloutOnCollaboration } = data;
 
       const collabRefId = cache.identify({
         __typename: 'Collaboration',
-        id: collaborationID,
+        id: collaborationId,
       });
 
       if (!collabRefId) {
@@ -106,7 +102,7 @@ export const useCalloutCreation = ({
 
   const handleCreateCallout = useCallback(
     async (callout: CalloutCreationType) => {
-      if (!collaborationID) {
+      if (!collaborationId) {
         return;
       }
 
@@ -116,7 +112,7 @@ export const useCalloutCreation = ({
         const result = await createCallout({
           variables: {
             calloutData: {
-              collaborationID,
+              collaborationID: collaborationId,
               enableComments: CALLOUTS_WITH_COMMENTS.includes(callout.type),
               ...callout,
             },
@@ -130,7 +126,7 @@ export const useCalloutCreation = ({
         setIsCreating(false);
       }
     },
-    [collaborationID, createCallout]
+    [collaborationId, createCallout]
   );
 
   return {

@@ -2,10 +2,10 @@ import { MailOutline } from '@mui/icons-material';
 import { Grid, InputAdornment, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
-import GitHub from '../../../../shared/components/SocialLinks/icons/GitHub';
-import LinkedIn from '../../../../shared/components/SocialLinks/icons/LinkedIn';
-import Twitter from '../../../../shared/components/SocialLinks/icons/Twitter';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import GitHub from '@/domain/shared/components/SocialLinks/icons/GitHub';
+import LinkedIn from '@/domain/shared/components/SocialLinks/icons/LinkedIn';
+import Twitter from '@/domain/shared/components/SocialLinks/icons/Twitter';
 
 export interface SocialSegmentProps {
   readOnly?: boolean;

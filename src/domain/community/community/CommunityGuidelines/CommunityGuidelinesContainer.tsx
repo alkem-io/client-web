@@ -5,12 +5,12 @@ import {
   useDeleteReferenceMutation,
   useTemplateContentLazyQuery,
   useUpdateCommunityGuidelinesMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
+} from '@/core/apollo/generated/apollo-hooks';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { useTranslation } from 'react-i18next';
 import { compact } from 'lodash';
-import { Identifiable } from '../../../../core/utils/Identifiable';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 export interface CommunityGuidelines {
   displayName: string;

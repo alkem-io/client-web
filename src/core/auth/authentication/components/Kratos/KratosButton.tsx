@@ -1,6 +1,6 @@
 import { ButtonProps, Grid } from '@mui/material';
 import { UiNodeInputAttributes } from '@ory/kratos-client';
-import React, { FC, useContext } from 'react';
+import { FC, useContext } from 'react';
 import { KratosUIContext } from '../KratosUI';
 import { getNodeName, getNodeTitle } from './helpers';
 import { KratosProps } from './KratosProps';

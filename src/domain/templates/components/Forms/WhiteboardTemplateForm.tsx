@@ -5,12 +5,12 @@ import TemplateFormBase, {
   TemplateFormProfileSubmittedValues,
   TemplateFormWithPreviewImages,
 } from './TemplateFormBase';
-import FormikWhiteboardPreview from '../../../collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
+import FormikWhiteboardPreview from '@/domain/collaboration/whiteboard/WhiteboardPreview/FormikWhiteboardPreview';
 import { useTranslation } from 'react-i18next';
-import { TemplateType } from '../../../../core/apollo/generated/graphql-schema';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfile } from './common/mappings';
-import { WhiteboardTemplate } from '../../models/WhiteboardTemplate';
-import EmptyWhiteboard from '../../../common/whiteboard/EmptyWhiteboard';
+import { WhiteboardTemplate } from '@/domain/templates/models/WhiteboardTemplate';
+import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 
 export interface WhiteboardTemplateFormSubmittedValues
   extends TemplateFormProfileSubmittedValues,

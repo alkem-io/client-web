@@ -1,22 +1,22 @@
 import { Button, Grid, Paper } from '@mui/material';
-import React, { FC, ReactNode } from 'react';
+import { PropsWithChildren, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RouterLink } from '../../../../core/ui/link/deprecated/RouterLink';
+import { RouterLink } from '@/core/ui/link/deprecated/RouterLink';
 import AddIcon from '@mui/icons-material/Add';
-import Gutters from '../../../../core/ui/grid/Gutters';
+import Gutters from '@/core/ui/grid/Gutters';
 
-interface DiscussionsLayoutProps {
+type DiscussionsLayoutProps = {
   canCreateDiscussion?: boolean;
   categorySelector?: ReactNode;
   backButton?: ReactNode;
-}
+};
 
-export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
+export const DiscussionsLayout = ({
   canCreateDiscussion = false,
   categorySelector,
   backButton,
   children,
-}) => {
+}: PropsWithChildren<DiscussionsLayoutProps>) => {
   const { t } = useTranslation();
 
   return (

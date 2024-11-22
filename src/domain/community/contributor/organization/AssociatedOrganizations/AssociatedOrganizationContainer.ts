@@ -1,16 +1,13 @@
-import { FC, useCallback } from 'react';
-import { useUserContext } from '../../../user';
+import { useCallback } from 'react';
+import { useUserContext } from '@/domain/community/user';
 import {
   refetchUserOrganizationIdsQuery,
   useAssociatedOrganizationQuery,
   useRemoveOrganizationRoleFromUserMutation,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import {
-  ContainerPropsWithProvided,
-  renderComponentOrChildrenFn,
-} from '../../../../../core/container/ComponentOrChildrenFn';
+} from '@/core/apollo/generated/apollo-hooks';
+import { ContainerPropsWithProvided, renderComponentOrChildrenFn } from '@/core/container/ComponentOrChildrenFn';
 import { AssociatedOrganization, mapToAssociatedOrganization } from './AssociatedOrganization';
-import { OrganizationRole } from '../../../../../core/apollo/generated/graphql-schema';
+import { OrganizationRole } from '@/core/apollo/generated/graphql-schema';
 
 export type OrganizationDetailsContainerProps = ContainerPropsWithProvided<
   {
@@ -23,11 +20,11 @@ export type OrganizationDetailsContainerProps = ContainerPropsWithProvided<
   }
 >;
 
-export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerProps> = ({
+export const AssociatedOrganizationContainer = ({
   organizationId,
   enableLeave,
   ...rendered
-}) => {
+}: OrganizationDetailsContainerProps) => {
   const { user } = useUserContext();
 
   const { data, loading, error } = useAssociatedOrganizationQuery({

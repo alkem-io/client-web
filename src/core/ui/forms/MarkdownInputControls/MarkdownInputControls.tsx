@@ -1,5 +1,5 @@
 import { Editor } from '@tiptap/react';
-import React, { forwardRef, memo, useEffect, useState } from 'react';
+import { forwardRef, memo, useEffect, useState } from 'react';
 import {
   Code,
   FormatBold,
@@ -14,21 +14,21 @@ import {
 } from '@mui/icons-material';
 import { Collapse, IconButton, IconButtonProps, Tabs } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { gutters } from '../../grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { ChainedCommands } from '@tiptap/core/dist/packages/core/src/types';
 import InsertImageButton from './InsertImageButton';
 import ToggleLinkButton from './ToggleLinkButton';
 import InsertEmojiButton from './InsertEmojiButton';
 import produce from 'immer';
 
-interface MarkdownInputControlsProps {
+type MarkdownInputControlsProps = {
   editor: Editor | null;
   visible?: boolean;
   hideImageOptions?: boolean;
   onDialogOpen?: () => void;
   onDialogClose?: () => void;
   temporaryLocation?: boolean;
-}
+};
 
 interface ControlsButtonProps extends IconButtonProps {
   editor: Editor | null;

@@ -1,12 +1,12 @@
 import { IconButton, styled } from '@mui/material';
 import { DataGrid, DataGridProps, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import { Identifiable } from '../../utils/Identifiable';
+import { Identifiable } from '@/core/utils/Identifiable';
 import { ReactNode, useMemo } from 'react';
 import { CardText } from '../typography';
 import SwapColors from '../palette/SwapColors';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useTranslation } from 'react-i18next';
-import TranslationKey from '../../i18n/utils/TranslationKey';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { GUTTER_PX } from '../grid/constants';
 
 export const StyledDataGrid = styled(DataGrid)(({ theme }) => ({

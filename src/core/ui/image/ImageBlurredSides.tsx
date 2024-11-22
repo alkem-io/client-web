@@ -9,11 +9,11 @@ interface ImageBlurredSidesProps extends BoxProps<'img'> {
   containerProps?: BoxProps;
 }
 
-interface BlurredSideProps {
+type BlurredSideProps = {
   src?: string;
   side: Side;
   blurRadius: BlurRadius;
-}
+};
 
 const BlurredSide = ({ src, side, blurRadius }: BlurredSideProps) => {
   const theme = useTheme();
@@ -45,14 +45,12 @@ const BlurredSide = ({ src, side, blurRadius }: BlurredSideProps) => {
   );
 };
 
-const ImageBlurredSides = ({ src, blurRadius, sx, containerProps, ...props }: ImageBlurredSidesProps) => {
-  return (
-    <Box display="flex" justifyContent="center" alignItems="stretch" {...containerProps}>
-      <BlurredSide src={src} blurRadius={blurRadius} side="left" />
-      <BlurredSide src={src} blurRadius={blurRadius} side="right" />
-      <Image src={src} {...props} flexShrink={0} sx={{ objectFit: 'cover', ...sx }} />
-    </Box>
-  );
-};
+const ImageBlurredSides = ({ src, blurRadius, sx, containerProps, ...props }: ImageBlurredSidesProps) => (
+  <Box display="flex" justifyContent="center" alignItems="stretch" {...containerProps}>
+    <BlurredSide src={src} blurRadius={blurRadius} side="left" />
+    <BlurredSide src={src} blurRadius={blurRadius} side="right" />
+    <Image src={src} {...props} flexShrink={0} sx={{ objectFit: 'cover', ...sx }} />
+  </Box>
+);
 
 export default ImageBlurredSides;

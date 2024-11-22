@@ -1,16 +1,15 @@
-import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import { useUrlParams } from '@/core/routing/useUrlParams';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import WhiteboardPage from '../EntityWhiteboardPage/WhiteboardPage';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 
 export interface WhiteboardRouteProps {
   parentPagePath: string;
   journeyTypeName: JourneyTypeName;
 }
 
-const WhiteboardRoute: FC<WhiteboardRouteProps> = ({ parentPagePath, journeyTypeName }) => {
+const WhiteboardRoute = ({ parentPagePath, journeyTypeName }: WhiteboardRouteProps) => {
   const { calloutNameId, whiteboardNameId } = useUrlParams();
 
   const { collaborationId } = useRouteResolver();

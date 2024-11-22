@@ -1,11 +1,10 @@
-import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { useQueryParams } from '../../../routing/useQueryParams';
-import { NotAuthenticatedRoute } from '../../../routing/NotAuthenticatedRoute';
+import { useQueryParams } from '@/core/routing/useQueryParams';
+import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 import RegistrationPage from '../pages/RegistrationPage';
 import RegistrationSuccessPage from '../pages/RegistrationSuccessPage';
 
-export const RegistrationRoute: FC = () => {
+export const RegistrationRoute = () => {
   const params = useQueryParams();
   const flow = params.get('flow') || undefined;
 

@@ -1,15 +1,14 @@
-import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useConfig } from '../../../platform/config/useConfig';
-import { Error404 } from '../../../../core/pages/Errors/Error404';
-import { PageLayoutHolderWithOutlet } from '../../../journey/common/EntityPageLayout';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import { Error404 } from '@/core/pages/Errors/Error404';
+import { PageLayoutHolderWithOutlet } from '@/domain/journey/common/EntityPageLayout';
 import UserProfilePage from '../pages/UserProfilePage';
 import UserAccountPage from '../pages/UserAccountPage';
 import UserCredentialsPage from '../pages/UserCredentialsPage';
 import UserMembershipPage from '../pages/UserMembershipPage';
 import UserNotificationsPage from '../pages/UserNotificationsPage';
 import UserOrganizationsPage from '../pages/UserOrganizationsPage';
-import { PlatformFeatureFlagName } from '../../../../core/apollo/generated/graphql-schema';
+import { PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
 
 export const UserSettingsRoute = () => {
   const { isFeatureEnabled } = useConfig();

@@ -1,14 +1,14 @@
-import { FC, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isNumber } from 'lodash';
 import { Box, DialogContent, Paper } from '@mui/material';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
-import { Caption } from '../../../../../core/ui/typography';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { Caption } from '@/core/ui/typography';
 import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from 'react-beautiful-dnd';
-import Gutters from '../../../../../core/ui/grid/Gutters';
-import { gutters } from '../../../../../core/ui/grid/utils';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
 
 interface CollectionItems {
   name: string;
@@ -24,13 +24,7 @@ interface SortDialogProps {
   onUpdateContributionsOrder: (contributions: CollectionItems[]) => void;
 }
 
-const SortDialog: FC<SortDialogProps> = ({
-  open,
-  onClose,
-  collaborationId,
-  contributions,
-  onUpdateContributionsOrder,
-}) => {
+const SortDialog = ({ open, onClose, collaborationId, contributions, onUpdateContributionsOrder }: SortDialogProps) => {
   const { t } = useTranslation();
   const [items, setItems] = useState(contributions);
   useEffect(() => {

@@ -1,9 +1,4 @@
 import WrapperMarkdown from './WrapperMarkdown';
-import React from 'react';
-
-interface OneLineMarkdownProps {
-  children: string;
-}
 
 /**
  * A Markdown renderer that sets <p> margins to 0.
@@ -11,12 +6,10 @@ interface OneLineMarkdownProps {
  * @param children
  * @constructor
  */
-const OneLineMarkdown = ({ children }: OneLineMarkdownProps) => {
-  return (
-    <WrapperMarkdown plain card>
-      {children}
-    </WrapperMarkdown>
-  );
-};
+const OneLineMarkdown = ({ children }: { children: string }) => (
+  <WrapperMarkdown plain card>
+    {children}
+  </WrapperMarkdown>
+);
 
 export default OneLineMarkdown;

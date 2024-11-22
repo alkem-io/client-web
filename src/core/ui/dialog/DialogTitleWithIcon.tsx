@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode, MouseEvent } from 'react';
 import { styled } from '@mui/material/styles';
 import MuiDialogTitle from '@mui/material/DialogTitle';
 import { DialogTitleProps } from '@mui/material/DialogTitle';
@@ -36,9 +36,9 @@ const Icon = styled(Box)(({ theme }) => ({
 }));
 
 export interface DialogTitleWithIconProps extends DialogTitleProps {
-  icon?: React.ReactNode;
-  subtitle?: React.ReactNode;
-  onClose?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  icon?: ReactNode;
+  subtitle?: ReactNode;
+  onClose?: (e: MouseEvent<HTMLButtonElement>) => void;
 }
 
 /**

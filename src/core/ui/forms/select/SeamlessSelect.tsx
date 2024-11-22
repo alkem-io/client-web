@@ -1,8 +1,8 @@
 import { Box, MenuItem, Select, SelectProps, TypographyProps } from '@mui/material';
 import { SelectOption } from '@mui/base';
 import { ExpandMore } from '@mui/icons-material';
-import { gutters } from '../../grid/utils';
-import { Caption } from '../../typography';
+import { gutters } from '@/core/ui/grid/utils';
+import { Caption } from '@/core/ui/typography';
 import React, { ComponentType, ReactNode, useMemo } from 'react';
 
 interface SeamlessSelectProps<Option extends string | number> extends SelectProps {

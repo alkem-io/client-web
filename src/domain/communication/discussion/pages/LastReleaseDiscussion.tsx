@@ -1,10 +1,7 @@
-import { FC } from 'react';
-import { useLatestReleaseDiscussionQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useLatestReleaseDiscussionQuery } from '@/core/apollo/generated/apollo-hooks';
 import DiscussionPage from './DiscussionPage';
 
-interface LastReleaseDiscussionProps {}
-
-export const LastReleaseDiscussion: FC<LastReleaseDiscussionProps> = () => {
+export const LastReleaseDiscussion = () => {
   const { data, loading } = useLatestReleaseDiscussionQuery();
 
   const lastReleaseNameID = data?.platform?.latestReleaseDiscussion?.nameID;

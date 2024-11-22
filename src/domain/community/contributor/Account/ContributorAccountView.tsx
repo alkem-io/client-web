@@ -1,47 +1,45 @@
-import React, { FC, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import { IconButton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import { BlockTitle } from '../../../../core/ui/typography';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { BlockTitle } from '@/core/ui/typography';
 import JourneyCardHorizontal, {
   JourneyCardHorizontalSkeleton,
-} from '../../../journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
+} from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
+import Gutters from '@/core/ui/grid/Gutters';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import InnovationHubCardHorizontal, {
   InnovationHubCardHorizontalSkeleton,
-} from '../../../innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
-import CreateSpaceDialog from '../../../journey/space/createSpace/CreateSpaceDialog';
-import useNewVirtualContributorWizard from '../../../../main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
-import CreateInnovationHubDialog from '../../../innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
+} from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
+import { Actions } from '@/core/ui/actions/Actions';
+import RoundedIcon from '@/core/ui/icon/RoundedIcon';
+import CreateSpaceDialog from '@/domain/journey/space/createSpace/CreateSpaceDialog';
+import useNewVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
+import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
 import {
   AuthorizationPrivilege,
-  LicenseEntitlement,
-  LicenseEntitlementDataType,
   LicenseEntitlementType,
   SpaceLevel,
   SpaceType,
   SpaceVisibility,
-} from '../../../../core/apollo/generated/graphql-schema';
-import MenuItemWithIcon from '../../../../core/ui/menu/MenuItemWithIcon';
+} from '@/core/apollo/generated/graphql-schema';
+import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import { DeleteOutline } from '@mui/icons-material';
 import {
   useDeleteInnovationHubMutation,
   useDeleteInnovationPackMutation,
   useDeleteSpaceMutation,
   useDeleteVirtualContributorOnAccountMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import EntityConfirmDeleteDialog from '../../../journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
+} from '@/core/apollo/generated/apollo-hooks';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
 import InnovationPackCardHorizontal, {
   InnovationPackCardHorizontalSkeleton,
-} from '../../../InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
-import CreateInnovationPackDialog from '../../../InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
+} from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
+import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
 
 const enum Entities {
   Space = 'Space',
@@ -65,7 +63,7 @@ export interface AccountTabResourcesProps {
   authorization?: { myPrivileges?: AuthorizationPrivilege[] };
   license?: {
     id: string;
-    entitlements?: LicenseEntitlement[];
+    myLicensePrivileges?: LicenseEntitlementType[];
   };
   spaces: {
     id: string;
@@ -82,15 +80,7 @@ export interface AccountTabResourcesProps {
     };
     license: {
       id: string;
-      entitlements: Array<{
-        id: string;
-        type: LicenseEntitlementType;
-        enabled: boolean;
-        limit: number;
-        usage: number;
-        isAvailable: boolean;
-        dataType: LicenseEntitlementDataType;
-      }>;
+      myLicensePrivileges?: LicenseEntitlementType[];
     };
     subspaces: {
       id: string;
@@ -155,7 +145,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accountHostName, account, loading }) => {
+export const ContributorAccountView = ({ accountHostName, account, loading }: ContributorAccountViewProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
@@ -164,35 +154,17 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const [entity, setSelectedEntity] = useState<Entities | undefined>(undefined);
   const styles = useStyles();
-  const accountEntitlements = account?.license?.entitlements || [];
-  const spaceFreeEntitlement = accountEntitlements.find(
-    entitlement => entitlement.type === LicenseEntitlementType.AccountSpaceFree
-  );
-  const spacePlusEntitlement = accountEntitlements.find(
-    entitlement => entitlement.type === LicenseEntitlementType.AccountSpacePlus
-  );
-  const spacePremiumEntitlement = accountEntitlements.find(
-    entitlement => entitlement.type === LicenseEntitlementType.AccountSpacePremium
-  );
+  const myAccountEntitlements = account?.license?.myLicensePrivileges || [];
 
-  const vcEntitlement = accountEntitlements.find(
-    entitlement => entitlement.type === LicenseEntitlementType.AccountVirtualContributor
-  );
-  const innovationHubEntitlement = accountEntitlements.find(
-    entitlement => entitlement.type === LicenseEntitlementType.AccountInnovationHub
-  );
-  const innovationPackEntitlement = accountEntitlements.find(
-    entitlement => entitlement.type === LicenseEntitlementType.AccountInnovationPack
-  );
+  const isEntitledToCreateSpace = [
+    LicenseEntitlementType.AccountSpaceFree,
+    LicenseEntitlementType.AccountSpacePlus,
+    LicenseEntitlementType.AccountSpacePremium,
+  ].some(entitlement => myAccountEntitlements.includes(entitlement));
 
-  const isSpaceFreeLimitReached = spaceFreeEntitlement?.enabled && !spaceFreeEntitlement?.isAvailable;
-  const isSpacePlusLimitReached = spacePlusEntitlement?.enabled && !spacePlusEntitlement?.isAvailable;
-  const isSpacePremiumLimitReached = spacePremiumEntitlement?.enabled && !spacePremiumEntitlement?.isAvailable;
-  const isSpaceLimitReached = isSpaceFreeLimitReached || isSpacePlusLimitReached || isSpacePremiumLimitReached;
-
-  const isVCLimitReached = !vcEntitlement?.isAvailable;
-  const isInnovationHubLimitReached = !innovationHubEntitlement?.isAvailable;
-  const isInnovationPackLimitReached = !innovationPackEntitlement?.isAvailable;
+  const isEntitledToCreateInnovationPack = myAccountEntitlements.includes(LicenseEntitlementType.AccountInnovationPack);
+  const isEntitledToCreateInnovationHub = myAccountEntitlements.includes(LicenseEntitlementType.AccountInnovationHub);
+  const isEntitledToCreateVC = myAccountEntitlements.includes(LicenseEntitlementType.AccountVirtualContributor);
 
   const { virtualContributors, innovationPacks, innovationHubs } = useMemo(
     () => ({
@@ -208,15 +180,15 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
 
   // Note: have information about whether it is the privilege or entitlement that blocks the enabling of the creation, give user more feedback.
   const canCreateSpace =
-    privileges.includes(AuthorizationPrivilege.CreateSpace) && (!isSpaceLimitReached || isPlatformAdmin);
+    privileges.includes(AuthorizationPrivilege.CreateSpace) && (isEntitledToCreateSpace || isPlatformAdmin);
   const canCreateInnovationPack =
     privileges.includes(AuthorizationPrivilege.CreateInnovationPack) &&
-    (!isInnovationPackLimitReached || isPlatformAdmin);
+    (isEntitledToCreateInnovationPack || isPlatformAdmin);
   const canCreateInnovationHub =
     privileges.includes(AuthorizationPrivilege.CreateInnovationHub) &&
-    (!isInnovationHubLimitReached || isPlatformAdmin);
+    (isEntitledToCreateInnovationHub || isPlatformAdmin);
   const canCreateVirtualContributor =
-    privileges.includes(AuthorizationPrivilege.CreateVirtualContributor) && (!isVCLimitReached || isPlatformAdmin);
+    privileges.includes(AuthorizationPrivilege.CreateVirtualContributor) && (isEntitledToCreateVC || isPlatformAdmin);
 
   const canDeleteEntities = privileges.includes(AuthorizationPrivilege.Delete);
 
@@ -469,6 +441,7 @@ export const ContributorAccountView: FC<ContributorAccountViewProps> = ({ accoun
                   key={vc.id}
                   profile={vc.profile}
                   seamless
+                  withUnifiedTitle
                   menuActions={getVCActions(vc.id)}
                 />
               ))}

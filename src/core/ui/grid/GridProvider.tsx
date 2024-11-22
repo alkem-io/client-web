@@ -1,10 +1,10 @@
-import React, { PropsWithChildren, useContext, useMemo } from 'react';
+import { PropsWithChildren, useContext, useMemo } from 'react';
 import GridContext, { GridProperties } from './GridContext';
 
-interface GridProviderProps {
+type GridProviderProps = {
   columns: number;
   force?: boolean;
-}
+};
 
 const GridProvider = ({ columns, force = false, children }: PropsWithChildren<GridProviderProps>) => {
   const parentGridContext = useContext(GridContext);
