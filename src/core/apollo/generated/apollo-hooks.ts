@@ -18056,6 +18056,8 @@ export function refetchSubspacePageQuery(variables: SchemaTypes.SubspacePageQuer
 export const PlatformLevelAuthorizationDocument = gql`
   query PlatformLevelAuthorization {
     platform {
+      id
+      myRoles
       authorization {
         ...MyPrivileges
       }

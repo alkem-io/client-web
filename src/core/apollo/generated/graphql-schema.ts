@@ -23536,6 +23536,8 @@ export type PlatformLevelAuthorizationQuery = {
   __typename?: 'Query';
   platform: {
     __typename?: 'Platform';
+    id: string;
+    myRoles: Array<PlatformRole>;
     authorization?:
       | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;

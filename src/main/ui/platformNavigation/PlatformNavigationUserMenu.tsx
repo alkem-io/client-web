@@ -16,7 +16,7 @@ import {
 import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { useTranslation } from 'react-i18next';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, PlatformRole } from '@/core/apollo/generated/graphql-schema';
 import { useUserContext } from '@/domain/community/user';
 import Gutters from '@/core/ui/grid/Gutters';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
@@ -47,18 +47,31 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
     const platformOrigin = usePlatformOrigin();
     const homeUrl = platformOrigin && `${platformOrigin}${ROUTE_HOME}`;
 
-    const { user: { user, hasPlatformPrivilege } = {}, isAuthenticated } = useUserContext();
+    const { user: { user, hasPlatformPrivilege } = {}, isAuthenticated, platformRoles } = useUserContext();
 
+    // todo: change with PlatformRole.GlobalAdmin?
     const isAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
 
     const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
 
-    const role = useMemo(() => {
-      if (isAdmin) {
-        // TODO change role name path
-        return t('common.enums.authorization-credentials.GLOBAL_ADMIN.name');
+    // the roles should follow the order
+    const roles = useMemo(() => {
+      const result: string[] = [];
+
+      if (platformRoles.includes(PlatformRole.GlobalAdmin)) {
+        result.push(t('common.roles.GLOBAL_ADMIN'));
       }
-    }, [isAdmin, t]);
+
+      if (platformRoles.includes(PlatformRole.VcCampaign)) {
+        result.push(t('common.roles.VC_CAMPAIGN'));
+      }
+
+      if (platformRoles.includes(PlatformRole.BetaTester)) {
+        result.push(t('common.roles.BETA_TESTER'));
+      }
+
+      return result.join(', ');
+    }, [platformRoles, t]);
 
     const Wrapper = surface ? GlobalMenuSurface : Box;
 
@@ -69,9 +82,9 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
             <Gutters disableGap alignItems="center" sx={{ paddingBottom: 1 }}>
               <AlkemioAvatar size="lg" src={user.profile.avatar?.uri} />
               <BlockTitle lineHeight={gutters(2)}>{user.profile.displayName}</BlockTitle>
-              {role && (
+              {roles.length > 0 && (
                 <Caption color="neutralMedium.main" textTransform="uppercase">
-                  {role}
+                  {roles}
                 </Caption>
               )}
             </Gutters>
