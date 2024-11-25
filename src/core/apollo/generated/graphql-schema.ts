@@ -16669,21 +16669,6 @@ export type AdminGlobalOrganizationsListQuery = {
       hasNextPage: boolean;
     };
   };
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    licensingFramework: {
-      __typename?: 'Licensing';
-      id: string;
-      plans: Array<{
-        __typename?: 'LicensePlan';
-        id: string;
-        name: string;
-        type: LicensePlanType;
-        licenseCredential: LicenseCredential;
-      }>;
-    };
-  };
 };
 
 export type AdminOrganizationVerifyMutationVariables = Exact<{
@@ -17579,21 +17564,6 @@ export type UserListQuery = {
       };
     }>;
     pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
-  };
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    licensingFramework: {
-      __typename?: 'Licensing';
-      id: string;
-      plans: Array<{
-        __typename?: 'LicensePlan';
-        id: string;
-        name: string;
-        type: LicensePlanType;
-        licenseCredential: LicenseCredential;
-      }>;
-    };
   };
 };
 
@@ -23711,14 +23681,6 @@ export type AdminSpacesListQuery = {
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
   }>;
-  platform: {
-    __typename?: 'Platform';
-    licensingFramework: {
-      __typename?: 'Licensing';
-      id: string;
-      plans: Array<{ __typename?: 'LicensePlan'; id: string; name: string; licenseCredential: LicenseCredential }>;
-    };
-  };
 };
 
 export type AdminSpaceFragment = {
@@ -24283,6 +24245,26 @@ export type ConfigurationFragment = {
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
   apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
   geo: { __typename?: 'Geo'; endpoint: string };
+};
+
+export type PlatformLicensingPlansQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformLicensingPlansQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    licensingFramework: {
+      __typename?: 'Licensing';
+      id: string;
+      plans: Array<{
+        __typename?: 'LicensePlan';
+        id: string;
+        type: LicensePlanType;
+        name: string;
+        licenseCredential: LicenseCredential;
+      }>;
+    };
+  };
 };
 
 export type ServerMetadataQueryVariables = Exact<{ [key: string]: never }>;
