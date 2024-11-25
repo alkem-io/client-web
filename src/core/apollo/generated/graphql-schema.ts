@@ -2546,33 +2546,29 @@ export type ISearchResults = {
 
 /** An in-app notification type. To not be queried directly */
 export type InAppNotification = {
-  /** The contributor is the main actor in the notification. */
-  actor?: Maybe<Contributor>;
   /** The contributor that triggered this notification. */
   category: Scalars['String'];
   id: Scalars['UUID'];
-  /** The contributor that should receive this notification. */
+  /** The receiver of the notification. */
   receiver: Contributor;
   /** The user that triggered this Activity. */
   state: InAppNotificationState;
   /** When (UTC) was the notification sent. */
   triggeredAt: Scalars['DateTime'];
-  /** The contributor that triggered this notification. */
-  triggeredBy?: Maybe<Contributor>;
+  /** The Contributor who triggered the notification. */
+  triggeredBy: Contributor;
   /** The user that triggered this Activity. */
   type: Scalars['String'];
 };
 
 export type InAppNotificationCalloutPublished = InAppNotification & {
   __typename?: 'InAppNotificationCalloutPublished';
-  /** The contributor is the main actor in the notification. */
-  actor?: Maybe<Contributor>;
   /** The Callout that was published. */
   callout: Callout;
   /** The contributor that triggered this notification. */
   category: Scalars['String'];
   id: Scalars['UUID'];
-  /** The contributor that should receive this notification. */
+  /** The receiver of the notification. */
   receiver: Contributor;
   /** Where the callout is located. */
   space: Space;
@@ -2580,8 +2576,8 @@ export type InAppNotificationCalloutPublished = InAppNotification & {
   state: InAppNotificationState;
   /** When (UTC) was the notification sent. */
   triggeredAt: Scalars['DateTime'];
-  /** The contributor that triggered this notification. */
-  triggeredBy?: Maybe<Contributor>;
+  /** The Contributor who triggered the notification. */
+  triggeredBy: Contributor;
   /** The user that triggered this Activity. */
   type: Scalars['String'];
 };
@@ -2589,13 +2585,13 @@ export type InAppNotificationCalloutPublished = InAppNotification & {
 export type InAppNotificationCommunityNewMember = InAppNotification & {
   __typename?: 'InAppNotificationCommunityNewMember';
   /** The Contributor that joined. */
-  actor?: Maybe<Contributor>;
+  actor: Contributor;
   /** The contributor that triggered this notification. */
   category: Scalars['String'];
   /** The type of the Contributor that joined. */
   contributorType: CommunityContributorType;
   id: Scalars['UUID'];
-  /** The contributor that should receive this notification. */
+  /** The receiver of the notification. */
   receiver: Contributor;
   /** The Space that was joined. */
   space: Space;
@@ -2603,8 +2599,8 @@ export type InAppNotificationCommunityNewMember = InAppNotification & {
   state: InAppNotificationState;
   /** When (UTC) was the notification sent. */
   triggeredAt: Scalars['DateTime'];
-  /** The Contributor that added the Contributor in. */
-  triggeredBy?: Maybe<Contributor>;
+  /** The Contributor who triggered the notification. */
+  triggeredBy: Contributor;
   /** The user that triggered this Activity. */
   type: Scalars['String'];
 };
@@ -2617,21 +2613,21 @@ export enum InAppNotificationState {
 
 export type InAppNotificationUserMentioned = InAppNotification & {
   __typename?: 'InAppNotificationUserMentioned';
-  /** The contributor is the main actor in the notification. */
-  actor?: Maybe<Contributor>;
   /** The contributor that triggered this notification. */
   category: Scalars['String'];
-  /** The type of contributor that was mentioned. */
+  /** The comment that the contributor was mentioned in. */
+  comment: Scalars['String'];
+  /** The type of the Contributor that joined. */
   contributorType: CommunityContributorType;
   id: Scalars['UUID'];
-  /** The contributor that should receive this notification. */
+  /** The receiver of the notification. */
   receiver: Contributor;
   /** The user that triggered this Activity. */
   state: InAppNotificationState;
   /** When (UTC) was the notification sent. */
   triggeredAt: Scalars['DateTime'];
-  /** The contributor that mentioned the receiver. */
-  triggeredBy?: Maybe<Contributor>;
+  /** The Contributor who triggered the notification. */
+  triggeredBy: Contributor;
   /** The user that triggered this Activity. */
   type: Scalars['String'];
 };
@@ -4915,7 +4911,7 @@ export type QueryExploreSpacesArgs = {
 };
 
 export type QueryNotificationsArgs = {
-  receiverID: Scalars['UUID_NAMEID'];
+  receiverID: Scalars['UUID'];
 };
 
 export type QueryOrganizationArgs = {
@@ -27718,7 +27714,7 @@ export type AskChatGuidanceQuestionQuery = {
 };
 
 export type InAppNotificationsQueryVariables = Exact<{
-  receiverID: Scalars['UUID_NAMEID'];
+  receiverID: Scalars['UUID'];
 }>;
 
 export type InAppNotificationsQuery = {
@@ -27758,7 +27754,7 @@ export type InAppNotificationsQuery = {
             visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           };
         };
-        triggeredBy?:
+        triggeredBy:
           | {
               __typename?: 'Organization';
               id: string;
@@ -27791,8 +27787,7 @@ export type InAppNotificationsQuery = {
                 url: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
-            }
-          | undefined;
+            };
       }
     | {
         __typename?: 'InAppNotificationCommunityNewMember';
@@ -27801,7 +27796,7 @@ export type InAppNotificationsQuery = {
         category: string;
         state: InAppNotificationState;
         triggeredAt: Date;
-        triggeredBy?:
+        triggeredBy:
           | {
               __typename?: 'Organization';
               id: string;
@@ -27834,8 +27829,7 @@ export type InAppNotificationsQuery = {
                 url: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
-            }
-          | undefined;
+            };
         space: {
           __typename?: 'Space';
           id: string;
@@ -27848,7 +27842,7 @@ export type InAppNotificationsQuery = {
             visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           };
         };
-        actor?:
+        actor:
           | {
               __typename?: 'Organization';
               id: string;
@@ -27881,8 +27875,7 @@ export type InAppNotificationsQuery = {
                 url: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
-            }
-          | undefined;
+            };
       }
     | {
         __typename?: 'InAppNotificationUserMentioned';
@@ -27891,8 +27884,9 @@ export type InAppNotificationsQuery = {
         category: string;
         state: InAppNotificationState;
         triggeredAt: Date;
+        comment: string;
         contributorType: CommunityContributorType;
-        triggeredBy?:
+        triggeredBy:
           | {
               __typename?: 'Organization';
               id: string;
@@ -27925,43 +27919,7 @@ export type InAppNotificationsQuery = {
                 url: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
-            }
-          | undefined;
-        actor?:
-          | {
-              __typename?: 'Organization';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              };
-            }
-          | {
-              __typename?: 'User';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              };
-            }
-          | {
-              __typename?: 'VirtualContributor';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              };
-            }
-          | undefined;
+            };
       }
   >;
 };
@@ -28005,7 +27963,7 @@ export type InAppNotificationCalloutPublishedFragment = {
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
   };
-  triggeredBy?:
+  triggeredBy:
     | {
         __typename?: 'Organization';
         id: string;
@@ -28038,13 +27996,12 @@ export type InAppNotificationCalloutPublishedFragment = {
           url: string;
           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
-      }
-    | undefined;
+      };
 };
 
 export type InAppNotificationCommunityNewMemberFragment = {
   __typename?: 'InAppNotificationCommunityNewMember';
-  triggeredBy?:
+  triggeredBy:
     | {
         __typename?: 'Organization';
         id: string;
@@ -28077,8 +28034,7 @@ export type InAppNotificationCommunityNewMemberFragment = {
           url: string;
           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
-      }
-    | undefined;
+      };
   space: {
     __typename?: 'Space';
     id: string;
@@ -28091,7 +28047,7 @@ export type InAppNotificationCommunityNewMemberFragment = {
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
   };
-  actor?:
+  actor:
     | {
         __typename?: 'Organization';
         id: string;
@@ -28124,14 +28080,14 @@ export type InAppNotificationCommunityNewMemberFragment = {
           url: string;
           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
-      }
-    | undefined;
+      };
 };
 
 export type InAppNotificationUserMentionedFragment = {
   __typename?: 'InAppNotificationUserMentioned';
+  comment: string;
   contributorType: CommunityContributorType;
-  triggeredBy?:
+  triggeredBy:
     | {
         __typename?: 'Organization';
         id: string;
@@ -28164,43 +28120,7 @@ export type InAppNotificationUserMentionedFragment = {
           url: string;
           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
-      }
-    | undefined;
-  actor?:
-    | {
-        __typename?: 'Organization';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        };
-      }
-    | {
-        __typename?: 'User';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        };
-      }
-    | {
-        __typename?: 'VirtualContributor';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          url: string;
-          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        };
-      }
-    | undefined;
+      };
 };
 
 export type JourneyRouteResolverQueryVariables = Exact<{

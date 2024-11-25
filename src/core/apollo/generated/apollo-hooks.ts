@@ -3192,17 +3192,7 @@ export const InAppNotificationUserMentionedFragmentDoc = gql`
         }
       }
     }
-    actor {
-      id
-      profile {
-        id
-        displayName
-        url
-        visual(type: AVATAR) {
-          ...VisualUri
-        }
-      }
-    }
+    comment
     contributorType
   }
   ${VisualUriFragmentDoc}
@@ -21825,7 +21815,7 @@ export function refetchAskChatGuidanceQuestionQuery(variables: SchemaTypes.AskCh
 }
 
 export const InAppNotificationsDocument = gql`
-  query InAppNotifications($receiverID: UUID_NAMEID!) {
+  query InAppNotifications($receiverID: UUID!) {
     notifications(receiverID: $receiverID) {
       id
       type

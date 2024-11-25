@@ -1488,7 +1488,6 @@ export type ISearchResultsFieldPolicy = {
   journeyResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationKeySpecifier = (
-  | 'actor'
   | 'category'
   | 'id'
   | 'receiver'
@@ -1499,7 +1498,6 @@ export type InAppNotificationKeySpecifier = (
   | InAppNotificationKeySpecifier
 )[];
 export type InAppNotificationFieldPolicy = {
-  actor?: FieldPolicy<any> | FieldReadFunction<any>;
   category?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   receiver?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1509,7 +1507,6 @@ export type InAppNotificationFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationCalloutPublishedKeySpecifier = (
-  | 'actor'
   | 'callout'
   | 'category'
   | 'id'
@@ -1522,7 +1519,6 @@ export type InAppNotificationCalloutPublishedKeySpecifier = (
   | InAppNotificationCalloutPublishedKeySpecifier
 )[];
 export type InAppNotificationCalloutPublishedFieldPolicy = {
-  actor?: FieldPolicy<any> | FieldReadFunction<any>;
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
   category?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1559,8 +1555,8 @@ export type InAppNotificationCommunityNewMemberFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationUserMentionedKeySpecifier = (
-  | 'actor'
   | 'category'
+  | 'comment'
   | 'contributorType'
   | 'id'
   | 'receiver'
@@ -1571,8 +1567,8 @@ export type InAppNotificationUserMentionedKeySpecifier = (
   | InAppNotificationUserMentionedKeySpecifier
 )[];
 export type InAppNotificationUserMentionedFieldPolicy = {
-  actor?: FieldPolicy<any> | FieldReadFunction<any>;
   category?: FieldPolicy<any> | FieldReadFunction<any>;
+  comment?: FieldPolicy<any> | FieldReadFunction<any>;
   contributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   receiver?: FieldPolicy<any> | FieldReadFunction<any>;

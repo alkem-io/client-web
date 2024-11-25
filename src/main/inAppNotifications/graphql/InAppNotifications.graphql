@@ -1,4 +1,4 @@
-query InAppNotifications ($receiverID: UUID_NAMEID!) {
+query InAppNotifications ($receiverID: UUID!) {
   notifications (receiverID: $receiverID) {
     id
     type

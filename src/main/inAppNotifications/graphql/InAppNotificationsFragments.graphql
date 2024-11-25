@@ -87,16 +87,17 @@ fragment InAppNotificationUserMentioned on InAppNotificationUserMentioned {
       }
     }
   }
-  actor {
-    id
-    profile {
-      id
-      displayName,
-      url,
-      visual(type: AVATAR) {
-        ...VisualUri
-      }
-    }
-  }
+  comment
+#  actor {
+#    id
+#    profile {
+#      id
+#      displayName,
+#      url,
+#      visual(type: AVATAR) {
+#        ...VisualUri
+#      }
+#    }
+#  }
   contributorType
 }

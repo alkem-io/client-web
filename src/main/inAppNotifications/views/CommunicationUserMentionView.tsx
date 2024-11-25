@@ -10,12 +10,14 @@ export const CommunicationUserMentionView = ({
   callout,
   triggeredBy,
   triggeredAt,
+  comment,
 }: InAppNotificationProps) => {
   const notification: InAppNotificationBaseViewProps = useMemo(() => {
     const notificationTextValues = {
       defaultValue: '',
       commenterName: triggeredBy?.profile?.displayName,
       colloutName: callout?.framing?.profile?.displayName,
+      comment,
     };
 
     return {

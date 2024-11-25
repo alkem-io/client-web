@@ -20,8 +20,8 @@ export enum InAppNotificationType {
 }
 
 export enum InAppNotificationCategory {
-  PERSONAL = 'PERSONAL',
-  ADMIN = 'ADMIN',
+  PERSONAL = 'self',
+  ADMIN = 'admin',
 }
 
 export interface InAppNotificationProps {
@@ -77,6 +77,7 @@ export interface InAppNotificationProps {
         }
       | undefined;
   };
+  comment?: string;
 }
 
 export const useInAppNotifications = () => {
