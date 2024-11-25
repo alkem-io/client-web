@@ -3,8 +3,8 @@ import type { AppState, CollaboratorPointer, SocketId, UserIdleState } from '@al
 import { DELETED_ELEMENT_TIMEOUT, WS_SCENE_EVENT_TYPES } from '../excalidrawAppConstants';
 import { env } from '@/main/env';
 import { BinaryFilesWithUrl } from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import { MakeBrand } from '@alkemio/excalidraw/dist/excalidraw/utility-types';
-import { isInvisiblySmallElement } from '@alkemio/excalidraw';
+import type { MakeBrand } from '@alkemio/excalidraw/dist/excalidraw/utility-types';
+import { isInvisiblySmallElement } from '@alkemio/excalidraw'; // TODO: make lazy - not possible to keep the type assertion `element is SyncableExcalidrawElement` if isInvisiblySmallElement is asynchrounously loaded
 
 export type SyncableExcalidrawElement = OrderedExcalidrawElement & MakeBrand<'SyncableExcalidrawElement'>;
 
