@@ -13,6 +13,7 @@ import RouterLink from '../link/RouterLink';
 import { gutters } from '../grid/utils';
 import { times } from 'lodash';
 import CardExpandButton from '../card/CardExpandButton';
+import Avatar from '@/core/ui/avatar/Avatar';
 
 const List = styled(MuiList)(() => ({ padding: 0 }));
 
@@ -33,6 +34,7 @@ interface Item {
   title: ReactNode;
   icon: ReactNode;
   uri: string;
+  cardBanner: string;
 }
 
 export interface LinksListProps {
@@ -57,8 +59,9 @@ const LinksList = ({ items = [], emptyListCaption, loading = false }: LinksListP
       {!loading &&
         items.length > 0 &&
         items.slice(0, COLLAPSED_LIST_ITEM_LIMIT).map(item => (
-          <ListItem key={item.id} component={RouterLink} to={item.uri}>
-            <ListItemIcon>{item.icon}</ListItemIcon>
+          <ListItem key={item.id} component={RouterLink} to={item.uri} sx={{ marginTop: gutters(0.5) }}>
+            <Avatar variant="rounded" alt="subspace avatar" src={item.cardBanner} aria-label="Subspace avatar" />
+
             <BlockSectionTitle minWidth={0} noWrap>
               {item.title}
             </BlockSectionTitle>
