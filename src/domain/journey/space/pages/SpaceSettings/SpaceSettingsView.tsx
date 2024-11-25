@@ -130,6 +130,7 @@ export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsV
   const roleSetId = settingsData?.lookup.space?.community?.roleSet.id;
   const collaborationId = settingsData?.lookup.space?.collaboration.id;
 
+  // check for TemplateCreation privileges
   const { data: templateData } = useSpaceTemplatesSetIdQuery({
     variables: { spaceNameId },
     skip: !spaceNameId,
