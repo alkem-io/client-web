@@ -47,7 +47,7 @@ const ListItem = forwardRef<HTMLDivElement, ListItemProps>(
       <Box ref={ref} {...boxProps}>
         <Caption>
           {Icon && <Icon sx={{ verticalAlign: 'bottom', marginRight: gutters(0.5) }} />}
-          {displayName} ({activity})
+          {displayName} {activity > 0 && `(${activity})`}
         </Caption>
       </Box>
     );

@@ -1787,7 +1787,8 @@
           "description": "Here you can explore the hosted **{{entities}}**. Filter by key words to show just the topics you care about.",
           "list": "List view",
           "empty": "No {{entities}} found.",
-          "empty-list": "There are no {{entities}} yet."
+          "empty-list": "There are no {{entities}} yet.",
+          "searchPlaceholder": "Find Subspaces..."
         },
         "recommendations": {
           "title": "Recommended by the Host"

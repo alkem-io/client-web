@@ -9,8 +9,8 @@ import ContentColumn from '@/core/ui/content/ContentColumn';
 import { useDashboardContext } from './DashboardContext';
 import MyResources from './myResources/MyResources';
 import { Theme, useMediaQuery } from '@mui/material';
-import { lazyWithGlobalErrorHandler } from '../../../core/lazyLoading/lazyWithGlobalErrorHandler';
-import Loading from '../../../core/ui/loading/Loading';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import Loading from '@/core/ui/loading/Loading';
 
 const DashboardDialogs = lazyWithGlobalErrorHandler(() => import('./DashboardDialogs/DashboardDialogs'));
 const DashboardActivity = lazyWithGlobalErrorHandler(() => import('./DashboardWithMemberships/DashboardActivity'));
