@@ -17683,7 +17683,7 @@ export const AdminSpaceSubspacesPageDocument = gql`
           id
           displayName
           url
-          cardBanner: visual(type: CARD) {
+          avatar: visual(type: AVATAR) {
             ...VisualUri
           }
         }

@@ -1,5 +1,5 @@
 import { Box, BoxProps, Skeleton } from '@mui/material';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import 'react-image-crop/dist/ReactCrop.css';
 import UploadButton from '@/core/ui/button/UploadButton';
@@ -10,8 +10,10 @@ import { useField } from 'formik';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { usePlatformVisualsConstraintsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
+import { Caption } from '../../typography';
+import { gutters } from '../../grid/utils';
 
-const DEFAULT_SIZE = 128;
+const DEFAULT_SIZE = 70;
 
 const ImagePlaceholder = ({ src, alt, ...props }: BoxProps<'img'>) => {
   const { t } = useTranslation();
@@ -61,6 +63,13 @@ const FormikAvatarUpload = ({
   const [field, , helpers] = useField<VisualWithAltText | undefined>(name);
   const selectedFile = field.value;
 
+  const imageUrl = useMemo(() => {
+    if (selectedFile?.file) {
+      return URL.createObjectURL(selectedFile.file);
+    }
+    return defaultVisualUrls[visualType];
+  }, [selectedFile, visualType, defaultVisualUrls]);
+
   const { data: dimensionsData, loading } = usePlatformVisualsConstraintsQuery({
     variables: {
       includeAvatar: visualType === VisualType.Avatar,
@@ -75,7 +84,7 @@ const FormikAvatarUpload = ({
   if (loading || !visualTypeConstraints) {
     return <FormikAvatarUploadSkeleton />;
   }
-  const { allowedTypes, aspectRatio } = visualTypeConstraints;
+  const { maxHeight, maxWidth, allowedTypes, aspectRatio } = visualTypeConstraints;
 
   const onFileSelected = (file: File) => {
     helpers.setValue({ file, altText });
@@ -91,7 +100,7 @@ const FormikAvatarUpload = ({
   return (
     <Box {...containerProps}>
       <FileUploadWrapper onFileSelected={onFileSelected} allowedTypes={allowedTypes}>
-        <Box marginBottom={2}>
+        <Box display="flex" flexDirection="row" gap={gutters()} marginBottom={gutters()}>
           <ImagePlaceholder
             sx={{
               display: 'flex',
@@ -103,9 +112,15 @@ const FormikAvatarUpload = ({
               cursor: 'pointer',
               borderColor: theme => theme.palette.grey[400],
             }}
-            src={defaultVisualUrls[visualType]}
+            src={imageUrl}
             alt={altText}
           />
+          <Box>
+            <Caption>{t(`pages.visualEdit.${visualType}.title`)}</Caption>
+            <Caption>
+              {t(`pages.visualEdit.${visualType}.description1`, { width: maxWidth, height: maxHeight })}
+            </Caption>
+          </Box>
         </Box>
       </FileUploadWrapper>
       <UploadButton allowedTypes={allowedTypes} onFileSelected={onFileSelected} text={t('buttons.upload')} />

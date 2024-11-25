@@ -2131,23 +2131,27 @@
       }
     },
     "visualEdit": {
-      "avatar": {
+      "AVATAR": {
         "title": "Avatar",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
         "description2": "Usage: Journey card on page banner",
         "description": "Description: {{alternativeText}}"
       },
-      "banner": {
+      "BANNER": {
         "title": "Page banner",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
         "description2": "Usage: Banner on dashboard tab",
         "description": "Description: {{alternativeText}}"
       },
-      "cardBanner": {
+      "CARD": {
         "title": "Card banner",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
         "description2": "Usage: Banner on cards",
         "description": "Description: {{alternativeText}}"
+      },
+      "BANNER_WIDE": {
+        "title": "Wide Banner",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
       },
       "form": {
         "altText": {

@@ -126,7 +126,7 @@ const InnovationHubForm = ({
                 <BlockSectionTitle>{t('components.visualSegment.banner')}</BlockSectionTitle>
                 <VisualUpload
                   visual={banner}
-                  altText={t('pages.visualEdit.banner.description', {
+                  altText={t('pages.visualEdit.BANNER.description', {
                     alternativeText: banner?.alternativeText,
                   })}
                 />

@@ -22830,7 +22830,7 @@ export type AdminSpaceSubspacesPageQuery = {
         id: string;
         displayName: string;
         url: string;
-        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
     }>;
     templatesManager?:

@@ -71,7 +71,7 @@ export const SubspaceListView = () => {
           displayName: s.profile.displayName,
           url: buildSettingsUrl(s.profile.url),
           avatar: {
-            uri: s.profile.cardBanner?.uri ?? '',
+            uri: s.profile.avatar?.uri ?? '',
           },
         },
       })) || []

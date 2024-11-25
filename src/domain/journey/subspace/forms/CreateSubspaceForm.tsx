@@ -14,8 +14,9 @@ import { FormikRadiosSwitch } from '@/core/ui/forms/FormikRadiosSwitch';
 import SubspaceTemplateSelector from '@/domain/templates/components/TemplateSelectors/SubspaceTemplateSelector';
 import Gutters from '@/core/ui/grid/Gutters';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import FormikAvatarUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
+import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { Theme, useMediaQuery } from '@mui/material';
 
 const FormikEffect = FormikEffectFactory<FormValues>();
 
@@ -41,6 +42,7 @@ export const CreateSubspaceForm = ({
   onChanged,
 }: PropsWithChildren<CreateSubspaceFormProps>) => {
   const { t } = useTranslation();
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
   const validationRequiredString = t('forms.validations.required');
 
@@ -128,9 +130,9 @@ export const CreateSubspaceForm = ({
             helpTextIcon={t('context.subspace.tags.tooltip')}
           />
           <Gutters disableHorizontalPadding>
-            <PageContentBlock sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <FormikAvatarUpload name="visuals.avatar" visualType={VisualType.Avatar} flex={1} />
-              <FormikAvatarUpload name="visuals.cardBanner" visualType={VisualType.Card} flex={1} />
+            <PageContentBlock sx={{ flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between' }}>
+              <FormikVisualUpload name="visuals.avatar" visualType={VisualType.Avatar} flex={1} />
+              <FormikVisualUpload name="visuals.cardBanner" visualType={VisualType.Card} flex={1} />
             </PageContentBlock>
             <SubspaceTemplateSelector name="collaborationTemplateId" disablePadding />
             <FormikRadiosSwitch
