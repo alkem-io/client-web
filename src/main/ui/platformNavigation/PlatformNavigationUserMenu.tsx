@@ -55,22 +55,23 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
     const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
 
     // the roles should follow the order
-    const roles = useMemo(() => {
-      const result: string[] = [];
-
-      if (platformRoles.includes(PlatformRole.GlobalAdmin)) {
-        result.push(t('common.roles.GLOBAL_ADMIN'));
+    const role = useMemo(() => {
+      for (const platformRole of platformRoles) {
+        switch (platformRole) {
+          case PlatformRole.GlobalAdmin:
+            return t('common.roles.GLOBAL_ADMIN');
+          case PlatformRole.Support:
+            return t('common.roles.SUPPORT');
+          case PlatformRole.LicenseManager:
+            return t('common.roles.LICENSE_MANAGER');
+          case PlatformRole.BetaTester:
+            return t('common.roles.BETA_TESTER');
+          case PlatformRole.VcCampaign:
+            return t('common.roles.VC_CAMPAIGN');
+          default:
+            return null;
+        }
       }
-
-      if (platformRoles.includes(PlatformRole.VcCampaign)) {
-        result.push(t('common.roles.VC_CAMPAIGN'));
-      }
-
-      if (platformRoles.includes(PlatformRole.BetaTester)) {
-        result.push(t('common.roles.BETA_TESTER'));
-      }
-
-      return result.join(', ');
     }, [platformRoles, t]);
 
     const Wrapper = surface ? GlobalMenuSurface : Box;
@@ -82,9 +83,9 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
             <Gutters disableGap alignItems="center" sx={{ paddingBottom: 1 }}>
               <AlkemioAvatar size="lg" src={user.profile.avatar?.uri} />
               <BlockTitle lineHeight={gutters(2)}>{user.profile.displayName}</BlockTitle>
-              {roles.length > 0 && (
+              {role && (
                 <Caption color="neutralMedium.main" textTransform="uppercase">
-                  {roles}
+                  {role}
                 </Caption>
               )}
             </Gutters>

@@ -580,10 +580,10 @@
     },
     "roles": {
       "GLOBAL_ADMIN": "Global Admin",
-      "SUPPORT": "Support",
+      "SUPPORT": "Support Admin",
       "LICENSE_MANAGER": "License Manager",
-      "VC_CAMPAIGN": "VC Campaign",
-      "BETA_TESTER": "Beta Tester"
+      "BETA_TESTER": "Beta Tester",
+      "VC_CAMPAIGN": "VC Early Access"
     }
   },
   "community": {
