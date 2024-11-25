@@ -84,7 +84,7 @@ const UserProvider: FC = ({ children }) => {
       isAuthenticated,
       platformRoles: platformLevelAuthorizationData?.platform.myRoles ?? [],
       accountPrivileges: meData?.me.user?.account?.authorization?.myPrivileges ?? [],
-      accountEntitlements: meData?.me.user?.account?.license?.myLicensePrivileges ?? [],
+      accountEntitlements: meData?.me.user?.account?.license?.availableEntitlements ?? [],
     }),
     [
       userMetadata,

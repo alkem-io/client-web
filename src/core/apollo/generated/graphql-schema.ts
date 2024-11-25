@@ -2780,14 +2780,14 @@ export type License = {
   __typename?: 'License';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The set of License Entitlement Types on that entity. */
+  availableEntitlements?: Maybe<Array<LicenseEntitlementType>>;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The set of Entitlements associated with the License applicable to this entity. */
   entitlements: Array<LicenseEntitlement>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The set of License Entitlements on that entity. */
-  myLicensePrivileges?: Maybe<Array<LicenseEntitlementType>>;
   /** The type of entity that this License is being used with. */
   type?: Maybe<LicenseType>;
   /** The date at which the entity was last updated. */
@@ -8080,7 +8080,7 @@ export type AccountInformationQuery = {
           license: {
             __typename?: 'License';
             id: string;
-            myLicensePrivileges?: Array<LicenseEntitlementType> | undefined;
+            availableEntitlements?: Array<LicenseEntitlementType> | undefined;
           };
           host?:
             | { __typename?: 'Organization'; id: string }
@@ -10277,7 +10277,7 @@ export type CollaborationAuthorizationEntitlementsQuery = {
           license: {
             __typename?: 'License';
             id: string;
-            myLicensePrivileges?: Array<LicenseEntitlementType> | undefined;
+            availableEntitlements?: Array<LicenseEntitlementType> | undefined;
           };
         }
       | undefined;
@@ -18272,7 +18272,7 @@ export type UserProviderQuery = {
                 license: {
                   __typename?: 'License';
                   id: string;
-                  myLicensePrivileges?: Array<LicenseEntitlementType> | undefined;
+                  availableEntitlements?: Array<LicenseEntitlementType> | undefined;
                 };
               }
             | undefined;
@@ -28943,7 +28943,7 @@ export type CampaignBlockCredentialsQuery = {
                 license: {
                   __typename?: 'License';
                   id: string;
-                  myLicensePrivileges?: Array<LicenseEntitlementType> | undefined;
+                  availableEntitlements?: Array<LicenseEntitlementType> | undefined;
                 };
               }
             | undefined;
@@ -30499,7 +30499,7 @@ export type NewVirtualContributorMySpacesQuery = {
                   license: {
                     __typename?: 'License';
                     id: string;
-                    myLicensePrivileges?: Array<LicenseEntitlementType> | undefined;
+                    availableEntitlements?: Array<LicenseEntitlementType> | undefined;
                   };
                   community: {
                     __typename?: 'Community';

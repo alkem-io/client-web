@@ -10,15 +10,16 @@ const CampaignBlock = () => {
   // Do not remove: Inside the blocks startWizard() is being called with a ClickEvent and that messes up with the param that startWizard expects
   const handleStartWizard = () => startWizard();
 
-  const userRoles: PlatformRole[] = data?.platform.myRoles ?? [];
-  const userEntitlements: LicenseEntitlementType[] | undefined = data?.me.user?.account?.license?.myLicensePrivileges;
-  const rolesAvailableTo = [PlatformRole.VcCampaign];
+  const userPlatformRoles: PlatformRole[] | undefined = data?.platform.myRoles;
+  const userAccountEntitlements: LicenseEntitlementType[] | undefined =
+    data?.me.user?.account?.license?.availableEntitlements;
+  const platfromRolesToDisplayCampaignBlockTo = [PlatformRole.VcCampaign];
   const entitlementsAvailableTo = [LicenseEntitlementType.AccountVirtualContributor];
 
   // the campaign block should be visible only for VcCampaign users ATM
   if (
-    !userRoles?.some(role => rolesAvailableTo.includes(role)) ||
-    !userEntitlements?.some(entitlement => entitlementsAvailableTo.includes(entitlement))
+    !userPlatformRoles?.some(role => platfromRolesToDisplayCampaignBlockTo.includes(role)) ||
+    !userAccountEntitlements?.some(entitlement => entitlementsAvailableTo.includes(entitlement))
   ) {
     return null;
   }

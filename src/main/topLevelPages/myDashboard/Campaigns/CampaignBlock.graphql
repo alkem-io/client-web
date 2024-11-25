@@ -10,7 +10,7 @@ query CampaignBlockCredentials {
         id
         license {
           id
-          myLicensePrivileges
+          availableEntitlements
         }
       }
     }

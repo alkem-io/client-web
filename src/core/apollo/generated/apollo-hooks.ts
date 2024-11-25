@@ -5086,7 +5086,7 @@ export const AccountInformationDocument = gql`
         }
         license {
           id
-          myLicensePrivileges
+          availableEntitlements
         }
         host {
           id
@@ -6308,7 +6308,7 @@ export const CollaborationAuthorizationEntitlementsDocument = gql`
         }
         license {
           id
-          myLicensePrivileges
+          availableEntitlements
         }
       }
     }
@@ -13703,7 +13703,7 @@ export const UserProviderDocument = gql`
           }
           license {
             id
-            myLicensePrivileges
+            availableEntitlements
           }
         }
       }
@@ -22535,7 +22535,7 @@ export const CampaignBlockCredentialsDocument = gql`
           id
           license {
             id
-            myLicensePrivileges
+            availableEntitlements
           }
         }
       }
@@ -23497,7 +23497,7 @@ export const NewVirtualContributorMySpacesDocument = gql`
             id
             license {
               id
-              myLicensePrivileges
+              availableEntitlements
             }
             community {
               id
