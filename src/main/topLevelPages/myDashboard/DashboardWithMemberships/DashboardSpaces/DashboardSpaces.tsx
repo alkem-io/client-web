@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { Paper, Button, Avatar } from '@mui/material';
 import { Card } from '@mui/material';
 import { DoubleArrowOutlined } from '@mui/icons-material';
-
 import Gutters from '@/core/ui/grid/Gutters';
 import GridItem from '@/core/ui/grid/GridItem';
 import Loading from '@/core/ui/loading/Loading';
@@ -12,11 +11,10 @@ import { Caption, Tagline } from '@/core/ui/typography';
 import { MyMembershipsDialog } from '@/main/topLevelPages/myDashboard/myMemberships/MyMembershipsDialog';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import JourneyTile from '@/domain/journey/common/JourneyTile/JourneyTile';
-import defaultJourneyBanner from '@/domain/journey/defaultVisuals/Banner.jpg';
-
+import { SpacePrivacyMode, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
 import { useDashboardSpaces } from './useDashboardSpaces';
 import { gutters } from '@/core/ui/grid/utils';
-import { SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
 
 const DashboardSpaces = () => {
   const {
@@ -61,7 +59,7 @@ const DashboardSpaces = () => {
                   variant="square"
                   sx={spaceCardMedia}
                   alt={profile?.displayName}
-                  src={profile?.spaceBanner?.uri || defaultJourneyBanner}
+                  src={profile?.spaceBanner?.uri || defaultVisualUrls[VisualType.Banner]}
                 />
               </Card>
 

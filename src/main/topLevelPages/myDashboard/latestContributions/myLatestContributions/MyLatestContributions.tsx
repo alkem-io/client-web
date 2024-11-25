@@ -6,6 +6,7 @@ import {
   ActivityEventType,
   ActivityLogCalloutWhiteboardContentModifiedFragment,
   ActivityLogCalloutWhiteboardCreatedFragment,
+  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import { Box, SelectChangeEvent } from '@mui/material';
 import {
@@ -13,7 +14,7 @@ import {
   ActivityViewChooser,
 } from '@/domain/collaboration/activity/ActivityLog/ActivityComponent';
 import { CaptionSmall } from '@/core/ui/typography/components';
-import defaultJourneyAvatar from '@/domain/journey/defaultVisuals/Avatar.jpg';
+import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
 import { LatestContributionsProps, SPACE_OPTION_ALL } from '../LatestContributionsProps';
 import { SelectOption } from '@mui/base';
 import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
@@ -113,7 +114,7 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
                   <ActivityViewChooser
                     key={activity.id}
                     activity={activity as ActivityLogResultType}
-                    avatarUrl={activity.space?.profile.avatar?.uri || defaultJourneyAvatar}
+                    avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
                   />
                 );
               })}
