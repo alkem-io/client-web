@@ -24311,6 +24311,7 @@ export type PageInfoFragment = {
 
 export type CreateSubspaceMutationVariables = Exact<{
   input: CreateSubspaceInput;
+  includeVisuals?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CreateSubspaceMutation = {
@@ -24318,6 +24319,12 @@ export type CreateSubspaceMutation = {
   createSubspace: {
     __typename?: 'Space';
     id: string;
+    visuals: {
+      __typename?: 'Profile';
+      id: string;
+      cardBanner?: { __typename?: 'Visual'; id: string } | undefined;
+      avatar?: { __typename?: 'Visual'; id: string } | undefined;
+    };
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     profile: {
       __typename?: 'Profile';

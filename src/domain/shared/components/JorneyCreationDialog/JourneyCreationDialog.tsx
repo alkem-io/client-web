@@ -34,6 +34,10 @@ export const JourneyCreationDialog: FC<JourneyCreationDialogProps> = ({
     tags: [],
     addTutorialCallouts: false,
     collaborationTemplateId: undefined,
+    visuals: {
+      avatar: { file: undefined, altText: '' },
+      cardBanner: { file: undefined, altText: '' },
+    },
   });
 
   const handleChange = (value: JourneyFormValues) => setValue(value);

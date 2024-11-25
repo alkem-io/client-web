@@ -7,6 +7,6 @@ export const defaultVisualUrls = {
   [VisualType.Avatar]: defaultJourneyAvatar,
   [VisualType.Banner]: defaultJourneyBanner,
   [VisualType.Card]: defaultJourneyCard,
-  // It's never shown as an uploadable, only replaced when saving a whiteboard, so it doesn't need a default
-  //[VisualType.BannerWide]: defaultJourneyBanner,
+  // It's never shown as an uploadable, only replaced when saving a whiteboard, so it doesn't really need a default, but it is useful to define it
+  [VisualType.BannerWide]: defaultJourneyBanner,
 } as const;

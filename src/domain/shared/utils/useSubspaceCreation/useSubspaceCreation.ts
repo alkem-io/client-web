@@ -4,6 +4,7 @@ import {
   refetchUserProviderQuery,
   SubspaceCardFragmentDoc,
   useCreateSubspaceMutation,
+  useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useConfig } from '@/domain/platform/config/useConfig';
@@ -24,6 +25,16 @@ interface SubspaceCreationInput {
   tags: string[];
   addTutorialCallouts: boolean;
   collaborationTemplateId?: string;
+  visuals: {
+    avatar: {
+      file: File | undefined;
+      altText?: string;
+    };
+    cardBanner: {
+      file: File | undefined;
+      altText?: string;
+    };
+  };
 }
 
 export const useSubspaceCreation = () => {
@@ -31,6 +42,7 @@ export const useSubspaceCreation = () => {
   const { isFeatureEnabled } = useConfig();
 
   const subscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);
+  const [uploadVisual] = useUploadVisualMutation();
 
   const [createSubspaceLazy] = useCreateSubspaceMutation({
     update: (cache, { data }) => {
@@ -70,6 +82,8 @@ export const useSubspaceCreation = () => {
   // add useCallback
   const createSubspace = useCallback(
     async (value: SubspaceCreationInput) => {
+      const includeVisuals = Boolean(value.visuals.cardBanner.file) || Boolean(value.visuals.avatar.file);
+
       const { data } = await createSubspaceLazy({
         variables: {
           input: {
@@ -89,6 +103,7 @@ export const useSubspaceCreation = () => {
               collaborationTemplateID: value.collaborationTemplateId,
             },
           },
+          includeVisuals,
         },
         optimisticResponse: {
           createSubspace: {
@@ -134,10 +149,40 @@ export const useSubspaceCreation = () => {
                 mode: SpacePrivacyMode.Public,
               },
             },
+            visuals: {
+              id: '',
+              cardBanner: {
+                id: '',
+              },
+              avatar: {
+                id: '',
+              },
+            },
           },
         },
       });
-
+      if (value.visuals.avatar.file && data?.createSubspace.visuals.avatar?.id) {
+        await uploadVisual({
+          variables: {
+            file: value.visuals.avatar.file,
+            uploadData: {
+              visualID: data.createSubspace.visuals.avatar.id,
+              alternativeText: value.visuals.avatar.altText,
+            },
+          },
+        });
+      }
+      if (value.visuals.cardBanner.file && data?.createSubspace.visuals.cardBanner?.id) {
+        await uploadVisual({
+          variables: {
+            file: value.visuals.cardBanner.file,
+            uploadData: {
+              visualID: data.createSubspace.visuals.cardBanner.id,
+              alternativeText: value.visuals.cardBanner.altText,
+            },
+          },
+        });
+      }
       return data?.createSubspace;
     },
     [createSubspaceLazy]

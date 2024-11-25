@@ -18999,9 +18999,18 @@ export type ShareLinkWithUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ShareLinkWithUserMutationVariables
 >;
 export const CreateSubspaceDocument = gql`
-  mutation createSubspace($input: CreateSubspaceInput!) {
+  mutation createSubspace($input: CreateSubspaceInput!, $includeVisuals: Boolean = false) {
     createSubspace(subspaceData: $input) {
       ...SubspaceCard
+      visuals: profile @include(if: $includeVisuals) {
+        id
+        cardBanner: visual(type: CARD) {
+          id
+        }
+        avatar: visual(type: AVATAR) {
+          id
+        }
+      }
     }
   }
   ${SubspaceCardFragmentDoc}
@@ -19025,6 +19034,7 @@ export type CreateSubspaceMutationFn = Apollo.MutationFunction<
  * const [createSubspaceMutation, { data, loading, error }] = useCreateSubspaceMutation({
  *   variables: {
  *      input: // value for 'input'
+ *      includeVisuals: // value for 'includeVisuals'
  *   },
  * });
  */

@@ -39,6 +39,7 @@ const SpaceSubspacesPage = () => {
         tags: value.tags,
         addTutorialCallouts: value.addTutorialCallouts,
         collaborationTemplateId: value.collaborationTemplateId,
+        visuals: value.visuals,
       });
 
       if (!result) {

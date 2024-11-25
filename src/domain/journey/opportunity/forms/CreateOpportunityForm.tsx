@@ -22,6 +22,10 @@ type FormValues = {
   tags: string[];
   addTutorialCallouts: boolean;
   collaborationTemplateId: string | undefined;
+  visuals: {
+    avatar: { file: File | undefined; altText?: string };
+    cardBanner: { file: File | undefined; altText?: string };
+  };
 };
 
 interface CreateOpportunityFormProps extends JourneyCreationForm {}
@@ -46,6 +50,7 @@ export const CreateOpportunityForm = ({
       tags: value.tags,
       addTutorialCallouts: value.addTutorialCallouts,
       collaborationTemplateId: value.collaborationTemplateId,
+      visuals: value.visuals,
     });
 
   const initialValues: FormValues = {
@@ -55,6 +60,10 @@ export const CreateOpportunityForm = ({
     tags: [],
     addTutorialCallouts: true,
     collaborationTemplateId: undefined,
+    visuals: {
+      avatar: { file: undefined, altText: '' },
+      cardBanner: { file: undefined, altText: '' },
+    },
   };
 
   const validationSchema = yup.object().shape({

@@ -13,6 +13,9 @@ import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { FormikRadiosSwitch } from '@/core/ui/forms/FormikRadiosSwitch';
 import SubspaceTemplateSelector from '@/domain/templates/components/TemplateSelectors/SubspaceTemplateSelector';
 import Gutters from '@/core/ui/grid/Gutters';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import FormikAvatarUpload from '@/core/ui/upload/FormikAvatarUpload/FormikAvatarUpload';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 
 const FormikEffect = FormikEffectFactory<FormValues>();
 
@@ -24,6 +27,10 @@ type FormValues = {
   tags: string[];
   addTutorialCallouts: boolean;
   collaborationTemplateId: string | undefined;
+  visuals: {
+    avatar: { file: File | undefined; altText?: string };
+    cardBanner: { file: File | undefined; altText?: string };
+  };
 };
 
 interface CreateSubspaceFormProps extends JourneyCreationForm {}
@@ -46,6 +53,7 @@ export const CreateSubspaceForm = ({
       tags: value.tags,
       addTutorialCallouts: value.addTutorialCallouts,
       collaborationTemplateId: value.collaborationTemplateId,
+      visuals: value.visuals,
     });
 
   const initialValues: FormValues = {
@@ -56,6 +64,10 @@ export const CreateSubspaceForm = ({
     tags: [],
     addTutorialCallouts: false,
     collaborationTemplateId: undefined,
+    visuals: {
+      avatar: { file: undefined, altText: '' },
+      cardBanner: { file: undefined, altText: '' },
+    },
   };
 
   const validationSchema = yup.object().shape({
@@ -116,7 +128,11 @@ export const CreateSubspaceForm = ({
             helpTextIcon={t('context.subspace.tags.tooltip')}
           />
           <Gutters disableHorizontalPadding>
-            <SubspaceTemplateSelector name="" disablePadding />
+            <PageContentBlock sx={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <FormikAvatarUpload name="visuals.avatar" visualType={VisualType.Avatar} flex={1} />
+              <FormikAvatarUpload name="visuals.cardBanner" visualType={VisualType.Card} flex={1} />
+            </PageContentBlock>
+            <SubspaceTemplateSelector name="collaborationTemplateId" disablePadding />
             <FormikRadiosSwitch
               name="addTutorialCallouts"
               label="Tutorials:"
