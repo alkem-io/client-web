@@ -14,8 +14,8 @@ import { InvitationsBlock } from './InvitationsBlock/InvitationsBlock';
 import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { useCreateSpaceLink } from './useCreateSpaceLink/useCreateSpaceLink';
-import { lazyWithGlobalErrorHandler } from '../../../core/lazyLoading/lazyWithGlobalErrorHandler';
-import Loading from '../../../core/ui/loading/Loading';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import Loading from '@/core/ui/loading/Loading';
 
 const DashboardDialogs = lazyWithGlobalErrorHandler(() => import('./DashboardDialogs/DashboardDialogs'));
 

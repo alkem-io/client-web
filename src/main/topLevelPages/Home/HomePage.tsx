@@ -6,7 +6,7 @@ import useInnovationHub from '@/domain/innovationHub/useInnovationHub/useInnovat
 import PageContent from '@/core/ui/content/PageContent';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
-const MyDashboard = lazyWithGlobalErrorHandler(() => import('../myDashboard/MyDashboard'));
+const MyDashboard = lazyWithGlobalErrorHandler(() => import('@/main/topLevelPages/myDashboard/MyDashboard'));
 
 const HomePage = () => {
   const { innovationHub, innovationHubLoading } = useInnovationHub();

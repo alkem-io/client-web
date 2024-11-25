@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import App from '../ui/layout/topLevelWrappers/App';
 import { CommunityContextProvider } from '@/domain/community/community/CommunityContext';
 import { SpaceContextProvider } from '@/domain/journey/space/SpaceContext/SpaceContext';
-import HomePage from '../topLevelPages/Home/HomePage';
+import HomePage from '@/main/topLevelPages/Home/HomePage';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { Restricted } from '@/core/routing/Restricted';
 import { nameOfUrl } from './urlParams';
@@ -21,9 +21,11 @@ import Loading from '@/core/ui/loading/Loading';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
 const DocumentationPage = lazyWithGlobalErrorHandler(() => import('@/domain/documentation/DocumentationPage'));
-const SpaceExplorerPage = lazyWithGlobalErrorHandler(() => import('../topLevelPages/topLevelSpaces/SpaceExplorerPage'));
+const SpaceExplorerPage = lazyWithGlobalErrorHandler(
+  () => import('@/main/topLevelPages/topLevelSpaces/SpaceExplorerPage')
+);
 const InnovationLibraryPage = lazyWithGlobalErrorHandler(
-  () => import('../topLevelPages/InnovationLibraryPage/InnovationLibraryPage')
+  () => import('@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryPage')
 );
 const ContributorsPage = lazyWithGlobalErrorHandler(() => import('@/domain/community/user/ContributorsPage'));
 const AdminRoute = lazyWithGlobalErrorHandler(() => import('@/domain/platform/admin/routing/AdminRoute'));

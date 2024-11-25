@@ -3,7 +3,7 @@ import { useLatestContributionsSpacesFlatQuery } from '@/core/apollo/generated/a
 import Loading from '@/core/ui/loading/Loading';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { DashboardProvider } from './DashboardContext';
-import { lazyWithGlobalErrorHandler } from '../../../core/lazyLoading/lazyWithGlobalErrorHandler';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
 const MyDashboardUnauthenticated = lazyWithGlobalErrorHandler(() => import('./MyDashboardUnauthenticated'));
 const MyDashboardWithMemberships = lazyWithGlobalErrorHandler(() => import('./MyDashboardWithMemberships'));
