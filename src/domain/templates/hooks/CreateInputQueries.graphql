@@ -67,24 +67,6 @@ query CreateCollaborationInput($collaborationId: UUID!) {
   }
 }
 
-query CreateInnovationFlowInput($innovationFlowId: UUID!) {
-  inputCreator {
-    innovationFlow(ID: $innovationFlowId) {
-      profile {
-        displayName
-        description
-        tagsets {
-          tags
-        }
-      }
-      states {
-        displayName
-        description
-      }
-    }
-  }
-}
-
 query CreateWhiteboardInput($whiteboardId: UUID!) {
   inputCreator {
     whiteboard(ID: $whiteboardId) {

@@ -48,7 +48,6 @@ export interface AccountResourcesProps {
       calloutTemplatesCount: number;
       collaborationTemplatesCount: number;
       communityGuidelinesTemplatesCount: number;
-      innovationFlowTemplatesCount: number;
       postTemplatesCount: number;
       whiteboardTemplatesCount: number;
     };

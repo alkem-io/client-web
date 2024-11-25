@@ -55,17 +55,6 @@ fragment WhiteboardTemplate on Template {
   }
 }
 
-fragment InnovationFlowTemplate on Template {
-  ...TemplateProfileInfo
-  innovationFlow {
-    id
-    states {
-      displayName
-      description
-    }
-  }
-}
-
 fragment CommunityGuidelinesTemplate on Template {
   ...TemplateProfileInfo
   communityGuidelines {

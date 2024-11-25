@@ -1,7 +1,6 @@
 import { CalloutType, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { CalloutTemplate } from './CalloutTemplate';
 import { CommunityGuidelinesTemplate } from './CommunityGuidelinesTemplate';
-import { InnovationFlowTemplate } from './InnovationFlowTemplate';
 import { AnyTemplate, TemplateBase } from './TemplateBase';
 import { PostTemplate } from './PostTemplate';
 import { WhiteboardTemplate } from './WhiteboardTemplate';
@@ -9,7 +8,10 @@ import EmptyWhiteboard from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { CollaborationTemplate } from './CollaborationTemplate';
 import { findDefaultTagset } from '@/domain/common/tags/utils';
 
-export const getNewTemplate = (templateType: TemplateType, defaultValues?: Partial<AnyTemplate>): AnyTemplate => {
+export const getNewTemplate = (
+  templateType: TemplateType,
+  defaultValues?: Partial<AnyTemplate>
+): AnyTemplate | undefined => {
   const common: TemplateBase = {
     id: '',
     type: templateType,
@@ -71,18 +73,6 @@ export const getNewTemplate = (templateType: TemplateType, defaultValues?: Parti
             description: data?.communityGuidelines?.profile?.description ?? '',
             references: data?.communityGuidelines?.profile?.references ?? [],
           },
-        },
-      };
-      return template;
-    }
-    case TemplateType.InnovationFlow: {
-      const data = defaultValues as Partial<InnovationFlowTemplate>;
-      const template: InnovationFlowTemplate = {
-        ...common,
-        type: TemplateType.InnovationFlow,
-        innovationFlow: {
-          id: '',
-          states: data?.innovationFlow?.states ?? [],
         },
       };
       return template;
