@@ -816,18 +816,18 @@
     },
     "subspace": {
       "displayName": {
-        "title": "Title",
-        "description": "Try to keep it short, descriptive and engaging",
+        "title": "Title *",
+        "description": "",
         "placeholder": ""
       },
       "tagline": {
-        "title": "Subspace Statement",
-        "description": "Explain in one sentence what this Subspace is about. It is also possible to frame it as a question, starting with 'How might we...'",
+        "title": "Tagline",
+        "description": "",
         "placeholder": ""
       },
       "background": {
-        "title": "Current Reality",
-        "description": "Give a brief impression of the current state of the Subspace. Think of the 'What, where, when and who'.",
+        "title": "A description of the subspace that is visible on the subspace dashboard",
+        "description": "",
         "placeholder": ""
       },
       "impact": {
@@ -847,17 +847,16 @@
       },
       "tags": {
         "title": "Tags",
-        "description": "Enter words that are key to the Subspace to make it stand out and easier to find.",
-        "placeholder": ""
-      },
-      "addCallouts": {
-        "title": "Add default template's collaboration tools"
+        "description": "",
+        "placeholder": "",
+        "tooltip": "Tags"
       },
       "addTutorialCallouts": {
         "title": "Add tutorials collaboration tools"
       },
-      "innovationFlow": {
-        "title": "Subspace Flow"
+      "template": {
+        "title": "Template:",
+        "defaultTemplate": "Default Alkemio template for subspaces"
       }
     },
     "subsubspace": {

@@ -1086,6 +1086,7 @@ export type ConfigKeySpecifier = (
   | 'locations'
   | 'sentry'
   | 'storage'
+  | 'visualTypeConstraints'
   | ConfigKeySpecifier
 )[];
 export type ConfigFieldPolicy = {
@@ -1096,6 +1097,7 @@ export type ConfigFieldPolicy = {
   locations?: FieldPolicy<any> | FieldReadFunction<any>;
   sentry?: FieldPolicy<any> | FieldReadFunction<any>;
   storage?: FieldPolicy<any> | FieldReadFunction<any>;
+  visualTypeConstraints?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ContextKeySpecifier = (
   | 'authorization'
@@ -3701,6 +3703,36 @@ export type VisualFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type VisualConstraintsKeySpecifier = (
+  | 'allowedTypes'
+  | 'aspectRatio'
+  | 'maxHeight'
+  | 'maxWidth'
+  | 'minHeight'
+  | 'minWidth'
+  | VisualConstraintsKeySpecifier
+)[];
+export type VisualConstraintsFieldPolicy = {
+  allowedTypes?: FieldPolicy<any> | FieldReadFunction<any>;
+  aspectRatio?: FieldPolicy<any> | FieldReadFunction<any>;
+  maxHeight?: FieldPolicy<any> | FieldReadFunction<any>;
+  maxWidth?: FieldPolicy<any> | FieldReadFunction<any>;
+  minHeight?: FieldPolicy<any> | FieldReadFunction<any>;
+  minWidth?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VisualTypeContraintsKeySpecifier = (
+  | 'Avatar'
+  | 'Banner'
+  | 'BannerWide'
+  | 'Card'
+  | VisualTypeContraintsKeySpecifier
+)[];
+export type VisualTypeContraintsFieldPolicy = {
+  Avatar?: FieldPolicy<any> | FieldReadFunction<any>;
+  Banner?: FieldPolicy<any> | FieldReadFunction<any>;
+  BannerWide?: FieldPolicy<any> | FieldReadFunction<any>;
+  Card?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type WhiteboardKeySpecifier = (
   | 'authorization'
   | 'content'
@@ -4618,6 +4650,14 @@ export type StrictTypedTypePolicies = {
   Visual?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VisualKeySpecifier | (() => undefined | VisualKeySpecifier);
     fields?: VisualFieldPolicy;
+  };
+  VisualConstraints?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | VisualConstraintsKeySpecifier | (() => undefined | VisualConstraintsKeySpecifier);
+    fields?: VisualConstraintsFieldPolicy;
+  };
+  VisualTypeContraints?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | VisualTypeContraintsKeySpecifier | (() => undefined | VisualTypeContraintsKeySpecifier);
+    fields?: VisualTypeContraintsFieldPolicy;
   };
   Whiteboard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | WhiteboardKeySpecifier | (() => undefined | WhiteboardKeySpecifier);

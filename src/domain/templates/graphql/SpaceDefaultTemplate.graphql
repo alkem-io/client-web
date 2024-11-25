@@ -1,0 +1,21 @@
+query SpaceDefaultTemplate ($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      templatesManager {
+        id
+        templateDefaults {
+          id
+          type
+          template {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1553,6 +1553,8 @@ export type Config = {
   sentry: Sentry;
   /** Configuration for storage providers, e.g. file */
   storage: StorageConfig;
+  /** Visual constraints for different visual types */
+  visualTypeConstraints: VisualTypeContraints;
 };
 
 export enum ContentUpdatePolicy {
@@ -6842,12 +6844,40 @@ export type Visual = {
   uri: Scalars['String'];
 };
 
+export type VisualConstraints = {
+  __typename?: 'VisualConstraints';
+  /** Allowed file types. */
+  allowedTypes: Array<Scalars['String']>;
+  /** Dimensions ratio width / height. */
+  aspectRatio: Scalars['Float'];
+  /** Maximum height resolution. */
+  maxHeight: Scalars['Float'];
+  /** Maximum width resolution. */
+  maxWidth: Scalars['Float'];
+  /** Minimum height resolution. */
+  minHeight: Scalars['Float'];
+  /** Minimum width resolution. */
+  minWidth: Scalars['Float'];
+};
+
 export enum VisualType {
   Avatar = 'AVATAR',
   Banner = 'BANNER',
   BannerWide = 'BANNER_WIDE',
   Card = 'CARD',
 }
+
+export type VisualTypeContraints = {
+  __typename?: 'VisualTypeContraints';
+  /** Avatar visual dimensions */
+  Avatar: VisualConstraints;
+  /** Banner visual dimensions */
+  Banner: VisualConstraints;
+  /** BannerWide visual dimensions */
+  BannerWide: VisualConstraints;
+  /** Card visual dimensions */
+  Card: VisualConstraints;
+};
 
 export type VisualUploadImageInput = {
   alternativeText?: InputMaybe<Scalars['String']>;
@@ -6961,6 +6991,63 @@ export type UploadFileMutationVariables = Exact<{
 }>;
 
 export type UploadFileMutation = { __typename?: 'Mutation'; uploadFileOnStorageBucket: string };
+
+export type PlatformVisualsConstraintsQueryVariables = Exact<{
+  includeAvatar?: InputMaybe<Scalars['Boolean']>;
+  includeBanner?: InputMaybe<Scalars['Boolean']>;
+  includeCard?: InputMaybe<Scalars['Boolean']>;
+  includeBannerWide?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type PlatformVisualsConstraintsQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    configuration: {
+      __typename?: 'Config';
+      visualTypeConstraints: {
+        __typename?: 'VisualTypeContraints';
+        Avatar?: {
+          __typename?: 'VisualConstraints';
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          aspectRatio: number;
+          allowedTypes: Array<string>;
+        };
+        Banner?: {
+          __typename?: 'VisualConstraints';
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          aspectRatio: number;
+          allowedTypes: Array<string>;
+        };
+        Card?: {
+          __typename?: 'VisualConstraints';
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          aspectRatio: number;
+          allowedTypes: Array<string>;
+        };
+        BannerWide?: {
+          __typename?: 'VisualConstraints';
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+          aspectRatio: number;
+          allowedTypes: Array<string>;
+        };
+      };
+    };
+  };
+};
 
 export type InnovationPackProfilePageQueryVariables = Exact<{
   innovationPackId: Scalars['UUID'];
@@ -25124,6 +25211,41 @@ export type SpaceCollaborationIdQuery = {
   };
 };
 
+export type SpaceDefaultTemplateQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpaceDefaultTemplateQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          templatesManager?:
+            | {
+                __typename?: 'TemplatesManager';
+                id: string;
+                templateDefaults: Array<{
+                  __typename?: 'TemplateDefault';
+                  id: string;
+                  type: TemplateDefaultType;
+                  template?:
+                    | {
+                        __typename?: 'Template';
+                        id: string;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | undefined;
+                }>;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type SpaceTemplatesSetIdQueryVariables = Exact<{
   spaceNameId: Scalars['UUID_NAMEID'];
 }>;
@@ -26094,6 +26216,20 @@ export type DeleteTemplateMutationVariables = Exact<{
 export type DeleteTemplateMutation = {
   __typename?: 'Mutation';
   deleteTemplate: { __typename?: 'Template'; id: string };
+};
+
+export type TemplateNameQueryVariables = Exact<{
+  templateId: Scalars['UUID'];
+}>;
+
+export type TemplateNameQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    template?:
+      | { __typename?: 'Template'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+      | undefined;
+  };
 };
 
 export type TemplateUrlResolverQueryVariables = Exact<{

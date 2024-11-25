@@ -1,0 +1,46 @@
+query PlatformVisualsConstraints(
+  $includeAvatar: Boolean = false,
+  $includeBanner: Boolean = false,
+  $includeCard: Boolean = false,
+  $includeBannerWide: Boolean = false,
+) {
+  platform {
+    id
+    configuration {
+      visualTypeConstraints {
+        Avatar @include(if: $includeAvatar) {
+          maxHeight
+          maxWidth
+          minHeight
+          minWidth
+          aspectRatio
+          allowedTypes
+        }
+        Banner @include(if: $includeBanner) {
+          maxHeight
+          maxWidth
+          minHeight
+          minWidth
+          aspectRatio
+          allowedTypes
+        }
+        Card @include(if: $includeCard) {
+          maxHeight
+          maxWidth
+          minHeight
+          minWidth
+          aspectRatio
+          allowedTypes
+        }
+        BannerWide @include(if: $includeBannerWide) {
+          maxHeight
+          maxWidth
+          minHeight
+          minWidth
+          aspectRatio
+          allowedTypes
+        }
+      }
+    }
+  }
+}
