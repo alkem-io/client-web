@@ -1,6 +1,5 @@
 import { forwardRef, PropsWithChildren, ReactNode, useMemo, useState } from 'react';
 import { Box, Divider, MenuList, Typography } from '@mui/material';
-import AlkemioAvatar from '@/core/ui/image/AlkemioAvatar';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import { buildLoginUrl, buildUserProfileUrl } from '@/main/routing/urlBuilders';
@@ -29,6 +28,7 @@ import NavigatableMenuItem from '@/core/ui/menu/NavigatableMenuItem';
 import GlobalMenuSurface from '@/core/ui/menu/GlobalMenuSurface';
 import { FocusTrap } from '@mui/base/FocusTrap';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
+import Avatar from '@/core/ui/avatar/Avatar';
 
 interface PlatformNavigationUserMenuProps {
   surface: boolean;
@@ -81,7 +81,12 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
         <Wrapper ref={ref}>
           {user && (
             <Gutters disableGap alignItems="center" sx={{ paddingBottom: 1 }}>
-              <AlkemioAvatar size="lg" src={user.profile.avatar?.uri} />
+              <Avatar
+                size="large"
+                src={user.profile.avatar?.uri}
+                aria-label="User avatar"
+                alt={t('common.avatar-of', { user: user.profile?.displayName })}
+              />
               <BlockTitle lineHeight={gutters(2)}>{user.profile.displayName}</BlockTitle>
               {role && (
                 <Caption color="neutralMedium.main" textTransform="uppercase">
