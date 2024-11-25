@@ -23536,6 +23536,8 @@ export type PlatformLevelAuthorizationQuery = {
   __typename?: 'Query';
   platform: {
     __typename?: 'Platform';
+    id: string;
+    myRoles: Array<PlatformRole>;
     authorization?:
       | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
@@ -28784,17 +28786,13 @@ export type CampaignBlockCredentialsQueryVariables = Exact<{ [key: string]: neve
 
 export type CampaignBlockCredentialsQuery = {
   __typename?: 'Query';
+  platform: { __typename?: 'Platform'; id: string; myRoles: Array<PlatformRole> };
   me: {
     __typename?: 'MeQueryResults';
     user?:
       | {
           __typename?: 'User';
           id: string;
-          agent: {
-            __typename?: 'Agent';
-            id: string;
-            credentials?: Array<{ __typename?: 'Credential'; resourceID: string; type: CredentialType }> | undefined;
-          };
           account?:
             | {
                 __typename?: 'Account';

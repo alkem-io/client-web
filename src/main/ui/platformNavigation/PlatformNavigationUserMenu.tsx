@@ -1,6 +1,5 @@
 import { forwardRef, PropsWithChildren, ReactNode, useMemo, useState } from 'react';
 import { Box, Divider, MenuList, Typography } from '@mui/material';
-import AlkemioAvatar from '@/core/ui/image/AlkemioAvatar';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
 import { buildLoginUrl, buildUserProfileUrl } from '@/main/routing/urlBuilders';
@@ -16,7 +15,7 @@ import {
 import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { useTranslation } from 'react-i18next';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, PlatformRole } from '@/core/apollo/generated/graphql-schema';
 import { useUserContext } from '@/domain/community/user';
 import Gutters from '@/core/ui/grid/Gutters';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
@@ -29,6 +28,7 @@ import NavigatableMenuItem from '@/core/ui/menu/NavigatableMenuItem';
 import GlobalMenuSurface from '@/core/ui/menu/GlobalMenuSurface';
 import { FocusTrap } from '@mui/base/FocusTrap';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
+import Avatar from '@/core/ui/avatar/Avatar';
 
 interface PlatformNavigationUserMenuProps {
   surface: boolean;
@@ -47,18 +47,32 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
     const platformOrigin = usePlatformOrigin();
     const homeUrl = platformOrigin && `${platformOrigin}${ROUTE_HOME}`;
 
-    const { user: { user, hasPlatformPrivilege } = {}, isAuthenticated } = useUserContext();
+    const { user: { user, hasPlatformPrivilege } = {}, isAuthenticated, platformRoles } = useUserContext();
 
+    // todo: change with PlatformRole.GlobalAdmin?
     const isAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
 
     const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
 
+    // the roles should follow the order
     const role = useMemo(() => {
-      if (isAdmin) {
-        // TODO change role name path
-        return t('common.enums.authorization-credentials.GLOBAL_ADMIN.name');
+      for (const platformRole of platformRoles) {
+        switch (platformRole) {
+          case PlatformRole.GlobalAdmin:
+            return t('common.roles.GLOBAL_ADMIN');
+          case PlatformRole.Support:
+            return t('common.roles.SUPPORT');
+          case PlatformRole.LicenseManager:
+            return t('common.roles.LICENSE_MANAGER');
+          case PlatformRole.BetaTester:
+            return t('common.roles.BETA_TESTER');
+          case PlatformRole.VcCampaign:
+            return t('common.roles.VC_CAMPAIGN');
+          default:
+            return null;
+        }
       }
-    }, [isAdmin, t]);
+    }, [platformRoles, t]);
 
     const Wrapper = surface ? GlobalMenuSurface : Box;
 
@@ -67,7 +81,12 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
         <Wrapper ref={ref}>
           {user && (
             <Gutters disableGap alignItems="center" sx={{ paddingBottom: 1 }}>
-              <AlkemioAvatar size="lg" src={user.profile.avatar?.uri} />
+              <Avatar
+                size="large"
+                src={user.profile.avatar?.uri}
+                aria-label="User avatar"
+                alt={t('common.avatar-of', { user: user.profile?.displayName })}
+              />
               <BlockTitle lineHeight={gutters(2)}>{user.profile.displayName}</BlockTitle>
               {role && (
                 <Caption color="neutralMedium.main" textTransform="uppercase">

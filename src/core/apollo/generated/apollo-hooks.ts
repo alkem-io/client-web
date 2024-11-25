@@ -18056,6 +18056,8 @@ export function refetchSubspacePageQuery(variables: SchemaTypes.SubspacePageQuer
 export const PlatformLevelAuthorizationDocument = gql`
   query PlatformLevelAuthorization {
     platform {
+      id
+      myRoles
       authorization {
         ...MyPrivileges
       }
@@ -22270,16 +22272,13 @@ export function refetchInnovationLibraryQuery(variables?: SchemaTypes.Innovation
 
 export const CampaignBlockCredentialsDocument = gql`
   query CampaignBlockCredentials {
+    platform {
+      id
+      myRoles
+    }
     me {
       user {
         id
-        agent {
-          id
-          credentials {
-            resourceID
-            type
-          }
-        }
         account {
           id
           license {
