@@ -20,16 +20,17 @@ import {
   useCreateSubspaceMutation,
   useDeleteSpaceMutation,
   useSpaceCollaborationIdLazyQuery,
+  useSpaceTemplatesSetIdQuery,
   useSubspacesInSpaceQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ContentCopyOutlined, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
+import { DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
 import Gutters from '@/core/ui/grid/Gutters';
 import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
 import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, TemplateType } from '@/core/apollo/generated/graphql-schema';
 
 export const OpportunityList: FC = () => {
   const { t } = useTranslation();
@@ -121,6 +122,15 @@ export const OpportunityList: FC = () => {
     [navigate, createSubspace, spaceNameId, subspaceId, challengeNameId]
   );
 
+  // check for TemplateCreation privileges
+  const { data: templateData } = useSpaceTemplatesSetIdQuery({
+    variables: { spaceNameId },
+    skip: !spaceNameId,
+  });
+
+  const templateSetPrivileges = templateData?.space.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
+  const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
+
   const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
   const handleSaveAsTemplate = async (values: CollaborationTemplateFormSubmittedValues) => {
     await handleCreateCollaborationTemplate(values, spaceNameId);
@@ -135,10 +145,10 @@ export const OpportunityList: FC = () => {
     }
   };
 
-  const onDuplicateClick = (_item: SearchableListItem) => {
-    // todo: implement
-    //setSelectedItem(item);
-  };
+  // const onDuplicateClick = (_item: SearchableListItem) => {
+  //   // todo: implement
+  //   //setSelectedItem(item);
+  // };
 
   const getDefaultTemplateValues = async () => {
     if (saveAsTemplateDialogSelectedItem?.id) {
@@ -160,15 +170,17 @@ export const OpportunityList: FC = () => {
 
   const getActions = (item: SearchableListItem) => (
     <>
-      <MenuItemWithIcon disabled iconComponent={ContentCopyOutlined} onClick={() => onDuplicateClick(item)}>
+      {/* <MenuItemWithIcon disabled iconComponent={ContentCopyOutlined} onClick={() => onDuplicateClick(item)}>
         Duplicate Subspace
-      </MenuItemWithIcon>
-      <MenuItemWithIcon
-        iconComponent={DownloadForOfflineOutlined}
-        onClick={() => setSaveAsTemplateDialogSelectedItem(item)}
-      >
-        {t('buttons.saveAsTemplate')}
-      </MenuItemWithIcon>
+      </MenuItemWithIcon> */}
+      {canCreateTemplate && (
+        <MenuItemWithIcon
+          iconComponent={DownloadForOfflineOutlined}
+          onClick={() => setSaveAsTemplateDialogSelectedItem(item)}
+        >
+          {t('buttons.saveAsTemplate')}
+        </MenuItemWithIcon>
+      )}
       <MenuItemWithIcon iconComponent={DeleteOutline} onClick={() => setDeleteDialogSelectedItem(item)}>
         {t('buttons.delete')}
       </MenuItemWithIcon>

@@ -578,6 +578,13 @@
         "year": "{{count}} year",
         "year_plural": "{{count}} years"
       }
+    },
+    "roles": {
+      "GLOBAL_ADMIN": "Global Admin",
+      "SUPPORT": "Support Admin",
+      "LICENSE_MANAGER": "License Manager",
+      "BETA_TESTER": "Beta Tester",
+      "VC_CAMPAIGN": "VC Early Access"
     }
   },
   "community": {
@@ -586,7 +593,7 @@
     "memberOrganizations": "Member Organizations ({{count}})",
     "pendingApplications": "Pending applications",
     "pendingMemberships": "Pending applications & invitations",
-    "invitationSent": "Invitation sent succesfully",
+    "invitationSent": "Invitation sent successfully",
     "leads": "Leads",
     "members": "Members",
     "host": "Host",

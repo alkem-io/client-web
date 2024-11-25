@@ -12,6 +12,7 @@ import {
   useCreateSubspaceMutation,
   useDeleteSpaceMutation,
   useSpaceCollaborationIdLazyQuery,
+  useSpaceTemplatesSetIdQuery,
   useUpdateTemplateDefaultMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -27,14 +28,14 @@ import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import InnovationFlowProfileView from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowProfileView';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import { Actions } from '@/core/ui/actions/Actions';
-import { Cached, ContentCopyOutlined, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
+import { Cached, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
 import SelectDefaultCollabTemplateDialog from '@/domain/templates-manager/SelectDefaultCollaborationTemplate/SelectDefaultCollabTemplateDialog';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import Gutters from '@/core/ui/grid/Gutters';
 import SearchableList, { SearchableListItem } from '@/domain/platform/admin/components/SearchableList';
 import EntityConfirmDeleteDialog from '../SpaceSettings/EntityConfirmDeleteDialog';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { TemplateDefaultType, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, TemplateDefaultType, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
 import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
 
@@ -161,9 +162,18 @@ export const SubspaceListView = () => {
     setSelectCollaborationTemplateDialogOpen(false);
   };
 
-  const onDuplicateClick = (_item: SearchableListItem) => {
-    throw new Error('Not implemented');
-  };
+  // const onDuplicateClick = (_item: SearchableListItem) => {
+  //   throw new Error('Not implemented');
+  // };
+
+  // check for TemplateCreation privileges
+  const { data: templateData } = useSpaceTemplatesSetIdQuery({
+    variables: { spaceNameId },
+    skip: !spaceNameId,
+  });
+
+  const templateSetPrivileges = templateData?.space.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
+  const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
 
   const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
   const handleSaveAsTemplate = async (values: CollaborationTemplateFormSubmittedValues) => {
@@ -199,15 +209,17 @@ export const SubspaceListView = () => {
 
   const getSubSpaceActions = (item: SearchableListItem) => (
     <>
-      <MenuItemWithIcon disabled iconComponent={ContentCopyOutlined} onClick={() => onDuplicateClick(item)}>
+      {/* <MenuItemWithIcon disabled iconComponent={ContentCopyOutlined} onClick={() => onDuplicateClick(item)}>
         Duplicate Subspace
-      </MenuItemWithIcon>
-      <MenuItemWithIcon
-        iconComponent={DownloadForOfflineOutlined}
-        onClick={() => setSaveAsTemplateDialogSelectedItem(item)}
-      >
-        {t('buttons.saveAsTemplate')}
-      </MenuItemWithIcon>
+      </MenuItemWithIcon> */}
+      {canCreateTemplate && (
+        <MenuItemWithIcon
+          iconComponent={DownloadForOfflineOutlined}
+          onClick={() => setSaveAsTemplateDialogSelectedItem(item)}
+        >
+          {t('buttons.saveAsTemplate')}
+        </MenuItemWithIcon>
+      )}
       <MenuItemWithIcon iconComponent={DeleteOutline} onClick={() => setDeleteDialogSelectedItem(item)}>
         {t('buttons.delete')}
       </MenuItemWithIcon>
