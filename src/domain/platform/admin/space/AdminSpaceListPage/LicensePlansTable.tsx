@@ -9,20 +9,20 @@ export interface LicensePlan {
   name: string;
 }
 
-interface PlansTableProps {
+interface LicensePlansTableProps {
   activeLicensePlanIds: string[] | undefined;
   licensePlans: LicensePlan[];
   onDelete?: (plan: LicensePlan) => void;
 }
 
-const PlansTable = ({ licensePlans, activeLicensePlanIds, onDelete }: PlansTableProps) => {
-  const isPlanActive = plan => activeLicensePlanIds?.includes(plan.id);
+const LicensePlansTable = ({ licensePlans, activeLicensePlanIds, onDelete }: LicensePlansTableProps) => {
+  const isLicensePlanActive = plan => activeLicensePlanIds?.includes(plan.id);
 
   const columns: GridColDef<LicensePlan>[] = [
     {
       headerName: 'Active',
       field: 'isActive',
-      valueGetter: ({ row }) => isPlanActive(row),
+      valueGetter: ({ row }) => isLicensePlanActive(row),
       renderCell: ({ value }) => (value ? <CheckIcon /> : <></>),
     },
     {
@@ -44,7 +44,7 @@ const PlansTable = ({ licensePlans, activeLicensePlanIds, onDelete }: PlansTable
       <DataGridTable
         rows={licensePlans}
         columns={columns}
-        disableDelete={plan => !isPlanActive(plan)}
+        disableDelete={plan => !isLicensePlanActive(plan)}
         onDelete={plan => setDeletingPlanId(plan.id)}
         dependencies={[activeLicensePlanIds]}
         hideFooter
@@ -67,4 +67,4 @@ const PlansTable = ({ licensePlans, activeLicensePlanIds, onDelete }: PlansTable
   );
 };
 
-export default PlansTable;
+export default LicensePlansTable;

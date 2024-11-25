@@ -2,7 +2,7 @@ import { DialogContent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import PlansTable from '@/domain/platform/admin/space/AdminSpaceListPage/PlansTable';
+import LicensePlansTable from '@/domain/platform/admin/space/AdminSpaceListPage/LicensePlansTable';
 import AssignPlan from '@/domain/platform/admin/space/AdminSpaceListPage/AssignPlan';
 
 type LicensePlanDialogProps = {
@@ -36,7 +36,7 @@ const LicensePlanDialog = ({
       <DialogHeader title={t('pages.admin.spaces.manageLicensePlans')} onClose={onClose} />
       <DialogContent>
         {licensePlans && (
-          <PlansTable
+          <LicensePlansTable
             activeLicensePlanIds={activeLicensePlanIds}
             licensePlans={licensePlans}
             onDelete={plan => revokeLicensePlan(accountId, plan.id)}

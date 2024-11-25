@@ -5,12 +5,13 @@ import {
   useAdminSpacesListQuery,
   useDeleteSpaceMutation,
   useOrganizationsListQuery,
+  usePlatformLicensingPlansQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import Loading from '@/core/ui/loading/Loading';
 import ListPage from '@/domain/platform/admin/components/ListPage';
 import { SearchableTableItem, SearchableTableItemMapper } from '@/domain/platform/admin/components/SearchableTable';
-import { AuthorizationPrivilege, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, LicensePlanType, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import SpaceListItem from './SpaceListItem';
@@ -22,12 +23,17 @@ export const SpaceList: FC = () => {
 
   const { data: spacesData, loading: loadingSpaces } = useAdminSpacesListQuery();
   const { data: organizationData } = useOrganizationsListQuery();
+  const { data: platformLicensingData } = usePlatformLicensingPlansQuery();
   const organizations = useMemo(() => {
     const organizationNames =
       organizationData?.organizations.map(org => ({ id: org.id, name: org.profile.displayName })) ?? [];
     return sortBy(organizationNames, org => org.name);
   }, [organizationData]);
 
+  const allLicensePlans = platformLicensingData?.platform.licensingFramework.plans ?? [];
+  const spaceLicensePlans = allLicensePlans.filter(
+    plan => plan.type === LicensePlanType.SpacePlan || plan.type === LicensePlanType.SpaceFeatureFlag
+  );
   const spaceList = useMemo(() => {
     return (
       spacesData?.spaces
@@ -53,8 +59,7 @@ export const SpaceList: FC = () => {
         }))
         .map(space => {
           const activeLicenseCredentials = space.subscriptions.map(subscription => subscription.name);
-          // TODO filter out expired ones
-          const activeLicensePlanIds = spacesData?.platform.licensingFramework.plans
+          const activeLicensePlanIds = platformLicensingData?.platform.licensingFramework.plans
             .filter(({ licenseCredential }) => activeLicenseCredentials.includes(licenseCredential))
             .map(({ id }) => id);
 
@@ -64,7 +69,7 @@ export const SpaceList: FC = () => {
             nameId: space.nameID,
             visibility: space.visibility,
             activeLicensePlanIds,
-            licensePlans: spacesData?.platform.licensingFramework.plans,
+            licensePlans: spaceLicensePlans,
           };
         }) ?? []
     );

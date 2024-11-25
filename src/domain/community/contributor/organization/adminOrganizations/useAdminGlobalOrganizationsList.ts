@@ -6,6 +6,7 @@ import {
   useAdminOrganizationVerifyMutation,
   useAssignLicensePlanToAccountMutation,
   useDeleteOrganizationMutation,
+  usePlatformLicensingPlansQuery,
   useRevokeLicensePlanFromAccountMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -63,6 +64,7 @@ export const useAdminGlobalOrganizationsList = () => {
     });
 
   const [verifyOrg] = useAdminOrganizationVerifyMutation();
+  const platformLicensePlans = usePlatformLicensingPlansQuery();
 
   const handleVerification = async (item: SearchableListItem) => {
     const orgFullData = data?.organizationsPaginated?.organization?.find(org => org.id === item.id);
@@ -112,7 +114,7 @@ export const useAdminGlobalOrganizationsList = () => {
       variables: {
         accountId,
         licensePlanId,
-        licensingId: data?.platform.licensingFramework.id ?? '',
+        licensingId: platformLicensePlans?.data?.platform.licensingFramework.id ?? '',
       },
       refetchQueries: [
         refetchAdminGlobalOrganizationsListQuery({
@@ -130,7 +132,7 @@ export const useAdminGlobalOrganizationsList = () => {
       variables: {
         accountId,
         licensePlanId,
-        licensingId: data?.platform.licensingFramework.id ?? '',
+        licensingId: platformLicensePlans.data?.platform.licensingFramework.id ?? '',
       },
       refetchQueries: [
         refetchAdminGlobalOrganizationsListQuery({
@@ -151,7 +153,7 @@ export const useAdminGlobalOrganizationsList = () => {
         url: buildSettingsUrl(org.profile.url),
         verified: org.verification.state === OrgVerificationLifecycleStates.manuallyVerified,
         avatar: org.profile.visual,
-        activeLicensePlanIds: data?.platform.licensingFramework.plans
+        activeLicensePlanIds: platformLicensePlans.data?.platform.licensingFramework.plans
           .filter(({ licenseCredential }) =>
             org.account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
           )
@@ -162,7 +164,7 @@ export const useAdminGlobalOrganizationsList = () => {
 
   const licensePlans = useMemo<ContributorLicensePlan[]>(
     () =>
-      data?.platform.licensingFramework.plans
+      platformLicensePlans.data?.platform.licensingFramework.plans
         .filter(plan => plan.type === LicensePlanType.AccountPlan)
         .map(licensePlan => ({
           id: licensePlan.id,
