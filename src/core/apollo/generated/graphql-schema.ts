@@ -25220,11 +25220,11 @@ export type SpaceCollaborationIdQuery = {
   };
 };
 
-export type SpaceDefaultTemplateQueryVariables = Exact<{
+export type SpaceDefaultTemplatesQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
 
-export type SpaceDefaultTemplateQuery = {
+export type SpaceDefaultTemplatesQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';

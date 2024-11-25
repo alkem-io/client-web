@@ -20143,8 +20143,8 @@ export function refetchSpaceCollaborationIdQuery(variables: SchemaTypes.SpaceCol
   return { query: SpaceCollaborationIdDocument, variables: variables };
 }
 
-export const SpaceDefaultTemplateDocument = gql`
-  query SpaceDefaultTemplate($spaceId: UUID!) {
+export const SpaceDefaultTemplatesDocument = gql`
+  query SpaceDefaultTemplates($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
         id
@@ -20168,55 +20168,55 @@ export const SpaceDefaultTemplateDocument = gql`
 `;
 
 /**
- * __useSpaceDefaultTemplateQuery__
+ * __useSpaceDefaultTemplatesQuery__
  *
- * To run a query within a React component, call `useSpaceDefaultTemplateQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceDefaultTemplateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSpaceDefaultTemplatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceDefaultTemplatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSpaceDefaultTemplateQuery({
+ * const { data, loading, error } = useSpaceDefaultTemplatesQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useSpaceDefaultTemplateQuery(
+export function useSpaceDefaultTemplatesQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceDefaultTemplateQuery,
-    SchemaTypes.SpaceDefaultTemplateQueryVariables
+    SchemaTypes.SpaceDefaultTemplatesQuery,
+    SchemaTypes.SpaceDefaultTemplatesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceDefaultTemplateQuery, SchemaTypes.SpaceDefaultTemplateQueryVariables>(
-    SpaceDefaultTemplateDocument,
+  return Apollo.useQuery<SchemaTypes.SpaceDefaultTemplatesQuery, SchemaTypes.SpaceDefaultTemplatesQueryVariables>(
+    SpaceDefaultTemplatesDocument,
     options
   );
 }
 
-export function useSpaceDefaultTemplateLazyQuery(
+export function useSpaceDefaultTemplatesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceDefaultTemplateQuery,
-    SchemaTypes.SpaceDefaultTemplateQueryVariables
+    SchemaTypes.SpaceDefaultTemplatesQuery,
+    SchemaTypes.SpaceDefaultTemplatesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SpaceDefaultTemplateQuery, SchemaTypes.SpaceDefaultTemplateQueryVariables>(
-    SpaceDefaultTemplateDocument,
+  return Apollo.useLazyQuery<SchemaTypes.SpaceDefaultTemplatesQuery, SchemaTypes.SpaceDefaultTemplatesQueryVariables>(
+    SpaceDefaultTemplatesDocument,
     options
   );
 }
 
-export type SpaceDefaultTemplateQueryHookResult = ReturnType<typeof useSpaceDefaultTemplateQuery>;
-export type SpaceDefaultTemplateLazyQueryHookResult = ReturnType<typeof useSpaceDefaultTemplateLazyQuery>;
-export type SpaceDefaultTemplateQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceDefaultTemplateQuery,
-  SchemaTypes.SpaceDefaultTemplateQueryVariables
+export type SpaceDefaultTemplatesQueryHookResult = ReturnType<typeof useSpaceDefaultTemplatesQuery>;
+export type SpaceDefaultTemplatesLazyQueryHookResult = ReturnType<typeof useSpaceDefaultTemplatesLazyQuery>;
+export type SpaceDefaultTemplatesQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceDefaultTemplatesQuery,
+  SchemaTypes.SpaceDefaultTemplatesQueryVariables
 >;
-export function refetchSpaceDefaultTemplateQuery(variables: SchemaTypes.SpaceDefaultTemplateQueryVariables) {
-  return { query: SpaceDefaultTemplateDocument, variables: variables };
+export function refetchSpaceDefaultTemplatesQuery(variables: SchemaTypes.SpaceDefaultTemplatesQueryVariables) {
+  return { query: SpaceDefaultTemplatesDocument, variables: variables };
 }
 
 export const SpaceTemplatesSetIdDocument = gql`

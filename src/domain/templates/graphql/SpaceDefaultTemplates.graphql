@@ -1,4 +1,4 @@
-query SpaceDefaultTemplate ($spaceId: UUID!) {
+query SpaceDefaultTemplates ($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id

@@ -14,7 +14,7 @@ import { FormikRadiosSwitch } from '@/core/ui/forms/FormikRadiosSwitch';
 import SubspaceTemplateSelector from '@/domain/templates/components/TemplateSelectors/SubspaceTemplateSelector';
 import Gutters from '@/core/ui/grid/Gutters';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import FormikAvatarUpload from '@/core/ui/upload/FormikAvatarUpload/FormikAvatarUpload';
+import FormikAvatarUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 
 const FormikEffect = FormikEffectFactory<FormValues>();

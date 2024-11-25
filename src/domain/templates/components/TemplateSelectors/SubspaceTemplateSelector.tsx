@@ -8,7 +8,7 @@ import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import { LibraryIcon } from '@/domain/templates/LibraryIcon';
 import { TemplateDefaultType, TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { useSpaceDefaultTemplateQuery, useTemplateNameQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceDefaultTemplatesQuery, useTemplateNameQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Identifiable } from '@/core/utils/Identifiable';
 import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
@@ -30,19 +30,19 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ na
     skip: !templateId,
   });
 
-  const { data: defaultSpaceTemplateData, loading: loadingSpaceTemplate } = useSpaceDefaultTemplateQuery({
+  const { data: defaultSpaceTemplatesData, loading: loadingSpaceTemplate } = useSpaceDefaultTemplatesQuery({
     variables: { spaceId: spaceId! },
     skip: !spaceId,
   });
 
   const templateName = useMemo(() => {
     const selectedTemplate = templateData?.lookup.template?.profile.displayName;
-    const defaultSpaceTemplate = defaultSpaceTemplateData?.lookup.space?.templatesManager?.templateDefaults.find(
+    const defaultSpaceTemplate = defaultSpaceTemplatesData?.lookup.space?.templatesManager?.templateDefaults.find(
       templateDefault => templateDefault.type === TemplateDefaultType.SpaceSubspace
     )?.template?.profile.displayName;
     const defaultPlatformTemplate = t('context.subspace.template.defaultTemplate');
     return selectedTemplate ?? defaultSpaceTemplate ?? defaultPlatformTemplate;
-  }, [templateId, templateData, defaultSpaceTemplateData, t]);
+  }, [templateId, templateData, defaultSpaceTemplatesData, t]);
 
   const handleSelectTemplate = async ({ id: templateId }: Identifiable): Promise<void> => {
     helpers.setValue(templateId);
