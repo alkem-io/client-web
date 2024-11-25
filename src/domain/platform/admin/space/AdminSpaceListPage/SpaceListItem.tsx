@@ -21,7 +21,7 @@ import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/Nam
 import { LoadingButton } from '@mui/lab';
 import { gutters } from '@/core/ui/grid/utils';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import PlansTable, { LicensePlan } from './PlansTable';
+import LicensePlansTable, { LicensePlan } from './LicensePlansTable';
 import AssignPlan from './AssignPlan';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
@@ -158,7 +158,7 @@ const SpaceListItem = ({
         />
         <DialogContent>
           {licensePlans && (
-            <PlansTable
+            <LicensePlansTable
               activeLicensePlanIds={activeLicensePlanIds}
               licensePlans={licensePlans}
               onDelete={plan => revokeLicensePlan({ variables: { spaceId, licensePlanId: plan.id } })}

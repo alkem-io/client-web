@@ -2,16 +2,6 @@ query adminSpacesList {
   spaces(filter: { visibilities: [ARCHIVED, ACTIVE, DEMO] }) {
     ...AdminSpace
   }
-  platform {
-    licensingFramework {
-      id
-      plans {
-        id
-        name
-        licenseCredential
-      }
-    }
-  }
 }
 
 fragment AdminSpace on Space {

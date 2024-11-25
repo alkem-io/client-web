@@ -5,6 +5,7 @@ import {
   refetchUserListQuery,
   useAssignLicensePlanToAccountMutation,
   useDeleteUserMutation,
+  usePlatformLicensingPlansQuery,
   useRevokeLicensePlanFromAccountMutation,
   useUserListQuery,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -71,6 +72,8 @@ const useAdminGlobalUserList = ({
     getPageInfo: result => result.usersPaginated.pageInfo,
   });
 
+  const platformLicensePlans = usePlatformLicensingPlansQuery();
+
   const userList = useMemo(
     () =>
       (data?.usersPaginated.users ?? []).map<SearchableTableItem>(({ id, profile, email, account }) => ({
@@ -79,7 +82,7 @@ const useAdminGlobalUserList = ({
         value: `${profile.displayName} (${email})`,
         url: buildSettingsUrl(profile.url),
         avatar: profile.visual,
-        activeLicensePlanIds: data?.platform.licensingFramework.plans
+        activeLicensePlanIds: platformLicensePlans?.data?.platform.licensingFramework.plans
           .filter(({ licenseCredential }) =>
             account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
           )
@@ -109,7 +112,7 @@ const useAdminGlobalUserList = ({
       variables: {
         accountId,
         licensePlanId,
-        licensingId: data?.platform.licensingFramework.id ?? '',
+        licensingId: platformLicensePlans?.data?.platform.licensingFramework.id ?? '',
       },
       refetchQueries: [
         refetchUserListQuery({
@@ -127,7 +130,7 @@ const useAdminGlobalUserList = ({
       variables: {
         accountId,
         licensePlanId,
-        licensingId: data?.platform.licensingFramework.id ?? '',
+        licensingId: platformLicensePlans?.data?.platform.licensingFramework.id ?? '',
       },
       refetchQueries: [
         refetchUserListQuery({
@@ -141,7 +144,7 @@ const useAdminGlobalUserList = ({
 
   const licensePlans = useMemo<ContributorLicensePlan[]>(
     () =>
-      data?.platform.licensingFramework.plans
+      platformLicensePlans?.data?.platform.licensingFramework.plans
         .filter(plan => plan.type === LicensePlanType.AccountPlan)
         .map(licensePlan => ({
           id: licensePlan.id,

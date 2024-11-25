@@ -24,16 +24,4 @@ query userList($first: Int!, $after: UUID, $filter: UserFilterInput) {
       hasNextPage
     }
   }
-  platform {
-    id
-    licensingFramework {
-      id
-      plans {
-        id
-        name
-        type
-        licenseCredential
-      }
-    }
-  }
 }

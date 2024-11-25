@@ -1,0 +1,13 @@
+query platformLicensingPlans {
+  platform {
+    licensingFramework {
+      id
+      plans {
+        id
+        type
+        name
+        licenseCredential
+      }
+    }
+  }
+}
