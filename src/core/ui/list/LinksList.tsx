@@ -1,13 +1,6 @@
 import { ReactNode, useState } from 'react';
 import { styled } from '@mui/styles';
-import {
-  Box,
-  Collapse,
-  List as MuiList,
-  ListItem as MuiListItem,
-  ListItemIcon as MuiListItemIcon,
-  Skeleton,
-} from '@mui/material';
+import { Box, Collapse, List as MuiList, ListItem as MuiListItem, Skeleton } from '@mui/material';
 import { BlockSectionTitle, CaptionSmall } from '../typography';
 import RouterLink from '../link/RouterLink';
 import { gutters } from '../grid/utils';
@@ -24,17 +17,12 @@ const ListItem = styled(MuiListItem)(({ theme }) => ({
   alignItems: 'center',
 })) as typeof MuiListItem;
 
-const ListItemIcon = styled(MuiListItemIcon)({
-  minWidth: 'auto',
-  color: 'inherit',
-});
-
 interface Item {
   id: string;
   title: ReactNode;
   icon: ReactNode;
   uri: string;
-  cardBanner: string;
+  cardBanner?: string;
 }
 
 export interface LinksListProps {
@@ -71,7 +59,8 @@ const LinksList = ({ items = [], emptyListCaption, loading = false }: LinksListP
         <Collapse in={isExpanded}>
           {items.slice(COLLAPSED_LIST_ITEM_LIMIT).map(item => (
             <ListItem key={item.id} component={RouterLink} to={item.uri}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
+              <Avatar variant="rounded" alt="subspace avatar" src={item.cardBanner} aria-label="Subspace avatar" />
+
               <BlockSectionTitle minWidth={0} noWrap>
                 {item.title}
               </BlockSectionTitle>

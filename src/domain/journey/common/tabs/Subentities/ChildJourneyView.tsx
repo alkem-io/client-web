@@ -1,5 +1,5 @@
 import { ApolloError } from '@apollo/client';
-import { useState, ReactElement, ReactNode, cloneElement } from 'react';
+import { useMemo, useState, ReactElement, ReactNode, cloneElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Button, IconButton } from '@mui/material';
@@ -78,6 +78,20 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
   const { t } = useTranslation();
   const { permissions } = useSpace();
 
+  const filteredItems = useMemo(
+    () =>
+      childEntities
+        .map(entity => ({
+          id: entity.id,
+          title: entity.profile.displayName,
+          icon: childEntitiesIcon,
+          uri: entity.profile.url,
+          cardBanner: entity.profile?.cardBanner?.uri || defaultSubspaceAvatar,
+        }))
+        .filter(ss => ss.title.toLowerCase().includes(filter.toLowerCase())),
+    [childEntities, filter, childEntitiesIcon]
+  );
+
   return (
     <MembershipBackdrop show={!childEntityReadAccess} blockName={getJourneyChildrenTranslation(t, journeyTypeName)}>
       <PageContent>
@@ -99,21 +113,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
               />
             )}
 
-            <LinksList
-              items={childEntities
-                .map(entity => ({
-                  id: entity.id,
-                  title: entity.profile.displayName,
-                  icon: childEntitiesIcon,
-                  uri: entity.profile.url,
-                  cardBanner: entity.profile?.cardBanner?.uri || defaultSubspaceAvatar,
-                }))
-                .filter(ss => ss.title.toLowerCase().includes(filter.toLowerCase()))}
-              emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
-                entities: getJourneyChildrenTranslation(t, journeyTypeName),
-                parentEntity: t(`common.${journeyTypeName}` as const),
-              })}
-            />
+            <LinksList items={filteredItems} />
           </PageContentBlock>
         </InfoColumn>
         <ContentColumn>
