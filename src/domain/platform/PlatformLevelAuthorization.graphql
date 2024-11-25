@@ -1,5 +1,7 @@
 query PlatformLevelAuthorization {
   platform {
+    id
+    myRoles
     authorization {
       ...MyPrivileges
     }
