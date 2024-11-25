@@ -9,6 +9,13 @@ query CampaignBlockCredentials {
           type
         }
       }
+      account {
+        id
+        license {
+          id
+          myLicensePrivileges
+        }
+      }
     }
   }
 }

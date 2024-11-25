@@ -1,8 +1,8 @@
 import { createTheme } from '@mui/material';
 import { ThemeOptions } from '@mui/material/styles';
 import componentsOverride from './components';
-import { paletteOptions } from '../../palette/palette';
-import { themeTypographyOptions } from '../../typography/themeTypographyOptions';
+import { paletteOptions } from '@/core/ui/palette/palette';
+import { themeTypographyOptions } from '@/core/ui/typography/themeTypographyOptions';
 
 // use theme constant instead of these
 const SPACING = 10;

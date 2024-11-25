@@ -6,28 +6,28 @@ import {
   useDeleteSpaceMutation,
   useOrganizationAuthorizationLazyQuery,
   useSpaceAccountQuery,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, LicensePlanType } from '../../../../../core/apollo/generated/graphql-schema';
-import useNavigate from '../../../../../core/routing/useNavigate';
-import ContributorCardHorizontal from '../../../../../core/ui/card/ContributorCardHorizontal';
-import PageContent from '../../../../../core/ui/content/PageContent';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
-import SeeMore from '../../../../../core/ui/content/SeeMore';
-import Gutters from '../../../../../core/ui/grid/Gutters';
-import { gutters } from '../../../../../core/ui/grid/utils';
-import RouterLink from '../../../../../core/ui/link/RouterLink';
-import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { BlockTitle, Caption, CaptionSmall } from '../../../../../core/ui/typography';
-import { PlanFeatures, PlanFooter, PlanName } from '../../../../license/plans/ui/PlanCardsComponents';
-import { getPlanTranslations } from '../../../../license/plans/utils/getPlanTranslations';
-import { ROUTE_HOME } from '../../../../platform/routes/constants';
+} from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, LicensePlanType } from '@/core/apollo/generated/graphql-schema';
+import useNavigate from '@/core/routing/useNavigate';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import SeeMore from '@/core/ui/content/SeeMore';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import RouterLink from '@/core/ui/link/RouterLink';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { BlockTitle, Caption, CaptionSmall } from '@/core/ui/typography';
+import { PlanFeatures, PlanFooter, PlanName } from '@/domain/license/plans/ui/PlanCardsComponents';
+import { getPlanTranslations } from '@/domain/license/plans/utils/getPlanTranslations';
+import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CachedIcon from '@mui/icons-material/Cached';
 import EntityConfirmDeleteDialog from '../SpaceSettings/EntityConfirmDeleteDialog';
 import { SvgIconComponent } from '@mui/icons-material';
-import { useUserContext } from '../../../../community/user';
-import translateWithElements from '../../../../shared/i18n/TranslateWithElements/TranslateWithElements';
-import { useConfig } from '../../../../platform/config/useConfig';
+import { useUserContext } from '@/domain/community/user';
+import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
+import { useConfig } from '@/domain/platform/config/useConfig';
 
 interface SpaceAccountPageProps {
   journeyId: string;
@@ -124,7 +124,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     const activeSubscription = space?.activeSubscription;
 
     // Need to clone the array to be able to sort it:
-    const plans = [...(data?.platform.licensing.plans ?? [])]
+    const plans = [...(data?.platform.licensingFramework.plans ?? [])]
       .filter(plan => plan.type === LicensePlanType.SpacePlan)
       .sort((a, b) => a.sortOrder - b.sortOrder)
       .map(plan => ({

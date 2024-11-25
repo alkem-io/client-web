@@ -1,6 +1,6 @@
 import { Link as MuiLink, LinkProps as MuiLinkProps } from '@mui/material';
 import { Link as ReactRouterLink, LinkProps as ReactRouterLinkProps } from 'react-router-dom';
-import { isAbsoluteUrl, normalizeLink } from '../../utils/links';
+import { isAbsoluteUrl, normalizeLink } from '@/core/utils/links';
 import { forwardRef } from 'react';
 import { useUrlBase } from './UrlBase';
 

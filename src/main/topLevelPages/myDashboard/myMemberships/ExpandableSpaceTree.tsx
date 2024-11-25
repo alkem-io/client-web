@@ -1,28 +1,28 @@
 import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { Button, Theme, useMediaQuery } from '@mui/material';
+import { Theme, Button, useMediaQuery } from '@mui/material';
 
-import Avatar from '../../../../core/ui/avatar/Avatar';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import GridItem from '../../../../core/ui/grid/GridItem';
-import RouterLink from '../../../../core/ui/link/RouterLink';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
+import Avatar from '@/core/ui/avatar/Avatar';
+import Gutters from '@/core/ui/grid/Gutters';
+import GridItem from '@/core/ui/grid/GridItem';
+import RouterLink from '@/core/ui/link/RouterLink';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { BlockSectionTitle, BlockTitle, Caption } from '../../../../core/ui/typography';
+import { Caption, BlockTitle, BlockSectionTitle } from '@/core/ui/typography';
 
-import { gutters } from '../../../../core/ui/grid/utils';
-import { useColumns } from '../../../../core/ui/grid/GridContext';
-import webkitLineClamp from '../../../../core/ui/utils/webkitLineClamp';
-import { SpaceLevel, CommunityRoleType } from '../../../../core/apollo/generated/graphql-schema';
-
-import defaultCardBanner from '../../../../domain/journey/defaultVisuals/Card.jpg';
+import { gutters } from '@/core/ui/grid/utils';
 import { MembershipProps } from './MyMembershipsDialog.model';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
+import { SpaceLevel, CommunityRoleType } from '@/core/apollo/generated/graphql-schema';
+
+import defaultCardBanner from '@/domain/journey/defaultVisuals/Card.jpg';
 
 const VISIBLE_COMMUNITY_ROLES = [CommunityRoleType.Admin, CommunityRoleType.Lead];
 
-export const ExpandableSpaceTree = (props: { membership: MembershipProps }) => {
+export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProps }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const columns = useColumns();
@@ -33,23 +33,19 @@ export const ExpandableSpaceTree = (props: { membership: MembershipProps }) => {
 
   const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
 
-  const renderSubSpaces = (childMembership: MembershipProps) => (
-    <ExpandableSpaceTree key={childMembership.space.id} membership={childMembership} />
-  );
-
   const paddingLeftMap = {
     [SpaceLevel.Space]: 0,
     [SpaceLevel.Challenge]: 5,
     [SpaceLevel.Opportunity]: 10,
   };
   const {
+    childMemberships,
     space: {
       level,
       community,
-      childMemberships,
       profile: { url, tagline, cardBanner, displayName },
     },
-  } = props.membership;
+  } = membership;
   const avatar = cardBanner?.uri;
   const roles = community?.roleSet?.myRoles;
   const paddingLeft = paddingLeftMap[level] ?? 0;
@@ -109,7 +105,10 @@ export const ExpandableSpaceTree = (props: { membership: MembershipProps }) => {
         </Gutters>
       </GridItem>
 
-      {isExpanded && childMemberships?.map(renderSubSpaces)}
+      {isExpanded &&
+        childMemberships?.map((childMembership: MembershipProps) => (
+          <ExpandableSpaceTree key={childMembership.space.id} membership={childMembership} />
+        ))}
     </>
   );
 };

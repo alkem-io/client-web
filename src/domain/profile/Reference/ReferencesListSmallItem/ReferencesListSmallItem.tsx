@@ -1,8 +1,8 @@
 import React, { ComponentType, PropsWithChildren } from 'react';
-import RouterLink from '../../../../core/ui/link/RouterLink';
-import { Text } from '../../../../core/ui/typography';
+import RouterLink from '@/core/ui/link/RouterLink';
+import { Text } from '@/core/ui/typography';
 import { Box, SvgIconProps } from '@mui/material';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { OpenInNewOutlined } from '@mui/icons-material';
 
 interface ReferencesListSmallItemProps {

@@ -1,36 +1,36 @@
-import React, { useEffect } from 'react';
-import CalloutsListDialog from '../../../../collaboration/callout/calloutsList/CalloutsListDialog';
-import { useBackToStaticPath } from '../../../../../core/routing/useBackToPath';
+import { useEffect } from 'react';
+import CalloutsListDialog from '@/domain/collaboration/callout/calloutsList/CalloutsListDialog';
+import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import { useTranslation } from 'react-i18next';
-import { UseCalloutsProvided } from '../../../../collaboration/callout/useCallouts/useCallouts';
-import { SubspaceDialog } from '../../layout/SubspaceDialog';
-import SubspacesListDialog from '../../dialogs/SubspacesListDialog';
-import ContributorsToggleDialog from '../../dialogs/ContributorsToggleDialog';
-import ActivityDialog from '../../../common/Activity/ActivityDialog';
-import CalendarDialog from '../../../../timeline/calendar/CalendarDialog';
+import { UseCalloutsProvided } from '@/domain/collaboration/callout/useCallouts/useCallouts';
+import { SubspaceDialog } from '@/domain/journey/subspace/layout/SubspaceDialog';
+import SubspacesListDialog from '@/domain/journey/subspace/dialogs/SubspacesListDialog';
+import ContributorsToggleDialog from '@/domain/journey/subspace/dialogs/ContributorsToggleDialog';
+import ActivityDialog from '@/domain/journey/common/Activity/ActivityDialog';
+import CalendarDialog from '@/domain/timeline/calendar/CalendarDialog';
 import { useParams } from 'react-router-dom';
-import { ShareDialog } from '../../../../shared/components/ShareDialog/ShareDialog';
-import InnovationFlowSettingsDialog from '../../../../collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog';
-import { useCollaborationAuthorization } from '../../../../collaboration/authorization/useCollaborationAuthorization';
-import DashboardNavigation from '../../../dashboardNavigation/DashboardNavigation';
+import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
+import InnovationFlowSettingsDialog from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsDialog';
+import DashboardNavigation from '@/domain/journey/dashboardNavigation/DashboardNavigation';
 import Dialog from '@mui/material/Dialog';
-import GridProvider from '../../../../../core/ui/grid/GridProvider';
-import { GRID_COLUMNS_MOBILE } from '../../../../../core/ui/grid/constants';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import { GRID_COLUMNS_MOBILE } from '@/core/ui/grid/constants';
 import { Theme, useMediaQuery } from '@mui/material';
-import { DashboardNavigationItem } from '../../../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
-import CommunityUpdatesDialog from '../../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
-import { buildUpdatesUrl } from '../../../../../main/routing/urlBuilders';
+import { DashboardNavigationItem } from '@/domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import CommunityUpdatesDialog from '@/domain/community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
+import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 
 export interface SubspaceDialogsProps {
   dialogOpen: SubspaceDialog | undefined;
   journeyId: string | undefined;
   journeyUrl: string | undefined;
-  parentJourneyId: string | undefined;
+  parentSpaceId: string | undefined;
   callouts: UseCalloutsProvided;
   dashboardNavigation: {
     dashboardNavigation: DashboardNavigationItem | undefined;
   };
   communityId: string | undefined;
+  collaborationId: string | undefined;
 }
 
 const SubspaceDialogs = ({
@@ -38,16 +38,15 @@ const SubspaceDialogs = ({
   journeyUrl,
   callouts,
   journeyId,
-  parentJourneyId,
+  parentSpaceId,
   dashboardNavigation,
   communityId,
+  collaborationId,
 }: SubspaceDialogsProps) => {
   const { t } = useTranslation();
   const { calendarEventNameId } = useParams();
 
   const handleClose = useBackToStaticPath(journeyUrl ?? '');
-
-  const { collaborationId } = useCollaborationAuthorization({ journeyId });
 
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
@@ -81,7 +80,7 @@ const SubspaceDialogs = ({
       <ActivityDialog journeyId={journeyId} open={dialogOpen === SubspaceDialog.Activity} onClose={handleClose} />
       <CalendarDialog
         journeyId={journeyId}
-        parentJourneyId={parentJourneyId}
+        parentSpaceId={parentSpaceId}
         open={dialogOpen === SubspaceDialog.Timeline}
         onClose={handleClose}
         parentPath={journeyUrl}

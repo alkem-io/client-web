@@ -1,5 +1,5 @@
-import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
-import { Identifiable } from '../../../core/utils/Identifiable';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { Identifiable } from '@/core/utils/Identifiable';
 import { CalloutTemplate } from './CalloutTemplate';
 import { CollaborationTemplate } from './CollaborationTemplate';
 import { CommunityGuidelinesTemplate } from './CommunityGuidelinesTemplate';

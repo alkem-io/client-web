@@ -1,23 +1,23 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button, Dialog, DialogActions, DialogContent, Theme, useMediaQuery } from '@mui/material';
-import DialogWithGrid from '../../../../../core/ui/dialog/DialogWithGrid';
-import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
-import RouterLink from '../../../../../core/ui/link/RouterLink';
-import { Caption, CaptionSmall, Text } from '../../../../../core/ui/typography';
-import GridContainer from '../../../../../core/ui/grid/GridContainer';
-import GridItem from '../../../../../core/ui/grid/GridItem';
-import { gutters } from '../../../../../core/ui/grid/utils';
-import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
-import Gutters from '../../../../../core/ui/grid/Gutters';
-import { usePlansTableQuery } from '../../../../../core/apollo/generated/apollo-hooks';
-import Loading from '../../../../../core/ui/loading/Loading';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import RouterLink from '@/core/ui/link/RouterLink';
+import { Caption, CaptionSmall, Text } from '@/core/ui/typography';
+import GridContainer from '@/core/ui/grid/GridContainer';
+import GridItem from '@/core/ui/grid/GridItem';
+import { gutters } from '@/core/ui/grid/utils';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import Gutters from '@/core/ui/grid/Gutters';
+import { usePlansTableQuery } from '@/core/apollo/generated/apollo-hooks';
+import Loading from '@/core/ui/loading/Loading';
 import SelectPlanButton from './SelectPlanButton';
 import { usePlanAvailability } from './usePlanAvailability';
-import { TagCategoryValues, error } from '../../../../../core/logging/sentry/log';
-import { getPlanTranslations } from '../../../../license/plans/utils/getPlanTranslations';
-import { PlanFeatures, PlanName, PlanPrice } from '../../../../license/plans/ui/PlanCardsComponents';
-import { LicenseCredential, LicensePlanType } from '../../../../../core/apollo/generated/graphql-schema';
+import { TagCategoryValues, error } from '@/core/logging/sentry/log';
+import { getPlanTranslations } from '@/domain/license/plans/utils/getPlanTranslations';
+import { PlanFeatures, PlanName, PlanPrice } from '@/domain/license/plans/ui/PlanCardsComponents';
+import { LicenseCredential, LicensePlanType } from '@/core/apollo/generated/graphql-schema';
 
 const lines = (theme: Theme) => `1px solid ${theme.palette.divider}`;
 
@@ -43,7 +43,7 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
   const plansData = useMemo(
     () =>
       (
-        data?.platform.licensing.plans
+        data?.platform.licensingFramework.plans
           .filter(plan => plan.enabled)
           .filter(plan => plan.type === LicensePlanType.SpacePlan)
           .sort((a, b) => a.sortOrder - b.sortOrder) ?? []

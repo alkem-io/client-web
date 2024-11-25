@@ -1,16 +1,17 @@
-import 'react-image-crop/dist/ReactCrop.css';
-import React, { FC, useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Avatar, Box, BoxProps, Skeleton } from '@mui/material';
-import { useNotification } from '../../notifications/useNotification';
-import { useUploadVisualMutation } from '../../../apollo/generated/apollo-hooks';
-import UploadButton from '../../button/UploadButton';
+import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import 'react-image-crop/dist/ReactCrop.css';
+import { useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
+import UploadButton from '@/core/ui/button/UploadButton';
+import Image from '@/core/ui/image/Image';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import FileUploadWrapper from '../FileUploadWrapper';
 import { CropDialog } from './CropDialog';
-import Image from '../../image/Image';
 
 const DEFAULT_SIZE = 128;
 
-const ImagePlaceholder: FC<BoxProps<'img'>> = ({ src, alt, ...props }) => {
+const ImagePlaceholder = ({ src, alt, ...props }: BoxProps<'img'>) => {
   const { t } = useTranslation();
   return src ? <Image src={src} alt={alt} {...props} /> : <Box {...props}>{t('components.visual-upload.no-data')}</Box>;
 };
@@ -38,7 +39,7 @@ export interface VisualUploadProps {
  * @param width
  * @constructor
  */
-const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE, altText }) => {
+const VisualUpload = ({ visual, height = DEFAULT_SIZE, altText }: VisualUploadProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
@@ -65,72 +66,68 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE, al
     [visual, uploadVisual]
   );
 
-  if (!visual) {
-    return null;
+  function onFileSelected(file: File) {
+    setSelectedFile(file);
+    setDialogOpened(true);
   }
+
+  if (!visual) return null;
 
   const { maxWidth, maxHeight, allowedTypes, aspectRatio } = visual;
 
-  if (!maxWidth || !maxHeight || !allowedTypes || !aspectRatio) {
-    throw new Error(
-      "'maxWidth', 'maxHeight', 'allowedTypes', 'aspectRatio' fields are required for the component to operate!"
-    );
-  }
+  const missingFields = [
+    !maxWidth && 'maxWidth',
+    !maxHeight && 'maxHeight',
+    !allowedTypes && 'allowedTypes',
+    !aspectRatio && 'aspectRatio',
+  ].filter(Boolean);
 
-  const width = height * visual.aspectRatio;
+  if (missingFields.length) throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+
+  const width = height * aspectRatio;
 
   return (
     <Box>
-      <Box marginBottom={2}>
-        {loading ? (
-          <Skeleton variant="rectangular">
-            <Avatar sx={{ width, height }} />
-          </Skeleton>
-        ) : (
-          <ImagePlaceholder
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: 1,
-              width,
-              height,
-              borderColor: theme => theme.palette.grey[400],
-            }}
-            src={visual?.uri}
-            alt={altText}
-          />
-        )}
-      </Box>
-      {visual && (
-        <Box>
-          <UploadButton
-            disabled={loading}
-            accept={visual.allowedTypes.join(',')}
-            onChange={e => {
-              const file = e && e.target && e.target.files && e.target.files[0];
-              if (file) {
-                setSelectedFile(file);
-                setDialogOpened(true);
-              }
-            }}
-            text={t('buttons.edit')}
-          />
+      <FileUploadWrapper onFileSelected={onFileSelected} allowedTypes={allowedTypes}>
+        <Box marginBottom={2}>
+          {loading ? (
+            <Skeleton variant="rectangular">
+              <Avatar sx={{ width, height }} />
+            </Skeleton>
+          ) : (
+            <ImagePlaceholder
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: 1,
+                width,
+                height,
+                cursor: 'pointer',
+                borderColor: theme => theme.palette.grey[400],
+              }}
+              src={visual?.uri}
+              alt={altText}
+            />
+          )}
         </Box>
-      )}
-      {dialogOpened && visual && (
+      </FileUploadWrapper>
+
+      <Box>
+        <UploadButton
+          disabled={loading}
+          allowedTypes={allowedTypes}
+          onFileSelected={onFileSelected}
+          text={t('buttons.edit')}
+        />
+      </Box>
+      {dialogOpened && (
         <CropDialog
           open={dialogOpened}
           file={selectedFile}
           onClose={() => setDialogOpened(false)}
           onSave={handleVisualUpload}
-          config={{
-            aspectRatio: visual.aspectRatio,
-            minWidth: visual.minWidth,
-            maxWidth: visual.maxWidth,
-            minHeight: visual.minHeight,
-            maxHeight: visual.maxHeight,
-          }}
+          config={visual}
         />
       )}
     </Box>

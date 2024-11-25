@@ -1,17 +1,17 @@
-import Gutters from '../../grid/Gutters';
-import { GridItemStyle, gutters } from '../../grid/utils';
-import { MAX_CONTENT_WIDTH_GUTTERS, useGlobalGridColumns } from '../../grid/constants';
-import ImageBlurredSides from '../../image/ImageBlurredSides';
+import Gutters from '@/core/ui/grid/Gutters';
+import { GridItemStyle, gutters } from '@/core/ui/grid/utils';
+import { MAX_CONTENT_WIDTH_GUTTERS, useGlobalGridColumns } from '@/core/ui/grid/constants';
+import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
 import { useTranslation } from 'react-i18next';
 import { ComponentType, ReactElement, ReactNode, useState } from 'react';
-import { Visual } from '../../../../domain/common/visual/Visual';
+import { Visual } from '@/domain/common/visual/Visual';
 import { Box, Skeleton } from '@mui/material';
-import GridProvider from '../../grid/GridProvider';
-import GridItem from '../../grid/GridItem';
-import { useColumns } from '../../grid/GridContext';
-import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '../../navigation/NavigationBar';
-import Overlay from '../../utils/Overlay';
-import { BasePageBannerProps } from '../../../../domain/journey/common/EntityPageLayout/EntityPageLayoutTypes';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import GridItem from '@/core/ui/grid/GridItem';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import { NAVIGATION_CONTAINER_HEIGHT_GUTTERS } from '@/core/ui/navigation/NavigationBar';
+import Overlay from '@/core/ui/utils/Overlay';
+import { BasePageBannerProps } from '@/domain/journey/common/EntityPageLayout/EntityPageLayoutTypes';
 
 export interface PageBannerProps extends BasePageBannerProps {
   banner: Visual | undefined;
@@ -23,10 +23,10 @@ interface CardRendererProps<CardProps extends { maxWidth?: number | string }> {
   cardComponent: ComponentType<CardProps>;
 }
 
-interface CardContainerProps {
+type CardContainerProps = {
   children: (props: GridItemStyle) => ReactElement;
   watermark?: ReactNode;
-}
+};
 
 const CardContainer = ({ watermark, children }: CardContainerProps) => {
   const columns = useColumns();

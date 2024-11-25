@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { AuthorizationPrivilege } from '../../core/apollo/generated/graphql-schema';
-import { usePlatformLevelAuthorizationQuery } from '../../core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { usePlatformLevelAuthorizationQuery } from '@/core/apollo/generated/apollo-hooks';
 import NonAdminRedirect from './NonAdminRedirect';
 
 const NonPlatformAdminRedirect: FC = ({ children }) => {

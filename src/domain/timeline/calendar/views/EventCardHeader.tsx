@@ -1,20 +1,15 @@
 import { Box, Skeleton, Theme, useMediaQuery } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import CardHeaderDetail from '../../../../core/ui/card/CardHeaderDetail';
-import { gutters } from '../../../../core/ui/grid/utils';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import { BlockSectionTitle } from '../../../../core/ui/typography';
-import {
-  formatLongDate,
-  formatTime,
-  formatTimeAndDuration,
-  getEndDateByDuration,
-} from '../../../../core/utils/time/utils';
+import CardHeaderDetail from '@/core/ui/card/CardHeaderDetail';
+import { gutters } from '@/core/ui/grid/utils';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import { BlockSectionTitle } from '@/core/ui/typography';
+import { formatLongDate, formatTime, formatTimeAndDuration, getEndDateByDuration } from '@/core/utils/time/utils';
 import { CalendarIcon } from '../icons/CalendarIcon';
 import { ClockIcon } from '../icons/ClockIcon';
 import CalendarEventBadge from './CalendarEventBadge';
-import { SubspaceIconV2 } from '../../../journey/subspace/icon/SubspaceIconV2';
+import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
 
 export interface EventCardHeaderProps {
   event:
@@ -63,17 +58,23 @@ const EventCardHeader = ({ event, children }: PropsWithChildren<EventCardHeaderP
       <Box display="flex" gap={isMobile ? 0 : gutters()} flexDirection={isMobile ? 'column' : 'row'}>
         {event && (
           <>
-            <CardHeaderDetail iconComponent={CalendarIcon}>{formatLongDate(startDate)}</CardHeaderDetail>
-            <CardHeaderDetail iconComponent={ClockIcon}>{formatTimeAndDuration(event, t)}</CardHeaderDetail>
+            <CardHeaderDetail iconComponent={<CalendarIcon />}>{formatLongDate(startDate)}</CardHeaderDetail>
+            <CardHeaderDetail iconComponent={<ClockIcon />}>{formatTimeAndDuration(event, t)}</CardHeaderDetail>
             {hasEndDate && (
               <>
                 <Box>-</Box>
-                <CardHeaderDetail iconComponent={CalendarIcon}>{formatLongDate(endDate)}</CardHeaderDetail>
-                <CardHeaderDetail iconComponent={ClockIcon}>{formatTime(endDate)}</CardHeaderDetail>
+                <CardHeaderDetail iconComponent={<CalendarIcon />}>{formatLongDate(endDate)}</CardHeaderDetail>
+                <CardHeaderDetail iconComponent={<ClockIcon />}>{formatTime(endDate)}</CardHeaderDetail>
               </>
             )}
             {event?.subspace && (
-              <CardHeaderDetail iconComponent={SubspaceIconV2}>{event.subspace.profile.displayName}</CardHeaderDetail>
+              <CardHeaderDetail
+                iconComponent={
+                  <SubspaceIcon2 fill="primary" sx={{ maxHeight: gutters(0.7), maxWidth: gutters(0.7) }} />
+                }
+              >
+                {event.subspace.profile.displayName}
+              </CardHeaderDetail>
             )}
           </>
         )}

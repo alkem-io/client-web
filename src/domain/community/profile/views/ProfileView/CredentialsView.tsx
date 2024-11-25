@@ -1,10 +1,9 @@
 import { Grid, Skeleton } from '@mui/material';
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import CredentialCard from '../../../../agent/credential/CredentialCard';
-import CredentialProfileCard, { ProfileCardProps } from '../../../../agent/credential/CredentialProfileCard';
-import { CardLayoutContainer, CardLayoutItem } from '../../../../../core/ui/card/cardsLayout/CardsLayout';
-import UserCredentialsContainer from '../../../../agent/credential/verifiedCredentials/UserCredentialsContainer';
+import CredentialCard from '@/domain/agent/credential/CredentialCard';
+import CredentialProfileCard, { ProfileCardProps } from '@/domain/agent/credential/CredentialProfileCard';
+import { CardLayoutContainer, CardLayoutItem } from '@/core/ui/card/cardsLayout/CardsLayout';
+import UserCredentialsContainer from '@/domain/agent/credential/verifiedCredentials/UserCredentialsContainer';
 
 interface CredentialsViewProps extends ProfileCardProps {
   userID: string;
@@ -33,7 +32,7 @@ const SkeletonItem = () => (
   </Grid>
 );
 
-export const CredentialsView: FC<CredentialsViewProps> = ({ userID, loading, ...rest }) => {
+export const CredentialsView = ({ userID, loading, ...rest }: CredentialsViewProps) => {
   const { t } = useTranslation();
   return (
     <UserCredentialsContainer userID={userID}>

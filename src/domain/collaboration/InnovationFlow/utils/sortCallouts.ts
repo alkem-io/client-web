@@ -15,10 +15,10 @@ export interface SortCalloutsParams {
   };
 }
 
-interface SortCalloutsReturnType {
+type SortCalloutsReturnType = {
   sortedCalloutIds: string[];
   optimisticSortOrder: number;
-}
+};
 
 const FLOW_STATE_MOVING = Symbol('Moving');
 

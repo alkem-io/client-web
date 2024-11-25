@@ -4,9 +4,9 @@ import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import ExploreSpaces from './ExploreSpaces/ExploreSpaces';
-import { Actions } from '../../../core/ui/actions/Actions';
-import { AUTH_SIGN_UP_PATH } from '../../../core/auth/authentication/constants/authentication.constants';
-import PageContentBlock from '../../../core/ui/content/PageContentBlock';
+import { Actions } from '@/core/ui/actions/Actions';
+import { AUTH_SIGN_UP_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
 
 interface MyDashboardUnauthenticatedProps {}
 

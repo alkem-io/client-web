@@ -1,4 +1,4 @@
-import { VisualType } from '../../../../core/apollo/generated/graphql-schema';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { camelCase } from 'lodash';
 
 export const VisualName: Record<VisualType, string> = {

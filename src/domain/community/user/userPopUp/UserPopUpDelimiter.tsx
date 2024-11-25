@@ -1,8 +1,6 @@
 import { Box } from '@mui/material';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { makeStyles } from '@mui/styles';
-
-interface DelimiterProps {}
 
 const useDelimiterStyle = makeStyles(theme => ({
   line: {
@@ -23,7 +21,7 @@ const useDelimiterStyle = makeStyles(theme => ({
   },
 }));
 
-export const UserPopUpDelimiter: FC<DelimiterProps> = ({ children }) => {
+export const UserPopUpDelimiter: FC = ({ children }) => {
   const style = useDelimiterStyle();
 
   return (

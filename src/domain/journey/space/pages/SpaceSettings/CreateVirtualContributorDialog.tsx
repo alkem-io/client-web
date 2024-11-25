@@ -3,16 +3,16 @@ import { useTranslation } from 'react-i18next';
 import { Button, Dialog, DialogContent } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import * as yup from 'yup';
-import DialogHeader from '../../../../../core/ui/dialog/DialogHeader';
-import Gutters from '../../../../../core/ui/grid/Gutters';
-import { Actions } from '../../../../../core/ui/actions/Actions';
-import { gutters } from '../../../../../core/ui/grid/utils';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import Gutters from '@/core/ui/grid/Gutters';
+import { Actions } from '@/core/ui/actions/Actions';
+import { gutters } from '@/core/ui/grid/utils';
 import { Form, Formik } from 'formik';
-import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
-import FormikSelect from '../../../../../core/ui/forms/FormikSelect';
-import useLoadingState from '../../../../shared/utils/useLoadingState';
-import { Caption } from '../../../../../core/ui/typography';
-import { nameSegmentSchema } from '../../../../platform/admin/components/Common/NameSegment';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import FormikSelect from '@/core/ui/forms/FormikSelect';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { Caption } from '@/core/ui/typography';
+import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 
 export interface VirtualContributorFormValues {
   displayName: string;

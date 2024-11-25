@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useFormikContext } from 'formik';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
@@ -8,7 +8,7 @@ export interface FormikEffectProps<T> {
 }
 
 const FormikEffectFactory = <T,>() => {
-  const Instance: FC<FormikEffectProps<T>> = ({ onChange, onStatusChange }) => {
+  const Instance = ({ onChange, onStatusChange }: FormikEffectProps<T>) => {
     const formik = useFormikContext<T>();
 
     if (!formik) {

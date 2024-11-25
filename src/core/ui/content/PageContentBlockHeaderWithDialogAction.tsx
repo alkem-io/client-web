@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { IconButton } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { ExpandContentIcon } from './ExpandContent';

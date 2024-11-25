@@ -1,4 +1,3 @@
-import React from 'react';
 import { Navigate, NavigateProps, useParams } from 'react-router-dom';
 
 interface RedirectProps extends NavigateProps {

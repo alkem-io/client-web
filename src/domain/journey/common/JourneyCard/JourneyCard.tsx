@@ -1,18 +1,18 @@
 import { ComponentType, PropsWithChildren, ReactNode, useState } from 'react';
 import { Box, SvgIconProps } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
-import ContributeCard, { ContributeCardProps } from '../../../../core/ui/card/ContributeCard';
-import BadgeCardView from '../../../../core/ui/list/BadgeCardView';
-import RoundedIcon from '../../../../core/ui/icon/RoundedIcon';
-import { gutters } from '../../../../core/ui/grid/utils';
-import CardContent from '../../../../core/ui/card/CardContent';
-import RouterLink from '../../../../core/ui/link/RouterLink';
-import ExpandableCardFooter from '../../../../core/ui/card/ExpandableCardFooter';
-import CardBanner from '../../../../core/ui/card/CardImageHeader';
+import ContributeCard, { ContributeCardProps } from '@/core/ui/card/ContributeCard';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import RoundedIcon from '@/core/ui/icon/RoundedIcon';
+import { gutters } from '@/core/ui/grid/utils';
+import CardContent from '@/core/ui/card/CardContent';
+import RouterLink from '@/core/ui/link/RouterLink';
+import ExpandableCardFooter from '@/core/ui/card/ExpandableCardFooter';
+import CardBanner from '@/core/ui/card/CardImageHeader';
 import { useTranslation } from 'react-i18next';
 import { JourneyCardBanner } from './Banner';
 import defaultCardBanner from '../../defaultVisuals/Card.jpg';
-import CardTags from '../../../../core/ui/card/CardTags';
+import CardTags from '@/core/ui/card/CardTags';
 
 export interface JourneyCardProps extends ContributeCardProps {
   iconComponent: ComponentType<SvgIconProps>;

@@ -4,23 +4,23 @@ import {
   useInnovationPackProfilePageQuery,
   useInnovationPackResolveIdQuery,
   useTemplateUrlResolverQuery,
-} from '../../../core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '../../../core/apollo/generated/graphql-schema';
-import { useUrlParams } from '../../../core/routing/useUrlParams';
-import PageContent from '../../../core/ui/content/PageContent';
-import PageContentBlock from '../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../core/ui/content/PageContentBlockHeader';
-import PageContentColumn from '../../../core/ui/content/PageContentColumn';
-import GridItem from '../../../core/ui/grid/GridItem';
-import Gutters from '../../../core/ui/grid/Gutters';
-import { gutters } from '../../../core/ui/grid/utils';
-import Loading from '../../../core/ui/loading/Loading';
-import WrapperMarkdown from '../../../core/ui/markdown/WrapperMarkdown';
-import { BlockSectionTitle, Text } from '../../../core/ui/typography';
-import ReferencesListSmallItem from '../../profile/Reference/ReferencesListSmallItem/ReferencesListSmallItem';
-import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
-import {} from '../../templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
-import TemplatesAdmin from '../../templates/components/TemplatesAdmin/TemplatesAdmin';
+} from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { useUrlParams } from '@/core/routing/useUrlParams';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import GridItem from '@/core/ui/grid/GridItem';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import Loading from '@/core/ui/loading/Loading';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { BlockSectionTitle, Text } from '@/core/ui/typography';
+import ReferencesListSmallItem from '@/domain/profile/Reference/ReferencesListSmallItem/ReferencesListSmallItem';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
+import {} from '@/domain/templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
+import TemplatesAdmin from '@/domain/templates/components/TemplatesAdmin/TemplatesAdmin';
 import InnovationPackProfileLayout from './InnovationPackProfileLayout';
 
 const InnovationPackProfilePage = () => {

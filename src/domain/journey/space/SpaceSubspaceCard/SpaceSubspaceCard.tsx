@@ -1,14 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { HubOutlined } from '@mui/icons-material';
-import { ProfileType, SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
-import { BlockTitle, Caption } from '../../../../core/ui/typography';
-import CardRibbon from '../../../../core/ui/card/CardRibbon';
-import CardActions from '../../../../core/ui/card/CardActions';
-import JourneyCard, { JourneyCardProps } from '../../common/JourneyCard/JourneyCard';
-import JourneyCardDescription from '../../common/JourneyCard/JourneyCardDescription';
-import JourneyCardSpacing from '../../common/JourneyCard/JourneyCardSpacing';
-import JourneyCardGoToButton from '../../common/JourneyCard/JourneyCardGoToButton';
-import JourneyCardTagline from '../../common/JourneyCard/JourneyCardTagline';
+import { ProfileType, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { BlockTitle, Caption } from '@/core/ui/typography';
+import CardRibbon from '@/core/ui/card/CardRibbon';
+import CardActions from '@/core/ui/card/CardActions';
+import JourneyCard, { JourneyCardProps } from '@/domain/journey/common/JourneyCard/JourneyCard';
+import JourneyCardDescription from '@/domain/journey/common/JourneyCard/JourneyCardDescription';
+import JourneyCardSpacing from '@/domain/journey/common/JourneyCard/JourneyCardSpacing';
+import JourneyCardGoToButton from '@/domain/journey/common/JourneyCard/JourneyCardGoToButton';
+import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
 import StackedAvatar from './StackedAvatar';
 import { ReactNode } from 'react';
 

@@ -1,9 +1,9 @@
-import Gutters from '../../grid/Gutters';
+import Gutters from '@/core/ui/grid/Gutters';
 import { ComponentType, ReactNode } from 'react';
 import { Box, Button, SvgIconProps, Tooltip, TooltipProps } from '@mui/material';
-import { Caption } from '../../typography';
-import SwapColors from '../../palette/SwapColors';
-import { gutters } from '../../grid/utils';
+import { Caption } from '@/core/ui/typography';
+import SwapColors from '@/core/ui/palette/SwapColors';
+import { gutters } from '@/core/ui/grid/utils';
 
 export interface RadioButtonOption<Value> {
   icon?: ComponentType<SvgIconProps>;

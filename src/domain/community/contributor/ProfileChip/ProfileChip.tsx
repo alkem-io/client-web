@@ -1,11 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 import { Box, Button, Skeleton, styled, Tooltip } from '@mui/material';
 import { ProfileChipView, ProfileChipViewProps } from './ProfileChipView';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { FC } from 'react';
-import GridItem from '../../../../core/ui/grid/GridItem';
-import FlexSpacer from '../../../../core/ui/utils/FlexSpacer';
+import GridItem from '@/core/ui/grid/GridItem';
+import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 
 export interface ProfileChipProps extends ProfileChipViewProps {
   loading?: boolean;
@@ -30,7 +29,7 @@ const RemoveButton = styled(Button)(({ theme }) => ({
   color: theme.palette.grey.dark,
 }));
 
-export const ProfileChip: FC<ProfileChipProps> = ({ loading, removable = false, onRemove, ...props }) => {
+export const ProfileChip = ({ loading, removable = false, onRemove, ...props }: ProfileChipProps) => {
   const { t } = useTranslation();
 
   return (

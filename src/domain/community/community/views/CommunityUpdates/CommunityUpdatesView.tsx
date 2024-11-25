@@ -24,24 +24,24 @@ import clsx from 'clsx';
 import { Form, Formik } from 'formik';
 import { keyBy } from 'lodash';
 import orderBy from 'lodash/orderBy';
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import FormikMarkdownField from '../../../../../core/ui/forms/MarkdownInput/FormikMarkdownField';
-import ConfirmationDialog from '../../../../../core/ui/dialogs/ConfirmationDialog';
-import AlkemioAvatar from '../../../../../core/ui/image/AlkemioAvatar';
-import SaveButton from '../../../../../core/ui/actions/SaveButton';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import AlkemioAvatar from '@/core/ui/image/AlkemioAvatar';
+import SaveButton from '@/core/ui/actions/SaveButton';
 import { FontDownloadIcon } from './icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from './icons/FontDownloadOffIcon';
-import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { Message } from '../../../../../core/apollo/generated/graphql-schema';
-import { Author } from '../../../../shared/components/AuthorAvatar/models/author';
-import { MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
-import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
-import hexToRGBA from '../../../../../core/utils/hexToRGBA';
-import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
-import UserPopUp from '../../../user/userPopUp/UserPopUp';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { Message } from '@/core/apollo/generated/graphql-schema';
+import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import hexToRGBA from '@/core/utils/hexToRGBA';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import UserPopUp from '@/domain/community/user/userPopUp/UserPopUp';
 
 export interface CommunityUpdatesViewProps {
   entities: {
@@ -95,7 +95,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, actions, state, options }) => {
+export const CommunityUpdatesView = ({ entities, actions, state, options }: CommunityUpdatesViewProps) => {
   const styles = useStyles();
   const notify = useNotification();
   const { t } = useTranslation();

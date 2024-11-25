@@ -1,11 +1,11 @@
 import { FilterConfig, FilterDefinition } from './Filter';
 import React, { ComponentType, ReactNode } from 'react';
 import { EntityFilter } from './EntityFilter';
-import CardsLayout from '../../core/ui/card/cardsLayout/CardsLayout';
-import PageContentBlock from '../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../core/ui/content/PageContentBlockHeader';
+import CardsLayout from '@/core/ui/card/cardsLayout/CardsLayout';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { useTranslation } from 'react-i18next';
-import { Identifiable } from '../../core/utils/Identifiable';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 interface ResultSectionProps<Result extends Identifiable> {
   title: ReactNode;

@@ -1,51 +1,40 @@
-import React, { ChangeEvent, ChangeEventHandler, FC, useCallback, useRef } from 'react';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import FileUploadWrapper from '../upload/FileUploadWrapper';
 
-interface UploadButtonProps {
-  onChange?: ChangeEventHandler<HTMLInputElement>;
-  accept?: string;
+/**
+ * @param onFileSelected Callback fired when a file is selected
+ * @param allowedTypes Array of MIME types that are allowed for upload (e.g. ['image/jpeg', 'image/png'])
+ * @param icon Optional icon element to render an IconButton instead of a regular Button
+ * @param text Optional button text (used when icon is not provided)
+ * @param disabled Optional flag to disable the button
+ */
+type UploadButtonProps = {
+  onFileSelected: (file: File) => void;
+  allowedTypes: string[];
   icon?: React.ReactElement;
   text?: string;
   disabled?: boolean;
-}
+};
 
-export const UploadButton: FC<UploadButtonProps> = ({ onChange, accept, icon, text, disabled }) => {
-  const ref = useRef<HTMLInputElement>(null);
+const UploadButton = ({ onFileSelected, allowedTypes, icon, text, disabled }: UploadButtonProps) => {
   const { t } = useTranslation();
-
-  const handleButtonClick = () => {
-    if (ref && ref.current) {
-      ref.current.value = '';
-      ref.current.click();
-    }
-  };
-
-  const handleChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      if (onChange) {
-        onChange(e);
-      }
-    },
-    [onChange]
-  );
-
-  const button = icon ? (
-    <IconButton aria-label={t('components.file-upload.uploadFile')} onClick={handleButtonClick} disabled={disabled}>
-      {icon}
-    </IconButton>
-  ) : (
-    <Button aria-label={text} onClick={handleButtonClick} disabled={disabled}>
-      {text}
-    </Button>
-  );
+  const label = text ?? t('components.file-upload.uploadFile');
 
   return (
-    <>
-      {button}
-      <input ref={ref} type="file" accept={accept} style={{ display: 'none' }} onChange={handleChange} />
-    </>
+    <FileUploadWrapper onFileSelected={onFileSelected} allowedTypes={allowedTypes}>
+      {icon ? (
+        <IconButton aria-label={label} disabled={disabled}>
+          {icon}
+        </IconButton>
+      ) : (
+        <Button aria-label={label} disabled={disabled}>
+          {label}
+        </Button>
+      )}
+    </FileUploadWrapper>
   );
 };
 

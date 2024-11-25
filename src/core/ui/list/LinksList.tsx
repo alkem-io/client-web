@@ -1,18 +1,12 @@
-import React, { FC, ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { styled } from '@mui/styles';
-import {
-  Box,
-  Collapse,
-  List as MuiList,
-  ListItem as MuiListItem,
-  ListItemIcon as MuiListItemIcon,
-  Skeleton,
-} from '@mui/material';
+import { Box, Collapse, List as MuiList, ListItem as MuiListItem, Skeleton } from '@mui/material';
 import { BlockSectionTitle, CaptionSmall } from '../typography';
 import RouterLink from '../link/RouterLink';
 import { gutters } from '../grid/utils';
 import { times } from 'lodash';
 import CardExpandButton from '../card/CardExpandButton';
+import Avatar from '@/core/ui/avatar/Avatar';
 
 const List = styled(MuiList)(() => ({ padding: 0 }));
 
@@ -23,16 +17,12 @@ const ListItem = styled(MuiListItem)(({ theme }) => ({
   alignItems: 'center',
 })) as typeof MuiListItem;
 
-const ListItemIcon = styled(MuiListItemIcon)({
-  minWidth: 'auto',
-  color: 'inherit',
-});
-
 interface Item {
   id: string;
   title: ReactNode;
   icon: ReactNode;
   uri: string;
+  cardBanner?: string;
 }
 
 export interface LinksListProps {
@@ -43,7 +33,7 @@ export interface LinksListProps {
 
 const COLLAPSED_LIST_ITEM_LIMIT = 5;
 
-const LinksList: FC<LinksListProps> = ({ items = [], emptyListCaption, loading = false }) => {
+const LinksList = ({ items = [], emptyListCaption, loading = false }: LinksListProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleExpand = () => {
@@ -57,8 +47,9 @@ const LinksList: FC<LinksListProps> = ({ items = [], emptyListCaption, loading =
       {!loading &&
         items.length > 0 &&
         items.slice(0, COLLAPSED_LIST_ITEM_LIMIT).map(item => (
-          <ListItem key={item.id} component={RouterLink} to={item.uri}>
-            <ListItemIcon>{item.icon}</ListItemIcon>
+          <ListItem key={item.id} component={RouterLink} to={item.uri} sx={{ marginTop: gutters(0.5) }}>
+            <Avatar variant="rounded" alt="subspace avatar" src={item.cardBanner} aria-label="Subspace avatar" />
+
             <BlockSectionTitle minWidth={0} noWrap>
               {item.title}
             </BlockSectionTitle>
@@ -68,7 +59,8 @@ const LinksList: FC<LinksListProps> = ({ items = [], emptyListCaption, loading =
         <Collapse in={isExpanded}>
           {items.slice(COLLAPSED_LIST_ITEM_LIMIT).map(item => (
             <ListItem key={item.id} component={RouterLink} to={item.uri}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
+              <Avatar variant="rounded" alt="subspace avatar" src={item.cardBanner} aria-label="Subspace avatar" />
+
               <BlockSectionTitle minWidth={0} noWrap>
                 {item.title}
               </BlockSectionTitle>

@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactNode } from 'react';
+import { forwardRef, ReactNode } from 'react';
 import { AvatarProps, Box } from '@mui/material';
 import ErrorHandlingAvatar from './ErrorHandlingAvatar';
 import { gutters } from '../grid/utils';

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useConfig } from '../../../domain/platform/config/useConfig';
-import LanguageSelect from '../../../core/ui/language/LanguageSelect';
-import HelpDialog from '../../../core/help/dialog/HelpDialog';
-import FooterLink from '../../../core/ui/layout/pageFooter/FooterLink';
-import PageFooter from '../../../core/ui/layout/pageFooter/PageFooter';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import LanguageSelect from '@/core/ui/language/LanguageSelect';
+import HelpDialog from '@/core/help/dialog/HelpDialog';
+import FooterLink from '@/core/ui/layout/pageFooter/FooterLink';
+import PageFooter from '@/core/ui/layout/pageFooter/PageFooter';
 import FooterLogo from './FooterLogo';
-import { Caption } from '../../../core/ui/typography';
+import { Caption } from '@/core/ui/typography';
 import { BoxProps, Button } from '@mui/material';
 import LanguageOutlinedIcon from '@mui/icons-material/LanguageOutlined';
 

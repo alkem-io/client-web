@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import { PropsWithChildren, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
 import {
   AuthorizationPrivilege,
@@ -8,19 +8,19 @@ import {
   ReferenceDetailsFragment,
   SearchVisibility,
   Tagset,
-} from '../../../../core/apollo/generated/graphql-schema';
-import { ContributorCardSquareProps } from '../../../community/contributor/ContributorCardSquare/ContributorCardSquare';
-import { WithId } from '../../../../core/utils/WithId';
+} from '@/core/apollo/generated/graphql-schema';
+import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
+import { WithId } from '@/core/utils/WithId';
 import useCommunityMembersAsCardProps, {
   RoleSetMembers,
-} from '../../../community/community/utils/useCommunityMembersAsCardProps';
-import { ContainerChildProps } from '../../../../core/container/container';
-import { useAboutPageMembersQuery, useAboutPageNonMembersQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
-import { MetricType } from '../../../platform/metrics/MetricType';
-import { InnovationFlowDetails } from '../../../collaboration/InnovationFlow/InnovationFlow';
-import { ContributorViewProps } from '../../../community/community/EntityDashboardContributorsSection/Types';
-import { VirtualContributorProps } from '../../../community/community/VirtualContributorsBlock/VirtualContributorsDialog';
+} from '@/domain/community/community/utils/useCommunityMembersAsCardProps';
+import { ContainerChildProps } from '@/core/container/container';
+import { useAboutPageMembersQuery, useAboutPageNonMembersQuery } from '@/core/apollo/generated/apollo-hooks';
+import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
+import { MetricType } from '@/domain/platform/metrics/MetricType';
+import { InnovationFlowDetails } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
+import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
+import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 
 interface AboutPagePermissions {
   communityReadAccess: boolean;
@@ -57,7 +57,7 @@ export interface AboutPageContainerProps
   journeyId: string | undefined;
 }
 
-const AboutPageContainer: FC<AboutPageContainerProps> = ({ journeyId, children }) => {
+const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPageContainerProps>) => {
   const {
     data: nonMembersData,
     loading: nonMembersDataLoading,

@@ -1,5 +1,5 @@
 import PLATFORM_NAVIGATION_MENU_ITEMS from './menuItems';
-import NavigatableMenuItem from '../../../../core/ui/menu/NavigatableMenuItem';
+import NavigatableMenuItem from '@/core/ui/menu/NavigatableMenuItem';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 

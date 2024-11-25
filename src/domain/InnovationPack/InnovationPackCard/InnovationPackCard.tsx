@@ -1,22 +1,22 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
-import ContributeCard, { ContributeCardProps } from '../../../core/ui/card/ContributeCard';
-import CardHeader from '../../../core/ui/card/CardHeader';
-import CardDetails from '../../../core/ui/card/CardDetails';
-import CardDescriptionWithTags from '../../../core/ui/card/CardDescriptionWithTags';
-import CardFooter from '../../../core/ui/card/CardFooter';
+import ContributeCard, { ContributeCardProps } from '@/core/ui/card/ContributeCard';
+import CardHeader from '@/core/ui/card/CardHeader';
+import CardDetails from '@/core/ui/card/CardDetails';
+import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
+import CardFooter from '@/core/ui/card/CardFooter';
 import InnovationPackIcon from '../InnovationPackIcon';
-import CardFooterBadge from '../../../core/ui/card/CardFooterBadge';
+import CardFooterBadge from '@/core/ui/card/CardFooterBadge';
 import { Box } from '@mui/material';
-import { WhiteboardIcon } from '../../collaboration/whiteboard/icon/WhiteboardIcon';
-import { PostIcon } from '../../collaboration/post/icon/PostIcon';
-import { InnovationFlowIcon } from '../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
-import CardFooterCountWithBadge from '../../../core/ui/card/CardFooterCountWithBadge';
-import { gutters } from '../../../core/ui/grid/utils';
-import { CommunityGuidelinesIcon } from '../../community/communityGuidelines/icon/CommunityGuidelinesIcon';
-import { TemplateType } from '../../../core/apollo/generated/graphql-schema';
-import { SpaceIcon } from '../../journey/space/icon/SpaceIcon';
+import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
+import { PostIcon } from '@/domain/collaboration/post/icon/PostIcon';
+import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
+import CardFooterCountWithBadge from '@/core/ui/card/CardFooterCountWithBadge';
+import { gutters } from '@/core/ui/grid/utils';
+import { CommunityGuidelinesIcon } from '@/domain/community/communityGuidelines/icon/CommunityGuidelinesIcon';
+import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
 
 export interface InnovationPackCardProps extends ContributeCardProps {
   displayName: string;

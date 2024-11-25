@@ -2,9 +2,9 @@ import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import GroupPage from '../components/Group/GroupPage';
 import EditMembersPage from '../components/Group/EditMembersPage';
-import Loading from '../../../../core/ui/loading/Loading';
-import { GroupInfoFragment } from '../../../../core/apollo/generated/graphql-schema';
-import { Error404 } from '../../../../core/pages/Errors/Error404';
+import Loading from '@/core/ui/loading/Loading';
+import { GroupInfoFragment } from '@/core/apollo/generated/graphql-schema';
+import { Error404 } from '@/core/pages/Errors/Error404';
 
 interface Props {
   group?: GroupInfoFragment;

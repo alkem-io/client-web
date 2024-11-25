@@ -1,14 +1,14 @@
-import React, { Ref, useMemo } from 'react';
+import { Ref, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useCalloutDetailsQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
+import { useCalloutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { TypedCallout, TypedCalloutDetails } from '../useCallouts/useCallouts';
 
-interface CalloutDetailsContainerProvided {
+type CalloutDetailsContainerProvided = {
   ref: Ref<Element>;
   callout: TypedCalloutDetails | undefined;
   loading: boolean;
-}
+};
 
 interface CalloutDetailsContainerProps extends SimpleContainerProps<CalloutDetailsContainerProvided> {
   callout: TypedCallout;

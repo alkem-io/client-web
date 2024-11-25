@@ -3,10 +3,10 @@ import {
   AuthorizationPrivilege,
   DiscussionCardFragment,
   ForumDiscussionCategory,
-} from '../../../../core/apollo/generated/graphql-schema';
-import { Author } from '../../../shared/components/AuthorAvatar/models/author';
-import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
-import { Room } from '../../room/models/Room';
+} from '@/core/apollo/generated/graphql-schema';
+import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
+import { useAuthorsDetails } from '@/domain/communication/communication/useAuthorsDetails';
+import { Room } from '@/domain/communication/room/models/Room';
 
 export interface Discussion {
   id: string;
@@ -21,7 +21,7 @@ export interface Discussion {
   comments: Room;
 }
 
-interface DiscussionMapper {
+type DiscussionMapper = {
   /**
    * Maps any compatible discussion fragment to a Discussion object.
    * Needs to be a hook to look into the authors details
@@ -30,7 +30,7 @@ interface DiscussionMapper {
    */
   discussionMapper: (discussion: DiscussionCardFragment) => Discussion;
   loading: boolean;
-}
+};
 
 export const useDiscussionMapper = (allAuthorsIds: string[]): DiscussionMapper => {
   const { authors, getAuthor, loading: loadingAuthors } = useAuthorsDetails(allAuthorsIds);

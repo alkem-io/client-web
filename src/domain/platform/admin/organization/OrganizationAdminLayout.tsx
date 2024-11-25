@@ -1,16 +1,16 @@
 import React, { FC } from 'react';
 import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
-import { useOrganization } from '../../../community/contributor/organization/hooks/useOrganization';
+import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
 import EntitySettingsLayout from '../layout/EntitySettingsLayout/EntitySettingsLayout';
-import OrganizationPageBanner from '../../../community/organization/layout/OrganizationPageBanner';
+import OrganizationPageBanner from '@/domain/community/organization/layout/OrganizationPageBanner';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
-import OrganizationPageContainer from '../../../community/contributor/organization/OrganizationPageContainer/OrganizationPageContainer';
-import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
+import OrganizationPageContainer from '@/domain/community/contributor/organization/OrganizationPageContainer/OrganizationPageContainer';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import { Diversity3Outlined, Settings, LocalOfferOutlined } from '@mui/icons-material';
-import { buildOrganizationUrl } from '../../../../main/routing/urlBuilders';
-import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import { buildOrganizationUrl } from '@/main/routing/urlBuilders';
+import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { useTranslation } from 'react-i18next';
 
 const tabs: TabDefinition<SettingsSection>[] = [

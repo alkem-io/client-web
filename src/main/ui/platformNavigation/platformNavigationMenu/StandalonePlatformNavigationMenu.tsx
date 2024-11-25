@@ -1,40 +1,38 @@
 import { Box, ButtonProps, Divider, MenuItem, MenuList, Paper, SvgIconProps } from '@mui/material';
-import Gutters from '../../../../core/ui/grid/Gutters';
+import Gutters from '@/core/ui/grid/Gutters';
 import React, { ComponentType, forwardRef, PropsWithChildren } from 'react';
-import RouterLink from '../../../../core/ui/link/RouterLink';
+import RouterLink from '@/core/ui/link/RouterLink';
 import { useTranslation } from 'react-i18next';
-import { gutters } from '../../../../core/ui/grid/utils';
-import PoweredBy from '../../poweredBy/PoweredBy';
+import { gutters } from '@/core/ui/grid/utils';
+import PoweredBy from '@/main/ui/poweredBy/PoweredBy';
 import { ButtonTypeMap } from '@mui/material/Button/Button';
 import { PLATFORM_NAVIGATION_MENU_ELEVATION } from '../constants';
 import PLATFORM_NAVIGATION_MENU_ITEMS from './menuItems';
 import { FocusTrap } from '@mui/base/FocusTrap';
-import NavigatableMenuItem from '../../../../core/ui/menu/NavigatableMenuItem';
+import NavigatableMenuItem from '@/core/ui/menu/NavigatableMenuItem';
 import { ExitToAppOutlined } from '@mui/icons-material';
-import { Caption } from '../../../../core/ui/typography';
+import { Caption } from '@/core/ui/typography';
 
-interface PlatformNavigationMenuItemProps {
+type PlatformNavigationMenuItemProps = {
   iconComponent: ComponentType<SvgIconProps>;
   route: string;
-}
+};
 
 const PlatformNavigationMenuItem = <D extends React.ElementType = ButtonTypeMap['defaultComponent'], P = {}>({
   route,
   iconComponent: Icon,
   children,
   ...props
-}: ButtonProps<D, P> & PropsWithChildren<PlatformNavigationMenuItemProps>) => {
-  return (
-    <MenuItem component={RouterLink} to={route} sx={{ padding: 0 }} {...props}>
-      <Gutters alignItems="center" width={gutters(7)} paddingX={gutters(0.25)}>
-        <Icon fontSize="large" />
-        <Caption textAlign="center" sx={{ textWrap: 'wrap' }}>
-          {children}
-        </Caption>
-      </Gutters>
-    </MenuItem>
-  );
-};
+}: ButtonProps<D, P> & PropsWithChildren<PlatformNavigationMenuItemProps>) => (
+  <MenuItem component={RouterLink} to={route} sx={{ padding: 0 }} {...props}>
+    <Gutters alignItems="center" width={gutters(7)} paddingX={gutters(0.25)}>
+      <Icon fontSize="large" />
+      <Caption textAlign="center" sx={{ textWrap: 'wrap' }}>
+        {children}
+      </Caption>
+    </Gutters>
+  </MenuItem>
+);
 
 interface StandalonePlatformNavigationMenuProps {
   onClose?: () => void;

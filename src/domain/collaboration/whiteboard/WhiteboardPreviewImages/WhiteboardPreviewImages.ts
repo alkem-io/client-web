@@ -1,10 +1,16 @@
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
 import getWhiteboardPreviewDimensions from './getWhiteboardPreviewDimensions';
-import { VisualType } from '../../../../core/apollo/generated/graphql-schema';
-import { useUploadVisualMutation } from '../../../../core/apollo/generated/apollo-hooks';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
 import { BannerDimensions, BannerNarrowDimensions } from './WhiteboardDimensions';
+import type { exportToBlob as ExcalidrawExportToBlob } from '@alkemio/excalidraw';
+import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
+
+type ExcalidrawUtils = {
+  exportToBlob: typeof ExcalidrawExportToBlob;
+};
 
 export interface PreviewImageDimensions {
   maxWidth: number;
@@ -43,7 +49,7 @@ export const generateWhiteboardPreviewImages = async <Whiteboard extends Whitebo
 
   const previewImages: WhiteboardPreviewImage[] = [];
 
-  const { exportToBlob } = await import('@alkemio/excalidraw');
+  const { exportToBlob } = await lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
 
   previewImages.push({
     visualType: VisualType.Banner,

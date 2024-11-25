@@ -1,44 +1,49 @@
-import React, { FC, useEffect, useState } from 'react';
-import useNavigate from '../../../../core/routing/useNavigate';
+import { useEffect, useState } from 'react';
+import useNavigate from '@/core/routing/useNavigate';
 import { Autocomplete, Button, DialogActions, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import PostForm, { PostFormInput, PostFormOutput } from '../PostForm/PostForm';
 import usePostSettings from '../containers/PostSettings/usePostSettings';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import { useNotification } from '../../../../core/ui/notifications/useNotification';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   PostSettingsFragment,
   AuthorizationPrivilege,
   CalloutType,
   Visual,
   VisualType,
-} from '../../../../core/apollo/generated/graphql-schema';
-import EditVisualsView from '../../../common/visual/EditVisuals/EditVisualsView';
-import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
+} from '@/core/apollo/generated/graphql-schema';
+import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
+import SectionSpacer from '@/domain/shared/components/Section/SectionSpacer';
 import { PostDialogSection } from '../views/PostDialogSection';
 import { PostLayout } from '../views/PostLayoutWithOutlet';
-import useCallouts from '../../callout/useCallouts/useCallouts';
-import { useMoveContributionToCalloutMutation } from '../../../../core/apollo/generated/apollo-hooks';
-import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import useCallouts from '@/domain/collaboration/callout/useCallouts/useCallouts';
+import { useMoveContributionToCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { LoadingButton } from '@mui/lab';
-import useLoadingState from '../../../shared/utils/useLoadingState';
-import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
-import { normalizeLink } from '../../../../core/utils/links';
-import { DialogFooter } from '../../../../core/ui/dialog/DialogWithGrid';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import { normalizeLink } from '@/core/utils/links';
+import { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
 
 export interface PostSettingsPageProps {
   onClose: () => void;
   journeyTypeName: JourneyTypeName;
+  collaborationId: string | undefined;
+  calloutId: string | undefined;
+  postNameId: string | undefined;
 }
 
-const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose }) => {
+const PostSettingsPage = ({
+  journeyTypeName,
+  collaborationId,
+  postNameId,
+  calloutId,
+  onClose,
+}: PostSettingsPageProps) => {
   const { t } = useTranslation();
-  const { postNameId } = useUrlParams();
-  const { calloutId } = useRouteResolver();
 
   const navigate = useNavigate();
 
@@ -75,11 +80,10 @@ const PostSettingsPage: FC<PostSettingsPageProps> = ({ journeyTypeName, onClose 
 
   const isMoveEnabled = Boolean(targetCalloutId) && targetCalloutId !== postSettings.parentCallout?.id;
 
-  const { journeyId } = useRouteResolver();
-
   const { callouts, refetchCallouts } = useCallouts({
-    journeyId,
+    collaborationId,
     journeyTypeName,
+    canReadCollaboration: true,
   });
 
   const calloutsOfTypePost = callouts?.filter(({ type }) => type === CalloutType.PostCollection);

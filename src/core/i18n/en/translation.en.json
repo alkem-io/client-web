@@ -652,13 +652,13 @@
       "content": "Are you sure that you want to Archive this invitation? The invitation will be rejected if it's not already."
     },
     "pendingMembership": {
-      "pendingMemberships": "Pending Memberships",
-      "pendingMembershipsWithCount": "Pending Memberships ({{count}})",
+      "pendingMemberships": "My Pending Memberships",
+      "pendingMembershipsWithCount": "My Pending Memberships ({{count}})",
       "invitationsSectionTitle": "Invitations",
       "virtualInvitationsSectionTitle": "Invitations for my Virtual Contributor",
       "applicationsSectionTitle": "Open applications",
       "invitationDialog": {
-        "title": "Pending Membership: {{journey}}",
+        "title": "My Pending Membership: {{journey}}",
         "vc": {
           "title": "Pending Virtual Contributor membership: {{journey}}"
         },
@@ -706,7 +706,7 @@
     "saveAsTemplate": "Save as Template",
     "alkemio-link": "Click here to read more about Alkemio's collaboration tools",
     "link-collection": {
-      "add-link": "Add link to {{title}}",
+      "add-link": "Add links or documents to {{title}}",
       "edit-link": "Edit {{title}}",
       "add-another": "Add another link",
       "delete-link": "Click here to delete this link",
@@ -958,8 +958,8 @@
       "name": "$t(common.enums.templateType.COLLABORATION)",
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
       "findByUrl": {
-        "title": "Space URL",
-        "description": "Enter the URL of the Space or Subspace you want to copy as a template.",
+        "title": "Subspace URL",
+        "description": "Enter the URL of the Subspace you want to copy as a template.",
         "use": "Use this space",
         "spaceNotFoundError": "Space not found",
         "collaborationNotFoundError": "Collaboration not found"
@@ -1064,10 +1064,10 @@
       "currentStateName": "Current Phase: {{state}}"
     },
     "innovationFlowSettings": {
-      "title": "Innovation Flow Settings",
-      "buttonTooltip": "Manage Innovation Flow",
+      "title": "Manage Flow",
+      "buttonTooltip": "Manage Flow",
       "editProfileDialog": {
-        "title": "Edit Details: Innovation Flow"
+        "title": "Edit Details: Flow"
       },
       "stateEditor": {
         "activeState": "Active Phase",
@@ -1446,7 +1446,7 @@
         "remove-reference": "Remove the reference"
       },
       "url-helper-text": "<terms>Click here</terms> for the terms and conditions.",
-      "plaintext-helper-text": "Click here for the terms and conditions.",
+      "plaintext-helper-text": "Click here for the terms and conditions. You can upload Word, PDF, Excel, or images up to 15 MB",
       "newReference": "New reference",
       "newReference_plural": "New reference ({{count}})",
       "newLink": "New link",
@@ -1813,7 +1813,8 @@
           "description": "Here you can explore the hosted **{{entities}}**. Filter by key words to show just the topics you care about.",
           "list": "List view",
           "empty": "No {{entities}} found.",
-          "empty-list": "There are no {{entities}} yet."
+          "empty-list": "There are no {{entities}} yet.",
+          "searchPlaceholder": "Find Subspaces..."
         },
         "recommendations": {
           "title": "Recommended by the Host"
@@ -2083,6 +2084,7 @@
             "title": "Copy Subspace",
             "description": "To utilize this Subspace setup, you can either duplicate it within the same Space or save it as a template for use across the platform. In both scenarios, the innovation flow and all collaboration tools will be replicated. Please note that comments or contributions to a tool will not be included in the template or duplicated Subspace.",
             "createTemplate": "Create Template",
+            "createTemplateTooltip": "To create a template from this Subspace, you need Space admin permissions.",
             "duplicate": "Duplicate"
           },
           "account": {
@@ -2284,7 +2286,7 @@
           "createYourVCButton": "Create your Virtual Contributor!",
           "vcCampaign": {
             "welcome": "🎉  Welcome to the  Virtual Contributors - Early Access Program!",
-            "clickHere": "Click below to create your Virtual Contributor. Once finished, this block will give you access to both your Virtual Contributor and your Space in which you can interact with it. Enjoy!"
+            "clickHere": "Click below to create your Virtual Contributors—up to three available. The ones you created can be found under My Account, along with the Space where you can interact with them. Enjoy!"
           }
         },
         "myMemberships": {
@@ -2582,6 +2584,10 @@
       "line3": "If the error persists please contact support.",
       "buttons": {
         "reload": "Reload"
+      },
+      "errors": {
+        "LazyLoadError": "Network error occurred. Please try reloading the page.",
+        "unknown": "An unknown error occurred. Please try reloading the page."
       }
     },
     "four-ou-four": {
@@ -3077,7 +3083,7 @@
       "title": "Create a Virtual Contributor",
       "profileDescription": "Choose a name and enrich your Virtual Contributors profile below.",
       "description": "A Virtual Contributor allows you to interact with AI on Alkemio. What do you want to make available through your Virtual Contributor?",
-      "createSpace": "Written knowledge in text and documents",
+      "createSpace": "Written knowledge in text",
       "useExistingSpace": "The content of a (Sub)Space on Alkemio",
       "useExternalAI": "An external AI",
       "ownAI": "AI Powered by Alkemio",

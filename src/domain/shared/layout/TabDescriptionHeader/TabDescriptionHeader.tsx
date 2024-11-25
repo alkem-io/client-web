@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from 'react';
-import { Caption } from '../../../../core/ui/typography';
+import { Caption } from '@/core/ui/typography';
 
 const splitIntoLines = (text: ReactNode, namespace?: string) => {
   if (Array.isArray(text)) {

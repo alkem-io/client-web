@@ -2,7 +2,6 @@ import { Tooltip } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import { Help } from '@mui/icons-material';
-import React, { FC } from 'react';
 
 interface HelpButtonProps {
   helpText: string;
@@ -17,7 +16,7 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-export const HelpButton: FC<HelpButtonProps> = ({ helpText, fontSize = 'small' }) => {
+export const HelpButton = ({ helpText, fontSize = 'small' }: HelpButtonProps) => {
   const styles = useStyles();
   return (
     <Tooltip title={helpText} arrow placement="right">

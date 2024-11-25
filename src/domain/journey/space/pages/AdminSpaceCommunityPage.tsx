@@ -1,44 +1,41 @@
-import React, { FC, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Button, Icon, IconButton, Tooltip } from '@mui/material';
 import DownloadForOfflineOutlinedIcon from '@mui/icons-material/DownloadForOfflineOutlined';
-import InnovationLibraryIcon from '../../../../main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
-import SpaceSettingsLayout from '../../../platform/admin/space/SpaceSettingsLayout';
-import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
-import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
+import InnovationLibraryIcon from '@/main/topLevelPages/InnovationLibraryPage/InnovationLibraryIcon';
+import SpaceSettingsLayout from '@/domain/platform/admin/space/SpaceSettingsLayout';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import { useSpace } from '../SpaceContext/useSpace';
-import PageContent from '../../../../core/ui/content/PageContent';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import PageContentColumn from '../../../../core/ui/content/PageContentColumn';
-import CommunityUsers from '../../../community/community/CommunityAdmin/CommunityUsers';
-import useRoleSetAdmin from '../../../community/community/CommunityAdmin/useCommunityAdmin';
-import CommunityOrganizations from '../../../community/community/CommunityAdmin/CommunityOrganizations';
-import CommunityApplications from '../../../community/community/CommunityAdmin/CommunityApplications';
-import PageContentBlockSeamless from '../../../../core/ui/content/PageContentBlockSeamless';
-import InvitationOptionsBlock from '../../../community/invitations/InvitationOptionsBlock';
-import PageContentBlockCollapsible from '../../../../core/ui/content/PageContentBlockCollapsible';
-import { BlockTitle, Caption, Text } from '../../../../core/ui/typography';
-import CommunityApplicationForm from '../../../community/community/CommunityApplicationForm/CommunityApplicationForm';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import CommunityUsers from '@/domain/community/community/CommunityAdmin/CommunityUsers';
+import useRoleSetAdmin from '@/domain/community/community/CommunityAdmin/useCommunityAdmin';
+import CommunityOrganizations from '@/domain/community/community/CommunityAdmin/CommunityOrganizations';
+import CommunityApplications from '@/domain/community/community/CommunityAdmin/CommunityApplications';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import InvitationOptionsBlock from '@/domain/community/invitations/InvitationOptionsBlock';
+import PageContentBlockCollapsible from '@/core/ui/content/PageContentBlockCollapsible';
+import { BlockTitle, Caption, Text } from '@/core/ui/typography';
+import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { Trans, useTranslation } from 'react-i18next';
-import { gutters } from '../../../../core/ui/grid/utils';
-import CommunityGuidelinesForm from '../../../community/community/CommunityGuidelines/CommunityGuidelinesForm';
-import CommunityVirtualContributors from '../../../community/community/CommunityAdmin/CommunityVirtualContributors';
+import { gutters } from '@/core/ui/grid/utils';
+import CommunityGuidelinesForm from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesForm';
+import CommunityVirtualContributors from '@/domain/community/community/CommunityAdmin/CommunityVirtualContributors';
 import CommunityGuidelinesContainer, {
   CommunityGuidelines,
-} from '../../../community/community/CommunityGuidelines/CommunityGuidelinesContainer';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import ImportTemplatesDialog from '../../../templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
-import { SpaceLevel, TemplateType } from '../../../../core/apollo/generated/graphql-schema';
+} from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesContainer';
+import { useUrlParams } from '@/core/routing/useUrlParams';
+import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
+import { SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
-import {
-  useCreateTemplateMutation,
-  useSpaceTemplatesSetIdLazyQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import CreateTemplateDialog from '../../../templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { toCreateTemplateMutationVariables } from '../../../templates/components/Forms/common/mappings';
-import { CommunityGuidelinesTemplateFormSubmittedValues } from '../../../templates/components/Forms/CommunityGuidelinesTemplateForm';
+import { useCreateTemplateMutation, useSpaceTemplatesSetIdLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
+import { toCreateTemplateMutationVariables } from '@/domain/templates/components/Forms/common/mappings';
+import { CommunityGuidelinesTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CommunityGuidelinesTemplateForm';
 
-const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
+const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => {
   const { t } = useTranslation();
   const { spaceId, loading: isLoadingSpace, communityId, roleSetId, profile: spaceProfile } = useSpace();
 
@@ -52,6 +49,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
     memberRoleDefinition,
     leadRoleDefinition,
     permissions,
+    entitlements,
     onApplicationStateChange,
     onInvitationStateChange,
     onDeleteInvitation,
@@ -255,7 +253,7 @@ const AdminSpaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../' })
             />
           </PageContentBlock>
         </PageContentColumn>
-        {permissions.virtualContributorsEnabled && (
+        {entitlements.virtualContributorsEnabled && (
           <PageContentColumn columns={6}>
             <PageContentBlock>
               <CommunityVirtualContributors

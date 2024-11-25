@@ -1,11 +1,11 @@
-import React, { PropsWithChildren } from 'react';
+import { MouseEvent, PropsWithChildren } from 'react';
 import { DialogTitle as MuiDialogTitle, DialogTitleClasses, IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
-import { PageTitle } from '../../typography';
+import { PageTitle } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 
 export interface DialogTitleProps {
-  onClose?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onClose?: (e: MouseEvent<HTMLButtonElement>) => void;
   id?: string; // TODO deprecate, remove
   classes?: Partial<DialogTitleClasses>; // TODO deprecate, remove
 }

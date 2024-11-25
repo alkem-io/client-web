@@ -1,4 +1,4 @@
-import { useConfig } from '../../domain/platform/config/useConfig';
+import { useConfig } from '@/domain/platform/config/useConfig';
 
 const getLandingUrl = ({ host }: { host: string }) => `//welcome.${host}/`;
 

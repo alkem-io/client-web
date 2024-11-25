@@ -1,19 +1,15 @@
-import React, { cloneElement, isValidElement, useCallback, useState } from 'react';
+import { FC, cloneElement, isValidElement, useCallback, useState, MouseEvent, Children } from 'react';
 import { ClickAwayListener, IconButton, Menu } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTranslation } from 'react-i18next';
 
-interface ActionsMenuProps {
-  children: React.ReactNode;
-}
-
-const ActionsMenu: React.FC<ActionsMenuProps> = ({ children }) => {
+const ActionsMenu: FC = ({ children }) => {
   const { t } = useTranslation();
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
   const settingsOpened = Boolean(settingsAnchorEl);
 
   // prevent the redirection of Link components when clicking on the ActionsMenu
-  const onMenuClick = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+  const onMenuClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
     setSettingsAnchorEl(event.currentTarget);
@@ -24,7 +20,7 @@ const ActionsMenu: React.FC<ActionsMenuProps> = ({ children }) => {
   }, []);
 
   // close the menu on every item click
-  const clonedChildren = React.Children.map(children, child => {
+  const clonedChildren = Children.map(children, child => {
     if (isValidElement(child)) {
       return cloneElement(child as React.ReactElement, {
         onClick: (event: React.MouseEvent<HTMLElement>) => {

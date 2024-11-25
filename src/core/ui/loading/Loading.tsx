@@ -1,13 +1,8 @@
 import { CircularProgress } from '@mui/material';
-import React, { FC } from 'react';
 import WrapperTypography from '../typography/deprecated/WrapperTypography';
 import { useLoadingStyles } from './Loading.styles';
 
-interface LoadingProps {
-  text?: string;
-}
-
-export const Loading: FC<LoadingProps> = ({ text = 'Loading' }) => {
+export const Loading = ({ text = 'Loading' }: { text?: string }) => {
   const styles = useLoadingStyles();
 
   return (

@@ -2,23 +2,20 @@ import AddModeratorIcon from '@mui/icons-material/AddModerator';
 import { Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import CredentialCard from '../../../agent/credential/CredentialCard';
-import OfferAlkemioCommunityCredentialDialog from '../../../agent/credential/OfferAlkemioCommunityCredentialDialog';
-import RequestCredentialDialog from '../../../agent/credential/RequestCredentialDialog';
-import QRCodeDialog from '../../../../core/ui/qrCode/QRCodeDialog';
-import Loading from '../../../../core/ui/loading/Loading';
-import UserCredentialsContainer from '../../../agent/credential/verifiedCredentials/UserCredentialsContainer';
-import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import {
-  useProfileVerifiedCredentialSubscription,
-  useUserSsiLazyQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
-import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
-import UserSettingsLayout from '../../../platform/admin/user/layout/UserSettingsLayout';
-import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
-import { CardLayoutContainer, CardLayoutItem } from '../../../../core/ui/card/cardsLayout/CardsLayout';
+import CredentialCard from '@/domain/agent/credential/CredentialCard';
+import OfferAlkemioCommunityCredentialDialog from '@/domain/agent/credential/OfferAlkemioCommunityCredentialDialog';
+import RequestCredentialDialog from '@/domain/agent/credential/RequestCredentialDialog';
+import QRCodeDialog from '@/core/ui/qrCode/QRCodeDialog';
+import Loading from '@/core/ui/loading/Loading';
+import UserCredentialsContainer from '@/domain/agent/credential/verifiedCredentials/UserCredentialsContainer';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { useProfileVerifiedCredentialSubscription, useUserSsiLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import UserSettingsLayout from '@/domain/platform/admin/user/layout/UserSettingsLayout';
+import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
+import { CardLayoutContainer, CardLayoutItem } from '@/core/ui/card/cardsLayout/CardsLayout';
 import { useUserContext } from '../hooks/useUserContext';
 import useUserContributions from '../userContributions/useUserContributions';
 

@@ -1,11 +1,15 @@
-import { useUrlParams } from '../../../core/routing/useUrlParams';
-import { useCalloutIdQuery, useJourneyRouteResolverQuery } from '../../../core/apollo/generated/apollo-hooks';
-import { getJourneyTypeName, JourneyTypeName } from '../../../domain/journey/JourneyTypeName';
+import { useUrlParams } from '@/core/routing/useUrlParams';
+import {
+  useCalloutIdQuery,
+  useJourneyRouteResolverQuery,
+  useSpaceKeyEntitiesIDsQuery,
+} from '@/core/apollo/generated/apollo-hooks';
+import { getJourneyTypeName, JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { takeWhile } from 'lodash';
 import { useMemo } from 'react';
-import { isApolloNotFoundError } from '../../../core/apollo/hooks/useApolloErrorHandler';
-import { NotFoundError } from '../../../core/notFound/NotFoundErrorBoundary';
-import { SpaceLevel } from '../../../core/apollo/generated/graphql-schema';
+import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
+import { NotFoundError } from '@/core/notFound/NotFoundErrorBoundary';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 enum RouteType {
   Journey = 'Journey',
@@ -14,7 +18,7 @@ enum RouteType {
 interface JourneyRouteParams {
   type: RouteType.Journey;
   journeyId: string | undefined;
-  parentJourneyId?: string;
+  parentSpaceId?: string;
   journeyPath: JourneyPath;
   spaceLevel: SpaceLevel; // TODO not sure maybe remove as well, can be calculated from journeyPath
   /**
@@ -37,6 +41,7 @@ interface JourneyRouteParams {
    * introduce type JourneyLevel = 0 | 1 | 2 instead
    */
   journeyTypeName: JourneyTypeName;
+  collaborationId: string | undefined;
 }
 
 interface JourneyCalloutRouteParams extends JourneyRouteParams {
@@ -117,6 +122,18 @@ export const useRouteResolver = ({ failOnNotFound = true }: RouteResolverOptions
     skip: !spaceNameId,
   });
 
+  const spaceId = data?.space.subspace?.subspace?.id ?? data?.space.subspace?.id ?? data?.space.id;
+
+  const { data: dataSpaceEntities, loading: loadingSpaceEntities } = useSpaceKeyEntitiesIDsQuery({
+    variables: {
+      spaceId: spaceId!,
+    },
+    skip: !spaceId,
+  });
+
+  const collaboration = dataSpaceEntities?.lookup.space?.collaboration;
+  const collaborationId = collaboration?.id;
+
   const spaceLevel = getSpaceLevel({ spaceNameId, subspaceNameId, subsubspaceNameId });
   const journeyLength = getSpaceDepth(spaceLevel) + 1;
   const journeyPath = useMemo(
@@ -127,7 +144,7 @@ export const useRouteResolver = ({ failOnNotFound = true }: RouteResolverOptions
     [data, journeyLength]
   );
 
-  const getSpaceJourneyId = () => {
+  const getParentSpaceId = () => {
     switch (spaceLevel) {
       case SpaceLevel.Challenge:
         return data?.space.id;
@@ -143,14 +160,15 @@ export const useRouteResolver = ({ failOnNotFound = true }: RouteResolverOptions
     subSpaceId: data?.space.subspace?.id,
     subSubSpaceId: data?.space.subspace?.subspace?.id,
     type: RouteType.Journey,
-    journeyId: data?.space.subspace?.subspace?.id ?? data?.space.subspace?.id ?? data?.space.id,
-    parentJourneyId: getSpaceJourneyId(),
+    journeyId: spaceId,
+    parentSpaceId: getParentSpaceId(),
     journeyTypeName: getJourneyTypeName({
       spaceNameId,
       challengeNameId: subspaceNameId,
       opportunityNameId: subsubspaceNameId,
     })!,
     spaceLevel,
+    collaborationId,
     journeyPath,
   };
 
@@ -161,16 +179,14 @@ export const useRouteResolver = ({ failOnNotFound = true }: RouteResolverOptions
   } = useCalloutIdQuery({
     variables: {
       calloutNameId: calloutNameId!,
-      spaceId: resolvedJourney.subSubSpaceId ?? resolvedJourney.subSpaceId ?? resolvedJourney.spaceId!,
+      collaborationId: collaborationId!,
     },
-    skip: !resolvedJourney.journeyId || !calloutNameId,
+    skip: !calloutNameId || !collaborationId,
   });
 
-  const collaboration = calloutData?.lookup.space?.collaboration;
+  const calloutId = calloutData?.lookup.collaboration?.callouts?.[0]?.id;
 
-  const calloutId = collaboration?.callouts?.[0]?.id;
-
-  const loading = loadingJourney || loadingCallout;
+  const loading = loadingJourney || loadingSpaceEntities || loadingCallout;
 
   const isNotFound = isApolloNotFoundError(journeyRouteError ?? calloutIdError);
 

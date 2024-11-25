@@ -1,18 +1,22 @@
 import React, { Suspense } from 'react';
-import PageContentColumn from '../../../core/ui/content/PageContentColumn';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import ReleaseNotesBanner from './releaseNotesBanner/ReleaseNotesBanner';
-import { useLatestReleaseDiscussionQuery } from '../../../core/apollo/generated/apollo-hooks';
+import { useLatestReleaseDiscussionQuery } from '@/core/apollo/generated/apollo-hooks';
 import CampaignBlock from './Campaigns/CampaignBlock';
-import InfoColumn from '../../../core/ui/content/InfoColumn';
+import InfoColumn from '@/core/ui/content/InfoColumn';
 import { DashboardMenu } from './DashboardMenu/DashboardMenu';
-import ContentColumn from '../../../core/ui/content/ContentColumn';
+import ContentColumn from '@/core/ui/content/ContentColumn';
 import { useDashboardContext } from './DashboardContext';
 import MyResources from './myResources/MyResources';
 import { Theme, useMediaQuery } from '@mui/material';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import Loading from '@/core/ui/loading/Loading';
 
-const DashboardDialogs = React.lazy(() => import('./DashboardDialogs/DashboardDialogs'));
-const DashboardActivity = React.lazy(() => import('./DashboardWithMemberships/DashboardActivity'));
-const DashboardSpaces = React.lazy(() => import('./DashboardWithMemberships/DashboardSpaces/DashboardSpaces'));
+const DashboardDialogs = lazyWithGlobalErrorHandler(() => import('./DashboardDialogs/DashboardDialogs'));
+const DashboardActivity = lazyWithGlobalErrorHandler(() => import('./DashboardWithMemberships/DashboardActivity'));
+const DashboardSpaces = lazyWithGlobalErrorHandler(
+  () => import('./DashboardWithMemberships/DashboardSpaces/DashboardSpaces')
+);
 
 const MyDashboardWithMemberships = () => {
   const { activityEnabled } = useDashboardContext();
@@ -36,17 +40,17 @@ const MyDashboardWithMemberships = () => {
         {data?.platform.latestReleaseDiscussion && <ReleaseNotesBanner />}
         <CampaignBlock />
         {!activityEnabled && (
-          <Suspense fallback={null}>
+          <Suspense fallback={<Loading />}>
             <DashboardSpaces />
           </Suspense>
         )}
         {activityEnabled && (
-          <Suspense fallback={null}>
+          <Suspense fallback={<Loading />}>
             <DashboardActivity />
           </Suspense>
         )}
       </ContentColumn>
-      <Suspense fallback={null}>
+      <Suspense fallback={<Loading />}>
         <DashboardDialogs />
       </Suspense>
     </PageContentColumn>

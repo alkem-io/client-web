@@ -1,24 +1,21 @@
-import { FC, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
-import { AuthorizationPrivilege, PostDashboardFragment } from '../../../../../core/apollo/generated/graphql-schema';
-import { usePostQuery, useRemoveMessageOnRoomMutation } from '../../../../../core/apollo/generated/apollo-hooks';
-import { useUserContext } from '../../../../community/user';
-import { Message } from '../../../../communication/room/models/Message';
-import { evictFromCache } from '../../../../../core/apollo/utils/removeFromCache';
-import {
-  ContainerPropsWithProvided,
-  renderComponentOrChildrenFn,
-} from '../../../../../core/container/ComponentOrChildrenFn';
-import { buildAuthorFromUser } from '../../../../community/user/utils/buildAuthorFromUser';
-import usePostMessageMutations from '../../../../communication/room/Comments/usePostMessageMutations';
-import useSubscribeOnRoomEvents from '../../../callout/useSubscribeOnRoomEvents';
+import { AuthorizationPrivilege, PostDashboardFragment } from '@/core/apollo/generated/graphql-schema';
+import { usePostQuery, useRemoveMessageOnRoomMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useUserContext } from '@/domain/community/user';
+import { Message } from '@/domain/communication/room/models/Message';
+import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
+import { ContainerPropsWithProvided, renderComponentOrChildrenFn } from '@/core/container/ComponentOrChildrenFn';
+import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
+import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
+import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 
-interface EntityIds {
+type EntityIds = {
   postNameId: string | undefined;
   calloutId: string | undefined;
-}
+};
 
-interface Provided {
+type Provided = {
   canReadComments: boolean;
   canPostComments: boolean;
   canDeleteComment: (authorId: string | undefined) => boolean;
@@ -37,11 +34,11 @@ interface Provided {
   deletingComment?: boolean;
   postingComment?: boolean;
   postUrl: string;
-}
+};
 
 export type PostDashboardContainerProps = ContainerPropsWithProvided<EntityIds, Provided>;
 
-const PostDashboardContainer: FC<PostDashboardContainerProps> = ({ calloutId, postNameId, ...rendered }) => {
+const PostDashboardContainer = ({ calloutId, postNameId, ...rendered }: PostDashboardContainerProps) => {
   const { user: userMetadata, isAuthenticated } = useUserContext();
 
   const user = userMetadata?.user;
@@ -59,7 +56,7 @@ const PostDashboardContainer: FC<PostDashboardContainerProps> = ({ calloutId, po
 
   const post = parentCallout?.contributions?.find(x => x.post && x.post.nameID === postNameId)?.post;
 
-  const roomId = parentCallout?.contributions?.find(x => x.post && x.post.nameID === postNameId)?.post?.comments.id;
+  const roomId = post?.comments.id;
 
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId);
 

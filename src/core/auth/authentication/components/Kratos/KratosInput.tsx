@@ -2,7 +2,7 @@ import { Grid, InputAdornment, OutlinedInputProps, TextField } from '@mui/materi
 import { UiNodeInputAttributes } from '@ory/kratos-client';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import React, { FC, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getNodeName, getNodeTitle, getNodeValue, isInvalidNode, isRequired } from './helpers';
 import { KratosInputExtraProps, KratosProps } from './KratosProps';

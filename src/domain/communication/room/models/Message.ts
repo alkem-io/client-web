@@ -1,4 +1,4 @@
-import { Author } from '../../../shared/components/AuthorAvatar/models/author';
+import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
 
 export interface Message {
   id: string;

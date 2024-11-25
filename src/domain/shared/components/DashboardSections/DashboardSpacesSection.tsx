@@ -1,15 +1,15 @@
 import React, { PropsWithChildren, ReactNode } from 'react';
-import ScrollableCardsLayoutContainer from '../../../../core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../core/ui/content/PageContentBlockHeader';
-import SpaceCard, { SpaceCardProps } from '../../../journey/space/SpaceCard/SpaceCard';
-import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
-import { MetricType } from '../../../platform/metrics/MetricType';
-import { CommunityMembershipStatus, Nvp, SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
-import { Visual } from '../../../common/visual/Visual';
-import { Identifiable } from '../../../../core/utils/Identifiable';
+import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import SpaceCard, { SpaceCardProps } from '@/domain/journey/space/SpaceCard/SpaceCard';
+import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
+import { MetricType } from '@/domain/platform/metrics/MetricType';
+import { CommunityMembershipStatus, Nvp, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { Visual } from '@/domain/common/visual/Visual';
+import { Identifiable } from '@/core/utils/Identifiable';
 import { Link } from '@mui/material';
-import { Caption } from '../../../../core/ui/typography';
+import { Caption } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 
 export interface SpaceAttrs extends Identifiable {

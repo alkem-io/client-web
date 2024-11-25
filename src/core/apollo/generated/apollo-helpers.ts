@@ -12,6 +12,7 @@ export type AccountKeySpecifier = (
   | 'id'
   | 'innovationHubs'
   | 'innovationPacks'
+  | 'license'
   | 'spaces'
   | 'storageAggregator'
   | 'subscriptions'
@@ -28,6 +29,7 @@ export type AccountFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
+  license?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -867,6 +869,7 @@ export type CollaborationKeySpecifier = (
   | 'id'
   | 'innovationFlow'
   | 'isTemplate'
+  | 'license'
   | 'tagsetTemplates'
   | 'timeline'
   | 'updatedDate'
@@ -880,6 +883,7 @@ export type CollaborationFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   isTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  license?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsetTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1733,6 +1737,48 @@ export type LibraryFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type LicenseKeySpecifier = (
+  | 'authorization'
+  | 'createdDate'
+  | 'entitlements'
+  | 'id'
+  | 'myLicensePrivileges'
+  | 'type'
+  | 'updatedDate'
+  | LicenseKeySpecifier
+)[];
+export type LicenseFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  entitlements?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  myLicensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type LicenseEntitlementKeySpecifier = (
+  | 'createdDate'
+  | 'dataType'
+  | 'enabled'
+  | 'id'
+  | 'isAvailable'
+  | 'limit'
+  | 'type'
+  | 'updatedDate'
+  | 'usage'
+  | LicenseEntitlementKeySpecifier
+)[];
+export type LicenseEntitlementFieldPolicy = {
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  dataType?: FieldPolicy<any> | FieldReadFunction<any>;
+  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isAvailable?: FieldPolicy<any> | FieldReadFunction<any>;
+  limit?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  usage?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type LicensePlanKeySpecifier = (
   | 'assignToNewOrganizationAccounts'
   | 'assignToNewUserAccounts'
@@ -1785,13 +1831,13 @@ export type LicensePolicyFieldPolicy = {
 };
 export type LicensePolicyCredentialRuleKeySpecifier = (
   | 'credentialType'
-  | 'grantedPrivileges'
+  | 'grantedEntitlements'
   | 'name'
   | LicensePolicyCredentialRuleKeySpecifier
 )[];
 export type LicensePolicyCredentialRuleFieldPolicy = {
   credentialType?: FieldPolicy<any> | FieldReadFunction<any>;
-  grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
+  grantedEntitlements?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LicensingKeySpecifier = (
@@ -1883,6 +1929,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'innovationHub'
   | 'innovationPack'
   | 'invitation'
+  | 'license'
   | 'post'
   | 'profile'
   | 'roleSet'
@@ -1915,6 +1962,7 @@ export type LookupQueryResultsFieldPolicy = {
   innovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  license?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSet?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2080,6 +2128,7 @@ export type MutationKeySpecifier = (
   | 'inviteUserToPlatformAndRoleSet'
   | 'inviteUserToPlatformWithRole'
   | 'joinRoleSet'
+  | 'licenseResetOnAccount'
   | 'messageUser'
   | 'moveContributionToCallout'
   | 'refreshVirtualContributorBodyOfKnowledge'
@@ -2092,6 +2141,7 @@ export type MutationKeySpecifier = (
   | 'removeRoleFromVirtualContributor'
   | 'removeUserFromGroup'
   | 'resetChatGuidance'
+  | 'resetLicenseOnAccounts'
   | 'revokeCredentialFromOrganization'
   | 'revokeCredentialFromUser'
   | 'revokeLicensePlanFromAccount'
@@ -2242,6 +2292,7 @@ export type MutationFieldPolicy = {
   inviteUserToPlatformAndRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteUserToPlatformWithRole?: FieldPolicy<any> | FieldReadFunction<any>;
   joinRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  licenseResetOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2254,6 +2305,7 @@ export type MutationFieldPolicy = {
   removeRoleFromVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   resetChatGuidance?: FieldPolicy<any> | FieldReadFunction<any>;
+  resetLicenseOnAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeLicensePlanFromAccount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2449,7 +2501,7 @@ export type PlatformKeySpecifier = (
   | 'innovationHub'
   | 'latestReleaseDiscussion'
   | 'library'
-  | 'licensing'
+  | 'licensingFramework'
   | 'metadata'
   | 'myRoles'
   | 'platformInvitations'
@@ -2467,7 +2519,7 @@ export type PlatformFieldPolicy = {
   innovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   latestReleaseDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   library?: FieldPolicy<any> | FieldReadFunction<any>;
-  licensing?: FieldPolicy<any> | FieldReadFunction<any>;
+  licensingFramework?: FieldPolicy<any> | FieldReadFunction<any>;
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
   myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   platformInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2794,7 +2846,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'id'
   | 'level'
   | 'levelZeroSpaceID'
-  | 'licensePrivileges'
+  | 'license'
   | 'metrics'
   | 'nameID'
   | 'profile'
@@ -2822,7 +2874,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
-  licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
+  license?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2891,6 +2943,7 @@ export type RoleSetKeySpecifier = (
   | 'entryRoleType'
   | 'id'
   | 'invitations'
+  | 'license'
   | 'myMembershipStatus'
   | 'myRoles'
   | 'myRolesImplicit'
@@ -2913,6 +2966,7 @@ export type RoleSetFieldPolicy = {
   entryRoleType?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
+  license?: FieldPolicy<any> | FieldReadFunction<any>;
   myMembershipStatus?: FieldPolicy<any> | FieldReadFunction<any>;
   myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   myRolesImplicit?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3169,7 +3223,7 @@ export type SpaceKeySpecifier = (
   | 'id'
   | 'level'
   | 'levelZeroSpaceID'
-  | 'licensePrivileges'
+  | 'license'
   | 'metrics'
   | 'nameID'
   | 'profile'
@@ -3197,7 +3251,7 @@ export type SpaceFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
-  licensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
+  license?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4283,6 +4337,14 @@ export type StrictTypedTypePolicies = {
   Library?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LibraryKeySpecifier | (() => undefined | LibraryKeySpecifier);
     fields?: LibraryFieldPolicy;
+  };
+  License?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LicenseKeySpecifier | (() => undefined | LicenseKeySpecifier);
+    fields?: LicenseFieldPolicy;
+  };
+  LicenseEntitlement?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LicenseEntitlementKeySpecifier | (() => undefined | LicenseEntitlementKeySpecifier);
+    fields?: LicenseEntitlementFieldPolicy;
   };
   LicensePlan?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LicensePlanKeySpecifier | (() => undefined | LicensePlanKeySpecifier);

@@ -12,14 +12,14 @@ import {
   MessageDetailsFragment,
   TemplateType,
   WhiteboardDetailsFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import { CalloutSummary } from '../CalloutSummary';
 import CalloutVisibilityChangeDialog from '../edit/visibilityChangeDialog/CalloutVisibilityChangeDialog';
 import CalloutEditDialog from '../edit/editDialog/CalloutEditDialog';
 import { CalloutEditType } from '../edit/CalloutEditType';
 import { CalloutLayoutEvents, CalloutSortProps } from '../CalloutViewTypes';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import MenuItemWithIcon from '../../../../core/ui/menu/MenuItemWithIcon';
+import { useUrlParams } from '@/core/routing/useUrlParams';
+import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import {
   ArrowDownwardOutlined,
   ArrowUpwardOutlined,
@@ -34,26 +34,26 @@ import {
   VerticalAlignBottomOutlined,
   VerticalAlignTopOutlined,
 } from '@mui/icons-material';
-import { Reference, Tagset } from '../../../common/profile/Profile';
-import { JourneyTypeName } from '../../../journey/JourneyTypeName';
+import { Reference, Tagset } from '@/domain/common/profile/Profile';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { WhiteboardFragmentWithCallout } from '../useCallouts/useCallouts';
 import { FormatedLink, LinkDetails } from '../links/LinkCollectionCallout';
-import ConfirmationDialog from '../../../../core/ui/dialogs/ConfirmationDialog';
-import useLoadingState from '../../../shared/utils/useLoadingState';
-import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
-import ExpandContentIcon from '../../../../core/ui/content/ExpandContent/ExpandContentIcon';
-import { ShareDialog } from '../../../shared/components/ShareDialog/ShareDialog';
-import { gutters } from '../../../../core/ui/grid/utils';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { SimpleContainerProps } from '@/core/container/SimpleContainer';
+import ExpandContentIcon from '@/core/ui/content/ExpandContent/ExpandContentIcon';
+import { ShareDialog } from '@/domain/shared/components/ShareDialog/ShareDialog';
+import { gutters } from '@/core/ui/grid/utils';
 import SortDialog from './sort/SortDialog';
 import {
   useCalloutContentLazyQuery,
   useUpdateContributionsSortOrderMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import { WhiteboardCardWhiteboard } from '../whiteboard/WhiteboardCard';
 import { PostCardPost } from '../post/PostCard';
-import { useCreateCalloutTemplate } from '../../../templates/hooks/useCreateCalloutTemplate';
-import { CalloutTemplateFormSubmittedValues } from '../../../templates/components/Forms/CalloutTemplateForm';
-import CreateTemplateDialog from '../../../templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
+import { useCreateCalloutTemplate } from '@/domain/templates/hooks/useCreateCalloutTemplate';
+import { CalloutTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CalloutTemplateForm';
+import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 
 interface CalloutSettingsProvided {
   settingsOpen: boolean;
@@ -102,6 +102,7 @@ export interface CalloutSettingsContainerProps
     editable?: boolean;
     movable?: boolean;
     canSaveAsTemplate?: boolean;
+    entitledToSaveAsTemplate?: boolean;
     authorization?: {
       myPrivileges?: AuthorizationPrivilege[];
     };
@@ -312,7 +313,7 @@ const CalloutSettingsContainer = ({
             {t('callout.sortContributions')}
           </MenuItemWithIcon>
         )}
-        {callout.canSaveAsTemplate && (
+        {callout.canSaveAsTemplate && callout.entitledToSaveAsTemplate && (
           <MenuItemWithIcon
             key="saveAsTemplate"
             iconComponent={DownloadForOfflineOutlinedIcon}

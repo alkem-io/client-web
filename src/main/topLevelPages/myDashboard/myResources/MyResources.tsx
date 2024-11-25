@@ -1,22 +1,20 @@
 import { useMemo } from 'react';
-import { useMyResourcesQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import ContributorCardHorizontal from '../../../../core/ui/card/ContributorCardHorizontal';
-import PageContentBlock from '../../../../core/ui/content/PageContentBlock';
-import { useUserContext } from '../../../../domain/community/user';
-import InnovationHubCardHorizontal from '../../../../domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
-import InnovationPackCardHorizontal from '../../../../domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
-import JourneyCardHorizontal from '../../../../domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
-import { useDashboardContext } from '../DashboardContext';
+import { useMyResourcesQuery } from '@/core/apollo/generated/apollo-hooks';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { useUserContext } from '@/domain/community/user';
+import InnovationHubCardHorizontal from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
+import InnovationPackCardHorizontal from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
+import JourneyCardHorizontal from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
 
 const MyResources = () => {
   const { accountId } = useUserContext();
-  const { activityEnabled } = useDashboardContext();
 
   const { data: accountData, loading: loadingAccount } = useMyResourcesQuery({
     variables: {
       accountId: accountId ?? '',
     },
-    skip: !activityEnabled || !accountId,
+    skip: !accountId,
   });
 
   const { innovationHubs, spaces, virtualContributors, innovationPacks } = useMemo(
@@ -30,7 +28,6 @@ const MyResources = () => {
   );
 
   if (
-    !activityEnabled ||
     loadingAccount ||
     !accountData?.lookup.account ||
     (innovationHubs.length < 1 && spaces?.length < 1 && virtualContributors?.length < 1 && innovationPacks?.length < 1)
@@ -55,7 +52,7 @@ const MyResources = () => {
         />
       ))}
       {virtualContributors?.map(vc => (
-        <ContributorCardHorizontal key={vc.id} profile={vc.profile} size="small" seamless />
+        <ContributorCardHorizontal key={vc.id} profile={vc.profile} size="small" withUnifiedTitle seamless />
       ))}
       {innovationPacks?.map(pack => (
         <InnovationPackCardHorizontal key={pack.id} {...pack} size="small" />
