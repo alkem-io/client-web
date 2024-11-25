@@ -86,7 +86,15 @@ const UserProvider: FC = ({ children }) => {
       accountPrivileges: meData?.me.user?.account?.authorization?.myPrivileges ?? [],
       accountEntitlements: meData?.me.user?.account?.license?.myLicensePrivileges ?? [],
     }),
-    [userMetadata, loading, loadingMeAndParentQueries, verified, isAuthenticated]
+    [
+      userMetadata,
+      loading,
+      loadingMeAndParentQueries,
+      verified,
+      isAuthenticated,
+      platformLevelAuthorizationData,
+      meData,
+    ]
   );
 
   if (error) return <ErrorPage error={error} />;
