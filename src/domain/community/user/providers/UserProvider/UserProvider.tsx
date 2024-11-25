@@ -76,7 +76,7 @@ const UserProvider: FC = ({ children }) => {
       verified,
       isAuthenticated,
       accountPrivileges: meData?.me.user?.account?.authorization?.myPrivileges ?? [],
-      accountEntitlements: meData?.me.user?.account?.license?.myLicensePrivileges ?? [],
+      accountEntitlements: meData?.me.user?.account?.license?.availableEntitlements ?? [],
     }),
     [userMetadata, loading, loadingMeAndParentQueries, verified, isAuthenticated]
   );

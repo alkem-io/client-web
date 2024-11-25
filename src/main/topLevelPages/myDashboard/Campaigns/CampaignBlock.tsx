@@ -11,7 +11,7 @@ const CampaignBlock = () => {
   const handleStartWizard = () => startWizard();
 
   const userRoles: CredentialType[] | undefined = data?.me.user?.agent.credentials?.map(credential => credential.type);
-  const userEntitlements: LicenseEntitlementType[] | undefined = data?.me.user?.account?.license?.myLicensePrivileges;
+  const userEntitlements: LicenseEntitlementType[] | undefined = data?.me.user?.account?.license?.availableEntitlements;
   const rolesAvailableTo = [CredentialType.VcCampaign, CredentialType.BetaTester];
   const entitlementsAvailableTo = [LicenseEntitlementType.AccountVirtualContributor];
 

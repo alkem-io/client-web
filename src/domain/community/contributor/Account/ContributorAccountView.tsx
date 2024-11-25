@@ -63,7 +63,7 @@ export interface AccountTabResourcesProps {
   authorization?: { myPrivileges?: AuthorizationPrivilege[] };
   license?: {
     id: string;
-    myLicensePrivileges?: LicenseEntitlementType[];
+    availableEntitlements?: LicenseEntitlementType[];
   };
   spaces: {
     id: string;
@@ -80,7 +80,7 @@ export interface AccountTabResourcesProps {
     };
     license: {
       id: string;
-      myLicensePrivileges?: LicenseEntitlementType[];
+      availableEntitlements?: LicenseEntitlementType[];
     };
     subspaces: {
       id: string;
@@ -154,7 +154,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const [entity, setSelectedEntity] = useState<Entities | undefined>(undefined);
   const styles = useStyles();
-  const myAccountEntitlements = account?.license?.myLicensePrivileges || [];
+  const myAccountEntitlements = account?.license?.availableEntitlements || [];
 
   const isEntitledToCreateSpace = [
     LicenseEntitlementType.AccountSpaceFree,
