@@ -27712,6 +27712,7 @@ export type InAppNotificationsQuery = {
         callout: {
           __typename?: 'Callout';
           id: string;
+          type: CalloutType;
           framing: {
             __typename?: 'CalloutFraming';
             id: string;
@@ -27921,6 +27922,7 @@ export type InAppNotificationCalloutPublishedFragment = {
   callout: {
     __typename?: 'Callout';
     id: string;
+    type: CalloutType;
     framing: {
       __typename?: 'CalloutFraming';
       id: string;

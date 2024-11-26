@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { InAppNotificationProps } from '../useInAppNotifications';
 import { InAppNotificationBaseView, InAppNotificationBaseViewProps } from './InAppNotificationBaseView';
 import { useMemo } from 'react';
@@ -11,13 +12,21 @@ export const CollaborationCalloutPublishedView = ({
   triggeredBy,
   triggeredAt,
 }: InAppNotificationProps) => {
+  const { t } = useTranslation();
+
   const notification: InAppNotificationBaseViewProps = useMemo(() => {
+    let calloutType = '';
+
+    if (callout?.type) {
+      calloutType = t(`components.calloutTypeSelect.label.${callout?.type}` as const);
+    }
+
     const notificationTextValues = {
       defaultValue: '',
       spaceName: space?.profile?.displayName,
       spaceType: space?.level,
       calloutName: callout?.framing?.profile?.displayName,
-      calloutType: '?',
+      calloutType: calloutType,
       contributorName: triggeredBy?.profile?.displayName,
     };
 
@@ -37,7 +46,7 @@ export const CollaborationCalloutPublishedView = ({
       triggeredAt: triggeredAt,
       values: notificationTextValues,
     };
-  }, [id, state]);
+  }, [id, state, space, callout, t]);
 
   return <InAppNotificationBaseView {...notification} />;
 };

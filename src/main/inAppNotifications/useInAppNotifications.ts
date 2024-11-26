@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import {
+  CalloutType,
   CommunityContributorType,
   InAppNotificationState,
   SpaceLevel,
@@ -66,6 +67,7 @@ export interface InAppNotificationProps {
       | undefined;
   };
   callout?: {
+    type: CalloutType;
     framing:
       | {
           profile?:
