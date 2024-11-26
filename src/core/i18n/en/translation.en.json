@@ -2762,8 +2762,8 @@
         "joinTheWelcomeSpace": "Join the Welcome Space"
       },
       "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!",
-      "versionNumber": "Version Number: <b>V{{version}}</b>",
-      "serverVersionNumber": "Server Version Number: <b>V{{version}}</b>"
+      "versionNumber": "Version Number: <b>v{{version}}</b>",
+      "serverVersionNumber": "Server Version Number: <b>v{{version}}</b>"
     },
     "forum": {
       "title": "Welcome to the Alkemio Forum",

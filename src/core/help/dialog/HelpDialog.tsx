@@ -1,5 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next';
-import { Box, Dialog, Grid, Link, styled } from '@mui/material';
+import { Box, Grid, Link, styled } from '@mui/material';
 import QuizOutlinedIcon from '@mui/icons-material/QuizOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import FiberNewTwoToneIcon from '@mui/icons-material/FiberNewTwoTone';
@@ -7,9 +7,12 @@ import { DialogContent } from '@/core/ui/dialog/deprecated';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { gutters } from '@/core/ui/grid/utils';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import useServerMetadata from '@/domain/platform/metadata/useServerMetadata';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import Gutters from '@/core/ui/grid/Gutters';
+import { Caption } from '@/core/ui/typography';
+import { buildWelcomeSpaceUrl } from '@/main/routing/urlBuilders';
 
 interface HelpDialogProps {
   open: boolean;
@@ -30,7 +33,7 @@ const IconWrapper = styled(Link)(({ theme }) => ({
 }));
 
 const Icon = styled(Box)(({ theme }) => ({
-  color: theme.palette.primary.dark,
+  color: theme.palette.primary.main,
   width: theme.spacing(5),
   height: theme.spacing(5),
   display: 'block',
@@ -55,10 +58,10 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
 
   const supportHref = locations?.support;
   const docsHref = `/${TopLevelRoutePath.Docs}`;
-  const welcomeSpaceHref = `/${TopLevelRoutePath.WelcomeSpace}`;
+  const welcomeSpaceHref = buildWelcomeSpaceUrl();
 
   return (
-    <Dialog open={open} onClose={handleClose} sx={{ '& .MuiDialog-paper': { maxWidth: 700 } }}>
+    <DialogWithGrid open={open} columns={6} onClose={handleClose}>
       <DialogHeader title={t('pages.help-dialog.title')} onClose={handleClose} />
       <HelpDialogContent>
         <WrapperMarkdown>{t('pages.help-dialog.text')}</WrapperMarkdown>
@@ -100,7 +103,29 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
           </Grid>
         </Grid>
 
-        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: gutters(2) }}>
+        <Gutters row justifyContent="center">
+          <Gutters row gap={1} disablePadding>
+            <Caption>
+              <Trans
+                i18nKey="pages.help-dialog.versionNumber"
+                components={{ b: <strong /> }}
+                values={{ version: import.meta.env.VITE_APP_VERSION }}
+              />
+            </Caption>
+          </Gutters>
+
+          <Gutters row gap={1} disablePadding>
+            <Caption>
+              <Trans
+                i18nKey="pages.help-dialog.serverVersionNumber"
+                components={{ b: <strong /> }}
+                values={{ version: services?.[0]?.version ?? 'N/A' }}
+              />
+            </Caption>
+          </Gutters>
+        </Gutters>
+
+        {/* <Grid sx={{ display: 'flex', justifyContent: 'center', marginTop: gutters(2) }}>
           <Box sx={{ marginLeft: gutters(2) }}>
             <Trans
               i18nKey="pages.help-dialog.versionNumber"
@@ -116,9 +141,9 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
               values={{ version: services?.[0]?.version ?? 'N/A' }}
             />
           </Box>
-        </Box>
+        </Grid> */}
       </HelpDialogContent>
-    </Dialog>
+    </DialogWithGrid>
   );
 };
 
