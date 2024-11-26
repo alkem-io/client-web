@@ -64,21 +64,36 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
         <WrapperMarkdown>{t('pages.help-dialog.text')}</WrapperMarkdown>
         <Grid container columns={{ xs: 4, sm: 6 }}>
           <Grid item xs={2}>
-            <IconWrapper href={docsHref} target="_blank" rel="noopener">
+            <IconWrapper
+              href={docsHref}
+              target="_blank"
+              rel="noopener"
+              aria-label={t('pages.help-dialog.icons.exploreDocumentation')}
+            >
               <Icon component={QuizOutlinedIcon} />
               {t('pages.help-dialog.icons.exploreDocumentation')}
             </IconWrapper>
           </Grid>
 
           <Grid item xs={2}>
-            <IconWrapper href={supportHref} target="_blank" rel="noopener">
+            <IconWrapper
+              href={supportHref}
+              target="_blank"
+              rel="noopener"
+              aria-label={t('pages.help-dialog.icons.contactTheTeam')}
+            >
               <Icon component={ForumOutlinedIcon} />
               {t('pages.help-dialog.icons.contactTheTeam')}
             </IconWrapper>
           </Grid>
 
           <Grid item xs={2}>
-            <IconWrapper href={welcomeSpaceHref} target="_blank" rel="noopener">
+            <IconWrapper
+              href={welcomeSpaceHref}
+              target="_blank"
+              rel="noopener"
+              aria-label={t('pages.help-dialog.icons.joinTheWelcomeSpace')}
+            >
               <Icon component={CustomNewIcon} />
               {t('pages.help-dialog.icons.joinTheWelcomeSpace')}
             </IconWrapper>
@@ -98,7 +113,7 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
             <Trans
               i18nKey="pages.help-dialog.serverVersionNumber"
               components={{ b: <strong /> }}
-              values={{ version: services[0].version }}
+              values={{ version: services?.[0]?.version ?? 'N/A' }}
             />
           </Box>
         </Box>
