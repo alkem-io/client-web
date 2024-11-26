@@ -2755,13 +2755,15 @@
     },
     "help-dialog": {
       "title": "Looking for help?",
-      "text": "We want to help you successfully use the Alkemio platform, and to do so we want to make the process of using it and interacting easier. This is how you can have an impact on the topics you care about.<br /><br />Click on the icons below to find answers to your questions, contact the Alkemio team for support or just get started!",
+      "text": "We're here to help you make the most of the Alkemio platform and create an impact on the topics you care about. Click below to find answers, contact our team, or get started!",
       "icons": {
-        "help-center-faq": "Help Center & FAQ",
-        "community-support-forum": "Contact us!",
-        "new-user": "New user? Start here!"
+        "exploreDocumentation": "Explore Documentation",
+        "contactTheTeam": "Contact the Team",
+        "joinTheWelcomeSpace": "Join the Welcome Space"
       },
-      "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!"
+      "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!",
+      "versionNumber": "Version Number: <b>V{{version}}</b>",
+      "serverVersionNumber": "Server Version Number: <b>V{{version}}</b>"
     },
     "forum": {
       "title": "Welcome to the Alkemio Forum",

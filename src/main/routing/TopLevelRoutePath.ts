@@ -14,6 +14,8 @@ export enum TopLevelRoutePath {
   Profile = 'profile',
   Restricted = 'restricted',
   Docs = 'docs',
+  WelcomeSpace = 'welcome-space',
+  Contact = 'contact',
   _Landing = 'landing', // Legacy route that redirects to Welcome site
   _Identity = 'identity', // Legacy route that's not used anymore but is decided to be reserved
 }
