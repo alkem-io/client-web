@@ -12,15 +12,15 @@ import {
 } from '@mui/material';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import { useUpdateAnswerRelevanceMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
   addResponseMessage,
-  dropMessages,
   addUserMessage,
+  dropMessages,
   renderCustomComponent,
   toggleWidget,
   Widget,
 } from 'react-chat-widget';
-import { useUpdateAnswerRelevanceMutation } from '@/core/apollo/generated/apollo-hooks';
 import logoSrc from '@/main/ui/logo/logoSmall.svg';
 import { useTranslation } from 'react-i18next';
 import 'react-chat-widget/lib/styles.css';
