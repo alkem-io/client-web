@@ -63,7 +63,7 @@ const SortDialog = ({ open, onClose, collaborationId, contributions, onUpdateCon
                           <DragIndicatorIcon />
                           <Caption>
                             {item.name}
-                            {isNumber(item.commentsCount) ? ` (${item.commentsCount})` : ''}
+                            {isNumber(item.commentsCount) && item.commentsCount > 0 ? ` (${item.commentsCount})` : ''}
                           </Caption>
                         </Box>
                       )}

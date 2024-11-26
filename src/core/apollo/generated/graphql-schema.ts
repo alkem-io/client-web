@@ -2753,14 +2753,14 @@ export type License = {
   __typename?: 'License';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The set of License Entitlement Types on that entity. */
+  availableEntitlements?: Maybe<Array<LicenseEntitlementType>>;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The set of Entitlements associated with the License applicable to this entity. */
   entitlements: Array<LicenseEntitlement>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The set of License Entitlements on that entity. */
-  myLicensePrivileges?: Maybe<Array<LicenseEntitlementType>>;
   /** The type of entity that this License is being used with. */
   type?: Maybe<LicenseType>;
   /** The date at which the entity was last updated. */
@@ -7942,7 +7942,7 @@ export type AccountInformationQuery = {
           license: {
             __typename?: 'License';
             id: string;
-            myLicensePrivileges?: Array<LicenseEntitlementType> | undefined;
+            availableEntitlements?: Array<LicenseEntitlementType> | undefined;
           };
           host?:
             | { __typename?: 'Organization'; id: string }
@@ -10139,7 +10139,7 @@ export type CollaborationAuthorizationEntitlementsQuery = {
           license: {
             __typename?: 'License';
             id: string;
-            myLicensePrivileges?: Array<LicenseEntitlementType> | undefined;
+            availableEntitlements?: Array<LicenseEntitlementType> | undefined;
           };
         }
       | undefined;
@@ -16531,21 +16531,6 @@ export type AdminGlobalOrganizationsListQuery = {
       hasNextPage: boolean;
     };
   };
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    licensingFramework: {
-      __typename?: 'Licensing';
-      id: string;
-      plans: Array<{
-        __typename?: 'LicensePlan';
-        id: string;
-        name: string;
-        type: LicensePlanType;
-        licenseCredential: LicenseCredential;
-      }>;
-    };
-  };
 };
 
 export type AdminOrganizationVerifyMutationVariables = Exact<{
@@ -17442,21 +17427,6 @@ export type UserListQuery = {
     }>;
     pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
   };
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    licensingFramework: {
-      __typename?: 'Licensing';
-      id: string;
-      plans: Array<{
-        __typename?: 'LicensePlan';
-        id: string;
-        name: string;
-        type: LicensePlanType;
-        licenseCredential: LicenseCredential;
-      }>;
-    };
-  };
 };
 
 export type UserAvatarsQueryVariables = Exact<{
@@ -18134,7 +18104,7 @@ export type UserProviderQuery = {
                 license: {
                   __typename?: 'License';
                   id: string;
-                  myLicensePrivileges?: Array<LicenseEntitlementType> | undefined;
+                  availableEntitlements?: Array<LicenseEntitlementType> | undefined;
                 };
               }
             | undefined;
@@ -23485,6 +23455,8 @@ export type PlatformLevelAuthorizationQuery = {
   __typename?: 'Query';
   platform: {
     __typename?: 'Platform';
+    id: string;
+    myRoles: Array<PlatformRole>;
     authorization?:
       | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
@@ -23571,14 +23543,6 @@ export type AdminSpacesListQuery = {
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
   }>;
-  platform: {
-    __typename?: 'Platform';
-    licensingFramework: {
-      __typename?: 'Licensing';
-      id: string;
-      plans: Array<{ __typename?: 'LicensePlan'; id: string; name: string; licenseCredential: LicenseCredential }>;
-    };
-  };
 };
 
 export type AdminSpaceFragment = {
@@ -24143,6 +24107,26 @@ export type ConfigurationFragment = {
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean; environment: string };
   apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
   geo: { __typename?: 'Geo'; endpoint: string };
+};
+
+export type PlatformLicensingPlansQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformLicensingPlansQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    licensingFramework: {
+      __typename?: 'Licensing';
+      id: string;
+      plans: Array<{
+        __typename?: 'LicensePlan';
+        id: string;
+        type: LicensePlanType;
+        name: string;
+        licenseCredential: LicenseCredential;
+      }>;
+    };
+  };
 };
 
 export type ServerMetadataQueryVariables = Exact<{ [key: string]: never }>;
@@ -28875,17 +28859,13 @@ export type CampaignBlockCredentialsQueryVariables = Exact<{ [key: string]: neve
 
 export type CampaignBlockCredentialsQuery = {
   __typename?: 'Query';
+  platform: { __typename?: 'Platform'; id: string; myRoles: Array<PlatformRole> };
   me: {
     __typename?: 'MeQueryResults';
     user?:
       | {
           __typename?: 'User';
           id: string;
-          agent: {
-            __typename?: 'Agent';
-            id: string;
-            credentials?: Array<{ __typename?: 'Credential'; resourceID: string; type: CredentialType }> | undefined;
-          };
           account?:
             | {
                 __typename?: 'Account';
@@ -28893,7 +28873,7 @@ export type CampaignBlockCredentialsQuery = {
                 license: {
                   __typename?: 'License';
                   id: string;
-                  myLicensePrivileges?: Array<LicenseEntitlementType> | undefined;
+                  availableEntitlements?: Array<LicenseEntitlementType> | undefined;
                 };
               }
             | undefined;
@@ -30449,7 +30429,7 @@ export type NewVirtualContributorMySpacesQuery = {
                   license: {
                     __typename?: 'License';
                     id: string;
-                    myLicensePrivileges?: Array<LicenseEntitlementType> | undefined;
+                    availableEntitlements?: Array<LicenseEntitlementType> | undefined;
                   };
                   community: {
                     __typename?: 'Community';

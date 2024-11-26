@@ -12,6 +12,7 @@ import { Room, VisualUriFragment } from '@/core/apollo/generated/graphql-schema'
 import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
 import { gutters } from '@/core/ui/grid/utils';
 import { Identifiable } from '@/core/utils/Identifiable';
+import { isNumber } from 'lodash';
 
 export interface PostCardPost extends Identifiable {
   profile: {
@@ -58,7 +59,9 @@ const PostCard = ({ post, onClick }: PostCardProps) => {
       </CardDetails>
       <CardFooter>
         {post.createdDate && <CardFooterDate date={post.createdDate} />}
-        <MessageCounter commentsCount={post.comments?.messagesCount} />
+        {isNumber(post.comments?.messagesCount) && post.comments?.messagesCount > 0 && (
+          <MessageCounter commentsCount={post.comments?.messagesCount} />
+        )}
       </CardFooter>
     </ContributeCard>
   );

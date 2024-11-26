@@ -6,7 +6,12 @@ import {
   useUserProviderQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
-import { AuthorizationPrivilege, LicenseEntitlementType, User } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  LicenseEntitlementType,
+  PlatformRole,
+  User,
+} from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { toUserMetadata, UserMetadata } from '../../hooks/useUserMetadataWrapper';
 
@@ -17,6 +22,7 @@ export interface UserContextValue {
   loadingMe: boolean; // Loading Authentication and Profile data. Once it's false that's enough for showing the page header and avatar.
   verified: boolean;
   isAuthenticated: boolean;
+  platformRoles: PlatformRole[];
   accountPrivileges: AuthorizationPrivilege[];
   accountEntitlements: LicenseEntitlementType[];
 }
@@ -28,6 +34,7 @@ const UserContext = createContext<UserContextValue>({
   loadingMe: true,
   verified: false,
   isAuthenticated: false,
+  platformRoles: [],
   accountPrivileges: [],
   accountEntitlements: [],
 });
@@ -75,10 +82,19 @@ const UserProvider: FC = ({ children }) => {
       loadingMe: loadingMeAndParentQueries,
       verified,
       isAuthenticated,
+      platformRoles: platformLevelAuthorizationData?.platform.myRoles ?? [],
       accountPrivileges: meData?.me.user?.account?.authorization?.myPrivileges ?? [],
-      accountEntitlements: meData?.me.user?.account?.license?.myLicensePrivileges ?? [],
+      accountEntitlements: meData?.me.user?.account?.license?.availableEntitlements ?? [],
     }),
-    [userMetadata, loading, loadingMeAndParentQueries, verified, isAuthenticated]
+    [
+      userMetadata,
+      loading,
+      loadingMeAndParentQueries,
+      verified,
+      isAuthenticated,
+      platformLevelAuthorizationData,
+      meData,
+    ]
   );
 
   if (error) return <ErrorPage error={error} />;

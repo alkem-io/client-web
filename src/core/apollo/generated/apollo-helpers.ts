@@ -1643,20 +1643,20 @@ export type LibraryFieldPolicy = {
 };
 export type LicenseKeySpecifier = (
   | 'authorization'
+  | 'availableEntitlements'
   | 'createdDate'
   | 'entitlements'
   | 'id'
-  | 'myLicensePrivileges'
   | 'type'
   | 'updatedDate'
   | LicenseKeySpecifier
 )[];
 export type LicenseFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  availableEntitlements?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   entitlements?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  myLicensePrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };

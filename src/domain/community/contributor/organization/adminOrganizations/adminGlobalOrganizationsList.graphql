@@ -26,18 +26,6 @@ query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: Organiza
       ...PageInfo
     }
   }
-  platform {
-    id
-    licensingFramework {
-      id
-      plans {
-        id
-        name
-        type
-        licenseCredential
-      }
-    }
-  }
 }
 
 mutation adminOrganizationVerify($input: OrganizationVerificationEventInput!) {

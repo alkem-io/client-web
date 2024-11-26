@@ -25,6 +25,7 @@ const NavigationBarContent = ({ transparent, children }: PropsWithChildren<Navig
           backgroundColor: theme => alpha(theme.palette.primary.main, transparent ? 0 : 0.25),
           backdropFilter: transparent ? 'none' : 'blur(8px)',
           position: 'relative',
+          overflow: 'visible',
           height: gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS - 1),
           maxWidth: gutters(MAX_CONTENT_WIDTH_GUTTERS - 2),
         }}

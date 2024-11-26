@@ -577,6 +577,13 @@
         "year": "{{count}} year",
         "year_plural": "{{count}} years"
       }
+    },
+    "roles": {
+      "GLOBAL_ADMIN": "Global Admin",
+      "SUPPORT": "Support Admin",
+      "LICENSE_MANAGER": "License Manager",
+      "BETA_TESTER": "Beta Tester",
+      "VC_CAMPAIGN": "VC Early Access"
     }
   },
   "community": {
@@ -585,7 +592,7 @@
     "memberOrganizations": "Member Organizations ({{count}})",
     "pendingApplications": "Pending applications",
     "pendingMemberships": "Pending applications & invitations",
-    "invitationSent": "Invitation sent succesfully",
+    "invitationSent": "Invitation sent successfully",
     "leads": "Leads",
     "members": "Members",
     "host": "Host",
@@ -1787,7 +1794,8 @@
           "description": "Here you can explore the hosted **{{entities}}**. Filter by key words to show just the topics you care about.",
           "list": "List view",
           "empty": "No {{entities}} found.",
-          "empty-list": "There are no {{entities}} yet."
+          "empty-list": "There are no {{entities}} yet.",
+          "searchPlaceholder": "Find Subspaces..."
         },
         "recommendations": {
           "title": "Recommended by the Host"
@@ -2557,6 +2565,10 @@
       "line3": "If the error persists please contact support.",
       "buttons": {
         "reload": "Reload"
+      },
+      "errors": {
+        "LazyLoadError": "Network error occurred. Please try reloading the page.",
+        "unknown": "An unknown error occurred. Please try reloading the page."
       }
     },
     "four-ou-four": {
