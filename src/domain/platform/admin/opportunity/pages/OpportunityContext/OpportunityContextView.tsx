@@ -1,17 +1,16 @@
 import { Grid } from '@mui/material';
-import React, { FC } from 'react';
-import { ContextForm, ContextFormValues } from '../../../../../context/ContextForm';
-import { useNotification } from '../../../../../../core/ui/notifications/useNotification';
-import { OpportunityContextSegment } from '../../OpportunityContextSegment';
-import SaveButton from '../../../../../../core/ui/actions/SaveButton';
-import { useRouteResolver } from '../../../../../../main/routing/resolvers/RouteResolver';
+import { ContextForm, ContextFormValues } from '@/domain/context/ContextForm';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { OpportunityContextSegment } from '@/domain/platform/admin/opportunity/OpportunityContextSegment';
+import SaveButton from '@/core/ui/actions/SaveButton';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import {
   refetchSubspaceProfileInfoQuery,
   useSubspaceProfileInfoQuery,
   useUpdateSpaceMutation,
-} from '../../../../../../core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 
-const OpportunityContextView: FC = () => {
+const OpportunityContextView = () => {
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 

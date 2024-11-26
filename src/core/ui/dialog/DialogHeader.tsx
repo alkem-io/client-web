@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, ReactElement, ReactNode } from 'react';
+import { PropsWithChildren, ReactElement, ReactNode, MouseEvent } from 'react';
 import { Close } from '@mui/icons-material';
 import { Box, BoxProps, IconButton, SvgIconProps } from '@mui/material';
 import ActionsBar from '../actions/ActionsBar/ActionsBar';
@@ -9,7 +9,7 @@ export interface DialogHeaderProps {
   icon?: ReactElement<SvgIconProps>;
   title?: ReactNode;
   actions?: ReactNode;
-  onClose?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onClose?: (event: MouseEvent<HTMLButtonElement>) => void;
   titleContainerProps?: BoxProps;
 }
 

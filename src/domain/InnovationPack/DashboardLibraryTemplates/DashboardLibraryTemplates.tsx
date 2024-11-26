@@ -1,16 +1,17 @@
 import { ReactNode, useMemo, useState } from 'react';
-import filterFn, { ValueType } from '../../../core/utils/filtering/filterFn';
+import filterFn, { ValueType } from '@/core/utils/filtering/filterFn';
 import { compact } from 'lodash';
-import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
-import PreviewTemplateDialog from '../../templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import PreviewTemplateDialog from '@/domain/templates/components/Dialogs/PreviewTemplateDialog/PreviewTemplateDialog';
 import LibraryTemplatesView, { LibraryTemplatesFilter } from './LibraryTemplatesView';
-import { AnyTemplate, AnyTemplateWithInnovationPack } from '../../templates/models/TemplateBase';
+import { AnyTemplate, AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
 
-interface DashboardLibraryTemplatesProps {
+type DashboardLibraryTemplatesProps = {
   headerTitle: ReactNode;
   dialogTitle: ReactNode;
   templates: AnyTemplateWithInnovationPack[] | undefined;
-}
+  loading?: boolean;
+};
 
 const templatesValueGetter = (template: AnyTemplateWithInnovationPack): ValueType => ({
   id: template.template.id,
@@ -24,7 +25,12 @@ const templatesValueGetter = (template: AnyTemplateWithInnovationPack): ValueTyp
 
 const MAX_TEMPLATES_WHEN_NOT_EXPANDED = 10;
 
-const DashboardLibraryTemplates = ({ headerTitle, dialogTitle, templates }: DashboardLibraryTemplatesProps) => {
+const DashboardLibraryTemplates = ({
+  loading,
+  templates,
+  headerTitle,
+  dialogTitle,
+}: DashboardLibraryTemplatesProps) => {
   const [filter, onFilterChange] = useState<LibraryTemplatesFilter>({
     templateTypes: [],
     searchTerms: [],
@@ -64,6 +70,7 @@ const DashboardLibraryTemplates = ({ headerTitle, dialogTitle, templates }: Dash
           setSelectedTemplate(template);
         }}
         hasMore={filteredLibraryTemplates.length > MAX_TEMPLATES_WHEN_NOT_EXPANDED}
+        loading={loading}
       />
       <DialogWithGrid open={isDialogOpen} onClose={() => setIsDialogOpen(false)} columns={12}>
         <LibraryTemplatesView
@@ -75,6 +82,7 @@ const DashboardLibraryTemplates = ({ headerTitle, dialogTitle, templates }: Dash
           onDialogClose={() => setIsDialogOpen(false)}
           onClick={template => setSelectedTemplate(template)}
           sx={{ flexShrink: 1 }}
+          loading={loading}
         />
       </DialogWithGrid>
       {selectedTemplate && (

@@ -1,14 +1,14 @@
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { Box } from '@mui/material';
 import CardFooterAvatar from './CardFooterAvatar';
 import { Caption } from '../typography';
 import { gutters } from '../grid/utils';
 import { useTranslation } from 'react-i18next';
 
-interface CardFooterBadgeProps {
+type CardFooterBadgeProps = {
   avatarUri?: string;
   avatarDisplayName?: string;
-}
+};
 
 const CardFooterBadge = ({ avatarUri, avatarDisplayName, children }: PropsWithChildren<CardFooterBadgeProps>) => {
   const { t } = useTranslation();

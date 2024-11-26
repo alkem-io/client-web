@@ -1,7 +1,6 @@
-import React from 'react';
-import ScrollerWithGradient, { Orientation } from '../../overflow/ScrollerWithGradient';
-import PageContentBlockGrid, { PageContentBlockGridProps } from '../../content/PageContentBlockGrid';
-import useCurrentBreakpoint from '../../utils/useCurrentBreakpoint';
+import ScrollerWithGradient, { Orientation } from '@/core/ui/overflow/ScrollerWithGradient';
+import PageContentBlockGrid, { PageContentBlockGridProps } from '@/core/ui/content/PageContentBlockGrid';
+import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import { BoxProps } from '@mui/material';
 
 interface ScrollableCardsLayoutContainerProps extends PageContentBlockGridProps {

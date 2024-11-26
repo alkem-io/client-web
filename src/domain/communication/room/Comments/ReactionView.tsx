@@ -1,19 +1,16 @@
-import React from 'react';
 import { Chip, Paper, Tooltip } from '@mui/material';
-import { Caption, CardText, Text } from '../../../../core/ui/typography/components';
-import Gutters from '../../../../core/ui/grid/Gutters';
-
-interface ReactionViewReactionSender {
-  profile: {
-    displayName: string;
-  };
-}
+import { Caption, CardText, Text } from '@/core/ui/typography/components';
+import Gutters from '@/core/ui/grid/Gutters';
 
 export interface ReactionViewReaction {
   emoji: string;
   count: number;
   ownReactionId?: string;
-  senders: ReactionViewReactionSender[];
+  senders: {
+    profile: {
+      displayName: string;
+    };
+  }[];
 }
 
 export interface ReactionViewProps {

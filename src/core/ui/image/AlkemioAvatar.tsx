@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
+import { forwardRef, ReactNode, useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import ImageFadeIn from './ImageFadeIn';
 import WrapperTypography from '../typography/deprecated/WrapperTypography';
@@ -63,14 +63,14 @@ export const useAvatarStyles = makeStyles<Theme, ClassProps>(theme => ({
   },
 }));
 
-interface ClassProps {
+type ClassProps = {
   background?: string;
-}
+};
 
-interface AvatarPopupProps {
+type AvatarPopupProps = {
   open: boolean;
   onHide: () => void;
-}
+};
 
 export interface AvatarProps {
   src?: string;

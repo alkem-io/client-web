@@ -14,18 +14,16 @@ const GridContainer = ({
   noWrap = false,
   disableGap = false,
   ...props
-}: GridContainerProps) => {
-  return (
-    <Box
-      display="flex"
-      flexDirection="row"
-      flexWrap={noWrap ? 'nowrap' : 'wrap'}
-      alignItems={sameHeight ? 'stretch' : 'start'}
-      gap={disableGap ? 0 : gutters()}
-      padding={disablePadding ? undefined : gutters()}
-      {...props}
-    />
-  );
-};
+}: GridContainerProps) => (
+  <Box
+    display="flex"
+    flexDirection="row"
+    flexWrap={noWrap ? 'nowrap' : 'wrap'}
+    alignItems={sameHeight ? 'stretch' : 'start'}
+    gap={disableGap ? 0 : gutters()}
+    padding={disablePadding ? undefined : gutters()}
+    {...props}
+  />
+);
 
 export default GridContainer;

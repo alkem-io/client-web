@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import SubspaceHomeView from './SubspaceHomeView';
 import SubspaceHomeContainer from './SubspaceHomeContainer';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
-import useDirectMessageDialog from '../../../communication/messaging/DirectMessaging/useDirectMessageDialog';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import { useTranslation } from 'react-i18next';
-import { SubspacePageLayout } from '../../common/EntityPageLayout';
-import JourneyDashboardWelcomeBlock from '../../common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
-import { AuthorizationPrivilege, CommunityMembershipStatus } from '../../../../core/apollo/generated/graphql-schema';
+import { SubspacePageLayout } from '@/domain/journey/common/EntityPageLayout';
+import JourneyDashboardWelcomeBlock from '@/domain/journey/common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';
+import { AuthorizationPrivilege, CommunityMembershipStatus } from '@/core/apollo/generated/graphql-schema';
 import { DialogDef } from '../layout/DialogDefinition';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import {
@@ -20,18 +20,16 @@ import {
   SettingsOutlined,
   ShareOutlined,
 } from '@mui/icons-material';
-import { InnovationFlowIcon } from '../../../collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
+import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import SubspaceDialogs from './dialogs/SubspaceDialogs';
-import { useSpace } from '../../space/SpaceContext/useSpace';
-import useSpaceDashboardNavigation from '../../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
-import DashboardNavigation, { DashboardNavigationProps } from '../../dashboardNavigation/DashboardNavigation';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import useSpaceDashboardNavigation from '@/domain/journey/space/spaceDashboardNavigation/useSpaceDashboardNavigation';
+import DashboardNavigation, {
+  DashboardNavigationProps,
+} from '@/domain/journey/dashboardNavigation/DashboardNavigation';
 import { useConsumeAction } from '../layout/SubspacePageLayout';
-import { useColumns } from '../../../../core/ui/grid/GridContext';
+import { useColumns } from '@/core/ui/grid/GridContext';
 import CreateJourney from './dialogs/CreateJourney';
-
-interface SubspaceHomePageProps {
-  dialog?: SubspaceDialog;
-}
 
 const Outline = (props: DashboardNavigationProps) => {
   useConsumeAction(SubspaceDialog.Outline);
@@ -39,10 +37,10 @@ const Outline = (props: DashboardNavigationProps) => {
   return <DashboardNavigation compact={columns === 0} {...props} />;
 };
 
-const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
+const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
   const { t } = useTranslation();
 
-  const { journeyId, journeyTypeName, journeyPath, parentJourneyId, loading } = useRouteResolver();
+  const { journeyId, journeyTypeName, journeyPath, parentSpaceId, loading } = useRouteResolver();
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
@@ -90,7 +88,7 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
             journeyId={journeyId}
             journeyPath={journeyPath}
             journeyUrl={subspace?.profile.url}
-            parentJourneyId={parentJourneyId}
+            parentSpaceId={parentSpaceId}
             loading={loading}
             welcome={
               <JourneyDashboardWelcomeBlock
@@ -186,13 +184,14 @@ const SubspaceHomePage = ({ dialog }: SubspaceHomePageProps) => {
             parentSpaceId={createSpaceState.parentSpaceId}
           />
           <SubspaceDialogs
-            parentJourneyId={parentJourneyId}
+            parentSpaceId={parentSpaceId}
             dialogOpen={dialog}
             callouts={callouts}
             journeyId={journeyId}
             journeyUrl={subspace?.profile.url}
             dashboardNavigation={dashboardNavigation}
             communityId={subspace?.community?.id}
+            collaborationId={subspace?.collaboration.id}
           />
         </>
       )}

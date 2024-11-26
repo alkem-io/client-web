@@ -1,19 +1,19 @@
-import React, { FC, PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import CountrySelect from './CountrySelect';
-import FormikInputField from '../../../core/ui/forms/FormikInputField/FormikInputField';
-import FormRow from '../../../core/ui/forms/FormRow';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import FormRow from '@/core/ui/forms/FormRow';
 
-interface LocationSegmentProps {
+type LocationSegmentProps = {
   cols?: number;
   readonly?: boolean;
   disabled?: boolean;
   required?: boolean;
   cityFieldName?: string;
   countryFieldName?: string;
-}
+};
 
-export const LocationSegment: FC<PropsWithChildren<LocationSegmentProps>> = props => {
+export const LocationSegment = (props: PropsWithChildren<LocationSegmentProps>) => {
   const { t } = useTranslation();
   const cols = !props?.cols || props?.cols <= 0 ? 1 : props!.cols,
     disabled = props.disabled || false,

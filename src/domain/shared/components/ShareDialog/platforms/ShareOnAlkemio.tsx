@@ -3,14 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
 import * as yup from 'yup';
 import { Alert, Box, Button, DialogActions } from '@mui/material';
-import FormikInputField from '../../../../../core/ui/forms/FormikInputField/FormikInputField';
-import { FormikUserSelector } from '../../../../community/user/FormikUserSelector/FormikUserSelector';
-import { gutters } from '../../../../../core/ui/grid/utils';
-import { Caption, Text } from '../../../../../core/ui/typography';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { FormikUserSelector } from '@/domain/community/user/FormikUserSelector/FormikUserSelector';
+import { gutters } from '@/core/ui/grid/utils';
+import { Caption, Text } from '@/core/ui/typography';
 import { ShareButton, ShareOnPlatformButtonProps, ShareOnPlatformHandlerProps } from '../ShareDialog';
-import { LONG_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
-import SendButton from '../../SendButton';
-import { useShareLinkWithUserMutation } from '../../../../../core/apollo/generated/apollo-hooks';
+import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import SendButton from '@/domain/shared/components/SendButton';
+import { useShareLinkWithUserMutation } from '@/core/apollo/generated/apollo-hooks';
 
 const ICON_URL = '/share-dialog/alkemio.png';
 

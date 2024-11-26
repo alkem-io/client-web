@@ -1,16 +1,16 @@
 import Dialog from '@mui/material/Dialog';
-import React, { FC } from 'react';
+import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import TranslationKey from '../../i18n/utils/TranslationKey';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import Loading from '../loading/Loading';
 import { DialogContent, DialogTitle } from '../dialog/deprecated';
 import QRCode from './QRCode';
 import { makeStyles } from '@mui/styles';
 
-interface QRCodeDialogProps {
+type QRCodeDialogProps = {
   entities: {
     titleId?: TranslationKey;
-    title?: React.ReactNode;
+    title?: ReactNode;
     contentId?: TranslationKey;
     content?: string;
     qrCodeJwt?: string;
@@ -26,7 +26,7 @@ interface QRCodeDialogProps {
   state?: {
     isLoading: boolean;
   };
-}
+};
 
 const useStyles = makeStyles({
   paper: {
@@ -41,7 +41,7 @@ const useStyles = makeStyles({
   },
 });
 
-const QRCodeDialog: FC<QRCodeDialogProps> = ({ entities, actions, options, state }) => {
+const QRCodeDialog = ({ entities, actions, options, state }: QRCodeDialogProps) => {
   const { t } = useTranslation();
   const styles = useStyles();
 

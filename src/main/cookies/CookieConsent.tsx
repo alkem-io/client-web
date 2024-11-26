@@ -3,7 +3,7 @@ import { useResizeDetector } from 'react-resize-detector';
 import ConsentContainer from './components/ConsentContainer';
 import GeneralConsent from './GeneralConsent';
 import CookieSettings from './CookieSettings';
-import { useCombinedRefs } from '../../domain/shared/utils/useCombinedRefs';
+import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 
 const CookieConsent = forwardRef<HTMLDivElement>((_, ref) => {
   const [cookieOptionsOpen, setCookieOptionsOpen] = useState(false);

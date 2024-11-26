@@ -1,11 +1,11 @@
 import React, { FC, useMemo } from 'react';
-import { useSubspaceProviderQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useSubspaceProviderQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
   SubspaceProviderFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
+} from '@/core/apollo/generated/graphql-schema';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 
 interface OpportunityViewerPermissions {
   viewerCanUpdate: boolean;

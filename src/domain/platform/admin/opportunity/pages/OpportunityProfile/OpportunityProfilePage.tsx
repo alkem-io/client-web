@@ -1,16 +1,13 @@
-import React, { FC } from 'react';
-import FormMode from '../../../components/FormMode';
-import { SettingsSection } from '../../../layout/EntitySettingsLayout/constants';
-import { SettingsPageProps } from '../../../layout/EntitySettingsLayout/types';
-import SubspaceSettingsLayout from '../../../subspace/SubspaceSettingsLayout';
+import FormMode from '@/domain/platform/admin/components/FormMode';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
+import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
 import OpportunityProfileView from './OpportunityProfileView';
 
-const OpportunityProfilePage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
-  return (
-    <SubspaceSettingsLayout currentTab={SettingsSection.Profile} tabRoutePrefix={routePrefix}>
-      <OpportunityProfileView mode={FormMode.update} />
-    </SubspaceSettingsLayout>
-  );
-};
+const OpportunityProfilePage = ({ routePrefix = '../' }: SettingsPageProps) => (
+  <SubspaceSettingsLayout currentTab={SettingsSection.Profile} tabRoutePrefix={routePrefix}>
+    <OpportunityProfileView mode={FormMode.update} />
+  </SubspaceSettingsLayout>
+);
 
 export default OpportunityProfilePage;

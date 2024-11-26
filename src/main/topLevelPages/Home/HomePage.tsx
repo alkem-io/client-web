@@ -1,11 +1,12 @@
 import React, { Suspense } from 'react';
 import HomePageLayout from './HomePageLayout';
-import InnovationHubHomePage from '../../../domain/innovationHub/InnovationHubHomePage/InnovationHubHomePage';
-import Loading from '../../../core/ui/loading/Loading';
-import useInnovationHub from '../../../domain/innovationHub/useInnovationHub/useInnovationHub';
-import PageContent from '../../../core/ui/content/PageContent';
+import InnovationHubHomePage from '@/domain/innovationHub/InnovationHubHomePage/InnovationHubHomePage';
+import Loading from '@/core/ui/loading/Loading';
+import useInnovationHub from '@/domain/innovationHub/useInnovationHub/useInnovationHub';
+import PageContent from '@/core/ui/content/PageContent';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
-const MyDashboard = React.lazy(() => import('../myDashboard/MyDashboard'));
+const MyDashboard = lazyWithGlobalErrorHandler(() => import('@/main/topLevelPages/myDashboard/MyDashboard'));
 
 const HomePage = () => {
   const { innovationHub, innovationHubLoading } = useInnovationHub();

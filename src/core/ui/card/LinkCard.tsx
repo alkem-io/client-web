@@ -1,7 +1,6 @@
 import { Card, CardProps } from '@mui/material';
-import React, { FC } from 'react';
 import ConditionalLink from '../link/ConditionalLink';
-import withElevationOnHover from '../../../domain/shared/components/withElevationOnHover';
+import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
 
 interface LinkCardProps extends CardProps {
   to?: string;
@@ -11,12 +10,10 @@ interface LinkCardProps extends CardProps {
 
 const ElevatedCard = withElevationOnHover(Card);
 
-const LinkCard: FC<LinkCardProps> = ({ to, elevationDisabled = false, keepScroll, ...rest }) => {
-  return (
-    <ConditionalLink condition={!!to} to={to} keepScroll={keepScroll}>
-      <ElevatedCard {...rest} elevationDisabled={elevationDisabled} />
-    </ConditionalLink>
-  );
-};
+const LinkCard = ({ to, elevationDisabled = false, keepScroll, ...rest }: LinkCardProps) => (
+  <ConditionalLink condition={!!to} to={to} keepScroll={keepScroll}>
+    <ElevatedCard {...rest} elevationDisabled={elevationDisabled} />
+  </ConditionalLink>
+);
 
 export default LinkCard;

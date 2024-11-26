@@ -1,8 +1,5 @@
-import React, { FC } from 'react';
 import LogoutPage from '../pages/LogoutPage';
 
-export const LogoutRoute: FC = () => {
-  return <LogoutPage />;
-};
+export const LogoutRoute = () => <LogoutPage />;
 
 export default LogoutRoute;

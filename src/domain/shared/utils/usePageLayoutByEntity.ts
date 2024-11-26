@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import SpacePageLayout from '../../journey/space/layout/SpacePageLayout';
-import SubspacePageLayout from '../../journey/subspace/layout/SubspacePageLayout';
-import { EntityTypeName } from '../../platform/constants/EntityTypeName';
+import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
+import SubspacePageLayout from '@/domain/journey/subspace/layout/SubspacePageLayout';
+import { EntityTypeName } from '@/domain/platform/constants/EntityTypeName';
 
 const usePageLayoutByEntity = (entityTypeName: EntityTypeName) =>
   useMemo(() => {

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useCalloutPostsQuery } from '../../../../core/apollo/generated/apollo-hooks';
+import { useCalloutPostsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useCalloutPostCreatedSubscription from './useCalloutPostCreatedSubscription';
 import { compact } from 'lodash';
 

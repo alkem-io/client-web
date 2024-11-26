@@ -1,11 +1,10 @@
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '../../../../../core/ui/forms/field-length.constants';
-import { JourneyTypeName } from '../../../../journey/JourneyTypeName';
-import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
+import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import SectionSpacer from '@/domain/shared/components/Section/SectionSpacer';
 import MarkdownInput from './MarkdownInput';
-import MarkdownValidator from '../../../../../core/ui/forms/MarkdownInput/MarkdownValidator';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 
 export const contextSegmentSchema = yup.object().shape({
   background: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
@@ -19,10 +18,7 @@ export interface ContextSegmentProps {
   loading?: boolean;
 }
 
-export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyTypeName }> = ({
-  loading,
-  contextType,
-}) => {
+export const ContextSegment = ({ loading, contextType }: ContextSegmentProps & { contextType: JourneyTypeName }) => {
   const { t } = useTranslation();
 
   return (

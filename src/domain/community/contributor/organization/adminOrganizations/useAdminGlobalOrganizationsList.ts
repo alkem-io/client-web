@@ -6,15 +6,16 @@ import {
   useAdminOrganizationVerifyMutation,
   useAssignLicensePlanToAccountMutation,
   useDeleteOrganizationMutation,
+  usePlatformLicensingPlansQuery,
   useRevokeLicensePlanFromAccountMutation,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import usePaginatedQuery from '../../../../shared/pagination/usePaginatedQuery';
-import { SearchableListItem } from '../../../../shared/components/SearchableList/SimpleSearchableTable';
-import clearCacheForQuery from '../../../../../core/apollo/utils/clearCacheForQuery';
+} from '@/core/apollo/generated/apollo-hooks';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
+import { SearchableListItem } from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
+import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { useTranslation } from 'react-i18next';
-import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
-import { LicensePlanType } from '../../../../../core/apollo/generated/graphql-schema';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { LicensePlanType } from '@/core/apollo/generated/graphql-schema';
 
 const PAGE_SIZE = 10;
 
@@ -63,6 +64,7 @@ export const useAdminGlobalOrganizationsList = () => {
     });
 
   const [verifyOrg] = useAdminOrganizationVerifyMutation();
+  const platformLicensePlans = usePlatformLicensingPlansQuery();
 
   const handleVerification = async (item: SearchableListItem) => {
     const orgFullData = data?.organizationsPaginated?.organization?.find(org => org.id === item.id);
@@ -112,7 +114,7 @@ export const useAdminGlobalOrganizationsList = () => {
       variables: {
         accountId,
         licensePlanId,
-        licensingId: data?.platform.licensing.id ?? '',
+        licensingId: platformLicensePlans?.data?.platform.licensingFramework.id ?? '',
       },
       refetchQueries: [
         refetchAdminGlobalOrganizationsListQuery({
@@ -130,7 +132,7 @@ export const useAdminGlobalOrganizationsList = () => {
       variables: {
         accountId,
         licensePlanId,
-        licensingId: data?.platform.licensing.id ?? '',
+        licensingId: platformLicensePlans.data?.platform.licensingFramework.id ?? '',
       },
       refetchQueries: [
         refetchAdminGlobalOrganizationsListQuery({
@@ -151,7 +153,7 @@ export const useAdminGlobalOrganizationsList = () => {
         url: buildSettingsUrl(org.profile.url),
         verified: org.verification.state === OrgVerificationLifecycleStates.manuallyVerified,
         avatar: org.profile.visual,
-        activeLicensePlanIds: data?.platform.licensing.plans
+        activeLicensePlanIds: platformLicensePlans.data?.platform.licensingFramework.plans
           .filter(({ licenseCredential }) =>
             org.account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
           )
@@ -162,7 +164,7 @@ export const useAdminGlobalOrganizationsList = () => {
 
   const licensePlans = useMemo<ContributorLicensePlan[]>(
     () =>
-      data?.platform.licensing.plans
+      platformLicensePlans.data?.platform.licensingFramework.plans
         .filter(plan => plan.type === LicensePlanType.AccountPlan)
         .map(licensePlan => ({
           id: licensePlan.id,

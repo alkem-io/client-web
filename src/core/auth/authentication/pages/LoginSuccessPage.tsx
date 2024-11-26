@@ -1,11 +1,9 @@
-import { FC, useEffect } from 'react';
+import { useEffect } from 'react';
 import { STORAGE_KEY_RETURN_URL } from '../constants/authentication.constants';
 import { useReturnUrl } from '../utils/SignUpReturnUrl';
-import { useUserContext } from '../../../../domain/community/user';
+import { useUserContext } from '@/domain/community/user';
 
-interface LoginSuccessPageProps {}
-
-export const LoginSuccessPage: FC<LoginSuccessPageProps> = () => {
+export const LoginSuccessPage = () => {
   const returnUrl = useReturnUrl();
   // We don't really need to use user info here on every login,
   // but user profile creation is triggered the first time the user logs in,

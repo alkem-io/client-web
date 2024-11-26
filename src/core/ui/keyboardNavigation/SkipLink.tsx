@@ -7,10 +7,10 @@ import { SystemStyleObject } from '@mui/system/styleFunctionSx/styleFunctionSx';
 
 const SKIP_LINK_Z_INDEX = 1;
 
-interface SkipLinkProps {
+type SkipLinkProps = {
   sx?: SystemStyleObject<Theme>;
   anchor?: Element | null | (() => Element | null);
-}
+};
 
 const SkipLink = ({ anchor, sx, children }: PropsWithChildren<SkipLinkProps>) => {
   const { t } = useTranslation();

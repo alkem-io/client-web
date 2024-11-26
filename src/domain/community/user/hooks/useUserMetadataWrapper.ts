@@ -1,11 +1,11 @@
-import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '../../../common/tags/tagset.constants';
+import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '@/domain/common/tags/tagset.constants';
 import {
   AuthorizationPrivilege,
   MyPrivilegesFragment,
   SpaceLevel,
   UserDetailsFragment,
-} from '../../../../core/apollo/generated/graphql-schema';
-import { Identifiable } from '../../../../core/utils/Identifiable';
+} from '@/core/apollo/generated/graphql-schema';
+import { Identifiable } from '@/core/utils/Identifiable';
 
 export interface PendingApplication extends Identifiable {
   spacePendingMembershipInfo: Identifiable & {

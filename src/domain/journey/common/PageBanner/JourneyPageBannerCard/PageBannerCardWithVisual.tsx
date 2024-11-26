@@ -2,14 +2,14 @@ import { ReactElement, ReactNode } from 'react';
 
 import { Box, BoxProps, CircularProgress, Theme, useMediaQuery, useTheme } from '@mui/material';
 
-import { gutters } from '../../../../../core/ui/grid/utils';
-import BadgeCardView from '../../../../../core/ui/list/BadgeCardView';
-import { Caption, PageTitle } from '../../../../../core/ui/typography';
+import { gutters } from '@/core/ui/grid/utils';
+import BadgeCardView from '@/core/ui/list/BadgeCardView';
+import { Caption, PageTitle } from '@/core/ui/typography';
 import PageBannerCardWrapper, {
   PageBannerCardWrapperProps,
-} from '../../../../../core/ui/layout/pageBannerCard/PageBannerCardWrapper';
-import Gutters, { GuttersProps } from '../../../../../core/ui/grid/Gutters';
-import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
+} from '@/core/ui/layout/pageBannerCard/PageBannerCardWrapper';
+import Gutters, { GuttersProps } from '@/core/ui/grid/Gutters';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 
 export interface PageBannerCardWithVisualProps extends PageBannerCardWrapperProps {
   header?: ReactNode;

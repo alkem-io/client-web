@@ -1,14 +1,13 @@
 import React, { useMemo, useState } from 'react';
-import { SearchTagsInputProps } from '../../../shared/components/SearchTagsInput/SearchTagsInput';
-import { Identifiable } from '../../../../core/utils/Identifiable';
-import MultipleSelect from '../../../../core/ui/search/MultipleSelect';
-import filterFn, { MatchInformation, ValueType, getAllValues } from '../../../../core/utils/filtering/filterFn';
+import { SearchTagsInputProps } from '@/domain/shared/components/SearchTagsInput/SearchTagsInput';
+import { Identifiable } from '@/core/utils/Identifiable';
+import filterFn, { MatchInformation, ValueType, getAllValues } from '@/core/utils/filtering/filterFn';
 import { Box } from '@mui/material';
-import { BlockTitle } from '../../../../core/ui/typography';
-import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { BlockTitle } from '@/core/ui/typography';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
+import { gutters } from '@/core/ui/grid/utils';
 import { uniq } from 'lodash';
-import { MAX_TERMS_SEARCH } from '../../../../main/search/SearchView';
+import { MAX_TERMS_SEARCH } from '@/main/search/SearchView';
 
 export interface CardFilterProps<T extends Identifiable> extends Omit<SearchTagsInputProps, 'value' | 'availableTags'> {
   data: T[];
@@ -45,10 +44,6 @@ const JourneyFilter = <T extends Identifiable>({
     [data, terms, valueGetter]
   );
 
-  const handleChange = (value: string[]) => {
-    setTerms(value);
-  };
-
   if (!data.length) {
     return <>{children([])}</>;
   }
@@ -61,13 +56,6 @@ const JourneyFilter = <T extends Identifiable>({
     <>
       <Box display="flex" justifyContent="space-between" flexWrap="wrap" gap={gutters(0.5)}>
         <BlockTitle>{title}</BlockTitle>
-        <MultipleSelect
-          onChange={handleChange}
-          value={terms}
-          minLength={2}
-          size="xsmall"
-          containerProps={{ marginLeft: 'auto', maxWidth: '100%', overflow: 'hidden' }}
-        />
       </Box>
       {allValues && (
         <TagsComponent

@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useLayoutEffect, useState } from 'react';
+import { PropsWithChildren, useLayoutEffect, useState } from 'react';
 import { alpha, AppBar, Box, Paper, Slide } from '@mui/material';
 import { gutters } from '../grid/utils';
 import { GUTTER_PX, MAX_CONTENT_WIDTH_GUTTERS, useGlobalGridColumns } from '../grid/constants';
@@ -7,7 +7,7 @@ import { useScrolledUp, useScrollTop } from '../scroll/utils';
 import {
   PLATFORM_NAVIGATION_ITEM_ELEVATION,
   PLATFORM_NAVIGATION_MENU_ELEVATION,
-} from '../../../main/ui/platformNavigation/constants';
+} from '@/main/ui/platformNavigation/constants';
 import { ElevationContextProvider } from '../utils/ElevationContext';
 
 interface NavigationBarContentProps {
@@ -25,6 +25,7 @@ const NavigationBarContent = ({ transparent, children }: PropsWithChildren<Navig
           backgroundColor: theme => alpha(theme.palette.primary.main, transparent ? 0 : 0.25),
           backdropFilter: transparent ? 'none' : 'blur(8px)',
           position: 'relative',
+          overflow: 'visible',
           height: gutters(NAVIGATION_CONTAINER_HEIGHT_GUTTERS - 1),
           maxWidth: gutters(MAX_CONTENT_WIDTH_GUTTERS - 2),
         }}

@@ -1,12 +1,12 @@
-import React, { PropsWithChildren } from 'react';
-import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import { PropsWithChildren } from 'react';
+import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { AssignmentIndOutlined } from '@mui/icons-material';
 import UserPageBanner from './UserPageBanner';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
+import { useUrlParams } from '@/core/routing/useUrlParams';
 import { useUserMetadata } from '../hooks/useUserMetadata';
-import { buildUserProfileUrl } from '../../../../main/routing/urlBuilders';
-import TopLevelLayout from '../../../../main/ui/layout/TopLevelLayout';
-import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
+import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
+import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import { useTranslation } from 'react-i18next';
 

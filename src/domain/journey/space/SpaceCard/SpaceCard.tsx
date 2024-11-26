@@ -1,15 +1,14 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { HubOutlined } from '@mui/icons-material';
-import JourneyCard, { JourneyCardProps } from '../../common/JourneyCard/JourneyCard';
-import { BlockTitle, Caption } from '../../../../core/ui/typography';
-import JourneyCardTagline from '../../common/JourneyCard/JourneyCardTagline';
-import JourneyCardDescription from '../../common/JourneyCard/JourneyCardDescription';
-import JourneyCardSpacing from '../../common/JourneyCard/JourneyCardSpacing';
-import CardActions from '../../../../core/ui/card/CardActions';
-import JourneyCardGoToButton from '../../common/JourneyCard/JourneyCardGoToButton';
-import CardRibbon from '../../../../core/ui/card/CardRibbon';
-import { SpaceVisibility } from '../../../../core/apollo/generated/graphql-schema';
+import JourneyCard, { JourneyCardProps } from '@/domain/journey/common/JourneyCard/JourneyCard';
+import { BlockTitle, Caption } from '@/core/ui/typography';
+import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
+import JourneyCardDescription from '@/domain/journey/common/JourneyCard/JourneyCardDescription';
+import JourneyCardSpacing from '@/domain/journey/common/JourneyCard/JourneyCardSpacing';
+import CardActions from '@/core/ui/card/CardActions';
+import JourneyCardGoToButton from '@/domain/journey/common/JourneyCard/JourneyCardGoToButton';
+import CardRibbon from '@/core/ui/card/CardRibbon';
+import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 
 export interface SpaceCardProps
   extends Omit<JourneyCardProps, 'header' | 'iconComponent' | 'expansion' | 'journeyTypeName'> {

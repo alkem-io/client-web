@@ -1,5 +1,5 @@
 import { Button, ButtonProps, Collapse } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useState, PropsWithChildren } from 'react';
 import { ButtonTypeMap } from '@mui/material/Button/Button';
 import { Caption } from '../typography';
 
@@ -12,7 +12,7 @@ const CollapsibleButton = <D extends React.ElementType = ButtonTypeMap['defaultC
   sx,
   children,
   ...props
-}: CollapsibleButtonProps & ButtonProps<D, P>) => {
+}: PropsWithChildren<CollapsibleButtonProps & ButtonProps<D, P>>) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (

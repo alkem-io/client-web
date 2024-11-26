@@ -4,7 +4,7 @@ import { Dialog } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { DialogActions, DialogContent, DialogTitle } from '../../../../core/ui/dialog/deprecated';
+import { DialogActions, DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
 import { JourneyCreationForm, JourneyFormValues } from './JourneyCreationForm';
 
 interface JourneyCreationDialogProps {

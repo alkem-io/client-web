@@ -1,12 +1,16 @@
 query CampaignBlockCredentials {
+  platform {
+    id
+    myRoles
+  }
   me {
     user {
       id
-      agent {
+      account {
         id
-        credentials {
-          resourceID
-          type
+        license {
+          id
+          availableEntitlements
         }
       }
     }

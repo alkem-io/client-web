@@ -1,17 +1,18 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { Skeleton } from '@mui/material';
-import { PostIcon } from '../../post/icon/PostIcon';
-import ContributeCard from '../../../../core/ui/card/ContributeCard';
-import CardHeader from '../../../../core/ui/card/CardHeader';
-import CardDetails from '../../../../core/ui/card/CardDetails';
-import CardDescriptionWithTags from '../../../../core/ui/card/CardDescriptionWithTags';
-import CardFooter from '../../../../core/ui/card/CardFooter';
-import CardFooterDate from '../../../../core/ui/card/CardFooterDate';
-import MessageCounter from '../../../../core/ui/card/MessageCounter';
-import { Room, VisualUriFragment } from '../../../../core/apollo/generated/graphql-schema';
-import CardHeaderCaption from '../../../../core/ui/card/CardHeaderCaption';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { Identifiable } from '../../../../core/utils/Identifiable';
+import { PostIcon } from '@/domain/collaboration/post/icon/PostIcon';
+import ContributeCard from '@/core/ui/card/ContributeCard';
+import CardHeader from '@/core/ui/card/CardHeader';
+import CardDetails from '@/core/ui/card/CardDetails';
+import CardDescriptionWithTags from '@/core/ui/card/CardDescriptionWithTags';
+import CardFooter from '@/core/ui/card/CardFooter';
+import CardFooterDate from '@/core/ui/card/CardFooterDate';
+import MessageCounter from '@/core/ui/card/MessageCounter';
+import { Room, VisualUriFragment } from '@/core/apollo/generated/graphql-schema';
+import CardHeaderCaption from '@/core/ui/card/CardHeaderCaption';
+import { gutters } from '@/core/ui/grid/utils';
+import { Identifiable } from '@/core/utils/Identifiable';
+import { isNumber } from 'lodash';
 
 export interface PostCardPost extends Identifiable {
   profile: {
@@ -58,7 +59,9 @@ const PostCard = ({ post, onClick }: PostCardProps) => {
       </CardDetails>
       <CardFooter>
         {post.createdDate && <CardFooterDate date={post.createdDate} />}
-        <MessageCounter commentsCount={post.comments?.messagesCount} />
+        {isNumber(post.comments?.messagesCount) && post.comments?.messagesCount > 0 && (
+          <MessageCounter commentsCount={post.comments?.messagesCount} />
+        )}
       </CardFooter>
     </ContributeCard>
   );

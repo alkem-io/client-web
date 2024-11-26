@@ -1,19 +1,19 @@
 import { Box } from '@mui/material';
 import produce from 'immer';
-import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
-import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
-import { Text } from '../../../ui/typography';
+import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
+import SubHeading from '@/domain/shared/components/Text/SubHeading';
+import { Text } from '@/core/ui/typography';
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
 import KratosUI from '../components/KratosUI';
-import React, { useLayoutEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import Loading from '../../../ui/loading/Loading';
+import Loading from '@/core/ui/loading/Loading';
 import { useTranslation } from 'react-i18next';
 import { SelfServiceLoginFlow } from '@ory/kratos-client';
-import translateWithElements from '../../../../domain/shared/i18n/TranslateWithElements/TranslateWithElements';
+import translateWithElements from '@/domain/shared/i18n/TranslateWithElements/TranslateWithElements';
 import { AUTH_REMINDER_PATH, AUTH_RESET_PASSWORD_PATH, AUTH_SIGN_UP_PATH } from '../constants/authentication.constants';
-import { ErrorDisplay } from '../../../../domain/shared/components/ErrorDisplay';
+import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
 import { LocationStateWithKratosErrors } from './LocationStateWithKratosErrors';
 import KratosForm from '../components/Kratos/KratosForm';
 

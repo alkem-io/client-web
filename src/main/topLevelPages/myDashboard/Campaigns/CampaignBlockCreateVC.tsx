@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '@mui/material';
-import Gutters from '../../../../core/ui/grid/Gutters';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import { Caption } from '../../../../core/ui/typography';
+import Gutters from '@/core/ui/grid/Gutters';
+import { gutters } from '@/core/ui/grid/utils';
+import { Actions } from '@/core/ui/actions/Actions';
+import { Caption } from '@/core/ui/typography';
 
 interface CampaignBlockCreateVCProps {
   startWizard: () => void;

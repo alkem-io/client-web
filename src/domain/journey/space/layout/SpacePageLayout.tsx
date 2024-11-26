@@ -1,20 +1,20 @@
-import { EntityPageLayout } from '../../common/EntityPageLayout';
+import { EntityPageLayout } from '@/domain/journey/common/EntityPageLayout';
 import SpaceTabs from './SpaceTabs';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import { useSpace } from '../SpaceContext/useSpace';
-import JourneyUnauthorizedDialogContainer from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
-import JourneyUnauthorizedDialog from '../../common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import JourneyBreadcrumbs from '../../common/journeyBreadcrumbs/JourneyBreadcrumbs';
-import { getVisualByType } from '../../../common/visual/utils/visuals.utils';
-import { VisualName } from '../../../common/visual/constants/visuals.constants';
-import useInnovationHubJourneyBannerRibbon from '../../../innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
+import JourneyUnauthorizedDialogContainer from '@/domain/journey/common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialogContainer';
+import JourneyUnauthorizedDialog from '@/domain/journey/common/JourneyUnauthorizedDialog/JourneyUnauthorizedDialog';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import JourneyBreadcrumbs from '@/domain/journey/common/journeyBreadcrumbs/JourneyBreadcrumbs';
+import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
+import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
+import useInnovationHubJourneyBannerRibbon from '@/domain/innovationHub/InnovationHubJourneyBannerRibbon/useInnovationHubJourneyBannerRibbon';
 import SpacePageBanner from './SpacePageBanner';
-import CommunityGuidelinesBlock from '../../../community/community/CommunityGuidelines/CommunityGuidelinesBlock';
-import { JourneyPath } from '../../../../main/routing/resolvers/RouteResolver';
-import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
-import useCanReadSpace from '../../common/authorization/useCanReadSpace';
-import { SpaceLevel } from '../../../../core/apollo/generated/graphql-schema';
+import CommunityGuidelinesBlock from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesBlock';
+import { JourneyPath } from '@/main/routing/resolvers/RouteResolver';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpace';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface SpacePageLayoutProps {
   currentSection: EntityPageSection;

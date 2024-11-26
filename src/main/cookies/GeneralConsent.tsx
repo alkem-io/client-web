@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@mui/material';
 import { useAlkemioCookies } from './useAlkemioCookies';
 import TextContainer from './components/TextContainer';
-import { Actions } from '../../core/ui/actions/Actions';
+import { Actions } from '@/core/ui/actions/Actions';
 
 interface GeneralConsentProps {
   handleOpenSettings: () => void;

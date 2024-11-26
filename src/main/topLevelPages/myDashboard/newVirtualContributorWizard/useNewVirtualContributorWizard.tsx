@@ -13,7 +13,7 @@ import {
   useSubspaceCommunityAndRoleSetIdLazyQuery,
   useAssignRoleToVirtualContributorMutation,
   refetchDashboardWithMembershipsQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   AiPersonaBodyOfKnowledgeType,
   AuthorizationPrivilege,
@@ -25,29 +25,29 @@ import {
   CreateVirtualContributorOnAccountMutationVariables,
   LicensePlanType,
   SpaceType,
-} from '../../../../core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import CreateNewVirtualContributor, { VirtualContributorFromProps } from './CreateNewVirtualContributor';
 import LoadingState from './LoadingState';
 import AddContent, { PostsFormValues, PostValues } from './AddContent';
 import ExistingSpace, { SelectableKnowledgeProps } from './ExistingSpace';
 import { useTranslation } from 'react-i18next';
-import { useNotification } from '../../../../core/ui/notifications/useNotification';
-import { useUserContext } from '../../../../domain/community/user';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
-import useNavigate from '../../../../core/routing/useNavigate';
-import { usePlanAvailability } from '../../../../domain/journey/space/createSpace/plansTable/usePlanAvailability';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { useUserContext } from '@/domain/community/user';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import useNavigate from '@/core/routing/useNavigate';
+import { usePlanAvailability } from '@/domain/journey/space/createSpace/plansTable/usePlanAvailability';
 import { addVCCreationCache } from './vcCreationUtil';
 import {
   CalloutCreationType,
   useCalloutCreation,
-} from '../../../../domain/collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreation';
+} from '@/domain/collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreation';
 import SetupVCInfo from './SetupVCInfo';
-import { info, TagCategoryValues } from '../../../../core/logging/sentry/log';
+import { info, TagCategoryValues } from '@/core/logging/sentry/log';
 import { compact } from 'lodash';
-import InfoDialog from '../../../../core/ui/dialogs/InfoDialog';
+import InfoDialog from '@/core/ui/dialogs/InfoDialog';
 import CreateExternalAIDialog, { ExternalVcFormValues } from './CreateExternalAIDialog';
 import { useNewVirtualContributorWizardProvided, UserAccountProps } from './useNewVirtualContributorProps';
-import { info as logInfo } from '../../../../core/logging/sentry/log';
+import { info as logInfo } from '@/core/logging/sentry/log';
 
 const SPACE_LABEL = '(space)';
 const entityNamePostfixes = {
@@ -202,7 +202,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const plans = useMemo(
     () =>
-      plansData?.platform.licensing.plans
+      plansData?.platform.licensingFramework.plans
         .filter(plan => plan.enabled)
         .filter(plan => plan.type === LicensePlanType.SpacePlan)
         .filter(plan => isPlanAvailable(plan))
@@ -223,13 +223,20 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
     const hasRequiredPrivileges =
       spaceMyPrivileges?.includes(AuthorizationPrivilege.CreateSubspace) &&
-      collaborationMyPrivileges?.includes(AuthorizationPrivilege.AccessVirtualContributor) &&
       collaborationMyPrivileges?.includes(AuthorizationPrivilege.CommunityAddMemberVcFromAccount);
 
     if (!hasRequiredPrivileges) {
-      logInfo(`Insuficient privileges to create a VC: ${JSON.stringify(spacePrivileges)}`, {
+      logInfo(`Insufficient privileges to create a VC, Space Privileges: ${JSON.stringify(spacePrivileges)}`, {
         category: TagCategoryValues.VC,
       });
+      logInfo(
+        `Insufficient privileges to create a VC, Collaboration Privileges: ${JSON.stringify(
+          collaborationMyPrivileges
+        )}`,
+        {
+          category: TagCategoryValues.VC,
+        }
+      );
     }
 
     return hasRequiredPrivileges;
@@ -359,8 +366,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   // load the following hook either with bokId (created subspace) or spaceId (created/existing space)
   const { handleCreateCallout, canCreateCallout } = useCalloutCreation({
-    journeyId: bokId,
-    overrideCollaborationId: collaborationId,
+    collaborationId,
   });
 
   const calloutDetails: CalloutCreationType = {

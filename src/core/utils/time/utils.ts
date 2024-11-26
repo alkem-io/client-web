@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 
 // Note: In this file some dates are recreated with
 //  `new Date(something that is supposed to be already a Date)`
-//  because the API is returning strings parseable as a Dates but not a real Javascript Dates, and
+//  because the API is returning strings parsable as a Dates but not a real Javascript Dates, and
 //  Codegen tool wrongly generates models with Date properties.
 
 // TODO: format dates in a better way. Maybe use momentjs?
@@ -85,7 +85,7 @@ export const formatLongDateTimeString = ({
     return defaultValue;
   }
 
-  // note can't extract the formatting options beacuse of type error
+  // note can't extract the formatting options because of type error
   let longDateTimeString = new Date(startDate).toLocaleDateString(LocaleId, longDayFormatOptions);
 
   if ((durationDays || 0) > 0 && durationMinutes && durationMinutes > 0) {

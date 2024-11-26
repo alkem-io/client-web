@@ -1,13 +1,12 @@
-import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Button, Dialog, DialogContent } from '@mui/material';
-import { useSubSpace } from '../../../journey/subspace/hooks/useSubSpace';
-import { useSpace } from '../../../journey/space/SpaceContext/useSpace';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import { BlockTitle } from '../../../../core/ui/typography';
-import { Actions } from '../../../../core/ui/actions/Actions';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { useOpportunity } from '../../../journey/opportunity/hooks/useOpportunity';
+import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { BlockTitle } from '@/core/ui/typography';
+import { Actions } from '@/core/ui/actions/Actions';
+import { gutters } from '@/core/ui/grid/utils';
+import { useOpportunity } from '@/domain/journey/opportunity/hooks/useOpportunity';
 
 export interface PreJoinParentDialogProps {
   open: boolean;
@@ -15,7 +14,7 @@ export interface PreJoinParentDialogProps {
   onJoin: () => void;
 }
 
-const PreJoinParentDialog: FC<PreJoinParentDialogProps> = ({ open, onClose, onJoin }) => {
+const PreJoinParentDialog = ({ open, onClose, onJoin }: PreJoinParentDialogProps) => {
   const { t } = useTranslation();
   const { profile: spaceProfile } = useSpace();
   const { profile: challengeProfile } = useSubSpace();

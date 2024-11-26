@@ -16,18 +16,20 @@ import {
   useAvailableVirtualContributorsLazyQuery,
   useAvailableVirtualContributorsInLibraryLazyQuery,
   useRoleSetAvailableMembersLazyQuery,
-} from '../../../../core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CommunityRoleType,
+  LicenseEntitlementType,
   SearchVisibility,
   SpaceLevel,
-} from '../../../../core/apollo/generated/graphql-schema';
-import { OrganizationDetailsFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityOrganizations';
-import { CommunityMemberUserFragmentWithRoles } from '../../../community/community/CommunityAdmin/CommunityUsers';
-import useInviteUsers from '../../../community/invitations/useInviteUsers';
-import { getJourneyTypeName } from '../../../journey/JourneyTypeName';
-import { Identifiable } from '../../../../core/utils/Identifiable';
+} from '@/core/apollo/generated/graphql-schema';
+import { OrganizationDetailsFragmentWithRoles } from '@/domain/community/community/CommunityAdmin/CommunityOrganizations';
+import { CommunityMemberUserFragmentWithRoles } from '@/domain/community/community/CommunityAdmin/CommunityUsers';
+import useInviteUsers from '@/domain/community/invitations/useInviteUsers';
+import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import { Identifiable } from '@/core/utils/Identifiable';
+import { useUserContext } from '@/domain/community/user';
 
 const MAX_AVAILABLE_MEMBERS = 100;
 const buildUserFilterObject = (filter: string | undefined) =>
@@ -87,10 +89,14 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
   const leadRoleDefinition = roleSet?.leadRoleDefinition;
   const roleSetMyPrivileges = roleSet?.authorization?.myPrivileges ?? [];
 
-  const permissions = {
-    virtualContributorsEnabled: roleSetMyPrivileges.some(
-      priv => priv === AuthorizationPrivilege.AccessVirtualContributor
+  const { accountEntitlements } = useUserContext();
+
+  const entitlements = {
+    virtualContributorsEnabled: accountEntitlements.some(
+      priv => priv === LicenseEntitlementType.AccountVirtualContributor
     ),
+  };
+  const permissions = {
     canAddMembers: roleSetMyPrivileges.some(priv => priv === AuthorizationPrivilege.CommunityAddMember),
     // the following privilege allows Admins of a space without CommunityAddMember privilege, to
     // be able to add VC from the account; CommunityAddMember overrides this privilege as it's not granted to PAs
@@ -506,6 +512,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
     memberRoleDefinition,
     leadRoleDefinition,
     permissions,
+    entitlements,
     applications: roleSetPending?.applications,
     invitations: roleSetPending?.invitations,
     platformInvitations: roleSetPending?.platformInvitations,

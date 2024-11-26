@@ -1,35 +1,36 @@
 import React, { FC, useCallback, useState } from 'react';
 
-import useNavigate from '../../../../../core/routing/useNavigate';
+import useNavigate from '@/core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import SearchableList, { SearchableListItem } from '../../components/SearchableList';
-import Loading from '../../../../../core/ui/loading/Loading';
-import { useNotification } from '../../../../../core/ui/notifications/useNotification';
-import { useSpace } from '../../../../journey/space/SpaceContext/useSpace';
-import { useSubSpace } from '../../../../journey/subspace/hooks/useSubSpace';
-import { useUrlParams } from '../../../../../core/routing/useUrlParams';
-import { JourneyCreationDialog } from '../../../../shared/components/JorneyCreationDialog';
-import { CreateOpportunityForm } from '../../../../journey/opportunity/forms/CreateOpportunityForm';
-import { buildSettingsUrl } from '../../../../../main/routing/urlBuilders';
-import { JourneyFormValues } from '../../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
-import { OpportunityIcon } from '../../../../journey/opportunity/icon/OpportunityIcon';
+import SearchableList, { SearchableListItem } from '@/domain/platform/admin/components/SearchableList';
+import Loading from '@/core/ui/loading/Loading';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
+import { useUrlParams } from '@/core/routing/useUrlParams';
+import { JourneyCreationDialog } from '@/domain/shared/components/JorneyCreationDialog';
+import { CreateOpportunityForm } from '@/domain/journey/opportunity/forms/CreateOpportunityForm';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { JourneyFormValues } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationForm';
+import { OpportunityIcon } from '@/domain/journey/opportunity/icon/OpportunityIcon';
 import {
   refetchSubspacesInSpaceQuery,
   useCreateSubspaceMutation,
   useDeleteSpaceMutation,
   useSpaceCollaborationIdLazyQuery,
+  useSpaceTemplatesSetIdQuery,
   useSubspacesInSpaceQuery,
-} from '../../../../../core/apollo/generated/apollo-hooks';
-import { ContentCopyOutlined, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
-import MenuItemWithIcon from '../../../../../core/ui/menu/MenuItemWithIcon';
-import EntityConfirmDeleteDialog from '../../../../journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
-import Gutters from '../../../../../core/ui/grid/Gutters';
-import { useCreateCollaborationTemplate } from '../../../../templates/hooks/useCreateCollaborationTemplate';
-import { CollaborationTemplateFormSubmittedValues } from '../../../../templates/components/Forms/CollaborationTemplateForm';
-import CreateTemplateDialog from '../../../../templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { TemplateType } from '../../../../../core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/apollo-hooks';
+import { DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
+import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
+import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
+import Gutters from '@/core/ui/grid/Gutters';
+import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
+import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
+import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
+import { AuthorizationPrivilege, TemplateType } from '@/core/apollo/generated/graphql-schema';
 
 export const OpportunityList: FC = () => {
   const { t } = useTranslation();
@@ -121,6 +122,15 @@ export const OpportunityList: FC = () => {
     [navigate, createSubspace, spaceNameId, subspaceId, challengeNameId]
   );
 
+  // check for TemplateCreation privileges
+  const { data: templateData } = useSpaceTemplatesSetIdQuery({
+    variables: { spaceNameId },
+    skip: !spaceNameId,
+  });
+
+  const templateSetPrivileges = templateData?.space.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
+  const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
+
   const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
   const handleSaveAsTemplate = async (values: CollaborationTemplateFormSubmittedValues) => {
     await handleCreateCollaborationTemplate(values, spaceNameId);
@@ -135,10 +145,10 @@ export const OpportunityList: FC = () => {
     }
   };
 
-  const onDuplicateClick = (_item: SearchableListItem) => {
-    // todo: implement
-    //setSelectedItem(item);
-  };
+  // const onDuplicateClick = (_item: SearchableListItem) => {
+  //   // todo: implement
+  //   //setSelectedItem(item);
+  // };
 
   const getDefaultTemplateValues = async () => {
     if (saveAsTemplateDialogSelectedItem?.id) {
@@ -160,15 +170,17 @@ export const OpportunityList: FC = () => {
 
   const getActions = (item: SearchableListItem) => (
     <>
-      <MenuItemWithIcon disabled iconComponent={ContentCopyOutlined} onClick={() => onDuplicateClick(item)}>
+      {/* <MenuItemWithIcon disabled iconComponent={ContentCopyOutlined} onClick={() => onDuplicateClick(item)}>
         Duplicate Subspace
-      </MenuItemWithIcon>
-      <MenuItemWithIcon
-        iconComponent={DownloadForOfflineOutlined}
-        onClick={() => setSaveAsTemplateDialogSelectedItem(item)}
-      >
-        {t('buttons.saveAsTemplate')}
-      </MenuItemWithIcon>
+      </MenuItemWithIcon> */}
+      {canCreateTemplate && (
+        <MenuItemWithIcon
+          iconComponent={DownloadForOfflineOutlined}
+          onClick={() => setSaveAsTemplateDialogSelectedItem(item)}
+        >
+          {t('buttons.saveAsTemplate')}
+        </MenuItemWithIcon>
+      )}
       <MenuItemWithIcon iconComponent={DeleteOutline} onClick={() => setDeleteDialogSelectedItem(item)}>
         {t('buttons.delete')}
       </MenuItemWithIcon>

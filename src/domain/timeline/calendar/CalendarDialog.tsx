@@ -2,20 +2,20 @@ import { Add } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useNavigate from '../../../core/routing/useNavigate';
-import RoundedIcon from '../../../core/ui/icon/RoundedIcon';
-import { CalendarEventDetailsFragment, TagsetType } from '../../../core/apollo/generated/graphql-schema';
-import { useQueryParams } from '../../../core/routing/useQueryParams';
-import BackButton from '../../../core/ui/actions/BackButton';
-import { dateRounded } from '../../../core/utils/time/utils';
+import useNavigate from '@/core/routing/useNavigate';
+import RoundedIcon from '@/core/ui/icon/RoundedIcon';
+import { CalendarEventDetailsFragment, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { useQueryParams } from '@/core/routing/useQueryParams';
+import BackButton from '@/core/ui/actions/BackButton';
+import { dateRounded } from '@/core/utils/time/utils';
 import CalendarEventDetailContainer, { CalendarEventDetailData } from './CalendarEventDetailContainer';
 import { CalendarEventFormData, CalendarEventsContainer } from './CalendarEventsContainer';
 import CalendarEventDetail from './views/CalendarEventDetail';
 import CalendarEventForm from './views/CalendarEventForm';
 import CalendarEventsList from './views/CalendarEventsList';
 import dayjs from 'dayjs';
-import DialogWithGrid from '../../../core/ui/dialog/DialogWithGrid';
-import ConfirmationDialog from '../../../core/ui/dialogs/ConfirmationDialog';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 // If url params contains `highlight=YYYY-MM-DD` events in that date will be highlighted
 export const HIGHLIGHT_PARAM_NAME = 'highlight';
@@ -24,7 +24,7 @@ export const INIT_CREATING_EVENT_PARAM = 'new';
 export interface CalendarDialogProps {
   open: boolean;
   journeyId: string | undefined;
-  parentJourneyId: string | undefined;
+  parentSpaceId: string | undefined;
   onClose: () => void;
   parentPath: string;
   calendarEventNameId?: string;
@@ -34,7 +34,7 @@ export interface CalendarDialogProps {
 const CalendarDialog: FC<CalendarDialogProps> = ({
   open,
   journeyId,
-  parentJourneyId,
+  parentSpaceId,
   onClose,
   parentPath,
   calendarEventNameId,
@@ -53,7 +53,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
         : null,
     [highlightedDayParam]
   );
-  const isSubspace = Boolean(parentJourneyId);
+  const isSubspace = Boolean(parentSpaceId);
 
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
   const [editingEventId, setEditingEventId] = useState<string>();
@@ -97,7 +97,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
       aria-labelledby="calendar-events-dialog-title"
       PaperProps={{ sx: { padding: 0, display: `${deletingEvent ? 'none' : 'flex'}`, flexDirection: 'column' } }}
     >
-      <CalendarEventsContainer journeyId={journeyId} parentJourneyId={parentJourneyId}>
+      <CalendarEventsContainer journeyId={journeyId} parentSpaceId={parentSpaceId}>
         {(
           { events, privileges },
           { createEvent, updateEvent, deleteEvent },
@@ -125,7 +125,7 @@ const CalendarDialog: FC<CalendarDialogProps> = ({
                   confirmButtonTextId: 'buttons.delete',
                   content: t('calendar.delete-confirmation', {
                     title: deletingEvent.profile.displayName,
-                    entity: t(`common.${parentJourneyId ? 'subspace' : 'space'}`),
+                    entity: t(`common.${parentSpaceId ? 'subspace' : 'space'}`),
                   }),
                   titleId: 'calendar.delete-event',
                 }}

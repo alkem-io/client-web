@@ -3,7 +3,7 @@ import Autocomplete, { AutocompleteProps, AutocompleteRenderInputParams } from '
 import TextField from '@mui/material/TextField';
 import { Chip, SxProps } from '@mui/material';
 import uniqSortedByOccurrences from './uniqSortedByOccurrences';
-import { gutters } from '../../../../core/ui/grid/utils';
+import { gutters } from '@/core/ui/grid/utils';
 
 export interface SearchTagsInputProps {
   value: string[];

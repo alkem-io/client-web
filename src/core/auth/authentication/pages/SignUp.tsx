@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import AuthPageContentContainer from '../../../../domain/shared/layout/AuthPageContentContainer';
-import SubHeading from '../../../../domain/shared/components/Text/SubHeading';
-import Paragraph from '../../../../domain/shared/components/Text/Paragraph';
+import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
+import SubHeading from '@/domain/shared/components/Text/SubHeading';
+import Paragraph from '@/domain/shared/components/Text/Paragraph';
 import { AcceptTermsContext } from '../components/AcceptTermsContext';
 import FixedHeightLogo from '../components/FixedHeightLogo';
 import { EmailOutlined } from '@mui/icons-material';
@@ -27,7 +27,7 @@ import { UiContainer } from '@ory/kratos-client';
 import { KRATOS_INPUT_NAME_CSRF, KRATOS_TRAIT_NAME_ACCEPTED_TERMS } from '../components/Kratos/constants';
 import { isInputNode } from '../components/Kratos/helpers';
 import { useStoreSignUpReturnUrl } from '../utils/SignUpReturnUrl';
-import { useQueryParams } from '../../../routing/useQueryParams';
+import { useQueryParams } from '@/core/routing/useQueryParams';
 
 const EmailIcon = () => {
   const size = (theme: Theme) => theme.spacing(3);

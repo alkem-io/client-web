@@ -1,21 +1,20 @@
-import React from 'react';
 import { Box, useMediaQuery } from '@mui/material';
 import ContributorCardSquare, { ContributorCardSquareProps } from '../ContributorCardSquare/ContributorCardSquare';
-import GridItem from '../../../../core/ui/grid/GridItem';
-import Gutters from '../../../../core/ui/grid/Gutters';
+import GridItem from '@/core/ui/grid/GridItem';
+import Gutters from '@/core/ui/grid/Gutters';
 import { Theme } from '@mui/material/styles';
-import GridProvider from '../../../../core/ui/grid/GridProvider';
-import { useColumns } from '../../../../core/ui/grid/GridContext';
-import { CommunityContributorType } from '../../../../core/apollo/generated/graphql-schema';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import { useColumns } from '@/core/ui/grid/GridContext';
+import { CommunityContributorType } from '@/core/apollo/generated/graphql-schema';
 
-interface CommunityContributorsBlockWideContentProps {
+type CommunityContributorsBlockWideContentProps = {
   users: ContributorCardSquareProps[] | undefined;
   organizations: ContributorCardSquareProps[] | undefined;
   nested?: boolean;
   contributorType: CommunityContributorType;
   filter: string[];
   compactView?: boolean;
-}
+};
 
 const COMPACT_VIEW_ROWS = 3;
 

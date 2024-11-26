@@ -1,18 +1,14 @@
-import React, { useState } from 'react';
+import { FC, useState, MouseEvent } from 'react';
 import { ClickAwayListener, IconButton, Menu } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTranslation } from 'react-i18next';
 
-interface ActionsMenuProps {
-  children: React.ReactNode;
-}
-
-const ActionsMenu: React.FC<ActionsMenuProps> = ({ children }) => {
+const ActionsMenu: FC = ({ children }) => {
   const { t } = useTranslation();
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
   const settingsOpened = Boolean(settingsAnchorEl);
 
-  const onMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const onMenuClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
     setSettingsAnchorEl(event.currentTarget);

@@ -1,34 +1,30 @@
-import React, { PropsWithChildren } from 'react';
-import TopLevelPageBreadcrumbs from '../../../../main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
+import { PropsWithChildren } from 'react';
+import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { AssignmentIndOutlined } from '@mui/icons-material';
-import { useUrlParams } from '../../../../core/routing/useUrlParams';
-import BreadcrumbsItem from '../../../../core/ui/navigation/BreadcrumbsItem';
+import { useUrlParams } from '@/core/routing/useUrlParams';
+import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import { useTranslation } from 'react-i18next';
 import VCPageBanner from './VCPageBanner';
-import { useVirtualContributorQuery } from '../../../../core/apollo/generated/apollo-hooks';
-import { SettingsSection, VCProfileTabs } from '../../../platform/admin/layout/EntitySettingsLayout/constants';
-import EntitySettingsLayout from '../../../platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
-import useRestrictedRedirect from '../../../../core/routing/useRestrictedRedirect';
-import { AuthorizationPrivilege } from '../../../../core/apollo/generated/graphql-schema';
+import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
+import { SettingsSection, VCProfileTabs } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import EntitySettingsLayout from '@/domain/platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
+import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
-interface VCPageLayoutProps {
+type VCPageLayoutProps = {
   currentTab: SettingsSection;
   tabRoutePrefix?: string;
-}
+};
 
-const tabs = [SettingsSection.MyProfile, SettingsSection.Membership, SettingsSection.Settings].map(section => {
-  return VCProfileTabs.find(tab => tab.section === section)!;
-});
+const tabs = [SettingsSection.MyProfile, SettingsSection.Membership, SettingsSection.Settings].map(
+  section => VCProfileTabs.find(tab => tab.section === section)!
+);
 
 const VCSettingsPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
   const { vcNameId = '' } = useUrlParams();
 
-  const { data, loading, error } = useVirtualContributorQuery({
-    variables: {
-      id: vcNameId,
-    },
-  });
+  const { data, loading, error } = useVirtualContributorQuery({ variables: { id: vcNameId } });
 
   const { t } = useTranslation();
 

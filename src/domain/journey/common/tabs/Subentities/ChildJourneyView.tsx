@@ -1,30 +1,31 @@
 import { ApolloError } from '@apollo/client';
-import { ReactElement, ReactNode, cloneElement } from 'react';
+import { useMemo, useState, ReactElement, ReactNode, cloneElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { Button, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { ValueType } from '../../../../../core/utils/filtering/filterFn';
-import ErrorBlock from '../../../../../core/ui/error/ErrorBlock';
-import getJourneyChildrenTranslation from '../../../subspace/getJourneyChildrenTranslation';
-import PageContent from '../../../../../core/ui/content/PageContent';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
-import PageContentBlockHeader from '../../../../../core/ui/content/PageContentBlockHeader';
-import LinksList from '../../../../../core/ui/list/LinksList';
-import { Caption } from '../../../../../core/ui/typography';
-import MembershipBackdrop from '../../../../shared/components/Backdrops/MembershipBackdrop';
-import { CardLayoutContainer } from '../../../../../core/ui/card/cardsLayout/CardsLayout';
-import { JourneyTypeName } from '../../../JourneyTypeName';
+import { ValueType } from '@/core/utils/filtering/filterFn';
+import ErrorBlock from '@/core/ui/error/ErrorBlock';
+import getJourneyChildrenTranslation from '@/domain/journey/subspace/getJourneyChildrenTranslation';
+import PageContent from '@/core/ui/content/PageContent';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import LinksList from '@/core/ui/list/LinksList';
+import { Caption } from '@/core/ui/typography';
+import MembershipBackdrop from '@/domain/shared/components/Backdrops/MembershipBackdrop';
+import { CardLayoutContainer } from '@/core/ui/card/cardsLayout/CardsLayout';
+import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import ChildJourneyCreate from './ChildJourneyCreate';
-import Loading from '../../../../../core/ui/loading/Loading';
-import PageContentBlockSeamless from '../../../../../core/ui/content/PageContentBlockSeamless';
-import JourneyFilter from '../../JourneyFilter/JourneyFilter';
-import { Identifiable } from '../../../../../core/utils/Identifiable';
-import { Actions } from '../../../../../core/ui/actions/Actions';
-import RoundedIcon from '../../../../../core/ui/icon/RoundedIcon';
-import { useSpace } from '../../../space/SpaceContext/useSpace';
-import InfoColumn from '../../../../../core/ui/content/InfoColumn';
-import ContentColumn from '../../../../../core/ui/content/ContentColumn';
+import Loading from '@/core/ui/loading/Loading';
+import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
+import JourneyFilter from '@/domain/journey/common/JourneyFilter/JourneyFilter';
+import { Identifiable } from '@/core/utils/Identifiable';
+import { Actions } from '@/core/ui/actions/Actions';
+import RoundedIcon from '@/core/ui/icon/RoundedIcon';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import InfoColumn from '@/core/ui/content/InfoColumn';
+import ContentColumn from '@/core/ui/content/ContentColumn';
+import SearchField from '@/core/ui/search/SearchField';
+import defaultSubspaceAvatar from '@/domain/journey/defaultVisuals/Card.jpg';
 
 export interface JourneySubentitiesState {
   loading: boolean;
@@ -35,6 +36,9 @@ interface BaseChildEntity extends Identifiable {
   profile: {
     displayName: string;
     url: string;
+    cardBanner?: {
+      uri: string;
+    };
   };
 }
 
@@ -69,8 +73,24 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
   children,
   onClickCreate,
 }: ChildJourneyViewProps<ChildEntity>) => {
+  const [filter, setFilter] = useState('');
+
   const { t } = useTranslation();
   const { permissions } = useSpace();
+
+  const filteredItems = useMemo(
+    () =>
+      childEntities
+        .map(entity => ({
+          id: entity.id,
+          title: entity.profile.displayName,
+          icon: childEntitiesIcon,
+          uri: entity.profile.url,
+          cardBanner: entity.profile?.cardBanner?.uri || defaultSubspaceAvatar,
+        }))
+        .filter(ss => ss.title.toLowerCase().includes(filter.toLowerCase())),
+    [childEntities, filter, childEntitiesIcon]
+  );
 
   return (
     <MembershipBackdrop show={!childEntityReadAccess} blockName={getJourneyChildrenTranslation(t, journeyTypeName)}>
@@ -81,25 +101,19 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
             canCreateSubentity={childEntityCreateAccess}
             onCreateSubentity={childEntityOnCreate}
           />
+
           {createSubentityDialog}
+
           <PageContentBlock>
-            <PageContentBlockHeader
-              title={t('pages.generic.sections.subentities.list', {
-                entities: getJourneyChildrenTranslation(t, journeyTypeName),
-              })}
-            />
-            <LinksList
-              items={childEntities.map(entity => ({
-                id: entity.id,
-                title: entity.profile.displayName,
-                icon: childEntitiesIcon,
-                uri: entity.profile.url,
-              }))}
-              emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
-                entities: getJourneyChildrenTranslation(t, journeyTypeName),
-                parentEntity: t(`common.${journeyTypeName}` as const),
-              })}
-            />
+            {childEntities.length > 3 && (
+              <SearchField
+                value={filter}
+                placeholder={t('pages.generic.sections.subentities.searchPlaceholder')}
+                onChange={event => setFilter(event.target.value)}
+              />
+            )}
+
+            <LinksList items={filteredItems} />
           </PageContentBlock>
         </InfoColumn>
         <ContentColumn>

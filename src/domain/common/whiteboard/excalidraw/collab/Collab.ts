@@ -6,8 +6,13 @@ import type {
   SocketId,
 } from '@alkemio/excalidraw/dist/excalidraw/types';
 import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/excalidraw/element/types';
-import { newElementWith } from '@alkemio/excalidraw/dist/excalidraw/element/mutateElement';
-import { hashElementsVersion, reconcileElements, restoreElements, StoreAction } from '@alkemio/excalidraw';
+import {
+  hashElementsVersion as ExcalidrawHashElementsVersion,
+  reconcileElements as ExcalidrawReconcileElements,
+  restoreElements as ExcalidrawRestoreElements,
+  StoreAction as ExcalidrawStoreAction,
+  newElementWith as ExcalidrawNewElementWith,
+} from '@alkemio/excalidraw';
 import {
   ACTIVE_THRESHOLD,
   CollaboratorModeEvent,
@@ -21,18 +26,19 @@ import { isImageElement, UserIdleState } from './utils';
 import { getCollabServer, SocketUpdateDataSource } from './data';
 import Portal from './Portal';
 import { BinaryFilesWithUrl, WhiteboardFilesManager } from '../useWhiteboardFilesManager';
-import { error as logError, TagCategoryValues } from '../../../../../core/logging/sentry/log';
+import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
 import {
   ReconciledExcalidrawElement,
   RemoteExcalidrawElement,
 } from '@alkemio/excalidraw/dist/excalidraw/data/reconcile';
-import { Mutable } from '@alkemio/excalidraw/dist/excalidraw/utility-types';
+import type { Mutable } from '@alkemio/excalidraw/dist/excalidraw/utility-types';
+import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 
-interface CollabState {
+type CollabState = {
   errorMessage: string;
   username: string;
   activeRoomLink: string;
-}
+};
 
 export interface CollabProps {
   excalidrawApi: ExcalidrawImperativeAPI;
@@ -51,6 +57,15 @@ type IncomingClientBroadcastData = {
   };
 };
 
+// List of used functions from Excalidraw that will be lazy loaded
+type ExcalidrawUtils = {
+  hashElementsVersion: typeof ExcalidrawHashElementsVersion;
+  reconcileElements: typeof ExcalidrawReconcileElements;
+  restoreElements: typeof ExcalidrawRestoreElements;
+  StoreAction: typeof ExcalidrawStoreAction;
+  newElementWith: typeof ExcalidrawNewElementWith;
+};
+
 class Collab {
   portal: Portal;
   state: CollabState;
@@ -65,11 +80,7 @@ class Collab {
   private onCloseConnection: () => void;
   private onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
   private onSceneInitChange: (initialized: boolean) => void;
-  private excalidrawUtils: Promise<{
-    hashElementsVersion: typeof hashElementsVersion;
-    newElementWith: typeof newElementWith;
-    restoreElements: typeof restoreElements;
-  }>;
+  private excalidrawUtils: Promise<ExcalidrawUtils>;
 
   constructor(props: CollabProps) {
     this.state = {
@@ -89,7 +100,7 @@ class Collab {
     this.filesManager = props.filesManager;
     this.onCollaboratorModeChange = props.onCollaboratorModeChange;
     this.onSceneInitChange = props.onSceneInitChange;
-    this.excalidrawUtils = import('@alkemio/excalidraw');
+    this.excalidrawUtils = lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
   }
 
   init() {
@@ -124,11 +135,10 @@ class Collab {
   };
 
   stopCollaboration = async () => {
+    const { StoreAction, newElementWith } = await this.excalidrawUtils;
+
     this.queueBroadcastAllElements.cancel();
-
     this.destroySocketClient();
-
-    const { newElementWith } = await this.excalidrawUtils;
 
     const elements = this.excalidrawAPI.getSceneElementsIncludingDeleted().map(element => {
       if (isImageElement(element) && element.status === 'saved') {
@@ -176,7 +186,7 @@ class Collab {
             'scene-init': async (payload: { elements: readonly ExcalidrawElement[]; files: BinaryFilesWithUrl }) => {
               if (!this.portal.socketInitialized) {
                 this.initializeRoom({ fetchScene: false });
-                this.handleRemoteSceneUpdate(
+                await this.handleRemoteSceneUpdate(
                   await this.reconcileElementsAndLoadFiles(payload.elements, payload.files),
                   {
                     init: true,
@@ -217,7 +227,9 @@ class Collab {
               } else if (isSceneUpdatePayload(data)) {
                 const remoteElements = data.payload.elements as RemoteExcalidrawElement[];
                 const remoteFiles = data.payload.files;
-                this.handleRemoteSceneUpdate(await this.reconcileElementsAndLoadFiles(remoteElements, remoteFiles));
+                await this.handleRemoteSceneUpdate(
+                  await this.reconcileElementsAndLoadFiles(remoteElements, remoteFiles)
+                );
               }
             },
             'collaborator-mode': event => {
@@ -298,7 +310,7 @@ class Collab {
     const localElements = this.getSceneElementsIncludingDeleted();
     const appState = this.excalidrawAPI.getAppState();
 
-    const { restoreElements } = await this.excalidrawUtils;
+    const { restoreElements, hashElementsVersion, reconcileElements } = await this.excalidrawUtils;
 
     const restoredRemoteElements = restoreElements(remoteElements, null);
 
@@ -311,8 +323,6 @@ class Collab {
     // Download the files that this instance is missing:
     await this.filesManager.loadFiles({ files: remoteFiles });
 
-    const { hashElementsVersion } = await this.excalidrawUtils;
-
     // Avoid broadcasting to the rest of the collaborators the scene
     // we just received!
     // Note: this needs to be set before updating the scene as it
@@ -322,10 +332,12 @@ class Collab {
     return reconciledElements;
   };
 
-  private handleRemoteSceneUpdate = (
+  private handleRemoteSceneUpdate = async (
     elements: ReconciledExcalidrawElement[],
     { init = false }: { init?: boolean } = {}
   ) => {
+    const { StoreAction } = await this.excalidrawUtils;
+
     this.excalidrawAPI.updateScene({
       elements,
       storeAction: init ? StoreAction.CAPTURE : StoreAction.NONE,

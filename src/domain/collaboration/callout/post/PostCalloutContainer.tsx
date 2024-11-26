@@ -1,14 +1,11 @@
 import { PostContributionProps, useCalloutPosts } from './useCalloutPosts';
-import { AuthorizationPrivilege, CreatePostInput, TagsetType } from '../../../../core/apollo/generated/graphql-schema';
-import {
-  PostCardFragmentDoc,
-  useCreatePostFromContributeTabMutation,
-} from '../../../../core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, CreatePostInput, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { PostCardFragmentDoc, useCreatePostFromContributeTabMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useInView } from 'react-intersection-observer';
-import { SimpleContainerProps } from '../../../../core/container/SimpleContainer';
-import { Ref } from 'react';
-import { DEFAULT_TAGSET } from '../../../common/tags/tagset.constants';
-import { StorageConfigContextProvider } from '../../../storage/StorageBucket/StorageConfigContext';
+import { SimpleContainerProps } from '@/core/container/SimpleContainer';
+import { PropsWithChildren, Ref } from 'react';
+import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 
 interface PostCalloutContainerProvided {
   ref: Ref<Element>;
@@ -28,7 +25,7 @@ interface PostCalloutContainerProps extends SimpleContainerProps<PostCalloutCont
   };
 }
 
-const PostCalloutContainer = ({ callout, children }: PostCalloutContainerProps) => {
+const PostCalloutContainer = ({ callout, children }: PropsWithChildren<PostCalloutContainerProps>) => {
   const calloutId = callout.id;
   const { ref: intersectionObserverRef, inView } = useInView({
     delay: 500,

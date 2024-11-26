@@ -1,7 +1,6 @@
-import React from 'react';
 import SearchableTable, { SearchableTableItem, SearchableTableProps } from './SearchableTable';
-import SearchableListLayout from '../../../shared/components/SearchableList/SearchableListLayout';
-import { ListItemLinkProps } from '../../../shared/components/SearchableList/ListItemLink';
+import SearchableListLayout from '@/domain/shared/components/SearchableList/SearchableListLayout';
+import { ListItemLinkProps } from '@/domain/shared/components/SearchableList/ListItemLink';
 
 interface ListPageProps<
   ItemViewProps extends {},
@@ -18,12 +17,10 @@ export const ListPage = <
   title,
   newLink,
   ...props
-}: ListPageProps<ItemViewProps, Item>) => {
-  return (
-    <SearchableListLayout title={title} newLink={newLink}>
-      <SearchableTable {...props} />
-    </SearchableListLayout>
-  );
-};
+}: ListPageProps<ItemViewProps, Item>) => (
+  <SearchableListLayout title={title} newLink={newLink}>
+    <SearchableTable {...props} />
+  </SearchableListLayout>
+);
 
 export default ListPage;

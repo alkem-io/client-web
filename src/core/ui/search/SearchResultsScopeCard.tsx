@@ -7,7 +7,7 @@ import { ComponentType, PropsWithChildren } from 'react';
 
 const AVATAR_SIZE_GUTTERS = 0.9;
 
-interface SearchResultsScopeCardProps {
+type SearchResultsScopeCardProps = {
   avatar?: {
     uri?: string;
   };
@@ -16,7 +16,7 @@ interface SearchResultsScopeCardProps {
   loading?: boolean;
   onClick?: () => void;
   onDelete?: () => void;
-}
+};
 
 const SearchResultsScopeCard = ({
   avatar,

@@ -1,4 +1,4 @@
-import React, { ComponentType } from 'react';
+import { ComponentType } from 'react';
 import { BoxProps, SvgIconProps } from '@mui/material';
 import RoundedBadge, { RoundedBadgeProps } from './RoundedBadge';
 import { Theme } from '@mui/material/styles';
@@ -15,12 +15,10 @@ const getFontSize = (theme: Theme) => (iconSize: SvgIconProps['fontSize'] | 'xsm
   }
 };
 
-const RoundedIcon = ({ size, iconSize = size, component: Icon, sx, ...containerProps }: RoundedIconProps) => {
-  return (
-    <RoundedBadge size={size} {...containerProps} sx={{ fontSize: theme => getFontSize(theme)(iconSize), ...sx }}>
-      <Icon fontSize={iconSize === 'xsmall' ? 'inherit' : iconSize} />
-    </RoundedBadge>
-  );
-};
+const RoundedIcon = ({ size, iconSize = size, component: Icon, sx, ...containerProps }: RoundedIconProps) => (
+  <RoundedBadge size={size} {...containerProps} sx={{ fontSize: theme => getFontSize(theme)(iconSize), ...sx }}>
+    <Icon fontSize={iconSize === 'xsmall' ? 'inherit' : iconSize} />
+  </RoundedBadge>
+);
 
 export default RoundedIcon;

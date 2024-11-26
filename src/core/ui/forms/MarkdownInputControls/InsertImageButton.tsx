@@ -1,16 +1,16 @@
 import { Button, IconButton, IconButtonProps } from '@mui/material';
 import { Editor } from '@tiptap/react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
 import FormikFileInput from '../FormikFileInput/FormikFileInput';
 import { AddPhotoAlternateOutlined } from '@mui/icons-material';
-import DialogHeader from '../../dialog/DialogHeader';
-import Gutters from '../../grid/Gutters';
-import { Actions } from '../../actions/Actions';
-import DialogWithGrid from '../../dialog/DialogWithGrid';
-import { useNotification } from '../../notifications/useNotification';
-import { BlockTitle } from '../../typography';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import Gutters from '@/core/ui/grid/Gutters';
+import { Actions } from '@/core/ui/actions/Actions';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { BlockTitle } from '@/core/ui/typography';
 import FormikInputField from '../FormikInputField/FormikInputField';
 
 interface InsertImageButtonProps extends IconButtonProps {
@@ -20,10 +20,10 @@ interface InsertImageButtonProps extends IconButtonProps {
   temporaryLocation?: boolean;
 }
 
-interface ImageProps {
+type ImageProps = {
   src: string;
   alt: string;
-}
+};
 
 const InsertImageButton = ({
   editor,

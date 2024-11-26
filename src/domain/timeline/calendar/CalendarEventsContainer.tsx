@@ -1,20 +1,20 @@
-import React, { FC, useCallback } from 'react';
+import React, { PropsWithChildren, useCallback } from 'react';
 import {
   refetchSpaceCalendarEventsQuery,
   useCreateCalendarEventMutation,
   useDeleteCalendarEventMutation,
   useSpaceCalendarEventsQuery,
   useUpdateCalendarEventMutation,
-} from '../../../core/apollo/generated/apollo-hooks';
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CalendarEvent,
   CalendarEventInfoFragment,
   Profile,
-} from '../../../core/apollo/generated/graphql-schema';
-import { StorageConfigContextProvider } from '../../storage/StorageBucket/StorageConfigContext';
+} from '@/core/apollo/generated/graphql-schema';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { MutationBaseOptions } from '@apollo/client/core/watchQueryOptions';
-import { isSameDay } from '../../../core/utils/time/utils';
+import { isSameDay } from '@/core/utils/time/utils';
 
 export interface CalendarEventFormData
   extends Pick<
@@ -31,7 +31,7 @@ export interface CalendarEventFormData
 
 export interface CalendarEventsContainerProps {
   journeyId: string | undefined;
-  parentJourneyId: string | undefined;
+  parentSpaceId: string | undefined;
   children: (
     entities: CalendarEventsEntities,
     actions: CalendarEventsActions,
@@ -66,9 +66,13 @@ export interface CalendarEventsEntities {
   };
 }
 
-export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ journeyId, parentJourneyId, children }) => {
+export const CalendarEventsContainer = ({
+  journeyId,
+  parentSpaceId,
+  children,
+}: PropsWithChildren<CalendarEventsContainerProps>) => {
   const { data: spaceData, loading } = useSpaceCalendarEventsQuery({
-    variables: { spaceId: journeyId!, includeSubspace: !Boolean(parentJourneyId) },
+    variables: { spaceId: journeyId!, includeSubspace: !Boolean(parentSpaceId) },
     skip: !journeyId,
   });
 
@@ -96,8 +100,8 @@ export const CalendarEventsContainer: FC<CalendarEventsContainerProps> = ({ jour
 
   refetchQueriesList = [refetchSpaceCalendarEventsQuery({ spaceId: journeyId! })];
 
-  if (parentJourneyId) {
-    refetchQueriesList.push(refetchSpaceCalendarEventsQuery({ spaceId: parentJourneyId! }));
+  if (parentSpaceId) {
+    refetchQueriesList.push(refetchSpaceCalendarEventsQuery({ spaceId: parentSpaceId! }));
   }
 
   const createEvent = useCallback(

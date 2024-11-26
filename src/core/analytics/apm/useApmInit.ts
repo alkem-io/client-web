@@ -3,12 +3,12 @@ import { v4 as uuidv4 } from 'uuid';
 import { init as initApm, UserObject } from '@elastic/apm-rum';
 // TODO Refactor to store data in localStorage, remove react-cookie npm
 import { useCookies } from 'react-cookie';
-import { error as logError } from '../../logging/sentry/log';
-import { useConfig } from '../../../domain/platform/config/useConfig';
-import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '../../../main/cookies/useAlkemioCookies';
-import { useUserGeo } from '../geo';
-import { Identifiable } from '../../utils/Identifiable';
-import { UserMetadata } from '../../../domain/community/user';
+import { error as logError } from '@/core/logging/sentry/log';
+import { useConfig } from '@/domain/platform/config/useConfig';
+import { ALKEMIO_COOKIE_NAME, AlkemioCookieTypes } from '@/main/cookies/useAlkemioCookies';
+import { useUserGeo } from '@/core/analytics/geo/index';
+import { Identifiable } from '@/core/utils/Identifiable';
+import { UserMetadata } from '@/domain/community/user';
 
 const APM_CLIENT_TRACK_COOKIE = 'apm';
 const APM_CLIENT_TRACK_COOKIE_EXPIRY = 2147483647 * 1000; // Y2k38 -> 2^31 - 1 = 2147483647 ie. 2038-01-19 04:14:07

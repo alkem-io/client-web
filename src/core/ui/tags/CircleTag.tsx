@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { ReactNode } from 'react';
+import { SVGProps, ReactNode, PropsWithChildren } from 'react';
 import { makeStyles } from '@mui/styles';
 import WrapperTypography from '../typography/deprecated/WrapperTypography';
 
@@ -61,20 +61,20 @@ const useCircleTagStyles = makeStyles(theme => ({
   ...CircleTagSizeStyles,
 }));
 
-export interface CircleTagProps extends React.SVGProps<SVGSVGElement> {
+export interface CircleTagProps extends SVGProps<SVGSVGElement> {
   color?: 'positive' | 'neutral' | 'primary' | 'neutralMedium'; //keyof Palette
   text?: ReactNode;
   className?: string;
   size?: 'small' | 'large'; // TODO [ATS]: Make it compatibile with MUI.
 }
 
-const CircleTag: React.FC<CircleTagProps> = ({
+const CircleTag = ({
   text,
   color = 'neutral',
   className,
   size = 'large',
   children = text,
-}): JSX.Element | null => {
+}: PropsWithChildren<CircleTagProps>) => {
   const styles = useCircleTagStyles();
 
   return (

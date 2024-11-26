@@ -1,8 +1,8 @@
 import clsx from 'clsx';
-import React, { FC } from 'react';
+import { PropsWithChildren } from 'react';
 import { Box, styled, SxProps, Theme } from '@mui/material';
-import WrapperTypography from '../../../../core/ui/typography/deprecated/WrapperTypography';
-import { gutters } from '../../../../core/ui/grid/utils';
+import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
+import { gutters } from '@/core/ui/grid/utils';
 
 const PREFIX = 'TagLabel';
 
@@ -32,16 +32,14 @@ export interface TagLabelProps {
   sx?: SxProps<Theme>;
 }
 
-const PostDashboardTagLabel: FC<TagLabelProps> = ({ children, className, sx }) => {
-  return (
-    <Root sx={sx}>
-      <Box className={clsx(classes.entityTypeWrapper, className)}>
-        <WrapperTypography variant="caption" className={classes.entityType}>
-          {children}
-        </WrapperTypography>
-      </Box>
-    </Root>
-  );
-};
+const PostDashboardTagLabel = ({ children, className, sx }: PropsWithChildren<TagLabelProps>) => (
+  <Root sx={sx}>
+    <Box className={clsx(classes.entityTypeWrapper, className)}>
+      <WrapperTypography variant="caption" className={classes.entityType}>
+        {children}
+      </WrapperTypography>
+    </Box>
+  </Root>
+);
 
 export default PostDashboardTagLabel;

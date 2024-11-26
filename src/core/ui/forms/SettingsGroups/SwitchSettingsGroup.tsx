@@ -1,8 +1,8 @@
 import { Box, CircularProgress, FormControlLabel, FormGroup, Switch, SwitchProps } from '@mui/material';
-import { FC, ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 
-const LoadingSwitch: FC<SwitchProps & { loading?: boolean }> = ({ loading, ...props }) => {
-  return loading ? (
+const LoadingSwitch = ({ loading, ...props }: SwitchProps & { loading?: boolean }) =>
+  loading ? (
     <Box position="relative">
       <CircularProgress sx={{ width: '100%', height: '100%', position: 'absolute' }} />
       <Switch {...props} />
@@ -10,14 +10,11 @@ const LoadingSwitch: FC<SwitchProps & { loading?: boolean }> = ({ loading, ...pr
   ) : (
     <Switch {...props} />
   );
-};
 
-interface SwitchSettingsGroupProps<
-  T extends Record<string, { checked: boolean; label: ReactNode; disabled?: boolean }>
-> {
+type SwitchSettingsGroupProps<T extends Record<string, { checked: boolean; label: ReactNode; disabled?: boolean }>> = {
   options: T;
   onChange: (key: keyof T, newValue: boolean) => void;
-}
+};
 
 function SwitchSettingsGroup<T extends Record<string, { checked: boolean; label: ReactNode; disabled?: boolean }>>({
   options,

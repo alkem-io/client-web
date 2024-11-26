@@ -9,17 +9,17 @@ import {
   Slide,
 } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
-import React, { FC, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ContributionDetailsContainer, {
   ContributionDetails,
-} from '../../community/profile/ContributionDetails/ContributionDetailsContainer';
-import { SpaceHostedItem } from '../../journey/utils/SpaceHostedItem';
-import { AgentBeginVerifiedCredentialOfferOutput } from '../../../core/apollo/generated/graphql-schema';
-import TranslationKey from '../../../core/i18n/utils/TranslationKey';
-import Loading from '../../../core/ui/loading/Loading';
-import { DialogContent, DialogTitle } from '../../../core/ui/dialog/deprecated';
-import QRCode from '../../../core/ui/qrCode/QRCode';
+} from '@/domain/community/profile/ContributionDetails/ContributionDetailsContainer';
+import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
+import { AgentBeginVerifiedCredentialOfferOutput } from '@/core/apollo/generated/graphql-schema';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import Loading from '@/core/ui/loading/Loading';
+import { DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
+import QRCode from '@/core/ui/qrCode/QRCode';
 
 interface OfferAlkemioCommunityCredentialDialogProps {
   entities: {
@@ -43,12 +43,12 @@ interface OfferAlkemioCommunityCredentialDialogProps {
   };
 }
 
-const OfferAlkemioCommunityCredentialDialog: FC<OfferAlkemioCommunityCredentialDialogProps> = ({
+const OfferAlkemioCommunityCredentialDialog = ({
   entities,
   actions,
   options,
   state,
-}) => {
+}: OfferAlkemioCommunityCredentialDialogProps) => {
   const { t } = useTranslation();
   const { contributions } = entities;
 

@@ -1,34 +1,28 @@
-import React, { FC, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useNavigate from '../../../../core/routing/useNavigate';
-import { journeyCardTagsGetter, journeyCardValueGetter } from '../../common/utils/journeyCardValueGetter';
-import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
-import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
-import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
-import { useSubspaceCreation } from '../../../shared/utils/useJourneyCreation/useJourneyCreation';
-import ChildJourneyView from '../../common/tabs/Subentities/ChildJourneyView';
+import useNavigate from '@/core/routing/useNavigate';
+import { journeyCardTagsGetter, journeyCardValueGetter } from '@/domain/journey/common/utils/journeyCardValueGetter';
+import { JourneyCreationDialog } from '@/domain/shared/components/JorneyCreationDialog';
+import { JourneyFormValues } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationForm';
+import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
+import { useSubspaceCreation } from '@/domain/shared/utils/useJourneyCreation/useJourneyCreation';
+import ChildJourneyView from '@/domain/journey/common/tabs/Subentities/ChildJourneyView';
 import SubspacesContainer from '../containers/SubspacesContainer';
 import { useSpace } from '../SpaceContext/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
-import CalloutsGroupView from '../../../collaboration/callout/CalloutsInContext/CalloutsGroupView';
-import {
-  CalloutGroupName,
-  CommunityMembershipStatus,
-  SpacePrivacyMode,
-} from '../../../../core/apollo/generated/graphql-schema';
-import { useRouteResolver } from '../../../../main/routing/resolvers/RouteResolver';
-import { SubspaceIcon } from '../../subspace/icon/SubspaceIcon';
-import SubspaceCard from '../../subspace/subspaceCard/SubspaceCard';
-import { CreateSubspaceForm } from '../../subspace/forms/CreateSubspaceForm';
-import useCallouts from '../../../collaboration/callout/useCallouts/useCallouts';
+import CalloutsGroupView from '@/domain/collaboration/callout/CalloutsInContext/CalloutsGroupView';
+import { CalloutGroupName, CommunityMembershipStatus, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
+import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
+import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
+import useCallouts from '@/domain/collaboration/callout/useCallouts/useCallouts';
 
-export interface SpaceSubspacesPageProps {}
-
-const SpaceSubspacesPage: FC<SpaceSubspacesPageProps> = () => {
+const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { spaceId, journeyPath } = useRouteResolver();
-  const { spaceNameId, permissions, visibility } = useSpace();
+  const { spaceNameId, permissions, visibility, collaborationId } = useSpace();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -57,8 +51,9 @@ const SpaceSubspacesPage: FC<SpaceSubspacesPageProps> = () => {
   );
 
   const callouts = useCallouts({
-    journeyId: spaceId,
+    collaborationId,
     journeyTypeName: 'space',
+    canReadCollaboration: true,
     groupNames: [CalloutGroupName.Subspaces],
   });
 
@@ -103,6 +98,7 @@ const SpaceSubspacesPage: FC<SpaceSubspacesPageProps> = () => {
             children={
               <CalloutsGroupView
                 journeyId={spaceId}
+                collaborationId={collaborationId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}

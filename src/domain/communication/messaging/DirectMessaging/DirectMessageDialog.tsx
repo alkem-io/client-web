@@ -1,19 +1,19 @@
-import React, { FC, ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { Alert, DialogActions } from '@mui/material';
 import { Formik, FormikState } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import DialogHeader from '../../../../core/ui/dialog/DialogHeader';
-import DialogContent from '../../../../core/ui/dialog/DialogContent';
-import { Caption } from '../../../../core/ui/typography/components';
-import SendButton from '../../../shared/components/SendButton';
-import { LONG_TEXT_LENGTH } from '../../../../core/ui/forms/field-length.constants';
-import FormikInputField from '../../../../core/ui/forms/FormikInputField/FormikInputField';
-import GridContainer from '../../../../core/ui/grid/GridContainer';
-import { gutters } from '../../../../core/ui/grid/utils';
-import { ProfileChip } from '../../../community/contributor/ProfileChip/ProfileChip';
-import useLoadingState from '../../../shared/utils/useLoadingState';
-import DialogWithGrid from '../../../../core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogContent from '@/core/ui/dialog/DialogContent';
+import { Caption } from '@/core/ui/typography/components';
+import SendButton from '@/domain/shared/components/SendButton';
+import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import GridContainer from '@/core/ui/grid/GridContainer';
+import { gutters } from '@/core/ui/grid/utils';
+import { ProfileChip } from '@/domain/community/contributor/ProfileChip/ProfileChip';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 
 export interface MessageReceiverChipData {
   id: string;
@@ -23,28 +23,28 @@ export interface MessageReceiverChipData {
   avatarUri?: string;
 }
 
-interface MessageUserDialogProps {
+type MessageUserDialogProps = {
   open: boolean;
   onClose: () => void;
   onSendMessage: (text: string) => Promise<void>;
   messageReceivers?: MessageReceiverChipData[];
   title?: ReactNode;
-}
+};
 
-interface SendMessageData {
+type SendMessageData = {
   message: string;
-}
+};
 
 /**
  * Consider using useDirectMessageDialog hook that has Send Message mutations baked in.
  */
-export const DirectMessageDialog: FC<MessageUserDialogProps> = ({
+export const DirectMessageDialog = ({
   open,
   onClose,
   onSendMessage,
   messageReceivers,
   title,
-}) => {
+}: MessageUserDialogProps) => {
   const { t } = useTranslation();
 
   const [isMessageSent, setMessageSent] = useState(false);

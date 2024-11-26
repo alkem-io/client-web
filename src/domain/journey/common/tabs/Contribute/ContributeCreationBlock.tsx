@@ -1,19 +1,18 @@
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Link } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
-import WrapperMarkdown from '../../../../../core/ui/markdown/WrapperMarkdown';
-import { Actions } from '../../../../../core/ui/actions/Actions';
-import PageContentBlock from '../../../../../core/ui/content/PageContentBlock';
-import { useConfig } from '../../../../platform/config/useConfig';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { Actions } from '@/core/ui/actions/Actions';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import { useConfig } from '@/domain/platform/config/useConfig';
 
-interface ContributeCreationBlockProps {
+type ContributeCreationBlockProps = {
   canCreate: boolean;
   handleCreate: () => void;
-}
+};
 
-export const ContributeCreationBlock: FC<ContributeCreationBlockProps> = ({ canCreate, handleCreate }) => {
+export const ContributeCreationBlock = ({ canCreate, handleCreate }: ContributeCreationBlockProps) => {
   const { t } = useTranslation();
   const { locations } = useConfig();
   return (

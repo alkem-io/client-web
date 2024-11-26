@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { ValidationMessageWithPayload } from './ValidationMessageWithPayload';
-import TranslationKey from '../../../../core/i18n/utils/TranslationKey';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 const useValidationMessageTranslation = () => {
   const { t } = useTranslation();

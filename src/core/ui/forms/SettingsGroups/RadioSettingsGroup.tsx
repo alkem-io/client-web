@@ -1,8 +1,8 @@
 import { Box, CircularProgress, FormControlLabel, Radio, RadioGroup, RadioProps } from '@mui/material';
-import { FC, ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 
-const LoadingRadio: FC<RadioProps & { loading?: boolean }> = ({ loading, ...props }) => {
-  return loading ? (
+const LoadingRadio = ({ loading, ...props }: RadioProps & { loading?: boolean }) =>
+  loading ? (
     <Box position="relative">
       <CircularProgress sx={{ width: '100%', height: '100%', position: 'absolute' }} />
       <Radio {...props} />
@@ -10,13 +10,12 @@ const LoadingRadio: FC<RadioProps & { loading?: boolean }> = ({ loading, ...prop
   ) : (
     <Radio {...props} />
   );
-};
 
-interface RadioSettingsGroupProps<T extends Record<string, { label: ReactNode }>> {
+type RadioSettingsGroupProps<T extends Record<string, { label: ReactNode }>> = {
   value: keyof T | undefined;
   options: T;
   onChange: (t: keyof T) => Promise<void> | void;
-}
+};
 
 function RadioSettingsGroup<T extends Record<string, { label: ReactNode }>>({
   value,
