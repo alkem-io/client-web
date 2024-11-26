@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import {
+  CreateSubspaceMutationOptions,
   refetchDashboardWithMembershipsQuery,
   refetchUserProviderQuery,
   SubspaceCardFragmentDoc,
@@ -37,14 +38,19 @@ interface SubspaceCreationInput {
   };
 }
 
-export const useSubspaceCreation = () => {
+export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptions = {}) => {
   const { spaceId } = useSpace();
   const { isFeatureEnabled } = useConfig();
 
   const subscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);
   const [uploadVisual] = useUploadVisualMutation();
 
-  const [createSubspaceLazy] = useCreateSubspaceMutation({
+  const {
+    refetchQueries = [refetchUserProviderQuery(), refetchDashboardWithMembershipsQuery()], // default to refetching user provider and dashboard
+    ...restMutationOptions
+  } = mutationOptions;
+
+  const [createSubspaceLazy, { loading }] = useCreateSubspaceMutation({
     update: (cache, { data }) => {
       if (subscriptionsEnabled || !data) {
         return;
@@ -75,8 +81,8 @@ export const useSubspaceCreation = () => {
         },
       });
     },
-
-    refetchQueries: [refetchUserProviderQuery(), refetchDashboardWithMembershipsQuery()],
+    refetchQueries,
+    ...restMutationOptions,
   });
 
   // add useCallback
@@ -188,5 +194,5 @@ export const useSubspaceCreation = () => {
     [createSubspaceLazy]
   );
 
-  return { createSubspace };
+  return { createSubspace, loading };
 };

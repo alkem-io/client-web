@@ -37,6 +37,7 @@ const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
 
   const { subSpaceId: challengeId } = useRouteResolver();
 
+  // TODO: This code is never used for creation. REMOVE
   const [createSubspace, { loading: isCreating }] = useCreateSubspaceMutation({
     onCompleted: data => {
       onSuccess('Successfully created');
@@ -68,7 +69,7 @@ const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
     const { name: displayName, nameID, tagsets, tagline, references } = values;
 
     // TODO: We need to select the template for the user if they want and put it in the collaborationData passing what we get using the createInput service
-
+    // TODO: This code is never used for creation. REMOVE
     switch (mode) {
       case FormMode.create:
         createSubspace({

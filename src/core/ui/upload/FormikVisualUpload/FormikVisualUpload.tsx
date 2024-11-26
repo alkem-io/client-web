@@ -20,12 +20,12 @@ const ImagePlaceholder = ({ src, alt, ...props }: BoxProps<'img'>) => {
   return src ? <Image src={src} alt={alt} {...props} /> : <Box {...props}>{t('components.visual-upload.no-data')}</Box>;
 };
 
-const FormikAvatarUploadSkeleton = () => {
+const FormikAvatarUploadSkeleton = ({ height = DEFAULT_SIZE, ...containerProps }: { height?: number } & BoxProps) => {
   return (
-    <Box>
-      <Skeleton variant="rectangular" width={DEFAULT_SIZE} height={DEFAULT_SIZE} />
+    <Box {...containerProps}>
+      <Skeleton variant="rectangular" width={height * 2} height={height} />
       <Box marginTop={2}>
-        <Skeleton variant="text" width={DEFAULT_SIZE} />
+        <Skeleton variant="text" width={height * 2} />
       </Box>
     </Box>
   );
@@ -82,7 +82,7 @@ const FormikAvatarUpload = ({
   const visualTypeConstraints =
     allConstraints?.Avatar ?? allConstraints?.Banner ?? allConstraints?.Card ?? allConstraints?.BannerWide;
   if (loading || !visualTypeConstraints) {
-    return <FormikAvatarUploadSkeleton />;
+    return <FormikAvatarUploadSkeleton height={height} {...containerProps} />;
   }
   const { maxHeight, maxWidth, allowedTypes, aspectRatio } = visualTypeConstraints;
 

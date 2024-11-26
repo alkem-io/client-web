@@ -2,14 +2,14 @@ import { useCallback } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
 import { JourneyCreationDialog } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationDialog';
-import { CreateOpportunityForm } from '@/domain/journey/opportunity/forms/CreateOpportunityForm';
 import { JourneyFormValues } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationForm';
 import {
-  useCreateSubspaceMutation,
   refetchSubspacesInSpaceQuery,
   refetchDashboardWithMembershipsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { Box } from '@mui/material';
+import { CreateSubspaceForm } from '../../forms/CreateSubspaceForm';
+import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
+import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
 
 export interface CreateJourneyProps {
   isVisible: boolean;
@@ -21,54 +21,42 @@ export const CreateJourney = ({ isVisible = false, onClose, parentSpaceId = '' }
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [createSubspace] = useCreateSubspaceMutation({
+  const { createSubspace } = useSubspaceCreation({
     refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: parentSpaceId }), refetchDashboardWithMembershipsQuery()],
   });
 
   const handleCreate = useCallback(
     async (value: JourneyFormValues) => {
-      const { data } = await createSubspace({
-        variables: {
-          input: {
-            spaceID: parentSpaceId,
-            context: {
-              vision: value.vision,
-            },
-            profileData: {
-              displayName: value.displayName,
-              tagline: value.tagline,
-            },
-            tags: value.tags,
-            collaborationData: {
-              addTutorialCallouts: value.addTutorialCallouts,
-              collaborationTemplateID: value.collaborationTemplateId,
-            },
-          },
-        },
+      const result = await createSubspace({
+        spaceID: parentSpaceId,
+        displayName: value.displayName,
+        tagline: value.tagline,
+        background: value.background ?? '',
+        vision: value.vision,
+        tags: value.tags,
+        addTutorialCallouts: value.addTutorialCallouts,
+        collaborationTemplateId: value.collaborationTemplateId,
+        visuals: value.visuals,
       });
 
-      if (!data?.createSubspace) {
+      if (!result) {
         return;
       }
-      if (data?.createSubspace.profile.url) {
-        navigate(data?.createSubspace.profile.url);
-        onClose();
-      }
+      navigate(result.profile.url);
+      onClose();
     },
     [navigate, createSubspace, parentSpaceId]
   );
 
   return (
-    <Box border="1px solid red">
-      CreateJourney - Where is this used? //!!
-      <JourneyCreationDialog
-        open={isVisible}
-        journeyName={t('common.subspace')}
-        onClose={onClose}
-        onCreate={handleCreate}
-        formComponent={CreateOpportunityForm}
-      />
-    </Box>
+    <JourneyCreationDialog
+      icon={<SubspaceIcon2 fill="primary" />}
+      open={isVisible}
+      journeyName={t('common.subspace')}
+      onClose={onClose}
+      onCreate={handleCreate}
+      formComponent={CreateSubspaceForm}
+    />
   );
 };
 

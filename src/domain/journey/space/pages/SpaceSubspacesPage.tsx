@@ -17,6 +17,7 @@ import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
 import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
 import useCallouts from '@/domain/collaboration/callout/useCallouts/useCallouts';
+import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
@@ -89,7 +90,7 @@ const SpaceSubspacesPage = () => {
             createSubentityDialog={
               <JourneyCreationDialog
                 open={isCreateDialogOpen}
-                icon={<SubspaceIcon />}
+                icon={<SubspaceIcon2 fill="primary" />}
                 journeyName={t('common.subspace')}
                 onClose={() => setCreateDialogOpen(false)}
                 onCreate={handleCreate}

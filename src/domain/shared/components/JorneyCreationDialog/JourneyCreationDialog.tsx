@@ -1,11 +1,12 @@
 import React, { FC, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dialog, DialogActions, SvgIconProps } from '@mui/material';
+import { DialogActions, SvgIconProps } from '@mui/material';
 import Button from '@mui/material/Button';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { DialogContent } from '@/core/ui/dialog/deprecated';
 import { JourneyCreationForm, JourneyFormValues } from './JourneyCreationForm';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 
 interface JourneyCreationDialogProps {
   open: boolean;
@@ -49,7 +50,7 @@ export const JourneyCreationDialog: FC<JourneyCreationDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} maxWidth="lg" fullWidth>
+    <DialogWithGrid open={open} maxWidth="lg" fullWidth>
       <DialogHeader onClose={onClose} icon={icon}>
         {t('journey-creation.dialog-title', { entity: journeyName })}
       </DialogHeader>
@@ -71,6 +72,6 @@ export const JourneyCreationDialog: FC<JourneyCreationDialogProps> = ({
           {t('buttons.create')}
         </LoadingButton>
       </DialogActions>
-    </Dialog>
+    </DialogWithGrid>
   );
 };
