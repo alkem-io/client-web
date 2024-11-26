@@ -64,6 +64,7 @@ fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMem
   }
   actor {
     id
+    __typename
     profile {
       id
       displayName,
@@ -88,16 +89,5 @@ fragment InAppNotificationUserMentioned on InAppNotificationUserMentioned {
     }
   }
   comment
-#  actor {
-#    id
-#    profile {
-#      id
-#      displayName,
-#      url,
-#      visual(type: AVATAR) {
-#        ...VisualUri
-#      }
-#    }
-#  }
   contributorType
 }

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Badge, ListItemButtonProps } from '@mui/material';
+import { Badge, Box, Divider, ListItemButtonProps } from '@mui/material';
 import ListItemButton, { ListItemButtonTypeMap } from '@mui/material/ListItemButton/ListItemButton';
 import MarkEmailUnreadOutlinedIcon from '@mui/icons-material/MarkEmailUnreadOutlined';
 import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
@@ -120,38 +120,63 @@ export const InAppNotificationBaseView = ({
     );
   };
 
+  const isUnread = state === InAppNotificationState.Unread;
+
   return (
-    <BadgeCardView
-      component={Wrapper}
-      to={resource.url ?? ''}
-      onClick={onNotificationClick}
-      padding
-      paddingY={gutters(2)}
-      sx={{
-        background: theme =>
-          state === InAppNotificationState.Unread ? theme.palette.highlight.light : theme.palette.background.paper,
-        borderRadius: 0,
-      }}
-      visual={
-        <Badge
-          overlap="circular"
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          badgeContent={contributor ? <Avatar size="small" src={contributor?.avatarUrl} /> : null}
-        >
-          <Avatar size="large" src={space?.avatarUrl || defaultJourneyAvatar} />
-        </Badge>
-      }
-    >
-      <Gutters row disablePadding>
-        <Gutters column flexGrow={1}>
-          <Caption>{renderFormattedTranslation(`components.inAppNotifications.type.${type}.subject`)}</Caption>
-          <Caption>{renderFormattedTranslation(`components.inAppNotifications.type.${type}.description`)}</Caption>
+    <>
+      <BadgeCardView
+        component={Wrapper}
+        to={resource.url ?? ''}
+        onClick={onNotificationClick}
+        paddingX={gutters(2)}
+        paddingY={gutters(0.5)}
+        sx={{
+          borderRadius: 0,
+        }}
+        visual={
+          <Badge
+            overlap="circular"
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            badgeContent={contributor ? <Avatar size="small" src={contributor?.avatarUrl} /> : null}
+          >
+            <Avatar size="large" src={space?.avatarUrl || defaultJourneyAvatar} />
+          </Badge>
+        }
+      >
+        <Gutters row disablePadding>
+          <Gutters column flexGrow={1} disableGap>
+            <Caption
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                fontWeight: isUnread ? 'bold' : 'normal',
+              }}
+            >
+              {isUnread && (
+                <Box
+                  sx={{
+                    width: '10px',
+                    height: '10px',
+                    background: '#09BCD4',
+                    borderRadius: '50%',
+                    marginRight: gutters(0.5),
+                  }}
+                />
+              )}
+              {renderFormattedTranslation(`components.inAppNotifications.type.${type}.subject`)}
+            </Caption>
+            <Caption>{renderFormattedTranslation(`components.inAppNotifications.type.${type}.description`)}</Caption>
+          </Gutters>
+          <Actions>
+            <Caption>{formatTimeElapsed(triggeredAt, t)}</Caption>
+            <ActionsMenu>{renderActions()}</ActionsMenu>
+          </Actions>
         </Gutters>
-        <Actions>
-          <Caption>{formatTimeElapsed(triggeredAt, t)}</Caption>
-          <ActionsMenu>{renderActions()}</ActionsMenu>
-        </Actions>
+      </BadgeCardView>
+      <Gutters row disablePadding disableGap display={'flex'} justifyContent={'center'}>
+        <Divider sx={{ maxWidth: '300px', flex: 1 }} />
       </Gutters>
-    </BadgeCardView>
+    </>
   );
 };

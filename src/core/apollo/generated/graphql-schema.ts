@@ -27826,7 +27826,7 @@ export type InAppNotificationsQuery = {
         };
         actor:
           | {
-              __typename?: 'Organization';
+              __typename: 'Organization';
               id: string;
               profile: {
                 __typename?: 'Profile';
@@ -27837,7 +27837,7 @@ export type InAppNotificationsQuery = {
               };
             }
           | {
-              __typename?: 'User';
+              __typename: 'User';
               id: string;
               profile: {
                 __typename?: 'Profile';
@@ -27848,7 +27848,7 @@ export type InAppNotificationsQuery = {
               };
             }
           | {
-              __typename?: 'VirtualContributor';
+              __typename: 'VirtualContributor';
               id: string;
               profile: {
                 __typename?: 'Profile';
@@ -28031,7 +28031,7 @@ export type InAppNotificationCommunityNewMemberFragment = {
   };
   actor:
     | {
-        __typename?: 'Organization';
+        __typename: 'Organization';
         id: string;
         profile: {
           __typename?: 'Profile';
@@ -28042,7 +28042,7 @@ export type InAppNotificationCommunityNewMemberFragment = {
         };
       }
     | {
-        __typename?: 'User';
+        __typename: 'User';
         id: string;
         profile: {
           __typename?: 'Profile';
@@ -28053,7 +28053,7 @@ export type InAppNotificationCommunityNewMemberFragment = {
         };
       }
     | {
-        __typename?: 'VirtualContributor';
+        __typename: 'VirtualContributor';
         id: string;
         profile: {
           __typename?: 'Profile';

@@ -3167,6 +3167,7 @@ export const InAppNotificationCommunityNewMemberFragmentDoc = gql`
     }
     actor {
       id
+      __typename
       profile {
         id
         displayName

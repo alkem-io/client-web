@@ -11,7 +11,7 @@ export const InAppNotificationsDialog = () => {
   const { isOpen, setIsOpen } = useInAppNotificationsContext();
 
   return (
-    <DialogWithGrid open={isOpen} columns={10} onClose={() => setIsOpen(false)}>
+    <DialogWithGrid open={isOpen} columns={8} onClose={() => setIsOpen(false)}>
       <DialogHeader icon={<NotificationsNoneOutlinedIcon />} onClose={() => setIsOpen(false)}>
         {t('common.notifications')}
       </DialogHeader>

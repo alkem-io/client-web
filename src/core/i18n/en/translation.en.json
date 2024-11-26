@@ -1740,11 +1740,11 @@
       "type": {
         "collaborationCalloutPublished": {
           "subject": "{{spaceName}} - New {{calloutType}} is published \"{{calloutName}}\", have a look!",
-          "description": "<b>{{contributorName}}</b> published a new {{calloutType}} in {{spaceType}}: {{spaceName}}, with name: {{calloutName}}."
+          "description": "{{contributorName}} published a new {{calloutType}} in {{spaceType}}: {{spaceName}}, with name: {{calloutName}}."
         },
         "communicationUserMention": {
           "subject": "{{commenterName}} mentioned you in a comment on Alkemio",
-          "description": "<b>{{commenterName}}</b> mentioned you in a comment on {{calloutName}}:<br /><pre><i>{{comment}}</i></pre>"
+          "description": "{{commenterName}} mentioned you in a comment on {{calloutName}}:<br /><pre><i>{{comment}}</i></pre>"
         },
         "communityNewMember": {
           "subject": "{{spaceName}} - Welcome to the Community!",
@@ -1752,7 +1752,7 @@
         },
         "communityNewMemberAdmin": {
           "subject": "{{memberType}} \"{{memberName}}\" joined {{spaceName}}",
-          "description": "The {{memberType}} <b>{{memberName}}</b> has joined {{spaceName}}, of which you are an admin."
+          "description": "The {{memberType}} {{memberName}} has joined {{spaceName}}, of which you are an admin."
         }
       }
     }

@@ -11,7 +11,7 @@ import {
 } from '../../core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../../domain/community/user';
 
-const POLLING_INTERVAL = 30 * 1000; // 30 seconds
+const POLLING_INTERVAL = 5 * 1000; // 5 seconds
 
 export enum InAppNotificationType {
   COLLABORATION_CALLOUT_PUBLISHED = 'collaborationCalloutPublished',
@@ -43,6 +43,18 @@ export interface InAppNotificationProps {
   };
   contributor?: {
     type: CommunityContributorType;
+    profile:
+      | {
+          displayName: string;
+          url: string;
+          visual?: {
+            uri: string;
+          };
+        }
+      | undefined;
+  };
+  actor?: {
+    __typename: string;
     profile:
       | {
           displayName: string;
@@ -93,7 +105,7 @@ export const useInAppNotifications = () => {
   });
 
   useEffect(() => {
-    if (data?.notifications?.length) {
+    if (startPolling) {
       startPolling(POLLING_INTERVAL);
     }
 
@@ -101,7 +113,10 @@ export const useInAppNotifications = () => {
   }, [data, startPolling, stopPolling]);
 
   const items: InAppNotificationProps[] = useMemo(
-    () => (data?.notifications ?? []).filter(item => item.state !== InAppNotificationState.Archived),
+    () =>
+      (data?.notifications ?? [])
+        .filter(item => item.state !== InAppNotificationState.Archived)
+        .sort((a, b) => new Date(b.triggeredAt).getTime() - new Date(a.triggeredAt).getTime()),
     [data]
   );
 

@@ -16,7 +16,7 @@ export const CommunicationUserMentionView = ({
     const notificationTextValues = {
       defaultValue: '',
       commenterName: triggeredBy?.profile?.displayName,
-      colloutName: callout?.framing?.profile?.displayName,
+      calloutName: callout?.framing?.profile?.displayName,
       comment,
     };
 
