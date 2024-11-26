@@ -1,3 +1,6 @@
+# TODO: Maybe refactor the server to be able to pass just the VisualTypes and return them
+# in a query like visualTypeConstraints(types: [Avatar, Banner, Card, BannerWide]) instead of
+# having to pass a boolean for each one of them.
 query PlatformVisualsConstraints(
   $includeAvatar: Boolean = false,
   $includeBanner: Boolean = false,

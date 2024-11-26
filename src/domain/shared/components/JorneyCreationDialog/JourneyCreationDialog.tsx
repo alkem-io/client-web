@@ -50,7 +50,7 @@ export const JourneyCreationDialog: FC<JourneyCreationDialogProps> = ({
   };
 
   return (
-    <DialogWithGrid open={open} maxWidth="lg" fullWidth>
+    <DialogWithGrid open={open} maxWidth="xs" fullWidth>
       <DialogHeader onClose={onClose} icon={icon}>
         {t('journey-creation.dialog-title', { entity: journeyName })}
       </DialogHeader>

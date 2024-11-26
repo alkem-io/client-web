@@ -2,7 +2,7 @@ import { Box, FormGroup } from '@mui/material';
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Tagset, TagsetType, Visual } from '@/core/apollo/generated/graphql-schema';
+import { Tagset, TagsetType, Visual, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { NameSegment, nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
@@ -126,7 +126,7 @@ const InnovationHubForm = ({
                 <BlockSectionTitle>{t('components.visualSegment.banner')}</BlockSectionTitle>
                 <VisualUpload
                   visual={banner}
-                  altText={t('pages.visualEdit.BANNER.description', {
+                  altText={t(`pages.visualEdit.${VisualType.Banner}.description`, {
                     alternativeText: banner?.alternativeText,
                   })}
                 />

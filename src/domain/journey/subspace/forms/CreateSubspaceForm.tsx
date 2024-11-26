@@ -17,6 +17,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { Theme, useMediaQuery } from '@mui/material';
+import { gutters } from '@/core/ui/grid/utils';
 
 const FormikEffect = FormikEffectFactory<FormValues>();
 
@@ -129,7 +130,7 @@ export const CreateSubspaceForm = ({
             helperText={t('context.subspace.tags.description')}
             helpTextIcon={t('context.subspace.tags.tooltip')}
           />
-          <Gutters disableHorizontalPadding>
+          <Gutters padding={theme => `${gutters()(theme)} 0 0 0`}>
             <PageContentBlock sx={{ flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between' }}>
               <FormikVisualUpload name="visuals.avatar" visualType={VisualType.Avatar} flex={1} />
               <FormikVisualUpload name="visuals.cardBanner" visualType={VisualType.Card} flex={1} />

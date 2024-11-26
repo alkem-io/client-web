@@ -3,21 +3,21 @@ import { useField } from 'formik';
 import Gutters, { GuttersProps } from '../grid/Gutters';
 import { BlockSectionTitle } from '../typography';
 
-interface FormikSwitchProps<T> extends GuttersProps {
+interface FormikRadiosSwitchProps<T> extends GuttersProps {
   name: string;
   label: string;
   options: { value: T; label: string }[];
 }
 
-export const FormikRadiosSwitch = <T,>({ name, label, options, ...rest }: FormikSwitchProps<T>) => {
-  const [field, , helper] = useField(name);
+export const FormikRadiosSwitch = <T,>({ name, label, options, ...containerProps }: FormikRadiosSwitchProps<T>) => {
+  const [field, , helper] = useField<T>(name);
 
   const handleChange = (value: T) => {
     helper.setValue(value);
   };
 
   return (
-    <Gutters alignItems="center" {...rest}>
+    <Gutters alignItems="center" {...containerProps}>
       <BlockSectionTitle>{label}</BlockSectionTitle>
       {options.map(({ value, label }, index) => (
         <InputLabel key={index}>
@@ -26,7 +26,7 @@ export const FormikRadiosSwitch = <T,>({ name, label, options, ...rest }: Formik
             checked={field.value === value}
             onClick={() => handleChange(value)}
             onBlur={field.onBlur}
-          />{' '}
+          />
           {label}
         </InputLabel>
       ))}
