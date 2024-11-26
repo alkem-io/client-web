@@ -3133,7 +3133,7 @@ export const InAppNotificationCalloutPublishedFragmentDoc = gql`
         id
         displayName
         url
-        visual(type: CARD) {
+        visual(type: AVATAR) {
           ...VisualUri
         }
       }
@@ -3149,7 +3149,7 @@ export const InAppNotificationCommunityNewMemberFragmentDoc = gql`
         id
         displayName
         url
-        visual(type: CARD) {
+        visual(type: AVATAR) {
           ...VisualUri
         }
       }
@@ -3189,7 +3189,7 @@ export const InAppNotificationUserMentionedFragmentDoc = gql`
         id
         displayName
         url
-        visual(type: CARD) {
+        visual(type: AVATAR) {
           ...VisualUri
         }
       }

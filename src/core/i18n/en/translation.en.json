@@ -1743,8 +1743,8 @@
           "description": "{{contributorName}} published a new {{calloutType}} in {{spaceType}}: {{spaceName}}, with name: {{calloutName}}."
         },
         "communicationUserMention": {
-          "subject": "{{commenterName}} mentioned you in a comment on Alkemio",
-          "description": "{{commenterName}} mentioned you in a comment on {{calloutName}}:<br /><pre><i>{{comment}}</i></pre>"
+          "subject": "{{commenterName}} mentioned you in a comment on {{calloutName}}:",
+          "description": ""
         },
         "communityNewMember": {
           "subject": "{{spaceName}} - Welcome to the Community!",

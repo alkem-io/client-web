@@ -13,12 +13,14 @@ import { Caption } from '../../../core/ui/typography';
 import { formatTimeElapsed } from '../../../domain/shared/utils/formatTimeElapsed';
 import defaultJourneyAvatar from '../../../domain/journey/defaultVisuals/Avatar.jpg';
 import { gutters } from '../../../core/ui/grid/utils';
-import { Actions } from '../../../core/ui/actions/Actions';
 import ActionsMenu from '../../../core/ui/card/ActionsMenu';
 import MenuItemWithIcon from '../../../core/ui/menu/MenuItemWithIcon';
 import { InAppNotificationState } from '../../../core/apollo/generated/graphql-schema';
 import { useInAppNotifications } from '../useInAppNotifications';
 import { useInAppNotificationsContext } from '../InAppNotificationsContext';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+
+const MAX_LENGTH_COMMENT = 150; // 150 characters
 
 export interface InAppNotificationBaseViewProps {
   id: string;
@@ -40,7 +42,7 @@ export interface InAppNotificationBaseViewProps {
 
 const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultComponent'], P = {}>(
   props: ListItemButtonProps<D, P> & RouterLinkProps
-) => <ListItemButton component={RouterLink} {...props} />;
+) => <ListItemButton component={props.to ? RouterLink : Box} {...props} />;
 
 export const InAppNotificationBaseView = ({
   id,
@@ -120,13 +122,33 @@ export const InAppNotificationBaseView = ({
     );
   };
 
+  const getTruncatedComment = (comment: string | undefined = '') => {
+    if (comment.length <= MAX_LENGTH_COMMENT) {
+      return comment;
+    }
+
+    return `${comment.slice(0, MAX_LENGTH_COMMENT)}...`;
+  };
+
+  const renderComments = () => {
+    if (values.comment) {
+      return (
+        <WrapperMarkdown disableParagraphPadding caption>
+          {getTruncatedComment(values.comment)}
+        </WrapperMarkdown>
+      );
+    }
+
+    return null;
+  };
+
   const isUnread = state === InAppNotificationState.Unread;
 
   return (
     <>
       <BadgeCardView
         component={Wrapper}
-        to={resource.url ?? ''}
+        to={resource.url}
         onClick={onNotificationClick}
         paddingX={gutters(2)}
         paddingY={gutters(0.5)}
@@ -139,18 +161,19 @@ export const InAppNotificationBaseView = ({
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             badgeContent={contributor ? <Avatar size="small" src={contributor?.avatarUrl} /> : null}
           >
-            <Avatar size="large" src={space?.avatarUrl || defaultJourneyAvatar} />
+            <Avatar size="regular" src={space?.avatarUrl || defaultJourneyAvatar} />
           </Badge>
         }
       >
         <Gutters row disablePadding>
-          <Gutters column flexGrow={1} disableGap>
+          <Gutters column flexGrow={1} disableGap justifyContent={'center'}>
             <Caption
               sx={{
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
                 fontWeight: isUnread ? 'bold' : 'normal',
+                marginBottom: gutters(0.5),
               }}
             >
               {isUnread && (
@@ -167,11 +190,12 @@ export const InAppNotificationBaseView = ({
               {renderFormattedTranslation(`components.inAppNotifications.type.${type}.subject`)}
             </Caption>
             <Caption>{renderFormattedTranslation(`components.inAppNotifications.type.${type}.description`)}</Caption>
+            {renderComments()}
           </Gutters>
-          <Actions>
+          <Gutters alignItems={'center'}>
             <Caption>{formatTimeElapsed(triggeredAt, t)}</Caption>
             <ActionsMenu>{renderActions()}</ActionsMenu>
-          </Actions>
+          </Gutters>
         </Gutters>
       </BadgeCardView>
       <Gutters row disablePadding disableGap display={'flex'} justifyContent={'center'}>

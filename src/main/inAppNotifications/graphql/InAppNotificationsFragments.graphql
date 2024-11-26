@@ -32,7 +32,7 @@ fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished 
       id
       displayName,
       url,
-      visual(type: CARD) {
+      visual(type: AVATAR) {
         ...VisualUri
       }
     }
@@ -46,7 +46,7 @@ fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMem
       id
       displayName,
       url,
-      visual(type: CARD) {
+      visual(type: AVATAR) {
         ...VisualUri
       }
     }
@@ -84,7 +84,7 @@ fragment InAppNotificationUserMentioned on InAppNotificationUserMentioned {
       id
       displayName,
       url,
-      visual(type: CARD) {
+      visual(type: AVATAR) {
         ...VisualUri
       }
     }
