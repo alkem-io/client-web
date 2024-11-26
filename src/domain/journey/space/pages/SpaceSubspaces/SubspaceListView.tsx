@@ -53,8 +53,9 @@ export const SubspaceListView = () => {
 
   const { data, loading } = useAdminSpaceSubspacesPageQuery({
     variables: {
-      spaceId: spaceNameId,
+      spaceId: spaceId,
     },
+    skip: !spaceId,
   });
   const [fetchCollaborationId] = useSpaceCollaborationIdLazyQuery();
 
@@ -81,7 +82,7 @@ export const SubspaceListView = () => {
   const [deleteSubspace] = useDeleteSpaceMutation({
     refetchQueries: [
       refetchAdminSpaceSubspacesPageQuery({
-        spaceId: spaceNameId,
+        spaceId,
       }),
     ],
     awaitRefetchQueries: true,
@@ -102,17 +103,14 @@ export const SubspaceListView = () => {
     onCompleted: () => {
       notify(t('pages.admin.subspace.notifications.subspace-created'), 'success');
     },
-    refetchQueries: [
-      refetchAdminSpaceSubspacesPageQuery({ spaceId: spaceNameId }),
-      refetchDashboardWithMembershipsQuery(),
-    ],
+    refetchQueries: [refetchAdminSpaceSubspacesPageQuery({ spaceId }), refetchDashboardWithMembershipsQuery()],
     awaitRefetchQueries: true,
   });
 
   const handleCreate = useCallback(
     async (value: JourneyFormValues) => {
       const result = await createSubspace({
-        spaceID: spaceNameId,
+        spaceID: spaceId,
         displayName: value.displayName,
         tagline: value.tagline,
         background: value.background ?? '',
@@ -128,7 +126,7 @@ export const SubspaceListView = () => {
       }
       navigate(buildSettingsUrl(result.profile.url));
     },
-    [navigate, createSubspace, spaceNameId]
+    [navigate, createSubspace, spaceId]
   );
 
   const [updateTemplateDefault] = useUpdateTemplateDefaultMutation();
@@ -143,7 +141,7 @@ export const SubspaceListView = () => {
       },
       refetchQueries: [
         refetchAdminSpaceSubspacesPageQuery({
-          spaceId: spaceNameId,
+          spaceId,
         }),
       ],
       awaitRefetchQueries: true,
