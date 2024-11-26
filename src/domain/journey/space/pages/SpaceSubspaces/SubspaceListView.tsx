@@ -16,9 +16,9 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
-import { JourneyCreationDialog } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationDialog';
+import { JourneyCreationDialog } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationDialog';
 import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
-import { JourneyFormValues } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationForm';
+import { JourneyFormValues } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationForm';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
