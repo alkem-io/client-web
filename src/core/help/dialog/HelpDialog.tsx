@@ -54,8 +54,8 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
   const handleClose = () => (onClose ? onClose() : undefined);
 
   const supportHref = locations?.support;
-  const docsHref = `${import.meta.env.VITE_APP_ALKEMIO_DOMAIN}/${TopLevelRoutePath.Docs}`;
-  const welcomeSpaceHref = `${import.meta.env.VITE_APP_ALKEMIO_DOMAIN}/${TopLevelRoutePath.WelcomeSpace}`;
+  const docsHref = `/${TopLevelRoutePath.Docs}`;
+  const welcomeSpaceHref = `/${TopLevelRoutePath.WelcomeSpace}`;
 
   return (
     <Dialog open={open} onClose={handleClose} sx={{ '& .MuiDialog-paper': { maxWidth: 700 } }}>
