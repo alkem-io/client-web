@@ -20,7 +20,7 @@ interface HelpDialogProps {
 }
 
 const HelpDialogContent = styled(DialogContent)(({ theme }) => ({
-  '& a': { color: theme.palette.common.black },
+  '& a': { color: theme.palette.primary.main },
   '& a:hover': { color: theme.palette.primary.light },
 }));
 
@@ -109,7 +109,7 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
               <Trans
                 i18nKey="pages.help-dialog.versionNumber"
                 components={{ b: <strong /> }}
-                values={{ version: import.meta.env.VITE_APP_VERSION }}
+                values={{ version: import.meta.env.VITE_APP_VERSION ?? 'N/A' }}
               />
             </Caption>
           </Gutters>
@@ -124,24 +124,6 @@ const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
             </Caption>
           </Gutters>
         </Gutters>
-
-        {/* <Grid sx={{ display: 'flex', justifyContent: 'center', marginTop: gutters(2) }}>
-          <Box sx={{ marginLeft: gutters(2) }}>
-            <Trans
-              i18nKey="pages.help-dialog.versionNumber"
-              components={{ b: <strong /> }}
-              values={{ version: import.meta.env.VITE_APP_VERSION }}
-            />
-          </Box>
-
-          <Box sx={{ marginLeft: gutters(2) }}>
-            <Trans
-              i18nKey="pages.help-dialog.serverVersionNumber"
-              components={{ b: <strong /> }}
-              values={{ version: services?.[0]?.version ?? 'N/A' }}
-            />
-          </Box>
-        </Grid> */}
       </HelpDialogContent>
     </DialogWithGrid>
   );
