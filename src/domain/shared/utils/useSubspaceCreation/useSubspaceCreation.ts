@@ -15,6 +15,7 @@ import {
   SpacePrivacyMode,
   TagsetType,
 } from '@/core/apollo/generated/graphql-schema';
+import { error as logError } from '@/core/logging/sentry/log';
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 
 interface SubspaceCreationInput {
@@ -167,31 +168,46 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
           },
         },
       });
-      if (value.visuals.avatar.file && data?.createSubspace.visuals.avatar?.id) {
-        await uploadVisual({
-          variables: {
-            file: value.visuals.avatar.file,
-            uploadData: {
-              visualID: data.createSubspace.visuals.avatar.id,
-              alternativeText: value.visuals.avatar.altText,
-            },
-          },
-        });
-      }
-      if (value.visuals.cardBanner.file && data?.createSubspace.visuals.cardBanner?.id) {
-        await uploadVisual({
-          variables: {
-            file: value.visuals.cardBanner.file,
-            uploadData: {
-              visualID: data.createSubspace.visuals.cardBanner.id,
-              alternativeText: value.visuals.cardBanner.altText,
-            },
-          },
-        });
+      try {
+        const uploadPromises: Promise<unknown>[] = [];
+        if (value.visuals.avatar.file && data?.createSubspace.visuals.avatar?.id) {
+          uploadPromises.push(
+            uploadVisual({
+              variables: {
+                file: value.visuals.avatar.file,
+                uploadData: {
+                  visualID: data.createSubspace.visuals.avatar.id,
+                  alternativeText: value.visuals.avatar.altText,
+                },
+              },
+            })
+          );
+        }
+        if (value.visuals.cardBanner.file && data?.createSubspace.visuals.cardBanner?.id) {
+          uploadPromises.push(
+            uploadVisual({
+              variables: {
+                file: value.visuals.cardBanner.file,
+                uploadData: {
+                  visualID: data.createSubspace.visuals.cardBanner.id,
+                  alternativeText: value.visuals.cardBanner.altText,
+                },
+              },
+            })
+          );
+        }
+        await Promise.all(uploadPromises);
+      } catch (error) {
+        // Subspace is created anyway, just the images failed log the error and continue
+        if (error instanceof Error) {
+          logError(error);
+        } else {
+          logError(`Error uploading visuals for subspace: ${error}`);
+        }
       }
       return data?.createSubspace;
     },
-    [createSubspaceLazy]
+    [createSubspaceLazy, uploadVisual]
   );
 
   return { createSubspace, loading };

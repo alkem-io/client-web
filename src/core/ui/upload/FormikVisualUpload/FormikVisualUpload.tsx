@@ -80,7 +80,16 @@ const FormikAvatarUpload = ({
   });
   const allConstraints = dimensionsData?.platform.configuration.visualTypeConstraints;
   const visualTypeConstraints =
-    allConstraints?.Avatar ?? allConstraints?.Banner ?? allConstraints?.Card ?? allConstraints?.BannerWide;
+    visualType === VisualType.Avatar
+      ? allConstraints?.Avatar
+      : visualType === VisualType.Banner
+      ? allConstraints?.Banner
+      : visualType === VisualType.Card
+      ? allConstraints?.Card
+      : visualType === VisualType.BannerWide
+      ? allConstraints?.BannerWide
+      : undefined;
+
   if (loading || !visualTypeConstraints) {
     return <FormikAvatarUploadSkeleton height={height} {...containerProps} />;
   }
@@ -92,7 +101,7 @@ const FormikAvatarUpload = ({
   };
   const handleVisualReady = (file: File, altText: string) => {
     helpers.setValue({ file, altText });
-    setCropDialogOpened(true);
+    setCropDialogOpened(false);
   };
 
   const width = height * aspectRatio;

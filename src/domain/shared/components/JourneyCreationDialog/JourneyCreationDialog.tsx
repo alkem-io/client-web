@@ -65,7 +65,6 @@ export const JourneyCreationDialog: FC<JourneyCreationDialogProps> = ({
           onClick={handleCreate}
           variant="contained"
           loading={submitting}
-          loadingIndicator={`${t('buttons.create')}...`}
           disabled={formInvalid}
           sx={{ alignSelf: 'end' }}
         >

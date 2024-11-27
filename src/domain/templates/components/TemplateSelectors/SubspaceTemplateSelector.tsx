@@ -21,7 +21,7 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ na
   const { t } = useTranslation();
   const { spaceId, loading: loadingSpace } = useSpace();
   const [isDialogOpen, setDialogOpen] = useState(false);
-  const [field, , helpers] = useField<String>(name);
+  const [field, , helpers] = useField<string>(name);
 
   const templateId: string | undefined = typeof field.value === 'string' ? field.value : undefined;
 
@@ -56,7 +56,12 @@ export const SubspaceTemplateSelector: FC<SubspaceTemplateSelectorProps> = ({ na
       <BlockSectionTitle>{t('context.subspace.template.title')}</BlockSectionTitle>
       {loading ? <Skeleton width="100%" /> : <Text>{templateName}</Text>}
       <Box sx={{ marginLeft: 'auto' }}>
-        <Button onClick={() => setDialogOpen(true)} startIcon={<LibraryIcon />} variant="outlined">
+        <Button
+          onClick={() => setDialogOpen(true)}
+          startIcon={<LibraryIcon />}
+          variant="outlined"
+          aria-label={t('buttons.change-template')}
+        >
           {t('buttons.change-template')}
         </Button>
         <ImportTemplatesDialog
