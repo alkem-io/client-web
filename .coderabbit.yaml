@@ -1,5 +1,8 @@
 language: en
 early_access: false
+auto_review:
+  enabled: true
+  auto_incremental_review: false
 reviews:
   high_level_summary: true
   sequence_diagrams: true
