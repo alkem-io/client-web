@@ -28,6 +28,16 @@ reviews:
         - Avoid flagging the absence of logging in cases where the global logger is
           already in place (graphql usage).
 
+        Inform about the recommendation of not using non-null assertion,
+        except on GraphQL queries where the variable is asserted non-null and followed by a
+        `skip:` with the same variable.
+        Examples:
+        - Not Required: there's a skip
+         {
+          variables: { templateId: templateId! },
+          skip: !templateId,
+         }
+
         Check for common security vulnerabilities such as:
         - SQL Injection
         - XSS (Cross-Site Scripting)
