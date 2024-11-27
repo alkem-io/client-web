@@ -18,7 +18,7 @@ reviews:
       instructions: |
         Review the React.js/TypeScript/JavaScript code for best practices and potential bugs.
         Ensure that the code adheres to TypeScript's typing system and modern standards.
-        Use the following code guide documentation in the codebase: 'docs\code-guidelines.md'.
+        Use the following code guide documentation in the codebase: 'docs/code-guidelines.md'.
 
         Ensure sufficient error handling and logging is present, **but note:**
         - Local `try/catch` blocks are not required unless they provide value
