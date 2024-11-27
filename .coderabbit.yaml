@@ -1,8 +1,5 @@
 language: en
 early_access: false
-auto_review:
-  enabled: true
-  auto_incremental_review: false
 reviews:
   high_level_summary: true
   sequence_diagrams: true
@@ -10,6 +7,9 @@ reviews:
   review_status: true
   collapse_walkthrough: false
   changed_files_summary: true
+  auto_review:
+    enabled: true
+    auto_incremental_review: false
   path_filters:
     - "!**/.github/**"
     - "!**/node_modules/**"  # Exclude dependencies
