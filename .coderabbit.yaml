@@ -9,7 +9,7 @@ reviews:
   changed_files_summary: true
   auto_review:
     enabled: true
-    auto_incremental_review: false
+    auto_incremental_review: true
   path_filters:
     - "!**/.github/**"
     - "!**/node_modules/**"  # Exclude dependencies
