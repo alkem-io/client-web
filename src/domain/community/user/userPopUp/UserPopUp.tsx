@@ -243,7 +243,7 @@ const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
       </DialogContent>
       <DialogActions>
         <Link component={RouterLink} to={buildUserProfileUrl(user?.nameID || '')} underline="none">
-          <Button variant="outlined" arial-label="user-profile-button">
+          <Button variant="outlined" aria-label="user-profile-button">
             {t('buttons.view-profile')}
           </Button>
         </Link>

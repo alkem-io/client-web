@@ -6,7 +6,7 @@ import {
   Tagset,
   User,
 } from '@/core/apollo/generated/graphql-schema';
-import NegativeButton from '@/core/ui/button/deprecated/NegativeButton';
+import NegativeButton from '@/core/ui/button/NegativeButton';
 import Section, { Header } from '@/core/ui/content/deprecated/Section';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';

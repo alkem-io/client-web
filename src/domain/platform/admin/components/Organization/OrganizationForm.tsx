@@ -213,7 +213,7 @@ export const OrganizationForm: FC<Props> = ({
   const backButton = (
     <Grid item>
       <Button variant="outlined" onClick={handleBack}>
-        {t(`buttons.${editMode ? 'cancel' : 'back'}`)}
+        {t(`buttons.${isEditMode ? 'cancel' : 'back'}`)}
       </Button>
     </Grid>
   );

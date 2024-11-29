@@ -6,23 +6,19 @@ interface ButtonProps {
   disabled?: boolean;
 }
 
-/**
- * @deprecated - Please use MUI Button directly
- */
 const NegativeButton = ({ disabled, onClick, children }: PropsWithChildren<ButtonProps>) => {
   return (
     <Button
       disabled={disabled}
       onClick={onClick}
       variant="outlined"
+      color="error"
       sx={theme => ({
-        color: theme.palette.error.main,
-        borderColor: theme.palette.error.main,
-        background: theme.palette.background.default,
+        bgcolor: 'background.default',
         '&:hover': {
-          color: theme.palette.background.default,
-          borderColor: theme.palette.error.main,
-          background: alpha(theme.palette.error.main, 0.7),
+          color: 'background.default',
+          borderColor: 'error.main',
+          bgcolor: alpha(theme.palette.error.main, 0.7),
         },
       })}
     >

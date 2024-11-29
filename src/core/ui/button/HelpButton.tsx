@@ -6,18 +6,10 @@ interface HelpButtonProps {
   fontSize?: 'inherit' | 'large' | 'medium' | 'small';
 }
 
-export const HelpButton = ({ helpText, fontSize = 'small' }: HelpButtonProps) => {
+const HelpButton = ({ helpText, fontSize = 'small' }: HelpButtonProps) => {
   return (
     <Tooltip title={helpText} arrow placement="right">
-      <Help
-        color="primary"
-        sx={theme => ({
-          icon: {
-            marginLeft: theme.spacing(1),
-          },
-        })}
-        fontSize={fontSize}
-      />
+      <Help color="primary" sx={{ ml: 1 }} fontSize={fontSize} />
     </Tooltip>
   );
 };

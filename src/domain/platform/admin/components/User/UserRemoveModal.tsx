@@ -1,4 +1,4 @@
-import NegativeButton from '@/core/ui/button/deprecated/NegativeButton';
+import NegativeButton from '@/core/ui/button/NegativeButton';
 import { DialogActions, DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
 import Loading from '@/core/ui/loading/Loading';
 import Dialog from '@mui/material/Dialog';
