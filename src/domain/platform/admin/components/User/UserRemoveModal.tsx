@@ -1,9 +1,9 @@
-import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
-import Dialog from '@mui/material/Dialog';
-import WrapperButton from '@/core/ui/button/deprecated/WrapperButton';
+import NegativeButton from '@/core/ui/button/deprecated/NegativeButton';
+import { DialogActions, DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
 import Loading from '@/core/ui/loading/Loading';
-import { DialogTitle, DialogContent, DialogActions } from '@/core/ui/dialog/deprecated';
+import Dialog from '@mui/material/Dialog';
+import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface UserRemoveModalProps {
   show: boolean;
@@ -25,7 +25,9 @@ const UserRemoveModal: FC<UserRemoveModalProps> = ({ show, onCancel, onConfirm, 
         {loading ? (
           <Loading text={'Loading ...'} />
         ) : (
-          <WrapperButton small variant={'negative'} onClick={onConfirm} disabled={loading} text={t('buttons.remove')} />
+          <NegativeButton onClick={onConfirm} disabled={loading}>
+            {t('buttons.remove')}
+          </NegativeButton>
         )}
       </DialogActions>
     </Dialog>

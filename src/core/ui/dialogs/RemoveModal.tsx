@@ -1,6 +1,6 @@
-import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
-import WrapperButton from '../button/deprecated/WrapperButton';
+import { useTranslation } from 'react-i18next';
+import NegativeButton from '../button/deprecated/NegativeButton';
 import { DialogActions, DialogContent, DialogTitle } from '../dialog/deprecated';
 
 type RelationRemoveModalProps = {
@@ -22,7 +22,7 @@ const RemoveModal = ({ show, text, onCancel, title, onConfirm }: RelationRemoveM
       </DialogTitle>
       <DialogContent dividers>{text}</DialogContent>
       <DialogActions>
-        <WrapperButton small variant={'negative'} onClick={onConfirm} text={t('buttons.remove')} />
+        <NegativeButton onClick={onConfirm}>{t('buttons.remove')}</NegativeButton>
       </DialogActions>
     </Dialog>
   );

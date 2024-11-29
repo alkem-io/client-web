@@ -1,7 +1,3 @@
-import { Grid } from '@mui/material';
-import { Form, Formik } from 'formik';
-import { useTranslation } from 'react-i18next';
-import * as yup from 'yup';
 import {
   GroupInfoFragment,
   Profile,
@@ -10,15 +6,19 @@ import {
   Tagset,
   User,
 } from '@/core/apollo/generated/graphql-schema';
-import { GroupFormInput } from './GroupFormInput';
-import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import WrapperButton from '@/core/ui/button/deprecated/WrapperButton';
+import NegativeButton from '@/core/ui/button/deprecated/NegativeButton';
 import Section, { Header } from '@/core/ui/content/deprecated/Section';
+import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/components/Common/TagsetSegment';
+import { Button, Grid } from '@mui/material';
+import { Form, Formik } from 'formik';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
 import GroupMembersDetails from '../GroupMembersDetails';
+import { GroupFormInput } from './GroupFormInput';
 
 type GroupFormProps = {
   title?: string;
@@ -129,31 +129,22 @@ export const GroupForm = ({ title, group, members, onSave, onCancel, onDelete }:
                   <Grid container item justifyContent={'flex-end'} spacing={2}>
                     {onCancel && (
                       <Grid item>
-                        <WrapperButton
-                          variant={isEditMode ? 'default' : 'primary'}
-                          onClick={() => onCancel()}
-                          disabled={isSubmitting}
-                          text={t(`buttons.${isEditMode ? 'cancel' : 'back'}` as const)}
-                        />
+                        <Button onClick={onCancel} disabled={isSubmitting} variant="outlined">
+                          {t(`buttons.${isEditMode ? 'cancel' : 'back'}`)}
+                        </Button>
                       </Grid>
                     )}
                     {onDelete && (
                       <Grid item>
-                        <WrapperButton
-                          variant={'negative'}
-                          onClick={() => onDelete(groupId)}
-                          disabled={isSubmitting}
-                          text={t('buttons.delete')}
-                        />
+                        <NegativeButton onClick={() => onDelete(groupId)} disabled={isSubmitting}>
+                          {t('buttons.delete')}
+                        </NegativeButton>
                       </Grid>
                     )}
                     <Grid item>
-                      <WrapperButton
-                        variant={'primary'}
-                        type={'submit'}
-                        disabled={isSubmitting}
-                        text={t('buttons.save')}
-                      />
+                      <Button variant="outlined" type="submit" disabled={isSubmitting}>
+                        {t('buttons.save')}
+                      </Button>
                     </Grid>
                   </Grid>
                 )}

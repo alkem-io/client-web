@@ -1,33 +1,32 @@
-import { Form, Formik } from 'formik';
-import React, { FC, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import useNavigate from '@/core/routing/useNavigate';
-import * as yup from 'yup';
-import { Grid } from '@mui/material';
-import { Tagset, UpdateTagset } from '@/domain/common/profile/Profile';
 import {
+  CreateOrganizationInput,
   Organization,
   OrganizationVerificationEnum,
-  UpdateOrganizationInput,
-  CreateOrganizationInput,
   TagsetType,
+  UpdateOrganizationInput,
 } from '@/core/apollo/generated/graphql-schema';
-import { EditMode } from '@/core/ui/forms/editMode';
-import WrapperButton from '@/core/ui/button/deprecated/WrapperButton';
+import useNavigate from '@/core/routing/useNavigate';
 import Section, { Header } from '@/core/ui/content/deprecated/Section';
+import { EditMode } from '@/core/ui/forms/editMode';
+import Gutters from '@/core/ui/grid/Gutters';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
+import { EmptyLocation } from '@/domain/common/location/Location';
+import { LocationSegment } from '@/domain/common/location/LocationSegment';
+import { formatLocation } from '@/domain/common/location/LocationUtils';
+import { Tagset, UpdateTagset } from '@/domain/common/profile/Profile';
+import { OrganizationInput } from '@/domain/community/contributor/organization/OrganizationInput';
+import { OrgVerificationLifecycleEvents } from '@/domain/community/contributor/organization/adminOrganizations/useAdminGlobalOrganizationsList';
+import { Button, Grid } from '@mui/material';
+import { Form, Formik } from 'formik';
+import { FC, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
+import { NameSegment, nameSegmentSchema } from '../Common/NameSegment';
+import { OrganizationSegment, organizationSegmentSchema } from '../Common/OrganizationSegment';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
+import { ProfileSegment, profileSegmentSchema } from '../Common/ProfileSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '../Common/TagsetSegment';
-import { ProfileSegment, profileSegmentSchema } from '../Common/ProfileSegment';
-import { organizationSegmentSchema, OrganizationSegment } from '../Common/OrganizationSegment';
-import { NameSegment, nameSegmentSchema } from '../Common/NameSegment';
-import { OrganizationInput } from '@/domain/community/contributor/organization/OrganizationInput';
-import { formatLocation } from '@/domain/common/location/LocationUtils';
-import { LocationSegment } from '@/domain/common/location/LocationSegment';
-import { EmptyLocation } from '@/domain/common/location/Location';
-import Gutters from '@/core/ui/grid/Gutters';
-import { OrgVerificationLifecycleEvents } from '@/domain/community/contributor/organization/adminOrganizations/useAdminGlobalOrganizationsList';
 
 const EmptyOrganization: Omit<Organization, 'authorization' | 'agent'> = {
   id: '',
@@ -213,11 +212,9 @@ export const OrganizationForm: FC<Props> = ({
 
   const backButton = (
     <Grid item>
-      <WrapperButton
-        variant={editMode ? 'default' : 'primary'}
-        onClick={handleBack}
-        text={t(`buttons.${editMode ? 'cancel' : 'back'}` as const)}
-      />
+      <Button variant="outlined" onClick={handleBack}>
+        {t(`buttons.${editMode ? 'cancel' : 'back'}`)}
+      </Button>
     </Grid>
   );
 
@@ -278,7 +275,9 @@ export const OrganizationForm: FC<Props> = ({
                       <Grid container item justifyContent={'flex-end'} spacing={2}>
                         {backButton}
                         <Grid item>
-                          <WrapperButton variant="primary" type={'submit'} text={t('buttons.save')} />
+                          <Button variant="outlined" type="submit">
+                            {t('buttons.save')}
+                          </Button>
                         </Grid>
                       </Grid>
                     )}
