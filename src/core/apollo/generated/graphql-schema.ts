@@ -1543,6 +1543,8 @@ export type Config = {
   apm: Apm;
   /** Authentication configuration. */
   authentication: AuthenticationConfig;
+  /** Visual constraints for the given type */
+  defaultVisualTypeConstraints: VisualConstraints;
   /** The feature flags for the platform */
   featureFlags: Array<PlatformFeatureFlag>;
   /** Integration with a 3rd party Geo information service */
@@ -1553,8 +1555,10 @@ export type Config = {
   sentry: Sentry;
   /** Configuration for storage providers, e.g. file */
   storage: StorageConfig;
-  /** Visual constraints for different visual types */
-  visualTypeConstraints: VisualTypeConstraints;
+};
+
+export type ConfigDefaultVisualTypeConstraintsArgs = {
+  type: VisualType;
 };
 
 export enum ContentUpdatePolicy {
@@ -6867,18 +6871,6 @@ export enum VisualType {
   Card = 'CARD',
 }
 
-export type VisualTypeConstraints = {
-  __typename?: 'VisualTypeConstraints';
-  /** Avatar visual dimensions */
-  avatar: VisualConstraints;
-  /** Banner visual dimensions */
-  banner: VisualConstraints;
-  /** BannerWide visual dimensions */
-  bannerWide: VisualConstraints;
-  /** Card visual dimensions */
-  card: VisualConstraints;
-};
-
 export type VisualUploadImageInput = {
   alternativeText?: InputMaybe<Scalars['String']>;
   visualID: Scalars['String'];
@@ -6992,58 +6984,25 @@ export type UploadFileMutationVariables = Exact<{
 
 export type UploadFileMutation = { __typename?: 'Mutation'; uploadFileOnStorageBucket: string };
 
-export type PlatformVisualsConstraintsQueryVariables = Exact<{
-  includeAvatar?: InputMaybe<Scalars['Boolean']>;
-  includeBanner?: InputMaybe<Scalars['Boolean']>;
-  includeCard?: InputMaybe<Scalars['Boolean']>;
-  includeBannerWide?: InputMaybe<Scalars['Boolean']>;
+export type DefaultVisualTypeConstraintsQueryVariables = Exact<{
+  visualType: VisualType;
 }>;
 
-export type PlatformVisualsConstraintsQuery = {
+export type DefaultVisualTypeConstraintsQuery = {
   __typename?: 'Query';
   platform: {
     __typename?: 'Platform';
     id: string;
     configuration: {
       __typename?: 'Config';
-      visualTypeConstraints: {
-        __typename?: 'VisualTypeConstraints';
-        avatar?: {
-          __typename?: 'VisualConstraints';
-          maxHeight: number;
-          maxWidth: number;
-          minHeight: number;
-          minWidth: number;
-          aspectRatio: number;
-          allowedTypes: Array<string>;
-        };
-        banner?: {
-          __typename?: 'VisualConstraints';
-          maxHeight: number;
-          maxWidth: number;
-          minHeight: number;
-          minWidth: number;
-          aspectRatio: number;
-          allowedTypes: Array<string>;
-        };
-        card?: {
-          __typename?: 'VisualConstraints';
-          maxHeight: number;
-          maxWidth: number;
-          minHeight: number;
-          minWidth: number;
-          aspectRatio: number;
-          allowedTypes: Array<string>;
-        };
-        bannerWide?: {
-          __typename?: 'VisualConstraints';
-          maxHeight: number;
-          maxWidth: number;
-          minHeight: number;
-          minWidth: number;
-          aspectRatio: number;
-          allowedTypes: Array<string>;
-        };
+      defaultVisualTypeConstraints: {
+        __typename?: 'VisualConstraints';
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+        aspectRatio: number;
+        allowedTypes: Array<string>;
       };
     };
   };

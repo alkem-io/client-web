@@ -4113,49 +4113,18 @@ export type UploadFileMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UploadFileMutation,
   SchemaTypes.UploadFileMutationVariables
 >;
-export const PlatformVisualsConstraintsDocument = gql`
-  query PlatformVisualsConstraints(
-    $includeAvatar: Boolean = false
-    $includeBanner: Boolean = false
-    $includeCard: Boolean = false
-    $includeBannerWide: Boolean = false
-  ) {
+export const DefaultVisualTypeConstraintsDocument = gql`
+  query DefaultVisualTypeConstraints($visualType: VisualType!) {
     platform {
       id
       configuration {
-        visualTypeConstraints {
-          avatar @include(if: $includeAvatar) {
-            maxHeight
-            maxWidth
-            minHeight
-            minWidth
-            aspectRatio
-            allowedTypes
-          }
-          banner @include(if: $includeBanner) {
-            maxHeight
-            maxWidth
-            minHeight
-            minWidth
-            aspectRatio
-            allowedTypes
-          }
-          card @include(if: $includeCard) {
-            maxHeight
-            maxWidth
-            minHeight
-            minWidth
-            aspectRatio
-            allowedTypes
-          }
-          bannerWide @include(if: $includeBannerWide) {
-            maxHeight
-            maxWidth
-            minHeight
-            minWidth
-            aspectRatio
-            allowedTypes
-          }
+        defaultVisualTypeConstraints(type: $visualType) {
+          maxHeight
+          maxWidth
+          minHeight
+          minWidth
+          aspectRatio
+          allowedTypes
         }
       }
     }
@@ -4163,60 +4132,59 @@ export const PlatformVisualsConstraintsDocument = gql`
 `;
 
 /**
- * __usePlatformVisualsConstraintsQuery__
+ * __useDefaultVisualTypeConstraintsQuery__
  *
- * To run a query within a React component, call `usePlatformVisualsConstraintsQuery` and pass it any options that fit your needs.
- * When your component renders, `usePlatformVisualsConstraintsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useDefaultVisualTypeConstraintsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDefaultVisualTypeConstraintsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = usePlatformVisualsConstraintsQuery({
+ * const { data, loading, error } = useDefaultVisualTypeConstraintsQuery({
  *   variables: {
- *      includeAvatar: // value for 'includeAvatar'
- *      includeBanner: // value for 'includeBanner'
- *      includeCard: // value for 'includeCard'
- *      includeBannerWide: // value for 'includeBannerWide'
+ *      visualType: // value for 'visualType'
  *   },
  * });
  */
-export function usePlatformVisualsConstraintsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.PlatformVisualsConstraintsQuery,
-    SchemaTypes.PlatformVisualsConstraintsQueryVariables
+export function useDefaultVisualTypeConstraintsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.DefaultVisualTypeConstraintsQuery,
+    SchemaTypes.DefaultVisualTypeConstraintsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.PlatformVisualsConstraintsQuery,
-    SchemaTypes.PlatformVisualsConstraintsQueryVariables
-  >(PlatformVisualsConstraintsDocument, options);
+    SchemaTypes.DefaultVisualTypeConstraintsQuery,
+    SchemaTypes.DefaultVisualTypeConstraintsQueryVariables
+  >(DefaultVisualTypeConstraintsDocument, options);
 }
 
-export function usePlatformVisualsConstraintsLazyQuery(
+export function useDefaultVisualTypeConstraintsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PlatformVisualsConstraintsQuery,
-    SchemaTypes.PlatformVisualsConstraintsQueryVariables
+    SchemaTypes.DefaultVisualTypeConstraintsQuery,
+    SchemaTypes.DefaultVisualTypeConstraintsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.PlatformVisualsConstraintsQuery,
-    SchemaTypes.PlatformVisualsConstraintsQueryVariables
-  >(PlatformVisualsConstraintsDocument, options);
+    SchemaTypes.DefaultVisualTypeConstraintsQuery,
+    SchemaTypes.DefaultVisualTypeConstraintsQueryVariables
+  >(DefaultVisualTypeConstraintsDocument, options);
 }
 
-export type PlatformVisualsConstraintsQueryHookResult = ReturnType<typeof usePlatformVisualsConstraintsQuery>;
-export type PlatformVisualsConstraintsLazyQueryHookResult = ReturnType<typeof usePlatformVisualsConstraintsLazyQuery>;
-export type PlatformVisualsConstraintsQueryResult = Apollo.QueryResult<
-  SchemaTypes.PlatformVisualsConstraintsQuery,
-  SchemaTypes.PlatformVisualsConstraintsQueryVariables
+export type DefaultVisualTypeConstraintsQueryHookResult = ReturnType<typeof useDefaultVisualTypeConstraintsQuery>;
+export type DefaultVisualTypeConstraintsLazyQueryHookResult = ReturnType<
+  typeof useDefaultVisualTypeConstraintsLazyQuery
 >;
-export function refetchPlatformVisualsConstraintsQuery(
-  variables?: SchemaTypes.PlatformVisualsConstraintsQueryVariables
+export type DefaultVisualTypeConstraintsQueryResult = Apollo.QueryResult<
+  SchemaTypes.DefaultVisualTypeConstraintsQuery,
+  SchemaTypes.DefaultVisualTypeConstraintsQueryVariables
+>;
+export function refetchDefaultVisualTypeConstraintsQuery(
+  variables: SchemaTypes.DefaultVisualTypeConstraintsQueryVariables
 ) {
-  return { query: PlatformVisualsConstraintsDocument, variables: variables };
+  return { query: DefaultVisualTypeConstraintsDocument, variables: variables };
 }
 
 export const InnovationPackProfilePageDocument = gql`

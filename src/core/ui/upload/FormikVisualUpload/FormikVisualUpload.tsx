@@ -8,7 +8,7 @@ import FileUploadWrapper from '../FileUploadWrapper';
 import { CropDialog } from '../VisualUpload/CropDialog';
 import { useField } from 'formik';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
-import { usePlatformVisualsConstraintsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useDefaultVisualTypeConstraintsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
 import { Caption } from '../../typography';
 import { gutters } from '../../grid/utils';
@@ -67,25 +67,10 @@ const FormikAvatarUpload = ({
     return defaultVisualUrls[visualType];
   }, [selectedFile, visualType, defaultVisualUrls]);
 
-  const { data: dimensionsData, loading } = usePlatformVisualsConstraintsQuery({
-    variables: {
-      includeAvatar: visualType === VisualType.Avatar,
-      includeBanner: visualType === VisualType.Banner,
-      includeCard: visualType === VisualType.Card,
-      includeBannerWide: visualType === VisualType.BannerWide,
-    },
+  const { data: constraintsData, loading } = useDefaultVisualTypeConstraintsQuery({
+    variables: { visualType },
   });
-  const allConstraints = dimensionsData?.platform.configuration.visualTypeConstraints;
-  const visualTypeConstraints =
-    visualType === VisualType.Avatar
-      ? allConstraints?.avatar
-      : visualType === VisualType.Banner
-      ? allConstraints?.banner
-      : visualType === VisualType.Card
-      ? allConstraints?.card
-      : visualType === VisualType.BannerWide
-      ? allConstraints?.bannerWide
-      : undefined;
+  const visualTypeConstraints = constraintsData?.platform.configuration.defaultVisualTypeConstraints;
 
   if (loading || !visualTypeConstraints) {
     return <FormikAvatarUploadSkeleton height={height} {...containerProps} />;
