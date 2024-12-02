@@ -1,5 +1,6 @@
+import { InAppNotificationCategory, NotificationEventType } from '@/core/apollo/generated/graphql-schema';
 import { warn as logWarn, TagCategoryValues } from '../../core/logging/sentry/log';
-import { InAppNotificationCategory, InAppNotificationProps, InAppNotificationType } from './useInAppNotifications';
+import { InAppNotificationProps } from './useInAppNotifications';
 import { CollaborationCalloutPublishedView } from './views/CollaborationCalloutPublishedView';
 import { CommunicationUserMentionView } from './views/CommunicationUserMentionView';
 import { CommunityNewMemberAdminView } from './views/CommunityNewMemberAdminView';
@@ -7,12 +8,12 @@ import { CommunityNewMemberView } from './views/CommunityNewMemberView';
 
 export const InAppNotificationItem = ({ ...item }: InAppNotificationProps) => {
   switch (item.type) {
-    case InAppNotificationType.COLLABORATION_CALLOUT_PUBLISHED:
+    case NotificationEventType.CollaborationCalloutPublished:
       return <CollaborationCalloutPublishedView {...item} />;
-    case InAppNotificationType.COMMUNICATION_USER_MENTION:
+    case NotificationEventType.CommunicationUserMention:
       return <CommunicationUserMentionView {...item} />;
-    case InAppNotificationType.COMMUNITY_NEW_MEMBER:
-      if (item.category === InAppNotificationCategory.ADMIN) {
+    case NotificationEventType.CommunityNewMember:
+      if (item.category === InAppNotificationCategory.Admin) {
         return <CommunityNewMemberAdminView {...item} />;
       }
       return <CommunityNewMemberView {...item} />;

@@ -1738,19 +1738,19 @@
         "delete": "Delete Notification"
       },
       "type": {
-        "collaborationCalloutPublished": {
+        "COLLABORATION_CALLOUT_PUBLISHED": {
           "subject": "{{spaceName}} - New {{calloutType}} is published \"{{calloutName}}\", have a look!",
           "description": "{{contributorName}} published a new {{calloutType}} in {{spaceType}}: {{spaceName}}, with name: {{calloutName}}."
         },
-        "communicationUserMention": {
+        "COMMUNICATION_USER_MENTION": {
           "subject": "{{commenterName}} mentioned you in a comment on {{calloutName}}:",
           "description": ""
         },
-        "communityNewMember": {
+        "COMMUNITY_NEW_MEMBER": {
           "subject": "{{spaceName}} - Welcome to the Community!",
           "description": "Thank you for joining {{spaceName}}!<br /> You can now start contributing to the various posts and whiteboards, further deepen your knowledge about this topic, and connect with other Contributors."
         },
-        "communityNewMemberAdmin": {
+        "COMMUNITY_NEW_MEMBER_ADMIN": {
           "subject": "{{memberType}} \"{{memberName}}\" joined {{spaceName}}",
           "description": "The {{memberType}} {{memberName}} has joined {{spaceName}}, of which you are an admin."
         }

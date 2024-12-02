@@ -13,7 +13,7 @@ export const CommunityNewMemberAdminView = ({ id, state, space, triggeredAt, act
 
     return {
       id,
-      type: 'communityNewMemberAdmin',
+      type: 'COMMUNITY_NEW_MEMBER_ADMIN',
       state,
       space: {
         avatarUrl: space?.profile?.visual?.uri ?? '',

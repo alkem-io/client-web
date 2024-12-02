@@ -2,36 +2,27 @@ import { useEffect, useMemo } from 'react';
 import {
   CalloutType,
   CommunityContributorType,
+  InAppNotificationCategory,
   InAppNotificationState,
+  NotificationEventType,
   PlatformRole,
   SpaceLevel,
-} from '../../core/apollo/generated/graphql-schema';
+} from '@/core/apollo/generated/graphql-schema';
 import {
   refetchInAppNotificationsQuery,
   useInAppNotificationsQuery,
   useUpdateNotificationStateMutation,
-} from '../../core/apollo/generated/apollo-hooks';
-import { useUserContext } from '../../domain/community/user';
+} from '@/core/apollo/generated/apollo-hooks';
+import { useUserContext } from '@/domain/community/user';
 
 const POLLING_INTERVAL = 5 * 1000; // 5 seconds
 
-export enum InAppNotificationType {
-  COLLABORATION_CALLOUT_PUBLISHED = 'collaborationCalloutPublished',
-  COMMUNICATION_USER_MENTION = 'communicationUserMention',
-  COMMUNITY_NEW_MEMBER = 'communityNewMember',
-}
-
-export enum InAppNotificationCategory {
-  PERSONAL = 'self',
-  ADMIN = 'admin',
-}
-
 export interface InAppNotificationProps {
   id: string;
-  type: string; // InAppNotificationType;
+  type: NotificationEventType;
   triggeredAt: Date;
   state: InAppNotificationState;
-  category: string; // InAppNotificationCategory;
+  category: InAppNotificationCategory;
   triggeredBy?: {
     profile:
       | {
