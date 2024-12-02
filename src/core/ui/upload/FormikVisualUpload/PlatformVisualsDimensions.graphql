@@ -11,7 +11,7 @@ query PlatformVisualsConstraints(
     id
     configuration {
       visualTypeConstraints {
-        Avatar @include(if: $includeAvatar) {
+        avatar @include(if: $includeAvatar) {
           maxHeight
           maxWidth
           minHeight
@@ -19,7 +19,7 @@ query PlatformVisualsConstraints(
           aspectRatio
           allowedTypes
         }
-        Banner @include(if: $includeBanner) {
+        banner @include(if: $includeBanner) {
           maxHeight
           maxWidth
           minHeight
@@ -27,7 +27,7 @@ query PlatformVisualsConstraints(
           aspectRatio
           allowedTypes
         }
-        Card @include(if: $includeCard) {
+        card @include(if: $includeCard) {
           maxHeight
           maxWidth
           minHeight
@@ -35,7 +35,7 @@ query PlatformVisualsConstraints(
           aspectRatio
           allowedTypes
         }
-        BannerWide @include(if: $includeBannerWide) {
+        bannerWide @include(if: $includeBannerWide) {
           maxHeight
           maxWidth
           minHeight

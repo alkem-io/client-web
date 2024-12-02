@@ -4124,7 +4124,7 @@ export const PlatformVisualsConstraintsDocument = gql`
       id
       configuration {
         visualTypeConstraints {
-          Avatar @include(if: $includeAvatar) {
+          avatar @include(if: $includeAvatar) {
             maxHeight
             maxWidth
             minHeight
@@ -4132,7 +4132,7 @@ export const PlatformVisualsConstraintsDocument = gql`
             aspectRatio
             allowedTypes
           }
-          Banner @include(if: $includeBanner) {
+          banner @include(if: $includeBanner) {
             maxHeight
             maxWidth
             minHeight
@@ -4140,7 +4140,7 @@ export const PlatformVisualsConstraintsDocument = gql`
             aspectRatio
             allowedTypes
           }
-          Card @include(if: $includeCard) {
+          card @include(if: $includeCard) {
             maxHeight
             maxWidth
             minHeight
@@ -4148,7 +4148,7 @@ export const PlatformVisualsConstraintsDocument = gql`
             aspectRatio
             allowedTypes
           }
-          BannerWide @include(if: $includeBannerWide) {
+          bannerWide @include(if: $includeBannerWide) {
             maxHeight
             maxWidth
             minHeight

@@ -202,7 +202,7 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
         if (error instanceof Error) {
           logError(error);
         } else {
-          logError(`Error uploading visuals for subspace: ${error}`);
+          logError(`Error uploading visuals for subspace: ${error}`, { label: 'TempStorage' });
         }
       }
       return data?.createSubspace;

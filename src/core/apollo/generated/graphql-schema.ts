@@ -1554,7 +1554,7 @@ export type Config = {
   /** Configuration for storage providers, e.g. file */
   storage: StorageConfig;
   /** Visual constraints for different visual types */
-  visualTypeConstraints: VisualTypeContraints;
+  visualTypeConstraints: VisualTypeConstraints;
 };
 
 export enum ContentUpdatePolicy {
@@ -6867,16 +6867,16 @@ export enum VisualType {
   Card = 'CARD',
 }
 
-export type VisualTypeContraints = {
-  __typename?: 'VisualTypeContraints';
+export type VisualTypeConstraints = {
+  __typename?: 'VisualTypeConstraints';
   /** Avatar visual dimensions */
-  Avatar: VisualConstraints;
+  avatar: VisualConstraints;
   /** Banner visual dimensions */
-  Banner: VisualConstraints;
+  banner: VisualConstraints;
   /** BannerWide visual dimensions */
-  BannerWide: VisualConstraints;
+  bannerWide: VisualConstraints;
   /** Card visual dimensions */
-  Card: VisualConstraints;
+  card: VisualConstraints;
 };
 
 export type VisualUploadImageInput = {
@@ -7007,8 +7007,8 @@ export type PlatformVisualsConstraintsQuery = {
     configuration: {
       __typename?: 'Config';
       visualTypeConstraints: {
-        __typename?: 'VisualTypeContraints';
-        Avatar?: {
+        __typename?: 'VisualTypeConstraints';
+        avatar?: {
           __typename?: 'VisualConstraints';
           maxHeight: number;
           maxWidth: number;
@@ -7017,7 +7017,7 @@ export type PlatformVisualsConstraintsQuery = {
           aspectRatio: number;
           allowedTypes: Array<string>;
         };
-        Banner?: {
+        banner?: {
           __typename?: 'VisualConstraints';
           maxHeight: number;
           maxWidth: number;
@@ -7026,7 +7026,7 @@ export type PlatformVisualsConstraintsQuery = {
           aspectRatio: number;
           allowedTypes: Array<string>;
         };
-        Card?: {
+        card?: {
           __typename?: 'VisualConstraints';
           maxHeight: number;
           maxWidth: number;
@@ -7035,7 +7035,7 @@ export type PlatformVisualsConstraintsQuery = {
           aspectRatio: number;
           allowedTypes: Array<string>;
         };
-        BannerWide?: {
+        bannerWide?: {
           __typename?: 'VisualConstraints';
           maxHeight: number;
           maxWidth: number;

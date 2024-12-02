@@ -44,11 +44,8 @@ export interface FormikAvatarUploadProps extends BoxProps {
 }
 
 /**
- * if height or width are not specified, default size would be used instead
- * @param visual
- * @param height
- * @param width
- * @constructor
+ * Dimensions are obtained from the query PlatformVisualsConstraints using the visualType
+ * If height is provided, width is calculated based on the aspect ratio of the visualType, if not default height is used
  */
 const FormikAvatarUpload = ({
   name,
@@ -81,13 +78,13 @@ const FormikAvatarUpload = ({
   const allConstraints = dimensionsData?.platform.configuration.visualTypeConstraints;
   const visualTypeConstraints =
     visualType === VisualType.Avatar
-      ? allConstraints?.Avatar
+      ? allConstraints?.avatar
       : visualType === VisualType.Banner
-      ? allConstraints?.Banner
+      ? allConstraints?.banner
       : visualType === VisualType.Card
-      ? allConstraints?.Card
+      ? allConstraints?.card
       : visualType === VisualType.BannerWide
-      ? allConstraints?.BannerWide
+      ? allConstraints?.bannerWide
       : undefined;
 
   if (loading || !visualTypeConstraints) {
