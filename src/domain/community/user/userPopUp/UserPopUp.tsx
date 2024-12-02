@@ -1,25 +1,24 @@
-import Link from '@mui/material/Link';
-import { Grid } from '@mui/material';
+import { DialogActions, DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
+import AlkemioAvatar from '@/core/ui/image/AlkemioAvatar';
+import { RouterLink } from '@/core/ui/link/deprecated/RouterLink';
+import Loading from '@/core/ui/loading/Loading';
+import Tag from '@/core/ui/tags/deprecated/Tag';
+import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
+import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
+import { Button, Grid } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
+import Link from '@mui/material/Link';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@mui/styles';
-import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
-import Loading from '@/core/ui/loading/Loading';
-import AlkemioAvatar from '@/core/ui/image/AlkemioAvatar';
-import WrapperButton from '@/core/ui/button/deprecated/WrapperButton';
-import UserPopUpDelimiter from './UserPopUpDelimiter';
-import { DialogActions, DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
-import { RouterLink } from '@/core/ui/link/deprecated/RouterLink';
-import Tag from '@/core/ui/tags/deprecated/Tag';
-import UserPopUpTagContainer from './UserPopUpTagContainer';
-import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
+import { useTranslation } from 'react-i18next';
 import { useUserMetadata } from '../index';
 import useUserContributionDisplayNames from '../userContributions/useUserContributionDisplayNames';
+import UserPopUpDelimiter from './UserPopUpDelimiter';
+import UserPopUpTagContainer from './UserPopUpTagContainer';
 
 const useUserPopUpStyles = makeStyles(theme => ({
   header: {
@@ -244,7 +243,9 @@ const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
       </DialogContent>
       <DialogActions>
         <Link component={RouterLink} to={buildUserProfileUrl(user?.nameID || '')} underline="none">
-          <WrapperButton variant={'primary'} text={t('buttons.view-profile')} arial-label="user-profile-button" />
+          <Button variant="outlined" aria-label="user-profile-button">
+            {t('buttons.view-profile')}
+          </Button>
         </Link>
       </DialogActions>
     </Dialog>
