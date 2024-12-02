@@ -3194,6 +3194,7 @@ export const InAppNotificationUserMentionedFragmentDoc = gql`
         }
       }
     }
+    commentUrl
     comment
     contributorType
   }

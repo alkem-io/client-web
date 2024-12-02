@@ -11,6 +11,7 @@ export const CommunicationUserMentionView = ({
   triggeredBy,
   triggeredAt,
   comment,
+  commentUrl,
 }: InAppNotificationProps) => {
   const notification: InAppNotificationBaseViewProps = useMemo(() => {
     const notificationTextValues = {
@@ -28,7 +29,7 @@ export const CommunicationUserMentionView = ({
         avatarUrl: space?.profile?.visual?.uri ?? '',
       },
       resource: {
-        url: callout?.framing?.profile?.url ?? '',
+        url: commentUrl ?? '',
       },
       contributor: {
         avatarUrl: triggeredBy?.profile?.visual?.uri ?? '',
@@ -36,7 +37,7 @@ export const CommunicationUserMentionView = ({
       triggeredAt: triggeredAt,
       values: notificationTextValues,
     };
-  }, [id, state, space, triggeredBy, callout, triggeredAt, comment]);
+  }, [id, state, space, triggeredBy, callout, triggeredAt, comment, commentUrl]);
 
   return <InAppNotificationBaseView {...notification} />;
 };

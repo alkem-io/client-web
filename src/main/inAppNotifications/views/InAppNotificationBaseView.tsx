@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Badge, Box, Divider, ListItemButtonProps } from '@mui/material';
+import { Badge, Box, Divider, ListItemButtonProps, Typography } from '@mui/material';
 import ListItemButton, { ListItemButtonTypeMap } from '@mui/material/ListItemButton/ListItemButton';
 import MarkEmailUnreadOutlinedIcon from '@mui/icons-material/MarkEmailUnreadOutlined';
 import DraftsOutlinedIcon from '@mui/icons-material/DraftsOutlined';
@@ -136,7 +136,7 @@ export const InAppNotificationBaseView = ({
   const renderComments = useCallback(() => {
     if (values.comment) {
       return (
-        <WrapperMarkdown disableParagraphPadding caption>
+        <WrapperMarkdown disableParagraphPadding caption plain>
           {getTruncatedComment(values.comment)}
         </WrapperMarkdown>
       );
@@ -170,7 +170,9 @@ export const InAppNotificationBaseView = ({
       >
         <Gutters row disablePadding>
           <Gutters column flexGrow={1} disableGap justifyContent={'center'}>
-            <Caption
+            <Typography
+              variant="h4"
+              color="primary"
               sx={{
                 display: 'flex',
                 flexDirection: 'row',
@@ -191,8 +193,10 @@ export const InAppNotificationBaseView = ({
                 />
               )}
               {renderFormattedTranslation(`components.inAppNotifications.type.${type}.subject`)}
-            </Caption>
-            <Caption>{renderFormattedTranslation(`components.inAppNotifications.type.${type}.description`)}</Caption>
+            </Typography>
+            <Typography variant="body2" color="neutral.light">
+              {renderFormattedTranslation(`components.inAppNotifications.type.${type}.description`)}
+            </Typography>
             {renderComments()}
           </Gutters>
           <Gutters alignItems={'center'}>

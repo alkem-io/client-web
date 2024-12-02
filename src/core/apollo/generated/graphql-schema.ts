@@ -27905,6 +27905,7 @@ export type InAppNotificationsQuery = {
         category: InAppNotificationCategory;
         state: InAppNotificationState;
         triggeredAt: Date;
+        commentUrl: string;
         comment: string;
         contributorType: CommunityContributorType;
         triggeredBy:
@@ -28107,6 +28108,7 @@ export type InAppNotificationCommunityNewMemberFragment = {
 
 export type InAppNotificationUserMentionedFragment = {
   __typename?: 'InAppNotificationUserMentioned';
+  commentUrl: string;
   comment: string;
   contributorType: CommunityContributorType;
   triggeredBy:

@@ -89,6 +89,7 @@ fragment InAppNotificationUserMentioned on InAppNotificationUserMentioned {
       }
     }
   }
+  commentUrl
   comment
   contributorType
 }
