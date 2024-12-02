@@ -1,13 +1,13 @@
-import React, { FC } from 'react';
-import { Link } from 'react-router-dom';
-import { UserAvatarsProvider } from '@/domain/community/user/containers/UserAvatarsProvider/UserAvatarsProvider';
 import { User } from '@/core/apollo/generated/graphql-schema';
 import AlkemioAvatar from '@/core/ui/image/AlkemioAvatar';
-import GroupMembersDetailsAvatarContainer from './GroupMembersDetailsAvatarContainer';
-import WrapperButton from '@/core/ui/button/deprecated/WrapperButton';
 import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
-import { useTranslation } from 'react-i18next';
+import { UserAvatarsProvider } from '@/domain/community/user/containers/UserAvatarsProvider/UserAvatarsProvider';
 import UserPopUp from '@/domain/community/user/userPopUp/UserPopUp';
+import { Button } from '@mui/material';
+import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import GroupMembersDetailsAvatarContainer from './GroupMembersDetailsAvatarContainer';
 
 interface GroupMembersDetailsProps {
   members: User[];
@@ -44,7 +44,11 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
           );
         }}
       </UserAvatarsProvider>
-      {editLink && <WrapperButton small as={Link} to={'members'} text={t('buttons.edit-members')} />}
+      {editLink && (
+        <Button component={Link} to={'members'}>
+          {t('buttons.edit-members')}
+        </Button>
+      )}
     </>
   );
 };

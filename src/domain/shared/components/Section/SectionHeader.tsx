@@ -1,7 +1,7 @@
-import { Box, Typography } from '@mui/material';
-import React, { FC, ReactNode } from 'react';
 import HelpButton from '@/core/ui/button/HelpButton';
 import MetricCircleView from '@/domain/platform/metrics/MetricCircleView';
+import { Box, Typography } from '@mui/material';
+import { FC, ReactNode } from 'react';
 
 interface SectionHeaderProps {
   text: ReactNode;
