@@ -2,128 +2,76 @@ import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useUrlParams } from '@/core/routing/useUrlParams';
 import {
-  refetchAdminSpaceSubspacesPageQuery,
-  refetchDashboardWithMembershipsQuery,
   refetchSubspaceProfileInfoQuery,
-  useCreateSubspaceMutation,
   useSubspaceProfileInfoQuery,
   useUpdateSpaceMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import SaveButton from '@/core/ui/actions/SaveButton';
 import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
-import FormMode from '@/domain/platform/admin/components/FormMode';
 import ProfileForm, { ProfileFormValues } from '@/domain/common/profile/ProfileForm';
 import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView';
 import { formatDatabaseLocation } from '@/domain/common/location/LocationUtils';
 import Gutters from '@/core/ui/grid/Gutters';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
-import useNavigate from '@/core/routing/useNavigate';
-import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 
 interface ChallengeProfileViewProps {
-  mode: FormMode;
+  subspaceId: string;
 }
 
-const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ mode }) => {
+const SubspaceProfileView: FC<ChallengeProfileViewProps> = ({ subspaceId }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { spaceNameId = '' } = useUrlParams();
-
-  const { subSpaceId: challengeId } = useRouteResolver();
-
-  // TODO: This code is never used for creation. REMOVE
-  const [createSubspace, { loading: isCreating }] = useCreateSubspaceMutation({
-    onCompleted: data => {
-      onSuccess('Successfully created');
-      navigate(buildSettingsUrl(data.createSubspace.profile.url), { replace: true });
-    },
-    refetchQueries: [
-      refetchAdminSpaceSubspacesPageQuery({ spaceId: spaceNameId }),
-      refetchDashboardWithMembershipsQuery(),
-    ],
-    awaitRefetchQueries: true,
-  });
-
   const [updateSubspace, { loading: isUpdating }] = useUpdateSpaceMutation({
     onCompleted: () => onSuccess('Successfully updated'),
-    refetchQueries: [refetchSubspaceProfileInfoQuery({ subspaceId: challengeId! })],
+    refetchQueries: [refetchSubspaceProfileInfoQuery({ subspaceId: subspaceId! })],
     awaitRefetchQueries: true,
   });
 
   const { data: subspaceProfile } = useSubspaceProfileInfoQuery({
-    variables: { subspaceId: challengeId! },
-    skip: mode === FormMode.create || !challengeId,
+    variables: { subspaceId: subspaceId! },
+    skip: !subspaceId,
   });
 
   const challenge = subspaceProfile?.lookup.space;
 
-  const isLoading = isCreating || isUpdating;
+  const isLoading = isUpdating;
 
   const onSubmit = async (values: ProfileFormValues) => {
     const { name: displayName, nameID, tagsets, tagline, references } = values;
 
-    // TODO: We need to select the template for the user if they want and put it in the collaborationData passing what we get using the createInput service
-    // TODO: This code is never used for creation. REMOVE
-    switch (mode) {
-      case FormMode.create:
-        createSubspace({
-          variables: {
-            input: {
-              nameID: nameID,
-              profileData: {
-                displayName,
-                tagline,
-                location: formatDatabaseLocation(values.location),
-              },
-              spaceID: spaceNameId,
-              tags: tagsets.flatMap(x => x.tags),
-              collaborationData: {},
-            },
-          },
-        });
-        break;
-      case FormMode.update: {
-        if (!challengeId) {
-          throw new Error('Challenge ID is required for update');
-        }
-        updateSubspace({
-          variables: {
-            input: {
-              ID: challengeId,
-              nameID: nameID,
-              profileData: {
-                displayName,
-                tagline,
-                location: formatDatabaseLocation(values.location),
-                tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
-                references: references.map(reference => ({
-                  ID: reference.id,
-                  name: reference.name,
-                  description: reference.description,
-                  uri: reference.uri,
-                })),
-              },
-            },
-          },
-        });
-        break;
-      }
-      default:
-        throw new Error(`Submit mode expected: (${mode}) found`);
+    if (!subspaceId) {
+      throw new Error('Challenge ID is required for update');
     }
+    updateSubspace({
+      variables: {
+        input: {
+          ID: subspaceId,
+          nameID: nameID,
+          profileData: {
+            displayName,
+            tagline,
+            location: formatDatabaseLocation(values.location),
+            tagsets: tagsets.map(tagset => ({ ID: tagset.id, name: tagset.name, tags: tagset.tags })),
+            references: references.map(reference => ({
+              ID: reference.id,
+              name: reference.name,
+              description: reference.description,
+              uri: reference.uri,
+            })),
+          },
+        },
+      },
+    });
   };
 
   let submitWired;
   return (
     <Gutters>
       <ProfileForm
-        isEdit={mode === FormMode.update}
+        isEdit
         name={challenge?.profile.displayName}
         nameID={challenge?.nameID}
         journeyType="subspace"
