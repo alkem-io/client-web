@@ -1,21 +1,32 @@
 import { IconButton, Paper } from '@mui/material';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import { useTranslation } from 'react-i18next';
-import BadgeCounter from '../../../core/ui/icon/BadgeCounter';
-import { useInAppNotifications } from '../../inAppNotifications/useInAppNotifications';
-import { useInAppNotificationsContext } from '../../inAppNotifications/InAppNotificationsContext';
-import { InAppNotificationState } from '../../../core/apollo/generated/graphql-schema';
+import BadgeCounter from '@/core/ui/icon/BadgeCounter';
+import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
+import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
+import { InAppNotificationState, PlatformRole } from '@/core/apollo/generated/graphql-schema';
+import { useUserContext } from '@/domain/community/user';
+import { useMemo } from 'react';
 
 export const PlatformNotificationsButton = () => {
-  const { t } = useTranslation();
+  const { user, platformRoles } = useUserContext();
   const { setIsOpen } = useInAppNotificationsContext();
   const { items } = useInAppNotifications();
+  const { t } = useTranslation();
+
+  const enableNotifications = useMemo(() => {
+    return user?.user.id && platformRoles?.includes(PlatformRole.BetaTester);
+  }, [user, platformRoles]);
 
   const openNotifications = () => {
     setIsOpen(true);
   };
 
   const unreadNotificationsCount = items.filter(item => item.state === InAppNotificationState.Unread).length;
+
+  if (!enableNotifications) {
+    return null;
+  }
 
   return (
     <Paper

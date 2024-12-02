@@ -3,6 +3,7 @@ import {
   CalloutType,
   CommunityContributorType,
   InAppNotificationState,
+  PlatformRole,
   SpaceLevel,
 } from '../../core/apollo/generated/graphql-schema';
 import {
@@ -95,15 +96,19 @@ export interface InAppNotificationProps {
 }
 
 export const useInAppNotifications = () => {
-  const { user } = useUserContext();
+  const { user, platformRoles } = useUserContext();
 
   const [updateState] = useUpdateNotificationStateMutation();
+
+  const enableNotifications = useMemo(() => {
+    return user?.user.id && platformRoles?.includes(PlatformRole.BetaTester);
+  }, [user, platformRoles]);
 
   const { data, loading, startPolling, stopPolling } = useInAppNotificationsQuery({
     variables: {
       receiverID: user?.user.id!,
     },
-    skip: !user?.user.id,
+    skip: !enableNotifications,
   });
 
   useEffect(() => {
