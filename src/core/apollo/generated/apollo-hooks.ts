@@ -10031,6 +10031,58 @@ export type UpdateCommunityGuidelinesMutationOptions = Apollo.BaseMutationOption
   SchemaTypes.UpdateCommunityGuidelinesMutation,
   SchemaTypes.UpdateCommunityGuidelinesMutationVariables
 >;
+export const RemoveCommunityGuidelinesContentDocument = gql`
+  mutation RemoveCommunityGuidelinesContent($communityGuidelinesData: RemoveCommunityGuidelinesContentInput!) {
+    removeCommunityGuidelinesContent(communityGuidelinesData: $communityGuidelinesData) {
+      ...CommunityGuidelinesDetails
+    }
+  }
+  ${CommunityGuidelinesDetailsFragmentDoc}
+`;
+export type RemoveCommunityGuidelinesContentMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveCommunityGuidelinesContentMutation,
+  SchemaTypes.RemoveCommunityGuidelinesContentMutationVariables
+>;
+
+/**
+ * __useRemoveCommunityGuidelinesContentMutation__
+ *
+ * To run a mutation, you first call `useRemoveCommunityGuidelinesContentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveCommunityGuidelinesContentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeCommunityGuidelinesContentMutation, { data, loading, error }] = useRemoveCommunityGuidelinesContentMutation({
+ *   variables: {
+ *      communityGuidelinesData: // value for 'communityGuidelinesData'
+ *   },
+ * });
+ */
+export function useRemoveCommunityGuidelinesContentMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveCommunityGuidelinesContentMutation,
+    SchemaTypes.RemoveCommunityGuidelinesContentMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveCommunityGuidelinesContentMutation,
+    SchemaTypes.RemoveCommunityGuidelinesContentMutationVariables
+  >(RemoveCommunityGuidelinesContentDocument, options);
+}
+
+export type RemoveCommunityGuidelinesContentMutationHookResult = ReturnType<
+  typeof useRemoveCommunityGuidelinesContentMutation
+>;
+export type RemoveCommunityGuidelinesContentMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveCommunityGuidelinesContentMutation>;
+export type RemoveCommunityGuidelinesContentMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveCommunityGuidelinesContentMutation,
+  SchemaTypes.RemoveCommunityGuidelinesContentMutationVariables
+>;
 export const CreateGroupOnCommunityDocument = gql`
   mutation createGroupOnCommunity($input: CreateUserGroupInput!) {
     createGroupOnCommunity(groupData: $input) {
