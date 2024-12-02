@@ -1,8 +1,8 @@
-import { Trans, useTranslation } from 'react-i18next';
-import { privateGraphQLEndpoint } from '@/main/constants/endpoints';
-import WrapperButton from '@/core/ui/button/deprecated/WrapperButton';
 import Section from '@/core/ui/content/deprecated/Section';
 import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
+import { privateGraphQLEndpoint } from '@/main/constants/endpoints';
+import { Button } from '@mui/material';
+import { Trans, useTranslation } from 'react-i18next';
 
 export const ErrorPage = ({ error }: { error: Error }) => {
   const { t } = useTranslation();
@@ -30,11 +30,9 @@ export const ErrorPage = ({ error }: { error: Error }) => {
           {t('pages.error.line3')}
         </WrapperTypography>
         <div>
-          <WrapperButton
-            variant="primary"
-            text={t('pages.error.buttons.reload')}
-            onClick={() => window.location.reload()}
-          />
+          <Button variant="outlined" onClick={() => window.location.reload()}>
+            {t('pages.error.buttons.reload')}
+          </Button>
         </div>
       </Section>
     </div>
