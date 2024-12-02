@@ -12,7 +12,7 @@ query NewVirtualContributorMySpaces {
           id
           license {
             id
-            myLicensePrivileges
+            availableEntitlements
           }
           community {
             id

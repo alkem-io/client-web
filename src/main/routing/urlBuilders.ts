@@ -75,3 +75,5 @@ export const buildInnovationHubUrl = (subdomain: string): string => {
 export const getAccountLink = (profileUrl?: string) => {
   return profileUrl ? `${profileUrl}/settings/account` : '';
 };
+
+export const buildWelcomeSpaceUrl = () => '/welcome-space';

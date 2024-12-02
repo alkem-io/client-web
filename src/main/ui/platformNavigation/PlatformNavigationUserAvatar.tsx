@@ -9,6 +9,8 @@ import MenuTriggerButton from '@/core/ui/tooltip/MenuTriggerButton';
 import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
 import NavigationItemContainer from '@/core/ui/navigation/NavigationItemContainer';
 import { useTranslation } from 'react-i18next';
+import BadgeLabel from '@/core/ui/icon/BadgeLabel';
+import { PlatformRole } from '@/core/apollo/generated/graphql-schema';
 
 interface PlatformNavigationUserAvatarProps {
   children: ReactElement<{ onClose?: () => void }>;
@@ -17,9 +19,11 @@ interface PlatformNavigationUserAvatarProps {
 
 const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUserAvatarProps) => {
   const { t } = useTranslation();
-  const { user, isAuthenticated, loadingMe } = useUserContext();
+  const { user, isAuthenticated, loadingMe, platformRoles } = useUserContext();
 
   const theme = useTheme();
+
+  const showBetaBadge = user && isAuthenticated && platformRoles.includes(PlatformRole.BetaTester);
 
   return (
     <MenuTriggerButton
@@ -28,13 +32,14 @@ const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUs
       placement="bottom-end"
       renderTrigger={({ ref, onClick, ...props }) => (
         <SwapColors>
-          <NavigationItemContainer ref={ref as Ref<HTMLDivElement>} position="relative">
+          <NavigationItemContainer ref={ref as Ref<HTMLDivElement>} position="relative" overflow="visible">
             <Paper
               component={Avatar}
               src={user?.user.profile.avatar?.uri}
               sx={{
                 padding: 0,
                 cursor: 'pointer',
+                position: 'relative',
               }}
               aria-label={t('buttons.userMenu')}
               onClick={onClick}
@@ -47,6 +52,18 @@ const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUs
               )}
               {!loadingMe && !isAuthenticated && <Person color="primary" />}
             </Paper>
+            {showBetaBadge && (
+              <BadgeLabel
+                count="Beta"
+                size="small"
+                sx={{
+                  position: 'absolute',
+                  bottom: '-8px',
+                  right: '-12px',
+                  zIndex: PLATFORM_NAVIGATION_MENU_Z_INDEX + 1,
+                }}
+              />
+            )}
             <Box
               position="absolute"
               top={0}

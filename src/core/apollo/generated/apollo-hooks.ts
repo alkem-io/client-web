@@ -4931,7 +4931,7 @@ export const AccountInformationDocument = gql`
         }
         license {
           id
-          myLicensePrivileges
+          availableEntitlements
         }
         host {
           id
@@ -6152,7 +6152,7 @@ export const CollaborationAuthorizationEntitlementsDocument = gql`
         }
         license {
           id
-          myLicensePrivileges
+          availableEntitlements
         }
       }
     }
@@ -11225,18 +11225,6 @@ export const AdminGlobalOrganizationsListDocument = gql`
         ...PageInfo
       }
     }
-    platform {
-      id
-      licensingFramework {
-        id
-        plans {
-          id
-          name
-          type
-          licenseCredential
-        }
-      }
-    }
   }
   ${PageInfoFragmentDoc}
 `;
@@ -12698,18 +12686,6 @@ export const UserListDocument = gql`
         hasNextPage
       }
     }
-    platform {
-      id
-      licensingFramework {
-        id
-        plans {
-          id
-          name
-          type
-          licenseCredential
-        }
-      }
-    }
   }
 `;
 
@@ -13546,7 +13522,7 @@ export const UserProviderDocument = gql`
           }
           license {
             id
-            myLicensePrivileges
+            availableEntitlements
           }
         }
       }
@@ -17925,6 +17901,8 @@ export function refetchSubspacePageQuery(variables: SchemaTypes.SubspacePageQuer
 export const PlatformLevelAuthorizationDocument = gql`
   query PlatformLevelAuthorization {
     platform {
+      id
+      myRoles
       authorization {
         ...MyPrivileges
       }
@@ -18216,16 +18194,6 @@ export const AdminSpacesListDocument = gql`
   query adminSpacesList {
     spaces(filter: { visibilities: [ARCHIVED, ACTIVE, DEMO] }) {
       ...AdminSpace
-    }
-    platform {
-      licensingFramework {
-        id
-        plans {
-          id
-          name
-          licenseCredential
-        }
-      }
     }
   }
   ${AdminSpaceFragmentDoc}
@@ -18655,6 +18623,73 @@ export type ConfigurationQueryResult = Apollo.QueryResult<
 >;
 export function refetchConfigurationQuery(variables?: SchemaTypes.ConfigurationQueryVariables) {
   return { query: ConfigurationDocument, variables: variables };
+}
+
+export const PlatformLicensingPlansDocument = gql`
+  query platformLicensingPlans {
+    platform {
+      licensingFramework {
+        id
+        plans {
+          id
+          type
+          name
+          licenseCredential
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __usePlatformLicensingPlansQuery__
+ *
+ * To run a query within a React component, call `usePlatformLicensingPlansQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformLicensingPlansQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformLicensingPlansQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformLicensingPlansQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformLicensingPlansQuery,
+    SchemaTypes.PlatformLicensingPlansQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PlatformLicensingPlansQuery, SchemaTypes.PlatformLicensingPlansQueryVariables>(
+    PlatformLicensingPlansDocument,
+    options
+  );
+}
+
+export function usePlatformLicensingPlansLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformLicensingPlansQuery,
+    SchemaTypes.PlatformLicensingPlansQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.PlatformLicensingPlansQuery, SchemaTypes.PlatformLicensingPlansQueryVariables>(
+    PlatformLicensingPlansDocument,
+    options
+  );
+}
+
+export type PlatformLicensingPlansQueryHookResult = ReturnType<typeof usePlatformLicensingPlansQuery>;
+export type PlatformLicensingPlansLazyQueryHookResult = ReturnType<typeof usePlatformLicensingPlansLazyQuery>;
+export type PlatformLicensingPlansQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformLicensingPlansQuery,
+  SchemaTypes.PlatformLicensingPlansQueryVariables
+>;
+export function refetchPlatformLicensingPlansQuery(variables?: SchemaTypes.PlatformLicensingPlansQueryVariables) {
+  return { query: PlatformLicensingPlansDocument, variables: variables };
 }
 
 export const ServerMetadataDocument = gql`
@@ -22060,21 +22095,18 @@ export function refetchInnovationLibraryQuery(variables?: SchemaTypes.Innovation
 
 export const CampaignBlockCredentialsDocument = gql`
   query CampaignBlockCredentials {
+    platform {
+      id
+      myRoles
+    }
     me {
       user {
         id
-        agent {
-          id
-          credentials {
-            resourceID
-            type
-          }
-        }
         account {
           id
           license {
             id
-            myLicensePrivileges
+            availableEntitlements
           }
         }
       }
@@ -23036,7 +23068,7 @@ export const NewVirtualContributorMySpacesDocument = gql`
             id
             license {
               id
-              myLicensePrivileges
+              availableEntitlements
             }
             community {
               id

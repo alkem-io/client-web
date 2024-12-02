@@ -577,6 +577,13 @@
         "year": "{{count}} year",
         "year_plural": "{{count}} years"
       }
+    },
+    "roles": {
+      "GLOBAL_ADMIN": "Global Admin",
+      "SUPPORT": "Support Admin",
+      "LICENSE_MANAGER": "License Manager",
+      "BETA_TESTER": "Beta Tester",
+      "VC_CAMPAIGN": "VC Early Access"
     }
   },
   "community": {
@@ -585,7 +592,7 @@
     "memberOrganizations": "Member Organizations ({{count}})",
     "pendingApplications": "Pending applications",
     "pendingMemberships": "Pending applications & invitations",
-    "invitationSent": "Invitation sent succesfully",
+    "invitationSent": "Invitation sent successfully",
     "leads": "Leads",
     "members": "Members",
     "host": "Host",
@@ -1779,7 +1786,8 @@
           "description": "Here you can explore the hosted **{{entities}}**. Filter by key words to show just the topics you care about.",
           "list": "List view",
           "empty": "No {{entities}} found.",
-          "empty-list": "There are no {{entities}} yet."
+          "empty-list": "There are no {{entities}} yet.",
+          "searchPlaceholder": "Find Subspaces..."
         },
         "recommendations": {
           "title": "Recommended by the Host"
@@ -2549,6 +2557,10 @@
       "line3": "If the error persists please contact support.",
       "buttons": {
         "reload": "Reload"
+      },
+      "errors": {
+        "LazyLoadError": "Network error occurred. Please try reloading the page.",
+        "unknown": "An unknown error occurred. Please try reloading the page."
       }
     },
     "four-ou-four": {
@@ -2735,13 +2747,15 @@
     },
     "help-dialog": {
       "title": "Looking for help?",
-      "text": "We want to help you successfully use the Alkemio platform, and to do so we want to make the process of using it and interacting easier. This is how you can have an impact on the topics you care about.<br /><br />Click on the icons below to find answers to your questions, contact the Alkemio team for support or just get started!",
+      "text": "We're here to help you make the most of the Alkemio platform and create an impact on the topics you care about. Click below to find answers, contact our team, or get started!",
       "icons": {
-        "help-center-faq": "Help Center & FAQ",
-        "community-support-forum": "Contact us!",
-        "new-user": "New user? Start here!"
+        "exploreDocumentation": "Explore Documentation",
+        "contactTheTeam": "Contact the Team",
+        "joinTheWelcomeSpace": "Join the Welcome Space"
       },
-      "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!"
+      "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!",
+      "versionNumber": "Version Number: <b>v{{version}}</b>",
+      "serverVersionNumber": "Server Version Number: <b>v{{version}}</b>"
     },
     "forum": {
       "title": "Welcome to the Alkemio Forum",
