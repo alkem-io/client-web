@@ -6,7 +6,7 @@ import { useInAppNotifications } from '../../inAppNotifications/useInAppNotifica
 import { useInAppNotificationsContext } from '../../inAppNotifications/InAppNotificationsContext';
 import { InAppNotificationState } from '../../../core/apollo/generated/graphql-schema';
 
-export const PlaformNotificationsButton = () => {
+export const PlatformNotificationsButton = () => {
   const { t } = useTranslation();
   const { setIsOpen } = useInAppNotificationsContext();
   const { items } = useInAppNotifications();

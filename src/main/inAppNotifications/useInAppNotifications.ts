@@ -99,7 +99,7 @@ export const useInAppNotifications = () => {
 
   const [updateState] = useUpdateNotificationStateMutation();
 
-  const { data, startPolling, stopPolling } = useInAppNotificationsQuery({
+  const { data, loading, startPolling, stopPolling } = useInAppNotificationsQuery({
     variables: {
       receiverID: user?.user.id!,
     },
@@ -132,5 +132,5 @@ export const useInAppNotifications = () => {
     });
   };
 
-  return { items, updateNotificationState };
+  return { items, isLoading: loading, updateNotificationState };
 };

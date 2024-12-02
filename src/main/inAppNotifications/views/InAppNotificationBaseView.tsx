@@ -63,7 +63,7 @@ export const InAppNotificationBaseView = ({
       updateNotificationState(id, InAppNotificationState.Read);
     }
     setIsOpen(false);
-  }, [id]);
+  }, [id, state]);
 
   const getReadAction = useCallback(() => {
     switch (state) {
@@ -90,7 +90,7 @@ export const InAppNotificationBaseView = ({
       default:
         return null;
     }
-  }, [id, state]);
+  }, [id, state, updateNotificationState]);
 
   const renderActions = useCallback(
     () => [
@@ -103,24 +103,27 @@ export const InAppNotificationBaseView = ({
         {t('components.inAppNotifications.action.delete')}
       </MenuItemWithIcon>,
     ],
-    [getReadAction, id]
+    [getReadAction, id, updateNotificationState, t]
   );
 
-  const renderFormattedTranslation = (key: string) => {
-    return (
-      <Trans
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        i18nKey={key as any}
-        values={values}
-        components={{
-          b: <strong />,
-          br: <br />,
-          pre: <pre />,
-          i: <em />,
-        }}
-      />
-    );
-  };
+  const renderFormattedTranslation = useCallback(
+    (key: string) => {
+      return (
+        <Trans
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          i18nKey={key as any}
+          values={values}
+          components={{
+            b: <strong />,
+            br: <br />,
+            pre: <pre />,
+            i: <em />,
+          }}
+        />
+      );
+    },
+    [values]
+  );
 
   const getTruncatedComment = (comment: string | undefined = '') => {
     if (comment.length <= MAX_LENGTH_COMMENT) {
@@ -130,7 +133,7 @@ export const InAppNotificationBaseView = ({
     return `${comment.slice(0, MAX_LENGTH_COMMENT)}...`;
   };
 
-  const renderComments = () => {
+  const renderComments = useCallback(() => {
     if (values.comment) {
       return (
         <WrapperMarkdown disableParagraphPadding caption>
@@ -140,7 +143,7 @@ export const InAppNotificationBaseView = ({
     }
 
     return null;
-  };
+  }, [values]);
 
   const isUnread = state === InAppNotificationState.Unread;
 

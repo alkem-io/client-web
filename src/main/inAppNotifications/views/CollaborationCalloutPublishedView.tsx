@@ -46,7 +46,7 @@ export const CollaborationCalloutPublishedView = ({
       triggeredAt: triggeredAt,
       values: notificationTextValues,
     };
-  }, [id, state, space, callout, t]);
+  }, [id, state, space, callout, triggeredBy, triggeredAt, t]);
 
   return <InAppNotificationBaseView {...notification} />;
 };

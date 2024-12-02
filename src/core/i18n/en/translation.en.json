@@ -1754,7 +1754,8 @@
           "subject": "{{memberType}} \"{{memberName}}\" joined {{spaceName}}",
           "description": "The {{memberType}} {{memberName}} has joined {{spaceName}}, of which you are an admin."
         }
-      }
+      },
+      "emptyInbox": "No pending notifications"
     }
   },
   "navigation": {

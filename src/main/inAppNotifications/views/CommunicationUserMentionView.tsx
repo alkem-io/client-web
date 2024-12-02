@@ -36,7 +36,7 @@ export const CommunicationUserMentionView = ({
       triggeredAt: triggeredAt,
       values: notificationTextValues,
     };
-  }, [id, state]);
+  }, [id, state, space, triggeredBy, callout, triggeredAt, comment]);
 
   return <InAppNotificationBaseView {...notification} />;
 };

@@ -22,7 +22,7 @@ export const CommunityNewMemberView = ({ id, type, state, space, triggeredAt }: 
       triggeredAt: triggeredAt,
       values: notificationTextValues,
     };
-  }, [id, state]);
+  }, [id, state, space, triggeredAt]);
 
   return <InAppNotificationBaseView {...notification} />;
 };

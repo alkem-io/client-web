@@ -24,7 +24,7 @@ export const CommunityNewMemberAdminView = ({ id, state, space, triggeredAt, act
       triggeredAt: triggeredAt,
       values: notificationTextValues,
     };
-  }, [id, state]);
+  }, [id, state, space, triggeredAt, actor]);
 
   return <InAppNotificationBaseView {...notification} />;
 };
