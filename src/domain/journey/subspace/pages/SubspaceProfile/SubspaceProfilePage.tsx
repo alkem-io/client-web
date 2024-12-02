@@ -6,7 +6,7 @@ import SubspaceProfileView from './SubspaceProfileView';
 import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 
-const ChallengeProfilePage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
+const SubspaceProfilePage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
   const { journeyPath } = useRouteResolver();
   const subspaceId = journeyPath[journeyPath.length - 1];
 
@@ -17,4 +17,4 @@ const ChallengeProfilePage: FC<SettingsPageProps> = ({ routePrefix = '../' }) =>
   );
 };
 
-export default ChallengeProfilePage;
+export default SubspaceProfilePage;

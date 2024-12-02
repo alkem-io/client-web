@@ -99,7 +99,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
               endIcon={isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
               onClick={toggleExpanded}
               aria-expanded={isExpanded}
-              area-label={isExpanded ? t('buttons.collapse') : t('buttons.expand')}
+              aria-label={isExpanded ? t('buttons.collapse') : t('buttons.expand')}
             />
           </Gutters>
         </Gutters>

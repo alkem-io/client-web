@@ -1,3 +1,8 @@
+interface VisualUpload {
+  file: File | undefined;
+  altText?: string;
+}
+
 export interface JourneyFormValues {
   displayName: string;
   tagline: string;
@@ -7,8 +12,8 @@ export interface JourneyFormValues {
   addTutorialCallouts: boolean;
   collaborationTemplateId?: string;
   visuals: {
-    avatar: { file: File | undefined; altText?: string };
-    cardBanner: { file: File | undefined; altText?: string };
+    avatar: VisualUpload;
+    cardBanner: VisualUpload;
   };
 }
 

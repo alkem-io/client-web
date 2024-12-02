@@ -102,7 +102,8 @@ export const OpportunityList: FC = () => {
         visuals: value.visuals,
       });
 
-      if (!result) {
+      if (!result?.profile.url) {
+        notify(t('pages.admin.subsubspace.notifications.error-creating-subsubspace'), 'error');
         return;
       }
       navigate(buildSettingsUrl(result.profile.url));

@@ -1,5 +1,5 @@
 import { Box, BoxProps, Skeleton } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import 'react-image-crop/dist/ReactCrop.css';
 import UploadButton from '@/core/ui/button/UploadButton';
@@ -60,12 +60,19 @@ const FormikAvatarUpload = ({
   const [field, , helpers] = useField<VisualWithAltText | undefined>(name);
   const selectedFile = field.value;
 
-  const imageUrl = useMemo(() => {
+  const [imageUrl, setImageUrl] = useState<string>(defaultVisualUrls[visualType]);
+
+  useEffect(() => {
     if (selectedFile?.file) {
-      return URL.createObjectURL(selectedFile.file);
+      const objectUrl = URL.createObjectURL(selectedFile.file);
+      setImageUrl(objectUrl);
+      return () => {
+        URL.revokeObjectURL(objectUrl);
+      };
+    } else {
+      setImageUrl(defaultVisualUrls[visualType]);
     }
-    return defaultVisualUrls[visualType];
-  }, [selectedFile, visualType, defaultVisualUrls]);
+  }, [selectedFile, visualType]);
 
   const { data: constraintsData, loading } = useDefaultVisualTypeConstraintsQuery({
     variables: { visualType },

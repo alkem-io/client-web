@@ -8,7 +8,10 @@ import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-l
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { TagsetField } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
-import { JourneyCreationForm } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationForm';
+import {
+  JourneyCreationForm,
+  JourneyFormValues,
+} from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationForm';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { FormikRadiosSwitch } from '@/core/ui/forms/FormikRadiosSwitch';
 import SubspaceTemplateSelector from '@/domain/templates/components/TemplateSelectors/SubspaceTemplateSelector';
@@ -21,19 +24,10 @@ import { gutters } from '@/core/ui/grid/utils';
 
 const FormikEffect = FormikEffectFactory<FormValues>();
 
-type FormValues = {
-  displayName: string;
-  tagline: string;
-  background: string;
-  vision: string;
-  tags: string[];
-  addTutorialCallouts: boolean;
-  collaborationTemplateId: string | undefined;
-  visuals: {
-    avatar: { file: File | undefined; altText?: string };
-    cardBanner: { file: File | undefined; altText?: string };
-  };
-};
+type FormValues = Pick<
+  JourneyFormValues,
+  'displayName' | 'tagline' | 'background' | 'tags' | 'addTutorialCallouts' | 'collaborationTemplateId' | 'visuals'
+>;
 
 interface CreateSubspaceFormProps extends JourneyCreationForm {}
 
@@ -52,7 +46,7 @@ export const CreateSubspaceForm = ({
       displayName: value.displayName,
       tagline: value.tagline,
       background: value.background,
-      vision: value.vision,
+      vision: '',
       tags: value.tags,
       addTutorialCallouts: value.addTutorialCallouts,
       collaborationTemplateId: value.collaborationTemplateId,
@@ -63,7 +57,6 @@ export const CreateSubspaceForm = ({
     displayName: '',
     tagline: '',
     background: '',
-    vision: '',
     tags: [],
     addTutorialCallouts: false,
     collaborationTemplateId: undefined,
@@ -87,6 +80,7 @@ export const CreateSubspaceForm = ({
       .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
     background: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
+    collaborationTemplateId: yup.string().nullable(),
   });
 
   return (

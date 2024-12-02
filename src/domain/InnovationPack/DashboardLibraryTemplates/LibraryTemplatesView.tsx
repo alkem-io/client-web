@@ -14,7 +14,7 @@ import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import TemplateCard from '@/domain/templates/components/cards/TemplateCard';
 import { AnyTemplate, AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
 import { gutters } from '@/core/ui/grid/utils';
-import { useTheme } from '@mui/styles';
+import { useTheme } from '@mui/material';
 
 export interface LibraryTemplatesFilter {
   templateTypes: TemplateType[];

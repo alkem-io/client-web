@@ -4,7 +4,7 @@ import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import SubspaceCommunicationsPage from '@/domain/journey/subspace/pages/SubspaceCommunications/SubspaceCommunicationsPage';
-import ChallengeProfilePage from '@/domain/journey/subspace/pages/SubspaceProfile/SubspaceProfilePage';
+import SubspaceProfilePage from '@/domain/journey/subspace/pages/SubspaceProfile/SubspaceProfilePage';
 import { ApplicationsAdminRoutes } from '@/domain/platform/admin/community/routes/ApplicationsAdminRoutes';
 
 import ChallengeAuthorizationRoute from '@/domain/platform/admin/subspace/routing/ChallengeAuthorizationRoute';
@@ -27,7 +27,7 @@ export const ChallengeRoute: FC = () => {
         <Routes>
           <Route path={'/'}>
             <Route index element={<Navigate to="profile" replace />} />
-            <Route path="profile" element={<ChallengeProfilePage />} />
+            <Route path="profile" element={<SubspaceProfilePage />} />
             <Route path="context" element={<SubspaceContextPage />} />
             <Route path="communications" element={<SubspaceCommunicationsPage communityId={communityId} />} />
             <Route
