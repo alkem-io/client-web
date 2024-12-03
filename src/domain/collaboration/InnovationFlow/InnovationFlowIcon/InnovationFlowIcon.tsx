@@ -8,4 +8,5 @@ const InnovationFlowIcon = (props: SvgIconProps) => (
 
 InnovationFlowIcon.muiName = 'InnovationFlow';
 
+// check and delete
 export { InnovationFlowIcon };
