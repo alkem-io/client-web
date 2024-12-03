@@ -16,9 +16,9 @@ import { gutters } from '@/core/ui/grid/utils';
 import { MembershipProps } from './MyMembershipsDialog.model';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
-import { SpaceLevel, CommunityRoleType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, CommunityRoleType, VisualType } from '@/core/apollo/generated/graphql-schema';
 
-import defaultCardBanner from '@/domain/journey/defaultVisuals/Card.jpg';
+import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
 
 const VISIBLE_COMMUNITY_ROLES = [CommunityRoleType.Admin, CommunityRoleType.Lead];
 
@@ -68,7 +68,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
             component={RouterLink}
             visual={
               <Avatar
-                src={avatar || defaultCardBanner}
+                src={avatar || defaultVisualUrls[VisualType.Card]}
                 alt={t('common.avatar-of', { space: displayName })}
                 aria-label="Space avatar"
               >
@@ -99,7 +99,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
               endIcon={isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
               onClick={toggleExpanded}
               aria-expanded={isExpanded}
-              area-label={isExpanded ? t('buttons.collapse') : t('buttons.expand')}
+              aria-label={isExpanded ? t('buttons.collapse') : t('buttons.expand')}
             />
           </Gutters>
         </Gutters>

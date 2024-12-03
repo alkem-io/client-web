@@ -7,7 +7,7 @@ query AdminSpaceSubspacesPage($spaceId: UUID_NAMEID!) {
         id
         displayName
         url
-        cardBanner: visual(type: CARD) {
+        avatar: visual(type: AVATAR) {
           ...VisualUri
         }
       }

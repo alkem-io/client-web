@@ -1,9 +1,11 @@
 import { useCallback } from 'react';
 import {
+  CreateSubspaceMutationOptions,
   refetchDashboardWithMembershipsQuery,
   refetchUserProviderQuery,
   SubspaceCardFragmentDoc,
   useCreateSubspaceMutation,
+  useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useConfig } from '@/domain/platform/config/useConfig';
@@ -13,6 +15,7 @@ import {
   SpacePrivacyMode,
   TagsetType,
 } from '@/core/apollo/generated/graphql-schema';
+import { error as logError } from '@/core/logging/sentry/log';
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 
 interface SubspaceCreationInput {
@@ -20,19 +23,35 @@ interface SubspaceCreationInput {
   displayName: string;
   tagline: string;
   background?: string;
-  vision: string;
+  vision?: string;
   tags: string[];
   addTutorialCallouts: boolean;
-  addCallouts: boolean;
+  collaborationTemplateId?: string;
+  visuals: {
+    avatar: {
+      file: File | undefined;
+      altText?: string;
+    };
+    cardBanner: {
+      file: File | undefined;
+      altText?: string;
+    };
+  };
 }
 
-export const useSubspaceCreation = () => {
+export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptions = {}) => {
   const { spaceId } = useSpace();
   const { isFeatureEnabled } = useConfig();
 
   const subscriptionsEnabled = isFeatureEnabled(PlatformFeatureFlagName.Subscriptions);
+  const [uploadVisual] = useUploadVisualMutation();
 
-  const [createSubspaceLazy] = useCreateSubspaceMutation({
+  const {
+    refetchQueries = [refetchUserProviderQuery(), refetchDashboardWithMembershipsQuery()], // default to refetching user provider and dashboard
+    ...restMutationOptions
+  } = mutationOptions;
+
+  const [createSubspaceLazy, { loading }] = useCreateSubspaceMutation({
     update: (cache, { data }) => {
       if (subscriptionsEnabled || !data) {
         return;
@@ -63,13 +82,15 @@ export const useSubspaceCreation = () => {
         },
       });
     },
-
-    refetchQueries: [refetchUserProviderQuery(), refetchDashboardWithMembershipsQuery()],
+    refetchQueries,
+    ...restMutationOptions,
   });
 
   // add useCallback
   const createSubspace = useCallback(
     async (value: SubspaceCreationInput) => {
+      const includeVisuals = Boolean(value.visuals.cardBanner.file) || Boolean(value.visuals.avatar.file);
+
       const { data } = await createSubspaceLazy({
         variables: {
           input: {
@@ -85,9 +106,11 @@ export const useSubspaceCreation = () => {
             tags: value.tags,
             collaborationData: {
               addTutorialCallouts: value.addTutorialCallouts,
-              addCallouts: value.addCallouts,
+              addCallouts: true, // Always add Callouts from the template
+              collaborationTemplateID: value.collaborationTemplateId,
             },
           },
+          includeVisuals,
         },
         optimisticResponse: {
           createSubspace: {
@@ -133,14 +156,59 @@ export const useSubspaceCreation = () => {
                 mode: SpacePrivacyMode.Public,
               },
             },
+            visuals: {
+              id: '',
+              cardBanner: {
+                id: '',
+              },
+              avatar: {
+                id: '',
+              },
+            },
           },
         },
       });
-
+      try {
+        const uploadPromises: Promise<unknown>[] = [];
+        if (value.visuals.avatar.file && data?.createSubspace.visuals.avatar?.id) {
+          uploadPromises.push(
+            uploadVisual({
+              variables: {
+                file: value.visuals.avatar.file,
+                uploadData: {
+                  visualID: data.createSubspace.visuals.avatar.id,
+                  alternativeText: value.visuals.avatar.altText,
+                },
+              },
+            })
+          );
+        }
+        if (value.visuals.cardBanner.file && data?.createSubspace.visuals.cardBanner?.id) {
+          uploadPromises.push(
+            uploadVisual({
+              variables: {
+                file: value.visuals.cardBanner.file,
+                uploadData: {
+                  visualID: data.createSubspace.visuals.cardBanner.id,
+                  alternativeText: value.visuals.cardBanner.altText,
+                },
+              },
+            })
+          );
+        }
+        await Promise.all(uploadPromises);
+      } catch (error) {
+        // Subspace is created anyway, just the images failed log the error and continue
+        if (error instanceof Error) {
+          logError(error);
+        } else {
+          logError(`Error uploading visuals for subspace: ${error}`, { label: 'TempStorage' });
+        }
+      }
       return data?.createSubspace;
     },
-    [createSubspaceLazy]
+    [createSubspaceLazy, uploadVisual]
   );
 
-  return { createSubspace };
+  return { createSubspace, loading };
 };

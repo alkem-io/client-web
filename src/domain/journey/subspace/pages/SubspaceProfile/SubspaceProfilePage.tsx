@@ -3,15 +3,18 @@ import React, { FC } from 'react';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import SubspaceProfileView from './SubspaceProfileView';
-import FormMode from '@/domain/platform/admin/components/FormMode';
 import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
+import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 
-const ChallengeProfilePage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
+const SubspaceProfilePage: FC<SettingsPageProps> = ({ routePrefix = '../' }) => {
+  const { journeyPath } = useRouteResolver();
+  const subspaceId = journeyPath[journeyPath.length - 1];
+
   return (
     <SubspaceSettingsLayout currentTab={SettingsSection.Profile} tabRoutePrefix={routePrefix}>
-      <SubspaceProfileView mode={FormMode.update} />
+      <SubspaceProfileView subspaceId={subspaceId} />
     </SubspaceSettingsLayout>
   );
 };
 
-export default ChallengeProfilePage;
+export default SubspaceProfilePage;

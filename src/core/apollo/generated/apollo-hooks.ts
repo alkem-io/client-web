@@ -4064,6 +4064,80 @@ export type UploadFileMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UploadFileMutation,
   SchemaTypes.UploadFileMutationVariables
 >;
+export const DefaultVisualTypeConstraintsDocument = gql`
+  query DefaultVisualTypeConstraints($visualType: VisualType!) {
+    platform {
+      id
+      configuration {
+        defaultVisualTypeConstraints(type: $visualType) {
+          maxHeight
+          maxWidth
+          minHeight
+          minWidth
+          aspectRatio
+          allowedTypes
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useDefaultVisualTypeConstraintsQuery__
+ *
+ * To run a query within a React component, call `useDefaultVisualTypeConstraintsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDefaultVisualTypeConstraintsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDefaultVisualTypeConstraintsQuery({
+ *   variables: {
+ *      visualType: // value for 'visualType'
+ *   },
+ * });
+ */
+export function useDefaultVisualTypeConstraintsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.DefaultVisualTypeConstraintsQuery,
+    SchemaTypes.DefaultVisualTypeConstraintsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.DefaultVisualTypeConstraintsQuery,
+    SchemaTypes.DefaultVisualTypeConstraintsQueryVariables
+  >(DefaultVisualTypeConstraintsDocument, options);
+}
+
+export function useDefaultVisualTypeConstraintsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.DefaultVisualTypeConstraintsQuery,
+    SchemaTypes.DefaultVisualTypeConstraintsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.DefaultVisualTypeConstraintsQuery,
+    SchemaTypes.DefaultVisualTypeConstraintsQueryVariables
+  >(DefaultVisualTypeConstraintsDocument, options);
+}
+
+export type DefaultVisualTypeConstraintsQueryHookResult = ReturnType<typeof useDefaultVisualTypeConstraintsQuery>;
+export type DefaultVisualTypeConstraintsLazyQueryHookResult = ReturnType<
+  typeof useDefaultVisualTypeConstraintsLazyQuery
+>;
+export type DefaultVisualTypeConstraintsQueryResult = Apollo.QueryResult<
+  SchemaTypes.DefaultVisualTypeConstraintsQuery,
+  SchemaTypes.DefaultVisualTypeConstraintsQueryVariables
+>;
+export function refetchDefaultVisualTypeConstraintsQuery(
+  variables: SchemaTypes.DefaultVisualTypeConstraintsQueryVariables
+) {
+  return { query: DefaultVisualTypeConstraintsDocument, variables: variables };
+}
+
 export const InnovationPackProfilePageDocument = gql`
   query InnovationPackProfilePage($innovationPackId: UUID!) {
     lookup {
@@ -17474,7 +17548,7 @@ export const AdminSpaceSubspacesPageDocument = gql`
           id
           displayName
           url
-          cardBanner: visual(type: CARD) {
+          avatar: visual(type: AVATAR) {
             ...VisualUri
           }
         }
@@ -18849,9 +18923,18 @@ export type ShareLinkWithUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ShareLinkWithUserMutationVariables
 >;
 export const CreateSubspaceDocument = gql`
-  mutation createSubspace($input: CreateSubspaceInput!) {
+  mutation createSubspace($input: CreateSubspaceInput!, $includeVisuals: Boolean = false) {
     createSubspace(subspaceData: $input) {
       ...SubspaceCard
+      visuals: profile @include(if: $includeVisuals) {
+        id
+        cardBanner: visual(type: CARD) {
+          id
+        }
+        avatar: visual(type: AVATAR) {
+          id
+        }
+      }
     }
   }
   ${SubspaceCardFragmentDoc}
@@ -18875,6 +18958,7 @@ export type CreateSubspaceMutationFn = Apollo.MutationFunction<
  * const [createSubspaceMutation, { data, loading, error }] = useCreateSubspaceMutation({
  *   variables: {
  *      input: // value for 'input'
+ *      includeVisuals: // value for 'includeVisuals'
  *   },
  * });
  */
@@ -19981,6 +20065,82 @@ export function refetchSpaceCollaborationIdQuery(variables: SchemaTypes.SpaceCol
   return { query: SpaceCollaborationIdDocument, variables: variables };
 }
 
+export const SpaceDefaultTemplatesDocument = gql`
+  query SpaceDefaultTemplates($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
+        id
+        templatesManager {
+          id
+          templateDefaults {
+            id
+            type
+            template {
+              id
+              profile {
+                id
+                displayName
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceDefaultTemplatesQuery__
+ *
+ * To run a query within a React component, call `useSpaceDefaultTemplatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceDefaultTemplatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceDefaultTemplatesQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useSpaceDefaultTemplatesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceDefaultTemplatesQuery,
+    SchemaTypes.SpaceDefaultTemplatesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceDefaultTemplatesQuery, SchemaTypes.SpaceDefaultTemplatesQueryVariables>(
+    SpaceDefaultTemplatesDocument,
+    options
+  );
+}
+
+export function useSpaceDefaultTemplatesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceDefaultTemplatesQuery,
+    SchemaTypes.SpaceDefaultTemplatesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceDefaultTemplatesQuery, SchemaTypes.SpaceDefaultTemplatesQueryVariables>(
+    SpaceDefaultTemplatesDocument,
+    options
+  );
+}
+
+export type SpaceDefaultTemplatesQueryHookResult = ReturnType<typeof useSpaceDefaultTemplatesQuery>;
+export type SpaceDefaultTemplatesLazyQueryHookResult = ReturnType<typeof useSpaceDefaultTemplatesLazyQuery>;
+export type SpaceDefaultTemplatesQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceDefaultTemplatesQuery,
+  SchemaTypes.SpaceDefaultTemplatesQueryVariables
+>;
+export function refetchSpaceDefaultTemplatesQuery(variables: SchemaTypes.SpaceDefaultTemplatesQueryVariables) {
+  return { query: SpaceDefaultTemplatesDocument, variables: variables };
+}
+
 export const SpaceTemplatesSetIdDocument = gql`
   query SpaceTemplatesSetId($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
@@ -20493,6 +20653,66 @@ export type DeleteTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteTemplateMutation,
   SchemaTypes.DeleteTemplateMutationVariables
 >;
+export const TemplateNameDocument = gql`
+  query TemplateName($templateId: UUID!) {
+    lookup {
+      template(ID: $templateId) {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useTemplateNameQuery__
+ *
+ * To run a query within a React component, call `useTemplateNameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTemplateNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTemplateNameQuery({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *   },
+ * });
+ */
+export function useTemplateNameQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.TemplateNameQuery, SchemaTypes.TemplateNameQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.TemplateNameQuery, SchemaTypes.TemplateNameQueryVariables>(
+    TemplateNameDocument,
+    options
+  );
+}
+
+export function useTemplateNameLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.TemplateNameQuery, SchemaTypes.TemplateNameQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.TemplateNameQuery, SchemaTypes.TemplateNameQueryVariables>(
+    TemplateNameDocument,
+    options
+  );
+}
+
+export type TemplateNameQueryHookResult = ReturnType<typeof useTemplateNameQuery>;
+export type TemplateNameLazyQueryHookResult = ReturnType<typeof useTemplateNameLazyQuery>;
+export type TemplateNameQueryResult = Apollo.QueryResult<
+  SchemaTypes.TemplateNameQuery,
+  SchemaTypes.TemplateNameQueryVariables
+>;
+export function refetchTemplateNameQuery(variables: SchemaTypes.TemplateNameQueryVariables) {
+  return { query: TemplateNameDocument, variables: variables };
+}
+
 export const TemplateUrlResolverDocument = gql`
   query TemplateUrlResolver($templatesSetId: UUID!, $templateNameId: NameID!) {
     lookupByName {
