@@ -1,11 +1,20 @@
+interface VisualUpload {
+  file: File | undefined;
+  altText?: string;
+}
+
 export interface JourneyFormValues {
   displayName: string;
   tagline: string;
-  vision: string;
+  vision?: string;
   tags: string[];
   background?: string;
   addTutorialCallouts: boolean;
-  addCallouts: boolean;
+  collaborationTemplateId?: string;
+  visuals: {
+    avatar: VisualUpload;
+    cardBanner: VisualUpload;
+  };
 }
 
 export interface JourneyCreationForm {

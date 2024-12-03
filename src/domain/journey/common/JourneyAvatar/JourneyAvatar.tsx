@@ -1,7 +1,8 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { SxProps, Theme } from '@mui/material';
 import Avatar, { AvatarSize, SizeableAvatarProps } from '@/core/ui/avatar/Avatar';
-import defaultJourneyAvatar from '../../defaultVisuals/Avatar.jpg';
+import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 
 interface JourneyAvatarProps extends SizeableAvatarProps {
   src: string | undefined;
@@ -10,7 +11,7 @@ interface JourneyAvatarProps extends SizeableAvatarProps {
 }
 
 const JourneyAvatar = forwardRef<HTMLDivElement, JourneyAvatarProps>(({ src, size = 'large', ...props }, ref) => {
-  return <Avatar ref={ref} size={size} src={src || defaultJourneyAvatar} {...props} />;
+  return <Avatar ref={ref} size={size} src={src || defaultVisualUrls[VisualType.Avatar]} {...props} />;
 });
 
 export default JourneyAvatar;

@@ -9,7 +9,6 @@ import {
   refetchAdminSpaceSubspacesPageQuery,
   refetchDashboardWithMembershipsQuery,
   useAdminSpaceSubspacesPageQuery,
-  useCreateSubspaceMutation,
   useDeleteSpaceMutation,
   useSpaceCollaborationIdLazyQuery,
   useSpaceTemplatesSetIdQuery,
@@ -17,9 +16,9 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
-import { JourneyCreationDialog } from '@/domain/shared/components/JorneyCreationDialog';
-import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
-import { JourneyFormValues } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationForm';
+import { JourneyCreationDialog } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationDialog';
+import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
+import { JourneyFormValues } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationForm';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -38,6 +37,7 @@ import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEd
 import { AuthorizationPrivilege, TemplateDefaultType, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
 import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
+import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
 
 export const SubspaceListView = () => {
   const { t } = useTranslation();
@@ -53,8 +53,9 @@ export const SubspaceListView = () => {
 
   const { data, loading } = useAdminSpaceSubspacesPageQuery({
     variables: {
-      spaceId: spaceNameId,
+      spaceId: spaceId,
     },
+    skip: !spaceId,
   });
   const [fetchCollaborationId] = useSpaceCollaborationIdLazyQuery();
 
@@ -71,7 +72,7 @@ export const SubspaceListView = () => {
           displayName: s.profile.displayName,
           url: buildSettingsUrl(s.profile.url),
           avatar: {
-            uri: s.profile.cardBanner?.uri ?? '',
+            uri: s.profile.avatar?.uri ?? '',
           },
         },
       })) || []
@@ -81,7 +82,7 @@ export const SubspaceListView = () => {
   const [deleteSubspace] = useDeleteSpaceMutation({
     refetchQueries: [
       refetchAdminSpaceSubspacesPageQuery({
-        spaceId: spaceNameId,
+        spaceId,
       }),
     ],
     awaitRefetchQueries: true,
@@ -98,48 +99,34 @@ export const SubspaceListView = () => {
     });
   };
 
-  const [createSubspace] = useCreateSubspaceMutation({
+  const { createSubspace } = useSubspaceCreation({
     onCompleted: () => {
       notify(t('pages.admin.subspace.notifications.subspace-created'), 'success');
     },
-    refetchQueries: [
-      refetchAdminSpaceSubspacesPageQuery({ spaceId: spaceNameId }),
-      refetchDashboardWithMembershipsQuery(),
-    ],
+    refetchQueries: [refetchAdminSpaceSubspacesPageQuery({ spaceId }), refetchDashboardWithMembershipsQuery()],
     awaitRefetchQueries: true,
   });
 
   const handleCreate = useCallback(
     async (value: JourneyFormValues) => {
-      const { data } = await createSubspace({
-        variables: {
-          input: {
-            spaceID: spaceNameId,
-            profileData: {
-              displayName: value.displayName,
-              description: value.background,
-              tagline: value.tagline,
-            },
-            context: {
-              vision: value.vision,
-            },
-            tags: value.tags,
-            collaborationData: {
-              addTutorialCallouts: value.addTutorialCallouts,
-              addCallouts: value.addCallouts,
-            },
-          },
-        },
+      const result = await createSubspace({
+        spaceID: spaceId,
+        displayName: value.displayName,
+        tagline: value.tagline,
+        background: value.background ?? '',
+        vision: value.vision,
+        tags: value.tags,
+        addTutorialCallouts: value.addTutorialCallouts,
+        collaborationTemplateId: value.collaborationTemplateId,
+        visuals: value.visuals,
       });
 
-      if (!data?.createSubspace) {
+      if (!result) {
         return;
       }
-      if (data?.createSubspace.profile.url) {
-        navigate(buildSettingsUrl(data?.createSubspace.profile.url));
-      }
+      navigate(buildSettingsUrl(result.profile.url));
     },
-    [navigate, createSubspace, spaceNameId]
+    [navigate, createSubspace, spaceId]
   );
 
   const [updateTemplateDefault] = useUpdateTemplateDefaultMutation();
@@ -154,7 +141,7 @@ export const SubspaceListView = () => {
       },
       refetchQueries: [
         refetchAdminSpaceSubspacesPageQuery({
-          spaceId: spaceNameId,
+          spaceId,
         }),
       ],
       awaitRefetchQueries: true,
@@ -282,7 +269,7 @@ export const SubspaceListView = () => {
       />
       <JourneyCreationDialog
         open={journeyCreationDialogOpen}
-        icon={<SubspaceIcon />}
+        icon={<SubspaceIcon2 fill="primary" />}
         journeyName={t('common.subspace')}
         onClose={() => setJourneyCreationDialogOpen(false)}
         onCreate={handleCreate}

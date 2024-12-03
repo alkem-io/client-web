@@ -10,7 +10,8 @@ import { alpha } from '@mui/material/styles';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import { BlockTitle } from '@/core/ui/typography';
 import InsertPhotoOutlinedIcon from '@mui/icons-material/InsertPhotoOutlined';
-import defaultJourneyCardBanner from '@/domain/journey/defaultVisuals/Card.jpg';
+import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { PrivacyIcon } from './PrivacyIcon';
 
 type JourneyTileProps = {
@@ -54,7 +55,7 @@ const JourneyTile = ({ journey, isPrivate, columns = 3 }: JourneyTileProps) => {
             {isPrivate && <PrivacyIcon />}
 
             <Avatar
-              src={journey.profile.cardBanner?.uri || defaultJourneyCardBanner}
+              src={journey.profile.cardBanner?.uri || defaultVisualUrls[VisualType.Card]}
               sx={{ width: '100%', height: 'auto', aspectRatio: RECENT_JOURNEY_CARD_ASPECT_RATIO }}
               variant="square"
             >
