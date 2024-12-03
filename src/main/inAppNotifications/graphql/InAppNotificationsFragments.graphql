@@ -65,7 +65,7 @@ fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMem
   }
   actor {
     id
-    __typename
+    __typename # do not remove
     profile {
       id
       displayName,

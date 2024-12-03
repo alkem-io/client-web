@@ -17,7 +17,7 @@ const ActionsMenu: FC = ({ children }) => {
 
   const handleClose = useCallback(() => {
     setSettingsAnchorEl(null);
-  }, []);
+  }, [setSettingsAnchorEl]);
 
   // close the menu on every item click
   const clonedChildren = Children.map(children, child => {
