@@ -2,10 +2,10 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { journeyCardTagsGetter, journeyCardValueGetter } from '@/domain/journey/common/utils/journeyCardValueGetter';
-import { JourneyCreationDialog } from '@/domain/shared/components/JorneyCreationDialog';
-import { JourneyFormValues } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationForm';
+import { JourneyCreationDialog } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationDialog';
+import { JourneyFormValues } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationForm';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import { useSubspaceCreation } from '@/domain/shared/utils/useJourneyCreation/useJourneyCreation';
+import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
 import ChildJourneyView from '@/domain/journey/common/tabs/Subentities/ChildJourneyView';
 import SubspacesContainer from '../containers/SubspacesContainer';
 import { useSpace } from '../SpaceContext/useSpace';
@@ -17,6 +17,7 @@ import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
 import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
 import useCallouts from '@/domain/collaboration/callout/useCallouts/useCallouts';
+import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
@@ -38,7 +39,8 @@ const SpaceSubspacesPage = () => {
         vision: value.vision,
         tags: value.tags,
         addTutorialCallouts: value.addTutorialCallouts,
-        addCallouts: value.addCallouts,
+        collaborationTemplateId: value.collaborationTemplateId,
+        visuals: value.visuals,
       });
 
       if (!result) {
@@ -88,7 +90,7 @@ const SpaceSubspacesPage = () => {
             createSubentityDialog={
               <JourneyCreationDialog
                 open={isCreateDialogOpen}
-                icon={<SubspaceIcon />}
+                icon={<SubspaceIcon2 fill="primary" />}
                 journeyName={t('common.subspace')}
                 onClose={() => setCreateDialogOpen(false)}
                 onCreate={handleCreate}

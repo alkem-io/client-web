@@ -21,7 +21,6 @@ const useInnovationPackCardProps = (
           calloutTemplatesCount: innovationPack.templatesSet?.calloutTemplatesCount,
           collaborationTemplatesCount: innovationPack.templatesSet?.collaborationTemplatesCount,
           communityGuidelinesTemplatesCount: innovationPack.templatesSet?.communityGuidelinesTemplatesCount,
-          innovationFlowTemplatesCount: innovationPack.templatesSet?.innovationFlowTemplatesCount,
           innovationPackUri: innovationPack.profile.url,
         };
       }),

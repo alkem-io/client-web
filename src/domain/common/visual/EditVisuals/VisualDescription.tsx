@@ -1,9 +1,10 @@
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 type VisualDescriptionProps = {
-  visualTypeName: 'avatar' | 'banner' | 'cardBanner';
+  visualTypeName: VisualType.Avatar | VisualType.Banner | VisualType.Card;
   visual:
     | {
         maxWidth: number;
