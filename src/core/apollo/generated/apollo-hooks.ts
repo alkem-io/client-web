@@ -21984,12 +21984,6 @@ export const InnovationLibraryDocument = gql`
               id
               type
             }
-            innovationFlow {
-              id
-              states {
-                displayName
-              }
-            }
           }
           innovationPack {
             id

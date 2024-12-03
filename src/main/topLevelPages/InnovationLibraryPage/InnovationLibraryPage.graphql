@@ -10,12 +10,6 @@ query InnovationLibrary($filterTemplateType: [TemplateType!]) {
             id
             type
           }
-          innovationFlow {
-            id
-            states {
-              displayName
-            }
-          }
         }
         innovationPack {
           id

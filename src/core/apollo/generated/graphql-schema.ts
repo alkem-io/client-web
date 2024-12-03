@@ -1543,6 +1543,8 @@ export type Config = {
   apm: Apm;
   /** Authentication configuration. */
   authentication: AuthenticationConfig;
+  /** Visual constraints for the given type */
+  defaultVisualTypeConstraints: VisualConstraints;
   /** The feature flags for the platform */
   featureFlags: Array<PlatformFeatureFlag>;
   /** Integration with a 3rd party Geo information service */
@@ -1553,6 +1555,10 @@ export type Config = {
   sentry: Sentry;
   /** Configuration for storage providers, e.g. file */
   storage: StorageConfig;
+};
+
+export type ConfigDefaultVisualTypeConstraintsArgs = {
+  type: VisualType;
 };
 
 export enum ContentUpdatePolicy {
@@ -5947,13 +5953,11 @@ export type Template = {
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The Innovation Flow. */
-  innovationFlow?: Maybe<InnovationFlow>;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** The description for Post Templates to users filling out a new Post based on this Template. */
   postDefaultDescription?: Maybe<Scalars['Markdown']>;
-  /** The Profile for this InnovationFlow. */
+  /** The Profile for this Template. */
   profile: Profile;
   /** The type for this Template. */
   type: TemplateType;
@@ -6001,7 +6005,6 @@ export enum TemplateType {
   Callout = 'CALLOUT',
   Collaboration = 'COLLABORATION',
   CommunityGuidelines = 'COMMUNITY_GUIDELINES',
-  InnovationFlow = 'INNOVATION_FLOW',
   Post = 'POST',
   Whiteboard = 'WHITEBOARD',
 }
@@ -6042,10 +6045,6 @@ export type TemplatesSet = {
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The InnovationFlowTemplates in this TemplatesSet. */
-  innovationFlowTemplates: Array<Template>;
-  /** The total number of InnovationFlowTemplates in this TemplatesSet. */
-  innovationFlowTemplatesCount: Scalars['Float'];
   /** The Post Templates in this TemplatesSet. */
   postTemplates: Array<Template>;
   /** The total number of Post Templates in this TemplatesSet. */
@@ -6840,6 +6839,22 @@ export type Visual = {
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   uri: Scalars['String'];
+};
+
+export type VisualConstraints = {
+  __typename?: 'VisualConstraints';
+  /** Allowed file types. */
+  allowedTypes: Array<Scalars['String']>;
+  /** Dimensions ratio width / height. */
+  aspectRatio: Scalars['Float'];
+  /** Maximum height resolution. */
+  maxHeight: Scalars['Float'];
+  /** Maximum width resolution. */
+  maxWidth: Scalars['Float'];
+  /** Minimum height resolution. */
+  minHeight: Scalars['Float'];
+  /** Minimum width resolution. */
+  minWidth: Scalars['Float'];
 };
 
 export enum VisualType {
@@ -28088,13 +28103,6 @@ export type InnovationLibraryQuery = {
           id: string;
           type: TemplateType;
           callout?: { __typename?: 'Callout'; id: string; type: CalloutType } | undefined;
-          innovationFlow?:
-            | {
-                __typename?: 'InnovationFlow';
-                id: string;
-                states: Array<{ __typename?: 'InnovationFlowState'; displayName: string }>;
-              }
-            | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
