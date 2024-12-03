@@ -7,7 +7,6 @@ import CollaborationTemplateForm, { CollaborationTemplateFormSubmittedValues } f
 import CommunityGuidelinesTemplateForm, {
   CommunityGuidelinesTemplateFormSubmittedValues,
 } from './CommunityGuidelinesTemplateForm';
-import InnovationFlowTemplateForm, { InnovationFlowTemplateFormSubmittedValues } from './InnovationFlowTemplateForm';
 import PostTemplateForm, { PostTemplateFormSubmittedValues } from './PostTemplateForm';
 import WhiteboardTemplateForm, { WhiteboardTemplateFormSubmittedValues } from './WhiteboardTemplateForm';
 
@@ -23,7 +22,6 @@ export type AnyTemplateFormSubmittedValues =
   | CollaborationTemplateFormSubmittedValues
   | CommunityGuidelinesTemplateFormSubmittedValues
   | PostTemplateFormSubmittedValues
-  | InnovationFlowTemplateFormSubmittedValues
   | WhiteboardTemplateFormSubmittedValues;
 
 const TemplateForm = ({ template, temporaryLocation = false, ...rest }: TemplateFormProps) => {
@@ -36,8 +34,6 @@ const TemplateForm = ({ template, temporaryLocation = false, ...rest }: Template
       return <CommunityGuidelinesTemplateForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
     case TemplateType.Post:
       return <PostTemplateForm template={template} temporaryLocation={temporaryLocation} {...rest} />;
-    case TemplateType.InnovationFlow:
-      return <InnovationFlowTemplateForm template={template} {...rest} />;
     case TemplateType.Whiteboard:
       return <WhiteboardTemplateForm template={template} {...rest} />;
   }

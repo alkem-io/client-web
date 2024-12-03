@@ -2040,6 +2040,7 @@ export type MutationKeySpecifier = (
   | 'messageUser'
   | 'moveContributionToCallout'
   | 'refreshVirtualContributorBodyOfKnowledge'
+  | 'removeCommunityGuidelinesContent'
   | 'removeMessageOnRoom'
   | 'removeOrganizationRoleFromUser'
   | 'removePlatformRoleFromUser'
@@ -2203,6 +2204,7 @@ export type MutationFieldPolicy = {
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeOrganizationRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3405,7 +3407,6 @@ export type TemplateKeySpecifier = (
   | 'communityGuidelines'
   | 'createdDate'
   | 'id'
-  | 'innovationFlow'
   | 'nameID'
   | 'postDefaultDescription'
   | 'profile'
@@ -3421,7 +3422,6 @@ export type TemplateFieldPolicy = {
   communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   postDefaultDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3480,8 +3480,6 @@ export type TemplatesSetKeySpecifier = (
   | 'communityGuidelinesTemplatesCount'
   | 'createdDate'
   | 'id'
-  | 'innovationFlowTemplates'
-  | 'innovationFlowTemplatesCount'
   | 'postTemplates'
   | 'postTemplatesCount'
   | 'templates'
@@ -3501,8 +3499,6 @@ export type TemplatesSetFieldPolicy = {
   communityGuidelinesTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  innovationFlowTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
-  innovationFlowTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;

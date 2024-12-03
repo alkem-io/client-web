@@ -41,8 +41,13 @@ const CommunityGuidelinesBlock = ({ communityId, journeyUrl }: CommunityGuidelin
   const openDialog = () => setIsCommunityGuidelinesInfoDialogOpen(true);
   const closeDialog = () => setIsCommunityGuidelinesInfoDialogOpen(false);
 
+  const comunityReferences = data?.lookup.community?.guidelines.profile.references;
+  const comunityDescription = data?.lookup.community?.guidelines.profile.description;
+
   const { t } = useTranslation();
-  const hasGuidelines = !!data?.lookup.community?.guidelines.profile.description;
+
+  const hasGuidelines = Boolean(data?.lookup.community?.guidelines.profile.description);
+  const isReadMoreVisible = Number(comunityDescription?.length) > 0 || Number(comunityReferences?.length) > 0;
   const showGuidelines =
     hasGuidelines ||
     data?.lookup.community?.guidelines.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Create);
@@ -51,7 +56,7 @@ const CommunityGuidelinesBlock = ({ communityId, journeyUrl }: CommunityGuidelin
     <>
       <PageContentBlock>
         <PageContentBlockHeader title={data?.lookup?.community?.guidelines?.profile.displayName} />
-        {hasGuidelines ? (
+        {isReadMoreVisible ? (
           <>
             <Box display="flex" flexDirection="column" gap={gutters()}>
               {loading && <CommunityGuidelinesSkeleton />}
@@ -65,6 +70,7 @@ const CommunityGuidelinesBlock = ({ communityId, journeyUrl }: CommunityGuidelin
                 </OverflowGradient>
               )}
             </Box>
+
             <SeeMore label="buttons.readMore" onClick={openDialog} />
           </>
         ) : (

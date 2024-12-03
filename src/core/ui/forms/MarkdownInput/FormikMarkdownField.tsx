@@ -91,7 +91,9 @@ export const FormikMarkdownField = ({
 
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      helper.setValue(event.target.value);
+      const trimmedValue = event.target.value.trim();
+      const newValue = trimmedValue === '<br>' ? '' : event.target.value;
+      helper.setValue(newValue);
     },
     [helper]
   );

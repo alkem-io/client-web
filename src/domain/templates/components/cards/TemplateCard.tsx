@@ -3,7 +3,6 @@ import { ContributeCardProps } from '@/core/ui/card/ContributeCard';
 import CalloutTemplateCard from './CalloutTemplateCard';
 import CommunityGuidelinesTemplateCard from './CommunityGuidelinesTemplateCard';
 import PostTemplateCard from './PostTemplateCard';
-import InnovationFlowTemplateCard from './InnovationFlowTemplateCard';
 import WhiteboardTemplateCard from './WhiteboardTemplateCard';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { AnyTemplateWithInnovationPack } from '@/domain/templates/models/TemplateBase';
@@ -26,8 +25,6 @@ const TemplateCard: FC<TemplateCardProps> = ({ template, link, ...rest }) => {
       return <CalloutTemplateCard template={template} {...link} {...rest} />;
     case TemplateType.CommunityGuidelines:
       return <CommunityGuidelinesTemplateCard template={template} {...link} {...rest} />;
-    case TemplateType.InnovationFlow:
-      return <InnovationFlowTemplateCard template={template} {...link} {...rest} />;
     case TemplateType.Post:
       return <PostTemplateCard template={template} {...link} {...rest} />;
     case TemplateType.Whiteboard:
