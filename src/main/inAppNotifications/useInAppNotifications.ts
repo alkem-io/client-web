@@ -108,7 +108,7 @@ export const useInAppNotifications = () => {
       startPolling(POLLING_INTERVAL);
     }
 
-    return stopPolling;
+    return () => stopPolling();
   }, [data, startPolling, stopPolling]);
 
   const items: InAppNotificationProps[] = useMemo(
