@@ -31,7 +31,6 @@ export const JourneyCreationDialog: FC<JourneyCreationDialogProps> = ({
   const [value, setValue] = useState<JourneyFormValues>({
     displayName: '',
     tagline: '',
-    vision: '',
     tags: [],
     addTutorialCallouts: false,
     collaborationTemplateId: undefined,

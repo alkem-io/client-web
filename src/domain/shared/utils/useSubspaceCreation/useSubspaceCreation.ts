@@ -23,7 +23,7 @@ interface SubspaceCreationInput {
   displayName: string;
   tagline: string;
   background?: string;
-  vision: string;
+  vision?: string;
   tags: string[];
   addTutorialCallouts: boolean;
   collaborationTemplateId?: string;

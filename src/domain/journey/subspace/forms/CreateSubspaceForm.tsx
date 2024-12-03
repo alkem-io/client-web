@@ -46,7 +46,6 @@ export const CreateSubspaceForm = ({
       displayName: value.displayName,
       tagline: value.tagline,
       background: value.background,
-      vision: '',
       tags: value.tags,
       addTutorialCallouts: value.addTutorialCallouts,
       collaborationTemplateId: value.collaborationTemplateId,

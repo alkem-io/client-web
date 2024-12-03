@@ -6,7 +6,7 @@ interface VisualUpload {
 export interface JourneyFormValues {
   displayName: string;
   tagline: string;
-  vision: string;
+  vision?: string;
   tags: string[];
   background?: string;
   addTutorialCallouts: boolean;
