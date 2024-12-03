@@ -3,7 +3,6 @@ import { Identifiable } from '@/core/utils/Identifiable';
 import { CalloutTemplate } from './CalloutTemplate';
 import { CollaborationTemplate } from './CollaborationTemplate';
 import { CommunityGuidelinesTemplate } from './CommunityGuidelinesTemplate';
-import { InnovationFlowTemplate } from './InnovationFlowTemplate';
 import { PostTemplate } from './PostTemplate';
 import { WhiteboardTemplate } from './WhiteboardTemplate';
 
@@ -11,7 +10,6 @@ export type AnyTemplate =
   | CalloutTemplate
   | CollaborationTemplate
   | CommunityGuidelinesTemplate
-  | InnovationFlowTemplate
   | PostTemplate
   | WhiteboardTemplate;
 

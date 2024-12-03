@@ -8,9 +8,6 @@ fragment TemplatesSetTemplates on TemplatesSet {
   whiteboardTemplates {
     ...WhiteboardTemplate
   }
-  innovationFlowTemplates {
-    ...InnovationFlowTemplate
-  }
   communityGuidelinesTemplates {
     ...CommunityGuidelinesTemplate
   }

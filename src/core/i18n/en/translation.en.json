@@ -584,7 +584,8 @@
       "LICENSE_MANAGER": "License Manager",
       "BETA_TESTER": "Beta Tester",
       "VC_CAMPAIGN": "VC Early Access"
-    }
+    },
+    "removeContent": "Delete Community Guidelines"
   },
   "community": {
     "memberUsers": "Member Users ({{count}})",
@@ -622,6 +623,7 @@
     },
     "communityGuidelines": {
       "title": "Community Guidelines",
+      "saveAndDeleteContentSuccessMessage": "Community guidelines content removed and saved successfully.",
       "updatedSuccessfully": "Community guidelines updated successfully.",
       "adminsOnly": "Since there are no Community Guidelines specified, this block is only visible for admins and leads.",
       "communityGuidelinesRedirect": "Click here to update the Community Guidelines in the Space settings.",
@@ -690,6 +692,10 @@
         "dialogTitle": "Are you sure you want to remove this member?",
         "dialogContent": "By clicking CONFIRM, {{member}} will be removed from this Community and all the underlying Subspaces {{memberFirstName}} may be member of. {{memberFirstName}}’s contributions will remain in place."
       }
+    },
+    "removeGuidelinesConfirmationDialog": {
+      "title": "Remove Community Guidelines Content",
+      "content": "Are you sure you want to remove the Community Guidelines? This action cannot be undone."
     }
   },
   "callout": {
@@ -955,10 +961,6 @@
       "editTemplateButton": "Edit Template",
       "editDialogTitle": "Edit Whiteboard Template",
       "errorImporting": "Error importing Whiteboard Template"
-    },
-    "innovationFlowTemplates": {
-      "name": "$t(common.enums.templateType.INNOVATION_FLOW)",
-      "title": "$t(common.templateLibrary): $t(common.enums.templateType.INNOVATION_FLOW_plural)"
     },
     "collaborationTemplates": {
       "name": "$t(common.enums.templateType.COLLABORATION)",
@@ -1725,10 +1727,6 @@
         "no-data-join": "No discussions. Please join the community to create a discussion",
         "explore": "Explore discussions"
       }
-    },
-    "innovationFlowTemplateSelect": {
-      "select": "Select different Flow",
-      "required": "Please select an Innovation Flow"
     }
   },
   "navigation": {

@@ -26,7 +26,6 @@ export interface InnovationPackCardProps extends ContributeCardProps {
   onClick?: () => void;
   whiteboardTemplatesCount?: ReactNode;
   postTemplatesCount: ReactNode;
-  innovationFlowTemplatesCount: ReactNode;
   collaborationTemplatesCount: ReactNode;
   calloutTemplatesCount?: ReactNode;
   communityGuidelinesTemplatesCount?: ReactNode;
@@ -41,7 +40,6 @@ const InnovationPackCard = ({
   providerAvatarUri,
   whiteboardTemplatesCount,
   postTemplatesCount,
-  innovationFlowTemplatesCount,
   collaborationTemplatesCount,
   calloutTemplatesCount,
   communityGuidelinesTemplatesCount,
