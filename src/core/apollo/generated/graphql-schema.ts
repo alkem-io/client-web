@@ -3475,6 +3475,8 @@ export type Mutation = {
   moveContributionToCallout: CalloutContribution;
   /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean'];
+  /** Updates the CommunityGuidelines. */
+  removeCommunityGuidelinesContent: CommunityGuidelines;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID'];
   /** Removes Organization Role from user. */
@@ -3947,6 +3949,10 @@ export type MutationMoveContributionToCalloutArgs = {
 
 export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
   refreshData: RefreshVirtualContributorBodyOfKnowledgeInput;
+};
+
+export type MutationRemoveCommunityGuidelinesContentArgs = {
+  communityGuidelinesData: RemoveCommunityGuidelinesContentInput;
 };
 
 export type MutationRemoveMessageOnRoomArgs = {
@@ -5043,6 +5049,11 @@ export type RelayPaginatedSpacePageInfo = {
   hasPreviousPage: Scalars['Boolean'];
   /** The first cursor of the page result */
   startCursor?: Maybe<Scalars['String']>;
+};
+
+export type RemoveCommunityGuidelinesContentInput = {
+  /** ID of the CommunityGuidelines that will be emptied */
+  communityGuidelinesID: Scalars['UUID'];
 };
 
 export type RemoveOrganizationRoleFromUserInput = {
@@ -15554,6 +15565,30 @@ export type UpdateCommunityGuidelinesMutationVariables = Exact<{
 export type UpdateCommunityGuidelinesMutation = {
   __typename?: 'Mutation';
   updateCommunityGuidelines: {
+    __typename?: 'CommunityGuidelines';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+    };
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
+};
+
+export type RemoveCommunityGuidelinesContentMutationVariables = Exact<{
+  communityGuidelinesData: RemoveCommunityGuidelinesContentInput;
+}>;
+
+export type RemoveCommunityGuidelinesContentMutation = {
+  __typename?: 'Mutation';
+  removeCommunityGuidelinesContent: {
     __typename?: 'CommunityGuidelines';
     id: string;
     profile: {

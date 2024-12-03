@@ -2040,6 +2040,7 @@ export type MutationKeySpecifier = (
   | 'messageUser'
   | 'moveContributionToCallout'
   | 'refreshVirtualContributorBodyOfKnowledge'
+  | 'removeCommunityGuidelinesContent'
   | 'removeMessageOnRoom'
   | 'removeOrganizationRoleFromUser'
   | 'removePlatformRoleFromUser'
@@ -2203,6 +2204,7 @@ export type MutationFieldPolicy = {
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeOrganizationRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;

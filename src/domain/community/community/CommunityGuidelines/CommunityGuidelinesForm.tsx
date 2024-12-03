@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +11,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { referenceSegmentSchema } from '@/domain/platform/admin/components/Common/ReferenceSegment';
 import LoadingButton from '@mui/lab/LoadingButton';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 
 type CommunityGuidelinesFormProps = {
   data: FormValues | undefined;
@@ -17,6 +19,9 @@ type CommunityGuidelinesFormProps = {
   onSubmit: (values: FormValues) => void;
   loading?: boolean;
   disabled?: boolean;
+  removeCommunityGuidelinesContentLoading?: boolean;
+  hasDeleteContentButton?: boolean;
+  onDeleteAndSaveContent?: () => void;
 };
 
 type FormValues = {
@@ -36,7 +41,18 @@ const validationSchema = yup.object().shape({
   references: referenceSegmentSchema,
 });
 
-const CommunityGuidelinesForm = ({ data, profileId, onSubmit, disabled, loading }: CommunityGuidelinesFormProps) => {
+const CommunityGuidelinesForm = ({
+  data,
+  profileId,
+  onSubmit,
+  disabled,
+  loading,
+  hasDeleteContentButton = false,
+  removeCommunityGuidelinesContentLoading,
+  onDeleteAndSaveContent,
+}: CommunityGuidelinesFormProps) => {
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
   const { t } = useTranslation();
 
   const initialValues: FormValues = {
@@ -46,32 +62,69 @@ const CommunityGuidelinesForm = ({ data, profileId, onSubmit, disabled, loading 
   };
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
-      {({ values, handleSubmit, isValid }) => {
-        return (
-          <Gutters>
-            <FormikInputField
-              name="displayName"
-              title={t('common.title')}
-              placeholder={t('common.title')}
-              disabled={disabled || loading}
-            />
-            <FormikMarkdownField
-              title={t('common.introduction')}
-              name="description"
-              disabled={disabled || loading}
-              maxLength={MARKDOWN_TEXT_LENGTH}
-            />
-            <ProfileReferenceSegment references={values.references} profileId={profileId} />
-            <Box display="flex" marginY={4} justifyContent="flex-end">
-              <LoadingButton disabled={!isValid} variant="contained" onClick={() => handleSubmit()} loading={loading}>
-                {t('common.update')}
-              </LoadingButton>
-            </Box>
-          </Gutters>
-        );
-      }}
-    </Formik>
+    <>
+      <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
+        {({ values, handleSubmit, isValid }) => {
+          return (
+            <Gutters>
+              <FormikInputField
+                name="displayName"
+                title={t('common.title')}
+                placeholder={t('common.title')}
+                disabled={disabled || loading}
+              />
+
+              <FormikMarkdownField
+                title={t('common.introduction')}
+                name="description"
+                disabled={disabled || loading}
+                maxLength={MARKDOWN_TEXT_LENGTH}
+              />
+
+              <ProfileReferenceSegment references={values.references} profileId={profileId} />
+
+              <Box display="flex" marginY={4} gap={1} justifyContent="flex-end">
+                {hasDeleteContentButton && (
+                  <LoadingButton
+                    loading={loading}
+                    variant="outlined"
+                    disabled={!isValid}
+                    onClick={() => setDeleteDialogOpen(true)}
+                  >
+                    {t('common.removeContent')}
+                  </LoadingButton>
+                )}
+
+                <LoadingButton disabled={!isValid} variant="contained" onClick={() => handleSubmit()} loading={loading}>
+                  {t('common.update')}
+                </LoadingButton>
+              </Box>
+            </Gutters>
+          );
+        }}
+      </Formik>
+
+      <ConfirmationDialog
+        entities={{
+          titleId: 'community.removeGuidelinesConfirmationDialog.title',
+          contentId: 'community.removeGuidelinesConfirmationDialog.content',
+          confirmButtonTextId: 'buttons.delete',
+        }}
+        options={{
+          show: deleteDialogOpen,
+        }}
+        actions={{
+          onConfirm: () => {
+            onDeleteAndSaveContent?.();
+            setDeleteDialogOpen(false);
+          },
+          onCancel: () => setDeleteDialogOpen(false),
+        }}
+        state={{
+          isLoading: Boolean(removeCommunityGuidelinesContentLoading),
+        }}
+      />
+    </>
   );
 };
 
