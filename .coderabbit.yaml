@@ -27,7 +27,6 @@ reviews:
           global error handler suffices.
         - Avoid flagging the absence of logging in cases where the global logger is
           already in place (graphql usage).
-        - Be more lenient with minor error handling omissions that do not impact the overall functionality.
 
         Inform about the recommendation of not using non-null assertion,
         except on GraphQL queries where the variable is asserted non-null and followed by a
