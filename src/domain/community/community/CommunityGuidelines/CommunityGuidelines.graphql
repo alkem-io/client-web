@@ -33,3 +33,9 @@ mutation UpdateCommunityGuidelines($communityGuidelinesData: UpdateCommunityGuid
     ...CommunityGuidelinesDetails
   }
 }
+
+mutation RemoveCommunityGuidelinesContent($communityGuidelinesData: RemoveCommunityGuidelinesContentInput!) {
+  removeCommunityGuidelinesContent(communityGuidelinesData: $communityGuidelinesData) {
+    ...CommunityGuidelinesDetails
+  }
+}

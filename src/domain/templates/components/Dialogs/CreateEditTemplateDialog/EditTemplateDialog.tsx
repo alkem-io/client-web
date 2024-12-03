@@ -22,7 +22,6 @@ const EditTemplateDialog = ({ template, templateType, open, onClose, onSubmit, o
       templateId: template?.id!,
       includeCallout: templateType === TemplateType.Callout,
       includeCommunityGuidelines: templateType === TemplateType.CommunityGuidelines,
-      includeInnovationFlow: templateType === TemplateType.InnovationFlow,
       includeCollaboration: templateType === TemplateType.Collaboration,
       includePost: templateType === TemplateType.Post,
       includeWhiteboard: templateType === TemplateType.Whiteboard,

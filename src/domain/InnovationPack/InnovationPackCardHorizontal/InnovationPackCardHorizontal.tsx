@@ -7,7 +7,6 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import { Caption, BlockTitle } from '@/core/ui/typography';
 import { CommunityGuidelinesIcon } from '@/domain/community/communityGuidelines/icon/CommunityGuidelinesIcon';
-import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import { PostIcon } from '@/domain/collaboration/post/icon/PostIcon';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 import InnovationPackIcon from '../InnovationPackIcon';
@@ -28,7 +27,6 @@ export interface InnovationPackCardHorizontalProps {
     calloutTemplatesCount?: number;
     collaborationTemplatesCount?: number;
     communityGuidelinesTemplatesCount?: number;
-    innovationFlowTemplatesCount?: number;
     postTemplatesCount?: number;
     whiteboardTemplatesCount?: number;
   };
@@ -58,7 +56,6 @@ const InnovationPackCardHorizontal = ({
     calloutTemplatesCount,
     collaborationTemplatesCount,
     communityGuidelinesTemplatesCount,
-    innovationFlowTemplatesCount,
     postTemplatesCount,
     whiteboardTemplatesCount,
   } = templates ?? {};
@@ -67,7 +64,6 @@ const InnovationPackCardHorizontal = ({
     (calloutTemplatesCount ?? 0) +
     (collaborationTemplatesCount ?? 0) +
     (communityGuidelinesTemplatesCount ?? 0) +
-    (innovationFlowTemplatesCount ?? 0) +
     (postTemplatesCount ?? 0) +
     (whiteboardTemplatesCount ?? 0);
 
@@ -125,25 +121,6 @@ const InnovationPackCardHorizontal = ({
               tooltip={t(`common.enums.templateType.${TemplateType.Post}_plural`)}
             >
               <Caption>{postTemplatesCount}</Caption>
-            </CardFooterCountWithBadge>
-          )}
-          {!!innovationFlowTemplatesCount && (
-            <CardFooterCountWithBadge
-              tooltip={t(`common.enums.templateType.${TemplateType.InnovationFlow}_plural`)}
-              icon={
-                // TODO Try to redraw InnovationFlowIcon in the same way as MUI icons are done
-                <Box
-                  width={theme => theme.spacing(1.5)}
-                  sx={{ svg: { width: '100%' } }}
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <InnovationFlowIcon />
-                </Box>
-              }
-            >
-              <Caption>{innovationFlowTemplatesCount}</Caption>
             </CardFooterCountWithBadge>
           )}
           {!!collaborationTemplatesCount && (

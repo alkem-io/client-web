@@ -1079,6 +1079,7 @@ export type CommunityMembershipResultFieldPolicy = {
 export type ConfigKeySpecifier = (
   | 'apm'
   | 'authentication'
+  | 'defaultVisualTypeConstraints'
   | 'featureFlags'
   | 'geo'
   | 'locations'
@@ -1089,6 +1090,7 @@ export type ConfigKeySpecifier = (
 export type ConfigFieldPolicy = {
   apm?: FieldPolicy<any> | FieldReadFunction<any>;
   authentication?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultVisualTypeConstraints?: FieldPolicy<any> | FieldReadFunction<any>;
   featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
   geo?: FieldPolicy<any> | FieldReadFunction<any>;
   locations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2033,6 +2035,7 @@ export type MutationKeySpecifier = (
   | 'messageUser'
   | 'moveContributionToCallout'
   | 'refreshVirtualContributorBodyOfKnowledge'
+  | 'removeCommunityGuidelinesContent'
   | 'removeMessageOnRoom'
   | 'removeOrganizationRoleFromUser'
   | 'removePlatformRoleFromUser'
@@ -2198,6 +2201,7 @@ export type MutationFieldPolicy = {
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeOrganizationRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3396,7 +3400,6 @@ export type TemplateKeySpecifier = (
   | 'communityGuidelines'
   | 'createdDate'
   | 'id'
-  | 'innovationFlow'
   | 'nameID'
   | 'postDefaultDescription'
   | 'profile'
@@ -3412,7 +3415,6 @@ export type TemplateFieldPolicy = {
   communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  innovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   postDefaultDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3471,8 +3473,6 @@ export type TemplatesSetKeySpecifier = (
   | 'communityGuidelinesTemplatesCount'
   | 'createdDate'
   | 'id'
-  | 'innovationFlowTemplates'
-  | 'innovationFlowTemplatesCount'
   | 'postTemplates'
   | 'postTemplatesCount'
   | 'templates'
@@ -3492,8 +3492,6 @@ export type TemplatesSetFieldPolicy = {
   communityGuidelinesTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  innovationFlowTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
-  innovationFlowTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   postTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3695,6 +3693,23 @@ export type VisualFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   uri?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VisualConstraintsKeySpecifier = (
+  | 'allowedTypes'
+  | 'aspectRatio'
+  | 'maxHeight'
+  | 'maxWidth'
+  | 'minHeight'
+  | 'minWidth'
+  | VisualConstraintsKeySpecifier
+)[];
+export type VisualConstraintsFieldPolicy = {
+  allowedTypes?: FieldPolicy<any> | FieldReadFunction<any>;
+  aspectRatio?: FieldPolicy<any> | FieldReadFunction<any>;
+  maxHeight?: FieldPolicy<any> | FieldReadFunction<any>;
+  maxWidth?: FieldPolicy<any> | FieldReadFunction<any>;
+  minHeight?: FieldPolicy<any> | FieldReadFunction<any>;
+  minWidth?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type WhiteboardKeySpecifier = (
   | 'authorization'
@@ -4606,6 +4621,10 @@ export type StrictTypedTypePolicies = {
   Visual?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VisualKeySpecifier | (() => undefined | VisualKeySpecifier);
     fields?: VisualFieldPolicy;
+  };
+  VisualConstraints?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | VisualConstraintsKeySpecifier | (() => undefined | VisualConstraintsKeySpecifier);
+    fields?: VisualConstraintsFieldPolicy;
   };
   Whiteboard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | WhiteboardKeySpecifier | (() => undefined | WhiteboardKeySpecifier);

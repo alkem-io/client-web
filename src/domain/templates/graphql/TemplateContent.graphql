@@ -2,7 +2,6 @@ query TemplateContent(
   $templateId: UUID!
   $includeCallout: Boolean = false
   $includeCommunityGuidelines: Boolean = false
-  $includeInnovationFlow: Boolean = false
   $includeCollaboration: Boolean = false
   $includePost: Boolean = false
   $includeWhiteboard: Boolean = false
@@ -24,9 +23,6 @@ query TemplateContent(
       }
       communityGuidelines @include(if: $includeCommunityGuidelines) {
         ...CommunityGuidelinesTemplateContent
-      }
-      innovationFlow @include(if: $includeInnovationFlow) {
-        ...InnovationFlowTemplateContent
       }
       postDefaultDescription @include(if: $includePost)
       whiteboard @include(if: $includeWhiteboard) {
@@ -96,14 +92,6 @@ fragment CommunityGuidelinesTemplateContent on CommunityGuidelines {
         myPrivileges
       }
     }
-  }
-}
-
-fragment InnovationFlowTemplateContent on InnovationFlow {
-  id
-  states {
-    displayName
-    description
   }
 }
 

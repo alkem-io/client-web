@@ -106,21 +106,14 @@ const TemplatesAdmin = ({
     skip: !templatesSetId,
   });
 
-  const {
-    calloutTemplates,
-    collaborationTemplates,
-    communityGuidelinesTemplates,
-    innovationFlowTemplates,
-    postTemplates,
-    whiteboardTemplates,
-  } = data?.lookup.templatesSet ?? {};
+  const { calloutTemplates, collaborationTemplates, communityGuidelinesTemplates, postTemplates, whiteboardTemplates } =
+    data?.lookup.templatesSet ?? {};
 
   const selectedTemplate = useMemo<AnyTemplate | undefined>(() => {
     if (!templateId) return undefined;
     return [
       ...(postTemplates ?? []),
       ...(whiteboardTemplates ?? []),
-      ...(innovationFlowTemplates ?? []),
       ...(communityGuidelinesTemplates ?? []),
       ...(calloutTemplates ?? []),
       ...(collaborationTemplates ?? []),
@@ -236,7 +229,6 @@ const TemplatesAdmin = ({
         templateId: id,
         includeCallout: templateType === TemplateType.Callout,
         includeCommunityGuidelines: templateType === TemplateType.CommunityGuidelines,
-        includeInnovationFlow: templateType === TemplateType.InnovationFlow,
         includeCollaboration: false, // templateType === TemplateType.Collaboration,
         includePost: templateType === TemplateType.Post,
         includeWhiteboard: templateType === TemplateType.Whiteboard,
@@ -280,9 +272,7 @@ const TemplatesAdmin = ({
         {canImportTemplates(templateType) ? (
           <ImportTemplateButton onClick={() => setImportTemplateType(templateType)} />
         ) : null}
-        {canCreateTemplates(templateType) &&
-        /* TODO: InnovationFlow templates are going to be removed in the near future, so disallow creation for this type */
-        templateType !== TemplateType.InnovationFlow ? (
+        {canCreateTemplates(templateType) ? (
           <CreateTemplateButton onClick={() => setCreatingTemplateType(templateType)} />
         ) : null}
       </>
@@ -336,18 +326,6 @@ const TemplatesAdmin = ({
           })}
           actions={<GalleryActions templateType={TemplateType.CommunityGuidelines} />}
           templates={communityGuidelinesTemplates}
-          loading={loading}
-          buildTemplateLink={buildTemplateLink}
-        />
-      </PageContentBlockSeamless>
-      <PageContentBlockSeamless disablePadding>
-        <TemplatesGallery
-          headerText={t('common.entitiesWithCount', {
-            entityType: t(`common.enums.templateType.${TemplateType.InnovationFlow}_plural`),
-            count: innovationFlowTemplates?.length ?? 0,
-          })}
-          actions={<GalleryActions templateType={TemplateType.InnovationFlow} />}
-          templates={innovationFlowTemplates}
           loading={loading}
           buildTemplateLink={buildTemplateLink}
         />
