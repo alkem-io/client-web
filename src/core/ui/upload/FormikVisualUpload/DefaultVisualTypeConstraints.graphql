@@ -1,0 +1,17 @@
+query DefaultVisualTypeConstraints(
+  $visualType: VisualType!
+) {
+  platform {
+    id
+    configuration {
+      defaultVisualTypeConstraints(type: $visualType) {
+        maxHeight
+        maxWidth
+        minHeight
+        minWidth
+        aspectRatio
+        allowedTypes
+      }
+    }
+  }
+}

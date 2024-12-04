@@ -6937,6 +6937,30 @@ export type UploadFileMutationVariables = Exact<{
 
 export type UploadFileMutation = { __typename?: 'Mutation'; uploadFileOnStorageBucket: string };
 
+export type DefaultVisualTypeConstraintsQueryVariables = Exact<{
+  visualType: VisualType;
+}>;
+
+export type DefaultVisualTypeConstraintsQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    configuration: {
+      __typename?: 'Config';
+      defaultVisualTypeConstraints: {
+        __typename?: 'VisualConstraints';
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+        aspectRatio: number;
+        allowedTypes: Array<string>;
+      };
+    };
+  };
+};
+
 export type InnovationPackProfilePageQueryVariables = Exact<{
   innovationPackId: Scalars['UUID'];
 }>;
@@ -22680,7 +22704,7 @@ export type AdminSpaceSubspacesPageQuery = {
         id: string;
         displayName: string;
         url: string;
-        cardBanner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
     }>;
     templatesManager?:
@@ -24175,6 +24199,7 @@ export type PageInfoFragment = {
 
 export type CreateSubspaceMutationVariables = Exact<{
   input: CreateSubspaceInput;
+  includeVisuals?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type CreateSubspaceMutation = {
@@ -24182,6 +24207,12 @@ export type CreateSubspaceMutation = {
   createSubspace: {
     __typename?: 'Space';
     id: string;
+    visuals: {
+      __typename?: 'Profile';
+      id: string;
+      cardBanner?: { __typename?: 'Visual'; id: string } | undefined;
+      avatar?: { __typename?: 'Visual'; id: string } | undefined;
+    };
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     profile: {
       __typename?: 'Profile';
@@ -25027,6 +25058,41 @@ export type SpaceCollaborationIdQuery = {
     __typename?: 'LookupQueryResults';
     space?:
       | { __typename?: 'Space'; id: string; collaboration: { __typename?: 'Collaboration'; id: string } }
+      | undefined;
+  };
+};
+
+export type SpaceDefaultTemplatesQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+}>;
+
+export type SpaceDefaultTemplatesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          templatesManager?:
+            | {
+                __typename?: 'TemplatesManager';
+                id: string;
+                templateDefaults: Array<{
+                  __typename?: 'TemplateDefault';
+                  id: string;
+                  type: TemplateDefaultType;
+                  template?:
+                    | {
+                        __typename?: 'Template';
+                        id: string;
+                        profile: { __typename?: 'Profile'; id: string; displayName: string };
+                      }
+                    | undefined;
+                }>;
+              }
+            | undefined;
+        }
       | undefined;
   };
 };
@@ -25942,6 +26008,20 @@ export type DeleteTemplateMutationVariables = Exact<{
 export type DeleteTemplateMutation = {
   __typename?: 'Mutation';
   deleteTemplate: { __typename?: 'Template'; id: string };
+};
+
+export type TemplateNameQueryVariables = Exact<{
+  templateId: Scalars['UUID'];
+}>;
+
+export type TemplateNameQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    template?:
+      | { __typename?: 'Template'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
+      | undefined;
+  };
 };
 
 export type TemplateUrlResolverQueryVariables = Exact<{

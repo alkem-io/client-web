@@ -9,7 +9,7 @@ import { toCreateTemplateFromCollaborationMutationVariables } from '../component
 export interface CollaborationCreationUtils {
   handleCreateCollaborationTemplate: (
     values: CollaborationTemplateFormSubmittedValues,
-    spaceNameId: string
+    destinationSpaceNameId: string
   ) => Promise<unknown>;
 }
 
@@ -18,8 +18,8 @@ export const useCreateCollaborationTemplate = (): CollaborationCreationUtils => 
   const [fetchTemplatesSetId] = useSpaceTemplatesSetIdLazyQuery();
 
   const handleCreateCollaborationTemplate = useCallback(
-    async (values: CollaborationTemplateFormSubmittedValues, spaceNameId: string) => {
-      const { data: templatesData } = await fetchTemplatesSetId({ variables: { spaceNameId } });
+    async (values: CollaborationTemplateFormSubmittedValues, destinationSpaceNameId: string) => {
+      const { data: templatesData } = await fetchTemplatesSetId({ variables: { spaceNameId: destinationSpaceNameId } });
       const templatesSetId = templatesData?.space.templatesManager?.templatesSet?.id;
       if (!templatesSetId) {
         throw new TypeError('TemplateSet not found!');

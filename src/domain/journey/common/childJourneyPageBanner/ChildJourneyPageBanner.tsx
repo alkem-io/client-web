@@ -1,7 +1,8 @@
 import JourneyPageBannerCard from '../PageBanner/JourneyPageBannerCard/JourneyPageBannerCard';
 import PageBanner, { PageBannerProps } from '@/core/ui/layout/pageBanner/PageBanner';
 import { useMemo } from 'react';
-import defaultJourneyBanner from '../../defaultVisuals/Banner.jpg';
+import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useChildJourneyPageBannerQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
@@ -21,7 +22,7 @@ const ChildJourneyPageBanner = ({ journeyId, ...props }: ChildJourneyPageBannerP
     }
     return {
       ...spaceBanner,
-      uri: defaultJourneyBanner,
+      uri: defaultVisualUrls[VisualType.Banner],
     };
   }, [spaceBanner]);
 
