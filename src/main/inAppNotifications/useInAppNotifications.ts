@@ -5,7 +5,6 @@ import {
   InAppNotificationCategory,
   InAppNotificationState,
   NotificationEventType,
-  PlatformRole,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
 import {
@@ -14,6 +13,7 @@ import {
   useUpdateNotificationStateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useUserContext } from '@/domain/community/user';
+import { useInAppNotificationsContext } from './InAppNotificationsContext';
 
 const POLLING_INTERVAL = 5 * 1000; // 5 seconds
 
@@ -88,19 +88,16 @@ export interface InAppNotificationProps {
 }
 
 export const useInAppNotifications = () => {
-  const { user, platformRoles } = useUserContext();
+  const { user } = useUserContext();
+  const { isEnabled } = useInAppNotificationsContext();
 
   const [updateState] = useUpdateNotificationStateMutation();
-
-  const enableNotifications = useMemo(() => {
-    return user?.user.id && platformRoles?.includes(PlatformRole.BetaTester);
-  }, [user, platformRoles]);
 
   const { data, loading, startPolling, stopPolling } = useInAppNotificationsQuery({
     variables: {
       receiverID: user?.user.id!,
     },
-    skip: !enableNotifications,
+    skip: !isEnabled,
   });
 
   useEffect(() => {

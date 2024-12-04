@@ -1,6 +1,9 @@
-import { createContext, useState, useContext, ReactNode } from 'react';
+import { PlatformRole } from '@/core/apollo/generated/graphql-schema';
+import { useUserContext } from '@/domain/community/user';
+import { createContext, useState, useContext, ReactNode, useMemo } from 'react';
 
 interface InAppNotificationsContextProps {
+  isEnabled: boolean;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }
@@ -8,9 +11,14 @@ interface InAppNotificationsContextProps {
 const InAppNotifications = createContext<InAppNotificationsContextProps | undefined>(undefined);
 
 export const InAppNotificationsProvider = ({ children }: { children: ReactNode }) => {
+  const { user, platformRoles } = useUserContext();
   const [isOpen, setIsOpen] = useState(false);
 
-  return <InAppNotifications.Provider value={{ isOpen, setIsOpen }}>{children}</InAppNotifications.Provider>;
+  const isEnabled = useMemo(() => {
+    return Boolean(user?.user.id && platformRoles?.includes(PlatformRole.BetaTester));
+  }, [user, platformRoles]);
+
+  return <InAppNotifications.Provider value={{ isEnabled, isOpen, setIsOpen }}>{children}</InAppNotifications.Provider>;
 };
 
 export const useInAppNotificationsContext = () => {
