@@ -31,6 +31,7 @@ import { findDefaultTagset } from '@/domain/common/tags/utils';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import scrollToTop from '@/core/ui/utils/scrollToTop';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -150,6 +151,7 @@ const CalloutCreationDialog = ({
         };
 
         result = await onCreateCallout(newCallout);
+        scrollToTop();
       } catch (ex) {
         // eslint-disable-next-line no-console
         console.error(ex);
