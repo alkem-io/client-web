@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import ContributeCard, { ContributeCardProps } from '@/core/ui/card/ContributeCard';
@@ -15,7 +14,7 @@ import CardFooterCountWithBadge from '@/core/ui/card/CardFooterCountWithBadge';
 import { gutters } from '@/core/ui/grid/utils';
 import { CommunityGuidelinesIcon } from '@/domain/community/communityGuidelines/icon/CommunityGuidelinesIcon';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
+import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
 
 export interface InnovationPackCardProps extends ContributeCardProps {
   displayName: string;
@@ -24,11 +23,11 @@ export interface InnovationPackCardProps extends ContributeCardProps {
   providerAvatarUri: string | undefined;
   providerDisplayName: string | undefined;
   onClick?: () => void;
-  whiteboardTemplatesCount?: ReactNode;
-  postTemplatesCount: ReactNode;
-  collaborationTemplatesCount: ReactNode;
-  calloutTemplatesCount?: ReactNode;
-  communityGuidelinesTemplatesCount?: ReactNode;
+  whiteboardTemplatesCount?: number;
+  postTemplatesCount?: number;
+  collaborationTemplatesCount?: number;
+  calloutTemplatesCount?: number;
+  communityGuidelinesTemplatesCount?: number;
   innovationPackUri: string;
 }
 
@@ -59,41 +58,36 @@ const InnovationPackCard = ({
             <CardFooterCountWithBadge
               iconComponent={DesignServicesIcon}
               tooltip={t(`common.enums.templateType.${TemplateType.Callout}_plural`)}
-            >
-              {calloutTemplatesCount}
-            </CardFooterCountWithBadge>
+              count={calloutTemplatesCount}
+            />
           )}
           {!!whiteboardTemplatesCount && (
             <CardFooterCountWithBadge
               iconComponent={WhiteboardIcon}
               tooltip={t(`common.enums.templateType.${TemplateType.Whiteboard}_plural`)}
-            >
-              {whiteboardTemplatesCount}
-            </CardFooterCountWithBadge>
+              count={whiteboardTemplatesCount}
+            />
           )}
           {!!communityGuidelinesTemplatesCount && (
             <CardFooterCountWithBadge
               iconComponent={CommunityGuidelinesIcon}
               tooltip={t(`common.enums.templateType.${TemplateType.CommunityGuidelines}_plural`)}
-            >
-              {communityGuidelinesTemplatesCount}
-            </CardFooterCountWithBadge>
+              count={communityGuidelinesTemplatesCount}
+            />
           )}
           {!!postTemplatesCount && (
             <CardFooterCountWithBadge
               iconComponent={PostIcon}
               tooltip={t(`common.enums.templateType.${TemplateType.Post}_plural`)}
-            >
-              {postTemplatesCount}
-            </CardFooterCountWithBadge>
+              count={postTemplatesCount}
+            />
           )}
           {!!collaborationTemplatesCount && (
             <CardFooterCountWithBadge
               tooltip={t(`common.enums.templateType.${TemplateType.Collaboration}_plural`)}
-              iconComponent={SpaceIcon}
-            >
-              {collaborationTemplatesCount}
-            </CardFooterCountWithBadge>
+              iconComponent={SubspaceIcon2}
+              count={collaborationTemplatesCount}
+            />
           )}
         </Box>
         <CardFooterBadge avatarUri={providerAvatarUri} avatarDisplayName={providerDisplayName}>
