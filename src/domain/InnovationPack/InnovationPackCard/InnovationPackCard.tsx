@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import ContributeCard, { ContributeCardProps } from '@/core/ui/card/ContributeCard';
@@ -24,11 +23,11 @@ export interface InnovationPackCardProps extends ContributeCardProps {
   providerAvatarUri: string | undefined;
   providerDisplayName: string | undefined;
   onClick?: () => void;
-  whiteboardTemplatesCount?: ReactNode;
-  postTemplatesCount: ReactNode;
-  collaborationTemplatesCount: ReactNode;
-  calloutTemplatesCount?: ReactNode;
-  communityGuidelinesTemplatesCount?: ReactNode;
+  whiteboardTemplatesCount?: number;
+  postTemplatesCount?: number;
+  collaborationTemplatesCount?: number;
+  calloutTemplatesCount?: number;
+  communityGuidelinesTemplatesCount?: number;
   innovationPackUri: string;
 }
 
@@ -59,35 +58,35 @@ const InnovationPackCard = ({
             <CardFooterCountWithBadge
               iconComponent={DesignServicesIcon}
               tooltip={t(`common.enums.templateType.${TemplateType.Callout}_plural`)}
-              count={+calloutTemplatesCount}
+              count={calloutTemplatesCount}
             />
           )}
           {!!whiteboardTemplatesCount && (
             <CardFooterCountWithBadge
               iconComponent={WhiteboardIcon}
               tooltip={t(`common.enums.templateType.${TemplateType.Whiteboard}_plural`)}
-              count={+whiteboardTemplatesCount}
+              count={whiteboardTemplatesCount}
             />
           )}
           {!!communityGuidelinesTemplatesCount && (
             <CardFooterCountWithBadge
               iconComponent={CommunityGuidelinesIcon}
               tooltip={t(`common.enums.templateType.${TemplateType.CommunityGuidelines}_plural`)}
-              count={+communityGuidelinesTemplatesCount}
+              count={communityGuidelinesTemplatesCount}
             />
           )}
           {!!postTemplatesCount && (
             <CardFooterCountWithBadge
               iconComponent={PostIcon}
               tooltip={t(`common.enums.templateType.${TemplateType.Post}_plural`)}
-              count={+postTemplatesCount}
+              count={postTemplatesCount}
             />
           )}
           {!!collaborationTemplatesCount && (
             <CardFooterCountWithBadge
               tooltip={t(`common.enums.templateType.${TemplateType.Collaboration}_plural`)}
               iconComponent={SubspaceIcon2}
-              count={+collaborationTemplatesCount}
+              count={collaborationTemplatesCount}
             />
           )}
         </Box>
