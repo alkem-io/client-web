@@ -62,7 +62,7 @@ const vcToContributorCard = (vc: VirtualContributor): ContributorCardSquareProps
     id: vc.id,
     displayName: vc.profile.displayName,
     avatar: vc.profile.avatar?.uri ?? '',
-    url: vc.profile.url,
+    url: vc.profile.url ?? '',
     tooltip: {
       tags: (vc.profile?.tagsets || []).flatMap(y => y.tags),
       city: vc.profile?.location?.city || '',
