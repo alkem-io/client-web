@@ -10,6 +10,34 @@ query ContributorsPageUsers($first: Int!, $after: UUID, $filter: UserFilterInput
   }
 }
 
+# no need of filtering as the list below is filtered to only Public and listed in store VCs
+query ContributorsVirtualInLibrary {
+  platform {
+    id
+    library {
+      id
+      virtualContributors {
+        id
+        profile {
+          id
+          displayName
+          url
+          location {
+            city
+            country
+          }
+          tagsets {
+            ...TagsetDetails
+          }
+          avatar: visual(type: AVATAR) {
+            ...VisualUri
+          }
+        }
+      }
+    }
+  }
+}
+
 fragment OrganizationContributorPaginated on PaginatedOrganization {
   organization {
     ...OrganizationContributor

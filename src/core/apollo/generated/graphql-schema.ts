@@ -3475,7 +3475,7 @@ export type Mutation = {
   moveContributionToCallout: CalloutContribution;
   /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean'];
-  /** Updates the CommunityGuidelines. */
+  /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID'];
@@ -16311,6 +16311,42 @@ export type ContributorsPageUsersQuery = {
       startCursor?: string | undefined;
       endCursor?: string | undefined;
       hasNextPage: boolean;
+    };
+  };
+};
+
+export type ContributorsVirtualInLibraryQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ContributorsVirtualInLibraryQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      virtualContributors: Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          location?: { __typename?: 'Location'; city?: string | undefined; country?: string | undefined } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }>;
     };
   };
 };

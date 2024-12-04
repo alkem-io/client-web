@@ -1,12 +1,16 @@
 import { ComponentType, ReactNode, Ref } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
-import { times } from 'lodash';
+import { noop, times } from 'lodash';
 import ContributorCardSquare, {
   ContributorCardSkeleton,
   ContributorCardSquareProps,
 } from '../contributor/ContributorCardSquare/ContributorCardSquare';
-import { PaginatedResult } from '../contributor/ContributorsSearch/ContributorsSearchContainer';
+import {
+  PaginatedResult,
+  VirtualContributors,
+  VirtualContributor,
+} from '../contributor/ContributorsSearch/ContributorsSearchContainer';
 import {
   CommunityContributorType,
   OrganizationContributorFragment,
@@ -53,10 +57,27 @@ const organizationToContributorCard = (org: OrganizationContributorFragment): Co
   };
 };
 
+const vcToContributorCard = (vc: VirtualContributor): ContributorCardSquareProps => {
+  return {
+    id: vc.id,
+    displayName: vc.profile.displayName,
+    avatar: vc.profile.avatar?.uri ?? '',
+    url: vc.profile.url,
+    tooltip: {
+      tags: (vc.profile?.tagsets || []).flatMap(y => y.tags),
+      city: vc.profile?.location?.city || '',
+      country: vc.profile?.location?.country || '',
+    },
+    isContactable: false,
+    contributorType: CommunityContributorType.Virtual,
+  };
+};
+
 export interface ContributorsViewProps {
   showUsers: boolean;
   usersPaginated: PaginatedResult<UserContributorFragment> | undefined; // only for registered users
   organizationsPaginated: PaginatedResult<OrganizationContributorFragment> | undefined;
+  virtualContributors: VirtualContributors | undefined;
 }
 
 interface ContributorsListProps<Item extends Identifiable> {
@@ -77,7 +98,7 @@ const ContributorsList = <Item extends Identifiable>({
 
   return (
     <GridProvider columns={16} force={columns === 12}>
-      <ScrollableCardsLayoutContainer cards={false} maxHeight={theme => theme.spacing(45)}>
+      <ScrollableCardsLayoutContainer cards={false} maxHeight={theme => theme.spacing(26)}>
         {items?.map(item => (
           <GridItem columns={2} key={item.id}>
             <Box>
@@ -103,6 +124,7 @@ const ContributorsView = ({
   showUsers,
   usersPaginated: users,
   organizationsPaginated: orgs,
+  virtualContributors: vcs,
 }: ContributorsViewProps) => {
   const { t } = useTranslation();
 
@@ -148,6 +170,15 @@ const ContributorsView = ({
             />
           </Grid>
         )}
+      </PageContentBlock>
+      <PageContentBlock columns={12}>
+        <PageContentBlockHeader title={t('pages.contributors.virtualContributors.title')} />
+        <ContributorsList
+          items={vcs?.items?.map(vcToContributorCard)}
+          cardComponent={ContributorCardSquare}
+          loading={vcs?.loading}
+          loader={noop}
+        />
       </PageContentBlock>
       <PageContentBlock columns={12}>
         <PageContentBlockHeader title={t('pages.contributors.organizations.title')} />
