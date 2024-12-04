@@ -3475,7 +3475,7 @@ export type Mutation = {
   moveContributionToCallout: CalloutContribution;
   /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean'];
-  /** Updates the CommunityGuidelines. */
+  /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID'];
@@ -3593,6 +3593,8 @@ export type Mutation = {
   updateTemplate: Template;
   /** Updates the specified Template Defaults. */
   updateTemplateDefault: TemplateDefault;
+  /** Updates the specified Collaboration Template using the provided Collaboration. */
+  updateTemplateFromCollaboration: Template;
   /** Updates the User. */
   updateUser: User;
   /** Updates the specified User Group. */
@@ -4177,6 +4179,10 @@ export type MutationUpdateTemplateArgs = {
 
 export type MutationUpdateTemplateDefaultArgs = {
   templateDefaultData: UpdateTemplateDefaultTemplateInput;
+};
+
+export type MutationUpdateTemplateFromCollaborationArgs = {
+  updateData: UpdateTemplateFromCollaborationInput;
 };
 
 export type MutationUpdateUserArgs = {
@@ -6523,6 +6529,13 @@ export type UpdateTemplateDefaultTemplateInput = {
   /** The identifier for the TemplateDefault to be updated. */
   templateDefaultID: Scalars['UUID'];
   /** The ID for the Template to use. */
+  templateID: Scalars['UUID'];
+};
+
+export type UpdateTemplateFromCollaborationInput = {
+  /** The Collaboration whose content should be copied to this Template. */
+  collaborationID: Scalars['UUID'];
+  /** The ID of the Template. */
   templateID: Scalars['UUID'];
 };
 
@@ -26050,6 +26063,16 @@ export type UpdateTemplateMutation = {
     };
     whiteboard?: { __typename?: 'Whiteboard'; id: string; content: string } | undefined;
   };
+};
+
+export type UpdateTemplateFromCollaborationMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+  collaborationId: Scalars['UUID'];
+}>;
+
+export type UpdateTemplateFromCollaborationMutation = {
+  __typename?: 'Mutation';
+  updateTemplateFromCollaboration: { __typename?: 'Template'; id: string };
 };
 
 export type DeleteTemplateMutationVariables = Exact<{

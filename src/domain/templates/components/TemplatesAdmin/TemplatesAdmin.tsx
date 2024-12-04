@@ -8,6 +8,7 @@ import {
   useTemplateContentLazyQuery,
   useUpdateCalloutTemplateMutation,
   useUpdateCommunityGuidelinesMutation,
+  useUpdateTemplateFromCollaborationMutation,
   useUpdateTemplateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
@@ -122,18 +123,23 @@ const TemplatesAdmin = ({
 
   // Update Template
   const [editTemplateMode, setEditTemplateMode] = useState(alwaysEditTemplate);
-  const [updateTemplate] = useUpdateTemplateMutation({
-    refetchQueries: ['AllTemplatesInTemplatesSet', 'TemplateContent'],
-  });
-  const [updateCallout] = useUpdateCalloutTemplateMutation();
-  const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation();
+
+  const refetchQueries = ['AllTemplatesInTemplatesSet', 'TemplateContent'];
+  const [updateTemplate] = useUpdateTemplateMutation({ refetchQueries });
+  const [updateCallout] = useUpdateCalloutTemplateMutation({ refetchQueries });
+  const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation({ refetchQueries });
+  const [updateTemplateFromCollaboration] = useUpdateTemplateFromCollaborationMutation({ refetchQueries });
 
   const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
     if (!selectedTemplate) {
       return;
     }
-    const { updateTemplateVariables, updateCalloutVariables, updateCommunityGuidelinesVariables } =
-      toUpdateTemplateMutationVariables(templateId!, selectedTemplate, values);
+    const {
+      updateTemplateVariables,
+      updateCalloutVariables,
+      updateCommunityGuidelinesVariables,
+      updateCollaborationTemplateVariables,
+    } = toUpdateTemplateMutationVariables(templateId!, selectedTemplate, values);
 
     const result = await updateTemplate({
       variables: updateTemplateVariables,
@@ -146,6 +152,11 @@ const TemplatesAdmin = ({
     if (updateCommunityGuidelinesVariables) {
       await updateCommunityGuidelines({
         variables: updateCommunityGuidelinesVariables,
+      });
+    }
+    if (updateCollaborationTemplateVariables) {
+      await updateTemplateFromCollaboration({
+        variables: updateCollaborationTemplateVariables,
       });
     }
 
@@ -367,6 +378,7 @@ const TemplatesAdmin = ({
         <EditTemplateDialog
           open
           onClose={() => backToTemplates(baseUrl)}
+          onCancel={() => setEditTemplateMode(false)}
           template={selectedTemplate}
           templateType={selectedTemplate.type}
           onSubmit={handleTemplateUpdate}

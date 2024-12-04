@@ -7,7 +7,7 @@ import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfile } from './common/mappings';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { CollaborationTemplate } from '@/domain/templates/models/CollaborationTemplate';
-import CollaborationTemplatePreview from '../Previews/CollabTemplatePreview';
+import CollaborationTemplatePreview from '../Previews/CollaborationTemplatePreview';
 import { useCollaborationTemplateContentQuery } from '@/core/apollo/generated/apollo-hooks';
 import CollaborationFromSpaceUrlForm from './CollaborationFromSpaceUrlForm';
 
@@ -63,11 +63,20 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: Collaboratio
           setFieldValue('collaborationId', collaborationId); // Change the value in Formik
           setCollaborationId(collaborationId); // Refresh the collaboration preview
         };
+        const handleCancel = () => {
+          const collaborationId = template?.collaboration?.id;
+          if (collaborationId) {
+            setFieldValue('collaborationId', collaborationId); // Change the value in Formik
+            setCollaborationId(collaborationId); // Refresh the collaboration preview
+          }
+        };
         return (
           <>
-            {!template?.collaboration?.id && (
-              <CollaborationFromSpaceUrlForm onUseCollaboration={handleCollaborationIdChange} />
-            )}
+            <CollaborationFromSpaceUrlForm
+              onUseCollaboration={handleCollaborationIdChange}
+              collapsible={Boolean(template?.collaboration?.id)}
+              onCollapse={handleCancel}
+            />
             <BlockSectionTitle>{t('common.states')}</BlockSectionTitle>
             <CollaborationTemplatePreview loading={loading} template={collaborationPreview} />
           </>
