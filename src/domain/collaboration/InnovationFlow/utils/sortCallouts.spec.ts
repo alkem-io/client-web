@@ -25,7 +25,7 @@ const sortAndGroup = (movedCallout: SortCalloutsParams['movedCallout']) => {
     return callout.id === movedCallout.id ? movedCallout.newState : callout.flowState?.currentState;
   });
   return {
-    groupedCalloutIds: mapValues(groupedCallouts, callouts => callouts.map(({ id }) => id)),
+    groupedCalloutIds: mapValues(groupedCallouts, callouts => callouts.map(({ id }) => id).reverse()),
     optimisticSortOrder,
   };
 };
@@ -122,7 +122,7 @@ describe('sortCallouts providing optimistic sortOrder', () => {
     ).toEqual(0);
   });
 
-  test('gives max sortOrder + 1 if the Callout goes to the end of the target group', () => {
+  test('gives max sortOrder + 1 if the Callout goes to the end (start) of the target group', () => {
     expect(
       sortAndGroup({
         id: '4',
@@ -142,12 +142,12 @@ describe('sortCallouts providing optimistic sortOrder', () => {
     expect(optimisticSortOrder).toBeLessThan(6);
   });
 
-  test('for the Callout that goes to the top of the target group, gives sortOrder less that of the next item', () => {
+  test('for the Callout that goes to the top of the target group, gives sortOrder greater that of the next item', () => {
     const { optimisticSortOrder } = sortAndGroup({
       id: '4',
       insertIndex: 0,
       newState: FlowStates.B,
     });
-    expect(optimisticSortOrder).toBeLessThan(3);
+    expect(optimisticSortOrder).toBeGreaterThan(3);
   });
 });

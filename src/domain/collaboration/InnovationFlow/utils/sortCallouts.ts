@@ -76,7 +76,7 @@ export const sortCallouts = ({ callouts, movedCallout }: SortCalloutsParams): So
       optimisticSortOrder,
     };
   } else {
-    const optimisticSortOrder = last(calloutsByFlowState[newState])!.sortOrder - 1;
+    const optimisticSortOrder = last(calloutsByFlowState[newState])!.sortOrder + 1;
     // unshift because of the reversed order
     sortedCalloutIds.unshift(calloutId);
 
