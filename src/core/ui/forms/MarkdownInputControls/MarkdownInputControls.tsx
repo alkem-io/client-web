@@ -1,5 +1,7 @@
+import { Node } from '@tiptap/core';
 import { Editor } from '@tiptap/react';
-import { forwardRef, memo, useEffect, useState } from 'react';
+import StarterKit from '@tiptap/starter-kit';
+import { forwardRef, memo, useMemo, useEffect, useState } from 'react';
 import {
   Code,
   FormatBold,
@@ -19,6 +21,7 @@ import { ChainedCommands } from '@tiptap/core/dist/packages/core/src/types';
 import InsertImageButton from './InsertImageButton';
 import ToggleLinkButton from './ToggleLinkButton';
 import InsertEmojiButton from './InsertEmojiButton';
+import { InsertVideoButton } from './InsertVideoButton/InsertVideoButton';
 import produce from 'immer';
 
 type MarkdownInputControlsProps = {
@@ -51,6 +54,32 @@ interface ButtonState {
   active?: boolean;
   disabled?: boolean;
 }
+
+export const iFrame = Node.create({
+  name: 'iFrame',
+  group: 'block',
+  inline: false,
+  atom: true,
+  addAttributes() {
+    return {
+      src: {
+        default: null,
+      },
+      width: {
+        default: '560',
+      },
+      height: {
+        default: '315',
+      },
+    };
+  },
+  parseHTML() {
+    return [{ tag: 'iframe' }];
+  },
+  renderHTML({ HTMLAttributes }) {
+    return ['iframe', HTMLAttributes];
+  },
+});
 
 const ControlsButton = memo(
   ({ editor, command, specs, ...buttonProps }: ControlsButtonProps) => {
@@ -121,6 +150,14 @@ const MarkdownInputControls = memo(
         }
       }, [visible]);
 
+      const embedVideoEditor = useMemo(
+        () =>
+          new Editor({
+            extensions: [StarterKit, iFrame],
+          }),
+        []
+      );
+
       return (
         <Collapse in={isVisible} ref={ref}>
           <Toolbar value={false} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
@@ -181,6 +218,9 @@ const MarkdownInputControls = memo(
                 temporaryLocation={temporaryLocation}
               />
             )}
+
+            <InsertVideoButton editor={embedVideoEditor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+
             <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
           </Toolbar>
         </Collapse>

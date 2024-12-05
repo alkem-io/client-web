@@ -585,7 +585,9 @@
       "BETA_TESTER": "Beta Tester",
       "VC_CAMPAIGN": "VC Early Access"
     },
-    "removeContent": "Delete Community Guidelines"
+    "removeContent": "Delete Community Guidelines",
+    "iframeContent": "iframe Content",
+    "embedCode": "Paste your embed code here"
   },
   "community": {
     "memberUsers": "Member Users ({{count}})",
@@ -1180,7 +1182,8 @@
         "list.ordered": "Ordered List",
         "list.indent": "Indent",
         "list.outdent": "Remove indent",
-        "remove.remove": "Remove"
+        "remove.remove": "Remove",
+        "embed.video": "Embed YouTube Video"
       },
       "image": {
         "dialogHeader": "Insert Image"

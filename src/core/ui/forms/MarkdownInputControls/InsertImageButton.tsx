@@ -67,6 +67,9 @@ const InsertImageButton = ({
 
   const isDisabled = !editor || !editor.can().setImage(initialValues);
 
+  console.log('img commands >>>', editor?.commands);
+  console.log('img extensions >>>', editor?.extensionManager.extensions);
+
   return (
     <>
       <IconButton

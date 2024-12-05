@@ -24,6 +24,7 @@ import { EditorState } from '@tiptap/pm/state';
 import { Highlight } from '@tiptap/extension-highlight';
 import { Selection } from 'prosemirror-state';
 import { EditorOptions } from '@tiptap/core';
+import { Iframe } from '../MarkdownInputControls/InsertVideoButton/Iframe';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
@@ -43,9 +44,7 @@ export interface MarkdownInputRefApi {
   getLabelOffset: () => Offset;
 }
 
-const ImageExtension = Image.configure({
-  inline: true,
-});
+const ImageExtension = Image.configure({ inline: true });
 
 const proseMirrorStyles = {
   outline: 'none',
@@ -57,7 +56,7 @@ const proseMirrorStyles = {
 } as const;
 
 const editorOptions: Partial<EditorOptions> = {
-  extensions: [StarterKit, ImageExtension, Link, Highlight],
+  extensions: [StarterKit, ImageExtension, Link, Highlight, Iframe],
 };
 
 export const MarkdownInput = memo(
@@ -91,20 +90,10 @@ export const MarkdownInput = memo(
         setHtmlContent(String(content));
       };
 
-      const editor = useEditor(
-        {
-          ...editorOptions,
-          content: htmlContent,
-        },
-        [htmlContent]
-      );
+      const editor = useEditor({ ...editorOptions, content: htmlContent }, [htmlContent]);
 
       // Currently used to highlight overflow but can be reused for other similar features as well
-      const shadowEditor = useEditor({
-        ...editorOptions,
-        content: '',
-        editable: false,
-      });
+      const shadowEditor = useEditor({ ...editorOptions, content: '', editable: false });
 
       useLayoutEffect(() => {
         if (!editor || !isInteractingWithInput || editor.getText() === '') {

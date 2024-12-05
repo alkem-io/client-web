@@ -25,6 +25,7 @@ interface MarkdownFieldProps extends InputProps {
   loading?: boolean; // TODO make use of
   hideImageOptions?: boolean;
   temporaryLocation?: boolean;
+  controlsVisible?: 'always' | 'focused';
 }
 
 const FilledDetector = ({ value }: { value: string | undefined }) => {
@@ -57,6 +58,7 @@ export const FormikMarkdownField = ({
   helperText: validInputHelperText,
   hideImageOptions,
   temporaryLocation = false,
+  controlsVisible = 'always',
 }: MarkdownFieldProps) => {
   const tErr = useValidationMessageTranslation();
   const { t } = useTranslation();
@@ -142,7 +144,7 @@ export const FormikMarkdownField = ({
           inputComponent={MarkdownInput}
           inputRef={inputRef}
           inputProps={{
-            controlsVisible: 'always',
+            controlsVisible,
             maxLength,
             hideImageOptions,
             temporaryLocation,
