@@ -10,7 +10,7 @@
 
 ##### End-to-end local setup
 
-1. build the notifications service;
+1. start the notifications service;
 2. in notifications/lib run `npm link`
 3. in notifications/service run `npm link @alkemio/notifications-lib`
 4. in the server root run again `npm link @alkemio/notifications-lib`
