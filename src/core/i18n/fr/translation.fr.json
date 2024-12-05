@@ -2322,9 +2322,9 @@
           "header": "Explore the other Spaces!"
         },
         "innovationLibraryBlock": {
-          "title": "Innovation library: Have you seen this one yet...?",
-          "description": "In the Library you can find Innovation Packs composed for you by various organisations. Each Innovation pack can hold a variety of Whiteboard templates, Post templates, and Innovation flows.",
-          "seeMore": "Explore more Innovation Packs"
+          "title": "Template library: Have you seen this one yet...?",
+          "description": "In the Library you can find Template Packs composed for you by various organisations. Each Template pack can hold a variety of Whiteboard templates, Post templates, and Innovation flows.",
+          "seeMore": "Explore more Template Packs"
         },
         "space": {
           "header": "Explorez les Hubs de Défi!",

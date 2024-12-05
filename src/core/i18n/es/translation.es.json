@@ -1812,9 +1812,9 @@
     },
     "innovationLibrary": {
       "shortName": "Library",
-      "fullName": "Best practices",
-      "title": "Innovation Library on Alkemio is here to guide your way to impact",
-      "subtitle": "Open the innovation packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
+      "fullName": "Template Library",
+      "title": "Template Library on Alkemio is here to guide your way to impact",
+      "subtitle": "Open the template packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
       "useTemplateButton": "Access this template from your Space to use it.",
       "innovationPacks": {
         "headerTitle": "$t(common.innovation-packs)",
@@ -2322,9 +2322,9 @@
           "header": "Explore the other Spaces!"
         },
         "innovationLibraryBlock": {
-          "title": "Innovation library: Have you seen this one yet...?",
-          "description": "In the Library you can find Innovation Packs composed for you by various organisations. Each Innovation pack can hold a variety of Whiteboard templates, Post templates, and Innovation flows.",
-          "seeMore": "Explore more Innovation Packs"
+          "title": "Template library: Have you seen this one yet...?",
+          "description": "In the Library you can find Template Packs composed for you by various organisations. Each Template pack can hold a variety of Whiteboard templates, Post templates, and Innovation flows.",
+          "seeMore": "Explore more Template Packs"
         },
         "space": {
           "header": "Explore the Challenge Spaces!",

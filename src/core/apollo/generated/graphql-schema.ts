@@ -2757,9 +2757,9 @@ export type Library = {
   id: Scalars['UUID'];
   /** The InnovationHub listed on this platform */
   innovationHubs: Array<InnovationHub>;
-  /** The Innovation Packs in the platform Innovation Library. */
+  /** The Innovation Packs in the platform Template Library. */
   innovationPacks: Array<InnovationPack>;
-  /** The Templates in the Innovation Library, together with information about the InnovationPack. */
+  /** The Templates in the Template Library, together with information about the InnovationPack. */
   templates: Array<TemplateResult>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
@@ -4410,7 +4410,7 @@ export type Platform = {
   innovationHub?: Maybe<InnovationHub>;
   /** The latest release discussion. */
   latestReleaseDiscussion?: Maybe<LatestReleaseDiscussion>;
-  /** The Innovation Library for the platform */
+  /** The Template Library for the platform */
   library: Library;
   /** The Licensing in use by the platform. */
   licensingFramework: Licensing;
@@ -4507,7 +4507,7 @@ export type PlatformLocations = {
   help: Scalars['String'];
   /** URL for the link Impact in the HomePage of the application */
   impact: Scalars['String'];
-  /** URL to a page about the innovation library */
+  /** URL to a page about the template library */
   innovationLibrary: Scalars['String'];
   /** URL to a page about the collaboration tools */
   inspiration: Scalars['String'];
@@ -6076,7 +6076,7 @@ export type Timeline = {
   __typename?: 'Timeline';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The Innovation Library for the timeline */
+  /** The Template Library for the timeline */
   calendar: Calendar;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;

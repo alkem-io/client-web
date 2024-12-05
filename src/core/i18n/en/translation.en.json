@@ -350,10 +350,10 @@
     "loading": "Loading...",
     "innovation-flow": "Innovation flow",
     "innovation-flows": "Innovation Flows",
-    "innovation-packs": "Innovation Packs",
+    "innovation-packs": "Template Packs",
     "innovation-hub": "Innovation Hub",
     "innovation-hubs": "Innovation Hubs",
-    "innovationPack": "Innovation Pack",
+    "innovationPack": "Template Pack",
     "more": "More",
     "url": "URL",
     "sources": "Sources",
@@ -499,7 +499,7 @@
           "hidden": true
         },
         "INNOVATION_PACK_PROVIDER": {
-          "name": "Innovation Pack Provider",
+          "name": "Template Pack Provider",
           "order": 17,
           "hidden": true
         }
@@ -1818,9 +1818,9 @@
     },
     "innovationLibrary": {
       "shortName": "$t(common.library)",
-      "fullName": "Best practices",
-      "title": "Innovation Library on Alkemio is here to guide your way to impact",
-      "subtitle": "Open the innovation packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
+      "fullName": "Template Library",
+      "title": "Template Library on Alkemio is here to guide your way to impact",
+      "subtitle": "Open the template packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
       "useTemplateButton": "Access this template from your Space to use it.",
       "innovationPacks": {
         "headerTitle": "$t(common.innovation-packs)",
@@ -1907,7 +1907,7 @@
             "hostedSpaces": "Hosted Spaces",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
-            "noTemplates": "This Innovation Pack doesn't have any template yet",
+            "noTemplates": "This Template Pack doesn't have any template yet",
             "customHomepages": "Custom Homepages",
             "hostTitle": "Host",
             "contactsLink": "If you want to change any of these settings, please contact the Alkemio team here.",
@@ -2079,14 +2079,14 @@
         }
       },
       "innovation-packs": {
-        "create": "Create Innovation Pack",
+        "create": "Create Template Pack",
         "fields": {
           "provider": "Provider organization",
           "listedInStore": "Listed in Store",
           "searchVisibility": "Search Visibility"
         },
         "back-button": "All $t(common.innovation-packs)",
-        "save-new-for-details": "Save the new Innovation Pack to edit the rest of the details",
+        "save-new-for-details": "Save the new Template Pack to edit the rest of the details",
         "saved-successfully": "Saved Successfully"
       },
       "innovationHubs": {
@@ -2325,7 +2325,7 @@
           },
           "new-to-alkemio": {
             "header": "New to Alkemio?",
-            "subheader": "Easy for you to engage in effective and meaningful ways. Find solutions to Subspaces.",
+            "subheader": "Easy for you to engage in effective and meaningful ways. Find Subspaces to contribute.",
             "more-info": "Contact us!",
             "more-info-url": "https://alkemio.foundation/feedback/"
           }

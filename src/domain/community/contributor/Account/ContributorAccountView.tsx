@@ -259,7 +259,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const [deletePackMutation, { loading: deletePackLoading }] = useDeleteInnovationPackMutation({
     onCompleted: () => {
       clearDeleteState();
-      notify('Innovation Pack deleted successfully!', 'success');
+      notify('Template Pack deleted successfully!', 'success');
     },
     refetchQueries: ['AccountInformation'],
   });
