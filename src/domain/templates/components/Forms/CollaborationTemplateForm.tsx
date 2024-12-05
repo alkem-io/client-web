@@ -1,7 +1,7 @@
 import React, { ReactNode, useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { FormikProps } from 'formik';
+import { FormikHelpers, FormikProps } from 'formik';
 import TemplateFormBase, { TemplateFormProfileSubmittedValues } from './TemplateFormBase';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { mapTemplateProfileToUpdateProfile } from './common/mappings';
@@ -63,13 +63,28 @@ const CollaborationTemplateForm = ({ template, onSubmit, actions }: Collaboratio
   const collaborationPreview = {
     collaboration: data?.lookup.collaboration,
   };
+  const handleSubmit = (
+    values: CollaborationTemplateFormSubmittedValues,
+    { setFieldValue }: FormikHelpers<CollaborationTemplateFormSubmittedValues>
+  ) => {
+    // Special case: For CollaborationTemplates we change collaborationId in the formik values,
+    // to mark that this template should reload its content from another collaboration.
+    // That's not real, collaborationId of a template never changes in the server.
+    // When we submit the form we call the updateTemplateFromCollaboration mutation with the new collaborationId so the template gets updated.
+    // We reset it here to the correct value to avoid Formik detecting the form as dirty on the next render.
+    // (dirty means that it will enable the button `Update` as if there were pending changes to save)
+    setFieldValue('collaborationId', template?.collaboration?.id); // Set the value back to the original collaborationId
+
+    // With other template types we just pass onSubmit directly to onSubmit
+    return onSubmit(values);
+  };
 
   return (
     <TemplateFormBase
       templateType={TemplateType.Collaboration}
       template={template}
       initialValues={initialValues}
-      onSubmit={onSubmit}
+      onSubmit={handleSubmit}
       actions={actions}
       validator={validator}
     >

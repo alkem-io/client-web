@@ -386,6 +386,10 @@ export const toUpdateTemplateMutationVariables = (
       };
     }
     case TemplateType.Collaboration: {
+      // Special case: In CollaborationTemplates we update the collaborationId in the formik values to
+      // mark that this template should load its content from another collaboration.
+      // Then updateCollaborationTemplateVariables will be returned and the mutation will be called.
+      // If the collaborationId remains the same, we just update the template profile.
       const oldCollaborationId = (template as CollaborationTemplate).collaboration?.id;
       const newCollaborationId = (newValues as CollaborationTemplateFormSubmittedValues).collaborationId;
       if (oldCollaborationId && newCollaborationId && oldCollaborationId !== newCollaborationId) {
