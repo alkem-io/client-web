@@ -585,8 +585,7 @@
       "LICENSE_MANAGER": "License Manager",
       "BETA_TESTER": "Beta Tester",
       "VC_CAMPAIGN": "VC Early Access"
-    },
-    "removeContent": "Delete Community Guidelines"
+    }
   },
   "community": {
     "memberUsers": "Member Users ({{count}})",
@@ -631,7 +630,8 @@
       "confirmationDialog": {
         "title": "Updating Community Guidelines",
         "description": "Are you sure you want to replace your existing Community Guidelines? This action cannot be undone."
-      }
+      },
+      "deleteCommunityGuidelines": "Delete Community Guidelines"
     },
     "applicationsHelp": "Here you can find everyone that applied to become a member of this Space. By clicking on them you can review their application and accept or reject them.",
     "applicationStatus": {
