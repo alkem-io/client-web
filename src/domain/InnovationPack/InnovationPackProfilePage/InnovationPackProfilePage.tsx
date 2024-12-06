@@ -28,7 +28,7 @@ const InnovationPackProfilePage = () => {
   const { templateNameId, innovationPackNameId } = useUrlParams();
 
   if (!innovationPackNameId) {
-    throw new Error('Must be within Innovation Pack');
+    throw new Error('Must be within Template Pack');
   }
 
   const { data: innovationPackResolverData, loading: resolvingInnovationPack } = useInnovationPackResolveIdQuery({
@@ -38,7 +38,7 @@ const InnovationPackProfilePage = () => {
 
   const innovationPackId = innovationPackResolverData?.lookupByName.innovationPack?.id;
   if (innovationPackNameId && !resolvingInnovationPack && !innovationPackId) {
-    throw new Error('Innovation pack not found.');
+    throw new Error('Template pack not found.');
   }
 
   const { data, loading: loadingInnovationPack } = useInnovationPackProfilePageQuery({

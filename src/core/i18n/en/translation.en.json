@@ -350,10 +350,10 @@
     "loading": "Loading...",
     "innovation-flow": "Innovation flow",
     "innovation-flows": "Innovation Flows",
-    "innovation-packs": "Innovation Packs",
+    "innovation-packs": "Template Packs",
     "innovation-hub": "Innovation Hub",
     "innovation-hubs": "Innovation Hubs",
-    "innovationPack": "Innovation Pack",
+    "innovationPack": "Template Pack",
     "more": "More",
     "url": "URL",
     "sources": "Sources",
@@ -499,7 +499,7 @@
           "hidden": true
         },
         "INNOVATION_PACK_PROVIDER": {
-          "name": "Innovation Pack Provider",
+          "name": "Template Pack Provider",
           "order": 17,
           "hidden": true
         }
@@ -1819,9 +1819,9 @@
     },
     "innovationLibrary": {
       "shortName": "$t(common.library)",
-      "fullName": "Best practices",
-      "title": "Innovation Library on Alkemio is here to guide your way to impact",
-      "subtitle": "Open the innovation packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
+      "fullName": "Template Library",
+      "title": "Template Library on Alkemio is here to guide your way to impact",
+      "subtitle": "Open the template packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
       "useTemplateButton": "Access this template from your Space to use it.",
       "innovationPacks": {
         "headerTitle": "$t(common.innovation-packs)",
@@ -1908,7 +1908,7 @@
             "hostedSpaces": "Hosted Spaces",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
-            "noTemplates": "This Innovation Pack doesn't have any template yet",
+            "noTemplates": "This Template Pack doesn't have any template yet",
             "customHomepages": "Custom Homepages",
             "hostTitle": "Host",
             "contactsLink": "If you want to change any of these settings, please contact the Alkemio team here.",
@@ -1926,7 +1926,8 @@
             "deleteSpace_disallowed": "The Space can only be deleted by the host of this Space.",
             "moreInfo": "More about Alkemio licenses can be found <moreinfo>here</moreinfo>.",
             "moreInfoUrl": "$t(plansTable.seeMoreUrl)",
-            "licenseUpdated": "License updated successfully"
+            "licenseUpdated": "License updated successfully",
+            "deletedSuccessfully": "{{entity}} deleted successfully"
           },
           "settings": {
             "description": "Here you can edit the visibility settings of your {{entity}}."
@@ -2080,14 +2081,14 @@
         }
       },
       "innovation-packs": {
-        "create": "Create Innovation Pack",
+        "create": "Create Template Pack",
         "fields": {
           "provider": "Provider organization",
           "listedInStore": "Listed in Store",
           "searchVisibility": "Search Visibility"
         },
         "back-button": "All $t(common.innovation-packs)",
-        "save-new-for-details": "Save the new Innovation Pack to edit the rest of the details",
+        "save-new-for-details": "Save the new Template Pack to edit the rest of the details",
         "saved-successfully": "Saved Successfully"
       },
       "innovationHubs": {
@@ -2329,7 +2330,7 @@
           },
           "new-to-alkemio": {
             "header": "New to Alkemio?",
-            "subheader": "Easy for you to engage in effective and meaningful ways. Find solutions to Subspaces.",
+            "subheader": "Easy for you to engage in effective and meaningful ways. Find Subspaces to contribute.",
             "more-info": "Contact us!",
             "more-info-url": "https://alkemio.foundation/feedback/"
           }
@@ -2799,7 +2800,8 @@
       "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
       "verification-flow-continue": "Continue",
-      "login-flow-account-exists": "You're trying to sign in with a LinkedIn/Microsoft account, but the associated email address was already used before. Please sign in with this e-mail address and password or try to reset the password. If that doesn't work, please send an email to support@alkem.io."
+      "login-flow-account-exists": "You're trying to sign in with a LinkedIn/Microsoft account, but the associated email address was already used before. Please sign in with this e-mail address and password or try to reset the password. If that doesn't work, please send an email to support@alkem.io.",
+      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above."
     },
     "fields": {
       "ID": "ID",
