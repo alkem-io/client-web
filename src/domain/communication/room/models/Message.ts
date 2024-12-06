@@ -5,7 +5,7 @@ export interface Message {
   threadID?: string;
   author?: Author;
   createdAt: Date;
-  body: string;
+  message: string;
   reactions: {
     id: string;
     emoji: string;

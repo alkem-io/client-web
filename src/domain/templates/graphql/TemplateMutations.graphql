@@ -87,6 +87,14 @@ mutation UpdateTemplate(
   }
 }
 
+# Special case for updating a collaboration template from an existing collaboration
+mutation UpdateTemplateFromCollaboration($templateId: UUID!, $collaborationId: UUID!) {
+  updateTemplateFromCollaboration(updateData: { templateID: $templateId, collaborationID: $collaborationId }) {
+    id
+  }
+}
+
+
 mutation DeleteTemplate($templateId: UUID!) {
   deleteTemplate(deleteData: { ID: $templateId }) {
     id

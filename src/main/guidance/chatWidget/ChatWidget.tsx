@@ -1,17 +1,31 @@
 import { cloneElement, ReactElement, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Box, IconButton, IconButtonProps, Paper, SvgIconProps, Theme, Tooltip } from '@mui/material';
+import {
+  Box,
+  IconButton,
+  IconButtonProps,
+  Paper,
+  Skeleton,
+  SvgIconProps,
+  Theme,
+  Tooltip,
+  useTheme,
+} from '@mui/material';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-import { addResponseMessage, dropMessages, renderCustomComponent, toggleWidget, Widget } from 'react-chat-widget';
+import { useUpdateAnswerRelevanceMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
-  useAskChatGuidanceQuestionQuery,
-  useResetChatGuidanceMutation,
-  useUpdateAnswerRelevanceMutation,
-} from '@/core/apollo/generated/apollo-hooks';
+  addResponseMessage,
+  addUserMessage,
+  dropMessages,
+  markAllAsRead,
+  renderCustomComponent,
+  setBadgeCount,
+  toggleWidget,
+  Widget,
+} from 'react-chat-widget';
 import logoSrc from '@/main/ui/logo/logoSmall.svg';
 import { useTranslation } from 'react-i18next';
 import 'react-chat-widget/lib/styles.css';
-import formatChatGuidanceResponseAsMarkdown from './formatChatGuidanceResponseAsMarkdown';
 import ChatWidgetStyles from './ChatWidgetStyles';
 import ChatWidgetTitle from './ChatWidgetTitle';
 import ChatWidgetHelpDialog from './ChatWidgetHelpDialog';
@@ -23,6 +37,8 @@ import { Caption } from '@/core/ui/typography';
 import { InfoOutlined } from '@mui/icons-material';
 import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from '@/main/ui/platformNavigation/constants';
 import ChatWidgetMenu from './ChatWidgetMenu';
+import useChatGuidanceCommunication from './useChatGuidanceCommunication';
+import { useUserContext } from '../../../domain/community/user';
 
 type FeedbackType = 'positive' | 'negative';
 
@@ -143,32 +159,26 @@ const Feedback = ({ answerId }: FeedbackProps) => {
   );
 };
 
-export const useInitialChatWidgetMessage = () => {
-  const { t } = useTranslation();
-
-  useEffect(() => {
-    addResponseMessage(t('chatbot.intro'));
-  }, []);
+const Loading = () => {
+  const theme = useTheme();
+  return (
+    <Box width="100%" display="flex" flexDirection="row" gap={gutters()}>
+      <Skeleton width={gutters(3)(theme)} height={gutters(4)(theme)} />
+      <Skeleton width="100%" height={gutters(4)(theme)} />
+    </Box>
+  );
 };
 
 const ChatWidget = () => {
-  const [newMessage, setNewMessage] = useState(null);
-  const { t, i18n } = useTranslation();
-  const { data, loading } = useAskChatGuidanceQuestionQuery({
-    variables: { chatData: { question: newMessage!, language: i18n.language.toUpperCase() } },
-    skip: !newMessage,
-    fetchPolicy: 'network-only',
-  });
-
-  useEffect(() => {
-    if (data && !loading) {
-      const responseMessageMarkdown = formatChatGuidanceResponseAsMarkdown(data.askChatGuidanceQuestion, t);
-      addResponseMessage(responseMessageMarkdown, data.askChatGuidanceQuestion.id!);
-      renderCustomComponent(Feedback, { answerId: data.askChatGuidanceQuestion.id });
-    }
-  }, [data, loading]);
-
+  const { t } = useTranslation();
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
+  const { messages, sendMessage, clearChat, loading } = useChatGuidanceCommunication();
+  const { user } = useUserContext();
+  const userId = user?.user.id;
+
+  const handleNewUserMessage = async (newMessage: string) => {
+    await sendMessage(newMessage);
+  };
 
   const [chatToggleTime, setChatToggleTime] = useState(Date.now());
 
@@ -212,23 +222,54 @@ const ChatWidget = () => {
 
   useLayoutEffect(setupMenuButton, [chatToggleTime]);
 
-  const [resetChatGuidance] = useResetChatGuidanceMutation();
-
-  const handleClearChat = () => {
-    resetChatGuidance();
-    dropMessages();
-    addResponseMessage(t('chatbot.intro'));
+  const handleClearChat = async () => {
+    await clearChat();
+    setChatToggleTime(Date.now()); // Force a re-render
   };
+
+  useEffect(() => {
+    dropMessages();
+    if (messages && messages.length > 0) {
+      messages?.forEach(message => {
+        if (message.author?.id === userId) {
+          addUserMessage(message.message);
+        } else {
+          addResponseMessage(message.message);
+        }
+      });
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage.author?.id && lastMessage.author.id !== userId) {
+        // If the last message has an author and is not myself print the feedback buttons
+        renderCustomComponent(Feedback, { answerId: lastMessage.id });
+        // And if the message is new, mark it as unread
+        if (lastMessage.createdAt > new Date(chatToggleTime)) {
+          setBadgeCount(1);
+        } else {
+          markAllAsRead();
+        }
+      } else if (messages.length === 1) {
+        // Always mark as unread the intro message
+        setBadgeCount(1);
+      } else {
+        markAllAsRead();
+      }
+    }
+    if (loading) {
+      renderCustomComponent(Loading, undefined);
+    }
+  }, [messages, loading]);
 
   return (
     <>
       <ChatWidgetStyles ref={wrapperRef} aria-label={t('common.help')}>
         <Widget
           profileAvatar={logoSrc}
-          title={<ChatWidgetTitle onClickInfo={() => setIsHelpDialogOpen(true)} />}
-          subtitle={<></>}
-          handleNewUserMessage={setNewMessage}
-          handleToggle={() => setChatToggleTime(Date.now())}
+          title={<ChatWidgetTitle key="title" onClickInfo={() => setIsHelpDialogOpen(true)} />}
+          subtitle={null}
+          handleNewUserMessage={handleNewUserMessage}
+          handleToggle={() => {
+            setChatToggleTime(Date.now());
+          }}
         />
       </ChatWidgetStyles>
       <ChatWidgetHelpDialog open={isHelpDialogOpen} onClose={() => setIsHelpDialogOpen(false)} />
