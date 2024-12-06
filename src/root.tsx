@@ -26,6 +26,8 @@ import { Error404 } from '@/core/pages/Errors/Error404';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { GlobalErrorDialog } from './core/lazyLoading/GlobalErrorDialog';
+import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
+import { InAppNotificationsDialog } from './main/inAppNotifications/InAppNotificationsDialog';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
@@ -87,18 +89,21 @@ const Root: FC = () => {
                                 <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
                                   <UserProvider>
                                     <PendingMembershipsDialogProvider>
-                                      <ApmUserSetter />
-                                      <ScrollToTop />
-                                      <NotFoundErrorBoundary
-                                        errorComponent={
-                                          <TopLevelLayout>
-                                            <Error404 />
-                                          </TopLevelLayout>
-                                        }
-                                      >
-                                        <TopLevelRoutes />
-                                        <GlobalErrorDialog />
-                                      </NotFoundErrorBoundary>
+                                      <InAppNotificationsProvider>
+                                        <ApmUserSetter />
+                                        <ScrollToTop />
+                                        <InAppNotificationsDialog />
+                                        <NotFoundErrorBoundary
+                                          errorComponent={
+                                            <TopLevelLayout>
+                                              <Error404 />
+                                            </TopLevelLayout>
+                                          }
+                                        >
+                                          <TopLevelRoutes />
+                                          <GlobalErrorDialog />
+                                        </NotFoundErrorBoundary>
+                                      </InAppNotificationsProvider>
                                     </PendingMembershipsDialogProvider>
                                   </UserProvider>
                                 </AlkemioApolloProvider>
