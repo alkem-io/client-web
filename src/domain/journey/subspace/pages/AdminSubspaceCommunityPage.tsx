@@ -132,13 +132,8 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
             loading,
             onSelectCommunityGuidelinesTemplate,
             onUpdateCommunityGuidelines,
-            onDeleteCommunityGuidelinesContent: onDeleteCommunityGuidelines,
+            onDeleteCommunityGuidelinesContent,
           }) => {
-            const hasDeleteContentButton =
-              Boolean(communityGuidelines?.displayName) ||
-              Boolean(communityGuidelines?.description) ||
-              Number(communityGuidelines?.references.length) > 0;
-
             return (
               <>
                 <PageContentBlockCollapsible
@@ -157,9 +152,8 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
                     data={communityGuidelines}
                     loading={loading}
                     onSubmit={onUpdateCommunityGuidelines}
-                    canDeleteCommunityGuidelines={hasDeleteContentButton}
                     profileId={profileId}
-                    onDeleteCommunityGuidelines={onDeleteCommunityGuidelines}
+                    onDeleteCommunityGuidelines={onDeleteCommunityGuidelinesContent}
                   />
                 </PageContentBlockCollapsible>
                 <ImportTemplatesDialog

@@ -162,11 +162,6 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
             onUpdateCommunityGuidelines,
             onDeleteCommunityGuidelinesContent: onDeleteCommunityGuidelines,
           }) => {
-            const hasDeleteContentButton =
-              Boolean(communityGuidelines?.displayName) ||
-              Boolean(communityGuidelines?.description) ||
-              Number(communityGuidelines?.references.length) > 0;
-
             return (
               <>
                 <PageContentBlockCollapsible
@@ -201,7 +196,6 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
                     loading={loading}
                     profileId={profileId}
                     onSubmit={onUpdateCommunityGuidelines}
-                    canDeleteCommunityGuidelines={hasDeleteContentButton}
                     onDeleteCommunityGuidelines={onDeleteCommunityGuidelines}
                   />
                 </PageContentBlockCollapsible>

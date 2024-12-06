@@ -20,7 +20,6 @@ type CommunityGuidelinesFormProps = {
   onSubmit: (values: FormValues) => void;
   loading?: boolean;
   disabled?: boolean;
-  canDeleteCommunityGuidelines?: boolean;
   onDeleteCommunityGuidelines?: () => Promise<unknown>;
 };
 
@@ -47,10 +46,12 @@ const CommunityGuidelinesForm = ({
   onSubmit,
   disabled,
   loading,
-  canDeleteCommunityGuidelines = false,
   onDeleteCommunityGuidelines,
 }: CommunityGuidelinesFormProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const hasDeleteContentsButton =
+    Boolean(data?.displayName) || Boolean(data?.description) || Number(data?.references.length) > 0;
 
   const { t } = useTranslation();
 
@@ -87,7 +88,7 @@ const CommunityGuidelinesForm = ({
               <ProfileReferenceSegment references={values.references} profileId={profileId} />
 
               <Box display="flex" marginY={4} gap={1} justifyContent="flex-end">
-                {canDeleteCommunityGuidelines && (
+                {hasDeleteContentsButton && (
                   <LoadingButton
                     loading={loading}
                     variant="outlined"
