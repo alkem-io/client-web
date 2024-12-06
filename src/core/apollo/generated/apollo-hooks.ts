@@ -11020,6 +11020,92 @@ export function refetchContributorsPageUsersQuery(variables: SchemaTypes.Contrib
   return { query: ContributorsPageUsersDocument, variables: variables };
 }
 
+export const ContributorsVirtualInLibraryDocument = gql`
+  query ContributorsVirtualInLibrary {
+    platform {
+      id
+      library {
+        id
+        virtualContributors {
+          id
+          profile {
+            id
+            displayName
+            url
+            location {
+              city
+              country
+            }
+            tagsets {
+              ...TagsetDetails
+            }
+            avatar: visual(type: AVATAR) {
+              ...VisualUri
+            }
+          }
+        }
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useContributorsVirtualInLibraryQuery__
+ *
+ * To run a query within a React component, call `useContributorsVirtualInLibraryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContributorsVirtualInLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContributorsVirtualInLibraryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useContributorsVirtualInLibraryQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.ContributorsVirtualInLibraryQuery,
+    SchemaTypes.ContributorsVirtualInLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ContributorsVirtualInLibraryQuery,
+    SchemaTypes.ContributorsVirtualInLibraryQueryVariables
+  >(ContributorsVirtualInLibraryDocument, options);
+}
+
+export function useContributorsVirtualInLibraryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ContributorsVirtualInLibraryQuery,
+    SchemaTypes.ContributorsVirtualInLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ContributorsVirtualInLibraryQuery,
+    SchemaTypes.ContributorsVirtualInLibraryQueryVariables
+  >(ContributorsVirtualInLibraryDocument, options);
+}
+
+export type ContributorsVirtualInLibraryQueryHookResult = ReturnType<typeof useContributorsVirtualInLibraryQuery>;
+export type ContributorsVirtualInLibraryLazyQueryHookResult = ReturnType<
+  typeof useContributorsVirtualInLibraryLazyQuery
+>;
+export type ContributorsVirtualInLibraryQueryResult = Apollo.QueryResult<
+  SchemaTypes.ContributorsVirtualInLibraryQuery,
+  SchemaTypes.ContributorsVirtualInLibraryQueryVariables
+>;
+export function refetchContributorsVirtualInLibraryQuery(
+  variables?: SchemaTypes.ContributorsVirtualInLibraryQueryVariables
+) {
+  return { query: ContributorsVirtualInLibraryDocument, variables: variables };
+}
+
 export const AssociatedOrganizationDocument = gql`
   query associatedOrganization($organizationId: UUID_NAMEID!) {
     organization(ID: $organizationId) {

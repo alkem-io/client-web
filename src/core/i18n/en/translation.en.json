@@ -2174,6 +2174,9 @@
       },
       "users": {
         "title": "Users"
+      },
+      "virtualContributors": {
+        "title": "Virtual Contributors"
       }
     },
     "search": {
