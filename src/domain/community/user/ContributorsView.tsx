@@ -64,9 +64,9 @@ const vcToContributorCard = (vc: VirtualContributor): ContributorCardSquareProps
     avatar: vc.profile.avatar?.uri ?? '',
     url: vc.profile.url ?? '',
     tooltip: {
-      tags: (vc.profile?.tagsets || []).flatMap(y => y.tags),
-      city: vc.profile?.location?.city || '',
-      country: vc.profile?.location?.country || '',
+      tags: (vc.profile?.tagsets ?? []).flatMap(y => y.tags),
+      city: vc.profile?.location?.city ?? '',
+      country: vc.profile?.location?.country ?? '',
     },
     isContactable: false,
     contributorType: CommunityContributorType.Virtual,
