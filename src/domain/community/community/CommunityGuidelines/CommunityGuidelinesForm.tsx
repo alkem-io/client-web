@@ -12,6 +12,7 @@ import { referenceSegmentSchema } from '@/domain/platform/admin/components/Commo
 import LoadingButton from '@mui/lab/LoadingButton';
 import ProfileReferenceSegment from '@/domain/platform/admin/components/Common/ProfileReferenceSegment';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
 type CommunityGuidelinesFormProps = {
   data: FormValues | undefined;
@@ -19,9 +20,8 @@ type CommunityGuidelinesFormProps = {
   onSubmit: (values: FormValues) => void;
   loading?: boolean;
   disabled?: boolean;
-  deleteCommunityGuidelinesLoading?: boolean;
-  hasDeleteContentButton?: boolean;
-  onDeleteCommunityGuidelines?: () => void;
+  canDeleteCommunityGuidelines?: boolean;
+  onDeleteCommunityGuidelines?: () => Promise<unknown>;
 };
 
 type FormValues = {
@@ -47,8 +47,7 @@ const CommunityGuidelinesForm = ({
   onSubmit,
   disabled,
   loading,
-  hasDeleteContentButton = false,
-  deleteCommunityGuidelinesLoading,
+  canDeleteCommunityGuidelines = false,
   onDeleteCommunityGuidelines,
 }: CommunityGuidelinesFormProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -60,6 +59,10 @@ const CommunityGuidelinesForm = ({
     description: data?.description ?? '',
     references: data?.references ?? [],
   };
+
+  const [handleDeleteCommunityGuidelines, deleteCommunityGuidelinesLoading] = useLoadingState(async () => {
+    await onDeleteCommunityGuidelines?.();
+  });
 
   return (
     <>
@@ -84,14 +87,14 @@ const CommunityGuidelinesForm = ({
               <ProfileReferenceSegment references={values.references} profileId={profileId} />
 
               <Box display="flex" marginY={4} gap={1} justifyContent="flex-end">
-                {hasDeleteContentButton && (
+                {canDeleteCommunityGuidelines && (
                   <LoadingButton
                     loading={loading}
                     variant="outlined"
                     disabled={!isValid}
                     onClick={() => setDeleteDialogOpen(true)}
                   >
-                    {t('common.deleteCommunityGuidelines')}
+                    {t('community.communityGuidelines.deleteCommunityGuidelines')}
                   </LoadingButton>
                 )}
 
@@ -114,14 +117,14 @@ const CommunityGuidelinesForm = ({
           show: deleteDialogOpen,
         }}
         actions={{
-          onConfirm: () => {
-            onDeleteCommunityGuidelines?.();
+          onConfirm: async () => {
+            await handleDeleteCommunityGuidelines();
             setDeleteDialogOpen(false);
           },
           onCancel: () => setDeleteDialogOpen(false),
         }}
         state={{
-          isLoading: Boolean(deleteCommunityGuidelinesLoading),
+          isLoading: deleteCommunityGuidelinesLoading,
         }}
       />
     </>

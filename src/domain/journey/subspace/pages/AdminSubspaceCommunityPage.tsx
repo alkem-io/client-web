@@ -130,10 +130,9 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
             communityGuidelines,
             profileId,
             loading,
-            deleteCommunityGuidelinesLoading,
             onSelectCommunityGuidelinesTemplate,
             onUpdateCommunityGuidelines,
-            onDeleteCommunityGuidelines,
+            onDeleteCommunityGuidelinesContent: onDeleteCommunityGuidelines,
           }) => {
             const hasDeleteContentButton =
               Boolean(communityGuidelines?.displayName) ||
@@ -157,9 +156,8 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
                   <CommunityGuidelinesForm
                     data={communityGuidelines}
                     loading={loading}
-                    deleteCommunityGuidelinesLoading={deleteCommunityGuidelinesLoading}
                     onSubmit={onUpdateCommunityGuidelines}
-                    hasDeleteContentButton={hasDeleteContentButton}
+                    canDeleteCommunityGuidelines={hasDeleteContentButton}
                     profileId={profileId}
                     onDeleteCommunityGuidelines={onDeleteCommunityGuidelines}
                   />
