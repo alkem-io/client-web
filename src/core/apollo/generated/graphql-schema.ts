@@ -3445,7 +3445,7 @@ export type Mutation = {
   moveContributionToCallout: CalloutContribution;
   /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean'];
-  /** Updates the CommunityGuidelines. */
+  /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID'];
@@ -3563,6 +3563,8 @@ export type Mutation = {
   updateTemplate: Template;
   /** Updates the specified Template Defaults. */
   updateTemplateDefault: TemplateDefault;
+  /** Updates the specified Collaboration Template using the provided Collaboration. */
+  updateTemplateFromCollaboration: Template;
   /** Updates the User. */
   updateUser: User;
   /** Updates the specified User Group. */
@@ -4151,6 +4153,10 @@ export type MutationUpdateTemplateArgs = {
 
 export type MutationUpdateTemplateDefaultArgs = {
   templateDefaultData: UpdateTemplateDefaultTemplateInput;
+};
+
+export type MutationUpdateTemplateFromCollaborationArgs = {
+  updateData: UpdateTemplateFromCollaborationInput;
 };
 
 export type MutationUpdateUserArgs = {
@@ -6485,6 +6491,13 @@ export type UpdateTemplateDefaultTemplateInput = {
   /** The identifier for the TemplateDefault to be updated. */
   templateDefaultID: Scalars['UUID'];
   /** The ID for the Template to use. */
+  templateID: Scalars['UUID'];
+};
+
+export type UpdateTemplateFromCollaborationInput = {
+  /** The Collaboration whose content should be copied to this Template. */
+  collaborationID: Scalars['UUID'];
+  /** The ID of the Template. */
   templateID: Scalars['UUID'];
 };
 
@@ -16264,6 +16277,42 @@ export type ContributorsPageUsersQuery = {
   };
 };
 
+export type ContributorsVirtualInLibraryQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ContributorsVirtualInLibraryQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      virtualContributors: Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          location?: { __typename?: 'Location'; city?: string | undefined; country?: string | undefined } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }>;
+    };
+  };
+};
+
 export type OrganizationContributorPaginatedFragment = {
   __typename?: 'PaginatedOrganization';
   organization: Array<{
@@ -25999,6 +26048,16 @@ export type UpdateTemplateMutation = {
     };
     whiteboard?: { __typename?: 'Whiteboard'; id: string; content: string } | undefined;
   };
+};
+
+export type UpdateTemplateFromCollaborationMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+  collaborationId: Scalars['UUID'];
+}>;
+
+export type UpdateTemplateFromCollaborationMutation = {
+  __typename?: 'Mutation';
+  updateTemplateFromCollaboration: { __typename?: 'Template'; id: string };
 };
 
 export type DeleteTemplateMutationVariables = Exact<{

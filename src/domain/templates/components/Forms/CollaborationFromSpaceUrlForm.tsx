@@ -1,25 +1,32 @@
-import { Box, TextField } from '@mui/material';
+import { Box, Button, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text } from '@/core/ui/typography';
 import { LoadingButton } from '@mui/lab';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { gutters } from '@/core/ui/grid/utils';
 import useUrlParser from '@/main/routing/resolvers/useUrlParser';
 import {
   useJourneyRouteResolverLazyQuery,
   useSpaceCollaborationIdLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import Gutters from '@/core/ui/grid/Gutters';
 
 interface CollaborationFromSpaceUrlFormProps {
   onUseCollaboration: (url: string) => Promise<unknown>;
+  collapsible?: boolean;
+  onCollapse?: () => void;
 }
 
-const CollaborationFromSpaceUrlForm: React.FC<CollaborationFromSpaceUrlFormProps> = ({ onUseCollaboration }) => {
+const CollaborationFromSpaceUrlForm: React.FC<CollaborationFromSpaceUrlFormProps> = ({
+  onUseCollaboration,
+  collapsible,
+  onCollapse,
+}) => {
   const { t } = useTranslation();
   const [url, setUrl] = useState('');
   const [urlError, setUrlError] = useState<string>();
+  const [collapsed, setCollapsed] = useState<boolean>(collapsible ?? false);
   const { parseUrl } = useUrlParser();
 
   const [resolveJourneyRoute] = useJourneyRouteResolverLazyQuery();
@@ -63,24 +70,50 @@ const CollaborationFromSpaceUrlForm: React.FC<CollaborationFromSpaceUrlFormProps
   });
 
   return (
-    <form onSubmit={e => e.preventDefault()}>
-      <PageContentBlock>
-        <Text>{t('templateLibrary.collaborationTemplates.findByUrl.description')}</Text>
-        <Box display="flex" flexDirection="row" alignItems="start">
-          <TextField
-            value={url}
-            onChange={e => setUrl(e.target.value)}
-            placeholder={t('templateLibrary.collaborationTemplates.findByUrl.title')}
-            sx={{ flexGrow: 1, marginRight: gutters() }}
-            error={Boolean(urlError)}
-            helperText={urlError}
-          />
-          <LoadingButton variant="contained" loading={loading} onClick={handleUse} sx={{ marginTop: gutters(0.5) }}>
-            {t('templateLibrary.collaborationTemplates.findByUrl.use')}
-          </LoadingButton>
+    <>
+      {collapsed && (
+        <Box textAlign="right">
+          <Button variant="outlined" onClick={() => setCollapsed(false)}>
+            {t('templateLibrary.collaborationTemplates.findByUrl.selectAnother')}
+          </Button>
         </Box>
-      </PageContentBlock>
-    </form>
+      )}
+      {!collapsed && (
+        <form onSubmit={e => e.preventDefault()}>
+          <PageContentBlock>
+            <Text>{t('templateLibrary.collaborationTemplates.findByUrl.description')}</Text>
+            <Gutters disablePadding row alignItems="baseline">
+              <TextField
+                value={url}
+                onChange={e => setUrl(e.target.value)}
+                placeholder={t('templateLibrary.collaborationTemplates.findByUrl.title')}
+                sx={{ flexGrow: 1 }}
+                error={Boolean(urlError)}
+                helperText={urlError}
+              />
+              <Box>
+                {collapsible && (
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      setCollapsed(true);
+                      onCollapse?.();
+                    }}
+                  >
+                    {t('buttons.cancel')}
+                  </Button>
+                )}
+              </Box>
+              <Box>
+                <LoadingButton variant="contained" loading={loading} onClick={handleUse}>
+                  {t('templateLibrary.collaborationTemplates.findByUrl.use')}
+                </LoadingButton>
+              </Box>
+            </Gutters>
+          </PageContentBlock>
+        </form>
+      )}
+    </>
   );
 };
 

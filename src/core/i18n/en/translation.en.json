@@ -970,7 +970,8 @@
         "description": "Enter the URL of the Subspace you want to copy as a template.",
         "use": "Use this space",
         "spaceNotFoundError": "Space not found",
-        "collaborationNotFoundError": "Collaboration not found"
+        "collaborationNotFoundError": "Collaboration not found",
+        "selectAnother": "Update Collaboration from another Space"
       }
     },
     "communityGuidelinesTemplates": {
@@ -2173,6 +2174,9 @@
       },
       "users": {
         "title": "Users"
+      },
+      "virtualContributors": {
+        "title": "Virtual Contributors"
       }
     },
     "search": {
