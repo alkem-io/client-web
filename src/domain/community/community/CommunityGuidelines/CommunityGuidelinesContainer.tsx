@@ -29,10 +29,10 @@ interface CommunityGuidelinesContainerProvided {
   communityGuidelinesId: string | undefined;
   profileId: string | undefined; // ProfileId is required to create references
   loading: boolean;
-  removeCommunityGuidelinesContentLoading: boolean;
+  deleteCommunityGuidelinesLoading: boolean;
   onSelectCommunityGuidelinesTemplate: (template: Identifiable) => Promise<unknown>;
   onUpdateCommunityGuidelines: (values: CommunityGuidelines) => Promise<unknown>;
-  onDeleteAndSaveContent?: () => void;
+  onDeleteCommunityGuidelines?: () => void;
 }
 
 interface CommunityGuidelinesContainerProps extends SimpleContainerProps<CommunityGuidelinesContainerProvided> {
@@ -64,7 +64,7 @@ const CommunityGuidelinesContainer = ({ communityId, children }: CommunityGuidel
   const communityGuidelinesId = communityGuidelines?.id;
   const profileId = data?.lookup.community?.guidelines.profile.id;
 
-  const [removeCommunityGuidelinesContent, { loading: removeCommunityGuidelinesContentLoading }] =
+  const [removeCommunityGuidelinesContent, { loading: deleteCommunityGuidelinesLoading }] =
     useRemoveCommunityGuidelinesContentMutation();
   const [updateGuidelines, { loading: submittingGuidelines }] = useUpdateCommunityGuidelinesMutation();
 
@@ -99,7 +99,7 @@ const CommunityGuidelinesContainer = ({ communityId, children }: CommunityGuidel
     });
   };
 
-  const onDeleteAndSaveContent = async () => {
+  const onDeleteCommunityGuidelines = async () => {
     if (!communityGuidelinesId) {
       return;
     }
@@ -188,11 +188,11 @@ const CommunityGuidelinesContainer = ({ communityId, children }: CommunityGuidel
         communityGuidelines,
         communityGuidelinesId,
         profileId,
-        removeCommunityGuidelinesContentLoading,
+        deleteCommunityGuidelinesLoading,
         loading: loading || submittingGuidelines || removingReference || addingReference,
         onUpdateCommunityGuidelines,
         onSelectCommunityGuidelinesTemplate,
-        onDeleteAndSaveContent,
+        onDeleteCommunityGuidelines,
       })}
     </>
   );

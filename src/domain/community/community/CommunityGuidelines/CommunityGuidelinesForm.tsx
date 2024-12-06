@@ -19,9 +19,9 @@ type CommunityGuidelinesFormProps = {
   onSubmit: (values: FormValues) => void;
   loading?: boolean;
   disabled?: boolean;
-  removeCommunityGuidelinesContentLoading?: boolean;
+  deleteCommunityGuidelinesLoading?: boolean;
   hasDeleteContentButton?: boolean;
-  onDeleteAndSaveContent?: () => void;
+  onDeleteCommunityGuidelines?: () => void;
 };
 
 type FormValues = {
@@ -48,8 +48,8 @@ const CommunityGuidelinesForm = ({
   disabled,
   loading,
   hasDeleteContentButton = false,
-  removeCommunityGuidelinesContentLoading,
-  onDeleteAndSaveContent,
+  deleteCommunityGuidelinesLoading,
+  onDeleteCommunityGuidelines,
 }: CommunityGuidelinesFormProps) => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -91,7 +91,7 @@ const CommunityGuidelinesForm = ({
                     disabled={!isValid}
                     onClick={() => setDeleteDialogOpen(true)}
                   >
-                    {t('common.removeContent')}
+                    {t('common.deleteCommunityGuidelines')}
                   </LoadingButton>
                 )}
 
@@ -115,13 +115,13 @@ const CommunityGuidelinesForm = ({
         }}
         actions={{
           onConfirm: () => {
-            onDeleteAndSaveContent?.();
+            onDeleteCommunityGuidelines?.();
             setDeleteDialogOpen(false);
           },
           onCancel: () => setDeleteDialogOpen(false),
         }}
         state={{
-          isLoading: Boolean(removeCommunityGuidelinesContentLoading),
+          isLoading: Boolean(deleteCommunityGuidelinesLoading),
         }}
       />
     </>

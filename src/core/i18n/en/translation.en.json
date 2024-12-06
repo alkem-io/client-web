@@ -586,7 +586,7 @@
       "BETA_TESTER": "Beta Tester",
       "VC_CAMPAIGN": "VC Early Access"
     },
-    "removeContent": "Delete Community Guidelines"
+    "deleteCommunityGuidelines": "Delete Community Guidelines"
   },
   "community": {
     "memberUsers": "Member Users ({{count}})",
