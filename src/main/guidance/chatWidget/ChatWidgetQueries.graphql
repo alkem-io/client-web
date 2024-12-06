@@ -1,11 +1,18 @@
-query askChatGuidanceQuestion($chatData: ChatGuidanceInput!) {
-  askChatGuidanceQuestion(chatData: $chatData) {
-    id
-    answer
-    question
-    sources {
-      uri
-      title
+query GuidanceRoomId {
+  me {
+    user {
+      id
+      guidanceRoom {
+        id
+      }
+    }
+  }
+}
+
+query GuidanceRoomMessages($roomId: UUID!) {
+  lookup {
+    room (ID: $roomId) {
+      ...CommentsWithMessages
     }
   }
 }

@@ -104,7 +104,7 @@ export const MessageView = ({
                 {t('messaging.messageDeleted')}
               </Text>
             ) : (
-              <WrapperMarkdown>{message.body}</WrapperMarkdown>
+              <WrapperMarkdown>{message.message}</WrapperMarkdown>
             )}
           </MessageContentWrapper>
           {!message.deleted && (
