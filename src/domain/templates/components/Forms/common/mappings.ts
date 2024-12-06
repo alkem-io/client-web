@@ -191,8 +191,8 @@ export const toCreateTemplateMutationVariables = (
           break;
         }
         case CalloutType.WhiteboardCollection: {
-          delete calloutTemplateData.callout.framing.whiteboard;
-          delete calloutTemplateData.callout.contributionDefaults?.postDescription;
+          delete callout.framing.whiteboard;
+          delete callout.contributionDefaults?.postDescription;
           break;
         }
       }
