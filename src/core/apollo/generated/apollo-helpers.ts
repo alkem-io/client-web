@@ -2099,6 +2099,7 @@ export type MutationKeySpecifier = (
   | 'updateTagset'
   | 'updateTemplate'
   | 'updateTemplateDefault'
+  | 'updateTemplateFromCollaboration'
   | 'updateUser'
   | 'updateUserGroup'
   | 'updateUserPlatformSettings'
@@ -2263,6 +2264,7 @@ export type MutationFieldPolicy = {
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTemplateDefault?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateTemplateFromCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;

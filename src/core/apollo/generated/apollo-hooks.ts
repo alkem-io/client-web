@@ -20691,6 +20691,58 @@ export type UpdateTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateTemplateMutation,
   SchemaTypes.UpdateTemplateMutationVariables
 >;
+export const UpdateTemplateFromCollaborationDocument = gql`
+  mutation UpdateTemplateFromCollaboration($templateId: UUID!, $collaborationId: UUID!) {
+    updateTemplateFromCollaboration(updateData: { templateID: $templateId, collaborationID: $collaborationId }) {
+      id
+    }
+  }
+`;
+export type UpdateTemplateFromCollaborationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateTemplateFromCollaborationMutation,
+  SchemaTypes.UpdateTemplateFromCollaborationMutationVariables
+>;
+
+/**
+ * __useUpdateTemplateFromCollaborationMutation__
+ *
+ * To run a mutation, you first call `useUpdateTemplateFromCollaborationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTemplateFromCollaborationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTemplateFromCollaborationMutation, { data, loading, error }] = useUpdateTemplateFromCollaborationMutation({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *      collaborationId: // value for 'collaborationId'
+ *   },
+ * });
+ */
+export function useUpdateTemplateFromCollaborationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateTemplateFromCollaborationMutation,
+    SchemaTypes.UpdateTemplateFromCollaborationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateTemplateFromCollaborationMutation,
+    SchemaTypes.UpdateTemplateFromCollaborationMutationVariables
+  >(UpdateTemplateFromCollaborationDocument, options);
+}
+
+export type UpdateTemplateFromCollaborationMutationHookResult = ReturnType<
+  typeof useUpdateTemplateFromCollaborationMutation
+>;
+export type UpdateTemplateFromCollaborationMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateTemplateFromCollaborationMutation>;
+export type UpdateTemplateFromCollaborationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateTemplateFromCollaborationMutation,
+  SchemaTypes.UpdateTemplateFromCollaborationMutationVariables
+>;
 export const DeleteTemplateDocument = gql`
   mutation DeleteTemplate($templateId: UUID!) {
     deleteTemplate(deleteData: { ID: $templateId }) {
