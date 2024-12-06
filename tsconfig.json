@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     // Basic settings
-    "target": "ES2016",
+    "target": "ES2022",
     "module": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "react-jsx",
