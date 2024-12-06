@@ -249,7 +249,7 @@ export const toCreateTemplateFromCollaborationMutationVariables = (
         description: ref.description,
       })),
     },
-    tags: values.profile.tagsets?.[0]?.tags ?? [],
+    tags: handleCreateTags(values),
   };
   return result;
 };
