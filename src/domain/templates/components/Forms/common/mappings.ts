@@ -11,6 +11,7 @@ import {
   UpdateProfileInput,
   UpdateReferenceInput,
   UpdateTagsetInput,
+  UpdateTemplateFromCollaborationMutationVariables,
 } from '@/core/apollo/generated/graphql-schema';
 import {
   CreateTemplateMutationVariables,
@@ -26,6 +27,7 @@ import { PostTemplateFormSubmittedValues } from '../PostTemplateForm';
 import { AnyTemplate } from '@/domain/templates/models/TemplateBase';
 import { CommunityGuidelinesTemplate } from '@/domain/templates/models/CommunityGuidelinesTemplate';
 import { CalloutTemplate } from '@/domain/templates/models/CalloutTemplate';
+import { CollaborationTemplate } from '@/domain/templates/models/CollaborationTemplate';
 
 interface EntityWithProfile {
   profile: {
@@ -330,6 +332,7 @@ export const toUpdateTemplateMutationVariables = (
   updateTemplateVariables: UpdateTemplateMutationVariables;
   updateCalloutVariables?: UpdateCalloutMutationVariables;
   updateCommunityGuidelinesVariables?: UpdateCommunityGuidelinesMutationVariables;
+  updateCollaborationTemplateVariables?: UpdateTemplateFromCollaborationMutationVariables;
 } => {
   const updateTemplateVariables: UpdateTemplateMutationVariables = {
     templateId: templateId!,
@@ -383,10 +386,27 @@ export const toUpdateTemplateMutationVariables = (
       };
     }
     case TemplateType.Collaboration: {
-      // TODO: Cannot update Collaboration Template content yet, but we can update the profile of it
-      return {
-        updateTemplateVariables,
-      };
+      // Special case: In CollaborationTemplates we update the collaborationId in the formik values to
+      // mark that this template should load its content from another collaboration.
+      // Then updateCollaborationTemplateVariables will be returned and the mutation will be called.
+      // If the collaborationId remains the same, we just update the template profile.
+      const oldCollaborationId = (template as CollaborationTemplate).collaboration?.id;
+      const newCollaborationId = (newValues as CollaborationTemplateFormSubmittedValues).collaborationId;
+      if (oldCollaborationId && newCollaborationId && oldCollaborationId !== newCollaborationId) {
+        const updateCollaborationTemplateVariables: UpdateTemplateFromCollaborationMutationVariables = {
+          templateId,
+          collaborationId: newCollaborationId,
+        };
+        return {
+          updateTemplateVariables,
+          updateCollaborationTemplateVariables,
+        };
+      } else {
+        // Collaboration selected didn't change, just update the template values
+        return {
+          updateTemplateVariables,
+        };
+      }
     }
     case TemplateType.CommunityGuidelines: {
       const communityGuidelinesTemplateData = newValues as CommunityGuidelinesTemplateFormSubmittedValues;
