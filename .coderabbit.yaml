@@ -19,14 +19,10 @@ reviews:
         Review the React.js/TypeScript/JavaScript code for best practices and potential bugs.
         Ensure that the code adheres to TypeScript's typing system and modern standards.
         Use the following code guide documentation in the codebase: 'docs/code-guidelines.md'.
-
         Ensure sufficient error handling and logging is present, **but note:**
-        - Local `try/catch` blocks are not required unless they provide value
-          beyond what the global error handler already covers.
-        - Avoid flagging the absence of local error handling in cases where the
-          global error handler suffices.
-        - Avoid flagging the absence of logging in cases where the global logger is
-          already in place (graphql usage).
+        - We have a global error handler in place. So local `try/catch` blocks are not required unless they provide value beyond what the global error handler already covers.
+        - Avoid flagging the absence of local error handling in cases where the global error handler suffices.
+        - Avoid flagging the absence of logging in cases where the global logger is already in place (graphql usage).
 
         Inform about the recommendation of not using non-null assertion,
         except on GraphQL queries where the variable is asserted non-null and followed by a
