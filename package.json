@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.77.0",
+  "version": "0.78.0",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "lint:fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
     "lint:prod": "tsc --noEmit && cross-env NODE_ENV=production eslint src/**/*.ts{,x}",
+    "prune": "rm -rf node_modules && npm install",
     "serve:dev": "serve -s build -l 3001",
     "start": "cross-env NODE_ENV=development node buildConfiguration && vite --host",
     "test": "vitest",

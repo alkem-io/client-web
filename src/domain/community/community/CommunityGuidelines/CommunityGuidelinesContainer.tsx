@@ -3,6 +3,7 @@ import {
   useCommunityGuidelinesQuery,
   useCreateReferenceOnProfileMutation,
   useDeleteReferenceMutation,
+  useRemoveCommunityGuidelinesContentMutation,
   useTemplateContentLazyQuery,
   useUpdateCommunityGuidelinesMutation,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -30,6 +31,7 @@ interface CommunityGuidelinesContainerProvided {
   loading: boolean;
   onSelectCommunityGuidelinesTemplate: (template: Identifiable) => Promise<unknown>;
   onUpdateCommunityGuidelines: (values: CommunityGuidelines) => Promise<unknown>;
+  onDeleteCommunityGuidelinesContent?: () => Promise<unknown>;
 }
 
 interface CommunityGuidelinesContainerProps extends SimpleContainerProps<CommunityGuidelinesContainerProvided> {
@@ -61,7 +63,9 @@ const CommunityGuidelinesContainer = ({ communityId, children }: CommunityGuidel
   const communityGuidelinesId = communityGuidelines?.id;
   const profileId = data?.lookup.community?.guidelines.profile.id;
 
+  const [removeCommunityGuidelinesContent] = useRemoveCommunityGuidelinesContentMutation();
   const [updateGuidelines, { loading: submittingGuidelines }] = useUpdateCommunityGuidelinesMutation();
+
   const onUpdateCommunityGuidelines = async (values: CommunityGuidelines) => {
     if (!communityGuidelinesId) {
       return;
@@ -90,6 +94,23 @@ const CommunityGuidelinesContainer = ({ communityId, children }: CommunityGuidel
           communityId,
         }),
       ],
+    });
+  };
+
+  const onDeleteCommunityGuidelinesContent = async () => {
+    if (!communityGuidelinesId) {
+      return;
+    }
+
+    await removeCommunityGuidelinesContent({
+      variables: {
+        communityGuidelinesData: {
+          communityGuidelinesID: communityGuidelinesId,
+        },
+      },
+      onCompleted: () => notify(t('community.communityGuidelines.saveAndDeleteContentSuccessMessage'), 'success'),
+      awaitRefetchQueries: true,
+      refetchQueries: [refetchCommunityGuidelinesQuery({ communityId })],
     });
   };
 
@@ -168,6 +189,7 @@ const CommunityGuidelinesContainer = ({ communityId, children }: CommunityGuidel
         loading: loading || submittingGuidelines || removingReference || addingReference,
         onUpdateCommunityGuidelines,
         onSelectCommunityGuidelinesTemplate,
+        onDeleteCommunityGuidelinesContent,
       })}
     </>
   );

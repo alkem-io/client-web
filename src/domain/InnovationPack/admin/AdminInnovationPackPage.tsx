@@ -30,7 +30,6 @@ const TemplateTypePermissions = {
     TemplateType.Callout,
     TemplateType.Collaboration,
     TemplateType.CommunityGuidelines,
-    TemplateType.InnovationFlow,
     TemplateType.Post,
     TemplateType.Whiteboard,
   ],
@@ -38,7 +37,6 @@ const TemplateTypePermissions = {
     TemplateType.Callout,
     TemplateType.Collaboration,
     TemplateType.CommunityGuidelines,
-    TemplateType.InnovationFlow,
     TemplateType.Post,
     TemplateType.Whiteboard,
   ],
@@ -50,7 +48,7 @@ const AdminInnovationPackPage = () => {
   const { innovationPackNameId, templateNameId } = useUrlParams();
 
   if (!innovationPackNameId) {
-    throw new Error('Must be within Innovation Pack');
+    throw new Error('Must be within Template Pack');
   }
 
   const { data: innovationPackResolverData, loading: resolvingInnovationPack } = useInnovationPackResolveIdQuery({
@@ -60,7 +58,7 @@ const AdminInnovationPackPage = () => {
 
   const innovationPackId = innovationPackResolverData?.lookupByName.innovationPack?.id;
   if (innovationPackNameId && !resolvingInnovationPack && !innovationPackId) {
-    throw new Error('Innovation pack not found.');
+    throw new Error('Template pack not found.');
   }
 
   const { data, loading: loadingInnovationPack } = useAdminInnovationPackQuery({
@@ -134,7 +132,7 @@ const AdminInnovationPackPage = () => {
                   templatesSetId={templatesSetId}
                   templateId={selectedTemplateId}
                   baseUrl={buildInnovationPackSettingsUrl(innovationPack.profile.url)}
-                  alwaysEditTemplate // When editing an Innovation pack, we don't want to see template preview, just go to Edit mode always
+                  alwaysEditTemplate // When editing an Template pack, we don't want to see template preview, just go to Edit mode always
                   canCreateTemplates={templateType => TemplateTypePermissions.create.includes(templateType)}
                   canEditTemplates={templateType => TemplateTypePermissions.edit.includes(templateType)}
                   canDeleteTemplates={templateType => TemplateTypePermissions.delete.includes(templateType)}

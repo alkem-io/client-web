@@ -109,7 +109,6 @@ export interface AccountTabResourcesProps {
       calloutTemplatesCount: number;
       collaborationTemplatesCount: number;
       communityGuidelinesTemplatesCount: number;
-      innovationFlowTemplatesCount: number;
       postTemplatesCount: number;
       whiteboardTemplatesCount: number;
     };
@@ -202,7 +201,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const [deleteSpaceMutation, { loading: deleteSpaceLoading }] = useDeleteSpaceMutation({
     onCompleted: () => {
       clearDeleteState();
-      notify('Space deleted successfully!', 'success');
+      notify(t('pages.admin.generic.sections.account.deletedSuccessfully', { entity: t('common.space') }), 'success');
     },
     refetchQueries: ['AccountInformation'],
   });
@@ -231,7 +230,10 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const [deleteVCMutation, { loading: deleteVCLoading }] = useDeleteVirtualContributorOnAccountMutation({
     onCompleted: () => {
       clearDeleteState();
-      notify('Virtual Contributor deleted successfully!', 'success');
+      notify(
+        t('pages.admin.generic.sections.account.deletedSuccessfully', { entity: t('common.virtual-contributor') }),
+        'success'
+      );
     },
     refetchQueries: ['AccountInformation'],
   });
@@ -260,7 +262,10 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const [deletePackMutation, { loading: deletePackLoading }] = useDeleteInnovationPackMutation({
     onCompleted: () => {
       clearDeleteState();
-      notify('Innovation Pack deleted successfully!', 'success');
+      notify(
+        t('pages.admin.generic.sections.account.deletedSuccessfully', { entity: t('common.innovationPack') }),
+        'success'
+      );
     },
     refetchQueries: ['AccountInformation'],
   });
@@ -287,7 +292,10 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const [deleteHubMutation, { loading: deleteHubLoading }] = useDeleteInnovationHubMutation({
     onCompleted: () => {
       clearDeleteState();
-      notify('Innovation Hub deleted successfully!', 'success');
+      notify(
+        t('pages.admin.generic.sections.account.deletedSuccessfully', { entity: t('common.innovation-hub') }),
+        'success'
+      );
     },
     refetchQueries: ['AccountInformation'],
   });

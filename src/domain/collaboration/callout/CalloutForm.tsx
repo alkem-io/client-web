@@ -34,8 +34,8 @@ import CalloutWhiteboardField, {
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { JourneyCalloutGroupNameOptions } from './CalloutsInContext/CalloutsGroup';
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
-import PostTemplateSelector from '@/domain/templates/components/CalloutForm/PostTemplateSelector';
-import WhiteboardTemplateSelector from '@/domain/templates/components/CalloutForm/WhiteboardTemplateSelector';
+import PostTemplateSelector from '@/domain/templates/components/TemplateSelectors/PostTemplateSelector';
+import WhiteboardTemplateSelector from '@/domain/templates/components/TemplateSelectors/WhiteboardTemplateSelector';
 
 type FormValueType = {
   displayName: string;

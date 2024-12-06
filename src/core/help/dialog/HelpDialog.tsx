@@ -1,13 +1,18 @@
-import { useTranslation } from 'react-i18next';
-import { Box, Dialog, Grid, Link, styled } from '@mui/material';
-import QuizOutlinedIzon from '@mui/icons-material/QuizOutlined';
+import { Trans, useTranslation } from 'react-i18next';
+import { Box, Grid, Link, styled } from '@mui/material';
+import QuizOutlinedIcon from '@mui/icons-material/QuizOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import FiberNewTwoToneIcon from '@mui/icons-material/FiberNewTwoTone';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { DialogContent } from '@/core/ui/dialog/deprecated';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
+import useServerMetadata from '@/domain/platform/metadata/useServerMetadata';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import Gutters from '@/core/ui/grid/Gutters';
+import { Caption } from '@/core/ui/typography';
+import { buildWelcomeSpaceUrl } from '@/main/routing/urlBuilders';
 
 interface HelpDialogProps {
   open: boolean;
@@ -15,33 +20,24 @@ interface HelpDialogProps {
 }
 
 const HelpDialogContent = styled(DialogContent)(({ theme }) => ({
-  '& a': { color: theme.palette.common.black },
+  '& a': { color: theme.palette.primary.main },
   '& a:hover': { color: theme.palette.primary.light },
 }));
 
 const IconWrapper = styled(Link)(({ theme }) => ({
   display: 'block',
   position: 'relative',
-  padding: theme.spacing(4),
+  padding: theme.spacing(2),
   textAlign: 'center',
   fontWeight: 'bold',
 }));
 
 const Icon = styled(Box)(({ theme }) => ({
-  color: theme.palette.primary.dark,
-  width: theme.spacing(8),
-  height: theme.spacing(8),
+  color: theme.palette.primary.main,
+  width: theme.spacing(5),
+  height: theme.spacing(5),
   display: 'block',
   margin: theme.spacing(2, 'auto', 2, 'auto'),
-}));
-
-const FooterLink = styled(Link)(({ theme }) => ({
-  '& svg': {
-    position: 'relative',
-    top: theme.spacing(1),
-    marginRight: theme.spacing(1),
-  },
-  textDecoration: 'underline',
 }));
 
 // Our Material FiberNew icon doesn't have a border around it like in the design.
@@ -53,43 +49,83 @@ const CustomNewIcon = styled(FiberNewTwoToneIcon)(() => ({
 
 const HelpDialog = ({ open, onClose }: HelpDialogProps) => {
   const { t } = useTranslation();
+
   const { locations } = useConfig();
+
+  const { services } = useServerMetadata();
+
   const handleClose = () => (onClose ? onClose() : undefined);
-  const faq = `${locations?.help}`;
-  const contactUs = `${locations?.support}`;
-  const gettingStarted = `${locations?.help}/getting-started`;
+
+  const supportHref = locations?.support;
+  const docsHref = `/${TopLevelRoutePath.Docs}`;
+  const welcomeSpaceHref = buildWelcomeSpaceUrl();
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth={'xl'}>
+    <DialogWithGrid open={open} columns={6} onClose={handleClose}>
       <DialogHeader title={t('pages.help-dialog.title')} onClose={handleClose} />
       <HelpDialogContent>
         <WrapperMarkdown>{t('pages.help-dialog.text')}</WrapperMarkdown>
         <Grid container columns={{ xs: 4, sm: 6 }}>
           <Grid item xs={2}>
-            <IconWrapper href={faq} target="_blank">
-              <Icon component={QuizOutlinedIzon} />
-              {t('pages.help-dialog.icons.help-center-faq')}
+            <IconWrapper
+              href={docsHref}
+              target="_blank"
+              rel="noopener"
+              aria-label={t('pages.help-dialog.icons.exploreDocumentation')}
+            >
+              <Icon component={QuizOutlinedIcon} />
+              {t('pages.help-dialog.icons.exploreDocumentation')}
             </IconWrapper>
           </Grid>
+
           <Grid item xs={2}>
-            <IconWrapper href={contactUs} target="_blank">
+            <IconWrapper
+              href={supportHref}
+              target="_blank"
+              rel="noopener"
+              aria-label={t('pages.help-dialog.icons.contactTheTeam')}
+            >
               <Icon component={ForumOutlinedIcon} />
-              {t('pages.help-dialog.icons.community-support-forum')}
+              {t('pages.help-dialog.icons.contactTheTeam')}
             </IconWrapper>
           </Grid>
+
           <Grid item xs={2}>
-            <IconWrapper href={gettingStarted} target="_blank">
+            <IconWrapper
+              href={welcomeSpaceHref}
+              target="_blank"
+              rel="noopener"
+              aria-label={t('pages.help-dialog.icons.joinTheWelcomeSpace')}
+            >
               <Icon component={CustomNewIcon} />
-              {t('pages.help-dialog.icons.new-user')}
+              {t('pages.help-dialog.icons.joinTheWelcomeSpace')}
             </IconWrapper>
           </Grid>
         </Grid>
-        <FooterLink href={locations?.tips} target="_blank">
-          <ArrowForwardIcon />
-          {t('pages.help-dialog.tips-and-tricks')}
-        </FooterLink>
+
+        <Gutters row justifyContent="center">
+          <Gutters row gap={1} disablePadding>
+            <Caption>
+              <Trans
+                i18nKey="pages.help-dialog.versionNumber"
+                components={{ b: <strong /> }}
+                values={{ version: import.meta.env.VITE_APP_VERSION ?? 'N/A' }}
+              />
+            </Caption>
+          </Gutters>
+
+          <Gutters row gap={1} disablePadding>
+            <Caption>
+              <Trans
+                i18nKey="pages.help-dialog.serverVersionNumber"
+                components={{ b: <strong /> }}
+                values={{ version: services?.[0]?.version ?? 'N/A' }}
+              />
+            </Caption>
+          </Gutters>
+        </Gutters>
       </HelpDialogContent>
-    </Dialog>
+    </DialogWithGrid>
   );
 };
 

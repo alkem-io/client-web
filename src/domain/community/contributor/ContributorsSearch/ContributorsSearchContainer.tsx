@@ -4,6 +4,7 @@ import { ContainerChildProps } from '@/core/container/container';
 import {
   useContributorsPageOrganizationsQuery,
   useContributorsPageUsersQuery,
+  useContributorsVirtualInLibraryQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useUserContext } from '@/domain/community/user';
 import {
@@ -13,6 +14,7 @@ import {
   ContributorsPageUsersQueryVariables,
   OrganizationContributorFragment,
   OrganizationVerificationEnum,
+  Tagset,
   UserContributorFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
@@ -28,9 +30,31 @@ export interface PaginatedResult<T> {
   fetchMore: (itemsNumber?: number) => Promise<void>;
 }
 
+export type VirtualContributor = {
+  id: string;
+  profile: {
+    displayName: string;
+    url: string;
+    tagsets?: Tagset[];
+    location?: {
+      city?: string;
+      country?: string;
+    };
+    avatar?: {
+      uri: string;
+    } | null;
+  };
+};
+
+export interface VirtualContributors {
+  items: VirtualContributor[] | undefined;
+  loading: boolean;
+}
+
 export interface ContributorsSearchContainerEntities {
   users: PaginatedResult<UserContributorFragment> | undefined;
   organizations: PaginatedResult<OrganizationContributorFragment> | undefined;
+  virtualContributors: VirtualContributors | undefined;
 }
 
 export interface ContributorsSearchContainerActions {}
@@ -96,7 +120,7 @@ const ContributorsSearchContainer = ({
     fetchMore: usersQueryResult.fetchMore,
   };
 
-  const oragnizationsQueryResult = usePaginatedQuery<
+  const organizationsQueryResult = usePaginatedQuery<
     ContributorsPageOrganizationsQuery,
     ContributorsPageOrganizationsQueryVariables
   >({
@@ -120,18 +144,25 @@ const ContributorsSearchContainer = ({
   });
 
   const organizations: PaginatedResult<OrganizationContributorFragment> = {
-    items: oragnizationsQueryResult.data?.organizationsPaginated.organization,
-    loading: oragnizationsQueryResult.loading,
-    hasMore: oragnizationsQueryResult.hasMore,
-    pageSize: oragnizationsQueryResult.pageSize,
-    firstPageSize: oragnizationsQueryResult.firstPageSize,
-    error: oragnizationsQueryResult.error,
-    fetchMore: oragnizationsQueryResult.fetchMore,
+    items: organizationsQueryResult.data?.organizationsPaginated.organization,
+    loading: organizationsQueryResult.loading,
+    hasMore: organizationsQueryResult.hasMore,
+    pageSize: organizationsQueryResult.pageSize,
+    firstPageSize: organizationsQueryResult.firstPageSize,
+    error: organizationsQueryResult.error,
+    fetchMore: organizationsQueryResult.fetchMore,
   };
 
-  const loading = users.loading || organizations.loading;
+  const { data: vcData, loading: loadingVCs } = useContributorsVirtualInLibraryQuery();
+
+  const virtualContributors = {
+    items: vcData?.platform.library.virtualContributors ?? [],
+    loading: loadingVCs,
+  };
+
+  const loading = users.loading || organizations.loading || virtualContributors.loading;
   const error = users.error || organizations.error;
-  return <>{children({ users, organizations }, { loading, error }, {})}</>;
+  return <>{children({ users, organizations, virtualContributors }, { loading, error }, {})}</>;
 };
 
 export default ContributorsSearchContainer;

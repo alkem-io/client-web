@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import ContributeCard, { ContributeCardProps } from '@/core/ui/card/ContributeCard';
@@ -11,12 +10,11 @@ import CardFooterBadge from '@/core/ui/card/CardFooterBadge';
 import { Box } from '@mui/material';
 import { WhiteboardIcon } from '@/domain/collaboration/whiteboard/icon/WhiteboardIcon';
 import { PostIcon } from '@/domain/collaboration/post/icon/PostIcon';
-import { InnovationFlowIcon } from '@/domain/collaboration/InnovationFlow/InnovationFlowIcon/InnovationFlowIcon';
 import CardFooterCountWithBadge from '@/core/ui/card/CardFooterCountWithBadge';
 import { gutters } from '@/core/ui/grid/utils';
 import { CommunityGuidelinesIcon } from '@/domain/community/communityGuidelines/icon/CommunityGuidelinesIcon';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
-import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
+import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
 
 export interface InnovationPackCardProps extends ContributeCardProps {
   displayName: string;
@@ -25,12 +23,11 @@ export interface InnovationPackCardProps extends ContributeCardProps {
   providerAvatarUri: string | undefined;
   providerDisplayName: string | undefined;
   onClick?: () => void;
-  whiteboardTemplatesCount?: ReactNode;
-  postTemplatesCount: ReactNode;
-  innovationFlowTemplatesCount: ReactNode;
-  collaborationTemplatesCount: ReactNode;
-  calloutTemplatesCount?: ReactNode;
-  communityGuidelinesTemplatesCount?: ReactNode;
+  whiteboardTemplatesCount?: number;
+  postTemplatesCount?: number;
+  collaborationTemplatesCount?: number;
+  calloutTemplatesCount?: number;
+  communityGuidelinesTemplatesCount?: number;
   innovationPackUri: string;
 }
 
@@ -42,7 +39,6 @@ const InnovationPackCard = ({
   providerAvatarUri,
   whiteboardTemplatesCount,
   postTemplatesCount,
-  innovationFlowTemplatesCount,
   collaborationTemplatesCount,
   calloutTemplatesCount,
   communityGuidelinesTemplatesCount,
@@ -62,60 +58,36 @@ const InnovationPackCard = ({
             <CardFooterCountWithBadge
               iconComponent={DesignServicesIcon}
               tooltip={t(`common.enums.templateType.${TemplateType.Callout}_plural`)}
-            >
-              {calloutTemplatesCount}
-            </CardFooterCountWithBadge>
+              count={calloutTemplatesCount}
+            />
           )}
           {!!whiteboardTemplatesCount && (
             <CardFooterCountWithBadge
               iconComponent={WhiteboardIcon}
               tooltip={t(`common.enums.templateType.${TemplateType.Whiteboard}_plural`)}
-            >
-              {whiteboardTemplatesCount}
-            </CardFooterCountWithBadge>
+              count={whiteboardTemplatesCount}
+            />
           )}
           {!!communityGuidelinesTemplatesCount && (
             <CardFooterCountWithBadge
               iconComponent={CommunityGuidelinesIcon}
               tooltip={t(`common.enums.templateType.${TemplateType.CommunityGuidelines}_plural`)}
-            >
-              {communityGuidelinesTemplatesCount}
-            </CardFooterCountWithBadge>
+              count={communityGuidelinesTemplatesCount}
+            />
           )}
           {!!postTemplatesCount && (
             <CardFooterCountWithBadge
               iconComponent={PostIcon}
               tooltip={t(`common.enums.templateType.${TemplateType.Post}_plural`)}
-            >
-              {postTemplatesCount}
-            </CardFooterCountWithBadge>
-          )}
-          {!!innovationFlowTemplatesCount && (
-            <CardFooterCountWithBadge
-              tooltip={t(`common.enums.templateType.${TemplateType.InnovationFlow}_plural`)}
-              icon={
-                // TODO Try to redraw InnovationFlowIcon in the same way as MUI icons are done
-                <Box
-                  width={theme => theme.spacing(1.5)}
-                  sx={{ svg: { width: '100%' } }}
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <InnovationFlowIcon />
-                </Box>
-              }
-            >
-              {innovationFlowTemplatesCount}
-            </CardFooterCountWithBadge>
+              count={postTemplatesCount}
+            />
           )}
           {!!collaborationTemplatesCount && (
             <CardFooterCountWithBadge
               tooltip={t(`common.enums.templateType.${TemplateType.Collaboration}_plural`)}
-              iconComponent={SpaceIcon}
-            >
-              {collaborationTemplatesCount}
-            </CardFooterCountWithBadge>
+              iconComponent={SubspaceIcon2}
+              count={collaborationTemplatesCount}
+            />
           )}
         </Box>
         <CardFooterBadge avatarUri={providerAvatarUri} avatarDisplayName={providerDisplayName}>

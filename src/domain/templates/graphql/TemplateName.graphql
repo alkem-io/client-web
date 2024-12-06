@@ -1,0 +1,11 @@
+query TemplateName($templateId: UUID!) {
+  lookup {
+    template(ID: $templateId) {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+}

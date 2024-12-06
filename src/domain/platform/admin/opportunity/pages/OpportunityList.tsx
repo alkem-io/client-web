@@ -9,15 +9,12 @@ import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
-import { useUrlParams } from '@/core/routing/useUrlParams';
-import { JourneyCreationDialog } from '@/domain/shared/components/JorneyCreationDialog';
-import { CreateOpportunityForm } from '@/domain/journey/opportunity/forms/CreateOpportunityForm';
+import { JourneyCreationDialog } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationDialog';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { JourneyFormValues } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationForm';
+import { JourneyFormValues } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationForm';
 import { OpportunityIcon } from '@/domain/journey/opportunity/icon/OpportunityIcon';
 import {
   refetchSubspacesInSpaceQuery,
-  useCreateSubspaceMutation,
   useDeleteSpaceMutation,
   useSpaceCollaborationIdLazyQuery,
   useSpaceTemplatesSetIdQuery,
@@ -31,13 +28,14 @@ import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCrea
 import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
 import { AuthorizationPrivilege, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
+import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
 
 export const OpportunityList: FC = () => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { spaceNameId } = useSpace();
   const { subspaceId } = useSubSpace();
-  const { challengeNameId = '' } = useUrlParams();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [saveAsTemplateDialogSelectedItem, setSaveAsTemplateDialogSelectedItem] = useState<SearchableListItem>();
@@ -82,44 +80,35 @@ export const OpportunityList: FC = () => {
     });
   };
 
-  const [createSubspace] = useCreateSubspaceMutation({
-    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: subspaceId })],
-    awaitRefetchQueries: true,
+  const { createSubspace } = useSubspaceCreation({
     onCompleted: () => {
       notify(t('pages.admin.subsubspace.notifications.subsubspace-created'), 'success');
     },
+    refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId: subspaceId })],
+    awaitRefetchQueries: true,
   });
 
   const handleCreate = useCallback(
     async (value: JourneyFormValues) => {
-      const { data } = await createSubspace({
-        variables: {
-          input: {
-            spaceID: subspaceId,
-            context: {
-              vision: value.vision,
-            },
-            profileData: {
-              displayName: value.displayName,
-              tagline: value.tagline,
-            },
-            tags: value.tags,
-            collaborationData: {
-              addTutorialCallouts: value.addTutorialCallouts,
-              addCallouts: value.addCallouts,
-            },
-          },
-        },
+      const result = await createSubspace({
+        spaceID: subspaceId,
+        displayName: value.displayName,
+        tagline: value.tagline,
+        background: value.background ?? '',
+        vision: value.vision,
+        tags: value.tags,
+        addTutorialCallouts: value.addTutorialCallouts,
+        collaborationTemplateId: value.collaborationTemplateId,
+        visuals: value.visuals,
       });
 
-      if (!data?.createSubspace) {
+      if (!result?.profile.url) {
+        notify(t('pages.admin.subsubspace.notifications.error-creating-subsubspace'), 'error');
         return;
       }
-      if (data?.createSubspace.profile.url) {
-        navigate(buildSettingsUrl(data?.createSubspace.profile.url));
-      }
+      navigate(buildSettingsUrl(result.profile.url));
     },
-    [navigate, createSubspace, spaceNameId, subspaceId, challengeNameId]
+    [navigate, createSubspace, subspaceId]
   );
 
   // check for TemplateCreation privileges
@@ -210,7 +199,7 @@ export const OpportunityList: FC = () => {
         journeyName={t('common.subspace')}
         onClose={() => setOpen(false)}
         onCreate={handleCreate}
-        formComponent={CreateOpportunityForm}
+        formComponent={CreateSubspaceForm}
       />
       <EntityConfirmDeleteDialog
         entity={t('common.subsubspace')}

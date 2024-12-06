@@ -99,7 +99,9 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
   }
 
   const [fetchSpaceTemplatesSetId] = useSpaceTemplatesSetIdLazyQuery();
+
   const [createTemplate] = useCreateTemplateMutation();
+
   const handleSaveAsTemplate = async (values: CommunityGuidelinesTemplateFormSubmittedValues) => {
     const { data: templatesSetData } = await fetchSpaceTemplatesSetId({ variables: { spaceNameId: spaceId } });
     const templatesSetId = templatesSetData?.space.templatesManager?.templatesSet?.id;
@@ -150,6 +152,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
           </Text>
           <CommunityApplicationForm roleSetId={roleSetId} />
         </PageContentBlockCollapsible>
+
         <CommunityGuidelinesContainer communityId={communityId}>
           {({
             communityGuidelines,
@@ -157,56 +160,63 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
             loading,
             onSelectCommunityGuidelinesTemplate,
             onUpdateCommunityGuidelines,
-          }) => (
-            <>
-              <PageContentBlockCollapsible
-                header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
-                primaryAction={
-                  <>
-                    <Button
-                      variant="outlined"
-                      onClick={() => setCommunityGuidelinesTemplatesDialogOpen(true)}
-                      startIcon={<InnovationLibraryIcon />}
-                    >
-                      {t('common.library')}
-                    </Button>
-                    <Tooltip title={<Caption>{t('buttons.saveAsTemplate')}</Caption>}>
-                      <IconButton
-                        aria-label={t('buttons.saveAsTemplate')}
-                        onClick={() => {
-                          currentCommunityGuidelines.current = communityGuidelines;
-                          setSaveAsTemplateDialogOpen(true);
-                        }}
-                        sx={{ marginLeft: gutters(0.5) }}
+            onDeleteCommunityGuidelinesContent: onDeleteCommunityGuidelines,
+          }) => {
+            return (
+              <>
+                <PageContentBlockCollapsible
+                  header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
+                  primaryAction={
+                    <>
+                      <Button
+                        variant="outlined"
+                        onClick={() => setCommunityGuidelinesTemplatesDialogOpen(true)}
+                        startIcon={<InnovationLibraryIcon />}
                       >
-                        <Icon component={DownloadForOfflineOutlinedIcon} color="primary" />
-                      </IconButton>
-                    </Tooltip>
-                  </>
-                }
-              >
-                <CommunityGuidelinesForm
-                  data={communityGuidelines}
-                  loading={loading}
-                  onSubmit={onUpdateCommunityGuidelines}
-                  profileId={profileId}
+                        {t('common.library')}
+                      </Button>
+
+                      <Tooltip title={<Caption>{t('buttons.saveAsTemplate')}</Caption>}>
+                        <IconButton
+                          aria-label={t('buttons.saveAsTemplate')}
+                          onClick={() => {
+                            currentCommunityGuidelines.current = communityGuidelines;
+                            setSaveAsTemplateDialogOpen(true);
+                          }}
+                          sx={{ marginLeft: gutters(0.5) }}
+                        >
+                          <Icon component={DownloadForOfflineOutlinedIcon} color="primary" />
+                        </IconButton>
+                      </Tooltip>
+                    </>
+                  }
+                >
+                  <CommunityGuidelinesForm
+                    data={communityGuidelines}
+                    loading={loading}
+                    profileId={profileId}
+                    onSubmit={onUpdateCommunityGuidelines}
+                    onDeleteCommunityGuidelines={onDeleteCommunityGuidelines}
+                  />
+                </PageContentBlockCollapsible>
+
+                <ImportTemplatesDialog
+                  open={communityGuidelinesTemplatesDialogOpen}
+                  templateType={TemplateType.CommunityGuidelines}
+                  onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
+                  onSelectTemplate={onSelectCommunityGuidelinesTemplate}
+                  enablePlatformTemplates
+                  actionButton={
+                    <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+                      {t('buttons.use')}
+                    </LoadingButton>
+                  }
                 />
-              </PageContentBlockCollapsible>
-              <ImportTemplatesDialog
-                open={communityGuidelinesTemplatesDialogOpen}
-                templateType={TemplateType.CommunityGuidelines}
-                onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
-                onSelectTemplate={onSelectCommunityGuidelinesTemplate}
-                enablePlatformTemplates
-                actionButton={
-                  <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
-                    {t('buttons.use')}
-                  </LoadingButton>
-                }
-              />
-            </>
-          )}
+              </>
+            );
+          }}
         </CommunityGuidelinesContainer>
+
         <CreateTemplateDialog
           open={saveAsTemplateDialogOpen}
           onClose={() => setSaveAsTemplateDialogOpen(false)}

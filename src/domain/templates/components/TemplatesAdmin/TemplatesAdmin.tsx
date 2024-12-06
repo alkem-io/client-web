@@ -8,6 +8,7 @@ import {
   useTemplateContentLazyQuery,
   useUpdateCalloutTemplateMutation,
   useUpdateCommunityGuidelinesMutation,
+  useUpdateTemplateFromCollaborationMutation,
   useUpdateTemplateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
@@ -86,14 +87,14 @@ const TemplatesAdmin = ({
 
   // Visuals management (for whiteboards)
   const { uploadVisuals } = useUploadWhiteboardVisuals();
-  const handlePreviewTemplates = (
+  const handlePreviewTemplates = async (
     values: AnyTemplateFormSubmittedValues,
     mutationResult?: { cardVisual?: { id: string }; previewVisual?: { id: string } }
   ) => {
     const whiteboardTemplate = values as WhiteboardTemplateFormSubmittedValues;
     const previewImages = whiteboardTemplate.whiteboardPreviewImages;
     if (mutationResult && previewImages) {
-      uploadVisuals(previewImages, {
+      await uploadVisuals(previewImages, {
         cardVisualId: mutationResult.cardVisual?.id,
         previewVisualId: mutationResult.previewVisual?.id,
       });
@@ -106,21 +107,14 @@ const TemplatesAdmin = ({
     skip: !templatesSetId,
   });
 
-  const {
-    calloutTemplates,
-    collaborationTemplates,
-    communityGuidelinesTemplates,
-    innovationFlowTemplates,
-    postTemplates,
-    whiteboardTemplates,
-  } = data?.lookup.templatesSet ?? {};
+  const { calloutTemplates, collaborationTemplates, communityGuidelinesTemplates, postTemplates, whiteboardTemplates } =
+    data?.lookup.templatesSet ?? {};
 
   const selectedTemplate = useMemo<AnyTemplate | undefined>(() => {
     if (!templateId) return undefined;
     return [
       ...(postTemplates ?? []),
       ...(whiteboardTemplates ?? []),
-      ...(innovationFlowTemplates ?? []),
       ...(communityGuidelinesTemplates ?? []),
       ...(calloutTemplates ?? []),
       ...(collaborationTemplates ?? []),
@@ -129,18 +123,23 @@ const TemplatesAdmin = ({
 
   // Update Template
   const [editTemplateMode, setEditTemplateMode] = useState(alwaysEditTemplate);
-  const [updateTemplate] = useUpdateTemplateMutation({
-    refetchQueries: ['AllTemplatesInTemplatesSet', 'TemplateContent'],
-  });
-  const [updateCallout] = useUpdateCalloutTemplateMutation();
-  const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation();
+
+  const refetchQueries = ['AllTemplatesInTemplatesSet', 'TemplateContent'];
+  const [updateTemplate] = useUpdateTemplateMutation({ refetchQueries });
+  const [updateCallout] = useUpdateCalloutTemplateMutation({ refetchQueries });
+  const [updateCommunityGuidelines] = useUpdateCommunityGuidelinesMutation({ refetchQueries });
+  const [updateTemplateFromCollaboration] = useUpdateTemplateFromCollaborationMutation({ refetchQueries });
 
   const handleTemplateUpdate = async (values: AnyTemplateFormSubmittedValues) => {
     if (!selectedTemplate) {
       return;
     }
-    const { updateTemplateVariables, updateCalloutVariables, updateCommunityGuidelinesVariables } =
-      toUpdateTemplateMutationVariables(templateId!, selectedTemplate, values);
+    const {
+      updateTemplateVariables,
+      updateCalloutVariables,
+      updateCommunityGuidelinesVariables,
+      updateCollaborationTemplateVariables,
+    } = toUpdateTemplateMutationVariables(templateId!, selectedTemplate, values);
 
     const result = await updateTemplate({
       variables: updateTemplateVariables,
@@ -155,10 +154,15 @@ const TemplatesAdmin = ({
         variables: updateCommunityGuidelinesVariables,
       });
     }
+    if (updateCollaborationTemplateVariables) {
+      await updateTemplateFromCollaboration({
+        variables: updateCollaborationTemplateVariables,
+      });
+    }
 
     if (updateTemplateVariables.includeProfileVisuals) {
       // Handle the visual in a special way with the preview images
-      handlePreviewTemplates(values, result.data?.updateTemplate.profile);
+      await handlePreviewTemplates(values, result.data?.updateTemplate.profile);
     }
     if (!alwaysEditTemplate) {
       setEditTemplateMode(false);
@@ -236,7 +240,6 @@ const TemplatesAdmin = ({
         templateId: id,
         includeCallout: templateType === TemplateType.Callout,
         includeCommunityGuidelines: templateType === TemplateType.CommunityGuidelines,
-        includeInnovationFlow: templateType === TemplateType.InnovationFlow,
         includeCollaboration: false, // templateType === TemplateType.Collaboration,
         includePost: templateType === TemplateType.Post,
         includeWhiteboard: templateType === TemplateType.Whiteboard,
@@ -280,9 +283,7 @@ const TemplatesAdmin = ({
         {canImportTemplates(templateType) ? (
           <ImportTemplateButton onClick={() => setImportTemplateType(templateType)} />
         ) : null}
-        {canCreateTemplates(templateType) &&
-        /* TODO: InnovationFlow templates are going to be removed in the near future, so disallow creation for this type */
-        templateType !== TemplateType.InnovationFlow ? (
+        {canCreateTemplates(templateType) ? (
           <CreateTemplateButton onClick={() => setCreatingTemplateType(templateType)} />
         ) : null}
       </>
@@ -343,18 +344,6 @@ const TemplatesAdmin = ({
       <PageContentBlockSeamless disablePadding>
         <TemplatesGallery
           headerText={t('common.entitiesWithCount', {
-            entityType: t(`common.enums.templateType.${TemplateType.InnovationFlow}_plural`),
-            count: innovationFlowTemplates?.length ?? 0,
-          })}
-          actions={<GalleryActions templateType={TemplateType.InnovationFlow} />}
-          templates={innovationFlowTemplates}
-          loading={loading}
-          buildTemplateLink={buildTemplateLink}
-        />
-      </PageContentBlockSeamless>
-      <PageContentBlockSeamless disablePadding>
-        <TemplatesGallery
-          headerText={t('common.entitiesWithCount', {
             entityType: t(`common.enums.templateType.${TemplateType.Post}_plural`),
             count: postTemplates?.length ?? 0,
           })}
@@ -389,6 +378,7 @@ const TemplatesAdmin = ({
         <EditTemplateDialog
           open
           onClose={() => backToTemplates(baseUrl)}
+          onCancel={alwaysEditTemplate ? undefined : () => setEditTemplateMode(false)}
           template={selectedTemplate}
           templateType={selectedTemplate.type}
           onSubmit={handleTemplateUpdate}

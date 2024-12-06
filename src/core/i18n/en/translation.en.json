@@ -122,6 +122,7 @@
     "submit": "Submit",
     "remove": "Remove",
     "cancel": "Cancel",
+    "upload": "Upload",
     "explore-and-connect": "Explore and connect",
     "send-message": "Send message",
     "edit-members": "Edit members",
@@ -349,10 +350,10 @@
     "loading": "Loading...",
     "innovation-flow": "Innovation flow",
     "innovation-flows": "Innovation Flows",
-    "innovation-packs": "Innovation Packs",
+    "innovation-packs": "Template Packs",
     "innovation-hub": "Innovation Hub",
     "innovation-hubs": "Innovation Hubs",
-    "innovationPack": "Innovation Pack",
+    "innovationPack": "Template Pack",
     "more": "More",
     "url": "URL",
     "sources": "Sources",
@@ -498,7 +499,7 @@
           "hidden": true
         },
         "INNOVATION_PACK_PROVIDER": {
-          "name": "Innovation Pack Provider",
+          "name": "Template Pack Provider",
           "order": 17,
           "hidden": true
         }
@@ -622,13 +623,15 @@
     },
     "communityGuidelines": {
       "title": "Community Guidelines",
+      "saveAndDeleteContentSuccessMessage": "Community guidelines content removed and saved successfully.",
       "updatedSuccessfully": "Community guidelines updated successfully.",
       "adminsOnly": "Since there are no Community Guidelines specified, this block is only visible for admins and leads.",
       "communityGuidelinesRedirect": "Click here to update the Community Guidelines in the Space settings.",
       "confirmationDialog": {
         "title": "Updating Community Guidelines",
         "description": "Are you sure you want to replace your existing Community Guidelines? This action cannot be undone."
-      }
+      },
+      "deleteCommunityGuidelines": "Delete Community Guidelines"
     },
     "applicationsHelp": "Here you can find everyone that applied to become a member of this Space. By clicking on them you can review their application and accept or reject them.",
     "applicationStatus": {
@@ -690,6 +693,10 @@
         "dialogTitle": "Are you sure you want to remove this member?",
         "dialogContent": "By clicking CONFIRM, {{member}} will be removed from this Community and all the underlying Subspaces {{memberFirstName}} may be member of. {{memberFirstName}}’s contributions will remain in place."
       }
+    },
+    "removeGuidelinesConfirmationDialog": {
+      "title": "Remove Community Guidelines Content",
+      "content": "Are you sure you want to remove the Community Guidelines? This action cannot be undone."
     }
   },
   "callout": {
@@ -823,18 +830,18 @@
     },
     "subspace": {
       "displayName": {
-        "title": "Title",
-        "description": "Try to keep it short, descriptive and engaging",
+        "title": "Title *",
+        "description": "",
         "placeholder": ""
       },
       "tagline": {
-        "title": "Subspace Statement",
-        "description": "Explain in one sentence what this Subspace is about. It is also possible to frame it as a question, starting with 'How might we...'",
+        "title": "Tagline",
+        "description": "",
         "placeholder": ""
       },
       "background": {
-        "title": "Current Reality",
-        "description": "Give a brief impression of the current state of the Subspace. Think of the 'What, where, when and who'.",
+        "title": "A description of the subspace that is visible on the subspace dashboard",
+        "description": "",
         "placeholder": ""
       },
       "impact": {
@@ -854,17 +861,16 @@
       },
       "tags": {
         "title": "Tags",
-        "description": "Enter words that are key to the Subspace to make it stand out and easier to find.",
-        "placeholder": ""
-      },
-      "addCallouts": {
-        "title": "Add default template's collaboration tools"
+        "description": "",
+        "placeholder": "",
+        "tooltip": "Tags"
       },
       "addTutorialCallouts": {
         "title": "Add tutorials collaboration tools"
       },
-      "innovationFlow": {
-        "title": "Subspace Flow"
+      "template": {
+        "title": "Template:",
+        "defaultTemplate": "Default Alkemio template for subspaces"
       }
     },
     "subsubspace": {
@@ -956,10 +962,6 @@
       "editDialogTitle": "Edit Whiteboard Template",
       "errorImporting": "Error importing Whiteboard Template"
     },
-    "innovationFlowTemplates": {
-      "name": "$t(common.enums.templateType.INNOVATION_FLOW)",
-      "title": "$t(common.templateLibrary): $t(common.enums.templateType.INNOVATION_FLOW_plural)"
-    },
     "collaborationTemplates": {
       "name": "$t(common.enums.templateType.COLLABORATION)",
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
@@ -968,7 +970,8 @@
         "description": "Enter the URL of the Subspace you want to copy as a template.",
         "use": "Use this space",
         "spaceNotFoundError": "Space not found",
-        "collaborationNotFoundError": "Collaboration not found"
+        "collaborationNotFoundError": "Collaboration not found",
+        "selectAnother": "Update Collaboration from another Space"
       }
     },
     "communityGuidelinesTemplates": {
@@ -1725,10 +1728,6 @@
         "no-data-join": "No discussions. Please join the community to create a discussion",
         "explore": "Explore discussions"
       }
-    },
-    "innovationFlowTemplateSelect": {
-      "select": "Select different Flow",
-      "required": "Please select an Innovation Flow"
     }
   },
   "navigation": {
@@ -1820,9 +1819,9 @@
     },
     "innovationLibrary": {
       "shortName": "$t(common.library)",
-      "fullName": "Best practices",
-      "title": "Innovation Library on Alkemio is here to guide your way to impact",
-      "subtitle": "Open the innovation packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
+      "fullName": "Template Library",
+      "title": "Template Library on Alkemio is here to guide your way to impact",
+      "subtitle": "Open the template packs below to explore all the Whiteboard templates, post templates and innovation flows you can use. If you want to know more <click>click here</click>.",
       "useTemplateButton": "Access this template from your Space to use it.",
       "innovationPacks": {
         "headerTitle": "$t(common.innovation-packs)",
@@ -1909,7 +1908,7 @@
             "hostedSpaces": "Hosted Spaces",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
-            "noTemplates": "This Innovation Pack doesn't have any template yet",
+            "noTemplates": "This Template Pack doesn't have any template yet",
             "customHomepages": "Custom Homepages",
             "hostTitle": "Host",
             "contactsLink": "If you want to change any of these settings, please contact the Alkemio team here.",
@@ -1927,7 +1926,8 @@
             "deleteSpace_disallowed": "The Space can only be deleted by the host of this Space.",
             "moreInfo": "More about Alkemio licenses can be found <moreinfo>here</moreinfo>.",
             "moreInfoUrl": "$t(plansTable.seeMoreUrl)",
-            "licenseUpdated": "License updated successfully"
+            "licenseUpdated": "License updated successfully",
+            "deletedSuccessfully": "{{entity}} deleted successfully"
           },
           "settings": {
             "description": "Here you can edit the visibility settings of your {{entity}}."
@@ -1976,7 +1976,8 @@
         "notifications": {
           "subsubspace-created": "Subspace created successfully.",
           "subsubspace-removed": "Subspace removed successfully.",
-          "subsubspace-updated": "Subspace updated successfully."
+          "subsubspace-updated": "Subspace updated successfully.",
+          "error-creating-subsubspace": "An error ocurred while creating the Subspace."
         }
       },
       "subspace": {
@@ -2080,14 +2081,14 @@
         }
       },
       "innovation-packs": {
-        "create": "Create Innovation Pack",
+        "create": "Create Template Pack",
         "fields": {
           "provider": "Provider organization",
           "listedInStore": "Listed in Store",
           "searchVisibility": "Search Visibility"
         },
         "back-button": "All $t(common.innovation-packs)",
-        "save-new-for-details": "Save the new Innovation Pack to edit the rest of the details",
+        "save-new-for-details": "Save the new Template Pack to edit the rest of the details",
         "saved-successfully": "Saved Successfully"
       },
       "innovationHubs": {
@@ -2131,23 +2132,27 @@
       }
     },
     "visualEdit": {
-      "avatar": {
+      "AVATAR": {
         "title": "Avatar",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
         "description2": "Usage: Journey card on page banner",
         "description": "Description: {{alternativeText}}"
       },
-      "banner": {
+      "BANNER": {
         "title": "Page banner",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
         "description2": "Usage: Banner on dashboard tab",
         "description": "Description: {{alternativeText}}"
       },
-      "cardBanner": {
+      "CARD": {
         "title": "Card banner",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
         "description2": "Usage: Banner on cards",
         "description": "Description: {{alternativeText}}"
+      },
+      "BANNER_WIDE": {
+        "title": "Wide Banner",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
       },
       "form": {
         "altText": {
@@ -2170,6 +2175,9 @@
       },
       "users": {
         "title": "Users"
+      },
+      "virtualContributors": {
+        "title": "Virtual Contributors"
       }
     },
     "search": {
@@ -2322,18 +2330,13 @@
           },
           "new-to-alkemio": {
             "header": "New to Alkemio?",
-            "subheader": "Easy for you to engage in effective and meaningful ways. Find solutions to Subspaces.",
+            "subheader": "Easy for you to engage in effective and meaningful ways. Find Subspaces to contribute.",
             "more-info": "Contact us!",
             "more-info-url": "https://alkemio.foundation/feedback/"
           }
         },
         "exploreOtherSubspaces": {
           "header": "Explore the other Spaces!"
-        },
-        "innovationLibraryBlock": {
-          "title": "Innovation library: Have you seen this one yet...?",
-          "description": "In the Library you can find Innovation Packs composed for you by various organisations. Each Innovation pack can hold a variety of Whiteboard templates, Post templates, and Innovation flows.",
-          "seeMore": "Explore more Innovation Packs"
         },
         "space": {
           "header": "Explore the Subspace Spaces!",
@@ -2755,13 +2758,15 @@
     },
     "help-dialog": {
       "title": "Looking for help?",
-      "text": "We want to help you successfully use the Alkemio platform, and to do so we want to make the process of using it and interacting easier. This is how you can have an impact on the topics you care about.<br /><br />Click on the icons below to find answers to your questions, contact the Alkemio team for support or just get started!",
+      "text": "We're here to help you make the most of the Alkemio platform and create an impact on the topics you care about. Click below to find answers, contact our team, or get started!",
       "icons": {
-        "help-center-faq": "Help Center & FAQ",
-        "community-support-forum": "Contact us!",
-        "new-user": "New user? Start here!"
+        "exploreDocumentation": "Explore Documentation",
+        "contactTheTeam": "Contact the Team",
+        "joinTheWelcomeSpace": "Join the Welcome Space"
       },
-      "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!"
+      "tips-and-tricks": "Looking for tips & tricks? Find them in the blog posts here!",
+      "versionNumber": "Version Number: <b>v{{version}}</b>",
+      "serverVersionNumber": "Server Version Number: <b>v{{version}}</b>"
     },
     "forum": {
       "title": "Welcome to the Alkemio Forum",
@@ -2795,7 +2800,8 @@
       "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
       "verification-flow-continue": "Continue",
-      "login-flow-account-exists": "You're trying to sign in with a LinkedIn/Microsoft account, but the associated email address was already used before. Please sign in with this e-mail address and password or try to reset the password. If that doesn't work, please send an email to support@alkem.io."
+      "login-flow-account-exists": "You're trying to sign in with a LinkedIn/Microsoft account, but the associated email address was already used before. Please sign in with this e-mail address and password or try to reset the password. If that doesn't work, please send an email to support@alkem.io.",
+      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above."
     },
     "fields": {
       "ID": "ID",
