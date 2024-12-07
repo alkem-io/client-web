@@ -1,8 +1,7 @@
 import { User } from '@/core/apollo/generated/graphql-schema';
-import AlkemioAvatar from '@/core/ui/image/AlkemioAvatar';
+import { AlkemioAvatar } from '@/core/ui/image/AlkemioAvatar';
 import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
 import { UserAvatarsProvider } from '@/domain/community/user/containers/UserAvatarsProvider/UserAvatarsProvider';
-import UserPopUp from '@/domain/community/user/userPopUp/UserPopUp';
 import { Button } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -26,12 +25,7 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
             <>
               <GroupMembersDetailsAvatarContainer title={''}>
                 {avatars.map((u, i) => (
-                  <AlkemioAvatar
-                    key={i}
-                    src={u.profile.visual?.uri}
-                    name={u.profile.displayName}
-                    renderPopup={({ open, onHide }) => open && <UserPopUp id={u.id} onHide={onHide} />}
-                  />
+                  <AlkemioAvatar key={i} src={u.profile.visual?.uri} name={u.profile.displayName} userId={u.id} />
                 ))}
               </GroupMembersDetailsAvatarContainer>
               <div style={{ flexBasis: '100%' }} />

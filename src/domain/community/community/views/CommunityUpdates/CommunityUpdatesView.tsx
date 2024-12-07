@@ -1,3 +1,18 @@
+import { Message } from '@/core/apollo/generated/graphql-schema';
+import SaveButton from '@/core/ui/actions/SaveButton';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { AlkemioAvatar } from '@/core/ui/image/AlkemioAvatar';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import hexToRGBA from '@/core/utils/hexToRGBA';
+import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import {
   Backdrop,
   Box,
@@ -16,10 +31,6 @@ import {
   Typography,
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import clsx from 'clsx';
 import { Form, Formik } from 'formik';
 import { keyBy } from 'lodash';
@@ -28,20 +39,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import AlkemioAvatar from '@/core/ui/image/AlkemioAvatar';
-import SaveButton from '@/core/ui/actions/SaveButton';
 import { FontDownloadIcon } from './icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from './icons/FontDownloadOffIcon';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { Message } from '@/core/apollo/generated/graphql-schema';
-import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
-import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import hexToRGBA from '@/core/utils/hexToRGBA';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import UserPopUp from '@/domain/community/user/userPopUp/UserPopUp';
 
 export interface CommunityUpdatesViewProps {
   entities: {
@@ -229,7 +228,7 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                         key={member.id}
                         src={member.avatarUrl}
                         name={member.displayName}
-                        renderPopup={({ open, onHide }) => open && <UserPopUp id={member.id} onHide={onHide} />}
+                        userId={member.id}
                       />
                     )
                   }
