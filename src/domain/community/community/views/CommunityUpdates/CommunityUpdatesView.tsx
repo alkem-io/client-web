@@ -7,7 +7,6 @@ import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { AlkemioAvatar } from '@/core/ui/image/AlkemioAvatar';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import hexToRGBA from '@/core/utils/hexToRGBA';
 import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -29,9 +28,8 @@ import {
   Skeleton,
   Tooltip,
   Typography,
+  alpha,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
-import clsx from 'clsx';
 import { Form, Formik } from 'formik';
 import { keyBy } from 'lodash';
 import orderBy from 'lodash/orderBy';
@@ -67,35 +65,15 @@ export interface CommunityUpdatesViewProps {
   };
 }
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    position: 'relative',
-  },
-  rootFade: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    height: '100%',
-    background: `linear-gradient(to top, ${hexToRGBA(theme.palette.background.paper, 1)} 20%,  ${hexToRGBA(
-      theme.palette.background.paper,
-      0
-    )} 80%)`,
-    pointerEvents: 'none',
-  },
-  expand: {
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)',
-  },
-}));
+const expandStyles = theme => ({
+  transform: 'rotate(0deg)',
+  marginLeft: 'auto',
+  transition: theme.transitions.create('transform', {
+    duration: theme.transitions.duration.shortest,
+  }),
+});
 
 export const CommunityUpdatesView = ({ entities, actions, state, options }: CommunityUpdatesViewProps) => {
-  const styles = useStyles();
   const notify = useNotification();
   const { t } = useTranslation();
   // entities
@@ -194,11 +172,11 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
           <Grid key={stubMessageId} item xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridProps['lg']}>
             <Card elevation={2}>
               <CardHeader title={<Skeleton />} subheader={<Skeleton />} />
-              <CardContent className={styles.root}>
+              <CardContent sx={{ position: 'relative' }}>
                 <Skeleton height={40} />
               </CardContent>
               <CardActions disableSpacing>
-                <IconButton disabled className={clsx(styles.expand)} size="large">
+                <IconButton disabled sx={theme => expandStyles(theme)} size="large">
                   <ExpandMoreIcon />
                 </IconButton>
               </CardActions>
@@ -253,7 +231,7 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                     )
                   }
                 />
-                <CardContent className={styles.root}>
+                <CardContent sx={{ position: 'relative' }}>
                   <Collapse in={expanded || disableCollapse} timeout="auto" collapsedSize={40}>
                     <Box>
                       {!reviewed && <WrapperMarkdown>{m.message}</WrapperMarkdown>}
@@ -263,7 +241,22 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                         </Typography>
                       )}
                     </Box>
-                    {!(expanded || disableCollapse) && <Box className={styles.rootFade} />}
+                    {!(expanded || disableCollapse) && (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          bottom: 0,
+                          width: '100%',
+                          height: '100%',
+                          background: theme =>
+                            `linear-gradient(to top, ${alpha(theme.palette.background.paper, 1)} 20%,  ${alpha(
+                              theme.palette.background.paper,
+                              0
+                            )} 80%)`,
+                          pointerEvents: 'none',
+                        }}
+                      />
+                    )}
                   </Collapse>
                 </CardContent>
                 {displayCardActions && (
@@ -294,8 +287,9 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                     {!disableCollapse && (
                       <Tooltip title={expanded ? 'View entire content' : 'Minimize'} placement="left">
                         <IconButton
-                          className={clsx(styles.expand, {
-                            [styles.expandOpen]: expanded,
+                          sx={theme => ({
+                            ...expandStyles(theme),
+                            ...(expanded ? { transform: 'rotate(180deg)' } : {}),
                           })}
                           onClick={() => setReviewedMessage(x => (x === m.id ? null : m.id))}
                           aria-expanded={expanded}
