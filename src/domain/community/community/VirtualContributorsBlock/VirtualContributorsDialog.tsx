@@ -51,7 +51,7 @@ const VirtualContributorsDialog = ({ open, onClose, virtualContributors }: Virtu
 
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={6}>
-      <DialogHeader onClose={onClose} title={t('pages.admin.virtualContributors.title')} icon={<VCIcon />} />
+      <DialogHeader onClose={onClose} title={t('pages.contributors.virtualContributors.title')} icon={<VCIcon />} />
       <SearchField
         value={filter}
         onChange={event => setFilter(event.target.value)}

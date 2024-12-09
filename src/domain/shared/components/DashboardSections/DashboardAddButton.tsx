@@ -5,17 +5,20 @@ import Avatar from '@/core/ui/avatar/Avatar';
 import { AddCircleOutlineOutlined } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { CaptionSmall } from '@/core/ui/typography';
-import { getIndentStyle } from './utils';
-import { ButtonBase } from '@mui/material';
+import { getIndentStyle } from '../../../journey/dashboardNavigation/utils';
+import { ButtonBase, SxProps, Theme } from '@mui/material';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
-interface DashboardNavigationAddSubspaceProps {
+interface DashboardAddButtonProps {
   url?: string;
   onClick?: MouseEventHandler;
   level?: number;
   compact?: boolean;
+  translationKey?: TranslationKey;
+  sx?: SxProps<Theme>;
 }
 
-const DashboardNavigationAddSubspace = ({ url, level = 0, onClick }: DashboardNavigationAddSubspaceProps) => {
+export const DashboardAddButton = ({ url, level = 0, onClick, translationKey, sx }: DashboardAddButtonProps) => {
   const { t } = useTranslation();
 
   return (
@@ -28,13 +31,14 @@ const DashboardNavigationAddSubspace = ({ url, level = 0, onClick }: DashboardNa
           <AddCircleOutlineOutlined />
         </Avatar>
       }
-      padding
       square
-      sx={getIndentStyle(level)}
+      sx={{ ...getIndentStyle(level), ...sx }}
     >
-      <CaptionSmall>{t('buttons.addSubject', { subject: t('common.subspace') })}</CaptionSmall>
+      <CaptionSmall>
+        {Boolean(translationKey)
+          ? t(translationKey as TranslationKey)
+          : t('buttons.addSubject', { subject: t('common.subspace') })}
+      </CaptionSmall>
     </BadgeCardView>
   );
 };
-
-export default DashboardNavigationAddSubspace;
