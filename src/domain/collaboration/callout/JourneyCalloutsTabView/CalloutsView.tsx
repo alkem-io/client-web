@@ -53,29 +53,30 @@ const CalloutsView = ({
 }: CalloutsViewProps) => {
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
-  const sortedCallouts = useMemo(() => callouts?.sort((a, b) => a.sortOrder - b.sortOrder), [callouts]);
+  // reversed sort order - highest to lowest (last created on top)
+  const sortedCallouts = useMemo(() => callouts?.sort((a, b) => b.sortOrder - a.sortOrder), [callouts]);
 
   const sortEvents: CalloutSortEvents | undefined = onSortOrderUpdate && {
     onMoveToTop: movedCalloutId => {
-      onSortOrderUpdate(movedCalloutId)(relatedCalloutIds => {
-        const next = without(relatedCalloutIds, movedCalloutId);
-        next.unshift(movedCalloutId);
-        return next;
-      });
-    },
-    onMoveToBottom: movedCalloutId => {
       onSortOrderUpdate(movedCalloutId)(relatedCalloutIds => {
         const next = without(relatedCalloutIds, movedCalloutId);
         next.push(movedCalloutId);
         return next;
       });
     },
+    onMoveToBottom: movedCalloutId => {
+      onSortOrderUpdate(movedCalloutId)(relatedCalloutIds => {
+        const next = without(relatedCalloutIds, movedCalloutId);
+        next.unshift(movedCalloutId);
+        return next;
+      });
+    },
     onMoveUp: movedCalloutId => {
       onSortOrderUpdate(movedCalloutId)(relatedCalloutIds => {
         const index = relatedCalloutIds.indexOf(movedCalloutId);
-        if (index > 0) {
+        if (index < relatedCalloutIds.length) {
           const next = without(relatedCalloutIds, movedCalloutId);
-          next.splice(index - 1, 0, movedCalloutId);
+          next.splice(index + 1, 0, movedCalloutId);
           return next;
         }
         return relatedCalloutIds;
@@ -84,9 +85,9 @@ const CalloutsView = ({
     onMoveDown: movedCalloutId => {
       onSortOrderUpdate(movedCalloutId)(relatedCalloutIds => {
         const index = relatedCalloutIds.indexOf(movedCalloutId);
-        if (index < relatedCalloutIds.length) {
+        if (index > 0) {
           const next = without(relatedCalloutIds, movedCalloutId);
-          next.splice(index + 1, 0, movedCalloutId);
+          next.splice(index - 1, 0, movedCalloutId);
           return next;
         }
         return relatedCalloutIds;

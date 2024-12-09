@@ -81,7 +81,7 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
           sortOrder: callout.sortOrder,
           flowState: mapFlowState(callout.framing.profile.flowState),
         }))
-        .sort((a, b) => a.sortOrder - b.sortOrder) ?? [],
+        .sort((a, b) => b.sortOrder - a.sortOrder) ?? [],
     [collaboration?.callouts]
   );
 
