@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { CaptionSmall } from '@/core/ui/typography';
 import { getIndentStyle } from '../../../journey/dashboardNavigation/utils';
 import { ButtonBase, SxProps, Theme } from '@mui/material';
+import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 interface DashboardAddButtonProps {
   url?: string;
