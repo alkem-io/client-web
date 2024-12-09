@@ -35,7 +35,7 @@ export const DashboardAddButton = ({ url, level = 0, onClick, translationKey, sx
       sx={{ ...getIndentStyle(level), ...sx }}
     >
       <CaptionSmall>
-        {Boolean(translationKey)
+        {translationKey
           ? t(translationKey as TranslationKey)
           : t('buttons.addSubject', { subject: t('common.subspace') })}
       </CaptionSmall>
