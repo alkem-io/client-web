@@ -4,5 +4,20 @@
     "source.fixAll.eslint": "explicit"
   },
   "files.eol": "\n",
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "cSpell.words": [
+    "alkemio",
+    "kratos",
+    "Ooops",
+    "Reimagining",
+    "signup",
+    "subentities",
+    "subsubspace",
+    "subsubspaces",
+    "tagset",
+    "tagsets",
+    "topbar",
+    "unverify",
+    "webp"
+  ]
 }
