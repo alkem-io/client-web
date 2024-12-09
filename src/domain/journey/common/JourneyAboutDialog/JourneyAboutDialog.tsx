@@ -59,6 +59,7 @@ export interface JourneyAboutDialogProps extends EntityDashboardLeads {
   shareUrl?: string;
   virtualContributors?: VirtualContributorProps[];
   hasReadPrivilege?: boolean;
+  hasInvitePrivilege?: boolean;
 }
 
 interface DialogHeaderItemProps extends BoxProps {
@@ -109,6 +110,7 @@ const JourneyAboutDialog = ({
   shareUrl,
   virtualContributors,
   hasReadPrivilege,
+  hasInvitePrivilege,
 }: JourneyAboutDialogProps) => {
   const { t } = useTranslation();
 
@@ -289,7 +291,11 @@ const JourneyAboutDialog = ({
             </PageContentBlockSeamless>
             {leftColumnChildrenBottom}
             {hasReadPrivilege && virtualContributors && virtualContributors?.length > 0 && (
-              <VirtualContributorsBlock virtualContributors={virtualContributors} loading={loading} />
+              <VirtualContributorsBlock
+                virtualContributors={virtualContributors}
+                loading={loading}
+                showInviteOption={hasInvitePrivilege}
+              />
             )}
           </PageContentColumn>
         </Gutters>
