@@ -1,4 +1,4 @@
-const env = (prod, dev) => (process.env.NODE_ENV  === 'production' ? prod : dev);
+const env = (prod, dev) => (process.env.NODE_ENV === 'production' ? prod : dev);
 
 module.exports = {
   root: true,
@@ -7,7 +7,7 @@ module.exports = {
     ecmaFeatures: {
       jsx: true,
     },
-    ecmaVersion: 2016,
+    ecmaVersion: '2022',
     sourceType: 'module',
     createDefaultProgram: true,
     project: './tsconfig.json',
@@ -38,8 +38,11 @@ module.exports = {
         ignoreRestSiblings: true,
       },
     ],
+    'react/prop-types': 'off',
+    '@typescript-eslint/ban-ts-comment': 'warn',
+    'react-hooks/rules-of-hooks': 'error',
     'import/prefer-default-export': 'off',
-    'react-hooks/exhaustive-deps': 'off',
+    'react-hooks/exhaustive-deps': 'warn',
     'react/jsx-pascal-case': 'error',
     'react/jsx-closing-bracket-location': 'error',
     'react/jsx-closing-tag-location': 'error',
