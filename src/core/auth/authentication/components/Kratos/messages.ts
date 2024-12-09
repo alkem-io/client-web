@@ -15,6 +15,7 @@ const messages: Record<string, string> = {
   '4060005': 'recovery-flow-expired',
   '1070009': 'verification-flow-continue',
   '4000007': 'login-flow-account-exists',
+  '4000006': 'invalid-credentials',
 };
 
 export const useKratosT = () => {

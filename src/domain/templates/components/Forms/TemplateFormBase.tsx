@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { displayNameValidator } from '@/core/ui/forms/validator';
-import { Formik, FormikProps } from 'formik';
+import { Formik, FormikHelpers, FormikProps } from 'formik';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { TagsetField } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import VisualUpload from '@/core/ui/upload/VisualUpload/VisualUpload';
@@ -54,7 +54,7 @@ interface TemplateFormBaseProps<T extends TemplateFormProfileSubmittedValues> {
   templateType: TemplateType;
   template?: AnyTemplate;
   initialValues: T;
-  onSubmit: (values: T) => void;
+  onSubmit: (values: T, formikHelpers: FormikHelpers<T>) => void;
   actions: ReactNode | ((formState: FormikProps<T>) => ReactNode);
   children?: ReactNode | ((formState: FormikProps<T>) => ReactNode);
   validator?: yup.ObjectSchemaDefinition<{}>;

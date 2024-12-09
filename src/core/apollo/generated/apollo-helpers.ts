@@ -556,7 +556,6 @@ export type AiPersonaServiceFieldPolicy = {
 export type AiServerKeySpecifier = (
   | 'aiPersonaService'
   | 'aiPersonaServices'
-  | 'askAiPersonaServiceQuestion'
   | 'authorization'
   | 'createdDate'
   | 'defaultAiPersonaService'
@@ -567,7 +566,6 @@ export type AiServerKeySpecifier = (
 export type AiServerFieldPolicy = {
   aiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
   aiPersonaServices?: FieldPolicy<any> | FieldReadFunction<any>;
-  askAiPersonaServiceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   defaultAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2014,22 +2012,17 @@ export type MessageFieldPolicy = {
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageAnswerQuestionKeySpecifier = (
-  | 'answer'
+  | 'error'
   | 'id'
   | 'question'
-  | 'sources'
+  | 'success'
   | MessageAnswerQuestionKeySpecifier
 )[];
 export type MessageAnswerQuestionFieldPolicy = {
-  answer?: FieldPolicy<any> | FieldReadFunction<any>;
+  error?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   question?: FieldPolicy<any> | FieldReadFunction<any>;
-  sources?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type MessageAnswerToQuestionSourceKeySpecifier = ('title' | 'uri' | MessageAnswerToQuestionSourceKeySpecifier)[];
-export type MessageAnswerToQuestionSourceFieldPolicy = {
-  title?: FieldPolicy<any> | FieldReadFunction<any>;
-  uri?: FieldPolicy<any> | FieldReadFunction<any>;
+  success?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MetadataKeySpecifier = ('services' | MetadataKeySpecifier)[];
 export type MetadataFieldPolicy = {
@@ -2053,6 +2046,7 @@ export type MutationKeySpecifier = (
   | 'aiServerPersonaServiceIngest'
   | 'aiServerUpdateAiPersonaService'
   | 'applyForEntryRoleOnRoleSet'
+  | 'askChatGuidanceQuestion'
   | 'assignLicensePlanToAccount'
   | 'assignLicensePlanToSpace'
   | 'assignOrganizationRoleToUser'
@@ -2076,6 +2070,7 @@ export type MutationKeySpecifier = (
   | 'createActor'
   | 'createActorGroup'
   | 'createCalloutOnCollaboration'
+  | 'createChatGuidanceRoom'
   | 'createContributionOnCallout'
   | 'createDiscussion'
   | 'createEventOnCalendar'
@@ -2192,6 +2187,7 @@ export type MutationKeySpecifier = (
   | 'updateTagset'
   | 'updateTemplate'
   | 'updateTemplateDefault'
+  | 'updateTemplateFromCollaboration'
   | 'updateUser'
   | 'updateUserGroup'
   | 'updateUserPlatformSettings'
@@ -2218,6 +2214,7 @@ export type MutationFieldPolicy = {
   aiServerPersonaServiceIngest?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerUpdateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   assignOrganizationRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2241,6 +2238,7 @@ export type MutationFieldPolicy = {
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  createChatGuidanceRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   createContributionOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   createEventOnCalendar?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2357,6 +2355,7 @@ export type MutationFieldPolicy = {
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTemplateDefault?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateTemplateFromCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2730,8 +2729,6 @@ export type QueryKeySpecifier = (
   | 'adminCommunicationMembership'
   | 'adminCommunicationOrphanedUsage'
   | 'aiServer'
-  | 'askChatGuidanceQuestion'
-  | 'askVirtualContributorQuestion'
   | 'exploreSpaces'
   | 'getSupportedVerifiedCredentialMetadata'
   | 'inputCreator'
@@ -2771,8 +2768,6 @@ export type QueryFieldPolicy = {
   adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServer?: FieldPolicy<any> | FieldReadFunction<any>;
-  askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
-  askVirtualContributorQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   exploreSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   inputCreator?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3631,6 +3626,7 @@ export type UserKeySpecifier = (
   | 'directRooms'
   | 'email'
   | 'firstName'
+  | 'guidanceRoom'
   | 'id'
   | 'isContactable'
   | 'lastName'
@@ -3653,6 +3649,7 @@ export type UserFieldPolicy = {
   directRooms?: FieldPolicy<any> | FieldReadFunction<any>;
   email?: FieldPolicy<any> | FieldReadFunction<any>;
   firstName?: FieldPolicy<any> | FieldReadFunction<any>;
+  guidanceRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isContactable?: FieldPolicy<any> | FieldReadFunction<any>;
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4409,13 +4406,6 @@ export type StrictTypedTypePolicies = {
   MessageAnswerQuestion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageAnswerQuestionKeySpecifier | (() => undefined | MessageAnswerQuestionKeySpecifier);
     fields?: MessageAnswerQuestionFieldPolicy;
-  };
-  MessageAnswerToQuestionSource?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | MessageAnswerToQuestionSourceKeySpecifier
-      | (() => undefined | MessageAnswerToQuestionSourceKeySpecifier);
-    fields?: MessageAnswerToQuestionSourceFieldPolicy;
   };
   Metadata?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MetadataKeySpecifier | (() => undefined | MetadataKeySpecifier);

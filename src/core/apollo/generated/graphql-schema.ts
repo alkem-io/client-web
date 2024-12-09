@@ -668,33 +668,12 @@ export type AiPersonaServiceIngestInput = {
   aiPersonaServiceID: Scalars['UUID'];
 };
 
-export type AiPersonaServiceQuestionInput = {
-  /** Virtual Persona Type. */
-  aiPersonaServiceID: Scalars['UUID'];
-  /** The ID of the context, the Virtual Persona is asked a question. */
-  contextID?: InputMaybe<Scalars['String']>;
-  /** The Virtual Contributor description. */
-  description?: InputMaybe<Scalars['String']>;
-  /** The Virtual Contributor displayName. */
-  displayName: Scalars['String'];
-  /** The Virtual Contributor interaciton part of which is this question. */
-  interactionID?: InputMaybe<Scalars['String']>;
-  /** The question that is being asked. */
-  question: Scalars['String'];
-  /** The ID of the message thread where the Virtual Contributor is asked a question if applicable. */
-  threadID?: InputMaybe<Scalars['String']>;
-  /** User identifier used internaly by the engine. */
-  userID?: InputMaybe<Scalars['String']>;
-};
-
 export type AiServer = {
   __typename?: 'AiServer';
   /** A particular AiPersonaService */
   aiPersonaService: AiPersonaService;
   /** The AiPersonaServices on this aiServer */
   aiPersonaServices: Array<AiPersonaService>;
-  /** Ask the virtual persona engine for guidance. */
-  askAiPersonaServiceQuestion: MessageAnswerQuestion;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
@@ -709,10 +688,6 @@ export type AiServer = {
 
 export type AiServerAiPersonaServiceArgs = {
   ID: Scalars['UUID'];
-};
-
-export type AiServerAskAiPersonaServiceQuestionArgs = {
-  aiPersonaQuestionInput: AiPersonaServiceQuestionInput;
 };
 
 export type Application = {
@@ -1236,7 +1211,7 @@ export enum CalloutVisibility {
 
 export type ChatGuidanceAnswerRelevanceInput = {
   /** The answer id. */
-  id: Scalars['UUID'];
+  id: Scalars['String'];
   /** Is the answer relevant or not. */
   relevant: Scalars['Boolean'];
 };
@@ -3329,23 +3304,14 @@ export type Message = {
 /** A detailed answer to a question, typically from an AI service. */
 export type MessageAnswerQuestion = {
   __typename?: 'MessageAnswerQuestion';
-  /** The answer to the question */
-  answer: Scalars['String'];
+  /** Error message if an error occurred */
+  error?: Maybe<Scalars['String']>;
   /** The id of the answer; null if an error was returned */
   id?: Maybe<Scalars['String']>;
   /** The original question */
   question: Scalars['String'];
-  /** The sources used to answer the question */
-  sources?: Maybe<Array<MessageAnswerToQuestionSource>>;
-};
-
-/** A source used in a detailed answer to a question. */
-export type MessageAnswerToQuestionSource = {
-  __typename?: 'MessageAnswerToQuestionSource';
-  /** The title of the source */
-  title?: Maybe<Scalars['String']>;
-  /** The URI of the source */
-  uri?: Maybe<Scalars['String']>;
+  /** Message successfully sent. If false, error will have the reason. */
+  success: Scalars['Boolean'];
 };
 
 export type Metadata = {
@@ -3414,6 +3380,8 @@ export type Mutation = {
   aiServerUpdateAiPersonaService: AiPersonaService;
   /** Apply to join the specified RoleSet in the entry Role. */
   applyForEntryRoleOnRoleSet: Application;
+  /** Ask the chat engine for guidance. */
+  askChatGuidanceQuestion: MessageAnswerQuestion;
   /** Assign the specified LicensePlan to an Account. */
   assignLicensePlanToAccount: Account;
   /** Assign the specified LicensePlan to a Space. */
@@ -3460,6 +3428,8 @@ export type Mutation = {
   createActorGroup: ActorGroup;
   /** Create a new Callout on the Collaboration. */
   createCalloutOnCollaboration: Callout;
+  /** Create a guidance chat room. */
+  createChatGuidanceRoom?: Maybe<Room>;
   /** Create a new Contribution on the Callout. */
   createContributionOnCallout: CalloutContribution;
   /** Creates a new Discussion as part of this Forum. */
@@ -3572,7 +3542,7 @@ export type Mutation = {
   moveContributionToCallout: CalloutContribution;
   /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean'];
-  /** Updates the CommunityGuidelines. */
+  /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID'];
@@ -3692,6 +3662,8 @@ export type Mutation = {
   updateTemplate: Template;
   /** Updates the specified Template Defaults. */
   updateTemplateDefault: TemplateDefault;
+  /** Updates the specified Collaboration Template using the provided Collaboration. */
+  updateTemplateFromCollaboration: Template;
   /** Updates the User. */
   updateUser: User;
   /** Updates the specified User Group. */
@@ -3756,6 +3728,10 @@ export type MutationAiServerUpdateAiPersonaServiceArgs = {
 
 export type MutationApplyForEntryRoleOnRoleSetArgs = {
   applicationData: ApplyForEntryRoleOnRoleSetInput;
+};
+
+export type MutationAskChatGuidanceQuestionArgs = {
+  chatData: ChatGuidanceInput;
 };
 
 export type MutationAssignLicensePlanToAccountArgs = {
@@ -4280,6 +4256,10 @@ export type MutationUpdateTemplateArgs = {
 
 export type MutationUpdateTemplateDefaultArgs = {
   templateDefaultData: UpdateTemplateDefaultTemplateInput;
+};
+
+export type MutationUpdateTemplateFromCollaborationArgs = {
+  updateData: UpdateTemplateFromCollaborationInput;
 };
 
 export type MutationUpdateUserArgs = {
@@ -4862,10 +4842,6 @@ export type Query = {
   adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
   /** Alkemio AiServer */
   aiServer: AiServer;
-  /** Ask the chat engine for guidance. */
-  askChatGuidanceQuestion: MessageAnswerQuestion;
-  /** Ask the virtual contributor a question directly. */
-  askVirtualContributorQuestion: MessageAnswerQuestion;
   /** Active Spaces only, order by most active in the past X days. */
   exploreSpaces: Array<Space>;
   /** Get supported credential metadata */
@@ -4946,14 +4922,6 @@ export type QueryActivityLogOnCollaborationArgs = {
 
 export type QueryAdminCommunicationMembershipArgs = {
   communicationData: CommunicationAdminMembershipInput;
-};
-
-export type QueryAskChatGuidanceQuestionArgs = {
-  chatData: ChatGuidanceInput;
-};
-
-export type QueryAskVirtualContributorQuestionArgs = {
-  virtualContributorQuestionInput: VirtualContributorQuestionInput;
 };
 
 export type QueryExploreSpacesArgs = {
@@ -6673,6 +6641,13 @@ export type UpdateTemplateDefaultTemplateInput = {
   templateID: Scalars['UUID'];
 };
 
+export type UpdateTemplateFromCollaborationInput = {
+  /** The Collaboration whose content should be copied to this Template. */
+  collaborationID: Scalars['UUID'];
+  /** The ID of the Template. */
+  templateID: Scalars['UUID'];
+};
+
 export type UpdateTemplateInput = {
   ID: Scalars['UUID'];
   /** The default description to be pre-filled when users create Posts based on this template. */
@@ -6768,6 +6743,8 @@ export type User = Contributor & {
   /** The email address for this User. */
   email: Scalars['String'];
   firstName: Scalars['String'];
+  /** Guidance Chat Room for this user */
+  guidanceRoom?: Maybe<Room>;
   /** The ID of the Contributor */
   id: Scalars['UUID'];
   /** Can a message be sent to this User. */
@@ -6944,21 +6921,6 @@ export type VirtualContributor = Contributor & {
   status: VirtualContributorStatus;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
-};
-
-export type VirtualContributorQuestionInput = {
-  /** The space in which context the Virtual Contributor is asked a question */
-  contextSpaceID?: InputMaybe<Scalars['String']>;
-  /** The question that is being asked. */
-  question: Scalars['String'];
-  /** The ID of the message thread where the Virtual Contributor is asked a question */
-  threadID?: InputMaybe<Scalars['String']>;
-  /** User identifier used internaly by the engine */
-  userID?: InputMaybe<Scalars['String']>;
-  /** The Virtual Contributor interaciton part of which is this question */
-  vcInteractionID?: InputMaybe<Scalars['String']>;
-  /** Virtual Contributor to be asked. */
-  virtualContributorID: Scalars['UUID'];
 };
 
 export enum VirtualContributorStatus {
@@ -16458,6 +16420,42 @@ export type ContributorsPageUsersQuery = {
       startCursor?: string | undefined;
       endCursor?: string | undefined;
       hasNextPage: boolean;
+    };
+  };
+};
+
+export type ContributorsVirtualInLibraryQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ContributorsVirtualInLibraryQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      virtualContributors: Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          location?: { __typename?: 'Location'; city?: string | undefined; country?: string | undefined } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }>;
     };
   };
 };
@@ -26199,6 +26197,16 @@ export type UpdateTemplateMutation = {
   };
 };
 
+export type UpdateTemplateFromCollaborationMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+  collaborationId: Scalars['UUID'];
+}>;
+
+export type UpdateTemplateFromCollaborationMutation = {
+  __typename?: 'Mutation';
+  updateTemplateFromCollaboration: { __typename?: 'Template'; id: string };
+};
+
 export type DeleteTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
 }>;
@@ -27640,19 +27648,161 @@ export type ResetChatGuidanceMutationVariables = Exact<{ [key: string]: never }>
 
 export type ResetChatGuidanceMutation = { __typename?: 'Mutation'; resetChatGuidance: boolean };
 
-export type AskChatGuidanceQuestionQueryVariables = Exact<{
+export type CreateGuidanceRoomMutationVariables = Exact<{ [key: string]: never }>;
+
+export type CreateGuidanceRoomMutation = {
+  __typename?: 'Mutation';
+  createChatGuidanceRoom?: { __typename?: 'Room'; id: string } | undefined;
+};
+
+export type AskChatGuidanceQuestionMutationVariables = Exact<{
   chatData: ChatGuidanceInput;
 }>;
 
-export type AskChatGuidanceQuestionQuery = {
+export type AskChatGuidanceQuestionMutation = {
+  __typename?: 'Mutation';
+  askChatGuidanceQuestion: { __typename?: 'MessageAnswerQuestion'; id?: string | undefined; success: boolean };
+};
+
+export type GuidanceRoomIdQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GuidanceRoomIdQuery = {
   __typename?: 'Query';
-  askChatGuidanceQuestion: {
-    __typename?: 'MessageAnswerQuestion';
-    id?: string | undefined;
-    answer: string;
-    question: string;
-    sources?:
-      | Array<{ __typename?: 'MessageAnswerToQuestionSource'; uri?: string | undefined; title?: string | undefined }>
+  me: {
+    __typename?: 'MeQueryResults';
+    user?:
+      | { __typename?: 'User'; id: string; guidanceRoom?: { __typename?: 'Room'; id: string } | undefined }
+      | undefined;
+  };
+};
+
+export type GuidanceRoomMessagesQueryVariables = Exact<{
+  roomId: Scalars['UUID'];
+}>;
+
+export type GuidanceRoomMessagesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    room?:
+      | {
+          __typename?: 'Room';
+          id: string;
+          messagesCount: number;
+          authorization?:
+            | {
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                anonymousReadAccess: boolean;
+              }
+            | undefined;
+          messages: Array<{
+            __typename?: 'Message';
+            id: string;
+            message: string;
+            timestamp: number;
+            threadID?: string | undefined;
+            reactions: Array<{
+              __typename?: 'Reaction';
+              id: string;
+              emoji: string;
+              sender?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string };
+                  }
+                | undefined;
+            }>;
+            sender?:
+              | {
+                  __typename?: 'Organization';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    description?: string | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
+                    location?:
+                      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                      | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    description?: string | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
+                    location?:
+                      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                      | undefined;
+                  };
+                }
+              | {
+                  __typename?: 'VirtualContributor';
+                  id: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    url: string;
+                    description?: string | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    tagsets?:
+                      | Array<{
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }>
+                      | undefined;
+                    location?:
+                      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                      | undefined;
+                  };
+                }
+              | undefined;
+          }>;
+          vcInteractions: Array<{
+            __typename?: 'VcInteraction';
+            id: string;
+            threadID: string;
+            virtualContributorID: string;
+          }>;
+        }
       | undefined;
   };
 };

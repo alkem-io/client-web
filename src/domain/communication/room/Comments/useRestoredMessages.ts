@@ -2,7 +2,7 @@ import { Message } from '../models/Message';
 import { useMemo } from 'react';
 import { keyBy, sortBy } from 'lodash';
 
-interface DeletedMessage extends Omit<Message, 'body'> {
+interface DeletedMessage extends Omit<Message, 'message'> {
   deleted: true;
 }
 
