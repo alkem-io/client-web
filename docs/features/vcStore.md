@@ -2,7 +2,7 @@
 
 #### Overview
 
-This document outlines the technical plan for implementation of the Invite VCs dialog a.k.a. 'VC Store' - [#7256](https://github.com/alkem-io/client-web/issues/72560). Ideally, the functionality should be reusable for different contributor types (User, Organization, VC) and can be placed in various contexts.
+This document outlines the technical plan for implementation of the Invite VCs dialog a.k.a. 'VC Store' - [#7256](https://github.com/alkem-io/client-web/issues/7256). Ideally, the functionality should be reusable for different contributor types (User, Organization, VC) and can be placed in various contexts.
 
 #### Components and Areas Affected
 
