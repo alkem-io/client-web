@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { CaptionSmall } from '@/core/ui/typography';
 import { getIndentStyle } from '../../../journey/dashboardNavigation/utils';
 import { ButtonBase, SxProps, Theme } from '@mui/material';
-import TranslationKey from '@/core/i18n/utils/TranslationKey';
 
 interface DashboardAddButtonProps {
   url?: string;
@@ -36,7 +35,7 @@ export const DashboardAddButton = ({ url, level = 0, onClick, translationKey, sx
     >
       <CaptionSmall>
         {translationKey
-          ? t(translationKey as TranslationKey)
+          ? t(translationKey, { defaultValue: t('common.add') })
           : t('buttons.addSubject', { subject: t('common.subspace') })}
       </CaptionSmall>
     </BadgeCardView>
