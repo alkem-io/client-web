@@ -143,9 +143,17 @@ export const MarkdownInput = memo(
         setCharacterCount(editor?.getText().length ?? 0);
       }, [editor]);
 
+      const wrapIframeWithStyledDiv = (markdown: string): string =>
+        markdown.replace(
+          /<iframe[^>]*><\/iframe>/g,
+          iframe => `<div style='position: relative; padding-bottom: 56.25%; height: 0; width: 100%;'>${iframe}</div>`
+        );
+
       const emitChangeOnEditorUpdate = (editor: Editor) => {
         const handleStateChange = async () => {
-          const markdown = await HTMLToMarkdown(editor.getHTML());
+          let markdown = await HTMLToMarkdown(editor.getHTML());
+
+          markdown = wrapIframeWithStyledDiv(markdown);
 
           setCharacterCount(editor.getText().length);
 

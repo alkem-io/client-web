@@ -1,7 +1,6 @@
 import { Node } from '@tiptap/core';
 import { Editor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import { forwardRef, memo, useMemo, useEffect, useState } from 'react';
+import { forwardRef, memo, useEffect, useState } from 'react';
 import {
   Code,
   FormatBold,
@@ -150,14 +149,6 @@ const MarkdownInputControls = memo(
         }
       }, [visible]);
 
-      const embedVideoEditor = useMemo(
-        () =>
-          new Editor({
-            extensions: [StarterKit, iFrame],
-          }),
-        []
-      );
-
       return (
         <Collapse in={isVisible} ref={ref}>
           <Toolbar value={false} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
@@ -219,7 +210,8 @@ const MarkdownInputControls = memo(
               />
             )}
 
-            <InsertVideoButton editor={embedVideoEditor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+            {/* @@@ WIP ~ #6607 */}
+            <InsertVideoButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
 
             <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
           </Toolbar>

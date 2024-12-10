@@ -9,6 +9,16 @@ declare module '@tiptap/core' {
   }
 }
 
+const defaultIframeAttributes = {
+  src: { default: null },
+  position: { default: 'absolute' },
+  top: { default: 0 },
+  left: { default: 0 },
+  width: { default: '100%' },
+  height: { default: '98%' }, // 100% adds a weird div overflow. 98% fits perfectly into its parent.
+  frameborder: { default: 0 },
+};
+
 export type IframeOptions = {
   allowFullscreen: boolean;
   HTMLAttributes: {
@@ -33,8 +43,7 @@ export const Iframe = Node.create<IframeOptions>({
 
   addAttributes() {
     return {
-      src: { default: null },
-      frameborder: { default: 0 },
+      ...defaultIframeAttributes,
       allowfullscreen: {
         default: this.options.allowFullscreen,
         parseHTML: () => this.options.allowFullscreen,
@@ -53,7 +62,7 @@ export const Iframe = Node.create<IframeOptions>({
   addCommands() {
     return {
       setIframe:
-        (options: { src: string }) =>
+        (options: { src: string; width: number; height: number }) =>
         ({ tr, dispatch }) => {
           const { selection } = tr;
           const node = this.type.create(options);

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect, ChangeEvent } from 'react';
 
 import { styled } from '@mui/system';
 import { Form, Formik } from 'formik';
@@ -22,9 +22,15 @@ interface InsertVideoButtonProps extends IconButtonProps {
   onDialogClose?: () => void;
 }
 
+const validSources = [
+  'https://player.vimeo.com/video/', // Vimeo
+  'https://www.youtube.com/embed/', // YouTube
+  'https://demo.arcade.software/', // Arcade
+  'https://issuu.com/', // Issuu
+];
+
 export const InsertVideoButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps }: InsertVideoButtonProps) => {
   const [src, setSrc] = useState('');
-  console.log('src', src);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { t } = useTranslation();
@@ -33,10 +39,13 @@ export const InsertVideoButton = ({ editor, onDialogOpen, onDialogClose, ...butt
 
   const buttonRef = useRef<HTMLButtonElement>(null);
 
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
   const handleOnCloseDialog = () => {
     setIsDialogOpen(false);
     editor?.commands.focus();
     onDialogClose?.();
+    setSrc('');
   };
 
   const blue = {
@@ -93,9 +102,44 @@ export const InsertVideoButton = ({ editor, onDialogOpen, onDialogClose, ...butt
   `
   );
 
+  const handleOnIconButtonClick = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleOnTextareaChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    const cursorPosition = event.target.selectionStart;
+
+    setSrc(event.target.value);
+
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.selectionStart = cursorPosition;
+        textareaRef.current.selectionEnd = cursorPosition;
+      }
+    }, 0);
+  };
+
   const handleOnSubmitIframe = () => {
+    const srcMatch = src.match(/src="([^"]+)"/);
+
+    if (!srcMatch) {
+      notify(t('components.wysiwyg-editor.embed.invalidOrUnsupportedEmbed'), 'error');
+
+      return;
+    }
+
+    const isValidSource = validSources.some(validSrc => src.includes(validSrc));
+
+    if (!isValidSource) {
+      notify(t('components.wysiwyg-editor.embed.invalidOrUnsupportedEmbed'), 'error');
+
+      return;
+    }
+
+    const srcValue = srcMatch[1];
+
     try {
-      editor?.commands.setIframe({ src });
+      editor?.commands.setIframe({ src: srcValue });
     } catch (error) {
       if (error instanceof Error) {
         notify(error.message, 'error');
@@ -107,15 +151,20 @@ export const InsertVideoButton = ({ editor, onDialogOpen, onDialogClose, ...butt
     handleOnCloseDialog();
   };
 
-  console.log('iframe commands >>>', editor?.commands);
-  console.log('iframe extensions >>>', editor?.extensionManager.extensions);
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [src]);
+
+  const isIconButtonDisabled = !editor || !editor.can().insertContent('');
 
   return (
     <>
       <IconButton
         ref={buttonRef}
-        disabled={!editor || !editor.can().insertContent('')}
-        onClick={() => setIsDialogOpen(true)}
+        disabled={isIconButtonDisabled}
+        onClick={handleOnIconButtonClick}
         aria-label={t('components.wysiwyg-editor.toolbar.emoji.emoji')}
         {...buttonProps}
       >
@@ -131,13 +180,14 @@ export const InsertVideoButton = ({ editor, onDialogOpen, onDialogClose, ...butt
           <Form>
             <Gutters>
               <Textarea
+                ref={textareaRef}
                 value={src}
                 minRows={7}
-                placeholder={t('common.url')}
                 maxLength={MARKDOWN_TEXT_LENGTH}
                 sx={{ width: '100%', maxWidth: '100%', minWidth: '100%' }}
-                onChange={e => setSrc(e.target.value)}
-                aria-label="empty textarea"
+                placeholder={t('components.wysiwyg-editor.embed.pasteEmbedCode')}
+                onChange={handleOnTextareaChange}
+                aria-label={t('components.wysiwyg-editor.embed.embedCodeTextAreaAriaLabel')}
               />
 
               <Actions justifyContent="space-between">

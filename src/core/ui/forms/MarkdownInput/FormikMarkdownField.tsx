@@ -46,6 +46,7 @@ const FilledDetector = ({ value }: { value: string | undefined }) => {
   return null;
 };
 
+// @@@ WIP ~ #6607
 export const FormikMarkdownField = ({
   title,
   name,
@@ -70,10 +71,7 @@ export const FormikMarkdownField = ({
     }
   };
 
-  const [field, meta, helper] = useField({
-    name,
-    validate,
-  });
+  const [field, meta, helper] = useField({ name, validate });
 
   const isError = Boolean(meta.error) && meta.touched;
 

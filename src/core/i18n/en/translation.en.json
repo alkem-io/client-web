@@ -354,7 +354,6 @@
     "innovation-hubs": "Innovation Hubs",
     "innovationPack": "Innovation Pack",
     "more": "More",
-    "url": "URL",
     "sources": "Sources",
     "license": "License",
     "virtual-contributors": "VC",
@@ -587,7 +586,7 @@
     },
     "removeContent": "Delete Community Guidelines",
     "iframeContent": "iframe Content",
-    "embedCode": "Paste your embed code here"
+    "url": "URL"
   },
   "community": {
     "memberUsers": "Member Users ({{count}})",
@@ -1183,7 +1182,7 @@
         "list.indent": "Indent",
         "list.outdent": "Remove indent",
         "remove.remove": "Remove",
-        "embed.video": "Embed YouTube Video"
+        "embed.video": "Embed Video or other Media"
       },
       "image": {
         "dialogHeader": "Insert Image"
@@ -1193,6 +1192,12 @@
       },
       "validation": {
         "maxLength": "The resulting text goes beyond the size accepted by the server."
+      },
+      "embed": {
+        "dialogTitle": "Embed Video or other Media",
+        "embedCodeTextAreaAriaLabel": "Empty textarea",
+        "pasteEmbedCode": "Paste the embed/iframe code here",
+        "invalidOrUnsupportedEmbed": "Unfortunately, this code is either not valid or not supported. Please check the code carefully or contact support@alkem.io"
       }
     },
     "top-callouts": {

@@ -69,7 +69,6 @@ const CalloutCreationDialog = ({
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
   const [selectedCalloutType, setSelectedCalloutType] = useState<CalloutType>();
-  console.log('selectedCalloutType', selectedCalloutType);
   const [isPublishDialogOpen, setIsConfirmPublishDialogOpen] = useState(false);
   const [isConfirmCloseDialogOpen, setIsConfirmCloseDialogOpen] = useState(false);
   const [sendNotification, setSendNotification] = useState(true);

@@ -8,13 +8,24 @@ import { Converter } from './Converter';
 import { once } from 'lodash';
 
 const isEmptyLine = (node: HTML, parent: Parent | null) => node.value === '<br>' && parent?.type === 'root';
+const allowDangerousHtmldIframeProps = [
+  'src',
+  'width',
+  'height',
+  'allow',
+  'allowfullscreen',
+  'frameborder',
+  'loading',
+  'title',
+  'referrerpolicy',
+];
 
 const UnifiedConverter = (): Converter => {
   const constructHtmlToMarkdownPipeline = once(async () => {
     const { unified } = await import('unified');
-
     const { default: rehypeParse } = await import('rehype-parse');
     const { default: rehypeRemark, defaultHandlers: defaultHTMLHandlers } = await import('rehype-remark');
+    const { default: rehypeRaw } = await import('rehype-raw');
     const { default: remarkStringify } = await import('remark-stringify');
 
     const trimmer = (nodeType: 'strong' | 'em') => (state: H, element: Element) => {
@@ -26,6 +37,7 @@ const UnifiedConverter = (): Converter => {
           if (trimmed === '' && value !== trimmed) {
             return html(space);
           }
+
           return html(
             `${value.startsWith(' ') ? space : ''}<${nodeType}>${trimmed}</${nodeType}>${
               value.endsWith(' ') ? space : ''
@@ -39,20 +51,19 @@ const UnifiedConverter = (): Converter => {
 
     return (
       unified()
-        .use(rehypeParse, {
-          fragment: true, // don't expect a full HTML Document
-        })
+        .use(rehypeParse, { fragment: true }) // don't expect a full HTML Document
+        .use(rehypeRaw)
         // @ts-ignore
         .use(rehypeRemark, {
           handlers: {
-            p: (state, element) => {
-              if (element.children.length === 0) {
-                return html('<br>');
-              }
-              return defaultHTMLHandlers.p(state, element);
-            },
+            p: (state, element) =>
+              element.children.length === 0 ? html('<br>') : defaultHTMLHandlers.p(state, element),
             strong: trimmer('strong'),
             em: trimmer('em'),
+            iframe: (state, element) => ({
+              type: 'html',
+              value: `<iframe src="${element.properties.src}" position="absolute" top="0" left="0" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>`,
+            }),
           },
         })
         .use(remarkStringify)
@@ -61,12 +72,21 @@ const UnifiedConverter = (): Converter => {
 
   const constructMarkdownToHTMLPipeline = once(async () => {
     const { unified } = await import('unified');
-
     const { default: remarkParse } = await import('remark-parse');
     const { default: remarkRehype, defaultHandlers: defaultMarkdownHandlers } = await import('remark-rehype');
     const { default: rehypeRaw } = await import('rehype-raw');
     const { default: rehypeSanitize } = await import('rehype-sanitize');
     const { default: rehypeStringify } = await import('rehype-stringify');
+    const { defaultSchema } = await import('hast-util-sanitize');
+
+    const sanitizeOptions = {
+      ...defaultSchema,
+      tagNames: [...(defaultSchema.tagNames || []), 'iframe'],
+      attributes: {
+        ...(defaultSchema.attributes || {}),
+        iframe: allowDangerousHtmldIframeProps,
+      },
+    };
 
     return (
       unified()
@@ -79,12 +99,13 @@ const UnifiedConverter = (): Converter => {
               if (isEmptyLine(node, parent)) {
                 return u('element', { tagName: 'p' });
               }
+
               return defaultMarkdownHandlers.html(state, node);
             },
           },
         })
-        .use(rehypeRaw)
-        .use(rehypeSanitize)
+        .use(rehypeRaw, { passThrough: ['iframe'] })
+        .use(rehypeSanitize, sanitizeOptions)
         .use(rehypeStringify)
     );
   });

@@ -50,7 +50,7 @@ const InsertImageButton = ({
 
   const insertImage = (imageProps: ImageProps) => {
     try {
-      editor?.commands.setImage(imageProps);
+      editor?.commands.setImage(imageProps); // @@@ WIP ~ #6607: Закоментирай го и провери състоянието на редактора
     } catch (error) {
       if (error instanceof Error) {
         notify(error.message, 'error');
@@ -60,15 +60,8 @@ const InsertImageButton = ({
     closeDialog();
   };
 
-  const initialValues: ImageProps = {
-    src: 'https://',
-    alt: '',
-  };
-
+  const initialValues: ImageProps = { src: 'https://', alt: '' };
   const isDisabled = !editor || !editor.can().setImage(initialValues);
-
-  console.log('img commands >>>', editor?.commands);
-  console.log('img extensions >>>', editor?.extensionManager.extensions);
 
   return (
     <>
