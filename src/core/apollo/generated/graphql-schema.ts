@@ -16199,6 +16199,7 @@ export type AvailableVirtualContributorsQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
+                  description?: string | undefined;
                   url: string;
                   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagsets?:
@@ -16229,6 +16230,7 @@ export type AvailableVirtualContributorsQuery = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                description?: string | undefined;
                 url: string;
                 avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 tagsets?:
@@ -16258,6 +16260,7 @@ export type AvailableVirtualContributorsQuery = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      description?: string | undefined;
       url: string;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagsets?:
@@ -16296,6 +16299,7 @@ export type AvailableVirtualContributorsInLibraryQuery = {
           __typename?: 'Profile';
           id: string;
           displayName: string;
+          description?: string | undefined;
           url: string;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagsets?:
@@ -16325,6 +16329,7 @@ export type VirtualContributorFullFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    description?: string | undefined;
     url: string;
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     tagsets?:

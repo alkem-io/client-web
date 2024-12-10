@@ -171,7 +171,8 @@
     "scrollToTop": "Scroll to top",
     "addSubject": "Add {{subject}}",
     "toolPosition": "Position of tool",
-    "createOwnSpace": "...or click here to create your own Space"
+    "createOwnSpace": "...or click here to create your own Space",
+    "invite": "Invite"
   },
   "tooltips": {
     "click-more-info": "Click for more information",

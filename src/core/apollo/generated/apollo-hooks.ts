@@ -1217,6 +1217,7 @@ export const VirtualContributorFullFragmentDoc = gql`
     profile {
       id
       displayName
+      description
       avatar: visual(type: AVATAR) {
         ...VisualUri
       }

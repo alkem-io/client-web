@@ -12,6 +12,7 @@ export interface ContributorProps extends Identifiable {
   email?: string;
   profile?: {
     displayName: string;
+    description?: string;
     avatar?: {
       uri: string;
     };

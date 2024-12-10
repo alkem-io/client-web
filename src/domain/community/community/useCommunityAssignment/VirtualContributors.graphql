@@ -46,6 +46,7 @@ fragment VirtualContributorFull on VirtualContributor {
   profile {
     id
     displayName
+    description
     avatar: visual(type: AVATAR) {
       ...VisualUri
     }
