@@ -62,7 +62,7 @@ export const Iframe = Node.create<IframeOptions>({
   addCommands() {
     return {
       setIframe:
-        (options: { src: string; width: number; height: number }) =>
+        (options: { src: string }) =>
         ({ tr, dispatch }) => {
           const { selection } = tr;
           const node = this.type.create(options);
