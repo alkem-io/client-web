@@ -2525,6 +2525,103 @@ export type ISearchResults = {
   journeyResultsCount: Scalars['Float'];
 };
 
+/** An in-app notification type. To not be queried directly */
+export type InAppNotification = {
+  /** Which category (role) is this notification targeted to. */
+  category: InAppNotificationCategory;
+  id: Scalars['UUID'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: InAppNotificationState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy: Contributor;
+  /** The type of the notification */
+  type: NotificationEventType;
+};
+
+export type InAppNotificationCalloutPublished = InAppNotification & {
+  __typename?: 'InAppNotificationCalloutPublished';
+  /** The Callout that was published. */
+  callout: Callout;
+  /** Which category (role) is this notification targeted to. */
+  category: InAppNotificationCategory;
+  id: Scalars['UUID'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** Where the callout is located. */
+  space: Space;
+  /** The current state of the notification */
+  state: InAppNotificationState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy: Contributor;
+  /** The type of the notification */
+  type: NotificationEventType;
+};
+
+/** Which category (role) is this notification targeted to. */
+export enum InAppNotificationCategory {
+  Admin = 'ADMIN',
+  Member = 'MEMBER',
+  Self = 'SELF',
+}
+
+export type InAppNotificationCommunityNewMember = InAppNotification & {
+  __typename?: 'InAppNotificationCommunityNewMember';
+  /** The Contributor that joined. */
+  actor: Contributor;
+  /** Which category (role) is this notification targeted to. */
+  category: InAppNotificationCategory;
+  /** The type of the Contributor that joined. */
+  contributorType: CommunityContributorType;
+  id: Scalars['UUID'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The Space that was joined. */
+  space: Space;
+  /** The current state of the notification */
+  state: InAppNotificationState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy: Contributor;
+  /** The type of the notification */
+  type: NotificationEventType;
+};
+
+export enum InAppNotificationState {
+  Archived = 'ARCHIVED',
+  Read = 'READ',
+  Unread = 'UNREAD',
+}
+
+export type InAppNotificationUserMentioned = InAppNotification & {
+  __typename?: 'InAppNotificationUserMentioned';
+  /** Which category (role) is this notification targeted to. */
+  category: InAppNotificationCategory;
+  /** The comment that the contributor was mentioned in. */
+  comment: Scalars['String'];
+  /** The url of the resource where the comment was created. */
+  commentUrl: Scalars['String'];
+  /** The type of the Contributor that joined. */
+  contributorType: CommunityContributorType;
+  id: Scalars['UUID'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: InAppNotificationState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy: Contributor;
+  /** The type of the notification */
+  type: NotificationEventType;
+};
+
 export type InnovationFlow = {
   __typename?: 'InnovationFlow';
   /** The authorization rules for the entity */
@@ -3537,6 +3634,8 @@ export type Mutation = {
   updateLicensePlan: LicensePlan;
   /** Updates the specified Link. */
   updateLink: Link;
+  /** Update notification state and return the notification. */
+  updateNotificationState: InAppNotificationState;
   /** Updates the specified Organization. */
   updateOrganization: Organization;
   /** Updates the specified Organization platform settings. */
@@ -4103,6 +4202,10 @@ export type MutationUpdateLinkArgs = {
   linkData: UpdateLinkInput;
 };
 
+export type MutationUpdateNotificationStateArgs = {
+  notificationData: UpdateNotificationStateInput;
+};
+
 export type MutationUpdateOrganizationArgs = {
   organizationData: UpdateOrganizationInput;
 };
@@ -4226,6 +4329,35 @@ export type Nvp = {
   updatedDate?: Maybe<Scalars['DateTime']>;
   value: Scalars['String'];
 };
+
+/** The type of the notification */
+export enum NotificationEventType {
+  CollaborationCalloutPublished = 'COLLABORATION_CALLOUT_PUBLISHED',
+  CollaborationDiscussionComment = 'COLLABORATION_DISCUSSION_COMMENT',
+  CollaborationPostComment = 'COLLABORATION_POST_COMMENT',
+  CollaborationPostCreated = 'COLLABORATION_POST_CREATED',
+  CollaborationWhiteboardCreated = 'COLLABORATION_WHITEBOARD_CREATED',
+  CommentReply = 'COMMENT_REPLY',
+  CommunicationCommentSent = 'COMMUNICATION_COMMENT_SENT',
+  CommunicationCommunityMessage = 'COMMUNICATION_COMMUNITY_MESSAGE',
+  CommunicationOrganizationMention = 'COMMUNICATION_ORGANIZATION_MENTION',
+  CommunicationOrganizationMessage = 'COMMUNICATION_ORGANIZATION_MESSAGE',
+  CommunicationUpdateSent = 'COMMUNICATION_UPDATE_SENT',
+  CommunicationUserMention = 'COMMUNICATION_USER_MENTION',
+  CommunicationUserMessage = 'COMMUNICATION_USER_MESSAGE',
+  CommunityApplicationCreated = 'COMMUNITY_APPLICATION_CREATED',
+  CommunityInvitationCreated = 'COMMUNITY_INVITATION_CREATED',
+  CommunityInvitationCreatedVc = 'COMMUNITY_INVITATION_CREATED_VC',
+  CommunityNewMember = 'COMMUNITY_NEW_MEMBER',
+  CommunityPlatformInvitationCreated = 'COMMUNITY_PLATFORM_INVITATION_CREATED',
+  PlatformForumDiscussionComment = 'PLATFORM_FORUM_DISCUSSION_COMMENT',
+  PlatformForumDiscussionCreated = 'PLATFORM_FORUM_DISCUSSION_CREATED',
+  PlatformGlobalRoleChange = 'PLATFORM_GLOBAL_ROLE_CHANGE',
+  PlatformUserInvitedToRole = 'PLATFORM_USER_INVITED_TO_ROLE',
+  PlatformUserRegistered = 'PLATFORM_USER_REGISTERED',
+  PlatformUserRemoved = 'PLATFORM_USER_REMOVED',
+  SpaceCreated = 'SPACE_CREATED',
+}
 
 export type Organization = Contributor &
   Groupable & {
@@ -4722,6 +4854,8 @@ export type Query = {
   lookupByName: LookupByNameQueryResults;
   /** Information about the current authenticated user */
   me: MeQueryResults;
+  /** Get all notifications for a receiver. */
+  notifications: Array<InAppNotification>;
   /** A particular Organization */
   organization: Organization;
   /** The Organizations on this platform */
@@ -4790,6 +4924,10 @@ export type QueryAdminCommunicationMembershipArgs = {
 
 export type QueryExploreSpacesArgs = {
   options?: InputMaybe<ExploreSpacesInput>;
+};
+
+export type QueryNotificationsArgs = {
+  receiverID: Scalars['UUID'];
 };
 
 export type QueryOrganizationArgs = {
@@ -6353,6 +6491,13 @@ export type UpdateLocationInput = {
   country?: InputMaybe<Scalars['String']>;
   postalCode?: InputMaybe<Scalars['String']>;
   stateOrProvince?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateNotificationStateInput = {
+  /** The ID of the notification to update. */
+  ID: Scalars['UUID'];
+  /** The new state of the notification. */
+  state: InAppNotificationState;
 };
 
 export type UpdateOrganizationInput = {
@@ -16050,7 +16195,26 @@ export type AvailableVirtualContributorsQuery = {
                 __typename?: 'VirtualContributor';
                 id: string;
                 nameID: string;
-                profile: { __typename?: 'Profile'; id: string; displayName: string };
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                };
               }>;
             };
           };
@@ -16061,7 +16225,26 @@ export type AvailableVirtualContributorsQuery = {
               __typename?: 'VirtualContributor';
               id: string;
               nameID: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string };
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
+                location?:
+                  | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                  | undefined;
+              };
             }>;
           };
         }
@@ -16071,7 +16254,26 @@ export type AvailableVirtualContributorsQuery = {
     __typename?: 'VirtualContributor';
     id: string;
     nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+      location?:
+        | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+        | undefined;
+    };
   }>;
 };
 
@@ -16090,17 +16292,55 @@ export type AvailableVirtualContributorsInLibraryQuery = {
         searchVisibility: SearchVisibility;
         id: string;
         nameID: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string };
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+        };
       }>;
     };
   };
 };
 
-export type VirtualContributorNameFragment = {
+export type VirtualContributorFullFragment = {
   __typename?: 'VirtualContributor';
   id: string;
   nameID: string;
-  profile: { __typename?: 'Profile'; id: string; displayName: string };
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    url: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    tagsets?:
+      | Array<{
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }>
+      | undefined;
+    location?:
+      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+      | undefined;
+  };
 };
 
 export type AllOrganizationsQueryVariables = Exact<{

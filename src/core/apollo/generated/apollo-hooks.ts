@@ -1210,15 +1210,29 @@ export const BasicOrganizationDetailsFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const VirtualContributorNameFragmentDoc = gql`
-  fragment VirtualContributorName on VirtualContributor {
+export const VirtualContributorFullFragmentDoc = gql`
+  fragment VirtualContributorFull on VirtualContributor {
     id
     nameID
     profile {
       id
       displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        id
+        city
+        country
+      }
+      url
     }
   }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const OrganizationContributorFragmentDoc = gql`
   fragment OrganizationContributor on Organization {
@@ -10360,23 +10374,23 @@ export const AvailableVirtualContributorsDocument = gql`
           roleSet {
             id
             virtualContributorsInRole(role: MEMBER) {
-              ...VirtualContributorName
+              ...VirtualContributorFull
             }
           }
         }
         account {
           id
           virtualContributors {
-            ...VirtualContributorName
+            ...VirtualContributorFull
           }
         }
       }
     }
     virtualContributors @skip(if: $filterSpace) {
-      ...VirtualContributorName
+      ...VirtualContributorFull
     }
   }
-  ${VirtualContributorNameFragmentDoc}
+  ${VirtualContributorFullFragmentDoc}
 `;
 
 /**
@@ -10444,12 +10458,12 @@ export const AvailableVirtualContributorsInLibraryDocument = gql`
         id
         virtualContributors {
           searchVisibility
-          ...VirtualContributorName
+          ...VirtualContributorFull
         }
       }
     }
   }
-  ${VirtualContributorNameFragmentDoc}
+  ${VirtualContributorFullFragmentDoc}
 `;
 
 /**

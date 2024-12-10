@@ -10,20 +10,20 @@ query AvailableVirtualContributors(
         roleSet {
           id
           virtualContributorsInRole(role: MEMBER) {
-            ...VirtualContributorName
+            ...VirtualContributorFull
           }
         }
       }
       account {
         id
         virtualContributors {
-          ...VirtualContributorName
+          ...VirtualContributorFull
         }
       }
     }
   }
   virtualContributors @skip(if: $filterSpace) {
-    ...VirtualContributorName
+    ...VirtualContributorFull
   }
 }
 
@@ -34,18 +34,30 @@ query AvailableVirtualContributorsInLibrary {
       id
       virtualContributors {
         searchVisibility
-        ...VirtualContributorName
+        ...VirtualContributorFull
       }
     }
   }
 }
 
-fragment VirtualContributorName on VirtualContributor {
+fragment VirtualContributorFull on VirtualContributor {
   id
   nameID
   profile {
     id
     displayName
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+    tagsets {
+      ...TagsetDetails
+    }
+    location {
+      id
+      city
+      country
+    }
+    url
   }
 }
 

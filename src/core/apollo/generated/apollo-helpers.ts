@@ -1487,6 +1487,98 @@ export type ISearchResultsFieldPolicy = {
   journeyResults?: FieldPolicy<any> | FieldReadFunction<any>;
   journeyResultsCount?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type InAppNotificationKeySpecifier = (
+  | 'category'
+  | 'id'
+  | 'receiver'
+  | 'state'
+  | 'triggeredAt'
+  | 'triggeredBy'
+  | 'type'
+  | InAppNotificationKeySpecifier
+)[];
+export type InAppNotificationFieldPolicy = {
+  category?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  receiver?: FieldPolicy<any> | FieldReadFunction<any>;
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type InAppNotificationCalloutPublishedKeySpecifier = (
+  | 'callout'
+  | 'category'
+  | 'id'
+  | 'receiver'
+  | 'space'
+  | 'state'
+  | 'triggeredAt'
+  | 'triggeredBy'
+  | 'type'
+  | InAppNotificationCalloutPublishedKeySpecifier
+)[];
+export type InAppNotificationCalloutPublishedFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  category?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  receiver?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type InAppNotificationCommunityNewMemberKeySpecifier = (
+  | 'actor'
+  | 'category'
+  | 'contributorType'
+  | 'id'
+  | 'receiver'
+  | 'space'
+  | 'state'
+  | 'triggeredAt'
+  | 'triggeredBy'
+  | 'type'
+  | InAppNotificationCommunityNewMemberKeySpecifier
+)[];
+export type InAppNotificationCommunityNewMemberFieldPolicy = {
+  actor?: FieldPolicy<any> | FieldReadFunction<any>;
+  category?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributorType?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  receiver?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type InAppNotificationUserMentionedKeySpecifier = (
+  | 'category'
+  | 'comment'
+  | 'commentUrl'
+  | 'contributorType'
+  | 'id'
+  | 'receiver'
+  | 'state'
+  | 'triggeredAt'
+  | 'triggeredBy'
+  | 'type'
+  | InAppNotificationUserMentionedKeySpecifier
+)[];
+export type InAppNotificationUserMentionedFieldPolicy = {
+  category?: FieldPolicy<any> | FieldReadFunction<any>;
+  comment?: FieldPolicy<any> | FieldReadFunction<any>;
+  commentUrl?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributorType?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  receiver?: FieldPolicy<any> | FieldReadFunction<any>;
+  state?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type InnovationFlowKeySpecifier = (
   | 'authorization'
   | 'createdDate'
@@ -2081,6 +2173,7 @@ export type MutationKeySpecifier = (
   | 'updateInnovationPack'
   | 'updateLicensePlan'
   | 'updateLink'
+  | 'updateNotificationState'
   | 'updateOrganization'
   | 'updateOrganizationPlatformSettings'
   | 'updatePost'
@@ -2248,6 +2341,7 @@ export type MutationFieldPolicy = {
   updateInnovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   updateLicensePlan?: FieldPolicy<any> | FieldReadFunction<any>;
   updateLink?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateNotificationState?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganizationPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePost?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2641,6 +2735,7 @@ export type QueryKeySpecifier = (
   | 'lookup'
   | 'lookupByName'
   | 'me'
+  | 'notifications'
   | 'organization'
   | 'organizations'
   | 'organizationsPaginated'
@@ -2678,6 +2773,7 @@ export type QueryFieldPolicy = {
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
   lookupByName?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
+  notifications?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationsPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4192,6 +4288,31 @@ export type StrictTypedTypePolicies = {
   ISearchResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ISearchResultsKeySpecifier | (() => undefined | ISearchResultsKeySpecifier);
     fields?: ISearchResultsFieldPolicy;
+  };
+  InAppNotification?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | InAppNotificationKeySpecifier | (() => undefined | InAppNotificationKeySpecifier);
+    fields?: InAppNotificationFieldPolicy;
+  };
+  InAppNotificationCalloutPublished?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InAppNotificationCalloutPublishedKeySpecifier
+      | (() => undefined | InAppNotificationCalloutPublishedKeySpecifier);
+    fields?: InAppNotificationCalloutPublishedFieldPolicy;
+  };
+  InAppNotificationCommunityNewMember?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InAppNotificationCommunityNewMemberKeySpecifier
+      | (() => undefined | InAppNotificationCommunityNewMemberKeySpecifier);
+    fields?: InAppNotificationCommunityNewMemberFieldPolicy;
+  };
+  InAppNotificationUserMentioned?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InAppNotificationUserMentionedKeySpecifier
+      | (() => undefined | InAppNotificationUserMentionedKeySpecifier);
+    fields?: InAppNotificationUserMentionedFieldPolicy;
   };
   InnovationFlow?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InnovationFlowKeySpecifier | (() => undefined | InnovationFlowKeySpecifier);
