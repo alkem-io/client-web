@@ -114,7 +114,7 @@ const handleCreateWhiteboard = (data?: {
   }
   return {
     content: data.content,
-    profileData: {
+    profile: {
       displayName: data.profile?.displayName ? data.profile?.displayName : 'Whiteboard Template',
     },
   };
