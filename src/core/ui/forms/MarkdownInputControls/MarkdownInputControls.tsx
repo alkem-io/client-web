@@ -210,7 +210,6 @@ const MarkdownInputControls = memo(
               />
             )}
 
-            {/* @@@ WIP ~ #6607 */}
             <InsertVideoButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
 
             <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />

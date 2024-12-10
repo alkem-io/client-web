@@ -46,7 +46,6 @@ const FilledDetector = ({ value }: { value: string | undefined }) => {
   return null;
 };
 
-// @@@ WIP ~ #6607
 export const FormikMarkdownField = ({
   title,
   name,

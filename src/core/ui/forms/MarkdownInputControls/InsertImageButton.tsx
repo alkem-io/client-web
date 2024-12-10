@@ -50,7 +50,7 @@ const InsertImageButton = ({
 
   const insertImage = (imageProps: ImageProps) => {
     try {
-      editor?.commands.setImage(imageProps); // @@@ WIP ~ #6607: Закоментирай го и провери състоянието на редактора
+      editor?.commands.setImage(imageProps);
     } catch (error) {
       if (error instanceof Error) {
         notify(error.message, 'error');
