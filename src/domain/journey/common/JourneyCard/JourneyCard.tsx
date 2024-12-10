@@ -11,7 +11,8 @@ import ExpandableCardFooter from '@/core/ui/card/ExpandableCardFooter';
 import CardBanner from '@/core/ui/card/CardImageHeader';
 import { useTranslation } from 'react-i18next';
 import { JourneyCardBanner } from './Banner';
-import defaultCardBanner from '../../defaultVisuals/Card.jpg';
+import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import CardTags from '@/core/ui/card/CardTags';
 
 export interface JourneyCardProps extends ContributeCardProps {
@@ -65,7 +66,7 @@ const JourneyCard = ({
     <ContributeCard sx={{ position: 'relative' }} {...containerProps}>
       <Box {...wrapperProps}>
         <CardBanner
-          src={banner?.uri || defaultCardBanner}
+          src={banner?.uri || defaultVisualUrls[VisualType.Card]}
           alt={t('visuals-alt-text.banner.card.text', { altText: banner?.alternativeText })}
           overlay={bannerOverlay}
         />

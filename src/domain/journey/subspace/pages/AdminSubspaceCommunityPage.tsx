@@ -52,7 +52,6 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     memberRoleDefinition,
     leadRoleDefinition,
     permissions,
-    entitlements,
     onApplicationStateChange,
     onInvitationStateChange,
     onDeleteInvitation,
@@ -132,41 +131,45 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
             loading,
             onSelectCommunityGuidelinesTemplate,
             onUpdateCommunityGuidelines,
-          }) => (
-            <>
-              <PageContentBlockCollapsible
-                header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
-                primaryAction={
-                  <Button
-                    variant="outlined"
-                    onClick={() => setCommunityGuidelinesTemplatesDialogOpen(true)}
-                    startIcon={<InnovationLibraryIcon />}
-                  >
-                    {t('common.library')}
-                  </Button>
-                }
-              >
-                <CommunityGuidelinesForm
-                  data={communityGuidelines}
-                  loading={loading}
-                  onSubmit={onUpdateCommunityGuidelines}
-                  profileId={profileId}
+            onDeleteCommunityGuidelinesContent,
+          }) => {
+            return (
+              <>
+                <PageContentBlockCollapsible
+                  header={<BlockTitle>{t('community.communityGuidelines.title')}</BlockTitle>}
+                  primaryAction={
+                    <Button
+                      variant="outlined"
+                      onClick={() => setCommunityGuidelinesTemplatesDialogOpen(true)}
+                      startIcon={<InnovationLibraryIcon />}
+                    >
+                      {t('common.library')}
+                    </Button>
+                  }
+                >
+                  <CommunityGuidelinesForm
+                    data={communityGuidelines}
+                    loading={loading}
+                    onSubmit={onUpdateCommunityGuidelines}
+                    profileId={profileId}
+                    onDeleteCommunityGuidelines={onDeleteCommunityGuidelinesContent}
+                  />
+                </PageContentBlockCollapsible>
+                <ImportTemplatesDialog
+                  open={communityGuidelinesTemplatesDialogOpen}
+                  templateType={TemplateType.CommunityGuidelines}
+                  onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
+                  onSelectTemplate={onSelectCommunityGuidelinesTemplate}
+                  enablePlatformTemplates
+                  actionButton={
+                    <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
+                      {t('buttons.use')}
+                    </LoadingButton>
+                  }
                 />
-              </PageContentBlockCollapsible>
-              <ImportTemplatesDialog
-                open={communityGuidelinesTemplatesDialogOpen}
-                templateType={TemplateType.CommunityGuidelines}
-                onClose={() => setCommunityGuidelinesTemplatesDialogOpen(false)}
-                onSelectTemplate={onSelectCommunityGuidelinesTemplate}
-                enablePlatformTemplates
-                actionButton={
-                  <LoadingButton startIcon={<SystemUpdateAltIcon />} variant="contained">
-                    {t('buttons.use')}
-                  </LoadingButton>
-                }
-              />
-            </>
-          )}
+              </>
+            );
+          }}
         </CommunityGuidelinesContainer>
         <PageContentColumn columns={6}>
           <PageContentBlock>
@@ -199,7 +202,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
             />
           </PageContentBlock>
         </PageContentColumn>
-        {entitlements.virtualContributorsEnabled && (
+        {
           <PageContentColumn columns={6}>
             <PageContentBlock>
               <CommunityVirtualContributors
@@ -216,7 +219,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
               />
             </PageContentBlock>
           </PageContentColumn>
-        )}
+        }
       </PageContent>
     </SubspaceSettingsLayout>
   );

@@ -10,13 +10,22 @@ import { CircularProgress } from '@mui/material';
 interface EditTemplateDialogProps {
   open: boolean;
   onClose: DialogHeaderProps['onClose'];
+  onCancel?: () => void;
   onSubmit: (values: AnyTemplateFormSubmittedValues) => void;
   onDelete?: () => void;
   template: AnyTemplate | undefined;
   templateType: TemplateType;
 }
 
-const EditTemplateDialog = ({ template, templateType, open, onClose, onSubmit, onDelete }: EditTemplateDialogProps) => {
+const EditTemplateDialog = ({
+  template,
+  templateType,
+  open,
+  onClose,
+  onCancel,
+  onSubmit,
+  onDelete,
+}: EditTemplateDialogProps) => {
   const { data, loading } = useTemplateContentQuery({
     variables: {
       templateId: template?.id!,
@@ -34,6 +43,7 @@ const EditTemplateDialog = ({ template, templateType, open, onClose, onSubmit, o
     <CreateEditTemplateDialogBase
       open={open}
       onClose={onClose}
+      onCancel={onCancel}
       templateType={templateType}
       onDelete={onDelete}
       editMode

@@ -19,13 +19,14 @@ import { fontFamilySourceSans, subHeading } from '@/core/ui/typography/themeTypo
 import { ApmProvider, ApmUserSetter } from '@/core/analytics/apm/context';
 import { UserGeoProvider } from '@/core/analytics/geo';
 import { SentryTransactionScopeContextProvider } from '@/core/analytics/SentryTransactionScopeContext';
-import { useInitialChatWidgetMessage } from '@/main/guidance/chatWidget/ChatWidget';
 import { PendingMembershipsDialogProvider } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { NotFoundErrorBoundary } from '@/core/notFound/NotFoundErrorBoundary';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { GlobalErrorDialog } from './core/lazyLoading/GlobalErrorDialog';
+import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
+import { InAppNotificationsDialog } from './main/inAppNotifications/InAppNotificationsDialog';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
@@ -67,8 +68,6 @@ const GlobalStyles: FC = ({ children }) => {
 };
 
 const Root: FC = () => {
-  useInitialChatWidgetMessage();
-
   return (
     <StyledEngineProvider injectFirst>
       <RootThemeProvider>
@@ -87,18 +86,21 @@ const Root: FC = () => {
                                 <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
                                   <UserProvider>
                                     <PendingMembershipsDialogProvider>
-                                      <ApmUserSetter />
-                                      <ScrollToTop />
-                                      <NotFoundErrorBoundary
-                                        errorComponent={
-                                          <TopLevelLayout>
-                                            <Error404 />
-                                          </TopLevelLayout>
-                                        }
-                                      >
-                                        <TopLevelRoutes />
-                                        <GlobalErrorDialog />
-                                      </NotFoundErrorBoundary>
+                                      <InAppNotificationsProvider>
+                                        <ApmUserSetter />
+                                        <ScrollToTop />
+                                        <InAppNotificationsDialog />
+                                        <NotFoundErrorBoundary
+                                          errorComponent={
+                                            <TopLevelLayout>
+                                              <Error404 />
+                                            </TopLevelLayout>
+                                          }
+                                        >
+                                          <TopLevelRoutes />
+                                          <GlobalErrorDialog />
+                                        </NotFoundErrorBoundary>
+                                      </InAppNotificationsProvider>
                                     </PendingMembershipsDialogProvider>
                                   </UserProvider>
                                 </AlkemioApolloProvider>

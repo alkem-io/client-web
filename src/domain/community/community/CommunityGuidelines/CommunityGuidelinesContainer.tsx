@@ -29,10 +29,9 @@ interface CommunityGuidelinesContainerProvided {
   communityGuidelinesId: string | undefined;
   profileId: string | undefined; // ProfileId is required to create references
   loading: boolean;
-  removeCommunityGuidelinesContentLoading: boolean;
   onSelectCommunityGuidelinesTemplate: (template: Identifiable) => Promise<unknown>;
   onUpdateCommunityGuidelines: (values: CommunityGuidelines) => Promise<unknown>;
-  onDeleteAndSaveContent?: () => void;
+  onDeleteCommunityGuidelinesContent?: () => Promise<unknown>;
 }
 
 interface CommunityGuidelinesContainerProps extends SimpleContainerProps<CommunityGuidelinesContainerProvided> {
@@ -64,8 +63,7 @@ const CommunityGuidelinesContainer = ({ communityId, children }: CommunityGuidel
   const communityGuidelinesId = communityGuidelines?.id;
   const profileId = data?.lookup.community?.guidelines.profile.id;
 
-  const [removeCommunityGuidelinesContent, { loading: removeCommunityGuidelinesContentLoading }] =
-    useRemoveCommunityGuidelinesContentMutation();
+  const [removeCommunityGuidelinesContent] = useRemoveCommunityGuidelinesContentMutation();
   const [updateGuidelines, { loading: submittingGuidelines }] = useUpdateCommunityGuidelinesMutation();
 
   const onUpdateCommunityGuidelines = async (values: CommunityGuidelines) => {
@@ -99,7 +97,7 @@ const CommunityGuidelinesContainer = ({ communityId, children }: CommunityGuidel
     });
   };
 
-  const onDeleteAndSaveContent = async () => {
+  const onDeleteCommunityGuidelinesContent = async () => {
     if (!communityGuidelinesId) {
       return;
     }
@@ -188,11 +186,10 @@ const CommunityGuidelinesContainer = ({ communityId, children }: CommunityGuidel
         communityGuidelines,
         communityGuidelinesId,
         profileId,
-        removeCommunityGuidelinesContentLoading,
         loading: loading || submittingGuidelines || removingReference || addingReference,
         onUpdateCommunityGuidelines,
         onSelectCommunityGuidelinesTemplate,
-        onDeleteAndSaveContent,
+        onDeleteCommunityGuidelinesContent,
       })}
     </>
   );

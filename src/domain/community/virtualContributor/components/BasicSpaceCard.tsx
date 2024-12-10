@@ -3,7 +3,8 @@ import Avatar from '@/core/ui/avatar/Avatar';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import RouterLink from '@/core/ui/link/RouterLink';
-import defaultJourneyCardBanner from '@/domain/journey/defaultVisuals/Card.jpg';
+import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
 
 // TODO: add cardBanner if we want support of Spaces as BOK
 export interface BasicSpaceProps {
@@ -26,7 +27,7 @@ const BasicSpaceCard = ({ space }: { space: BasicSpaceProps | undefined }) => {
     <BadgeCardView
       visual={
         <Avatar
-          src={space.avatar?.uri || defaultJourneyCardBanner}
+          src={space.avatar?.uri || defaultVisualUrls[VisualType.Card]}
           alt={t('common.avatar-of', { user: space.displayName })}
         >
           {space.displayName}

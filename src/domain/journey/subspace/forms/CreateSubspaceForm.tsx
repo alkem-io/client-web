@@ -6,24 +6,28 @@ import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTransl
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH, MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import Gutters from '@/core/ui/grid/Gutters';
 import { TagsetField } from '@/domain/platform/admin/components/Common/TagsetSegment';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
-import { JourneyCreationForm } from '@/domain/shared/components/JorneyCreationDialog/JourneyCreationForm';
+import {
+  JourneyCreationForm,
+  JourneyFormValues,
+} from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationForm';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
+import { FormikRadiosSwitch } from '@/core/ui/forms/FormikRadiosSwitch';
+import SubspaceTemplateSelector from '@/domain/templates/components/TemplateSelectors/SubspaceTemplateSelector';
+import Gutters from '@/core/ui/grid/Gutters';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
+import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { Theme, useMediaQuery } from '@mui/material';
+import { gutters } from '@/core/ui/grid/utils';
 
 const FormikEffect = FormikEffectFactory<FormValues>();
 
-type FormValues = {
-  displayName: string;
-  tagline: string;
-  background: string;
-  vision: string;
-  tags: string[];
-  addTutorialCallouts: boolean;
-  addCallouts: boolean;
-};
+type FormValues = Pick<
+  JourneyFormValues,
+  'displayName' | 'tagline' | 'background' | 'tags' | 'addTutorialCallouts' | 'collaborationTemplateId' | 'visuals'
+>;
 
 interface CreateSubspaceFormProps extends JourneyCreationForm {}
 
@@ -33,6 +37,7 @@ export const CreateSubspaceForm = ({
   onChanged,
 }: PropsWithChildren<CreateSubspaceFormProps>) => {
   const { t } = useTranslation();
+  const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
   const validationRequiredString = t('forms.validations.required');
 
@@ -41,20 +46,23 @@ export const CreateSubspaceForm = ({
       displayName: value.displayName,
       tagline: value.tagline,
       background: value.background,
-      vision: value.vision,
       tags: value.tags,
       addTutorialCallouts: value.addTutorialCallouts,
-      addCallouts: value.addCallouts,
+      collaborationTemplateId: value.collaborationTemplateId,
+      visuals: value.visuals,
     });
 
   const initialValues: FormValues = {
     displayName: '',
     tagline: '',
     background: '',
-    vision: '',
     tags: [],
     addTutorialCallouts: false,
-    addCallouts: true,
+    collaborationTemplateId: undefined,
+    visuals: {
+      avatar: { file: undefined, altText: '' },
+      cardBanner: { file: undefined, altText: '' },
+    },
   };
 
   const validationSchema = yup.object().shape({
@@ -68,11 +76,10 @@ export const CreateSubspaceForm = ({
       .string()
       .trim()
       .min(3, MessageWithPayload('forms.validations.minLength'))
-      .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
-      .required(validationRequiredString),
-    background: MarkdownValidator(MARKDOWN_TEXT_LENGTH).trim().required(validationRequiredString),
-    vision: MarkdownValidator(MARKDOWN_TEXT_LENGTH).trim().required(validationRequiredString),
+      .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+    background: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
     tags: yup.array().of(yup.string().min(2)).notRequired(),
+    collaborationTemplateId: yup.string().nullable(),
   });
 
   return (
@@ -85,48 +92,53 @@ export const CreateSubspaceForm = ({
     >
       {() => (
         <Form noValidate>
-          <Gutters disablePadding>
-            <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
-            <FormikInputField
-              name="displayName"
-              title={t('context.subspace.displayName.title')}
-              helperText={t('context.subspace.displayName.description')}
-              disabled={isSubmitting}
-              maxLength={SMALL_TEXT_LENGTH}
+          <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
+          <FormikInputField
+            name="displayName"
+            title={t('context.subspace.displayName.title')}
+            helperText={t('context.subspace.displayName.description')}
+            disabled={isSubmitting}
+            maxLength={SMALL_TEXT_LENGTH}
+          />
+          <FormikInputField
+            name="tagline"
+            title={t('context.subspace.tagline.title')}
+            helperText={t('context.subspace.tagline.description')}
+            disabled={isSubmitting}
+            maxLength={SMALL_TEXT_LENGTH}
+          />
+          <FormikMarkdownField
+            name="background"
+            title={t('context.subspace.background.title')}
+            rows={5}
+            helperText={t('context.subspace.background.description')}
+            disabled={isSubmitting}
+            maxLength={MARKDOWN_TEXT_LENGTH}
+            temporaryLocation
+          />
+          <TagsetField
+            name="tags"
+            disabled={isSubmitting}
+            title={t('context.subspace.tags.title')}
+            helperText={t('context.subspace.tags.description')}
+            helpTextIcon={t('context.subspace.tags.tooltip')}
+          />
+          <Gutters padding={theme => `${gutters()(theme)} 0 0 0`}>
+            <PageContentBlock sx={{ flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between' }}>
+              <FormikVisualUpload name="visuals.avatar" visualType={VisualType.Avatar} flex={1} />
+              <FormikVisualUpload name="visuals.cardBanner" visualType={VisualType.Card} flex={1} />
+            </PageContentBlock>
+            <SubspaceTemplateSelector name="collaborationTemplateId" disablePadding />
+            <FormikRadiosSwitch
+              name="addTutorialCallouts"
+              label="Tutorials:"
+              options={[
+                { label: 'On', value: true },
+                { label: 'Off', value: false },
+              ]}
+              row
+              disablePadding
             />
-            <FormikInputField
-              name="tagline"
-              title={t('context.subspace.tagline.title')}
-              helperText={t('context.subspace.tagline.description')}
-              disabled={isSubmitting}
-              maxLength={SMALL_TEXT_LENGTH}
-            />
-            <FormikMarkdownField
-              name="background"
-              title={t('context.subspace.background.title')}
-              rows={5}
-              helperText={t('context.subspace.background.description')}
-              disabled={isSubmitting}
-              maxLength={MARKDOWN_TEXT_LENGTH}
-              temporaryLocation
-            />
-            <FormikMarkdownField
-              name="vision"
-              title={t('context.subspace.vision.title')}
-              rows={5}
-              helperText={t('context.subspace.vision.description')}
-              disabled={isSubmitting}
-              maxLength={MARKDOWN_TEXT_LENGTH}
-              temporaryLocation
-            />
-            <TagsetField
-              name="tags"
-              disabled={isSubmitting}
-              title={t('context.subspace.tags.title')}
-              helperText={t('context.subspace.tags.description')}
-            />
-            <FormikSwitch name="addCallouts" title={t('context.subspace.addCallouts.title')} />
-            <FormikSwitch name="addTutorialCallouts" title={t('context.subspace.addTutorialCallouts.title')} />
           </Gutters>
         </Form>
       )}

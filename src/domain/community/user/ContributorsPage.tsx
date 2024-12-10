@@ -66,12 +66,13 @@ const ContributorsPage = () => {
           </PageContentBlockSeamless>
         )}
         <ContributorsSearchContainer searchTerms={searchTermsDebounced} pageSize={ITEMS_PER_PAGE}>
-          {({ users, organizations }) => {
+          {({ users, organizations, virtualContributors }) => {
             return (
               <ContributorsView
                 usersPaginated={users}
                 showUsers={isAuthenticated}
                 organizationsPaginated={organizations}
+                virtualContributors={virtualContributors}
               />
             );
           }}
