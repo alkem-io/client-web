@@ -1140,6 +1140,17 @@
       },
       "inviteToRole": "Invite to be a: "
     },
+    "inviteContributorsDialog": {
+      "vcs": {
+        "onAccount": {
+          "title": "Virtual Contributors from my account"
+        },
+        "inLibrary": {
+          "title": "Other Virtual Contributors"
+        }
+      },
+      "successfullyAdded": "{{contributor}} added successfully"
+    },
     "confirmation-dialog": {
       "delete-comment": {
         "confirmation-title": "Deleting comment",

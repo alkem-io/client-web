@@ -1,12 +1,19 @@
 import { useMemo } from 'react';
 import {
-  useCommunityMembersListQuery,
   useAssignRoleToVirtualContributorMutation,
   useAvailableVirtualContributorsLazyQuery,
   useAvailableVirtualContributorsInLibraryLazyQuery,
   useBodyOfKnowledgeProfileLazyQuery,
+  useCommunityVirtualMembersListQuery,
+  useRemoveRoleFromVirtualContributorMutation,
+  refetchCommunityMembersListQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { CommunityRoleType, SearchVisibility, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  CommunityRoleType,
+  SearchVisibility,
+  SpaceLevel,
+} from '@/core/apollo/generated/graphql-schema';
 import useInviteUsers from '@/domain/community/invitations/useInviteUsers';
 import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { Identifiable } from '@/core/utils/Identifiable';
@@ -43,8 +50,8 @@ const useInviteContributors = ({
   const {
     data: roleSetData,
     loading: loadingMembers,
-    refetch: refetchCommunityMembers,
-  } = useCommunityMembersListQuery({
+    refetch: refetchCommunityVirtualMembers,
+  } = useCommunityVirtualMembersListQuery({
     variables: {
       roleSetId,
       spaceId,
@@ -52,6 +59,17 @@ const useInviteContributors = ({
     },
     skip: !roleSetId || !spaceId,
   });
+
+  const roleSetMyPrivileges = roleSetData?.lookup.roleSet?.authorization?.myPrivileges ?? [];
+
+  const permissions = {
+    canAddMembers: roleSetMyPrivileges.some(priv => priv === AuthorizationPrivilege.CommunityAddMember),
+    // the following privilege allows Admins of a space without CommunityAddMember privilege, to
+    // be able to add VC from the account; CommunityAddMember overrides this privilege as it's not granted to PAs
+    canAddVirtualContributorsFromAccount: roleSetMyPrivileges.some(
+      priv => priv === AuthorizationPrivilege.CommunityAddMemberVcFromAccount
+    ),
+  };
 
   const [getVcBoKProfile, { loading: bokProfileLoading }] = useBodyOfKnowledgeProfileLazyQuery();
   const getBoKProfile = async (bodyOfKnowledgeID: string) => {
@@ -75,7 +93,8 @@ const useInviteContributors = ({
   const filterExisting = (vc: VirtualContributorNameProps, existingVCs) =>
     !existingVCs.some(member => member.id === vc.id);
 
-  const [fetchAllVirtualContributorsInLibrary] = useAvailableVirtualContributorsInLibraryLazyQuery();
+  const [fetchAllVirtualContributorsInLibrary, { loading: libraryVCsLoading }] =
+    useAvailableVirtualContributorsInLibraryLazyQuery();
   const getAvailableVirtualContributorsInLibrary = async (filter: string | undefined) => {
     const { data } = await fetchAllVirtualContributorsInLibrary();
 
@@ -87,7 +106,7 @@ const useInviteContributors = ({
     );
   };
 
-  const [fetchAllVirtualContributors] = useAvailableVirtualContributorsLazyQuery();
+  const [fetchAllVirtualContributors, { loading: accountVCsLoading }] = useAvailableVirtualContributorsLazyQuery();
   const getAvailableVirtualContributors = async (filter: string | undefined, all: boolean = false) => {
     const { data } = await fetchAllVirtualContributors({
       variables: {
@@ -121,7 +140,7 @@ const useInviteContributors = ({
   };
 
   const [addVirtualContributor] = useAssignRoleToVirtualContributorMutation();
-  const handleAddVirtualContributor = async (virtualContributorId: string) => {
+  const onAddVirtualContributor = async (virtualContributorId: string) => {
     if (!roleSetId) {
       return;
     }
@@ -132,22 +151,45 @@ const useInviteContributors = ({
         role: CommunityRoleType.Member,
       },
     });
-    return refetchCommunityMembers();
+    refetchCommunityMembersListQuery({ roleSetId, spaceId });
+
+    return refetchCommunityVirtualMembers();
+  };
+
+  const [removeVirtualContributor] = useRemoveRoleFromVirtualContributorMutation();
+  const onRemoveVirtualContributor = async (virtualContributorId: string) => {
+    if (!roleSetId) {
+      return;
+    }
+    await removeVirtualContributor({
+      variables: {
+        roleSetId,
+        contributorId: virtualContributorId,
+        role: CommunityRoleType.Member,
+      },
+    });
+    refetchCommunityMembersListQuery({ roleSetId, spaceId });
+
+    return refetchCommunityVirtualMembers();
   };
 
   const { inviteContributor: inviteExistingUser, platformInviteToCommunity: inviteExternalUser } =
     useInviteUsers(roleSetId);
 
   return {
+    permissions,
     virtualContributors,
-    onAddVirtualContributor: handleAddVirtualContributor,
+    onAddVirtualContributor,
+    onRemoveVirtualContributor,
     getAvailableVirtualContributors,
     getAvailableVirtualContributorsInLibrary,
     inviteExistingUser,
     inviteExternalUser,
     getBoKProfile,
-    loading: loadingMembers,
+    loadingMembers,
     bokProfileLoading,
+    accountVCsLoading,
+    libraryVCsLoading,
   };
 };
 
