@@ -2032,12 +2032,12 @@
           "subspaces": {
             "description": "Here you can edit Subspaces for this Space.",
             "defaultSettings": {
-              "title": "Default settings",
+              "title": "Default Subspace Template",
               "description": "Choose the default settings that will apply when creating a new Subspace within this Space. These settings can be modified during the creation process or at a later time.",
               "defaultCollaborationTemplate": {
-                "selectDifferentTemplate": "Select Collaboration Template",
-                "title": "Selecting the Default Collaboration Template",
-                "description": "Customize the default template for newly created Subspaces. Admins can modify it later in the Innovation flow settings. \n\nBelow you can choose between the templates collected in the Space Templates library."
+                "selectDifferentTemplate": "Change Default Template",
+                "title": "Change Default Subspace Template",
+                "description": "Customize the default template for newly created Subspaces.<br/><br/>Below you can choose between the templates collected in the Space Templates library. If you’re looking to create new templates or explore additional templates, <library>click here</library> to access this library."
               }
             }
           }
