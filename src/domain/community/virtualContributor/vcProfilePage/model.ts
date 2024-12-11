@@ -1,6 +1,7 @@
+import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 import { BasicSpaceProps } from '../components/BasicSpaceCard';
 
-type VirtualContributor = {
+export type VirtualContributorProfile = {
   profile: {
     displayName: string;
     description?: string;
@@ -25,11 +26,14 @@ type VirtualContributor = {
       url: string;
     };
   };
+  aiPersona?: {
+    bodyOfKnowledge?: string;
+    bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType;
+    bodyOfKnowledgeID?: string;
+  };
 };
 
 export type VCProfilePageViewProps = {
-  hasBokId: boolean;
-  bokDescription?: string;
   bokProfile?: BasicSpaceProps;
-  virtualContributor?: VirtualContributor;
+  virtualContributor?: VirtualContributorProfile;
 };

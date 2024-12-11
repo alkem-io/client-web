@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogContent, DialogActions, Button } from '@mui/material';
-import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaBodyOfKnowledgeType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
@@ -11,6 +11,10 @@ import InviteContributorsList from './InviteContributorsList';
 import { PageTitle } from '@/core/ui/typography';
 import InviteVirtualContributorDialog from '../invitations/InviteVirtualContributorDialog';
 import PreviewContributorDialog from './PreviewContributorDialog';
+import VCProfileContentView from '../virtualContributor/vcProfilePage/VCProfileContentView';
+import { VirtualContributorProfile } from '../virtualContributor/vcProfilePage/model';
+import { BasicSpaceProps } from '../virtualContributor/components/BasicSpaceCard';
+import Loading from '@/core/ui/loading/Loading';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
@@ -22,6 +26,8 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     getAvailableVirtualContributorsInLibrary,
     inviteExistingUser,
     onAddVirtualContributor,
+    getBoKProfile,
+    bokProfileLoading,
   } = useInviteContributors({ roleSetId, spaceId, spaceLevel: SpaceLevel.Space });
 
   const [onAccount, setOnAccount] = useState<ContributorProps[]>();
@@ -30,6 +36,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const [openInviteDialog, setOpenInviteDialog] = useState(false);
   const [action, setAction] = useState<'add' | 'invite'>();
   const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState<string>('');
+  const [bokProfile, setBoKProfile] = useState<BasicSpaceProps>();
 
   const fetchVCs = async () => {
     let acc = await getAvailableVirtualContributors('', false);
@@ -43,9 +50,23 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     fetchVCs();
   }, [virtualContributors]);
 
-  const onContributorClick = (id: string) => {
+  const getContributorsBoKProfile = async () => {
+    const vc = getContributorById(selectedVirtualContributorId);
+    const isBoKSpace = vc?.aiPersona?.bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
+    const bodyOfKnowledgeID = vc?.aiPersona?.bodyOfKnowledgeID;
+    if (!isBoKSpace || !bodyOfKnowledgeID) {
+      return undefined;
+    }
+
+    return await getBoKProfile(bodyOfKnowledgeID);
+  };
+
+  const onContributorClick = async (id: string) => {
     setSelectedVirtualContributorId(id);
     setOpenPreviewDialog(true);
+
+    const vcBoK = await getContributorsBoKProfile();
+    setBoKProfile(vcBoK);
   };
 
   const onAccountContributorClick = (id: string) => {
@@ -69,6 +90,10 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   };
 
   const hasOnAccount = onAccount && onAccount.length > 0;
+
+  const selectedContributor = selectedVirtualContributorId
+    ? getContributorById(selectedVirtualContributorId)
+    : undefined;
 
   // todo:b add checks for privileges on the Actions
 
@@ -97,11 +122,11 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
           onInviteUser={inviteExistingUser}
         />
       )}
-      {openPreviewDialog && selectedVirtualContributorId && (
+      {openPreviewDialog && selectedContributor && (
         <PreviewContributorDialog
           open={openPreviewDialog}
           onClose={() => setOpenPreviewDialog(false)}
-          contributor={getContributorById(selectedVirtualContributorId)}
+          contributor={selectedContributor}
           actions={
             <>
               {action === 'add' && (
@@ -116,7 +141,13 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
               )}
             </>
           }
-        />
+        >
+          {bokProfileLoading && <Loading />}
+          <VCProfileContentView
+            bokProfile={bokProfile as unknown as BasicSpaceProps}
+            virtualContributor={selectedContributor as unknown as VirtualContributorProfile}
+          />
+        </PreviewContributorDialog>
       )}
     </DialogWithGrid>
   );

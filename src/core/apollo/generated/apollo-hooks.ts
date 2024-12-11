@@ -1231,6 +1231,11 @@ export const VirtualContributorFullFragmentDoc = gql`
       }
       url
     }
+    aiPersona {
+      bodyOfKnowledge
+      bodyOfKnowledgeType
+      bodyOfKnowledgeID
+    }
   }
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}

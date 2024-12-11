@@ -3540,6 +3540,8 @@ export type Mutation = {
   messageUser: Scalars['String'];
   /** Moves the specified Contribution to another Callout. */
   moveContributionToCallout: CalloutContribution;
+  /** Refresh the Bodies of Knowledge on All VCs */
+  refreshAllBodiesOfKnowledge: Scalars['Boolean'];
   /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean'];
   /** Empties the CommunityGuidelines. */
@@ -16216,6 +16218,14 @@ export type AvailableVirtualContributorsQuery = {
                     | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                     | undefined;
                 };
+                aiPersona?:
+                  | {
+                      __typename?: 'AiPersona';
+                      bodyOfKnowledge?: string | undefined;
+                      bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+                      bodyOfKnowledgeID?: string | undefined;
+                    }
+                  | undefined;
               }>;
             };
           };
@@ -16247,6 +16257,14 @@ export type AvailableVirtualContributorsQuery = {
                   | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
                   | undefined;
               };
+              aiPersona?:
+                | {
+                    __typename?: 'AiPersona';
+                    bodyOfKnowledge?: string | undefined;
+                    bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+                    bodyOfKnowledgeID?: string | undefined;
+                  }
+                | undefined;
             }>;
           };
         }
@@ -16277,6 +16295,14 @@ export type AvailableVirtualContributorsQuery = {
         | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
         | undefined;
     };
+    aiPersona?:
+      | {
+          __typename?: 'AiPersona';
+          bodyOfKnowledge?: string | undefined;
+          bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+          bodyOfKnowledgeID?: string | undefined;
+        }
+      | undefined;
   }>;
 };
 
@@ -16316,6 +16342,14 @@ export type AvailableVirtualContributorsInLibraryQuery = {
             | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
             | undefined;
         };
+        aiPersona?:
+          | {
+              __typename?: 'AiPersona';
+              bodyOfKnowledge?: string | undefined;
+              bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+              bodyOfKnowledgeID?: string | undefined;
+            }
+          | undefined;
       }>;
     };
   };
@@ -16346,6 +16380,14 @@ export type VirtualContributorFullFragment = {
       | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
       | undefined;
   };
+  aiPersona?:
+    | {
+        __typename?: 'AiPersona';
+        bodyOfKnowledge?: string | undefined;
+        bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+        bodyOfKnowledgeID?: string | undefined;
+      }
+    | undefined;
 };
 
 export type AllOrganizationsQueryVariables = Exact<{

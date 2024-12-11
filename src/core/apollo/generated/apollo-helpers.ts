@@ -2126,6 +2126,7 @@ export type MutationKeySpecifier = (
   | 'licenseResetOnAccount'
   | 'messageUser'
   | 'moveContributionToCallout'
+  | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
   | 'removeCommunityGuidelinesContent'
   | 'removeMessageOnRoom'
@@ -2294,6 +2295,7 @@ export type MutationFieldPolicy = {
   licenseResetOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;

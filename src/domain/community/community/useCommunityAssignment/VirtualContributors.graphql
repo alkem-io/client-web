@@ -60,6 +60,11 @@ fragment VirtualContributorFull on VirtualContributor {
     }
     url
   }
+  aiPersona {
+    bodyOfKnowledge
+    bodyOfKnowledgeType
+    bodyOfKnowledgeID
+  }
 }
 
 

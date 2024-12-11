@@ -19,9 +19,16 @@ interface PreviewContributorDialogProps {
   onClose: () => void;
   contributor: ContributorProps | undefined;
   actions?: ReactNode;
+  children?: ReactNode;
 }
 
-const PreviewContributorDialog = ({ open = false, contributor, onClose, actions }: PreviewContributorDialogProps) => {
+const PreviewContributorDialog = ({
+  children,
+  open = false,
+  contributor,
+  onClose,
+  actions,
+}: PreviewContributorDialogProps) => {
   const { t } = useTranslation();
 
   const { profile } = contributor ?? {};
@@ -67,7 +74,7 @@ const PreviewContributorDialog = ({ open = false, contributor, onClose, actions 
             </PageContentBlockSeamless>
           </PageContentColumn>
           <PageContentColumn columns={9} alignSelf="stretch" flexDirection="column">
-            {/* Profile in here */}
+            {children}
           </PageContentColumn>
         </PageContentBlockGrid>
       </DialogContent>

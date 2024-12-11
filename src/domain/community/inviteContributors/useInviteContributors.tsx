@@ -4,6 +4,7 @@ import {
   useAssignRoleToVirtualContributorMutation,
   useAvailableVirtualContributorsLazyQuery,
   useAvailableVirtualContributorsInLibraryLazyQuery,
+  useBodyOfKnowledgeProfileLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { CommunityRoleType, SearchVisibility, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useInviteUsers from '@/domain/community/invitations/useInviteUsers';
@@ -51,6 +52,17 @@ const useInviteContributors = ({
     },
     skip: !roleSetId || !spaceId,
   });
+
+  const [getVcBoKProfile, { loading: bokProfileLoading }] = useBodyOfKnowledgeProfileLazyQuery();
+  const getBoKProfile = async (bodyOfKnowledgeID: string) => {
+    const { data } = await getVcBoKProfile({
+      variables: {
+        spaceId: bodyOfKnowledgeID!,
+      },
+    });
+
+    return data?.lookup?.space?.profile;
+  };
 
   const virtualContributors = useMemo(() => {
     const roleSet = roleSetData?.lookup.roleSet;
@@ -133,7 +145,9 @@ const useInviteContributors = ({
     getAvailableVirtualContributorsInLibrary,
     inviteExistingUser,
     inviteExternalUser,
+    getBoKProfile,
     loading: loadingMembers,
+    bokProfileLoading,
   };
 };
 
