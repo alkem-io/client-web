@@ -1,4 +1,4 @@
-import { FC, useState, MouseEvent } from 'react';
+import { FC, cloneElement, isValidElement, useCallback, useState, MouseEvent, Children } from 'react';
 import { ClickAwayListener, IconButton, Menu } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useTranslation } from 'react-i18next';
@@ -8,15 +8,32 @@ const ActionsMenu: FC = ({ children }) => {
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
   const settingsOpened = Boolean(settingsAnchorEl);
 
-  const onMenuClick = (event: MouseEvent<HTMLButtonElement>) => {
+  // prevent the redirection of Link components when clicking on the ActionsMenu
+  const onMenuClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
     setSettingsAnchorEl(event.currentTarget);
-  };
+  }, []);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setSettingsAnchorEl(null);
-  };
+  }, [setSettingsAnchorEl]);
+
+  // close the menu on every item click
+  const clonedChildren = Children.map(children, child => {
+    if (isValidElement(child)) {
+      return cloneElement(child as React.ReactElement, {
+        onClick: (event: React.MouseEvent<HTMLElement>) => {
+          if (child.props.onClick) {
+            child.props.onClick(event);
+          }
+          handleClose();
+        },
+      });
+    }
+
+    return child;
+  });
 
   return (
     <div onClick={e => e.stopPropagation()}>
@@ -40,7 +57,7 @@ const ActionsMenu: FC = ({ children }) => {
             horizontal: 'right',
           }}
         >
-          {children}
+          {clonedChildren}
         </Menu>
       </ClickAwayListener>
     </div>

@@ -52,7 +52,6 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     memberRoleDefinition,
     leadRoleDefinition,
     permissions,
-    entitlements,
     onApplicationStateChange,
     onInvitationStateChange,
     onDeleteInvitation,
@@ -203,7 +202,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
             />
           </PageContentBlock>
         </PageContentColumn>
-        {entitlements.virtualContributorsEnabled && (
+        {
           <PageContentColumn columns={6}>
             <PageContentBlock>
               <CommunityVirtualContributors
@@ -220,7 +219,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
               />
             </PageContentBlock>
           </PageContentColumn>
-        )}
+        }
       </PageContent>
     </SubspaceSettingsLayout>
   );
