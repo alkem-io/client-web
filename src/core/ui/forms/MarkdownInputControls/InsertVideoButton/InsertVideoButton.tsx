@@ -22,12 +22,6 @@ interface InsertVideoButtonProps extends IconButtonProps {
   onDialogClose?: () => void;
 }
 
-const black = {
-  200: '#303030',
-  400: '#171717',
-  600: '#131313',
-};
-
 const grey = {
   50: '#F3F6F9',
   200: '#DAE2ED',
@@ -35,11 +29,16 @@ const grey = {
   700: '#434D5B',
   900: '#1C2025',
 };
+const black = {
+  200: '#303030',
+  400: '#171717',
+  600: '#131313',
+};
 const validSources = [
-  'https://player.vimeo.com/video/', // Vimeo
-  'https://www.youtube.com/embed/', // YouTube
-  'https://demo.arcade.software/', // Arcade
-  'https://issuu.com/', // Issuu
+  'https://player.vimeo.com',
+  'https://www.youtube.com',
+  'https://demo.arcade.software',
+  'https://issuu.com', // Important - not tested because in order to get embed code from this site one must have account with paid plan!
 ];
 
 export const InsertVideoButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps }: InsertVideoButtonProps) => {
@@ -119,7 +118,9 @@ export const InsertVideoButton = ({ editor, onDialogOpen, onDialogClose, ...butt
       return;
     }
 
-    const isValidSource = validSources.some(validSrc => src.includes(validSrc));
+    const embedCodeSrc = srcMatch[1];
+    const srcOrigin = new URL(embedCodeSrc).origin;
+    const isValidSource = validSources.some(vS => vS === srcOrigin);
 
     if (!isValidSource) {
       notify(t('components.wysiwyg-editor.embed.invalidOrUnsupportedEmbed'), 'error');
@@ -127,10 +128,8 @@ export const InsertVideoButton = ({ editor, onDialogOpen, onDialogClose, ...butt
       return;
     }
 
-    const srcValue = srcMatch[1];
-
     try {
-      editor?.commands.setIframe({ src: srcValue });
+      editor?.commands.setIframe({ src: embedCodeSrc });
     } catch (error) {
       if (error instanceof Error) {
         notify(error.message, 'error');
@@ -156,7 +155,7 @@ export const InsertVideoButton = ({ editor, onDialogOpen, onDialogClose, ...butt
         ref={buttonRef}
         disabled={isIconButtonDisabled}
         onClick={handleOnIconButtonClick}
-        aria-label={t('components.wysiwyg-editor.toolbar.emoji.emoji')}
+        aria-label={t('components.wysiwyg-editor.toolbar.embed.video')}
         {...buttonProps}
       >
         <SmartScreenOutlinedIcon />

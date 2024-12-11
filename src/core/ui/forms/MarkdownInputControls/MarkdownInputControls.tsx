@@ -38,6 +38,21 @@ interface ControlsButtonProps extends IconButtonProps {
   specs?: string | [attributes: {}] | [nodeOrMark: string, attributes?: {}];
 }
 
+const sanitizeUrl = (url: string): string => {
+  try {
+    const parsedUrl = new URL(url);
+    const allowedProtocols = ['http:', 'https:'];
+
+    if (!allowedProtocols.includes(parsedUrl.protocol)) {
+      return 'about:blank';
+    }
+
+    return url;
+  } catch (e) {
+    return 'about:blank';
+  }
+};
+
 /*
 Tabs component used without real Tabs, because MUI Tabs component has a very useful variant="scrollable"
 that adds buttons on the sides of the toolbar when the buttons don't fit in a single row */
@@ -70,13 +85,20 @@ export const iFrame = Node.create({
       height: {
         default: '315',
       },
+      sandbox: {
+        default: 'allow-scripts allow-same-origin allow-popups',
+      },
     };
   },
   parseHTML() {
     return [{ tag: 'iframe' }];
   },
   renderHTML({ HTMLAttributes }) {
-    return ['iframe', HTMLAttributes];
+    const safeAttributes = {
+      ...HTMLAttributes,
+      src: sanitizeUrl(HTMLAttributes.src),
+    };
+    return ['iframe', safeAttributes];
   },
 });
 
