@@ -136,7 +136,7 @@ export const InAppNotificationBaseView = ({
   const renderComments = useCallback(() => {
     if (values.comment) {
       return (
-        <WrapperMarkdown disableParagraphPadding caption plain>
+        <WrapperMarkdown disableParagraphPadding caption>
           {getTruncatedComment(values.comment)}
         </WrapperMarkdown>
       );
@@ -153,7 +153,7 @@ export const InAppNotificationBaseView = ({
         component={Wrapper}
         to={resource.url}
         onClick={onNotificationClick}
-        paddingX={gutters(2)}
+        paddingLeft={gutters(2)}
         paddingY={gutters(0.5)}
         sx={{
           borderRadius: 0,
