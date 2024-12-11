@@ -22,6 +22,19 @@ interface InsertVideoButtonProps extends IconButtonProps {
   onDialogClose?: () => void;
 }
 
+const black = {
+  200: '#303030',
+  400: '#171717',
+  600: '#131313',
+};
+
+const grey = {
+  50: '#F3F6F9',
+  200: '#DAE2ED',
+  300: '#C7D0DD',
+  700: '#434D5B',
+  900: '#1C2025',
+};
 const validSources = [
   'https://player.vimeo.com/video/', // Vimeo
   'https://www.youtube.com/embed/', // YouTube
@@ -48,28 +61,6 @@ export const InsertVideoButton = ({ editor, onDialogOpen, onDialogClose, ...butt
     setSrc('');
   };
 
-  const blue = {
-    100: '#DAECFF',
-    200: '#b6daff',
-    400: '#3399FF',
-    500: '#007FFF',
-    600: '#0072E5',
-    900: '#003A75',
-  };
-
-  const grey = {
-    50: '#F3F6F9',
-    100: '#E5EAF2',
-    200: '#DAE2ED',
-    300: '#C7D0DD',
-    400: '#B0B8C4',
-    500: '#9DA8B7',
-    600: '#6B7A90',
-    700: '#434D5B',
-    800: '#303740',
-    900: '#1C2025',
-  };
-
   const Textarea = styled(BaseTextareaAutosize)(
     ({ theme }) => `
     box-sizing: border-box;
@@ -86,13 +77,13 @@ export const InsertVideoButton = ({ editor, onDialogOpen, onDialogClose, ...butt
     box-shadow: 0 2px 2px ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
 
     &:hover {
-      border-color: ${blue[400]};
+      border-color: ${black[400]};
     }
 
     &:focus {
       outline: 0;
-      border-color: ${blue[400]};
-      box-shadow: 0 0 0 3px ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
+      border-color: ${black[400]};
+      box-shadow: 0 0 0 1px ${theme.palette.mode === 'dark' ? black[600] : black[200]};
     }
 
     /* firefox */
