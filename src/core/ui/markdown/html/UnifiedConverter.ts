@@ -62,7 +62,7 @@ const UnifiedConverter = (): Converter => {
             em: trimmer('em'),
             iframe: (state, element) => ({
               type: 'html',
-              value: `<iframe src="${element.properties.src}" position="absolute" top="0" left="0" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>`,
+              value: `<iframe src="${element.properties.src}" position="absolute" top="0" left="0" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" title="Subpace Collaboration Tools" loading="lazy" ></iframe>`,
             }),
           },
         })
