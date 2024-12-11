@@ -42,8 +42,16 @@ const sanitizeUrl = (url: string): string => {
   try {
     const parsedUrl = new URL(url);
     const allowedProtocols = ['http:', 'https:'];
+    // 'javascript:' is used to prevent XSS attacks by blocking dangerous protocols
+    const dangerousProtocols = ['javascript:', 'data:', 'vbscript:'];
 
-    if (!allowedProtocols.includes(parsedUrl.protocol)) {
+    if (!allowedProtocols.includes(parsedUrl.protocol) || dangerousProtocols.some(p => url.toLowerCase().includes(p))) {
+      return 'about:blank';
+    }
+
+    // Ensure the URL doesn't contain encoded versions of dangerous protocols
+    const decodedUrl = decodeURIComponent(url.toLowerCase());
+    if (dangerousProtocols.some(p => decodedUrl.includes(p))) {
       return 'about:blank';
     }
 
@@ -86,7 +94,7 @@ export const iFrame = Node.create({
         default: '315',
       },
       sandbox: {
-        default: 'allow-scripts allow-same-origin allow-popups',
+        default: 'allow-scripts allow-popups',
       },
     };
   },
