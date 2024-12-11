@@ -95,9 +95,11 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
     AuthorizationPrivilege.Read
   );
 
-  const hasInvitePrivilege = membersData?.lookup.space?.community?.roleSet.authorization?.myPrivileges?.includes(
-    AuthorizationPrivilege.CommunityInvite
-  );
+  const communityPrivileges = membersData?.lookup.space?.community?.roleSet.authorization?.myPrivileges ?? [];
+
+  const hasInvitePrivilege =
+    communityPrivileges.includes(AuthorizationPrivilege.CommunityInvite) ||
+    communityPrivileges.includes(AuthorizationPrivilege.CommunityAddMemberVcFromAccount);
 
   const context = nonMemberContext;
 
