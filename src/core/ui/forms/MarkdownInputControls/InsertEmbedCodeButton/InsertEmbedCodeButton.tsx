@@ -35,10 +35,10 @@ const black = {
   600: '#131313',
 };
 const validSources = [
-  'https://player.vimeo.com',
-  'https://www.youtube.com',
-  'https://demo.arcade.software',
   'https://issuu.com', // Important - not tested because in order to get embed code from this site one must have account with paid plan!
+  'https://www.youtube.com',
+  'https://player.vimeo.com',
+  'https://demo.arcade.software',
 ];
 
 export const InsertEmbedCodeButton = ({
@@ -115,21 +115,27 @@ export const InsertEmbedCodeButton = ({
   };
 
   const handleOnSubmitIframe = () => {
-    const srcMatch = src.match(/src="([^"]+)"/);
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(src, 'text/html');
+    const iframe = doc.querySelector('iframe');
 
-    if (!srcMatch) {
+    if (!iframe) {
       notify(t('components.wysiwyg-editor.embed.invalidOrUnsupportedEmbed'), 'error');
-
       return;
     }
 
-    const embedCodeSrc = srcMatch[1];
+    const embedCodeSrc = iframe.getAttribute('src');
+
+    if (!embedCodeSrc) {
+      notify(t('components.wysiwyg-editor.embed.invalidOrUnsupportedEmbed'), 'error');
+      return;
+    }
+
     const srcOrigin = new URL(embedCodeSrc).origin;
     const isValidSource = validSources.some(vS => vS === srcOrigin);
 
     if (!isValidSource) {
       notify(t('components.wysiwyg-editor.embed.invalidOrUnsupportedEmbed'), 'error');
-
       return;
     }
 
@@ -147,10 +153,10 @@ export const InsertEmbedCodeButton = ({
   };
 
   useEffect(() => {
-    if (textareaRef.current) {
+    if (isDialogOpen && textareaRef?.current !== null) {
       textareaRef.current.focus();
     }
-  }, [src]);
+  }, [src, isDialogOpen]);
 
   const isIconButtonDisabled = !editor || !editor.can().insertContent('');
 

@@ -1197,6 +1197,7 @@
         "maxLength": "The resulting text goes beyond the size accepted by the server."
       },
       "embed": {
+        "iframeAria": "{{title}} iframe",
         "dialogTitle": "Embed Video or other Media",
         "embedCodeTextAreaAriaLabel": "Empty textarea",
         "pasteEmbedCode": "Paste the embed/iframe code here",

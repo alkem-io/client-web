@@ -15,8 +15,9 @@ const defaultIframeAttributes = {
   top: { default: 0 },
   left: { default: 0 },
   width: { default: '100%' },
-  height: { default: '98%' }, // 100% adds a weird div overflow. 98% fits perfectly into its parent.
+  height: { default: '100%' },
   frameborder: { default: 0 },
+  sandbox: { default: 'allow-scripts allow-same-origin allow-popups allow-presentation' },
 };
 
 export type IframeOptions = {
@@ -37,7 +38,12 @@ export const Iframe = Node.create<IframeOptions>({
   addOptions() {
     return {
       allowFullscreen: true,
-      HTMLAttributes: { class: 'iframe-wrapper' },
+      mozallowfullscreen: true,
+      webkitallowfullscreen: true,
+      HTMLAttributes: {
+        class: 'iframe-wrapper',
+        style: 'position: relative; height: 442px; width: 100%;',
+      },
     };
   },
 

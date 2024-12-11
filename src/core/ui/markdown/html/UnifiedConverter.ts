@@ -1,5 +1,6 @@
 import type { Parent } from 'unist';
 import type { H } from 'rehype-remark';
+import { useTranslation } from 'react-i18next';
 import type { HTML } from 'mdast-util-to-hast/lib/handlers/html';
 import type { Element } from 'hast-util-to-mdast/lib/handlers/strong';
 import { html } from 'mdast-builder';
@@ -11,16 +12,18 @@ const isEmptyLine = (node: HTML, parent: Parent | null) => node.value === '<br>'
 const allowDangerousHtmldIframeProps = [
   'src',
   'width',
-  'height',
-  'allow',
-  'allowfullscreen',
-  'frameborder',
-  'loading',
   'title',
+  'allow',
+  'height',
+  'loading',
+  'frameborder',
   'referrerpolicy',
+  'allowfullscreen',
 ];
 
 const UnifiedConverter = (): Converter => {
+  const { t } = useTranslation();
+
   const constructHtmlToMarkdownPipeline = once(async () => {
     const { unified } = await import('unified');
     const { default: rehypeParse } = await import('rehype-parse');
@@ -62,7 +65,12 @@ const UnifiedConverter = (): Converter => {
             em: trimmer('em'),
             iframe: (state, element) => ({
               type: 'html',
-              value: `<iframe src="${element.properties.src}" position="absolute" top="0" left="0" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" title="Subpace Collaboration Tools" loading="lazy" ></iframe>`,
+              value: `<iframe src="${
+                element.properties.src
+              }" position="absolute" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" title=${t(
+                'components.wysiwyg-editor.embed.iframeAria',
+                { title: element.properties.title || 'Embeded video iframe' }
+              )} loading="lazy"></iframe>`,
             }),
           },
         })
