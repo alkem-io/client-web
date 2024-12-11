@@ -9,6 +9,7 @@ export const enum TagCategoryValues {
   SPACE_CREATION = 'SPACE_CREATION',
   WS = 'WS',
   VC = 'VC',
+  NOTIFICATIONS = 'NOTIFICATIONS',
 }
 
 interface Tags {

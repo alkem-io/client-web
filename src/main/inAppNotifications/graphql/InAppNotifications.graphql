@@ -1,0 +1,25 @@
+query InAppNotifications ($receiverID: UUID!) {
+  notifications (receiverID: $receiverID) {
+    id
+    type
+    category
+    state
+    triggeredAt
+    ... on InAppNotificationCalloutPublished {
+      ...InAppNotificationCalloutPublished
+    }
+    ... on InAppNotificationCommunityNewMember {
+      ...InAppNotificationCommunityNewMember
+    }
+    ... on InAppNotificationUserMentioned {
+      ...InAppNotificationUserMentioned
+    }
+  }
+}
+
+mutation UpdateNotificationState ($ID: UUID!, $state: InAppNotificationState!) {
+  updateNotificationState ( notificationData:  {
+     ID: $ID,
+     state: $state,
+  })
+}

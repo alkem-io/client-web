@@ -3071,6 +3071,108 @@ export const CalendarEventDetailsFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
+export const InAppNotificationCalloutPublishedFragmentDoc = gql`
+  fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished {
+    callout {
+      id
+      type
+      framing {
+        id
+        profile {
+          id
+          displayName
+          url
+          visual(type: CARD) {
+            ...VisualUri
+          }
+        }
+      }
+    }
+    space {
+      id
+      level
+      profile {
+        id
+        displayName
+        url
+        visual(type: CARD) {
+          ...VisualUri
+        }
+      }
+    }
+    triggeredBy {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: AVATAR) {
+          ...VisualUri
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const InAppNotificationCommunityNewMemberFragmentDoc = gql`
+  fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMember {
+    triggeredBy {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: AVATAR) {
+          ...VisualUri
+        }
+      }
+    }
+    space {
+      id
+      level
+      profile {
+        id
+        displayName
+        url
+        visual(type: CARD) {
+          ...VisualUri
+        }
+      }
+    }
+    actor {
+      id
+      __typename
+      profile {
+        id
+        displayName
+        url
+        visual(type: AVATAR) {
+          ...VisualUri
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const InAppNotificationUserMentionedFragmentDoc = gql`
+  fragment InAppNotificationUserMentioned on InAppNotificationUserMentioned {
+    triggeredBy {
+      id
+      profile {
+        id
+        displayName
+        url
+        visual(type: AVATAR) {
+          ...VisualUri
+        }
+      }
+    }
+    commentUrl
+    comment
+    contributorType
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const SearchResultPostProfileFragmentDoc = gql`
   fragment SearchResultPostProfile on Profile {
     id
@@ -22100,6 +22202,129 @@ export function refetchGuidanceRoomMessagesQuery(variables: SchemaTypes.Guidance
   return { query: GuidanceRoomMessagesDocument, variables: variables };
 }
 
+export const InAppNotificationsDocument = gql`
+  query InAppNotifications($receiverID: UUID!) {
+    notifications(receiverID: $receiverID) {
+      id
+      type
+      category
+      state
+      triggeredAt
+      ... on InAppNotificationCalloutPublished {
+        ...InAppNotificationCalloutPublished
+      }
+      ... on InAppNotificationCommunityNewMember {
+        ...InAppNotificationCommunityNewMember
+      }
+      ... on InAppNotificationUserMentioned {
+        ...InAppNotificationUserMentioned
+      }
+    }
+  }
+  ${InAppNotificationCalloutPublishedFragmentDoc}
+  ${InAppNotificationCommunityNewMemberFragmentDoc}
+  ${InAppNotificationUserMentionedFragmentDoc}
+`;
+
+/**
+ * __useInAppNotificationsQuery__
+ *
+ * To run a query within a React component, call `useInAppNotificationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInAppNotificationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInAppNotificationsQuery({
+ *   variables: {
+ *      receiverID: // value for 'receiverID'
+ *   },
+ * });
+ */
+export function useInAppNotificationsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InAppNotificationsQuery,
+    SchemaTypes.InAppNotificationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.InAppNotificationsQuery, SchemaTypes.InAppNotificationsQueryVariables>(
+    InAppNotificationsDocument,
+    options
+  );
+}
+
+export function useInAppNotificationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InAppNotificationsQuery,
+    SchemaTypes.InAppNotificationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.InAppNotificationsQuery, SchemaTypes.InAppNotificationsQueryVariables>(
+    InAppNotificationsDocument,
+    options
+  );
+}
+
+export type InAppNotificationsQueryHookResult = ReturnType<typeof useInAppNotificationsQuery>;
+export type InAppNotificationsLazyQueryHookResult = ReturnType<typeof useInAppNotificationsLazyQuery>;
+export type InAppNotificationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.InAppNotificationsQuery,
+  SchemaTypes.InAppNotificationsQueryVariables
+>;
+export function refetchInAppNotificationsQuery(variables: SchemaTypes.InAppNotificationsQueryVariables) {
+  return { query: InAppNotificationsDocument, variables: variables };
+}
+
+export const UpdateNotificationStateDocument = gql`
+  mutation UpdateNotificationState($ID: UUID!, $state: InAppNotificationState!) {
+    updateNotificationState(notificationData: { ID: $ID, state: $state })
+  }
+`;
+export type UpdateNotificationStateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateNotificationStateMutation,
+  SchemaTypes.UpdateNotificationStateMutationVariables
+>;
+
+/**
+ * __useUpdateNotificationStateMutation__
+ *
+ * To run a mutation, you first call `useUpdateNotificationStateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateNotificationStateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateNotificationStateMutation, { data, loading, error }] = useUpdateNotificationStateMutation({
+ *   variables: {
+ *      ID: // value for 'ID'
+ *      state: // value for 'state'
+ *   },
+ * });
+ */
+export function useUpdateNotificationStateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateNotificationStateMutation,
+    SchemaTypes.UpdateNotificationStateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateNotificationStateMutation,
+    SchemaTypes.UpdateNotificationStateMutationVariables
+  >(UpdateNotificationStateDocument, options);
+}
+
+export type UpdateNotificationStateMutationHookResult = ReturnType<typeof useUpdateNotificationStateMutation>;
+export type UpdateNotificationStateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateNotificationStateMutation>;
+export type UpdateNotificationStateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateNotificationStateMutation,
+  SchemaTypes.UpdateNotificationStateMutationVariables
+>;
 export const JourneyRouteResolverDocument = gql`
   query JourneyRouteResolver(
     $spaceNameId: UUID_NAMEID!

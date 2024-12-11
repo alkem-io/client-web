@@ -20,7 +20,6 @@ import {
 import {
   AuthorizationPrivilege,
   CommunityRoleType,
-  LicenseEntitlementType,
   SearchVisibility,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
@@ -29,7 +28,6 @@ import { CommunityMemberUserFragmentWithRoles } from '@/domain/community/communi
 import useInviteUsers from '@/domain/community/invitations/useInviteUsers';
 import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { Identifiable } from '@/core/utils/Identifiable';
-import { useUserContext } from '@/domain/community/user';
 
 const MAX_AVAILABLE_MEMBERS = 100;
 const buildUserFilterObject = (filter: string | undefined) =>
@@ -89,13 +87,6 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
   const leadRoleDefinition = roleSet?.leadRoleDefinition;
   const roleSetMyPrivileges = roleSet?.authorization?.myPrivileges ?? [];
 
-  const { accountEntitlements } = useUserContext();
-
-  const entitlements = {
-    virtualContributorsEnabled: accountEntitlements.some(
-      priv => priv === LicenseEntitlementType.AccountVirtualContributor
-    ),
-  };
   const permissions = {
     canAddMembers: roleSetMyPrivileges.some(priv => priv === AuthorizationPrivilege.CommunityAddMember),
     // the following privilege allows Admins of a space without CommunityAddMember privilege, to
@@ -512,7 +503,6 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
     memberRoleDefinition,
     leadRoleDefinition,
     permissions,
-    entitlements,
     applications: roleSetPending?.applications,
     invitations: roleSetPending?.invitations,
     platformInvitations: roleSetPending?.platformInvitations,

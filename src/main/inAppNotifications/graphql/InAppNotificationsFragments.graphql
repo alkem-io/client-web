@@ -1,0 +1,95 @@
+fragment InAppNotificationCalloutPublished on InAppNotificationCalloutPublished {
+  callout {
+    id
+    type
+    framing {
+      id
+      profile {
+        id
+        displayName,
+        url,
+        visual(type: CARD) {
+          ...VisualUri
+        }
+      }
+    }
+  }
+  space {
+    id
+    level
+    profile {
+      id
+      displayName,
+      url,
+      visual(type: CARD) {
+        ...VisualUri
+      }
+    }
+  }
+  triggeredBy {
+    id
+    profile {
+      id
+      displayName,
+      url,
+      visual(type: AVATAR) {
+        ...VisualUri
+      }
+    }
+  }
+}
+
+fragment InAppNotificationCommunityNewMember on InAppNotificationCommunityNewMember {
+  triggeredBy {
+    id
+    profile {
+      id
+      displayName,
+      url,
+      visual(type: AVATAR) {
+        ...VisualUri
+      }
+    }
+  }
+  space {
+    id
+    level
+    profile {
+      id
+      displayName,
+      url,
+      visual(type: CARD) {
+        ...VisualUri
+      }
+    }
+  }
+  actor {
+    id
+    __typename # do not remove
+    profile {
+      id
+      displayName,
+      url,
+      visual(type: AVATAR) {
+        ...VisualUri
+      }
+    }
+  }
+}
+
+fragment InAppNotificationUserMentioned on InAppNotificationUserMentioned {
+  triggeredBy {
+    id
+    profile {
+      id
+      displayName,
+      url,
+      visual(type: AVATAR) {
+        ...VisualUri
+      }
+    }
+  }
+  commentUrl
+  comment
+  contributorType
+}
