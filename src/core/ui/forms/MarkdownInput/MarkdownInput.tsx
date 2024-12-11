@@ -24,7 +24,7 @@ import { EditorState } from '@tiptap/pm/state';
 import { Highlight } from '@tiptap/extension-highlight';
 import { Selection } from 'prosemirror-state';
 import { EditorOptions } from '@tiptap/core';
-import { Iframe } from '../MarkdownInputControls/InsertVideoButton/Iframe';
+import { Iframe } from '../MarkdownInputControls/InsertEmbedCodeButton/Iframe';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';

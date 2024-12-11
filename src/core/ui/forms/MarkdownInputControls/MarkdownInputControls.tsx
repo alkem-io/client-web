@@ -20,7 +20,7 @@ import { ChainedCommands } from '@tiptap/core/dist/packages/core/src/types';
 import InsertImageButton from './InsertImageButton';
 import ToggleLinkButton from './ToggleLinkButton';
 import InsertEmojiButton from './InsertEmojiButton';
-import { InsertVideoButton } from './InsertVideoButton/InsertVideoButton';
+import { InsertEmbedCodeButton } from './InsertEmbedCodeButton/InsertEmbedCodeButton';
 import produce from 'immer';
 
 type MarkdownInputControlsProps = {
@@ -232,7 +232,7 @@ const MarkdownInputControls = memo(
               />
             )}
 
-            <InsertVideoButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+            <InsertEmbedCodeButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
 
             <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
           </Toolbar>

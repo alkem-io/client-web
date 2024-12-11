@@ -16,7 +16,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 
-interface InsertVideoButtonProps extends IconButtonProps {
+interface InsertEmbedCodeButtonProps extends IconButtonProps {
   editor: Editor | null;
   onDialogOpen?: () => void;
   onDialogClose?: () => void;
@@ -41,7 +41,12 @@ const validSources = [
   'https://issuu.com', // Important - not tested because in order to get embed code from this site one must have account with paid plan!
 ];
 
-export const InsertVideoButton = ({ editor, onDialogOpen, onDialogClose, ...buttonProps }: InsertVideoButtonProps) => {
+export const InsertEmbedCodeButton = ({
+  editor,
+  onDialogOpen,
+  onDialogClose,
+  ...buttonProps
+}: InsertEmbedCodeButtonProps) => {
   const [src, setSrc] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
