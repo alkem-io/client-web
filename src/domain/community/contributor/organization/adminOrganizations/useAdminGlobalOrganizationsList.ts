@@ -15,7 +15,7 @@ import { SearchableListItem } from '@/domain/shared/components/SearchableList/Si
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { useTranslation } from 'react-i18next';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-import { LicensePlanType } from '@/core/apollo/generated/graphql-schema';
+import { LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
 
 const PAGE_SIZE = 10;
 
@@ -154,8 +154,10 @@ export const useAdminGlobalOrganizationsList = () => {
         verified: org.verification.state === OrgVerificationLifecycleStates.manuallyVerified,
         avatar: org.profile.visual,
         activeLicensePlanIds: platformLicensePlans.data?.platform.licensingFramework.plans
-          .filter(({ licenseCredential }) =>
-            org.account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
+          .filter(({ LicensingCredentialBasedCredentialType }) =>
+            org.account?.subscriptions
+              .map(subscription => subscription.name)
+              .includes(LicensingCredentialBasedCredentialType)
           )
           .map(({ id }) => id),
       })) || [],
@@ -165,7 +167,7 @@ export const useAdminGlobalOrganizationsList = () => {
   const licensePlans = useMemo<ContributorLicensePlan[]>(
     () =>
       platformLicensePlans.data?.platform.licensingFramework.plans
-        .filter(plan => plan.type === LicensePlanType.AccountPlan)
+        .filter(plan => plan.type === LicensingCredentialBasedPlanType.AccountPlan)
         .map(licensePlan => ({
           id: licensePlan.id,
           name: licensePlan.name,
