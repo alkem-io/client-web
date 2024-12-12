@@ -41,7 +41,7 @@ export const Iframe = Node.create<IframeOptions>({
       webkitallowfullscreen: true,
       HTMLAttributes: {
         class: 'iframe-wrapper',
-        style: 'position: relative; height: 442px; width: 100%;',
+        style: 'position: relative; height: 442px; width: 100%;', // This `height` is applied to the iframe in the edit dialog. Without it the iframe video is short in height and it might misslead the user that it will look the same after submitting it.
       },
     };
   },
