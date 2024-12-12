@@ -147,7 +147,7 @@ export const MarkdownInput = memo(
         markdown.replace(
           /<iframe[^>]*><\/iframe>/g,
           iframe =>
-            `<div style='position: relative; padding-bottom: 56.25%; height: 0; width: 100%; margin-bottom: 10px;'>${iframe}</div>`
+            `<div style='position: relative; padding-bottom: 56.25%; width: 100%; overflow: hidden; border-radius: 8px; margin-bottom: 10px;'>${iframe}</div>`
         );
 
       const emitChangeOnEditorUpdate = (editor: Editor) => {
