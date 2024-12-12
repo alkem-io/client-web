@@ -1880,7 +1880,7 @@ export type CreateLicensePlanOnLicensingFrameworkInput = {
   /** Is this plan free? */
   isFree: Scalars['Boolean'];
   /** The credential to represent this plan */
-  LicensingCredentialBasedCredentialType: LicensingCredentialBasedCredentialType;
+  licenseCredential: LicensingCredentialBasedCredentialType;
   licensingFrameworkID: Scalars['UUID'];
   /** The name of the License Plan */
   name: Scalars['String'];
@@ -2927,7 +2927,7 @@ export type LicensePlan = {
   /** Is this plan free? */
   isFree: Scalars['Boolean'];
   /** The credential to represent this plan */
-  LicensingCredentialBasedCredentialType: LicensingCredentialBasedCredentialType;
+  licenseCredential: LicensingCredentialBasedCredentialType;
   /** The name of the License Plan */
   name: Scalars['String'];
   /** The price per month of this plan. */
@@ -6474,7 +6474,7 @@ export type UpdateLicensePlanInput = {
   /** Is this plan free? */
   isFree?: InputMaybe<Scalars['Boolean']>;
   /** The credential to represent this plan */
-  LicensingCredentialBasedCredentialType?: InputMaybe<LicensingCredentialBasedCredentialType>;
+  licenseCredential?: InputMaybe<LicensingCredentialBasedCredentialType>;
   /** The price per month of this plan. */
   pricePerMonth?: InputMaybe<Scalars['Float']>;
   /** Does this plan require contact support */
@@ -22435,7 +22435,7 @@ export type SpaceAccountQuery = {
         sortOrder: number;
         isFree: boolean;
         pricePerMonth?: number | undefined;
-        LicensingCredentialBasedCredentialType: LicensingCredentialBasedCredentialType;
+        licenseCredential: LicensingCredentialBasedCredentialType;
       }>;
     };
     configuration: {
@@ -24373,7 +24373,7 @@ export type PlatformLicensingPlansQuery = {
         id: string;
         type: LicensingCredentialBasedPlanType;
         name: string;
-        LicensingCredentialBasedCredentialType: LicensingCredentialBasedCredentialType;
+        licenseCredential: LicensingCredentialBasedCredentialType;
       }>;
     };
   };

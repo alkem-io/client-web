@@ -154,10 +154,8 @@ export const useAdminGlobalOrganizationsList = () => {
         verified: org.verification.state === OrgVerificationLifecycleStates.manuallyVerified,
         avatar: org.profile.visual,
         activeLicensePlanIds: platformLicensePlans.data?.platform.licensingFramework.plans
-          .filter(({ LicensingCredentialBasedCredentialType }) =>
-            org.account?.subscriptions
-              .map(subscription => subscription.name)
-              .includes(LicensingCredentialBasedCredentialType)
+          .filter(({ licenseCredential }) =>
+            org.account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
           )
           .map(({ id }) => id),
       })) || [],

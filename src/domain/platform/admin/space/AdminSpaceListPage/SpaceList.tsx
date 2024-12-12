@@ -68,8 +68,8 @@ export const SpaceList: FC = () => {
             subscription => subscription.name
           );
           const activeLicensePlanIds = platformLicensingData?.platform.licensingFramework.plans
-            .filter(({ LicensingCredentialBasedCredentialType }) =>
-              activeLicensingCredentialBasedCredentialTypes.includes(LicensingCredentialBasedCredentialType)
+            .filter(({ licenseCredential }) =>
+              activeLicensingCredentialBasedCredentialTypes.includes(licenseCredential)
             )
             .map(({ id }) => id);
 
