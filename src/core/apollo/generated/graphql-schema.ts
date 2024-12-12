@@ -2605,6 +2605,8 @@ export type InAppNotificationUserMentioned = InAppNotification & {
   category: InAppNotificationCategory;
   /** The comment that the contributor was mentioned in. */
   comment: Scalars['String'];
+  /** The display name of the resource where the comment was created. */
+  commentOriginName: Scalars['String'];
   /** The url of the resource where the comment was created. */
   commentUrl: Scalars['String'];
   /** The type of the Contributor that joined. */
@@ -28000,6 +28002,7 @@ export type InAppNotificationsQuery = {
         triggeredAt: Date;
         commentUrl: string;
         comment: string;
+        commentOriginName: string;
         contributorType: CommunityContributorType;
         triggeredBy:
           | {
@@ -28210,6 +28213,7 @@ export type InAppNotificationUserMentionedFragment = {
   __typename?: 'InAppNotificationUserMentioned';
   commentUrl: string;
   comment: string;
+  commentOriginName: string;
   contributorType: CommunityContributorType;
   triggeredBy:
     | {

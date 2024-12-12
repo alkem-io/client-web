@@ -1557,6 +1557,7 @@ export type InAppNotificationCommunityNewMemberFieldPolicy = {
 export type InAppNotificationUserMentionedKeySpecifier = (
   | 'category'
   | 'comment'
+  | 'commentOriginName'
   | 'commentUrl'
   | 'contributorType'
   | 'id'
@@ -1570,6 +1571,7 @@ export type InAppNotificationUserMentionedKeySpecifier = (
 export type InAppNotificationUserMentionedFieldPolicy = {
   category?: FieldPolicy<any> | FieldReadFunction<any>;
   comment?: FieldPolicy<any> | FieldReadFunction<any>;
+  commentOriginName?: FieldPolicy<any> | FieldReadFunction<any>;
   commentUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   contributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
