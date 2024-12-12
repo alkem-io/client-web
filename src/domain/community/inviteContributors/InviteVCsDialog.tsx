@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { debounce } from 'lodash';
 import { DialogContent, DialogActions, Button } from '@mui/material';
 import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -57,9 +58,12 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     setInLibrary(lib);
   };
 
+  // debounce as we could have multiple changes in a short period of time
+  const debouncedFetchVCs = debounce(fetchVCs, 100);
+
   // on memberVCs change, update the lists of VCs
   useEffect(() => {
-    fetchVCs();
+    debouncedFetchVCs();
   }, [virtualContributors]);
 
   const getContributorsBoKProfile = async () => {

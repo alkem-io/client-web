@@ -47,6 +47,7 @@ const useInviteContributors = ({
     opportunityNameId: opportunityId,
   })!;
 
+  // Fetch community virtual members list
   const {
     data: roleSetData,
     loading: loadingMembers,
@@ -60,8 +61,8 @@ const useInviteContributors = ({
     skip: !roleSetId || !spaceId,
   });
 
+  // Determine the permissions based on the user's privileges
   const roleSetMyPrivileges = roleSetData?.lookup.roleSet?.authorization?.myPrivileges ?? [];
-
   const permissions = {
     canAddMembers: roleSetMyPrivileges.some(priv => priv === AuthorizationPrivilege.CommunityAddMember),
     // the following privilege allows Admins of a space without CommunityAddMember privilege, to
@@ -82,17 +83,19 @@ const useInviteContributors = ({
     return data?.lookup?.space?.profile;
   };
 
+  // Memoize the virtual contributors list (already members)
   const virtualContributors = useMemo(() => {
     const roleSet = roleSetData?.lookup.roleSet;
     return roleSet?.memberVirtualContributors ?? [];
   }, [roleSetData]);
 
+  // Filter functions for virtual contributors
   const filterByName = (vc: VirtualContributorNameProps, filter?: string) =>
     vc.profile.displayName.toLowerCase().includes(filter?.toLowerCase() ?? '');
-
   const filterExisting = (vc: VirtualContributorNameProps, existingVCs) =>
     !existingVCs.some(member => member.id === vc.id);
 
+  // TODO: need pagination in the future
   const [fetchAllVirtualContributorsInLibrary, { loading: libraryVCsLoading }] =
     useAvailableVirtualContributorsInLibraryLazyQuery();
   const getAvailableVirtualContributorsInLibrary = async (filter: string | undefined) => {
