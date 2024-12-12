@@ -1,13 +1,22 @@
 import { Pluggable } from 'unified';
-import { ALLOWED_EMBED_URLS } from './allowedEmbedUrls';
 import { visit } from 'unist-util-visit';
+
+import { ALLOWED_EMBED_URLS } from './allowedEmbedUrls';
 
 const isAllowedUrl = (url: string) => {
   try {
-    const srcOrigin = new URL(url).origin;
+    const parsedUrl = new URL(url);
+
+    if (parsedUrl.protocol !== 'https:') {
+      return false;
+    }
+
+    const srcOrigin = parsedUrl.origin;
+
     return ALLOWED_EMBED_URLS.some(vS => vS === srcOrigin);
   } catch (e) {
-    console.error(e);
+    console.error('Invalid iframe URL:', url, e);
+
     return false;
   }
 };
