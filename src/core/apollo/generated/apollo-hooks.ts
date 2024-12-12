@@ -3189,6 +3189,7 @@ export const InAppNotificationUserMentionedFragmentDoc = gql`
     }
     commentUrl
     comment
+    commentOriginName
     contributorType
   }
   ${VisualUriFragmentDoc}

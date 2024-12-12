@@ -1195,7 +1195,8 @@
         "list.ordered": "Ordered List",
         "list.indent": "Indent",
         "list.outdent": "Remove indent",
-        "remove.remove": "Remove"
+        "remove.remove": "Remove",
+        "embed.video": "Embed Video or other Media"
       },
       "image": {
         "dialogHeader": "Insert Image"
@@ -1205,6 +1206,13 @@
       },
       "validation": {
         "maxLength": "The resulting text goes beyond the size accepted by the server."
+      },
+      "embed": {
+        "iframeAria": "{{title}}",
+        "dialogTitle": "Embed Video or other Media",
+        "embedCodeTextAreaAriaLabel": "Empty textarea",
+        "pasteEmbedCode": "Paste the embed/iframe code here",
+        "invalidOrUnsupportedEmbed": "Unfortunately, this code is either not valid or not supported. Please check the code carefully or contact support@alkem.io"
       }
     },
     "top-callouts": {

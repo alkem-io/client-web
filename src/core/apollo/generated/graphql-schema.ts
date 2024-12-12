@@ -80,7 +80,7 @@ export type AccountSubscription = {
   /** The expiry date of this subscription, null if it does never expire. */
   expires?: Maybe<Scalars['DateTime']>;
   /** The name of the Subscription. */
-  name: LicenseCredential;
+  name: LicensingCredentialBasedCredentialType;
 };
 
 export enum AccountType {
@@ -1880,7 +1880,7 @@ export type CreateLicensePlanOnLicensingFrameworkInput = {
   /** Is this plan free? */
   isFree: Scalars['Boolean'];
   /** The credential to represent this plan */
-  licenseCredential: LicenseCredential;
+  licenseCredential: LicensingCredentialBasedCredentialType;
   licensingFrameworkID: Scalars['UUID'];
   /** The name of the License Plan */
   name: Scalars['String'];
@@ -1895,7 +1895,7 @@ export type CreateLicensePlanOnLicensingFrameworkInput = {
   /** Is there a trial period enabled */
   trialEnabled: Scalars['Boolean'];
   /** The type of this License Plan. */
-  type: LicensePlanType;
+  type: LicensingCredentialBasedPlanType;
 };
 
 export type CreateLinkInput = {
@@ -2545,14 +2545,14 @@ export type InAppNotification = {
 export type InAppNotificationCalloutPublished = InAppNotification & {
   __typename?: 'InAppNotificationCalloutPublished';
   /** The Callout that was published. */
-  callout: Callout;
+  callout?: Maybe<Callout>;
   /** Which category (role) is this notification targeted to. */
   category: InAppNotificationCategory;
   id: Scalars['UUID'];
   /** The receiver of the notification. */
   receiver: Contributor;
   /** Where the callout is located. */
-  space: Space;
+  space?: Maybe<Space>;
   /** The current state of the notification */
   state: InAppNotificationState;
   /** When (UTC) was the notification sent. */
@@ -2573,7 +2573,7 @@ export enum InAppNotificationCategory {
 export type InAppNotificationCommunityNewMember = InAppNotification & {
   __typename?: 'InAppNotificationCommunityNewMember';
   /** The Contributor that joined. */
-  actor: Contributor;
+  actor?: Maybe<Contributor>;
   /** Which category (role) is this notification targeted to. */
   category: InAppNotificationCategory;
   /** The type of the Contributor that joined. */
@@ -2582,7 +2582,7 @@ export type InAppNotificationCommunityNewMember = InAppNotification & {
   /** The receiver of the notification. */
   receiver: Contributor;
   /** The Space that was joined. */
-  space: Space;
+  space?: Maybe<Space>;
   /** The current state of the notification */
   state: InAppNotificationState;
   /** When (UTC) was the notification sent. */
@@ -2605,6 +2605,8 @@ export type InAppNotificationUserMentioned = InAppNotification & {
   category: InAppNotificationCategory;
   /** The comment that the contributor was mentioned in. */
   comment: Scalars['String'];
+  /** The display name of the resource where the comment was created. */
+  commentOriginName: Scalars['String'];
   /** The url of the resource where the comment was created. */
   commentUrl: Scalars['String'];
   /** The type of the Contributor that joined. */
@@ -2870,17 +2872,6 @@ export type License = {
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
-export enum LicenseCredential {
-  AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
-  SpaceFeatureSaveAsTemplate = 'SPACE_FEATURE_SAVE_AS_TEMPLATE',
-  SpaceFeatureVirtualContributors = 'SPACE_FEATURE_VIRTUAL_CONTRIBUTORS',
-  SpaceFeatureWhiteboardMultiUser = 'SPACE_FEATURE_WHITEBOARD_MULTI_USER',
-  SpaceLicenseEnterprise = 'SPACE_LICENSE_ENTERPRISE',
-  SpaceLicenseFree = 'SPACE_LICENSE_FREE',
-  SpaceLicensePlus = 'SPACE_LICENSE_PLUS',
-  SpaceLicensePremium = 'SPACE_LICENSE_PREMIUM',
-}
-
 export type LicenseEntitlement = {
   __typename?: 'LicenseEntitlement';
   /** The date at which the entity was created. */
@@ -2938,7 +2929,7 @@ export type LicensePlan = {
   /** Is this plan free? */
   isFree: Scalars['Boolean'];
   /** The credential to represent this plan */
-  licenseCredential: LicenseCredential;
+  licenseCredential: LicensingCredentialBasedCredentialType;
   /** The name of the License Plan */
   name: Scalars['String'];
   /** The price per month of this plan. */
@@ -2952,17 +2943,10 @@ export type LicensePlan = {
   /** Is there a trial period enabled */
   trialEnabled: Scalars['Boolean'];
   /** The type of this License Plan. */
-  type: LicensePlanType;
+  type: LicensingCredentialBasedPlanType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
-
-export enum LicensePlanType {
-  AccountFeatureFlag = 'ACCOUNT_FEATURE_FLAG',
-  AccountPlan = 'ACCOUNT_PLAN',
-  SpaceFeatureFlag = 'SPACE_FEATURE_FLAG',
-  SpacePlan = 'SPACE_PLAN',
-}
 
 export type LicensePolicy = {
   __typename?: 'LicensePolicy';
@@ -2971,18 +2955,11 @@ export type LicensePolicy = {
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The set of credential rules that are contained by this License Policy. */
-  credentialRules: Array<LicensePolicyCredentialRule>;
+  credentialRules: Array<LicensingCredentialBasedPolicyCredentialRule>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
-};
-
-export type LicensePolicyCredentialRule = {
-  __typename?: 'LicensePolicyCredentialRule';
-  credentialType: LicenseCredential;
-  grantedEntitlements: Array<LicenseEntitlementType>;
-  name?: Maybe<Scalars['String']>;
 };
 
 export enum LicenseType {
@@ -3007,6 +2984,31 @@ export type Licensing = {
   policy: LicensePolicy;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
+};
+
+export enum LicensingCredentialBasedCredentialType {
+  AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
+  SpaceFeatureSaveAsTemplate = 'SPACE_FEATURE_SAVE_AS_TEMPLATE',
+  SpaceFeatureVirtualContributors = 'SPACE_FEATURE_VIRTUAL_CONTRIBUTORS',
+  SpaceFeatureWhiteboardMultiUser = 'SPACE_FEATURE_WHITEBOARD_MULTI_USER',
+  SpaceLicenseEnterprise = 'SPACE_LICENSE_ENTERPRISE',
+  SpaceLicenseFree = 'SPACE_LICENSE_FREE',
+  SpaceLicensePlus = 'SPACE_LICENSE_PLUS',
+  SpaceLicensePremium = 'SPACE_LICENSE_PREMIUM',
+}
+
+export enum LicensingCredentialBasedPlanType {
+  AccountFeatureFlag = 'ACCOUNT_FEATURE_FLAG',
+  AccountPlan = 'ACCOUNT_PLAN',
+  SpaceFeatureFlag = 'SPACE_FEATURE_FLAG',
+  SpacePlan = 'SPACE_PLAN',
+}
+
+export type LicensingCredentialBasedPolicyCredentialRule = {
+  __typename?: 'LicensingCredentialBasedPolicyCredentialRule';
+  credentialType: LicensingCredentialBasedCredentialType;
+  grantedEntitlements: Array<LicenseEntitlementType>;
+  name?: Maybe<Scalars['String']>;
 };
 
 export type Lifecycle = {
@@ -3368,6 +3370,10 @@ export type Mutation = {
   adminUpdateContributorAvatars: Profile;
   /** Remove the Kratos account associated with the specified User. Note: the Users profile on the platform is not deleted. */
   adminUserAccountDelete: User;
+  /** Create a test customer on wingback. */
+  adminWingbackCreateTestCustomer: Scalars['String'];
+  /** Get wingback customer entitlements. */
+  adminWingbackGetCustomerEntitlements: Scalars['String'];
   /** Reset the Authorization Policy on the specified AiServer. */
   aiServerAuthorizationPolicyReset: AiServer;
   /** Creates a new AiPersonaService on the aiServer. */
@@ -3710,6 +3716,10 @@ export type MutationAdminUpdateContributorAvatarsArgs = {
 
 export type MutationAdminUserAccountDeleteArgs = {
   userID: Scalars['UUID'];
+};
+
+export type MutationAdminWingbackGetCustomerEntitlementsArgs = {
+  customerID: Scalars['String'];
 };
 
 export type MutationAiServerCreateAiPersonaServiceArgs = {
@@ -5795,7 +5805,7 @@ export type SpaceSubscription = {
   /** The expiry date of this subscription, null if it does never expire. */
   expires?: Maybe<Scalars['DateTime']>;
   /** The name of the Subscription. */
-  name: LicenseCredential;
+  name: LicensingCredentialBasedCredentialType;
 };
 
 export enum SpaceType {
@@ -6466,7 +6476,7 @@ export type UpdateLicensePlanInput = {
   /** Is this plan free? */
   isFree?: InputMaybe<Scalars['Boolean']>;
   /** The credential to represent this plan */
-  licenseCredential?: InputMaybe<LicenseCredential>;
+  licenseCredential?: InputMaybe<LicensingCredentialBasedCredentialType>;
   /** The price per month of this plan. */
   pricePerMonth?: InputMaybe<Scalars['Float']>;
   /** Does this plan require contact support */
@@ -16704,7 +16714,7 @@ export type AdminGlobalOrganizationsListQuery = {
         | {
             __typename?: 'Account';
             id: string;
-            subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
+            subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicensingCredentialBasedCredentialType }>;
           }
         | undefined;
       profile: {
@@ -17951,7 +17961,7 @@ export type UserListQuery = {
         | {
             __typename?: 'Account';
             id: string;
-            subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
+            subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicensingCredentialBasedCredentialType }>;
           }
         | undefined;
       profile: {
@@ -22114,7 +22124,7 @@ export type PlansTableQuery = {
         trialEnabled: boolean;
         requiresPaymentMethod: boolean;
         requiresContactSupport: boolean;
-        type: LicensePlanType;
+        type: LicensingCredentialBasedPlanType;
       }>;
     };
   };
@@ -22618,7 +22628,11 @@ export type SpaceAccountQuery = {
           visibility: SpaceVisibility;
           profile: { __typename?: 'Profile'; id: string; url: string };
           activeSubscription?:
-            | { __typename?: 'SpaceSubscription'; name: LicenseCredential; expires?: Date | undefined }
+            | {
+                __typename?: 'SpaceSubscription';
+                name: LicensingCredentialBasedCredentialType;
+                expires?: Date | undefined;
+              }
             | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -22689,11 +22703,11 @@ export type SpaceAccountQuery = {
         id: string;
         name: string;
         enabled: boolean;
-        type: LicensePlanType;
+        type: LicensingCredentialBasedPlanType;
         sortOrder: number;
         isFree: boolean;
         pricePerMonth?: number | undefined;
-        licenseCredential: LicenseCredential;
+        licenseCredential: LicensingCredentialBasedCredentialType;
       }>;
     };
     configuration: {
@@ -23995,7 +24009,7 @@ export type AssignLicensePlanToSpaceMutation = {
   assignLicensePlanToSpace: {
     __typename?: 'Space';
     id: string;
-    subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicenseCredential }>;
+    subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
   };
 };
 
@@ -24009,7 +24023,7 @@ export type RevokeLicensePlanFromSpaceMutation = {
   revokeLicensePlanFromSpace: {
     __typename?: 'Space';
     id: string;
-    subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicenseCredential }>;
+    subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
   };
 };
 
@@ -24033,7 +24047,7 @@ export type AdminSpacesListQuery = {
     id: string;
     nameID: string;
     visibility: SpaceVisibility;
-    subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicenseCredential }>;
+    subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
     provider:
       | {
           __typename?: 'Organization';
@@ -24058,7 +24072,7 @@ export type AdminSpaceFragment = {
   id: string;
   nameID: string;
   visibility: SpaceVisibility;
-  subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicenseCredential }>;
+  subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
   provider:
     | { __typename?: 'Organization'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
     | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
@@ -24629,9 +24643,9 @@ export type PlatformLicensingPlansQuery = {
       plans: Array<{
         __typename?: 'LicensePlan';
         id: string;
-        type: LicensePlanType;
+        type: LicensingCredentialBasedPlanType;
         name: string;
-        licenseCredential: LicenseCredential;
+        licenseCredential: LicensingCredentialBasedCredentialType;
       }>;
     };
   };
@@ -28091,34 +28105,38 @@ export type InAppNotificationsQuery = {
         category: InAppNotificationCategory;
         state: InAppNotificationState;
         triggeredAt: Date;
-        callout: {
-          __typename?: 'Callout';
-          id: string;
-          type: CalloutType;
-          framing: {
-            __typename?: 'CalloutFraming';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
+        callout?:
+          | {
+              __typename?: 'Callout';
               id: string;
-              displayName: string;
-              url: string;
-              visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-            };
-          };
-        };
-        space: {
-          __typename?: 'Space';
-          id: string;
-          level: SpaceLevel;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            url: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          };
-        };
+              type: CalloutType;
+              framing: {
+                __typename?: 'CalloutFraming';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+              };
+            }
+          | undefined;
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | undefined;
         triggeredBy:
           | {
               __typename?: 'Organization';
@@ -28195,19 +28213,21 @@ export type InAppNotificationsQuery = {
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
             };
-        space: {
-          __typename?: 'Space';
-          id: string;
-          level: SpaceLevel;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            url: string;
-            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          };
-        };
-        actor:
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | undefined;
+        actor?:
           | {
               __typename: 'Organization';
               id: string;
@@ -28240,7 +28260,8 @@ export type InAppNotificationsQuery = {
                 url: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
-            };
+            }
+          | undefined;
       }
     | {
         __typename?: 'InAppNotificationUserMentioned';
@@ -28251,6 +28272,7 @@ export type InAppNotificationsQuery = {
         triggeredAt: Date;
         commentUrl: string;
         comment: string;
+        commentOriginName: string;
         contributorType: CommunityContributorType;
         triggeredBy:
           | {
@@ -28302,34 +28324,38 @@ export type UpdateNotificationStateMutation = {
 
 export type InAppNotificationCalloutPublishedFragment = {
   __typename?: 'InAppNotificationCalloutPublished';
-  callout: {
-    __typename?: 'Callout';
-    id: string;
-    type: CalloutType;
-    framing: {
-      __typename?: 'CalloutFraming';
-      id: string;
-      profile: {
-        __typename?: 'Profile';
+  callout?:
+    | {
+        __typename?: 'Callout';
         id: string;
-        displayName: string;
-        url: string;
-        visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      };
-    };
-  };
-  space: {
-    __typename?: 'Space';
-    id: string;
-    level: SpaceLevel;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      url: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    };
-  };
+        type: CalloutType;
+        framing: {
+          __typename?: 'CalloutFraming';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+        };
+      }
+    | undefined;
+  space?:
+    | {
+        __typename?: 'Space';
+        id: string;
+        level: SpaceLevel;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | undefined;
   triggeredBy:
     | {
         __typename?: 'Organization';
@@ -28402,19 +28428,21 @@ export type InAppNotificationCommunityNewMemberFragment = {
           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
       };
-  space: {
-    __typename?: 'Space';
-    id: string;
-    level: SpaceLevel;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      url: string;
-      visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    };
-  };
-  actor:
+  space?:
+    | {
+        __typename?: 'Space';
+        id: string;
+        level: SpaceLevel;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | undefined;
+  actor?:
     | {
         __typename: 'Organization';
         id: string;
@@ -28447,13 +28475,15 @@ export type InAppNotificationCommunityNewMemberFragment = {
           url: string;
           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
-      };
+      }
+    | undefined;
 };
 
 export type InAppNotificationUserMentionedFragment = {
   __typename?: 'InAppNotificationUserMentioned';
   commentUrl: string;
   comment: string;
+  commentOriginName: string;
   contributorType: CommunityContributorType;
   triggeredBy:
     | {
