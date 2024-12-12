@@ -1,10 +1,9 @@
 import { useRef, useState, useEffect, ChangeEvent } from 'react';
 
-import { styled } from '@mui/system';
 import { Form, Formik } from 'formik';
 import { Editor } from '@tiptap/react';
 import { useTranslation } from 'react-i18next';
-import { Button, IconButton, IconButtonProps } from '@mui/material';
+import { Button, IconButton, IconButtonProps, styled } from '@mui/material';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import SmartScreenOutlinedIcon from '@mui/icons-material/SmartScreenOutlined';
 import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
@@ -15,6 +14,7 @@ import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { gutters } from '@/core/ui/grid/utils';
 
 interface InsertEmbedCodeButtonProps extends IconButtonProps {
   editor: Editor | null;
@@ -22,18 +22,6 @@ interface InsertEmbedCodeButtonProps extends IconButtonProps {
   onDialogClose?: () => void;
 }
 
-const grey = {
-  50: '#F3F6F9',
-  200: '#DAE2ED',
-  300: '#C7D0DD',
-  700: '#434D5B',
-  900: '#1C2025',
-};
-const black = {
-  200: '#303030',
-  400: '#171717',
-  600: '#131313',
-};
 const validSources = [
   'https://issuu.com', // Important - not tested because in order to get embed code from this site one must have account with paid plan!
   'https://www.youtube.com',
@@ -68,26 +56,26 @@ export const InsertEmbedCodeButton = ({
   const Textarea = styled(BaseTextareaAutosize)(
     ({ theme }) => `
     box-sizing: border-box;
-    width: 320px;
-    font-family: 'IBM Plex Sans', sans-serif;
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+    font-family: monospace;
     font-size: 0.875rem;
-    font-weight: 400;
     line-height: 1.5;
-    padding: 12px;
-    border-radius: 12px 12px 0;
-    color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
-    background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
-    border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
-    box-shadow: 0 2px 2px ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
+    padding: ${gutters(0.5)(theme)};
+    border-radius: ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0;
+    color: ${theme.palette.grey[900]};
+    background: ${theme.palette.background.default};
+    border: 1px solid ${theme.palette.grey[200]};
 
     &:hover {
-      border-color: ${black[400]};
+      border-color: ${theme.palette.grey[400]};
     }
 
     &:focus {
       outline: 0;
-      border-color: ${black[400]};
-      box-shadow: 0 0 0 1px ${theme.palette.mode === 'dark' ? black[600] : black[200]};
+      border-color: ${theme.palette.grey[400]};
+      box-shadow: 0 0 0 1px ${theme.palette.grey[200]};
     }
 
     /* firefox */
@@ -156,7 +144,7 @@ export const InsertEmbedCodeButton = ({
     if (isDialogOpen && textareaRef?.current !== null) {
       textareaRef.current.focus();
     }
-  }, [src, isDialogOpen]);
+  }, [textareaRef?.current, isDialogOpen]);
 
   const isIconButtonDisabled = !editor || !editor.can().insertContent('');
 
@@ -185,7 +173,6 @@ export const InsertEmbedCodeButton = ({
                 value={src}
                 minRows={7}
                 maxLength={MARKDOWN_TEXT_LENGTH}
-                sx={{ width: '100%', maxWidth: '100%', minWidth: '100%' }}
                 placeholder={t('components.wysiwyg-editor.embed.pasteEmbedCode')}
                 onChange={handleOnTextareaChange}
                 aria-label={t('components.wysiwyg-editor.embed.embedCodeTextAreaAriaLabel')}
