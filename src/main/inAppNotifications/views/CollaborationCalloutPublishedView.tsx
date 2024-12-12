@@ -48,5 +48,15 @@ export const CollaborationCalloutPublishedView = ({
     };
   }, [id, state, space, callout, triggeredBy, triggeredAt, t]);
 
+  // do not display notification if these are missing
+  if (
+    !callout ||
+    !callout.framing?.profile?.displayName ||
+    !callout?.framing?.profile?.url ||
+    !triggeredBy?.profile?.displayName
+  ) {
+    return null;
+  }
+
   return <InAppNotificationBaseView {...notification} />;
 };

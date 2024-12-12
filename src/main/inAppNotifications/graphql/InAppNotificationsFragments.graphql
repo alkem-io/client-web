@@ -91,5 +91,6 @@ fragment InAppNotificationUserMentioned on InAppNotificationUserMentioned {
   }
   commentUrl
   comment
+  commentOriginName
   contributorType
 }
