@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { PropsWithChildren, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { BlockSectionTitle, CardText } from '@/core/ui/typography';
@@ -19,7 +19,6 @@ interface PreviewContributorDialogProps {
   onClose: () => void;
   contributor: ContributorProps | undefined;
   actions?: ReactNode;
-  children?: ReactNode;
 }
 
 const PreviewContributorDialog = ({
@@ -28,7 +27,7 @@ const PreviewContributorDialog = ({
   contributor,
   onClose,
   actions,
-}: PreviewContributorDialogProps) => {
+}: PropsWithChildren<PreviewContributorDialogProps>) => {
   const { t } = useTranslation();
 
   const { profile } = contributor ?? {};

@@ -23,7 +23,7 @@ export const VCProfilePageView = ({ bokProfile, virtualContributor }: VCProfileP
         </PageContentBlock>
         <PageContentBlock>
           <PageContentBlockHeader title={t('pages.virtualContributorProfile.host')} />
-          <ContributorCardHorizontal profile={virtualContributor?.provider.profile} seamless />
+          <ContributorCardHorizontal profile={virtualContributor?.provider?.profile} seamless />
         </PageContentBlock>
       </PageContentColumn>
 

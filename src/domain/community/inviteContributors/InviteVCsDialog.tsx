@@ -11,7 +11,7 @@ import InviteContributorsList from './InviteContributorsList';
 import InviteVirtualContributorDialog from '../invitations/InviteVirtualContributorDialog';
 import PreviewContributorDialog from './PreviewContributorDialog';
 import VCProfileContentView from '../virtualContributor/vcProfilePage/VCProfileContentView';
-import { VirtualContributorProfile } from '../virtualContributor/vcProfilePage/model';
+import { VirtualContributorProfileProps } from '../virtualContributor/vcProfilePage/model';
 import { BasicSpaceProps } from '../virtualContributor/components/BasicSpaceCard';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -46,7 +46,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const [openInviteDialog, setOpenInviteDialog] = useState(false);
   const [actionButtonDisabled, setActionButtonDisabled] = useState(false);
   const [action, setAction] = useState<'add' | 'invite'>();
-  const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState<string>('');
+  const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState('');
   const [bokProfile, setBoKProfile] = useState<BasicSpaceProps>();
 
   const fetchVCs = async () => {
@@ -112,7 +112,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     }
   };
 
-  const onInviteClick = async () => {
+  const onInviteClick = () => {
     setActionButtonDisabled(true);
     setOpenInviteDialog(true);
   };
@@ -189,8 +189,8 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
           actions={renderActions()}
         >
           <VCProfileContentView
-            bokProfile={bokProfile as unknown as BasicSpaceProps}
-            virtualContributor={selectedContributor as unknown as VirtualContributorProfile}
+            bokProfile={bokProfile as BasicSpaceProps}
+            virtualContributor={selectedContributor as VirtualContributorProfileProps}
           />
         </PreviewContributorDialog>
       )}
