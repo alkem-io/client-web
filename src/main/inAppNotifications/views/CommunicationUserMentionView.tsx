@@ -7,17 +7,17 @@ export const CommunicationUserMentionView = ({
   type,
   state,
   space,
-  callout,
   triggeredBy,
   triggeredAt,
   comment,
   commentUrl,
+  commentOriginName,
 }: InAppNotificationProps) => {
   const notification: InAppNotificationBaseViewProps = useMemo(() => {
     const notificationTextValues = {
       defaultValue: '',
       commenterName: triggeredBy?.profile?.displayName,
-      calloutName: callout?.framing?.profile?.displayName,
+      calloutName: commentOriginName,
       comment,
     };
 
@@ -37,7 +37,12 @@ export const CommunicationUserMentionView = ({
       triggeredAt: triggeredAt,
       values: notificationTextValues,
     };
-  }, [id, state, space, triggeredBy, callout, triggeredAt, comment, commentUrl]);
+  }, [id, state, space, triggeredBy, commentOriginName, triggeredAt, comment, commentUrl]);
+
+  // do not display notification if these are missing
+  if (!commentOriginName || !commentUrl || !triggeredBy?.profile?.displayName) {
+    return null;
+  }
 
   return <InAppNotificationBaseView {...notification} />;
 };

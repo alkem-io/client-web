@@ -85,6 +85,7 @@ export interface InAppNotificationProps {
   };
   comment?: string;
   commentUrl?: string;
+  commentOriginName?: string;
 }
 
 export const useInAppNotifications = () => {
