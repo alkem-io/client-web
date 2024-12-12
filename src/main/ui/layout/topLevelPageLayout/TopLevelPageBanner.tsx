@@ -3,7 +3,7 @@ import PageBanner from '@/core/ui/layout/pageBanner/PageBanner';
 import PageBannerCard, { PageBannerCardProps } from '@/main/topLevelPages/pageBannerCard/PageBannerCard';
 
 const banner: Visual = {
-  uri: '/alkemio-banner/global-banner.jpg',
+  uri: '/alkemio-banner/global-banner.svg',
 };
 
 interface TopLevelPageBannerProps extends PageBannerCardProps {}
