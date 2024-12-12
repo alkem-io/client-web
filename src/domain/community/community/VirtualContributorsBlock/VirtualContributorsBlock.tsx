@@ -12,7 +12,8 @@ import VirtualContributorsDialog, { VirtualContributorProps } from './VirtualCon
 import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
 import Gutters from '@/core/ui/grid/Gutters';
 import { DashboardAddButton } from '@/domain/shared/components/DashboardSections/DashboardAddButton';
-import { noop } from 'lodash';
+import InviteContributorDialog from '@/domain/community/inviteContributors/InviteContributorsDialog';
+import { CommunityContributorType } from '@/core/apollo/generated/graphql-schema';
 
 export const VIRTUAL_CONTRIBUTORS_LIMIT = 3;
 
@@ -20,14 +21,12 @@ type VirtualContributorsBlockProps = {
   virtualContributors: VirtualContributorProps[];
   loading: boolean;
   showInviteOption?: boolean;
-  onInviteClick?: () => void;
 };
 
 const VirtualContributorsBlock = ({
   virtualContributors,
   loading,
   showInviteOption = false,
-  onInviteClick = noop,
 }: VirtualContributorsBlockProps) => {
   const { t } = useTranslation();
 
@@ -35,7 +34,14 @@ const VirtualContributorsBlock = ({
   const openDialog = () => setDialogOpen(true);
   const closeDialog = () => setDialogOpen(false);
 
+  const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
+  const closeInviteDialog = () => setInviteDialogOpen(false);
+
   const visibleVCs = virtualContributors.slice(0, VIRTUAL_CONTRIBUTORS_LIMIT);
+
+  const onInvite = () => {
+    setInviteDialogOpen(true);
+  };
 
   return (
     <PageContentBlock>
@@ -46,7 +52,7 @@ const VirtualContributorsBlock = ({
           <DashboardAddButton
             sx={{ padding: 0, textAlign: 'left' }}
             translationKey="community.virtualContributors.inviteBtn"
-            onClick={onInviteClick}
+            onClick={onInvite}
           />
         )}
         {visibleVCs?.map(vc => (
@@ -67,6 +73,11 @@ const VirtualContributorsBlock = ({
         <SeeMore label="buttons.see-more" onClick={openDialog} />
       )}
       <VirtualContributorsDialog open={dialogOpen} onClose={closeDialog} virtualContributors={virtualContributors} />
+      <InviteContributorDialog
+        open={inviteDialogOpen}
+        onClose={closeInviteDialog}
+        type={CommunityContributorType.Virtual}
+      />
     </PageContentBlock>
   );
 };

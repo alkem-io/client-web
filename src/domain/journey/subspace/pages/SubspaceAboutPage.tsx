@@ -45,7 +45,6 @@ const SubspaceAboutPage = () => {
             memberOrganizationsCount,
             virtualContributors,
             hasReadPrivilege,
-            hasInvitePrivilege,
           },
           state
         ) => (
@@ -86,7 +85,6 @@ const SubspaceAboutPage = () => {
             }
             virtualContributors={virtualContributors}
             hasReadPrivilege={hasReadPrivilege}
-            hasInvitePrivilege={hasInvitePrivilege}
           />
         )}
       </AboutPageContainer>
