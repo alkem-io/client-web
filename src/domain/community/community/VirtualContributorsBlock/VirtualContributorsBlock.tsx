@@ -12,7 +12,6 @@ import VirtualContributorsDialog, { VirtualContributorProps } from './VirtualCon
 import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIcons';
 import Gutters from '@/core/ui/grid/Gutters';
 import { DashboardAddButton } from '@/domain/shared/components/DashboardSections/DashboardAddButton';
-import { noop } from 'lodash';
 import InviteContributorDialog from '@/domain/community/inviteContributors/InviteContributorsDialog';
 import { CommunityContributorType } from '@/core/apollo/generated/graphql-schema';
 
@@ -22,14 +21,12 @@ type VirtualContributorsBlockProps = {
   virtualContributors: VirtualContributorProps[];
   loading: boolean;
   showInviteOption?: boolean;
-  onInviteClick?: () => void;
 };
 
 const VirtualContributorsBlock = ({
   virtualContributors,
   loading,
   showInviteOption = false,
-  onInviteClick = noop,
 }: VirtualContributorsBlockProps) => {
   const { t } = useTranslation();
 
@@ -44,7 +41,6 @@ const VirtualContributorsBlock = ({
 
   const onInvite = () => {
     setInviteDialogOpen(true);
-    onInviteClick();
   };
 
   return (
