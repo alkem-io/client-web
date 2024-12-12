@@ -17330,7 +17330,7 @@ export const SpaceAccountDocument = gql`
           sortOrder
           isFree
           pricePerMonth
-          LicensingCredentialBasedCredentialType
+          licenseCredential
         }
       }
       configuration {
@@ -18948,7 +18948,7 @@ export const PlatformLicensingPlansDocument = gql`
           id
           type
           name
-          LicensingCredentialBasedCredentialType
+          licenseCredential
         }
       }
     }

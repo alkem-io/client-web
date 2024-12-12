@@ -1784,7 +1784,7 @@ export type LicensePlanKeySpecifier = (
   | 'enabled'
   | 'id'
   | 'isFree'
-  | 'LicensingCredentialBasedCredentialType'
+  | 'licenseCredential'
   | 'name'
   | 'pricePerMonth'
   | 'requiresContactSupport'
@@ -1802,7 +1802,7 @@ export type LicensePlanFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isFree?: FieldPolicy<any> | FieldReadFunction<any>;
-  LicensingCredentialBasedCredentialType?: FieldPolicy<any> | FieldReadFunction<any>;
+  licenseCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   pricePerMonth?: FieldPolicy<any> | FieldReadFunction<any>;
   requiresContactSupport?: FieldPolicy<any> | FieldReadFunction<any>;

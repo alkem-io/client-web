@@ -135,7 +135,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
     if (!data || !activeSubscription) {
       return undefined;
     }
-    const currentPlan = plans.find(plan => plan.LicensingCredentialBasedCredentialType === activeSubscription.name);
+    const currentPlan = plans.find(plan => plan.licenseCredential === activeSubscription.name);
     if (!currentPlan) {
       return undefined;
     }
