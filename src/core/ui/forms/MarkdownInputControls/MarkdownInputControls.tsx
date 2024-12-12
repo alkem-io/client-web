@@ -93,9 +93,6 @@ export const iFrame = Node.create({
       height: {
         default: '315',
       },
-      sandbox: {
-        default: 'allow-scripts allow-popups',
-      },
     };
   },
   parseHTML() {

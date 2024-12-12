@@ -17,7 +17,7 @@ const defaultIframeAttributes = {
   width: { default: '100%' },
   height: { default: '100%' },
   frameborder: { default: 0 },
-  sandbox: { default: 'allow-scripts allow-same-origin allow-popups allow-presentation' },
+  allowFullScreen: { default: 1 },
 };
 
 export type IframeOptions = {
