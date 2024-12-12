@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, ChangeEvent } from 'react';
+import { useRef, useState, useEffect, ChangeEvent, useMemo } from 'react';
 
 import { Form, Formik } from 'formik';
 import { Editor } from '@tiptap/react';
@@ -9,7 +9,6 @@ import SmartScreenOutlinedIcon from '@mui/icons-material/SmartScreenOutlined';
 import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
 
 import Gutters from '@/core/ui/grid/Gutters';
-import { BlockTitle } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -35,7 +34,6 @@ export const InsertEmbedCodeButton = ({
   onDialogClose,
   ...buttonProps
 }: InsertEmbedCodeButtonProps) => {
-  const [src, setSrc] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { t } = useTranslation();
@@ -50,7 +48,6 @@ export const InsertEmbedCodeButton = ({
     setIsDialogOpen(false);
     editor?.commands.focus();
     onDialogClose?.();
-    setSrc('');
   };
 
   const Textarea = styled(BaseTextareaAutosize)(
@@ -89,20 +86,7 @@ export const InsertEmbedCodeButton = ({
     setIsDialogOpen(true);
   };
 
-  const handleOnTextareaChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    const cursorPosition = event.target.selectionStart;
-
-    setSrc(event.target.value);
-
-    setTimeout(() => {
-      if (textareaRef.current) {
-        textareaRef.current.selectionStart = cursorPosition;
-        textareaRef.current.selectionEnd = cursorPosition;
-      }
-    }, 0);
-  };
-
-  const handleOnSubmitIframe = () => {
+  const handleOnSubmitIframe = ({ src }: { src: string }) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(src, 'text/html');
     const iframe = doc.querySelector('iframe');
@@ -141,12 +125,15 @@ export const InsertEmbedCodeButton = ({
   };
 
   useEffect(() => {
-    if (isDialogOpen && textareaRef?.current !== null) {
-      textareaRef.current.focus();
-    }
+    setTimeout(() => {
+      if (isDialogOpen) {
+        textareaRef?.current?.focus();
+      }
+    }, 10);
   }, [textareaRef?.current, isDialogOpen]);
 
   const isIconButtonDisabled = !editor || !editor.can().insertContent('');
+  const initialValues = useMemo(() => ({ src: '' }), []);
 
   return (
     <>
@@ -161,32 +148,31 @@ export const InsertEmbedCodeButton = ({
       </IconButton>
 
       <DialogWithGrid open={isDialogOpen} onClose={handleOnCloseDialog}>
-        <DialogHeader onClose={handleOnCloseDialog}>
-          <BlockTitle>{t('components.wysiwyg-editor.toolbar.embed.video')}</BlockTitle>
-        </DialogHeader>
+        <DialogHeader title={t('components.wysiwyg-editor.embed.dialogTitle')} onClose={handleOnCloseDialog} />
+        <Formik initialValues={initialValues} onSubmit={handleOnSubmitIframe}>
+          {({ setFieldValue, values }) => (
+            <Form>
+              <Gutters>
+                <Textarea
+                  ref={textareaRef}
+                  value={values.src}
+                  minRows={7}
+                  maxLength={MARKDOWN_TEXT_LENGTH}
+                  placeholder={t('components.wysiwyg-editor.embed.pasteEmbedCode')}
+                  onChange={(event: ChangeEvent<HTMLTextAreaElement>) => setFieldValue('src', event.target.value)}
+                  aria-label={t('components.wysiwyg-editor.embed.embedCodeTextAreaAriaLabel')}
+                />
 
-        <Formik initialValues={{ src: '' }} onSubmit={handleOnSubmitIframe}>
-          <Form>
-            <Gutters>
-              <Textarea
-                ref={textareaRef}
-                value={src}
-                minRows={7}
-                maxLength={MARKDOWN_TEXT_LENGTH}
-                placeholder={t('components.wysiwyg-editor.embed.pasteEmbedCode')}
-                onChange={handleOnTextareaChange}
-                aria-label={t('components.wysiwyg-editor.embed.embedCodeTextAreaAriaLabel')}
-              />
+                <Actions justifyContent="space-between">
+                  <Button onClick={handleOnCloseDialog}>{t('buttons.cancel')}</Button>
 
-              <Actions justifyContent="space-between">
-                <Button onClick={handleOnCloseDialog}>{t('buttons.cancel')}</Button>
-
-                <Button type="submit" variant="contained">
-                  {t('buttons.insert')}
-                </Button>
-              </Actions>
-            </Gutters>
-          </Form>
+                  <Button type="submit" variant="contained">
+                    {t('buttons.insert')}
+                  </Button>
+                </Actions>
+              </Gutters>
+            </Form>
+          )}
         </Formik>
       </DialogWithGrid>
     </>
