@@ -7,7 +7,7 @@ import {
   useOrganizationAuthorizationLazyQuery,
   useSpaceAccountQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, LicensePlanType } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import PageContent from '@/core/ui/content/PageContent';
@@ -125,7 +125,7 @@ const SpaceAccountView: FC<SpaceAccountPageProps> = ({ journeyId }) => {
 
     // Need to clone the array to be able to sort it:
     const plans = [...(data?.platform.licensingFramework.plans ?? [])]
-      .filter(plan => plan.type === LicensePlanType.SpacePlan)
+      .filter(plan => plan.type === LicensingCredentialBasedPlanType.SpacePlan)
       .sort((a, b) => a.sortOrder - b.sortOrder)
       .map(plan => ({
         ...plan,
