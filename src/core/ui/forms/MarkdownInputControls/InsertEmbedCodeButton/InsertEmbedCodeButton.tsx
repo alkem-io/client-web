@@ -14,19 +14,13 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { gutters } from '@/core/ui/grid/utils';
+import { ALLOWED_EMBED_URLS } from '@/core/ui/markdown/embed/allowedEmbedUrls';
 
 interface InsertEmbedCodeButtonProps extends IconButtonProps {
   editor: Editor | null;
   onDialogOpen?: () => void;
   onDialogClose?: () => void;
 }
-
-const validSources = [
-  'https://issuu.com', // Important - not tested because in order to get embed code from this site one must have account with paid plan!
-  'https://www.youtube.com',
-  'https://player.vimeo.com',
-  'https://demo.arcade.software',
-];
 
 export const InsertEmbedCodeButton = ({
   editor,
@@ -104,7 +98,7 @@ export const InsertEmbedCodeButton = ({
     }
 
     const srcOrigin = new URL(embedCodeSrc).origin;
-    const isValidSource = validSources.some(vS => vS === srcOrigin);
+    const isValidSource = ALLOWED_EMBED_URLS.some(vS => vS === srcOrigin);
 
     if (!isValidSource) {
       notify(t('components.wysiwyg-editor.embed.invalidOrUnsupportedEmbed'), 'error');
