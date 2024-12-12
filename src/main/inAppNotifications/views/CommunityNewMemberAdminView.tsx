@@ -26,5 +26,10 @@ export const CommunityNewMemberAdminView = ({ id, state, space, triggeredAt, act
     };
   }, [id, state, space, triggeredAt, actor]);
 
+  // do not display notification if these are missing
+  if (!actor?.profile?.displayName || !space?.profile?.displayName) {
+    return null;
+  }
+
   return <InAppNotificationBaseView {...notification} />;
 };
