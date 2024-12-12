@@ -11,7 +11,7 @@ interface InviteContributorsListProps {
 
 const InviteContributorsList = ({ contributors = [], onCardClick = noop }: InviteContributorsListProps) => {
   return (
-    <GridContainer>
+    <GridContainer sx={{ paddingX: 0 }}>
       {contributors.map(c => (
         <GridItem key={c?.id}>
           <UserCard

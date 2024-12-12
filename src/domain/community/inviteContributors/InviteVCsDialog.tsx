@@ -8,7 +8,6 @@ import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import useInviteContributors from '@/domain/community/inviteContributors/useInviteContributors';
 import { ContributorProps, InviteContributorDialogProps } from './InviteContributorsProps';
 import InviteContributorsList from './InviteContributorsList';
-import { PageTitle } from '@/core/ui/typography';
 import InviteVirtualContributorDialog from '../invitations/InviteVirtualContributorDialog';
 import PreviewContributorDialog from './PreviewContributorDialog';
 import VCProfileContentView from '../virtualContributor/vcProfilePage/VCProfileContentView';
@@ -17,6 +16,8 @@ import { BasicSpaceProps } from '../virtualContributor/components/BasicSpaceCard
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import { gutters } from '@/core/ui/grid/utils';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
@@ -149,9 +150,15 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
       <DialogContent>
         <Gutters disablePadding disableGap>
-          {showOnAccount && <PageTitle>{t('components.inviteContributorsDialog.vcs.onAccount.title')}</PageTitle>}
+          {showOnAccount && (
+            <PageContentBlockHeader title={t('components.inviteContributorsDialog.vcs.onAccount.title')} />
+          )}
           {showOnAccount && <InviteContributorsList contributors={onAccount} onCardClick={onAccountContributorClick} />}
-          {showOnAccount && <PageTitle>{t('components.inviteContributorsDialog.vcs.inLibrary.title')}</PageTitle>}
+          {showOnAccount && (
+            <Gutters disableGap disablePadding paddingTop={gutters()}>
+              <PageContentBlockHeader title={t('components.inviteContributorsDialog.vcs.inLibrary.title')} />
+            </Gutters>
+          )}
           {libraryVCsLoading ? (
             <Loading />
           ) : (
