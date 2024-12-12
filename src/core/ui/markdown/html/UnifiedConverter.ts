@@ -9,7 +9,7 @@ import { Converter } from './Converter';
 import { once } from 'lodash';
 
 const isEmptyLine = (node: HTML, parent: Parent | null) => node.value === '<br>' && parent?.type === 'root';
-const allowDangerousHtmldIframeProps = [
+const allowDangerousHtmlIframeProps = [
   'src',
   'width',
   'title',
@@ -65,12 +65,20 @@ const UnifiedConverter = (): Converter => {
             em: trimmer('em'),
             iframe: (state, element) => ({
               type: 'html',
-              value: `<iframe src="${
-                element.properties.src
-              }" position="absolute" width="100%" height="100%" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" title=${t(
-                'components.wysiwyg-editor.embed.iframeAria',
-                { title: element.properties.title || 'Embeded video iframe' }
-              )} loading="lazy"></iframe>`,
+              value: `<iframe
+                src="${element.properties.src}"
+                position="absolute"
+                width="100%"
+                height="100%"
+                frameborder="0"
+                webkitallowfullscreen
+                 mozallowfullscreen
+                 allowfullscreen
+                 allow="clipboard-write"
+                  title="${t('components.wysiwyg-editor.embed.iframeAria', {
+                    title: element.properties.title ?? 'Embeded video iframe',
+                  })}"
+              loading="lazy"></iframe>`,
             }),
           },
         })
@@ -92,7 +100,7 @@ const UnifiedConverter = (): Converter => {
       tagNames: [...(defaultSchema.tagNames || []), 'iframe'],
       attributes: {
         ...(defaultSchema.attributes || {}),
-        iframe: allowDangerousHtmldIframeProps,
+        iframe: allowDangerousHtmlIframeProps,
       },
     };
 

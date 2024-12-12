@@ -356,6 +356,7 @@
     "innovation-hubs": "Innovation Hubs",
     "innovationPack": "Template Pack",
     "more": "More",
+    "url": "URL",
     "sources": "Sources",
     "license": "License",
     "virtual-contributors": "VC",
@@ -585,10 +586,7 @@
       "LICENSE_MANAGER": "License Manager",
       "BETA_TESTER": "Beta Tester",
       "VC_CAMPAIGN": "VC Early Access"
-    },
-    "removeContent": "Delete Community Guidelines",
-    "iframeContent": "iframe Content",
-    "url": "URL"
+    }
   },
   "community": {
     "memberUsers": "Member Users ({{count}})",
@@ -1197,7 +1195,7 @@
         "maxLength": "The resulting text goes beyond the size accepted by the server."
       },
       "embed": {
-        "iframeAria": "{{title}} iframe",
+        "iframeAria": "{{title}}",
         "dialogTitle": "Embed Video or other Media",
         "embedCodeTextAreaAriaLabel": "Empty textarea",
         "pasteEmbedCode": "Paste the embed/iframe code here",

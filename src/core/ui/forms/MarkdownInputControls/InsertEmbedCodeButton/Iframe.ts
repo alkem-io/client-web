@@ -23,8 +23,7 @@ const defaultIframeAttributes = {
 export type IframeOptions = {
   allowFullscreen: boolean;
   HTMLAttributes: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any; // It's any by default, keep it.
+    [key: string]: string;
   };
 };
 
