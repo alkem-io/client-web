@@ -16,7 +16,7 @@ import PageBannerWatermark from '@/main/ui/platformNavigation/PageBannerWatermar
 import VirtualContributorLabel from '@/domain/community/virtualContributor/VirtualContributorLabel';
 
 const banner: Visual = {
-  uri: '/alkemio-banner/global-banner.jpg',
+  uri: '/alkemio-banner/global-banner.svg',
 };
 
 export interface ProfilePageBannerProps {
