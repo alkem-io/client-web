@@ -23,7 +23,7 @@ import {
   CalloutVisibility,
   CommunityRoleType,
   CreateVirtualContributorOnAccountMutationVariables,
-  LicensePlanType,
+  LicensingCredentialBasedPlanType,
   SpaceType,
 } from '@/core/apollo/generated/graphql-schema';
 import CreateNewVirtualContributor, { VirtualContributorFromProps } from './CreateNewVirtualContributor';
@@ -204,7 +204,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     () =>
       plansData?.platform.licensingFramework.plans
         .filter(plan => plan.enabled)
-        .filter(plan => plan.type === LicensePlanType.SpacePlan)
+        .filter(plan => plan.type === LicensingCredentialBasedPlanType.SpacePlan)
         .filter(plan => isPlanAvailable(plan))
         .sort((a, b) => a.sortOrder - b.sortOrder) ?? [],
     [plansData, isPlanAvailable]

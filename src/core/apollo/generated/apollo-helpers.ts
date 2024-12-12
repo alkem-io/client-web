@@ -1564,6 +1564,7 @@ export type InAppNotificationCommunityNewMemberFieldPolicy = {
 export type InAppNotificationUserMentionedKeySpecifier = (
   | 'category'
   | 'comment'
+  | 'commentOriginName'
   | 'commentUrl'
   | 'contributorType'
   | 'id'
@@ -1577,6 +1578,7 @@ export type InAppNotificationUserMentionedKeySpecifier = (
 export type InAppNotificationUserMentionedFieldPolicy = {
   category?: FieldPolicy<any> | FieldReadFunction<any>;
   comment?: FieldPolicy<any> | FieldReadFunction<any>;
+  commentOriginName?: FieldPolicy<any> | FieldReadFunction<any>;
   commentUrl?: FieldPolicy<any> | FieldReadFunction<any>;
   contributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1834,17 +1836,6 @@ export type LicensePolicyFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type LicensePolicyCredentialRuleKeySpecifier = (
-  | 'credentialType'
-  | 'grantedEntitlements'
-  | 'name'
-  | LicensePolicyCredentialRuleKeySpecifier
-)[];
-export type LicensePolicyCredentialRuleFieldPolicy = {
-  credentialType?: FieldPolicy<any> | FieldReadFunction<any>;
-  grantedEntitlements?: FieldPolicy<any> | FieldReadFunction<any>;
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type LicensingKeySpecifier = (
   | 'authorization'
   | 'createdDate'
@@ -1861,6 +1852,17 @@ export type LicensingFieldPolicy = {
   plans?: FieldPolicy<any> | FieldReadFunction<any>;
   policy?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type LicensingCredentialBasedPolicyCredentialRuleKeySpecifier = (
+  | 'credentialType'
+  | 'grantedEntitlements'
+  | 'name'
+  | LicensingCredentialBasedPolicyCredentialRuleKeySpecifier
+)[];
+export type LicensingCredentialBasedPolicyCredentialRuleFieldPolicy = {
+  credentialType?: FieldPolicy<any> | FieldReadFunction<any>;
+  grantedEntitlements?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LifecycleKeySpecifier = ('createdDate' | 'id' | 'updatedDate' | LifecycleKeySpecifier)[];
 export type LifecycleFieldPolicy = {
@@ -2047,6 +2049,8 @@ export type MutationKeySpecifier = (
   | 'adminSearchIngestFromScratch'
   | 'adminUpdateContributorAvatars'
   | 'adminUserAccountDelete'
+  | 'adminWingbackCreateTestCustomer'
+  | 'adminWingbackGetCustomerEntitlements'
   | 'aiServerAuthorizationPolicyReset'
   | 'aiServerCreateAiPersonaService'
   | 'aiServerDeleteAiPersonaService'
@@ -2133,6 +2137,7 @@ export type MutationKeySpecifier = (
   | 'licenseResetOnAccount'
   | 'messageUser'
   | 'moveContributionToCallout'
+  | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
   | 'removeCommunityGuidelinesContent'
   | 'removeMessageOnRoom'
@@ -2215,6 +2220,8 @@ export type MutationFieldPolicy = {
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserAccountDelete?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminWingbackCreateTestCustomer?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminWingbackGetCustomerEntitlements?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerAuthorizationPolicyReset?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerCreateAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerDeleteAiPersonaService?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2301,6 +2308,7 @@ export type MutationFieldPolicy = {
   licenseResetOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2743,7 +2751,6 @@ export type QueryKeySpecifier = (
   | 'lookupByName'
   | 'me'
   | 'notifications'
-  | 'notificationsAll'
   | 'organization'
   | 'organizations'
   | 'organizationsPaginated'
@@ -2782,7 +2789,6 @@ export type QueryFieldPolicy = {
   lookupByName?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
   notifications?: FieldPolicy<any> | FieldReadFunction<any>;
-  notificationsAll?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationsPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4378,16 +4384,16 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | LicensePolicyKeySpecifier | (() => undefined | LicensePolicyKeySpecifier);
     fields?: LicensePolicyFieldPolicy;
   };
-  LicensePolicyCredentialRule?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | LicensePolicyCredentialRuleKeySpecifier
-      | (() => undefined | LicensePolicyCredentialRuleKeySpecifier);
-    fields?: LicensePolicyCredentialRuleFieldPolicy;
-  };
   Licensing?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LicensingKeySpecifier | (() => undefined | LicensingKeySpecifier);
     fields?: LicensingFieldPolicy;
+  };
+  LicensingCredentialBasedPolicyCredentialRule?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | LicensingCredentialBasedPolicyCredentialRuleKeySpecifier
+      | (() => undefined | LicensingCredentialBasedPolicyCredentialRuleKeySpecifier);
+    fields?: LicensingCredentialBasedPolicyCredentialRuleFieldPolicy;
   };
   Lifecycle?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LifecycleKeySpecifier | (() => undefined | LifecycleKeySpecifier);

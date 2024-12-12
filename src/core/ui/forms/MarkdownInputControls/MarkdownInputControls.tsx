@@ -1,3 +1,4 @@
+import { Node } from '@tiptap/core';
 import { Editor } from '@tiptap/react';
 import { forwardRef, memo, useEffect, useState } from 'react';
 import {
@@ -19,6 +20,7 @@ import { ChainedCommands } from '@tiptap/core/dist/packages/core/src/types';
 import InsertImageButton from './InsertImageButton';
 import ToggleLinkButton from './ToggleLinkButton';
 import InsertEmojiButton from './InsertEmojiButton';
+import { InsertEmbedCodeButton } from './InsertEmbedCodeButton/InsertEmbedCodeButton';
 import produce from 'immer';
 
 type MarkdownInputControlsProps = {
@@ -36,6 +38,29 @@ interface ControlsButtonProps extends IconButtonProps {
   specs?: string | [attributes: {}] | [nodeOrMark: string, attributes?: {}];
 }
 
+const sanitizeUrl = (url: string): string => {
+  try {
+    const parsedUrl = new URL(url);
+    const allowedProtocols = ['http:', 'https:'];
+    // 'javascript:' is used to prevent XSS attacks by blocking dangerous protocols
+    const dangerousProtocols = ['javascript:', 'data:', 'vbscript:'];
+
+    if (!allowedProtocols.includes(parsedUrl.protocol) || dangerousProtocols.some(p => url.toLowerCase().includes(p))) {
+      return 'about:blank';
+    }
+
+    // Ensure the URL doesn't contain encoded versions of dangerous protocols
+    const decodedUrl = decodeURIComponent(url.toLowerCase());
+    if (dangerousProtocols.some(p => decodedUrl.includes(p))) {
+      return 'about:blank';
+    }
+
+    return url;
+  } catch (e) {
+    return 'about:blank';
+  }
+};
+
 /*
 Tabs component used without real Tabs, because MUI Tabs component has a very useful variant="scrollable"
 that adds buttons on the sides of the toolbar when the buttons don't fit in a single row */
@@ -51,6 +76,36 @@ interface ButtonState {
   active?: boolean;
   disabled?: boolean;
 }
+
+export const iFrame = Node.create({
+  name: 'iFrame',
+  group: 'block',
+  inline: false,
+  atom: true,
+  addAttributes() {
+    return {
+      src: {
+        default: null,
+      },
+      width: {
+        default: '560',
+      },
+      height: {
+        default: '315',
+      },
+    };
+  },
+  parseHTML() {
+    return [{ tag: 'iframe' }];
+  },
+  renderHTML({ HTMLAttributes }) {
+    const safeAttributes = {
+      ...HTMLAttributes,
+      src: sanitizeUrl(HTMLAttributes.src),
+    };
+    return ['iframe', safeAttributes];
+  },
+});
 
 const ControlsButton = memo(
   ({ editor, command, specs, ...buttonProps }: ControlsButtonProps) => {
@@ -181,6 +236,9 @@ const MarkdownInputControls = memo(
                 temporaryLocation={temporaryLocation}
               />
             )}
+
+            <InsertEmbedCodeButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+
             <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
           </Toolbar>
         </Collapse>
