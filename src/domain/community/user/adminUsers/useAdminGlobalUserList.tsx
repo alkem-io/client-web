@@ -87,10 +87,8 @@ const useAdminGlobalUserList = ({
         url: buildSettingsUrl(profile.url),
         avatar: profile.visual,
         activeLicensePlanIds: platformLicensePlans?.data?.platform.licensingFramework.plans
-          .filter(({ LicensingCredentialBasedCredentialType }) =>
-            account?.subscriptions
-              .map(subscription => subscription.name)
-              .includes(LicensingCredentialBasedCredentialType)
+          .filter(({ licenseCredential }) =>
+            account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
           )
           .map(({ id }) => id),
       })),
