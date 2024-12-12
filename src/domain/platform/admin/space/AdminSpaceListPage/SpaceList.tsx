@@ -11,7 +11,11 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import Loading from '@/core/ui/loading/Loading';
 import ListPage from '@/domain/platform/admin/components/ListPage';
 import { SearchableTableItem, SearchableTableItemMapper } from '@/domain/platform/admin/components/SearchableTable';
-import { AuthorizationPrivilege, LicensePlanType, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  LicensingCredentialBasedPlanType,
+  SpaceVisibility,
+} from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import SpaceListItem from './SpaceListItem';
@@ -32,7 +36,9 @@ export const SpaceList: FC = () => {
 
   const allLicensePlans = platformLicensingData?.platform.licensingFramework.plans ?? [];
   const spaceLicensePlans = allLicensePlans.filter(
-    plan => plan.type === LicensePlanType.SpacePlan || plan.type === LicensePlanType.SpaceFeatureFlag
+    plan =>
+      plan.type === LicensingCredentialBasedPlanType.SpacePlan ||
+      plan.type === LicensingCredentialBasedPlanType.SpaceFeatureFlag
   );
   const spaceList = useMemo(() => {
     return (
@@ -58,9 +64,13 @@ export const SpaceList: FC = () => {
           url: buildSettingsUrl(space.profile.url),
         }))
         .map(space => {
-          const activeLicenseCredentials = space.subscriptions.map(subscription => subscription.name);
+          const activeLicensingCredentialBasedCredentialTypes = space.subscriptions.map(
+            subscription => subscription.name
+          );
           const activeLicensePlanIds = platformLicensingData?.platform.licensingFramework.plans
-            .filter(({ licenseCredential }) => activeLicenseCredentials.includes(licenseCredential))
+            .filter(({ LicensingCredentialBasedCredentialType }) =>
+              activeLicensingCredentialBasedCredentialTypes.includes(LicensingCredentialBasedCredentialType)
+            )
             .map(({ id }) => id);
 
           return {

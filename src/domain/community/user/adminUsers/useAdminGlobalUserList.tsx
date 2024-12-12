@@ -11,7 +11,11 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
-import { LicensePlanType, UserListQuery, UserListQueryVariables } from '@/core/apollo/generated/graphql-schema';
+import {
+  LicensingCredentialBasedPlanType,
+  UserListQuery,
+  UserListQueryVariables,
+} from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
@@ -83,8 +87,10 @@ const useAdminGlobalUserList = ({
         url: buildSettingsUrl(profile.url),
         avatar: profile.visual,
         activeLicensePlanIds: platformLicensePlans?.data?.platform.licensingFramework.plans
-          .filter(({ licenseCredential }) =>
-            account?.subscriptions.map(subscription => subscription.name).includes(licenseCredential)
+          .filter(({ LicensingCredentialBasedCredentialType }) =>
+            account?.subscriptions
+              .map(subscription => subscription.name)
+              .includes(LicensingCredentialBasedCredentialType)
           )
           .map(({ id }) => id),
       })),
@@ -145,7 +151,7 @@ const useAdminGlobalUserList = ({
   const licensePlans = useMemo<ContributorLicensePlan[]>(
     () =>
       platformLicensePlans?.data?.platform.licensingFramework.plans
-        .filter(plan => plan.type === LicensePlanType.AccountPlan)
+        .filter(plan => plan.type === LicensingCredentialBasedPlanType.AccountPlan)
         .map(licensePlan => ({
           id: licensePlan.id,
           name: licensePlan.name,

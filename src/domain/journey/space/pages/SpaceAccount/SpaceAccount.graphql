@@ -49,7 +49,7 @@ query SpaceAccount($spaceId: UUID!) {
         sortOrder
         isFree
         pricePerMonth
-        licenseCredential
+        LicensingCredentialBasedCredentialType
       }
     }
     configuration {
