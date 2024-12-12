@@ -60,13 +60,14 @@ const CalloutDescription = ({ callout }: { callout: CalloutPreview }) => {
 
   switch (callout.type) {
     case CalloutType.Whiteboard:
-    case CalloutType.WhiteboardCollection:
       if (callout.framing.whiteboard?.profile.preview?.uri) {
         return (
-          <WhiteboardPreview
-            whiteboard={callout.framing.whiteboard}
-            displayName={callout.framing.profile.displayName}
-          />
+          <Box display="flex" justifyContent="center">
+            <WhiteboardPreview
+              whiteboard={callout.framing.whiteboard}
+              displayName={callout.framing.profile.displayName}
+            />
+          </Box>
         );
       }
       return null;
