@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Accordion, AccordionDetails, AccordionSummary, Box, styled } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -74,38 +74,48 @@ const InnovationFlowCalloutsPreview = ({ callouts, selectedState, loading }: Inn
   const handleSelectedCalloutChange = (calloutId: string) => (_event, isExpanded: boolean) =>
     setSelectedCallout(isExpanded ? calloutId : false);
 
+  const visibleCallouts = useMemo(() => {
+    return callouts
+      ?.filter(
+        callout =>
+          selectedState &&
+          callout.framing.profile.flowStateTagset?.tags &&
+          callout.framing.profile.flowStateTagset?.tags.includes(selectedState)
+      )
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+  }, [callouts, selectedState]);
+
+  const calloutDescriptions: Record<string, ReactNode> = useMemo(
+    () =>
+      visibleCallouts?.reduce(
+        (obj, callout) => ({ ...obj, [callout.id]: <CalloutDescription callout={callout} /> }),
+        {}
+      ) ?? {},
+    [visibleCallouts]
+  );
+
   return (
     <>
-      {!loading && callouts && (
+      {!loading && visibleCallouts && (
         <Box>
-          {callouts
-            .filter(
-              callout =>
-                selectedState &&
-                callout.framing.profile.flowStateTagset?.tags &&
-                callout.framing.profile.flowStateTagset?.tags.includes(selectedState)
-            )
-            .sort((a, b) => a.sortOrder - b.sortOrder)
-            .map(callout => {
-              return (
-                <StyledAccordion
-                  key={callout.id}
-                  expanded={selectedCallout === callout.id}
-                  onChange={handleSelectedCalloutChange(callout.id)}
-                >
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <RoundedIcon
-                      size="small"
-                      component={getCalloutTypeIcon({ type: callout.type, contributionPolicy: undefined })}
-                    />
-                    <Text marginLeft={gutters()}>{callout.framing.profile.displayName}</Text>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <CalloutDescription callout={callout} />
-                  </AccordionDetails>
-                </StyledAccordion>
-              );
-            })}
+          {visibleCallouts.map(callout => {
+            return (
+              <StyledAccordion
+                key={callout.id}
+                expanded={selectedCallout === callout.id}
+                onChange={handleSelectedCalloutChange(callout.id)}
+              >
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <RoundedIcon
+                    size="small"
+                    component={getCalloutTypeIcon({ type: callout.type, contributionPolicy: undefined })}
+                  />
+                  <Text marginLeft={gutters()}>{callout.framing.profile.displayName}</Text>
+                </AccordionSummary>
+                <AccordionDetails>{selectedCallout === callout.id && calloutDescriptions[callout.id]}</AccordionDetails>
+              </StyledAccordion>
+            );
+          })}
         </Box>
       )}
     </>
