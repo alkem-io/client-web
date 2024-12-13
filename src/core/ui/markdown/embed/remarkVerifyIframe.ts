@@ -23,27 +23,35 @@ const isAllowedUrl = (url: string) => {
 
 export const remarkVerifyIframe: Pluggable = () => {
   return tree => {
-    visit(tree, 'html', (node: Node) => {
-      // @ts-ignore
-      if (typeof node.value === 'string') {
-        // @ts-ignore
+    visit(tree, 'html', (node: { value: string }) => {
+      if (node && typeof node.value === 'string') {
         const nodeValue: string = node.value;
         if (nodeValue.toLowerCase().includes('<iframe')) {
-          const srcMatch = nodeValue.match(/src="([^"]*)"/i);
-          if (!srcMatch) {
-            // Iframe without src at all? just remove it
-            // @ts-ignore
+          try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(nodeValue, 'text/html');
+            const iframes = doc.querySelectorAll('iframe');
+            if (!iframes || !iframes.length) {
+              // Cannot find the iframe node after seeing an <iframe, remove the node
+              node.value = '';
+              return;
+            } else {
+              for (let iframe of iframes) {
+                const src = iframe.getAttribute('src');
+                if (!src || !isAllowedUrl(src)) {
+                  node.value = '';
+                  return;
+                }
+                if (iframe.getAttribute('sandbox')) {
+                  node.value = '';
+                  return;
+                }
+              }
+            }
+          } catch (ex) {
+            // If we can't parse the HTML, just remove the node
             node.value = '';
-          } else if (!isAllowedUrl(srcMatch[1])) {
-            // @ts-ignore
-            node.value = node.value.replace(/src="[^"]*"/i, 'src="about:blank"');
           }
-        }
-        const sandboxMatch = nodeValue.match(/sandbox="([^"]*)"/i);
-        if (sandboxMatch) {
-          // We are not using sandbox attribute for now, so this may be comming from someone trying to tamper with our cookies. Remove the entire thing for now:
-          // @ts-ignore
-          node.value = '';
         }
       }
     });

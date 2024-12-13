@@ -10,6 +10,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import UploadButton from '@/core/ui/button/UploadButton';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { useMemo } from 'react';
 
 const DEFAULT_REFERENCE_TYPE = 'reference';
 
@@ -36,6 +37,54 @@ const FileUploadButton = ({
   const notify = useNotification();
 
   const maxFileSizeMb = storageConfig.maxFileSize ? storageConfig.maxFileSize / bytesInMegabyte : 0;
+
+  // NOTE: Some browsers fail to map mime types to extensions correctly. Hence the need of a mapping of
+  // file types to extensions explicitly, so we can have a filtered list when selecting files on the client.
+  // Extended mimeTypeToExtensionMap
+  const mimeTypeToExtensionMap: { [mimeType: string]: string } = {
+    // PDF
+    'application/pdf': '.pdf',
+
+    // Excel
+    'application/vnd.ms-excel': '.xls',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '.xlsx',
+    'application/vnd.oasis.opendocument.spreadsheet': '.ods',
+
+    // Word
+    'application/msword': '.doc',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
+    'application/vnd.oasis.opendocument.text': '.odt',
+
+    // Images
+    'image/bmp': '.bmp',
+    'image/jpg': '.jpg',
+    'image/jpeg': '.jpg,.jpeg',
+    'image/x-png': '.png',
+    'image/png': '.png',
+    'image/gif': '.gif',
+    'image/webp': '.webp',
+    'image/svg+xml': '.svg',
+    'image/avif': '.avif',
+
+    // PowerPoint
+    'application/vnd.ms-powerpoint': '.ppt',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
+    'application/vnd.ms-powerpoint.presentation.macroEnabled.12': '.pptm',
+    'application/vnd.openxmlformats-officedocument.presentationml.slideshow': '.ppsx',
+    'application/vnd.ms-powerpoint.slideshow.macroEnabled.12': '.ppsm',
+    'application/vnd.openxmlformats-officedocument.presentationml.template': '.potx',
+    'application/vnd.ms-powerpoint.template.macroEnabled.12': '.potm',
+    'application/vnd.oasis.opendocument.presentation': '.odp',
+  } as const;
+
+  const allowedMimeTypes = storageConfig.allowedMimeTypes;
+
+  const allowedExtensions = useMemo(() => {
+    return allowedMimeTypes
+      .map(mimeType => mimeTypeToExtensionMap[mimeType])
+      .filter(Boolean)
+      .join(',');
+  }, [allowedMimeTypes]);
 
   const [uploadFileOnReference, { loading: loadingOnReference }] = useUploadFileOnReferenceMutation({
     onCompleted: data => {
@@ -103,7 +152,7 @@ const FileUploadButton = ({
     <UploadButton
       icon={loading ? <CircularProgress size={20} /> : <AttachFileIcon />}
       disabled={loading}
-      allowedTypes={storageConfig.allowedMimeTypes}
+      allowedTypes={allowedExtensions.split(',')}
       onFileSelected={file => {
         handleSubmit(file);
         onChange?.(file.name);
