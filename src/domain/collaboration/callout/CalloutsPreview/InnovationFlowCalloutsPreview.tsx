@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Accordion, AccordionDetails, AccordionSummary, Box, styled } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -45,7 +45,7 @@ const StyledAccordion = styled(Accordion)(({ theme }) => ({
   boxShadow: 'none',
 }));
 
-const CalloutDescription = ({ callout }: { callout: CalloutPreview }) => {
+const CalloutDescription = memo(({ callout }: { callout: CalloutPreview }) => {
   const { t } = useTranslation();
 
   switch (callout.type) {
@@ -67,7 +67,7 @@ const CalloutDescription = ({ callout }: { callout: CalloutPreview }) => {
         <CaptionSmall>{t('common.noDescription')}</CaptionSmall>
       );
   }
-};
+});
 
 const InnovationFlowCalloutsPreview = ({ callouts, selectedState, loading }: InnovationFlowCalloutsPreviewProps) => {
   const [selectedCallout, setSelectedCallout] = useState<string | false>(false);
@@ -84,15 +84,6 @@ const InnovationFlowCalloutsPreview = ({ callouts, selectedState, loading }: Inn
       )
       .sort((a, b) => a.sortOrder - b.sortOrder);
   }, [callouts, selectedState]);
-
-  const calloutDescriptions: Record<string, ReactNode> = useMemo(
-    () =>
-      visibleCallouts?.reduce(
-        (obj, callout) => ({ ...obj, [callout.id]: <CalloutDescription callout={callout} /> }),
-        {}
-      ) ?? {},
-    [visibleCallouts]
-  );
 
   return (
     <>
@@ -112,7 +103,9 @@ const InnovationFlowCalloutsPreview = ({ callouts, selectedState, loading }: Inn
                   />
                   <Text marginLeft={gutters()}>{callout.framing.profile.displayName}</Text>
                 </AccordionSummary>
-                <AccordionDetails>{selectedCallout === callout.id && calloutDescriptions[callout.id]}</AccordionDetails>
+                <AccordionDetails>
+                  {selectedCallout === callout.id && <CalloutDescription callout={callout} />}
+                </AccordionDetails>
               </StyledAccordion>
             );
           })}
