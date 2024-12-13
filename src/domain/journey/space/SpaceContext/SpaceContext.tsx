@@ -17,6 +17,7 @@ export interface SpacePermissions {
   canReadPosts: boolean;
   canReadSubspaces: boolean;
   canCreateSubspaces: boolean;
+  canCreateTemplates: boolean;
   canCreate: boolean;
   communityReadAccess: boolean;
   canReadCollaboration: boolean;
@@ -55,6 +56,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
     viewerCanUpdate: false,
     canCreate: false,
     canCreateSubspaces: false,
+    canCreateTemplates: false,
     canReadPosts: false,
     canReadSubspaces: false,
     communityReadAccess: false,
@@ -109,6 +111,9 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
 
   const canReadSubspaces = spacePrivileges.includes(AuthorizationPrivilege.Read);
   const canCreateSubspaces = spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace);
+  const canCreateTemplates =
+    data?.space.templatesManager?.templatesSet?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Create) ??
+    false;
   const canCreate = spacePrivileges.includes(AuthorizationPrivilege.Create);
 
   const communityPrivileges = space?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
@@ -119,6 +124,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       viewerCanUpdate: spacePrivileges.includes(AuthorizationPrivilege.Update),
       canReadSubspaces,
       canCreateSubspaces: canCreateSubspaces,
+      canCreateTemplates,
       canCreate,
       communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
       canReadCollaboration: collaborationPrivileges.includes(AuthorizationPrivilege.Read),

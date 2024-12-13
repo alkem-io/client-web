@@ -2137,6 +2137,16 @@ export const SpaceInfoFragmentDoc = gql`
         myPrivileges
       }
     }
+    templatesManager {
+      id
+      templatesSet {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
     visibility
   }
   ${SpaceDetailsFragmentDoc}
