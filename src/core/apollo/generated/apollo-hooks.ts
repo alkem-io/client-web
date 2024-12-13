@@ -17767,6 +17767,23 @@ export const AdminSpaceSubspacesPageDocument = gql`
             }
             collaboration {
               id
+              callouts {
+                id
+                type
+                sortOrder
+                framing {
+                  id
+                  profile {
+                    id
+                    displayName
+                    description
+                    flowStateTagset: tagset(tagsetName: FLOW_STATE) {
+                      id
+                      tags
+                    }
+                  }
+                }
+              }
               innovationFlow {
                 id
                 profile {

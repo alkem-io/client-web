@@ -23021,6 +23021,23 @@ export type AdminSpaceSubspacesPageQuery = {
                     | {
                         __typename?: 'Collaboration';
                         id: string;
+                        callouts: Array<{
+                          __typename?: 'Callout';
+                          id: string;
+                          type: CalloutType;
+                          sortOrder: number;
+                          framing: {
+                            __typename?: 'CalloutFraming';
+                            id: string;
+                            profile: {
+                              __typename?: 'Profile';
+                              id: string;
+                              displayName: string;
+                              description: string;
+                              flowStateTagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                            };
+                          };
+                        }>;
                         innovationFlow: {
                           __typename?: 'InnovationFlow';
                           id: string;
