@@ -22,8 +22,8 @@ import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { spaceId, journeyPath } = useRouteResolver();
-  const { spaceNameId, permissions, visibility, collaborationId } = useSpace();
+  const { journeyPath } = useRouteResolver();
+  const { spaceId, permissions, visibility, collaborationId } = useSpace();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -32,7 +32,7 @@ const SpaceSubspacesPage = () => {
   const handleCreate = useCallback(
     async (value: JourneyFormValues) => {
       const result = await createSubspace({
-        spaceID: spaceNameId,
+        spaceID: spaceId,
         displayName: value.displayName,
         tagline: value.tagline,
         background: value.background ?? '',
@@ -49,7 +49,7 @@ const SpaceSubspacesPage = () => {
 
       navigate(result.profile.url);
     },
-    [navigate, createSubspace, spaceNameId]
+    [navigate, createSubspace, spaceId]
   );
 
   const callouts = useCallouts({
