@@ -21099,6 +21099,25 @@ export type SpaceProviderQuery = {
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
     };
+    templatesManager?:
+      | {
+          __typename?: 'TemplatesManager';
+          id: string;
+          templatesSet?:
+            | {
+                __typename?: 'TemplatesSet';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -21200,6 +21219,21 @@ export type SpaceInfoFragment = {
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
   };
+  templatesManager?:
+    | {
+        __typename?: 'TemplatesManager';
+        id: string;
+        templatesSet?:
+          | {
+              __typename?: 'TemplatesSet';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }
+          | undefined;
+      }
+    | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
