@@ -2020,7 +2020,7 @@ export type CreateSubspaceInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
-  spaceID: Scalars['UUID_NAMEID'];
+  spaceID: Scalars['UUID'];
   tags?: InputMaybe<Array<Scalars['String']>>;
   type?: InputMaybe<SpaceType>;
 };

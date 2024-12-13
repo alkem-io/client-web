@@ -75,7 +75,7 @@ const FileUploadButton = ({
     'application/vnd.openxmlformats-officedocument.presentationml.template': '.potx',
     'application/vnd.ms-powerpoint.template.macroEnabled.12': '.potm',
     'application/vnd.oasis.opendocument.presentation': '.odp',
-  };
+  } as const;
 
   const allowedMimeTypes = storageConfig.allowedMimeTypes;
 
