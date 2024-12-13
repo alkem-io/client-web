@@ -27,44 +27,31 @@ export const remarkVerifyIframe: Pluggable = () => {
       if (node && typeof node.value === 'string') {
         const nodeValue: string = node.value;
         if (nodeValue.toLowerCase().includes('<iframe')) {
-          const filters = [
-            {
-              regex: /src="([^"]*)"/i,
-              action: match => {
-                if (!nodeValue.includes('src=')) {
-                  node.value = ''; // Iframe without src at all? just remove it
-                  return;
-                }
-                if (match && !isAllowedUrl(match[1])) {
-                  node.value = nodeValue.replace(/src="[^"]*"/i, 'src="about:blank"');
-                }
-              },
-            },
-            {
-              // Same as above, but for single quotes
-              regex: /src='([^']*)'/i,
-              action: match => {
-                if (!nodeValue.includes('src=')) {
+          try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(nodeValue, 'text/html');
+            const iframes = doc.querySelectorAll('iframe');
+            if (!iframes || !iframes.length) {
+              // Cannot find the iframe node after seeing an <iframe, remove the node
+              node.value = '';
+              return;
+            } else {
+              for (let iframe of iframes) {
+                const src = iframe.getAttribute('src');
+                if (!src || !isAllowedUrl(src)) {
                   node.value = '';
                   return;
                 }
-                if (match && !isAllowedUrl(match[1])) {
-                  node.value = nodeValue.replace(/src='[^']*'/i, "src='about:blank'");
-                }
-              },
-            },
-            {
-              // We are not using sandbox attribute for now,
-              // so this may be comming from someone trying to tamper with our cookies. Remove the entire thing for now:
-              regex: /sandbox/i,
-              action: match => {
-                if (match) {
+                if (iframe.getAttribute('sandbox')) {
                   node.value = '';
+                  return;
                 }
-              },
-            },
-          ];
-          filters.forEach(filter => filter.action(nodeValue.match(filter.regex)));
+              }
+            }
+          } catch (ex) {
+            // If we can't parse the HTML, just remove the node
+            node.value = '';
+          }
         }
       }
     });
