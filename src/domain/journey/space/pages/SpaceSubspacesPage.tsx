@@ -23,7 +23,7 @@ const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { journeyPath } = useRouteResolver();
-  const { spaceId, spaceNameId, permissions, visibility, collaborationId } = useSpace();
+  const { spaceId, permissions, visibility, collaborationId } = useSpace();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -49,7 +49,7 @@ const SpaceSubspacesPage = () => {
 
       navigate(result.profile.url);
     },
-    [navigate, createSubspace, spaceNameId]
+    [navigate, createSubspace, spaceId]
   );
 
   const callouts = useCallouts({
