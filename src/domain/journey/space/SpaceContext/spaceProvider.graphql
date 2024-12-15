@@ -46,6 +46,16 @@ fragment SpaceInfo on Space {
       myPrivileges
     }
   }
+  templatesManager {
+    id
+    templatesSet{
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
 
   visibility
 }

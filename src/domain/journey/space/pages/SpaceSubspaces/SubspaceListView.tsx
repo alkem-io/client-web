@@ -37,6 +37,7 @@ import { AuthorizationPrivilege, TemplateDefaultType, TemplateType } from '@/cor
 import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
 import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
+import InnovationFlowCalloutsPreview from '@/domain/collaboration/callout/CalloutsPreview/InnovationFlowCalloutsPreview';
 
 export const SubspaceListView = () => {
   const { t } = useTranslation();
@@ -226,7 +227,14 @@ export const SubspaceListView = () => {
             <InnovationFlowStates
               states={defaultSubspaceTemplate.template.collaboration?.innovationFlow.states}
               selectedState={selectedState}
-              onSelectState={state => setSelectedState(state.displayName)}
+              onSelectState={state =>
+                setSelectedState(currentState => (currentState === state.displayName ? undefined : state.displayName))
+              }
+            />
+            <InnovationFlowCalloutsPreview
+              callouts={defaultSubspaceTemplate.template.collaboration?.callouts}
+              selectedState={selectedState}
+              loading={loading}
             />
           </>
         ) : (

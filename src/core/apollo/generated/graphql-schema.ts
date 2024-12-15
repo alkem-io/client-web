@@ -2021,7 +2021,7 @@ export type CreateSubspaceInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
-  spaceID: Scalars['UUID_NAMEID'];
+  spaceID: Scalars['UUID'];
   tags?: InputMaybe<Array<Scalars['String']>>;
   type?: InputMaybe<SpaceType>;
 };
@@ -21356,6 +21356,25 @@ export type SpaceProviderQuery = {
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
     };
+    templatesManager?:
+      | {
+          __typename?: 'TemplatesManager';
+          id: string;
+          templatesSet?:
+            | {
+                __typename?: 'TemplatesSet';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -21457,6 +21476,21 @@ export type SpaceInfoFragment = {
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
   };
+  templatesManager?:
+    | {
+        __typename?: 'TemplatesManager';
+        id: string;
+        templatesSet?:
+          | {
+              __typename?: 'TemplatesSet';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }
+          | undefined;
+      }
+    | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -23244,6 +23278,23 @@ export type AdminSpaceSubspacesPageQuery = {
                     | {
                         __typename?: 'Collaboration';
                         id: string;
+                        callouts: Array<{
+                          __typename?: 'Callout';
+                          id: string;
+                          type: CalloutType;
+                          sortOrder: number;
+                          framing: {
+                            __typename?: 'CalloutFraming';
+                            id: string;
+                            profile: {
+                              __typename?: 'Profile';
+                              id: string;
+                              displayName: string;
+                              description: string;
+                              flowStateTagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                            };
+                          };
+                        }>;
                         innovationFlow: {
                           __typename?: 'InnovationFlow';
                           id: string;

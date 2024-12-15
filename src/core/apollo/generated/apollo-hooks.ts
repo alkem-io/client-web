@@ -2157,6 +2157,16 @@ export const SpaceInfoFragmentDoc = gql`
         myPrivileges
       }
     }
+    templatesManager {
+      id
+      templatesSet {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
     visibility
   }
   ${SpaceDetailsFragmentDoc}
@@ -17860,6 +17870,23 @@ export const AdminSpaceSubspacesPageDocument = gql`
             }
             collaboration {
               id
+              callouts {
+                id
+                type
+                sortOrder
+                framing {
+                  id
+                  profile {
+                    id
+                    displayName
+                    description
+                    flowStateTagset: tagset(tagsetName: FLOW_STATE) {
+                      id
+                      tags
+                    }
+                  }
+                }
+              }
               innovationFlow {
                 id
                 profile {
