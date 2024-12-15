@@ -172,7 +172,8 @@
     "addSubject": "Add {{subject}}",
     "toolPosition": "Position of tool",
     "createOwnSpace": "...or click here to create your own Space",
-    "notifications": "Notifications Button"
+    "notifications": "Notifications Button",
+    "invite": "Invite"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -1138,6 +1139,17 @@
         "title": "Send an email invitation"
       },
       "inviteToRole": "Invite to be a: "
+    },
+    "inviteContributorsDialog": {
+      "vcs": {
+        "onAccount": {
+          "title": "Virtual Contributors from my account"
+        },
+        "inLibrary": {
+          "title": "Other Virtual Contributors"
+        }
+      },
+      "successfullyAdded": "{{contributor}} added successfully"
     },
     "confirmation-dialog": {
       "delete-comment": {

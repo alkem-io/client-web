@@ -86,6 +86,8 @@ const SpaceCommunityPage = () => {
     AuthorizationPrivilege.CommunityInvite
   );
 
+  const showVirtualContributorsBlock = hasReadPrivilege && (virtualContributors?.length > 0 || hasInvitePrivilege);
+
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Community}>
       <SpaceCommunityContainer collaborationId={collaborationId}>
@@ -108,14 +110,11 @@ const SpaceCommunityPage = () => {
                 onSendMessage={sendMessageToCommunityLeads}
                 messageReceivers={messageReceivers}
               />
-              {hasReadPrivilege && virtualContributors?.length > 0 && (
+              {showVirtualContributorsBlock && (
                 <VirtualContributorsBlock
                   virtualContributors={virtualContributors}
                   loading={loading}
                   showInviteOption={hasInvitePrivilege}
-                  onInviteClick={() => {
-                    console.log('TODO: impl w #7256');
-                  }}
                 />
               )}
               <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.space.profile.url} />
