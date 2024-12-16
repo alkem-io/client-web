@@ -1147,7 +1147,8 @@
         },
         "inLibrary": {
           "title": "Other Virtual Contributors"
-        }
+        },
+        "emptyMessage": "No available Virtual Contributors"
       },
       "successfullyAdded": "{{contributor}} added successfully"
     },

@@ -82,8 +82,8 @@ const SpaceCommunityPage = () => {
       ) ?? [];
   }
 
-  const hasInvitePrivilege = data?.space.community?.roleSet.authorization?.myPrivileges?.includes(
-    AuthorizationPrivilege.CommunityInvite
+  const hasInvitePrivilege = data?.space.community?.roleSet.authorization?.myPrivileges?.some(privilege =>
+    [AuthorizationPrivilege.CommunityInvite, AuthorizationPrivilege.CommunityAddMemberVcFromAccount].includes(privilege)
   );
 
   const showVirtualContributorsBlock = hasReadPrivilege && (virtualContributors?.length > 0 || hasInvitePrivilege);

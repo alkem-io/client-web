@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
 import { DialogContent, DialogActions, Button } from '@mui/material';
@@ -19,6 +19,7 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { gutters } from '@/core/ui/grid/utils';
+import { Caption } from '@/core/ui/typography';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
@@ -58,12 +59,19 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     setInLibrary(lib);
   };
 
+  const memoizedFetchVCs = useCallback(fetchVCs, [
+    getAvailableVirtualContributors,
+    getAvailableVirtualContributorsInLibrary,
+  ]);
+
   // debounce as we could have multiple changes in a short period of time
   const debouncedFetchVCs = debounce(fetchVCs, 100);
 
+  const memoizedDebouncedFetchVCs = useCallback(debouncedFetchVCs, [memoizedFetchVCs]);
+
   // on memberVCs change, update the lists of VCs
   useEffect(() => {
-    debouncedFetchVCs();
+    memoizedDebouncedFetchVCs();
   }, [virtualContributors]);
 
   const getContributorsBoKProfile = async () => {
@@ -150,6 +158,12 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     </>
   );
 
+  const isEmpty =
+    (!onAccount || onAccount.length === 0) &&
+    (!inLibrary || inLibrary.length === 0) &&
+    !accountVCsLoading &&
+    !libraryVCsLoading;
+
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
       <DialogContent>
@@ -168,6 +182,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
           ) : (
             <InviteContributorsList contributors={inLibrary} onCardClick={onLibraryContributorClick} />
           )}
+          {isEmpty && <Caption>{t('components.inviteContributorsDialog.vcs.emptyMessage')}</Caption>}
         </Gutters>
       </DialogContent>
       <DialogActions>
