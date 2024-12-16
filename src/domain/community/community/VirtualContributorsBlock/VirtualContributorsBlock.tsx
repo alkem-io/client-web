@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
@@ -39,9 +39,9 @@ const VirtualContributorsBlock = ({
 
   const visibleVCs = virtualContributors.slice(0, VIRTUAL_CONTRIBUTORS_LIMIT);
 
-  const onInvite = () => {
+  const onInvite = useCallback(() => {
     setInviteDialogOpen(true);
-  };
+  }, [setInviteDialogOpen]);
 
   return (
     <PageContentBlock>
@@ -73,11 +73,13 @@ const VirtualContributorsBlock = ({
         <SeeMore label="buttons.see-more" onClick={openDialog} />
       )}
       <VirtualContributorsDialog open={dialogOpen} onClose={closeDialog} virtualContributors={virtualContributors} />
-      <InviteContributorDialog
-        open={inviteDialogOpen}
-        onClose={closeInviteDialog}
-        type={CommunityContributorType.Virtual}
-      />
+      {inviteDialogOpen && (
+        <InviteContributorDialog
+          open={inviteDialogOpen}
+          onClose={closeInviteDialog}
+          type={CommunityContributorType.Virtual}
+        />
+      )}
     </PageContentBlock>
   );
 };
