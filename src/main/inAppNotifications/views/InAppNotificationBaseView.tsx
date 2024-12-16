@@ -185,6 +185,7 @@ export const InAppNotificationBaseView = ({
                 <Box
                   sx={{
                     width: '10px',
+                    minWidth: '10px', // fix flex layout issue
                     height: '10px',
                     background: '#09BCD4',
                     borderRadius: '50%',
