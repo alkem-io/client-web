@@ -82,6 +82,12 @@ const SpaceCommunityPage = () => {
       ) ?? [];
   }
 
+  const hasInvitePrivilege = data?.space.community?.roleSet.authorization?.myPrivileges?.some(privilege =>
+    [AuthorizationPrivilege.CommunityInvite, AuthorizationPrivilege.CommunityAddMemberVcFromAccount].includes(privilege)
+  );
+
+  const showVirtualContributorsBlock = hasReadPrivilege && (virtualContributors?.length > 0 || hasInvitePrivilege);
+
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Community}>
       <SpaceCommunityContainer collaborationId={collaborationId}>
@@ -104,8 +110,12 @@ const SpaceCommunityPage = () => {
                 onSendMessage={sendMessageToCommunityLeads}
                 messageReceivers={messageReceivers}
               />
-              {hasReadPrivilege && virtualContributors?.length > 0 && (
-                <VirtualContributorsBlock virtualContributors={virtualContributors} loading={loading} />
+              {showVirtualContributorsBlock && (
+                <VirtualContributorsBlock
+                  virtualContributors={virtualContributors}
+                  loading={loading}
+                  showInviteOption={hasInvitePrivilege}
+                />
               )}
               <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.space.profile.url} />
             </InfoColumn>
