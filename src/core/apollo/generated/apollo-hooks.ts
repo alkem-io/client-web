@@ -10413,6 +10413,7 @@ export const CommunityMembersListDocument = gql`
   ) {
     lookup {
       space(ID: $spaceId) @include(if: $includeSpaceHost) {
+        id
         provider {
           ...ContributorDetails
         }
@@ -12663,6 +12664,7 @@ export const CommunityVirtualMembersListDocument = gql`
   ) {
     lookup {
       space(ID: $spaceId) @include(if: $includeSpaceHost) {
+        id
         provider {
           ...ContributorDetails
         }

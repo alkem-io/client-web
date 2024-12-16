@@ -2537,7 +2537,7 @@ export type InAppNotification = {
   /** When (UTC) was the notification sent. */
   triggeredAt: Scalars['DateTime'];
   /** The Contributor who triggered the notification. */
-  triggeredBy: Contributor;
+  triggeredBy?: Maybe<Contributor>;
   /** The type of the notification */
   type: NotificationEventType;
 };
@@ -2558,7 +2558,7 @@ export type InAppNotificationCalloutPublished = InAppNotification & {
   /** When (UTC) was the notification sent. */
   triggeredAt: Scalars['DateTime'];
   /** The Contributor who triggered the notification. */
-  triggeredBy: Contributor;
+  triggeredBy?: Maybe<Contributor>;
   /** The type of the notification */
   type: NotificationEventType;
 };
@@ -2588,7 +2588,7 @@ export type InAppNotificationCommunityNewMember = InAppNotification & {
   /** When (UTC) was the notification sent. */
   triggeredAt: Scalars['DateTime'];
   /** The Contributor who triggered the notification. */
-  triggeredBy: Contributor;
+  triggeredBy?: Maybe<Contributor>;
   /** The type of the notification */
   type: NotificationEventType;
 };
@@ -2619,7 +2619,7 @@ export type InAppNotificationUserMentioned = InAppNotification & {
   /** When (UTC) was the notification sent. */
   triggeredAt: Scalars['DateTime'];
   /** The Contributor who triggered the notification. */
-  triggeredBy: Contributor;
+  triggeredBy?: Maybe<Contributor>;
   /** The type of the notification */
   type: NotificationEventType;
 };
@@ -3336,10 +3336,18 @@ export enum MimeType {
   Gif = 'GIF',
   Jpeg = 'JPEG',
   Jpg = 'JPG',
+  Odp = 'ODP',
   Ods = 'ODS',
   Odt = 'ODT',
   Pdf = 'PDF',
   Png = 'PNG',
+  Potm = 'POTM',
+  Potx = 'POTX',
+  Ppsm = 'PPSM',
+  Ppsx = 'PPSX',
+  Ppt = 'PPT',
+  Pptm = 'PPTM',
+  Pptx = 'PPTX',
   Svg = 'SVG',
   Webp = 'WEBP',
   Xls = 'XLS',
@@ -15832,6 +15840,7 @@ export type CommunityMembersListQuery = {
     space?:
       | {
           __typename?: 'Space';
+          id: string;
           provider:
             | {
                 __typename?: 'Organization';
@@ -17583,6 +17592,7 @@ export type CommunityVirtualMembersListQuery = {
     space?:
       | {
           __typename?: 'Space';
+          id: string;
           provider:
             | {
                 __typename?: 'Organization';
@@ -23290,7 +23300,7 @@ export type AdminSpaceSubspacesPageQuery = {
                               __typename?: 'Profile';
                               id: string;
                               displayName: string;
-                              description: string;
+                              description?: string | undefined;
                               flowStateTagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
                             };
                           };
@@ -28188,7 +28198,7 @@ export type InAppNotificationsQuery = {
               };
             }
           | undefined;
-        triggeredBy:
+        triggeredBy?:
           | {
               __typename?: 'Organization';
               id: string;
@@ -28221,7 +28231,8 @@ export type InAppNotificationsQuery = {
                 url: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
-            };
+            }
+          | undefined;
       }
     | {
         __typename?: 'InAppNotificationCommunityNewMember';
@@ -28230,7 +28241,7 @@ export type InAppNotificationsQuery = {
         category: InAppNotificationCategory;
         state: InAppNotificationState;
         triggeredAt: Date;
-        triggeredBy:
+        triggeredBy?:
           | {
               __typename?: 'Organization';
               id: string;
@@ -28263,7 +28274,8 @@ export type InAppNotificationsQuery = {
                 url: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
-            };
+            }
+          | undefined;
         space?:
           | {
               __typename?: 'Space';
@@ -28325,7 +28337,7 @@ export type InAppNotificationsQuery = {
         comment: string;
         commentOriginName: string;
         contributorType: CommunityContributorType;
-        triggeredBy:
+        triggeredBy?:
           | {
               __typename?: 'Organization';
               id: string;
@@ -28358,7 +28370,8 @@ export type InAppNotificationsQuery = {
                 url: string;
                 visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               };
-            };
+            }
+          | undefined;
       }
   >;
 };
@@ -28407,7 +28420,7 @@ export type InAppNotificationCalloutPublishedFragment = {
         };
       }
     | undefined;
-  triggeredBy:
+  triggeredBy?:
     | {
         __typename?: 'Organization';
         id: string;
@@ -28440,12 +28453,13 @@ export type InAppNotificationCalloutPublishedFragment = {
           url: string;
           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
-      };
+      }
+    | undefined;
 };
 
 export type InAppNotificationCommunityNewMemberFragment = {
   __typename?: 'InAppNotificationCommunityNewMember';
-  triggeredBy:
+  triggeredBy?:
     | {
         __typename?: 'Organization';
         id: string;
@@ -28478,7 +28492,8 @@ export type InAppNotificationCommunityNewMemberFragment = {
           url: string;
           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
-      };
+      }
+    | undefined;
   space?:
     | {
         __typename?: 'Space';
@@ -28536,7 +28551,7 @@ export type InAppNotificationUserMentionedFragment = {
   comment: string;
   commentOriginName: string;
   contributorType: CommunityContributorType;
-  triggeredBy:
+  triggeredBy?:
     | {
         __typename?: 'Organization';
         id: string;
@@ -28569,7 +28584,8 @@ export type InAppNotificationUserMentionedFragment = {
           url: string;
           visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
-      };
+      }
+    | undefined;
 };
 
 export type JourneyRouteResolverQueryVariables = Exact<{
