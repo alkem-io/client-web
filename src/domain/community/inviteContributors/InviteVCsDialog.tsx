@@ -72,7 +72,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   // on memberVCs change, update the lists of VCs
   useEffect(() => {
     memoizedDebouncedFetchVCs();
-  }, [virtualContributors, memoizedDebouncedFetchVCs]);
+  }, [virtualContributors]); // do not add memoizedDebouncedFetchVCs in the dependencies
 
   const getContributorsBoKProfile = async () => {
     const vc = getContributorById(selectedVirtualContributorId);
