@@ -55,7 +55,7 @@ const UserCard = ({
 
   return (
     <ContributeCard to={url} aria-label="user-card">
-      <Box onClick={onCardClick}>
+      <Box onClick={onCardClick} sx={{ cursor: onCardClick !== noop ? 'pointer' : 'default' }}>
         {loading ? (
           <Skeleton variant={'rectangular'}>
             <Avatar />
