@@ -74,8 +74,8 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     memoizedDebouncedFetchVCs();
   }, [virtualContributors]); // do not add memoizedDebouncedFetchVCs in the dependencies
 
-  const getContributorsBoKProfile = async () => {
-    const vc = getContributorById(selectedVirtualContributorId);
+  const getContributorsBoKProfile = async (vcId: string) => {
+    const vc = getContributorById(vcId);
     const isBoKSpace = vc?.aiPersona?.bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
     const bodyOfKnowledgeID = vc?.aiPersona?.bodyOfKnowledgeID;
 
@@ -91,7 +91,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     setActionButtonDisabled(false);
     setOpenPreviewDialog(true);
 
-    const vcBoK = await getContributorsBoKProfile();
+    const vcBoK = await getContributorsBoKProfile(id);
     setBoKProfile(vcBoK);
   };
 
