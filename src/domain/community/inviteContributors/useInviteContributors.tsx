@@ -6,7 +6,7 @@ import {
   useBodyOfKnowledgeProfileLazyQuery,
   useCommunityVirtualMembersListQuery,
   useRemoveRoleFromVirtualContributorMutation,
-  refetchCommunityMembersListQuery,
+  refetchSpaceCommunityPageQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -153,8 +153,8 @@ const useInviteContributors = ({
         contributorId: virtualContributorId,
         role: CommunityRoleType.Member,
       },
+      refetchQueries: [refetchSpaceCommunityPageQuery({ spaceNameId: spaceId ?? '', includeCommunity: true })],
     });
-    refetchCommunityMembersListQuery({ roleSetId, spaceId });
 
     return refetchCommunityVirtualMembers();
   };
@@ -171,7 +171,6 @@ const useInviteContributors = ({
         role: CommunityRoleType.Member,
       },
     });
-    refetchCommunityMembersListQuery({ roleSetId, spaceId });
 
     return refetchCommunityVirtualMembers();
   };
