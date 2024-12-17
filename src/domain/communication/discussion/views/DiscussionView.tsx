@@ -62,7 +62,7 @@ export const DiscussionView = ({
   return (
     <Grid container spacing={2} alignItems="stretch" wrap="nowrap">
       <Grid item xs={12} container direction="column">
-        <Grid item>
+        <Grid item sx={{ width: '100%' }}>
           <Box display="flex" justifyContent="space-between">
             <BlockTitle height={gutters(3)}>{discussion.title}</BlockTitle>
             <ShareButton url={discussion.url} entityTypeName="discussion" />
