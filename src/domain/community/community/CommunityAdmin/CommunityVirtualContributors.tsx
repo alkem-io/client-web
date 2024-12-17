@@ -14,14 +14,14 @@ import { gutters } from '@/core/ui/grid/utils';
 import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
 import DataGridTable from '@/core/ui/table/DataGridTable';
 import { BlockTitle } from '@/core/ui/typography';
-import CommunityAddMembersDialog from './CommunityAddMembersDialog';
 import { Remove } from '@mui/icons-material';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Identifiable } from '@/core/utils/Identifiable';
-import InviteVirtualContributorDialog from '@/domain/community/invitations/InviteVirtualContributorDialog';
 import { InviteContributorsData } from '@/domain/community/invitations/useInviteUsers';
 import { ContributorViewProps } from '../EntityDashboardContributorsSection/Types';
+import { CommunityContributorType } from '@/core/apollo/generated/graphql-schema';
+import InviteContributorsDialog from '@/domain/community/inviteContributors/InviteContributorsDialog';
 
 type RenderParams = GridRenderCellParams<string, ContributorViewProps>;
 type GetterParams = GridValueGetterParams<string, ContributorViewProps>;
@@ -66,12 +66,7 @@ const CommunityVirtualContributors = ({
   virtualContributors = [],
   onRemoveMember,
   canAddVirtualContributors,
-  fetchAvailableVirtualContributors,
-  fetchAvailableVirtualContributorsOnAccount,
-  onAddMember,
   loading,
-  inviteExistingUser,
-  spaceDisplayName = '',
 }: CommunityVirtualContributorsProps) => {
   const { t } = useTranslation();
 
@@ -113,35 +108,10 @@ const CommunityVirtualContributors = ({
 
   const [deletingMemberId, setDeletingMemberId] = useState<string>();
   const [isAddingNewMember, setAddingNewMember] = useState(false);
-  const [isInvitingExternal, setIsInvitingExternal] = useState(false);
-  const [allVirtualContributors, setAllVirtualContributors] = useState(false);
-  const [selectedVirtualContributorId, setSelectedVirtualContributorId] = useState<string>('');
 
-  const openAvailableContributorsDialog = (external: boolean = false) => {
-    setAllVirtualContributors(external);
-
+  const openAvailableContributorsDialog = () => {
     setAddingNewMember(true);
   };
-
-  const getFilteredVirtualContributors = async (filter?: string) => {
-    if (allVirtualContributors) {
-      return fetchAvailableVirtualContributors(filter);
-    } else {
-      return fetchAvailableVirtualContributorsOnAccount(filter, false);
-    }
-  };
-
-  const onAddClick = (virtualContributorId: string) => {
-    if (allVirtualContributors) {
-      setAddingNewMember(false);
-      setIsInvitingExternal(true);
-      setSelectedVirtualContributorId(virtualContributorId);
-    } else {
-      onAddMember(virtualContributorId);
-    }
-  };
-
-  const closeInvitationDialog = () => setIsInvitingExternal(false);
 
   return (
     <>
@@ -152,7 +122,7 @@ const CommunityVirtualContributors = ({
             <Button variant="contained" startIcon={<AddIcon />} onClick={() => openAvailableContributorsDialog()}>
               {t('common.add')}
             </Button>
-            <Button variant="contained" startIcon={<AddIcon />} onClick={() => openAvailableContributorsDialog(true)}>
+            <Button variant="contained" startIcon={<AddIcon />} onClick={() => openAvailableContributorsDialog()}>
               {t('community.virtualContributors.inviteExternalVC')}
             </Button>
           </Actions>
@@ -212,21 +182,12 @@ const CommunityVirtualContributors = ({
         />
       )}
       {isAddingNewMember && (
-        <CommunityAddMembersDialog
-          onAdd={onAddClick}
-          fetchAvailableEntities={getFilteredVirtualContributors}
-          allowSearchByURL
-          onClose={() => setAddingNewMember(false)}
-        />
-      )}
-      {isInvitingExternal && (
-        <InviteVirtualContributorDialog
-          title={t('components.invitations.inviteExistingVCDialog.title')}
-          spaceDisplayName={spaceDisplayName}
-          open={isInvitingExternal}
-          onClose={closeInvitationDialog}
-          contributorId={selectedVirtualContributorId}
-          onInviteUser={inviteExistingUser}
+        <InviteContributorsDialog
+          open={isAddingNewMember}
+          onClose={() => {
+            setAddingNewMember(false);
+          }}
+          type={CommunityContributorType.Virtual}
         />
       )}
     </>
