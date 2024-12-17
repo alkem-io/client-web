@@ -60,11 +60,7 @@ const InsertImageButton = ({
     closeDialog();
   };
 
-  const initialValues: ImageProps = {
-    src: 'https://',
-    alt: '',
-  };
-
+  const initialValues: ImageProps = { src: 'https://', alt: '' };
   const isDisabled = !editor || !editor.can().setImage(initialValues);
 
   return (

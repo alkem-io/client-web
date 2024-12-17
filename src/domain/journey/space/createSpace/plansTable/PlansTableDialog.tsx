@@ -17,7 +17,10 @@ import { usePlanAvailability } from './usePlanAvailability';
 import { TagCategoryValues, error } from '@/core/logging/sentry/log';
 import { getPlanTranslations } from '@/domain/license/plans/utils/getPlanTranslations';
 import { PlanFeatures, PlanName, PlanPrice } from '@/domain/license/plans/ui/PlanCardsComponents';
-import { LicenseCredential, LicensePlanType } from '@/core/apollo/generated/graphql-schema';
+import {
+  LicensingCredentialBasedCredentialType,
+  LicensingCredentialBasedPlanType,
+} from '@/core/apollo/generated/graphql-schema';
 
 const lines = (theme: Theme) => `1px solid ${theme.palette.divider}`;
 
@@ -45,7 +48,7 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
       (
         data?.platform.licensingFramework.plans
           .filter(plan => plan.enabled)
-          .filter(plan => plan.type === LicensePlanType.SpacePlan)
+          .filter(plan => plan.type === LicensingCredentialBasedPlanType.SpacePlan)
           .sort((a, b) => a.sortOrder - b.sortOrder) ?? []
       ).map(plan => ({
         ...plan,
@@ -161,10 +164,16 @@ const PlansTableDialog = ({ open, onClose, onSelectPlan }: PlansTableDialogProps
           <WrapperMarkdown>{t('plansTable.confirmationDialogs.freeTrial.content')}</WrapperMarkdown>
         </DialogContent>
         <DialogActions>
-          <Button variant="text" onClick={() => handleSelectPlan(LicenseCredential.SpaceLicenseFree)}>
+          <Button
+            variant="text"
+            onClick={() => handleSelectPlan(LicensingCredentialBasedCredentialType.SpaceLicenseFree)}
+          >
             {t('plansTable.confirmationDialogs.freeTrial.buttons.continue')}
           </Button>
-          <Button variant="contained" onClick={() => handleSelectPlan(LicenseCredential.SpaceLicensePlus)}>
+          <Button
+            variant="contained"
+            onClick={() => handleSelectPlan(LicensingCredentialBasedCredentialType.SpaceLicensePlus)}
+          >
             {t('plansTable.confirmationDialogs.freeTrial.buttons.startPlus')}
           </Button>
         </DialogActions>
