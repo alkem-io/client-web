@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { BackdropProps } from './BackdropWithMessage';
@@ -11,16 +11,19 @@ const Root = styled(Box)(() => ({
   overflow: 'hidden',
 }));
 
-const Background = styled(ImageFadeIn)(() => ({
+const Background = styled(ImageFadeIn)(({ theme }) => ({
   display: 'grid',
   placeContent: 'center',
-  width: '100%',
 
-  '@media (width > 600px)': {
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+
+  [theme.breakpoints.up('sm')]: {
     width: '100%',
   },
 
-  '@media (width < 600px)': {
+  [theme.breakpoints.down('sm')]: {
     height: 160,
   },
 }));
@@ -32,7 +35,7 @@ const Message = styled(Box)(({ theme }) => ({
   display: 'grid',
   placeContent: 'center',
 
-  '@media (width < 600px)': {
+  [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(0.5),
   },
 }));
@@ -44,7 +47,7 @@ const ButtonsWrapper = styled(Box)(({ theme }) => ({
     marginRight: theme.spacing(1),
     marginTop: theme.spacing(1),
 
-    '@media (width > 600px)': {
+    [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(2),
       marginRight: theme.spacing(2),
     },
@@ -76,6 +79,7 @@ const ImageBackdrop: FC<ImageBackdropProps> = ({
       {show && (
         <Root>
           <Background src={src} sx={imageSx} />
+
           {children}
 
           <Message>
