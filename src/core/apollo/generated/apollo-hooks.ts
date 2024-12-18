@@ -12495,11 +12495,8 @@ export type InviteUserToPlatformAndRoleSetMutationOptions = Apollo.BaseMutationO
   SchemaTypes.InviteUserToPlatformAndRoleSetMutationVariables
 >;
 export const AvailableVirtualContributorsDocument = gql`
-  query AvailableVirtualContributors(
-    $filterSpace: Boolean = false
-    $filterSpaceId: UUID = "00000000-0000-0000-0000-000000000000"
-  ) {
-    lookup @include(if: $filterSpace) {
+  query AvailableVirtualContributors($filterSpaceId: UUID = "00000000-0000-0000-0000-000000000000") {
+    lookup {
       space(ID: $filterSpaceId) {
         id
         community {
@@ -12519,9 +12516,6 @@ export const AvailableVirtualContributorsDocument = gql`
         }
       }
     }
-    virtualContributors @skip(if: $filterSpace) {
-      ...VirtualContributorFull
-    }
   }
   ${VirtualContributorFullFragmentDoc}
 `;
@@ -12538,7 +12532,6 @@ export const AvailableVirtualContributorsDocument = gql`
  * @example
  * const { data, loading, error } = useAvailableVirtualContributorsQuery({
  *   variables: {
- *      filterSpace: // value for 'filterSpace'
  *      filterSpaceId: // value for 'filterSpaceId'
  *   },
  * });

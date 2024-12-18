@@ -122,9 +122,6 @@ const CommunityVirtualContributors = ({
             <Button variant="contained" startIcon={<AddIcon />} onClick={() => openAvailableContributorsDialog()}>
               {t('common.add')}
             </Button>
-            <Button variant="contained" startIcon={<AddIcon />} onClick={() => openAvailableContributorsDialog()}>
-              {t('community.virtualContributors.inviteExternalVC')}
-            </Button>
           </Actions>
         )}
       </Box>

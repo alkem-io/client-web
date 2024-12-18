@@ -17399,13 +17399,12 @@ export type InviteUserToPlatformAndRoleSetMutation = {
 };
 
 export type AvailableVirtualContributorsQueryVariables = Exact<{
-  filterSpace?: InputMaybe<Scalars['Boolean']>;
   filterSpaceId?: InputMaybe<Scalars['UUID']>;
 }>;
 
 export type AvailableVirtualContributorsQuery = {
   __typename?: 'Query';
-  lookup?: {
+  lookup: {
     __typename?: 'LookupQueryResults';
     space?:
       | {
@@ -17494,40 +17493,6 @@ export type AvailableVirtualContributorsQuery = {
         }
       | undefined;
   };
-  virtualContributors?: Array<{
-    __typename?: 'VirtualContributor';
-    id: string;
-    nameID: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      description?: string | undefined;
-      url: string;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-      location?:
-        | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-        | undefined;
-    };
-    aiPersona?:
-      | {
-          __typename?: 'AiPersona';
-          bodyOfKnowledge?: string | undefined;
-          bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
-          bodyOfKnowledgeID?: string | undefined;
-        }
-      | undefined;
-  }>;
 };
 
 export type AvailableVirtualContributorsInLibraryQueryVariables = Exact<{ [key: string]: never }>;

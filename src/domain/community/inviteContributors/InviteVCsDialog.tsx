@@ -20,12 +20,20 @@ import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
+import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
+import { useOpportunity } from '@/domain/journey/opportunity/hooks/useOpportunity';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
 
-  const { spaceId, roleSetId } = useSpace();
+  const { opportunityId: subSubSpaceId, roleSetId: oppRoleSetId } = useOpportunity();
+  const { subspaceId: subSpaceId, roleSetId: subSpaceRoleSetId } = useSubSpace();
+  const { spaceId: spaceSpaceId, roleSetId: spaceRoleSetId } = useSpace();
+
+  const spaceId = subSubSpaceId || subSpaceId || spaceSpaceId;
+  const roleSetId = oppRoleSetId || subSpaceRoleSetId || spaceRoleSetId;
+
   const { spaceLevel } = useRouteResolver();
 
   // data
@@ -52,7 +60,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const [bokProfile, setBoKProfile] = useState<BasicSpaceProps>();
 
   const fetchVCs = async () => {
-    let acc = await getAvailableVirtualContributors('', false);
+    let acc = await getAvailableVirtualContributors('');
     setOnAccount(acc);
 
     let lib = await getAvailableVirtualContributorsInLibrary('');
@@ -108,6 +116,11 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const getContributorById = (id: string) => {
     return onAccount?.find(c => c.id === id) || inLibrary?.find(c => c.id === id);
   };
+
+  // remove the duplicates from available onAccount in the inLibrary list
+  const filteredInLibrary = useCallback(() => {
+    return inLibrary?.filter(vc => !(onAccount ?? []).some(member => member.id === vc.id));
+  }, [inLibrary, onAccount]);
 
   const onAddClick = async () => {
     setActionButtonDisabled(true);
@@ -180,7 +193,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
           {libraryVCsLoading ? (
             <Loading />
           ) : (
-            <InviteContributorsList contributors={inLibrary} onCardClick={onLibraryContributorClick} />
+            <InviteContributorsList contributors={filteredInLibrary()} onCardClick={onLibraryContributorClick} />
           )}
           {isEmpty && <Caption>{t('components.inviteContributorsDialog.vcs.emptyMessage')}</Caption>}
         </Gutters>
