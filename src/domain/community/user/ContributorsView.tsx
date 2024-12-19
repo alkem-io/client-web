@@ -27,7 +27,7 @@ import { useColumns } from '@/core/ui/grid/GridContext';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { Identifiable } from '@/core/utils/Identifiable';
 
-const USERS_GRAYED_OUT_IMAGE = '/contributors/users-grayed.png';
+const grayedOutUsersImgSrc = '/contributors/users-grayed.png';
 export const ITEMS_PER_PAGE = 32;
 
 const userToContributorCard = (user: UserContributorFragment): ContributorCardSquareProps => {
@@ -155,16 +155,12 @@ const ContributorsView = ({
         {!showUsers && (
           <Grid item>
             <ImageBackdrop
-              src={USERS_GRAYED_OUT_IMAGE}
-              backdropMessage={'login'}
-              blockName={'all-contributing-users'}
+              src={grayedOutUsersImgSrc}
+              backdropMessage="login"
+              blockName="all-contributing-users"
               messageSx={theme => ({
                 [theme.breakpoints.up('sm')]: {
                   fontWeight: 'bold',
-                },
-                [theme.breakpoints.up('lg')]: {
-                  marginTop: theme.spacing(10),
-                  marginBottom: theme.spacing(-10),
                 },
               })}
             />

@@ -45,10 +45,8 @@ export const VCProfilePage = () => {
   return (
     <VCPageLayout>
       <VCProfilePageView
-        virtualContributor={data?.virtualContributor}
-        bokDescription={data?.virtualContributor?.aiPersona?.bodyOfKnowledge}
         bokProfile={isBokSpace ? bokProfile?.lookup.space?.profile : undefined}
-        hasBokId={Boolean(data?.virtualContributor.aiPersona?.bodyOfKnowledgeID)}
+        virtualContributor={data?.virtualContributor}
       />
     </VCPageLayout>
   );
