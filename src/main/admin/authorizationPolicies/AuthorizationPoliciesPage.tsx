@@ -96,11 +96,6 @@ const AuthorizationPoliciesPage = () => {
                 {!loading && !!authorizationPolicyId && (
                   <>
                     <Gutters row disablePadding>
-                      <BlockTitle>Anonymous Read Access</BlockTitle>
-                      <Chip label={authorizationPolicy.anonymousReadAccess ? 'TRUE' : 'FALSE'} />
-                      <Divider />
-                    </Gutters>
-                    <Gutters row disablePadding>
                       <BlockTitle>Type</BlockTitle>
                       <Chip label={authorizationPolicy.type} />
                       <Divider />

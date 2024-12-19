@@ -6,7 +6,5 @@ fragment ContextDetails on Context {
   authorization {
     id
     myPrivileges
-    anonymousReadAccess
-    type
   }
 }

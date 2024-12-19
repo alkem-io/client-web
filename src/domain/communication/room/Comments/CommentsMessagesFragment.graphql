@@ -4,7 +4,6 @@ fragment CommentsWithMessages on Room {
   authorization {
     id
     myPrivileges
-    anonymousReadAccess
   }
   messages {
     ...MessageDetails

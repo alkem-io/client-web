@@ -669,7 +669,6 @@ export const WhiteboardDetailsFragmentDoc = gql`
     authorization {
       id
       myPrivileges
-      anonymousReadAccess
     }
     contentUpdatePolicy
     createdBy {
@@ -775,7 +774,6 @@ export const CommentsWithMessagesFragmentDoc = gql`
     authorization {
       id
       myPrivileges
-      anonymousReadAccess
     }
     messages {
       ...MessageDetails
@@ -1008,7 +1006,6 @@ export const CalloutWithWhiteboardFragmentDoc = gql`
     type
     authorization {
       id
-      anonymousReadAccess
       myPrivileges
     }
     framing {
@@ -1034,7 +1031,6 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
       type
       authorization {
         id
-        anonymousReadAccess
         myPrivileges
       }
       contributions {
@@ -1117,7 +1113,6 @@ export const DiscussionCardFragmentDoc = gql`
     authorization {
       id
       myPrivileges
-      anonymousReadAccess
     }
   }
   ${VisualFullFragmentDoc}
@@ -2079,8 +2074,6 @@ export const ContextDetailsFragmentDoc = gql`
     authorization {
       id
       myPrivileges
-      anonymousReadAccess
-      type
     }
   }
 `;
@@ -2243,7 +2236,6 @@ export const SpacePageFragmentDoc = gql`
       impact
       authorization {
         id
-        anonymousReadAccess
         myPrivileges
       }
     }
@@ -2434,7 +2426,6 @@ export const SpaceProfileFragmentDoc = gql`
       authorization {
         id
         myPrivileges
-        anonymousReadAccess
       }
     }
     collaboration {
@@ -8925,7 +8916,6 @@ export const PlatformDiscussionsDocument = gql`
         authorization {
           id
           myPrivileges
-          anonymousReadAccess
         }
         discussions {
           ...DiscussionCard
@@ -8996,7 +8986,6 @@ export const PlatformDiscussionDocument = gql`
         authorization {
           id
           myPrivileges
-          anonymousReadAccess
         }
         discussion(ID: $discussionId) {
           ...DiscussionDetails
@@ -21890,7 +21879,6 @@ export const AuthorizationPolicyDocument = gql`
       authorizationPolicy(ID: $authorizationPolicyId) {
         id
         type
-        anonymousReadAccess
         credentialRules {
           name
           cascade
