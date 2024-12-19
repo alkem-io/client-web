@@ -172,7 +172,8 @@
     "addSubject": "Add {{subject}}",
     "toolPosition": "Position of tool",
     "createOwnSpace": "...or click here to create your own Space",
-    "notifications": "Notifications Button"
+    "notifications": "Notifications Button",
+    "invite": "Invite"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -611,7 +612,8 @@
       },
       "inviteExternalVC": "Invite External VC",
       "externalVCsInfo": "At the moment, only Alkemio Support can add an external Virtual Contributor to your Space. Please contact Support <click>here</click> if you wish to do so, we are happy to help!",
-      "searchVC": "Find Virtual Contributor"
+      "searchVC": "Find Virtual Contributor",
+      "inviteBtn": "Invite Virtual Contributor"
     },
     "application-form": {
       "title": "Application Form",
@@ -1137,6 +1139,18 @@
         "title": "Send an email invitation"
       },
       "inviteToRole": "Invite to be a: "
+    },
+    "inviteContributorsDialog": {
+      "vcs": {
+        "onAccount": {
+          "title": "Virtual Contributors from my account"
+        },
+        "inLibrary": {
+          "title": "Other Virtual Contributors"
+        },
+        "emptyMessage": "No available Virtual Contributors"
+      },
+      "successfullyAdded": "{{contributor}} added successfully"
     },
     "confirmation-dialog": {
       "delete-comment": {
@@ -2150,9 +2164,6 @@
             "subtitle": "The order below is the order in which the Spaces will be visible on the Custom Homepage"
           }
         }
-      },
-      "virtualContributors": {
-        "title": "Virtual Contributors"
       }
     },
     "feedback": {

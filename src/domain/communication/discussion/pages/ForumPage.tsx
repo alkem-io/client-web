@@ -31,7 +31,7 @@ import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumb
 import { BlockTitle } from '@/core/ui/typography';
 
 const ALL_CATEGORIES = DiscussionCategoryExtEnum.All;
-const FORUM_GRAYED_OUT_IMAGE = '/forum/forum-grayed.png';
+const grayedOutForumImgSrc = '/forum/forum-grayed.png';
 
 const useSubscriptionToForum = UseSubscriptionToSubEntity<
   PlatformDiscussionsQuery['platform']['forum'],
@@ -149,17 +149,13 @@ export const ForumPage = ({ dialog }: { dialog?: 'new' }) => {
       >
         {!loading && !isAuthenticated ? (
           <ImageBackdrop
-            src={FORUM_GRAYED_OUT_IMAGE}
+            src={grayedOutForumImgSrc}
             backdropMessage={'login'}
             blockName={'all-contributing-users'}
             imageSx={{ filter: 'blur(2px)' }}
             messageSx={theme => ({
               [theme.breakpoints.up('sm')]: {
                 fontWeight: 'bold',
-              },
-              [theme.breakpoints.up('lg')]: {
-                marginTop: theme.spacing(10),
-                marginBottom: theme.spacing(-10),
               },
             })}
           />

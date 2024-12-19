@@ -1205,16 +1205,6 @@ export const BasicOrganizationDetailsFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const VirtualContributorNameFragmentDoc = gql`
-  fragment VirtualContributorName on VirtualContributor {
-    id
-    nameID
-    profile {
-      id
-      displayName
-    }
-  }
-`;
 export const OrganizationContributorFragmentDoc = gql`
   fragment OrganizationContributor on Organization {
     id
@@ -1484,6 +1474,36 @@ export const AccountResourceProfileFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+`;
+export const VirtualContributorFullFragmentDoc = gql`
+  fragment VirtualContributorFull on VirtualContributor {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      description
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        id
+        city
+        country
+      }
+      url
+    }
+    aiPersona {
+      bodyOfKnowledge
+      bodyOfKnowledgeType
+      bodyOfKnowledgeID
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const PendingMembershipsJourneyProfileFragmentDoc = gql`
   fragment PendingMembershipsJourneyProfile on Profile {
@@ -10382,6 +10402,7 @@ export const CommunityMembersListDocument = gql`
   ) {
     lookup {
       space(ID: $spaceId) @include(if: $includeSpaceHost) {
+        id
         provider {
           ...ContributorDetails
         }
@@ -10447,168 +10468,6 @@ export type CommunityMembersListQueryResult = Apollo.QueryResult<
 >;
 export function refetchCommunityMembersListQuery(variables: SchemaTypes.CommunityMembersListQueryVariables) {
   return { query: CommunityMembersListDocument, variables: variables };
-}
-
-export const AvailableVirtualContributorsDocument = gql`
-  query AvailableVirtualContributors(
-    $filterSpace: Boolean = false
-    $filterSpaceId: UUID = "00000000-0000-0000-0000-000000000000"
-  ) {
-    lookup @include(if: $filterSpace) {
-      space(ID: $filterSpaceId) {
-        id
-        community {
-          id
-          roleSet {
-            id
-            virtualContributorsInRole(role: MEMBER) {
-              ...VirtualContributorName
-            }
-          }
-        }
-        account {
-          id
-          virtualContributors {
-            ...VirtualContributorName
-          }
-        }
-      }
-    }
-    virtualContributors @skip(if: $filterSpace) {
-      ...VirtualContributorName
-    }
-  }
-  ${VirtualContributorNameFragmentDoc}
-`;
-
-/**
- * __useAvailableVirtualContributorsQuery__
- *
- * To run a query within a React component, call `useAvailableVirtualContributorsQuery` and pass it any options that fit your needs.
- * When your component renders, `useAvailableVirtualContributorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAvailableVirtualContributorsQuery({
- *   variables: {
- *      filterSpace: // value for 'filterSpace'
- *      filterSpaceId: // value for 'filterSpaceId'
- *   },
- * });
- */
-export function useAvailableVirtualContributorsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.AvailableVirtualContributorsQuery,
-    SchemaTypes.AvailableVirtualContributorsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.AvailableVirtualContributorsQuery,
-    SchemaTypes.AvailableVirtualContributorsQueryVariables
-  >(AvailableVirtualContributorsDocument, options);
-}
-
-export function useAvailableVirtualContributorsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AvailableVirtualContributorsQuery,
-    SchemaTypes.AvailableVirtualContributorsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.AvailableVirtualContributorsQuery,
-    SchemaTypes.AvailableVirtualContributorsQueryVariables
-  >(AvailableVirtualContributorsDocument, options);
-}
-
-export type AvailableVirtualContributorsQueryHookResult = ReturnType<typeof useAvailableVirtualContributorsQuery>;
-export type AvailableVirtualContributorsLazyQueryHookResult = ReturnType<
-  typeof useAvailableVirtualContributorsLazyQuery
->;
-export type AvailableVirtualContributorsQueryResult = Apollo.QueryResult<
-  SchemaTypes.AvailableVirtualContributorsQuery,
-  SchemaTypes.AvailableVirtualContributorsQueryVariables
->;
-export function refetchAvailableVirtualContributorsQuery(
-  variables?: SchemaTypes.AvailableVirtualContributorsQueryVariables
-) {
-  return { query: AvailableVirtualContributorsDocument, variables: variables };
-}
-
-export const AvailableVirtualContributorsInLibraryDocument = gql`
-  query AvailableVirtualContributorsInLibrary {
-    platform {
-      id
-      library {
-        id
-        virtualContributors {
-          searchVisibility
-          ...VirtualContributorName
-        }
-      }
-    }
-  }
-  ${VirtualContributorNameFragmentDoc}
-`;
-
-/**
- * __useAvailableVirtualContributorsInLibraryQuery__
- *
- * To run a query within a React component, call `useAvailableVirtualContributorsInLibraryQuery` and pass it any options that fit your needs.
- * When your component renders, `useAvailableVirtualContributorsInLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAvailableVirtualContributorsInLibraryQuery({
- *   variables: {
- *   },
- * });
- */
-export function useAvailableVirtualContributorsInLibraryQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.AvailableVirtualContributorsInLibraryQuery,
-    SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.AvailableVirtualContributorsInLibraryQuery,
-    SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
-  >(AvailableVirtualContributorsInLibraryDocument, options);
-}
-
-export function useAvailableVirtualContributorsInLibraryLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AvailableVirtualContributorsInLibraryQuery,
-    SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.AvailableVirtualContributorsInLibraryQuery,
-    SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
-  >(AvailableVirtualContributorsInLibraryDocument, options);
-}
-
-export type AvailableVirtualContributorsInLibraryQueryHookResult = ReturnType<
-  typeof useAvailableVirtualContributorsInLibraryQuery
->;
-export type AvailableVirtualContributorsInLibraryLazyQueryHookResult = ReturnType<
-  typeof useAvailableVirtualContributorsInLibraryLazyQuery
->;
-export type AvailableVirtualContributorsInLibraryQueryResult = Apollo.QueryResult<
-  SchemaTypes.AvailableVirtualContributorsInLibraryQuery,
-  SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
->;
-export function refetchAvailableVirtualContributorsInLibraryQuery(
-  variables?: SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
-) {
-  return { query: AvailableVirtualContributorsInLibraryDocument, variables: variables };
 }
 
 export const AllOrganizationsDocument = gql`
@@ -12624,6 +12483,252 @@ export type InviteUserToPlatformAndRoleSetMutationOptions = Apollo.BaseMutationO
   SchemaTypes.InviteUserToPlatformAndRoleSetMutation,
   SchemaTypes.InviteUserToPlatformAndRoleSetMutationVariables
 >;
+export const AvailableVirtualContributorsDocument = gql`
+  query AvailableVirtualContributors(
+    $filterSpace: Boolean = false
+    $filterSpaceId: UUID = "00000000-0000-0000-0000-000000000000"
+  ) {
+    lookup @include(if: $filterSpace) {
+      space(ID: $filterSpaceId) {
+        id
+        community {
+          id
+          roleSet {
+            id
+            virtualContributorsInRole(role: MEMBER) {
+              ...VirtualContributorFull
+            }
+          }
+        }
+        account {
+          id
+          virtualContributors {
+            ...VirtualContributorFull
+          }
+        }
+      }
+    }
+    virtualContributors @skip(if: $filterSpace) {
+      ...VirtualContributorFull
+    }
+  }
+  ${VirtualContributorFullFragmentDoc}
+`;
+
+/**
+ * __useAvailableVirtualContributorsQuery__
+ *
+ * To run a query within a React component, call `useAvailableVirtualContributorsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAvailableVirtualContributorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAvailableVirtualContributorsQuery({
+ *   variables: {
+ *      filterSpace: // value for 'filterSpace'
+ *      filterSpaceId: // value for 'filterSpaceId'
+ *   },
+ * });
+ */
+export function useAvailableVirtualContributorsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.AvailableVirtualContributorsQuery,
+    SchemaTypes.AvailableVirtualContributorsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.AvailableVirtualContributorsQuery,
+    SchemaTypes.AvailableVirtualContributorsQueryVariables
+  >(AvailableVirtualContributorsDocument, options);
+}
+
+export function useAvailableVirtualContributorsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AvailableVirtualContributorsQuery,
+    SchemaTypes.AvailableVirtualContributorsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.AvailableVirtualContributorsQuery,
+    SchemaTypes.AvailableVirtualContributorsQueryVariables
+  >(AvailableVirtualContributorsDocument, options);
+}
+
+export type AvailableVirtualContributorsQueryHookResult = ReturnType<typeof useAvailableVirtualContributorsQuery>;
+export type AvailableVirtualContributorsLazyQueryHookResult = ReturnType<
+  typeof useAvailableVirtualContributorsLazyQuery
+>;
+export type AvailableVirtualContributorsQueryResult = Apollo.QueryResult<
+  SchemaTypes.AvailableVirtualContributorsQuery,
+  SchemaTypes.AvailableVirtualContributorsQueryVariables
+>;
+export function refetchAvailableVirtualContributorsQuery(
+  variables?: SchemaTypes.AvailableVirtualContributorsQueryVariables
+) {
+  return { query: AvailableVirtualContributorsDocument, variables: variables };
+}
+
+export const AvailableVirtualContributorsInLibraryDocument = gql`
+  query AvailableVirtualContributorsInLibrary {
+    platform {
+      id
+      library {
+        id
+        virtualContributors {
+          searchVisibility
+          ...VirtualContributorFull
+        }
+      }
+    }
+  }
+  ${VirtualContributorFullFragmentDoc}
+`;
+
+/**
+ * __useAvailableVirtualContributorsInLibraryQuery__
+ *
+ * To run a query within a React component, call `useAvailableVirtualContributorsInLibraryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAvailableVirtualContributorsInLibraryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAvailableVirtualContributorsInLibraryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAvailableVirtualContributorsInLibraryQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.AvailableVirtualContributorsInLibraryQuery,
+    SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.AvailableVirtualContributorsInLibraryQuery,
+    SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
+  >(AvailableVirtualContributorsInLibraryDocument, options);
+}
+
+export function useAvailableVirtualContributorsInLibraryLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AvailableVirtualContributorsInLibraryQuery,
+    SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.AvailableVirtualContributorsInLibraryQuery,
+    SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
+  >(AvailableVirtualContributorsInLibraryDocument, options);
+}
+
+export type AvailableVirtualContributorsInLibraryQueryHookResult = ReturnType<
+  typeof useAvailableVirtualContributorsInLibraryQuery
+>;
+export type AvailableVirtualContributorsInLibraryLazyQueryHookResult = ReturnType<
+  typeof useAvailableVirtualContributorsInLibraryLazyQuery
+>;
+export type AvailableVirtualContributorsInLibraryQueryResult = Apollo.QueryResult<
+  SchemaTypes.AvailableVirtualContributorsInLibraryQuery,
+  SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
+>;
+export function refetchAvailableVirtualContributorsInLibraryQuery(
+  variables?: SchemaTypes.AvailableVirtualContributorsInLibraryQueryVariables
+) {
+  return { query: AvailableVirtualContributorsInLibraryDocument, variables: variables };
+}
+
+export const CommunityVirtualMembersListDocument = gql`
+  query CommunityVirtualMembersList(
+    $roleSetId: UUID!
+    $spaceId: UUID = "00000000-0000-0000-0000-000000000000"
+    $includeSpaceHost: Boolean = false
+  ) {
+    lookup {
+      space(ID: $spaceId) @include(if: $includeSpaceHost) {
+        id
+        provider {
+          ...ContributorDetails
+        }
+      }
+      roleSet(ID: $roleSetId) {
+        authorization {
+          id
+          myPrivileges
+        }
+        memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
+          ...CommunityMemberVirtualContributor
+        }
+      }
+    }
+  }
+  ${ContributorDetailsFragmentDoc}
+  ${CommunityMemberVirtualContributorFragmentDoc}
+`;
+
+/**
+ * __useCommunityVirtualMembersListQuery__
+ *
+ * To run a query within a React component, call `useCommunityVirtualMembersListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityVirtualMembersListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityVirtualMembersListQuery({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *      spaceId: // value for 'spaceId'
+ *      includeSpaceHost: // value for 'includeSpaceHost'
+ *   },
+ * });
+ */
+export function useCommunityVirtualMembersListQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityVirtualMembersListQuery,
+    SchemaTypes.CommunityVirtualMembersListQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CommunityVirtualMembersListQuery,
+    SchemaTypes.CommunityVirtualMembersListQueryVariables
+  >(CommunityVirtualMembersListDocument, options);
+}
+
+export function useCommunityVirtualMembersListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityVirtualMembersListQuery,
+    SchemaTypes.CommunityVirtualMembersListQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CommunityVirtualMembersListQuery,
+    SchemaTypes.CommunityVirtualMembersListQueryVariables
+  >(CommunityVirtualMembersListDocument, options);
+}
+
+export type CommunityVirtualMembersListQueryHookResult = ReturnType<typeof useCommunityVirtualMembersListQuery>;
+export type CommunityVirtualMembersListLazyQueryHookResult = ReturnType<typeof useCommunityVirtualMembersListLazyQuery>;
+export type CommunityVirtualMembersListQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityVirtualMembersListQuery,
+  SchemaTypes.CommunityVirtualMembersListQueryVariables
+>;
+export function refetchCommunityVirtualMembersListQuery(
+  variables: SchemaTypes.CommunityVirtualMembersListQueryVariables
+) {
+  return { query: CommunityVirtualMembersListDocument, variables: variables };
+}
+
 export const PendingMembershipsSpaceDocument = gql`
   query PendingMembershipsSpace(
     $spaceId: UUID!

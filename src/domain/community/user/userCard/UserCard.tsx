@@ -12,6 +12,7 @@ import ExpandableCardFooter from '@/core/ui/card/ExpandableCardFooter';
 import { Caption } from '@/core/ui/typography';
 import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
+import { noop } from 'lodash';
 
 /* todo add jobTitle */
 export interface UserCardProps {
@@ -27,6 +28,7 @@ export interface UserCardProps {
   loading?: boolean;
   isContactable?: boolean;
   onContact?: () => void;
+  onCardClick?: () => void;
 }
 
 const UserCard = ({
@@ -41,6 +43,7 @@ const UserCard = ({
   loading,
   isContactable = true,
   onContact,
+  onCardClick = noop,
 }: UserCardProps) => {
   const { t } = useTranslation();
   const location = [city, country].filter(x => !!x).join(', ');
@@ -52,7 +55,7 @@ const UserCard = ({
 
   return (
     <ContributeCard to={url} aria-label="user-card">
-      <Box>
+      <Box onClick={onCardClick} sx={{ cursor: onCardClick !== noop ? 'pointer' : 'default' }}>
         {loading ? (
           <Skeleton variant={'rectangular'}>
             <Avatar />
@@ -99,16 +102,17 @@ const UserCard = ({
         >
           <Caption fontSize={gutters(0.7)}>{displayName}</Caption>
           {roleName && <InfoRow text={roleName} icon={PersonIcon} ariaLabel="Role name" loading={loading} />}
-          <InfoRow
-            text={location || t('components.profileSegment.location.noLocation')}
-            icon={LocationOnOutlinedIcon}
-            ariaLabel="Location"
-            loading={loading}
-          />
+          {location && (
+            <InfoRow text={location} icon={LocationOnOutlinedIcon} ariaLabel={t('common.location')} loading={loading} />
+          )}
         </BadgeCardView>
       </Box>
       <Box onClick={toggleExpanded} sx={{ cursor: 'pointer' }} paddingBottom={1}>
-        <ExpandableCardFooter expanded={isExpanded} tags={<TagsComponent tags={tags} loading={loading} />} />
+        <ExpandableCardFooter
+          expanded={isExpanded}
+          expandable={tags.length > 0}
+          tags={<TagsComponent tags={tags} loading={loading} />}
+        />
       </Box>
     </ContributeCard>
   );

@@ -69,7 +69,7 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
             />
             {virtualContributors && virtualContributors?.length > 0 && (
               <>
-                <BlockTitle>{t('pages.admin.virtualContributors.title')}</BlockTitle>
+                <BlockTitle>{t('pages.contributors.virtualContributors.title')}</BlockTitle>
                 <CommunityVirtualContributorsBlockWide virtualContributors={virtualContributors} />
               </>
             )}
