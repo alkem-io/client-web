@@ -21366,25 +21366,6 @@ export type SpaceProviderQuery = {
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
     };
-    templatesManager?:
-      | {
-          __typename?: 'TemplatesManager';
-          id: string;
-          templatesSet?:
-            | {
-                __typename?: 'TemplatesSet';
-                id: string;
-                authorization?:
-                  | {
-                      __typename?: 'Authorization';
-                      id: string;
-                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    }
-                  | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -21447,6 +21428,37 @@ export type SpaceUrlQuery = {
   space: { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
 };
 
+export type SpaceTemplateManagerQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type SpaceTemplateManagerQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    templatesManager?:
+      | {
+          __typename?: 'TemplatesManager';
+          id: string;
+          templatesSet?:
+            | {
+                __typename?: 'TemplatesSet';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type SpaceInfoFragment = {
   __typename?: 'Space';
   visibility: SpaceVisibility;
@@ -21486,21 +21498,6 @@ export type SpaceInfoFragment = {
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
   };
-  templatesManager?:
-    | {
-        __typename?: 'TemplatesManager';
-        id: string;
-        templatesSet?:
-          | {
-              __typename?: 'TemplatesSet';
-              id: string;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-            }
-          | undefined;
-      }
-    | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;

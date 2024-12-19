@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useUrlParams } from '@/core/routing/useUrlParams';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { useSpaceProviderQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceProviderQuery, useSpaceTemplateManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
@@ -111,10 +111,26 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
 
   const canReadSubspaces = spacePrivileges.includes(AuthorizationPrivilege.Read);
   const canCreateSubspaces = spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace);
-  const canCreateTemplates =
-    data?.space.templatesManager?.templatesSet?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Create) ??
-    false;
-  const canCreate = spacePrivileges.includes(AuthorizationPrivilege.Create);
+
+  // A member has READ and an Admin can also access it, this is more of a temporary solution
+  const canAccessTemplateManager =
+    space?.community.roleSet.myMembershipStatus === CommunityMembershipStatus.Member ||
+    spacePrivileges.includes(AuthorizationPrivilege.Grant);
+  let canCreateTemplates = false;
+  let canCreate = false;
+
+  const { data: templateManagerData } = useSpaceTemplateManagerQuery({
+    variables: { spaceNameId },
+    skip: !spaceNameId || !canAccessTemplateManager,
+  });
+
+  if (canAccessTemplateManager) {
+    canCreateTemplates =
+      templateManagerData?.space.templatesManager?.templatesSet?.authorization?.myPrivileges?.includes(
+        AuthorizationPrivilege.Create
+      ) ?? false;
+    canCreate = spacePrivileges.includes(AuthorizationPrivilege.Create);
+  }
 
   const communityPrivileges = space?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 

@@ -2157,16 +2157,6 @@ export const SpaceInfoFragmentDoc = gql`
         myPrivileges
       }
     }
-    templatesManager {
-      id
-      templatesSet {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-      }
-    }
     visibility
   }
   ${SpaceDetailsFragmentDoc}
@@ -16371,6 +16361,76 @@ export type SpaceUrlLazyQueryHookResult = ReturnType<typeof useSpaceUrlLazyQuery
 export type SpaceUrlQueryResult = Apollo.QueryResult<SchemaTypes.SpaceUrlQuery, SchemaTypes.SpaceUrlQueryVariables>;
 export function refetchSpaceUrlQuery(variables: SchemaTypes.SpaceUrlQueryVariables) {
   return { query: SpaceUrlDocument, variables: variables };
+}
+
+export const SpaceTemplateManagerDocument = gql`
+  query SpaceTemplateManager($spaceNameId: UUID_NAMEID!) {
+    space(ID: $spaceNameId) {
+      id
+      templatesManager {
+        id
+        templatesSet {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceTemplateManagerQuery__
+ *
+ * To run a query within a React component, call `useSpaceTemplateManagerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceTemplateManagerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceTemplateManagerQuery({
+ *   variables: {
+ *      spaceNameId: // value for 'spaceNameId'
+ *   },
+ * });
+ */
+export function useSpaceTemplateManagerQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceTemplateManagerQuery,
+    SchemaTypes.SpaceTemplateManagerQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceTemplateManagerQuery, SchemaTypes.SpaceTemplateManagerQueryVariables>(
+    SpaceTemplateManagerDocument,
+    options
+  );
+}
+
+export function useSpaceTemplateManagerLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceTemplateManagerQuery,
+    SchemaTypes.SpaceTemplateManagerQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceTemplateManagerQuery, SchemaTypes.SpaceTemplateManagerQueryVariables>(
+    SpaceTemplateManagerDocument,
+    options
+  );
+}
+
+export type SpaceTemplateManagerQueryHookResult = ReturnType<typeof useSpaceTemplateManagerQuery>;
+export type SpaceTemplateManagerLazyQueryHookResult = ReturnType<typeof useSpaceTemplateManagerLazyQuery>;
+export type SpaceTemplateManagerQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceTemplateManagerQuery,
+  SchemaTypes.SpaceTemplateManagerQueryVariables
+>;
+export function refetchSpaceTemplateManagerQuery(variables: SchemaTypes.SpaceTemplateManagerQueryVariables) {
+  return { query: SpaceTemplateManagerDocument, variables: variables };
 }
 
 export const SpaceHostDocument = gql`
