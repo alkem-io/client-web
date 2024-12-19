@@ -31,39 +31,40 @@ const DocumentationPage = () => {
   // used only for the initial loading
   const docsInternalPath = pathname.split(`/${TopLevelRoutePath.Docs}/`)[1] ?? '';
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [height, setHeight] = useState(DEFAULT_HEIGHT);
   const [src, setSrc] = useState('');
 
   let srcIndex = `${locations?.documentation}/`;
   // use for local development
   // let srcIndex = `http://localhost:3010/documentation/`;
 
+  const handleMessage = (event: MessageEvent) => {
+    if (!event.origin.startsWith(getCurrentOriginWithoutPort())) {
+      return;
+    }
+
+    switch (event.data.type) {
+      case SupportedMessageTypes.PageHeight: {
+        if (event.data.height) {
+          if (iframeRef.current) {
+            iframeRef.current.style.height = `${event.data.height}px`; // Dynamically update the iframe height
+          }
+        }
+        break;
+      }
+      case SupportedMessageTypes.PageChange: {
+        // on page change just replace the path (used for sharing)
+        // the actual navigation is internal in the iframe
+        const newPath = `/${TopLevelRoutePath.Docs}${event.data.url}`;
+        navigate(newPath, { replace: true });
+        scrollToTop();
+        break;
+      }
+    }
+  };
+
   useEffect(() => {
     // set the source once, and then listen for messages
     setSrc(`${srcIndex}${docsInternalPath ?? ''}`);
-
-    const handleMessage = (event: MessageEvent) => {
-      if (!event.origin.startsWith(getCurrentOriginWithoutPort())) {
-        return;
-      }
-
-      switch (event.data.type) {
-        case SupportedMessageTypes.PageHeight:
-          if (event.data.height) {
-            setHeight(`${event.data.height}px`);
-          }
-          break;
-        case SupportedMessageTypes.PageChange:
-          // on page change just replace the path (used for sharing)
-          // the actual navigation is internal for the iframe
-          const newPath = `/${TopLevelRoutePath.Docs}${event.data.url}`;
-          navigate(newPath, { replace: true });
-          scrollToTop();
-          break;
-        default:
-          console.log('Unsupported: ', event);
-      }
-    };
 
     window.addEventListener('message', handleMessage);
 
@@ -81,7 +82,6 @@ const DocumentationPage = () => {
         <PageContentBlock fullHeight>
           <Gutters
             disablePadding
-            height={height}
             sx={{
               overflow: 'hidden',
             }}
@@ -91,7 +91,7 @@ const DocumentationPage = () => {
                 src={src}
                 ref={iframeRef}
                 title={t('pages.documentation.title')}
-                style={{ width: '100%', height: '100%', border: 'none' }}
+                style={{ width: '100%', height: DEFAULT_HEIGHT, border: 'none' }}
               />
             )}
           </Gutters>
