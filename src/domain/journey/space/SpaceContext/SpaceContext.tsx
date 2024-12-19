@@ -117,7 +117,6 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
     space?.community.roleSet.myMembershipStatus === CommunityMembershipStatus.Member ||
     spacePrivileges.includes(AuthorizationPrivilege.Grant);
   let canCreateTemplates = false;
-  let canCreate = false;
 
   const { data: templateManagerData } = useSpaceTemplateManagerQuery({
     variables: { spaceNameId },
@@ -131,7 +130,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       ) ?? false;
   }
 
-  canCreate = spacePrivileges.includes(AuthorizationPrivilege.Create);
+  const canCreate = spacePrivileges.includes(AuthorizationPrivilege.Create);
   const communityPrivileges = space?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = useMemo<SpacePermissions>(() => {
