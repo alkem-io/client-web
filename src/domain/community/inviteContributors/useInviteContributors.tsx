@@ -85,8 +85,7 @@ const useInviteContributors = ({
 
   // Memoize the virtual contributors list (already members)
   const virtualContributors = useMemo(() => {
-    const roleSet = roleSetData?.lookup.roleSet;
-    return roleSet?.memberVirtualContributors ?? [];
+    return roleSetData?.lookup.roleSet?.memberVirtualContributors ?? [];
   }, [roleSetData]);
 
   // Filter functions for virtual contributors
@@ -110,35 +109,25 @@ const useInviteContributors = ({
   };
 
   const [fetchAllVirtualContributors, { loading: accountVCsLoading }] = useAvailableVirtualContributorsLazyQuery();
-  const getAvailableVirtualContributors = async (filter: string | undefined, all: boolean = false) => {
+  const getAvailableVirtualContributors = async (filter: string | undefined) => {
     const { data } = await fetchAllVirtualContributors({
       variables: {
-        filterSpace: !all || spaceLevel !== SpaceLevel.Space,
         filterSpaceId: spaceId,
       },
     });
-    const roleSet = data?.lookup?.space?.community?.roleSet;
+    const virtualContributorsInCommunity = data?.lookup?.space?.community?.roleSet?.virtualContributorsInRole ?? [];
+    const virtualContributorsInAccount = data?.lookup?.space?.account.virtualContributors ?? [];
 
-    // Results for Space Level - on Account if !all (filter in the query)
+    // Results for Space Level - on Account (filter in the query)
     if (spaceLevel === SpaceLevel.Space) {
-      return (data?.lookup?.space?.account.virtualContributors ?? data?.virtualContributors ?? []).filter(
-        vc => filterExisting(vc, virtualContributors) && filterByName(vc, filter)
-      );
-    }
-
-    // Results for Subspaces - Community Members including External VCs (filter in the query)
-    if (all) {
-      return (roleSet?.virtualContributorsInRole ?? []).filter(
-        vc => filterExisting(vc, virtualContributors) && filterByName(vc, filter)
+      return virtualContributorsInAccount.filter(
+        vc => filterExisting(vc, virtualContributorsInCommunity) && filterByName(vc, filter)
       );
     }
 
     // Results for Subspaces - Only Community Members On Account (filter in the query)
-    return (roleSet?.virtualContributorsInRole ?? []).filter(
-      vc =>
-        data?.lookup?.space?.account.virtualContributors.some(member => member.id === vc.id) &&
-        filterExisting(vc, virtualContributors) &&
-        filterByName(vc, filter)
+    return virtualContributorsInAccount.filter(
+      vc => virtualContributors.every(member => member.id !== vc.id) && filterByName(vc, filter)
     );
   };
 
