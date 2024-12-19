@@ -15,7 +15,7 @@ import {
 import { useUserContext } from '@/domain/community/user';
 import { useInAppNotificationsContext } from './InAppNotificationsContext';
 
-const POLLING_INTERVAL = 5 * 1000; // 5 seconds
+const POLLING_INTERVAL = 15 * 1000; // 15 seconds
 
 export interface InAppNotificationProps {
   id: string;
