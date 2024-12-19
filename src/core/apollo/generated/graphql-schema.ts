@@ -21428,11 +21428,11 @@ export type SpaceUrlQuery = {
   space: { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
 };
 
-export type SpaceTemplateManagerQueryVariables = Exact<{
+export type SpaceTemplatesManagerQueryVariables = Exact<{
   spaceNameId: Scalars['UUID_NAMEID'];
 }>;
 
-export type SpaceTemplateManagerQuery = {
+export type SpaceTemplatesManagerQuery = {
   __typename?: 'Query';
   space: {
     __typename?: 'Space';

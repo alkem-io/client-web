@@ -14,7 +14,7 @@ query SpaceUrl($spaceNameId: UUID_NAMEID!) {
   }
 }
 
-query SpaceTemplateManager($spaceNameId: UUID_NAMEID!) {
+query SpaceTemplatesManager($spaceNameId: UUID_NAMEID!) {
   space(ID: $spaceNameId) {
     id
     templatesManager {
