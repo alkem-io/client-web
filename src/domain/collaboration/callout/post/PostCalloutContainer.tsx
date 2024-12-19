@@ -82,7 +82,6 @@ const PostCalloutContainer = ({ callout, children }: PropsWithChildren<PostCallo
               description: post.profileData.description,
             },
             tags: post.tags,
-            visualUri: post.visualUri,
           },
         },
       },
@@ -97,11 +96,6 @@ const PostCalloutContainer = ({ callout, children }: PropsWithChildren<PostCallo
               url: '',
               displayName: post.profileData.displayName,
               description: post.profileData?.description,
-              visual: {
-                id: '-1',
-                name: '',
-                uri: post.visualUri ?? '',
-              },
               tagset: {
                 id: '-1',
                 name: DEFAULT_TAGSET,
