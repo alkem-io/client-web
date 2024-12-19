@@ -22,6 +22,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import { useOpportunity } from '@/domain/journey/opportunity/hooks/useOpportunity';
+import { filterUniqueItems } from '@/core/utils/filterUniqueItems';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
@@ -60,10 +61,10 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const [bokProfile, setBoKProfile] = useState<BasicSpaceProps>();
 
   const fetchVCs = async () => {
-    let acc = await getAvailableVirtualContributors('');
+    const acc = await getAvailableVirtualContributors('');
     setOnAccount(acc);
 
-    let lib = await getAvailableVirtualContributorsInLibrary('');
+    const lib = await getAvailableVirtualContributorsInLibrary('');
     setInLibrary(lib);
   };
 
@@ -117,9 +118,17 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     return onAccount?.find(c => c.id === id) || inLibrary?.find(c => c.id === id);
   };
 
-  // remove the duplicates from available onAccount in the inLibrary list
+  // filters the duplicates from available onAccount in the inLibrary list
   const filteredInLibrary = useCallback(() => {
-    return inLibrary?.filter(vc => !(onAccount ?? []).some(member => member.id === vc.id));
+    if (!inLibrary || !inLibrary.length) {
+      return [];
+    }
+
+    if (!onAccount || !onAccount.length) {
+      return inLibrary;
+    }
+
+    return filterUniqueItems(inLibrary, onAccount);
   }, [inLibrary, onAccount]);
 
   const onAddClick = async () => {
