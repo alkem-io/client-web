@@ -129,9 +129,9 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       templateManagerData?.space.templatesManager?.templatesSet?.authorization?.myPrivileges?.includes(
         AuthorizationPrivilege.Create
       ) ?? false;
-    canCreate = spacePrivileges.includes(AuthorizationPrivilege.Create);
   }
 
+  canCreate = spacePrivileges.includes(AuthorizationPrivilege.Create);
   const communityPrivileges = space?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = useMemo<SpacePermissions>(() => {
