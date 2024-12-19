@@ -102,16 +102,17 @@ const UserCard = ({
         >
           <Caption fontSize={gutters(0.7)}>{displayName}</Caption>
           {roleName && <InfoRow text={roleName} icon={PersonIcon} ariaLabel="Role name" loading={loading} />}
-          <InfoRow
-            text={location || t('components.profileSegment.location.noLocation')}
-            icon={LocationOnOutlinedIcon}
-            ariaLabel="Location"
-            loading={loading}
-          />
+          {location && (
+            <InfoRow text={location} icon={LocationOnOutlinedIcon} ariaLabel={t('common.location')} loading={loading} />
+          )}
         </BadgeCardView>
       </Box>
       <Box onClick={toggleExpanded} sx={{ cursor: 'pointer' }} paddingBottom={1}>
-        <ExpandableCardFooter expanded={isExpanded} tags={<TagsComponent tags={tags} loading={loading} />} />
+        <ExpandableCardFooter
+          expanded={isExpanded}
+          expandable={tags.length > 0}
+          tags={<TagsComponent tags={tags} loading={loading} />}
+        />
       </Box>
     </ContributeCard>
   );
