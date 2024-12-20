@@ -62,7 +62,6 @@ fragment SpacePage on Space {
     impact
     authorization {
       id
-      anonymousReadAccess
       myPrivileges
     }
   }

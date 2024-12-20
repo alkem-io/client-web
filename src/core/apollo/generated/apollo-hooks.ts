@@ -669,7 +669,6 @@ export const WhiteboardDetailsFragmentDoc = gql`
     authorization {
       id
       myPrivileges
-      anonymousReadAccess
     }
     contentUpdatePolicy
     createdBy {
@@ -775,7 +774,6 @@ export const CommentsWithMessagesFragmentDoc = gql`
     authorization {
       id
       myPrivileges
-      anonymousReadAccess
     }
     messages {
       ...MessageDetails
@@ -1008,7 +1006,6 @@ export const CalloutWithWhiteboardFragmentDoc = gql`
     type
     authorization {
       id
-      anonymousReadAccess
       myPrivileges
     }
     framing {
@@ -1034,7 +1031,6 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
       type
       authorization {
         id
-        anonymousReadAccess
         myPrivileges
       }
       contributions {
@@ -1117,7 +1113,6 @@ export const DiscussionCardFragmentDoc = gql`
     authorization {
       id
       myPrivileges
-      anonymousReadAccess
     }
   }
   ${VisualFullFragmentDoc}
@@ -2079,8 +2074,6 @@ export const ContextDetailsFragmentDoc = gql`
     authorization {
       id
       myPrivileges
-      anonymousReadAccess
-      type
     }
   }
 `;
@@ -2155,16 +2148,6 @@ export const SpaceInfoFragmentDoc = gql`
       authorization {
         id
         myPrivileges
-      }
-    }
-    templatesManager {
-      id
-      templatesSet {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
       }
     }
     visibility
@@ -2243,7 +2226,6 @@ export const SpacePageFragmentDoc = gql`
       impact
       authorization {
         id
-        anonymousReadAccess
         myPrivileges
       }
     }
@@ -2434,7 +2416,6 @@ export const SpaceProfileFragmentDoc = gql`
       authorization {
         id
         myPrivileges
-        anonymousReadAccess
       }
     }
     collaboration {
@@ -8925,7 +8906,6 @@ export const PlatformDiscussionsDocument = gql`
         authorization {
           id
           myPrivileges
-          anonymousReadAccess
         }
         discussions {
           ...DiscussionCard
@@ -8996,7 +8976,6 @@ export const PlatformDiscussionDocument = gql`
         authorization {
           id
           myPrivileges
-          anonymousReadAccess
         }
         discussion(ID: $discussionId) {
           ...DiscussionDetails
@@ -16366,6 +16345,76 @@ export function refetchSpaceUrlQuery(variables: SchemaTypes.SpaceUrlQueryVariabl
   return { query: SpaceUrlDocument, variables: variables };
 }
 
+export const SpaceTemplatesManagerDocument = gql`
+  query SpaceTemplatesManager($spaceNameId: UUID_NAMEID!) {
+    space(ID: $spaceNameId) {
+      id
+      templatesManager {
+        id
+        templatesSet {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useSpaceTemplatesManagerQuery__
+ *
+ * To run a query within a React component, call `useSpaceTemplatesManagerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceTemplatesManagerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceTemplatesManagerQuery({
+ *   variables: {
+ *      spaceNameId: // value for 'spaceNameId'
+ *   },
+ * });
+ */
+export function useSpaceTemplatesManagerQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceTemplatesManagerQuery,
+    SchemaTypes.SpaceTemplatesManagerQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceTemplatesManagerQuery, SchemaTypes.SpaceTemplatesManagerQueryVariables>(
+    SpaceTemplatesManagerDocument,
+    options
+  );
+}
+
+export function useSpaceTemplatesManagerLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceTemplatesManagerQuery,
+    SchemaTypes.SpaceTemplatesManagerQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceTemplatesManagerQuery, SchemaTypes.SpaceTemplatesManagerQueryVariables>(
+    SpaceTemplatesManagerDocument,
+    options
+  );
+}
+
+export type SpaceTemplatesManagerQueryHookResult = ReturnType<typeof useSpaceTemplatesManagerQuery>;
+export type SpaceTemplatesManagerLazyQueryHookResult = ReturnType<typeof useSpaceTemplatesManagerLazyQuery>;
+export type SpaceTemplatesManagerQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceTemplatesManagerQuery,
+  SchemaTypes.SpaceTemplatesManagerQueryVariables
+>;
+export function refetchSpaceTemplatesManagerQuery(variables: SchemaTypes.SpaceTemplatesManagerQueryVariables) {
+  return { query: SpaceTemplatesManagerDocument, variables: variables };
+}
+
 export const SpaceHostDocument = gql`
   query SpaceHost($spaceNameId: UUID_NAMEID!) {
     space(ID: $spaceNameId) {
@@ -21883,7 +21932,6 @@ export const AuthorizationPolicyDocument = gql`
       authorizationPolicy(ID: $authorizationPolicyId) {
         id
         type
-        anonymousReadAccess
         credentialRules {
           name
           cascade
