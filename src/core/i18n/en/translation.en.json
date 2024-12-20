@@ -3145,6 +3145,15 @@
         "initialPosts": "Initial Posts",
         "delete": "Delete post"
       },
+      "documents": {
+        "title": "Or add documents <tooltip><icon /></tooltip> to your Knowledge Subspace.",
+        "tooltip": "Supported file formats: Text on websites, .pdf, .doc(x), .xls(x). Maximum file size: 20mb",
+        "referenceTitle": "Reference Title",
+        "referenceUrl": "Url",
+        "addAnother": "Add another document",
+        "remove": "Remove document",
+        "initialDocuments": "Initial Links and Documents"
+      },
       "submitDisabled": "Add at least one Post to continue"
     },
     "externalAI": {
