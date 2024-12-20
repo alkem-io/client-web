@@ -1,6 +1,7 @@
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import {
   refetchLatestContributionsSpacesFlatQuery,
+  refetchPendingInvitationsQuery,
   useInvitationStateEventMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
@@ -38,7 +39,7 @@ const InvitationActionsContainer = ({ onUpdate, onAccept, onReject, children }: 
       onCompleted: () => {
         onAccept?.(spaceUrl);
       },
-      refetchQueries: [refetchLatestContributionsSpacesFlatQuery()],
+      refetchQueries: [refetchLatestContributionsSpacesFlatQuery(), refetchPendingInvitationsQuery()],
     })
   );
 
@@ -51,6 +52,7 @@ const InvitationActionsContainer = ({ onUpdate, onAccept, onReject, children }: 
       onCompleted: () => {
         onReject?.();
       },
+      refetchQueries: [refetchPendingInvitationsQuery()],
     })
   );
 

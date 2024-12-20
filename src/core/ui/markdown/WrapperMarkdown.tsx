@@ -5,6 +5,7 @@ import components from './components';
 import PlainText from './PlainText';
 import { MarkdownOptions, MarkdownOptionsProvider } from './MarkdownOptionsContext';
 import { Box } from '@mui/material';
+import { remarkVerifyIframe } from './embed/remarkVerifyIframe';
 
 const allowedNodeTypes = ['iframe'] as const;
 
@@ -28,7 +29,7 @@ export const WrapperMarkdown = ({
     <Box sx={{ li: { marginY: caption ? 0 : 1 }, display: plain ? 'inline' : undefined }}>
       <ReactMarkdown
         components={components}
-        remarkPlugins={[gfm, [PlainText, { enabled: plain }]]}
+        remarkPlugins={[gfm, [PlainText, { enabled: plain }], remarkVerifyIframe]}
         rehypePlugins={
           plain ? undefined : ([rehypeRaw, { passThrough: allowedNodeTypes }] as MarkdownProps['rehypePlugins'])
         }

@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useUrlParams } from '@/core/routing/useUrlParams';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { useSpaceProviderQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceProviderQuery, useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
@@ -17,6 +17,7 @@ export interface SpacePermissions {
   canReadPosts: boolean;
   canReadSubspaces: boolean;
   canCreateSubspaces: boolean;
+  canCreateTemplates: boolean;
   canCreate: boolean;
   communityReadAccess: boolean;
   canReadCollaboration: boolean;
@@ -55,6 +56,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
     viewerCanUpdate: false,
     canCreate: false,
     canCreateSubspaces: false,
+    canCreateTemplates: false,
     canReadPosts: false,
     canReadSubspaces: false,
     communityReadAccess: false,
@@ -109,8 +111,26 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
 
   const canReadSubspaces = spacePrivileges.includes(AuthorizationPrivilege.Read);
   const canCreateSubspaces = spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace);
-  const canCreate = spacePrivileges.includes(AuthorizationPrivilege.Create);
 
+  // A member has READ and an Admin can also access it, this is more of a temporary solution
+  const canAccessTemplatesManager =
+    space?.community.roleSet.myMembershipStatus === CommunityMembershipStatus.Member ||
+    spacePrivileges.includes(AuthorizationPrivilege.Grant);
+  let canCreateTemplates = false;
+
+  const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
+    variables: { spaceNameId },
+    skip: !spaceNameId || !canAccessTemplatesManager,
+  });
+
+  if (canAccessTemplatesManager) {
+    canCreateTemplates =
+      templatesManagerData?.space.templatesManager?.templatesSet?.authorization?.myPrivileges?.includes(
+        AuthorizationPrivilege.Create
+      ) ?? false;
+  }
+
+  const canCreate = spacePrivileges.includes(AuthorizationPrivilege.Create);
   const communityPrivileges = space?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = useMemo<SpacePermissions>(() => {
@@ -119,6 +139,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       viewerCanUpdate: spacePrivileges.includes(AuthorizationPrivilege.Update),
       canReadSubspaces,
       canCreateSubspaces: canCreateSubspaces,
+      canCreateTemplates,
       canCreate,
       communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
       canReadCollaboration: collaborationPrivileges.includes(AuthorizationPrivilege.Read),

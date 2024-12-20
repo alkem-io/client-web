@@ -7,7 +7,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import useNavigate from '@/core/routing/useNavigate';
 
 export const InvitationsBlock = () => {
-  const { data, refetch: refetchPendingInvitationsQuery } = usePendingInvitationsQuery();
+  const { data } = usePendingInvitationsQuery();
   const navigate = useNavigate();
 
   const communityInvitations = useMemo(
@@ -23,12 +23,7 @@ export const InvitationsBlock = () => {
   );
 
   const onInvitationAccept = (spaceUrl: string) => {
-    refetchPendingInvitationsQuery();
     navigate(spaceUrl);
-  };
-
-  const onInvitationReject = () => {
-    refetchPendingInvitationsQuery();
   };
 
   if (!communityInvitations.length) {
@@ -38,7 +33,7 @@ export const InvitationsBlock = () => {
   return (
     <PageContentBlock columns={12}>
       {communityInvitations.map(invitation => (
-        <InvitationActionsContainer key={invitation.id} onAccept={onInvitationAccept} onReject={onInvitationReject}>
+        <InvitationActionsContainer key={invitation.id} onAccept={onInvitationAccept}>
           {props => <SingleInvitationFull invitation={invitation} {...props} />}
         </InvitationActionsContainer>
       ))}

@@ -24,6 +24,7 @@ import { EditorState } from '@tiptap/pm/state';
 import { Highlight } from '@tiptap/extension-highlight';
 import { Selection } from 'prosemirror-state';
 import { EditorOptions } from '@tiptap/core';
+import { Iframe } from '../MarkdownInputControls/InsertEmbedCodeButton/Iframe';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
@@ -43,9 +44,7 @@ export interface MarkdownInputRefApi {
   getLabelOffset: () => Offset;
 }
 
-const ImageExtension = Image.configure({
-  inline: true,
-});
+const ImageExtension = Image.configure({ inline: true });
 
 const proseMirrorStyles = {
   outline: 'none',
@@ -57,7 +56,7 @@ const proseMirrorStyles = {
 } as const;
 
 const editorOptions: Partial<EditorOptions> = {
-  extensions: [StarterKit, ImageExtension, Link, Highlight],
+  extensions: [StarterKit, ImageExtension, Link, Highlight, Iframe],
 };
 
 export const MarkdownInput = memo(
@@ -91,20 +90,10 @@ export const MarkdownInput = memo(
         setHtmlContent(String(content));
       };
 
-      const editor = useEditor(
-        {
-          ...editorOptions,
-          content: htmlContent,
-        },
-        [htmlContent]
-      );
+      const editor = useEditor({ ...editorOptions, content: htmlContent }, [htmlContent]);
 
       // Currently used to highlight overflow but can be reused for other similar features as well
-      const shadowEditor = useEditor({
-        ...editorOptions,
-        content: '',
-        editable: false,
-      });
+      const shadowEditor = useEditor({ ...editorOptions, content: '', editable: false });
 
       useLayoutEffect(() => {
         if (!editor || !isInteractingWithInput || editor.getText() === '') {
@@ -154,9 +143,18 @@ export const MarkdownInput = memo(
         setCharacterCount(editor?.getText().length ?? 0);
       }, [editor]);
 
+      const wrapIframeWithStyledDiv = (markdown: string): string =>
+        markdown.replace(
+          /<iframe[^>]*><\/iframe>/g,
+          iframe =>
+            `<div style='position: relative; padding-bottom: 56.25%; width: 100%; overflow: hidden; border-radius: 8px; margin-bottom: 10px;'>${iframe}</div>`
+        );
+
       const emitChangeOnEditorUpdate = (editor: Editor) => {
         const handleStateChange = async () => {
-          const markdown = await HTMLToMarkdown(editor.getHTML());
+          let markdown = await HTMLToMarkdown(editor.getHTML());
+
+          markdown = wrapIframeWithStyledDiv(markdown);
 
           setCharacterCount(editor.getText().length);
 

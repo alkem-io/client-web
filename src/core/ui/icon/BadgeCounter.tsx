@@ -11,7 +11,7 @@ const BadgeSizes: Record<NonNullable<BadgeCounterProps['size']>, TypographyProps
   small: {
     fontSize: '0.7rem',
     lineHeight: gutters(0.8),
-    width: gutters(0.8),
+    minWidth: gutters(0.8),
     height: gutters(0.8),
   },
   medium: {
@@ -29,7 +29,8 @@ const BadgeCounter = ({ count, size = 'medium', ...props }: BadgeCounterProps) =
       color={theme.palette.error.contrastText}
       fontWeight="bold"
       display="inline-block"
-      borderRadius="50%"
+      borderRadius={BadgeSizes[size].height}
+      paddingLeft={gutters(0.1)}
       marginLeft={gutters(0.5)}
       textAlign="center"
       {...BadgeSizes[size]}

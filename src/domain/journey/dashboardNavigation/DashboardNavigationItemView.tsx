@@ -9,8 +9,8 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import { getIndentStyle } from './utils';
 import { DashboardNavigationItem } from '../space/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { Identifiable } from '@/core/utils/Identifiable';
-import DashboardNavigationAddSubspace from './DashboardNavigationAddSubspace';
 import { last } from 'lodash';
+import { DashboardAddButton } from '@/domain/shared/components/DashboardSections/DashboardAddButton';
 
 export interface DashboardNavigationItemViewProps extends DashboardNavigationItem {
   tooltipPlacement?: TooltipProps['placement'];
@@ -191,9 +191,7 @@ const DashboardNavigationItemView = forwardRef<DashboardNavigationItemViewApi, D
             onExited={() => onToggle?.(isExpanded)}
           >
             <Box ref={childrenContainerRef}>
-              {hasCreateButton && (
-                <DashboardNavigationAddSubspace level={level + 1} onClick={() => onCreateSubspace?.({ id })} />
-              )}
+              {hasCreateButton && <DashboardAddButton level={level + 1} onClick={() => onCreateSubspace?.({ id })} />}
               {children?.map(child => (
                 <DashboardNavigationItemView
                   key={child.id}

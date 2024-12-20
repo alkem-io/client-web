@@ -43,6 +43,7 @@ export interface AboutPageContainerEntities {
   references: ReferenceDetailsFragment[] | undefined;
   virtualContributors?: VirtualContributorProps[];
   hasReadPrivilege?: boolean;
+  hasInvitePrivilege?: boolean;
 }
 
 export interface AboutPageContainerActions {}
@@ -93,6 +94,12 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
   const hasReadPrivilege = membersData?.lookup.space?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Read
   );
+
+  const communityPrivileges = membersData?.lookup.space?.community?.roleSet.authorization?.myPrivileges ?? [];
+
+  const hasInvitePrivilege =
+    communityPrivileges.includes(AuthorizationPrivilege.CommunityInvite) ||
+    communityPrivileges.includes(AuthorizationPrivilege.CommunityAddMemberVcFromAccount);
 
   const context = nonMemberContext;
 
@@ -155,6 +162,7 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
           references,
           virtualContributors,
           hasReadPrivilege,
+          hasInvitePrivilege,
           ...contributors,
         },
         { loading, error },
