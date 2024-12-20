@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   refetchSubspacesInSpaceQuery,
   useCreateSpaceMutation,
@@ -13,6 +13,7 @@ import {
   useSubspaceCommunityAndRoleSetIdLazyQuery,
   useAssignRoleToVirtualContributorMutation,
   refetchDashboardWithMembershipsQuery,
+  useCreateLinkOnCalloutMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AiPersonaBodyOfKnowledgeType,
@@ -29,7 +30,7 @@ import {
 import CreateNewVirtualContributor, { VirtualContributorFromProps } from './CreateNewVirtualContributor';
 import LoadingState from './LoadingState';
 import AddContent from './AddContent/AddContent';
-import { PostsFormValues, PostValues } from './AddContent/AddContentProps';
+import { BoKCalloutsFormValues, DocumentValues, PostValues } from './AddContent/AddContentProps';
 import ExistingSpace, { SelectableKnowledgeProps } from './ExistingSpace';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -89,8 +90,9 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [boKParentRoleSetId, setBoKParentRoleSetId] = useState<string>();
   const [creationIndex, setCreationIndex] = useState<number>(0); // used in case of space deletion
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps>();
-  const [calloutPostData, setCalloutPostData] = useState<PostsFormValues>();
+  const [calloutData, setCalloutData] = useState<BoKCalloutsFormValues>();
   const [tryCreateCallout, setTryCreateCallout] = useState<boolean>(false);
+  const calloutId = useRef<string>();
 
   const startWizard = (initAccount: UserAccountProps | undefined) => {
     setTargetAccount(initAccount);
@@ -103,8 +105,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     setStep(step);
   };
 
-  const handleAddContent = async (posts: PostsFormValues) => {
-    setCalloutPostData(posts);
+  const handleAddContent = async (values: BoKCalloutsFormValues) => {
+    setCalloutData(values);
     // trigger useEffect to create the callout once canCreateCallout is true
     setTryCreateCallout(true);
   };
@@ -387,6 +389,23 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     sendNotification: false,
   };
 
+  const calloutDocumentsDetails: CalloutCreationType = {
+    framing: {
+      profile: {
+        displayName: t('createVirtualContributorWizard.addContent.documents.initialDocuments'),
+        description: '',
+        referencesData: [],
+      },
+    },
+    type: CalloutType.LinkCollection,
+    contributionPolicy: {
+      state: CalloutState.Open,
+    },
+    groupName: CalloutGroupName.Home,
+    visibility: CalloutVisibility.Published,
+    sendNotification: false,
+  };
+
   // no need of 'update' implementation as the callout is on another page
   // where CalloutDetails will refetch the details
   const [createPost] = useCreatePostFromContributeTabMutation();
@@ -406,22 +425,55 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     });
   };
 
+  const [createLinkOnCallout] = useCreateLinkOnCalloutMutation();
+  const onCreateLink = async (document: DocumentValues, calloutId: string) => {
+    await createLinkOnCallout({
+      variables: {
+        input: {
+          calloutID: calloutId,
+          link: {
+            uri: document.url,
+            profile: {
+              displayName: document.name,
+            },
+          },
+        },
+      },
+    });
+  };
+
   const createCalloutContent = async () => {
     setStep('loadingVCSetup');
 
     // create collection of posts
-    if (calloutPostData?.posts && calloutPostData?.posts.length > 0 && bokId) {
-      const callout = await handleCreateCallout(calloutDetails);
+    if (calloutData?.posts && calloutData?.posts.length > 0 && bokId) {
+      const postCallout = await handleCreateCallout(calloutDetails);
+      const postCalloutId = postCallout?.id;
+      calloutId.current = postCalloutId;
 
       // add posts to collection
-      if (callout?.id) {
-        for (const post of calloutPostData?.posts) {
-          await onCreatePost(post, callout.id);
+      if (postCalloutId) {
+        for (const post of calloutData?.posts) {
+          await onCreatePost(post, postCalloutId);
         }
       }
-
-      setTryCreateCallout(false);
     }
+
+    // create collection of docs & links
+    if (calloutData?.documents && calloutData?.documents.length > 0 && bokId) {
+      const documentsCallout = await handleCreateCallout(calloutDocumentsDetails);
+      const documentsCalloutId = documentsCallout?.id;
+      calloutId.current = documentsCalloutId;
+
+      // add documents to collection
+      if (documentsCalloutId) {
+        for (const document of calloutData?.documents) {
+          await onCreateLink(document, documentsCalloutId);
+        }
+      }
+    }
+
+    setTryCreateCallout(false);
 
     // create VC
     if (virtualContributorInput && myAccountId && bokId && bokRoleSetId) {
@@ -607,7 +659,11 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           <LoadingState onClose={handleCancel} entity={selectedExistingSpaceId ? 'subspace' : 'space'} />
         )}
         {step === 'addKnowledge' && virtualContributorInput && (
-          <AddContent onClose={handleCancel} onCreateVC={handleAddContent} />
+          <AddContent
+            onClose={handleCancel}
+            onCreateVC={handleAddContent}
+            spaceId={createdSpaceId ?? selectedExistingSpaceId ?? ''}
+          />
         )}
         {step === 'existingKnowledge' && (
           <ExistingSpace

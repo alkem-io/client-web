@@ -8,8 +8,9 @@ import { gutters } from '@/core/ui/grid/utils';
 import { AddContentForm } from './AddContentForm';
 import { AddContentProps } from './AddContentProps';
 import CancelDialog from '../CancelDialog';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 
-const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
+const AddContent = ({ onClose, onCreateVC, spaceId }: AddContentProps) => {
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -18,17 +19,17 @@ const AddContent = ({ onClose, onCreateVC }: AddContentProps) => {
   };
 
   return (
-    <>
+    <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
       <DialogHeader onClose={onCancel}>{t('createVirtualContributorWizard.addContent.title')}</DialogHeader>
       <DialogContent>
-        <Gutters disablePadding disableGap paddingBottom={gutters(2)}>
+        <Gutters disablePadding paddingBottom={gutters(2)}>
           <Caption>{t('createVirtualContributorWizard.addContent.description')}</Caption>
           <Caption fontWeight="bold">{t('createVirtualContributorWizard.addContent.descriptionBold')}</Caption>
           <AddContentForm onSubmit={onCreateVC} onCancel={onCancel} />
         </Gutters>
       </DialogContent>
       <CancelDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onConfirm={onClose} />
-    </>
+    </StorageConfigContextProvider>
   );
 };
 

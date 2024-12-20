@@ -1,5 +1,5 @@
 import { Formik } from 'formik';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { pullAt } from 'lodash';
 import * as yup from 'yup';
 import { Box, Button, Tooltip } from '@mui/material';
@@ -10,8 +10,11 @@ import { LONG_MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/fi
 import { Actions } from '@/core/ui/actions/Actions';
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import { PostsFormValues } from './AddContentProps';
+import { BoKCalloutsFormValues } from './AddContentProps';
 import { PostItem } from './PostItem';
+import { Caption } from '@/core/ui/typography';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { DocumentItem } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/AddContent/DocumentItem';
 
 const MAX_POSTS = 25;
 
@@ -20,12 +23,17 @@ const newPost = () => ({
   description: '',
 });
 
+const newDocument = () => ({
+  name: '',
+  url: '',
+});
+
 export const AddContentForm = ({
   onSubmit,
   onCancel,
 }: {
   onCancel: () => void;
-  onSubmit: (values: PostsFormValues) => void;
+  onSubmit: (values: BoKCalloutsFormValues) => void;
 }) => {
   const { t } = useTranslation();
 
@@ -45,18 +53,24 @@ export const AddContentForm = ({
       .min(1, MessageWithPayload('forms.validations.minLength')),
   });
 
-  const initialValues: PostsFormValues = {
+  const initialValues: BoKCalloutsFormValues = {
     posts: [
       {
         title: t('createVirtualContributorWizard.addContent.post.exampleTitle'),
         description: t('createVirtualContributorWizard.addContent.post.exampleDescription'),
       },
     ],
+    documents: [
+      {
+        name: '',
+        url: '',
+      },
+    ],
   };
 
   return (
     <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
-      {({ values: { posts }, isValid, setFieldValue }) => {
+      {({ values: { posts, documents }, isValid, setFieldValue }) => {
         const moreThanOnePost = posts.length > 1;
         const maxPostsReached = posts.length >= MAX_POSTS;
 
@@ -68,6 +82,15 @@ export const AddContentForm = ({
           const nextPosts = [...posts];
           pullAt(nextPosts, index);
           setFieldValue('posts', nextPosts);
+        };
+        const handleAddDocument = () => {
+          const newArrayDocuments = [...documents, newDocument()];
+          setFieldValue('documents', newArrayDocuments);
+        };
+        const handleDeleteDocument = (index: number) => {
+          const nextDocuments = [...documents];
+          pullAt(nextDocuments, index);
+          setFieldValue('documents', nextDocuments);
         };
 
         return (
@@ -97,6 +120,34 @@ export const AddContentForm = ({
               </Box>
             </Tooltip>
 
+            <Caption>
+              <Trans
+                i18nKey="createVirtualContributorWizard.addContent.documents.title"
+                components={{
+                  icon: <InfoOutlinedIcon fontSize="small" color="primary" style={{ verticalAlign: 'bottom' }} />,
+                  tooltip: (
+                    <Tooltip
+                      title={t('createVirtualContributorWizard.addContent.documents.tooltip')}
+                      arrow
+                      placement="top"
+                    >
+                      <></>
+                    </Tooltip>
+                  ),
+                }}
+              />
+            </Caption>
+            {documents?.map((document, index) => (
+              <DocumentItem key={index} document={document} index={index} onDelete={handleDeleteDocument} />
+            ))}
+            <Tooltip title={t('createVirtualContributorWizard.addContent.documents.addAnother')} placement={'bottom'}>
+              <Box>
+                <Button color="primary" variant="outlined" startIcon={<AddIcon />} onClick={handleAddDocument}>
+                  {t('createVirtualContributorWizard.addContent.documents.addAnother')}
+                </Button>
+              </Box>
+            </Tooltip>
+
             <Box
               sx={{
                 position: 'absolute',
@@ -120,7 +171,11 @@ export const AddContentForm = ({
                   placement={'bottom-start'}
                 >
                   <span>
-                    <LoadingButton variant="contained" disabled={!isValid} onClick={() => onSubmit({ posts })}>
+                    <LoadingButton
+                      variant="contained"
+                      disabled={!isValid}
+                      onClick={() => onSubmit({ posts, documents })}
+                    >
                       {t('buttons.continue')}
                     </LoadingButton>
                   </span>

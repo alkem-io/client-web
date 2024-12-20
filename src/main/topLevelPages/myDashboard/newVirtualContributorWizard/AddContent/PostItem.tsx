@@ -20,7 +20,7 @@ export const PostItem = ({ post, index, onDelete, hasDelete }: PostItemProps) =>
   const { t } = useTranslation();
 
   return (
-    <Gutters key={index} paddingX={0}>
+    <Gutters key={index} disablePadding>
       <FormikInputField
         name={`posts[${index}].title`}
         title={t('createVirtualContributorWizard.addContent.post.title')}

@@ -3,11 +3,18 @@ export type PostValues = {
   description: string;
 };
 
-export interface PostsFormValues {
+export interface DocumentValues {
+  name: string;
+  url: string;
+}
+
+export interface BoKCalloutsFormValues {
   posts: PostValues[];
+  documents: DocumentValues[];
 }
 
 export type AddContentProps = {
   onClose: () => void;
-  onCreateVC: (posts: PostsFormValues) => Promise<void>;
+  onCreateVC: (values: BoKCalloutsFormValues) => Promise<void>;
+  spaceId: string;
 };
