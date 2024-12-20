@@ -14,6 +14,7 @@ import {
 import { DirectMessageDialog } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { CommunityContributorType } from '@/core/apollo/generated/graphql-schema';
+import { gutters } from '@/core/ui/grid/utils';
 
 type ContributorCardTooltip = {
   tags: string[];
@@ -111,17 +112,19 @@ export const ContributorCardSquare = (props: ContributorCardSquareProps) => {
             arrow
             title={
               <GridProvider columns={3}>
-                <UserCard
-                  displayName={displayName}
-                  avatarSrc={avatar}
-                  avatarAltText={avatarAltText}
-                  tags={tooltip?.tags ?? []}
-                  roleName={roleName ?? tooltip?.roleName}
-                  city={tooltip?.city}
-                  country={tooltip?.country}
-                  isContactable={isContactable}
-                  onContact={() => setIsMessageUserDialogOpen(true)}
-                />
+                <Box width={gutters(15)}>
+                  <UserCard
+                    displayName={displayName}
+                    avatarSrc={avatar}
+                    avatarAltText={avatarAltText}
+                    tags={tooltip?.tags ?? []}
+                    roleName={roleName ?? tooltip?.roleName}
+                    city={tooltip?.city}
+                    country={tooltip?.country}
+                    isContactable={isContactable}
+                    onContact={() => setIsMessageUserDialogOpen(true)}
+                  />
+                </Box>
               </GridProvider>
             }
             classes={{ tooltip: styles.tooltip }}

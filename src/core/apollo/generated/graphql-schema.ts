@@ -804,7 +804,6 @@ export enum AuthenticationType {
 
 export type Authorization = {
   __typename?: 'Authorization';
-  anonymousReadAccess: Scalars['Boolean'];
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The set of credential rules that are contained by this Authorization Policy. */
@@ -826,6 +825,7 @@ export type Authorization = {
 export enum AuthorizationCredential {
   BetaTester = 'BETA_TESTER',
   GlobalAdmin = 'GLOBAL_ADMIN',
+  GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
@@ -959,6 +959,7 @@ export enum AuthorizationPrivilege {
   MovePost = 'MOVE_POST',
   PlatformAdmin = 'PLATFORM_ADMIN',
   Read = 'READ',
+  ReadAbout = 'READ_ABOUT',
   ReadUsers = 'READ_USERS',
   ReadUserPii = 'READ_USER_PII',
   ReadUserSettings = 'READ_USER_SETTINGS',
@@ -2020,7 +2021,7 @@ export type CreateSubspaceInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
-  spaceID: Scalars['UUID'];
+  spaceID: Scalars['UUID_NAMEID'];
   tags?: InputMaybe<Array<Scalars['String']>>;
   type?: InputMaybe<SpaceType>;
 };
@@ -2173,6 +2174,7 @@ export enum CredentialType {
   AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
   BetaTester = 'BETA_TESTER',
   GlobalAdmin = 'GLOBAL_ADMIN',
+  GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
@@ -8554,7 +8556,6 @@ export type CalloutPageCalloutQuery = {
                         __typename?: 'Authorization';
                         id: string;
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                        anonymousReadAccess: boolean;
                       }
                     | undefined;
                   createdBy?:
@@ -8623,7 +8624,6 @@ export type CalloutPageCalloutQuery = {
                       __typename?: 'Authorization';
                       id: string;
                       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      anonymousReadAccess: boolean;
                     }
                   | undefined;
                 messages: Array<{
@@ -10544,12 +10544,7 @@ export type CreateCalloutMutation = {
               storageBucket: { __typename?: 'StorageBucket'; id: string };
             };
             authorization?:
-              | {
-                  __typename?: 'Authorization';
-                  id: string;
-                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                  anonymousReadAccess: boolean;
-                }
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
             createdBy?:
               | {
@@ -10599,12 +10594,7 @@ export type CreateCalloutMutation = {
           id: string;
           messagesCount: number;
           authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           messages: Array<{
             __typename?: 'Message';
@@ -10918,12 +10908,7 @@ export type UpdateCalloutVisibilityMutation = {
               storageBucket: { __typename?: 'StorageBucket'; id: string };
             };
             authorization?:
-              | {
-                  __typename?: 'Authorization';
-                  id: string;
-                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                  anonymousReadAccess: boolean;
-                }
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
             createdBy?:
               | {
@@ -10973,12 +10958,7 @@ export type UpdateCalloutVisibilityMutation = {
           id: string;
           messagesCount: number;
           authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           messages: Array<{
             __typename?: 'Message';
@@ -11654,7 +11634,6 @@ export type CalloutDetailsQuery = {
                         __typename?: 'Authorization';
                         id: string;
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                        anonymousReadAccess: boolean;
                       }
                     | undefined;
                   createdBy?:
@@ -11723,7 +11702,6 @@ export type CalloutDetailsQuery = {
                       __typename?: 'Authorization';
                       id: string;
                       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      anonymousReadAccess: boolean;
                     }
                   | undefined;
                 messages: Array<{
@@ -11954,12 +11932,7 @@ export type CalloutDetailsFragment = {
             storageBucket: { __typename?: 'StorageBucket'; id: string };
           };
           authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           createdBy?:
             | {
@@ -12009,12 +11982,7 @@ export type CalloutDetailsFragment = {
         id: string;
         messagesCount: number;
         authorization?:
-          | {
-              __typename?: 'Authorization';
-              id: string;
-              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-              anonymousReadAccess: boolean;
-            }
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
         messages: Array<{
           __typename?: 'Message';
@@ -13007,12 +12975,7 @@ export type WhiteboardDetailsFragment = {
     storageBucket: { __typename?: 'StorageBucket'; id: string };
   };
   authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        anonymousReadAccess: boolean;
-      }
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
   createdBy?:
     | {
@@ -13048,12 +13011,7 @@ export type CalloutWithWhiteboardFragment = {
   nameID: string;
   type: CalloutType;
   authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        anonymousReadAccess: boolean;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-      }
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
   framing: {
     __typename?: 'CalloutFraming';
@@ -13114,12 +13072,7 @@ export type CalloutWithWhiteboardFragment = {
             storageBucket: { __typename?: 'StorageBucket'; id: string };
           };
           authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           createdBy?:
             | {
@@ -13198,12 +13151,7 @@ export type CalloutWithWhiteboardFragment = {
             storageBucket: { __typename?: 'StorageBucket'; id: string };
           };
           authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           createdBy?:
             | {
@@ -13235,12 +13183,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
     nameID: string;
     type: CalloutType;
     authorization?:
-      | {
-          __typename?: 'Authorization';
-          id: string;
-          anonymousReadAccess: boolean;
-          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        }
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
     contributions: Array<{
       __typename?: 'CalloutContribution';
@@ -13300,12 +13243,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
               storageBucket: { __typename?: 'StorageBucket'; id: string };
             };
             authorization?:
-              | {
-                  __typename?: 'Authorization';
-                  id: string;
-                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                  anonymousReadAccess: boolean;
-                }
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
             createdBy?:
               | {
@@ -13385,12 +13323,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
               storageBucket: { __typename?: 'StorageBucket'; id: string };
             };
             authorization?:
-              | {
-                  __typename?: 'Authorization';
-                  id: string;
-                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                  anonymousReadAccess: boolean;
-                }
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
             createdBy?:
               | {
@@ -13430,12 +13363,7 @@ export type WhiteboardFromCalloutQuery = {
           nameID: string;
           type: CalloutType;
           authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                anonymousReadAccess: boolean;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-              }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           framing: {
             __typename?: 'CalloutFraming';
@@ -13500,7 +13428,6 @@ export type WhiteboardFromCalloutQuery = {
                         __typename?: 'Authorization';
                         id: string;
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                        anonymousReadAccess: boolean;
                       }
                     | undefined;
                   createdBy?:
@@ -13589,7 +13516,6 @@ export type WhiteboardFromCalloutQuery = {
                         __typename?: 'Authorization';
                         id: string;
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                        anonymousReadAccess: boolean;
                       }
                     | undefined;
                   createdBy?:
@@ -13686,12 +13612,7 @@ export type WhiteboardWithContentQuery = {
             storageBucket: { __typename?: 'StorageBucket'; id: string };
           };
           authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           createdBy?:
             | {
@@ -13778,12 +13699,7 @@ export type WhiteboardWithoutContentQuery = {
             storageBucket: { __typename?: 'StorageBucket'; id: string };
           };
           authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           createdBy?:
             | {
@@ -13882,12 +13798,7 @@ export type CreateWhiteboardOnCalloutMutation = {
             storageBucket: { __typename?: 'StorageBucket'; id: string };
           };
           authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           createdBy?:
             | {
@@ -14514,12 +14425,7 @@ export type PlatformDiscussionsQuery = {
       id: string;
       discussionCategories: Array<ForumDiscussionCategory>;
       authorization?:
-        | {
-            __typename?: 'Authorization';
-            id: string;
-            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-            anonymousReadAccess: boolean;
-          }
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
       discussions?:
         | Array<{
@@ -14560,12 +14466,7 @@ export type PlatformDiscussionsQuery = {
                 | undefined;
             };
             authorization?:
-              | {
-                  __typename?: 'Authorization';
-                  id: string;
-                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                  anonymousReadAccess: boolean;
-                }
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
           }>
         | undefined;
@@ -14611,12 +14512,7 @@ export type DiscussionCardFragment = {
       | undefined;
   };
   authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        anonymousReadAccess: boolean;
-      }
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
 };
 
@@ -14633,12 +14529,7 @@ export type PlatformDiscussionQuery = {
       __typename?: 'Forum';
       id: string;
       authorization?:
-        | {
-            __typename?: 'Authorization';
-            id: string;
-            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-            anonymousReadAccess: boolean;
-          }
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
       discussion?:
         | {
@@ -14966,12 +14857,7 @@ export type CommentsWithMessagesFragment = {
   id: string;
   messagesCount: number;
   authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        anonymousReadAccess: boolean;
-      }
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
   messages: Array<{
     __typename?: 'Message';
@@ -19352,13 +19238,7 @@ export type ContextDetailsFragment = {
   impact?: string | undefined;
   who?: string | undefined;
   authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        anonymousReadAccess: boolean;
-        type?: AuthorizationPolicyType | undefined;
-      }
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
 };
 
@@ -21322,13 +21202,7 @@ export type SpaceDetailsFragment = {
     impact?: string | undefined;
     who?: string | undefined;
     authorization?:
-      | {
-          __typename?: 'Authorization';
-          id: string;
-          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-          anonymousReadAccess: boolean;
-          type?: AuthorizationPolicyType | undefined;
-        }
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
   };
   settings: { __typename?: 'SpaceSettings'; privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode } };
@@ -21368,7 +21242,6 @@ export type SpaceProviderQuery = {
             id: string;
             myPrivileges?: Array<AuthorizationPrivilege> | undefined;
             type?: AuthorizationPolicyType | undefined;
-            anonymousReadAccess: boolean;
           }
         | undefined;
     };
@@ -21379,25 +21252,6 @@ export type SpaceProviderQuery = {
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
     };
-    templatesManager?:
-      | {
-          __typename?: 'TemplatesManager';
-          id: string;
-          templatesSet?:
-            | {
-                __typename?: 'TemplatesSet';
-                id: string;
-                authorization?:
-                  | {
-                      __typename?: 'Authorization';
-                      id: string;
-                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    }
-                  | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -21460,6 +21314,37 @@ export type SpaceUrlQuery = {
   space: { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
 };
 
+export type SpaceTemplatesManagerQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type SpaceTemplatesManagerQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    templatesManager?:
+      | {
+          __typename?: 'TemplatesManager';
+          id: string;
+          templatesSet?:
+            | {
+                __typename?: 'TemplatesSet';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type SpaceInfoFragment = {
   __typename?: 'Space';
   visibility: SpaceVisibility;
@@ -21488,7 +21373,6 @@ export type SpaceInfoFragment = {
           id: string;
           myPrivileges?: Array<AuthorizationPrivilege> | undefined;
           type?: AuthorizationPolicyType | undefined;
-          anonymousReadAccess: boolean;
         }
       | undefined;
   };
@@ -21499,21 +21383,6 @@ export type SpaceInfoFragment = {
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
   };
-  templatesManager?:
-    | {
-        __typename?: 'TemplatesManager';
-        id: string;
-        templatesSet?:
-          | {
-              __typename?: 'TemplatesSet';
-              id: string;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-            }
-          | undefined;
-      }
-    | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -21745,12 +21614,7 @@ export type SpacePageQuery = {
             who?: string | undefined;
             impact?: string | undefined;
             authorization?:
-              | {
-                  __typename?: 'Authorization';
-                  id: string;
-                  anonymousReadAccess: boolean;
-                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                }
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
           };
           collaboration?: {
@@ -21995,12 +21859,7 @@ export type SpacePageFragment = {
     who?: string | undefined;
     impact?: string | undefined;
     authorization?:
-      | {
-          __typename?: 'Authorization';
-          id: string;
-          anonymousReadAccess: boolean;
-          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        }
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
   };
   collaboration?: {
@@ -22369,13 +22228,7 @@ export type UpdateSpaceMutation = {
       impact?: string | undefined;
       who?: string | undefined;
       authorization?:
-        | {
-            __typename?: 'Authorization';
-            id: string;
-            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-            anonymousReadAccess: boolean;
-            type?: AuthorizationPolicyType | undefined;
-          }
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
     };
     settings: {
@@ -22558,13 +22411,7 @@ export type SubspaceProfileInfoQuery = {
             impact?: string | undefined;
             who?: string | undefined;
             authorization?:
-              | {
-                  __typename?: 'Authorization';
-                  id: string;
-                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                  anonymousReadAccess: boolean;
-                  type?: AuthorizationPolicyType | undefined;
-                }
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
           };
           collaboration: {
@@ -22817,12 +22664,7 @@ export type SpaceProfileFragment = {
     id: string;
     vision?: string | undefined;
     authorization?:
-      | {
-          __typename?: 'Authorization';
-          id: string;
-          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-          anonymousReadAccess: boolean;
-        }
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
   };
   collaboration: {
@@ -25826,7 +25668,6 @@ export type TemplateContentQuery = {
                               __typename?: 'Authorization';
                               id: string;
                               myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              anonymousReadAccess: boolean;
                             }
                           | undefined;
                         createdBy?:
@@ -26102,12 +25943,7 @@ export type CalloutTemplateContentFragment = {
             storageBucket: { __typename?: 'StorageBucket'; id: string };
           };
           authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           createdBy?:
             | {
@@ -27217,12 +27053,7 @@ export type CalendarEventDetailsQuery = {
             id: string;
             messagesCount: number;
             authorization?:
-              | {
-                  __typename?: 'Authorization';
-                  id: string;
-                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                  anonymousReadAccess: boolean;
-                }
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
             messages: Array<{
               __typename?: 'Message';
@@ -27420,12 +27251,7 @@ export type CalendarEventDetailsFragment = {
     id: string;
     messagesCount: number;
     authorization?:
-      | {
-          __typename?: 'Authorization';
-          id: string;
-          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-          anonymousReadAccess: boolean;
-        }
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
     messages: Array<{
       __typename?: 'Message';
@@ -27619,12 +27445,7 @@ export type CreateCalendarEventMutation = {
       id: string;
       messagesCount: number;
       authorization?:
-        | {
-            __typename?: 'Authorization';
-            id: string;
-            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-            anonymousReadAccess: boolean;
-          }
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
       messages: Array<{
         __typename?: 'Message';
@@ -27802,12 +27623,7 @@ export type UpdateCalendarEventMutation = {
       id: string;
       messagesCount: number;
       authorization?:
-        | {
-            __typename?: 'Authorization';
-            id: string;
-            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-            anonymousReadAccess: boolean;
-          }
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
       messages: Array<{
         __typename?: 'Message';
@@ -27960,7 +27776,6 @@ export type AuthorizationPolicyQuery = {
           __typename?: 'Authorization';
           id: string;
           type?: AuthorizationPolicyType | undefined;
-          anonymousReadAccess: boolean;
           credentialRules?:
             | Array<{
                 __typename?: 'AuthorizationPolicyRuleCredential';
@@ -28048,12 +27863,7 @@ export type GuidanceRoomMessagesQuery = {
           id: string;
           messagesCount: number;
           authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
           messages: Array<{
             __typename?: 'Message';
@@ -29630,7 +29440,6 @@ export type LibraryTemplatesFragment = {
                         __typename?: 'Authorization';
                         id: string;
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                        anonymousReadAccess: boolean;
                       }
                     | undefined;
                   createdBy?:
