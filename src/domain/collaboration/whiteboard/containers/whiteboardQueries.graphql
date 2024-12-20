@@ -27,7 +27,6 @@ fragment WhiteboardDetails on Whiteboard {
   authorization {
     id
     myPrivileges
-    anonymousReadAccess
   }
   contentUpdatePolicy
   createdBy {
@@ -70,7 +69,6 @@ fragment CalloutWithWhiteboard on Callout {
   type
   authorization {
     id
-    anonymousReadAccess
     myPrivileges
   }
   framing {
@@ -94,7 +92,6 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
     type
     authorization {
       id
-      anonymousReadAccess
       myPrivileges
     }
     contributions {
