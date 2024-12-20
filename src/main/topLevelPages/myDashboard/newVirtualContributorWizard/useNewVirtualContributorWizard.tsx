@@ -28,7 +28,8 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import CreateNewVirtualContributor, { VirtualContributorFromProps } from './CreateNewVirtualContributor';
 import LoadingState from './LoadingState';
-import AddContent, { PostsFormValues, PostValues } from './AddContent';
+import AddContent from './AddContent/AddContent';
+import { PostsFormValues, PostValues } from './AddContent/AddContentProps';
 import ExistingSpace, { SelectableKnowledgeProps } from './ExistingSpace';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
