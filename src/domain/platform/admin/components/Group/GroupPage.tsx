@@ -10,8 +10,8 @@ import {
 import { AuthorizationCredential, GroupInfoFragment, User } from '@/core/apollo/generated/graphql-schema';
 import GroupForm, { UserGroupUpdateInput } from './GroupForm/GroupForm';
 import { getUpdateProfileInput } from '@/domain/community/user/utils/getUpdateUserInput';
-import OrganizationAdminLayout from '@/domain/platform/admin/organization/OrganizationAdminLayout';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import OrganizationAdminLayout from '@/domain/community/organizationAdmin/layout/OrganizationAdminLayout';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 
 export const GroupPage = ({ group }: { group?: GroupInfoFragment }) => {
   const { t } = useTranslation();

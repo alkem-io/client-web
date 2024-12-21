@@ -13,7 +13,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { Actions } from '@/core/ui/actions/Actions';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { Caption } from '@/core/ui/typography';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 
 interface FormValues {
   collaborationTemplateSelectedId: string;

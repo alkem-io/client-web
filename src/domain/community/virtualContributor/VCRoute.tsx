@@ -3,7 +3,7 @@ import VCProfilePage from './vcProfilePage/VCProfilePage';
 import { PageLayoutHolderWithOutlet } from '@/domain/journey/common/EntityPageLayout';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import VCSettingsRoute from './VCSettingsRoute';
+import VCSettingsRoute from '../virtualContributorAdmin/VCSettingsRoute';
 import { nameOfUrl } from '@/main/routing/urlParams';
 
 export const VCRoute = () => (

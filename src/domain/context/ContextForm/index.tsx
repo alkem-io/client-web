@@ -12,7 +12,7 @@ export interface ContextFormValues {
 }
 
 type ContextFormProps = {
-  context?: Context;
+  context?: Omit<Context, 'anonymousReadAccess'>;
   profile?: Omit<Profile, 'storageBucket' | 'url'>;
   onSubmit: (formData: ContextFormValues) => void;
   wireSubmit: (setter: () => void) => void;

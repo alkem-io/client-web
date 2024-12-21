@@ -23,7 +23,7 @@ import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import { Caption } from '@/core/ui/typography';
 
 interface SpaceEditFormProps {
-  context?: Context;
+  context?: Omit<Context, 'anonymousReadAccess'>;
   profile?: Omit<Profile, 'storageBucket' | 'url'>;
   name?: string;
   nameID?: string;

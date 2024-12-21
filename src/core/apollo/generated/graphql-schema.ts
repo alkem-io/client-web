@@ -804,6 +804,7 @@ export enum AuthenticationType {
 
 export type Authorization = {
   __typename?: 'Authorization';
+  anonymousReadAccess?: Maybe<Scalars['Boolean']>;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The set of credential rules that are contained by this Authorization Policy. */
@@ -825,7 +826,6 @@ export type Authorization = {
 export enum AuthorizationCredential {
   BetaTester = 'BETA_TESTER',
   GlobalAdmin = 'GLOBAL_ADMIN',
-  GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
@@ -959,7 +959,6 @@ export enum AuthorizationPrivilege {
   MovePost = 'MOVE_POST',
   PlatformAdmin = 'PLATFORM_ADMIN',
   Read = 'READ',
-  ReadAbout = 'READ_ABOUT',
   ReadUsers = 'READ_USERS',
   ReadUserPii = 'READ_USER_PII',
   ReadUserSettings = 'READ_USER_SETTINGS',
@@ -2022,7 +2021,7 @@ export type CreateSubspaceInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
-  spaceID: Scalars['UUID_NAMEID'];
+  spaceID: Scalars['UUID'];
   tags?: InputMaybe<Array<Scalars['String']>>;
   type?: InputMaybe<SpaceType>;
 };
@@ -2161,7 +2160,6 @@ export enum CredentialType {
   AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
   BetaTester = 'BETA_TESTER',
   GlobalAdmin = 'GLOBAL_ADMIN',
-  GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
@@ -3009,8 +3007,15 @@ export enum LicensingCredentialBasedPlanType {
 export type LicensingCredentialBasedPolicyCredentialRule = {
   __typename?: 'LicensingCredentialBasedPolicyCredentialRule';
   credentialType: LicensingCredentialBasedCredentialType;
-  grantedEntitlements: Array<LicenseEntitlementType>;
+  grantedEntitlements: Array<LicensingGrantedEntitlement>;
   name?: Maybe<Scalars['String']>;
+};
+
+export type LicensingGrantedEntitlement = {
+  __typename?: 'LicensingGrantedEntitlement';
+  limit: Scalars['Float'];
+  /** The entitlement that is granted. */
+  type: LicenseEntitlementType;
 };
 
 export type Lifecycle = {
@@ -3073,6 +3078,178 @@ export type LookupByNameQueryResultsTemplateArgs = {
   templatesSetID: Scalars['UUID'];
 };
 
+export type LookupMyPrivilegesQueryResults = {
+  __typename?: 'LookupMyPrivilegesQueryResults';
+  /** Lookup myPrivileges on the specified Account */
+  account?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified Application */
+  application?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified Calendar */
+  calendar?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified CalendarEvent */
+  calendarEvent?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified Callout */
+  callout?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified Collaboration */
+  collaboration?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified Community */
+  community?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified Community guidelines */
+  communityGuidelines?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified Context */
+  context?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified Document */
+  document?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified InnovationFlow */
+  innovationFlow?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified InnovationHub */
+  innovationHub?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified InnovationPack */
+  innovationPack?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified Invitation */
+  invitation?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified License */
+  license?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified Post */
+  post?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified Profile */
+  profile?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified RoleSet */
+  roleSet?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified Room */
+  room?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified Space */
+  space?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified StorageAggregator */
+  storageAggregator?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified StorageBucket */
+  storageBucket?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified Template */
+  template?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified TemplatesManager */
+  templatesManager?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified TemplatesSet */
+  templatesSet?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified User */
+  user?: Maybe<Array<AuthorizationPrivilege>>;
+  /** A particular VirtualContributor */
+  virtualContributor?: Maybe<Array<AuthorizationPrivilege>>;
+  /** Lookup myPrivileges on the specified Whiteboard */
+  whiteboard?: Maybe<Array<AuthorizationPrivilege>>;
+};
+
+export type LookupMyPrivilegesQueryResultsAccountArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsApplicationArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsCalendarArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsCalendarEventArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsCalloutArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsCollaborationArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsCommunityArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsCommunityGuidelinesArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsContextArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsDocumentArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsInnovationFlowArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsInnovationHubArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsInnovationPackArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsInvitationArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsLicenseArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsPostArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsProfileArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsRoleSetArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsRoomArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsSpaceArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsStorageAggregatorArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsStorageBucketArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsTemplateArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsTemplatesManagerArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsTemplatesSetArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsUserArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsVirtualContributorArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupMyPrivilegesQueryResultsWhiteboardArgs = {
+  ID: Scalars['UUID'];
+};
+
 export type LookupQueryResults = {
   __typename?: 'LookupQueryResults';
   /** Lookup the specified Account */
@@ -3109,6 +3286,8 @@ export type LookupQueryResults = {
   invitation?: Maybe<Invitation>;
   /** Lookup the specified License */
   license?: Maybe<License>;
+  /** Lookup myPrivileges on the specified entity. */
+  myPrivileges?: Maybe<LookupMyPrivilegesQueryResults>;
   /** Lookup the specified Post */
   post?: Maybe<Post>;
   /** Lookup the specified Profile */
@@ -3658,10 +3837,10 @@ export type Mutation = {
   updateOrganization: Organization;
   /** Updates the specified Organization platform settings. */
   updateOrganizationPlatformSettings: Organization;
+  /** Updates one of the Setting on an Organization */
+  updateOrganizationSettings: Organization;
   /** Updates the specified Post. */
   updatePost: Post;
-  /** Updates one of the Preferences on an Organization */
-  updatePreferenceOnOrganization: Preference;
   /** Updates one of the Preferences on a Space */
   updatePreferenceOnUser: Preference;
   /** Updates the specified Profile. */
@@ -3688,6 +3867,8 @@ export type Mutation = {
   updateUserGroup: UserGroup;
   /** Update the platform settings, such as nameID, email, for the specified User. */
   updateUserPlatformSettings: User;
+  /** Updates one of the Setting on a User */
+  updateUserSettings: User;
   /** Updates the specified VirtualContributor. */
   updateVirtualContributor: VirtualContributor;
   /** Updates the image URI for the specified Visual. */
@@ -4236,12 +4417,12 @@ export type MutationUpdateOrganizationPlatformSettingsArgs = {
   organizationData: UpdateOrganizationPlatformSettingsInput;
 };
 
-export type MutationUpdatePostArgs = {
-  postData: UpdatePostInput;
+export type MutationUpdateOrganizationSettingsArgs = {
+  settingsData: UpdateOrganizationSettingsInput;
 };
 
-export type MutationUpdatePreferenceOnOrganizationArgs = {
-  preferenceData: UpdateOrganizationPreferenceInput;
+export type MutationUpdatePostArgs = {
+  postData: UpdatePostInput;
 };
 
 export type MutationUpdatePreferenceOnUserArgs = {
@@ -4294,6 +4475,10 @@ export type MutationUpdateUserGroupArgs = {
 
 export type MutationUpdateUserPlatformSettingsArgs = {
   updateData: UpdateUserPlatformSettingsInput;
+};
+
+export type MutationUpdateUserSettingsArgs = {
+  settingsData: UpdateUserSettingsInput;
 };
 
 export type MutationUpdateVirtualContributorArgs = {
@@ -4416,10 +4601,10 @@ export type Organization = Contributor &
     nameID: Scalars['NameID'];
     /** All Users that are owners of this Organization. */
     owners?: Maybe<Array<User>>;
-    /** The preferences for this Organization */
-    preferences: Array<Preference>;
     /** The profile for this Organization. */
     profile: Profile;
+    /** The settings for this Organization. */
+    settings: OrganizationSettings;
     /** The StorageAggregator for managing storage buckets in use by this Organization */
     storageAggregator?: Maybe<StorageAggregator>;
     /** The date at which the entity was last updated. */
@@ -4446,15 +4631,31 @@ export type OrganizationFilterInput = {
   website?: InputMaybe<Scalars['String']>;
 };
 
-export enum OrganizationPreferenceType {
-  AuthorizationOrganizationMatchDomain = 'AUTHORIZATION_ORGANIZATION_MATCH_DOMAIN',
-}
-
 export enum OrganizationRole {
   Admin = 'ADMIN',
   Associate = 'ASSOCIATE',
   Owner = 'OWNER',
 }
+
+export type OrganizationSettings = {
+  __typename?: 'OrganizationSettings';
+  /** The membership settings for this Organization. */
+  membership: OrganizationSettingsMembership;
+  /** The privacy settings for this Organization */
+  privacy: OrganizationSettingsPrivacy;
+};
+
+export type OrganizationSettingsMembership = {
+  __typename?: 'OrganizationSettingsMembership';
+  /** Allow Users with email addresses matching the domain of this Organization to join. */
+  allowUsersMatchingDomainToJoin: Scalars['Boolean'];
+};
+
+export type OrganizationSettingsPrivacy = {
+  __typename?: 'OrganizationSettingsPrivacy';
+  /** Allow contribution roles (membership, lead etc) in Spaces to be visible. */
+  contributionRolesPubliclyVisible: Scalars['Boolean'];
+};
 
 export type OrganizationVerification = {
   __typename?: 'OrganizationVerification';
@@ -4734,7 +4935,6 @@ export type PreferenceDefinition = {
 };
 
 export enum PreferenceType {
-  AuthorizationOrganizationMatchDomain = 'AUTHORIZATION_ORGANIZATION_MATCH_DOMAIN',
   NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
   NotificationApplicationSubmitted = 'NOTIFICATION_APPLICATION_SUBMITTED',
   NotificationCalloutPublished = 'NOTIFICATION_CALLOUT_PUBLISHED',
@@ -4742,7 +4942,6 @@ export enum PreferenceType {
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationMention = 'NOTIFICATION_COMMUNICATION_MENTION',
-  NotificationCommunicationMessage = 'NOTIFICATION_COMMUNICATION_MESSAGE',
   NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
   NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
   NotificationCommunityCollaborationInterestAdmin = 'NOTIFICATION_COMMUNITY_COLLABORATION_INTEREST_ADMIN',
@@ -6542,12 +6741,26 @@ export type UpdateOrganizationPlatformSettingsInput = {
   organizationID: Scalars['UUID'];
 };
 
-export type UpdateOrganizationPreferenceInput = {
-  /** ID of the Organization */
-  organizationID: Scalars['UUID_NAMEID'];
-  /** Type of the organization preference */
-  type: OrganizationPreferenceType;
-  value: Scalars['String'];
+export type UpdateOrganizationSettingsEntityInput = {
+  membership?: InputMaybe<UpdateOrganizationSettingsMembershipInput>;
+  privacy?: InputMaybe<UpdateOrganizationSettingsPrivacyInput>;
+};
+
+export type UpdateOrganizationSettingsInput = {
+  /** The identifier for the Organization whose settings are to be updated. */
+  organizationID: Scalars['String'];
+  /** Update the settings for the Organization. */
+  settings: UpdateOrganizationSettingsEntityInput;
+};
+
+export type UpdateOrganizationSettingsMembershipInput = {
+  /** Allow Users with email addresses matching the domain of this Organization to join. */
+  allowUsersMatchingDomainToJoin: Scalars['Boolean'];
+};
+
+export type UpdateOrganizationSettingsPrivacyInput = {
+  /** Allow contribution roles (membership, lead etc) in Spaces to be visible. */
+  contributionRolesPubliclyVisible: Scalars['Boolean'];
 };
 
 export type UpdatePostInput = {
@@ -6714,6 +6927,28 @@ export type UpdateUserPreferenceInput = {
   value: Scalars['String'];
 };
 
+export type UpdateUserSettingsCommunicationInput = {
+  /** Allow Users to send messages to this User. */
+  allowOtherUsersToSendMessages: Scalars['Boolean'];
+};
+
+export type UpdateUserSettingsEntityInput = {
+  communication?: InputMaybe<UpdateUserSettingsCommunicationInput>;
+  privacy?: InputMaybe<UpdateUserSettingsPrivacyInput>;
+};
+
+export type UpdateUserSettingsInput = {
+  /** Update the settings for the User. */
+  settings: UpdateUserSettingsEntityInput;
+  /** The identifier for the User whose settings are to be updated. */
+  userID: Scalars['String'];
+};
+
+export type UpdateUserSettingsPrivacyInput = {
+  /** Allow contribution roles (communication, lead etc) in Spaces to be visible. */
+  contributionRolesPubliclyVisible: Scalars['Boolean'];
+};
+
 export type UpdateVirtualContributorInput = {
   /** The ID of the Virtual Contributor to update. */
   ID: Scalars['UUID'];
@@ -6778,6 +7013,8 @@ export type User = Contributor & {
   preferences: Array<Preference>;
   /** The Profile for this User. */
   profile: Profile;
+  /** The settings for this User. */
+  settings: UserSettings;
   /** The StorageAggregator for managing storage buckets in use by this User */
   storageAggregator?: Maybe<StorageAggregator>;
   /** The date at which the entity was last updated. */
@@ -6837,7 +7074,6 @@ export enum UserPreferenceType {
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationMention = 'NOTIFICATION_COMMUNICATION_MENTION',
-  NotificationCommunicationMessage = 'NOTIFICATION_COMMUNICATION_MESSAGE',
   NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
   NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
   NotificationCommunityCollaborationInterestAdmin = 'NOTIFICATION_COMMUNITY_COLLABORATION_INTEREST_ADMIN',
@@ -6865,6 +7101,26 @@ export type UserSendMessageInput = {
   message: Scalars['String'];
   /** The user a message is being sent to */
   receivingUserID: Scalars['String'];
+};
+
+export type UserSettings = {
+  __typename?: 'UserSettings';
+  /** The communication settings for this User. */
+  communication: UserSettingsCommunication;
+  /** The privacy settings for this User */
+  privacy: UserSettingsPrivacy;
+};
+
+export type UserSettingsCommunication = {
+  __typename?: 'UserSettingsCommunication';
+  /** Allow Users to send messages to this User. */
+  allowOtherUsersToSendMessages: Scalars['Boolean'];
+};
+
+export type UserSettingsPrivacy = {
+  __typename?: 'UserSettingsPrivacy';
+  /** Allow contribution roles (communication, lead etc) in Spaces to be visible. */
+  contributionRolesPubliclyVisible: Scalars['Boolean'];
 };
 
 export type UsersWithAuthorizationCredentialInput = {
@@ -13869,41 +14125,6 @@ export type LinkDetailsWithAuthorizationFragment = {
     | undefined;
 };
 
-export type OrganizationPreferencesQueryVariables = Exact<{
-  orgId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OrganizationPreferencesQuery = {
-  __typename?: 'Query';
-  organization: {
-    __typename?: 'Organization';
-    id: string;
-    preferences: Array<{
-      __typename?: 'Preference';
-      id: string;
-      value: string;
-      definition: {
-        __typename?: 'PreferenceDefinition';
-        id: string;
-        description: string;
-        displayName: string;
-        group: string;
-        type: PreferenceType;
-        valueType: PreferenceValueType;
-      };
-    }>;
-  };
-};
-
-export type UpdatePreferenceOnOrganizationMutationVariables = Exact<{
-  preferenceData: UpdateOrganizationPreferenceInput;
-}>;
-
-export type UpdatePreferenceOnOrganizationMutation = {
-  __typename?: 'Mutation';
-  updatePreferenceOnOrganization: { __typename?: 'Preference'; id: string; value: string };
-};
-
 export type CreateReferenceOnProfileMutationVariables = Exact<{
   input: CreateReferenceOnProfileInput;
 }>;
@@ -16570,80 +16791,6 @@ export type RolesOrganizationQuery = {
   };
 };
 
-export type AssignLicensePlanToAccountMutationVariables = Exact<{
-  licensePlanId: Scalars['UUID'];
-  accountId: Scalars['UUID'];
-  licensingId: Scalars['UUID'];
-}>;
-
-export type AssignLicensePlanToAccountMutation = {
-  __typename?: 'Mutation';
-  assignLicensePlanToAccount: { __typename?: 'Account'; id: string };
-};
-
-export type RevokeLicensePlanFromAccountMutationVariables = Exact<{
-  licensePlanId: Scalars['UUID'];
-  accountId: Scalars['UUID'];
-  licensingId: Scalars['UUID'];
-}>;
-
-export type RevokeLicensePlanFromAccountMutation = {
-  __typename?: 'Mutation';
-  revokeLicensePlanFromAccount: { __typename?: 'Account'; id: string };
-};
-
-export type AdminGlobalOrganizationsListQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['UUID']>;
-  filter?: InputMaybe<OrganizationFilterInput>;
-}>;
-
-export type AdminGlobalOrganizationsListQuery = {
-  __typename?: 'Query';
-  organizationsPaginated: {
-    __typename?: 'PaginatedOrganization';
-    organization: Array<{
-      __typename?: 'Organization';
-      id: string;
-      account?:
-        | {
-            __typename?: 'Account';
-            id: string;
-            subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicensingCredentialBasedCredentialType }>;
-          }
-        | undefined;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        url: string;
-        displayName: string;
-        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-      };
-      verification: { __typename?: 'OrganizationVerification'; id: string; state: string };
-    }>;
-    pageInfo: {
-      __typename?: 'PageInfo';
-      startCursor?: string | undefined;
-      endCursor?: string | undefined;
-      hasNextPage: boolean;
-    };
-  };
-};
-
-export type AdminOrganizationVerifyMutationVariables = Exact<{
-  input: OrganizationVerificationEventInput;
-}>;
-
-export type AdminOrganizationVerifyMutation = {
-  __typename?: 'Mutation';
-  eventOnOrganizationVerification: {
-    __typename?: 'OrganizationVerification';
-    id: string;
-    nextEvents: Array<string>;
-    state: string;
-  };
-};
-
 export type OrganizationInfoFragment = {
   __typename?: 'Organization';
   id: string;
@@ -16909,61 +17056,6 @@ export type DeleteOrganizationMutation = {
   deleteOrganization: { __typename?: 'Organization'; id: string };
 };
 
-export type UpdateOrganizationMutationVariables = Exact<{
-  input: UpdateOrganizationInput;
-}>;
-
-export type UpdateOrganizationMutation = {
-  __typename?: 'Mutation';
-  updateOrganization: {
-    __typename?: 'Organization';
-    id: string;
-    nameID: string;
-    contactEmail?: string | undefined;
-    domain?: string | undefined;
-    legalEntityName?: string | undefined;
-    website?: string | undefined;
-    verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      url: string;
-      displayName: string;
-      description?: string | undefined;
-      tagline?: string | undefined;
-      visual?:
-        | {
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }
-        | undefined;
-      location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
-      references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-        | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-    };
-  };
-};
-
 export type OrganizationAuthorizationQueryVariables = Exact<{
   organizationId: Scalars['UUID_NAMEID'];
 }>;
@@ -17140,6 +17232,108 @@ export type OrganizationsListQuery = {
   }>;
 };
 
+export type OrganizationAccountQueryVariables = Exact<{
+  organizationNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OrganizationAccountQuery = {
+  __typename?: 'Query';
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    account?: { __typename?: 'Account'; id: string } | undefined;
+  };
+};
+
+export type OrganizationSettingsQueryVariables = Exact<{
+  orgId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OrganizationSettingsQuery = {
+  __typename?: 'Query';
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    settings: {
+      __typename?: 'OrganizationSettings';
+      membership: { __typename?: 'OrganizationSettingsMembership'; allowUsersMatchingDomainToJoin: boolean };
+      privacy: { __typename?: 'OrganizationSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+    };
+  };
+};
+
+export type UpdateOrganizationMutationVariables = Exact<{
+  input: UpdateOrganizationInput;
+}>;
+
+export type UpdateOrganizationMutation = {
+  __typename?: 'Mutation';
+  updateOrganization: {
+    __typename?: 'Organization';
+    id: string;
+    nameID: string;
+    contactEmail?: string | undefined;
+    domain?: string | undefined;
+    legalEntityName?: string | undefined;
+    website?: string | undefined;
+    verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      url: string;
+      displayName: string;
+      description?: string | undefined;
+      tagline?: string | undefined;
+      visual?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+      location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+    };
+  };
+};
+
+export type UpdateOrganizationSettingsMutationVariables = Exact<{
+  settingsData: UpdateOrganizationSettingsInput;
+}>;
+
+export type UpdateOrganizationSettingsMutation = {
+  __typename?: 'Mutation';
+  updateOrganizationSettings: {
+    __typename?: 'Organization';
+    id: string;
+    settings: {
+      __typename?: 'OrganizationSettings';
+      membership: { __typename?: 'OrganizationSettingsMembership'; allowUsersMatchingDomainToJoin: boolean };
+    };
+  };
+};
+
 export type AccountResourcesInfoQueryVariables = Exact<{
   accountId: Scalars['UUID'];
 }>;
@@ -17230,6 +17424,99 @@ export type AccountResourceProfileFragment = {
   displayName: string;
   url: string;
   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+};
+
+export type UpdateUserMutationVariables = Exact<{
+  input: UpdateUserInput;
+}>;
+
+export type UpdateUserMutation = {
+  __typename?: 'Mutation';
+  updateUser: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string | undefined;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      tagline?: string | undefined;
+      description?: string | undefined;
+      url: string;
+      location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+      avatar?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+    };
+  };
+};
+
+export type UpdateUserSettingsMutationVariables = Exact<{
+  settingsData: UpdateUserSettingsInput;
+}>;
+
+export type UpdateUserSettingsMutation = {
+  __typename?: 'Mutation';
+  updateUserSettings: {
+    __typename?: 'User';
+    id: string;
+    settings: {
+      __typename?: 'UserSettings';
+      privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+      communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
+    };
+  };
+};
+
+export type UserSettingsQueryVariables = Exact<{
+  userID: Scalars['UUID'];
+}>;
+
+export type UserSettingsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          settings: {
+            __typename?: 'UserSettings';
+            communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
+            privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+          };
+        }
+      | undefined;
+  };
 };
 
 export type DeleteInvitationMutationVariables = Exact<{
@@ -17839,39 +18126,6 @@ export type UserSelectorUserInformationFragment = {
   };
 };
 
-export type UserListQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['UUID']>;
-  filter?: InputMaybe<UserFilterInput>;
-}>;
-
-export type UserListQuery = {
-  __typename?: 'Query';
-  usersPaginated: {
-    __typename?: 'PaginatedUsers';
-    users: Array<{
-      __typename?: 'User';
-      id: string;
-      email: string;
-      account?:
-        | {
-            __typename?: 'Account';
-            id: string;
-            subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicensingCredentialBasedCredentialType }>;
-          }
-        | undefined;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        url: string;
-        displayName: string;
-        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-      };
-    }>;
-    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
-  };
-};
-
 export type UserAvatarsQueryVariables = Exact<{
   ids: Array<Scalars['UUID']> | Scalars['UUID'];
 }>;
@@ -18265,60 +18519,6 @@ export type UpdateGroupMutation = {
             | undefined;
         }
       | undefined;
-  };
-};
-
-export type UpdateUserMutationVariables = Exact<{
-  input: UpdateUserInput;
-}>;
-
-export type UpdateUserMutation = {
-  __typename?: 'Mutation';
-  updateUser: {
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone?: string | undefined;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      tagline?: string | undefined;
-      description?: string | undefined;
-      url: string;
-      location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
-      avatar?:
-        | {
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }
-        | undefined;
-      references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-        | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-    };
   };
 };
 
@@ -23888,17 +24088,77 @@ export type PlatformLevelAuthorizationQuery = {
   };
 };
 
-export type OrganizationAccountQueryVariables = Exact<{
-  organizationNameId: Scalars['UUID_NAMEID'];
+export type AssignLicensePlanToAccountMutationVariables = Exact<{
+  licensePlanId: Scalars['UUID'];
+  accountId: Scalars['UUID'];
+  licensingId: Scalars['UUID'];
 }>;
 
-export type OrganizationAccountQuery = {
+export type AssignLicensePlanToAccountMutation = {
+  __typename?: 'Mutation';
+  assignLicensePlanToAccount: { __typename?: 'Account'; id: string };
+};
+
+export type RevokeLicensePlanFromAccountMutationVariables = Exact<{
+  licensePlanId: Scalars['UUID'];
+  accountId: Scalars['UUID'];
+  licensingId: Scalars['UUID'];
+}>;
+
+export type RevokeLicensePlanFromAccountMutation = {
+  __typename?: 'Mutation';
+  revokeLicensePlanFromAccount: { __typename?: 'Account'; id: string };
+};
+
+export type AdminGlobalOrganizationsListQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<OrganizationFilterInput>;
+}>;
+
+export type AdminGlobalOrganizationsListQuery = {
   __typename?: 'Query';
-  organization: {
-    __typename?: 'Organization';
+  organizationsPaginated: {
+    __typename?: 'PaginatedOrganization';
+    organization: Array<{
+      __typename?: 'Organization';
+      id: string;
+      account?:
+        | {
+            __typename?: 'Account';
+            id: string;
+            subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicensingCredentialBasedCredentialType }>;
+          }
+        | undefined;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        url: string;
+        displayName: string;
+        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      };
+      verification: { __typename?: 'OrganizationVerification'; id: string; state: string };
+    }>;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      startCursor?: string | undefined;
+      endCursor?: string | undefined;
+      hasNextPage: boolean;
+    };
+  };
+};
+
+export type AdminOrganizationVerifyMutationVariables = Exact<{
+  input: OrganizationVerificationEventInput;
+}>;
+
+export type AdminOrganizationVerifyMutation = {
+  __typename?: 'Mutation';
+  eventOnOrganizationVerification: {
+    __typename?: 'OrganizationVerification';
     id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-    account?: { __typename?: 'Account'; id: string } | undefined;
+    nextEvents: Array<string>;
+    state: string;
   };
 };
 
@@ -24399,6 +24659,39 @@ export type DeleteDocumentMutationVariables = Exact<{
 export type DeleteDocumentMutation = {
   __typename?: 'Mutation';
   deleteDocument: { __typename?: 'Document'; id: string };
+};
+
+export type UserListQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type UserListQuery = {
+  __typename?: 'Query';
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{
+      __typename?: 'User';
+      id: string;
+      email: string;
+      account?:
+        | {
+            __typename?: 'Account';
+            id: string;
+            subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicensingCredentialBasedCredentialType }>;
+          }
+        | undefined;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        url: string;
+        displayName: string;
+        visual?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      };
+    }>;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
+  };
 };
 
 export type AdminVirtualContributorsQueryVariables = Exact<{ [key: string]: never }>;

@@ -1,0 +1,15 @@
+query userSettings($userID: UUID!) {
+  lookup {
+    user(ID: $userID) {
+      id
+      settings {
+        communication {
+          allowOtherUsersToSendMessages
+        }
+        privacy {
+          contributionRolesPubliclyVisible
+        }
+      }
+    }
+  }
+}

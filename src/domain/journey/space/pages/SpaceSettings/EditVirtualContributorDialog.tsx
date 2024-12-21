@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogContent } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import VirtualContributorForm from '@/domain/community/virtualContributor/vcSettingsPage/VirtualContributorForm';
+import VirtualContributorForm from '@/domain/community/virtualContributorAdmin/vcSettingsPage/VirtualContributorForm';
 import { UpdateVirtualContributorInput, Visual } from '@/core/apollo/generated/graphql-schema';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 

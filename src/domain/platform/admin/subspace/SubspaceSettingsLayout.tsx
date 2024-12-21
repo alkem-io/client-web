@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
+import { SettingsSection } from '../layout/EntitySettingsLayout/SettingsSection';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import RouterLink from '@/core/ui/link/RouterLink';

@@ -1,6 +1,6 @@
 import { Container } from '@mui/material';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
-import OrganizationAdminLayout from '@/domain/platform/admin/organization/OrganizationAdminLayout';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import OrganizationAdminLayout from '@/domain/community/organizationAdmin/layout/OrganizationAdminLayout';
 import { AuthorizationCredential } from '@/core/apollo/generated/graphql-schema';
 import EditGroupCredentials from '../Authorization/EditGroupCredentials';
 

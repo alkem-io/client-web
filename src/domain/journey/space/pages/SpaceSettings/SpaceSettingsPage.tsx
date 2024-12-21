@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import SpaceSettingsView from './SpaceSettingsView';
 import SpaceSettingsLayout from '@/domain/platform/admin/space/SpaceSettingsLayout';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import { Skeleton } from '@mui/material';

@@ -15,7 +15,7 @@ import { LocationSegment } from '@/domain/common/location/LocationSegment';
 import { formatLocation } from '@/domain/common/location/LocationUtils';
 import { Tagset, UpdateTagset } from '@/domain/common/profile/Profile';
 import { OrganizationInput } from '@/domain/community/contributor/organization/OrganizationInput';
-import { OrgVerificationLifecycleEvents } from '@/domain/community/contributor/organization/adminOrganizations/useAdminGlobalOrganizationsList';
+import { OrgVerificationLifecycleEvents } from '@/domain/platform/admin/organizations/useAdminGlobalOrganizationsList';
 import { Button, Grid } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { FC, useCallback } from 'react';
@@ -72,7 +72,14 @@ const EmptyOrganization: Omit<Organization, 'authorization' | 'agent'> = {
       size: -1,
     },
   },
-  preferences: [],
+  settings: {
+    privacy: {
+      contributionRolesPubliclyVisible: false,
+    },
+    membership: {
+      allowUsersMatchingDomainToJoin: false,
+    },
+  },
 };
 
 interface Props {

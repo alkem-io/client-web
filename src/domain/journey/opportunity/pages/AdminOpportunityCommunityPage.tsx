@@ -5,7 +5,7 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import CommunityOrganizations from '@/domain/community/community/CommunityAdmin/CommunityOrganizations';
 import CommunityUsers from '@/domain/community/community/CommunityAdmin/CommunityUsers';
 import useRoleSetAdmin from '@/domain/community/community/CommunityAdmin/useCommunityAdmin';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import { useOpportunity } from '../hooks/useOpportunity';
 import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';

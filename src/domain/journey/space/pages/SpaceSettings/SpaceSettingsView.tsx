@@ -28,7 +28,7 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { BlockSectionTitle, BlockTitle, Caption, Text } from '@/core/ui/typography';
 import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { Box, Button, CircularProgress } from '@mui/material';
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';

@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import CommunityUpdatesPage, {
   CommunityUpdatesPageProps,
 } from '@/domain/platform/admin/community/CommunityUpdatesPage';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
 

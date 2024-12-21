@@ -3,8 +3,8 @@ import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeCont
 import { Error404 } from '@/core/pages/Errors/Error404';
 import NonPlatformAdminRedirect from '@/main/admin/NonPlatformAdminRedirect';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
-import { AdminOrganizationsRoutes } from '../organization';
-import { UsersRoute } from '../user/routing/UsersRoute';
+import { AdminOrganizationsRoutes } from '../../../community/organizationAdmin';
+import { UsersRoute } from '../users/routing/UsersRoute';
 import { SpacesRoute } from '../space/routing/SpacesRoute';
 import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import AdminInnovationPacksRoutes from '@/domain/InnovationPack/admin/AdminInnovationPackRoutes';

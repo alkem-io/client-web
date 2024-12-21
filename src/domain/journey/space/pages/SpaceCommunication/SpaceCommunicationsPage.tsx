@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import SpaceSettingsLayout from '@/domain/platform/admin/space/SpaceSettingsLayout';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import CommunityUpdatesPage from '@/domain/platform/admin/community/CommunityUpdatesPage';
 
