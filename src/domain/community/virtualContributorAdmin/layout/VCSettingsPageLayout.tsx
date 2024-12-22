@@ -7,10 +7,11 @@ import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import { useTranslation } from 'react-i18next';
 import VCPageBanner from '../../virtualContributor/layout/VCPageBanner';
 import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
-import { SettingsSection, VCProfileTabs } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import EntitySettingsLayout from '@/domain/platform/admin/layout/EntitySettingsLayout/EntitySettingsLayout';
 import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { VCProfileTabs } from '../VcAdminTabs';
 
 type VCPageLayoutProps = {
   currentTab: SettingsSection;

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
 import { FormControl, FormControlLabel, FormGroup, Skeleton, Switch } from '@mui/material';
-import { Preference, UserPreferenceType } from '@/core/apollo/generated/graphql-schema';
+import { Preference, PreferenceType } from '@/core/apollo/generated/graphql-schema';
 
 export interface PreferenceSectionProps {
   headerText: string;
@@ -9,7 +9,7 @@ export interface PreferenceSectionProps {
   preferences: Preference[];
   loading?: boolean;
   submitting?: boolean;
-  onUpdate: (id: string, type: UserPreferenceType, value: boolean) => void;
+  onUpdate: (id: string, type: PreferenceType, value: boolean) => void;
 }
 
 const PreferenceSection: FC<PreferenceSectionProps> = ({
@@ -39,7 +39,7 @@ const PreferenceSection: FC<PreferenceSectionProps> = ({
                   <Switch
                     checked={value !== 'false'}
                     name={definition.type}
-                    onChange={(event, checked) => onUpdate(id, event.target.name as UserPreferenceType, checked)}
+                    onChange={(event, checked) => onUpdate(id, event.target.name as PreferenceType, checked)}
                     disabled={submitting}
                   />
                 }

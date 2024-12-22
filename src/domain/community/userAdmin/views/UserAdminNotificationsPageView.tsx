@@ -1,6 +1,6 @@
 import { Grid, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { AuthorizationPrivilege, Preference, UserPreferenceType } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, Preference, PreferenceType } from '@/core/apollo/generated/graphql-schema';
 import { ViewProps } from '@/core/container/view';
 import { useUserContext } from '../../user/hooks/useUserContext';
 import PreferenceSection from '@/main/ui/settings/PreferenceSection';
@@ -16,7 +16,7 @@ export interface UserNotificationsPageViewState {
 }
 
 export interface UserNotificationsPageViewActions {
-  updatePreference: (type: UserPreferenceType, checked: boolean, id: string) => void;
+  updatePreference: (type: PreferenceType, checked: boolean, id: string) => void;
 }
 
 export interface UserNotificationsPageViewProps
@@ -53,14 +53,14 @@ const UserNotificationsPageView = ({ entities, actions, state }: UserNotificatio
             subHeaderText={t('pages.user-notifications-settings.general.subtitle')}
             preferences={generalGroup}
             loading={loading}
-            onUpdate={(id, type, value) => updatePreference(type as UserPreferenceType, value, id)}
+            onUpdate={(id, type, value) => updatePreference(type as PreferenceType, value, id)}
           />
           <PreferenceSection
             headerText={t('pages.user-notifications-settings.user-communication.title')}
             subHeaderText={t('pages.user-notifications-settings.user-communication.subtitle')}
             preferences={communicationGroup}
             loading={loading}
-            onUpdate={(id, type, value) => updatePreference(type as UserPreferenceType, value, id)}
+            onUpdate={(id, type, value) => updatePreference(type as PreferenceType, value, id)}
           />
           {orgCommunicationGroup && (
             <PreferenceSection
@@ -68,7 +68,7 @@ const UserNotificationsPageView = ({ entities, actions, state }: UserNotificatio
               subHeaderText={t('pages.user-notifications-settings.organization-communication.subtitle')}
               preferences={orgCommunicationGroup}
               loading={loading}
-              onUpdate={(id, type, value) => updatePreference(type as UserPreferenceType, value, id)}
+              onUpdate={(id, type, value) => updatePreference(type as PreferenceType, value, id)}
             />
           )}
         </Box>
@@ -80,7 +80,7 @@ const UserNotificationsPageView = ({ entities, actions, state }: UserNotificatio
             subHeaderText={t('pages.user-notifications-settings.forum.subtitle')}
             preferences={forumGroup}
             loading={loading}
-            onUpdate={(id, type, value) => updatePreference(type as UserPreferenceType, value, id)}
+            onUpdate={(id, type, value) => updatePreference(type as PreferenceType, value, id)}
           />
           {!!(adminGroup.length || communityGroup.length) && (
             <>
@@ -90,7 +90,7 @@ const UserNotificationsPageView = ({ entities, actions, state }: UserNotificatio
                   subHeaderText={t('pages.user-notifications-settings.user-administration.subtitle')}
                   preferences={adminGroup}
                   loading={loading}
-                  onUpdate={(id, type, value) => updatePreference(type as UserPreferenceType, value, id)}
+                  onUpdate={(id, type, value) => updatePreference(type as PreferenceType, value, id)}
                 />
               )}
               {communityGroup.length > 0 && (
@@ -99,7 +99,7 @@ const UserNotificationsPageView = ({ entities, actions, state }: UserNotificatio
                   subHeaderText={t('pages.user-notifications-settings.community-administration.subtitle')}
                   preferences={communityGroup}
                   loading={loading}
-                  onUpdate={(id, type, value) => updatePreference(type as UserPreferenceType, value, id)}
+                  onUpdate={(id, type, value) => updatePreference(type as PreferenceType, value, id)}
                 />
               )}
             </>

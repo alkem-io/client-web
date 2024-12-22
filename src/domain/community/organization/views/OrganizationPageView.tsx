@@ -1,9 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  OrganizationContainerEntities,
-  OrganizationContainerState,
-} from '../OrganizationPageContainer/OrganizationPageContainer';
+
 import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import {
@@ -25,6 +22,10 @@ import AccountResourcesView, {
 import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMemberships';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import Loading from '@/core/ui/loading/Loading';
+import {
+  OrganizationContainerEntities,
+  OrganizationContainerState,
+} from '../../contributor/organization/OrganizationPageContainer/OrganizationPageContainer';
 
 type OrganizationPageViewProps = {
   entities: OrganizationContainerEntities;
