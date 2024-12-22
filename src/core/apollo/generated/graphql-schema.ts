@@ -2241,7 +2241,7 @@ export type DeleteLinkInput = {
 };
 
 export type DeleteOrganizationInput = {
-  ID: Scalars['UUID_NAMEID'];
+  ID: Scalars['UUID'];
 };
 
 export type DeletePlatformInvitationInput = {
@@ -6722,8 +6722,8 @@ export type UpdateNotificationStateInput = {
 };
 
 export type UpdateOrganizationInput = {
-  /** The ID or NameID of the Organization to update. */
-  ID: Scalars['UUID_NAMEID'];
+  /** The ID of the Organization to update. */
+  ID: Scalars['UUID'];
   contactEmail?: InputMaybe<Scalars['String']>;
   domain?: InputMaybe<Scalars['String']>;
   legalEntityName?: InputMaybe<Scalars['String']>;
@@ -6748,7 +6748,7 @@ export type UpdateOrganizationSettingsEntityInput = {
 
 export type UpdateOrganizationSettingsInput = {
   /** The identifier for the Organization whose settings are to be updated. */
-  organizationID: Scalars['String'];
+  organizationID: Scalars['UUID'];
   /** Update the settings for the Organization. */
   settings: UpdateOrganizationSettingsEntityInput;
 };
@@ -6921,7 +6921,7 @@ export type UpdateUserPlatformSettingsInput = {
 
 export type UpdateUserPreferenceInput = {
   /** Type of the user preference */
-  type: UserPreferenceType;
+  type: PreferenceType;
   /** ID of the User */
   userID: Scalars['UUID'];
   value: Scalars['String'];
@@ -6933,7 +6933,9 @@ export type UpdateUserSettingsCommunicationInput = {
 };
 
 export type UpdateUserSettingsEntityInput = {
+  /** Settings related to this users Communication preferences. */
   communication?: InputMaybe<UpdateUserSettingsCommunicationInput>;
+  /** Settings related to Privacy. */
   privacy?: InputMaybe<UpdateUserSettingsPrivacyInput>;
 };
 
@@ -6941,7 +6943,7 @@ export type UpdateUserSettingsInput = {
   /** Update the settings for the User. */
   settings: UpdateUserSettingsEntityInput;
   /** The identifier for the User whose settings are to be updated. */
-  userID: Scalars['String'];
+  userID: Scalars['UUID'];
 };
 
 export type UpdateUserSettingsPrivacyInput = {
@@ -7065,36 +7067,6 @@ export type UserGroup = {
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
-
-export enum UserPreferenceType {
-  NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
-  NotificationApplicationSubmitted = 'NOTIFICATION_APPLICATION_SUBMITTED',
-  NotificationCalloutPublished = 'NOTIFICATION_CALLOUT_PUBLISHED',
-  NotificationCommentReply = 'NOTIFICATION_COMMENT_REPLY',
-  NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
-  NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
-  NotificationCommunicationMention = 'NOTIFICATION_COMMUNICATION_MENTION',
-  NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
-  NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
-  NotificationCommunityCollaborationInterestAdmin = 'NOTIFICATION_COMMUNITY_COLLABORATION_INTEREST_ADMIN',
-  NotificationCommunityCollaborationInterestUser = 'NOTIFICATION_COMMUNITY_COLLABORATION_INTEREST_USER',
-  NotificationCommunityInvitationUser = 'NOTIFICATION_COMMUNITY_INVITATION_USER',
-  NotificationCommunityNewMember = 'NOTIFICATION_COMMUNITY_NEW_MEMBER',
-  NotificationCommunityNewMemberAdmin = 'NOTIFICATION_COMMUNITY_NEW_MEMBER_ADMIN',
-  NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
-  NotificationCommunityReviewSubmittedAdmin = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED_ADMIN',
-  NotificationDiscussionCommentCreated = 'NOTIFICATION_DISCUSSION_COMMENT_CREATED',
-  NotificationForumDiscussionComment = 'NOTIFICATION_FORUM_DISCUSSION_COMMENT',
-  NotificationForumDiscussionCreated = 'NOTIFICATION_FORUM_DISCUSSION_CREATED',
-  NotificationOrganizationMention = 'NOTIFICATION_ORGANIZATION_MENTION',
-  NotificationOrganizationMessage = 'NOTIFICATION_ORGANIZATION_MESSAGE',
-  NotificationPostCommentCreated = 'NOTIFICATION_POST_COMMENT_CREATED',
-  NotificationPostCreated = 'NOTIFICATION_POST_CREATED',
-  NotificationPostCreatedAdmin = 'NOTIFICATION_POST_CREATED_ADMIN',
-  NotificationUserRemoved = 'NOTIFICATION_USER_REMOVED',
-  NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
-  NotificationWhiteboardCreated = 'NOTIFICATION_WHITEBOARD_CREATED',
-}
 
 export type UserSendMessageInput = {
   /** The message being sent */
@@ -17232,108 +17204,6 @@ export type OrganizationsListQuery = {
   }>;
 };
 
-export type OrganizationAccountQueryVariables = Exact<{
-  organizationNameId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OrganizationAccountQuery = {
-  __typename?: 'Query';
-  organization: {
-    __typename?: 'Organization';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-    account?: { __typename?: 'Account'; id: string } | undefined;
-  };
-};
-
-export type OrganizationSettingsQueryVariables = Exact<{
-  orgId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OrganizationSettingsQuery = {
-  __typename?: 'Query';
-  organization: {
-    __typename?: 'Organization';
-    id: string;
-    settings: {
-      __typename?: 'OrganizationSettings';
-      membership: { __typename?: 'OrganizationSettingsMembership'; allowUsersMatchingDomainToJoin: boolean };
-      privacy: { __typename?: 'OrganizationSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
-    };
-  };
-};
-
-export type UpdateOrganizationMutationVariables = Exact<{
-  input: UpdateOrganizationInput;
-}>;
-
-export type UpdateOrganizationMutation = {
-  __typename?: 'Mutation';
-  updateOrganization: {
-    __typename?: 'Organization';
-    id: string;
-    nameID: string;
-    contactEmail?: string | undefined;
-    domain?: string | undefined;
-    legalEntityName?: string | undefined;
-    website?: string | undefined;
-    verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      url: string;
-      displayName: string;
-      description?: string | undefined;
-      tagline?: string | undefined;
-      visual?:
-        | {
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }
-        | undefined;
-      location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
-      references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-        | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-    };
-  };
-};
-
-export type UpdateOrganizationSettingsMutationVariables = Exact<{
-  settingsData: UpdateOrganizationSettingsInput;
-}>;
-
-export type UpdateOrganizationSettingsMutation = {
-  __typename?: 'Mutation';
-  updateOrganizationSettings: {
-    __typename?: 'Organization';
-    id: string;
-    settings: {
-      __typename?: 'OrganizationSettings';
-      membership: { __typename?: 'OrganizationSettingsMembership'; allowUsersMatchingDomainToJoin: boolean };
-    };
-  };
-};
-
 export type AccountResourcesInfoQueryVariables = Exact<{
   accountId: Scalars['UUID'];
 }>;
@@ -17424,99 +17294,6 @@ export type AccountResourceProfileFragment = {
   displayName: string;
   url: string;
   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-};
-
-export type UpdateUserMutationVariables = Exact<{
-  input: UpdateUserInput;
-}>;
-
-export type UpdateUserMutation = {
-  __typename?: 'Mutation';
-  updateUser: {
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone?: string | undefined;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      tagline?: string | undefined;
-      description?: string | undefined;
-      url: string;
-      location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
-      avatar?:
-        | {
-            __typename?: 'Visual';
-            id: string;
-            uri: string;
-            name: string;
-            allowedTypes: Array<string>;
-            aspectRatio: number;
-            maxHeight: number;
-            maxWidth: number;
-            minHeight: number;
-            minWidth: number;
-            alternativeText?: string | undefined;
-          }
-        | undefined;
-      references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-        | undefined;
-      tagsets?:
-        | Array<{
-            __typename?: 'Tagset';
-            id: string;
-            name: string;
-            tags: Array<string>;
-            allowedValues: Array<string>;
-            type: TagsetType;
-          }>
-        | undefined;
-    };
-  };
-};
-
-export type UpdateUserSettingsMutationVariables = Exact<{
-  settingsData: UpdateUserSettingsInput;
-}>;
-
-export type UpdateUserSettingsMutation = {
-  __typename?: 'Mutation';
-  updateUserSettings: {
-    __typename?: 'User';
-    id: string;
-    settings: {
-      __typename?: 'UserSettings';
-      privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
-      communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
-    };
-  };
-};
-
-export type UserSettingsQueryVariables = Exact<{
-  userID: Scalars['UUID'];
-}>;
-
-export type UserSettingsQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    user?:
-      | {
-          __typename?: 'User';
-          id: string;
-          settings: {
-            __typename?: 'UserSettings';
-            communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
-            privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
-          };
-        }
-      | undefined;
-  };
 };
 
 export type DeleteInvitationMutationVariables = Exact<{
@@ -17916,6 +17693,108 @@ export type VirtualContributorFullFragment = {
         bodyOfKnowledgeID?: string | undefined;
       }
     | undefined;
+};
+
+export type OrganizationAccountQueryVariables = Exact<{
+  organizationNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OrganizationAccountQuery = {
+  __typename?: 'Query';
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+    account?: { __typename?: 'Account'; id: string } | undefined;
+  };
+};
+
+export type OrganizationSettingsQueryVariables = Exact<{
+  orgId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OrganizationSettingsQuery = {
+  __typename?: 'Query';
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    settings: {
+      __typename?: 'OrganizationSettings';
+      membership: { __typename?: 'OrganizationSettingsMembership'; allowUsersMatchingDomainToJoin: boolean };
+      privacy: { __typename?: 'OrganizationSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+    };
+  };
+};
+
+export type UpdateOrganizationMutationVariables = Exact<{
+  input: UpdateOrganizationInput;
+}>;
+
+export type UpdateOrganizationMutation = {
+  __typename?: 'Mutation';
+  updateOrganization: {
+    __typename?: 'Organization';
+    id: string;
+    nameID: string;
+    contactEmail?: string | undefined;
+    domain?: string | undefined;
+    legalEntityName?: string | undefined;
+    website?: string | undefined;
+    verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      url: string;
+      displayName: string;
+      description?: string | undefined;
+      tagline?: string | undefined;
+      visual?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+      location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+    };
+  };
+};
+
+export type UpdateOrganizationSettingsMutationVariables = Exact<{
+  settingsData: UpdateOrganizationSettingsInput;
+}>;
+
+export type UpdateOrganizationSettingsMutation = {
+  __typename?: 'Mutation';
+  updateOrganizationSettings: {
+    __typename?: 'Organization';
+    id: string;
+    settings: {
+      __typename?: 'OrganizationSettings';
+      membership: { __typename?: 'OrganizationSettingsMembership'; allowUsersMatchingDomainToJoin: boolean };
+    };
+  };
 };
 
 export type PendingMembershipsSpaceQueryVariables = Exact<{
@@ -19098,6 +18977,99 @@ export type UserOrganizationIdsQuery = {
     __typename?: 'ContributorRoles';
     id: string;
     organizations: Array<{ __typename?: 'RolesResultOrganization'; id: string }>;
+  };
+};
+
+export type UpdateUserMutationVariables = Exact<{
+  input: UpdateUserInput;
+}>;
+
+export type UpdateUserMutation = {
+  __typename?: 'Mutation';
+  updateUser: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string | undefined;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      tagline?: string | undefined;
+      description?: string | undefined;
+      url: string;
+      location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+      avatar?:
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+            alternativeText?: string | undefined;
+          }
+        | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+    };
+  };
+};
+
+export type UpdateUserSettingsMutationVariables = Exact<{
+  settingsData: UpdateUserSettingsInput;
+}>;
+
+export type UpdateUserSettingsMutation = {
+  __typename?: 'Mutation';
+  updateUserSettings: {
+    __typename?: 'User';
+    id: string;
+    settings: {
+      __typename?: 'UserSettings';
+      privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+      communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
+    };
+  };
+};
+
+export type UserSettingsQueryVariables = Exact<{
+  userID: Scalars['UUID'];
+}>;
+
+export type UserSettingsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          settings: {
+            __typename?: 'UserSettings';
+            communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
+            privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
+          };
+        }
+      | undefined;
   };
 };
 

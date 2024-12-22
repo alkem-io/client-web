@@ -11664,244 +11664,6 @@ export function refetchOrganizationsListQuery(variables?: SchemaTypes.Organizati
   return { query: OrganizationsListDocument, variables: variables };
 }
 
-export const OrganizationAccountDocument = gql`
-  query OrganizationAccount($organizationNameId: UUID_NAMEID!) {
-    organization(ID: $organizationNameId) {
-      id
-      profile {
-        id
-        displayName
-      }
-      account {
-        id
-      }
-    }
-  }
-`;
-
-/**
- * __useOrganizationAccountQuery__
- *
- * To run a query within a React component, call `useOrganizationAccountQuery` and pass it any options that fit your needs.
- * When your component renders, `useOrganizationAccountQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOrganizationAccountQuery({
- *   variables: {
- *      organizationNameId: // value for 'organizationNameId'
- *   },
- * });
- */
-export function useOrganizationAccountQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OrganizationAccountQuery,
-    SchemaTypes.OrganizationAccountQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OrganizationAccountQuery, SchemaTypes.OrganizationAccountQueryVariables>(
-    OrganizationAccountDocument,
-    options
-  );
-}
-
-export function useOrganizationAccountLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OrganizationAccountQuery,
-    SchemaTypes.OrganizationAccountQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.OrganizationAccountQuery, SchemaTypes.OrganizationAccountQueryVariables>(
-    OrganizationAccountDocument,
-    options
-  );
-}
-
-export type OrganizationAccountQueryHookResult = ReturnType<typeof useOrganizationAccountQuery>;
-export type OrganizationAccountLazyQueryHookResult = ReturnType<typeof useOrganizationAccountLazyQuery>;
-export type OrganizationAccountQueryResult = Apollo.QueryResult<
-  SchemaTypes.OrganizationAccountQuery,
-  SchemaTypes.OrganizationAccountQueryVariables
->;
-export function refetchOrganizationAccountQuery(variables: SchemaTypes.OrganizationAccountQueryVariables) {
-  return { query: OrganizationAccountDocument, variables: variables };
-}
-
-export const OrganizationSettingsDocument = gql`
-  query organizationSettings($orgId: UUID_NAMEID!) {
-    organization(ID: $orgId) {
-      id
-      settings {
-        membership {
-          allowUsersMatchingDomainToJoin
-        }
-        privacy {
-          contributionRolesPubliclyVisible
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useOrganizationSettingsQuery__
- *
- * To run a query within a React component, call `useOrganizationSettingsQuery` and pass it any options that fit your needs.
- * When your component renders, `useOrganizationSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOrganizationSettingsQuery({
- *   variables: {
- *      orgId: // value for 'orgId'
- *   },
- * });
- */
-export function useOrganizationSettingsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OrganizationSettingsQuery,
-    SchemaTypes.OrganizationSettingsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OrganizationSettingsQuery, SchemaTypes.OrganizationSettingsQueryVariables>(
-    OrganizationSettingsDocument,
-    options
-  );
-}
-
-export function useOrganizationSettingsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OrganizationSettingsQuery,
-    SchemaTypes.OrganizationSettingsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.OrganizationSettingsQuery, SchemaTypes.OrganizationSettingsQueryVariables>(
-    OrganizationSettingsDocument,
-    options
-  );
-}
-
-export type OrganizationSettingsQueryHookResult = ReturnType<typeof useOrganizationSettingsQuery>;
-export type OrganizationSettingsLazyQueryHookResult = ReturnType<typeof useOrganizationSettingsLazyQuery>;
-export type OrganizationSettingsQueryResult = Apollo.QueryResult<
-  SchemaTypes.OrganizationSettingsQuery,
-  SchemaTypes.OrganizationSettingsQueryVariables
->;
-export function refetchOrganizationSettingsQuery(variables: SchemaTypes.OrganizationSettingsQueryVariables) {
-  return { query: OrganizationSettingsDocument, variables: variables };
-}
-
-export const UpdateOrganizationDocument = gql`
-  mutation updateOrganization($input: UpdateOrganizationInput!) {
-    updateOrganization(organizationData: $input) {
-      ...OrganizationProfileInfo
-    }
-  }
-  ${OrganizationProfileInfoFragmentDoc}
-`;
-export type UpdateOrganizationMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateOrganizationMutation,
-  SchemaTypes.UpdateOrganizationMutationVariables
->;
-
-/**
- * __useUpdateOrganizationMutation__
- *
- * To run a mutation, you first call `useUpdateOrganizationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateOrganizationMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateOrganizationMutation, { data, loading, error }] = useUpdateOrganizationMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateOrganizationMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateOrganizationMutation,
-    SchemaTypes.UpdateOrganizationMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UpdateOrganizationMutation, SchemaTypes.UpdateOrganizationMutationVariables>(
-    UpdateOrganizationDocument,
-    options
-  );
-}
-
-export type UpdateOrganizationMutationHookResult = ReturnType<typeof useUpdateOrganizationMutation>;
-export type UpdateOrganizationMutationResult = Apollo.MutationResult<SchemaTypes.UpdateOrganizationMutation>;
-export type UpdateOrganizationMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateOrganizationMutation,
-  SchemaTypes.UpdateOrganizationMutationVariables
->;
-export const UpdateOrganizationSettingsDocument = gql`
-  mutation updateOrganizationSettings($settingsData: UpdateOrganizationSettingsInput!) {
-    updateOrganizationSettings(settingsData: $settingsData) {
-      id
-      settings {
-        membership {
-          allowUsersMatchingDomainToJoin
-        }
-      }
-    }
-  }
-`;
-export type UpdateOrganizationSettingsMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateOrganizationSettingsMutation,
-  SchemaTypes.UpdateOrganizationSettingsMutationVariables
->;
-
-/**
- * __useUpdateOrganizationSettingsMutation__
- *
- * To run a mutation, you first call `useUpdateOrganizationSettingsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateOrganizationSettingsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateOrganizationSettingsMutation, { data, loading, error }] = useUpdateOrganizationSettingsMutation({
- *   variables: {
- *      settingsData: // value for 'settingsData'
- *   },
- * });
- */
-export function useUpdateOrganizationSettingsMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateOrganizationSettingsMutation,
-    SchemaTypes.UpdateOrganizationSettingsMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateOrganizationSettingsMutation,
-    SchemaTypes.UpdateOrganizationSettingsMutationVariables
-  >(UpdateOrganizationSettingsDocument, options);
-}
-
-export type UpdateOrganizationSettingsMutationHookResult = ReturnType<typeof useUpdateOrganizationSettingsMutation>;
-export type UpdateOrganizationSettingsMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateOrganizationSettingsMutation>;
-export type UpdateOrganizationSettingsMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateOrganizationSettingsMutation,
-  SchemaTypes.UpdateOrganizationSettingsMutationVariables
->;
 export const AccountResourcesInfoDocument = gql`
   query AccountResourcesInfo($accountId: UUID!) {
     lookup {
@@ -12012,172 +11774,6 @@ export type AccountResourcesInfoQueryResult = Apollo.QueryResult<
 >;
 export function refetchAccountResourcesInfoQuery(variables: SchemaTypes.AccountResourcesInfoQueryVariables) {
   return { query: AccountResourcesInfoDocument, variables: variables };
-}
-
-export const UpdateUserDocument = gql`
-  mutation updateUser($input: UpdateUserInput!) {
-    updateUser(userData: $input) {
-      ...UserDetails
-    }
-  }
-  ${UserDetailsFragmentDoc}
-`;
-export type UpdateUserMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateUserMutation,
-  SchemaTypes.UpdateUserMutationVariables
->;
-
-/**
- * __useUpdateUserMutation__
- *
- * To run a mutation, you first call `useUpdateUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateUserMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateUserMutation, { data, loading, error }] = useUpdateUserMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateUserMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateUserMutation, SchemaTypes.UpdateUserMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UpdateUserMutation, SchemaTypes.UpdateUserMutationVariables>(
-    UpdateUserDocument,
-    options
-  );
-}
-
-export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
-export type UpdateUserMutationResult = Apollo.MutationResult<SchemaTypes.UpdateUserMutation>;
-export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateUserMutation,
-  SchemaTypes.UpdateUserMutationVariables
->;
-export const UpdateUserSettingsDocument = gql`
-  mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
-    updateUserSettings(settingsData: $settingsData) {
-      id
-      settings {
-        privacy {
-          contributionRolesPubliclyVisible
-        }
-        communication {
-          allowOtherUsersToSendMessages
-        }
-      }
-    }
-  }
-`;
-export type UpdateUserSettingsMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateUserSettingsMutation,
-  SchemaTypes.UpdateUserSettingsMutationVariables
->;
-
-/**
- * __useUpdateUserSettingsMutation__
- *
- * To run a mutation, you first call `useUpdateUserSettingsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateUserSettingsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateUserSettingsMutation, { data, loading, error }] = useUpdateUserSettingsMutation({
- *   variables: {
- *      settingsData: // value for 'settingsData'
- *   },
- * });
- */
-export function useUpdateUserSettingsMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateUserSettingsMutation,
-    SchemaTypes.UpdateUserSettingsMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UpdateUserSettingsMutation, SchemaTypes.UpdateUserSettingsMutationVariables>(
-    UpdateUserSettingsDocument,
-    options
-  );
-}
-
-export type UpdateUserSettingsMutationHookResult = ReturnType<typeof useUpdateUserSettingsMutation>;
-export type UpdateUserSettingsMutationResult = Apollo.MutationResult<SchemaTypes.UpdateUserSettingsMutation>;
-export type UpdateUserSettingsMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateUserSettingsMutation,
-  SchemaTypes.UpdateUserSettingsMutationVariables
->;
-export const UserSettingsDocument = gql`
-  query userSettings($userID: UUID!) {
-    lookup {
-      user(ID: $userID) {
-        id
-        settings {
-          communication {
-            allowOtherUsersToSendMessages
-          }
-          privacy {
-            contributionRolesPubliclyVisible
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useUserSettingsQuery__
- *
- * To run a query within a React component, call `useUserSettingsQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserSettingsQuery({
- *   variables: {
- *      userID: // value for 'userID'
- *   },
- * });
- */
-export function useUserSettingsQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserSettingsQuery, SchemaTypes.UserSettingsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.UserSettingsQuery, SchemaTypes.UserSettingsQueryVariables>(
-    UserSettingsDocument,
-    options
-  );
-}
-
-export function useUserSettingsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserSettingsQuery, SchemaTypes.UserSettingsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.UserSettingsQuery, SchemaTypes.UserSettingsQueryVariables>(
-    UserSettingsDocument,
-    options
-  );
-}
-
-export type UserSettingsQueryHookResult = ReturnType<typeof useUserSettingsQuery>;
-export type UserSettingsLazyQueryHookResult = ReturnType<typeof useUserSettingsLazyQuery>;
-export type UserSettingsQueryResult = Apollo.QueryResult<
-  SchemaTypes.UserSettingsQuery,
-  SchemaTypes.UserSettingsQueryVariables
->;
-export function refetchUserSettingsQuery(variables: SchemaTypes.UserSettingsQueryVariables) {
-  return { query: UserSettingsDocument, variables: variables };
 }
 
 export const DeleteInvitationDocument = gql`
@@ -12703,6 +12299,244 @@ export function refetchCommunityVirtualMembersListQuery(
   return { query: CommunityVirtualMembersListDocument, variables: variables };
 }
 
+export const OrganizationAccountDocument = gql`
+  query OrganizationAccount($organizationNameId: UUID_NAMEID!) {
+    organization(ID: $organizationNameId) {
+      id
+      profile {
+        id
+        displayName
+      }
+      account {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __useOrganizationAccountQuery__
+ *
+ * To run a query within a React component, call `useOrganizationAccountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationAccountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationAccountQuery({
+ *   variables: {
+ *      organizationNameId: // value for 'organizationNameId'
+ *   },
+ * });
+ */
+export function useOrganizationAccountQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OrganizationAccountQuery,
+    SchemaTypes.OrganizationAccountQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OrganizationAccountQuery, SchemaTypes.OrganizationAccountQueryVariables>(
+    OrganizationAccountDocument,
+    options
+  );
+}
+
+export function useOrganizationAccountLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrganizationAccountQuery,
+    SchemaTypes.OrganizationAccountQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.OrganizationAccountQuery, SchemaTypes.OrganizationAccountQueryVariables>(
+    OrganizationAccountDocument,
+    options
+  );
+}
+
+export type OrganizationAccountQueryHookResult = ReturnType<typeof useOrganizationAccountQuery>;
+export type OrganizationAccountLazyQueryHookResult = ReturnType<typeof useOrganizationAccountLazyQuery>;
+export type OrganizationAccountQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrganizationAccountQuery,
+  SchemaTypes.OrganizationAccountQueryVariables
+>;
+export function refetchOrganizationAccountQuery(variables: SchemaTypes.OrganizationAccountQueryVariables) {
+  return { query: OrganizationAccountDocument, variables: variables };
+}
+
+export const OrganizationSettingsDocument = gql`
+  query organizationSettings($orgId: UUID_NAMEID!) {
+    organization(ID: $orgId) {
+      id
+      settings {
+        membership {
+          allowUsersMatchingDomainToJoin
+        }
+        privacy {
+          contributionRolesPubliclyVisible
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOrganizationSettingsQuery__
+ *
+ * To run a query within a React component, call `useOrganizationSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationSettingsQuery({
+ *   variables: {
+ *      orgId: // value for 'orgId'
+ *   },
+ * });
+ */
+export function useOrganizationSettingsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OrganizationSettingsQuery,
+    SchemaTypes.OrganizationSettingsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OrganizationSettingsQuery, SchemaTypes.OrganizationSettingsQueryVariables>(
+    OrganizationSettingsDocument,
+    options
+  );
+}
+
+export function useOrganizationSettingsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrganizationSettingsQuery,
+    SchemaTypes.OrganizationSettingsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.OrganizationSettingsQuery, SchemaTypes.OrganizationSettingsQueryVariables>(
+    OrganizationSettingsDocument,
+    options
+  );
+}
+
+export type OrganizationSettingsQueryHookResult = ReturnType<typeof useOrganizationSettingsQuery>;
+export type OrganizationSettingsLazyQueryHookResult = ReturnType<typeof useOrganizationSettingsLazyQuery>;
+export type OrganizationSettingsQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrganizationSettingsQuery,
+  SchemaTypes.OrganizationSettingsQueryVariables
+>;
+export function refetchOrganizationSettingsQuery(variables: SchemaTypes.OrganizationSettingsQueryVariables) {
+  return { query: OrganizationSettingsDocument, variables: variables };
+}
+
+export const UpdateOrganizationDocument = gql`
+  mutation updateOrganization($input: UpdateOrganizationInput!) {
+    updateOrganization(organizationData: $input) {
+      ...OrganizationProfileInfo
+    }
+  }
+  ${OrganizationProfileInfoFragmentDoc}
+`;
+export type UpdateOrganizationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateOrganizationMutation,
+  SchemaTypes.UpdateOrganizationMutationVariables
+>;
+
+/**
+ * __useUpdateOrganizationMutation__
+ *
+ * To run a mutation, you first call `useUpdateOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateOrganizationMutation, { data, loading, error }] = useUpdateOrganizationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateOrganizationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateOrganizationMutation,
+    SchemaTypes.UpdateOrganizationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateOrganizationMutation, SchemaTypes.UpdateOrganizationMutationVariables>(
+    UpdateOrganizationDocument,
+    options
+  );
+}
+
+export type UpdateOrganizationMutationHookResult = ReturnType<typeof useUpdateOrganizationMutation>;
+export type UpdateOrganizationMutationResult = Apollo.MutationResult<SchemaTypes.UpdateOrganizationMutation>;
+export type UpdateOrganizationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateOrganizationMutation,
+  SchemaTypes.UpdateOrganizationMutationVariables
+>;
+export const UpdateOrganizationSettingsDocument = gql`
+  mutation updateOrganizationSettings($settingsData: UpdateOrganizationSettingsInput!) {
+    updateOrganizationSettings(settingsData: $settingsData) {
+      id
+      settings {
+        membership {
+          allowUsersMatchingDomainToJoin
+        }
+      }
+    }
+  }
+`;
+export type UpdateOrganizationSettingsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateOrganizationSettingsMutation,
+  SchemaTypes.UpdateOrganizationSettingsMutationVariables
+>;
+
+/**
+ * __useUpdateOrganizationSettingsMutation__
+ *
+ * To run a mutation, you first call `useUpdateOrganizationSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateOrganizationSettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateOrganizationSettingsMutation, { data, loading, error }] = useUpdateOrganizationSettingsMutation({
+ *   variables: {
+ *      settingsData: // value for 'settingsData'
+ *   },
+ * });
+ */
+export function useUpdateOrganizationSettingsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateOrganizationSettingsMutation,
+    SchemaTypes.UpdateOrganizationSettingsMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateOrganizationSettingsMutation,
+    SchemaTypes.UpdateOrganizationSettingsMutationVariables
+  >(UpdateOrganizationSettingsDocument, options);
+}
+
+export type UpdateOrganizationSettingsMutationHookResult = ReturnType<typeof useUpdateOrganizationSettingsMutation>;
+export type UpdateOrganizationSettingsMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateOrganizationSettingsMutation>;
+export type UpdateOrganizationSettingsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateOrganizationSettingsMutation,
+  SchemaTypes.UpdateOrganizationSettingsMutationVariables
+>;
 export const PendingMembershipsSpaceDocument = gql`
   query PendingMembershipsSpace(
     $spaceId: UUID!
@@ -14239,6 +14073,172 @@ export type UserOrganizationIdsQueryResult = Apollo.QueryResult<
 >;
 export function refetchUserOrganizationIdsQuery(variables: SchemaTypes.UserOrganizationIdsQueryVariables) {
   return { query: UserOrganizationIdsDocument, variables: variables };
+}
+
+export const UpdateUserDocument = gql`
+  mutation updateUser($input: UpdateUserInput!) {
+    updateUser(userData: $input) {
+      ...UserDetails
+    }
+  }
+  ${UserDetailsFragmentDoc}
+`;
+export type UpdateUserMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateUserMutation,
+  SchemaTypes.UpdateUserMutationVariables
+>;
+
+/**
+ * __useUpdateUserMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserMutation, { data, loading, error }] = useUpdateUserMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateUserMutation, SchemaTypes.UpdateUserMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateUserMutation, SchemaTypes.UpdateUserMutationVariables>(
+    UpdateUserDocument,
+    options
+  );
+}
+
+export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
+export type UpdateUserMutationResult = Apollo.MutationResult<SchemaTypes.UpdateUserMutation>;
+export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateUserMutation,
+  SchemaTypes.UpdateUserMutationVariables
+>;
+export const UpdateUserSettingsDocument = gql`
+  mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
+    updateUserSettings(settingsData: $settingsData) {
+      id
+      settings {
+        privacy {
+          contributionRolesPubliclyVisible
+        }
+        communication {
+          allowOtherUsersToSendMessages
+        }
+      }
+    }
+  }
+`;
+export type UpdateUserSettingsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateUserSettingsMutation,
+  SchemaTypes.UpdateUserSettingsMutationVariables
+>;
+
+/**
+ * __useUpdateUserSettingsMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserSettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserSettingsMutation, { data, loading, error }] = useUpdateUserSettingsMutation({
+ *   variables: {
+ *      settingsData: // value for 'settingsData'
+ *   },
+ * });
+ */
+export function useUpdateUserSettingsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateUserSettingsMutation,
+    SchemaTypes.UpdateUserSettingsMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateUserSettingsMutation, SchemaTypes.UpdateUserSettingsMutationVariables>(
+    UpdateUserSettingsDocument,
+    options
+  );
+}
+
+export type UpdateUserSettingsMutationHookResult = ReturnType<typeof useUpdateUserSettingsMutation>;
+export type UpdateUserSettingsMutationResult = Apollo.MutationResult<SchemaTypes.UpdateUserSettingsMutation>;
+export type UpdateUserSettingsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateUserSettingsMutation,
+  SchemaTypes.UpdateUserSettingsMutationVariables
+>;
+export const UserSettingsDocument = gql`
+  query userSettings($userID: UUID!) {
+    lookup {
+      user(ID: $userID) {
+        id
+        settings {
+          communication {
+            allowOtherUsersToSendMessages
+          }
+          privacy {
+            contributionRolesPubliclyVisible
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserSettingsQuery__
+ *
+ * To run a query within a React component, call `useUserSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserSettingsQuery({
+ *   variables: {
+ *      userID: // value for 'userID'
+ *   },
+ * });
+ */
+export function useUserSettingsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserSettingsQuery, SchemaTypes.UserSettingsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserSettingsQuery, SchemaTypes.UserSettingsQueryVariables>(
+    UserSettingsDocument,
+    options
+  );
+}
+
+export function useUserSettingsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserSettingsQuery, SchemaTypes.UserSettingsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserSettingsQuery, SchemaTypes.UserSettingsQueryVariables>(
+    UserSettingsDocument,
+    options
+  );
+}
+
+export type UserSettingsQueryHookResult = ReturnType<typeof useUserSettingsQuery>;
+export type UserSettingsLazyQueryHookResult = ReturnType<typeof useUserSettingsLazyQuery>;
+export type UserSettingsQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserSettingsQuery,
+  SchemaTypes.UserSettingsQueryVariables
+>;
+export function refetchUserSettingsQuery(variables: SchemaTypes.UserSettingsQueryVariables) {
+  return { query: UserSettingsDocument, variables: variables };
 }
 
 export const VirtualContributorDocument = gql`
