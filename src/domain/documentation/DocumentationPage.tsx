@@ -39,6 +39,7 @@ const DocumentationPage = () => {
 
   const handleMessage = (event: MessageEvent) => {
     if (!event.origin.startsWith(getCurrentOriginWithoutPort())) {
+      console.log('event.origin: ', event.origin);
       return;
     }
 
@@ -90,6 +91,7 @@ const DocumentationPage = () => {
               <iframe
                 src={src}
                 ref={iframeRef}
+                sandbox="allow-scripts allow-same-origin"
                 title={t('pages.documentation.title')}
                 style={{ width: '100%', height: DEFAULT_HEIGHT, border: 'none' }}
               />
