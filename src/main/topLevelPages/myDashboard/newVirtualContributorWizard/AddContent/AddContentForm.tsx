@@ -6,7 +6,7 @@ import { Box, Button, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { gutters } from '@/core/ui/grid/utils';
 import { LoadingButton } from '@mui/lab';
-import { LONG_MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { LONG_MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { Actions } from '@/core/ui/actions/Actions';
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
@@ -51,6 +51,19 @@ export const AddContentForm = ({
         })
       )
       .min(1, MessageWithPayload('forms.validations.minLength')),
+    documents: yup.array().of(
+      yup.object().shape({
+        name: yup
+          .string()
+          .min(3, MessageWithPayload('forms.validations.minLength'))
+          .max(SMALL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+          .required(MessageWithPayload('forms.validations.requiredField')),
+        url: yup
+          .string()
+          .required(MessageWithPayload('forms.validations.requiredField'))
+          .max(MID_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength')),
+      })
+    ),
   });
 
   const initialValues: BoKCalloutsFormValues = {
@@ -69,7 +82,7 @@ export const AddContentForm = ({
   };
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} validateOnMount>
       {({ values: { posts, documents }, isValid, setFieldValue }) => {
         const moreThanOnePost = posts.length > 1;
         const maxPostsReached = posts.length >= MAX_POSTS;
@@ -138,7 +151,13 @@ export const AddContentForm = ({
               />
             </Caption>
             {documents?.map((document, index) => (
-              <DocumentItem key={index} document={document} index={index} onDelete={handleDeleteDocument} />
+              <DocumentItem
+                key={index}
+                document={document}
+                index={index}
+                onDelete={handleDeleteDocument}
+                onChange={fileName => setFieldValue(`documents[${index}].name`, fileName)}
+              />
             ))}
             <Tooltip title={t('createVirtualContributorWizard.addContent.documents.addAnother')} placement={'bottom'}>
               <Box>
