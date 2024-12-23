@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
+import { SettingsSection } from '../layout/EntitySettingsLayout/SettingsSection';
 import { TabDefinition } from '../layout/EntitySettingsLayout/EntitySettingsTabs';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import RouterLink from '@/core/ui/link/RouterLink';
