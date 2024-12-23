@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import UserProfilePage from '../userProfilePage/UserProfilePage';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import UserSettingsRoute from './UserSettingsRoute';
+import UserAdminRoute from '../../userAdmin/routing/UserAdminRoute';
 import { PageLayoutHolderWithOutlet } from '@/domain/journey/common/EntityPageLayout';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { nameOfUrl } from '@/main/routing/urlParams';
@@ -12,7 +12,7 @@ export const UserRoute = () => (
       <Route path="" element={<PageLayoutHolderWithOutlet />}>
         <Route index element={<UserProfilePage />} />
       </Route>
-      <Route path={'settings/*'} element={<UserSettingsRoute />} />
+      <Route path={'settings/*'} element={<UserAdminRoute />} />
     </Route>
     <Route
       path="*"

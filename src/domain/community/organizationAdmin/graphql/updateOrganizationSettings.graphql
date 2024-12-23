@@ -1,0 +1,10 @@
+mutation updateOrganizationSettings($settingsData: UpdateOrganizationSettingsInput!) {
+  updateOrganizationSettings(settingsData: $settingsData) {
+    id
+    settings {
+      membership {
+        allowUsersMatchingDomainToJoin
+      }
+    }
+  }
+}
