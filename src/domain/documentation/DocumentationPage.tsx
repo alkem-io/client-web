@@ -76,7 +76,9 @@ const DocumentationPage = () => {
 
   return (
     <TopLevelLayout
-      header={<TopLevelPageBanner title={t('pages.documentation.title')} subtitle="&nbsp;" />}
+      header={
+        <TopLevelPageBanner title={t('pages.documentation.title')} subtitle={t('pages.documentation.subtitle')} />
+      }
       breadcrumbs={<TopLevelPageBreadcrumbs />}
     >
       <PageContent>
