@@ -4,9 +4,9 @@ import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import { SellOutlined } from '@mui/icons-material';
+import SellOutlinedIcon from '@mui/icons-material/SellOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
-import { Settings } from '@mui/icons-material';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 
 export const UserAdminTabs: TabDefinition<SettingsSection>[] = [
   {
@@ -22,7 +22,7 @@ export const UserAdminTabs: TabDefinition<SettingsSection>[] = [
   {
     section: SettingsSection.Account,
     route: 'account',
-    icon: SellOutlined,
+    icon: SellOutlinedIcon,
   },
   {
     section: SettingsSection.Organizations,
@@ -42,6 +42,6 @@ export const UserAdminTabs: TabDefinition<SettingsSection>[] = [
   {
     section: SettingsSection.Settings,
     route: 'settings',
-    icon: Settings,
+    icon: SettingsOutlinedIcon,
   },
 ];

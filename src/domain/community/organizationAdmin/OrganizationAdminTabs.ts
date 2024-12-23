@@ -2,7 +2,8 @@ import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLa
 import { TabDefinition } from '@/domain/platform/admin/layout/EntitySettingsLayout/EntitySettingsTabs';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
-import { Settings, LocalOfferOutlined } from '@mui/icons-material';
+import SellOutlinedIcon from '@mui/icons-material/SellOutlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 
 export const organizationAdminTabs: TabDefinition<SettingsSection>[] = [
   {
@@ -13,7 +14,7 @@ export const organizationAdminTabs: TabDefinition<SettingsSection>[] = [
   {
     section: SettingsSection.Account,
     route: 'account',
-    icon: LocalOfferOutlined,
+    icon: SellOutlinedIcon,
   },
   {
     section: SettingsSection.Community,
@@ -28,6 +29,6 @@ export const organizationAdminTabs: TabDefinition<SettingsSection>[] = [
   {
     section: SettingsSection.Settings,
     route: 'settings',
-    icon: Settings,
+    icon: SettingsOutlinedIcon,
   },
 ];

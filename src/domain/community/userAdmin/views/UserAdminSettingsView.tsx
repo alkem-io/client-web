@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import { useMemo } from 'react';
 import Loading from '@/core/ui/loading/Loading';
 import { Trans, useTranslation } from 'react-i18next';
 import { useUserSettingsQuery, useUpdateUserSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
@@ -18,22 +18,23 @@ const defaultUserSettings = {
   },
 };
 
-export const UserAdminSettingsView: FC = () => {
+export const UserAdminSettingsView = () => {
   const { userNameId = '' } = useUrlParams();
   const { user: userMetadata, loading: isLoadingUser } = useUserMetadata(userNameId);
 
   const { t } = useTranslation();
-  const userID = userMetadata?.user.id || '';
+  const userID = userMetadata?.user.id ?? '';
 
   const { data, loading } = useUserSettingsQuery({
     variables: { userID },
-    skip: isLoadingUser,
+    skip: isLoadingUser || !userID,
   });
 
   const [updateUserSettings] = useUpdateUserSettingsMutation();
 
   const currentSettings = useMemo(() => {
     const settings = data?.lookup.user?.settings;
+
     return {
       ...settings,
     };
@@ -69,10 +70,6 @@ export const UserAdminSettingsView: FC = () => {
         },
       },
     });
-
-    // if (showNotification) {
-    //   notify(t('pages.admin.space.settings.savedSuccessfully'), 'success');
-    // }
   };
 
   return (

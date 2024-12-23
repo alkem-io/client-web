@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
 import Loading from '@/core/ui/loading/Loading';
 import { Trans, useTranslation } from 'react-i18next';
@@ -20,13 +20,13 @@ const defaultOrganizationSettings = {
   },
 };
 
-export const OrganizationAdminSettingsView: FC = () => {
+export const OrganizationAdminSettingsView = () => {
   const { organizationId, loading: isLoadingOrganization } = useOrganization();
   const { t } = useTranslation();
 
   const { data, loading } = useOrganizationSettingsQuery({
     variables: { orgId: organizationId },
-    skip: isLoadingOrganization,
+    skip: isLoadingOrganization || !organizationId,
   });
 
   const [updateOrganizationSettings] = useUpdateOrganizationSettingsMutation();
@@ -68,10 +68,6 @@ export const OrganizationAdminSettingsView: FC = () => {
         },
       },
     });
-
-    // if (showNotification) {
-    //   notify(t('pages.admin.space.settings.savedSuccessfully'), 'success');
-    // }
   };
 
   return (
