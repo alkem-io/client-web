@@ -3,7 +3,6 @@ import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import SpacePageBanner from '../journey/space/layout/SpacePageBanner';
 import { useLocation } from 'react-router-dom';
 import Gutters from '@/core/ui/grid/Gutters';
 import { useConfig } from '../platform/config/useConfig';
@@ -11,6 +10,7 @@ import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { useTranslation } from 'react-i18next';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import useNavigate from '@/core/routing/useNavigate';
+import TopLevelPageBanner from '@/main/ui/layout/topLevelPageLayout/TopLevelPageBanner';
 
 const DEFAULT_HEIGHT = '100vh';
 const enum SupportedMessageTypes {
@@ -39,6 +39,7 @@ const DocumentationPage = () => {
 
   const handleMessage = (event: MessageEvent) => {
     if (!event.origin.startsWith(getCurrentOriginWithoutPort())) {
+      console.log('event.origin: ', event.origin);
       return;
     }
 
@@ -75,7 +76,9 @@ const DocumentationPage = () => {
 
   return (
     <TopLevelLayout
-      header={<SpacePageBanner title={t('pages.documentation.title')} journeyTypeName="admin" />}
+      header={
+        <TopLevelPageBanner title={t('pages.documentation.title')} subtitle={t('pages.documentation.subtitle')} />
+      }
       breadcrumbs={<TopLevelPageBreadcrumbs />}
     >
       <PageContent>
@@ -90,6 +93,7 @@ const DocumentationPage = () => {
               <iframe
                 src={src}
                 ref={iframeRef}
+                sandbox="allow-scripts allow-same-origin"
                 title={t('pages.documentation.title')}
                 style={{ width: '100%', height: DEFAULT_HEIGHT, border: 'none' }}
               />
