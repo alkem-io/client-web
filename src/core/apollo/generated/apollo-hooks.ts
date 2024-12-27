@@ -294,22 +294,25 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
       id
       myPrivileges
     }
-    callouts(groups: $filterCalloutGroups) {
+    calloutsSet {
       id
-      nameID
-      type
-      activity
-      sortOrder
-      framing {
+      callouts(groups: $filterCalloutGroups) {
         id
-        profile {
+        nameID
+        type
+        activity
+        sortOrder
+        framing {
           id
-          displayName
-          calloutGroupName: tagset(tagsetName: CALLOUT_GROUP) {
-            ...TagsetDetails
-          }
-          flowState: tagset(tagsetName: FLOW_STATE) {
-            ...TagsetDetails
+          profile {
+            id
+            displayName
+            calloutGroupName: tagset(tagsetName: CALLOUT_GROUP) {
+              ...TagsetDetails
+            }
+            flowState: tagset(tagsetName: FLOW_STATE) {
+              ...TagsetDetails
+            }
           }
         }
       }
@@ -622,8 +625,11 @@ export const CollaborationWithCalloutsFragmentDoc = gql`
       id
       myPrivileges
     }
-    callouts(groups: $groups, IDs: $calloutIds) {
-      ...Callout
+    calloutsSet {
+      id
+      callouts(groups: $groups, IDs: $calloutIds) {
+        ...Callout
+      }
     }
   }
   ${CalloutFragmentDoc}
@@ -1025,23 +1031,26 @@ export const CalloutWithWhiteboardFragmentDoc = gql`
 export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
   fragment CollaborationWithWhiteboardDetails on Collaboration {
     id
-    callouts {
+    calloutsSet {
       id
-      nameID
-      type
-      authorization {
+      callouts {
         id
-        myPrivileges
-      }
-      contributions {
-        whiteboard {
-          ...WhiteboardDetails
+        nameID
+        type
+        authorization {
+          id
+          myPrivileges
         }
-      }
-      framing {
-        id
-        whiteboard {
-          ...WhiteboardDetails
+        contributions {
+          whiteboard {
+            ...WhiteboardDetails
+          }
+        }
+        framing {
+          id
+          whiteboard {
+            ...WhiteboardDetails
+          }
         }
       }
     }
@@ -2173,8 +2182,11 @@ export const DashboardTopCalloutFragmentDoc = gql`
 `;
 export const DashboardTopCalloutsFragmentDoc = gql`
   fragment DashboardTopCallouts on Collaboration {
-    callouts(sortByActivity: true) {
-      ...DashboardTopCallout
+    calloutsSet {
+      id
+      callouts(sortByActivity: true) {
+        ...DashboardTopCallout
+      }
     }
   }
   ${DashboardTopCalloutFragmentDoc}
@@ -2765,12 +2777,15 @@ export const ProfileStorageConfigFragmentDoc = gql`
 export const CalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
   fragment CalloutOnCollaborationWithStorageConfig on Collaboration {
     id
-    callouts(IDs: [$calloutId]) {
+    calloutsSet {
       id
-      framing {
+      callouts(IDs: [$calloutId]) {
         id
-        profile {
-          ...ProfileStorageConfig
+        framing {
+          id
+          profile {
+            ...ProfileStorageConfig
+          }
         }
       }
     }
@@ -2844,29 +2859,32 @@ export const CollaborationTemplateContentFragmentDoc = gql`
         description
       }
     }
-    callouts {
+    calloutsSet {
       id
-      type
-      framing {
+      callouts {
         id
-        profile {
-          id
-          displayName
-          description
-          flowStateTagset: tagset(tagsetName: FLOW_STATE) {
-            tags
-          }
-        }
-        whiteboard {
+        type
+        framing {
           id
           profile {
-            preview: visual(type: BANNER) {
-              ...VisualFull
+            id
+            displayName
+            description
+            flowStateTagset: tagset(tagsetName: FLOW_STATE) {
+              tags
+            }
+          }
+          whiteboard {
+            id
+            profile {
+              preview: visual(type: BANNER) {
+                ...VisualFull
+              }
             }
           }
         }
+        sortOrder
       }
-      sortOrder
     }
   }
   ${VisualFullFragmentDoc}
@@ -3545,13 +3563,16 @@ export const LibraryTemplatesFragmentDoc = gql`
             description
           }
         }
-        callouts {
+        calloutsSet {
           id
-          framing {
+          callouts {
             id
-            profile {
+            framing {
               id
-              displayName
+              profile {
+                id
+                displayName
+              }
             }
           }
         }
@@ -6406,8 +6427,8 @@ export function refetchCollaborationAuthorizationEntitlementsQuery(
 }
 
 export const UpdateCalloutsSortOrderDocument = gql`
-  mutation UpdateCalloutsSortOrder($collaborationId: UUID!, $calloutIds: [UUID_NAMEID!]!) {
-    updateCalloutsSortOrder(sortOrderData: { collaborationID: $collaborationId, calloutIDs: $calloutIds }) {
+  mutation UpdateCalloutsSortOrder($calloutsSetID: UUID!, $calloutIds: [UUID_NAMEID!]!) {
+    updateCalloutsSortOrder(sortOrderData: { calloutsSetID: $calloutsSetID, calloutIDs: $calloutIds }) {
       id
       sortOrder
     }
@@ -6431,7 +6452,7 @@ export type UpdateCalloutsSortOrderMutationFn = Apollo.MutationFunction<
  * @example
  * const [updateCalloutsSortOrderMutation, { data, loading, error }] = useUpdateCalloutsSortOrderMutation({
  *   variables: {
- *      collaborationId: // value for 'collaborationId'
+ *      calloutsSetID: // value for 'calloutsSetID'
  *      calloutIds: // value for 'calloutIds'
  *   },
  * });
@@ -6507,8 +6528,8 @@ export type UpdateContributionsSortOrderMutationOptions = Apollo.BaseMutationOpt
   SchemaTypes.UpdateContributionsSortOrderMutationVariables
 >;
 export const CreateCalloutDocument = gql`
-  mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
-    createCalloutOnCollaboration(calloutData: $calloutData) {
+  mutation createCallout($calloutData: CreateCalloutOnCalloutsSetInput!) {
+    createCalloutOnCalloutsSet(calloutData: $calloutData) {
       ...CalloutDetails
     }
   }
@@ -17790,19 +17811,22 @@ export const AdminSpaceSubspacesPageDocument = gql`
             }
             collaboration {
               id
-              callouts {
+              calloutsSet {
                 id
-                type
-                sortOrder
-                framing {
+                callouts {
                   id
-                  profile {
+                  type
+                  sortOrder
+                  framing {
                     id
-                    displayName
-                    description
-                    flowStateTagset: tagset(tagsetName: FLOW_STATE) {
+                    profile {
                       id
-                      tags
+                      displayName
+                      description
+                      flowStateTagset: tagset(tagsetName: FLOW_STATE) {
+                        id
+                        tags
+                      }
                     }
                   }
                 }
@@ -21589,10 +21613,12 @@ export const CreateCollaborationInputDocument = gql`
   query CreateCollaborationInput($collaborationId: UUID!) {
     inputCreator {
       collaboration(ID: $collaborationId) {
-        calloutsData {
-          framing {
-            profile {
-              displayName
+        calloutsSetData {
+          calloutsData {
+            framing {
+              profile {
+                displayName
+              }
             }
           }
         }
@@ -22773,8 +22799,11 @@ export const CalloutIdDocument = gql`
     lookup {
       collaboration(ID: $collaborationId) {
         id
-        callouts(IDs: [$calloutNameId]) {
+        calloutsSet {
           id
+          callouts(IDs: [$calloutNameId]) {
+            id
+          }
         }
       }
     }

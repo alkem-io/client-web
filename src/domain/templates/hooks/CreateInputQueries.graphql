@@ -55,11 +55,13 @@ query CreateCalloutInput($calloutId: UUID!) {
 query CreateCollaborationInput($collaborationId: UUID!) {
   inputCreator {
     collaboration(ID: $collaborationId) {
-      calloutsData {
-        framing {
-          profile {
-            displayName
-            ##...
+      calloutsSetData {
+        calloutsData {
+          framing {
+            profile {
+              displayName
+              ##...
+            }
           }
         }
       }

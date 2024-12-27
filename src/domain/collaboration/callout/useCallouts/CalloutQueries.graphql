@@ -1,8 +1,4 @@
-query Callouts(
-  $collaborationId: UUID!
-  $groups: [String!]
-  $calloutIds: [UUID_NAMEID!]
-) {
+query Callouts($collaborationId: UUID!, $groups: [String!], $calloutIds: [UUID_NAMEID!]) {
   lookup {
     collaboration(ID: $collaborationId) {
       ...CollaborationWithCallouts
@@ -16,8 +12,11 @@ fragment CollaborationWithCallouts on Collaboration {
     id
     myPrivileges
   }
-  callouts(groups: $groups, IDs: $calloutIds) {
-    ...Callout
+  calloutsSet {
+    id
+    callouts(groups: $groups, IDs: $calloutIds) {
+      ...Callout
+    }
   }
 }
 
