@@ -17088,6 +17088,9 @@ export const SubspaceProfileInfoDocument = gql`
           innovationFlow {
             id
           }
+          calloutsSet {
+            id
+          }
         }
       }
     }

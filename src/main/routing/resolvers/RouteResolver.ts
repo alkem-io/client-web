@@ -184,7 +184,7 @@ export const useRouteResolver = ({ failOnNotFound = true }: RouteResolverOptions
     skip: !calloutNameId || !collaborationId,
   });
 
-  const calloutId = calloutData?.lookup.collaboration?.callouts?.[0]?.id;
+  const calloutId = calloutData?.lookup.collaboration?.calloutsSet.callouts?.[0]?.id;
 
   const loading = loadingJourney || loadingSpaceEntities || loadingCallout;
 

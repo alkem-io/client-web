@@ -144,7 +144,7 @@ const useCallouts = ({
 
   const callouts = useMemo(
     () =>
-      collaboration?.callouts?.map(({ authorization, ...callout }) => {
+      collaboration?.calloutsSet.callouts?.map(({ authorization, ...callout }) => {
         const draft = callout?.visibility === CalloutVisibility.Draft;
         const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
         const movable = collaboration.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
@@ -180,7 +180,7 @@ const useCallouts = ({
       }
       return updateCalloutsSortOrderMutation({
         variables: {
-          collaborationId: collaboration.id,
+          calloutsSetID: collaboration.calloutsSet.id,
           calloutIds,
         },
       });

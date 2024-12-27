@@ -38,6 +38,7 @@ export interface CalloutCreationType {
 
 export interface CalloutCreationParams {
   collaborationId?: string;
+  calloutsSetId?: string;
   initialOpened?: boolean;
 }
 
@@ -47,7 +48,7 @@ export interface CalloutCreationUtils {
   handleCreateCalloutClosed: () => void;
   handleCreateCallout: (
     callout: CalloutCreationType
-  ) => Promise<CreateCalloutMutation['createCalloutOnCollaboration'] | undefined>;
+  ) => Promise<CreateCalloutMutation['createCalloutOnCalloutsSet'] | undefined>;
   loading: boolean;
   canCreateCallout: boolean;
 }
@@ -57,6 +58,7 @@ const CALLOUTS_WITH_COMMENTS = [CalloutType.Post];
 
 export const useCalloutCreation = ({
   collaborationId,
+  calloutsSetId,
   initialOpened = false,
 }: CalloutCreationParams): CalloutCreationUtils => {
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
@@ -68,7 +70,7 @@ export const useCalloutCreation = ({
       if (!data || !collaborationId) {
         return;
       }
-      const { createCalloutOnCollaboration } = data;
+      const { createCalloutOnCalloutsSet } = data;
 
       const collabRefId = cache.identify({
         __typename: 'Collaboration',
@@ -84,7 +86,7 @@ export const useCalloutCreation = ({
         fields: {
           callouts(existing = []) {
             const newCalloutRef = cache.writeFragment({
-              data: createCalloutOnCollaboration,
+              data: createCalloutOnCalloutsSet,
               fragment: CalloutFragmentDoc,
               fragmentName: 'Callout',
             });
@@ -102,7 +104,7 @@ export const useCalloutCreation = ({
 
   const handleCreateCallout = useCallback(
     async (callout: CalloutCreationType) => {
-      if (!collaborationId) {
+      if (!calloutsSetId) {
         return;
       }
 
@@ -112,7 +114,7 @@ export const useCalloutCreation = ({
         const result = await createCallout({
           variables: {
             calloutData: {
-              collaborationID: collaborationId,
+              calloutsSetID: calloutsSetId,
               enableComments: CALLOUTS_WITH_COMMENTS.includes(callout.type),
               ...callout,
             },
@@ -121,7 +123,7 @@ export const useCalloutCreation = ({
 
         setIsCalloutCreationDialogOpen(false);
 
-        return result.data?.createCalloutOnCollaboration;
+        return result.data?.createCalloutOnCalloutsSet;
       } finally {
         setIsCreating(false);
       }

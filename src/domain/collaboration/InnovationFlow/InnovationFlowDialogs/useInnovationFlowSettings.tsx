@@ -64,12 +64,13 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
   });
 
   const collaboration = data?.lookup.collaboration;
+  const calloutsSetId = collaboration?.calloutsSet?.id;
   const innovationFlow = collaboration?.innovationFlow;
 
   // Collaboration
   const callouts = useMemo(
     () =>
-      collaboration?.callouts
+      collaboration?.calloutsSet.callouts
         ?.map<GroupedCallout>(callout => ({
           id: callout.id,
           nameID: callout.nameID,
@@ -82,7 +83,7 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
           flowState: mapFlowState(callout.framing.profile.flowState),
         }))
         .sort((a, b) => a.sortOrder - b.sortOrder) ?? [],
-    [collaboration?.callouts]
+    [collaboration?.calloutsSet.callouts]
   );
 
   const [updateInnovationFlowCurrentState, { loading: changingState }] = useUpdateInnovationFlowCurrentStateMutation({
@@ -118,7 +119,7 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
   const [updateCalloutsSortOrder, { loading: loadingSortOrder }] = useUpdateCalloutsSortOrderMutation();
 
   const handleUpdateCalloutFlowState = async (calloutId: string, newState: string, insertIndex: number) => {
-    const callout = collaboration?.callouts?.find(({ id }) => id === calloutId);
+    const callout = collaboration?.calloutsSet.callouts?.find(({ id }) => id === calloutId);
     const flowStateTagset = callout?.framing.profile.flowState;
     if (!collaboration || !callout || !flowStateTagset) {
       return;
@@ -171,7 +172,7 @@ const useInnovationFlowSettings = ({ collaborationId, filterCalloutGroups, skip 
 
     await updateCalloutsSortOrder({
       variables: {
-        collaborationId: collaboration.id,
+        calloutsSetID: calloutsSetId!,
         calloutIds: sortedCalloutIds,
       },
       refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId: collaborationId!, filterCalloutGroups })],

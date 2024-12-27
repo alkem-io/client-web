@@ -74,7 +74,7 @@ export const ActivityContainer = ({ spaceId, children }: PropsWithChildren<Activ
     limit: RECENT_ACTIVITIES_LIMIT_INITIAL,
   });
 
-  const topCallouts = _space?.lookup.space?.collaboration?.callouts?.slice(0, TOP_CALLOUTS_LIMIT);
+  const topCallouts = _space?.lookup.space?.collaboration?.calloutsSet.callouts?.slice(0, TOP_CALLOUTS_LIMIT);
 
   return (
     <>

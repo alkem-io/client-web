@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 interface CalloutsGroupProps extends CalloutsViewProps {
   journeyId: string | undefined;
   collaborationId: string | undefined;
+  calloutsSetId: string | undefined;
   canCreateCallout: boolean;
   groupName: CalloutGroupName;
   flowState?: string;
@@ -23,6 +24,7 @@ const CalloutsGroupView = ({
   createButtonPlace = 'bottom',
   journeyTypeName,
   collaborationId,
+  calloutsSetId,
   ...calloutsViewProps
 }: CalloutsGroupProps) => {
   const {
@@ -31,7 +33,7 @@ const CalloutsGroupView = ({
     handleCreateCalloutClosed,
     handleCreateCallout,
     loading,
-  } = useCalloutCreationWithPreviewImages({ collaborationId });
+  } = useCalloutCreationWithPreviewImages({ collaborationId, calloutsSetId });
 
   const handleCreate = () => {
     handleCreateCalloutOpened();

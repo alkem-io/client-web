@@ -17,7 +17,7 @@ interface WhiteboardProviderProps extends WhiteboardLocation {
 export interface IProvidedEntities {
   whiteboard: WhiteboardDetailsFragment | undefined;
   calloutId: string | undefined;
-  authorization: NonNullable<CollaborationWithWhiteboardDetailsFragment['callouts']>[0]['authorization'];
+  authorization: NonNullable<CollaborationWithWhiteboardDetailsFragment['calloutsSet']['callouts']>[0]['authorization'];
 }
 
 export interface IProvidedEntitiesState {

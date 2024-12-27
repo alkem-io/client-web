@@ -20,6 +20,7 @@ import { CalloutGroupNameValuesMap } from '@/domain/collaboration/callout/Callou
 interface SubspaceHomeViewProps {
   journeyId: string | undefined;
   collaborationId: string | undefined;
+  calloutsSetId: string | undefined;
   templatesSetId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
@@ -34,6 +35,7 @@ interface SubspaceHomeViewProps {
 const SubspaceHomeView = ({
   journeyId,
   collaborationId,
+  calloutsSetId,
   templatesSetId,
   innovationFlowStates,
   currentInnovationFlowState,
@@ -47,7 +49,7 @@ const SubspaceHomeView = ({
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
   const { isCalloutCreationDialogOpen, handleCreateCalloutOpened, handleCreateCalloutClosed, handleCreateCallout } =
-    useCalloutCreationWithPreviewImages({ collaborationId });
+    useCalloutCreationWithPreviewImages({ collaborationId, calloutsSetId });
 
   const createButton = (
     <Button

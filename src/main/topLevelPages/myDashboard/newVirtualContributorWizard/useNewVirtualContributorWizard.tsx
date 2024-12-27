@@ -188,6 +188,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           collaborationData: {
             addTutorialCallouts: false,
             addCallouts: true,
+            calloutsSetData: {},
           },
         },
       },
@@ -285,7 +286,9 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             profileData: {
               displayName: generateSpaceName(user?.user.profile.displayName!, creationIndex),
             },
-            collaborationData: {},
+            collaborationData: {
+              calloutsSetData: {},
+            },
           },
         },
       });
@@ -363,10 +366,12 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   });
 
   const collaborationId = subspaceProfile?.lookup.space?.collaboration?.id;
+  const calloutsSetId = subspaceProfile?.lookup.space?.collaboration?.calloutsSet.id;
 
   // load the following hook either with bokId (created subspace) or spaceId (created/existing space)
   const { handleCreateCallout, canCreateCallout } = useCalloutCreation({
     collaborationId,
+    calloutsSetId,
   });
 
   const calloutDetails: CalloutCreationType = {

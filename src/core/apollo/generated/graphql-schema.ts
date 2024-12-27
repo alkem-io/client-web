@@ -22647,6 +22647,7 @@ export type SubspaceProfileInfoQuery = {
             __typename?: 'Collaboration';
             id: string;
             innovationFlow: { __typename?: 'InnovationFlow'; id: string };
+            calloutsSet: { __typename?: 'CalloutsSet'; id: string };
           };
         }
       | undefined;
