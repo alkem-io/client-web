@@ -51,6 +51,7 @@ const SpaceCommunityPage = () => {
   });
 
   const leadUsers = data?.space.community?.roleSet?.leadUsers;
+  const calloutsSetId = data?.space.collaboration?.calloutsSet?.id;
 
   const messageReceivers = useMemo(
     () =>
@@ -90,7 +91,7 @@ const SpaceCommunityPage = () => {
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Community}>
-      <SpaceCommunityContainer collaborationId={collaborationId}>
+      <SpaceCommunityContainer collaborationId={collaborationId} calloutsSetId={calloutsSetId}>
         {({ callouts }) => (
           <PageContent>
             <InfoColumn>
@@ -124,6 +125,7 @@ const SpaceCommunityPage = () => {
               <CalloutsGroupView
                 journeyId={spaceId}
                 collaborationId={collaborationId}
+                calloutsSetId={data?.space.collaboration?.calloutsSet?.id}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Community]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}

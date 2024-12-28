@@ -19,7 +19,7 @@ const PostRoute = ({ parentPagePath, journeyTypeName }: PostRouteProps) => {
   const onClose = () => backToExplore();
 
   const { postNameId } = useUrlParams();
-  const { calloutId, collaborationId } = useRouteResolver();
+  const { calloutId, collaborationId, calloutsSetId } = useRouteResolver();
 
   return (
     <Routes>
@@ -38,6 +38,7 @@ const PostRoute = ({ parentPagePath, journeyTypeName }: PostRouteProps) => {
           element={
             <PostSettingsPage
               collaborationId={collaborationId}
+              calloutsSetId={calloutsSetId}
               calloutId={calloutId}
               postNameId={postNameId}
               onClose={onClose}

@@ -25,6 +25,9 @@ query SpaceKeyEntitiesIDs($spaceId: UUID!) {
       }
       collaboration {
         id
+        calloutsSet {
+          id
+        }
       }
     }
   }

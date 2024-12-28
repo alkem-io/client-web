@@ -23,7 +23,7 @@ const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { journeyPath } = useRouteResolver();
-  const { spaceId, permissions, visibility, collaborationId } = useSpace();
+  const { spaceId, permissions, visibility, collaborationId, calloutsSetId } = useSpace();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -54,6 +54,7 @@ const SpaceSubspacesPage = () => {
 
   const callouts = useCallouts({
     collaborationId,
+    calloutsSetId,
     journeyTypeName: 'space',
     canReadCollaboration: true,
     groupNames: [CalloutGroupName.Subspaces],
@@ -101,6 +102,7 @@ const SpaceSubspacesPage = () => {
               <CalloutsGroupView
                 journeyId={spaceId}
                 collaborationId={collaborationId}
+                calloutsSetId={calloutsSetId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}

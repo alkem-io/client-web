@@ -32,6 +32,7 @@ export interface PostSettingsPageProps {
   onClose: () => void;
   journeyTypeName: JourneyTypeName;
   collaborationId: string | undefined;
+  calloutsSetId: string | undefined;
   calloutId: string | undefined;
   postNameId: string | undefined;
 }
@@ -39,6 +40,7 @@ export interface PostSettingsPageProps {
 const PostSettingsPage = ({
   journeyTypeName,
   collaborationId,
+  calloutsSetId,
   postNameId,
   calloutId,
   onClose,
@@ -82,6 +84,7 @@ const PostSettingsPage = ({
 
   const { callouts, refetchCallouts } = useCallouts({
     collaborationId,
+    calloutsSetId,
     journeyTypeName,
     canReadCollaboration: true,
   });

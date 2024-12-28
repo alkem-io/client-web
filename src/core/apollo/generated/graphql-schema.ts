@@ -20964,6 +20964,7 @@ export type SubspaceProviderQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
+            calloutsSet: { __typename?: 'CalloutsSet'; id: string };
           };
         }
       | undefined;
@@ -21032,6 +21033,7 @@ export type SubspaceProviderFragment = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
+    calloutsSet: { __typename?: 'CalloutsSet'; id: string };
   };
 };
 
@@ -21362,7 +21364,11 @@ export type SpaceCommunityPageQuery = {
           | undefined;
       };
     };
-    collaboration: { __typename?: 'Collaboration'; id: string };
+    collaboration: {
+      __typename?: 'Collaboration';
+      id: string;
+      calloutsSet: { __typename?: 'CalloutsSet'; id: string };
+    };
   };
 };
 
@@ -21472,6 +21478,7 @@ export type SpaceProviderQuery = {
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
+      calloutsSet: { __typename?: 'CalloutsSet'; id: string };
     };
     profile: {
       __typename?: 'Profile';
@@ -21603,6 +21610,7 @@ export type SpaceInfoFragment = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
+    calloutsSet: { __typename?: 'CalloutsSet'; id: string };
   };
   profile: {
     __typename?: 'Profile';
@@ -23909,7 +23917,11 @@ export type SubspacePageQuery = {
                 | undefined;
             };
           };
-          collaboration: { __typename?: 'Collaboration'; id: string };
+          collaboration: {
+            __typename?: 'Collaboration';
+            id: string;
+            calloutsSet: { __typename?: 'CalloutsSet'; id: string };
+          };
           templatesManager?:
             | {
                 __typename?: 'TemplatesManager';
@@ -24117,7 +24129,7 @@ export type SubspacePageSpaceFragment = {
         | undefined;
     };
   };
-  collaboration: { __typename?: 'Collaboration'; id: string };
+  collaboration: { __typename?: 'Collaboration'; id: string; calloutsSet: { __typename?: 'CalloutsSet'; id: string } };
   templatesManager?:
     | {
         __typename?: 'TemplatesManager';
@@ -25790,7 +25802,15 @@ export type SpaceCollaborationIdQuery = {
   lookup: {
     __typename?: 'LookupQueryResults';
     space?:
-      | { __typename?: 'Space'; id: string; collaboration: { __typename?: 'Collaboration'; id: string } }
+      | {
+          __typename?: 'Space';
+          id: string;
+          collaboration: {
+            __typename?: 'Collaboration';
+            id: string;
+            calloutsSet: { __typename?: 'CalloutsSet'; id: string };
+          };
+        }
       | undefined;
   };
 };
@@ -28793,7 +28813,11 @@ export type SpaceKeyEntitiesIDsQuery = {
           __typename?: 'Space';
           id: string;
           community: { __typename?: 'Community'; id: string };
-          collaboration: { __typename?: 'Collaboration'; id: string };
+          collaboration: {
+            __typename?: 'Collaboration';
+            id: string;
+            calloutsSet: { __typename?: 'CalloutsSet'; id: string };
+          };
         }
       | undefined;
   };

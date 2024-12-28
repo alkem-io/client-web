@@ -69,6 +69,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
   });
 
   const space = spaceData?.lookup.space;
+  const calloutsSetId = space?.collaboration?.calloutsSet?.id;
 
   const isMember = space?.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
 
@@ -124,6 +125,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
 
   const callouts = useCallouts({
     collaborationId,
+    calloutsSetId,
     journeyTypeName: 'space',
     canReadCollaboration: true,
     groupNames: [CalloutGroupName.Home],

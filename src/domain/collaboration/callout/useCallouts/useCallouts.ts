@@ -70,6 +70,7 @@ export type TypedCalloutDetails = TypedCallout &
 
 interface UseCalloutsParams {
   collaborationId: string | undefined;
+  calloutsSetId: string | undefined;
   journeyTypeName: JourneyTypeName;
   groupNames?: CalloutGroupName[];
   canReadCollaboration: boolean;
@@ -99,6 +100,7 @@ const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-group';
 
 const useCallouts = ({
   collaborationId,
+  calloutsSetId,
   journeyTypeName,
   canReadCollaboration,
   ...params

@@ -8,12 +8,19 @@ interface KnowledgeBaseContainerProps
     callouts: UseCalloutsProvided;
   }> {
   collaborationId: string | undefined;
+  calloutsSetId: string | undefined;
   journeyTypeName: JourneyTypeName;
 }
 
-const KnowledgeBaseContainer = ({ collaborationId, journeyTypeName, children }: KnowledgeBaseContainerProps) => {
+const KnowledgeBaseContainer = ({
+  collaborationId,
+  calloutsSetId,
+  journeyTypeName,
+  children,
+}: KnowledgeBaseContainerProps) => {
   const callouts = useCallouts({
     collaborationId,
+    calloutsSetId,
     journeyTypeName,
     canReadCollaboration: true,
     groupNames: [CalloutGroupName.Knowledge],

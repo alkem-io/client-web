@@ -2029,6 +2029,9 @@ export const SubspaceProviderFragmentDoc = gql`
         id
         myPrivileges
       }
+      calloutsSet {
+        id
+      }
     }
   }
   ${VisualFullFragmentDoc}
@@ -2157,6 +2160,9 @@ export const SpaceInfoFragmentDoc = gql`
       authorization {
         id
         myPrivileges
+      }
+      calloutsSet {
+        id
       }
     }
     visibility
@@ -2582,6 +2588,9 @@ export const SubspacePageSpaceFragmentDoc = gql`
     }
     collaboration {
       id
+      calloutsSet {
+        id
+      }
     }
     templatesManager {
       id
@@ -16078,6 +16087,9 @@ export const SpaceCommunityPageDocument = gql`
       }
       collaboration {
         id
+        calloutsSet {
+          id
+        }
       }
     }
   }
@@ -20522,6 +20534,9 @@ export const SpaceCollaborationIdDocument = gql`
         id
         collaboration {
           id
+          calloutsSet {
+            id
+          }
         }
       }
     }
@@ -22739,6 +22754,9 @@ export const SpaceKeyEntitiesIDsDocument = gql`
         }
         collaboration {
           id
+          calloutsSet {
+            id
+          }
         }
       }
     }
