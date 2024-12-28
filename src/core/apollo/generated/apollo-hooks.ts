@@ -618,22 +618,6 @@ export const CalloutFragmentDoc = gql`
   }
   ${TagsetDetailsFragmentDoc}
 `;
-export const CollaborationWithCalloutsFragmentDoc = gql`
-  fragment CollaborationWithCallouts on Collaboration {
-    id
-    authorization {
-      id
-      myPrivileges
-    }
-    calloutsSet {
-      id
-      callouts(groups: $groups, IDs: $calloutIds) {
-        ...Callout
-      }
-    }
-  }
-  ${CalloutFragmentDoc}
-`;
 export const ReferenceDetailsFragmentDoc = gql`
   fragment ReferenceDetails on Reference {
     id
@@ -7213,14 +7197,21 @@ export function refetchCalloutPostsQuery(variables: SchemaTypes.CalloutPostsQuer
 }
 
 export const CalloutsDocument = gql`
-  query Callouts($collaborationId: UUID!, $groups: [String!], $calloutIds: [UUID_NAMEID!]) {
+  query Callouts($calloutsSetId: UUID!, $groups: [String!], $calloutIds: [UUID_NAMEID!]) {
     lookup {
-      collaboration(ID: $collaborationId) {
-        ...CollaborationWithCallouts
+      calloutsSet(ID: $calloutsSetId) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        callouts(groups: $groups, IDs: $calloutIds) {
+          ...Callout
+        }
       }
     }
   }
-  ${CollaborationWithCalloutsFragmentDoc}
+  ${CalloutFragmentDoc}
 `;
 
 /**
@@ -7235,7 +7226,7 @@ export const CalloutsDocument = gql`
  * @example
  * const { data, loading, error } = useCalloutsQuery({
  *   variables: {
- *      collaborationId: // value for 'collaborationId'
+ *      calloutsSetId: // value for 'calloutsSetId'
  *      groups: // value for 'groups'
  *      calloutIds: // value for 'calloutIds'
  *   },

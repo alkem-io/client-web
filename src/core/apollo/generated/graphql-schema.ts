@@ -11653,7 +11653,7 @@ export type PostCardFragment = {
 };
 
 export type CalloutsQueryVariables = Exact<{
-  collaborationId: Scalars['UUID'];
+  calloutsSetId: Scalars['UUID'];
   groups?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
   calloutIds?: InputMaybe<Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID']>;
 }>;
@@ -11662,95 +11662,47 @@ export type CalloutsQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
-    collaboration?:
+    calloutsSet?:
       | {
-          __typename?: 'Collaboration';
+          __typename?: 'CalloutsSet';
           id: string;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
-          calloutsSet: {
-            __typename?: 'CalloutsSet';
+          callouts: Array<{
+            __typename?: 'Callout';
             id: string;
-            callouts: Array<{
-              __typename?: 'Callout';
+            nameID: string;
+            type: CalloutType;
+            sortOrder: number;
+            activity: number;
+            visibility: CalloutVisibility;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+            framing: {
+              __typename?: 'CalloutFraming';
               id: string;
-              nameID: string;
-              type: CalloutType;
-              sortOrder: number;
-              activity: number;
-              visibility: CalloutVisibility;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-              framing: {
-                __typename?: 'CalloutFraming';
+              profile: {
+                __typename?: 'Profile';
                 id: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  url: string;
-                  displayName: string;
-                  tagsets?:
-                    | Array<{
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }>
-                    | undefined;
-                };
+                url: string;
+                displayName: string;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
               };
-            }>;
-          };
+            };
+          }>;
         }
       | undefined;
-  };
-};
-
-export type CollaborationWithCalloutsFragment = {
-  __typename?: 'Collaboration';
-  id: string;
-  authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-    | undefined;
-  calloutsSet: {
-    __typename?: 'CalloutsSet';
-    id: string;
-    callouts: Array<{
-      __typename?: 'Callout';
-      id: string;
-      nameID: string;
-      type: CalloutType;
-      sortOrder: number;
-      activity: number;
-      visibility: CalloutVisibility;
-      authorization?:
-        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-        | undefined;
-      framing: {
-        __typename?: 'CalloutFraming';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          url: string;
-          displayName: string;
-          tagsets?:
-            | Array<{
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }>
-            | undefined;
-        };
-      };
-    }>;
   };
 };
 

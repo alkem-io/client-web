@@ -1,21 +1,14 @@
-query Callouts($collaborationId: UUID!, $groups: [String!], $calloutIds: [UUID_NAMEID!]) {
+query Callouts($calloutsSetId: UUID!, $groups: [String!], $calloutIds: [UUID_NAMEID!]) {
   lookup {
-    collaboration(ID: $collaborationId) {
-      ...CollaborationWithCallouts
-    }
-  }
-}
-
-fragment CollaborationWithCallouts on Collaboration {
-  id
-  authorization {
-    id
-    myPrivileges
-  }
-  calloutsSet {
-    id
-    callouts(groups: $groups, IDs: $calloutIds) {
-      ...Callout
+    calloutsSet(ID: $calloutsSetId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      callouts(groups: $groups, IDs: $calloutIds) {
+        ...Callout
+      }
     }
   }
 }
