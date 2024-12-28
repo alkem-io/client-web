@@ -72,17 +72,17 @@ export const useCalloutCreation = ({
       }
       const { createCalloutOnCalloutsSet } = data;
 
-      const collabRefId = cache.identify({
-        __typename: 'Collaboration',
-        id: collaborationId,
+      const calloutsSetRefId = cache.identify({
+        __typename: 'CalloutsSet',
+        id: calloutsSetId,
       });
 
-      if (!collabRefId) {
+      if (!calloutsSetRefId) {
         return;
       }
 
       cache.modify({
-        id: collabRefId,
+        id: calloutsSetRefId,
         fields: {
           callouts(existing = []) {
             const newCalloutRef = cache.writeFragment({
