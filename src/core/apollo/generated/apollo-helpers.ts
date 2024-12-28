@@ -2004,8 +2004,8 @@ export type LookupQueryResultsKeySpecifier = (
   | 'authorizationPrivilegesForUser'
   | 'calendar'
   | 'calendarEvent'
-  | 'callloutsSet'
   | 'callout'
+  | 'calloutsSet'
   | 'collaboration'
   | 'community'
   | 'communityGuidelines'
@@ -2039,8 +2039,8 @@ export type LookupQueryResultsFieldPolicy = {
   authorizationPrivilegesForUser?: FieldPolicy<any> | FieldReadFunction<any>;
   calendar?: FieldPolicy<any> | FieldReadFunction<any>;
   calendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
-  callloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  calloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;

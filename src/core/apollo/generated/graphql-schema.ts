@@ -3286,10 +3286,10 @@ export type LookupQueryResults = {
   calendar?: Maybe<Calendar>;
   /** Lookup the specified CalendarEvent */
   calendarEvent?: Maybe<CalendarEvent>;
-  /** Lookup the specified CalloutsSet */
-  callloutsSet?: Maybe<CalloutsSet>;
   /** Lookup the specified Callout */
   callout?: Maybe<Callout>;
+  /** Lookup the specified CalloutsSet */
+  calloutsSet?: Maybe<CalloutsSet>;
   /** Lookup the specified Collaboration */
   collaboration?: Maybe<Collaboration>;
   /** Lookup the specified Community */
@@ -3365,11 +3365,11 @@ export type LookupQueryResultsCalendarEventArgs = {
   ID: Scalars['UUID'];
 };
 
-export type LookupQueryResultsCallloutsSetArgs = {
+export type LookupQueryResultsCalloutArgs = {
   ID: Scalars['UUID'];
 };
 
-export type LookupQueryResultsCalloutArgs = {
+export type LookupQueryResultsCalloutsSetArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -10630,6 +10630,13 @@ export type CollaborationAuthorizationEntitlementsQuery = {
             __typename?: 'License';
             id: string;
             availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+          };
+          calloutsSet: {
+            __typename?: 'CalloutsSet';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
           };
         }
       | undefined;

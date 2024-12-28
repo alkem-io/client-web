@@ -10,6 +10,13 @@ query CollaborationAuthorizationEntitlements($collaborationId: UUID!) {
         id
         availableEntitlements
       }
+      calloutsSet {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
     }
   }
 }

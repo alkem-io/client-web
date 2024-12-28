@@ -6372,6 +6372,13 @@ export const CollaborationAuthorizationEntitlementsDocument = gql`
           id
           availableEntitlements
         }
+        calloutsSet {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
       }
     }
   }
