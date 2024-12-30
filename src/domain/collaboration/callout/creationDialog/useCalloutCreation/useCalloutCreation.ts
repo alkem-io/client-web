@@ -38,6 +38,7 @@ export interface CalloutCreationType {
 
 export interface CalloutCreationParams {
   collaborationId?: string;
+  calloutsSetId?: string;
   initialOpened?: boolean;
 }
 
@@ -47,7 +48,7 @@ export interface CalloutCreationUtils {
   handleCreateCalloutClosed: () => void;
   handleCreateCallout: (
     callout: CalloutCreationType
-  ) => Promise<CreateCalloutMutation['createCalloutOnCollaboration'] | undefined>;
+  ) => Promise<CreateCalloutMutation['createCalloutOnCalloutsSet'] | undefined>;
   loading: boolean;
   canCreateCallout: boolean;
 }
@@ -57,34 +58,36 @@ const CALLOUTS_WITH_COMMENTS = [CalloutType.Post];
 
 export const useCalloutCreation = ({
   collaborationId,
+  calloutsSetId,
   initialOpened = false,
 }: CalloutCreationParams): CalloutCreationUtils => {
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
   const [isCreating, setIsCreating] = useState(false);
+  // TODO: remove the collaborationId dependency in favor of calloutsSetId
   const { canCreateCallout, loading } = useCollaborationAuthorizationEntitlements({ collaborationId });
 
   const [createCallout] = useCreateCalloutMutation({
     update: (cache, { data }) => {
-      if (!data || !collaborationId) {
+      if (!data || !calloutsSetId) {
         return;
       }
-      const { createCalloutOnCollaboration } = data;
+      const { createCalloutOnCalloutsSet } = data;
 
-      const collabRefId = cache.identify({
-        __typename: 'Collaboration',
-        id: collaborationId,
+      const calloutsSetRefId = cache.identify({
+        __typename: 'CalloutsSet',
+        id: calloutsSetId,
       });
 
-      if (!collabRefId) {
+      if (!calloutsSetRefId) {
         return;
       }
 
       cache.modify({
-        id: collabRefId,
+        id: calloutsSetRefId,
         fields: {
           callouts(existing = []) {
             const newCalloutRef = cache.writeFragment({
-              data: createCalloutOnCollaboration,
+              data: createCalloutOnCalloutsSet,
               fragment: CalloutFragmentDoc,
               fragmentName: 'Callout',
             });
@@ -102,7 +105,7 @@ export const useCalloutCreation = ({
 
   const handleCreateCallout = useCallback(
     async (callout: CalloutCreationType) => {
-      if (!collaborationId) {
+      if (!calloutsSetId) {
         return;
       }
 
@@ -112,7 +115,7 @@ export const useCalloutCreation = ({
         const result = await createCallout({
           variables: {
             calloutData: {
-              collaborationID: collaborationId,
+              calloutsSetID: calloutsSetId,
               enableComments: CALLOUTS_WITH_COMMENTS.includes(callout.type),
               ...callout,
             },
@@ -121,12 +124,12 @@ export const useCalloutCreation = ({
 
         setIsCalloutCreationDialogOpen(false);
 
-        return result.data?.createCalloutOnCollaboration;
+        return result.data?.createCalloutOnCalloutsSet;
       } finally {
         setIsCreating(false);
       }
     },
-    [collaborationId, createCallout]
+    [calloutsSetId, createCallout]
   );
 
   return {

@@ -31,9 +31,11 @@ export const useCollaborationAuthorizationEntitlements = ({
 
   const collaborationPrivileges = collaborationData?.lookup.collaboration?.authorization?.myPrivileges ?? [];
   const collaborationEntitlements = collaborationData?.lookup.collaboration?.license?.availableEntitlements ?? [];
-  const canCreateCallout = collaborationPrivileges.includes(AuthorizationPrivilege.CreateCallout);
   const canSaveAsTemplate = permissions.canCreateTemplates;
   const canReadCallout = collaborationPrivileges.includes(AuthorizationPrivilege.Read);
+
+  const calloutsSetPrivileges = collaborationData?.lookup.collaboration?.calloutsSet?.authorization?.myPrivileges ?? [];
+  const canCreateCallout = calloutsSetPrivileges.includes(AuthorizationPrivilege.CreateCallout);
 
   const entitledToSaveAsTemplate =
     collaborationEntitlements?.includes(LicenseEntitlementType.SpaceFlagSaveAsTemplate) ?? false;

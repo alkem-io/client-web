@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import PageContent from '@/core/ui/content/PageContent';
 import { useUrlParams } from '@/core/routing/useUrlParams';
-import CalloutsGroupView from '@/domain/collaboration/callout/CalloutsInContext/CalloutsGroupView';
+import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import EntityDashboardLeadsSection from '@/domain/community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import ContactLeadsButton from '@/domain/community/community/ContactLeadsButton/ContactLeadsButton';
 import {
@@ -51,6 +51,7 @@ const SpaceCommunityPage = () => {
   });
 
   const leadUsers = data?.space.community?.roleSet?.leadUsers;
+  const calloutsSetId = data?.space.collaboration?.calloutsSet?.id;
 
   const messageReceivers = useMemo(
     () =>
@@ -90,7 +91,7 @@ const SpaceCommunityPage = () => {
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Community}>
-      <SpaceCommunityContainer collaborationId={collaborationId}>
+      <SpaceCommunityContainer collaborationId={collaborationId} calloutsSetId={calloutsSetId}>
         {({ callouts }) => (
           <PageContent>
             <InfoColumn>
@@ -124,6 +125,7 @@ const SpaceCommunityPage = () => {
               <CalloutsGroupView
                 journeyId={spaceId}
                 collaborationId={collaborationId}
+                calloutsSetId={calloutsSetId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Community]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}

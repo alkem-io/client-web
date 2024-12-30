@@ -1,5 +1,5 @@
-mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
-  createCalloutOnCollaboration(calloutData: $calloutData) {
+mutation createCallout($calloutData: CreateCalloutOnCalloutsSetInput!) {
+  createCalloutOnCalloutsSet(calloutData: $calloutData) {
     ...CalloutDetails
   }
 }

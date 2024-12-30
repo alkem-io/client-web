@@ -25,6 +25,9 @@ query SpaceKeyEntitiesIDs($spaceId: UUID!) {
       }
       collaboration {
         id
+        calloutsSet {
+          id
+        }
       }
     }
   }
@@ -34,8 +37,11 @@ query CalloutId($calloutNameId: UUID_NAMEID!, $collaborationId: UUID!) {
   lookup {
     collaboration(ID: $collaborationId) {
       id
-      callouts(IDs: [$calloutNameId]) {
+      calloutsSet {
         id
+        callouts(IDs: [$calloutNameId]) {
+          id
+        }
       }
     }
   }

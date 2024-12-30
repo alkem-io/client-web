@@ -26,7 +26,7 @@ import {
   useDeleteCalloutMutation,
   useVirtualContributorQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { TypedCalloutDetails } from '@/domain/collaboration/callout/useCallouts/useCallouts';
+import { TypedCalloutDetails } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import { Actions } from '@/core/ui/actions/Actions';
 import { removeVCCreationCache } from './vcCreationUtil';
 import { useSubscribeOnVirtualContributorEvents } from '@/domain/community/virtualContributor/useSubscribeOnVirtualContributorEvents';
@@ -34,6 +34,7 @@ import { useSubscribeOnVirtualContributorEvents } from '@/domain/community/virtu
 interface TryVirtualContributorDialogProps {
   spaceId: string;
   collaborationId: string | undefined;
+  calloutsSetId: string | undefined;
   vcNameId: string;
   open: boolean;
   onClose: () => void;
@@ -42,6 +43,7 @@ interface TryVirtualContributorDialogProps {
 const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = ({
   spaceId,
   collaborationId,
+  calloutsSetId,
   vcNameId,
   open,
   onClose,
@@ -53,6 +55,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
 
   const options: CalloutCreationParams = {
     collaborationId,
+    calloutsSetId,
   };
 
   const calloutDetails: CalloutCreationType = {

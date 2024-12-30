@@ -151,12 +151,12 @@ const CalloutCreationDialog = ({
         };
 
         result = await onCreateCallout(newCallout);
+        setCallout({});
         scrollToTop();
       } catch (ex) {
         // eslint-disable-next-line no-console
         console.error(ex);
       } finally {
-        setCallout({});
         closePublishDialog();
         return result;
       }
