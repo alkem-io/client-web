@@ -10,13 +10,13 @@ import ChildJourneyView from '@/domain/journey/common/tabs/Subentities/ChildJour
 import SubspacesContainer from '../containers/SubspacesContainer';
 import { useSpace } from '../SpaceContext/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
-import CalloutsGroupView from '@/domain/collaboration/callout/CalloutsInContext/CalloutsGroupView';
+import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { CalloutGroupName, CommunityMembershipStatus, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
 import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
-import useCallouts from '@/domain/collaboration/callout/useCallouts/useCallouts';
+import useCallouts from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
 
 const SpaceSubspacesPage = () => {

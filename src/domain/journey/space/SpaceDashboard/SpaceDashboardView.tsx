@@ -19,8 +19,8 @@ import { DashboardNavigationItem } from '../spaceDashboardNavigation/useSpaceDas
 import DashboardNavigation from '@/domain/journey/dashboardNavigation/DashboardNavigation';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import FullWidthButton from '@/core/ui/button/FullWidthButton';
-import CalloutsGroupView from '@/domain/collaboration/callout/CalloutsInContext/CalloutsGroupView';
-import { OrderUpdate, TypedCallout } from '@/domain/collaboration/callout/useCallouts/useCallouts';
+import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
+import { OrderUpdate, TypedCallout } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import JourneyDashboardWelcomeBlock, {
   JourneyDashboardWelcomeBlockProps,
 } from '@/domain/journey/common/journeyDashboardWelcomeBlock/JourneyDashboardWelcomeBlock';

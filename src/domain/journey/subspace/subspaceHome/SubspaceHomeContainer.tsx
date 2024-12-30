@@ -2,7 +2,7 @@ import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import useInnovationFlowStates, {
   UseInnovationFlowStatesProvided,
 } from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
-import useCallouts, { UseCalloutsProvided } from '@/domain/collaboration/callout/useCallouts/useCallouts';
+import useCallouts, { UseCalloutsProvided } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import { SubspacePageSpaceFragment } from '@/core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';

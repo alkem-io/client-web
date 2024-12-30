@@ -4,7 +4,7 @@ import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import CalloutView from '../callout/CalloutView/CalloutView';
 import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { useCalloutEdit } from '../callout/edit/useCalloutEdit/useCalloutEdit';
-import { TypedCalloutDetails } from '../callout/useCallouts/useCallouts';
+import { TypedCalloutDetails } from '../calloutsSet/useCallouts/useCallouts';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useLocation } from 'react-router-dom';
 import { DialogContent, Theme, useMediaQuery } from '@mui/material';

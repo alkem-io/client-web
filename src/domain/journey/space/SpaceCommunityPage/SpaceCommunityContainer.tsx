@@ -1,4 +1,4 @@
-import useCallouts, { UseCalloutsProvided } from '@/domain/collaboration/callout/useCallouts/useCallouts';
+import useCallouts, { UseCalloutsProvided } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
 

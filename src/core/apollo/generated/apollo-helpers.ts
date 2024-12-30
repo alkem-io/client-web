@@ -866,6 +866,7 @@ export type CalloutsSetKeySpecifier = (
   | 'groups'
   | 'id'
   | 'tagsetTemplates'
+  | 'type'
   | 'updatedDate'
   | CalloutsSetKeySpecifier
 )[];
@@ -876,6 +877,7 @@ export type CalloutsSetFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsetTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CollaborationKeySpecifier = (
@@ -1729,6 +1731,23 @@ export type InvitationFieldPolicy = {
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type KnowledgeBaseKeySpecifier = (
+  | 'authorization'
+  | 'calloutsSet'
+  | 'createdDate'
+  | 'id'
+  | 'profile'
+  | 'updatedDate'
+  | KnowledgeBaseKeySpecifier
+)[];
+export type KnowledgeBaseFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  calloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LatestReleaseDiscussionKeySpecifier = ('id' | 'nameID' | LatestReleaseDiscussionKeySpecifier)[];
 export type LatestReleaseDiscussionFieldPolicy = {
@@ -3866,6 +3885,7 @@ export type VirtualContributorKeySpecifier = (
   | 'authorization'
   | 'createdDate'
   | 'id'
+  | 'knowledgeBase'
   | 'listedInStore'
   | 'nameID'
   | 'profile'
@@ -3882,6 +3902,7 @@ export type VirtualContributorFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  knowledgeBase?: FieldPolicy<any> | FieldReadFunction<any>;
   listedInStore?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4481,6 +4502,10 @@ export type StrictTypedTypePolicies = {
   Invitation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | InvitationKeySpecifier | (() => undefined | InvitationKeySpecifier);
     fields?: InvitationFieldPolicy;
+  };
+  KnowledgeBase?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | KnowledgeBaseKeySpecifier | (() => undefined | KnowledgeBaseKeySpecifier);
+    fields?: KnowledgeBaseFieldPolicy;
   };
   LatestReleaseDiscussion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LatestReleaseDiscussionKeySpecifier | (() => undefined | LatestReleaseDiscussionKeySpecifier);

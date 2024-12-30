@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
-import { useCalloutEdit } from '../edit/useCalloutEdit/useCalloutEdit';
+import { useCalloutEdit } from '../../callout/edit/useCalloutEdit/useCalloutEdit';
 import { OrderUpdate, TypedCallout, TypedCalloutDetails } from '../useCallouts/useCallouts';
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
-import { CalloutSortEvents, CalloutSortProps } from '../CalloutViewTypes';
-import CalloutView from '../CalloutView/CalloutView';
+import { CalloutSortEvents, CalloutSortProps } from '../../callout/CalloutViewTypes';
+import CalloutView from '../../callout/CalloutView/CalloutView';
 import useNavigate from '@/core/routing/useNavigate';
 import {
   LocationStateCachedCallout,

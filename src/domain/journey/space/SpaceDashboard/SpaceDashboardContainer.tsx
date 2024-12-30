@@ -15,7 +15,7 @@ import {
   Reference,
   SpacePageFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import useCallouts, { UseCalloutsProvided } from '@/domain/collaboration/callout/useCallouts/useCallouts';
+import useCallouts, { UseCalloutsProvided } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import useSpaceDashboardNavigation, {
   DashboardNavigationItem,
 } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';

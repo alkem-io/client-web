@@ -15,7 +15,7 @@ import {
   Tagset,
   UpdateProfileInput,
 } from '@/core/apollo/generated/graphql-schema';
-import { CalloutGroupNameValuesMap } from '@/domain/collaboration/callout/CalloutsInContext/CalloutsGroup';
+import { CalloutGroupNameValuesMap } from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroup';
 import { InnovationFlowState } from '../InnovationFlow';
 import { sortCallouts } from '../utils/sortCallouts';
 import { useMemo } from 'react';

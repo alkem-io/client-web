@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import PageContent from '@/core/ui/content/PageContent';
 import { useUrlParams } from '@/core/routing/useUrlParams';
-import CalloutsGroupView from '@/domain/collaboration/callout/CalloutsInContext/CalloutsGroupView';
+import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import EntityDashboardLeadsSection from '@/domain/community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import ContactLeadsButton from '@/domain/community/community/ContactLeadsButton/ContactLeadsButton';
 import {

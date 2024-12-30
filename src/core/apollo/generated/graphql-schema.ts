@@ -617,6 +617,7 @@ export type AiPersona = {
 };
 
 export enum AiPersonaBodyOfKnowledgeType {
+  AlkemioKnowledgeBase = 'ALKEMIO_KNOWLEDGE_BASE',
   AlkemioSpace = 'ALKEMIO_SPACE',
   None = 'NONE',
   Other = 'OTHER',
@@ -894,6 +895,7 @@ export enum AuthorizationPolicyType {
   InnovationPack = 'INNOVATION_PACK',
   Invitation = 'INVITATION',
   InMemory = 'IN_MEMORY',
+  KnowledgeBase = 'KNOWLEDGE_BASE',
   Library = 'LIBRARY',
   License = 'LICENSE',
   LicensePolicy = 'LICENSE_POLICY',
@@ -1224,6 +1226,8 @@ export type CalloutsSet = {
   id: Scalars['UUID'];
   /** The tagset templates on this CalloutsSet. */
   tagsetTemplates?: Maybe<Array<TagsetTemplate>>;
+  /** The set of CalloutGroups in use in this CalloutsSet. */
+  type: Array<CalloutGroup>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
@@ -1896,6 +1900,13 @@ export type CreateInnovationPackOnAccountInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type CreateKnowledgeBaseInput = {
+  /** The CalloutsSet to use for this KnowledgeBase. */
+  calloutsSetData?: InputMaybe<CreateCalloutsSetInput>;
+  /** The Profile to use for this KnowledgeBase. */
+  profile: CreateProfileInput;
+};
+
 export type CreateLicensePlanOnLicensingFrameworkInput = {
   /** Assign this plan to all new Organization accounts */
   assignToNewOrganizationAccounts: Scalars['Boolean'];
@@ -2125,6 +2136,8 @@ export type CreateVirtualContributorOnAccountInput = {
   accountID: Scalars['UUID'];
   /** Data used to create the AI Persona */
   aiPersona: CreateAiPersonaInput;
+  /** The KnowledgeBase to use for this Collaboration. */
+  knowledgeBaseData?: InputMaybe<CreateKnowledgeBaseInput>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
@@ -2833,6 +2846,22 @@ export type InviteNewContributorForRoleOnRoleSetInput = {
 
 export type JoinAsEntryRoleOnRoleSetInput = {
   roleSetID: Scalars['UUID'];
+};
+
+export type KnowledgeBase = {
+  __typename?: 'KnowledgeBase';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The calloutsSet with Callouts in use by this KnowledgeBase */
+  calloutsSet: CalloutsSet;
+  /** The date at which the entity was created. */
+  createdDate?: Maybe<Scalars['DateTime']>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The Profile for describing this KnowledgeBase. */
+  profile: Profile;
+  /** The date at which the entity was last updated. */
+  updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
 export type LatestReleaseDiscussion = {
@@ -5061,6 +5090,7 @@ export enum ProfileType {
   InnovationFlow = 'INNOVATION_FLOW',
   InnovationHub = 'INNOVATION_HUB',
   InnovationPack = 'INNOVATION_PACK',
+  KnowledgeBase = 'KNOWLEDGE_BASE',
   Opportunity = 'OPPORTUNITY',
   Organization = 'ORGANIZATION',
   Post = 'POST',
@@ -7183,6 +7213,8 @@ export type VirtualContributor = Contributor & {
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The ID of the Contributor */
   id: Scalars['UUID'];
+  /** The KnowledgeBase being used by this virtual contributor */
+  knowledgeBase?: Maybe<KnowledgeBase>;
   /** Flag to control if this VC is listed in the platform store. */
   listedInStore: Scalars['Boolean'];
   /** A name identifier of the Contributor, unique within a given scope. */
@@ -10643,64 +10675,11 @@ export type CollaborationAuthorizationEntitlementsQuery = {
   };
 };
 
-export type UpdateCalloutsSortOrderMutationVariables = Exact<{
-  calloutsSetID: Scalars['UUID'];
-  calloutIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
+export type RemoveCommentFromCalloutMutationVariables = Exact<{
+  messageData: RoomRemoveMessageInput;
 }>;
 
-export type UpdateCalloutsSortOrderMutation = {
-  __typename?: 'Mutation';
-  updateCalloutsSortOrder: Array<{ __typename?: 'Callout'; id: string; sortOrder: number }>;
-};
-
-export type UpdateContributionsSortOrderMutationVariables = Exact<{
-  calloutID: Scalars['UUID'];
-  contributionIds: Array<Scalars['UUID']> | Scalars['UUID'];
-}>;
-
-export type UpdateContributionsSortOrderMutation = {
-  __typename?: 'Mutation';
-  updateContributionsSortOrder: Array<{ __typename?: 'CalloutContribution'; id: string; sortOrder: number }>;
-};
-
-export type DashboardTopCalloutsFragment = {
-  __typename?: 'Collaboration';
-  calloutsSet: {
-    __typename?: 'CalloutsSet';
-    id: string;
-    callouts: Array<{
-      __typename?: 'Callout';
-      id: string;
-      type: CalloutType;
-      visibility: CalloutVisibility;
-      activity: number;
-      framing: {
-        __typename?: 'CalloutFraming';
-        id: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          url: string;
-          displayName: string;
-          description?: string | undefined;
-        };
-      };
-    }>;
-  };
-};
-
-export type DashboardTopCalloutFragment = {
-  __typename?: 'Callout';
-  id: string;
-  type: CalloutType;
-  visibility: CalloutVisibility;
-  activity: number;
-  framing: {
-    __typename?: 'CalloutFraming';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; url: string; displayName: string; description?: string | undefined };
-  };
-};
+export type RemoveCommentFromCalloutMutation = { __typename?: 'Mutation'; removeMessageOnRoom: string };
 
 export type CreateCalloutMutationVariables = Exact<{
   calloutData: CreateCalloutOnCalloutsSetInput;
@@ -11341,48 +11320,6 @@ export type DeleteCalloutMutationVariables = Exact<{
 
 export type DeleteCalloutMutation = { __typename?: 'Mutation'; deleteCallout: { __typename?: 'Callout'; id: string } };
 
-export type CreatePostFromContributeTabMutationVariables = Exact<{
-  postData: CreateContributionOnCalloutInput;
-}>;
-
-export type CreatePostFromContributeTabMutation = {
-  __typename?: 'Mutation';
-  createContributionOnCallout: {
-    __typename?: 'CalloutContribution';
-    post?:
-      | {
-          __typename?: 'Post';
-          id: string;
-          nameID: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            description?: string | undefined;
-            url: string;
-            tagset?:
-              | {
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }
-              | undefined;
-            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          };
-        }
-      | undefined;
-  };
-};
-
-export type RemoveCommentFromCalloutMutationVariables = Exact<{
-  messageData: RoomRemoveMessageInput;
-}>;
-
-export type RemoveCommentFromCalloutMutation = { __typename?: 'Mutation'; removeMessageOnRoom: string };
-
 export type CreateLinkOnCalloutMutationVariables = Exact<{
   input: CreateContributionOnCalloutInput;
 }>;
@@ -11609,6 +11546,42 @@ export type ContributeTabPostFragment = {
   };
 };
 
+export type CreatePostFromContributeTabMutationVariables = Exact<{
+  postData: CreateContributionOnCalloutInput;
+}>;
+
+export type CreatePostFromContributeTabMutation = {
+  __typename?: 'Mutation';
+  createContributionOnCallout: {
+    __typename?: 'CalloutContribution';
+    post?:
+      | {
+          __typename?: 'Post';
+          id: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            url: string;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
 export type PostCardFragment = {
   __typename?: 'Post';
   id: string;
@@ -11649,6 +11622,114 @@ export type PostCardFragment = {
     references?:
       | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
       | undefined;
+  };
+};
+
+export type CalloutWhiteboardsQueryVariables = Exact<{
+  calloutId: Scalars['UUID'];
+}>;
+
+export type CalloutWhiteboardsQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          contributions: Array<{
+            __typename?: 'CalloutContribution';
+            id: string;
+            sortOrder: number;
+            whiteboard?:
+              | {
+                  __typename?: 'Whiteboard';
+                  id: string;
+                  createdDate: Date;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    url: string;
+                    displayName: string;
+                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  };
+                }
+              | undefined;
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type WhiteboardCollectionCalloutCardFragment = {
+  __typename?: 'Whiteboard';
+  id: string;
+  createdDate: Date;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    url: string;
+    displayName: string;
+    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  };
+};
+
+export type UpdateCalloutsSortOrderMutationVariables = Exact<{
+  calloutsSetID: Scalars['UUID'];
+  calloutIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
+}>;
+
+export type UpdateCalloutsSortOrderMutation = {
+  __typename?: 'Mutation';
+  updateCalloutsSortOrder: Array<{ __typename?: 'Callout'; id: string; sortOrder: number }>;
+};
+
+export type UpdateContributionsSortOrderMutationVariables = Exact<{
+  calloutID: Scalars['UUID'];
+  contributionIds: Array<Scalars['UUID']> | Scalars['UUID'];
+}>;
+
+export type UpdateContributionsSortOrderMutation = {
+  __typename?: 'Mutation';
+  updateContributionsSortOrder: Array<{ __typename?: 'CalloutContribution'; id: string; sortOrder: number }>;
+};
+
+export type DashboardTopCalloutsFragment = {
+  __typename?: 'Collaboration';
+  calloutsSet: {
+    __typename?: 'CalloutsSet';
+    id: string;
+    callouts: Array<{
+      __typename?: 'Callout';
+      id: string;
+      type: CalloutType;
+      visibility: CalloutVisibility;
+      activity: number;
+      framing: {
+        __typename?: 'CalloutFraming';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          url: string;
+          displayName: string;
+          description?: string | undefined;
+        };
+      };
+    }>;
+  };
+};
+
+export type DashboardTopCalloutFragment = {
+  __typename?: 'Callout';
+  id: string;
+  type: CalloutType;
+  visibility: CalloutVisibility;
+  activity: number;
+  framing: {
+    __typename?: 'CalloutFraming';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; url: string; displayName: string; description?: string | undefined };
   };
 };
 
@@ -12376,55 +12457,6 @@ export type CalloutContentQuery = {
           };
         }
       | undefined;
-  };
-};
-
-export type CalloutWhiteboardsQueryVariables = Exact<{
-  calloutId: Scalars['UUID'];
-}>;
-
-export type CalloutWhiteboardsQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    callout?:
-      | {
-          __typename?: 'Callout';
-          id: string;
-          contributions: Array<{
-            __typename?: 'CalloutContribution';
-            id: string;
-            sortOrder: number;
-            whiteboard?:
-              | {
-                  __typename?: 'Whiteboard';
-                  id: string;
-                  createdDate: Date;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    url: string;
-                    displayName: string;
-                    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  };
-                }
-              | undefined;
-          }>;
-        }
-      | undefined;
-  };
-};
-
-export type WhiteboardCollectionCalloutCardFragment = {
-  __typename?: 'Whiteboard';
-  id: string;
-  createdDate: Date;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    url: string;
-    displayName: string;
-    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
 };
 

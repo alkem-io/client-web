@@ -5,7 +5,7 @@ import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import { ContributeCreationBlock } from '@/domain/journey/common/tabs/Contribute/ContributeCreationBlock';
 import MembershipBackdrop from '@/domain/shared/components/Backdrops/MembershipBackdrop';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import CalloutsGroupView from '../callout/CalloutsInContext/CalloutsGroupView';
+import CalloutsGroupView from '../calloutsSet/CalloutsInContext/CalloutsGroupView';
 import CalloutCreationDialog from '../callout/creationDialog/CalloutCreationDialog';
 import { useCalloutCreationWithPreviewImages } from '../callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import KnowledgeBaseContainer from './KnowledgeBaseContainer';

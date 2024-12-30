@@ -1,5 +1,5 @@
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
-import useCallouts, { UseCalloutsProvided } from '../callout/useCallouts/useCallouts';
+import useCallouts, { UseCalloutsProvided } from '../calloutsSet/useCallouts/useCallouts';
 import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 
