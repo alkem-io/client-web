@@ -18,7 +18,7 @@ import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView'
 import SectionSpacer from '@/domain/shared/components/Section/SectionSpacer';
 import { PostDialogSection } from '../views/PostDialogSection';
 import { PostLayout } from '../views/PostLayoutWithOutlet';
-import useCallouts from '@/domain/collaboration/callout/useCallouts/useCallouts';
+import useCallouts from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import { useMoveContributionToCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
@@ -32,6 +32,7 @@ export interface PostSettingsPageProps {
   onClose: () => void;
   journeyTypeName: JourneyTypeName;
   collaborationId: string | undefined;
+  calloutsSetId: string | undefined;
   calloutId: string | undefined;
   postNameId: string | undefined;
 }
@@ -39,6 +40,7 @@ export interface PostSettingsPageProps {
 const PostSettingsPage = ({
   journeyTypeName,
   collaborationId,
+  calloutsSetId,
   postNameId,
   calloutId,
   onClose,
@@ -82,6 +84,7 @@ const PostSettingsPage = ({
 
   const { callouts, refetchCallouts } = useCallouts({
     collaborationId,
+    calloutsSetId,
     journeyTypeName,
     canReadCollaboration: true,
   });

@@ -30,7 +30,7 @@ export interface CalloutCreationTypeWithPreviewImages extends CalloutCreationTyp
 export interface CalloutCreationUtilsWithPreviewImages extends Omit<CalloutCreationUtils, 'handleCreateCallout'> {
   handleCreateCallout: (
     callout: CalloutCreationTypeWithPreviewImages
-  ) => Promise<CreateCalloutMutation['createCalloutOnCollaboration'] | undefined>;
+  ) => Promise<CreateCalloutMutation['createCalloutOnCalloutsSet'] | undefined>;
 }
 
 export const useCalloutCreationWithPreviewImages = (

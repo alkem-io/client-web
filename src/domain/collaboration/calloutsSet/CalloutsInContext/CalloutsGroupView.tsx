@@ -1,5 +1,5 @@
-import CalloutCreationDialog from '../creationDialog/CalloutCreationDialog';
-import { useCalloutCreationWithPreviewImages } from '../creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import CalloutCreationDialog from '../../callout/creationDialog/CalloutCreationDialog';
+import { useCalloutCreationWithPreviewImages } from '../../callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import AddContentButton from '@/core/ui/content/AddContentButton';
 import CalloutsView, { CalloutsViewProps } from '../JourneyCalloutsTabView/CalloutsView';
 import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 interface CalloutsGroupProps extends CalloutsViewProps {
   journeyId: string | undefined;
   collaborationId: string | undefined;
+  calloutsSetId: string | undefined;
   canCreateCallout: boolean;
   groupName: CalloutGroupName;
   flowState?: string;
@@ -23,6 +24,7 @@ const CalloutsGroupView = ({
   createButtonPlace = 'bottom',
   journeyTypeName,
   collaborationId,
+  calloutsSetId,
   ...calloutsViewProps
 }: CalloutsGroupProps) => {
   const {
@@ -31,7 +33,7 @@ const CalloutsGroupView = ({
     handleCreateCalloutClosed,
     handleCreateCallout,
     loading,
-  } = useCalloutCreationWithPreviewImages({ collaborationId });
+  } = useCalloutCreationWithPreviewImages({ collaborationId, calloutsSetId });
 
   const handleCreate = () => {
     handleCreateCalloutOpened();

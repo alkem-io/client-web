@@ -21,7 +21,7 @@ import { Tagset } from '@/domain/common/profile/Profile';
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { useCollaborationAuthorizationEntitlements } from '@/domain/collaboration/authorization/useCollaborationAuthorization';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
-import { getCalloutGroupNameValue } from '../utils/getCalloutGroupValue';
+import { getCalloutGroupNameValue } from '../../callout/utils/getCalloutGroupValue';
 
 export type WhiteboardFragmentWithCallout = WhiteboardDetailsFragment & { calloutNameId: string };
 
@@ -70,6 +70,7 @@ export type TypedCalloutDetails = TypedCallout &
 
 interface UseCalloutsParams {
   collaborationId: string | undefined;
+  calloutsSetId: string | undefined;
   journeyTypeName: JourneyTypeName;
   groupNames?: CalloutGroupName[];
   canReadCollaboration: boolean;
@@ -99,6 +100,7 @@ const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-group';
 
 const useCallouts = ({
   collaborationId,
+  calloutsSetId,
   journeyTypeName,
   canReadCollaboration,
   ...params
@@ -112,7 +114,7 @@ const useCallouts = ({
   } = useCollaborationAuthorizationEntitlements({ collaborationId });
 
   const variables = {
-    collaborationId: collaborationId!,
+    calloutsSetId: calloutsSetId!,
     groups: params.groupNames,
   } as const;
 
@@ -123,7 +125,7 @@ const useCallouts = ({
   } = useCalloutsQuery({
     variables,
     fetchPolicy: 'cache-and-network',
-    skip: !canReadCollaboration || !collaborationId,
+    skip: !canReadCollaboration || !calloutsSetId,
   });
 
   const [getCallouts] = useCalloutsLazyQuery({
@@ -140,14 +142,14 @@ const useCallouts = ({
     });
   };
 
-  const collaboration = calloutsData?.lookup.collaboration;
+  const calloutsSet = calloutsData?.lookup.calloutsSet;
 
   const callouts = useMemo(
     () =>
-      collaboration?.callouts?.map(({ authorization, ...callout }) => {
+      calloutsSet?.callouts?.map(({ authorization, ...callout }) => {
         const draft = callout?.visibility === CalloutVisibility.Draft;
         const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
-        const movable = collaboration.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
+        const movable = calloutsSet.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
         const innovationFlowTagset = callout.framing.profile.tagsets?.find(
           tagset => tagset.name === INNOVATION_FLOW_STATES_TAGSET_NAME
         );
@@ -170,22 +172,22 @@ const useCallouts = ({
           groupName: getCalloutGroupNameValue(groupNameTagset?.tags),
         } as TypedCallout;
       }),
-    [collaboration]
+    [calloutsSet]
   );
 
   const submitCalloutsSortOrder = useCallback(
     (calloutIds: string[]) => {
-      if (!collaboration) {
-        throw new Error('Collaboration is not loaded yet.');
+      if (!calloutsSet) {
+        throw new Error('CalloutsSet is not loaded yet.');
       }
       return updateCalloutsSortOrderMutation({
         variables: {
-          collaborationId: collaboration.id,
+          calloutsSetID: calloutsSet.id,
           calloutIds,
         },
       });
     },
-    [collaboration]
+    [calloutsSet]
   );
 
   const sortedCallouts = useMemo(() => callouts?.sort((a, b) => a.sortOrder - b.sortOrder), [callouts]);

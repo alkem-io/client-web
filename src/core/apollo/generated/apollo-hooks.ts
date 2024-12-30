@@ -294,22 +294,25 @@ export const InnovationFlowCollaborationFragmentDoc = gql`
       id
       myPrivileges
     }
-    callouts(groups: $filterCalloutGroups) {
+    calloutsSet {
       id
-      nameID
-      type
-      activity
-      sortOrder
-      framing {
+      callouts(groups: $filterCalloutGroups) {
         id
-        profile {
+        nameID
+        type
+        activity
+        sortOrder
+        framing {
           id
-          displayName
-          calloutGroupName: tagset(tagsetName: CALLOUT_GROUP) {
-            ...TagsetDetails
-          }
-          flowState: tagset(tagsetName: FLOW_STATE) {
-            ...TagsetDetails
+          profile {
+            id
+            displayName
+            calloutGroupName: tagset(tagsetName: CALLOUT_GROUP) {
+              ...TagsetDetails
+            }
+            flowState: tagset(tagsetName: FLOW_STATE) {
+              ...TagsetDetails
+            }
           }
         }
       }
@@ -589,6 +592,21 @@ export const ContributeTabPostFragmentDoc = gql`
   }
   ${PostCardFragmentDoc}
 `;
+export const WhiteboardCollectionCalloutCardFragmentDoc = gql`
+  fragment WhiteboardCollectionCalloutCard on Whiteboard {
+    id
+    profile {
+      id
+      url
+      displayName
+      visual(type: CARD) {
+        ...VisualUri
+      }
+    }
+    createdDate
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
     id
@@ -614,19 +632,6 @@ export const CalloutFragmentDoc = gql`
     visibility
   }
   ${TagsetDetailsFragmentDoc}
-`;
-export const CollaborationWithCalloutsFragmentDoc = gql`
-  fragment CollaborationWithCallouts on Collaboration {
-    id
-    authorization {
-      id
-      myPrivileges
-    }
-    callouts(groups: $groups, IDs: $calloutIds) {
-      ...Callout
-    }
-  }
-  ${CalloutFragmentDoc}
 `;
 export const ReferenceDetailsFragmentDoc = gql`
   fragment ReferenceDetails on Reference {
@@ -846,21 +851,6 @@ export const CalloutDetailsFragmentDoc = gql`
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
-export const WhiteboardCollectionCalloutCardFragmentDoc = gql`
-  fragment WhiteboardCollectionCalloutCard on Whiteboard {
-    id
-    profile {
-      id
-      url
-      displayName
-      visual(type: CARD) {
-        ...VisualUri
-      }
-    }
-    createdDate
-  }
-  ${VisualUriFragmentDoc}
-`;
 export const PostDashboardFragmentDoc = gql`
   fragment PostDashboard on Post {
     id
@@ -1025,23 +1015,26 @@ export const CalloutWithWhiteboardFragmentDoc = gql`
 export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
   fragment CollaborationWithWhiteboardDetails on Collaboration {
     id
-    callouts {
+    calloutsSet {
       id
-      nameID
-      type
-      authorization {
+      callouts {
         id
-        myPrivileges
-      }
-      contributions {
-        whiteboard {
-          ...WhiteboardDetails
+        nameID
+        type
+        authorization {
+          id
+          myPrivileges
         }
-      }
-      framing {
-        id
-        whiteboard {
-          ...WhiteboardDetails
+        contributions {
+          whiteboard {
+            ...WhiteboardDetails
+          }
+        }
+        framing {
+          id
+          whiteboard {
+            ...WhiteboardDetails
+          }
         }
       }
     }
@@ -2020,6 +2013,9 @@ export const SubspaceProviderFragmentDoc = gql`
         id
         myPrivileges
       }
+      calloutsSet {
+        id
+      }
     }
   }
   ${VisualFullFragmentDoc}
@@ -2149,6 +2145,9 @@ export const SpaceInfoFragmentDoc = gql`
         id
         myPrivileges
       }
+      calloutsSet {
+        id
+      }
     }
     visibility
   }
@@ -2173,8 +2172,11 @@ export const DashboardTopCalloutFragmentDoc = gql`
 `;
 export const DashboardTopCalloutsFragmentDoc = gql`
   fragment DashboardTopCallouts on Collaboration {
-    callouts(sortByActivity: true) {
-      ...DashboardTopCallout
+    calloutsSet {
+      id
+      callouts(sortByActivity: true) {
+        ...DashboardTopCallout
+      }
     }
   }
   ${DashboardTopCalloutFragmentDoc}
@@ -2570,6 +2572,9 @@ export const SubspacePageSpaceFragmentDoc = gql`
     }
     collaboration {
       id
+      calloutsSet {
+        id
+      }
     }
     templatesManager {
       id
@@ -2765,12 +2770,15 @@ export const ProfileStorageConfigFragmentDoc = gql`
 export const CalloutOnCollaborationWithStorageConfigFragmentDoc = gql`
   fragment CalloutOnCollaborationWithStorageConfig on Collaboration {
     id
-    callouts(IDs: [$calloutId]) {
+    calloutsSet {
       id
-      framing {
+      callouts(IDs: [$calloutId]) {
         id
-        profile {
-          ...ProfileStorageConfig
+        framing {
+          id
+          profile {
+            ...ProfileStorageConfig
+          }
         }
       }
     }
@@ -2844,29 +2852,32 @@ export const CollaborationTemplateContentFragmentDoc = gql`
         description
       }
     }
-    callouts {
+    calloutsSet {
       id
-      type
-      framing {
+      callouts {
         id
-        profile {
-          id
-          displayName
-          description
-          flowStateTagset: tagset(tagsetName: FLOW_STATE) {
-            tags
-          }
-        }
-        whiteboard {
+        type
+        framing {
           id
           profile {
-            preview: visual(type: BANNER) {
-              ...VisualFull
+            id
+            displayName
+            description
+            flowStateTagset: tagset(tagsetName: FLOW_STATE) {
+              tags
+            }
+          }
+          whiteboard {
+            id
+            profile {
+              preview: visual(type: BANNER) {
+                ...VisualFull
+              }
             }
           }
         }
+        sortOrder
       }
-      sortOrder
     }
   }
   ${VisualFullFragmentDoc}
@@ -3545,13 +3556,16 @@ export const LibraryTemplatesFragmentDoc = gql`
             description
           }
         }
-        callouts {
+        calloutsSet {
           id
-          framing {
+          callouts {
             id
-            profile {
+            framing {
               id
-              displayName
+              profile {
+                id
+                displayName
+              }
             }
           }
         }
@@ -6342,6 +6356,13 @@ export const CollaborationAuthorizationEntitlementsDocument = gql`
           id
           availableEntitlements
         }
+        calloutsSet {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+        }
       }
     }
   }
@@ -6405,110 +6426,56 @@ export function refetchCollaborationAuthorizationEntitlementsQuery(
   return { query: CollaborationAuthorizationEntitlementsDocument, variables: variables };
 }
 
-export const UpdateCalloutsSortOrderDocument = gql`
-  mutation UpdateCalloutsSortOrder($collaborationId: UUID!, $calloutIds: [UUID_NAMEID!]!) {
-    updateCalloutsSortOrder(sortOrderData: { collaborationID: $collaborationId, calloutIDs: $calloutIds }) {
-      id
-      sortOrder
-    }
+export const RemoveCommentFromCalloutDocument = gql`
+  mutation RemoveCommentFromCallout($messageData: RoomRemoveMessageInput!) {
+    removeMessageOnRoom(messageData: $messageData)
   }
 `;
-export type UpdateCalloutsSortOrderMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateCalloutsSortOrderMutation,
-  SchemaTypes.UpdateCalloutsSortOrderMutationVariables
+export type RemoveCommentFromCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveCommentFromCalloutMutation,
+  SchemaTypes.RemoveCommentFromCalloutMutationVariables
 >;
 
 /**
- * __useUpdateCalloutsSortOrderMutation__
+ * __useRemoveCommentFromCalloutMutation__
  *
- * To run a mutation, you first call `useUpdateCalloutsSortOrderMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateCalloutsSortOrderMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useRemoveCommentFromCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveCommentFromCalloutMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateCalloutsSortOrderMutation, { data, loading, error }] = useUpdateCalloutsSortOrderMutation({
+ * const [removeCommentFromCalloutMutation, { data, loading, error }] = useRemoveCommentFromCalloutMutation({
  *   variables: {
- *      collaborationId: // value for 'collaborationId'
- *      calloutIds: // value for 'calloutIds'
+ *      messageData: // value for 'messageData'
  *   },
  * });
  */
-export function useUpdateCalloutsSortOrderMutation(
+export function useRemoveCommentFromCalloutMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateCalloutsSortOrderMutation,
-    SchemaTypes.UpdateCalloutsSortOrderMutationVariables
+    SchemaTypes.RemoveCommentFromCalloutMutation,
+    SchemaTypes.RemoveCommentFromCalloutMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.UpdateCalloutsSortOrderMutation,
-    SchemaTypes.UpdateCalloutsSortOrderMutationVariables
-  >(UpdateCalloutsSortOrderDocument, options);
+    SchemaTypes.RemoveCommentFromCalloutMutation,
+    SchemaTypes.RemoveCommentFromCalloutMutationVariables
+  >(RemoveCommentFromCalloutDocument, options);
 }
 
-export type UpdateCalloutsSortOrderMutationHookResult = ReturnType<typeof useUpdateCalloutsSortOrderMutation>;
-export type UpdateCalloutsSortOrderMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutsSortOrderMutation>;
-export type UpdateCalloutsSortOrderMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateCalloutsSortOrderMutation,
-  SchemaTypes.UpdateCalloutsSortOrderMutationVariables
->;
-export const UpdateContributionsSortOrderDocument = gql`
-  mutation UpdateContributionsSortOrder($calloutID: UUID!, $contributionIds: [UUID!]!) {
-    updateContributionsSortOrder(sortOrderData: { calloutID: $calloutID, contributionIDs: $contributionIds }) {
-      id
-      sortOrder
-    }
-  }
-`;
-export type UpdateContributionsSortOrderMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateContributionsSortOrderMutation,
-  SchemaTypes.UpdateContributionsSortOrderMutationVariables
->;
-
-/**
- * __useUpdateContributionsSortOrderMutation__
- *
- * To run a mutation, you first call `useUpdateContributionsSortOrderMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateContributionsSortOrderMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateContributionsSortOrderMutation, { data, loading, error }] = useUpdateContributionsSortOrderMutation({
- *   variables: {
- *      calloutID: // value for 'calloutID'
- *      contributionIds: // value for 'contributionIds'
- *   },
- * });
- */
-export function useUpdateContributionsSortOrderMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateContributionsSortOrderMutation,
-    SchemaTypes.UpdateContributionsSortOrderMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateContributionsSortOrderMutation,
-    SchemaTypes.UpdateContributionsSortOrderMutationVariables
-  >(UpdateContributionsSortOrderDocument, options);
-}
-
-export type UpdateContributionsSortOrderMutationHookResult = ReturnType<typeof useUpdateContributionsSortOrderMutation>;
-export type UpdateContributionsSortOrderMutationResult =
-  Apollo.MutationResult<SchemaTypes.UpdateContributionsSortOrderMutation>;
-export type UpdateContributionsSortOrderMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateContributionsSortOrderMutation,
-  SchemaTypes.UpdateContributionsSortOrderMutationVariables
+export type RemoveCommentFromCalloutMutationHookResult = ReturnType<typeof useRemoveCommentFromCalloutMutation>;
+export type RemoveCommentFromCalloutMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveCommentFromCalloutMutation>;
+export type RemoveCommentFromCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveCommentFromCalloutMutation,
+  SchemaTypes.RemoveCommentFromCalloutMutationVariables
 >;
 export const CreateCalloutDocument = gql`
-  mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
-    createCalloutOnCollaboration(calloutData: $calloutData) {
+  mutation createCallout($calloutData: CreateCalloutOnCalloutsSetInput!) {
+    createCalloutOnCalloutsSet(calloutData: $calloutData) {
       ...CalloutDetails
     }
   }
@@ -6811,119 +6778,6 @@ export type DeleteCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalloutMutation,
   SchemaTypes.DeleteCalloutMutationVariables
 >;
-export const CreatePostFromContributeTabDocument = gql`
-  mutation CreatePostFromContributeTab($postData: CreateContributionOnCalloutInput!) {
-    createContributionOnCallout(contributionData: $postData) {
-      post {
-        id
-        nameID
-        profile {
-          id
-          displayName
-          description
-          url
-          tagset {
-            ...TagsetDetails
-          }
-          visual(type: CARD) {
-            ...VisualUri
-          }
-        }
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualUriFragmentDoc}
-`;
-export type CreatePostFromContributeTabMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreatePostFromContributeTabMutation,
-  SchemaTypes.CreatePostFromContributeTabMutationVariables
->;
-
-/**
- * __useCreatePostFromContributeTabMutation__
- *
- * To run a mutation, you first call `useCreatePostFromContributeTabMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreatePostFromContributeTabMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createPostFromContributeTabMutation, { data, loading, error }] = useCreatePostFromContributeTabMutation({
- *   variables: {
- *      postData: // value for 'postData'
- *   },
- * });
- */
-export function useCreatePostFromContributeTabMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreatePostFromContributeTabMutation,
-    SchemaTypes.CreatePostFromContributeTabMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.CreatePostFromContributeTabMutation,
-    SchemaTypes.CreatePostFromContributeTabMutationVariables
-  >(CreatePostFromContributeTabDocument, options);
-}
-
-export type CreatePostFromContributeTabMutationHookResult = ReturnType<typeof useCreatePostFromContributeTabMutation>;
-export type CreatePostFromContributeTabMutationResult =
-  Apollo.MutationResult<SchemaTypes.CreatePostFromContributeTabMutation>;
-export type CreatePostFromContributeTabMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreatePostFromContributeTabMutation,
-  SchemaTypes.CreatePostFromContributeTabMutationVariables
->;
-export const RemoveCommentFromCalloutDocument = gql`
-  mutation RemoveCommentFromCallout($messageData: RoomRemoveMessageInput!) {
-    removeMessageOnRoom(messageData: $messageData)
-  }
-`;
-export type RemoveCommentFromCalloutMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveCommentFromCalloutMutation,
-  SchemaTypes.RemoveCommentFromCalloutMutationVariables
->;
-
-/**
- * __useRemoveCommentFromCalloutMutation__
- *
- * To run a mutation, you first call `useRemoveCommentFromCalloutMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveCommentFromCalloutMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeCommentFromCalloutMutation, { data, loading, error }] = useRemoveCommentFromCalloutMutation({
- *   variables: {
- *      messageData: // value for 'messageData'
- *   },
- * });
- */
-export function useRemoveCommentFromCalloutMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveCommentFromCalloutMutation,
-    SchemaTypes.RemoveCommentFromCalloutMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveCommentFromCalloutMutation,
-    SchemaTypes.RemoveCommentFromCalloutMutationVariables
-  >(RemoveCommentFromCalloutDocument, options);
-}
-
-export type RemoveCommentFromCalloutMutationHookResult = ReturnType<typeof useRemoveCommentFromCalloutMutation>;
-export type RemoveCommentFromCalloutMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveCommentFromCalloutMutation>;
-export type RemoveCommentFromCalloutMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveCommentFromCalloutMutation,
-  SchemaTypes.RemoveCommentFromCalloutMutationVariables
->;
 export const CreateLinkOnCalloutDocument = gql`
   mutation createLinkOnCallout($input: CreateContributionOnCalloutInput!) {
     createContributionOnCallout(contributionData: $input) {
@@ -7175,15 +7029,259 @@ export function refetchCalloutPostsQuery(variables: SchemaTypes.CalloutPostsQuer
   return { query: CalloutPostsDocument, variables: variables };
 }
 
-export const CalloutsDocument = gql`
-  query Callouts($collaborationId: UUID!, $groups: [String!], $calloutIds: [UUID_NAMEID!]) {
-    lookup {
-      collaboration(ID: $collaborationId) {
-        ...CollaborationWithCallouts
+export const CreatePostFromContributeTabDocument = gql`
+  mutation CreatePostFromContributeTab($postData: CreateContributionOnCalloutInput!) {
+    createContributionOnCallout(contributionData: $postData) {
+      post {
+        id
+        nameID
+        profile {
+          id
+          displayName
+          description
+          url
+          tagset {
+            ...TagsetDetails
+          }
+          visual(type: CARD) {
+            ...VisualUri
+          }
+        }
       }
     }
   }
-  ${CollaborationWithCalloutsFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+  ${VisualUriFragmentDoc}
+`;
+export type CreatePostFromContributeTabMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreatePostFromContributeTabMutation,
+  SchemaTypes.CreatePostFromContributeTabMutationVariables
+>;
+
+/**
+ * __useCreatePostFromContributeTabMutation__
+ *
+ * To run a mutation, you first call `useCreatePostFromContributeTabMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePostFromContributeTabMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPostFromContributeTabMutation, { data, loading, error }] = useCreatePostFromContributeTabMutation({
+ *   variables: {
+ *      postData: // value for 'postData'
+ *   },
+ * });
+ */
+export function useCreatePostFromContributeTabMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreatePostFromContributeTabMutation,
+    SchemaTypes.CreatePostFromContributeTabMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreatePostFromContributeTabMutation,
+    SchemaTypes.CreatePostFromContributeTabMutationVariables
+  >(CreatePostFromContributeTabDocument, options);
+}
+
+export type CreatePostFromContributeTabMutationHookResult = ReturnType<typeof useCreatePostFromContributeTabMutation>;
+export type CreatePostFromContributeTabMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreatePostFromContributeTabMutation>;
+export type CreatePostFromContributeTabMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreatePostFromContributeTabMutation,
+  SchemaTypes.CreatePostFromContributeTabMutationVariables
+>;
+export const CalloutWhiteboardsDocument = gql`
+  query CalloutWhiteboards($calloutId: UUID!) {
+    lookup {
+      callout(ID: $calloutId) {
+        id
+        contributions {
+          id
+          sortOrder
+          whiteboard {
+            ...WhiteboardCollectionCalloutCard
+          }
+        }
+      }
+    }
+  }
+  ${WhiteboardCollectionCalloutCardFragmentDoc}
+`;
+
+/**
+ * __useCalloutWhiteboardsQuery__
+ *
+ * To run a query within a React component, call `useCalloutWhiteboardsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutWhiteboardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutWhiteboardsQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useCalloutWhiteboardsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutWhiteboardsQuery,
+    SchemaTypes.CalloutWhiteboardsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutWhiteboardsQuery, SchemaTypes.CalloutWhiteboardsQueryVariables>(
+    CalloutWhiteboardsDocument,
+    options
+  );
+}
+
+export function useCalloutWhiteboardsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutWhiteboardsQuery,
+    SchemaTypes.CalloutWhiteboardsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutWhiteboardsQuery, SchemaTypes.CalloutWhiteboardsQueryVariables>(
+    CalloutWhiteboardsDocument,
+    options
+  );
+}
+
+export type CalloutWhiteboardsQueryHookResult = ReturnType<typeof useCalloutWhiteboardsQuery>;
+export type CalloutWhiteboardsLazyQueryHookResult = ReturnType<typeof useCalloutWhiteboardsLazyQuery>;
+export type CalloutWhiteboardsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutWhiteboardsQuery,
+  SchemaTypes.CalloutWhiteboardsQueryVariables
+>;
+export function refetchCalloutWhiteboardsQuery(variables: SchemaTypes.CalloutWhiteboardsQueryVariables) {
+  return { query: CalloutWhiteboardsDocument, variables: variables };
+}
+
+export const UpdateCalloutsSortOrderDocument = gql`
+  mutation UpdateCalloutsSortOrder($calloutsSetID: UUID!, $calloutIds: [UUID_NAMEID!]!) {
+    updateCalloutsSortOrder(sortOrderData: { calloutsSetID: $calloutsSetID, calloutIDs: $calloutIds }) {
+      id
+      sortOrder
+    }
+  }
+`;
+export type UpdateCalloutsSortOrderMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCalloutsSortOrderMutation,
+  SchemaTypes.UpdateCalloutsSortOrderMutationVariables
+>;
+
+/**
+ * __useUpdateCalloutsSortOrderMutation__
+ *
+ * To run a mutation, you first call `useUpdateCalloutsSortOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCalloutsSortOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCalloutsSortOrderMutation, { data, loading, error }] = useUpdateCalloutsSortOrderMutation({
+ *   variables: {
+ *      calloutsSetID: // value for 'calloutsSetID'
+ *      calloutIds: // value for 'calloutIds'
+ *   },
+ * });
+ */
+export function useUpdateCalloutsSortOrderMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCalloutsSortOrderMutation,
+    SchemaTypes.UpdateCalloutsSortOrderMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateCalloutsSortOrderMutation,
+    SchemaTypes.UpdateCalloutsSortOrderMutationVariables
+  >(UpdateCalloutsSortOrderDocument, options);
+}
+
+export type UpdateCalloutsSortOrderMutationHookResult = ReturnType<typeof useUpdateCalloutsSortOrderMutation>;
+export type UpdateCalloutsSortOrderMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutsSortOrderMutation>;
+export type UpdateCalloutsSortOrderMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCalloutsSortOrderMutation,
+  SchemaTypes.UpdateCalloutsSortOrderMutationVariables
+>;
+export const UpdateContributionsSortOrderDocument = gql`
+  mutation UpdateContributionsSortOrder($calloutID: UUID!, $contributionIds: [UUID!]!) {
+    updateContributionsSortOrder(sortOrderData: { calloutID: $calloutID, contributionIDs: $contributionIds }) {
+      id
+      sortOrder
+    }
+  }
+`;
+export type UpdateContributionsSortOrderMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateContributionsSortOrderMutation,
+  SchemaTypes.UpdateContributionsSortOrderMutationVariables
+>;
+
+/**
+ * __useUpdateContributionsSortOrderMutation__
+ *
+ * To run a mutation, you first call `useUpdateContributionsSortOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateContributionsSortOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateContributionsSortOrderMutation, { data, loading, error }] = useUpdateContributionsSortOrderMutation({
+ *   variables: {
+ *      calloutID: // value for 'calloutID'
+ *      contributionIds: // value for 'contributionIds'
+ *   },
+ * });
+ */
+export function useUpdateContributionsSortOrderMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateContributionsSortOrderMutation,
+    SchemaTypes.UpdateContributionsSortOrderMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateContributionsSortOrderMutation,
+    SchemaTypes.UpdateContributionsSortOrderMutationVariables
+  >(UpdateContributionsSortOrderDocument, options);
+}
+
+export type UpdateContributionsSortOrderMutationHookResult = ReturnType<typeof useUpdateContributionsSortOrderMutation>;
+export type UpdateContributionsSortOrderMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateContributionsSortOrderMutation>;
+export type UpdateContributionsSortOrderMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateContributionsSortOrderMutation,
+  SchemaTypes.UpdateContributionsSortOrderMutationVariables
+>;
+export const CalloutsDocument = gql`
+  query Callouts($calloutsSetId: UUID!, $groups: [String!], $calloutIds: [UUID_NAMEID!]) {
+    lookup {
+      calloutsSet(ID: $calloutsSetId) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        callouts(groups: $groups, IDs: $calloutIds) {
+          ...Callout
+        }
+      }
+    }
+  }
+  ${CalloutFragmentDoc}
 `;
 
 /**
@@ -7198,7 +7296,7 @@ export const CalloutsDocument = gql`
  * @example
  * const { data, loading, error } = useCalloutsQuery({
  *   variables: {
- *      collaborationId: // value for 'collaborationId'
+ *      calloutsSetId: // value for 'calloutsSetId'
  *      groups: // value for 'groups'
  *      calloutIds: // value for 'calloutIds'
  *   },
@@ -7366,76 +7464,6 @@ export type CalloutContentQueryResult = Apollo.QueryResult<
 >;
 export function refetchCalloutContentQuery(variables: SchemaTypes.CalloutContentQueryVariables) {
   return { query: CalloutContentDocument, variables: variables };
-}
-
-export const CalloutWhiteboardsDocument = gql`
-  query CalloutWhiteboards($calloutId: UUID!) {
-    lookup {
-      callout(ID: $calloutId) {
-        id
-        contributions {
-          id
-          sortOrder
-          whiteboard {
-            ...WhiteboardCollectionCalloutCard
-          }
-        }
-      }
-    }
-  }
-  ${WhiteboardCollectionCalloutCardFragmentDoc}
-`;
-
-/**
- * __useCalloutWhiteboardsQuery__
- *
- * To run a query within a React component, call `useCalloutWhiteboardsQuery` and pass it any options that fit your needs.
- * When your component renders, `useCalloutWhiteboardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCalloutWhiteboardsQuery({
- *   variables: {
- *      calloutId: // value for 'calloutId'
- *   },
- * });
- */
-export function useCalloutWhiteboardsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CalloutWhiteboardsQuery,
-    SchemaTypes.CalloutWhiteboardsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CalloutWhiteboardsQuery, SchemaTypes.CalloutWhiteboardsQueryVariables>(
-    CalloutWhiteboardsDocument,
-    options
-  );
-}
-
-export function useCalloutWhiteboardsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CalloutWhiteboardsQuery,
-    SchemaTypes.CalloutWhiteboardsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.CalloutWhiteboardsQuery, SchemaTypes.CalloutWhiteboardsQueryVariables>(
-    CalloutWhiteboardsDocument,
-    options
-  );
-}
-
-export type CalloutWhiteboardsQueryHookResult = ReturnType<typeof useCalloutWhiteboardsQuery>;
-export type CalloutWhiteboardsLazyQueryHookResult = ReturnType<typeof useCalloutWhiteboardsLazyQuery>;
-export type CalloutWhiteboardsQueryResult = Apollo.QueryResult<
-  SchemaTypes.CalloutWhiteboardsQuery,
-  SchemaTypes.CalloutWhiteboardsQueryVariables
->;
-export function refetchCalloutWhiteboardsQuery(variables: SchemaTypes.CalloutWhiteboardsQueryVariables) {
-  return { query: CalloutWhiteboardsDocument, variables: variables };
 }
 
 export const PostDocument = gql`
@@ -16057,6 +16085,9 @@ export const SpaceCommunityPageDocument = gql`
       }
       collaboration {
         id
+        calloutsSet {
+          id
+        }
       }
     }
   }
@@ -17067,6 +17098,9 @@ export const SubspaceProfileInfoDocument = gql`
           innovationFlow {
             id
           }
+          calloutsSet {
+            id
+          }
         }
       }
     }
@@ -17790,19 +17824,22 @@ export const AdminSpaceSubspacesPageDocument = gql`
             }
             collaboration {
               id
-              callouts {
+              calloutsSet {
                 id
-                type
-                sortOrder
-                framing {
+                callouts {
                   id
-                  profile {
+                  type
+                  sortOrder
+                  framing {
                     id
-                    displayName
-                    description
-                    flowStateTagset: tagset(tagsetName: FLOW_STATE) {
+                    profile {
                       id
-                      tags
+                      displayName
+                      description
+                      flowStateTagset: tagset(tagsetName: FLOW_STATE) {
+                        id
+                        tags
+                      }
                     }
                   }
                 }
@@ -20495,6 +20532,9 @@ export const SpaceCollaborationIdDocument = gql`
         id
         collaboration {
           id
+          calloutsSet {
+            id
+          }
         }
       }
     }
@@ -21589,10 +21629,12 @@ export const CreateCollaborationInputDocument = gql`
   query CreateCollaborationInput($collaborationId: UUID!) {
     inputCreator {
       collaboration(ID: $collaborationId) {
-        calloutsData {
-          framing {
-            profile {
-              displayName
+        calloutsSetData {
+          calloutsData {
+            framing {
+              profile {
+                displayName
+              }
             }
           }
         }
@@ -22710,6 +22752,9 @@ export const SpaceKeyEntitiesIDsDocument = gql`
         }
         collaboration {
           id
+          calloutsSet {
+            id
+          }
         }
       }
     }
@@ -22773,8 +22818,11 @@ export const CalloutIdDocument = gql`
     lookup {
       collaboration(ID: $collaborationId) {
         id
-        callouts(IDs: [$calloutNameId]) {
+        calloutsSet {
           id
+          callouts(IDs: [$calloutNameId]) {
+            id
+          }
         }
       }
     }

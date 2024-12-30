@@ -86,23 +86,26 @@ fragment CalloutWithWhiteboard on Callout {
 
 fragment CollaborationWithWhiteboardDetails on Collaboration {
   id
-  callouts {
+  calloutsSet {
     id
-    nameID
-    type
-    authorization {
+    callouts {
       id
-      myPrivileges
-    }
-    contributions {
-      whiteboard {
-        ...WhiteboardDetails
+      nameID
+      type
+      authorization {
+        id
+        myPrivileges
       }
-    }
-    framing {
-      id
-      whiteboard {
-        ...WhiteboardDetails
+      contributions {
+        whiteboard {
+          ...WhiteboardDetails
+        }
+      }
+      framing {
+        id
+        whiteboard {
+          ...WhiteboardDetails
+        }
       }
     }
   }

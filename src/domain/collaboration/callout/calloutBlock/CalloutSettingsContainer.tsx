@@ -36,7 +36,7 @@ import {
 } from '@mui/icons-material';
 import { Reference, Tagset } from '@/domain/common/profile/Profile';
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
-import { WhiteboardFragmentWithCallout } from '../useCallouts/useCallouts';
+import { WhiteboardFragmentWithCallout } from '../../calloutsSet/useCallouts/useCallouts';
 import { FormatedLink, LinkDetails } from '../links/LinkCollectionCallout';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';

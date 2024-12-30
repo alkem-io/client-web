@@ -1,0 +1,4 @@
+
+mutation RemoveCommentFromCallout($messageData: RoomRemoveMessageInput!) {
+  removeMessageOnRoom(messageData: $messageData)
+}

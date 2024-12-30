@@ -127,7 +127,9 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
             displayName: values.name!, // ensured by yup validation
             tagline: values.tagline!,
           },
-          collaborationData: {},
+          collaborationData: {
+            calloutsSetData: {},
+          },
           tags: compact(values.tagsets?.reduce((acc: string[], tagset) => [...acc, ...tagset.tags], [])),
           licensePlanID: values.licensePlanId,
         },

@@ -1,5 +1,5 @@
-mutation UpdateCalloutsSortOrder($collaborationId: UUID!, $calloutIds: [UUID_NAMEID!]!) {
-  updateCalloutsSortOrder(sortOrderData: { collaborationID: $collaborationId, calloutIDs: $calloutIds }) {
+mutation UpdateCalloutsSortOrder($calloutsSetID: UUID!, $calloutIds: [UUID_NAMEID!]!) {
+  updateCalloutsSortOrder(sortOrderData: { calloutsSetID: $calloutsSetID, calloutIDs: $calloutIds }) {
     id
     sortOrder
   }
