@@ -454,6 +454,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       // add posts to collection
       if (postCalloutId) {
         const postsArray = calloutData?.posts ?? [];
+
         for (const post of postsArray) {
           await onCreatePost(post, postCalloutId);
         }
@@ -469,6 +470,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       // add documents to collection
       if (documentsCalloutId) {
         const documentsArray = calloutData?.documents ?? [];
+
         for (const document of documentsArray) {
           await onCreateLink(document, documentsCalloutId);
         }
