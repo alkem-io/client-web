@@ -2,7 +2,7 @@ import { GridColDef, GridRenderCellParams, GridValueGetterParams } from '@mui/x-
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import SpaceSettingsLayout from '../SpaceSettingsLayout';
 import { Box, BoxProps, CircularProgress, IconButton, Link, LinkProps, Skeleton, useTheme } from '@mui/material';

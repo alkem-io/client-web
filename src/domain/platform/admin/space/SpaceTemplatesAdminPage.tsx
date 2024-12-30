@@ -4,7 +4,7 @@ import { useUrlParams } from '@/core/routing/useUrlParams';
 import Loading from '@/core/ui/loading/Loading';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import TemplatesAdmin from '@/domain/templates/components/TemplatesAdmin/TemplatesAdmin';
-import { SettingsSection } from '../layout/EntitySettingsLayout/constants';
+import { SettingsSection } from '../layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '../layout/EntitySettingsLayout/types';
 import SpaceSettingsLayout from './SpaceSettingsLayout';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
