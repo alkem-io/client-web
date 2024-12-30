@@ -31,14 +31,14 @@ const SubspaceHomeContainer = ({ journeyId, journeyTypeName, children }: Subspac
     skip: !journeyId || !spaceReadAccess.canReadSpace,
   });
 
-  const collaborationId = data?.lookup.space?.collaboration.id;
-  const calloutsSetId = data?.lookup.space?.collaboration.calloutsSet?.id;
+  const collaboration = data?.lookup.space?.collaboration;
+  const collaborationId = collaboration?.id;
 
   const innovationFlow = useInnovationFlowStates({ collaborationId });
 
   const callouts = useCallouts({
     collaborationId,
-    calloutsSetId,
+    calloutsSetId: collaboration?.calloutsSet?.id,
     journeyTypeName,
     canReadCollaboration: true,
   });

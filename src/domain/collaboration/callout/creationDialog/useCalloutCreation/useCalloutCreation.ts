@@ -63,11 +63,12 @@ export const useCalloutCreation = ({
 }: CalloutCreationParams): CalloutCreationUtils => {
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
   const [isCreating, setIsCreating] = useState(false);
+  // TODO: remove the collaborationId dependency in favor of calloutsSetId
   const { canCreateCallout, loading } = useCollaborationAuthorizationEntitlements({ collaborationId });
 
   const [createCallout] = useCreateCalloutMutation({
     update: (cache, { data }) => {
-      if (!data || !collaborationId) {
+      if (!data || !calloutsSetId) {
         return;
       }
       const { createCalloutOnCalloutsSet } = data;
@@ -128,7 +129,7 @@ export const useCalloutCreation = ({
         setIsCreating(false);
       }
     },
-    [collaborationId, createCallout]
+    [calloutsSetId, createCallout]
   );
 
   return {

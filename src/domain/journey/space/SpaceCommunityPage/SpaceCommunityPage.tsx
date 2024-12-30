@@ -125,7 +125,7 @@ const SpaceCommunityPage = () => {
               <CalloutsGroupView
                 journeyId={spaceId}
                 collaborationId={collaborationId}
-                calloutsSetId={data?.space.collaboration?.calloutsSet?.id}
+                calloutsSetId={calloutsSetId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Community]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}

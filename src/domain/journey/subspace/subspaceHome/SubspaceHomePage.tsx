@@ -81,121 +81,125 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
 
   return (
     <SubspaceHomeContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
-      {({ innovationFlow, callouts, subspace, spaceReadAccess }) => (
-        <>
-          <SubspacePageLayout
-            spaceReadAccess={spaceReadAccess}
-            journeyId={journeyId}
-            journeyPath={journeyPath}
-            journeyUrl={subspace?.profile.url}
-            parentSpaceId={parentSpaceId}
-            loading={loading}
-            welcome={
-              <JourneyDashboardWelcomeBlock
-                vision={subspace?.context?.vision ?? ''}
-                leadUsers={subspace?.community?.roleSet?.leadUsers ?? []}
-                onContactLeadUser={receiver => sendMessage('user', receiver)}
-                leadOrganizations={subspace?.community?.roleSet?.leadOrganizations}
-                onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
-                journeyTypeName="subspace"
-                member={subspace?.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
-              />
-            }
-            actions={
-              <>
-                <DialogDef
-                  dialogType={SubspaceDialog.About}
-                  label={t(`spaceDialog.${SubspaceDialog.About}` as const)}
-                  icon={InfoOutlined}
-                />
-                <DialogDef
-                  dialogType={SubspaceDialog.Outline}
-                  label={t(`spaceDialog.${SubspaceDialog.Outline}` as const)}
-                  icon={AccountTreeOutlined}
-                />
-                <DialogDef
-                  dialogType={SubspaceDialog.Index}
-                  label={t(`spaceDialog.${SubspaceDialog.Index}` as const)}
-                  icon={ListOutlined}
-                />
-                <DialogDef
-                  dialogType={SubspaceDialog.Subspaces}
-                  label={t(`spaceDialog.${SubspaceDialog.Subspaces}` as const)}
-                  icon={SegmentOutlined}
-                />
-                <DialogDef
-                  dialogType={SubspaceDialog.Contributors}
-                  label={t(`spaceDialog.${SubspaceDialog.Contributors}` as const)}
-                  icon={GroupsOutlined}
-                />
-                <DialogDef
-                  dialogType={SubspaceDialog.Activity}
-                  label={t(`spaceDialog.${SubspaceDialog.Activity}` as const)}
-                  icon={HistoryOutlined}
-                />
-                <DialogDef
-                  dialogType={SubspaceDialog.Timeline}
-                  label={t('spaceDialog.events')}
-                  icon={CalendarMonthOutlined}
-                />
-                <DialogDef
-                  dialogType={SubspaceDialog.Share}
-                  label={t(`spaceDialog.${SubspaceDialog.Share}` as const)}
-                  icon={ShareOutlined}
-                />
-                {innovationFlow.canEditInnovationFlow && (
-                  <DialogDef
-                    dialogType={SubspaceDialog.ManageFlow}
-                    label={t(`spaceDialog.${SubspaceDialog.ManageFlow}` as const)}
-                    icon={InnovationFlowIcon}
-                  />
-                )}
-                {subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) && (
-                  <DialogDef
-                    dialogType={SubspaceDialog.Settings}
-                    label={t(`spaceDialog.${SubspaceDialog.Settings}` as const)}
-                    icon={SettingsOutlined}
-                  />
-                )}
-              </>
-            }
-            infoColumnChildren={
-              <Outline
-                currentItemId={journeyId}
-                dashboardNavigation={dashboardNavigation.dashboardNavigation}
-                onCreateSubspace={openCreateSubspace}
-                onCurrentItemNotFound={dashboardNavigation.refetch}
-              />
-            }
-          >
-            <SubspaceHomeView
+      {({ innovationFlow, callouts, subspace, spaceReadAccess }) => {
+        const { collaboration, community, profile } = subspace ?? {};
+
+        return (
+          <>
+            <SubspacePageLayout
+              spaceReadAccess={spaceReadAccess}
               journeyId={journeyId}
-              collaborationId={subspace?.collaboration.id}
-              calloutsSetId={subspace?.collaboration.calloutsSet.id}
-              templatesSetId={subspace?.templatesManager?.templatesSet?.id}
-              journeyTypeName={journeyTypeName}
-              {...innovationFlow}
-              {...callouts}
+              journeyPath={journeyPath}
+              journeyUrl={profile?.url}
+              parentSpaceId={parentSpaceId}
+              loading={loading}
+              welcome={
+                <JourneyDashboardWelcomeBlock
+                  vision={subspace?.context?.vision ?? ''}
+                  leadUsers={community?.roleSet?.leadUsers ?? []}
+                  onContactLeadUser={receiver => sendMessage('user', receiver)}
+                  leadOrganizations={community?.roleSet?.leadOrganizations}
+                  onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
+                  journeyTypeName="subspace"
+                  member={community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
+                />
+              }
+              actions={
+                <>
+                  <DialogDef
+                    dialogType={SubspaceDialog.About}
+                    label={t(`spaceDialog.${SubspaceDialog.About}` as const)}
+                    icon={InfoOutlined}
+                  />
+                  <DialogDef
+                    dialogType={SubspaceDialog.Outline}
+                    label={t(`spaceDialog.${SubspaceDialog.Outline}` as const)}
+                    icon={AccountTreeOutlined}
+                  />
+                  <DialogDef
+                    dialogType={SubspaceDialog.Index}
+                    label={t(`spaceDialog.${SubspaceDialog.Index}` as const)}
+                    icon={ListOutlined}
+                  />
+                  <DialogDef
+                    dialogType={SubspaceDialog.Subspaces}
+                    label={t(`spaceDialog.${SubspaceDialog.Subspaces}` as const)}
+                    icon={SegmentOutlined}
+                  />
+                  <DialogDef
+                    dialogType={SubspaceDialog.Contributors}
+                    label={t(`spaceDialog.${SubspaceDialog.Contributors}` as const)}
+                    icon={GroupsOutlined}
+                  />
+                  <DialogDef
+                    dialogType={SubspaceDialog.Activity}
+                    label={t(`spaceDialog.${SubspaceDialog.Activity}` as const)}
+                    icon={HistoryOutlined}
+                  />
+                  <DialogDef
+                    dialogType={SubspaceDialog.Timeline}
+                    label={t('spaceDialog.events')}
+                    icon={CalendarMonthOutlined}
+                  />
+                  <DialogDef
+                    dialogType={SubspaceDialog.Share}
+                    label={t(`spaceDialog.${SubspaceDialog.Share}` as const)}
+                    icon={ShareOutlined}
+                  />
+                  {innovationFlow.canEditInnovationFlow && (
+                    <DialogDef
+                      dialogType={SubspaceDialog.ManageFlow}
+                      label={t(`spaceDialog.${SubspaceDialog.ManageFlow}` as const)}
+                      icon={InnovationFlowIcon}
+                    />
+                  )}
+                  {subspace?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) && (
+                    <DialogDef
+                      dialogType={SubspaceDialog.Settings}
+                      label={t(`spaceDialog.${SubspaceDialog.Settings}` as const)}
+                      icon={SettingsOutlined}
+                    />
+                  )}
+                </>
+              }
+              infoColumnChildren={
+                <Outline
+                  currentItemId={journeyId}
+                  dashboardNavigation={dashboardNavigation.dashboardNavigation}
+                  onCreateSubspace={openCreateSubspace}
+                  onCurrentItemNotFound={dashboardNavigation.refetch}
+                />
+              }
+            >
+              <SubspaceHomeView
+                journeyId={journeyId}
+                collaborationId={collaboration?.id}
+                calloutsSetId={collaboration?.calloutsSet.id}
+                templatesSetId={subspace?.templatesManager?.templatesSet?.id}
+                journeyTypeName={journeyTypeName}
+                {...innovationFlow}
+                {...callouts}
+              />
+            </SubspacePageLayout>
+            {directMessageDialog}
+            <CreateJourney
+              isVisible={createSpaceState.isDialogVisible}
+              onClose={onCreateJourneyClose}
+              parentSpaceId={createSpaceState.parentSpaceId}
             />
-          </SubspacePageLayout>
-          {directMessageDialog}
-          <CreateJourney
-            isVisible={createSpaceState.isDialogVisible}
-            onClose={onCreateJourneyClose}
-            parentSpaceId={createSpaceState.parentSpaceId}
-          />
-          <SubspaceDialogs
-            parentSpaceId={parentSpaceId}
-            dialogOpen={dialog}
-            callouts={callouts}
-            journeyId={journeyId}
-            journeyUrl={subspace?.profile.url}
-            dashboardNavigation={dashboardNavigation}
-            communityId={subspace?.community?.id}
-            collaborationId={subspace?.collaboration.id}
-          />
-        </>
-      )}
+            <SubspaceDialogs
+              parentSpaceId={parentSpaceId}
+              dialogOpen={dialog}
+              callouts={callouts}
+              journeyId={journeyId}
+              journeyUrl={profile?.url}
+              dashboardNavigation={dashboardNavigation}
+              communityId={community?.id}
+              collaborationId={collaboration?.id}
+            />
+          </>
+        );
+      }}
     </SubspaceHomeContainer>
   );
 };
