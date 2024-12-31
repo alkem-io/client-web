@@ -18,10 +18,9 @@ import {
 import { useCallback, useMemo } from 'react';
 import { groupBy } from 'lodash';
 import { Tagset } from '@/domain/common/profile/Profile';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
-import { useCollaborationAuthorizationEntitlements } from '@/domain/collaboration/authorization/useCollaborationAuthorization';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { getCalloutGroupNameValue } from '../../callout/utils/getCalloutGroupValue';
+import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
 
 export type WhiteboardFragmentWithCallout = WhiteboardDetailsFragment & { calloutNameId: string };
 
@@ -69,11 +68,10 @@ export type TypedCalloutDetails = TypedCallout &
   };
 
 interface UseCalloutsParams {
-  collaborationId: string | undefined;
   calloutsSetId: string | undefined;
-  journeyTypeName: JourneyTypeName;
   groupNames?: CalloutGroupName[];
-  canReadCollaboration: boolean;
+  canSaveAsTemplate: boolean;
+  entitledToSaveAsTemplate: boolean;
 }
 
 export interface OrderUpdate {
@@ -84,7 +82,7 @@ export interface UseCalloutsProvided {
   callouts: TypedCallout[] | undefined;
   groupedCallouts: Record<CalloutGroupName, TypedCallout[] | undefined>;
   canCreateCallout: boolean;
-  canReadCallout: boolean;
+  canReadCalloutsSet: boolean;
   loading: boolean;
   refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;
   refetchCallout: (calloutId: string) => void;
@@ -99,23 +97,20 @@ const CALLOUT_DISPLAY_LOCATION_TAGSET_NAME = 'callout-group';
  */
 
 const useCallouts = ({
-  collaborationId,
   calloutsSetId,
-  journeyTypeName,
-  canReadCollaboration,
-  ...params
+  canSaveAsTemplate,
+  entitledToSaveAsTemplate,
+  groupNames,
 }: UseCalloutsParams): UseCalloutsProvided => {
   const {
     canCreateCallout,
-    canReadCallout,
-    canSaveAsTemplate,
-    entitledToSaveAsTemplate,
+    canReadCalloutsSet,
     loading: authorizationLoading,
-  } = useCollaborationAuthorizationEntitlements({ collaborationId });
+  } = useCalloutsSetAuthorization({ calloutsSetId });
 
   const variables = {
     calloutsSetId: calloutsSetId!,
-    groups: params.groupNames,
+    groups: groupNames,
   } as const;
 
   const {
@@ -125,7 +120,7 @@ const useCallouts = ({
   } = useCalloutsQuery({
     variables,
     fetchPolicy: 'cache-and-network',
-    skip: !canReadCollaboration || !calloutsSetId,
+    skip: !canReadCalloutsSet || !calloutsSetId,
   });
 
   const [getCallouts] = useCalloutsLazyQuery({
@@ -221,7 +216,7 @@ const useCallouts = ({
     callouts,
     groupedCallouts,
     canCreateCallout,
-    canReadCallout,
+    canReadCalloutsSet,
     loading: calloutsLoading || authorizationLoading,
     refetchCallouts,
     refetchCallout,

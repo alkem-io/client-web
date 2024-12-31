@@ -18,33 +18,23 @@ import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView'
 import SectionSpacer from '@/domain/shared/components/Section/SectionSpacer';
 import { PostDialogSection } from '../views/PostDialogSection';
 import { PostLayout } from '../views/PostLayoutWithOutlet';
-import useCallouts from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import { useMoveContributionToCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { LoadingButton } from '@mui/lab';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { normalizeLink } from '@/core/utils/links';
 import { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
+import useCalloutsOnCollaboration from '../../useCalloutsOnCollaboration';
 
 export interface PostSettingsPageProps {
   onClose: () => void;
-  journeyTypeName: JourneyTypeName;
   collaborationId: string | undefined;
-  calloutsSetId: string | undefined;
   calloutId: string | undefined;
   postNameId: string | undefined;
 }
 
-const PostSettingsPage = ({
-  journeyTypeName,
-  collaborationId,
-  calloutsSetId,
-  postNameId,
-  calloutId,
-  onClose,
-}: PostSettingsPageProps) => {
+const PostSettingsPage = ({ collaborationId, postNameId, calloutId, onClose }: PostSettingsPageProps) => {
   const { t } = useTranslation();
 
   const navigate = useNavigate();
@@ -82,11 +72,8 @@ const PostSettingsPage = ({
 
   const isMoveEnabled = Boolean(targetCalloutId) && targetCalloutId !== postSettings.parentCallout?.id;
 
-  const { callouts, refetchCallouts } = useCallouts({
+  const { callouts, refetchCallouts } = useCalloutsOnCollaboration({
     collaborationId,
-    calloutsSetId,
-    journeyTypeName,
-    canReadCollaboration: true,
   });
 
   const calloutsOfTypePost = callouts?.filter(({ type }) => type === CalloutType.PostCollection);
