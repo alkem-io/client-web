@@ -14,12 +14,12 @@ export interface PostRouteProps {
   journeyTypeName: JourneyTypeName;
 }
 
-const PostRoute = ({ parentPagePath, journeyTypeName }: PostRouteProps) => {
+const PostRoute = ({ parentPagePath }: PostRouteProps) => {
   const [backToExplore] = useBackToParentPage(parentPagePath, { keepScroll: true });
   const onClose = () => backToExplore();
 
   const { postNameId } = useUrlParams();
-  const { calloutId, collaborationId, calloutsSetId } = useRouteResolver();
+  const { calloutId, collaborationId } = useRouteResolver();
 
   return (
     <Routes>
@@ -38,11 +38,9 @@ const PostRoute = ({ parentPagePath, journeyTypeName }: PostRouteProps) => {
           element={
             <PostSettingsPage
               collaborationId={collaborationId}
-              calloutsSetId={calloutsSetId}
               calloutId={calloutId}
               postNameId={postNameId}
               onClose={onClose}
-              journeyTypeName={journeyTypeName}
             />
           }
         />

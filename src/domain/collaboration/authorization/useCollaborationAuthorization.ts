@@ -8,10 +8,10 @@ type CollaborationAuthorizationEntitlementsParams = {
 
 type CollaborationAuthorization = {
   collaborationPrivileges: AuthorizationPrivilege[];
-  canCreateCallout: boolean;
   canSaveAsTemplate: boolean;
   entitledToSaveAsTemplate: boolean;
-  canReadCallout: boolean;
+  canReadCollaboration: boolean;
+  calloutsSetId: string | undefined;
   loading: boolean;
 };
 
@@ -32,20 +32,17 @@ export const useCollaborationAuthorizationEntitlements = ({
   const collaborationPrivileges = collaborationData?.lookup.collaboration?.authorization?.myPrivileges ?? [];
   const collaborationEntitlements = collaborationData?.lookup.collaboration?.license?.availableEntitlements ?? [];
   const canSaveAsTemplate = permissions.canCreateTemplates;
-  const canReadCallout = collaborationPrivileges.includes(AuthorizationPrivilege.Read);
-
-  const calloutsSetPrivileges = collaborationData?.lookup.collaboration?.calloutsSet?.authorization?.myPrivileges ?? [];
-  const canCreateCallout = calloutsSetPrivileges.includes(AuthorizationPrivilege.CreateCallout);
+  const canReadCollaboration = collaborationPrivileges.includes(AuthorizationPrivilege.Read);
 
   const entitledToSaveAsTemplate =
     collaborationEntitlements?.includes(LicenseEntitlementType.SpaceFlagSaveAsTemplate) ?? false;
 
   return {
     collaborationPrivileges,
-    canCreateCallout,
     canSaveAsTemplate,
     entitledToSaveAsTemplate,
-    canReadCallout,
+    canReadCollaboration,
+    calloutsSetId: collaborationData?.lookup.collaboration?.calloutsSet?.id,
     loading: loadingCollaboration,
   };
 };

@@ -42,7 +42,7 @@ import { addVCCreationCache } from './vcCreationUtil';
 import {
   CalloutCreationType,
   useCalloutCreation,
-} from '@/domain/collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreation';
+} from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import SetupVCInfo from './SetupVCInfo';
 import { info, TagCategoryValues } from '@/core/logging/sentry/log';
 import { compact } from 'lodash';
@@ -368,12 +368,10 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     skip: !bokId,
   });
 
-  const collaborationId = subspaceProfile?.lookup.space?.collaboration?.id;
   const calloutsSetId = subspaceProfile?.lookup.space?.collaboration?.calloutsSet.id;
 
   // load the following hook either with bokId (created subspace) or spaceId (created/existing space)
   const { handleCreateCallout, canCreateCallout } = useCalloutCreation({
-    collaborationId,
     calloutsSetId,
   });
 

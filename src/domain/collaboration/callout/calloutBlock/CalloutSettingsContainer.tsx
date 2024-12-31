@@ -351,7 +351,7 @@ const CalloutSettingsContainer = ({
       <SortDialog
         open={sortDialogOpen}
         onClose={handleSortDialogClose}
-        collaborationId={callout.id}
+        calloutId={callout.id}
         contributions={getCalloutItems(callout.type) || []}
         onUpdateContributionsOrder={handleSortContributions}
       />

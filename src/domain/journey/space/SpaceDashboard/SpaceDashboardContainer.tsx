@@ -15,11 +15,12 @@ import {
   Reference,
   SpacePageFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import useCallouts, { UseCalloutsProvided } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
+import { UseCalloutsProvided } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import useSpaceDashboardNavigation, {
   DashboardNavigationItem,
 } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
+import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboratin';
 
 export interface SpaceContainerEntities {
   space: SpacePageFragment | undefined;
@@ -69,7 +70,6 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
   });
 
   const space = spaceData?.lookup.space;
-  const calloutsSetId = space?.collaboration?.calloutsSet?.id;
 
   const isMember = space?.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
 
@@ -123,11 +123,8 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
     [sendMessageToCommunityLeads, communityId]
   );
 
-  const callouts = useCallouts({
+  const callouts = useCalloutsOnCollaboration({
     collaborationId,
-    calloutsSetId,
-    journeyTypeName: 'space',
-    canReadCollaboration: true,
     groupNames: [CalloutGroupName.Home],
   });
 

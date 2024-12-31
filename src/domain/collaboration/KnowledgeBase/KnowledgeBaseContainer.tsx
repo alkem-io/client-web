@@ -1,28 +1,18 @@
 import { SimpleContainerProps } from '@/core/container/SimpleContainer';
-import useCallouts, { UseCalloutsProvided } from '../calloutsSet/useCallouts/useCallouts';
+import { UseCalloutsProvided } from '../calloutsSet/useCallouts/useCallouts';
 import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import useCalloutsOnCollaboration from '../useCalloutsOnCollaboratin';
 
 interface KnowledgeBaseContainerProps
   extends SimpleContainerProps<{
     callouts: UseCalloutsProvided;
   }> {
   collaborationId: string | undefined;
-  calloutsSetId: string | undefined;
-  journeyTypeName: JourneyTypeName;
 }
 
-const KnowledgeBaseContainer = ({
-  collaborationId,
-  calloutsSetId,
-  journeyTypeName,
-  children,
-}: KnowledgeBaseContainerProps) => {
-  const callouts = useCallouts({
+const KnowledgeBaseContainer = ({ collaborationId, children }: KnowledgeBaseContainerProps) => {
+  const callouts = useCalloutsOnCollaboration({
     collaborationId,
-    calloutsSetId,
-    journeyTypeName,
-    canReadCollaboration: true,
     groupNames: [CalloutGroupName.Knowledge],
   });
 

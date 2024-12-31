@@ -9,7 +9,7 @@ import { OrderUpdate, TypedCallout } from '@/domain/collaboration/calloutsSet/us
 import { InnovationFlowState } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
 import React, { useEffect, useMemo, useState } from 'react';
 import { SubspaceInnovationFlow, useConsumeAction } from '../layout/SubspacePageLayout';
-import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import CalloutCreationDialog from '@/domain/collaboration/callout/creationDialog/CalloutCreationDialog';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
@@ -49,7 +49,7 @@ const SubspaceHomeView = ({
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
   const { isCalloutCreationDialogOpen, handleCreateCalloutOpened, handleCreateCalloutClosed, handleCreateCallout } =
-    useCalloutCreationWithPreviewImages({ collaborationId, calloutsSetId });
+    useCalloutCreationWithPreviewImages({ calloutsSetId });
 
   const createButton = (
     <Button
@@ -124,7 +124,6 @@ const SubspaceHomeView = ({
       </SubspaceInnovationFlow>
       <CalloutsGroupView
         journeyId={journeyId}
-        collaborationId={collaborationId}
         calloutsSetId={calloutsSetId}
         callouts={selectedFlowStateCallouts}
         canCreateCallout={canCreateCallout && isMobile}
