@@ -16,8 +16,8 @@ import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
 import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
-import useCallouts from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
+import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
@@ -52,11 +52,8 @@ const SpaceSubspacesPage = () => {
     [navigate, createSubspace, spaceId]
   );
 
-  const callouts = useCallouts({
+  const callouts = useCalloutsOnCollaboration({
     collaborationId,
-    calloutsSetId,
-    journeyTypeName: 'space',
-    canReadCollaboration: true,
     groupNames: [CalloutGroupName.Subspaces],
   });
 
@@ -101,7 +98,6 @@ const SpaceSubspacesPage = () => {
             children={
               <CalloutsGroupView
                 journeyId={spaceId}
-                collaborationId={collaborationId}
                 calloutsSetId={calloutsSetId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces]}
                 canCreateCallout={callouts.canCreateCallout}

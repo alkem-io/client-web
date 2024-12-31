@@ -7,7 +7,7 @@ import MembershipBackdrop from '@/domain/shared/components/Backdrops/MembershipB
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import CalloutsGroupView from '../calloutsSet/CalloutsInContext/CalloutsGroupView';
 import CalloutCreationDialog from '../callout/creationDialog/CalloutCreationDialog';
-import { useCalloutCreationWithPreviewImages } from '../callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import { useCalloutCreationWithPreviewImages } from '../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import KnowledgeBaseContainer from './KnowledgeBaseContainer';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
@@ -26,7 +26,7 @@ const KnowledgeBasePage = () => {
     handleCreateCalloutClosed,
     handleCreateCallout,
     loading: loadingCalloutCreation,
-  } = useCalloutCreationWithPreviewImages({ collaborationId });
+  } = useCalloutCreationWithPreviewImages({ calloutsSetId });
 
   const handleCreate = () => {
     handleCreateCalloutOpened();
@@ -34,11 +34,11 @@ const KnowledgeBasePage = () => {
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.KnowledgeBase}>
-      <KnowledgeBaseContainer collaborationId={collaborationId} calloutsSetId={calloutsSetId} journeyTypeName="space">
+      <KnowledgeBaseContainer collaborationId={collaborationId}>
         {({
           callouts: {
             loading,
-            canReadCallout,
+            canReadCalloutsSet: canReadCallout,
             canCreateCallout,
             groupedCallouts,
             onCalloutsSortOrderUpdate,
@@ -63,7 +63,6 @@ const KnowledgeBasePage = () => {
                 <ContentColumn>
                   <CalloutsGroupView
                     journeyId={journeyId}
-                    collaborationId={collaborationId}
                     calloutsSetId={calloutsSetId}
                     callouts={groupedCallouts[CalloutGroupName.Knowledge]}
                     canCreateCallout={canCreateCallout}

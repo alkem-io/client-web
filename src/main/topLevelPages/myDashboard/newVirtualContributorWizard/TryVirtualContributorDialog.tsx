@@ -11,7 +11,7 @@ import {
   CalloutCreationParams,
   CalloutCreationType,
   useCalloutCreation,
-} from '@/domain/collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreation';
+} from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import {
   CalloutGroupName,
   CalloutState,
@@ -42,7 +42,6 @@ interface TryVirtualContributorDialogProps {
 
 const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = ({
   spaceId,
-  collaborationId,
   calloutsSetId,
   vcNameId,
   open,
@@ -54,7 +53,6 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
   const [calloutId, setCalloutId] = useState<string | undefined>(undefined);
 
   const options: CalloutCreationParams = {
-    collaborationId,
     calloutsSetId,
   };
 

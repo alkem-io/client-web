@@ -9,8 +9,8 @@ import {
   CreateReferenceInput,
   CreateTagsetInput,
 } from '@/core/apollo/generated/graphql-schema';
-import { WhiteboardFieldSubmittedValues } from '../CalloutWhiteboardField/CalloutWhiteboardField';
-import { useCollaborationAuthorizationEntitlements } from '@/domain/collaboration/authorization/useCollaborationAuthorization';
+import { WhiteboardFieldSubmittedValues } from '../../callout/creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
+import { useCalloutsSetAuthorization } from '../authorization/useCalloutsSetAuthorization';
 
 export interface CalloutCreationType {
   framing: {
@@ -37,7 +37,6 @@ export interface CalloutCreationType {
 }
 
 export interface CalloutCreationParams {
-  collaborationId?: string;
   calloutsSetId?: string;
   initialOpened?: boolean;
 }
@@ -57,14 +56,13 @@ export interface CalloutCreationUtils {
 const CALLOUTS_WITH_COMMENTS = [CalloutType.Post];
 
 export const useCalloutCreation = ({
-  collaborationId,
   calloutsSetId,
   initialOpened = false,
 }: CalloutCreationParams): CalloutCreationUtils => {
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
   const [isCreating, setIsCreating] = useState(false);
-  // TODO: remove the collaborationId dependency in favor of calloutsSetId
-  const { canCreateCallout, loading } = useCollaborationAuthorizationEntitlements({ collaborationId });
+
+  const { canCreateCallout, loading } = useCalloutsSetAuthorization({ calloutsSetId });
 
   const [createCallout] = useCreateCalloutMutation({
     update: (cache, { data }) => {

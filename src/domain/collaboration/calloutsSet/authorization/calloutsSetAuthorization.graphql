@@ -1,0 +1,11 @@
+query CalloutsSetAuthorization($calloutsSetId: UUID!) {
+  lookup {
+    calloutsSet(ID: $calloutsSetId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+}

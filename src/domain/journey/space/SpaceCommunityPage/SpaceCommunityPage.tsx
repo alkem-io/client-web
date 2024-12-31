@@ -91,7 +91,7 @@ const SpaceCommunityPage = () => {
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Community}>
-      <SpaceCommunityContainer collaborationId={collaborationId} calloutsSetId={calloutsSetId}>
+      <SpaceCommunityContainer collaborationId={collaborationId}>
         {({ callouts }) => (
           <PageContent>
             <InfoColumn>
@@ -124,7 +124,6 @@ const SpaceCommunityPage = () => {
               <CommunityContributorsBlockWide users={memberUsers} organizations={memberOrganizations} />
               <CalloutsGroupView
                 journeyId={spaceId}
-                collaborationId={collaborationId}
                 calloutsSetId={calloutsSetId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Community]}
                 canCreateCallout={callouts.canCreateCallout}
