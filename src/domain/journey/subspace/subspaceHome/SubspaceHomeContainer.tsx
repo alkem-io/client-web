@@ -7,7 +7,7 @@ import { SubspacePageSpaceFragment } from '@/core/apollo/generated/graphql-schem
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useCanReadSpace, { SpaceReadAccess } from '@/domain/journey/common/authorization/useCanReadSpace';
-import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboratin';
+import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
 
 interface SubspaceHomeContainerProvided {
   innovationFlow: UseInnovationFlowStatesProvided;

@@ -17,7 +17,7 @@ import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
 import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
 import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
-import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboratin';
+import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();

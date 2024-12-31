@@ -1,5 +1,4 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
 import PostDashboardPage from '../pages/PostDashboardPage';
 import PostSettingsPage from '../pages/PostSettingsPage';
@@ -11,7 +10,6 @@ import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 
 export interface PostRouteProps {
   parentPagePath: string;
-  journeyTypeName: JourneyTypeName;
 }
 
 const PostRoute = ({ parentPagePath }: PostRouteProps) => {

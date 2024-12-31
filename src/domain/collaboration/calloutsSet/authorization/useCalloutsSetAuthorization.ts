@@ -1,11 +1,11 @@
 import { useCalloutsSetAuthorizationQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 
-type CalloutsSetAuthorizationuseCalloutsSetAuthorizationQueryParams = {
+type CalloutsSetAuthorizationParams = {
   calloutsSetId: string | undefined;
 };
 
-type CalloutsSetAuthorization = {
+type CalloutsSetAuthorizationType = {
   calloutsSetPrivileges: AuthorizationPrivilege[];
   canCreateCallout: boolean;
   canReadCalloutsSet: boolean;
@@ -14,7 +14,7 @@ type CalloutsSetAuthorization = {
 
 export const useCalloutsSetAuthorization = ({
   calloutsSetId,
-}: CalloutsSetAuthorizationuseCalloutsSetAuthorizationQueryParams): CalloutsSetAuthorization => {
+}: CalloutsSetAuthorizationParams): CalloutsSetAuthorizationType => {
   const { data: calloutsSetData, loading: loadingCalloutsSet } = useCalloutsSetAuthorizationQuery({
     variables: {
       calloutsSetId: calloutsSetId!,

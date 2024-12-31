@@ -23,9 +23,13 @@ export interface UseCalloutsOnCollaborationProvided {
 }
 
 /**
+ * Custom hook to manage callouts within a collaboration context.
+ *
+ * This hook is a wrapper over `useCallouts` to extract the collaboration logic from it.
+ * It provides additional functionality specific to collaboration, such as authorization entitlements.
+ *
  * If you need Callouts without a group, don't specify groupNames at all.
  */
-
 const useCalloutsOnCollaboration = ({
   collaborationId,
   groupNames,

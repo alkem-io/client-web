@@ -20,7 +20,7 @@ import useSpaceDashboardNavigation, {
   DashboardNavigationItem,
 } from '../spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
-import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboratin';
+import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
 
 export interface SpaceContainerEntities {
   space: SpacePageFragment | undefined;

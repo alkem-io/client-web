@@ -25,7 +25,7 @@ import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { normalizeLink } from '@/core/utils/links';
 import { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
-import useCalloutsOnCollaboration from '../../useCalloutsOnCollaboratin';
+import useCalloutsOnCollaboration from '../../useCalloutsOnCollaboration';
 
 export interface PostSettingsPageProps {
   onClose: () => void;
