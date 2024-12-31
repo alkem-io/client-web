@@ -23,10 +23,8 @@ import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTransl
 import { AiPersonaBodyOfKnowledgeType, AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
 
 type CreateNewVirtualContributorProps = {
-  canCreateSubspace?: boolean;
-  canUseExisting?: boolean;
   onClose: () => void;
-  onCreateSpace: (values: VirtualContributorFromProps) => void;
+  onCreateKnowledge: (values: VirtualContributorFromProps) => void;
   onUseExistingKnowledge: (values: VirtualContributorFromProps) => void;
   onUseExternal: (values: VirtualContributorFromProps) => void;
   loading?: boolean;
@@ -82,7 +80,7 @@ const BigButton = ({
 
 const CreateNewVirtualContributor = ({
   onClose,
-  onCreateSpace,
+  onCreateKnowledge,
   onUseExistingKnowledge,
   onUseExternal,
   loading,
@@ -117,7 +115,7 @@ const CreateNewVirtualContributor = ({
     const newValues = { ...values, name };
     switch (source) {
       case VCSourceOptions.WRITTEN_KNOWLEDGE:
-        onCreateSpace(newValues);
+        onCreateKnowledge(newValues);
         break;
       case VCSourceOptions.EXISTING_SPACE:
         onUseExistingKnowledge(newValues);
