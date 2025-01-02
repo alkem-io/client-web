@@ -15,6 +15,7 @@ import { PostItem } from './PostItem';
 import { Caption } from '@/core/ui/typography';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { DocumentItem } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/AddContent/DocumentItem';
+import { useState } from 'react';
 
 const MAX_POSTS = 25;
 
@@ -33,9 +34,16 @@ export const AddContentForm = ({
   onCancel,
 }: {
   onCancel: () => void;
-  onSubmit: (values: BoKCalloutsFormValues) => void;
+  onSubmit: (values: BoKCalloutsFormValues) => Promise<void>;
 }) => {
   const { t } = useTranslation();
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleSubmit = async (values: BoKCalloutsFormValues) => {
+    setIsSubmitted(true);
+    await onSubmit(values);
+    setIsSubmitted(false);
+  };
 
   const validationSchema = yup.object().shape({
     posts: yup
@@ -82,7 +90,7 @@ export const AddContentForm = ({
   };
 
   return (
-    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} validateOnMount>
+    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit} validateOnMount>
       {({ values: { posts, documents }, isValid, setFieldValue }) => {
         const moreThanOnePost = posts.length > 1;
         const maxPostsReached = posts.length >= MAX_POSTS;
@@ -192,8 +200,9 @@ export const AddContentForm = ({
                   <span>
                     <LoadingButton
                       variant="contained"
+                      loading={isSubmitted}
                       disabled={!isValid}
-                      onClick={() => onSubmit({ posts, documents })}
+                      onClick={() => handleSubmit({ posts, documents })}
                     >
                       {t('buttons.continue')}
                     </LoadingButton>
