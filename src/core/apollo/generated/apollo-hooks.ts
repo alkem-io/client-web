@@ -17762,6 +17762,22 @@ export const CreateVirtualContributorOnAccountDocument = gql`
         id
         url
       }
+      knowledgeBase {
+        id
+        calloutsSet {
+          id
+          callouts {
+            id
+            framing {
+              id
+              profile {
+                id
+                displayName
+              }
+            }
+          }
+        }
+      }
     }
   }
 `;

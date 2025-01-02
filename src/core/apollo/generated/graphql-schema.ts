@@ -23307,6 +23307,25 @@ export type CreateVirtualContributorOnAccountMutation = {
     id: string;
     nameID: string;
     profile: { __typename?: 'Profile'; id: string; url: string };
+    knowledgeBase?:
+      | {
+          __typename?: 'KnowledgeBase';
+          id: string;
+          calloutsSet: {
+            __typename?: 'CalloutsSet';
+            id: string;
+            callouts: Array<{
+              __typename?: 'Callout';
+              id: string;
+              framing: {
+                __typename?: 'CalloutFraming';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string };
+              };
+            }>;
+          };
+        }
+      | undefined;
   };
 };
 
