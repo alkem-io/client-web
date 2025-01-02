@@ -201,7 +201,7 @@ const CalloutCreationDialog = ({
       whiteboardContent: templateCallout.contributionDefaults?.whiteboardContent,
       whiteboard: whiteboard && {
         content: whiteboard.content,
-        profileData: {
+        profile: {
           displayName: 'Whiteboard',
         },
         previewImages: [],
