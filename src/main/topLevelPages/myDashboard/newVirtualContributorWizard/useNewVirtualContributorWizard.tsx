@@ -235,7 +235,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             aiPersonaService: {
               engine: values.engine,
               bodyOfKnowledgeType: values.bodyOfKnowledgeType ?? AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase,
-              bodyOfKnowledgeID: vcBoKId ?? createdSpaceId ?? selectedExistingSpaceId,
+              bodyOfKnowledgeID: vcBoKId ?? selectedExistingSpaceId,
             },
           },
           knowledgeBaseData: {
@@ -269,7 +269,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
   };
 
-  // Add To Community Logic
+  // Add To Community
   const [getSpaceCommunity] = useSubspaceCommunityAndRoleSetIdLazyQuery({
     variables: {
       spaceId: createdSpaceId ?? selectedExistingSpaceId,
@@ -481,14 +481,12 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             onUseExternal={values => onStepSelection('externalProvider', values)}
           />
         )}
-        {step === 'createSpace' && (
-          <LoadingState onClose={handleCloseWizard} entity={selectedExistingSpaceId ? 'subspace' : 'space'} />
-        )}
+        {step === 'createSpace' && <LoadingState onClose={handleCloseWizard} />}
         {step === 'addKnowledge' && virtualContributorInput && (
           <AddContent
             onClose={handleCloseWizard}
             onCreateVC={onCreateVcWithKnowledge}
-            spaceId={createdSpaceId ?? selectedExistingSpaceId ?? ''}
+            spaceId={selectedExistingSpaceId ?? ''}
           />
         )}
         {step === 'existingKnowledge' && (
@@ -517,7 +515,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         )}
       </DialogWithGrid>
     ),
-    [dialogOpen, step, loading, selectableSpaces]
+    [dialogOpen, step, loading, selectableSpaces, selectedExistingSpaceId]
   );
 
   return {
