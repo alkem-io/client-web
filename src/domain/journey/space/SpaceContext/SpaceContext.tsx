@@ -29,6 +29,7 @@ interface SpaceContextProps {
   spaceNameId: string;
   communityId: string;
   collaborationId: string;
+  calloutsSetId: string;
   roleSetId: string;
   isPrivate?: boolean;
   loading: boolean;
@@ -50,6 +51,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
   spaceNameId: '',
   communityId: '',
   collaborationId: '',
+  calloutsSetId: '',
   roleSetId: '',
   permissions: {
     canRead: false,
@@ -101,6 +103,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
 
   const communityId = space?.community?.id ?? '';
   const collaborationId = space?.collaboration?.id ?? '';
+  const calloutsSetId = space?.collaboration?.calloutsSet?.id ?? '';
   const roleSetId = space?.community?.roleSet?.id ?? '';
   const isPrivate = space && space.settings.privacy?.mode === SpacePrivacyMode.Private;
   const error = configError || spaceError;
@@ -178,6 +181,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
         spaceNameId,
         communityId,
         collaborationId,
+        calloutsSetId,
         roleSetId,
         permissions,
         isPrivate,

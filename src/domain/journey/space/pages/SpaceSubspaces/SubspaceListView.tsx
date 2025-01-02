@@ -232,7 +232,7 @@ export const SubspaceListView = () => {
               }
             />
             <InnovationFlowCalloutsPreview
-              callouts={defaultSubspaceTemplate.template.collaboration?.callouts}
+              callouts={defaultSubspaceTemplate.template.collaboration?.calloutsSet.callouts}
               selectedState={selectedState}
               loading={loading}
             />

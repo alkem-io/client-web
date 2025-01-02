@@ -42,6 +42,7 @@ interface JourneyRouteParams {
    */
   journeyTypeName: JourneyTypeName;
   collaborationId: string | undefined;
+  calloutsSetId: string | undefined;
 }
 
 interface JourneyCalloutRouteParams extends JourneyRouteParams {
@@ -133,6 +134,7 @@ export const useRouteResolver = ({ failOnNotFound = true }: RouteResolverOptions
 
   const collaboration = dataSpaceEntities?.lookup.space?.collaboration;
   const collaborationId = collaboration?.id;
+  const calloutsSetId = collaboration?.calloutsSet?.id;
 
   const spaceLevel = getSpaceLevel({ spaceNameId, subspaceNameId, subsubspaceNameId });
   const journeyLength = getSpaceDepth(spaceLevel) + 1;
@@ -169,6 +171,7 @@ export const useRouteResolver = ({ failOnNotFound = true }: RouteResolverOptions
     })!,
     spaceLevel,
     collaborationId,
+    calloutsSetId,
     journeyPath,
   };
 
@@ -184,7 +187,7 @@ export const useRouteResolver = ({ failOnNotFound = true }: RouteResolverOptions
     skip: !calloutNameId || !collaborationId,
   });
 
-  const calloutId = calloutData?.lookup.collaboration?.callouts?.[0]?.id;
+  const calloutId = calloutData?.lookup.collaboration?.calloutsSet.callouts?.[0]?.id;
 
   const loading = loadingJourney || loadingSpaceEntities || loadingCallout;
 

@@ -55,5 +55,8 @@ fragment SubspaceProvider on Space {
       id
       myPrivileges
     }
+    calloutsSet {
+      id
+    }
   }
 }

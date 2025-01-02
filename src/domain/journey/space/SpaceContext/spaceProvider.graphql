@@ -61,6 +61,9 @@ fragment SpaceInfo on Space {
       id
       myPrivileges
     }
+    calloutsSet {
+      id
+    }
   }
 
   visibility

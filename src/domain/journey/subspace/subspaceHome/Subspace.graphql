@@ -38,6 +38,9 @@ fragment SubspacePageSpace on Space {
   }
   collaboration {
     id
+    calloutsSet {
+      id
+    }
   }
   templatesManager {
     id
