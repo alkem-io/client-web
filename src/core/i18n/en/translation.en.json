@@ -171,7 +171,9 @@
     "scrollToTop": "Scroll to top",
     "addSubject": "Add {{subject}}",
     "toolPosition": "Position of tool",
-    "createOwnSpace": "...or click here to create your own Space"
+    "createOwnSpace": "...or click here to create your own Space",
+    "notifications": "Notifications Button",
+    "invite": "Invite"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -610,7 +612,8 @@
       },
       "inviteExternalVC": "Invite External VC",
       "externalVCsInfo": "At the moment, only Alkemio Support can add an external Virtual Contributor to your Space. Please contact Support <click>here</click> if you wish to do so, we are happy to help!",
-      "searchVC": "Find Virtual Contributor"
+      "searchVC": "Find Virtual Contributor",
+      "inviteBtn": "Invite Virtual Contributor"
     },
     "application-form": {
       "title": "Application Form",
@@ -1137,6 +1140,18 @@
       },
       "inviteToRole": "Invite to be a: "
     },
+    "inviteContributorsDialog": {
+      "vcs": {
+        "onAccount": {
+          "title": "Virtual Contributors from my account"
+        },
+        "inLibrary": {
+          "title": "Other Virtual Contributors"
+        },
+        "emptyMessage": "No available Virtual Contributors"
+      },
+      "successfullyAdded": "{{contributor}} added successfully"
+    },
     "confirmation-dialog": {
       "delete-comment": {
         "confirmation-title": "Deleting comment",
@@ -1181,7 +1196,8 @@
         "list.ordered": "Ordered List",
         "list.indent": "Indent",
         "list.outdent": "Remove indent",
-        "remove.remove": "Remove"
+        "remove.remove": "Remove",
+        "embed.video": "Embed Video or other Media"
       },
       "image": {
         "dialogHeader": "Insert Image"
@@ -1191,6 +1207,13 @@
       },
       "validation": {
         "maxLength": "The resulting text goes beyond the size accepted by the server."
+      },
+      "embed": {
+        "iframeAria": "{{title}}",
+        "dialogTitle": "Embed Video or other Media",
+        "embedCodeTextAreaAriaLabel": "Empty textarea",
+        "pasteEmbedCode": "Paste the embed/iframe code here",
+        "invalidOrUnsupportedEmbed": "Unfortunately, this code is either not valid or not supported. Please check the code carefully or contact support@alkem.io"
       }
     },
     "top-callouts": {
@@ -1728,6 +1751,32 @@
         "no-data-join": "No discussions. Please join the community to create a discussion",
         "explore": "Explore discussions"
       }
+    },
+    "inAppNotifications": {
+      "action": {
+        "read": "Mark as read",
+        "unread": "Mark as unread",
+        "delete": "Delete Notification"
+      },
+      "type": {
+        "COLLABORATION_CALLOUT_PUBLISHED": {
+          "subject": "{{spaceName}} - New {{calloutType}} is published \"{{calloutName}}\", have a look!",
+          "description": "{{contributorName}} published a new {{calloutType}} in {{spaceType}}: {{spaceName}}, with name: {{calloutName}}."
+        },
+        "COMMUNICATION_USER_MENTION": {
+          "subject": "{{commenterName}} mentioned you in a comment on {{calloutName}}:",
+          "description": ""
+        },
+        "COMMUNITY_NEW_MEMBER": {
+          "subject": "{{spaceName}} - Welcome to the Community!",
+          "description": "Thank you for joining {{spaceName}}!<br /> You can now start contributing to the various posts and whiteboards, further deepen your knowledge about this topic, and connect with other Contributors."
+        },
+        "COMMUNITY_NEW_MEMBER_ADMIN": {
+          "subject": "{{memberType}} \"{{memberName}}\" joined {{spaceName}}",
+          "description": "The {{memberType}} {{memberName}} has joined {{spaceName}}, of which you are an admin."
+        }
+      },
+      "emptyInbox": "No pending notifications"
     }
   },
   "navigation": {
@@ -2004,12 +2053,12 @@
           "subspaces": {
             "description": "Here you can edit Subspaces for this Space.",
             "defaultSettings": {
-              "title": "Default settings",
+              "title": "Default Subspace Template",
               "description": "Choose the default settings that will apply when creating a new Subspace within this Space. These settings can be modified during the creation process or at a later time.",
               "defaultCollaborationTemplate": {
-                "selectDifferentTemplate": "Select Collaboration Template",
-                "title": "Selecting the Default Collaboration Template",
-                "description": "Customize the default template for newly created Subspaces. Admins can modify it later in the Innovation flow settings. \n\nBelow you can choose between the templates collected in the Space Templates library."
+                "selectDifferentTemplate": "Change Default Template",
+                "title": "Change Default Subspace Template",
+                "description": "Customize the default template for newly created Subspaces.<br/><br/>Below you can choose between the templates collected in the Space Templates library. If you’re looking to create new templates or explore additional templates, <library>click here</library> to access this library."
               }
             }
           }
@@ -2115,9 +2164,6 @@
             "subtitle": "The order below is the order in which the Spaces will be visible on the Custom Homepage"
           }
         }
-      },
-      "virtualContributors": {
-        "title": "Virtual Contributors"
       }
     },
     "feedback": {

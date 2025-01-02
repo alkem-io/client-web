@@ -9,25 +9,16 @@ import {
   useCommunityMembersListQuery,
   useAssignRoleToUserMutation,
   useAssignRoleToOrganizationMutation,
-  useAssignRoleToVirtualContributorMutation,
   useRemoveRoleFromUserMutation,
   useRemoveRoleFromOrganizationMutation,
-  useRemoveRoleFromVirtualContributorMutation,
-  useAvailableVirtualContributorsLazyQuery,
-  useAvailableVirtualContributorsInLibraryLazyQuery,
   useRoleSetAvailableMembersLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationPrivilege,
-  CommunityRoleType,
-  SearchVisibility,
-  SpaceLevel,
-} from '@/core/apollo/generated/graphql-schema';
+import { CommunityRoleType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { OrganizationDetailsFragmentWithRoles } from '@/domain/community/community/CommunityAdmin/CommunityOrganizations';
 import { CommunityMemberUserFragmentWithRoles } from '@/domain/community/community/CommunityAdmin/CommunityUsers';
 import useInviteUsers from '@/domain/community/invitations/useInviteUsers';
 import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
-import { Identifiable } from '@/core/utils/Identifiable';
+import useInviteContributors from '../../inviteContributors/useInviteContributors';
 
 const MAX_AVAILABLE_MEMBERS = 100;
 const buildUserFilterObject = (filter: string | undefined) =>
@@ -54,13 +45,6 @@ interface useRoleSetAdminParams {
   spaceLevel: SpaceLevel | undefined;
 }
 
-interface VirtualContributorNameProps extends Identifiable {
-  profile: {
-    id: string;
-    displayName: string;
-  };
-}
-
 const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spaceLevel }: useRoleSetAdminParams) => {
   const journeyTypeName = getJourneyTypeName({
     spaceNameId: spaceId,
@@ -85,16 +69,6 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
 
   const memberRoleDefinition = roleSet?.memberRoleDefinition;
   const leadRoleDefinition = roleSet?.leadRoleDefinition;
-  const roleSetMyPrivileges = roleSet?.authorization?.myPrivileges ?? [];
-
-  const permissions = {
-    canAddMembers: roleSetMyPrivileges.some(priv => priv === AuthorizationPrivilege.CommunityAddMember),
-    // the following privilege allows Admins of a space without CommunityAddMember privilege, to
-    // be able to add VC from the account; CommunityAddMember overrides this privilege as it's not granted to PAs
-    canAddVirtualContributorsFromAccount: roleSetMyPrivileges.some(
-      priv => priv === AuthorizationPrivilege.CommunityAddMemberVcFromAccount
-    ),
-  };
 
   const {
     data: dataApplications,
@@ -194,10 +168,15 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
     return result;
   }, [roleSetData]);
 
-  const virtualContributors = useMemo(() => {
-    const roleSet = roleSetData?.lookup.roleSet;
-    return roleSet?.memberVirtualContributors ?? [];
-  }, [roleSetData]);
+  // Virtual Contributors community related extracted in useInviteContributors
+  const {
+    permissions,
+    virtualContributors,
+    getAvailableVirtualContributors,
+    getAvailableVirtualContributorsInLibrary,
+    onAddVirtualContributor,
+    onRemoveVirtualContributor,
+  } = useInviteContributors({ roleSetId, spaceId, spaceLevel });
 
   // Available new members:
   const [fetchAvailableUsers, { refetch: refetchAvailableMemberUsers }] = useRoleSetAvailableMembersLazyQuery();
@@ -223,57 +202,6 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
     // Filter out already member organizations
     return data?.organizationsPaginated.organization.filter(
       org => organizations.find(member => member.id === org.id) === undefined
-    );
-  };
-
-  const filterByName = (vc: VirtualContributorNameProps, filter?: string) =>
-    vc.profile.displayName.toLowerCase().includes(filter?.toLowerCase() ?? '');
-
-  const filterExisting = (vc: VirtualContributorNameProps, existingVCs) =>
-    !existingVCs.some(member => member.id === vc.id);
-
-  const [fetchAllVirtualContributorsInLibrary] = useAvailableVirtualContributorsInLibraryLazyQuery();
-  const getAvailableVirtualContributorsInLibrary = async (filter: string | undefined) => {
-    const { data } = await fetchAllVirtualContributorsInLibrary();
-
-    return (data?.platform.library.virtualContributors ?? []).filter(
-      vc =>
-        vc.searchVisibility === SearchVisibility.Public &&
-        filterExisting(vc, virtualContributors) &&
-        filterByName(vc, filter)
-    );
-  };
-
-  const [fetchAllVirtualContributors] = useAvailableVirtualContributorsLazyQuery();
-  const getAvailableVirtualContributors = async (filter: string | undefined, all: boolean = false) => {
-    const { data } = await fetchAllVirtualContributors({
-      variables: {
-        filterSpace: !all || spaceLevel !== SpaceLevel.Space,
-        filterSpaceId: spaceId,
-      },
-    });
-    const roleSet = data?.lookup?.space?.community?.roleSet;
-
-    // Results for Space Level - on Account if !all (filter in the query)
-    if (spaceLevel === SpaceLevel.Space) {
-      return (data?.lookup?.space?.account.virtualContributors ?? data?.virtualContributors ?? []).filter(
-        vc => filterExisting(vc, virtualContributors) && filterByName(vc, filter)
-      );
-    }
-
-    // Results for Subspaces - Community Members including External VCs (filter in the query)
-    if (all) {
-      return (roleSet?.virtualContributorsInRole ?? []).filter(
-        vc => filterExisting(vc, virtualContributors) && filterByName(vc, filter)
-      );
-    }
-
-    // Results for Subspaces - Only Community Members On Account (filter in the query)
-    return (roleSet?.virtualContributorsInRole ?? []).filter(
-      vc =>
-        data?.lookup?.space?.account.virtualContributors.some(member => member.id === vc.id) &&
-        filterExisting(vc, virtualContributors) &&
-        filterByName(vc, filter)
     );
   };
 
@@ -422,35 +350,6 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
     return refetchCommunityMembers();
   };
 
-  const [addVirtualContributor] = useAssignRoleToVirtualContributorMutation();
-  const handleAddVirtualContributor = async (virtualContributorId: string) => {
-    if (!roleSetId) {
-      return;
-    }
-    await addVirtualContributor({
-      variables: {
-        roleSetId,
-        contributorId: virtualContributorId,
-        role: CommunityRoleType.Member,
-      },
-    });
-    return refetchCommunityMembers();
-  };
-  const [removeVirtualContributor] = useRemoveRoleFromVirtualContributorMutation();
-  const handleRemoveVirtualContributor = async (virtualContributorId: string) => {
-    if (!roleSetId) {
-      return;
-    }
-    await removeVirtualContributor({
-      variables: {
-        roleSetId,
-        contributorId: virtualContributorId,
-        role: CommunityRoleType.Member,
-      },
-    });
-    return refetchCommunityMembers();
-  };
-
   const onInviteUser = async () => {
     await refetchApplicationsAndInvitations();
   };
@@ -513,10 +412,10 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
     onOrganizationLeadChange: onOrganizationLeadChange,
     onAddUser: handleAddUser,
     onAddOrganization: handleAddOrganization,
-    onAddVirtualContributor: handleAddVirtualContributor,
+    onAddVirtualContributor,
     onRemoveUser: handleRemoveUser,
     onRemoveOrganization: handleRemoveOrganization,
-    onRemoveVirtualContributor: handleRemoveVirtualContributor,
+    onRemoveVirtualContributor,
     onDeleteInvitation: handleDeleteInvitation,
     onDeletePlatformInvitation: handleDeletePlatformInvitation,
     getAvailableUsers,

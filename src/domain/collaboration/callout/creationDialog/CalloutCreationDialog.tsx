@@ -31,6 +31,7 @@ import { findDefaultTagset } from '@/domain/common/tags/utils';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
+import scrollToTop from '@/core/ui/utils/scrollToTop';
 
 export type CalloutCreationDialogFields = {
   description?: string;
@@ -68,7 +69,7 @@ const CalloutCreationDialog = ({
   const { t } = useTranslation();
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
-  const [selectedCalloutType, setSelectedCalloutType] = useState<CalloutType | undefined>(undefined);
+  const [selectedCalloutType, setSelectedCalloutType] = useState<CalloutType>();
   const [isPublishDialogOpen, setIsConfirmPublishDialogOpen] = useState(false);
   const [isConfirmCloseDialogOpen, setIsConfirmCloseDialogOpen] = useState(false);
   const [sendNotification, setSendNotification] = useState(true);
@@ -150,6 +151,7 @@ const CalloutCreationDialog = ({
         };
 
         result = await onCreateCallout(newCallout);
+        scrollToTop();
       } catch (ex) {
         // eslint-disable-next-line no-console
         console.error(ex);
@@ -218,6 +220,7 @@ const CalloutCreationDialog = ({
           <DialogHeader onClose={handleClose}>
             <Box display="flex">{t('components.calloutTypeSelect.title')}</Box>
           </DialogHeader>
+
           <DialogContent>
             <Gutters>
               <CalloutTypeSelect
@@ -236,6 +239,7 @@ const CalloutCreationDialog = ({
               />
             </Gutters>
           </DialogContent>
+
           <ImportTemplatesDialog
             open={importCalloutTemplateDialogOpen}
             templateType={TemplateType.Callout}
@@ -260,6 +264,7 @@ const CalloutCreationDialog = ({
               })}
             </Box>
           </DialogHeader>
+
           <DialogContent>
             <CalloutForm
               calloutType={selectedCalloutType}
@@ -270,6 +275,7 @@ const CalloutCreationDialog = ({
               temporaryLocation // Always true for callout creation
             />
           </DialogContent>
+
           <Actions padding={gutters()}>
             <Button onClick={openConfirmCloseDialog}>{t('buttons.cancel')}</Button>
             <FlexSpacer />

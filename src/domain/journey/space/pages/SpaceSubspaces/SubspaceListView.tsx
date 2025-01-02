@@ -4,7 +4,6 @@ import useNavigate from '@/core/routing/useNavigate';
 import { useTranslation } from 'react-i18next';
 import Button from '@mui/material/Button';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import Loading from '@/core/ui/loading/Loading';
 import {
   refetchAdminSpaceSubspacesPageQuery,
   refetchDashboardWithMembershipsQuery,
@@ -28,7 +27,7 @@ import InnovationFlowProfileView from '@/domain/collaboration/InnovationFlow/Inn
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import { Actions } from '@/core/ui/actions/Actions';
 import { Cached, DeleteOutline, DownloadForOfflineOutlined } from '@mui/icons-material';
-import SelectDefaultCollabTemplateDialog from '@/domain/templates-manager/SelectDefaultCollaborationTemplate/SelectDefaultCollabTemplateDialog';
+import SelectDefaultCollaborationTemplateDialog from '@/domain/templates-manager/SelectDefaultCollaborationTemplate/SelectDefaultCollaborationTemplateDialog';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import Gutters from '@/core/ui/grid/Gutters';
 import SearchableList, { SearchableListItem } from '@/domain/platform/admin/components/SearchableList';
@@ -38,6 +37,7 @@ import { AuthorizationPrivilege, TemplateDefaultType, TemplateType } from '@/cor
 import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
 import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
+import InnovationFlowCalloutsPreview from '@/domain/collaboration/callout/CalloutsPreview/InnovationFlowCalloutsPreview';
 
 export const SubspaceListView = () => {
   const { t } = useTranslation();
@@ -213,36 +213,45 @@ export const SubspaceListView = () => {
     </>
   );
 
-  if (loading) return <Loading text={'Loading Subspaces'} />;
-
   return (
     <>
       <PageContentBlock>
         <PageContentBlockHeader title={t('pages.admin.space.sections.subspaces.defaultSettings.title')} />
         <Caption>{t('pages.admin.space.sections.subspaces.defaultSettings.description')}</Caption>
-        <PageContentBlock>
-          <PageContentBlockHeader title={t('common.innovation-flow')} />
-          <BlockSectionTitle>{defaultSubspaceTemplate?.template?.profile.displayName}</BlockSectionTitle>
-          <InnovationFlowProfileView
-            innovationFlow={defaultSubspaceTemplate?.template?.collaboration?.innovationFlow}
-          />
-          <InnovationFlowStates
-            states={defaultSubspaceTemplate?.template?.collaboration?.innovationFlow.states}
-            selectedState={selectedState}
-            onSelectState={state => setSelectedState(state.displayName)}
-          />
-          <Actions justifyContent="end">
-            <Button
-              variant="outlined"
-              startIcon={<Cached />}
-              onClick={() => setSelectCollaborationTemplateDialogOpen(true)}
-            >
-              {t(
-                'pages.admin.space.sections.subspaces.defaultSettings.defaultCollaborationTemplate.selectDifferentTemplate'
-              )}
-            </Button>
-          </Actions>
-        </PageContentBlock>
+        {defaultSubspaceTemplate?.template ? (
+          <>
+            <BlockSectionTitle>{defaultSubspaceTemplate.template.profile.displayName}</BlockSectionTitle>
+            <InnovationFlowProfileView
+              innovationFlow={defaultSubspaceTemplate.template.collaboration?.innovationFlow}
+            />
+            <InnovationFlowStates
+              states={defaultSubspaceTemplate.template.collaboration?.innovationFlow.states}
+              selectedState={selectedState}
+              onSelectState={state =>
+                setSelectedState(currentState => (currentState === state.displayName ? undefined : state.displayName))
+              }
+            />
+            <InnovationFlowCalloutsPreview
+              callouts={defaultSubspaceTemplate.template.collaboration?.callouts}
+              selectedState={selectedState}
+              loading={loading}
+            />
+          </>
+        ) : (
+          <BlockSectionTitle>{t('context.subspace.template.defaultTemplate')}</BlockSectionTitle>
+        )}
+
+        <Actions justifyContent="end">
+          <Button
+            variant="outlined"
+            startIcon={<Cached />}
+            onClick={() => setSelectCollaborationTemplateDialogOpen(true)}
+          >
+            {t(
+              'pages.admin.space.sections.subspaces.defaultSettings.defaultCollaborationTemplate.selectDifferentTemplate'
+            )}
+          </Button>
+        </Actions>
       </PageContentBlock>
       <PageContentBlock>
         <PageContentBlockHeader title={t('common.subspaces')} />
@@ -256,11 +265,11 @@ export const SubspaceListView = () => {
             {t('buttons.create')}
           </Button>
           <Gutters disablePadding>
-            <SearchableList data={subspaces} getActions={getSubSpaceActions} />
+            <SearchableList data={subspaces} getActions={getSubSpaceActions} loading={loading} />
           </Gutters>
         </Box>
       </PageContentBlock>
-      <SelectDefaultCollabTemplateDialog
+      <SelectDefaultCollaborationTemplateDialog
         spaceId={spaceId}
         open={selectCollaborationTemplateDialogOpen}
         defaultCollaborationTemplateId={defaultSubspaceTemplate?.template?.id}

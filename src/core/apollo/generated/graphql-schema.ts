@@ -80,7 +80,7 @@ export type AccountSubscription = {
   /** The expiry date of this subscription, null if it does never expire. */
   expires?: Maybe<Scalars['DateTime']>;
   /** The name of the Subscription. */
-  name: LicenseCredential;
+  name: LicensingCredentialBasedCredentialType;
 };
 
 export enum AccountType {
@@ -1880,7 +1880,7 @@ export type CreateLicensePlanOnLicensingFrameworkInput = {
   /** Is this plan free? */
   isFree: Scalars['Boolean'];
   /** The credential to represent this plan */
-  licenseCredential: LicenseCredential;
+  licenseCredential: LicensingCredentialBasedCredentialType;
   licensingFrameworkID: Scalars['UUID'];
   /** The name of the License Plan */
   name: Scalars['String'];
@@ -1895,7 +1895,7 @@ export type CreateLicensePlanOnLicensingFrameworkInput = {
   /** Is there a trial period enabled */
   trialEnabled: Scalars['Boolean'];
   /** The type of this License Plan. */
-  type: LicensePlanType;
+  type: LicensingCredentialBasedPlanType;
 };
 
 export type CreateLinkInput = {
@@ -2021,7 +2021,7 @@ export type CreateSubspaceInput = {
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
-  spaceID: Scalars['UUID_NAMEID'];
+  spaceID: Scalars['UUID'];
   tags?: InputMaybe<Array<Scalars['String']>>;
   type?: InputMaybe<SpaceType>;
 };
@@ -2525,6 +2525,105 @@ export type ISearchResults = {
   journeyResultsCount: Scalars['Float'];
 };
 
+/** An in-app notification type. To not be queried directly */
+export type InAppNotification = {
+  /** Which category (role) is this notification targeted to. */
+  category: InAppNotificationCategory;
+  id: Scalars['UUID'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: InAppNotificationState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEventType;
+};
+
+export type InAppNotificationCalloutPublished = InAppNotification & {
+  __typename?: 'InAppNotificationCalloutPublished';
+  /** The Callout that was published. */
+  callout?: Maybe<Callout>;
+  /** Which category (role) is this notification targeted to. */
+  category: InAppNotificationCategory;
+  id: Scalars['UUID'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** Where the callout is located. */
+  space?: Maybe<Space>;
+  /** The current state of the notification */
+  state: InAppNotificationState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEventType;
+};
+
+/** Which category (role) is this notification targeted to. */
+export enum InAppNotificationCategory {
+  Admin = 'ADMIN',
+  Member = 'MEMBER',
+  Self = 'SELF',
+}
+
+export type InAppNotificationCommunityNewMember = InAppNotification & {
+  __typename?: 'InAppNotificationCommunityNewMember';
+  /** The Contributor that joined. */
+  actor?: Maybe<Contributor>;
+  /** Which category (role) is this notification targeted to. */
+  category: InAppNotificationCategory;
+  /** The type of the Contributor that joined. */
+  contributorType: CommunityContributorType;
+  id: Scalars['UUID'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The Space that was joined. */
+  space?: Maybe<Space>;
+  /** The current state of the notification */
+  state: InAppNotificationState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEventType;
+};
+
+export enum InAppNotificationState {
+  Archived = 'ARCHIVED',
+  Read = 'READ',
+  Unread = 'UNREAD',
+}
+
+export type InAppNotificationUserMentioned = InAppNotification & {
+  __typename?: 'InAppNotificationUserMentioned';
+  /** Which category (role) is this notification targeted to. */
+  category: InAppNotificationCategory;
+  /** The comment that the contributor was mentioned in. */
+  comment: Scalars['String'];
+  /** The display name of the resource where the comment was created. */
+  commentOriginName: Scalars['String'];
+  /** The url of the resource where the comment was created. */
+  commentUrl: Scalars['String'];
+  /** The type of the Contributor that joined. */
+  contributorType: CommunityContributorType;
+  id: Scalars['UUID'];
+  /** The receiver of the notification. */
+  receiver: Contributor;
+  /** The current state of the notification */
+  state: InAppNotificationState;
+  /** When (UTC) was the notification sent. */
+  triggeredAt: Scalars['DateTime'];
+  /** The Contributor who triggered the notification. */
+  triggeredBy?: Maybe<Contributor>;
+  /** The type of the notification */
+  type: NotificationEventType;
+};
+
 export type InnovationFlow = {
   __typename?: 'InnovationFlow';
   /** The authorization rules for the entity */
@@ -2773,17 +2872,6 @@ export type License = {
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
-export enum LicenseCredential {
-  AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
-  SpaceFeatureSaveAsTemplate = 'SPACE_FEATURE_SAVE_AS_TEMPLATE',
-  SpaceFeatureVirtualContributors = 'SPACE_FEATURE_VIRTUAL_CONTRIBUTORS',
-  SpaceFeatureWhiteboardMultiUser = 'SPACE_FEATURE_WHITEBOARD_MULTI_USER',
-  SpaceLicenseEnterprise = 'SPACE_LICENSE_ENTERPRISE',
-  SpaceLicenseFree = 'SPACE_LICENSE_FREE',
-  SpaceLicensePlus = 'SPACE_LICENSE_PLUS',
-  SpaceLicensePremium = 'SPACE_LICENSE_PREMIUM',
-}
-
 export type LicenseEntitlement = {
   __typename?: 'LicenseEntitlement';
   /** The date at which the entity was created. */
@@ -2841,7 +2929,7 @@ export type LicensePlan = {
   /** Is this plan free? */
   isFree: Scalars['Boolean'];
   /** The credential to represent this plan */
-  licenseCredential: LicenseCredential;
+  licenseCredential: LicensingCredentialBasedCredentialType;
   /** The name of the License Plan */
   name: Scalars['String'];
   /** The price per month of this plan. */
@@ -2855,17 +2943,10 @@ export type LicensePlan = {
   /** Is there a trial period enabled */
   trialEnabled: Scalars['Boolean'];
   /** The type of this License Plan. */
-  type: LicensePlanType;
+  type: LicensingCredentialBasedPlanType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
-
-export enum LicensePlanType {
-  AccountFeatureFlag = 'ACCOUNT_FEATURE_FLAG',
-  AccountPlan = 'ACCOUNT_PLAN',
-  SpaceFeatureFlag = 'SPACE_FEATURE_FLAG',
-  SpacePlan = 'SPACE_PLAN',
-}
 
 export type LicensePolicy = {
   __typename?: 'LicensePolicy';
@@ -2874,18 +2955,11 @@ export type LicensePolicy = {
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The set of credential rules that are contained by this License Policy. */
-  credentialRules: Array<LicensePolicyCredentialRule>;
+  credentialRules: Array<LicensingCredentialBasedPolicyCredentialRule>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
-};
-
-export type LicensePolicyCredentialRule = {
-  __typename?: 'LicensePolicyCredentialRule';
-  credentialType: LicenseCredential;
-  grantedEntitlements: Array<LicenseEntitlementType>;
-  name?: Maybe<Scalars['String']>;
 };
 
 export enum LicenseType {
@@ -2910,6 +2984,31 @@ export type Licensing = {
   policy: LicensePolicy;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
+};
+
+export enum LicensingCredentialBasedCredentialType {
+  AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
+  SpaceFeatureSaveAsTemplate = 'SPACE_FEATURE_SAVE_AS_TEMPLATE',
+  SpaceFeatureVirtualContributors = 'SPACE_FEATURE_VIRTUAL_CONTRIBUTORS',
+  SpaceFeatureWhiteboardMultiUser = 'SPACE_FEATURE_WHITEBOARD_MULTI_USER',
+  SpaceLicenseEnterprise = 'SPACE_LICENSE_ENTERPRISE',
+  SpaceLicenseFree = 'SPACE_LICENSE_FREE',
+  SpaceLicensePlus = 'SPACE_LICENSE_PLUS',
+  SpaceLicensePremium = 'SPACE_LICENSE_PREMIUM',
+}
+
+export enum LicensingCredentialBasedPlanType {
+  AccountFeatureFlag = 'ACCOUNT_FEATURE_FLAG',
+  AccountPlan = 'ACCOUNT_PLAN',
+  SpaceFeatureFlag = 'SPACE_FEATURE_FLAG',
+  SpacePlan = 'SPACE_PLAN',
+}
+
+export type LicensingCredentialBasedPolicyCredentialRule = {
+  __typename?: 'LicensingCredentialBasedPolicyCredentialRule';
+  credentialType: LicensingCredentialBasedCredentialType;
+  grantedEntitlements: Array<LicenseEntitlementType>;
+  name?: Maybe<Scalars['String']>;
 };
 
 export type Lifecycle = {
@@ -3237,10 +3336,18 @@ export enum MimeType {
   Gif = 'GIF',
   Jpeg = 'JPEG',
   Jpg = 'JPG',
+  Odp = 'ODP',
   Ods = 'ODS',
   Odt = 'ODT',
   Pdf = 'PDF',
   Png = 'PNG',
+  Potm = 'POTM',
+  Potx = 'POTX',
+  Ppsm = 'PPSM',
+  Ppsx = 'PPSX',
+  Ppt = 'PPT',
+  Pptm = 'PPTM',
+  Pptx = 'PPTX',
   Svg = 'SVG',
   Webp = 'WEBP',
   Xls = 'XLS',
@@ -3271,6 +3378,10 @@ export type Mutation = {
   adminUpdateContributorAvatars: Profile;
   /** Remove the Kratos account associated with the specified User. Note: the Users profile on the platform is not deleted. */
   adminUserAccountDelete: User;
+  /** Create a test customer on wingback. */
+  adminWingbackCreateTestCustomer: Scalars['String'];
+  /** Get wingback customer entitlements. */
+  adminWingbackGetCustomerEntitlements: Scalars['String'];
   /** Reset the Authorization Policy on the specified AiServer. */
   aiServerAuthorizationPolicyReset: AiServer;
   /** Creates a new AiPersonaService on the aiServer. */
@@ -3443,6 +3554,8 @@ export type Mutation = {
   messageUser: Scalars['String'];
   /** Moves the specified Contribution to another Callout. */
   moveContributionToCallout: CalloutContribution;
+  /** Refresh the Bodies of Knowledge on All VCs */
+  refreshAllBodiesOfKnowledge: Scalars['Boolean'];
   /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean'];
   /** Empties the CommunityGuidelines. */
@@ -3537,6 +3650,8 @@ export type Mutation = {
   updateLicensePlan: LicensePlan;
   /** Updates the specified Link. */
   updateLink: Link;
+  /** Update notification state and return the notification. */
+  updateNotificationState: InAppNotificationState;
   /** Updates the specified Organization. */
   updateOrganization: Organization;
   /** Updates the specified Organization platform settings. */
@@ -3609,6 +3724,10 @@ export type MutationAdminUpdateContributorAvatarsArgs = {
 
 export type MutationAdminUserAccountDeleteArgs = {
   userID: Scalars['UUID'];
+};
+
+export type MutationAdminWingbackGetCustomerEntitlementsArgs = {
+  customerID: Scalars['String'];
 };
 
 export type MutationAiServerCreateAiPersonaServiceArgs = {
@@ -4103,6 +4222,10 @@ export type MutationUpdateLinkArgs = {
   linkData: UpdateLinkInput;
 };
 
+export type MutationUpdateNotificationStateArgs = {
+  notificationData: UpdateNotificationStateInput;
+};
+
 export type MutationUpdateOrganizationArgs = {
   organizationData: UpdateOrganizationInput;
 };
@@ -4226,6 +4349,35 @@ export type Nvp = {
   updatedDate?: Maybe<Scalars['DateTime']>;
   value: Scalars['String'];
 };
+
+/** The type of the notification */
+export enum NotificationEventType {
+  CollaborationCalloutPublished = 'COLLABORATION_CALLOUT_PUBLISHED',
+  CollaborationDiscussionComment = 'COLLABORATION_DISCUSSION_COMMENT',
+  CollaborationPostComment = 'COLLABORATION_POST_COMMENT',
+  CollaborationPostCreated = 'COLLABORATION_POST_CREATED',
+  CollaborationWhiteboardCreated = 'COLLABORATION_WHITEBOARD_CREATED',
+  CommentReply = 'COMMENT_REPLY',
+  CommunicationCommentSent = 'COMMUNICATION_COMMENT_SENT',
+  CommunicationCommunityMessage = 'COMMUNICATION_COMMUNITY_MESSAGE',
+  CommunicationOrganizationMention = 'COMMUNICATION_ORGANIZATION_MENTION',
+  CommunicationOrganizationMessage = 'COMMUNICATION_ORGANIZATION_MESSAGE',
+  CommunicationUpdateSent = 'COMMUNICATION_UPDATE_SENT',
+  CommunicationUserMention = 'COMMUNICATION_USER_MENTION',
+  CommunicationUserMessage = 'COMMUNICATION_USER_MESSAGE',
+  CommunityApplicationCreated = 'COMMUNITY_APPLICATION_CREATED',
+  CommunityInvitationCreated = 'COMMUNITY_INVITATION_CREATED',
+  CommunityInvitationCreatedVc = 'COMMUNITY_INVITATION_CREATED_VC',
+  CommunityNewMember = 'COMMUNITY_NEW_MEMBER',
+  CommunityPlatformInvitationCreated = 'COMMUNITY_PLATFORM_INVITATION_CREATED',
+  PlatformForumDiscussionComment = 'PLATFORM_FORUM_DISCUSSION_COMMENT',
+  PlatformForumDiscussionCreated = 'PLATFORM_FORUM_DISCUSSION_CREATED',
+  PlatformGlobalRoleChange = 'PLATFORM_GLOBAL_ROLE_CHANGE',
+  PlatformUserInvitedToRole = 'PLATFORM_USER_INVITED_TO_ROLE',
+  PlatformUserRegistered = 'PLATFORM_USER_REGISTERED',
+  PlatformUserRemoved = 'PLATFORM_USER_REMOVED',
+  SpaceCreated = 'SPACE_CREATED',
+}
 
 export type Organization = Contributor &
   Groupable & {
@@ -4722,6 +4874,8 @@ export type Query = {
   lookupByName: LookupByNameQueryResults;
   /** Information about the current authenticated user */
   me: MeQueryResults;
+  /** Get all notifications for a receiver. */
+  notifications: Array<InAppNotification>;
   /** A particular Organization */
   organization: Organization;
   /** The Organizations on this platform */
@@ -4790,6 +4944,10 @@ export type QueryAdminCommunicationMembershipArgs = {
 
 export type QueryExploreSpacesArgs = {
   options?: InputMaybe<ExploreSpacesInput>;
+};
+
+export type QueryNotificationsArgs = {
+  receiverID: Scalars['UUID'];
 };
 
 export type QueryOrganizationArgs = {
@@ -5655,7 +5813,7 @@ export type SpaceSubscription = {
   /** The expiry date of this subscription, null if it does never expire. */
   expires?: Maybe<Scalars['DateTime']>;
   /** The name of the Subscription. */
-  name: LicenseCredential;
+  name: LicensingCredentialBasedCredentialType;
 };
 
 export enum SpaceType {
@@ -6326,7 +6484,7 @@ export type UpdateLicensePlanInput = {
   /** Is this plan free? */
   isFree?: InputMaybe<Scalars['Boolean']>;
   /** The credential to represent this plan */
-  licenseCredential?: InputMaybe<LicenseCredential>;
+  licenseCredential?: InputMaybe<LicensingCredentialBasedCredentialType>;
   /** The price per month of this plan. */
   pricePerMonth?: InputMaybe<Scalars['Float']>;
   /** Does this plan require contact support */
@@ -6353,6 +6511,13 @@ export type UpdateLocationInput = {
   country?: InputMaybe<Scalars['String']>;
   postalCode?: InputMaybe<Scalars['String']>;
   stateOrProvince?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateNotificationStateInput = {
+  /** The ID of the notification to update. */
+  ID: Scalars['UUID'];
+  /** The new state of the notification. */
+  state: InAppNotificationState;
 };
 
 export type UpdateOrganizationInput = {
@@ -15675,6 +15840,7 @@ export type CommunityMembersListQuery = {
     space?:
       | {
           __typename?: 'Space';
+          id: string;
           provider:
             | {
                 __typename?: 'Organization';
@@ -16024,82 +16190,6 @@ export type AvailableUserFragment = {
   __typename?: 'User';
   id: string;
   email: string;
-  profile: { __typename?: 'Profile'; id: string; displayName: string };
-};
-
-export type AvailableVirtualContributorsQueryVariables = Exact<{
-  filterSpace?: InputMaybe<Scalars['Boolean']>;
-  filterSpaceId?: InputMaybe<Scalars['UUID']>;
-}>;
-
-export type AvailableVirtualContributorsQuery = {
-  __typename?: 'Query';
-  lookup?: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          community: {
-            __typename?: 'Community';
-            id: string;
-            roleSet: {
-              __typename?: 'RoleSet';
-              id: string;
-              virtualContributorsInRole: Array<{
-                __typename?: 'VirtualContributor';
-                id: string;
-                nameID: string;
-                profile: { __typename?: 'Profile'; id: string; displayName: string };
-              }>;
-            };
-          };
-          account: {
-            __typename?: 'Account';
-            id: string;
-            virtualContributors: Array<{
-              __typename?: 'VirtualContributor';
-              id: string;
-              nameID: string;
-              profile: { __typename?: 'Profile'; id: string; displayName: string };
-            }>;
-          };
-        }
-      | undefined;
-  };
-  virtualContributors?: Array<{
-    __typename?: 'VirtualContributor';
-    id: string;
-    nameID: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  }>;
-};
-
-export type AvailableVirtualContributorsInLibraryQueryVariables = Exact<{ [key: string]: never }>;
-
-export type AvailableVirtualContributorsInLibraryQuery = {
-  __typename?: 'Query';
-  platform: {
-    __typename?: 'Platform';
-    id: string;
-    library: {
-      __typename?: 'Library';
-      id: string;
-      virtualContributors: Array<{
-        __typename?: 'VirtualContributor';
-        searchVisibility: SearchVisibility;
-        id: string;
-        nameID: string;
-        profile: { __typename?: 'Profile'; id: string; displayName: string };
-      }>;
-    };
-  };
-};
-
-export type VirtualContributorNameFragment = {
-  __typename?: 'VirtualContributor';
-  id: string;
-  nameID: string;
   profile: { __typename?: 'Profile'; id: string; displayName: string };
 };
 
@@ -16633,7 +16723,7 @@ export type AdminGlobalOrganizationsListQuery = {
         | {
             __typename?: 'Account';
             id: string;
-            subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
+            subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicensingCredentialBasedCredentialType }>;
           }
         | undefined;
       profile: {
@@ -17308,6 +17398,353 @@ export type InviteUserToPlatformAndRoleSetMutation = {
   inviteUserToPlatformAndRoleSet: { __typename?: 'PlatformInvitation'; id: string };
 };
 
+export type AvailableVirtualContributorsQueryVariables = Exact<{
+  filterSpace?: InputMaybe<Scalars['Boolean']>;
+  filterSpaceId?: InputMaybe<Scalars['UUID']>;
+}>;
+
+export type AvailableVirtualContributorsQuery = {
+  __typename?: 'Query';
+  lookup?: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          community: {
+            __typename?: 'Community';
+            id: string;
+            roleSet: {
+              __typename?: 'RoleSet';
+              id: string;
+              virtualContributorsInRole: Array<{
+                __typename?: 'VirtualContributor';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  url: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                    | undefined;
+                };
+                aiPersona?:
+                  | {
+                      __typename?: 'AiPersona';
+                      bodyOfKnowledge?: string | undefined;
+                      bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+                      bodyOfKnowledgeID?: string | undefined;
+                    }
+                  | undefined;
+              }>;
+            };
+          };
+          account: {
+            __typename?: 'Account';
+            id: string;
+            virtualContributors: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              nameID: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                description?: string | undefined;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
+                location?:
+                  | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                  | undefined;
+              };
+              aiPersona?:
+                | {
+                    __typename?: 'AiPersona';
+                    bodyOfKnowledge?: string | undefined;
+                    bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+                    bodyOfKnowledgeID?: string | undefined;
+                  }
+                | undefined;
+            }>;
+          };
+        }
+      | undefined;
+  };
+  virtualContributors?: Array<{
+    __typename?: 'VirtualContributor';
+    id: string;
+    nameID: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      url: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagsets?:
+        | Array<{
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }>
+        | undefined;
+      location?:
+        | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+        | undefined;
+    };
+    aiPersona?:
+      | {
+          __typename?: 'AiPersona';
+          bodyOfKnowledge?: string | undefined;
+          bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+          bodyOfKnowledgeID?: string | undefined;
+        }
+      | undefined;
+  }>;
+};
+
+export type AvailableVirtualContributorsInLibraryQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AvailableVirtualContributorsInLibraryQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    library: {
+      __typename?: 'Library';
+      id: string;
+      virtualContributors: Array<{
+        __typename?: 'VirtualContributor';
+        searchVisibility: SearchVisibility;
+        id: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          url: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+          location?:
+            | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+            | undefined;
+        };
+        aiPersona?:
+          | {
+              __typename?: 'AiPersona';
+              bodyOfKnowledge?: string | undefined;
+              bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+              bodyOfKnowledgeID?: string | undefined;
+            }
+          | undefined;
+      }>;
+    };
+  };
+};
+
+export type CommunityVirtualMembersListQueryVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  spaceId?: InputMaybe<Scalars['UUID']>;
+  includeSpaceHost?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type CommunityVirtualMembersListQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          provider:
+            | {
+                __typename?: 'Organization';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  description?: string | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                    | undefined;
+                };
+              }
+            | {
+                __typename?: 'User';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  description?: string | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                    | undefined;
+                };
+              }
+            | {
+                __typename?: 'VirtualContributor';
+                id: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  description?: string | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagsets?:
+                    | Array<{
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }>
+                    | undefined;
+                  location?:
+                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                    | undefined;
+                };
+              };
+        }
+      | undefined;
+    roleSet?:
+      | {
+          __typename?: 'RoleSet';
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          memberVirtualContributors: Array<{
+            __typename?: 'VirtualContributor';
+            id: string;
+            searchVisibility: SearchVisibility;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              tagsets?:
+                | Array<{
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }>
+                | undefined;
+              location?:
+                | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                | undefined;
+            };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type VirtualContributorFullFragment = {
+  __typename?: 'VirtualContributor';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    url: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    tagsets?:
+      | Array<{
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }>
+      | undefined;
+    location?:
+      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+      | undefined;
+  };
+  aiPersona?:
+    | {
+        __typename?: 'AiPersona';
+        bodyOfKnowledge?: string | undefined;
+        bodyOfKnowledgeType?: AiPersonaBodyOfKnowledgeType | undefined;
+        bodyOfKnowledgeID?: string | undefined;
+      }
+    | undefined;
+};
+
 export type PendingMembershipsSpaceQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
   fetchDetails?: Scalars['Boolean'];
@@ -17534,7 +17971,7 @@ export type UserListQuery = {
         | {
             __typename?: 'Account';
             id: string;
-            subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicenseCredential }>;
+            subscriptions: Array<{ __typename?: 'AccountSubscription'; name: LicensingCredentialBasedCredentialType }>;
           }
         | undefined;
       profile: {
@@ -20991,6 +21428,37 @@ export type SpaceUrlQuery = {
   space: { __typename?: 'Space'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
 };
 
+export type SpaceTemplatesManagerQueryVariables = Exact<{
+  spaceNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type SpaceTemplatesManagerQuery = {
+  __typename?: 'Query';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    templatesManager?:
+      | {
+          __typename?: 'TemplatesManager';
+          id: string;
+          templatesSet?:
+            | {
+                __typename?: 'TemplatesSet';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type SpaceInfoFragment = {
   __typename?: 'Space';
   visibility: SpaceVisibility;
@@ -21697,7 +22165,7 @@ export type PlansTableQuery = {
         trialEnabled: boolean;
         requiresPaymentMethod: boolean;
         requiresContactSupport: boolean;
-        type: LicensePlanType;
+        type: LicensingCredentialBasedPlanType;
       }>;
     };
   };
@@ -22201,7 +22669,11 @@ export type SpaceAccountQuery = {
           visibility: SpaceVisibility;
           profile: { __typename?: 'Profile'; id: string; url: string };
           activeSubscription?:
-            | { __typename?: 'SpaceSubscription'; name: LicenseCredential; expires?: Date | undefined }
+            | {
+                __typename?: 'SpaceSubscription';
+                name: LicensingCredentialBasedCredentialType;
+                expires?: Date | undefined;
+              }
             | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -22272,11 +22744,11 @@ export type SpaceAccountQuery = {
         id: string;
         name: string;
         enabled: boolean;
-        type: LicensePlanType;
+        type: LicensingCredentialBasedPlanType;
         sortOrder: number;
         isFree: boolean;
         pricePerMonth?: number | undefined;
-        licenseCredential: LicenseCredential;
+        licenseCredential: LicensingCredentialBasedCredentialType;
       }>;
     };
     configuration: {
@@ -22813,6 +23285,23 @@ export type AdminSpaceSubspacesPageQuery = {
                     | {
                         __typename?: 'Collaboration';
                         id: string;
+                        callouts: Array<{
+                          __typename?: 'Callout';
+                          id: string;
+                          type: CalloutType;
+                          sortOrder: number;
+                          framing: {
+                            __typename?: 'CalloutFraming';
+                            id: string;
+                            profile: {
+                              __typename?: 'Profile';
+                              id: string;
+                              displayName: string;
+                              description?: string | undefined;
+                              flowStateTagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                            };
+                          };
+                        }>;
                         innovationFlow: {
                           __typename?: 'InnovationFlow';
                           id: string;
@@ -23578,7 +24067,7 @@ export type AssignLicensePlanToSpaceMutation = {
   assignLicensePlanToSpace: {
     __typename?: 'Space';
     id: string;
-    subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicenseCredential }>;
+    subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
   };
 };
 
@@ -23592,7 +24081,7 @@ export type RevokeLicensePlanFromSpaceMutation = {
   revokeLicensePlanFromSpace: {
     __typename?: 'Space';
     id: string;
-    subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicenseCredential }>;
+    subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
   };
 };
 
@@ -23616,7 +24105,7 @@ export type AdminSpacesListQuery = {
     id: string;
     nameID: string;
     visibility: SpaceVisibility;
-    subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicenseCredential }>;
+    subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
     provider:
       | {
           __typename?: 'Organization';
@@ -23641,7 +24130,7 @@ export type AdminSpaceFragment = {
   id: string;
   nameID: string;
   visibility: SpaceVisibility;
-  subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicenseCredential }>;
+  subscriptions: Array<{ __typename?: 'SpaceSubscription'; name: LicensingCredentialBasedCredentialType }>;
   provider:
     | { __typename?: 'Organization'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
     | { __typename?: 'User'; id: string; profile: { __typename?: 'Profile'; id: string; displayName: string } }
@@ -24212,9 +24701,9 @@ export type PlatformLicensingPlansQuery = {
       plans: Array<{
         __typename?: 'LicensePlan';
         id: string;
-        type: LicensePlanType;
+        type: LicensingCredentialBasedPlanType;
         name: string;
-        licenseCredential: LicenseCredential;
+        licenseCredential: LicensingCredentialBasedCredentialType;
       }>;
     };
   };
@@ -27658,6 +28147,442 @@ export type GuidanceRoomMessagesQuery = {
         }
       | undefined;
   };
+};
+
+export type InAppNotificationsQueryVariables = Exact<{
+  receiverID: Scalars['UUID'];
+}>;
+
+export type InAppNotificationsQuery = {
+  __typename?: 'Query';
+  notifications: Array<
+    | {
+        __typename?: 'InAppNotificationCalloutPublished';
+        id: string;
+        type: NotificationEventType;
+        category: InAppNotificationCategory;
+        state: InAppNotificationState;
+        triggeredAt: Date;
+        callout?:
+          | {
+              __typename?: 'Callout';
+              id: string;
+              type: CalloutType;
+              framing: {
+                __typename?: 'CalloutFraming';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+              };
+            }
+          | undefined;
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | undefined;
+        triggeredBy?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'User';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | undefined;
+      }
+    | {
+        __typename?: 'InAppNotificationCommunityNewMember';
+        id: string;
+        type: NotificationEventType;
+        category: InAppNotificationCategory;
+        state: InAppNotificationState;
+        triggeredAt: Date;
+        triggeredBy?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'User';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | undefined;
+        space?:
+          | {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | undefined;
+        actor?:
+          | {
+              __typename: 'Organization';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | {
+              __typename: 'User';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | {
+              __typename: 'VirtualContributor';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | undefined;
+      }
+    | {
+        __typename?: 'InAppNotificationUserMentioned';
+        id: string;
+        type: NotificationEventType;
+        category: InAppNotificationCategory;
+        state: InAppNotificationState;
+        triggeredAt: Date;
+        commentUrl: string;
+        comment: string;
+        commentOriginName: string;
+        contributorType: CommunityContributorType;
+        triggeredBy?:
+          | {
+              __typename?: 'Organization';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'User';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | {
+              __typename?: 'VirtualContributor';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+            }
+          | undefined;
+      }
+  >;
+};
+
+export type UpdateNotificationStateMutationVariables = Exact<{
+  ID: Scalars['UUID'];
+  state: InAppNotificationState;
+}>;
+
+export type UpdateNotificationStateMutation = {
+  __typename?: 'Mutation';
+  updateNotificationState: InAppNotificationState;
+};
+
+export type InAppNotificationCalloutPublishedFragment = {
+  __typename?: 'InAppNotificationCalloutPublished';
+  callout?:
+    | {
+        __typename?: 'Callout';
+        id: string;
+        type: CalloutType;
+        framing: {
+          __typename?: 'CalloutFraming';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            url: string;
+            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+        };
+      }
+    | undefined;
+  space?:
+    | {
+        __typename?: 'Space';
+        id: string;
+        level: SpaceLevel;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | undefined;
+  triggeredBy?:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'User';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | undefined;
+};
+
+export type InAppNotificationCommunityNewMemberFragment = {
+  __typename?: 'InAppNotificationCommunityNewMember';
+  triggeredBy?:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'User';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | undefined;
+  space?:
+    | {
+        __typename?: 'Space';
+        id: string;
+        level: SpaceLevel;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | undefined;
+  actor?:
+    | {
+        __typename: 'Organization';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | {
+        __typename: 'User';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | {
+        __typename: 'VirtualContributor';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | undefined;
+};
+
+export type InAppNotificationUserMentionedFragment = {
+  __typename?: 'InAppNotificationUserMentioned';
+  commentUrl: string;
+  comment: string;
+  commentOriginName: string;
+  contributorType: CommunityContributorType;
+  triggeredBy?:
+    | {
+        __typename?: 'Organization';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'User';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | {
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          url: string;
+          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }
+    | undefined;
 };
 
 export type JourneyRouteResolverQueryVariables = Exact<{
