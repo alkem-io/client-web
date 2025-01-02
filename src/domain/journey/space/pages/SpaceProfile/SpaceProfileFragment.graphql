@@ -29,7 +29,6 @@ fragment SpaceProfile on Space {
     authorization {
       id
       myPrivileges
-      anonymousReadAccess
     }
   }
   collaboration {

@@ -1,5 +1,4 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
 import PostDashboardPage from '../pages/PostDashboardPage';
 import PostSettingsPage from '../pages/PostSettingsPage';
@@ -11,10 +10,9 @@ import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 
 export interface PostRouteProps {
   parentPagePath: string;
-  journeyTypeName: JourneyTypeName;
 }
 
-const PostRoute = ({ parentPagePath, journeyTypeName }: PostRouteProps) => {
+const PostRoute = ({ parentPagePath }: PostRouteProps) => {
   const [backToExplore] = useBackToParentPage(parentPagePath, { keepScroll: true });
   const onClose = () => backToExplore();
 
@@ -41,7 +39,6 @@ const PostRoute = ({ parentPagePath, journeyTypeName }: PostRouteProps) => {
               calloutId={calloutId}
               postNameId={postNameId}
               onClose={onClose}
-              journeyTypeName={journeyTypeName}
             />
           }
         />

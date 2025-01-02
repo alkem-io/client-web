@@ -104,29 +104,32 @@ fragment CollaborationTemplateContent on Collaboration {
       description
     }
   }
-  callouts {
+  calloutsSet {
     id
-    type
-    framing {
+    callouts {
       id
-      profile {
-        id
-        displayName
-        description
-        flowStateTagset: tagset(tagsetName: FLOW_STATE) {
-          tags
-        }
-      }
-      whiteboard {
+      type
+      framing {
         id
         profile {
-          preview: visual(type: BANNER) {
-            ...VisualFull
+          id
+          displayName
+          description
+          flowStateTagset: tagset(tagsetName: FLOW_STATE) {
+            tags
+          }
+        }
+        whiteboard {
+          id
+          profile {
+            preview: visual(type: BANNER) {
+              ...VisualFull
+            }
           }
         }
       }
+      sortOrder
     }
-    sortOrder
   }
 }
 

@@ -1,0 +1,8 @@
+
+mutation createLinkOnCallout($input: CreateContributionOnCalloutInput!) {
+  createContributionOnCallout(contributionData: $input) {
+    link {
+      ...LinkDetails
+    }
+  }
+}

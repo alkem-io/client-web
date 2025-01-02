@@ -1,0 +1,137 @@
+query Callouts($calloutsSetId: UUID!, $groups: [String!], $calloutIds: [UUID_NAMEID!]) {
+  lookup {
+    calloutsSet(ID: $calloutsSetId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      callouts(groups: $groups, IDs: $calloutIds) {
+        ...Callout
+      }
+    }
+  }
+}
+
+fragment Callout on Callout {
+  id
+  nameID
+  type
+  sortOrder
+  activity
+  authorization {
+    id
+    myPrivileges
+  }
+  framing {
+    id
+    profile {
+      id
+      url
+      displayName
+      tagsets {
+        ...TagsetDetails
+      }
+    }
+  }
+  visibility
+}
+
+query CalloutDetails($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      ...CalloutDetails
+    }
+  }
+}
+
+fragment CalloutDetails on Callout {
+  id
+  nameID
+  type
+  framing {
+    id
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        ...TagsetDetails
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      references {
+        ...ReferenceDetails
+      }
+      storageBucket {
+        id
+      }
+      url
+    }
+    whiteboard {
+      ...WhiteboardDetails
+    }
+  }
+  contributionPolicy {
+    state
+  }
+  contributionDefaults {
+    id
+    postDescription
+    whiteboardContent
+  }
+  sortOrder
+  activity
+  contributions {
+    id
+    sortOrder
+    link {
+      ...LinkDetailsWithAuthorization
+    }
+  }
+  comments {
+    ...CommentsWithMessages
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+  visibility
+}
+
+query CalloutContent($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      type
+      framing {
+        id
+        profile {
+          id
+          displayName
+          description
+          tagsets {
+            ...TagsetDetails
+          }
+          references {
+            ...ReferenceDetails
+          }
+        }
+        whiteboard {
+          id
+          profile {
+            id
+            displayName
+          }
+          content
+        }
+      }
+      contributionDefaults {
+        id
+        postDescription
+        whiteboardContent
+      }
+    }
+  }
+}
