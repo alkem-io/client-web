@@ -19400,6 +19400,26 @@ export type RefreshBodyOfKnowledgeMutation = {
   refreshVirtualContributorBodyOfKnowledge: boolean;
 };
 
+export type VirtualContributorKnowledgeBaseQueryVariables = Exact<{
+  id: Scalars['UUID_NAMEID'];
+}>;
+
+export type VirtualContributorKnowledgeBaseQuery = {
+  __typename?: 'Query';
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    knowledgeBase?:
+      | {
+          __typename?: 'KnowledgeBase';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          calloutsSet: { __typename?: 'CalloutsSet'; id: string };
+        }
+      | undefined;
+  };
+};
+
 export type VcMembershipsQueryVariables = Exact<{
   virtualContributorId: Scalars['UUID_NAMEID'];
 }>;

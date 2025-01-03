@@ -141,10 +141,6 @@ const CalloutSettingsContainer = ({
 
   const { spaceNameId } = useUrlParams();
 
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space');
-  }
-
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
   const settingsOpened = Boolean(settingsAnchorEl);
   const handleSettingsOpened = (event: React.MouseEvent<HTMLElement>) => setSettingsAnchorEl(event.currentTarget);
@@ -186,6 +182,11 @@ const CalloutSettingsContainer = ({
 
   const { handleCreateCalloutTemplate } = useCreateCalloutTemplate();
   const handleSaveAsTemplate = async (values: CalloutTemplateFormSubmittedValues) => {
+    if (!spaceNameId) {
+      setSaveAsTemplateDialogOpen(false);
+      return;
+    }
+
     await handleCreateCalloutTemplate(values, spaceNameId);
     setSaveAsTemplateDialogOpen(false);
   };
