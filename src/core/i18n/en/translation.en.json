@@ -173,7 +173,8 @@
     "toolPosition": "Position of tool",
     "createOwnSpace": "...or click here to create your own Space",
     "notifications": "Notifications Button",
-    "invite": "Invite"
+    "invite": "Invite",
+    "visit": "Visit"
   },
   "tooltips": {
     "click-more-info": "Click for more information",

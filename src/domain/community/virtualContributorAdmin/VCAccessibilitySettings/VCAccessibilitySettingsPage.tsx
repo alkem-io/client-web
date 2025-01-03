@@ -37,12 +37,14 @@ export const VCAccessibilitySettingsPage = () => {
     },
   });
 
+  const vc = data?.virtualContributor;
+
   const [updateContributorMutation] = useUpdateVirtualContributorMutation();
   const handleUpdate = (props: VCAccessibilityProps) => {
     updateContributorMutation({
       variables: {
         virtualContributorData: {
-          ID: data?.virtualContributor?.id ?? '',
+          ID: vc?.id ?? '',
           ...props,
         },
       },
@@ -65,7 +67,7 @@ export const VCAccessibilitySettingsPage = () => {
     updateBodyOfKnowledge({
       variables: {
         refreshData: {
-          virtualContributorID: data?.virtualContributor?.id ?? '',
+          virtualContributorID: vc?.id ?? '',
         },
       },
       onCompleted: () => {
@@ -74,19 +76,23 @@ export const VCAccessibilitySettingsPage = () => {
     });
   };
 
-  if (!data?.virtualContributor) {
+  if (!vc) {
     return null;
   }
 
+  const type = vc?.aiPersona?.bodyOfKnowledgeType;
+  const ingestionAvailable =
+    type === AiPersonaBodyOfKnowledgeType.AlkemioSpace || type === AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase;
+
   return (
-    <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={data.virtualContributor.id}>
+    <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={vc?.id}>
       <VCSettingsPageLayout currentTab={SettingsSection.Settings}>
         <PageContent background="background.paper">
           <PageContentColumn columns={12}>
             <PageContentBlock>
               <BlockTitle>{t('pages.virtualContributorProfile.settings.access.title')}</BlockTitle>
               <RadioSettingsGroup
-                value={data?.virtualContributor?.searchVisibility ?? SearchVisibility.Account}
+                value={vc?.searchVisibility ?? SearchVisibility.Account}
                 options={{
                   [SearchVisibility.Public]: {
                     label: (
@@ -118,8 +124,8 @@ export const VCAccessibilitySettingsPage = () => {
               <SwitchSettingsGroup
                 options={{
                   listedInStore: {
-                    checked: data?.virtualContributor?.listedInStore ?? false,
-                    disabled: data?.virtualContributor?.searchVisibility !== SearchVisibility.Public,
+                    checked: vc?.listedInStore ?? false,
+                    disabled: vc?.searchVisibility !== SearchVisibility.Public,
                     label: t('pages.virtualContributorProfile.settings.access.listedInStore'),
                   },
                 }}
@@ -128,7 +134,7 @@ export const VCAccessibilitySettingsPage = () => {
             </PageContentBlock>
           </PageContentColumn>
         </PageContent>
-        {data?.virtualContributor?.aiPersona?.bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace && (
+        {ingestionAvailable && (
           <PageContent background="background.paper">
             <PageContentColumn columns={12}>
               <PageContentBlock>
