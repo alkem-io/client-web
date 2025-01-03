@@ -26,7 +26,7 @@ import {
   getDocumentCalloutRequestData,
   getPostCalloutRequestData,
 } from './AddContent/AddContentProps';
-import ExistingSpace, { SelectableKnowledgeProps } from './ExistingSpace';
+import ExistingSpace, { SelectableKnowledgeSpace } from './ExistingSpace';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useUserContext } from '@/domain/community/user';
@@ -49,7 +49,7 @@ type Step =
   | 'loadingVCSetup'
   | 'insufficientPrivileges'; // not used ATM
 
-type SelectableSpace = {
+export type SelectableSpace = {
   id: string;
   profile: {
     displayName: string;
@@ -97,35 +97,11 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     fetchPolicy: 'cache-and-network',
   });
 
-  // selectableSpaces are space and subspaces
-  // subspaces has communityId in order to manually add the VC to it
   const { selectedExistingSpaceId, myAccountId, selectableSpaces } = useMemo(() => {
     const account = targetAccount ?? data?.me.user?.account; // contextual or self by default
     const accountId = account?.id;
     const mySpace = account?.spaces?.[0]; // TODO: auto-selecting the first space, not ideal
-    let selectableSpaces: SelectableKnowledgeProps[] = [];
-    if (accountId) {
-      const addSelectableSpace = (space: SelectableSpace, parentSpace?: SelectableSpace) => {
-        selectableSpaces.push({
-          id: space.id,
-          name: `${space.profile.displayName}${parentSpace ? '' : ` (${t('common.space')})`}`,
-          accountId,
-          url: parentSpace ? parentSpace.profile.url : space.profile.url,
-          roleSetId: space.community.roleSet.id,
-          parentRoleSetId: parentSpace?.community.roleSet.id,
-        });
-      };
-
-      account?.spaces?.forEach((space: SelectableSpace) => {
-        addSelectableSpace(space);
-        space.subspaces?.forEach(subspace => {
-          addSelectableSpace(subspace, space);
-          subspace.subspaces?.forEach(subsubspace => {
-            addSelectableSpace(subsubspace, subspace);
-          });
-        });
-      });
-    }
+    const selectableSpaces = account?.spaces ?? [];
 
     return {
       selectedExistingSpaceId: mySpace?.id,
@@ -443,13 +419,13 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   };
 
   // ###STEP 'existingKnowledge' - Existing Knowledge
-  const handleCreateVCWithExistingKnowledge = async (selectedKnowledge: SelectableKnowledgeProps) => {
-    if (selectedKnowledge && virtualContributorInput) {
+  const handleCreateVCWithExistingKnowledge = async (selectedKnowledge: SelectableKnowledgeSpace) => {
+    if (selectedKnowledge && virtualContributorInput && myAccountId) {
       const values = { ...virtualContributorInput, bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType.AlkemioSpace };
 
       const createdVC = await executeVcCreation({
         values,
-        accountId: selectedKnowledge.accountId,
+        accountId: myAccountId,
         vcBoKId: selectedKnowledge.id,
       });
 

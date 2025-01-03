@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
@@ -8,11 +8,11 @@ import { LoadingButton } from '@mui/lab';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
+import { SelectableSpace } from './useNewVirtualContributorWizard';
 
-export interface SelectableKnowledgeProps {
+export interface SelectableKnowledgeSpace {
   id: string;
   name: string;
-  accountId: string;
   url: string | undefined;
   roleSetId?: string;
   parentRoleSetId?: string;
@@ -21,8 +21,8 @@ export interface SelectableKnowledgeProps {
 interface ExistingSpaceProps {
   onClose: () => void;
   onBack: () => void;
-  onSubmit: (subspace: SelectableKnowledgeProps) => void;
-  availableSpaces: SelectableKnowledgeProps[];
+  onSubmit: (subspace: SelectableKnowledgeSpace) => void;
+  availableSpaces: SelectableSpace[];
   loading: boolean;
 }
 
@@ -33,12 +33,36 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, availableSpaces, loading }: 
     subspaceId: '',
   };
 
+  const listItems = useMemo(() => {
+    const result: SelectableKnowledgeSpace[] = [];
+    const addSelectableSpace = (space: SelectableSpace, parentSpace?: SelectableSpace) => {
+      result.push({
+        id: space.id,
+        name: `${space.profile.displayName}${parentSpace ? '' : ` (${t('common.space')})`}`,
+        url: parentSpace ? parentSpace.profile.url : space.profile.url,
+        roleSetId: space.community.roleSet.id,
+        parentRoleSetId: parentSpace?.community.roleSet.id,
+      });
+    };
+
+    availableSpaces.forEach((space: SelectableSpace) => {
+      addSelectableSpace(space);
+      space.subspaces?.forEach(subspace => {
+        addSelectableSpace(subspace, space);
+        subspace.subspaces?.forEach(subsubspace => {
+          addSelectableSpace(subsubspace, subspace);
+        });
+      });
+    });
+    return result;
+  }, [availableSpaces]);
+
   const validationSchema = yup.object().shape({
     subspaceId: yup.string().required(),
   });
 
   const onCreate = (values: { subspaceId: string }) => {
-    const bok = availableSpaces.filter(s => s.id === values.subspaceId)[0];
+    const bok = listItems.filter(s => s.id === values.subspaceId)[0];
     bok && onSubmit(bok);
   };
 
@@ -63,7 +87,7 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, availableSpaces, loading }: 
                 <FormikAutocomplete
                   name="subspaceId"
                   title={t('createVirtualContributorWizard.existingSpace.label')}
-                  values={availableSpaces}
+                  values={listItems}
                   required
                   disablePortal={false}
                 />
