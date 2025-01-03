@@ -260,17 +260,19 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const [addVirtualContributorToRole] = useAssignRoleToVirtualContributorMutation();
 
-  const addVCToCommunity = async (virtualContributorId: string, parentRoleSetId?: string) => {
-    if (parentRoleSetId) {
+  const addVCToCommunity = async (virtualContributorId: string, parentRoleSetIds: string[] = []) => {
+    if (parentRoleSetIds.length > 0) {
       // the VC cannot be added to the BoK community
-      // if it's not part of the parent community
-      await addVirtualContributorToRole({
-        variables: {
-          roleSetId: parentRoleSetId,
-          contributorId: virtualContributorId,
-          role: CommunityRoleType.Member,
-        },
-      });
+      // if it's not part of the parent communities
+      for (const roleSetId of parentRoleSetIds) {
+        await addVirtualContributorToRole({
+          variables: {
+            roleSetId,
+            contributorId: virtualContributorId,
+            role: CommunityRoleType.Member,
+          },
+        });
+      }
     }
     const spaceId = createdSpaceId ?? selectedExistingSpaceId;
     if (spaceId) {
@@ -433,7 +435,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         return;
       }
 
-      const addToCommunity = await addVCToCommunity(createdVC?.id, selectedKnowledge.parentRoleSetId);
+      const addToCommunity = await addVCToCommunity(createdVC?.id, selectedKnowledge.parentRoleSetIds);
 
       if (addToCommunity) {
         addVCCreationCache(createdVC?.nameID);

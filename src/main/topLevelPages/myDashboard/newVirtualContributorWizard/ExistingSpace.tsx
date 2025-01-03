@@ -15,7 +15,7 @@ export interface SelectableKnowledgeSpace {
   name: string;
   url: string | undefined;
   roleSetId?: string;
-  parentRoleSetId?: string;
+  parentRoleSetIds?: string[];
 }
 
 interface ExistingSpaceProps {
@@ -35,22 +35,23 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, availableSpaces, loading }: 
 
   const listItems = useMemo(() => {
     const result: SelectableKnowledgeSpace[] = [];
-    const addSelectableSpace = (space: SelectableSpace, parentSpace?: SelectableSpace) => {
+    const addSelectableSpace = (space: SelectableSpace, parentSpaces: SelectableSpace[] = []) => {
       result.push({
         id: space.id,
-        name: `${space.profile.displayName}${parentSpace ? '' : ` (${t('common.space')})`}`,
-        url: parentSpace ? parentSpace.profile.url : space.profile.url,
+        name: `${space.profile.displayName}${parentSpaces.length > 0 ? '' : ` (${t('common.space')})`}`,
+        url: parentSpaces.length > 0 ? parentSpaces[parentSpaces.length - 1].profile.url : space.profile.url, // If available, go to the parent space
         roleSetId: space.community.roleSet.id,
-        parentRoleSetId: parentSpace?.community.roleSet.id,
+        parentRoleSetIds: parentSpaces.map(space => space?.community.roleSet.id),
       });
     };
 
+    // Hierarchy loop
     availableSpaces.forEach((space: SelectableSpace) => {
       addSelectableSpace(space);
       space.subspaces?.forEach(subspace => {
-        addSelectableSpace(subspace, space);
+        addSelectableSpace(subspace, [space]);
         subspace.subspaces?.forEach(subsubspace => {
-          addSelectableSpace(subsubspace, subspace);
+          addSelectableSpace(subsubspace, [space, subspace]);
         });
       });
     });
