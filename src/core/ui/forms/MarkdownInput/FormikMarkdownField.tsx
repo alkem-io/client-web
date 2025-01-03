@@ -150,31 +150,24 @@ export const FormikMarkdownField = ({
         for (const item of items) {
           if (item.type.startsWith('image/')) {
             const file = item.getAsFile();
-
             if (file) {
-              for (const item of items) {
-                if (item.type.startsWith('image/')) {
-                  const file = item.getAsFile();
-                  if (file) {
-                    const reader = new FileReader();
-                    reader.onload = () => {
-                      uploadFile({
-                        variables: {
-                          file,
-                          uploadData: {
-                            storageBucketId,
-                            temporaryLocation: true,
-                          },
-                        },
-                      });
-                    };
-                    reader.readAsDataURL(file);
-                  }
-                  event.preventDefault();
-                }
-              }
+              const reader = new FileReader();
+
+              reader.onload = () => {
+                uploadFile({
+                  variables: {
+                    file,
+                    uploadData: {
+                      storageBucketId,
+                      temporaryLocation: true,
+                    },
+                  },
+                });
+              };
+
+              reader.readAsDataURL(file);
+              event.preventDefault();
             }
-            event.preventDefault();
           }
         }
       }
