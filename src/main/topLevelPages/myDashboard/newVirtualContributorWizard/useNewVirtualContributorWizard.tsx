@@ -234,8 +234,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           aiPersona: {
             aiPersonaService: {
               engine: values.engine,
-              bodyOfKnowledgeType: values.bodyOfKnowledgeType ?? AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase,
-              bodyOfKnowledgeID: vcBoKId ?? selectedExistingSpaceId,
+              bodyOfKnowledgeType: values.bodyOfKnowledgeType,
+              bodyOfKnowledgeID: vcBoKId,
             },
           },
           knowledgeBaseData: {
@@ -424,8 +424,10 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   // ###STEP 'existingKnowledge' - Existing Knowledge
   const handleCreateVCWithExistingKnowledge = async (selectedKnowledge: SelectableKnowledgeProps) => {
     if (selectedKnowledge && virtualContributorInput) {
+      const values = { ...virtualContributorInput, bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType.AlkemioSpace };
+
       const createdVC = await executeVcCreation({
-        values: virtualContributorInput,
+        values,
         accountId: selectedKnowledge.accountId,
         vcBoKId: selectedKnowledge.id,
       });

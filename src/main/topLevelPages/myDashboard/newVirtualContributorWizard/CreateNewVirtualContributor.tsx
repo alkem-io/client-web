@@ -96,7 +96,7 @@ const CreateNewVirtualContributor = ({
     tagline: '',
     description: '',
     engine: AiPersonaEngine.Expert,
-    bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType.AlkemioSpace,
+    bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType.AlkemioKnowledgeBase,
   };
 
   const validationSchema = yup.object().shape({
