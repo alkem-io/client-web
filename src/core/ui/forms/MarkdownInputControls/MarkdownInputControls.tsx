@@ -43,6 +43,7 @@ const sanitizeUrl = (url: string): string => {
     const parsedUrl = new URL(url);
     const allowedProtocols = ['http:', 'https:'];
     // 'javascript:' is used to prevent XSS attacks by blocking dangerous protocols
+    // eslint-disable-next-line no-script-url
     const dangerousProtocols = ['javascript:', 'data:', 'vbscript:'];
 
     if (!allowedProtocols.includes(parsedUrl.protocol) || dangerousProtocols.some(p => url.toLowerCase().includes(p))) {

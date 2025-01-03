@@ -1,6 +1,25 @@
-import { ChangeEvent, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { FormControl, FormHelperText, InputLabel, InputProps, OutlinedInput, useFormControl } from '@mui/material';
+import {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  ClipboardEvent,
+  PropsWithChildren,
+} from 'react';
+import {
+  FormControl,
+  FormHelperText,
+  InputBaseComponentProps,
+  InputLabel,
+  InputProps,
+  OutlinedInput,
+  useFormControl,
+} from '@mui/material';
 import { useField } from 'formik';
+import { Editor } from '@tiptap/react';
 import CharacterCounter from '../characterCounter/CharacterCounter';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
@@ -11,6 +30,9 @@ import { MarkdownTextMaxLength } from '../field-length.constants';
 import { error as logError } from '@/core/logging/sentry/log';
 import { isMarkdownMaxLengthError } from './MarkdownValidator';
 import { useTranslation } from 'react-i18next';
+import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useNotification } from '../../notifications/useNotification';
+import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 
 interface MarkdownFieldProps extends InputProps {
   title: string;
@@ -60,8 +82,10 @@ export const FormikMarkdownField = ({
   temporaryLocation = false,
   controlsVisible = 'always',
 }: MarkdownFieldProps) => {
-  const tErr = useValidationMessageTranslation();
-  const { t } = useTranslation();
+  const [editor, setEditor] = useState<Editor>();
+
+  const notify = useNotification();
+
   const validate = () => {
     const characterCount = inputElementRef.current?.value?.length ?? 0;
     const isAboveCharacterLimit = maxLength && characterCount > maxLength;
@@ -70,7 +94,21 @@ export const FormikMarkdownField = ({
     }
   };
 
+  const storageConfig = useStorageConfigContext();
+
   const [field, meta, helper] = useField({ name, validate });
+
+  const [uploadFile] = useUploadFileMutation({
+    onCompleted: data => {
+      notify(t('components.file-upload.file-upload-success'), 'success');
+
+      editor?.commands.setImage({ src: data.uploadFileOnStorageBucket, alt: 'pasted-image' });
+    },
+  });
+
+  const { t } = useTranslation();
+
+  const tErr = useValidationMessageTranslation();
 
   const isError = Boolean(meta.error) && meta.touched;
 
@@ -88,13 +126,60 @@ export const FormikMarkdownField = ({
     return tErr(meta.error as TranslationKey, { field: title });
   }, [isError, meta.error, validInputHelperText, tErr, title]);
 
-  const handleChange = useCallback(
+  const handleOnChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const trimmedValue = event.target.value.trim();
       const newValue = trimmedValue === '<br>' ? '' : event.target.value;
       helper.setValue(newValue);
     },
     [helper]
+  );
+
+  const handleOnPaste = useCallback(
+    (event: ClipboardEvent) => {
+      const clipboardData = event.clipboardData;
+      const items = clipboardData.items;
+
+      if (!items) {
+        return;
+      }
+
+      const storageBucketId = storageConfig?.storageBucketId;
+
+      if (storageBucketId) {
+        for (const item of items) {
+          if (item.type.startsWith('image/')) {
+            const file = item.getAsFile();
+
+            if (file) {
+              for (const item of items) {
+                if (item.type.startsWith('image/')) {
+                  const file = item.getAsFile();
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                      uploadFile({
+                        variables: {
+                          file,
+                          uploadData: {
+                            storageBucketId,
+                            temporaryLocation: true,
+                          },
+                        },
+                      });
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                  event.preventDefault();
+                }
+              }
+            }
+            event.preventDefault();
+          }
+        }
+      }
+    },
+    [storageConfig?.storageBucketId, uploadFile]
   );
 
   const handleBlur = useCallback(() => {
@@ -115,12 +200,20 @@ export const FormikMarkdownField = ({
     inputElement?.focus();
   };
 
+  const handlePassEditor = useCallback((edtr: Editor) => setEditor(edtr), []);
+
+  const inputComponent = useCallback(
+    (props: PropsWithChildren<InputBaseComponentProps>) => <MarkdownInput {...props} passEditor={handlePassEditor} />,
+    [handlePassEditor]
+  );
+
   const labelOffset = inputElement?.getLabelOffset();
 
   return (
     <FormControl required={required} disabled={disabled} error={isError} fullWidth>
       <CharacterCountContextProvider>
         <FilledDetector value={inputElement?.value} />
+
         {labelOffset && (
           <InputLabel
             onClick={focusInput}
@@ -133,28 +226,27 @@ export const FormikMarkdownField = ({
             {title}
           </InputLabel>
         )}
+
         <OutlinedInput
-          value={field.value}
-          onChange={handleChange}
-          onBlur={handleBlur}
+          multiline
           label={title}
-          inputComponent={MarkdownInput}
+          value={field.value}
           inputRef={inputRef}
+          readOnly={readOnly}
           inputProps={{
-            controlsVisible,
             maxLength,
+            controlsVisible,
             hideImageOptions,
             temporaryLocation,
           }}
-          readOnly={readOnly}
           placeholder={placeholder}
-          multiline
-          sx={{
-            '&.MuiOutlinedInput-root': {
-              padding: gutters(0.5),
-            },
-          }}
+          inputComponent={inputComponent}
+          sx={{ '&.MuiOutlinedInput-root': { padding: gutters(0.5) } }}
+          onBlur={handleBlur}
+          onPaste={handleOnPaste}
+          onChange={handleOnChange}
         />
+
         <CharacterCountContainer>
           {({ characterCount }) => (
             <CharacterCounter count={characterCount} maxLength={maxLength} disabled={counterDisabled || !maxLength}>

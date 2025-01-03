@@ -31,6 +31,7 @@ interface MarkdownInputProps extends InputBaseComponentProps {
   maxLength?: number;
   hideImageOptions?: boolean;
   temporaryLocation?: boolean;
+  passEditor?: (editor: Editor) => void;
 }
 
 type Offset = {
@@ -71,6 +72,7 @@ export const MarkdownInput = memo(
         onFocus,
         onBlur,
         temporaryLocation = false,
+        passEditor,
       },
       ref
     ) => {
@@ -94,6 +96,12 @@ export const MarkdownInput = memo(
 
       // Currently used to highlight overflow but can be reused for other similar features as well
       const shadowEditor = useEditor({ ...editorOptions, content: '', editable: false });
+
+      useEffect(() => {
+        if (editor) {
+          passEditor?.(editor);
+        }
+      }, [editor, passEditor]);
 
       useLayoutEffect(() => {
         if (!editor || !isInteractingWithInput || editor.getText() === '') {
@@ -275,16 +283,10 @@ export const MarkdownInput = memo(
             onDialogClose={handleDialogClose}
             temporaryLocation={temporaryLocation}
           />
-          <Box
-            width="100%"
-            maxHeight="50vh"
-            sx={{
-              overflowY: 'auto',
-              '.ProseMirror': proseMirrorStyles,
-            }}
-          >
+          <Box width="100%" maxHeight="50vh" sx={{ overflowY: 'auto', '.ProseMirror': proseMirrorStyles }}>
             <Box position="relative" style={{ minHeight: prevEditorHeight }}>
               <EditorContent editor={editor} />
+
               <CharacterCountContainer>
                 {({ characterCount }) =>
                   typeof maxLength === 'undefined' || characterCount <= maxLength ? null : (
