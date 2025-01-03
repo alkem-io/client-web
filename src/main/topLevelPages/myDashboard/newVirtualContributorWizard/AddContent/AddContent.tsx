@@ -19,7 +19,7 @@ const AddContent = ({ onClose, onCreateVC, spaceId }: AddContentProps) => {
   };
 
   return (
-    <StorageConfigContextProvider locationType="journey" spaceId={spaceId}>
+    <StorageConfigContextProvider locationType={spaceId ? 'journey' : 'platform'} spaceId={spaceId}>
       <DialogHeader onClose={onCancel}>{t('createVirtualContributorWizard.addContent.title')}</DialogHeader>
       <DialogContent>
         <Gutters disablePadding paddingBottom={gutters(2)}>

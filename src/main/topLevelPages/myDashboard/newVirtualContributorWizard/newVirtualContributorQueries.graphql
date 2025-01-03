@@ -14,42 +14,38 @@ query NewVirtualContributorMySpaces {
             id
             availableEntitlements
           }
-          community {
-            id
-            roleSet {
-              id
-              authorization {
-                id
-                myPrivileges
-              }
-            }
-          }
-          profile {
-            id
-            displayName
-            url
-          }
           authorization {
             id
             myPrivileges
           }
-
+          ...VCSelectableSpace
           subspaces {
-            id
-            type
-            profile {
-              id
-              displayName
-              url
-            }
-            community {
-              id
-              roleSet {
-                id
-              }
+            ...VCSelectableSpace
+            subspaces {
+              ...VCSelectableSpace
             }
           }
         }
+      }
+    }
+  }
+}
+
+fragment VCSelectableSpace on Space {
+  id
+  type
+  profile {
+    id
+    displayName
+    url
+  }
+  community {
+    id
+    roleSet {
+      id
+      authorization {
+        id
+        myPrivileges
       }
     }
   }

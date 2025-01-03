@@ -1,3 +1,5 @@
+import { CalloutState, CalloutType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+
 export type PostValues = {
   title: string;
   description: string;
@@ -18,3 +20,35 @@ export type AddContentProps = {
   onCreateVC: (values: BoKCalloutsFormValues) => Promise<void>;
   spaceId: string;
 };
+
+export const getPostCalloutRequestData = (title: string, description: string) => ({
+  framing: {
+    profile: {
+      description: description,
+      displayName: title,
+      referencesData: [],
+    },
+  },
+  type: CalloutType.Post,
+  contributionPolicy: {
+    state: CalloutState.Closed,
+  },
+  visibility: CalloutVisibility.Published,
+  sendNotification: false,
+});
+
+export const getDocumentCalloutRequestData = (name: string) => ({
+  framing: {
+    profile: {
+      displayName: name,
+      description: '',
+      referencesData: [],
+    },
+  },
+  type: CalloutType.LinkCollection,
+  contributionPolicy: {
+    state: CalloutState.Open,
+  },
+  visibility: CalloutVisibility.Published,
+  sendNotification: false,
+});

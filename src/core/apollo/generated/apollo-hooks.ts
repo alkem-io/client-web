@@ -3732,6 +3732,27 @@ export const ShortAccountItemFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const VcSelectableSpaceFragmentDoc = gql`
+  fragment VCSelectableSpace on Space {
+    id
+    type
+    profile {
+      id
+      displayName
+      url
+    }
+    community {
+      id
+      roleSet {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+`;
 export const RecentSpaceProfileFragmentDoc = gql`
   fragment RecentSpaceProfile on Profile {
     id
@@ -17762,6 +17783,22 @@ export const CreateVirtualContributorOnAccountDocument = gql`
         id
         url
       }
+      knowledgeBase {
+        id
+        calloutsSet {
+          id
+          callouts {
+            id
+            framing {
+              id
+              profile {
+                id
+                displayName
+              }
+            }
+          }
+        }
+      }
     }
   }
 `;
@@ -24263,38 +24300,15 @@ export const NewVirtualContributorMySpacesDocument = gql`
               id
               availableEntitlements
             }
-            community {
-              id
-              roleSet {
-                id
-                authorization {
-                  id
-                  myPrivileges
-                }
-              }
-            }
-            profile {
-              id
-              displayName
-              url
-            }
             authorization {
               id
               myPrivileges
             }
+            ...VCSelectableSpace
             subspaces {
-              id
-              type
-              profile {
-                id
-                displayName
-                url
-              }
-              community {
-                id
-                roleSet {
-                  id
-                }
+              ...VCSelectableSpace
+              subspaces {
+                ...VCSelectableSpace
               }
             }
           }
@@ -24302,6 +24316,7 @@ export const NewVirtualContributorMySpacesDocument = gql`
       }
     }
   }
+  ${VcSelectableSpaceFragmentDoc}
 `;
 
 /**

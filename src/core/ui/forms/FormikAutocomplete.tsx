@@ -33,7 +33,7 @@ export const FormikAutocomplete = ({
 
   const [field, meta, helpers] = useField(name);
 
-  const isError = Boolean(meta.error);
+  const isError = Boolean(meta.error) && meta.touched;
 
   const helperText = useMemo(() => {
     if (!isError) {
@@ -56,7 +56,10 @@ export const FormikAutocomplete = ({
       disablePortal={disablePortal}
       value={values.find(option => option.id === field.value) ?? null}
       options={values}
-      onBlur={field.onBlur}
+      onBlur={e => {
+        helpers.setTouched(true);
+        field.onBlur(e);
+      }}
       onChange={handleChange}
       getOptionLabel={option => option?.name}
       sx={sx}
