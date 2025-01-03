@@ -36,7 +36,6 @@ import { usePlanAvailability } from '@/domain/journey/space/createSpace/plansTab
 import { addVCCreationCache } from './vcCreationUtil';
 import SetupVCInfo from './SetupVCInfo';
 import { info as logInfo } from '@/core/logging/sentry/log';
-import { compact } from 'lodash';
 import InfoDialog from '@/core/ui/dialogs/InfoDialog';
 import CreateExternalAIDialog, { ExternalVcFormValues } from './CreateExternalAIDialog';
 import { useNewVirtualContributorWizardProvided, UserAccountProps } from './useNewVirtualContributorProps';
@@ -49,6 +48,20 @@ type Step =
   | 'externalProvider'
   | 'loadingVCSetup'
   | 'insufficientPrivileges'; // not used ATM
+
+type SelectableSpace = {
+  id: string;
+  profile: {
+    displayName: string;
+    url: string;
+  };
+  community: {
+    roleSet: {
+      id: string;
+    };
+  };
+  subspaces?: SelectableSpace[];
+};
 
 const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvided => {
   const { t } = useTranslation();
@@ -89,31 +102,28 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const { selectedExistingSpaceId, myAccountId, selectableSpaces } = useMemo(() => {
     const account = targetAccount ?? data?.me.user?.account; // contextual or self by default
     const accountId = account?.id;
-    const mySpaces = compact(account?.spaces);
-    const mySpace = mySpaces?.[0]; // TODO: auto-selecting the first space, not ideal
+    const mySpace = account?.spaces?.[0]; // TODO: auto-selecting the first space, not ideal
     let selectableSpaces: SelectableKnowledgeProps[] = [];
-
     if (accountId) {
-      account?.spaces?.forEach(space => {
-        if (space) {
-          selectableSpaces.push({
-            id: space.id,
-            name: `${space.profile.displayName} (${t('common.space')})`,
-            accountId,
-            url: space.profile.url,
-            roleSetId: space.community.roleSet.id,
+      const addSelectableSpace = (space: SelectableSpace, parentSpace?: SelectableSpace) => {
+        selectableSpaces.push({
+          id: space.id,
+          name: `${space.profile.displayName}${parentSpace ? '' : ` (${t('common.space')})`}`,
+          accountId,
+          url: parentSpace ? parentSpace.profile.url : space.profile.url,
+          roleSetId: space.community.roleSet.id,
+          parentRoleSetId: parentSpace?.community.roleSet.id,
+        });
+      };
+
+      account?.spaces?.forEach((space: SelectableSpace) => {
+        addSelectableSpace(space);
+        space.subspaces?.forEach(subspace => {
+          addSelectableSpace(subspace, space);
+          subspace.subspaces?.forEach(subsubspace => {
+            addSelectableSpace(subsubspace, subspace);
           });
-          selectableSpaces = selectableSpaces.concat(
-            space.subspaces?.map(subspace => ({
-              id: subspace.id,
-              name: subspace.profile.displayName,
-              accountId,
-              url: space.profile.url, // land on parent space
-              roleSetId: subspace.community.roleSet.id,
-              parentRoleSetId: space.community.roleSet.id,
-            })) ?? []
-          );
-        }
+        });
       });
     }
 
@@ -270,11 +280,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   };
 
   // Add To Community
-  const [getSpaceCommunity] = useSubspaceCommunityAndRoleSetIdLazyQuery({
-    variables: {
-      spaceId: createdSpaceId ?? selectedExistingSpaceId,
-    },
-  });
+  const [getSpaceCommunity] = useSubspaceCommunityAndRoleSetIdLazyQuery();
 
   const [addVirtualContributorToRole] = useAssignRoleToVirtualContributorMutation();
 
@@ -290,35 +296,50 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         },
       });
     }
+    const spaceId = createdSpaceId ?? selectedExistingSpaceId;
+    if (spaceId) {
+      const communityData = await getSpaceCommunity({
+        variables: {
+          spaceId,
+        },
+      });
+      const roleSetId = communityData.data?.lookup.space?.community.roleSet.id;
+      if (!roleSetId) {
+        return false;
+      }
 
-    const communityData = await getSpaceCommunity();
-    const roleSetId = communityData.data?.lookup.space?.community.roleSet.id;
-    if (!roleSetId) {
-      return false;
+      const addToCommunityResult = await addVirtualContributorToRole({
+        variables: {
+          roleSetId,
+          contributorId: virtualContributorId,
+          role: CommunityRoleType.Member,
+        },
+      });
+
+      return Boolean(addToCommunityResult.data?.assignRoleToVirtualContributor?.id);
+    } else {
+      notify(t('createVirtualContributorWizard.errors.spaceNotSelected'), 'error');
     }
-
-    const addToCommunityResult = await addVirtualContributorToRole({
-      variables: {
-        roleSetId,
-        contributorId: virtualContributorId,
-        role: CommunityRoleType.Member,
-      },
-    });
-
-    return Boolean(addToCommunityResult.data?.assignRoleToVirtualContributor?.id);
   };
 
   // post creation navigation
-  const [getNewSpaceUrl] = useSpaceUrlLazyQuery({
-    variables: {
-      spaceNameId: createdSpaceId ?? selectedExistingSpaceId,
-    },
-  });
-
+  const [getNewSpaceUrl] = useSpaceUrlLazyQuery();
   const navigateToTryYourVC = async (url?: string) => {
-    const { data } = await getNewSpaceUrl();
-
-    navigate(url ?? data?.space?.profile?.url ?? '');
+    if (url) {
+      navigate(url);
+    } else {
+      const spaceNameId = createdSpaceId ?? selectedExistingSpaceId;
+      if (spaceNameId) {
+        const { data } = await getNewSpaceUrl({
+          variables: {
+            spaceNameId,
+          },
+        });
+        if (data?.space?.profile?.url) {
+          navigate(data.space.profile.url);
+        }
+      }
+    }
   };
 
   // ###STEP 'addKnowledge' - Add Content

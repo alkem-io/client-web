@@ -7,7 +7,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { LoadingButton } from '@mui/lab';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import FormikSelect from '@/core/ui/forms/FormikSelect';
+import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
 
 export interface SelectableKnowledgeProps {
   id: string;
@@ -60,11 +60,12 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, availableSpaces, loading }: 
             {availableSpaces && availableSpaces.length > 0 && (
               <Gutters disablePadding>
                 <Caption>{t('createVirtualContributorWizard.existingSpace.description')}</Caption>
-                <FormikSelect
+                <FormikAutocomplete
                   name="subspaceId"
                   title={t('createVirtualContributorWizard.existingSpace.label')}
                   values={availableSpaces}
                   required
+                  disablePortal={false}
                 />
               </Gutters>
             )}
