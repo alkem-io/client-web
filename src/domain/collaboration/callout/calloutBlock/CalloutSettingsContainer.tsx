@@ -118,6 +118,7 @@ export interface CalloutSettingsContainerProps
   expanded?: boolean;
   onExpand?: () => void;
   journeyTypeName: JourneyTypeName;
+  disableRichMedia?: boolean;
 }
 
 const CalloutSettingsContainer = ({
@@ -136,6 +137,7 @@ const CalloutSettingsContainer = ({
   onExpand,
   journeyTypeName,
   children,
+  disableRichMedia,
 }: CalloutSettingsContainerProps) => {
   const { t } = useTranslation();
 
@@ -442,6 +444,7 @@ const CalloutSettingsContainer = ({
           onDelete={() => setDeleteDialogOpen(true)}
           canChangeCalloutLocation
           journeyTypeName={journeyTypeName}
+          disableRichMedia={disableRichMedia}
         />
       )}
       <ConfirmationDialog

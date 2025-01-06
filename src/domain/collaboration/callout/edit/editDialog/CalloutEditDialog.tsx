@@ -23,6 +23,7 @@ export interface CalloutEditDialogProps {
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
   canChangeCalloutLocation?: boolean;
   journeyTypeName: JourneyTypeName;
+  disableRichMedia?: boolean;
 }
 
 const CalloutEditDialog = ({
@@ -34,6 +35,7 @@ const CalloutEditDialog = ({
   onCalloutEdit,
   canChangeCalloutLocation,
   journeyTypeName,
+  disableRichMedia,
 }: CalloutEditDialogProps) => {
   const { t } = useTranslation();
 
@@ -108,6 +110,7 @@ const CalloutEditDialog = ({
               onChange={handleChange}
               canChangeCalloutLocation={canChangeCalloutLocation}
               journeyTypeName={journeyTypeName}
+              disableRichMedia={disableRichMedia}
             />
           </StorageConfigContextProvider>
         </DialogContent>

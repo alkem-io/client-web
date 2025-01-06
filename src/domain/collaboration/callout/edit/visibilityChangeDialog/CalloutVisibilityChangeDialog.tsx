@@ -4,7 +4,6 @@ import { Box } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import Button from '@mui/material/Button';
 import { LoadingButton } from '@mui/lab';
-import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
 import { DialogContent } from '@/core/ui/dialog/deprecated';
 import { CalloutType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { Formik } from 'formik';
@@ -16,6 +15,7 @@ import FormRow from '@/core/ui/forms/FormRow';
 import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
 import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';
+import { CalloutReactIcon } from '@/domain/collaboration/callout/icon/CalloutReactIcon';
 
 export type CalloutSummaryFields = {
   framing: {
@@ -68,7 +68,7 @@ const CalloutVisibilityChangeDialog = ({
       <Formik initialValues={initialValues} enableReinitialize validateOnMount onSubmit={handleVisibilityChanged}>
         {({ handleSubmit }) => (
           <>
-            <DialogHeader icon={<CalloutIcon />} title={title} onClose={onClose} />
+            <DialogHeader icon={<CalloutReactIcon />} title={title} onClose={onClose} />
             <DialogContent>
               <Gutters paddingTop={0}>
                 <Box>

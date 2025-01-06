@@ -54,7 +54,7 @@ const CalloutsGroupView = ({
   return (
     <>
       {canCreateCallout && createButtonPlace === 'top' && createButton}
-      <CalloutsView journeyTypeName={journeyTypeName} {...calloutsViewProps} />
+      <CalloutsView journeyTypeName={journeyTypeName} disableRichMedia={disableRichMedia} {...calloutsViewProps} />
       {canCreateCallout && createButtonPlace === 'bottom' && createButton}
       <CalloutCreationDialog
         open={isCalloutCreationDialogOpen}
