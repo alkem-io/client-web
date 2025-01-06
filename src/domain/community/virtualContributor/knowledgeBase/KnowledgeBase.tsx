@@ -1,10 +1,12 @@
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import useKnowledgeBase from '@/domain/community/virtualContributor/knowledgeBase/useKnowledgeBase';
-import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
+import { CalloutGroupName, CalloutType } from '@/core/apollo/generated/graphql-schema';
 
 type KnowledgeBase = {
   id: string;
 };
+
+const AVAILABLE_CALLOUT_TYPES = [CalloutType.Post, CalloutType.LinkCollection, CalloutType.PostCollection];
 
 /**
  * KnowledgeBase component displays a group of callouts.
@@ -26,6 +28,8 @@ const KnowledgeBase = ({ id }: KnowledgeBase) => {
       onCalloutUpdate={refetchCallout}
       groupName={CalloutGroupName.Knowledge}
       createButtonPlace="top"
+      availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
+      disableRichMedia
     />
   );
 };

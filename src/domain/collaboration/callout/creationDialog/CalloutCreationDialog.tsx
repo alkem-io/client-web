@@ -56,6 +56,7 @@ export interface CalloutCreationDialogProps {
   flowState?: string;
   journeyTypeName: JourneyTypeName;
   availableCalloutTypes?: CalloutType[];
+  disableRichMedia?: boolean;
 }
 
 const CalloutCreationDialog = ({
@@ -67,6 +68,7 @@ const CalloutCreationDialog = ({
   flowState,
   journeyTypeName,
   availableCalloutTypes,
+  disableRichMedia,
 }: CalloutCreationDialogProps) => {
   const { t } = useTranslation();
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
@@ -276,6 +278,7 @@ const CalloutCreationDialog = ({
               onStatusChanged={handleStatusChange}
               journeyTypeName={journeyTypeName}
               temporaryLocation // Always true for callout creation
+              disableRichMedia={disableRichMedia}
             />
           </DialogContent>
 

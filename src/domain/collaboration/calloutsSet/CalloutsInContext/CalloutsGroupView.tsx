@@ -13,9 +13,9 @@ interface CalloutsGroupProps extends CalloutsViewProps {
   groupName: CalloutGroupName;
   flowState?: string;
   createButtonPlace?: 'top' | 'bottom';
+  availableCalloutTypes?: CalloutType[];
+  disableRichMedia?: boolean;
 }
-
-const AVAILABLE_CALLOUT_TYPES = [CalloutType.Post, CalloutType.LinkCollection, CalloutType.PostCollection];
 
 const CalloutsGroupView = ({
   journeyId,
@@ -25,6 +25,8 @@ const CalloutsGroupView = ({
   createButtonPlace = 'bottom',
   journeyTypeName,
   calloutsSetId,
+  availableCalloutTypes,
+  disableRichMedia,
   ...calloutsViewProps
 }: CalloutsGroupProps) => {
   const {
@@ -62,7 +64,8 @@ const CalloutsGroupView = ({
         groupName={groupName}
         flowState={flowState}
         journeyTypeName={journeyTypeName}
-        availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
+        availableCalloutTypes={availableCalloutTypes}
+        disableRichMedia={disableRichMedia}
       />
     </>
   );
