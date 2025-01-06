@@ -9,7 +9,7 @@ import InnovationFlowCollaborationToolsBlock from './InnovationFlowCollaboration
 import PageContentBlockContextualMenu from '@/core/ui/content/PageContentBlockContextualMenu';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { CalloutGroupNameValuesMap } from '@/domain/collaboration/callout/CalloutsInContext/CalloutsGroup';
+import { CalloutGroupNameValuesMap } from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroup';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';

@@ -1,11 +1,13 @@
-import React, { FC, useCallback, useMemo, useState } from 'react';
-import { styled, AvatarProps, Tooltip, Link, Box } from '@mui/material';
+import React, { FC, useCallback, useMemo, useRef, useState } from 'react';
+import { styled, AvatarProps, Tooltip, Link, Box, useTheme } from '@mui/material';
 import Avatar from '@/core/ui/avatar/Avatar';
 import UserCard from '@/domain/community/user/userCard/UserCard';
 import { Author } from './models/author';
 import { DirectMessageDialog } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
 import { useSendMessageToUserMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useTranslation } from 'react-i18next';
+import GridProvider from '@/core/ui/grid/GridProvider';
+import { CONTRIBUTE_CARD_COLUMNS } from '@/core/ui/card/ContributeCard';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
   height: theme.avatarSizeXs,
@@ -18,6 +20,8 @@ export interface AuthorAvatarProps {
 
 export const AuthorAvatar: FC<AuthorAvatarProps> = ({ author }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
+  const anchorElement = useRef<HTMLDivElement>(null);
   const [sendMessageToUser] = useSendMessageToUserMutation();
   const [isContactDialogVisible, setContactDialogVisible] = useState(false);
   const handleSendMessage = useCallback(
@@ -44,22 +48,40 @@ export const AuthorAvatar: FC<AuthorAvatarProps> = ({ author }) => {
         author ? (
           <Tooltip
             arrow
+            slotProps={{
+              popper: {
+                anchorEl: anchorElement.current,
+                modifiers: [
+                  {
+                    name: 'offset',
+                    options: {
+                      offset: ({ placement }) => (placement === 'top' ? [0, 0] : [0, theme.avatarSizeXs]),
+                    },
+                  },
+                ],
+              },
+            }}
             title={
-              <UserCard
-                displayName={author.displayName}
-                avatarSrc={author.avatarUrl}
-                tags={author.tags || []}
-                city={author.city}
-                country={author.country}
-                url={author.url}
-                onContact={() => setContactDialogVisible(true)}
-              />
+              <GridProvider columns={CONTRIBUTE_CARD_COLUMNS}>
+                <UserCard
+                  displayName={author.displayName}
+                  avatarSrc={author.avatarUrl}
+                  tags={author.tags}
+                  city={author.city}
+                  country={author.country}
+                  url={author.url}
+                  onContact={() => setContactDialogVisible(true)}
+                />
+              </GridProvider>
             }
             PopperProps={{
               sx: { '& > .MuiTooltip-tooltip': { background: 'transparent' } },
             }}
           >
-            <Box>{children}</Box>
+            <Box>
+              <Box ref={anchorElement} />
+              {children}
+            </Box>
           </Tooltip>
         ) : (
           <>{children}</>

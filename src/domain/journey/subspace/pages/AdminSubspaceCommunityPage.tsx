@@ -8,7 +8,7 @@ import CommunityApplications from '@/domain/community/community/CommunityAdmin/C
 import CommunityOrganizations from '@/domain/community/community/CommunityAdmin/CommunityOrganizations';
 import CommunityUsers from '@/domain/community/community/CommunityAdmin/CommunityUsers';
 import useRoleSetAdmin from '@/domain/community/community/CommunityAdmin/useCommunityAdmin';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import { useSubSpace } from '../hooks/useSubSpace';
 import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
@@ -52,7 +52,6 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     memberRoleDefinition,
     leadRoleDefinition,
     permissions,
-    entitlements,
     onApplicationStateChange,
     onInvitationStateChange,
     onDeleteInvitation,
@@ -203,7 +202,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
             />
           </PageContentBlock>
         </PageContentColumn>
-        {entitlements.virtualContributorsEnabled && (
+        {
           <PageContentColumn columns={6}>
             <PageContentBlock>
               <CommunityVirtualContributors
@@ -220,7 +219,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
               />
             </PageContentBlock>
           </PageContentColumn>
-        )}
+        }
       </PageContent>
     </SubspaceSettingsLayout>
   );

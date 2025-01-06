@@ -2,11 +2,12 @@ import { SimpleContainerProps } from '@/core/container/SimpleContainer';
 import useInnovationFlowStates, {
   UseInnovationFlowStatesProvided,
 } from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
-import useCallouts, { UseCalloutsProvided } from '@/domain/collaboration/callout/useCallouts/useCallouts';
+import { UseCalloutsProvided } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import { SubspacePageSpaceFragment } from '@/core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useCanReadSpace, { SpaceReadAccess } from '@/domain/journey/common/authorization/useCanReadSpace';
+import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
 
 interface SubspaceHomeContainerProvided {
   innovationFlow: UseInnovationFlowStatesProvided;
@@ -20,7 +21,7 @@ interface SubspaceHomeContainerProps extends SimpleContainerProps<SubspaceHomeCo
   journeyTypeName: JourneyTypeName;
 }
 
-const SubspaceHomeContainer = ({ journeyId, journeyTypeName, children }: SubspaceHomeContainerProps) => {
+const SubspaceHomeContainer = ({ journeyId, children }: SubspaceHomeContainerProps) => {
   const spaceReadAccess = useCanReadSpace({ spaceId: journeyId });
 
   const { data } = useSubspacePageQuery({
@@ -31,14 +32,13 @@ const SubspaceHomeContainer = ({ journeyId, journeyTypeName, children }: Subspac
     skip: !journeyId || !spaceReadAccess.canReadSpace,
   });
 
-  const collaborationId = data?.lookup.space?.collaboration.id;
+  const collaboration = data?.lookup.space?.collaboration;
+  const collaborationId = collaboration?.id;
 
   const innovationFlow = useInnovationFlowStates({ collaborationId });
 
-  const callouts = useCallouts({
+  const callouts = useCalloutsOnCollaboration({
     collaborationId,
-    journeyTypeName,
-    canReadCollaboration: true,
   });
 
   return <>{children({ innovationFlow, callouts, subspace: data?.lookup.space, spaceReadAccess })}</>;

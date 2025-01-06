@@ -37,6 +37,7 @@ const SpaceDashboardPage = ({
             <SpaceDashboardView
               spaceId={spaceId}
               collaborationId={collaborationId}
+              calloutsSetId={entities.space?.collaboration?.calloutsSet?.id}
               vision={entities.space?.context?.vision}
               dashboardNavigation={dashboardNavigation}
               dashboardNavigationLoading={state.loading}

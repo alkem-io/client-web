@@ -5,7 +5,6 @@ query AuthorizationPolicy($authorizationPolicyId: UUID!) {
     ) {
       id
       type
-      anonymousReadAccess
       credentialRules {
         name
         cascade

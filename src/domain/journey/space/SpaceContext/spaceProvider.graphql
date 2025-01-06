@@ -14,6 +14,22 @@ query SpaceUrl($spaceNameId: UUID_NAMEID!) {
   }
 }
 
+query SpaceTemplatesManager($spaceNameId: UUID_NAMEID!) {
+  space(ID: $spaceNameId) {
+    id
+    templatesManager {
+      id
+      templatesSet {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+}
+
 fragment SpaceInfo on Space {
   ...SpaceDetails
   authorization {
@@ -44,6 +60,9 @@ fragment SpaceInfo on Space {
     authorization {
       id
       myPrivileges
+    }
+    calloutsSet {
+      id
     }
   }
 

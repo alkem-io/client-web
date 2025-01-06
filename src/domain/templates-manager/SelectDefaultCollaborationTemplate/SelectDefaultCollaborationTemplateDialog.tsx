@@ -2,8 +2,7 @@ import * as yup from 'yup';
 import { Button, Skeleton } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 import { Form, Formik } from 'formik';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
@@ -12,6 +11,9 @@ import { useSpaceCollaborationTemplatesQuery } from '@/core/apollo/generated/apo
 import { useMemo } from 'react';
 import Gutters from '@/core/ui/grid/Gutters';
 import { Actions } from '@/core/ui/actions/Actions';
+import RouterLink from '@/core/ui/link/RouterLink';
+import { Caption } from '@/core/ui/typography';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 
 interface FormValues {
   collaborationTemplateSelectedId: string;
@@ -73,13 +75,19 @@ const SelectDefaultCollaborationTemplateDialog = ({
         {({ isValid, values }) => (
           <Form noValidate>
             <Gutters>
-              <WrapperMarkdown caption>
-                {t('pages.admin.space.sections.subspaces.defaultSettings.defaultCollaborationTemplate.description')}
-              </WrapperMarkdown>
+              <Caption>
+                <Trans
+                  i18nKey="pages.admin.space.sections.subspaces.defaultSettings.defaultCollaborationTemplate.description"
+                  components={{
+                    library: <RouterLink to={`../../${SettingsSection.Templates}`} underline="always" />,
+                    br: <br />,
+                  }}
+                />
+              </Caption>
               {loadingInnovationFlows && <Skeleton variant="rectangular" />}
               {collaborationTemplates && (
                 <FormikSelect
-                  title={t('components.discussionForm.category.title')}
+                  title={t('common.category')}
                   name="collaborationTemplateSelectedId"
                   values={collaborationTemplates}
                 />

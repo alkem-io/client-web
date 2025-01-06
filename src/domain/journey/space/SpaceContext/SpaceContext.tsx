@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useUrlParams } from '@/core/routing/useUrlParams';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { useSpaceProviderQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceProviderQuery, useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
@@ -17,6 +17,7 @@ export interface SpacePermissions {
   canReadPosts: boolean;
   canReadSubspaces: boolean;
   canCreateSubspaces: boolean;
+  canCreateTemplates: boolean;
   canCreate: boolean;
   communityReadAccess: boolean;
   canReadCollaboration: boolean;
@@ -28,6 +29,7 @@ interface SpaceContextProps {
   spaceNameId: string;
   communityId: string;
   collaborationId: string;
+  calloutsSetId: string;
   roleSetId: string;
   isPrivate?: boolean;
   loading: boolean;
@@ -49,12 +51,14 @@ const SpaceContext = React.createContext<SpaceContextProps>({
   spaceNameId: '',
   communityId: '',
   collaborationId: '',
+  calloutsSetId: '',
   roleSetId: '',
   permissions: {
     canRead: false,
     viewerCanUpdate: false,
     canCreate: false,
     canCreateSubspaces: false,
+    canCreateTemplates: false,
     canReadPosts: false,
     canReadSubspaces: false,
     communityReadAccess: false,
@@ -99,6 +103,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
 
   const communityId = space?.community?.id ?? '';
   const collaborationId = space?.collaboration?.id ?? '';
+  const calloutsSetId = space?.collaboration?.calloutsSet?.id ?? '';
   const roleSetId = space?.community?.roleSet?.id ?? '';
   const isPrivate = space && space.settings.privacy?.mode === SpacePrivacyMode.Private;
   const error = configError || spaceError;
@@ -109,8 +114,26 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
 
   const canReadSubspaces = spacePrivileges.includes(AuthorizationPrivilege.Read);
   const canCreateSubspaces = spacePrivileges.includes(AuthorizationPrivilege.CreateSubspace);
-  const canCreate = spacePrivileges.includes(AuthorizationPrivilege.Create);
 
+  // A member has READ and an Admin can also access it, this is more of a temporary solution
+  const canAccessTemplatesManager =
+    space?.community.roleSet.myMembershipStatus === CommunityMembershipStatus.Member ||
+    spacePrivileges.includes(AuthorizationPrivilege.Grant);
+  let canCreateTemplates = false;
+
+  const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
+    variables: { spaceNameId },
+    skip: !spaceNameId || !canAccessTemplatesManager,
+  });
+
+  if (canAccessTemplatesManager) {
+    canCreateTemplates =
+      templatesManagerData?.space.templatesManager?.templatesSet?.authorization?.myPrivileges?.includes(
+        AuthorizationPrivilege.Create
+      ) ?? false;
+  }
+
+  const canCreate = spacePrivileges.includes(AuthorizationPrivilege.Create);
   const communityPrivileges = space?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = useMemo<SpacePermissions>(() => {
@@ -119,6 +142,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       viewerCanUpdate: spacePrivileges.includes(AuthorizationPrivilege.Update),
       canReadSubspaces,
       canCreateSubspaces: canCreateSubspaces,
+      canCreateTemplates,
       canCreate,
       communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
       canReadCollaboration: collaborationPrivileges.includes(AuthorizationPrivilege.Read),
@@ -157,6 +181,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
         spaceNameId,
         communityId,
         collaborationId,
+        calloutsSetId,
         roleSetId,
         permissions,
         isPrivate,

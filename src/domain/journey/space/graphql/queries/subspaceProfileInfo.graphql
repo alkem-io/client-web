@@ -32,6 +32,9 @@ query SubspaceProfileInfo($subspaceId: UUID!) {
         innovationFlow {
           id
         }
+        calloutsSet {
+          id
+        }
       }
     }
   }

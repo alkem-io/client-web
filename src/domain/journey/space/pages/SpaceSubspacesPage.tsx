@@ -10,20 +10,20 @@ import ChildJourneyView from '@/domain/journey/common/tabs/Subentities/ChildJour
 import SubspacesContainer from '../containers/SubspacesContainer';
 import { useSpace } from '../SpaceContext/useSpace';
 import SpacePageLayout from '../layout/SpacePageLayout';
-import CalloutsGroupView from '@/domain/collaboration/callout/CalloutsInContext/CalloutsGroupView';
+import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { CalloutGroupName, CommunityMembershipStatus, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import { SubspaceIcon } from '@/domain/journey/subspace/icon/SubspaceIcon';
 import SubspaceCard from '@/domain/journey/subspace/subspaceCard/SubspaceCard';
 import { CreateSubspaceForm } from '@/domain/journey/subspace/forms/CreateSubspaceForm';
-import useCallouts from '@/domain/collaboration/callout/useCallouts/useCallouts';
 import SubspaceIcon2 from '@/main/ui/icons/SubspaceIcon2';
+import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
 
 const SpaceSubspacesPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { spaceId, journeyPath } = useRouteResolver();
-  const { spaceNameId, permissions, visibility, collaborationId } = useSpace();
+  const { journeyPath } = useRouteResolver();
+  const { spaceId, permissions, visibility, collaborationId, calloutsSetId } = useSpace();
 
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
 
@@ -32,7 +32,7 @@ const SpaceSubspacesPage = () => {
   const handleCreate = useCallback(
     async (value: JourneyFormValues) => {
       const result = await createSubspace({
-        spaceID: spaceNameId,
+        spaceID: spaceId,
         displayName: value.displayName,
         tagline: value.tagline,
         background: value.background ?? '',
@@ -49,13 +49,11 @@ const SpaceSubspacesPage = () => {
 
       navigate(result.profile.url);
     },
-    [navigate, createSubspace, spaceNameId]
+    [navigate, createSubspace, spaceId]
   );
 
-  const callouts = useCallouts({
+  const callouts = useCalloutsOnCollaboration({
     collaborationId,
-    journeyTypeName: 'space',
-    canReadCollaboration: true,
     groupNames: [CalloutGroupName.Subspaces],
   });
 
@@ -100,7 +98,7 @@ const SpaceSubspacesPage = () => {
             children={
               <CalloutsGroupView
                 journeyId={spaceId}
-                collaborationId={collaborationId}
+                calloutsSetId={calloutsSetId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}
