@@ -55,6 +55,7 @@ export interface CalloutCreationDialogProps {
   groupName: CalloutGroupName;
   flowState?: string;
   journeyTypeName: JourneyTypeName;
+  availableCalloutTypes?: CalloutType[];
 }
 
 const CalloutCreationDialog = ({
@@ -65,6 +66,7 @@ const CalloutCreationDialog = ({
   groupName,
   flowState,
   journeyTypeName,
+  availableCalloutTypes,
 }: CalloutCreationDialogProps) => {
   const { t } = useTranslation();
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
@@ -225,6 +227,7 @@ const CalloutCreationDialog = ({
             <Gutters>
               <CalloutTypeSelect
                 onSelect={handleSelectCalloutType}
+                availableCalloutTypes={availableCalloutTypes}
                 extraButtons={
                   <Button
                     size="large"

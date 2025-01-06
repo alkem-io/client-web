@@ -2,7 +2,7 @@ import CalloutCreationDialog from '../../callout/creationDialog/CalloutCreationD
 import { useCalloutCreationWithPreviewImages } from '../useCalloutCreation/useCalloutCreationWithPreviewImages';
 import AddContentButton from '@/core/ui/content/AddContentButton';
 import CalloutsView, { CalloutsViewProps } from '../CalloutsView/CalloutsView';
-import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
+import { CalloutGroupName, CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { useTranslation } from 'react-i18next';
 
@@ -14,6 +14,8 @@ interface CalloutsGroupProps extends CalloutsViewProps {
   flowState?: string;
   createButtonPlace?: 'top' | 'bottom';
 }
+
+const AVAILABLE_CALLOUT_TYPES = [CalloutType.Post, CalloutType.LinkCollection, CalloutType.PostCollection];
 
 const CalloutsGroupView = ({
   journeyId,
@@ -60,6 +62,7 @@ const CalloutsGroupView = ({
         groupName={groupName}
         flowState={flowState}
         journeyTypeName={journeyTypeName}
+        availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
       />
     </>
   );
