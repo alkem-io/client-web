@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { MouseEventHandler, ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
@@ -48,8 +48,9 @@ const UserCard = ({
   const { t } = useTranslation();
   const location = [city, country].filter(x => !!x).join(', ');
   const [isExpanded, setIsExpanded] = useState(false);
-  const toggleExpanded = event => {
+  const toggleExpanded: MouseEventHandler<HTMLDivElement> = event => {
     event.stopPropagation();
+    event.preventDefault();
     setIsExpanded(wasExpanded => !wasExpanded);
   };
 
@@ -107,13 +108,15 @@ const UserCard = ({
           )}
         </BadgeCardView>
       </Box>
-      <Box onClick={toggleExpanded} sx={{ cursor: 'pointer' }} paddingBottom={1}>
-        <ExpandableCardFooter
-          expanded={isExpanded}
-          expandable={tags.length > 0}
-          tags={<TagsComponent tags={tags} loading={loading} />}
-        />
-      </Box>
+      {tags && tags.length > 0 && (
+        <Box onClick={toggleExpanded} sx={{ cursor: 'pointer' }} paddingBottom={1}>
+          <ExpandableCardFooter
+            expanded={isExpanded}
+            expandable={tags.length > 0}
+            tags={<TagsComponent tags={tags} loading={loading} />}
+          />
+        </Box>
+      )}
     </ContributeCard>
   );
 };
