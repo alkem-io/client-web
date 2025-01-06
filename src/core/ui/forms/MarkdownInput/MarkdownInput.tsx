@@ -31,7 +31,7 @@ interface MarkdownInputProps extends InputBaseComponentProps {
   maxLength?: number;
   hideImageOptions?: boolean;
   temporaryLocation?: boolean;
-  passEditor?: (editor: Editor) => void;
+  pasteImageHandler?: (editor: Editor) => void;
 }
 
 type Offset = {
@@ -72,7 +72,7 @@ export const MarkdownInput = memo(
         onFocus,
         onBlur,
         temporaryLocation = false,
-        passEditor,
+        pasteImageHandler,
       },
       ref
     ) => {
@@ -99,9 +99,9 @@ export const MarkdownInput = memo(
 
       useEffect(() => {
         if (editor) {
-          passEditor?.(editor);
+          pasteImageHandler?.(editor);
         }
-      }, [editor, passEditor]);
+      }, [editor, pasteImageHandler]);
 
       useLayoutEffect(() => {
         if (!editor || !isInteractingWithInput || editor.getText() === '') {

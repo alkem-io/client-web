@@ -162,7 +162,7 @@ export const FormikMarkdownField = ({
                     file,
                     uploadData: {
                       storageBucketId,
-                      temporaryLocation: true,
+                      temporaryLocation,
                     },
                   },
                 });
@@ -200,11 +200,13 @@ export const FormikMarkdownField = ({
     inputElement?.focus();
   };
 
-  const handlePassEditor = useCallback((edtr: Editor) => setEditor(edtr), []);
+  const handleImagePaste = useCallback((edtr: Editor) => setEditor(edtr), []);
 
   const inputComponent = useCallback(
-    (props: PropsWithChildren<InputBaseComponentProps>) => <MarkdownInput {...props} passEditor={handlePassEditor} />,
-    [handlePassEditor]
+    (props: PropsWithChildren<InputBaseComponentProps>) => (
+      <MarkdownInput {...props} pasteImageHandler={handleImagePaste} />
+    ),
+    [handleImagePaste]
   );
 
   const labelOffset = inputElement?.getLabelOffset();
