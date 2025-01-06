@@ -1,7 +1,10 @@
 import { CalloutsQueryVariables } from '@/core/apollo/generated/graphql-schema';
 import useCallouts, { TypedCallout } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import { OrderUpdate } from '@/domain/collaboration/useCalloutsOnCollaboration';
-import { useVirtualContributorKnowledgeBaseQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useUpdateVirtualContributorMutation,
+  useVirtualContributorKnowledgeBaseQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 
 interface useKnowledgeBaseParams {
   id: string | undefined;
@@ -16,6 +19,8 @@ interface useKnowledgeBaseProvided {
   refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;
   refetchCallout: (calloutId: string) => void;
   onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
+  knowledgeBaseDescription: string | undefined;
+  updateDescription: (values: { description: string }) => Promise<void>;
 }
 
 /**
@@ -32,7 +37,26 @@ const useKnowledgeBase = ({ id }: useKnowledgeBaseParams): useKnowledgeBaseProvi
     },
     skip: !id,
   });
-  const calloutsSetId = knowledgeBaseData?.virtualContributor?.knowledgeBase?.calloutsSet?.id ?? '';
+  const knowledgeBase = knowledgeBaseData?.virtualContributor?.knowledgeBase;
+  const calloutsSetId = knowledgeBase?.calloutsSet?.id ?? '';
+
+  const [updateVC] = useUpdateVirtualContributorMutation({
+    refetchQueries: ['VirtualContributorKnowledgeBase'],
+  });
+  const updateDescription = async ({ description }) => {
+    await updateVC({
+      variables: {
+        virtualContributorData: {
+          ID: id!,
+          knowledgeBaseData: {
+            profile: {
+              description: description,
+            },
+          },
+        },
+      },
+    });
+  };
 
   const {
     callouts,
@@ -57,6 +81,8 @@ const useKnowledgeBase = ({ id }: useKnowledgeBaseParams): useKnowledgeBaseProvi
     refetchCallouts,
     refetchCallout,
     onCalloutsSortOrderUpdate,
+    knowledgeBaseDescription: knowledgeBaseData?.virtualContributor?.knowledgeBase?.profile?.description,
+    updateDescription,
   };
 };
 
