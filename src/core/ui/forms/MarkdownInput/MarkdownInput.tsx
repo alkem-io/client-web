@@ -58,6 +58,10 @@ const proseMirrorStyles = {
 
 const editorOptions: Partial<EditorOptions> = {
   extensions: [StarterKit, ImageExtension, Link, Highlight, Iframe],
+  editorProps: {
+    // Prevents automatic pasting
+    handlePaste: () => true, // Returns true to stop the default handling
+  },
 };
 
 export const MarkdownInput = memo(

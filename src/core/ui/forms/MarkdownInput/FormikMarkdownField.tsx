@@ -105,7 +105,7 @@ export const FormikMarkdownField = ({
       editor?.commands.setImage({ src: data.uploadFileOnStorageBucket, alt: 'pasted-image' });
     },
     onError: error => {
-      logError(error);
+      console.error(error.message);
     },
   });
 
@@ -141,17 +141,18 @@ export const FormikMarkdownField = ({
   const handleOnPaste = useCallback(
     (event: ClipboardEvent) => {
       const clipboardData = event.clipboardData;
-      const items = clipboardData.items;
+      const items = clipboardData?.items;
 
       if (!items) return;
 
       const storageBucketId = storageConfig?.storageBucketId;
 
       if (storageBucketId) {
-        let hasImage = false;
+        let imageProcessed = false;
 
         for (const item of items) {
-          if (item.type.startsWith('image/')) {
+          // Process `image/png` first
+          if (item.kind === 'file' && item.type.startsWith('image/')) {
             const file = item.getAsFile();
             if (file) {
               const reader = new FileReader();
@@ -168,14 +169,25 @@ export const FormikMarkdownField = ({
                 });
               };
 
-              reader.readAsDataURL(file); // Read to trigger onLoad.
-              hasImage = true;
+              reader.readAsDataURL(file); // Read the file to trigger onLoad.
+              imageProcessed = true;
+              break; // Stop after processing the image.
+            }
+          }
+
+          // Process `text/html` only if there is no image
+          if (!imageProcessed && item.kind === 'string' && item.type === 'text/html') {
+            const htmlContent = clipboardData.getData('text/html');
+            if (htmlContent.includes('<img')) {
+              // If we find HTML with `<img>`, ignore it to avoid duplication.
+              imageProcessed = true;
+              break;
             }
           }
         }
 
-        if (hasImage) {
-          event.preventDefault(); // Prevent default only if there's an image.
+        if (imageProcessed) {
+          event.preventDefault();
         }
       }
     },
@@ -206,7 +218,7 @@ export const FormikMarkdownField = ({
     (props: PropsWithChildren<InputBaseComponentProps>) => (
       <MarkdownInput {...props} pasteImageHandler={handleImagePaste} />
     ),
-    [handleImagePaste]
+    [handleImagePaste, handleOnPaste]
   );
 
   const labelOffset = inputElement?.getLabelOffset();
