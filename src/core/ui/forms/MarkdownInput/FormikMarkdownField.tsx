@@ -140,13 +140,13 @@ export const FormikMarkdownField = ({
       const clipboardData = event.clipboardData;
       const items = clipboardData.items;
 
-      if (!items) {
-        return;
-      }
+      if (!items) return;
 
       const storageBucketId = storageConfig?.storageBucketId;
 
       if (storageBucketId) {
+        let hasImage = false;
+
         for (const item of items) {
           if (item.type.startsWith('image/')) {
             const file = item.getAsFile();
@@ -165,10 +165,14 @@ export const FormikMarkdownField = ({
                 });
               };
 
-              reader.readAsDataURL(file);
-              event.preventDefault();
+              reader.readAsDataURL(file); // Read to trigger onLoad.
+              hasImage = true;
             }
           }
+        }
+
+        if (hasImage) {
+          event.preventDefault(); // Prevent default only if there's an image.
         }
       }
     },
