@@ -104,6 +104,9 @@ export const FormikMarkdownField = ({
 
       editor?.commands.setImage({ src: data.uploadFileOnStorageBucket, alt: 'pasted-image' });
     },
+    onError: error => {
+      logError(error);
+    },
   });
 
   const { t } = useTranslation();
