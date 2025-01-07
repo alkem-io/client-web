@@ -42,10 +42,10 @@ const InnovationFlowStateForm = ({
       .string()
       .required()
       .max(SMALL_TEXT_LENGTH)
-      // Avoid any JSON-related chars:
+      // Avoid commas in state names, because they are used to separate states in the database
       // This validation is also performed on the server: domain/collaboration/innovation-flow-states/innovation.flow.state.service.ts
       // Keep them in sync
-      .matches(/^[^[\],'"{}\\]+$/, t('components.innovationFlowSettings.stateEditor.invalidChars'))
+      .test('no-comma', t('components.innovationFlowSettings.stateEditor.invalidChars'), value => !value?.includes(','))
       .notOneOf(forbiddenFlowStateNames, t('components.innovationFlowSettings.stateEditor.noRepeatedStates')),
     description: MarkdownValidator(MARKDOWN_TEXT_LENGTH),
   });
