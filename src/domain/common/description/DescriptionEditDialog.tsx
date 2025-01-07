@@ -40,7 +40,7 @@ export const DescriptionEditDialog = ({ description, onUpdate, onClose }: Descri
 
   return (
     <DialogWithGrid open>
-      <DialogHeader onClose={onClose}>Edit</DialogHeader>
+      <DialogHeader onClose={onClose}>{t('buttons.edit')}</DialogHeader>
       <DialogContent>
         <Formik
           initialValues={initialValues}
