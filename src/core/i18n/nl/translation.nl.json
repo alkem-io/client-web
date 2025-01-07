@@ -176,7 +176,7 @@
     "click-more-info": "Klik voor meer informatie",
     "click-delete": "Klik om te verwijderen"
   },
-  "topbar": {
+  "topBar": {
     "sign-in": "Inloggen | Aanmelden"
   },
   "authentication": {
@@ -250,7 +250,7 @@
     "explore": "Bijdragen",
     "edit-entity": "Pas {{entity}} aan",
     "filter": "Filter",
-    "filterby": "Filter op...",
+    "filterBy": "Filter op...",
     "forum": "Forum",
     "email": "Email",
     "state": "Staat",
@@ -699,7 +699,7 @@
     "delete-confirm-title": "Oproep verwijderen?",
     "delete-confirm-text": "Alle kaarten, whiteboards en discussies onder deze oproep worden ook verwijderd.",
     "state-permission": "Accepteer nieuwe reacties",
-    "permission-helptext": "Gebruik de switch hieronder om deze oproep voor nieuwe bijdragen te sluiten.",
+    "permission-help-text": "Gebruik de switch hieronder om deze oproep voor nieuwe bijdragen te sluiten.",
     "callout-location": "Locatie: ",
     "sortContributions": "Sorteer bijdragen",
     "saveAsTemplate": "Opslaan als Template",
@@ -1439,7 +1439,7 @@
     "referenceSegment": {
       "title": "Referenties",
       "description": "Houd er rekening mee dat alle bestanden die je hier toevoegt openbaar zijn. Als je wilt dat alleen de leden van deze Space toegang hebben tot de bestanden, voeg het dan toe aan een bericht of een verzameling links op één van de Space pagina's.",
-      "missing-refereneces": "Nog geen referenties",
+      "missing-references": "Nog geen referenties",
       "tooltips": {
         "add-reference": "Voeg een referentie toe",
         "remove-reference": "Verwijder de referentie"
@@ -1562,7 +1562,7 @@
       },
       "parentSpace": "in: {{space}}"
     },
-    "errorblock": {
+    "errorBlock": {
       "message": "Excuses, er is een fout opgetreden tijdens het laden van {{blockName}}."
     },
     "loading": {
@@ -1783,7 +1783,7 @@
         "profile": {
           "description": ""
         },
-        "subentities": {
+        "subEntities": {
           "description": "Hier kan je de {{entities}} verkennen binnen deze {{parentEntity}}. Filter op tags om uitsluitend de onderwerpen van jouw interesse te zien.",
           "list": "Lijst met {{entities}}",
           "empty": "Geen {{entities}} gevonden in deze {{parentEntity}}.",
@@ -3103,7 +3103,7 @@
           "placeholder": "Selecteer een provider uit deze lijst"
         }
       },
-      "commingSoon": {
+      "comingSoon": {
         "title": "🚀 Binnenkort beschikbaar!",
         "subTitle": "We zijn momenteel bezig met het bouwen van de functionaliteit om externe AI-diensten te gebruiken voor je Virtual Contributor. Je kunt ons helpen door te delen welke AI-service je wil gebruiken.",
         "input": {

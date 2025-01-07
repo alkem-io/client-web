@@ -176,7 +176,7 @@
     "click-more-info": "Clique aqui para mais informações",
     "click-delete": "Clique para excluir"
   },
-  "topbar": {
+  "topBar": {
     "sign-in": "Login ou cadastre-se"
   },
   "authentication": {
@@ -250,7 +250,7 @@
     "explore": "Contribuir",
     "edit-entity": "Editar {{entity}}",
     "filter": "Filtrar",
-    "filterby": "Filtrar por...",
+    "filterBy": "Filtrar por...",
     "forum": "Fórum",
     "email": "Email",
     "state": "Estado",
@@ -699,7 +699,7 @@
     "delete-confirm-title": "Excluir Callout?",
     "delete-confirm-text": "Todos os posts, Whiteboards e mensagens sob o Callout também serão excluídos.",
     "state-permission": "Aceitar novas respostas",
-    "permission-helptext": "Utilize o interruptor abaixo para fechar este Callout para novas entradas.",
+    "permission-help-text": "Utilize o interruptor abaixo para fechar este Callout para novas entradas.",
     "callout-location": "Localização: ",
     "sortContributions": "Sort contributions",
     "saveAsTemplate": "Save as Template",
@@ -1439,7 +1439,7 @@
     "referenceSegment": {
       "title": "Referências",
       "description": "Please keep in mind that all the files you attach here become publicly available. If you only want the members of this Space to be able to access the files, attach it to a post or a collection of links on one of the member pages.",
-      "missing-refereneces": "Sem referências ainda",
+      "missing-references": "Sem referências ainda",
       "tooltips": {
         "add-reference": "Adicionar uma referência",
         "remove-reference": "Remover a referência"
@@ -1562,7 +1562,7 @@
       },
       "parentSpace": "in: {{space}}"
     },
-    "errorblock": {
+    "errorBlock": {
       "message": "Desculpe, ocorreu um erro ao carregar o {{blockName}}."
     },
     "loading": {
@@ -1783,7 +1783,7 @@
         "profile": {
           "description": ""
         },
-        "subentities": {
+        "subEntities": {
           "description": "Aqui você pode explorar o **{{entities}}** hospedado neste {{parentEntity}}. Filtre por palavras-chave para mostrar apenas os tópicos que você se interessa.",
           "list": "Lista de {{entities}}",
           "empty": "Nenhum(a) {{entities}} encontrado neste(a) {{parentEntity}}.",
@@ -2018,7 +2018,7 @@
         },
         "notifications": {
           "space-created": "Espaço criado com sucesso.",
-          "errorCreatingSpace": "An error ocurred while creating the Space.",
+          "errorCreatingSpace": "An error occurred while creating the Space.",
           "space-removed": "Espaço '{{name}}' removido com sucesso."
         },
         "settings": {
@@ -2031,7 +2031,7 @@
           "license-features": {
             "title": "Recursos do Espaço",
             "features": {
-              "WHITEBOARD_MULTI_USER": "Multiuser Whiteboards",
+              "WHITEBOARD_MULTI_USER": "Multi-user Whiteboards",
               "CALLOUT_TO_CALLOUT_TEMPLATE": "Criar template a partir do Callout",
               "VIRTUAL_CONTRIBUTORS": "Interact with virtual contributors"
             }
@@ -3099,7 +3099,7 @@
           "placeholder": "Select a provider from this list"
         }
       },
-      "commingSoon": {
+      "comingSoon": {
         "title": "🚀 Coming soon!",
         "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
         "input": {

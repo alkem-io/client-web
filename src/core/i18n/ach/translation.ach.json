@@ -176,7 +176,7 @@
     "click-more-info": "crwdns8310:0crwdne8310:0",
     "click-delete": "crwdns8312:0crwdne8312:0"
   },
-  "topbar": {
+  "topBar": {
     "sign-in": "crwdns8314:0crwdne8314:0"
   },
   "authentication": {
@@ -250,7 +250,7 @@
     "explore": "crwdns8418:0crwdne8418:0",
     "edit-entity": "crwdns8420:0{{entity}}crwdne8420:0",
     "filter": "crwdns8422:0crwdne8422:0",
-    "filterby": "crwdns8424:0crwdne8424:0",
+    "filterBy": "crwdns8424:0crwdne8424:0",
     "forum": "crwdns8426:0crwdne8426:0",
     "email": "crwdns8428:0crwdne8428:0",
     "state": "crwdns11608:0crwdne11608:0",
@@ -699,7 +699,7 @@
     "delete-confirm-title": "crwdns8966:0crwdne8966:0",
     "delete-confirm-text": "crwdns8968:0crwdne8968:0",
     "state-permission": "crwdns8970:0crwdne8970:0",
-    "permission-helptext": "crwdns8972:0crwdne8972:0",
+    "permission-help-text": "crwdns8972:0crwdne8972:0",
     "callout-location": "crwdns8974:0crwdne8974:0",
     "sortContributions": "crwdns12838:0crwdne12838:0",
     "saveAsTemplate": "crwdns12970:0crwdne12970:0",
@@ -1439,7 +1439,7 @@
     "referenceSegment": {
       "title": "crwdns9696:0crwdne9696:0",
       "description": "crwdns11320:0crwdne11320:0",
-      "missing-refereneces": "crwdns9698:0crwdne9698:0",
+      "missing-references": "crwdns9698:0crwdne9698:0",
       "tooltips": {
         "add-reference": "crwdns9700:0crwdne9700:0",
         "remove-reference": "crwdns9702:0crwdne9702:0"
@@ -1562,7 +1562,7 @@
       },
       "parentSpace": "crwdns11586:0{{space}}crwdne11586:0"
     },
-    "errorblock": {
+    "errorBlock": {
       "message": "crwdns9800:0{{blockName}}crwdne9800:0"
     },
     "loading": {
@@ -1783,7 +1783,7 @@
         "profile": {
           "description": "crwdns9992:0crwdne9992:0"
         },
-        "subentities": {
+        "subEntities": {
           "description": "crwdns11566:0{{entities}}crwdne11566:0",
           "list": "crwdns11414:0crwdne11414:0",
           "empty": "crwdns11568:0{{entities}}crwdne11568:0",
@@ -3108,7 +3108,7 @@
           "placeholder": "crwdns13198:0crwdne13198:0"
         }
       },
-      "commingSoon": {
+      "comingSoon": {
         "title": "crwdns13200:0crwdne13200:0",
         "subTitle": "crwdns13202:0crwdne13202:0",
         "input": {

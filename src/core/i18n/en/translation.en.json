@@ -48,13 +48,13 @@
   },
   "languages": {
     "en": "English",
-    "nl": "Dutch",
-    "es": "Spanish",
-    "bg": "Bulgarian",
-    "ua": "Ukrainian",
-    "de": "German",
-    "fr": "French",
-    "pt": "Portuguese (Brazil)",
+    "nl": "Nederlands",
+    "es": "Español",
+    "bg": "Български",
+    "ua": "Українська",
+    "de": "Deutsch",
+    "fr": "Français",
+    "pt": "Português (Brasil)",
     "inContextTool": "In context translation"
   },
   "fields": {
@@ -179,7 +179,7 @@
     "click-more-info": "Click for more information",
     "click-delete": "Click to delete"
   },
-  "topbar": {
+  "topBar": {
     "sign-in": "Log In | Sign Up"
   },
   "authentication": {
@@ -253,7 +253,7 @@
     "explore": "Contribute",
     "edit-entity": "Edit {{entity}}",
     "filter": "Filter",
-    "filterby": "Filter by...",
+    "filterBy": "Filter by...",
     "forum": "Forum",
     "email": "Email",
     "state": "Phase",
@@ -716,7 +716,7 @@
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All Posts, Whiteboards and messages under the Callout will also be deleted.",
     "state-permission": "Accept new responses",
-    "permission-helptext": "Use the switch below to close this callout for new entries.",
+    "permission-help-text": "Use the switch below to close this callout for new entries.",
     "callout-location": "Location: ",
     "sortContributions": "Sort contributions",
     "saveAsTemplate": "Save as Template",
@@ -1223,7 +1223,7 @@
     "associated-organization": {
       "confirmation-dialog": {
         "title": "Leaving {{organization}}",
-        "text": "Are you sure you want to leave? You might not be able to see the content or make contributons once you're not a member anymore."
+        "text": "Are you sure you want to leave? You might not be able to see the content or make contributions once you're not a member anymore."
       }
     },
     "error-display": {
@@ -1295,7 +1295,7 @@
         "title": "Details",
         "description": "Description",
         "type-comments": "Comments",
-        "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a messageboard.",
+        "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a message board.",
         "type-posts": "Posts",
         "type-posts-help": "Select Posts when you want people to answer in a card format.",
         "type-whiteboards": "Whiteboards",
@@ -1473,7 +1473,7 @@
     "referenceSegment": {
       "title": "References",
       "description": "Please keep in mind that all the files you attach here become publicly available. If you only want the members of this Space to be able to access the files, attach it to a post or a collection of links on one of the member pages.",
-      "missing-refereneces": "No references yet",
+      "missing-references": "No references yet",
       "tooltips": {
         "add-reference": "Add a reference",
         "remove-reference": "Remove the reference"
@@ -1596,7 +1596,7 @@
       },
       "parentSpace": "in: {{space}}"
     },
-    "errorblock": {
+    "errorBlock": {
       "message": "Sorry, an error occurred while loading {{blockName}}."
     },
     "loading": {
@@ -1839,7 +1839,7 @@
         "profile": {
           "description": ""
         },
-        "subentities": {
+        "subEntities": {
           "description": "Here you can explore the hosted **{{entities}}**. Filter by key words to show just the topics you care about.",
           "list": "List view",
           "empty": "No {{entities}} found.",
@@ -2049,7 +2049,7 @@
           "subsubspace-created": "Subspace created successfully.",
           "subsubspace-removed": "Subspace removed successfully.",
           "subsubspace-updated": "Subspace updated successfully.",
-          "error-creating-subsubspace": "An error ocurred while creating the Subspace."
+          "error-creating-subsubspace": "An error occurred while creating the Subspace."
         }
       },
       "subspace": {
@@ -2098,8 +2098,8 @@
           }
         },
         "notifications": {
-          "space-created": "Space created successfuly.",
-          "errorCreatingSpace": "An error ocurred while creating the Space.",
+          "space-created": "Space created successfully.",
+          "errorCreatingSpace": "An error occurred while creating the Space.",
           "space-removed": "Space '{{name}}' removed successfully."
         },
         "settings": {
@@ -2112,7 +2112,7 @@
           "license-features": {
             "title": "Space Features",
             "features": {
-              "WHITEBOARD_MULTI_USER": "Multiuser Whiteboards",
+              "WHITEBOARD_MULTI_USER": "Multi-user Whiteboards",
               "CALLOUT_TO_CALLOUT_TEMPLATE": "Create template from callout",
               "VIRTUAL_CONTRIBUTORS": "Interact with virtual contributors"
             }
@@ -2422,7 +2422,7 @@
         },
         "organizations": {
           "header": "Organizations",
-          "subheader": "The entities that want to bring innnovation."
+          "subheader": "The entities that want to bring innovation."
         },
         "contributors-section": {
           "title": "See who is driving Subspaces on Alkemio"
@@ -2626,7 +2626,7 @@
       "register": "Don’t have an Alkemio account yet? <signup>Click here to sign up.</signup>"
     },
     "about": {
-      "title": "Reimagining collaboration",
+      "title": "Re-imagining collaboration",
       "description": "Alkemio puts the Subspaces central, each Subspace providing a central, neutral place for collaboration.",
       "powered-by": "Powered by {{name}} v{{version}}"
     },
@@ -3068,7 +3068,7 @@
       {
         "name": "SPACE_LICENSE_PREMIUM",
         "displayName": "Premium",
-        "priceDescription": "For Established Communities, organisations, coalitions...",
+        "priceDescription": "For Established Communities, organizations, coalitions...",
         "features": [
           "Up to 250 members",
           "Realtime, multi-user Whiteboards",
@@ -3197,7 +3197,7 @@
           "placeholder": "Select a provider from this list"
         }
       },
-      "commingSoon": {
+      "comingSoon": {
         "title": "🚀 Coming soon!",
         "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
         "input": {

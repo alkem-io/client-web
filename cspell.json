@@ -1,0 +1,35 @@
+{
+  "version": "0.2",
+  "ignorePaths": ["build", "coverage", "dist", "node_modules", "public"],
+  "dictionaryDefinitions": [
+    {
+      "name": "alkemio-dictionary",
+      "path": "./.cspell/alkemio-dictionary.txt"
+    },
+    {
+      "name": "bulgarian-dictionary",
+      "path": "./.cspell/bulgarian-dictionary.txt"
+    },
+    {
+      "name": "languages-names-dictionary",
+      "path": "./.cspell/languages-names-dictionary.txt"
+    }
+  ],
+  "dictionaries": ["alkemio-dictionary", "bulgarian-dictionary", "languages-names-dictionary"],
+  "words": [],
+  "ignoreWords": [
+    "codegen",
+    "eslintcache",
+    "excalidraw",
+    "kratos",
+    "languagedetector",
+    "mdast",
+    "prosemirror",
+    "qrcode",
+    "resizer",
+    "traefik",
+    "uuidv",
+    "webp"
+  ],
+  "import": []
+}

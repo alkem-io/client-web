@@ -176,7 +176,7 @@
     "click-more-info": "Нажміть, щоб дізнатись більше",
     "click-delete": "Нажміть, щоб видалити"
   },
-  "topbar": {
+  "topBar": {
     "sign-in": "Увійти | Зареєструватися"
   },
   "authentication": {
@@ -250,7 +250,7 @@
     "explore": "Дослідити",
     "edit-entity": "Редагувати {{entity}}",
     "filter": "Фільтр",
-    "filterby": "Filter by...",
+    "filterBy": "Filter by...",
     "forum": "Forum",
     "email": "Пошта",
     "state": "Стан",
@@ -699,7 +699,7 @@
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All Posts, Whiteboards and messages under the Callout will also be deleted.",
     "state-permission": "Accept new responses",
-    "permission-helptext": "Use the switch below to close this callout for new entries.",
+    "permission-help-text": "Use the switch below to close this callout for new entries.",
     "callout-location": "Location: ",
     "sortContributions": "Sort contributions",
     "saveAsTemplate": "Save as Template",
@@ -1189,7 +1189,7 @@
     "associated-organization": {
       "confirmation-dialog": {
         "title": "Leaving {{organization}}",
-        "text": "Are you sure you want to leave? You might not be able to see the content or make contributons once you're not a member anymore."
+        "text": "Are you sure you want to leave? You might not be able to see the content or make contributions once you're not a member anymore."
       }
     },
     "error-display": {
@@ -1261,7 +1261,7 @@
         "title": "Деталі",
         "description": "Опис",
         "type-comments": "Comments",
-        "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a messageboard.",
+        "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a message board.",
         "type-posts": "Posts",
         "type-posts-help": "Select Posts when you want people to answer in a card format.",
         "type-whiteboards": "Whiteboards",
@@ -1439,7 +1439,7 @@
     "referenceSegment": {
       "title": "Посилання",
       "description": "Please keep in mind that all the files you attach here become publicly available. If you only want the members of this Space to be able to access the files, attach it to a post or a collection of links on one of the member pages.",
-      "missing-refereneces": "No references yet",
+      "missing-references": "No references yet",
       "tooltips": {
         "add-reference": "Додати посилання",
         "remove-reference": "Видалити посилання"
@@ -1562,7 +1562,7 @@
       },
       "parentSpace": "in: {{space}}"
     },
-    "errorblock": {
+    "errorBlock": {
       "message": "Вибачте, сталась помилка під час завантеження {{blockName}}."
     },
     "loading": {
@@ -1783,7 +1783,7 @@
         "profile": {
           "description": ""
         },
-        "subentities": {
+        "subEntities": {
           "description": "Here you can explore the **{{entities}}** hosted in this {{parentEntity}}. Filter by key words to show just the topics you care about.",
           "list": "List of {{entities}}",
           "empty": "No {{entities}} found in this {{parentEntity}}.",
@@ -2017,8 +2017,8 @@
           }
         },
         "notifications": {
-          "space-created": "Space created successfuly.",
-          "errorCreatingSpace": "An error ocurred while creating the Space.",
+          "space-created": "Space created successfully.",
+          "errorCreatingSpace": "An error occurred while creating the Space.",
           "space-removed": "Space '{{name}}' removed successfully."
         },
         "settings": {
@@ -2031,7 +2031,7 @@
           "license-features": {
             "title": "Space Features",
             "features": {
-              "WHITEBOARD_MULTI_USER": "Multiuser Whiteboards",
+              "WHITEBOARD_MULTI_USER": "Multi-user Whiteboards",
               "CALLOUT_TO_CALLOUT_TEMPLATE": "Create template from callout",
               "VIRTUAL_CONTRIBUTORS": "Interact with virtual contributors"
             }
@@ -3099,7 +3099,7 @@
           "placeholder": "Select a provider from this list"
         }
       },
-      "commingSoon": {
+      "comingSoon": {
         "title": "🚀 Coming soon!",
         "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
         "input": {

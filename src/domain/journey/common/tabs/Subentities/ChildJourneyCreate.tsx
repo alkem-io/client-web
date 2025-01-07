@@ -19,7 +19,7 @@ const ChildJourneyCreate = ({ journeyTypeName, canCreateSubentity, onCreateSuben
   return (
     <PageContentBlock accent>
       <WrapperMarkdown>
-        {t('pages.generic.sections.subentities.description', {
+        {t('pages.generic.sections.subEntities.description', {
           entities: getJourneyChildrenTranslation(t, journeyTypeName),
         })}
       </WrapperMarkdown>
