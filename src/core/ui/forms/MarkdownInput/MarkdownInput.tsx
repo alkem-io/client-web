@@ -8,8 +8,10 @@ import React, {
   useLayoutEffect,
   useRef,
   useState,
+  useMemo,
 } from 'react';
 import { Box, useTheme } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { Editor, EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
@@ -25,13 +27,16 @@ import { Highlight } from '@tiptap/extension-highlight';
 import { Selection } from 'prosemirror-state';
 import { EditorOptions } from '@tiptap/core';
 import { Iframe } from '../MarkdownInputControls/InsertEmbedCodeButton/Iframe';
+import { EditorView } from '@tiptap/pm/view';
+import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useNotification } from '../../notifications/useNotification';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
   maxLength?: number;
   hideImageOptions?: boolean;
   temporaryLocation?: boolean;
-  pasteImageHandler?: (editor: Editor) => void;
 }
 
 type Offset = {
@@ -56,14 +61,6 @@ const proseMirrorStyles = {
   '& img': { maxWidth: '100%' },
 } as const;
 
-const editorOptions: Partial<EditorOptions> = {
-  extensions: [StarterKit, ImageExtension, Link, Highlight, Iframe],
-  editorProps: {
-    // Prevents automatic pasting
-    handlePaste: () => true, // Returns true to stop the default handling
-  },
-};
-
 export const MarkdownInput = memo(
   forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
     (
@@ -76,7 +73,6 @@ export const MarkdownInput = memo(
         onFocus,
         onBlur,
         temporaryLocation = false,
-        pasteImageHandler,
       },
       ref
     ) => {
@@ -96,16 +92,101 @@ export const MarkdownInput = memo(
         setHtmlContent(String(content));
       };
 
+      const { t } = useTranslation();
+
+      const notify = useNotification();
+
+      const [uploadFile] = useUploadFileMutation({
+        onCompleted: data => {
+          notify(t('components.file-upload.file-upload-success'), 'success');
+
+          editor?.commands.setImage({ src: data.uploadFileOnStorageBucket, alt: 'pasted-image' });
+        },
+
+        onError: error => {
+          console.error(error.message);
+        },
+      });
+
+      const storageConfig = useStorageConfigContext();
+
+      const editorOptions: Partial<EditorOptions> = useMemo(
+        () => ({
+          extensions: [StarterKit, ImageExtension, Link, Highlight, Iframe],
+          editorProps: {
+            handlePaste: (_view: EditorView, event: ClipboardEvent) => {
+              const clipboardData = event.clipboardData;
+              const items = clipboardData?.items;
+
+              if (!items) {
+                return false; // Allow default behavior if no items are found.
+              }
+
+              const storageBucketId = storageConfig?.storageBucketId;
+
+              if (!storageBucketId) {
+                return false; // Stop custom handling if storageBucketId is missing.
+              }
+
+              let imageProcessed = false;
+
+              for (const item of items) {
+                // Handle images first
+                if (!imageProcessed && item.kind === 'file' && item.type.startsWith('image/')) {
+                  const file = item.getAsFile();
+
+                  if (file) {
+                    const reader = new FileReader();
+
+                    reader.onload = () => {
+                      uploadFile({
+                        variables: {
+                          file,
+                          uploadData: {
+                            storageBucketId,
+                            temporaryLocation,
+                          },
+                        },
+                      });
+                    };
+
+                    reader.readAsDataURL(file);
+                    imageProcessed = true;
+                  }
+                }
+
+                // Check for HTML content containing <img> tags
+                if (!imageProcessed && item.kind === 'string' && item.type === 'text/html') {
+                  const htmlContent = clipboardData.getData('text/html');
+
+                  if (htmlContent.includes('<img')) {
+                    imageProcessed = true; // Mark as processed to avoid duplicates.
+                  }
+                }
+
+                // Break the loop once an image or relevant HTML is handled.
+                if (imageProcessed) {
+                  break;
+                }
+              }
+
+              // Prevent default behavior only if we processed an image or relevant HTML.
+              if (imageProcessed) {
+                event.preventDefault();
+                return true; // Block default behavior in the editor.
+              }
+
+              return false; // Allow default behavior for non-image content.
+            },
+          },
+        }),
+        [storageConfig, temporaryLocation, uploadFile]
+      );
+
       const editor = useEditor({ ...editorOptions, content: htmlContent }, [htmlContent]);
 
       // Currently used to highlight overflow but can be reused for other similar features as well
       const shadowEditor = useEditor({ ...editorOptions, content: '', editable: false });
-
-      useEffect(() => {
-        if (editor) {
-          pasteImageHandler?.(editor);
-        }
-      }, [editor, pasteImageHandler]);
 
       useLayoutEffect(() => {
         if (!editor || !isInteractingWithInput || editor.getText() === '') {

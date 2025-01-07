@@ -1,25 +1,6 @@
-import {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-  ClipboardEvent,
-  PropsWithChildren,
-} from 'react';
-import {
-  FormControl,
-  FormHelperText,
-  InputBaseComponentProps,
-  InputLabel,
-  InputProps,
-  OutlinedInput,
-  useFormControl,
-} from '@mui/material';
+import { ChangeEvent, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { FormControl, FormHelperText, InputLabel, InputProps, OutlinedInput, useFormControl } from '@mui/material';
 import { useField } from 'formik';
-import { Editor } from '@tiptap/react';
 import CharacterCounter from '../characterCounter/CharacterCounter';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
@@ -30,9 +11,6 @@ import { MarkdownTextMaxLength } from '../field-length.constants';
 import { error as logError } from '@/core/logging/sentry/log';
 import { isMarkdownMaxLengthError } from './MarkdownValidator';
 import { useTranslation } from 'react-i18next';
-import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
-import { useNotification } from '../../notifications/useNotification';
-import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 
 interface MarkdownFieldProps extends InputProps {
   title: string;
@@ -82,10 +60,6 @@ export const FormikMarkdownField = ({
   temporaryLocation = false,
   controlsVisible = 'always',
 }: MarkdownFieldProps) => {
-  const [editor, setEditor] = useState<Editor>();
-
-  const notify = useNotification();
-
   const validate = () => {
     const characterCount = inputElementRef.current?.value?.length ?? 0;
     const isAboveCharacterLimit = maxLength && characterCount > maxLength;
@@ -94,20 +68,7 @@ export const FormikMarkdownField = ({
     }
   };
 
-  const storageConfig = useStorageConfigContext();
-
   const [field, meta, helper] = useField({ name, validate });
-
-  const [uploadFile] = useUploadFileMutation({
-    onCompleted: data => {
-      notify(t('components.file-upload.file-upload-success'), 'success');
-
-      editor?.commands.setImage({ src: data.uploadFileOnStorageBucket, alt: 'pasted-image' });
-    },
-    onError: error => {
-      console.error(error.message);
-    },
-  });
 
   const { t } = useTranslation();
 
@@ -138,62 +99,6 @@ export const FormikMarkdownField = ({
     [helper]
   );
 
-  const handleOnPaste = useCallback(
-    (event: ClipboardEvent) => {
-      const clipboardData = event.clipboardData;
-      const items = clipboardData?.items;
-
-      if (!items) return;
-
-      const storageBucketId = storageConfig?.storageBucketId;
-
-      if (storageBucketId) {
-        let imageProcessed = false;
-
-        for (const item of items) {
-          // Process `image/png` first
-          if (item.kind === 'file' && item.type.startsWith('image/')) {
-            const file = item.getAsFile();
-            if (file) {
-              const reader = new FileReader();
-
-              reader.onload = () => {
-                uploadFile({
-                  variables: {
-                    file,
-                    uploadData: {
-                      storageBucketId,
-                      temporaryLocation,
-                    },
-                  },
-                });
-              };
-
-              reader.readAsDataURL(file); // Read the file to trigger onLoad.
-              imageProcessed = true;
-              break; // Stop after processing the image.
-            }
-          }
-
-          // Process `text/html` only if there is no image
-          if (!imageProcessed && item.kind === 'string' && item.type === 'text/html') {
-            const htmlContent = clipboardData.getData('text/html');
-            if (htmlContent.includes('<img')) {
-              // If we find HTML with `<img>`, ignore it to avoid duplication.
-              imageProcessed = true;
-              break;
-            }
-          }
-        }
-
-        if (imageProcessed) {
-          event.preventDefault();
-        }
-      }
-    },
-    [storageConfig?.storageBucketId, uploadFile]
-  );
-
   const handleBlur = useCallback(() => {
     helper.setTouched(true);
   }, [helper]);
@@ -211,15 +116,6 @@ export const FormikMarkdownField = ({
   const focusInput = () => {
     inputElement?.focus();
   };
-
-  const handleImagePaste = useCallback((edtr: Editor) => setEditor(edtr), []);
-
-  const inputComponent = useCallback(
-    (props: PropsWithChildren<InputBaseComponentProps>) => (
-      <MarkdownInput {...props} pasteImageHandler={handleImagePaste} />
-    ),
-    [handleImagePaste, handleOnPaste]
-  );
 
   const labelOffset = inputElement?.getLabelOffset();
 
@@ -254,10 +150,9 @@ export const FormikMarkdownField = ({
             temporaryLocation,
           }}
           placeholder={placeholder}
-          inputComponent={inputComponent}
+          inputComponent={MarkdownInput}
           sx={{ '&.MuiOutlinedInput-root': { padding: gutters(0.5) } }}
           onBlur={handleBlur}
-          onPaste={handleOnPaste}
           onChange={handleOnChange}
         />
 
