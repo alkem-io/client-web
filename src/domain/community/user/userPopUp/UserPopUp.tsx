@@ -83,22 +83,11 @@ const useUserPopUpStyles = makeStyles(theme => ({
       padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
     },
   },
-  marginBottom: {
-    marginBottom: theme.spacing(2),
-  },
-  refRow: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-  },
-  refDiv: {
-    marginBottom: theme.spacing(1),
-  },
 }));
 
 type UserPopUpProps = {
   id: string;
   onHide: () => void;
-  terms?: Array<string>;
 };
 
 const getStringOfNames = (arr: string[]) => arr.join(', ');

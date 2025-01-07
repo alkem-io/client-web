@@ -1,6 +1,6 @@
 import UserPopUp from '@/domain/community/user/userPopUp/UserPopUp';
 import { Box, Tooltip } from '@mui/material';
-import { ReactNode, forwardRef, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ImageFadeIn from './ImageFadeIn';
 
@@ -14,9 +14,9 @@ interface AvatarProps {
  * @deprecated
  * TODO Replace with MUI Avatar
  */
-export const AlkemioAvatar = forwardRef(({ src, name, userId }: AvatarProps, ref) => {
+export const AlkemioAvatar = ({ src, name, userId }: AvatarProps) => {
   const { t } = useTranslation();
-  const [isPopUpShown, setIsPopUpShown] = useState<boolean>(false);
+  const [isPopUpShown, setIsPopUpShown] = useState(false);
   const [hasFailedToLoad, setHasFailedToLoad] = useState(false);
 
   useEffect(() => {
@@ -37,7 +37,6 @@ export const AlkemioAvatar = forwardRef(({ src, name, userId }: AvatarProps, ref
 
   return (
     <Box
-      ref={ref}
       sx={{
         width: 40,
         height: 40,
@@ -72,4 +71,4 @@ export const AlkemioAvatar = forwardRef(({ src, name, userId }: AvatarProps, ref
       {isPopUpShown && <UserPopUp id={userId} onHide={() => setIsPopUpShown(false)} />}
     </Box>
   );
-});
+};
