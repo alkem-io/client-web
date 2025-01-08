@@ -24,6 +24,9 @@ query SpaceCommunityPage($spaceNameId: UUID_NAMEID!, $includeCommunity: Boolean!
     }
     collaboration {
       id
+      calloutsSet {
+        id
+      }
     }
   }
 }

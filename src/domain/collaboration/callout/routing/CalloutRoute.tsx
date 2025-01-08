@@ -16,7 +16,7 @@ const CalloutRoute = ({ parentPagePath, journeyTypeName }: CalloutRouteProps) =>
       path={`posts/:${nameOfUrl.postNameId}/*`}
       element={
         <PostProvider>
-          <PostRoute parentPagePath={parentPagePath} journeyTypeName={journeyTypeName} />
+          <PostRoute parentPagePath={parentPagePath} />
         </PostProvider>
       }
     />

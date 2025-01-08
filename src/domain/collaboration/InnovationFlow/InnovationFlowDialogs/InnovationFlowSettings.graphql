@@ -62,22 +62,25 @@ fragment InnovationFlowCollaboration on Collaboration {
     id
     myPrivileges
   }
-  callouts(groups: $filterCalloutGroups) {
+  calloutsSet {
     id
-    nameID
-    type
-    activity
-    sortOrder
-    framing {
+    callouts(groups: $filterCalloutGroups) {
       id
-      profile {
+      nameID
+      type
+      activity
+      sortOrder
+      framing {
         id
-        displayName
-        calloutGroupName: tagset(tagsetName: CALLOUT_GROUP) {
-          ...TagsetDetails
-        }
-        flowState: tagset(tagsetName: FLOW_STATE) {
-          ...TagsetDetails
+        profile {
+          id
+          displayName
+          calloutGroupName: tagset(tagsetName: CALLOUT_GROUP) {
+            ...TagsetDetails
+          }
+          flowState: tagset(tagsetName: FLOW_STATE) {
+            ...TagsetDetails
+          }
         }
       }
     }

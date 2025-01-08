@@ -32,7 +32,7 @@ import CalloutWhiteboardField, {
   WhiteboardFieldSubmittedValuesWithPreviewImages,
 } from './creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
-import { JourneyCalloutGroupNameOptions } from './CalloutsInContext/CalloutsGroup';
+import { JourneyCalloutGroupNameOptions } from '../calloutsSet/CalloutsInContext/CalloutsGroup';
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import PostTemplateSelector from '@/domain/templates/components/TemplateSelectors/PostTemplateSelector';
 import WhiteboardTemplateSelector from '@/domain/templates/components/TemplateSelectors/WhiteboardTemplateSelector';

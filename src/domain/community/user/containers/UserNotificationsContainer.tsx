@@ -6,7 +6,7 @@ import {
   useUserNotificationsPreferencesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { ContainerChildProps } from '@/core/container/container';
-import { Preference, UserPreferenceType } from '@/core/apollo/generated/graphql-schema';
+import { Preference, PreferenceType } from '@/core/apollo/generated/graphql-schema';
 
 export interface UserNotificationsContainerEntities {
   preferences: Preference[];
@@ -17,7 +17,7 @@ export interface UserNotificationsContainerState {
 }
 
 export interface UserNotificationsContainerActions {
-  updatePreference: (type: UserPreferenceType, checked: boolean, id: string) => void;
+  updatePreference: (type: PreferenceType, checked: boolean, id: string) => void;
 }
 
 export interface UserNotificationsContainerProps
@@ -40,7 +40,7 @@ const UserNotificationsContainer = ({ children }: PropsWithChildren<UserNotifica
 
   const userUUID = data?.user.id;
 
-  const updatePreference = (type: UserPreferenceType, checked: boolean, id: string) => {
+  const updatePreference = (type: PreferenceType, checked: boolean, id: string) => {
     if (!userUUID) {
       return;
     }

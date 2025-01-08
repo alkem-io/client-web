@@ -6,7 +6,7 @@ import {
 } from '@/domain/collaboration/activity/ActivityLog/ActivityComponent';
 import { Caption } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
-import TopCalloutDetails from '@/domain/collaboration/callout/TopCallout/TopCalloutDetails';
+import TopCalloutDetails from '@/domain/collaboration/calloutsSet/TopCallout/TopCalloutDetails';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { gutters } from '@/core/ui/grid/utils';
 import AltToggle from '@/core/ui/forms/AltToggle/AltToggle';

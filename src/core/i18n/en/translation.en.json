@@ -1087,6 +1087,7 @@
         "editState": "Edit Details",
         "deleteState": "Delete",
         "addState": "Add Phase",
+        "invalidChars": "A phase name cannot contain special characters.",
         "noRepeatedStates": "A phase with the same name already exists.",
         "createDialog": {
           "title": "Create Flow Phase"
@@ -1983,12 +1984,34 @@
           }
         }
       },
+      "user": {
+        "settings": {
+          "title": "Settings",
+          "subtitle": "This section allows you to modify the User settings",
+          "communication": {
+            "allowOtherUsersToSendMessages": "Allow other users to message me."
+          },
+          "privacy": {
+            "contributorRolesVisible": "Show contributor roles to all registered users"
+          }
+        }
+      },
       "organization": {
         "create-organization": "Create organization",
         "authorization": {
-          "preferences": {
-            "title": "Authorization",
-            "subtitle": "This section allows you to modify the organizations authorization"
+          "title": "Authorization",
+          "subtitle": "This section allows you to modify the organizations authorization"
+        },
+        "settings": {
+          "title": "Settings",
+          "subtitle": "This section allows you to modify the organization settings",
+          "membership": {
+            "usersMatchingEmail": "Allow users with emails matching the domain of the Organization to associate themselves."
+          },
+          "privacy": {
+            "title": "Privacy",
+            "subtitle": "This section allows you to modify the organization privacy settings",
+            "contributorRolesVisible": "Show contributor roles to all registered users"
           }
         },
         "notifications": {
@@ -2823,7 +2846,8 @@
       "back": "See all discussions"
     },
     "documentation": {
-      "title": "Documentation"
+      "title": "Documentation",
+      "subtitle": "Platform Manual & Support"
     }
   },
   "operations": {
@@ -3144,6 +3168,15 @@
         "tooltip": "More posts can be added in the Body of Knowledge once the VC is created",
         "initialPosts": "Initial Posts",
         "delete": "Delete post"
+      },
+      "documents": {
+        "title": "Or add documents <tooltip><icon /></tooltip> to your Knowledge Subspace.",
+        "tooltip": "Supported file formats: Text on websites, .pdf, .doc(x), .xls(x). Maximum file size: 20mb",
+        "referenceTitle": "Reference Title",
+        "referenceUrl": "Url",
+        "addAnother": "Add another document",
+        "remove": "Remove document",
+        "initialDocuments": "Initial Links and Documents"
       },
       "submitDisabled": "Add at least one Post to continue"
     },

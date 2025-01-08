@@ -8,7 +8,7 @@ import {
   CalloutGroupName,
   TemplateType,
 } from '@/core/apollo/generated/graphql-schema';
-import { CalloutCreationTypeWithPreviewImages } from './useCalloutCreation/useCalloutCreationWithPreviewImages';
+import { CalloutCreationTypeWithPreviewImages } from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
 import { DialogContent } from '@/core/ui/dialog/deprecated';
 import { LoadingButton } from '@mui/lab';
@@ -151,12 +151,12 @@ const CalloutCreationDialog = ({
         };
 
         result = await onCreateCallout(newCallout);
+        setCallout({});
         scrollToTop();
       } catch (ex) {
         // eslint-disable-next-line no-console
         console.error(ex);
       } finally {
-        setCallout({});
         closePublishDialog();
         return result;
       }
