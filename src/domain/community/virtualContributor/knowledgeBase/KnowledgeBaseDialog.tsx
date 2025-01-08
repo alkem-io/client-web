@@ -13,7 +13,7 @@ type KnowledgeBaseDialogProps = {
 const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) => {
   return (
     <DialogWithGrid open columns={10}>
-      <DialogHeader onClose={onClose}>{title}</DialogHeader>
+      <DialogHeader onClose={onClose} title={title} />
       <DialogContent>
         <Gutters disablePadding>
           <KnowledgeBase id={id} />

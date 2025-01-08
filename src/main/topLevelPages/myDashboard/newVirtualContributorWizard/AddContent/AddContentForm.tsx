@@ -1,9 +1,10 @@
 import { Formik } from 'formik';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { pullAt } from 'lodash';
 import * as yup from 'yup';
 import { Box, Button, Tooltip } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import LibraryBooksOutlined from '@mui/icons-material/LibraryBooksOutlined';
+import AttachmentOutlinedIcon from '@mui/icons-material/AttachmentOutlined';
 import { gutters } from '@/core/ui/grid/utils';
 import { LoadingButton } from '@mui/lab';
 import { LONG_MARKDOWN_TEXT_LENGTH, MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
@@ -12,8 +13,6 @@ import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTransl
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { BoKCalloutsFormValues } from './AddContentProps';
 import { PostItem } from './PostItem';
-import { Caption } from '@/core/ui/typography';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { DocumentItem } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/AddContent/DocumentItem';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
@@ -76,12 +75,7 @@ export const AddContentForm = ({
         description: t('createVirtualContributorWizard.addContent.post.exampleDescription'),
       },
     ],
-    documents: [
-      {
-        name: '',
-        url: '',
-      },
-    ],
+    documents: [],
   };
 
   return (
@@ -127,7 +121,7 @@ export const AddContentForm = ({
                 <Button
                   color="primary"
                   variant="outlined"
-                  startIcon={<AddIcon />}
+                  startIcon={<LibraryBooksOutlined />}
                   disabled={maxPostsReached}
                   onClick={() => handleAddPost()}
                 >
@@ -136,23 +130,6 @@ export const AddContentForm = ({
               </Box>
             </Tooltip>
 
-            <Caption>
-              <Trans
-                i18nKey="createVirtualContributorWizard.addContent.documents.title"
-                components={{
-                  icon: <InfoOutlinedIcon fontSize="small" color="primary" style={{ verticalAlign: 'bottom' }} />,
-                  tooltip: (
-                    <Tooltip
-                      title={t('createVirtualContributorWizard.addContent.documents.tooltip')}
-                      arrow
-                      placement="top"
-                    >
-                      <></>
-                    </Tooltip>
-                  ),
-                }}
-              />
-            </Caption>
             {documents?.map((document, index) => (
               <DocumentItem
                 key={index}
@@ -164,7 +141,12 @@ export const AddContentForm = ({
             ))}
             <Tooltip title={t('createVirtualContributorWizard.addContent.documents.addAnother')} placement={'bottom'}>
               <Box>
-                <Button color="primary" variant="outlined" startIcon={<AddIcon />} onClick={handleAddDocument}>
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  startIcon={<AttachmentOutlinedIcon />}
+                  onClick={handleAddDocument}
+                >
                   {t('createVirtualContributorWizard.addContent.documents.addAnother')}
                 </Button>
               </Box>

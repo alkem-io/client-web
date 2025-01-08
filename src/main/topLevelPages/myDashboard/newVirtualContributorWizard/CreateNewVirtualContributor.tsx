@@ -128,7 +128,7 @@ const CreateNewVirtualContributor = ({
 
   return (
     <>
-      <DialogHeader onClose={onClose}>{t('createVirtualContributorWizard.initial.title')}</DialogHeader>
+      <DialogHeader onClose={onClose} title={t('createVirtualContributorWizard.initial.title')} />
       <DialogContent sx={{ paddingTop: 0 }}>
         {loading && <Loading />}
         {!loading && (

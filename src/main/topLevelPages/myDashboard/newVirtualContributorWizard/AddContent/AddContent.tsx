@@ -20,11 +20,13 @@ const AddContent = ({ onClose, onCreateVC, spaceId }: AddContentProps) => {
 
   return (
     <StorageConfigContextProvider locationType={spaceId ? 'journey' : 'platform'} spaceId={spaceId}>
-      <DialogHeader onClose={onCancel}>{t('createVirtualContributorWizard.addContent.title')}</DialogHeader>
+      <DialogHeader onClose={onCancel} title={t('createVirtualContributorWizard.addContent.title')} />
       <DialogContent>
         <Gutters disablePadding paddingBottom={gutters(2)}>
-          <Caption>{t('createVirtualContributorWizard.addContent.description')}</Caption>
-          <Caption fontWeight="bold">{t('createVirtualContributorWizard.addContent.descriptionBold')}</Caption>
+          <Caption>
+            {`${t('createVirtualContributorWizard.addContent.description')}
+            ${t('createVirtualContributorWizard.addContent.descriptionBold')}`}
+          </Caption>
           <AddContentForm onSubmit={onCreateVC} onCancel={onCancel} />
         </Gutters>
       </DialogContent>

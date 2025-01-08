@@ -3158,23 +3158,22 @@
     },
     "addContent": {
       "title": "Add knowledge",
-      "description": "What knowledge do you want your Virtual Contributor to have? Write it down in post(s).",
+      "description": "What knowledge do you want your Virtual Contributor to have? Write it down in posts or upload it in documents.",
       "descriptionBold": "You can update, add, and remove content later.",
       "post": {
         "title": "Post title",
         "exampleTitle": "Example: About Alkemio",
         "exampleDescription": "Tip: Create a structured and specific text, for example:\n\n<strong>Background</strong>\n\nAlkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.\n\n<strong>Governance</strong>\n\nTo maintain trust and realize our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...\n",
-        "addAnotherPost": "Add another post",
+        "addAnotherPost": "Add Post",
         "tooltip": "More posts can be added in the Body of Knowledge once the VC is created",
         "initialPosts": "Initial Posts",
         "delete": "Delete post"
       },
       "documents": {
-        "title": "Or add documents <tooltip><icon /></tooltip> to your Knowledge Subspace.",
         "tooltip": "Supported file formats: Text on websites, .pdf, .doc(x), .xls(x). Maximum file size: 20mb",
         "referenceTitle": "Reference Title",
         "referenceUrl": "Url",
-        "addAnother": "Add another document",
+        "addAnother": "Add Document",
         "remove": "Remove document",
         "initialDocuments": "Initial Links and Documents"
       },
