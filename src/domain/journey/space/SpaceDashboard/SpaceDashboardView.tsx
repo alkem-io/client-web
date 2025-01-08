@@ -172,7 +172,6 @@ const SpaceDashboardView = ({
 
         <ContentColumn>
           <CalloutsGroupView
-            journeyId={spaceId}
             calloutsSetId={calloutsSetId}
             callouts={callouts.groupedCallouts[CalloutGroupName.Home]}
             canCreateCallout={callouts.canCreateCallout}

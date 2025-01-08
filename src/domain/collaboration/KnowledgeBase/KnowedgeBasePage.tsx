@@ -16,7 +16,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
 
 const KnowledgeBasePage = () => {
-  const { journeyId, journeyPath, collaborationId, calloutsSetId } = useRouteResolver();
+  const { journeyPath, collaborationId, calloutsSetId } = useRouteResolver();
 
   const { t } = useTranslation();
 
@@ -62,7 +62,6 @@ const KnowledgeBasePage = () => {
 
                 <ContentColumn>
                   <CalloutsGroupView
-                    journeyId={journeyId}
                     calloutsSetId={calloutsSetId}
                     callouts={groupedCallouts[CalloutGroupName.Knowledge]}
                     canCreateCallout={canCreateCallout}

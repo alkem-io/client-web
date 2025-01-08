@@ -46,7 +46,6 @@ const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) =
             />
           )}
           <CalloutsGroupView
-            journeyId={''}
             calloutsSetId={calloutsSetId}
             callouts={callouts}
             canCreateCallout={canCreateCallout}
