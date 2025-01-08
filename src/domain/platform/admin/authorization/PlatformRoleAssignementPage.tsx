@@ -5,14 +5,13 @@ import {
   useAssignPlatformRoleToUserMutation,
   useRemovePlatformRoleFromUserMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationCredential, PlatformRole } from '@/core/apollo/generated/graphql-schema';
+import { PlatformRole } from '@/core/apollo/generated/graphql-schema';
 
 interface PlatformRoleAssignementPageProps {
   role: PlatformRole;
-  authorizationCredential: AuthorizationCredential;
 }
 
-const PlatformRoleAssignementPage = ({ authorizationCredential, role }: PlatformRoleAssignementPageProps) => {
+const PlatformRoleAssignementPage = ({ role }: PlatformRoleAssignementPageProps) => {
   const [assignRole, { loading: addingMember }] = useAssignPlatformRoleToUserMutation();
 
   const [revokeRole, { loading: removingMember }] = useRemovePlatformRoleFromUserMutation();
@@ -51,14 +50,7 @@ const PlatformRoleAssignementPage = ({ authorizationCredential, role }: Platform
     });
   };
 
-  return (
-    <EditMemberCredentials
-      onAdd={handleAdd}
-      onRemove={handleRemove}
-      credential={authorizationCredential}
-      updating={addingMember || removingMember}
-    />
-  );
+  return <EditMemberCredentials onAdd={handleAdd} onRemove={handleRemove} updating={addingMember || removingMember} />;
 };
 
 export default PlatformRoleAssignementPage;

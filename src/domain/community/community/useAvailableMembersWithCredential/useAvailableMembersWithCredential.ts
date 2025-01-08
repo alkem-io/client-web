@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
-import { AuthorizationCredential, UserDisplayNameFragment } from '@/core/apollo/generated/graphql-schema';
-import { useUsersWithCredentialsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { UserDisplayNameFragment } from '@/core/apollo/generated/graphql-schema';
 import { Member } from '@/domain/community/user/models/User';
 import { UseUsersSearchResult } from './useUsersSearch';
 import useAllPossibleMemberUsers from '../useCommunityAssignment/useAllPossibleMemberUsers';
@@ -18,12 +17,11 @@ export interface AvailableMembersResults {
 }
 
 interface CurrentUserAttrs {
-  credential: AuthorizationCredential;
-  resourceId?: string;
+  roleSetId?: string;
 }
 
 interface CommunityMembersAttrs {
-  parentCommunityId?: string;
+  parentRoleSetId?: string;
 }
 
 export type UseAvailableMembersOptions = CurrentUserAttrs & CommunityMembersAttrs;
@@ -33,13 +31,12 @@ const EMPTY_LIST = [];
 /***
  * Hook to fetch available users in a certain context, defined by the parent members (if applicable),
  * the credential type of the authorization group and the resource
- * @param options.credential The credential type of the authorization group
  * @param options.resourceId The resource
  * @param options.parentCommunityId The parent entity community id (if applicable)
  * @param options.filter
  */
 export const useAvailableMembersWithCredential = (options: UseAvailableMembersOptions): AvailableMembersResults => {
-  const { credential, resourceId, parentCommunityId } = options;
+  const { roleSetId, parentRoleSetId } = options;
 
   const {
     allPossibleMemberUsers,
@@ -47,7 +44,7 @@ export const useAvailableMembersWithCredential = (options: UseAvailableMembersOp
     error: errorOnLoadingAllPossibleMembers,
     ...allPossibleMembersProvided
   } = useAllPossibleMemberUsers({
-    parentCommunityId,
+    parentRoleSetId,
   });
 
   const {
@@ -60,7 +57,7 @@ export const useAvailableMembersWithCredential = (options: UseAvailableMembersOp
     variables: {
       input: {
         type: credential,
-        resourceID: resourceId,
+        resourceID: roleSetId,
       },
     },
   });

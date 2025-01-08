@@ -1,0 +1,9 @@
+mutation assignPlatformRoleToUser($input: AssignRoleOnRoleSetToUserInput!) {
+  assignPlatformRoleToUser(roleData: $input) {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}

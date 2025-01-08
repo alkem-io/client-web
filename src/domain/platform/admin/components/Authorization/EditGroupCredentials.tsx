@@ -58,8 +58,8 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentCo
   const { availableMembers, currentMembers, loading, fetchMore, hasMore, setSearchTerm } =
     useAvailableMembersWithCredential({
       credential,
-      resourceId,
-      parentCommunityId,
+      roleSetId: resourceId,
+      parentRoleSetId: parentCommunityId,
     });
 
   return (

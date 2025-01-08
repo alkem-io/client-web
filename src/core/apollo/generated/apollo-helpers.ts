@@ -2161,7 +2161,6 @@ export type MutationKeySpecifier = (
   | 'askChatGuidanceQuestion'
   | 'assignLicensePlanToAccount'
   | 'assignLicensePlanToSpace'
-  | 'assignOrganizationRoleToUser'
   | 'assignPlatformRoleToUser'
   | 'assignRoleToOrganization'
   | 'assignRoleToUser'
@@ -2233,7 +2232,6 @@ export type MutationKeySpecifier = (
   | 'ingest'
   | 'inviteContributorsForRoleSetMembership'
   | 'inviteUserToPlatformAndRoleSet'
-  | 'inviteUserToPlatformWithRole'
   | 'joinRoleSet'
   | 'licenseResetOnAccount'
   | 'messageUser'
@@ -2242,7 +2240,6 @@ export type MutationKeySpecifier = (
   | 'refreshVirtualContributorBodyOfKnowledge'
   | 'removeCommunityGuidelinesContent'
   | 'removeMessageOnRoom'
-  | 'removeOrganizationRoleFromUser'
   | 'removePlatformRoleFromUser'
   | 'removeReactionToMessageInRoom'
   | 'removeRoleFromOrganization'
@@ -2333,7 +2330,6 @@ export type MutationFieldPolicy = {
   askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignOrganizationRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignPlatformRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   assignRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2405,7 +2401,6 @@ export type MutationFieldPolicy = {
   ingest?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteContributorsForRoleSetMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteUserToPlatformAndRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
-  inviteUserToPlatformWithRole?: FieldPolicy<any> | FieldReadFunction<any>;
   joinRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   licenseResetOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2414,7 +2409,6 @@ export type MutationFieldPolicy = {
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeOrganizationRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2500,9 +2494,7 @@ export type NVPFieldPolicy = {
 };
 export type OrganizationKeySpecifier = (
   | 'account'
-  | 'admins'
   | 'agent'
-  | 'associates'
   | 'authorization'
   | 'contactEmail'
   | 'createdDate'
@@ -2512,10 +2504,9 @@ export type OrganizationKeySpecifier = (
   | 'id'
   | 'legalEntityName'
   | 'metrics'
-  | 'myRoles'
   | 'nameID'
-  | 'owners'
   | 'profile'
+  | 'roleSet'
   | 'settings'
   | 'storageAggregator'
   | 'updatedDate'
@@ -2525,9 +2516,7 @@ export type OrganizationKeySpecifier = (
 )[];
 export type OrganizationFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
-  admins?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
-  associates?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   contactEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2537,10 +2526,9 @@ export type OrganizationFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   legalEntityName?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
-  myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  owners?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2641,8 +2629,7 @@ export type PlatformKeySpecifier = (
   | 'library'
   | 'licensingFramework'
   | 'metadata'
-  | 'myRoles'
-  | 'platformInvitations'
+  | 'roleSet'
   | 'storageAggregator'
   | 'templatesManager'
   | 'updatedDate'
@@ -2659,8 +2646,7 @@ export type PlatformFieldPolicy = {
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   licensingFramework?: FieldPolicy<any> | FieldReadFunction<any>;
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
-  myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
-  platformInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3083,6 +3069,7 @@ export type RoleSetKeySpecifier = (
   | 'platformInvitations'
   | 'roleDefinition'
   | 'roleDefinitions'
+  | 'type'
   | 'updatedDate'
   | 'usersInRole'
   | 'virtualContributorsInRole'
@@ -3106,6 +3093,7 @@ export type RoleSetFieldPolicy = {
   platformInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
   roleDefinition?: FieldPolicy<any> | FieldReadFunction<any>;
   roleDefinitions?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   usersInRole?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorsInRole?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -134,7 +134,7 @@ export const OrganizationAssociatesContainer = ({
     setSearchTerm,
   } = useAvailableMembersWithCredential({
     credential: entities.credential,
-    resourceId: entities.organizationId,
+    roleSetId: entities.organizationId,
   });
 
   const currentMember = useMemo<Member | undefined>(() => {

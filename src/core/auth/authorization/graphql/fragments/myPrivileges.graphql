@@ -1,3 +1,0 @@
-fragment MyPrivileges on Authorization {
-    myPrivileges
-}

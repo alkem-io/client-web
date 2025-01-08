@@ -1,0 +1,9 @@
+mutation removePlatformRoleFromUser($input: RemoveRoleOnRoleSetFromUserInput!) {
+  removePlatformRoleFromUser(roleData: $input) {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}

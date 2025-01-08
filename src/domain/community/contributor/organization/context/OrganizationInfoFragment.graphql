@@ -39,30 +39,33 @@ fragment OrganizationInfo on Organization {
     name
     value
   }
-  associates @include(if: $includeAssociates) {
+  roleSet {
     id
-    nameID
-    isContactable
-    profile {
+    associatedUsers: usersInRole(role: ASSOCIATE) {
       id
-      displayName
-      location {
-        country
-        city
-      }
-      visual(type: AVATAR) {
-        ...VisualUri
-        alternativeText
-      }
-      tagsets {
-        ...TagsetDetails
+      nameID
+      isContactable
+      profile {
+        id
+        displayName
+        location {
+          country
+          city
+        }
+        visual(type: AVATAR) {
+          ...VisualUri
+          alternativeText
+        }
+        tagsets {
+          ...TagsetDetails
+        }
       }
     }
-  }
-  admins @include(if: $includeAssociates) {
-    id
-  }
-  owners @include(if: $includeAssociates) {
-    id
+    adminUsers: usersInRole(role: ADMIN) {
+      id
+    }
+    ownerUsers: usersInRole(role: OWNER) {
+      id
+    }
   }
 }

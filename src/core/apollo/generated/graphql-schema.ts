@@ -429,7 +429,7 @@ export type ActivityLogEntryMemberJoined = ActivityLogEntry & {
   /** The Contributor that joined the Community. */
   contributor: Contributor;
   /** The type of the Contributor that joined the Community. */
-  contributorType: CommunityContributorType;
+  contributorType: RoleSetContributorType;
   /** The timestamp for the Activity. */
   createdDate: Scalars['DateTime'];
   /** The text details for this Activity. */
@@ -740,32 +740,21 @@ export type AssignLicensePlanToSpace = {
   spaceID: Scalars['UUID'];
 };
 
-export type AssignOrganizationRoleToUserInput = {
-  organizationID: Scalars['UUID'];
-  role: OrganizationRole;
-  userID: Scalars['UUID'];
-};
-
-export type AssignPlatformRoleToUserInput = {
-  role: PlatformRole;
-  userID: Scalars['UUID'];
-};
-
 export type AssignRoleOnRoleSetToOrganizationInput = {
   contributorID: Scalars['UUID'];
-  role: CommunityRoleType;
+  role: RoleName;
   roleSetID: Scalars['UUID'];
 };
 
 export type AssignRoleOnRoleSetToUserInput = {
   contributorID: Scalars['UUID'];
-  role: CommunityRoleType;
+  role: RoleName;
   roleSetID: Scalars['UUID'];
 };
 
 export type AssignRoleOnRoleSetToVirtualContributorInput = {
   contributorID: Scalars['UUID'];
-  role: CommunityRoleType;
+  role: RoleName;
   roleSetID: Scalars['UUID'];
 };
 
@@ -1440,12 +1429,6 @@ export type CommunityApplicationResult = {
   spacePendingMembershipInfo: SpacePendingMembershipInfo;
 };
 
-export enum CommunityContributorType {
-  Organization = 'ORGANIZATION',
-  User = 'USER',
-  Virtual = 'VIRTUAL',
-}
-
 export type CommunityGuidelines = {
   __typename?: 'CommunityGuidelines';
   /** The authorization rules for the entity */
@@ -1467,7 +1450,7 @@ export type CommunityInvitationForRoleResult = {
   /** ID for Contrbutor that is being invited to a community */
   contributorID: Scalars['UUID'];
   /** The Type of the Contrbutor that is being invited to a community */
-  contributorType: CommunityContributorType;
+  contributorType: RoleSetContributorType;
   /** ID for the user that created the invitation. */
   createdBy: Scalars['UUID'];
   /** Date of creation */
@@ -1519,16 +1502,6 @@ export enum CommunityMembershipStatus {
   InvitationPending = 'INVITATION_PENDING',
   Member = 'MEMBER',
   NotMember = 'NOT_MEMBER',
-}
-
-export enum CommunityRoleImplicit {
-  SubspaceAdmin = 'SUBSPACE_ADMIN',
-}
-
-export enum CommunityRoleType {
-  Admin = 'ADMIN',
-  Lead = 'LEAD',
-  Member = 'MEMBER',
 }
 
 export type Config = {
@@ -1973,14 +1946,6 @@ export type CreateOrganizationInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
   website?: InputMaybe<Scalars['String']>;
-};
-
-export type CreatePlatformInvitationForRoleInput = {
-  email: Scalars['String'];
-  firstName?: InputMaybe<Scalars['String']>;
-  lastName?: InputMaybe<Scalars['String']>;
-  platformRole: PlatformRole;
-  welcomeMessage?: InputMaybe<Scalars['String']>;
 };
 
 export type CreatePostInput = {
@@ -2612,7 +2577,7 @@ export type InAppNotificationCommunityNewMember = InAppNotification & {
   /** Which category (role) is this notification targeted to. */
   category: InAppNotificationCategory;
   /** The type of the Contributor that joined. */
-  contributorType: CommunityContributorType;
+  contributorType: RoleSetContributorType;
   id: Scalars['UUID'];
   /** The receiver of the notification. */
   receiver: Contributor;
@@ -2645,7 +2610,7 @@ export type InAppNotificationUserMentioned = InAppNotification & {
   /** The url of the resource where the comment was created. */
   commentUrl: Scalars['String'];
   /** The type of the Contributor that joined. */
-  contributorType: CommunityContributorType;
+  contributorType: RoleSetContributorType;
   id: Scalars['UUID'];
   /** The receiver of the notification. */
   receiver: Contributor;
@@ -2799,12 +2764,12 @@ export type Invitation = {
   /** The Contributor who is invited. */
   contributor: Contributor;
   /** The type of contributor that is invited. */
-  contributorType: CommunityContributorType;
+  contributorType: RoleSetContributorType;
   /** The User who triggered the invitation. */
   createdBy: User;
   createdDate: Scalars['DateTime'];
   /** An additional role to assign to the Contributor, in addition to the entry Role. */
-  extraRole?: Maybe<CommunityRoleType>;
+  extraRole?: Maybe<RoleName>;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Whether to also add the invited contributor to the parent community. */
@@ -2827,7 +2792,7 @@ export type InvitationEventInput = {
 
 export type InviteForEntryRoleOnRoleSetInput = {
   /** An additional role to assign to the Contributors, in addition to the entry Role. */
-  extraRole?: InputMaybe<CommunityRoleType>;
+  extraRole?: InputMaybe<RoleName>;
   /** The identifiers for the contributors being invited. */
   invitedContributors: Array<Scalars['UUID']>;
   roleSetID: Scalars['UUID'];
@@ -2839,7 +2804,7 @@ export type InviteNewContributorForRoleOnRoleSetInput = {
   firstName?: InputMaybe<Scalars['String']>;
   lastName?: InputMaybe<Scalars['String']>;
   /** An additional role to assign to the Contributors, in addition to the entry Role. */
-  roleSetExtraRole?: InputMaybe<CommunityRoleType>;
+  roleSetExtraRole?: InputMaybe<RoleName>;
   roleSetID: Scalars['UUID'];
   welcomeMessage?: InputMaybe<Scalars['String']>;
 };
@@ -3638,9 +3603,7 @@ export type Mutation = {
   assignLicensePlanToAccount: Account;
   /** Assign the specified LicensePlan to a Space. */
   assignLicensePlanToSpace: Space;
-  /** Assigns an Organization Role to user. */
-  assignOrganizationRoleToUser: User;
-  /** Assigns a platform role to a User. */
+  /** Assigns a User to a role on the Platform. */
   assignPlatformRoleToUser: User;
   /** Assigns an Organization a Role in the specified Community. */
   assignRoleToOrganization: Organization;
@@ -3782,8 +3745,6 @@ export type Mutation = {
   inviteContributorsForRoleSetMembership: Array<Invitation>;
   /** Invite a User to join the platform and the specified RoleSet as a member. */
   inviteUserToPlatformAndRoleSet: PlatformInvitation;
-  /** Invite a User to join the platform in a particular Platform role e.g. BetaTester */
-  inviteUserToPlatformWithRole: PlatformInvitation;
   /** Join the specified RoleSet using the entry Role, without going through an approval process. */
   joinRoleSet: RoleSet;
   /** Reset the License with Entitlements on the specified Account. */
@@ -3800,9 +3761,7 @@ export type Mutation = {
   removeCommunityGuidelinesContent: CommunityGuidelines;
   /** Removes a message. */
   removeMessageOnRoom: Scalars['MessageID'];
-  /** Removes Organization Role from user. */
-  removeOrganizationRoleFromUser: User;
-  /** Removes a User from a platform role. */
+  /** Removes a User from a Role on the Platform. */
   removePlatformRoleFromUser: User;
   /** Remove a reaction on a message from the specified Room. */
   removeReactionToMessageInRoom: Scalars['Boolean'];
@@ -4002,12 +3961,8 @@ export type MutationAssignLicensePlanToSpaceArgs = {
   planData: AssignLicensePlanToSpace;
 };
 
-export type MutationAssignOrganizationRoleToUserArgs = {
-  membershipData: AssignOrganizationRoleToUserInput;
-};
-
 export type MutationAssignPlatformRoleToUserArgs = {
-  membershipData: AssignPlatformRoleToUserInput;
+  roleData: AssignRoleOnRoleSetToUserInput;
 };
 
 export type MutationAssignRoleToOrganizationArgs = {
@@ -4262,10 +4217,6 @@ export type MutationInviteUserToPlatformAndRoleSetArgs = {
   invitationData: InviteNewContributorForRoleOnRoleSetInput;
 };
 
-export type MutationInviteUserToPlatformWithRoleArgs = {
-  invitationData: CreatePlatformInvitationForRoleInput;
-};
-
 export type MutationJoinRoleSetArgs = {
   joinData: JoinAsEntryRoleOnRoleSetInput;
 };
@@ -4294,12 +4245,8 @@ export type MutationRemoveMessageOnRoomArgs = {
   messageData: RoomRemoveMessageInput;
 };
 
-export type MutationRemoveOrganizationRoleFromUserArgs = {
-  membershipData: RemoveOrganizationRoleFromUserInput;
-};
-
 export type MutationRemovePlatformRoleFromUserArgs = {
-  membershipData: RemovePlatformRoleFromUserInput;
+  roleData: RemoveRoleOnRoleSetFromUserInput;
 };
 
 export type MutationRemoveReactionToMessageInRoomArgs = {
@@ -4628,12 +4575,8 @@ export type Organization = Contributor &
     __typename?: 'Organization';
     /** The account hosted by this Organization. */
     account?: Maybe<Account>;
-    /** All Users that are admins of this Organization. */
-    admins?: Maybe<Array<User>>;
     /** The Agent representing this User. */
     agent: Agent;
-    /** All Users that are associated with this Organization. */
-    associates?: Maybe<Array<User>>;
     /** The authorization rules for the Contributor */
     authorization?: Maybe<Authorization>;
     /** Organization contact email */
@@ -4652,14 +4595,12 @@ export type Organization = Contributor &
     legalEntityName?: Maybe<Scalars['String']>;
     /** Metrics about the activity within this Organization. */
     metrics?: Maybe<Array<Nvp>>;
-    /** The roles on this Organization for the currently logged in user. */
-    myRoles?: Maybe<Array<OrganizationRole>>;
     /** A name identifier of the Contributor, unique within a given scope. */
     nameID: Scalars['NameID'];
-    /** All Users that are owners of this Organization. */
-    owners?: Maybe<Array<User>>;
     /** The profile for this Organization. */
     profile: Profile;
+    /** The RoleSet for this Organization. */
+    roleSet: RoleSet;
     /** The settings for this Organization. */
     settings: OrganizationSettings;
     /** The StorageAggregator for managing storage buckets in use by this Organization */
@@ -4687,12 +4628,6 @@ export type OrganizationFilterInput = {
   nameID?: InputMaybe<Scalars['String']>;
   website?: InputMaybe<Scalars['String']>;
 };
-
-export enum OrganizationRole {
-  Admin = 'ADMIN',
-  Associate = 'ASSOCIATE',
-  Owner = 'OWNER',
-}
 
 export type OrganizationSettings = {
   __typename?: 'OrganizationSettings';
@@ -4808,10 +4743,8 @@ export type Platform = {
   licensingFramework: Licensing;
   /** Alkemio Services Metadata. */
   metadata: Metadata;
-  /** The roles on the Platform for the currently logged in user. */
-  myRoles: Array<PlatformRole>;
-  /** Invitations to join roles for users not yet on the Alkemio platform. */
-  platformInvitations: Array<PlatformInvitation>;
+  /** The RoleSet for this Platform. */
+  roleSet: RoleSet;
   /** The StorageAggregator with documents in use by Users + Organizations on the Platform. */
   storageAggregator: StorageAggregator;
   /** The TemplatesManager in use by the Platform */
@@ -4848,7 +4781,7 @@ export type PlatformInvitation = {
   __typename?: 'PlatformInvitation';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The User who triggered the platformInvitation. */
+  /** The User who created the platformInvitation. */
   createdBy: User;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
@@ -4859,11 +4792,11 @@ export type PlatformInvitation = {
   id: Scalars['UUID'];
   lastName?: Maybe<Scalars['String']>;
   /** The platform role the user will receive when they sign up */
-  platformRole?: Maybe<PlatformRole>;
+  platformRole?: Maybe<RoleName>;
   /** Whether a new user profile has been created. */
   profileCreated: Scalars['Boolean'];
   /** An additional role to assign to the Contributor, in addition to the entry Role. */
-  roleSetExtraRole?: Maybe<CommunityRoleType>;
+  roleSetExtraRole?: Maybe<RoleName>;
   /** Whether to also add the invited user to the parent community. */
   roleSetInvitedToParent: Scalars['Boolean'];
   /** The date at which the entity was last updated. */
@@ -4924,16 +4857,6 @@ export type PlatformLocations = {
   /** URL where users can get tips and tricks */
   tips: Scalars['String'];
 };
-
-export enum PlatformRole {
-  BetaTester = 'BETA_TESTER',
-  CommunityReader = 'COMMUNITY_READER',
-  GlobalAdmin = 'GLOBAL_ADMIN',
-  LicenseManager = 'LICENSE_MANAGER',
-  SpacesReader = 'SPACES_READER',
-  Support = 'SUPPORT',
-  VcCampaign = 'VC_CAMPAIGN',
-}
 
 export type Post = {
   __typename?: 'Post';
@@ -5441,32 +5364,21 @@ export type RemoveCommunityGuidelinesContentInput = {
   communityGuidelinesID: Scalars['UUID'];
 };
 
-export type RemoveOrganizationRoleFromUserInput = {
-  organizationID: Scalars['UUID'];
-  role: OrganizationRole;
-  userID: Scalars['UUID'];
-};
-
-export type RemovePlatformRoleFromUserInput = {
-  role: PlatformRole;
-  userID: Scalars['UUID'];
-};
-
 export type RemoveRoleOnRoleSetFromOrganizationInput = {
   contributorID: Scalars['UUID'];
-  role: CommunityRoleType;
+  role: RoleName;
   roleSetID: Scalars['UUID'];
 };
 
 export type RemoveRoleOnRoleSetFromUserInput = {
   contributorID: Scalars['UUID'];
-  role: CommunityRoleType;
+  role: RoleName;
   roleSetID: Scalars['UUID'];
 };
 
 export type RemoveRoleOnRoleSetFromVirtualContributorInput = {
   contributorID: Scalars['UUID'];
-  role: CommunityRoleType;
+  role: RoleName;
   roleSetID: Scalars['UUID'];
 };
 
@@ -5526,7 +5438,7 @@ export type Role = {
   /** Flag to indicate if this Role requires having the same role in the Parent RoleSet. */
   requiresSameRoleInParentRoleSet: Scalars['Boolean'];
   /** The CommunityRole that this role definition is for. */
-  type: CommunityRoleType;
+  type: RoleName;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** The role policy that applies for Users in this Role. */
@@ -5534,6 +5446,21 @@ export type Role = {
   /** The role policy that applies for VirtualContributors in this Role. */
   virtualContributorPolicy: ContributorRolePolicy;
 };
+
+export enum RoleName {
+  Admin = 'ADMIN',
+  Associate = 'ASSOCIATE',
+  GlobalAdmin = 'GLOBAL_ADMIN',
+  GlobalCommunityReader = 'GLOBAL_COMMUNITY_READER',
+  GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
+  GlobalSpacesReader = 'GLOBAL_SPACES_READER',
+  GlobalSupport = 'GLOBAL_SUPPORT',
+  Lead = 'LEAD',
+  Member = 'MEMBER',
+  Owner = 'OWNER',
+  PlatformBetaTester = 'PLATFORM_BETA_TESTER',
+  PlatformVcCampaign = 'PLATFORM_VC_CAMPAIGN',
+}
 
 export type RoleSet = {
   __typename?: 'RoleSet';
@@ -5549,8 +5476,8 @@ export type RoleSet = {
   availableUsersForMemberRole: PaginatedUsers;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
-  /** The CommunityRole that acts as the entry Role for the RoleSet, so other roles potentially require it. */
-  entryRoleType: CommunityRoleType;
+  /** The Role that acts as the entry Role for the RoleSet, so other roles potentially require it. */
+  entryRoleType: RoleName;
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** Invitations for this roleSet. */
@@ -5560,9 +5487,9 @@ export type RoleSet = {
   /** The membership status of the currently logged in user. */
   myMembershipStatus?: Maybe<CommunityMembershipStatus>;
   /** The roles on this community for the currently logged in user. */
-  myRoles: Array<CommunityRoleType>;
+  myRoles: Array<RoleName>;
   /** The implicit roles on this community for the currently logged in user. */
-  myRolesImplicit: Array<CommunityRoleImplicit>;
+  myRolesImplicit: Array<RoleSetRoleImplicit>;
   /** All Organizations that have the specified Role in this Community. */
   organizationsInRole: Array<Organization>;
   /** Invitations to join this Community for users not yet on the Alkemio platform. */
@@ -5571,6 +5498,8 @@ export type RoleSet = {
   roleDefinition: Role;
   /** The Role Definitions included in this roleSet. */
   roleDefinitions: Array<Role>;
+  /** A type of entity that this RoleSet is being used with. */
+  type?: Maybe<RoleSetType>;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
   /** All users that are contributing to this Community in the specified Role. */
@@ -5596,21 +5525,37 @@ export type RoleSetAvailableUsersForMemberRoleArgs = {
 };
 
 export type RoleSetOrganizationsInRoleArgs = {
-  role: CommunityRoleType;
+  role: RoleName;
 };
 
 export type RoleSetRoleDefinitionArgs = {
-  role: CommunityRoleType;
+  role: RoleName;
 };
 
 export type RoleSetUsersInRoleArgs = {
   limit?: InputMaybe<Scalars['Float']>;
-  role: CommunityRoleType;
+  role: RoleName;
 };
 
 export type RoleSetVirtualContributorsInRoleArgs = {
-  role: CommunityRoleType;
+  role: RoleName;
 };
+
+export enum RoleSetContributorType {
+  Organization = 'ORGANIZATION',
+  User = 'USER',
+  Virtual = 'VIRTUAL',
+}
+
+export enum RoleSetRoleImplicit {
+  SubspaceAdmin = 'SUBSPACE_ADMIN',
+}
+
+export enum RoleSetType {
+  Organization = 'ORGANIZATION',
+  Platform = 'PLATFORM',
+  Space = 'SPACE',
+}
 
 export type RolesOrganizationInput = {
   /** Return membership in Spaces matching the provided filter. */
@@ -7321,63 +7266,6 @@ export type Whiteboard = {
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
 
-export type MyPrivilegesFragment = {
-  __typename?: 'Authorization';
-  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-};
-
-export type AssignOrganizationRoleToUserMutationVariables = Exact<{
-  input: AssignOrganizationRoleToUserInput;
-}>;
-
-export type AssignOrganizationRoleToUserMutation = {
-  __typename?: 'Mutation';
-  assignOrganizationRoleToUser: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type AssignPlatformRoleToUserMutationVariables = Exact<{
-  input: AssignPlatformRoleToUserInput;
-}>;
-
-export type AssignPlatformRoleToUserMutation = {
-  __typename?: 'Mutation';
-  assignPlatformRoleToUser: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type RemoveOrganizationRoleFromUserMutationVariables = Exact<{
-  input: RemoveOrganizationRoleFromUserInput;
-}>;
-
-export type RemoveOrganizationRoleFromUserMutation = {
-  __typename?: 'Mutation';
-  removeOrganizationRoleFromUser: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type RemovePlatformRoleFromUserMutationVariables = Exact<{
-  input: RemovePlatformRoleFromUserInput;
-}>;
-
-export type RemovePlatformRoleFromUserMutation = {
-  __typename?: 'Mutation';
-  removePlatformRoleFromUser: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
 export type UploadFileOnReferenceMutationVariables = Exact<{
   file: Scalars['Upload'];
   uploadData: StorageBucketUploadFileOnReferenceInput;
@@ -8026,7 +7914,7 @@ export type MyMembershipsRoleSetFragment = {
   __typename?: 'RoleSet';
   id: string;
   myMembershipStatus?: CommunityMembershipStatus | undefined;
-  myRoles: Array<CommunityRoleType>;
+  myRoles: Array<RoleName>;
 };
 
 export type ApplyForEntryRoleOnRoleSetMutationVariables = Exact<{
@@ -8127,7 +8015,7 @@ export type CommunityApplicationsInvitationsQuery = {
             updatedDate: Date;
             state: string;
             nextEvents: Array<string>;
-            contributorType: CommunityContributorType;
+            contributorType: RoleSetContributorType;
             contributor:
               | {
                   __typename?: 'Organization';
@@ -8251,7 +8139,7 @@ export type AdminCommunityInvitationFragment = {
   updatedDate: Date;
   state: string;
   nextEvents: Array<string>;
-  contributorType: CommunityContributorType;
+  contributorType: RoleSetContributorType;
   contributor:
     | {
         __typename?: 'Organization';
@@ -8416,29 +8304,6 @@ export type RoleSetAvailableMembersQuery = {
         }
       | undefined;
   };
-};
-
-export type UsersWithCredentialsQueryVariables = Exact<{
-  input: UsersWithAuthorizationCredentialInput;
-}>;
-
-export type UsersWithCredentialsQuery = {
-  __typename?: 'Query';
-  usersWithAuthorizationCredential: Array<{
-    __typename?: 'User';
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    isContactable: boolean;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      url: string;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    };
-  }>;
 };
 
 export type AccountInformationQueryVariables = Exact<{
@@ -16378,7 +16243,7 @@ export type AllOrganizationsQuery = {
 
 export type AssignRoleToUserMutationVariables = Exact<{
   roleSetId: Scalars['UUID'];
-  role: CommunityRoleType;
+  role: RoleName;
   contributorId: Scalars['UUID'];
 }>;
 
@@ -16389,7 +16254,7 @@ export type AssignRoleToUserMutation = {
 
 export type RemoveRoleFromUserMutationVariables = Exact<{
   roleSetId: Scalars['UUID'];
-  role: CommunityRoleType;
+  role: RoleName;
   contributorId: Scalars['UUID'];
 }>;
 
@@ -16400,7 +16265,7 @@ export type RemoveRoleFromUserMutation = {
 
 export type AssignRoleToOrganizationMutationVariables = Exact<{
   roleSetId: Scalars['UUID'];
-  role: CommunityRoleType;
+  role: RoleName;
   contributorId: Scalars['UUID'];
 }>;
 
@@ -16411,7 +16276,7 @@ export type AssignRoleToOrganizationMutation = {
 
 export type RemoveRoleFromOrganizationMutationVariables = Exact<{
   roleSetId: Scalars['UUID'];
-  role: CommunityRoleType;
+  role: RoleName;
   contributorId: Scalars['UUID'];
 }>;
 
@@ -16422,7 +16287,7 @@ export type RemoveRoleFromOrganizationMutation = {
 
 export type AssignRoleToVirtualContributorMutationVariables = Exact<{
   roleSetId: Scalars['UUID'];
-  role: CommunityRoleType;
+  role: RoleName;
   contributorId: Scalars['UUID'];
 }>;
 
@@ -16433,7 +16298,7 @@ export type AssignRoleToVirtualContributorMutation = {
 
 export type RemoveRoleFromVirtualContributorMutationVariables = Exact<{
   roleSetId: Scalars['UUID'];
-  role: CommunityRoleType;
+  role: RoleName;
   contributorId: Scalars['UUID'];
 }>;
 
@@ -16787,23 +16652,26 @@ export type AssociatedOrganizationDetailsFragment = {
 };
 
 export type OrganizationAssociatesQueryVariables = Exact<{
-  id: Scalars['UUID_NAMEID'];
+  roleSetId: Scalars['UUID'];
 }>;
 
 export type OrganizationAssociatesQuery = {
   __typename?: 'Query';
-  organization: {
-    __typename?: 'Organization';
-    id: string;
-    associates?:
-      | Array<{
-          __typename?: 'User';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    roleSet?:
+      | {
+          __typename?: 'RoleSet';
           id: string;
-          firstName: string;
-          lastName: string;
-          email: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        }>
+          associatedUsers: Array<{
+            __typename?: 'User';
+            id: string;
+            firstName: string;
+            lastName: string;
+            email: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }>;
+        }
       | undefined;
   };
 };
@@ -16882,35 +16750,37 @@ export type OrganizationInfoFragment = {
       | undefined;
   };
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-  associates?:
-    | Array<{
-        __typename?: 'User';
+  roleSet: {
+    __typename?: 'RoleSet';
+    id: string;
+    associatedUsers: Array<{
+      __typename?: 'User';
+      id: string;
+      nameID: string;
+      isContactable: boolean;
+      profile: {
+        __typename?: 'Profile';
         id: string;
-        nameID: string;
-        isContactable: boolean;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
-          visual?:
-            | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
-            | undefined;
-          tagsets?:
-            | Array<{
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }>
-            | undefined;
-        };
-      }>
-    | undefined;
-  admins?: Array<{ __typename?: 'User'; id: string }> | undefined;
-  owners?: Array<{ __typename?: 'User'; id: string }> | undefined;
+        displayName: string;
+        location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+        visual?:
+          | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
+          | undefined;
+        tagsets?:
+          | Array<{
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }>
+          | undefined;
+      };
+    }>;
+    adminUsers: Array<{ __typename?: 'User'; id: string }>;
+    ownerUsers: Array<{ __typename?: 'User'; id: string }>;
+  };
 };
 
 export type OrganizationInfoQueryVariables = Exact<{
@@ -16966,35 +16836,37 @@ export type OrganizationInfoQuery = {
         | undefined;
     };
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-    associates?:
-      | Array<{
-          __typename?: 'User';
+    roleSet: {
+      __typename?: 'RoleSet';
+      id: string;
+      associatedUsers: Array<{
+        __typename?: 'User';
+        id: string;
+        nameID: string;
+        isContactable: boolean;
+        profile: {
+          __typename?: 'Profile';
           id: string;
-          nameID: string;
-          isContactable: boolean;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            displayName: string;
-            location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
-            visual?:
-              | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
-              | undefined;
-            tagsets?:
-              | Array<{
-                  __typename?: 'Tagset';
-                  id: string;
-                  name: string;
-                  tags: Array<string>;
-                  allowedValues: Array<string>;
-                  type: TagsetType;
-                }>
-              | undefined;
-          };
-        }>
-      | undefined;
-    admins?: Array<{ __typename?: 'User'; id: string }> | undefined;
-    owners?: Array<{ __typename?: 'User'; id: string }> | undefined;
+          displayName: string;
+          location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+          visual?:
+            | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
+            | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+        };
+      }>;
+      adminUsers: Array<{ __typename?: 'User'; id: string }>;
+      ownerUsers: Array<{ __typename?: 'User'; id: string }>;
+    };
   };
 };
 
@@ -17126,16 +16998,18 @@ export type OrganizationGroupQuery = {
   organization: {
     __typename?: 'Organization';
     id: string;
-    associates?:
-      | Array<{
-          __typename?: 'User';
-          id: string;
-          firstName: string;
-          lastName: string;
-          email: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        }>
-      | undefined;
+    roleSet: {
+      __typename?: 'RoleSet';
+      id: string;
+      associatedUsers: Array<{
+        __typename?: 'User';
+        id: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string };
+      }>;
+    };
     group?:
       | {
           __typename?: 'UserGroup';
@@ -17401,7 +17275,7 @@ export type InviteContributorsForRoleSetMembershipMutationVariables = Exact<{
   contributorIds: Array<Scalars['UUID']> | Scalars['UUID'];
   roleSetId: Scalars['UUID'];
   message?: InputMaybe<Scalars['String']>;
-  extraRole?: InputMaybe<CommunityRoleType>;
+  extraRole?: InputMaybe<RoleName>;
 }>;
 
 export type InviteContributorsForRoleSetMembershipMutation = {
@@ -17413,7 +17287,7 @@ export type InviteUserToPlatformAndRoleSetMutationVariables = Exact<{
   email: Scalars['String'];
   roleSetId: Scalars['UUID'];
   message?: InputMaybe<Scalars['String']>;
-  extraRole?: InputMaybe<CommunityRoleType>;
+  extraRole?: InputMaybe<RoleName>;
 }>;
 
 export type InviteUserToPlatformAndRoleSetMutation = {
@@ -18670,6 +18544,11 @@ export type UserProfileQuery = {
   };
 };
 
+export type MyPrivilegesFragment = {
+  __typename?: 'Authorization';
+  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+};
+
 export type UserProviderQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserProviderQuery = {
@@ -18837,7 +18716,7 @@ export type UserPendingMembershipsQuery = {
         welcomeMessage?: string | undefined;
         state: string;
         createdDate: Date;
-        contributorType: CommunityContributorType;
+        contributorType: RoleSetContributorType;
         createdBy: { __typename?: 'User'; id: string };
         contributor:
           | { __typename?: 'Organization'; id: string }
@@ -18863,7 +18742,7 @@ export type InvitationDataFragment = {
     welcomeMessage?: string | undefined;
     state: string;
     createdDate: Date;
-    contributorType: CommunityContributorType;
+    contributorType: RoleSetContributorType;
     createdBy: { __typename?: 'User'; id: string };
     contributor:
       | { __typename?: 'Organization'; id: string }
@@ -19440,7 +19319,7 @@ export type VcMembershipsQuery = {
         welcomeMessage?: string | undefined;
         state: string;
         createdDate: Date;
-        contributorType: CommunityContributorType;
+        contributorType: RoleSetContributorType;
         createdBy: { __typename?: 'User'; id: string };
         contributor:
           | { __typename?: 'Organization'; id: string }
@@ -23482,7 +23361,7 @@ export type SpaceDashboardNavigationChallengesQuery = {
                 __typename?: 'RoleSet';
                 id: string;
                 myMembershipStatus?: CommunityMembershipStatus | undefined;
-                myRoles: Array<CommunityRoleType>;
+                myRoles: Array<RoleName>;
               };
             };
           }>;
@@ -23529,7 +23408,7 @@ export type SpaceDashboardNavigationOpportunitiesQuery = {
                   __typename?: 'RoleSet';
                   id: string;
                   myMembershipStatus?: CommunityMembershipStatus | undefined;
-                  myRoles: Array<CommunityRoleType>;
+                  myRoles: Array<RoleName>;
                 };
               };
             }>;
@@ -23614,7 +23493,7 @@ export type SubspacePendingMembershipInfoQuery = {
               __typename?: 'RoleSet';
               id: string;
               myMembershipStatus?: CommunityMembershipStatus | undefined;
-              myRoles: Array<CommunityRoleType>;
+              myRoles: Array<RoleName>;
             };
           };
           authorization?:
@@ -23690,7 +23569,7 @@ export type SubspacePendingMembershipInfoFragment = {
       __typename?: 'RoleSet';
       id: string;
       myMembershipStatus?: CommunityMembershipStatus | undefined;
-      myRoles: Array<CommunityRoleType>;
+      myRoles: Array<RoleName>;
     };
   };
   authorization?:
@@ -24157,10 +24036,36 @@ export type PlatformLevelAuthorizationQuery = {
   platform: {
     __typename?: 'Platform';
     id: string;
-    myRoles: Array<PlatformRole>;
+    roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<RoleName> };
     authorization?:
       | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
+  };
+};
+
+export type AssignPlatformRoleToUserMutationVariables = Exact<{
+  input: AssignRoleOnRoleSetToUserInput;
+}>;
+
+export type AssignPlatformRoleToUserMutation = {
+  __typename?: 'Mutation';
+  assignPlatformRoleToUser: {
+    __typename?: 'User';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+};
+
+export type RemovePlatformRoleFromUserMutationVariables = Exact<{
+  input: RemoveRoleOnRoleSetFromUserInput;
+}>;
+
+export type RemovePlatformRoleFromUserMutation = {
+  __typename?: 'Mutation';
+  removePlatformRoleFromUser: {
+    __typename?: 'User';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
   };
 };
 
@@ -28542,7 +28447,7 @@ export type InAppNotificationsQuery = {
         commentUrl: string;
         comment: string;
         commentOriginName: string;
-        contributorType: CommunityContributorType;
+        contributorType: RoleSetContributorType;
         triggeredBy?:
           | {
               __typename?: 'Organization';
@@ -28756,7 +28661,7 @@ export type InAppNotificationUserMentionedFragment = {
   commentUrl: string;
   comment: string;
   commentOriginName: string;
-  contributorType: CommunityContributorType;
+  contributorType: RoleSetContributorType;
   triggeredBy?:
     | {
         __typename?: 'Organization';
@@ -29954,7 +29859,11 @@ export type CampaignBlockCredentialsQueryVariables = Exact<{ [key: string]: neve
 
 export type CampaignBlockCredentialsQuery = {
   __typename?: 'Query';
-  platform: { __typename?: 'Platform'; id: string; myRoles: Array<PlatformRole> };
+  platform: {
+    __typename?: 'Platform';
+    id: string;
+    roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<RoleName> };
+  };
   me: {
     __typename?: 'MeQueryResults';
     user?:
@@ -30013,7 +29922,7 @@ export type DashboardWithMembershipsQuery = {
             __typename?: 'RoleSet';
             id: string;
             myMembershipStatus?: CommunityMembershipStatus | undefined;
-            myRoles: Array<CommunityRoleType>;
+            myRoles: Array<RoleName>;
           };
         };
         profile: {
@@ -30046,7 +29955,7 @@ export type DashboardWithMembershipsQuery = {
               __typename?: 'RoleSet';
               id: string;
               myMembershipStatus?: CommunityMembershipStatus | undefined;
-              myRoles: Array<CommunityRoleType>;
+              myRoles: Array<RoleName>;
             };
           };
           profile: {
@@ -30078,7 +29987,7 @@ export type DashboardSpaceMembershipFragment = {
       __typename?: 'RoleSet';
       id: string;
       myMembershipStatus?: CommunityMembershipStatus | undefined;
-      myRoles: Array<CommunityRoleType>;
+      myRoles: Array<RoleName>;
     };
   };
   profile: {
@@ -30230,7 +30139,7 @@ export type PendingInvitationsQuery = {
         __typename?: 'Invitation';
         id: string;
         welcomeMessage?: string | undefined;
-        contributorType: CommunityContributorType;
+        contributorType: RoleSetContributorType;
         state: string;
         createdDate: Date;
         createdBy: { __typename?: 'User'; id: string };
@@ -31316,7 +31225,7 @@ export type MyMembershipsQuery = {
             __typename?: 'RoleSet';
             id: string;
             myMembershipStatus?: CommunityMembershipStatus | undefined;
-            myRoles: Array<CommunityRoleType>;
+            myRoles: Array<RoleName>;
           };
         };
         profile: {
@@ -31344,7 +31253,7 @@ export type MyMembershipsQuery = {
               __typename?: 'RoleSet';
               id: string;
               myMembershipStatus?: CommunityMembershipStatus | undefined;
-              myRoles: Array<CommunityRoleType>;
+              myRoles: Array<RoleName>;
             };
           };
           profile: {
@@ -31372,7 +31281,7 @@ export type MyMembershipsQuery = {
                 __typename?: 'RoleSet';
                 id: string;
                 myMembershipStatus?: CommunityMembershipStatus | undefined;
-                myRoles: Array<CommunityRoleType>;
+                myRoles: Array<RoleName>;
               };
             };
             profile: {
@@ -31403,7 +31312,7 @@ export type SpaceMembershipFragment = {
       __typename?: 'RoleSet';
       id: string;
       myMembershipStatus?: CommunityMembershipStatus | undefined;
-      myRoles: Array<CommunityRoleType>;
+      myRoles: Array<RoleName>;
     };
   };
   profile: {

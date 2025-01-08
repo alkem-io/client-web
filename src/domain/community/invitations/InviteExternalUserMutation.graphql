@@ -1,4 +1,4 @@
-mutation inviteUserToPlatformAndRoleSet($email: String!, $roleSetId: UUID!, $message: String, $extraRole: CommunityRoleType) {
+mutation inviteUserToPlatformAndRoleSet($email: String!, $roleSetId: UUID!, $message: String, $extraRole: RoleName) {
   inviteUserToPlatformAndRoleSet(invitationData: {
     email: $email
     roleSetID: $roleSetId

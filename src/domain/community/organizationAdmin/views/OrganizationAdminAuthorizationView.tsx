@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import EditMemberUsers from '@/domain/platform/admin/components/Community/EditMembersUsers';
 import OrganizationAssociatesContainer from '@/domain/community/contributor/organization/OrganizationAssociatesContainer/OrganizationAssociatesContainer';
 import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
-import { AuthorizationCredential } from '@/core/apollo/generated/graphql-schema';
 import Loading from '@/core/ui/loading/Loading';
 import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';

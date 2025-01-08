@@ -1,8 +1,10 @@
-query organizationAssociates($id: UUID_NAMEID!) {
-  organization(ID: $id) {
-    id
-    associates {
-      ...GroupMembers
+query organizationAssociates($roleSetId: UUID!) {
+  lookup {
+    roleSet(ID: $roleSetId) {
+      id
+      associatedUsers: usersInRole(role: ASSOCIATE) {
+        ...GroupMembers
+      }
     }
   }
 }
