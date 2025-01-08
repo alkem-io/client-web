@@ -60,6 +60,8 @@ export const FormikMarkdownField = ({
   temporaryLocation = false,
   controlsVisible = 'always',
 }: MarkdownFieldProps) => {
+  const tErr = useValidationMessageTranslation();
+  const { t } = useTranslation();
   const validate = () => {
     const characterCount = inputElementRef.current?.value?.length ?? 0;
     const isAboveCharacterLimit = maxLength && characterCount > maxLength;
@@ -69,10 +71,6 @@ export const FormikMarkdownField = ({
   };
 
   const [field, meta, helper] = useField({ name, validate });
-
-  const { t } = useTranslation();
-
-  const tErr = useValidationMessageTranslation();
 
   const isError = Boolean(meta.error) && meta.touched;
 
@@ -90,7 +88,7 @@ export const FormikMarkdownField = ({
     return tErr(meta.error as TranslationKey, { field: title });
   }, [isError, meta.error, validInputHelperText, tErr, title]);
 
-  const handleOnChange = useCallback(
+  const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const trimmedValue = event.target.value.trim();
       const newValue = trimmedValue === '<br>' ? '' : event.target.value;
@@ -123,7 +121,6 @@ export const FormikMarkdownField = ({
     <FormControl required={required} disabled={disabled} error={isError} fullWidth>
       <CharacterCountContextProvider>
         <FilledDetector value={inputElement?.value} />
-
         {labelOffset && (
           <InputLabel
             onClick={focusInput}
@@ -136,26 +133,28 @@ export const FormikMarkdownField = ({
             {title}
           </InputLabel>
         )}
-
         <OutlinedInput
-          multiline
-          label={title}
           value={field.value}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          label={title}
+          inputComponent={MarkdownInput}
           inputRef={inputRef}
-          readOnly={readOnly}
           inputProps={{
-            maxLength,
             controlsVisible,
+            maxLength,
             hideImageOptions,
             temporaryLocation,
           }}
+          readOnly={readOnly}
           placeholder={placeholder}
-          inputComponent={MarkdownInput}
-          sx={{ '&.MuiOutlinedInput-root': { padding: gutters(0.5) } }}
-          onBlur={handleBlur}
-          onChange={handleOnChange}
+          multiline
+          sx={{
+            '&.MuiOutlinedInput-root': {
+              padding: gutters(0.5),
+            },
+          }}
         />
-
         <CharacterCountContainer>
           {({ characterCount }) => (
             <CharacterCounter count={characterCount} maxLength={maxLength} disabled={counterDisabled || !maxLength}>
