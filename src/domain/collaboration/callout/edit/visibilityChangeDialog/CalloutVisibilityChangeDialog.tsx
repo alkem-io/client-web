@@ -15,7 +15,7 @@ import FormRow from '@/core/ui/forms/FormRow';
 import { FormikSwitch } from '@/core/ui/forms/FormikSwitch';
 import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';
-import { CalloutReactIcon } from '@/domain/collaboration/callout/icon/CalloutReactIcon';
+import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
 
 export type CalloutSummaryFields = {
   framing: {
@@ -63,12 +63,14 @@ const CalloutVisibilityChangeDialog = ({
     sendNotifications: true,
   };
 
+  const CalloutIcon = calloutIcons[CalloutType.PostCollection];
+
   return (
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="callout-visibility-dialog-title" onClose={onClose}>
       <Formik initialValues={initialValues} enableReinitialize validateOnMount onSubmit={handleVisibilityChanged}>
         {({ handleSubmit }) => (
           <>
-            <DialogHeader icon={<CalloutReactIcon />} title={title} onClose={onClose} />
+            <DialogHeader icon={<CalloutIcon />} title={title} onClose={onClose} />
             <DialogContent>
               <Gutters paddingTop={0}>
                 <Box>

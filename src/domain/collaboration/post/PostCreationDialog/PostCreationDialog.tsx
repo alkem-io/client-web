@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import PostForm, { PostFormOutput } from '../PostForm/PostForm';
-import { CreatePostInput } from '@/core/apollo/generated/graphql-schema';
+import { CalloutType, CreatePostInput } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { CalloutReactIcon } from '@/domain/collaboration/callout/icon/CalloutReactIcon';
+import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
 
 export type PostCreationType = Partial<CreatePostInput>;
 export type PostCreationOutput = CreatePostInput;
@@ -35,6 +35,7 @@ const PostCreationDialog = ({
   const { t } = useTranslation();
   const [post, setPost] = useState<PostCreationType>({});
   const [isFormValid, setIsFormValid] = useState(false);
+  const CalloutIcon = calloutIcons[CalloutType.PostCollection];
 
   const handleClose = () => {
     setPost({});
@@ -78,7 +79,7 @@ const PostCreationDialog = ({
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="post-creation-title">
       <DialogHeader onClose={handleClose}>
         <Box display="flex" alignItems="center">
-          <CalloutReactIcon fill="primary" sx={{ marginRight: 1 }} />
+          <CalloutIcon sx={{ marginRight: 1 }} />
           {t('components.post-creation.title', { calloutDisplayName: calloutDisplayName })}
         </Box>
       </DialogHeader>
