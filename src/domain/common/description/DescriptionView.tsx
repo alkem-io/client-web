@@ -15,7 +15,7 @@ export const DescriptionView = ({ description, canEdit = false, onEditClick = no
   const { t } = useTranslation();
 
   return (
-    <Gutters disablePadding row alignItems="center">
+    <Gutters disablePadding row alignItems="flex-start">
       <Box flex={1} sx={{ wordWrap: 'break-word' }}>
         <WrapperMarkdown disableParagraphPadding>{description ?? ''}</WrapperMarkdown>
       </Box>

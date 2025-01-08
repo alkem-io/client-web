@@ -1,10 +1,13 @@
+import { useTranslation } from 'react-i18next';
 import { CalloutsQueryVariables } from '@/core/apollo/generated/graphql-schema';
 import useCallouts, { TypedCallout } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import { OrderUpdate } from '@/domain/collaboration/useCalloutsOnCollaboration';
 import {
+  useRefreshBodyOfKnowledgeMutation,
   useUpdateVirtualContributorMutation,
   useVirtualContributorKnowledgeBaseQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 
 interface useKnowledgeBaseParams {
   id: string | undefined;
@@ -21,6 +24,8 @@ interface useKnowledgeBaseProvided {
   onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
   knowledgeBaseDescription: string | undefined;
   updateDescription: (values: { description: string }) => Promise<void>;
+  ingestKnowledge: () => Promise<unknown>;
+  ingestLoading: boolean;
 }
 
 /**
@@ -31,6 +36,9 @@ interface useKnowledgeBaseProvided {
  *
  */
 const useKnowledgeBase = ({ id }: useKnowledgeBaseParams): useKnowledgeBaseProvided => {
+  const notify = useNotification();
+  const { t } = useTranslation();
+
   const { data: knowledgeBaseData, loading: knowledgeBaseLoading } = useVirtualContributorKnowledgeBaseQuery({
     variables: {
       id: id!,
@@ -54,6 +62,20 @@ const useKnowledgeBase = ({ id }: useKnowledgeBaseParams): useKnowledgeBaseProvi
             },
           },
         },
+      },
+    });
+  };
+
+  const [updateBodyOfKnowledge, { loading: ingestLoading }] = useRefreshBodyOfKnowledgeMutation();
+  const ingestKnowledge = () => {
+    return updateBodyOfKnowledge({
+      variables: {
+        refreshData: {
+          virtualContributorID: id!,
+        },
+      },
+      onCompleted: () => {
+        notify(t('pages.virtualContributorProfile.success', { entity: t('common.settings') }), 'success');
       },
     });
   };
@@ -83,6 +105,8 @@ const useKnowledgeBase = ({ id }: useKnowledgeBaseParams): useKnowledgeBaseProvi
     onCalloutsSortOrderUpdate,
     knowledgeBaseDescription: knowledgeBaseData?.virtualContributor?.knowledgeBase?.profile?.description,
     updateDescription,
+    ingestKnowledge,
+    ingestLoading,
   };
 };
 
