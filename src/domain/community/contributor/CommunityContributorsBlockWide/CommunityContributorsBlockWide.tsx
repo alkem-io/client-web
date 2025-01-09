@@ -3,7 +3,7 @@ import { ContributorCardSquareProps } from '../ContributorCardSquare/Contributor
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeaderWithDialogAction from '@/core/ui/content/PageContentBlockHeaderWithDialogAction';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { ButtonBase, Grid, useMediaQuery } from '@mui/material';
+import { ButtonBase, useMediaQuery } from '@mui/material';
 import { BlockTitle, CaptionSmall } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -17,6 +17,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import Loading from '@/core/ui/loading/Loading';
 import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
+import Gutters from '@/core/ui/grid/Gutters';
 
 const grayedOutUsersImgSrc = '/contributors/users-grayed.png';
 
@@ -110,7 +111,7 @@ const CommunityContributorsBlockWide = ({
     <>
       <PageContentBlock>
         <PageContentBlockHeaderWithDialogAction
-          showIcon={false}
+          showExpand={false}
           title={t('pages.generic.sections.community.contributors')}
           onDialogOpen={() => setIsDialogOpen(true)}
           actions={
@@ -139,7 +140,7 @@ const CommunityContributorsBlockWide = ({
             compactView
           />
         ) : (
-          <Grid item>
+          <Gutters>
             <ImageBackdrop
               src={grayedOutUsersImgSrc}
               backdropMessage="login"
@@ -150,7 +151,7 @@ const CommunityContributorsBlockWide = ({
                 },
               })}
             />
-          </Grid>
+          </Gutters>
         )}
 
         <Actions justifyContent="end">

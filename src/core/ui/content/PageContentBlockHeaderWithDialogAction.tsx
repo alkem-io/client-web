@@ -10,7 +10,7 @@ interface PageContentBlockHeaderWithDialogActionProps extends PageContentBlockHe
   onDialogOpen?: () => void;
   onDialogClose?: () => void;
   expanded?: boolean;
-  showIcon?: boolean;
+  showExpand?: boolean;
 }
 
 const iconSize = (theme: Theme) => theme.spacing(2);
@@ -20,7 +20,7 @@ const PageContentBlockHeaderWithDialogAction = ({
   onDialogOpen,
   onDialogClose,
   actions,
-  showIcon = true,
+  showExpand = true,
   ...headerProps
 }: PropsWithChildren<PageContentBlockHeaderWithDialogActionProps>) => {
   const { t } = useTranslation();
@@ -28,7 +28,7 @@ const PageContentBlockHeaderWithDialogAction = ({
     <>
       {actions}
 
-      {showIcon && (
+      {showExpand && (
         <IconButton
           onClick={expanded ? onDialogClose : onDialogOpen}
           sx={{ svg: { width: iconSize, height: iconSize } }}
