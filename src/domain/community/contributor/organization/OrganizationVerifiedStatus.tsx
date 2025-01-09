@@ -1,8 +1,8 @@
 import { Tooltip } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import { Help } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
+import { BeenhereOutlined } from '@mui/icons-material';
 import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
 
 type VerifiedStatusProps = {
@@ -30,7 +30,7 @@ export const OrganizationVerifiedStatus = ({ verified, helpText }: VerifiedStatu
       {verified ? t('common.verified-status.verified') : t('common.verified-status.not-verified')}
       {helpText && verified && (
         <Tooltip title={helpText} arrow placement="right">
-          <Help color="primary" className={styles.icon} />
+          <BeenhereOutlined color="primary" className={styles.icon} />
         </Tooltip>
       )}
     </WrapperTypography>
