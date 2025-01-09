@@ -10,6 +10,7 @@ import {
   DirectMessageDialog,
   MessageReceiverChipData,
 } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
+import CommunityContributorsBlockWide from '@/domain/community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWide';
 import { useSpaceCommunityPageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/useSendMessageToCommunityLeads';
 import useCommunityMembersAsCardProps from '@/domain/community/community/utils/useCommunityMembersAsCardProps';
@@ -24,7 +25,6 @@ import ContentColumn from '@/core/ui/content/ContentColumn';
 import VirtualContributorsBlock from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsBlock';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import { useUserContext } from '@/domain/community/user';
-import RoleSetContributorTypesBlockWide from '@/domain/community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWide';
 
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
@@ -121,7 +121,11 @@ const SpaceCommunityPage = () => {
               <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.space.profile.url} />
             </InfoColumn>
             <ContentColumn>
-              <RoleSetContributorTypesBlockWide users={memberUsers} organizations={memberOrganizations} />
+              <CommunityContributorsBlockWide
+                users={memberUsers}
+                showUsers={isAuthenticated}
+                organizations={memberOrganizations}
+              />
               <CalloutsGroupView
                 journeyId={spaceId}
                 calloutsSetId={calloutsSetId}

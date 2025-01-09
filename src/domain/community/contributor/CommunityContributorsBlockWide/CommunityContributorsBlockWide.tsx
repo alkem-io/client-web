@@ -8,7 +8,7 @@ import { BlockTitle, CaptionSmall } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import RoleSetContributorTypesBlockWideContent from './RoleSetContributorTypesBlockWideContent';
+import CommunityContributorsBlockWideContent from './CommunityContributorsBlockWideContent';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import AltToggle from '@/core/ui/forms/AltToggle/AltToggle';
 import MultipleSelect from '@/core/ui/search/MultipleSelect';
@@ -16,12 +16,17 @@ import { Theme } from '@mui/material/styles';
 import { gutters } from '@/core/ui/grid/utils';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import Loading from '@/core/ui/loading/Loading';
+import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
+import Gutters from '@/core/ui/grid/Gutters';
+
+const grayedOutUsersImgSrc = '/contributors/users-grayed.png';
 
 type RoleSetContributorTypesBlockWideProps = {
   users: ContributorCardSquareProps[] | undefined;
   organizations: ContributorCardSquareProps[] | undefined;
   isDialogView?: boolean;
   isLoading?: boolean;
+  showUsers: boolean;
 };
 
 const config = [
@@ -37,6 +42,7 @@ const config = [
 
 const RoleSetContributorTypesBlockWide = ({
   users,
+  showUsers,
   organizations,
   isDialogView = false,
   isLoading = false,
@@ -89,7 +95,7 @@ const RoleSetContributorTypesBlockWide = ({
         >
           {contributorTypeToggle()}
         </PageContentBlockHeader>
-        <RoleSetContributorTypesBlockWideContent
+        <CommunityContributorsBlockWideContent
           users={users}
           organizations={organizations}
           contributorType={contributorType}
@@ -105,6 +111,7 @@ const RoleSetContributorTypesBlockWide = ({
     <>
       <PageContentBlock>
         <PageContentBlockHeaderWithDialogAction
+          showExpand={false}
           title={t('pages.generic.sections.community.contributors')}
           onDialogOpen={() => setIsDialogOpen(true)}
           actions={
@@ -122,14 +129,29 @@ const RoleSetContributorTypesBlockWide = ({
         >
           {contributorTypeToggle()}
         </PageContentBlockHeaderWithDialogAction>
-        <RoleSetContributorTypesBlockWideContent
-          users={users}
-          organizations={organizations}
-          contributorType={contributorType}
-          filter={filter}
-          nested
-          compactView
-        />
+        {showUsers ? (
+          <CommunityContributorsBlockWideContent
+            users={users}
+            organizations={organizations}
+            contributorType={contributorType}
+            filter={filter}
+            nested
+            compactView
+          />
+        ) : (
+          <Gutters disablePadding>
+            <ImageBackdrop
+              src={grayedOutUsersImgSrc}
+              backdropMessage="login"
+              blockName="all-contributing-users"
+              messageSx={theme => ({
+                [theme.breakpoints.up('sm')]: {
+                  fontWeight: 'bold',
+                },
+              })}
+            />
+          </Gutters>
+        )}
         <Actions justifyContent="end">
           <ButtonBase component={CaptionSmall} onClick={() => setIsDialogOpen(true)}>
             {t('common.show-all')}
@@ -145,7 +167,7 @@ const RoleSetContributorTypesBlockWide = ({
         <DialogHeader onClose={() => setIsDialogOpen(false)}>
           <BlockTitle>{t('pages.generic.sections.community.contributors')}</BlockTitle>
         </DialogHeader>
-        <RoleSetContributorTypesBlockWideContent
+        <CommunityContributorsBlockWideContent
           users={users}
           organizations={organizations}
           contributorType={contributorType}
