@@ -1,3 +1,16 @@
+import { Message } from '@/core/apollo/generated/graphql-schema';
+import SaveButton from '@/core/ui/actions/SaveButton';
+import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
+import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
+import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
+import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import {
   Backdrop,
   Box,
@@ -14,13 +27,9 @@ import {
   Skeleton,
   Tooltip,
   Typography,
+  alpha,
+  Link,
 } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import clsx from 'clsx';
 import { Form, Formik } from 'formik';
 import { keyBy } from 'lodash';
 import orderBy from 'lodash/orderBy';
@@ -28,20 +37,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
-import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import AlkemioAvatar from '@/core/ui/image/AlkemioAvatar';
-import SaveButton from '@/core/ui/actions/SaveButton';
+import Avatar from '@/core/ui/avatar/Avatar';
 import { FontDownloadIcon } from './icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from './icons/FontDownloadOffIcon';
-import { useNotification } from '@/core/ui/notifications/useNotification';
-import { Message } from '@/core/apollo/generated/graphql-schema';
-import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
-import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
-import hexToRGBA from '@/core/utils/hexToRGBA';
-import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
-import UserPopUp from '@/domain/community/user/userPopUp/UserPopUp';
 
 export interface CommunityUpdatesViewProps {
   entities: {
@@ -68,35 +66,15 @@ export interface CommunityUpdatesViewProps {
   };
 }
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    position: 'relative',
-  },
-  rootFade: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    height: '100%',
-    background: `linear-gradient(to top, ${hexToRGBA(theme.palette.background.paper, 1)} 20%,  ${hexToRGBA(
-      theme.palette.background.paper,
-      0
-    )} 80%)`,
-    pointerEvents: 'none',
-  },
-  expand: {
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)',
-  },
-}));
+const expandStyles = theme => ({
+  transform: 'rotate(0deg)',
+  marginLeft: 'auto',
+  transition: theme.transitions.create('transform', {
+    duration: theme.transitions.duration.shortest,
+  }),
+});
 
 export const CommunityUpdatesView = ({ entities, actions, state, options }: CommunityUpdatesViewProps) => {
-  const styles = useStyles();
   const notify = useNotification();
   const { t } = useTranslation();
   // entities
@@ -195,11 +173,11 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
           <Grid key={stubMessageId} item xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridProps['lg']}>
             <Card elevation={2}>
               <CardHeader title={<Skeleton />} subheader={<Skeleton />} />
-              <CardContent className={styles.root}>
+              <CardContent sx={{ position: 'relative' }}>
                 <Skeleton height={40} />
               </CardContent>
               <CardActions disableSpacing>
-                <IconButton disabled className={clsx(styles.expand)} size="large">
+                <IconButton disabled sx={theme => expandStyles(theme)} size="large">
                   <ExpandMoreIcon />
                 </IconButton>
               </CardActions>
@@ -225,12 +203,15 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                 <CardHeader
                   avatar={
                     member && (
-                      <AlkemioAvatar
-                        key={member.id}
-                        src={member.avatarUrl}
-                        name={member.displayName}
-                        renderPopup={({ open, onHide }) => open && <UserPopUp id={member.id} onHide={onHide} />}
-                      />
+                      <Link key={member.id} href={member.url}>
+                        <Avatar
+                          src={member.avatarUrl}
+                          aria-label="User avatar"
+                          alt={t('common.avatar-of', { user: member.displayName })}
+                        >
+                          {member.displayName?.[0]}
+                        </Avatar>
+                      </Link>
                     )
                   }
                   title={member?.displayName || m.sender}
@@ -254,7 +235,7 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                     )
                   }
                 />
-                <CardContent className={styles.root}>
+                <CardContent sx={{ position: 'relative' }}>
                   <Collapse in={expanded || disableCollapse} timeout="auto" collapsedSize={40}>
                     <Box>
                       {!reviewed && <WrapperMarkdown>{m.message}</WrapperMarkdown>}
@@ -264,7 +245,22 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                         </Typography>
                       )}
                     </Box>
-                    {!(expanded || disableCollapse) && <Box className={styles.rootFade} />}
+                    {!(expanded || disableCollapse) && (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          bottom: 0,
+                          width: '100%',
+                          height: '100%',
+                          background: theme =>
+                            `linear-gradient(to top, ${alpha(theme.palette.background.paper, 1)} 20%,  ${alpha(
+                              theme.palette.background.paper,
+                              0
+                            )} 80%)`,
+                          pointerEvents: 'none',
+                        }}
+                      />
+                    )}
                   </Collapse>
                 </CardContent>
                 {displayCardActions && (
@@ -295,8 +291,9 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                     {!disableCollapse && (
                       <Tooltip title={expanded ? 'View entire content' : 'Minimize'} placement="left">
                         <IconButton
-                          className={clsx(styles.expand, {
-                            [styles.expandOpen]: expanded,
+                          sx={theme => ({
+                            ...expandStyles(theme),
+                            ...(expanded ? { transform: 'rotate(180deg)' } : {}),
                           })}
                           onClick={() => setReviewedMessage(x => (x === m.id ? null : m.id))}
                           aria-expanded={expanded}
