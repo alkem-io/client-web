@@ -31,6 +31,7 @@ import { useConsumeAction } from '../layout/SubspacePageLayout';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import CreateJourney from './dialogs/CreateJourney';
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
+import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 
 const Outline = (props: DashboardNavigationProps) => {
   useConsumeAction(SubspaceDialog.Outline);
@@ -172,7 +173,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
                     onCurrentItemNotFound={dashboardNavigation.refetch}
                   />
                   {communityReadAccess && communityId && (
-                    <DashboardUpdatesSection communityId={communityId} shareUrl={''} />
+                    <DashboardUpdatesSection communityId={communityId} shareUrl={buildUpdatesUrl(profile?.url ?? '')} />
                   )}
                 </>
               }
