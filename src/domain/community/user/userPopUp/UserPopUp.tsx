@@ -2,8 +2,8 @@ import Avatar from '@/core/ui/avatar/Avatar';
 import { DialogActions, DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
 import { RouterLink } from '@/core/ui/link/deprecated/RouterLink';
 import Loading from '@/core/ui/loading/Loading';
-import Tag from '@/core/ui/tags/deprecated/Tag';
 import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
+import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
 import { Button, Grid } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
@@ -18,7 +18,6 @@ import { useTranslation } from 'react-i18next';
 import { useUserMetadata } from '../index';
 import useUserContributionDisplayNames from '../userContributions/useUserContributionDisplayNames';
 import UserPopUpDelimiter from './UserPopUpDelimiter';
-import UserPopUpTagContainer from './UserPopUpTagContainer';
 
 const useUserPopUpStyles = makeStyles(theme => ({
   header: {
@@ -140,15 +139,7 @@ const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
         ) : (
           <div>
             <div className={styles.centeredText}>
-              {tags.length > 0 ? (
-                <UserPopUpTagContainer>
-                  {tags.map((t, i) => (
-                    <Tag key={i} text={t} color="neutralMedium" />
-                  ))}
-                </UserPopUpTagContainer>
-              ) : (
-                <span>No tags available</span>
-              )}
+              <TagsComponent tags={tags} size="medium" variant="filled" />
             </div>
             <div>
               <Table size="small" className={styles.table}>
