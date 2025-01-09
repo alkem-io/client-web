@@ -460,7 +460,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                 aria-label={t('common.add')}
                 aria-haspopup="true"
                 size="small"
-                onClick={() => startWizard(account)}
+                onClick={() => startWizard(account, accountHostName)}
               >
                 <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
               </IconButton>

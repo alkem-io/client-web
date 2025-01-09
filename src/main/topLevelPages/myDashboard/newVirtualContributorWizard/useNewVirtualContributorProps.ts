@@ -55,6 +55,6 @@ export interface UserAccountProps {
 interface NewVirtualContributorWizardProps {}
 
 export interface useNewVirtualContributorWizardProvided {
-  startWizard: (initAccount?: UserAccountProps | undefined) => void;
+  startWizard: (initAccount?: UserAccountProps | undefined, accountName?: string) => void;
   NewVirtualContributorWizard: ComponentType<NewVirtualContributorWizardProps>;
 }
