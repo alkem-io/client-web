@@ -1,28 +1,16 @@
-import { useEffect, useRef } from 'react';
-import { makeStyles } from '@mui/styles';
-import { useResizeDetector } from 'react-resize-detector';
-import clsx from 'clsx';
+import { Box, SxProps, Theme } from '@mui/material';
 import qrcode from 'qrcode';
-
-const useStyles = makeStyles({
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
-});
+import { useEffect, useRef } from 'react';
+import { useResizeDetector } from 'react-resize-detector';
 
 type QRCodeProps = {
   qrCodeJwt?: string | null;
   qrCodeImg?: string | null;
-  className?: string;
+  sx?: SxProps<Theme>;
 };
 
-export const QRCode = ({ qrCodeJwt, qrCodeImg, className }: QRCodeProps) => {
+export const QRCode = ({ qrCodeJwt, qrCodeImg, sx }: QRCodeProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const styles = useStyles();
-
   const { height, width } = useResizeDetector({ targetRef: containerRef });
 
   useEffect(() => {
@@ -50,7 +38,12 @@ export const QRCode = ({ qrCodeJwt, qrCodeImg, className }: QRCodeProps) => {
     };
   }, [qrCodeJwt, qrCodeImg, height, width]);
 
-  return <div ref={containerRef} className={clsx(styles.container, className)} />;
+  return (
+    <Box
+      sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden', ...sx }}
+      ref={containerRef}
+    />
+  );
 };
 
 export default QRCode;
