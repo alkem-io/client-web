@@ -1,11 +1,11 @@
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
-import { IconButton } from '@mui/material';
+import { Box, IconButton, Tooltip } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { BlockTitle } from '@/core/ui/typography';
+import { BlockTitle, Caption, Text } from '@/core/ui/typography';
 import JourneyCardHorizontal, {
   JourneyCardHorizontalSkeleton,
 } from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
@@ -21,6 +21,7 @@ import useNewVirtualContributorWizard from '@/main/topLevelPages/myDashboard/new
 import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
 import {
   AuthorizationPrivilege,
+  LicenseEntitlement,
   LicenseEntitlementType,
   SpaceLevel,
   SpaceType,
@@ -60,10 +61,12 @@ interface AccountProfile {
 
 export interface AccountTabResourcesProps {
   id: string;
+  externalSubscriptionID?: string;
   authorization?: { myPrivileges?: AuthorizationPrivilege[] };
   license?: {
     id: string;
     availableEntitlements?: LicenseEntitlementType[];
+    entitlements?: Pick<LicenseEntitlement, 'type' | 'limit' | 'usage'>[];
   };
   spaces: {
     id: string;
@@ -142,6 +145,12 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'space-between',
     height: '100%',
   },
+  guttersRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    height: '100%',
+  },
 }));
 
 export const ContributorAccountView = ({ accountHostName, account, loading }: ContributorAccountViewProps) => {
@@ -154,6 +163,8 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const [entity, setSelectedEntity] = useState<Entities | undefined>(undefined);
   const styles = useStyles();
   const myAccountEntitlements = account?.license?.availableEntitlements || [];
+  const myAccountEntitlementDetails = account?.license?.entitlements || [];
+  const externalSubscriptionID = account?.externalSubscriptionID;
 
   const isEntitledToCreateSpace = [
     LicenseEntitlementType.AccountSpaceFree,
@@ -175,21 +186,38 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   );
 
   const privileges = account?.authorization?.myPrivileges ?? [];
-  const isPlatformAdmin = privileges.includes(AuthorizationPrivilege.PlatformAdmin);
+  // const isPlatformAdmin = privileges.includes(AuthorizationPrivilege.PlatformAdmin);
+  const isPlatformAdmin = false;
 
-  // Note: have information about whether it is the privilege or entitlement that blocks the enabling of the creation, give user more feedback.
-  const canCreateSpace =
-    privileges.includes(AuthorizationPrivilege.CreateSpace) && (isEntitledToCreateSpace || isPlatformAdmin);
-  const canCreateInnovationPack =
-    privileges.includes(AuthorizationPrivilege.CreateInnovationPack) &&
-    (isEntitledToCreateInnovationPack || isPlatformAdmin);
-  const canCreateInnovationHub =
-    privileges.includes(AuthorizationPrivilege.CreateInnovationHub) &&
-    (isEntitledToCreateInnovationHub || isPlatformAdmin);
+  const canCreateSpace = privileges.includes(AuthorizationPrivilege.CreateSpace) || isPlatformAdmin;
+  const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack) || isPlatformAdmin;
+  const canCreateInnovationHub = privileges.includes(AuthorizationPrivilege.CreateInnovationHub) || isPlatformAdmin;
   const canCreateVirtualContributor =
-    privileges.includes(AuthorizationPrivilege.CreateVirtualContributor) && (isEntitledToCreateVC || isPlatformAdmin);
+    privileges.includes(AuthorizationPrivilege.CreateVirtualContributor) || isPlatformAdmin;
 
   const canDeleteEntities = privileges.includes(AuthorizationPrivilege.Delete);
+
+  const { limit: hostedSpaceLimit = 0, usage: hostedSpaceUsage = 0 } =
+    myAccountEntitlementDetails.find(
+      entitlement =>
+        entitlement.type === LicenseEntitlementType.AccountSpaceFree ||
+        entitlement.type === LicenseEntitlementType.AccountSpacePlus ||
+        entitlement.type === LicenseEntitlementType.AccountSpacePremium
+    ) ?? {};
+
+  const { limit: vcLimit = 0, usage: vcUsage = 0 } =
+    myAccountEntitlementDetails.find(
+      entitlement => entitlement.type === LicenseEntitlementType.AccountVirtualContributor
+    ) ?? {};
+
+  const { limit: innovationPackLimit = 0, usage: innovationPackUsage = 0 } =
+    myAccountEntitlementDetails.find(
+      entitlement => entitlement.type === LicenseEntitlementType.AccountInnovationPack
+    ) ?? {};
+
+  const { limit: innovationHubLimit = 0, usage: innovationHubUsage = 0 } =
+    myAccountEntitlementDetails.find(entitlement => entitlement.type === LicenseEntitlementType.AccountInnovationHub) ??
+    {};
 
   const clearDeleteState = () => {
     setDeleteDialogOpen(false);
@@ -396,7 +424,18 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   return (
     <PageContentColumn columns={12}>
       <PageContentBlock halfWidth>
-        <BlockTitle>{t('pages.admin.generic.sections.account.hostedSpaces')}</BlockTitle>
+        <Gutters disablePadding disableGap className={styles.guttersRow}>
+          <BlockTitle>{t('pages.admin.generic.sections.account.hostedSpaces')}</BlockTitle>
+          <TextWithTooltip
+            text={`${hostedSpaceUsage}/${hostedSpaceLimit}`}
+            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+              type: t('pages.admin.generic.sections.account.virtualContributors'),
+              usage: hostedSpaceUsage,
+              limit: hostedSpaceLimit,
+            })}
+          />
+        </Gutters>
+
         <Gutters disablePadding disableGap className={styles.gutters}>
           {loading && <JourneyCardHorizontalSkeleton />}
           <Gutters disablePadding>
@@ -416,17 +455,18 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               ))}
           </Gutters>
         </Gutters>
-        <Actions>
+        <Actions justifyContent="end">
           {canCreateSpace && (
             <>
-              <IconButton
-                aria-label={t('common.add')}
-                aria-haspopup="true"
-                size="small"
+              <CreationButton
+                disabled={!isEntitledToCreateSpace}
                 onClick={() => setCreateDialogOpen(true)}
-              >
-                <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
-              </IconButton>
+                tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+                  type: t('pages.admin.generic.sections.account.hostedSpaces'),
+                  usage: hostedSpaceUsage,
+                  limit: hostedSpaceLimit,
+                })}
+              />
               {createDialogOpen && (
                 <CreateSpaceDialog
                   redirectOnComplete={false}
@@ -439,7 +479,17 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
         </Actions>
       </PageContentBlock>
       <PageContentBlock halfWidth>
-        <BlockTitle>{t('pages.admin.generic.sections.account.virtualContributors')}</BlockTitle>
+        <Gutters disablePadding disableGap className={styles.guttersRow}>
+          <BlockTitle>{t('pages.admin.generic.sections.account.virtualContributors')}</BlockTitle>
+          <TextWithTooltip
+            text={`${vcUsage}/${vcLimit}`}
+            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+              type: t('pages.admin.generic.sections.account.virtualContributors'),
+              usage: vcUsage,
+              limit: vcLimit,
+            })}
+          />
+        </Gutters>
         <Gutters disablePadding className={styles.gutters}>
           {loading && <JourneyCardHorizontalSkeleton />}
           <Gutters disablePadding>
@@ -454,45 +504,73 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
                 />
               ))}
           </Gutters>
-          <Actions>
+          <Actions justifyContent="end">
             {canCreateVirtualContributor && (
-              <IconButton
-                aria-label={t('common.add')}
-                aria-haspopup="true"
-                size="small"
+              <CreationButton
+                disabled={!isEntitledToCreateVC}
                 onClick={() => startWizard(account)}
-              >
-                <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
-              </IconButton>
+                tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+                  type: t('pages.admin.generic.sections.account.virtualContributors'),
+                  usage: vcUsage,
+                  limit: vcLimit,
+                })}
+              />
             )}
           </Actions>
           <NewVirtualContributorWizard />
         </Gutters>
       </PageContentBlock>
       <PageContentBlock halfWidth>
-        <BlockTitle>{t('pages.admin.generic.sections.account.innovationPacks')}</BlockTitle>
+        <Gutters disablePadding disableGap className={styles.guttersRow}>
+          <BlockTitle>{t('pages.admin.generic.sections.account.innovationPacks')}</BlockTitle>
+          <TextWithTooltip
+            text={`${innovationPackUsage}/${innovationPackLimit}`}
+            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+              type: t('pages.admin.generic.sections.account.innovationPacks'),
+              usage: innovationPackUsage,
+              limit: innovationPackLimit,
+            })}
+          />
+        </Gutters>
         <Gutters disablePadding className={styles.gutters}>
           {loading && <InnovationPackCardHorizontalSkeleton />}
           {!loading &&
             innovationPacks?.map(pack => (
               <InnovationPackCardHorizontal key={pack.id} {...pack} actions={getPackActions(pack.id)} />
             ))}
-          <Actions>
-            {canCreateInnovationPack && account?.id && <CreateInnovationPackDialog accountId={account?.id} />}
+          <Actions justifyContent="end">
+            {/*extract the buttons from the dialogs*/}
+            {canCreateInnovationPack && account?.id && (
+              <CreateInnovationPackDialog accountId={account?.id} disabled={!isEntitledToCreateInnovationPack} />
+            )}
           </Actions>
         </Gutters>
       </PageContentBlock>
       <PageContentBlock halfWidth>
-        <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
+        <Gutters disablePadding disableGap className={styles.guttersRow}>
+          <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
+          <TextWithTooltip
+            text={`${innovationHubUsage}/${innovationHubLimit}`}
+            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+              type: t('pages.admin.generic.sections.account.customHomepages'),
+              usage: innovationHubUsage,
+              limit: innovationHubLimit,
+            })}
+          />
+        </Gutters>
         <Gutters disablePadding className={styles.gutters}>
           {loading && <InnovationHubCardHorizontalSkeleton />}
           {!loading &&
             innovationHubs?.map(hub => (
               <InnovationHubCardHorizontal key={hub.id} {...hub} actions={getHubActions(hub.id)} />
             ))}
-          <Actions>
+          <Actions justifyContent="end">
             {canCreateInnovationHub && account?.id && (
-              <CreateInnovationHubDialog accountId={account?.id} accountHostName={accountHostName} />
+              <CreateInnovationHubDialog
+                accountId={account?.id}
+                accountHostName={accountHostName}
+                disabled={!isEntitledToCreateInnovationHub}
+              />
             )}
           </Actions>
         </Gutters>
@@ -506,8 +584,50 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
           />
         )}
       </PageContentBlock>
+      {externalSubscriptionID && <Caption>Wingback id: {externalSubscriptionID}</Caption>}
     </PageContentColumn>
   );
 };
 
 export default ContributorAccountView;
+
+const TextWithTooltip = ({ text, tooltip }: { text: string; tooltip: string }) => {
+  return (
+    <Tooltip arrow title={<Caption>{tooltip}</Caption>} placement="top">
+      <Text>{text}</Text>
+    </Tooltip>
+  );
+};
+
+const CreationButton = ({
+  tooltip,
+  disabled,
+  onClick,
+}: {
+  tooltip: string;
+  onClick: () => void;
+  disabled?: boolean;
+}) => {
+  const { t } = useTranslation();
+
+  const button = (
+    <IconButton
+      aria-label={t('common.add')}
+      aria-disabled={disabled}
+      aria-haspopup="true"
+      size="small"
+      onClick={onClick}
+      disabled={disabled}
+    >
+      <RoundedIcon component={AddIcon} size="medium" iconSize="small" disabled={disabled} aria-disabled={disabled} />
+    </IconButton>
+  );
+
+  return disabled ? (
+    <Tooltip arrow placement="top" title={tooltip}>
+      <Box>{button}</Box>
+    </Tooltip>
+  ) : (
+    { button }
+  );
+};

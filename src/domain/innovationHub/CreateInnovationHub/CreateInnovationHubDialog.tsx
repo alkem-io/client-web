@@ -14,9 +14,10 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 type CreateInnovationHubDialogProps = {
   accountId: string | undefined;
   accountHostName: string | undefined;
+  disabled?: boolean;
 };
 
-const CreateInnovationHubDialog = ({ accountId, accountHostName = '' }: CreateInnovationHubDialogProps) => {
+const CreateInnovationHubDialog = ({ accountId, accountHostName = '', disabled }: CreateInnovationHubDialogProps) => {
   const { t } = useTranslation();
 
   const notify = useNotification();
@@ -68,8 +69,14 @@ const CreateInnovationHubDialog = ({ accountId, accountHostName = '' }: CreateIn
           />
         </DialogContent>
       </DialogWithGrid>
-      <IconButton aria-label={t('common.add')} aria-haspopup="true" size="small" onClick={() => setIsOpen(true)}>
-        <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
+      <IconButton
+        aria-label={t('common.add')}
+        aria-haspopup="true"
+        size="small"
+        onClick={() => setIsOpen(true)}
+        disabled={disabled}
+      >
+        <RoundedIcon component={AddIcon} size="medium" iconSize="small" disabled={disabled} />
       </IconButton>
     </>
   );

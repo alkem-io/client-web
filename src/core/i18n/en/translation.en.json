@@ -1956,8 +1956,10 @@
           "account": {
             "description": "Here you find all your Spaces, Virtual Contributors, and other hosted resources. If you have any questions, feel free to reach out to the Alkemio team.",
             "hostedSpaces": "Hosted Spaces",
+            "hostedSpacesNotice": "You've created {{usage}} out of your {{limit}} available Spaces in your account.",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
+            "usageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your account.",
             "noTemplates": "This Template Pack doesn't have any template yet",
             "customHomepages": "Custom Homepages",
             "hostTitle": "Host",
