@@ -48,19 +48,17 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
                 }}
               >
                 {populated.map(u => (
-                  <>
-                    <Tooltip placement={'bottom'} id={'membersTooltip'} title={u.profile.displayName}>
-                      <Avatar
-                        src={u.profile.visual?.uri}
-                        aria-label="User avatar"
-                        alt={t('common.avatar-of', { user: u.profile.displayName })}
-                        onClick={() => onMemberClick(u.id)}
-                        sx={{ cursor: 'pointer' }}
-                      >
-                        {u.profile.displayName?.[0]}
-                      </Avatar>
-                    </Tooltip>
-                  </>
+                  <Tooltip key={u.id} placement={'bottom'} id={'membersTooltip'} title={u.profile.displayName}>
+                    <Avatar
+                      src={u.profile.visual?.uri}
+                      aria-label="User avatar"
+                      alt={t('common.avatar-of', { user: u.profile.displayName })}
+                      onClick={() => onMemberClick(u.id)}
+                      sx={{ cursor: 'pointer' }}
+                    >
+                      {u.profile.displayName?.[0]}
+                    </Avatar>
+                  </Tooltip>
                 ))}
               </Box>
               <div style={{ flexBasis: '100%' }} />
