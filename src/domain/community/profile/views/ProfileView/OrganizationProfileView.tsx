@@ -6,6 +6,7 @@ import OrganizationVerifiedStatus from '@/domain/community/contributor/organizat
 import { Location } from '@/core/apollo/generated/graphql-schema';
 import { BlockTitle } from '@/core/ui/typography';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import CardMemberIcon from '@/domain/community/membership/CardMemberIcon/CardMemberIcon';
 
 export interface OrganizationProfileViewEntity {
   displayName: string;
@@ -46,6 +47,8 @@ export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps
           )}
         </VerifiedBadge>
         <Grid container spacing={2} direction="column">
+          {entity?.verified && <CardMemberIcon />}
+
           <Grid item>
             <ProfileDetail title={t('components.profile.fields.bio.title')} value={entity.bio} />
           </Grid>
