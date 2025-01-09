@@ -3,7 +3,7 @@ import { ContributorCardSquareProps } from '../ContributorCardSquare/Contributor
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeaderWithDialogAction from '@/core/ui/content/PageContentBlockHeaderWithDialogAction';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
-import { ButtonBase, useMediaQuery } from '@mui/material';
+import { ButtonBase, Grid, useMediaQuery } from '@mui/material';
 import { BlockTitle, CaptionSmall } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -16,12 +16,16 @@ import { Theme } from '@mui/material/styles';
 import { gutters } from '@/core/ui/grid/utils';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import Loading from '@/core/ui/loading/Loading';
+import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
+
+const grayedOutUsersImgSrc = '/contributors/users-grayed.png';
 
 type CommunityContributorsBlockWideProps = {
   users: ContributorCardSquareProps[] | undefined;
   organizations: ContributorCardSquareProps[] | undefined;
   isDialogView?: boolean;
   isLoading?: boolean;
+  showUsers: boolean;
 };
 
 const config = [
@@ -37,6 +41,7 @@ const config = [
 
 const CommunityContributorsBlockWide = ({
   users,
+  showUsers,
   organizations,
   isDialogView = false,
   isLoading = false,
@@ -122,14 +127,31 @@ const CommunityContributorsBlockWide = ({
         >
           {contributorTypeToggle()}
         </PageContentBlockHeaderWithDialogAction>
-        <CommunityContributorsBlockWideContent
-          users={users}
-          organizations={organizations}
-          contributorType={contributorType}
-          filter={filter}
-          nested
-          compactView
-        />
+
+        {showUsers ? (
+          <CommunityContributorsBlockWideContent
+            users={users}
+            organizations={organizations}
+            contributorType={contributorType}
+            filter={filter}
+            nested
+            compactView
+          />
+        ) : (
+          <Grid item>
+            <ImageBackdrop
+              src={grayedOutUsersImgSrc}
+              backdropMessage="login"
+              blockName="all-contributing-users"
+              messageSx={theme => ({
+                [theme.breakpoints.up('sm')]: {
+                  fontWeight: 'bold',
+                },
+              })}
+            />
+          </Grid>
+        )}
+
         <Actions justifyContent="end">
           <ButtonBase component={CaptionSmall} onClick={() => setIsDialogOpen(true)}>
             {t('common.show-all')}
