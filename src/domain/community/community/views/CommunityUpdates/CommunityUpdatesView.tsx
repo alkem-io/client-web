@@ -4,7 +4,6 @@ import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { AlkemioAvatar } from '@/core/ui/image/AlkemioAvatar';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
@@ -29,6 +28,7 @@ import {
   Tooltip,
   Typography,
   alpha,
+  Link,
 } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { keyBy } from 'lodash';
@@ -37,6 +37,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
+import Avatar from '@/core/ui/avatar/Avatar';
 import { FontDownloadIcon } from './icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from './icons/FontDownloadOffIcon';
 
@@ -202,12 +203,15 @@ export const CommunityUpdatesView = ({ entities, actions, state, options }: Comm
                 <CardHeader
                   avatar={
                     member && (
-                      <AlkemioAvatar
-                        key={member.id}
-                        src={member.avatarUrl}
-                        name={member.displayName}
-                        userId={member.id}
-                      />
+                      <Link key={member.id} href={member.url}>
+                        <Avatar
+                          src={member.avatarUrl}
+                          aria-label="User avatar"
+                          alt={t('common.avatar-of', { user: member.displayName })}
+                        >
+                          {member.displayName?.[0]}
+                        </Avatar>
+                      </Link>
                     )
                   }
                   title={member?.displayName || m.sender}
