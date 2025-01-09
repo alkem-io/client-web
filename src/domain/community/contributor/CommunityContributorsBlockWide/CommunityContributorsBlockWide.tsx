@@ -110,6 +110,7 @@ const CommunityContributorsBlockWide = ({
     <>
       <PageContentBlock>
         <PageContentBlockHeaderWithDialogAction
+          showIcon={false}
           title={t('pages.generic.sections.community.contributors')}
           onDialogOpen={() => setIsDialogOpen(true)}
           actions={

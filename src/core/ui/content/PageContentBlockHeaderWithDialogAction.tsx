@@ -10,6 +10,7 @@ interface PageContentBlockHeaderWithDialogActionProps extends PageContentBlockHe
   onDialogOpen?: () => void;
   onDialogClose?: () => void;
   expanded?: boolean;
+  showIcon?: boolean;
 }
 
 const iconSize = (theme: Theme) => theme.spacing(2);
@@ -19,19 +20,23 @@ const PageContentBlockHeaderWithDialogAction = ({
   onDialogOpen,
   onDialogClose,
   actions,
+  showIcon = true,
   ...headerProps
 }: PropsWithChildren<PageContentBlockHeaderWithDialogActionProps>) => {
   const { t } = useTranslation();
   const dialogAction = (
     <>
       {actions}
-      <IconButton
-        onClick={expanded ? onDialogClose : onDialogOpen}
-        sx={{ svg: { width: iconSize, height: iconSize } }}
-        aria-label={t('buttons.expandWindow')}
-      >
-        {expanded ? <Close /> : <ExpandContentIcon />}
-      </IconButton>
+
+      {showIcon && (
+        <IconButton
+          onClick={expanded ? onDialogClose : onDialogOpen}
+          sx={{ svg: { width: iconSize, height: iconSize } }}
+          aria-label={t('buttons.expandWindow')}
+        >
+          {expanded ? <Close /> : <ExpandContentIcon />}
+        </IconButton>
+      )}
     </>
   );
 
