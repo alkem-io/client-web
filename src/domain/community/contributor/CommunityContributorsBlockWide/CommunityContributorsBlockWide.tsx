@@ -16,12 +16,17 @@ import { Theme } from '@mui/material/styles';
 import { gutters } from '@/core/ui/grid/utils';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import Loading from '@/core/ui/loading/Loading';
+import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
+import Gutters from '@/core/ui/grid/Gutters';
+
+const grayedOutUsersImgSrc = '/contributors/users-grayed.png';
 
 type CommunityContributorsBlockWideProps = {
   users: ContributorCardSquareProps[] | undefined;
   organizations: ContributorCardSquareProps[] | undefined;
   isDialogView?: boolean;
   isLoading?: boolean;
+  showUsers: boolean;
 };
 
 const config = [
@@ -37,6 +42,7 @@ const config = [
 
 const CommunityContributorsBlockWide = ({
   users,
+  showUsers,
   organizations,
   isDialogView = false,
   isLoading = false,
@@ -105,6 +111,7 @@ const CommunityContributorsBlockWide = ({
     <>
       <PageContentBlock>
         <PageContentBlockHeaderWithDialogAction
+          showExpand={false}
           title={t('pages.generic.sections.community.contributors')}
           onDialogOpen={() => setIsDialogOpen(true)}
           actions={
@@ -122,14 +129,31 @@ const CommunityContributorsBlockWide = ({
         >
           {contributorTypeToggle()}
         </PageContentBlockHeaderWithDialogAction>
-        <CommunityContributorsBlockWideContent
-          users={users}
-          organizations={organizations}
-          contributorType={contributorType}
-          filter={filter}
-          nested
-          compactView
-        />
+
+        {showUsers ? (
+          <CommunityContributorsBlockWideContent
+            users={users}
+            organizations={organizations}
+            contributorType={contributorType}
+            filter={filter}
+            nested
+            compactView
+          />
+        ) : (
+          <Gutters disablePadding>
+            <ImageBackdrop
+              src={grayedOutUsersImgSrc}
+              backdropMessage="login"
+              blockName="all-contributing-users"
+              messageSx={theme => ({
+                [theme.breakpoints.up('sm')]: {
+                  fontWeight: 'bold',
+                },
+              })}
+            />
+          </Gutters>
+        )}
+
         <Actions justifyContent="end">
           <ButtonBase component={CaptionSmall} onClick={() => setIsDialogOpen(true)}>
             {t('common.show-all')}

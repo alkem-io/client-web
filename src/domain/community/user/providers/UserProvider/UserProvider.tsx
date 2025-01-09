@@ -45,7 +45,7 @@ const UserProvider: FC = ({ children }) => {
   const { data: meData, loading: loadingMe } = useUserProviderQuery({ skip: !isAuthenticated });
 
   const { data: platformLevelAuthorizationData, loading: isLoadingPlatformLevelAuthorization } =
-    usePlatformLevelAuthorizationQuery({ skip: !isAuthenticated });
+    usePlatformLevelAuthorizationQuery({ skip: !isAuthenticated || !meData?.me?.user });
   const platformLevelAuthorization = platformLevelAuthorizationData?.platform.authorization;
 
   const [createUserProfile, { loading: loadingCreateUser, error }] = useCreateUserNewRegistrationMutation({
