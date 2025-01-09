@@ -1,11 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import AddIcon from '@mui/icons-material/Add';
-import { Box, IconButton, Tooltip } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { BlockTitle, Caption, Text } from '@/core/ui/typography';
+import { BlockTitle, Caption } from '@/core/ui/typography';
 import JourneyCardHorizontal, {
   JourneyCardHorizontalSkeleton,
 } from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
@@ -15,7 +13,6 @@ import InnovationHubCardHorizontal, {
   InnovationHubCardHorizontalSkeleton,
 } from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
 import { Actions } from '@/core/ui/actions/Actions';
-import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import CreateSpaceDialog from '@/domain/journey/space/createSpace/CreateSpaceDialog';
 import useNewVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
 import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
@@ -35,6 +32,8 @@ import {
   useDeleteSpaceMutation,
   useDeleteVirtualContributorOnAccountMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import CreationButton from '@/core/ui/button/CreationButton';
+import TextWithTooltip from '@/core/ui/typography/TextWithTooltip';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
 import InnovationPackCardHorizontal, {
@@ -149,7 +148,6 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    height: '100%',
   },
 }));
 
@@ -157,7 +155,9 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const { t } = useTranslation();
   const notify = useNotification();
   const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
-  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [createSpaceDialogOpen, setCreateSpaceDialogOpen] = useState(false);
+  const [createInnovationHubDialogOpen, setCreateInnovationHubDialogOpen] = useState(false);
+  const [createInnovationPackDialogOpen, setCreateInnovationPackDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const [entity, setSelectedEntity] = useState<Entities | undefined>(undefined);
@@ -186,14 +186,11 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   );
 
   const privileges = account?.authorization?.myPrivileges ?? [];
-  // const isPlatformAdmin = privileges.includes(AuthorizationPrivilege.PlatformAdmin);
-  const isPlatformAdmin = false;
 
-  const canCreateSpace = privileges.includes(AuthorizationPrivilege.CreateSpace) || isPlatformAdmin;
-  const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack) || isPlatformAdmin;
-  const canCreateInnovationHub = privileges.includes(AuthorizationPrivilege.CreateInnovationHub) || isPlatformAdmin;
-  const canCreateVirtualContributor =
-    privileges.includes(AuthorizationPrivilege.CreateVirtualContributor) || isPlatformAdmin;
+  const canCreateSpace = privileges.includes(AuthorizationPrivilege.CreateSpace);
+  const canCreateInnovationPack = privileges.includes(AuthorizationPrivilege.CreateInnovationPack);
+  const canCreateInnovationHub = privileges.includes(AuthorizationPrivilege.CreateInnovationHub);
+  const canCreateVirtualContributor = privileges.includes(AuthorizationPrivilege.CreateVirtualContributor);
 
   const canDeleteEntities = privileges.includes(AuthorizationPrivilege.Delete);
 
@@ -460,17 +457,13 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             <>
               <CreationButton
                 disabled={!isEntitledToCreateSpace}
-                onClick={() => setCreateDialogOpen(true)}
-                tooltip={t('pages.admin.generic.sections.account.usageNotice', {
-                  type: t('pages.admin.generic.sections.account.hostedSpaces'),
-                  usage: hostedSpaceUsage,
-                  limit: hostedSpaceLimit,
-                })}
+                onClick={() => setCreateSpaceDialogOpen(true)}
+                disabledTooltip={t('pages.admin.generic.sections.account.limitNotice')}
               />
-              {createDialogOpen && (
+              {createSpaceDialogOpen && (
                 <CreateSpaceDialog
                   redirectOnComplete={false}
-                  onClose={() => setCreateDialogOpen(false)}
+                  onClose={() => setCreateSpaceDialogOpen(false)}
                   account={{ id: account?.id, name: accountHostName }}
                 />
               )}
@@ -509,11 +502,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               <CreationButton
                 disabled={!isEntitledToCreateVC}
                 onClick={() => startWizard(account)}
-                tooltip={t('pages.admin.generic.sections.account.usageNotice', {
-                  type: t('pages.admin.generic.sections.account.virtualContributors'),
-                  usage: vcUsage,
-                  limit: vcLimit,
-                })}
+                disabledTooltip={t('pages.admin.generic.sections.account.limitNotice')}
               />
             )}
           </Actions>
@@ -539,9 +528,19 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               <InnovationPackCardHorizontal key={pack.id} {...pack} actions={getPackActions(pack.id)} />
             ))}
           <Actions justifyContent="end">
-            {/*extract the buttons from the dialogs*/}
             {canCreateInnovationPack && account?.id && (
-              <CreateInnovationPackDialog accountId={account?.id} disabled={!isEntitledToCreateInnovationPack} />
+              <>
+                <CreationButton
+                  disabled={!isEntitledToCreateInnovationPack}
+                  onClick={() => setCreateInnovationPackDialogOpen(true)}
+                  disabledTooltip={t('pages.admin.generic.sections.account.limitNotice')}
+                />
+                <CreateInnovationPackDialog
+                  accountId={account?.id}
+                  open={createInnovationPackDialogOpen}
+                  onClose={() => setCreateInnovationPackDialogOpen(false)}
+                />
+              </>
             )}
           </Actions>
         </Gutters>
@@ -566,11 +565,19 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             ))}
           <Actions justifyContent="end">
             {canCreateInnovationHub && account?.id && (
-              <CreateInnovationHubDialog
-                accountId={account?.id}
-                accountHostName={accountHostName}
-                disabled={!isEntitledToCreateInnovationHub}
-              />
+              <>
+                <CreationButton
+                  disabled={!isEntitledToCreateInnovationHub}
+                  onClick={() => setCreateInnovationHubDialogOpen(true)}
+                  disabledTooltip={t('pages.admin.generic.sections.account.limitNotice')}
+                />
+                <CreateInnovationHubDialog
+                  accountId={account.id}
+                  accountHostName={accountHostName}
+                  open={createInnovationHubDialogOpen}
+                  onClose={() => setCreateInnovationHubDialogOpen(false)}
+                />
+              </>
             )}
           </Actions>
         </Gutters>
@@ -590,44 +597,3 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
 };
 
 export default ContributorAccountView;
-
-const TextWithTooltip = ({ text, tooltip }: { text: string; tooltip: string }) => {
-  return (
-    <Tooltip arrow title={<Caption>{tooltip}</Caption>} placement="top">
-      <Text>{text}</Text>
-    </Tooltip>
-  );
-};
-
-const CreationButton = ({
-  tooltip,
-  disabled,
-  onClick,
-}: {
-  tooltip: string;
-  onClick: () => void;
-  disabled?: boolean;
-}) => {
-  const { t } = useTranslation();
-
-  const button = (
-    <IconButton
-      aria-label={t('common.add')}
-      aria-disabled={disabled}
-      aria-haspopup="true"
-      size="small"
-      onClick={onClick}
-      disabled={disabled}
-    >
-      <RoundedIcon component={AddIcon} size="medium" iconSize="small" disabled={disabled} aria-disabled={disabled} />
-    </IconButton>
-  );
-
-  return disabled ? (
-    <Tooltip arrow placement="top" title={tooltip}>
-      <Box>{button}</Box>
-    </Tooltip>
-  ) : (
-    { button }
-  );
-};

@@ -1956,10 +1956,10 @@
           "account": {
             "description": "Here you find all your Spaces, Virtual Contributors, and other hosted resources. If you have any questions, feel free to reach out to the Alkemio team.",
             "hostedSpaces": "Hosted Spaces",
-            "hostedSpacesNotice": "You've created {{usage}} out of your {{limit}} available Spaces in your account.",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
             "usageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your account.",
+            "limitNotice": "Contact the Alkemio team to increase the limits on your account",
             "noTemplates": "This Template Pack doesn't have any template yet",
             "customHomepages": "Custom Homepages",
             "hostTitle": "Host",
@@ -2163,7 +2163,12 @@
         },
         "back-button": "All $t(common.innovation-packs)",
         "save-new-for-details": "Save the new Template Pack to edit the rest of the details",
-        "saved-successfully": "Saved Successfully"
+        "saved-successfully": "Saved Successfully",
+        "notifications": {
+          "pack-created": "$t(common.innovation-pack) created successfuly.",
+          "pack-error": "An error occurred while creating the $t(common.innovation-pack).",
+          "pack-removed": "$t(common.innovation-pack) '{{name}}' removed successfully."
+        }
       },
       "innovationHubs": {
         "create": "Create Innovation Hub",
