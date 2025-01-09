@@ -140,7 +140,7 @@ const CommunityContributorsBlockWide = ({
             compactView
           />
         ) : (
-          <Gutters>
+          <Gutters disablePadding>
             <ImageBackdrop
               src={grayedOutUsersImgSrc}
               backdropMessage="login"
