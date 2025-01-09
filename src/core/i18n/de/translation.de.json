@@ -176,7 +176,7 @@
     "click-more-info": "Hier tippen für weitere Informationen",
     "click-delete": "Klick zum Löschen"
   },
-  "topBar": {
+  "topbar": {
     "sign-in": "Einloggen / Anmelden"
   },
   "authentication": {
@@ -250,7 +250,7 @@
     "explore": "Beitragen",
     "edit-entity": "{{ entity}} bearbeiten",
     "filter": "Filter",
-    "filterBy": "Filtern nach...",
+    "filterby": "Filtern nach...",
     "forum": "Forum",
     "email": "Email",
     "state": "Zustand",
@@ -699,7 +699,7 @@
     "delete-confirm-title": "Anruf löschen?",
     "delete-confirm-text": "Alle Karten, Whiteboards und Nachrichten unter dem Callout werden ebenfalls gelöscht.",
     "state-permission": "Neue Antworten akzeptieren",
-    "permission-help-text": "Benutzen Sie den Schalter unten, um diesen Aufruf für neue Einträge zu schließen.",
+    "permission-helptext": "Benutzen Sie den Schalter unten, um diesen Aufruf für neue Einträge zu schließen.",
     "callout-location": "Standort: ",
     "sortContributions": "Sort contributions",
     "saveAsTemplate": "Save as Template",
@@ -1439,7 +1439,7 @@
     "referenceSegment": {
       "title": "Referenzen",
       "description": "Please keep in mind that all the files you attach here become publicly available. If you only want the members of this Space to be able to access the files, attach it to a post or a collection of links on one of the member pages.",
-      "missing-references": "Es wurde noch keine Referenz gesetzt",
+      "missing-refereneces": "Es wurde noch keine Referenz gesetzt",
       "tooltips": {
         "add-reference": "Referenz hinzufügen",
         "remove-reference": "Referenz entfernen"
@@ -1562,7 +1562,7 @@
       },
       "parentSpace": "in: {{space}}"
     },
-    "errorBlock": {
+    "errorblock": {
       "message": "Sorry, an error occurred while loading this conversation."
     },
     "loading": {
@@ -1783,7 +1783,7 @@
         "profile": {
           "description": ""
         },
-        "subEntities": {
+        "subentities": {
           "description": "Hier kannst du die **{{entities}}** in diesem {{parentEntity}} finden. Filtere nach Schlüsselwörtern, um nur die Themen anzuzeigen, die dir am Herzen liegen.",
           "list": "Liste der Entitäten",
           "empty": "Keine {{entities}} in diesem {{parentEntity}} gefunden.",
@@ -2018,7 +2018,7 @@
         },
         "notifications": {
           "space-created": "Hub erfolgreich erstellt.",
-          "errorCreatingSpace": "An error occurred while creating the Space.",
+          "errorCreatingSpace": "An error ocurred while creating the Space.",
           "space-removed": "Hub '{{name}}' erfolgreich entfernt."
         },
         "settings": {
@@ -2031,7 +2031,7 @@
           "license-features": {
             "title": "Space Features",
             "features": {
-              "WHITEBOARD_MULTI_USER": "Multi-user Whiteboards",
+              "WHITEBOARD_MULTI_USER": "Multiuser Whiteboards",
               "CALLOUT_TO_CALLOUT_TEMPLATE": "Create template from callout",
               "VIRTUAL_CONTRIBUTORS": "Interact with virtual contributors"
             }
@@ -2323,7 +2323,7 @@
         },
         "innovationLibraryBlock": {
           "title": "Innovation library: Have you seen this one yet...?",
-          "description": "In the Library you can find Innovation Packs composed for you by various organizations. Each Innovation pack can hold a variety of Whiteboard templates, Post templates, and Innovation flows.",
+          "description": "In the Library you can find Innovation Packs composed for you by various organisations. Each Innovation pack can hold a variety of Whiteboard templates, Post templates, and Innovation flows.",
           "seeMore": "Explore more Innovation Packs"
         },
         "space": {
@@ -2341,7 +2341,7 @@
         },
         "organizations": {
           "header": "Organisationen",
-          "subheader": "Die Entitäten, die innovation bringen wollen."
+          "subheader": "Die Entitäten, die innnovation bringen wollen."
         },
         "contributors-section": {
           "title": "Sehen Sie, wer die Herausforderungen auf Alkemio fährt"
@@ -3099,7 +3099,7 @@
           "placeholder": "Select a provider from this list"
         }
       },
-      "comingSoon": {
+      "commingSoon": {
         "title": "🚀 Coming soon!",
         "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
         "input": {

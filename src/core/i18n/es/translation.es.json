@@ -176,7 +176,7 @@
     "click-more-info": "Click para más información",
     "click-delete": "Click para borrar"
   },
-  "topBar": {
+  "topbar": {
     "sign-in": "Iniciar sesión | Registrarse"
   },
   "authentication": {
@@ -250,7 +250,7 @@
     "explore": "Contribuir",
     "edit-entity": "Editar {{entity}}",
     "filter": "Filtrar",
-    "filterBy": "Filtrar por...",
+    "filterby": "Filtrar por...",
     "forum": "Foro",
     "email": "Email",
     "state": "Estado",
@@ -699,7 +699,7 @@
     "delete-confirm-title": "¿Borrar Callout?",
     "delete-confirm-text": "All Posts, Whiteboards and messages under the Callout will also be deleted.",
     "state-permission": "Aceptar nuevas respuestas",
-    "permission-help-text": "Utilice el interruptor de abajo para cerrar este callout y hacer espacio para nuevas entradas.",
+    "permission-helptext": "Utilice el interruptor de abajo para cerrar este callout y hacer espacio para nuevas entradas.",
     "callout-location": "Ubicación: ",
     "sortContributions": "Sort contributions",
     "saveAsTemplate": "Save as Template",
@@ -1261,7 +1261,7 @@
         "title": "Detalles",
         "description": "Descripción",
         "type-comments": "Comentarios",
-        "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a message board.",
+        "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a messageboard.",
         "type-posts": "Posts",
         "type-posts-help": "Select Posts when you want people to answer in a card format.",
         "type-whiteboards": "Whiteboards",
@@ -1439,7 +1439,7 @@
     "referenceSegment": {
       "title": "Referencias",
       "description": "Please keep in mind that all the files you attach here become publicly available. If you only want the members of this Space to be able to access the files, attach it to a post or a collection of links on one of the member pages.",
-      "missing-references": "No hay referencias todavía",
+      "missing-refereneces": "No hay referencias todavía",
       "tooltips": {
         "add-reference": "Agregar una referencia",
         "remove-reference": "Borrar la referencia"
@@ -1562,7 +1562,7 @@
       },
       "parentSpace": "in: {{space}}"
     },
-    "errorBlock": {
+    "errorblock": {
       "message": "Lo sentimos, se ha producido un error al cargar {{blockName}}."
     },
     "loading": {
@@ -1783,7 +1783,7 @@
         "profile": {
           "description": ""
         },
-        "subEntities": {
+        "subentities": {
           "description": "Aquí puedes explorar los desafíos hospedados en este hub. Filtra por palabras clave para mostrar solo los temas que te interesen.",
           "list": "Lista de {{entities}}",
           "empty": "No hay {{entities}} en este {{parentEntity}}.",
@@ -2017,8 +2017,8 @@
           }
         },
         "notifications": {
-          "space-created": "Space created successfully.",
-          "errorCreatingSpace": "An error occurred while creating the Space.",
+          "space-created": "Space created successfuly.",
+          "errorCreatingSpace": "An error ocurred while creating the Space.",
           "space-removed": "Space '{{name}}' removed successfully."
         },
         "settings": {
@@ -2031,7 +2031,7 @@
           "license-features": {
             "title": "Space Features",
             "features": {
-              "WHITEBOARD_MULTI_USER": "Multi-user Whiteboards",
+              "WHITEBOARD_MULTI_USER": "Multiuser Whiteboards",
               "CALLOUT_TO_CALLOUT_TEMPLATE": "Create template from callout",
               "VIRTUAL_CONTRIBUTORS": "Interact with virtual contributors"
             }
@@ -2323,7 +2323,7 @@
         },
         "innovationLibraryBlock": {
           "title": "Innovation library: Have you seen this one yet...?",
-          "description": "In the Library you can find Innovation Packs composed for you by various organizations. Each Innovation pack can hold a variety of Whiteboard templates, Post templates, and Innovation flows.",
+          "description": "In the Library you can find Innovation Packs composed for you by various organisations. Each Innovation pack can hold a variety of Whiteboard templates, Post templates, and Innovation flows.",
           "seeMore": "Explore more Innovation Packs"
         },
         "space": {
@@ -2979,7 +2979,7 @@
       {
         "name": "SPACE_LICENSE_PREMIUM",
         "displayName": "Premium",
-        "priceDescription": "For Established Communities, organizations, coalitions...",
+        "priceDescription": "For Established Communities, organisations, coalitions...",
         "features": [
           "Up to 250 members",
           "Realtime, multi-user Whiteboards",
@@ -3099,7 +3099,7 @@
           "placeholder": "Select a provider from this list"
         }
       },
-      "comingSoon": {
+      "commingSoon": {
         "title": "🚀 Coming soon!",
         "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
         "input": {
