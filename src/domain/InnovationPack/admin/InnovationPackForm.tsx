@@ -45,7 +45,9 @@ type InnovationPackFormProps = {
   loading?: boolean;
   onSubmit: (formData: InnovationPackFormValues) => void;
 };
-
+/**
+ * Requires StorageConfigContextProvider
+ */
 const InnovationPackForm = ({
   isNew = false,
   nameID,
@@ -116,6 +118,7 @@ const InnovationPackForm = ({
               </>
             )}
             <FormikMarkdownField
+              temporaryLocation={isNew}
               title={t('common.description')}
               name="profile.description"
               maxLength={MARKDOWN_TEXT_LENGTH}
@@ -133,7 +136,7 @@ const InnovationPackForm = ({
             ) : (
               <BlockSectionTitle>{t('pages.admin.innovation-packs.save-new-for-details')}</BlockSectionTitle>
             )}
-            <Box display="flex" marginY={4} justifyContent="flex-end">
+            <Box display="flex" justifyContent="flex-end">
               <SaveButton loading={loading} onClick={() => handleSubmit()} />
             </Box>
           </Gutters>

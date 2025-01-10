@@ -41,6 +41,8 @@ export type Account = {
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
+  /** The external subscription ID for this Account. */
+  externalSubscriptionID?: Maybe<Scalars['String']>;
   /** The Account host. */
   host?: Maybe<Contributor>;
   /** The ID of the entity */
@@ -3619,7 +3621,7 @@ export type Mutation = {
   /** Create a test customer on wingback. */
   adminWingbackCreateTestCustomer: Scalars['String'];
   /** Get wingback customer entitlements. */
-  adminWingbackGetCustomerEntitlements: Scalars['String'];
+  adminWingbackGetCustomerEntitlements: Array<LicensingGrantedEntitlement>;
   /** Reset the Authorization Policy on the specified AiServer. */
   aiServerAuthorizationPolicyReset: AiServer;
   /** Creates a new AiPersonaService on the aiServer. */
@@ -8460,6 +8462,7 @@ export type AccountInformationQuery = {
       | {
           __typename?: 'Account';
           id: string;
+          externalSubscriptionID?: string | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -8467,6 +8470,12 @@ export type AccountInformationQuery = {
             __typename?: 'License';
             id: string;
             availableEntitlements?: Array<LicenseEntitlementType> | undefined;
+            entitlements: Array<{
+              __typename?: 'LicenseEntitlement';
+              type: LicenseEntitlementType;
+              limit: number;
+              usage: number;
+            }>;
           };
           host?:
             | { __typename?: 'Organization'; id: string }
