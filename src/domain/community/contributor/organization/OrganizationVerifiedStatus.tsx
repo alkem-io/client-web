@@ -1,9 +1,7 @@
 import { Tooltip } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
-import { Help } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
+import { BlockTitle } from '@/core/ui/typography';
+import { BeenhereOutlined } from '@mui/icons-material';
 
 type VerifiedStatusProps = {
   verified: boolean;
@@ -11,29 +9,18 @@ type VerifiedStatusProps = {
   helpText?: string;
 };
 
-const useStyles = makeStyles(theme =>
-  createStyles({
-    icon: {
-      marginLeft: theme.spacing(1),
-    },
-  })
-);
-
 export const OrganizationVerifiedStatus = ({ verified, helpText }: VerifiedStatusProps) => {
   const { t } = useTranslation();
-  const styles = useStyles();
-
-  const color = verified ? 'success' : 'warning';
 
   return (
-    <WrapperTypography weight="bold" color={color}>
-      {verified ? t('common.verified-status.verified') : t('common.verified-status.not-verified')}
+    <BlockTitle sx={{ display: 'flex', alignItems: 'center', columnGap: 0.5 }}>
       {helpText && verified && (
         <Tooltip title={helpText} arrow placement="right">
-          <Help color="primary" className={styles.icon} />
+          <BeenhereOutlined fontSize="small" color="primary" />
         </Tooltip>
       )}
-    </WrapperTypography>
+      {verified ? t('common.verified-status.verified') : t('common.verified-status.not-verified')}
+    </BlockTitle>
   );
 };
 
