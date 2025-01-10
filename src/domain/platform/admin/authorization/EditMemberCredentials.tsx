@@ -6,7 +6,6 @@ import { useAvailableMembersWithCredential } from '@/domain/access/removeMe/useA
 interface EditAdminCredentialsProps extends Pick<EditMemberUsersProps, 'onAdd' | 'onRemove' | 'updating'> {
   /** Members of the edited entity */
   roleSetId?: string;
-  parentRoleSetId?: string; // To get addable users
   title?: string;
 }
 
@@ -15,17 +14,14 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
   onRemove,
   title,
   roleSetId,
-  parentRoleSetId,
   updating,
 }) => {
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
 
-  const { availableMembers, currentMembers, loading, hasMore, setSearchTerm } =
-    useAvailableMembersWithCredential({
-      credential,
-      roleSetId,
-    });
+  const { availableMembers, currentMembers, loading, hasMore, setSearchTerm } = useAvailableMembersWithCredential({
+    roleSetId,
+  });
 
   return (
     <EditMemberUsers

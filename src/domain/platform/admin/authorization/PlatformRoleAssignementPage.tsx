@@ -22,11 +22,6 @@ const PlatformRoleAssignementPage = ({ role, roleSetId }: PlatformRoleAssignemen
         role,
         roleSetId,
       },
-      refetchQueries: [
-        refetchUsersWithRoleQuery({
-          input: { role, roleSetId },
-        }),
-      ],
       awaitRefetchQueries: true,
     });
   };
@@ -38,11 +33,6 @@ const PlatformRoleAssignementPage = ({ role, roleSetId }: PlatformRoleAssignemen
         role,
         roleSetId,
       },
-      refetchQueries: [
-        refetchUsersWithCredentialsQuery({
-          input: { role, roleSetId },
-        }),
-      ],
       awaitRefetchQueries: true,
     });
   };
