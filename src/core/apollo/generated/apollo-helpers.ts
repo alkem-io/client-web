@@ -8,6 +8,7 @@ export type AccountKeySpecifier = (
   | 'agent'
   | 'authorization'
   | 'createdDate'
+  | 'externalSubscriptionID'
   | 'host'
   | 'id'
   | 'innovationHubs'
@@ -25,6 +26,7 @@ export type AccountFieldPolicy = {
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  externalSubscriptionID?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
