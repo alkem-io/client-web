@@ -1088,6 +1088,7 @@
         "editState": "Edit Details",
         "deleteState": "Delete",
         "addState": "Add Phase",
+        "invalidChars": "A phase name cannot contain special characters.",
         "noRepeatedStates": "A phase with the same name already exists.",
         "createDialog": {
           "title": "Create Flow Phase"
