@@ -3,55 +3,48 @@ import AdminLayout from '../layout/toplevel/AdminLayout';
 import { Box, Tab } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { AdminSection } from '../layout/toplevel/constants';
-import { AuthorizationCredential, PlatformRole } from '@/core/apollo/generated/graphql-schema';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import PlatformRoleAssignementPage from './PlatformRoleAssignementPage';
 import { gutters } from '@/core/ui/grid/utils';
 
 interface AdminAuthorizationPageProps {
-  credential?: AuthorizationCredential;
+  role?: RoleName;
 }
 
 const tabs = [
   {
     title: 'Global admins',
-    authorizationCredential: AuthorizationCredential.GlobalAdmin,
-    platformRole: PlatformRole.GlobalAdmin,
+    platformRole: RoleName.GlobalAdmin,
   },
   {
     title: 'Support',
-    authorizationCredential: AuthorizationCredential.GlobalSupport,
-    platformRole: PlatformRole.Support,
+    platformRole: RoleName.GlobalSupport,
   },
   {
     title: 'License Manager',
-    authorizationCredential: AuthorizationCredential.GlobalLicenseManager,
-    platformRole: PlatformRole.LicenseManager,
+    platformRole: RoleName.GlobalLicenseManager,
   },
   {
     title: 'Community Reader',
-    authorizationCredential: AuthorizationCredential.GlobalCommunityRead,
-    platformRole: PlatformRole.CommunityReader,
+    platformRole: RoleName.GlobalCommunityReader,
   },
   {
     title: 'Spaces Reader',
-    authorizationCredential: AuthorizationCredential.GlobalSpacesReader,
-    platformRole: PlatformRole.SpacesReader,
+    platformRole: RoleName.GlobalSpacesReader,
   },
   {
     title: 'Beta Testers',
-    authorizationCredential: AuthorizationCredential.BetaTester,
-    platformRole: PlatformRole.BetaTester,
+    platformRole: RoleName.PlatformBetaTester,
   },
   {
     title: 'VC Campaign',
-    authorizationCredential: AuthorizationCredential.VcCampaign,
-    platformRole: PlatformRole.VcCampaign,
+    platformRole: RoleName.PlatformVcCampaign,
   },
 ];
 
-const AdminAuthorizationPage = ({ credential }: AdminAuthorizationPageProps) => {
-  const selectedTab: AuthorizationCredential | '_none' = credential ?? '_none';
+const AdminAuthorizationPage = ({ role }: AdminAuthorizationPageProps) => {
+  const selectedTab: RoleName | '_none' = role ?? '_none'; // TODO: test + tidy up
 
   return (
     <AdminLayout currentTab={AdminSection.Authorization}>
@@ -60,10 +53,10 @@ const AdminAuthorizationPage = ({ credential }: AdminAuthorizationPageProps) => 
           <TabList sx={{ '.MuiTabs-flexContainer': { gap: gutters() } }}>
             {tabs.map(tab => (
               <Tab
-                key={tab.authorizationCredential}
-                value={tab.authorizationCredential}
+                key={tab.platformRole}
+                value={tab.platformRole}
                 component={RouterLink}
-                to={`/admin/authorization/roles/${tab.authorizationCredential}`}
+                to={`/admin/authorization/roles/${tab.platformRole}`}
                 label={tab.title}
               />
             ))}
@@ -71,11 +64,8 @@ const AdminAuthorizationPage = ({ credential }: AdminAuthorizationPageProps) => 
         </Box>
         <TabPanel value="_none" />
         {tabs.map(tab => (
-          <TabPanel key={tab.authorizationCredential} value={tab.authorizationCredential}>
-            <PlatformRoleAssignementPage
-              role={tab.platformRole}
-              authorizationCredential={tab.authorizationCredential}
-            />
+          <TabPanel key={tab.platformRole} value={tab.platformRole}>
+            <PlatformRoleAssignementPage role={tab.platformRole} />
           </TabPanel>
         ))}
       </TabContext>

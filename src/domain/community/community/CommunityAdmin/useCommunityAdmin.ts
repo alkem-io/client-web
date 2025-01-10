@@ -13,7 +13,7 @@ import {
   useRemoveRoleFromOrganizationMutation,
   useRoleSetAvailableMembersLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { CommunityRoleType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { OrganizationDetailsFragmentWithRoles } from '@/domain/community/community/CommunityAdmin/CommunityOrganizations';
 import { CommunityMemberUserFragmentWithRoles } from '@/domain/community/community/CommunityAdmin/CommunityUsers';
 import useInviteUsers from '@/domain/community/invitations/useInviteUsers';
@@ -215,7 +215,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
       variables: {
         roleSetId,
         contributorId: memberId,
-        role: CommunityRoleType.Member,
+        role: RoleName.Member,
       },
     });
     await refetchAvailableMemberUsers();
@@ -231,7 +231,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
       variables: {
         roleSetId,
         contributorId: memberId,
-        role: CommunityRoleType.Member,
+        role: RoleName.Member,
       },
     });
     await refetchAvailableMemberOrganizations();
@@ -263,7 +263,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
         variables: {
           contributorId: memberId,
           roleSetId,
-          role: CommunityRoleType.Lead,
+          role: RoleName.Lead,
         },
       });
     } else {
@@ -271,7 +271,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
         variables: {
           contributorId: memberId,
           roleSetId,
-          role: CommunityRoleType.Lead,
+          role: RoleName.Lead,
         },
       });
     }
@@ -284,11 +284,11 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
     }
     if (isAdmin) {
       await assignRoleToUser({
-        variables: { roleSetId: roleSetId, role: CommunityRoleType.Admin, contributorId: memberId },
+        variables: { roleSetId: roleSetId, role: RoleName.Admin, contributorId: memberId },
       });
     } else {
       await removeRoleFromUser({
-        variables: { roleSetId: roleSetId, role: CommunityRoleType.Admin, contributorId: memberId },
+        variables: { roleSetId: roleSetId, role: RoleName.Admin, contributorId: memberId },
       });
     }
     return refetchCommunityMembers();
@@ -303,7 +303,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
       variables: {
         contributorId: memberId,
         roleSetId,
-        role: CommunityRoleType.Member,
+        role: RoleName.Member,
       },
     });
     return refetchCommunityMembers();
@@ -320,7 +320,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
         variables: {
           contributorId: memberId,
           roleSetId,
-          role: CommunityRoleType.Lead,
+          role: RoleName.Lead,
         },
       });
     } else {
@@ -328,7 +328,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
         variables: {
           contributorId: memberId,
           roleSetId,
-          role: CommunityRoleType.Lead,
+          role: RoleName.Lead,
         },
       });
     }
@@ -344,7 +344,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
       variables: {
         contributorId: memberId,
         roleSetId,
-        role: CommunityRoleType.Member,
+        role: RoleName.Member,
       },
     });
     return refetchCommunityMembers();

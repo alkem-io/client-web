@@ -15,7 +15,7 @@ import {
 import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { useTranslation } from 'react-i18next';
-import { AuthorizationPrivilege, PlatformRole } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, RoleName } from '@/core/apollo/generated/graphql-schema';
 import { useUserContext } from '@/domain/community/user';
 import Gutters from '@/core/ui/grid/Gutters';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
@@ -49,7 +49,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
 
     const { user: { user, hasPlatformPrivilege } = {}, isAuthenticated, platformRoles } = useUserContext();
 
-    // todo: change with PlatformRole.GlobalAdmin?
+    // todo: change with RoleName.GlobalAdmin?
     const isAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
 
     const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
@@ -58,15 +58,15 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
     const role = useMemo(() => {
       for (const platformRole of platformRoles) {
         switch (platformRole) {
-          case PlatformRole.GlobalAdmin:
+          case RoleName.GlobalAdmin:
             return t('common.roles.GLOBAL_ADMIN');
-          case PlatformRole.Support:
+          case RoleName.GlobalSupport:
             return t('common.roles.SUPPORT');
-          case PlatformRole.LicenseManager:
+          case RoleName.GlobalLicenseManager:
             return t('common.roles.LICENSE_MANAGER');
-          case PlatformRole.BetaTester:
+          case RoleName.PlatformBetaTester:
             return t('common.roles.BETA_TESTER');
-          case PlatformRole.VcCampaign:
+          case RoleName.PlatformVcCampaign:
             return t('common.roles.VC_CAMPAIGN');
           default:
             return null;

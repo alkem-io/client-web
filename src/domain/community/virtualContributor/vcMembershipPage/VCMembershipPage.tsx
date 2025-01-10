@@ -5,7 +5,7 @@ import { ContributionsView } from '@/domain/community/profile/views/ProfileView'
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import VCSettingsPageLayout from '../../virtualContributorAdmin/layout/VCSettingsPageLayout';
 import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
-import { AuthorizationPrivilege, CommunityContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useVcMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   PendingMembershipsDialogType,
@@ -39,7 +39,7 @@ const UserMembershipPage = () => {
         id: space.id,
         spaceLevel: SpaceLevel.Space,
         contributorId: data.virtualContributor.id,
-        contributorType: CommunityContributorType.Virtual,
+        contributorType: RoleSetContributorType.Virtual,
       };
       acc.push(currentSpace);
 
@@ -48,7 +48,7 @@ const UserMembershipPage = () => {
         spaceID: subspace.id,
         spaceLevel: subspace.level,
         contributorId: data.virtualContributor.id,
-        contributorType: CommunityContributorType.Virtual,
+        contributorType: RoleSetContributorType.Virtual,
       }));
 
       return acc.concat(subspaces);
@@ -59,7 +59,7 @@ const UserMembershipPage = () => {
     return data?.me.communityInvitations
       .filter(
         invitation =>
-          invitation.invitation.contributorType === CommunityContributorType.Virtual &&
+          invitation.invitation.contributorType === RoleSetContributorType.Virtual &&
           invitation.invitation.contributor.id === data.virtualContributor.id
       )
       .map(invitation => ({
@@ -67,7 +67,7 @@ const UserMembershipPage = () => {
         spaceID: invitation.spacePendingMembershipInfo.id,
         spaceLevel: invitation.spacePendingMembershipInfo.level,
         contributorId: data.virtualContributor.id,
-        contributorType: CommunityContributorType.Virtual,
+        contributorType: RoleSetContributorType.Virtual,
       }));
   }, [data]);
 

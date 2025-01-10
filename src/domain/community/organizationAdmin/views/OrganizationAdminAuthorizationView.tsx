@@ -1,18 +1,19 @@
 import React, { FC } from 'react';
 import EditMemberUsers from '@/domain/platform/admin/components/Community/EditMembersUsers';
-import OrganizationAssociatesContainer from '@/domain/community/contributor/organization/OrganizationAssociatesContainer/OrganizationAssociatesContainer';
+import OrganizationAssociatesContainer from '@/domain/access/removeMe/OrganizationAssociatesContainer/OrganizationAssociatesContainer';
 import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
 import Loading from '@/core/ui/loading/Loading';
 import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
 import { useOrganizationAssociatesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 
 export const OrganizationAdminAuthorizationView: FC = () => {
-  const { organizationId, loading: isLoadingOrganization } = useOrganization();
+  const { roleSetId, loading: isLoadingOrganization } = useOrganization();
   const { t } = useTranslation();
 
   const { data, loading: isLoadingAssociates } = useOrganizationAssociatesQuery({
-    variables: { id: organizationId },
+    variables: { roleSetId: roleSetId },
     skip: isLoadingOrganization,
   });
 
@@ -20,19 +21,15 @@ export const OrganizationAdminAuthorizationView: FC = () => {
     return <Loading />;
   }
 
-  const orgAssociates = data?.organization.associates;
+  const orgAssociates = data?.lookup.roleSet?.associatedUsers || [];
 
   return (
-    <DashboardGenericSection
-      headerText={t(
-        `common.enums.authorization-credentials.${AuthorizationCredential.OrganizationAdmin}.name` as const
-      )}
-    >
+    <DashboardGenericSection headerText={t(`organization.role.${RoleName.Admin}.name` as const)}>
       <OrganizationAssociatesContainer
         entities={{
-          organizationId,
-          parentAssociates: orgAssociates,
-          credential: AuthorizationCredential.OrganizationAdmin,
+          roleSetID: roleSetId,
+          existingAssociatedUsers: orgAssociates,
+          role: RoleName.Admin,
         }}
       >
         {({ entities, actions, state }) => (

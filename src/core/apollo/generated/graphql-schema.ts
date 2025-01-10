@@ -7941,6 +7941,72 @@ export type JoinRoleSetMutationVariables = Exact<{
 
 export type JoinRoleSetMutation = { __typename?: 'Mutation'; joinRoleSet: { __typename?: 'RoleSet'; id: string } };
 
+export type AssignRoleToUserMutationVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  role: RoleName;
+  contributorId: Scalars['UUID'];
+}>;
+
+export type AssignRoleToUserMutation = {
+  __typename?: 'Mutation';
+  assignRoleToUser: { __typename?: 'User'; id: string };
+};
+
+export type RemoveRoleFromUserMutationVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  role: RoleName;
+  contributorId: Scalars['UUID'];
+}>;
+
+export type RemoveRoleFromUserMutation = {
+  __typename?: 'Mutation';
+  removeRoleFromUser: { __typename?: 'User'; id: string };
+};
+
+export type AssignRoleToOrganizationMutationVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  role: RoleName;
+  contributorId: Scalars['UUID'];
+}>;
+
+export type AssignRoleToOrganizationMutation = {
+  __typename?: 'Mutation';
+  assignRoleToOrganization: { __typename?: 'Organization'; id: string };
+};
+
+export type RemoveRoleFromOrganizationMutationVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  role: RoleName;
+  contributorId: Scalars['UUID'];
+}>;
+
+export type RemoveRoleFromOrganizationMutation = {
+  __typename?: 'Mutation';
+  removeRoleFromOrganization: { __typename?: 'Organization'; id: string };
+};
+
+export type AssignRoleToVirtualContributorMutationVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  role: RoleName;
+  contributorId: Scalars['UUID'];
+}>;
+
+export type AssignRoleToVirtualContributorMutation = {
+  __typename?: 'Mutation';
+  assignRoleToVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
+};
+
+export type RemoveRoleFromVirtualContributorMutationVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  role: RoleName;
+  contributorId: Scalars['UUID'];
+}>;
+
+export type RemoveRoleFromVirtualContributorMutation = {
+  __typename?: 'Mutation';
+  removeRoleFromVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
+};
+
 export type CommunityApplicationsInvitationsQueryVariables = Exact<{
   roleSetId: Scalars['UUID'];
 }>;
@@ -8303,6 +8369,50 @@ export type RoleSetAvailableMembersQuery = {
           };
         }
       | undefined;
+  };
+};
+
+export type OrganizationAssociatesQueryVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+}>;
+
+export type OrganizationAssociatesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    roleSet?:
+      | {
+          __typename?: 'RoleSet';
+          id: string;
+          associatedUsers: Array<{
+            __typename?: 'User';
+            id: string;
+            firstName: string;
+            lastName: string;
+            email: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type AvailableUsersQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type AvailableUsersQuery = {
+  __typename?: 'Query';
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{
+      __typename?: 'User';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string };
+    }>;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
   };
 };
 
@@ -15812,25 +15922,6 @@ export type CreateGroupOnCommunityMutation = {
   };
 };
 
-export type AvailableUsersQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['UUID']>;
-  filter?: InputMaybe<UserFilterInput>;
-}>;
-
-export type AvailableUsersQuery = {
-  __typename?: 'Query';
-  usersPaginated: {
-    __typename?: 'PaginatedUsers';
-    users: Array<{
-      __typename?: 'User';
-      id: string;
-      profile: { __typename?: 'Profile'; id: string; displayName: string };
-    }>;
-    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
-  };
-};
-
 export type BasicOrganizationDetailsFragment = {
   __typename?: 'Organization';
   id: string;
@@ -16241,72 +16332,6 @@ export type AllOrganizationsQuery = {
   };
 };
 
-export type AssignRoleToUserMutationVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-  role: RoleName;
-  contributorId: Scalars['UUID'];
-}>;
-
-export type AssignRoleToUserMutation = {
-  __typename?: 'Mutation';
-  assignRoleToUser: { __typename?: 'User'; id: string };
-};
-
-export type RemoveRoleFromUserMutationVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-  role: RoleName;
-  contributorId: Scalars['UUID'];
-}>;
-
-export type RemoveRoleFromUserMutation = {
-  __typename?: 'Mutation';
-  removeRoleFromUser: { __typename?: 'User'; id: string };
-};
-
-export type AssignRoleToOrganizationMutationVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-  role: RoleName;
-  contributorId: Scalars['UUID'];
-}>;
-
-export type AssignRoleToOrganizationMutation = {
-  __typename?: 'Mutation';
-  assignRoleToOrganization: { __typename?: 'Organization'; id: string };
-};
-
-export type RemoveRoleFromOrganizationMutationVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-  role: RoleName;
-  contributorId: Scalars['UUID'];
-}>;
-
-export type RemoveRoleFromOrganizationMutation = {
-  __typename?: 'Mutation';
-  removeRoleFromOrganization: { __typename?: 'Organization'; id: string };
-};
-
-export type AssignRoleToVirtualContributorMutationVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-  role: RoleName;
-  contributorId: Scalars['UUID'];
-}>;
-
-export type AssignRoleToVirtualContributorMutation = {
-  __typename?: 'Mutation';
-  assignRoleToVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
-};
-
-export type RemoveRoleFromVirtualContributorMutationVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-  role: RoleName;
-  contributorId: Scalars['UUID'];
-}>;
-
-export type RemoveRoleFromVirtualContributorMutation = {
-  __typename?: 'Mutation';
-  removeRoleFromVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
-};
-
 export type ContributorsPageOrganizationsQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
@@ -16651,31 +16676,6 @@ export type AssociatedOrganizationDetailsFragment = {
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
 };
 
-export type OrganizationAssociatesQueryVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-}>;
-
-export type OrganizationAssociatesQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    roleSet?:
-      | {
-          __typename?: 'RoleSet';
-          id: string;
-          associatedUsers: Array<{
-            __typename?: 'User';
-            id: string;
-            firstName: string;
-            lastName: string;
-            email: string;
-            profile: { __typename?: 'Profile'; id: string; displayName: string };
-          }>;
-        }
-      | undefined;
-  };
-};
-
 export type RolesOrganizationQueryVariables = Exact<{
   input: Scalars['UUID_NAMEID'];
 }>;
@@ -16714,6 +16714,37 @@ export type OrganizationInfoFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
+  roleSet: {
+    __typename?: 'RoleSet';
+    id: string;
+    associatedUsers: Array<{
+      __typename?: 'User';
+      id: string;
+      nameID: string;
+      isContactable: boolean;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+        visual?:
+          | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
+          | undefined;
+        tagsets?:
+          | Array<{
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }>
+          | undefined;
+      };
+    }>;
+    adminUsers: Array<{ __typename?: 'User'; id: string }>;
+    ownerUsers: Array<{ __typename?: 'User'; id: string }>;
+  };
   verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
   profile: {
     __typename?: 'Profile';
@@ -16750,37 +16781,6 @@ export type OrganizationInfoFragment = {
       | undefined;
   };
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-  roleSet: {
-    __typename?: 'RoleSet';
-    id: string;
-    associatedUsers: Array<{
-      __typename?: 'User';
-      id: string;
-      nameID: string;
-      isContactable: boolean;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        displayName: string;
-        location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
-        visual?:
-          | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
-          | undefined;
-        tagsets?:
-          | Array<{
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }>
-          | undefined;
-      };
-    }>;
-    adminUsers: Array<{ __typename?: 'User'; id: string }>;
-    ownerUsers: Array<{ __typename?: 'User'; id: string }>;
-  };
 };
 
 export type OrganizationInfoQueryVariables = Exact<{
@@ -16800,6 +16800,37 @@ export type OrganizationInfoQuery = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
+    roleSet: {
+      __typename?: 'RoleSet';
+      id: string;
+      associatedUsers: Array<{
+        __typename?: 'User';
+        id: string;
+        nameID: string;
+        isContactable: boolean;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+          visual?:
+            | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
+            | undefined;
+          tagsets?:
+            | Array<{
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }>
+            | undefined;
+        };
+      }>;
+      adminUsers: Array<{ __typename?: 'User'; id: string }>;
+      ownerUsers: Array<{ __typename?: 'User'; id: string }>;
+    };
     verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
     profile: {
       __typename?: 'Profile';
@@ -16836,37 +16867,6 @@ export type OrganizationInfoQuery = {
         | undefined;
     };
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-    roleSet: {
-      __typename?: 'RoleSet';
-      id: string;
-      associatedUsers: Array<{
-        __typename?: 'User';
-        id: string;
-        nameID: string;
-        isContactable: boolean;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
-          visual?:
-            | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
-            | undefined;
-          tagsets?:
-            | Array<{
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }>
-            | undefined;
-        };
-      }>;
-      adminUsers: Array<{ __typename?: 'User'; id: string }>;
-      ownerUsers: Array<{ __typename?: 'User'; id: string }>;
-    };
   };
 };
 
@@ -17134,21 +17134,6 @@ export type OrganizationProfileInfoQuery = {
         | undefined;
     };
   };
-};
-
-export type OrganizationsListQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Float']>;
-  shuffle?: InputMaybe<Scalars['Boolean']>;
-  filterCredentials?: InputMaybe<Array<AuthorizationCredential> | AuthorizationCredential>;
-}>;
-
-export type OrganizationsListQuery = {
-  __typename?: 'Query';
-  organizations: Array<{
-    __typename?: 'Organization';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  }>;
 };
 
 export type AccountResourcesInfoQueryVariables = Exact<{
@@ -18762,11 +18747,11 @@ export type EntitlementDetailsFragment = {
   enabled: boolean;
 };
 
-export type SpaceCommunityContributorsQueryVariables = Exact<{
+export type SpaceRoleSetContributorTypesQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
 }>;
 
-export type SpaceCommunityContributorsQuery = {
+export type SpaceRoleSetContributorTypesQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';

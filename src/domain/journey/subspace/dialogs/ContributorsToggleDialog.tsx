@@ -2,14 +2,14 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogContent } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import CommunityContributorsBlockWide from '@/domain/community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWide';
-import { useSpaceCommunityContributorsQuery } from '@/core/apollo/generated/apollo-hooks';
+import RoleSetContributorTypesBlockWide from '@/domain/community/contributor/RoleSetContributorTypesBlockWide/RoleSetContributorTypesBlockWide';
+import { useSpaceRoleSetContributorTypesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useUserContext } from '@/domain/community/user';
 import { BlockTitle, Caption } from '@/core/ui/typography';
-import CommunityVirtualContributorsBlockWide from '@/domain/community/contributor/CommunityContributorsBlockWide/CommunityVirtualContributorsBlockWide';
-import { CommunityContributorType, SearchVisibility } from '@/core/apollo/generated/graphql-schema';
+import CommunityVirtualContributorsBlockWide from '@/domain/community/contributor/RoleSetContributorTypesBlockWide/CommunityVirtualContributorsBlockWide';
+import { RoleSetContributorType, SearchVisibility } from '@/core/apollo/generated/graphql-schema';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import Gutters from '@/core/ui/grid/Gutters';
 
@@ -27,7 +27,7 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
   const { isAuthenticated } = useUserContext();
   const { t } = useTranslation();
 
-  const { loading, data } = useSpaceCommunityContributorsQuery({
+  const { loading, data } = useSpaceRoleSetContributorTypesQuery({
     variables: {
       spaceId: journeyId,
     },
@@ -40,7 +40,7 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
     avatar: user.profile.visual?.uri || '',
     displayName: user.profile.displayName || '',
     url: user.profile.url,
-    contributorType: CommunityContributorType.User,
+    contributorType: RoleSetContributorType.User,
   }));
 
   const organizations: ContributorCardSquareProps[] | undefined = roleSet?.memberOrganizations.map(organization => ({
@@ -48,7 +48,7 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
     avatar: organization.profile.visual?.uri || '',
     displayName: organization.profile.displayName || '',
     url: organization.profile.url,
-    contributorType: CommunityContributorType.Organization,
+    contributorType: RoleSetContributorType.Organization,
   }));
 
   const virtualContributors: VirtualContributorProps[] =
@@ -61,7 +61,7 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
         {!isAuthenticated && <Caption>{t('pages.contributors.unauthorized')}</Caption>}
         {isAuthenticated && (
           <Gutters disablePadding>
-            <CommunityContributorsBlockWide
+            <RoleSetContributorTypesBlockWide
               users={users}
               organizations={organizations}
               isLoading={loading}

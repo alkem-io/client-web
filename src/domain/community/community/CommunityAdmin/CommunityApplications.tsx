@@ -13,7 +13,7 @@ import {
   AdminCommunityApplicationFragment,
   AdminPlatformInvitationCommunityFragment,
   AdminCommunityInvitationFragment,
-  CommunityContributorType,
+  RoleSetContributorType,
   User,
 } from '@/core/apollo/generated/graphql-schema';
 import { ApplicationDialog } from '@/domain/community/application/dialogs/ApplicationDialog';
@@ -31,7 +31,7 @@ enum MembershipType {
 type MembershipTableItem = {
   id: string;
   type: MembershipType;
-  contributorType: CommunityContributorType;
+  contributorType: RoleSetContributorType;
   url: string;
   displayName: string;
   state?: string;
@@ -150,7 +150,7 @@ const CreatePendingMembershipForApplication = (application: AdminCommunityApplic
   const result: MembershipTableItem = {
     id: application.id,
     type: MembershipType.Application,
-    contributorType: CommunityContributorType.User,
+    contributorType: RoleSetContributorType.User,
     displayName: applicant.profile.displayName,
     url: applicant.profile.url,
     state: application.state,
@@ -187,7 +187,7 @@ const CreatePendingMembershipForPlatformInvitation = (invitation: AdminPlatformI
   const result: MembershipTableItem = {
     id: invitation.id,
     type: MembershipType.PlatformInvitation,
-    contributorType: CommunityContributorType.User,
+    contributorType: RoleSetContributorType.User,
     nextEvents: [],
     displayName: invitation.email,
     url: '',

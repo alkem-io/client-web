@@ -22,9 +22,9 @@ import {
   CalloutState,
   CalloutType,
   CalloutVisibility,
-  CommunityRoleType,
   CreateVirtualContributorOnAccountMutationVariables,
   LicensingCredentialBasedPlanType,
+  RoleName,
   SpaceType,
 } from '@/core/apollo/generated/graphql-schema';
 import CreateNewVirtualContributor, { VirtualContributorFromProps } from './CreateNewVirtualContributor';
@@ -537,7 +537,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           variables: {
             roleSetId: parentRoleSetId,
             contributorId: virtualContributorId,
-            role: CommunityRoleType.Member,
+            role: RoleName.Member,
           },
         });
       }
@@ -547,7 +547,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         variables: {
           roleSetId: roleSetId,
           contributorId: virtualContributorId,
-          role: CommunityRoleType.Member,
+          role: RoleName.Member,
         },
       });
 

@@ -12,7 +12,7 @@ import {
   VirtualContributor,
 } from '../contributor/ContributorsSearch/ContributorsSearchContainer';
 import {
-  CommunityContributorType,
+  RoleSetContributorType,
   OrganizationContributorFragment,
   UserContributorFragment,
 } from '@/core/apollo/generated/graphql-schema';
@@ -42,7 +42,7 @@ const userToContributorCard = (user: UserContributorFragment): ContributorCardSq
       country: user.userProfile?.location?.country || '',
     },
     isContactable: user.isContactable,
-    contributorType: CommunityContributorType.User,
+    contributorType: RoleSetContributorType.User,
   };
 };
 
@@ -53,7 +53,7 @@ const organizationToContributorCard = (org: OrganizationContributorFragment): Co
     avatar: org.orgProfile.visual?.uri ?? '',
     url: buildOrganizationUrl(org.nameID),
     isContactable: true,
-    contributorType: CommunityContributorType.Organization,
+    contributorType: RoleSetContributorType.Organization,
   };
 };
 
@@ -69,7 +69,7 @@ const vcToContributorCard = (vc: VirtualContributor): ContributorCardSquareProps
       country: vc.profile?.location?.country ?? '',
     },
     isContactable: false,
-    contributorType: CommunityContributorType.Virtual,
+    contributorType: RoleSetContributorType.Virtual,
   };
 };
 

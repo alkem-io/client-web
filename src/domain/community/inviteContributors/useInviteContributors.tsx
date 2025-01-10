@@ -8,12 +8,7 @@ import {
   useRemoveRoleFromVirtualContributorMutation,
   refetchSpaceCommunityPageQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import {
-  AuthorizationPrivilege,
-  CommunityRoleType,
-  SearchVisibility,
-  SpaceLevel,
-} from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, RoleName, SearchVisibility, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useInviteUsers from '@/domain/community/invitations/useInviteUsers';
 import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { Identifiable } from '@/core/utils/Identifiable';
@@ -151,7 +146,7 @@ const useInviteContributors = ({
       variables: {
         roleSetId,
         contributorId: virtualContributorId,
-        role: CommunityRoleType.Member,
+        role: RoleName.Member,
       },
       refetchQueries: [refetchSpaceCommunityPageQuery({ spaceNameId: spaceId ?? '', includeCommunity: true })],
     });
@@ -168,7 +163,7 @@ const useInviteContributors = ({
       variables: {
         roleSetId,
         contributorId: virtualContributorId,
-        role: CommunityRoleType.Member,
+        role: RoleName.Member,
       },
     });
 

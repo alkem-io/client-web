@@ -1,39 +1,35 @@
 import React, { FC } from 'react';
 import EditMemberUsers from '@/domain/platform/admin/components/Community/EditMembersUsers';
-import OrganizationAssociatesContainer from '@/domain/community/contributor/organization/OrganizationAssociatesContainer/OrganizationAssociatesContainer';
+import OrganizationAssociatesContainer from '@/domain/access/removeMe/OrganizationAssociatesContainer/OrganizationAssociatesContainer';
 import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
-import { AuthorizationCredential } from '@/core/apollo/generated/graphql-schema';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import Loading from '@/core/ui/loading/Loading';
 import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
 import { useOrganizationAssociatesQuery } from '@/core/apollo/generated/apollo-hooks';
 
 export const OrganizationOwnerAuthorizationView: FC = () => {
-  const { organizationId, loading: isLoadingOrganization } = useOrganization();
+  const { roleSetId, loading: isLoadingOrganization } = useOrganization();
   const { t } = useTranslation();
 
   const { data, loading: isLoadingAssociates } = useOrganizationAssociatesQuery({
-    variables: { id: organizationId },
-    skip: isLoadingOrganization,
+    variables: { roleSetId },
+    skip: isLoadingOrganization || !roleSetId,
   });
 
   if (isLoadingOrganization || isLoadingAssociates) {
     return <Loading />;
   }
 
-  const orgAssociates = data?.organization.associates;
+  const orgAssociates = data?.lookup.roleSet?.associatedUsers || [];
 
   return (
-    <DashboardGenericSection
-      headerText={t(
-        `common.enums.authorization-credentials.${AuthorizationCredential.OrganizationOwner}.name` as const
-      )}
-    >
+    <DashboardGenericSection headerText={t(`oganization.role.${RoleName.Owner}.name` as const)}>
       <OrganizationAssociatesContainer
         entities={{
-          organizationId,
-          parentAssociates: orgAssociates,
-          credential: AuthorizationCredential.OrganizationOwner,
+          roleSetID: roleSetId,
+          existingAssociatedUsers: orgAssociates,
+          role: RoleName.Owner,
         }}
       >
         {({ entities, actions, state }) => (

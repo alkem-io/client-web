@@ -15,7 +15,7 @@ import {
 } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import {
   AuthorizationPrivilege,
-  CommunityContributorType,
+  RoleSetContributorType,
   OrganizationInfoFragment,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
@@ -143,7 +143,7 @@ export const OrganizationPageContainer = ({ children }: PropsWithChildren<Organi
         },
         url: buildUserProfileUrl(x.nameID),
         isContactable: x.isContactable,
-        contributorType: CommunityContributorType.User,
+        contributorType: RoleSetContributorType.User,
       })) || []
     );
   }, [usersWithRoles]);
@@ -155,7 +155,7 @@ export const OrganizationPageContainer = ({ children }: PropsWithChildren<Organi
       spaceLevel: SpaceLevel.Space,
       id: x.id,
       contributorId: organizationId,
-      contributorType: CommunityContributorType.Organization,
+      contributorType: RoleSetContributorType.Organization,
       roles: x.roles,
     }));
 
@@ -166,7 +166,7 @@ export const OrganizationPageContainer = ({ children }: PropsWithChildren<Organi
           spaceLevel: c.level,
           id: c.id,
           contributorId: organizationId,
-          contributorType: CommunityContributorType.Organization,
+          contributorType: RoleSetContributorType.Organization,
           roles: c.roles,
         }))
       ) || [];

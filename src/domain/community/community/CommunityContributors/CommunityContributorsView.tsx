@@ -12,7 +12,7 @@ import { mapUserCardPropsToContributorCardProps } from '../utils/useCommunityMem
 import { Identifiable } from '@/core/utils/Identifiable';
 import { UserCardProps } from '@/domain/community/user/userCard/UserCard';
 
-export interface CommunityContributorsViewProps extends ContributingOrganizationsProps {
+export interface RoleSetContributorTypesViewProps extends ContributingOrganizationsProps {
   loading?: boolean;
   organizationsCount: number | undefined;
   users: (Identifiable & UserCardProps)[] | undefined;
@@ -25,14 +25,14 @@ const SubSectionHeading = styled(props => <Typography variant="h3" {...props} />
   paddingBottom: theme.spacing(2),
 }));
 
-const CommunityContributorsView = ({
+const RoleSetContributorTypesView = ({
   organizations = [],
   users = [],
   organizationsCount,
   noOrganizationsView,
   loading,
   usersComponent: UsersComponent = DashboardContributingUsers,
-}: CommunityContributorsViewProps) => {
+}: RoleSetContributorTypesViewProps) => {
   const { t } = useTranslation();
 
   return (
@@ -49,4 +49,4 @@ const CommunityContributorsView = ({
   );
 };
 
-export default CommunityContributorsView;
+export default RoleSetContributorTypesView;

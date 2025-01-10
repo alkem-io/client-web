@@ -18,7 +18,7 @@ import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/Scrollabl
 import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
 import InvitationDialog from '../invitations/InvitationDialog';
 import InvitationActionsContainer from '../invitations/InvitationActionsContainer';
-import { CommunityContributorType, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType, VisualType } from '@/core/apollo/generated/graphql-schema';
 import BackButton from '@/core/ui/actions/BackButton';
 import useNavigate from '@/core/routing/useNavigate';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
@@ -47,7 +47,7 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
     setOpenDialog({
       type: PendingMembershipsDialogType.InvitationView,
       invitationId: id,
-      journeyUri: invitation.contributorType === CommunityContributorType.Virtual ? undefined : space.profile.url,
+      journeyUri: invitation.contributorType === RoleSetContributorType.Virtual ? undefined : space.profile.url,
     });
   };
 
@@ -59,11 +59,11 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
       : undefined;
 
   const virtualContributorInvitations = invitations?.filter(
-    invitation => invitation.invitation.contributorType === CommunityContributorType.Virtual
+    invitation => invitation.invitation.contributorType === RoleSetContributorType.Virtual
   );
 
   const nonVirtualContributorInvitations = invitations?.filter(
-    invitation => invitation.invitation.contributorType !== CommunityContributorType.Virtual
+    invitation => invitation.invitation.contributorType !== RoleSetContributorType.Virtual
   );
 
   const pendingMembershipsCount = invitations && applications ? invitations.length + applications.length : undefined;

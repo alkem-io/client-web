@@ -1,4 +1,4 @@
-query SpaceCommunityContributors($spaceId: UUID!) {
+query SpaceRoleSetContributorTypes($spaceId: UUID!) {
   lookup {
     space(ID: $spaceId) {
       id

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { UserDisplayNameFragment } from '@/core/apollo/generated/graphql-schema';
 import { Member } from '@/domain/community/user/models/User';
 import { UseUsersSearchResult } from './useUsersSearch';
-import useAllPossibleMemberUsers from '../useCommunityAssignment/useAllPossibleMemberUsers';
+import useAllPossibleMemberUsers from '../../../community/community/useCommunityAssignment/useAllPossibleMemberUsers';
 
 export interface AvailableMembersResults {
   availableMembers: UserDisplayNameFragment[];
@@ -51,13 +51,13 @@ export const useAvailableMembersWithCredential = (options: UseAvailableMembersOp
     data: existingMembers,
     loading: loadingMembers,
     error: membersError,
-  } = useUsersWithCredentialsQuery({
+  } = useUsersWithRoleQuery({
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',
     variables: {
       input: {
-        type: credential,
-        resourceID: roleSetId,
+        role,
+        roleSetId,
       },
     },
   });
@@ -66,17 +66,17 @@ export const useAvailableMembersWithCredential = (options: UseAvailableMembersOp
   const hasError = errorOnLoadingAllPossibleMembers || !!membersError;
 
   const availableMembers = useMemo<UserDisplayNameFragment[] | undefined>(() => {
-    if (!existingMembers?.usersWithAuthorizationCredential) {
+    if (!existingMembers?.lookup.roleSet.associatedUsers) {
       return allPossibleMemberUsers;
     }
     return allPossibleMemberUsers?.filter(
-      member => !existingMembers.usersWithAuthorizationCredential.some(user => user.id === member.id)
+      member => !existingMembers.lookup.roleSet.associatedUsers.some(user => user.id === member.id)
     );
   }, [allPossibleMemberUsers, existingMembers]);
 
   return {
     availableMembers: availableMembers ?? EMPTY_LIST,
-    currentMembers: existingMembers?.usersWithAuthorizationCredential ?? EMPTY_LIST,
+    currentMembers: existingMembers?.lookup.roleSet.associatedUsers ?? EMPTY_LIST,
     error: hasError,
     loading: isLoading,
     ...allPossibleMembersProvided,

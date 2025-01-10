@@ -3,11 +3,11 @@ import { useUserContext } from '@/domain/community/user';
 import {
   refetchUserOrganizationIdsQuery,
   useAssociatedOrganizationQuery,
-  useRemoveOrganizationRoleFromUserMutation,
+  useRemoveRoleFromUserMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { ContainerPropsWithProvided, renderComponentOrChildrenFn } from '@/core/container/ComponentOrChildrenFn';
 import { AssociatedOrganization, mapToAssociatedOrganization } from './AssociatedOrganization';
-import { OrganizationRole } from '@/core/apollo/generated/graphql-schema';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 
 export type OrganizationDetailsContainerProps = ContainerPropsWithProvided<
   {
@@ -34,8 +34,7 @@ export const AssociatedOrganizationContainer = ({
     errorPolicy: 'all',
   });
 
-  const [disassociateSelfFromOrganization, { loading: removingFromOrganization }] =
-    useRemoveOrganizationRoleFromUserMutation();
+  const [disassociateSelfFromOrganization, { loading: removingFromOrganization }] = useRemoveRoleFromUserMutation();
 
   const handleRemoveSelfFromOrganization = useCallback(async () => {
     if (!user) {
@@ -44,10 +43,10 @@ export const AssociatedOrganizationContainer = ({
 
     await disassociateSelfFromOrganization({
       variables: {
-        input: {
-          userID: user.user.id,
-          organizationID: organizationId,
-          role: OrganizationRole.Associate,
+        roleData: {
+          contributorID: user.user.id,
+          roleSetID: organizationId,
+          role: RoleName.Associate,
         },
       },
       refetchQueries: [refetchUserOrganizationIdsQuery({ userId: user.user.id })],

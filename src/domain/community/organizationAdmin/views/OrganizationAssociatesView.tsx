@@ -1,10 +1,11 @@
 import React, { FC } from 'react';
 import EditMemberUsers from '@/domain/platform/admin/components/Community/EditMembersUsers';
-import OrganizationAssociates from '@/domain/community/contributor/organization/OrganizationAssociatesContainer/OrganizationAssociatesContainer';
+import OrganizationAssociates from '@/domain/access/removeMe/OrganizationAssociatesContainer/OrganizationAssociatesContainer';
 import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
 import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
 import Loading from '@/core/ui/loading/Loading';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 
 export const OrganizationAssociatesView: FC = () => {
   const { organizationId, loading } = useOrganization();
@@ -18,8 +19,8 @@ export const OrganizationAssociatesView: FC = () => {
     <DashboardGenericSection headerText={t('common.members')}>
       <OrganizationAssociates
         entities={{
-          organizationId,
-          credential: AuthorizationCredential.OrganizationAssociate,
+          roleSetID: organizationId,
+          role: RoleName.Associate,
         }}
       >
         {({ entities, actions, state }) => (

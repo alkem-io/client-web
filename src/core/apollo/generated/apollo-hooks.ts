@@ -1320,6 +1320,9 @@ export const OrganizationInfoFragmentDoc = gql`
       id
       myPrivileges
     }
+    roleSet {
+      id
+    }
     verification {
       id
       status
@@ -4633,6 +4636,314 @@ export type JoinRoleSetMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.JoinRoleSetMutation,
   SchemaTypes.JoinRoleSetMutationVariables
 >;
+export const AssignRoleToUserDocument = gql`
+  mutation assignRoleToUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
+    assignRoleToUser(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
+      id
+    }
+  }
+`;
+export type AssignRoleToUserMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignRoleToUserMutation,
+  SchemaTypes.AssignRoleToUserMutationVariables
+>;
+
+/**
+ * __useAssignRoleToUserMutation__
+ *
+ * To run a mutation, you first call `useAssignRoleToUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignRoleToUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignRoleToUserMutation, { data, loading, error }] = useAssignRoleToUserMutation({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *      role: // value for 'role'
+ *      contributorId: // value for 'contributorId'
+ *   },
+ * });
+ */
+export function useAssignRoleToUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignRoleToUserMutation,
+    SchemaTypes.AssignRoleToUserMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.AssignRoleToUserMutation, SchemaTypes.AssignRoleToUserMutationVariables>(
+    AssignRoleToUserDocument,
+    options
+  );
+}
+
+export type AssignRoleToUserMutationHookResult = ReturnType<typeof useAssignRoleToUserMutation>;
+export type AssignRoleToUserMutationResult = Apollo.MutationResult<SchemaTypes.AssignRoleToUserMutation>;
+export type AssignRoleToUserMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignRoleToUserMutation,
+  SchemaTypes.AssignRoleToUserMutationVariables
+>;
+export const RemoveRoleFromUserDocument = gql`
+  mutation removeRoleFromUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
+    removeRoleFromUser(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
+      id
+    }
+  }
+`;
+export type RemoveRoleFromUserMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveRoleFromUserMutation,
+  SchemaTypes.RemoveRoleFromUserMutationVariables
+>;
+
+/**
+ * __useRemoveRoleFromUserMutation__
+ *
+ * To run a mutation, you first call `useRemoveRoleFromUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveRoleFromUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeRoleFromUserMutation, { data, loading, error }] = useRemoveRoleFromUserMutation({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *      role: // value for 'role'
+ *      contributorId: // value for 'contributorId'
+ *   },
+ * });
+ */
+export function useRemoveRoleFromUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveRoleFromUserMutation,
+    SchemaTypes.RemoveRoleFromUserMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.RemoveRoleFromUserMutation, SchemaTypes.RemoveRoleFromUserMutationVariables>(
+    RemoveRoleFromUserDocument,
+    options
+  );
+}
+
+export type RemoveRoleFromUserMutationHookResult = ReturnType<typeof useRemoveRoleFromUserMutation>;
+export type RemoveRoleFromUserMutationResult = Apollo.MutationResult<SchemaTypes.RemoveRoleFromUserMutation>;
+export type RemoveRoleFromUserMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveRoleFromUserMutation,
+  SchemaTypes.RemoveRoleFromUserMutationVariables
+>;
+export const AssignRoleToOrganizationDocument = gql`
+  mutation assignRoleToOrganization($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
+    assignRoleToOrganization(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
+      id
+    }
+  }
+`;
+export type AssignRoleToOrganizationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignRoleToOrganizationMutation,
+  SchemaTypes.AssignRoleToOrganizationMutationVariables
+>;
+
+/**
+ * __useAssignRoleToOrganizationMutation__
+ *
+ * To run a mutation, you first call `useAssignRoleToOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignRoleToOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignRoleToOrganizationMutation, { data, loading, error }] = useAssignRoleToOrganizationMutation({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *      role: // value for 'role'
+ *      contributorId: // value for 'contributorId'
+ *   },
+ * });
+ */
+export function useAssignRoleToOrganizationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignRoleToOrganizationMutation,
+    SchemaTypes.AssignRoleToOrganizationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AssignRoleToOrganizationMutation,
+    SchemaTypes.AssignRoleToOrganizationMutationVariables
+  >(AssignRoleToOrganizationDocument, options);
+}
+
+export type AssignRoleToOrganizationMutationHookResult = ReturnType<typeof useAssignRoleToOrganizationMutation>;
+export type AssignRoleToOrganizationMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignRoleToOrganizationMutation>;
+export type AssignRoleToOrganizationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignRoleToOrganizationMutation,
+  SchemaTypes.AssignRoleToOrganizationMutationVariables
+>;
+export const RemoveRoleFromOrganizationDocument = gql`
+  mutation removeRoleFromOrganization($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
+    removeRoleFromOrganization(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
+      id
+    }
+  }
+`;
+export type RemoveRoleFromOrganizationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveRoleFromOrganizationMutation,
+  SchemaTypes.RemoveRoleFromOrganizationMutationVariables
+>;
+
+/**
+ * __useRemoveRoleFromOrganizationMutation__
+ *
+ * To run a mutation, you first call `useRemoveRoleFromOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveRoleFromOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeRoleFromOrganizationMutation, { data, loading, error }] = useRemoveRoleFromOrganizationMutation({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *      role: // value for 'role'
+ *      contributorId: // value for 'contributorId'
+ *   },
+ * });
+ */
+export function useRemoveRoleFromOrganizationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveRoleFromOrganizationMutation,
+    SchemaTypes.RemoveRoleFromOrganizationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveRoleFromOrganizationMutation,
+    SchemaTypes.RemoveRoleFromOrganizationMutationVariables
+  >(RemoveRoleFromOrganizationDocument, options);
+}
+
+export type RemoveRoleFromOrganizationMutationHookResult = ReturnType<typeof useRemoveRoleFromOrganizationMutation>;
+export type RemoveRoleFromOrganizationMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveRoleFromOrganizationMutation>;
+export type RemoveRoleFromOrganizationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveRoleFromOrganizationMutation,
+  SchemaTypes.RemoveRoleFromOrganizationMutationVariables
+>;
+export const AssignRoleToVirtualContributorDocument = gql`
+  mutation assignRoleToVirtualContributor($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
+    assignRoleToVirtualContributor(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
+      id
+    }
+  }
+`;
+export type AssignRoleToVirtualContributorMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignRoleToVirtualContributorMutation,
+  SchemaTypes.AssignRoleToVirtualContributorMutationVariables
+>;
+
+/**
+ * __useAssignRoleToVirtualContributorMutation__
+ *
+ * To run a mutation, you first call `useAssignRoleToVirtualContributorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignRoleToVirtualContributorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignRoleToVirtualContributorMutation, { data, loading, error }] = useAssignRoleToVirtualContributorMutation({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *      role: // value for 'role'
+ *      contributorId: // value for 'contributorId'
+ *   },
+ * });
+ */
+export function useAssignRoleToVirtualContributorMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignRoleToVirtualContributorMutation,
+    SchemaTypes.AssignRoleToVirtualContributorMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AssignRoleToVirtualContributorMutation,
+    SchemaTypes.AssignRoleToVirtualContributorMutationVariables
+  >(AssignRoleToVirtualContributorDocument, options);
+}
+
+export type AssignRoleToVirtualContributorMutationHookResult = ReturnType<
+  typeof useAssignRoleToVirtualContributorMutation
+>;
+export type AssignRoleToVirtualContributorMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignRoleToVirtualContributorMutation>;
+export type AssignRoleToVirtualContributorMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignRoleToVirtualContributorMutation,
+  SchemaTypes.AssignRoleToVirtualContributorMutationVariables
+>;
+export const RemoveRoleFromVirtualContributorDocument = gql`
+  mutation removeRoleFromVirtualContributor($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
+    removeRoleFromVirtualContributor(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
+      id
+    }
+  }
+`;
+export type RemoveRoleFromVirtualContributorMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveRoleFromVirtualContributorMutation,
+  SchemaTypes.RemoveRoleFromVirtualContributorMutationVariables
+>;
+
+/**
+ * __useRemoveRoleFromVirtualContributorMutation__
+ *
+ * To run a mutation, you first call `useRemoveRoleFromVirtualContributorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveRoleFromVirtualContributorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeRoleFromVirtualContributorMutation, { data, loading, error }] = useRemoveRoleFromVirtualContributorMutation({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *      role: // value for 'role'
+ *      contributorId: // value for 'contributorId'
+ *   },
+ * });
+ */
+export function useRemoveRoleFromVirtualContributorMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveRoleFromVirtualContributorMutation,
+    SchemaTypes.RemoveRoleFromVirtualContributorMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveRoleFromVirtualContributorMutation,
+    SchemaTypes.RemoveRoleFromVirtualContributorMutationVariables
+  >(RemoveRoleFromVirtualContributorDocument, options);
+}
+
+export type RemoveRoleFromVirtualContributorMutationHookResult = ReturnType<
+  typeof useRemoveRoleFromVirtualContributorMutation
+>;
+export type RemoveRoleFromVirtualContributorMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveRoleFromVirtualContributorMutation>;
+export type RemoveRoleFromVirtualContributorMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveRoleFromVirtualContributorMutation,
+  SchemaTypes.RemoveRoleFromVirtualContributorMutationVariables
+>;
 export const CommunityApplicationsInvitationsDocument = gql`
   query CommunityApplicationsInvitations($roleSetId: UUID!) {
     lookup {
@@ -4836,6 +5147,138 @@ export type RoleSetAvailableMembersQueryResult = Apollo.QueryResult<
 >;
 export function refetchRoleSetAvailableMembersQuery(variables: SchemaTypes.RoleSetAvailableMembersQueryVariables) {
   return { query: RoleSetAvailableMembersDocument, variables: variables };
+}
+
+export const OrganizationAssociatesDocument = gql`
+  query organizationAssociates($roleSetId: UUID!) {
+    lookup {
+      roleSet(ID: $roleSetId) {
+        id
+        associatedUsers: usersInRole(role: ASSOCIATE) {
+          ...GroupMembers
+        }
+      }
+    }
+  }
+  ${GroupMembersFragmentDoc}
+`;
+
+/**
+ * __useOrganizationAssociatesQuery__
+ *
+ * To run a query within a React component, call `useOrganizationAssociatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationAssociatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationAssociatesQuery({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *   },
+ * });
+ */
+export function useOrganizationAssociatesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OrganizationAssociatesQuery,
+    SchemaTypes.OrganizationAssociatesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OrganizationAssociatesQuery, SchemaTypes.OrganizationAssociatesQueryVariables>(
+    OrganizationAssociatesDocument,
+    options
+  );
+}
+
+export function useOrganizationAssociatesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrganizationAssociatesQuery,
+    SchemaTypes.OrganizationAssociatesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.OrganizationAssociatesQuery, SchemaTypes.OrganizationAssociatesQueryVariables>(
+    OrganizationAssociatesDocument,
+    options
+  );
+}
+
+export type OrganizationAssociatesQueryHookResult = ReturnType<typeof useOrganizationAssociatesQuery>;
+export type OrganizationAssociatesLazyQueryHookResult = ReturnType<typeof useOrganizationAssociatesLazyQuery>;
+export type OrganizationAssociatesQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrganizationAssociatesQuery,
+  SchemaTypes.OrganizationAssociatesQueryVariables
+>;
+export function refetchOrganizationAssociatesQuery(variables: SchemaTypes.OrganizationAssociatesQueryVariables) {
+  return { query: OrganizationAssociatesDocument, variables: variables };
+}
+
+export const AvailableUsersDocument = gql`
+  query availableUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
+    usersPaginated(first: $first, after: $after, filter: $filter) {
+      users {
+        id
+        profile {
+          id
+          displayName
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+`;
+
+/**
+ * __useAvailableUsersQuery__
+ *
+ * To run a query within a React component, call `useAvailableUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAvailableUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAvailableUsersQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useAvailableUsersQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AvailableUsersQuery, SchemaTypes.AvailableUsersQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AvailableUsersQuery, SchemaTypes.AvailableUsersQueryVariables>(
+    AvailableUsersDocument,
+    options
+  );
+}
+
+export function useAvailableUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AvailableUsersQuery, SchemaTypes.AvailableUsersQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AvailableUsersQuery, SchemaTypes.AvailableUsersQueryVariables>(
+    AvailableUsersDocument,
+    options
+  );
+}
+
+export type AvailableUsersQueryHookResult = ReturnType<typeof useAvailableUsersQuery>;
+export type AvailableUsersLazyQueryHookResult = ReturnType<typeof useAvailableUsersLazyQuery>;
+export type AvailableUsersQueryResult = Apollo.QueryResult<
+  SchemaTypes.AvailableUsersQuery,
+  SchemaTypes.AvailableUsersQueryVariables
+>;
+export function refetchAvailableUsersQuery(variables: SchemaTypes.AvailableUsersQueryVariables) {
+  return { query: AvailableUsersDocument, variables: variables };
 }
 
 export const AccountInformationDocument = gql`
@@ -10004,72 +10447,6 @@ export type CreateGroupOnCommunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateGroupOnCommunityMutation,
   SchemaTypes.CreateGroupOnCommunityMutationVariables
 >;
-export const AvailableUsersDocument = gql`
-  query availableUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
-    usersPaginated(first: $first, after: $after, filter: $filter) {
-      users {
-        id
-        profile {
-          id
-          displayName
-        }
-      }
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
-    }
-  }
-`;
-
-/**
- * __useAvailableUsersQuery__
- *
- * To run a query within a React component, call `useAvailableUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useAvailableUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAvailableUsersQuery({
- *   variables: {
- *      first: // value for 'first'
- *      after: // value for 'after'
- *      filter: // value for 'filter'
- *   },
- * });
- */
-export function useAvailableUsersQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AvailableUsersQuery, SchemaTypes.AvailableUsersQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AvailableUsersQuery, SchemaTypes.AvailableUsersQueryVariables>(
-    AvailableUsersDocument,
-    options
-  );
-}
-
-export function useAvailableUsersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AvailableUsersQuery, SchemaTypes.AvailableUsersQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AvailableUsersQuery, SchemaTypes.AvailableUsersQueryVariables>(
-    AvailableUsersDocument,
-    options
-  );
-}
-
-export type AvailableUsersQueryHookResult = ReturnType<typeof useAvailableUsersQuery>;
-export type AvailableUsersLazyQueryHookResult = ReturnType<typeof useAvailableUsersLazyQuery>;
-export type AvailableUsersQueryResult = Apollo.QueryResult<
-  SchemaTypes.AvailableUsersQuery,
-  SchemaTypes.AvailableUsersQueryVariables
->;
-export function refetchAvailableUsersQuery(variables: SchemaTypes.AvailableUsersQueryVariables) {
-  return { query: AvailableUsersDocument, variables: variables };
-}
-
 export const CommunityMembersListDocument = gql`
   query CommunityMembersList(
     $roleSetId: UUID!
@@ -10212,314 +10589,6 @@ export function refetchAllOrganizationsQuery(variables: SchemaTypes.AllOrganizat
   return { query: AllOrganizationsDocument, variables: variables };
 }
 
-export const AssignRoleToUserDocument = gql`
-  mutation assignRoleToUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
-    assignRoleToUser(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
-      id
-    }
-  }
-`;
-export type AssignRoleToUserMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignRoleToUserMutation,
-  SchemaTypes.AssignRoleToUserMutationVariables
->;
-
-/**
- * __useAssignRoleToUserMutation__
- *
- * To run a mutation, you first call `useAssignRoleToUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignRoleToUserMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [assignRoleToUserMutation, { data, loading, error }] = useAssignRoleToUserMutation({
- *   variables: {
- *      roleSetId: // value for 'roleSetId'
- *      role: // value for 'role'
- *      contributorId: // value for 'contributorId'
- *   },
- * });
- */
-export function useAssignRoleToUserMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignRoleToUserMutation,
-    SchemaTypes.AssignRoleToUserMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.AssignRoleToUserMutation, SchemaTypes.AssignRoleToUserMutationVariables>(
-    AssignRoleToUserDocument,
-    options
-  );
-}
-
-export type AssignRoleToUserMutationHookResult = ReturnType<typeof useAssignRoleToUserMutation>;
-export type AssignRoleToUserMutationResult = Apollo.MutationResult<SchemaTypes.AssignRoleToUserMutation>;
-export type AssignRoleToUserMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignRoleToUserMutation,
-  SchemaTypes.AssignRoleToUserMutationVariables
->;
-export const RemoveRoleFromUserDocument = gql`
-  mutation removeRoleFromUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
-    removeRoleFromUser(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
-      id
-    }
-  }
-`;
-export type RemoveRoleFromUserMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveRoleFromUserMutation,
-  SchemaTypes.RemoveRoleFromUserMutationVariables
->;
-
-/**
- * __useRemoveRoleFromUserMutation__
- *
- * To run a mutation, you first call `useRemoveRoleFromUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveRoleFromUserMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeRoleFromUserMutation, { data, loading, error }] = useRemoveRoleFromUserMutation({
- *   variables: {
- *      roleSetId: // value for 'roleSetId'
- *      role: // value for 'role'
- *      contributorId: // value for 'contributorId'
- *   },
- * });
- */
-export function useRemoveRoleFromUserMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveRoleFromUserMutation,
-    SchemaTypes.RemoveRoleFromUserMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.RemoveRoleFromUserMutation, SchemaTypes.RemoveRoleFromUserMutationVariables>(
-    RemoveRoleFromUserDocument,
-    options
-  );
-}
-
-export type RemoveRoleFromUserMutationHookResult = ReturnType<typeof useRemoveRoleFromUserMutation>;
-export type RemoveRoleFromUserMutationResult = Apollo.MutationResult<SchemaTypes.RemoveRoleFromUserMutation>;
-export type RemoveRoleFromUserMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveRoleFromUserMutation,
-  SchemaTypes.RemoveRoleFromUserMutationVariables
->;
-export const AssignRoleToOrganizationDocument = gql`
-  mutation assignRoleToOrganization($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
-    assignRoleToOrganization(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
-      id
-    }
-  }
-`;
-export type AssignRoleToOrganizationMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignRoleToOrganizationMutation,
-  SchemaTypes.AssignRoleToOrganizationMutationVariables
->;
-
-/**
- * __useAssignRoleToOrganizationMutation__
- *
- * To run a mutation, you first call `useAssignRoleToOrganizationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignRoleToOrganizationMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [assignRoleToOrganizationMutation, { data, loading, error }] = useAssignRoleToOrganizationMutation({
- *   variables: {
- *      roleSetId: // value for 'roleSetId'
- *      role: // value for 'role'
- *      contributorId: // value for 'contributorId'
- *   },
- * });
- */
-export function useAssignRoleToOrganizationMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignRoleToOrganizationMutation,
-    SchemaTypes.AssignRoleToOrganizationMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AssignRoleToOrganizationMutation,
-    SchemaTypes.AssignRoleToOrganizationMutationVariables
-  >(AssignRoleToOrganizationDocument, options);
-}
-
-export type AssignRoleToOrganizationMutationHookResult = ReturnType<typeof useAssignRoleToOrganizationMutation>;
-export type AssignRoleToOrganizationMutationResult =
-  Apollo.MutationResult<SchemaTypes.AssignRoleToOrganizationMutation>;
-export type AssignRoleToOrganizationMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignRoleToOrganizationMutation,
-  SchemaTypes.AssignRoleToOrganizationMutationVariables
->;
-export const RemoveRoleFromOrganizationDocument = gql`
-  mutation removeRoleFromOrganization($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
-    removeRoleFromOrganization(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
-      id
-    }
-  }
-`;
-export type RemoveRoleFromOrganizationMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveRoleFromOrganizationMutation,
-  SchemaTypes.RemoveRoleFromOrganizationMutationVariables
->;
-
-/**
- * __useRemoveRoleFromOrganizationMutation__
- *
- * To run a mutation, you first call `useRemoveRoleFromOrganizationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveRoleFromOrganizationMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeRoleFromOrganizationMutation, { data, loading, error }] = useRemoveRoleFromOrganizationMutation({
- *   variables: {
- *      roleSetId: // value for 'roleSetId'
- *      role: // value for 'role'
- *      contributorId: // value for 'contributorId'
- *   },
- * });
- */
-export function useRemoveRoleFromOrganizationMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveRoleFromOrganizationMutation,
-    SchemaTypes.RemoveRoleFromOrganizationMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveRoleFromOrganizationMutation,
-    SchemaTypes.RemoveRoleFromOrganizationMutationVariables
-  >(RemoveRoleFromOrganizationDocument, options);
-}
-
-export type RemoveRoleFromOrganizationMutationHookResult = ReturnType<typeof useRemoveRoleFromOrganizationMutation>;
-export type RemoveRoleFromOrganizationMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveRoleFromOrganizationMutation>;
-export type RemoveRoleFromOrganizationMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveRoleFromOrganizationMutation,
-  SchemaTypes.RemoveRoleFromOrganizationMutationVariables
->;
-export const AssignRoleToVirtualContributorDocument = gql`
-  mutation assignRoleToVirtualContributor($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
-    assignRoleToVirtualContributor(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
-      id
-    }
-  }
-`;
-export type AssignRoleToVirtualContributorMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignRoleToVirtualContributorMutation,
-  SchemaTypes.AssignRoleToVirtualContributorMutationVariables
->;
-
-/**
- * __useAssignRoleToVirtualContributorMutation__
- *
- * To run a mutation, you first call `useAssignRoleToVirtualContributorMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignRoleToVirtualContributorMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [assignRoleToVirtualContributorMutation, { data, loading, error }] = useAssignRoleToVirtualContributorMutation({
- *   variables: {
- *      roleSetId: // value for 'roleSetId'
- *      role: // value for 'role'
- *      contributorId: // value for 'contributorId'
- *   },
- * });
- */
-export function useAssignRoleToVirtualContributorMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignRoleToVirtualContributorMutation,
-    SchemaTypes.AssignRoleToVirtualContributorMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AssignRoleToVirtualContributorMutation,
-    SchemaTypes.AssignRoleToVirtualContributorMutationVariables
-  >(AssignRoleToVirtualContributorDocument, options);
-}
-
-export type AssignRoleToVirtualContributorMutationHookResult = ReturnType<
-  typeof useAssignRoleToVirtualContributorMutation
->;
-export type AssignRoleToVirtualContributorMutationResult =
-  Apollo.MutationResult<SchemaTypes.AssignRoleToVirtualContributorMutation>;
-export type AssignRoleToVirtualContributorMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignRoleToVirtualContributorMutation,
-  SchemaTypes.AssignRoleToVirtualContributorMutationVariables
->;
-export const RemoveRoleFromVirtualContributorDocument = gql`
-  mutation removeRoleFromVirtualContributor($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
-    removeRoleFromVirtualContributor(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
-      id
-    }
-  }
-`;
-export type RemoveRoleFromVirtualContributorMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveRoleFromVirtualContributorMutation,
-  SchemaTypes.RemoveRoleFromVirtualContributorMutationVariables
->;
-
-/**
- * __useRemoveRoleFromVirtualContributorMutation__
- *
- * To run a mutation, you first call `useRemoveRoleFromVirtualContributorMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveRoleFromVirtualContributorMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeRoleFromVirtualContributorMutation, { data, loading, error }] = useRemoveRoleFromVirtualContributorMutation({
- *   variables: {
- *      roleSetId: // value for 'roleSetId'
- *      role: // value for 'role'
- *      contributorId: // value for 'contributorId'
- *   },
- * });
- */
-export function useRemoveRoleFromVirtualContributorMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveRoleFromVirtualContributorMutation,
-    SchemaTypes.RemoveRoleFromVirtualContributorMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveRoleFromVirtualContributorMutation,
-    SchemaTypes.RemoveRoleFromVirtualContributorMutationVariables
-  >(RemoveRoleFromVirtualContributorDocument, options);
-}
-
-export type RemoveRoleFromVirtualContributorMutationHookResult = ReturnType<
-  typeof useRemoveRoleFromVirtualContributorMutation
->;
-export type RemoveRoleFromVirtualContributorMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveRoleFromVirtualContributorMutation>;
-export type RemoveRoleFromVirtualContributorMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveRoleFromVirtualContributorMutation,
-  SchemaTypes.RemoveRoleFromVirtualContributorMutationVariables
->;
 export const ContributorsPageOrganizationsDocument = gql`
   query ContributorsPageOrganizations(
     $first: Int!
@@ -10802,72 +10871,6 @@ export type AssociatedOrganizationQueryResult = Apollo.QueryResult<
 >;
 export function refetchAssociatedOrganizationQuery(variables: SchemaTypes.AssociatedOrganizationQueryVariables) {
   return { query: AssociatedOrganizationDocument, variables: variables };
-}
-
-export const OrganizationAssociatesDocument = gql`
-  query organizationAssociates($roleSetId: UUID!) {
-    lookup {
-      roleSet(ID: $roleSetId) {
-        id
-        associatedUsers: usersInRole(role: ASSOCIATE) {
-          ...GroupMembers
-        }
-      }
-    }
-  }
-  ${GroupMembersFragmentDoc}
-`;
-
-/**
- * __useOrganizationAssociatesQuery__
- *
- * To run a query within a React component, call `useOrganizationAssociatesQuery` and pass it any options that fit your needs.
- * When your component renders, `useOrganizationAssociatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOrganizationAssociatesQuery({
- *   variables: {
- *      roleSetId: // value for 'roleSetId'
- *   },
- * });
- */
-export function useOrganizationAssociatesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OrganizationAssociatesQuery,
-    SchemaTypes.OrganizationAssociatesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OrganizationAssociatesQuery, SchemaTypes.OrganizationAssociatesQueryVariables>(
-    OrganizationAssociatesDocument,
-    options
-  );
-}
-
-export function useOrganizationAssociatesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OrganizationAssociatesQuery,
-    SchemaTypes.OrganizationAssociatesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.OrganizationAssociatesQuery, SchemaTypes.OrganizationAssociatesQueryVariables>(
-    OrganizationAssociatesDocument,
-    options
-  );
-}
-
-export type OrganizationAssociatesQueryHookResult = ReturnType<typeof useOrganizationAssociatesQuery>;
-export type OrganizationAssociatesLazyQueryHookResult = ReturnType<typeof useOrganizationAssociatesLazyQuery>;
-export type OrganizationAssociatesQueryResult = Apollo.QueryResult<
-  SchemaTypes.OrganizationAssociatesQuery,
-  SchemaTypes.OrganizationAssociatesQueryVariables
->;
-export function refetchOrganizationAssociatesQuery(variables: SchemaTypes.OrganizationAssociatesQueryVariables) {
-  return { query: OrganizationAssociatesDocument, variables: variables };
 }
 
 export const RolesOrganizationDocument = gql`
@@ -11414,69 +11417,6 @@ export type OrganizationProfileInfoQueryResult = Apollo.QueryResult<
 >;
 export function refetchOrganizationProfileInfoQuery(variables: SchemaTypes.OrganizationProfileInfoQueryVariables) {
   return { query: OrganizationProfileInfoDocument, variables: variables };
-}
-
-export const OrganizationsListDocument = gql`
-  query organizationsList($limit: Float, $shuffle: Boolean, $filterCredentials: [AuthorizationCredential!]) {
-    organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-
-/**
- * __useOrganizationsListQuery__
- *
- * To run a query within a React component, call `useOrganizationsListQuery` and pass it any options that fit your needs.
- * When your component renders, `useOrganizationsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOrganizationsListQuery({
- *   variables: {
- *      limit: // value for 'limit'
- *      shuffle: // value for 'shuffle'
- *      filterCredentials: // value for 'filterCredentials'
- *   },
- * });
- */
-export function useOrganizationsListQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.OrganizationsListQuery, SchemaTypes.OrganizationsListQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OrganizationsListQuery, SchemaTypes.OrganizationsListQueryVariables>(
-    OrganizationsListDocument,
-    options
-  );
-}
-
-export function useOrganizationsListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OrganizationsListQuery,
-    SchemaTypes.OrganizationsListQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.OrganizationsListQuery, SchemaTypes.OrganizationsListQueryVariables>(
-    OrganizationsListDocument,
-    options
-  );
-}
-
-export type OrganizationsListQueryHookResult = ReturnType<typeof useOrganizationsListQuery>;
-export type OrganizationsListLazyQueryHookResult = ReturnType<typeof useOrganizationsListLazyQuery>;
-export type OrganizationsListQueryResult = Apollo.QueryResult<
-  SchemaTypes.OrganizationsListQuery,
-  SchemaTypes.OrganizationsListQueryVariables
->;
-export function refetchOrganizationsListQuery(variables?: SchemaTypes.OrganizationsListQueryVariables) {
-  return { query: OrganizationsListDocument, variables: variables };
 }
 
 export const AccountResourcesInfoDocument = gql`
@@ -13582,8 +13522,8 @@ export function refetchUserPendingMembershipsQuery(variables?: SchemaTypes.UserP
   return { query: UserPendingMembershipsDocument, variables: variables };
 }
 
-export const SpaceCommunityContributorsDocument = gql`
-  query SpaceCommunityContributors($spaceId: UUID!) {
+export const SpaceRoleSetContributorTypesDocument = gql`
+  query SpaceRoleSetContributorTypes($spaceId: UUID!) {
     lookup {
       space(ID: $spaceId) {
         id
@@ -13624,57 +13564,59 @@ export const SpaceCommunityContributorsDocument = gql`
 `;
 
 /**
- * __useSpaceCommunityContributorsQuery__
+ * __useSpaceRoleSetContributorTypesQuery__
  *
- * To run a query within a React component, call `useSpaceCommunityContributorsQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceCommunityContributorsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSpaceRoleSetContributorTypesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceRoleSetContributorTypesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSpaceCommunityContributorsQuery({
+ * const { data, loading, error } = useSpaceRoleSetContributorTypesQuery({
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useSpaceCommunityContributorsQuery(
+export function useSpaceRoleSetContributorTypesQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceCommunityContributorsQuery,
-    SchemaTypes.SpaceCommunityContributorsQueryVariables
+    SchemaTypes.SpaceRoleSetContributorTypesQuery,
+    SchemaTypes.SpaceRoleSetContributorTypesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.SpaceCommunityContributorsQuery,
-    SchemaTypes.SpaceCommunityContributorsQueryVariables
-  >(SpaceCommunityContributorsDocument, options);
+    SchemaTypes.SpaceRoleSetContributorTypesQuery,
+    SchemaTypes.SpaceRoleSetContributorTypesQueryVariables
+  >(SpaceRoleSetContributorTypesDocument, options);
 }
 
-export function useSpaceCommunityContributorsLazyQuery(
+export function useSpaceRoleSetContributorTypesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceCommunityContributorsQuery,
-    SchemaTypes.SpaceCommunityContributorsQueryVariables
+    SchemaTypes.SpaceRoleSetContributorTypesQuery,
+    SchemaTypes.SpaceRoleSetContributorTypesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.SpaceCommunityContributorsQuery,
-    SchemaTypes.SpaceCommunityContributorsQueryVariables
-  >(SpaceCommunityContributorsDocument, options);
+    SchemaTypes.SpaceRoleSetContributorTypesQuery,
+    SchemaTypes.SpaceRoleSetContributorTypesQueryVariables
+  >(SpaceRoleSetContributorTypesDocument, options);
 }
 
-export type SpaceCommunityContributorsQueryHookResult = ReturnType<typeof useSpaceCommunityContributorsQuery>;
-export type SpaceCommunityContributorsLazyQueryHookResult = ReturnType<typeof useSpaceCommunityContributorsLazyQuery>;
-export type SpaceCommunityContributorsQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceCommunityContributorsQuery,
-  SchemaTypes.SpaceCommunityContributorsQueryVariables
+export type SpaceRoleSetContributorTypesQueryHookResult = ReturnType<typeof useSpaceRoleSetContributorTypesQuery>;
+export type SpaceRoleSetContributorTypesLazyQueryHookResult = ReturnType<
+  typeof useSpaceRoleSetContributorTypesLazyQuery
 >;
-export function refetchSpaceCommunityContributorsQuery(
-  variables: SchemaTypes.SpaceCommunityContributorsQueryVariables
+export type SpaceRoleSetContributorTypesQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceRoleSetContributorTypesQuery,
+  SchemaTypes.SpaceRoleSetContributorTypesQueryVariables
+>;
+export function refetchSpaceRoleSetContributorTypesQuery(
+  variables: SchemaTypes.SpaceRoleSetContributorTypesQueryVariables
 ) {
-  return { query: SpaceCommunityContributorsDocument, variables: variables };
+  return { query: SpaceRoleSetContributorTypesDocument, variables: variables };
 }
 
 export const UserContributionDisplayNamesDocument = gql`

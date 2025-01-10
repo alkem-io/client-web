@@ -8,8 +8,8 @@ import { BlockTitle, CaptionSmall } from '@/core/ui/typography';
 import { useTranslation } from 'react-i18next';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import CommunityContributorsBlockWideContent from './CommunityContributorsBlockWideContent';
-import { CommunityContributorType } from '@/core/apollo/generated/graphql-schema';
+import RoleSetContributorTypesBlockWideContent from './RoleSetContributorTypesBlockWideContent';
+import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import AltToggle from '@/core/ui/forms/AltToggle/AltToggle';
 import MultipleSelect from '@/core/ui/search/MultipleSelect';
 import { Theme } from '@mui/material/styles';
@@ -17,7 +17,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import Loading from '@/core/ui/loading/Loading';
 
-type CommunityContributorsBlockWideProps = {
+type RoleSetContributorTypesBlockWideProps = {
   users: ContributorCardSquareProps[] | undefined;
   organizations: ContributorCardSquareProps[] | undefined;
   isDialogView?: boolean;
@@ -27,25 +27,25 @@ type CommunityContributorsBlockWideProps = {
 const config = [
   {
     label: 'common.people',
-    value: CommunityContributorType.User,
+    value: RoleSetContributorType.User,
   },
   {
     label: 'common.organizations',
-    value: CommunityContributorType.Organization,
+    value: RoleSetContributorType.Organization,
   },
 ] as const;
 
-const CommunityContributorsBlockWide = ({
+const RoleSetContributorTypesBlockWide = ({
   users,
   organizations,
   isDialogView = false,
   isLoading = false,
-}: CommunityContributorsBlockWideProps) => {
+}: RoleSetContributorTypesBlockWideProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { t } = useTranslation();
 
-  const [contributorType, setContributorType] = useState(CommunityContributorType.User);
+  const [contributorType, setContributorType] = useState(RoleSetContributorType.User);
   const [filter, onFilterChange] = useState<string[]>([]);
 
   const contributorTypeToggleOptions = config.map(configItem => ({
@@ -89,7 +89,7 @@ const CommunityContributorsBlockWide = ({
         >
           {contributorTypeToggle()}
         </PageContentBlockHeader>
-        <CommunityContributorsBlockWideContent
+        <RoleSetContributorTypesBlockWideContent
           users={users}
           organizations={organizations}
           contributorType={contributorType}
@@ -122,7 +122,7 @@ const CommunityContributorsBlockWide = ({
         >
           {contributorTypeToggle()}
         </PageContentBlockHeaderWithDialogAction>
-        <CommunityContributorsBlockWideContent
+        <RoleSetContributorTypesBlockWideContent
           users={users}
           organizations={organizations}
           contributorType={contributorType}
@@ -145,7 +145,7 @@ const CommunityContributorsBlockWide = ({
         <DialogHeader onClose={() => setIsDialogOpen(false)}>
           <BlockTitle>{t('pages.generic.sections.community.contributors')}</BlockTitle>
         </DialogHeader>
-        <CommunityContributorsBlockWideContent
+        <RoleSetContributorTypesBlockWideContent
           users={users}
           organizations={organizations}
           contributorType={contributorType}
@@ -156,4 +156,4 @@ const CommunityContributorsBlockWide = ({
   );
 };
 
-export default CommunityContributorsBlockWide;
+export default RoleSetContributorTypesBlockWide;

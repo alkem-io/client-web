@@ -11,9 +11,9 @@ import { useColumns } from '@/core/ui/grid/GridContext';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import Loading from '@/core/ui/loading/Loading';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
-import { CommunityContributorType } from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 
-type CommunityContributorsBlockWideProps = {
+type RoleSetContributorTypesBlockWideProps = {
   virtualContributors: VirtualContributorProps[];
   isLoading?: boolean;
 };
@@ -23,7 +23,7 @@ const COMPACT_VIEW_ROWS = 3;
 const CommunityVirtualContributorsBlockWide = ({
   virtualContributors,
   isLoading,
-}: CommunityContributorsBlockWideProps) => {
+}: RoleSetContributorTypesBlockWideProps) => {
   const [searchTerm, onSearchTermChange] = useState<string[]>([]);
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
   const columns = useColumns();
@@ -71,7 +71,7 @@ const CommunityVirtualContributorsBlockWide = ({
                       displayName={vc.profile.displayName}
                       tooltip={{ tags: [] }}
                       url={vc.profile.url.substring(origin.length, vc.profile.url.length) ?? ''}
-                      contributorType={CommunityContributorType.Virtual}
+                      contributorType={RoleSetContributorType.Virtual}
                       isContactable={false}
                       {...vc}
                     />

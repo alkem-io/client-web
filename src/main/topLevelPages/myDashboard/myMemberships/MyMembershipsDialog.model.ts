@@ -4,7 +4,7 @@ import { type SvgIconProps } from '@mui/material';
 
 import {
   SpaceLevel,
-  CommunityRoleType,
+  RoleName,
   AuthorizationPrivilege,
   CommunityMembershipStatus,
 } from '@/core/apollo/generated/graphql-schema';
@@ -27,7 +27,7 @@ export type MembershipProps = {
     };
     community?: {
       roleSet: {
-        myRoles?: CommunityRoleType[];
+        myRoles?: RoleName[];
         myMembershipStatus?: CommunityMembershipStatus;
       };
     };

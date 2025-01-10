@@ -1,15 +1,15 @@
-import { useSpaceCommunityContributorsQuery } from '@/core/apollo/generated/apollo-hooks';
-import CommunityContributorsView from '../CommunityContributors/CommunityContributorsView';
+import { useSpaceRoleSetContributorTypesQuery } from '@/core/apollo/generated/apollo-hooks';
+import RoleSetContributorTypesView from '../RoleSetContributorTypes/RoleSetContributorTypesView';
 import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import useUserCardProps from '../utils/useUserCardProps';
-import NoOrganizations from '../CommunityContributors/NoOrganizations';
+import NoOrganizations from '../RoleSetContributorTypes/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 
 const SubspaceContributorsDialogContent = ({ dialogOpen }: ContributorsDialogContentProps) => {
   const { journeyId } = useRouteResolver();
 
-  const { loading, data } = useSpaceCommunityContributorsQuery({
+  const { loading, data } = useSpaceRoleSetContributorTypesQuery({
     variables: {
       spaceId: journeyId!,
     },
@@ -19,7 +19,7 @@ const SubspaceContributorsDialogContent = ({ dialogOpen }: ContributorsDialogCon
   const { memberUsers, memberOrganizations } = data?.lookup.space?.community.roleSet ?? {};
 
   return (
-    <CommunityContributorsView
+    <RoleSetContributorTypesView
       organizations={useOrganizationCardProps(memberOrganizations)}
       users={useUserCardProps(memberUsers)}
       organizationsCount={memberOrganizations?.length}

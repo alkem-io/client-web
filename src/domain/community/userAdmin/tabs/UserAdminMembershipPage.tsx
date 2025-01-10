@@ -9,7 +9,7 @@ import { useUserMetadata } from '../../user/hooks/useUserMetadata';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import SectionSpacer from '@/domain/shared/components/Section/SectionSpacer';
 import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
-import { CommunityContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useUserContributionsQuery, useUserPendingMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
 
 const UserAdminMembershipPage = () => {
@@ -35,7 +35,7 @@ const UserAdminMembershipPage = () => {
         id: space.id,
         spaceLevel: SpaceLevel.Space,
         contributorId: userMetadata?.user.id!,
-        contributorType: CommunityContributorType.User,
+        contributorType: RoleSetContributorType.User,
       };
       acc.push(currentSpace);
 
@@ -44,7 +44,7 @@ const UserAdminMembershipPage = () => {
         spaceID: subspace.id,
         spaceLevel: subspace.level,
         contributorId: userMetadata?.user.id!,
-        contributorType: CommunityContributorType.User,
+        contributorType: RoleSetContributorType.User,
       }));
 
       return acc.concat(subspaces);
@@ -62,7 +62,7 @@ const UserAdminMembershipPage = () => {
         spaceID: application.spacePendingMembershipInfo.id,
         spaceLevel: application.spacePendingMembershipInfo.level,
         contributorId: userMetadata.user.id,
-        contributorType: CommunityContributorType.User,
+        contributorType: RoleSetContributorType.User,
       }));
     }
   }, [userMetadata, pendingMembershipsData]);

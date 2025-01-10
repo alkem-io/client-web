@@ -7,6 +7,7 @@ import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
 type OrganizationContextProps = {
   organization?: OrganizationInfoFragment;
   organizationId: string;
+  roleSetId: string;
   organizationNameId: string | undefined;
   canReadUsers: boolean;
   displayName: string;
@@ -17,6 +18,7 @@ const OrganizationContext = React.createContext<OrganizationContextProps>({
   loading: true,
   canReadUsers: false,
   organizationId: '',
+  roleSetId: '',
   organizationNameId: '',
   displayName: '',
 });
@@ -40,6 +42,7 @@ const OrganizationProvider: FC = ({ children }) => {
       value={{
         organization,
         organizationId: organization?.id ?? '',
+        roleSetId: organization?.roleSet.id ?? '',
         organizationNameId: organization?.nameID ?? organizationNameId,
         canReadUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
         displayName,

@@ -14,7 +14,7 @@ import { FormikUserSelector } from '../user/FormikUserSelector/FormikUserSelecto
 import { InviteContributorsData } from './useInviteUsers';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { sortBy } from 'lodash';
-import { CommunityRoleType } from '@/core/apollo/generated/graphql-schema';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 import { gutters } from '@/core/ui/grid/utils';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
@@ -29,7 +29,7 @@ type MessageDialogProps = {
   currentApplicationsUserIds: string[];
   currentInvitationsUserIds: string[];
   currentMembersIds: string[];
-  communityRoles: readonly CommunityRoleType[];
+  communityRoles: readonly RoleName[];
 };
 
 enum SortCriteria {
@@ -78,7 +78,7 @@ const InviteExistingUserDialog = ({
 
   const initialValues: InviteContributorsData = {
     contributorIds: [],
-    extraRole: CommunityRoleType.Member,
+    extraRole: RoleName.Member,
     message: t('components.invitations.defaultInvitationMessage', { space: spaceDisplayName }) as string,
   };
 

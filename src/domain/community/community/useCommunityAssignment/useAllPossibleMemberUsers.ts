@@ -1,5 +1,7 @@
 import { UserDisplayNameFragment } from '@/core/apollo/generated/graphql-schema';
-import useUsersSearch, { UseUsersSearchResult } from '../useAvailableMembersWithCredential/useUsersSearch';
+import useUsersSearch, {
+  UseUsersSearchResult,
+} from '../../../access/removeMe/useAvailableMembersWithCredential/useUsersSearch';
 import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
 import { useAvailableUsersQuery, useRoleSetMembersQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';

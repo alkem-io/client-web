@@ -12,7 +12,7 @@ import { useSpaceSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import InviteExistingUserDialog from './InviteExistingUserDialog';
 import { InviteContributorsData, InviteExternalUserData } from './useInviteUsers';
 import InviteExternalUserDialog from './InviteExternalUserDialog';
-import { CommunityRoleType } from '@/core/apollo/generated/graphql-schema';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 
 type InvitationOptionsBlockProps = {
   spaceDisplayName: string | undefined;
@@ -30,7 +30,7 @@ enum UserInvite {
   External,
 }
 
-const AVAILABLE_COMMUNITY_ROLES = [CommunityRoleType.Member, CommunityRoleType.Admin, CommunityRoleType.Lead] as const;
+const AVAILABLE_COMMUNITY_ROLES = [RoleName.Member, RoleName.Admin, RoleName.Lead] as const;
 
 const InvitationOptionsBlock = ({
   spaceDisplayName = '',

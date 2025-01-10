@@ -5,7 +5,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { ProfileChip } from '@/domain/community/contributor/ProfileChip/ProfileChip';
 import { Actions } from '@/core/ui/actions/Actions';
 import Gutters from '@/core/ui/grid/Gutters';
-import { CommunityContributorType } from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { Button } from '@mui/material';
 import { Caption, CaptionSmall } from '@/core/ui/typography';
 
@@ -74,7 +74,7 @@ const appStyles = makeStyles(theme => ({
 
 export type ApplicationDialogDataType = {
   id: string;
-  contributorType: CommunityContributorType;
+  contributorType: RoleSetContributorType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   nextEvents: string[];
   email?: string;
