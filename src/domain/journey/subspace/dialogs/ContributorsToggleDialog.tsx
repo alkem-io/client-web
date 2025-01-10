@@ -62,6 +62,7 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
         {isAuthenticated && (
           <Gutters disablePadding>
             <CommunityContributorsBlockWide
+              showUsers
               users={users}
               organizations={organizations}
               isLoading={loading}

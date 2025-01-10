@@ -121,7 +121,12 @@ const SpaceCommunityPage = () => {
               <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.space.profile.url} />
             </InfoColumn>
             <ContentColumn>
-              <CommunityContributorsBlockWide users={memberUsers} organizations={memberOrganizations} />
+              <CommunityContributorsBlockWide
+                users={memberUsers}
+                showUsers={isAuthenticated}
+                organizations={memberOrganizations}
+              />
+
               <CalloutsGroupView
                 journeyId={spaceId}
                 calloutsSetId={calloutsSetId}
