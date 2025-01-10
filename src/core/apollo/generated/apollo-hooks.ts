@@ -1264,41 +1264,6 @@ export const UserContributorPaginatedFragmentDoc = gql`
   ${UserContributorFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
-export const AssociatedOrganizationDetailsFragmentDoc = gql`
-  fragment AssociatedOrganizationDetails on Organization {
-    id
-    nameID
-    profile {
-      id
-      url
-      tagline
-      displayName
-      description
-      location {
-        id
-        city
-        country
-      }
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      tagsets {
-        id
-        tags
-      }
-    }
-    verification {
-      id
-      status
-    }
-    metrics {
-      id
-      name
-      value
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
 export const FullLocationFragmentDoc = gql`
   fragment fullLocation on Location {
     id
@@ -10821,10 +10786,43 @@ export function refetchContributorsVirtualInLibraryQuery(
 export const AssociatedOrganizationDocument = gql`
   query associatedOrganization($organizationId: UUID_NAMEID!) {
     organization(ID: $organizationId) {
-      ...AssociatedOrganizationDetails
+      id
+      nameID
+      roleSet {
+        id
+        myRoles
+      }
+      profile {
+        id
+        url
+        tagline
+        displayName
+        description
+        location {
+          id
+          city
+          country
+        }
+        avatar: visual(type: AVATAR) {
+          ...VisualUri
+        }
+        tagsets {
+          id
+          tags
+        }
+      }
+      verification {
+        id
+        status
+      }
+      metrics {
+        id
+        name
+        value
+      }
     }
   }
-  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 
 /**

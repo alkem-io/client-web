@@ -59,15 +59,15 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
       for (const platformRole of platformRoles) {
         switch (platformRole) {
           case RoleName.GlobalAdmin:
-            return t('common.enums.roles.GLOBAL_ADMIN');
+            return t('common.roles.GLOBAL_ADMIN');
           case RoleName.GlobalSupport:
-            return t('common.enums.roles.GLOBAL_SUPPORT');
+            return t('common.roles.GLOBAL_SUPPORT');
           case RoleName.GlobalLicenseManager:
-            return t('common.enums.roles.GLOBAL_LICENSE_MANAGER');
+            return t('common.roles.GLOBAL_LICENSE_MANAGER');
           case RoleName.PlatformBetaTester:
-            return t('common.enums.roles.PLATFORM_BETA_TESTER');
+            return t('common.roles.PLATFORM_BETA_TESTER');
           case RoleName.PlatformVcCampaign:
-            return t('common.enums.roles.PLATFORM_VC_CAMPAIGN');
+            return t('common.roles.PLATFORM_VC_CAMPAIGN');
           default:
             return null;
         }

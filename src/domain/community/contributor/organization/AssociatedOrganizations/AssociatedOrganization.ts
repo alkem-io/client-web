@@ -1,6 +1,6 @@
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
 import {
-  AssociatedOrganizationDetailsFragment,
+  AssociatedOrganizationQuery,
   OrganizationVerificationEnum,
 } from '@/core/apollo/generated/graphql-schema';
 import { buildOrganizationUrl } from '@/main/routing/urlBuilders';
@@ -37,7 +37,8 @@ interface RequestState {
 }
 
 export const mapToAssociatedOrganization = (
-  organization: AssociatedOrganizationDetailsFragment | undefined,
+  // TODO: Do not use types from graphql here
+  organization: AssociatedOrganizationQuery['organization'] | undefined,
   key: string,
   state?: RequestState
 ): AssociatedOrganization => {

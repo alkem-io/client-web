@@ -111,7 +111,7 @@ const JourneyCardHorizontal = ({
               variant="filled"
               color="primary"
               label={
-                <Typography variant="button">{t(`common.enums.communityRole.${communityRole}` as const)}</Typography>
+                <Typography variant="button">{t(`common.roles.${communityRole}` as const)}</Typography>
               }
             />
           )}

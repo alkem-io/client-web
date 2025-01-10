@@ -28,7 +28,7 @@ import { ProfileSegment, profileSegmentSchema } from '../Common/ProfileSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { TagsetSegment, tagsetsSegmentSchema } from '../Common/TagsetSegment';
 
-const EmptyOrganization: Omit<Organization, 'authorization' | 'agent'> = {
+const EmptyOrganization: Omit<Organization, 'authorization' | 'agent' | 'roleSet'> = {
   id: '',
   nameID: '',
   contactEmail: undefined,

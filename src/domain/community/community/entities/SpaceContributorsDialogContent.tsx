@@ -2,8 +2,8 @@ import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import { useSpaceRoleSetContributorTypesQuery } from '@/core/apollo/generated/apollo-hooks';
 import useUserCardProps from '../utils/useUserCardProps';
-import RoleSetContributorTypesView from '../RoleSetContributorTypes/RoleSetContributorTypesView';
-import NoOrganizations from '../RoleSetContributorTypes/NoOrganizations';
+import RoleSetContributorTypesView from '../RoleSetContributors/RoleSetContributorTypesView';
+import NoOrganizations from '../RoleSetContributors/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
 
 const SpaceContributorsDialogContent = ({ dialogOpen }: ContributorsDialogContentProps) => {

@@ -26,6 +26,7 @@ export const AssociatedOrganizationContainer = ({
   ...rendered
 }: OrganizationDetailsContainerProps) => {
   const { user } = useUserContext();
+  const userId = user?.user.id;
 
   const { data, loading, error } = useAssociatedOrganizationQuery({
     variables: {
@@ -33,26 +34,24 @@ export const AssociatedOrganizationContainer = ({
     },
     errorPolicy: 'all',
   });
+  const roleSetId = data?.organization.roleSet.id;
 
   const [disassociateSelfFromOrganization, { loading: removingFromOrganization }] = useRemoveRoleFromUserMutation();
-
   const handleRemoveSelfFromOrganization = useCallback(async () => {
-    if (!user) {
-      throw new Error('User is not loaded');
+    if (!userId || !roleSetId) {
+      throw new Error('Data not yet loaded');
     }
 
     await disassociateSelfFromOrganization({
       variables: {
-        roleData: {
-          contributorID: user.user.id,
-          roleSetID: organizationId,
-          role: RoleName.Associate,
-        },
+        contributorId: user.user.id,
+        roleSetId,
+        role: RoleName.Associate,
       },
-      refetchQueries: [refetchUserOrganizationIdsQuery({ userId: user.user.id })],
+      refetchQueries: [refetchUserOrganizationIdsQuery({ userId })],
       awaitRefetchQueries: true,
     });
-  }, [user?.user.id, organizationId, disassociateSelfFromOrganization]);
+  }, [organizationId, userId, roleSetId, disassociateSelfFromOrganization]);
 
   const associatedOrganization = mapToAssociatedOrganization(data?.organization, organizationId, {
     loading,

@@ -4,7 +4,7 @@ import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
 import { buildOrganizationUrl } from '@/main/routing/urlBuilders';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { MetricType } from '@/domain/platform/metrics/MetricType';
-import { OrganizationCardProps } from '../CommunityContributors/ContributingOrganizations';
+import { OrganizationCardProps } from '../RoleSetContributors/ContributingOrganizations';
 
 export const toOrganizationCardProps = (org: OrganizationCardFragment): OrganizationCardProps & Identifiable => ({
   id: org.id,

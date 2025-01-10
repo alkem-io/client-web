@@ -1,8 +1,8 @@
 import { useSpaceRoleSetContributorTypesQuery } from '@/core/apollo/generated/apollo-hooks';
-import RoleSetContributorTypesView from '../RoleSetContributorTypes/RoleSetContributorTypesView';
+import RoleSetContributorTypesView from '../RoleSetContributors/RoleSetContributorTypesView';
 import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import useUserCardProps from '../utils/useUserCardProps';
-import NoOrganizations from '../RoleSetContributorTypes/NoOrganizations';
+import NoOrganizations from '../RoleSetContributors/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 
