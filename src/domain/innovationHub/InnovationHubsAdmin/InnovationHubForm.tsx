@@ -91,7 +91,7 @@ const InnovationHubForm = ({
     <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
       {({ values: { profile }, errors, handleSubmit }) => {
         return (
-          <Gutters>
+          <Gutters disablePadding>
             <FormikInputField
               name="subdomain"
               title={t('pages.admin.innovationHubs.fields.subdomain')}
@@ -117,6 +117,7 @@ const InnovationHubForm = ({
                 title={t('common.description')}
                 name="profile.description"
                 maxLength={MARKDOWN_TEXT_LENGTH}
+                temporaryLocation={isNew}
               />
             </FormGroup>
             {!isNew && profileId ? (
@@ -135,7 +136,7 @@ const InnovationHubForm = ({
               <BlockSectionTitle>{t('pages.admin.innovationHubs.saveForMoreDetails')}</BlockSectionTitle>
             )}
             <FormGroup>
-              <Box display="flex" marginY={4} justifyContent="flex-end">
+              <Box display="flex" justifyContent="flex-end">
                 <SaveButton
                   loading={loading}
                   disabled={errors && Object.keys(errors).length > 0}

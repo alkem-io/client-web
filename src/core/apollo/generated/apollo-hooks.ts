@@ -5127,6 +5127,7 @@ export const AccountInformationDocument = gql`
     lookup {
       account(ID: $accountId) {
         id
+        externalSubscriptionID
         authorization {
           id
           myPrivileges
@@ -5134,6 +5135,11 @@ export const AccountInformationDocument = gql`
         license {
           id
           availableEntitlements
+          entitlements {
+            type
+            limit
+            usage
+          }
         }
         host {
           id
