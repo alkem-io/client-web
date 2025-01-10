@@ -118,89 +118,79 @@ export const MarkdownInput = memo(
               const clipboardData = event.clipboardData;
               const items = clipboardData?.items;
 
-              // If no data is found, allow default behavior
               if (!items) {
-                return false; // Allow default behavior if no items are found
+                return false;
               }
+
+              const storageBucketId = storageConfig?.storageBucketId;
+
+              if (!storageBucketId) {
+                return false;
+              }
+
+              // General function to check for images and HTML content with images
+              const isImageOrHtmlWithImage = (item: DataTransferItem) => {
+                if (item.kind === 'file' && item.type.startsWith('image/')) {
+                  return true; // Image
+                }
+
+                if (item.kind === 'string' && item.type === 'text/html') {
+                  const htmlContent = clipboardData.getData('text/html');
+                  return htmlContent.includes('<img'); // HTML tag with image
+                }
+
+                return false; // Not an image or HTML with images
+              };
 
               // If hideImageOptions is enabled, block images
               if (hideImageOptions) {
                 for (const item of items) {
-                  if (item.kind === 'file' && item.type.startsWith('image/')) {
+                  if (isImageOrHtmlWithImage(item)) {
                     event.preventDefault();
-                    return true; // Block paste of images
-                  }
-
-                  if (item.kind === 'string' && item.type === 'text/html') {
-                    const htmlContent = clipboardData.getData('text/html');
-
-                    // Check if HTML contains <img> tags
-                    if (htmlContent.includes('<img')) {
-                      event.preventDefault();
-                      return true; // Block paste of HTML containing images
-                    }
+                    return true; // Block paste of images or HTML with images
                   }
                 }
 
-                return false; // Allow default behavior for text
+                return false; // Allow paste of text
               }
 
-              // If hideImageOptions is not enabled, execute the original logic
-              const storageBucketId = storageConfig?.storageBucketId;
-
-              if (!storageBucketId) {
-                return false; // Stop custom handling if storageBucketId is missing
-              }
-
+              // Original logic for handling images
               let imageProcessed = false;
 
               for (const item of items) {
-                // Handle images first
-                if (!imageProcessed && item.kind === 'file' && item.type.startsWith('image/')) {
-                  const file = item.getAsFile();
-
-                  if (file) {
-                    const reader = new FileReader();
-
-                    reader.onload = () => {
-                      uploadFile({
-                        variables: {
-                          file,
-                          uploadData: {
-                            storageBucketId,
-                            temporaryLocation,
+                if (!imageProcessed && isImageOrHtmlWithImage(item)) {
+                  if (item.kind === 'file' && item.type.startsWith('image/')) {
+                    const file = item.getAsFile();
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = () => {
+                        uploadFile({
+                          variables: {
+                            file,
+                            uploadData: { storageBucketId, temporaryLocation },
                           },
-                        },
-                      });
-                    };
-
-                    reader.readAsDataURL(file);
-                    imageProcessed = true;
+                        });
+                      };
+                      reader.readAsDataURL(file);
+                      imageProcessed = true;
+                    }
+                  } else if (item.kind === 'string' && item.type === 'text/html') {
+                    imageProcessed = true; // HTML with images
                   }
                 }
 
-                // Check for HTML content containing <img> tags
-                if (!imageProcessed && item.kind === 'string' && item.type === 'text/html') {
-                  const htmlContent = clipboardData.getData('text/html');
-
-                  if (htmlContent.includes('<img')) {
-                    imageProcessed = true; // Mark as processed to avoid duplicates
-                  }
-                }
-
-                // Break the loop once an image or relevant HTML is handled
                 if (imageProcessed) {
+                  // Stop if we have already processed an image
                   break;
                 }
               }
 
-              // Prevent default behavior only if we processed an image or relevant HTML
               if (imageProcessed) {
                 event.preventDefault();
-                return true; // Block default behavior in the editor
+                return true; // Block default behavior for images
               }
 
-              return false; // Allow default behavior for non-image content
+              return false; // Allow default behavior for text
             },
           },
         }),
