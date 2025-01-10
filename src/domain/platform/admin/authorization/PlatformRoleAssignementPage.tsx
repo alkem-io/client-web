@@ -1,5 +1,5 @@
 import React from 'react';
-import EditMemberCredentials from '../components/Authorization/EditMemberCredentials';
+import EditMemberCredentials from './EditMemberCredentials';
 import {
   useAssignPlatformRoleToUserMutation,
   useRemovePlatformRoleFromUserMutation,
@@ -8,25 +8,23 @@ import { RoleName } from '@/core/apollo/generated/graphql-schema';
 
 interface PlatformRoleAssignementPageProps {
   role: RoleName;
+  roleSetId: string;
 }
 
-const PlatformRoleAssignementPage = ({ role }: PlatformRoleAssignementPageProps) => {
+const PlatformRoleAssignementPage = ({ role, roleSetId }: PlatformRoleAssignementPageProps) => {
   const [assignRole, { loading: addingMember }] = useAssignPlatformRoleToUserMutation();
-
   const [revokeRole, { loading: removingMember }] = useRemovePlatformRoleFromUserMutation();
 
   const handleAdd = (userId: string) => {
     assignRole({
       variables: {
-        roleData: {
-          contributorID: userId,
-          role,
-          roleSetID: '',
-        },
+        contributorId: userId,
+        role,
+        roleSetId,
       },
       refetchQueries: [
         refetchUsersWithRoleQuery({
-          input: { role, roleSetID },
+          input: { role, roleSetId },
         }),
       ],
       awaitRefetchQueries: true,
@@ -36,15 +34,13 @@ const PlatformRoleAssignementPage = ({ role }: PlatformRoleAssignementPageProps)
   const handleRemove = (memberId: string) => {
     revokeRole({
       variables: {
-        roleData: {
-          contributorID: memberId,
-          role,
-          roleSetId: '',
-        },
+        contributorId: memberId,
+        role,
+        roleSetId,
       },
       refetchQueries: [
         refetchUsersWithCredentialsQuery({
-          input: { role, roleSetID },
+          input: { role, roleSetId },
         }),
       ],
       awaitRefetchQueries: true,

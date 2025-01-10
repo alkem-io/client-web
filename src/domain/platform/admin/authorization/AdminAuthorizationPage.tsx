@@ -7,6 +7,8 @@ import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import PlatformRoleAssignementPage from './PlatformRoleAssignementPage';
 import { gutters } from '@/core/ui/grid/utils';
+import { usePlatformRolesetQuery } from '@/core/apollo/generated/apollo-hooks';
+import Loading from '@/core/ui/loading/Loading';
 
 interface AdminAuthorizationPageProps {
   role?: RoleName;
@@ -46,29 +48,35 @@ const tabs = [
 const AdminAuthorizationPage = ({ role }: AdminAuthorizationPageProps) => {
   const selectedTab: RoleName | '_none' = role ?? '_none'; // TODO: test + tidy up
 
+  const { data, loading } = usePlatformRolesetQuery();
+  const roleSetId = data?.platform.roleSet.id;
+
   return (
     <AdminLayout currentTab={AdminSection.Authorization}>
-      <TabContext value={selectedTab}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <TabList sx={{ '.MuiTabs-flexContainer': { gap: gutters() } }}>
-            {tabs.map(tab => (
-              <Tab
-                key={tab.platformRole}
-                value={tab.platformRole}
-                component={RouterLink}
-                to={`/admin/authorization/roles/${tab.platformRole}`}
-                label={tab.title}
-              />
-            ))}
-          </TabList>
-        </Box>
-        <TabPanel value="_none" />
-        {tabs.map(tab => (
-          <TabPanel key={tab.platformRole} value={tab.platformRole}>
-            <PlatformRoleAssignementPage role={tab.platformRole} />
-          </TabPanel>
-        ))}
-      </TabContext>
+      {loading && <Loading />}
+      {!loading && roleSetId && (
+        <TabContext value={selectedTab}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <TabList sx={{ '.MuiTabs-flexContainer': { gap: gutters() } }}>
+              {tabs.map(tab => (
+                <Tab
+                  key={tab.platformRole}
+                  value={tab.platformRole}
+                  component={RouterLink}
+                  to={`/admin/authorization/roles/${tab.platformRole}`}
+                  label={tab.title}
+                />
+              ))}
+            </TabList>
+          </Box>
+          <TabPanel value="_none" />
+          {tabs.map(tab => (
+            <TabPanel key={tab.platformRole} value={tab.platformRole}>
+              <PlatformRoleAssignementPage role={tab.platformRole} roleSetId={roleSetId} />
+            </TabPanel>
+          ))}
+        </TabContext>
+      )}
     </AdminLayout>
   );
 };

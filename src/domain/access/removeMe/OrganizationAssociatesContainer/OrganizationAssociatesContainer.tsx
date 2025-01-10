@@ -54,11 +54,9 @@ export const OrganizationAssociatesContainer = ({
     (memberId: string, role: RoleName) => {
       assignRoleToUser({
         variables: {
-          roleData: {
-            roleSetID: entities.roleSetID,
-            contributorID: memberId,
-            role,
-          },
+          roleSetId: entities.roleSetID,
+          contributorId: memberId,
+          role,
         },
         refetchQueries: [
           refetchUsersWithRoleQuery({
@@ -75,11 +73,9 @@ export const OrganizationAssociatesContainer = ({
     (memberId: string, role: RoleName) => {
       revokeRoleToUser({
         variables: {
-          roleData: {
-            contributorID: memberId,
-            roleSetID: entities.roleSetID,
-            role,
-          },
+          contributorId: memberId,
+          roleSetId: entities.roleSetID,
+          role,
         },
         refetchQueries: [
           refetchUsersWithRoleQuery({

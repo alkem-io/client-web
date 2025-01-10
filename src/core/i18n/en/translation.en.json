@@ -385,11 +385,20 @@
       "not-verified": ""
     },
     "enums": {
-      "communityRole": {
+      "roles": {
         "ADMIN": "$t(common.admin)",
         "LEAD": "$t(common.lead)",
         "HOST": "$t(common.host)",
-        "MEMBER": "$t(common.member)"
+        "MEMBER": "$t(common.member)",
+        "ASSOCIATE": "Associate",
+        "OWNER": "Owner",
+        "GLOBAL_ADMIN": "Global Admin",
+        "GLOBAL_SUPPORT": "Support Admin",
+        "GLOBAL_LICENSE_MANAGER": "License Manager",
+        "GLOBAL_COMMUNITY_READER": "Community Manager",
+        "GLOBAL_SPACES_READER": "Spaces Reader",
+        "PLATFORM_BETA_TESTER": "Beta Tester",
+        "PLATFORM_VC_CAMPAIGN": "VC Early Access"
       },
       "innovationFlowState": {
         "new": "New",
@@ -580,13 +589,6 @@
         "year": "{{count}} year",
         "year_plural": "{{count}} years"
       }
-    },
-    "roles": {
-      "GLOBAL_ADMIN": "Global Admin",
-      "SUPPORT": "Support Admin",
-      "LICENSE_MANAGER": "License Manager",
-      "BETA_TESTER": "Beta Tester",
-      "VC_CAMPAIGN": "VC Early Access"
     }
   },
   "community": {

@@ -1,5 +1,5 @@
-mutation removePlatformRoleFromUser($input: RemoveRoleOnRoleSetFromUserInput!) {
-  removePlatformRoleFromUser(roleData: $input) {
+mutation removePlatformRoleFromUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
+  removePlatformRoleFromUser(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
     id
     profile {
       id

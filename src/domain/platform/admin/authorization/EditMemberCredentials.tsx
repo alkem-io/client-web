@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useUserContext } from '@/domain/community/user';
-import EditMemberUsers, { EditMemberUsersProps } from '../Community/EditMembersUsers';
+import EditMemberUsers, { EditMemberUsersProps } from '../components/Community/EditMembersUsers';
 import { useAvailableMembersWithCredential } from '@/domain/access/removeMe/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
 
 interface EditAdminCredentialsProps extends Pick<EditMemberUsersProps, 'onAdd' | 'onRemove' | 'updating'> {

@@ -18099,9 +18099,64 @@ export function refetchPlatformLevelAuthorizationQuery(
   return { query: PlatformLevelAuthorizationDocument, variables: variables };
 }
 
+export const PlatformRolesetDocument = gql`
+  query PlatformRoleset {
+    platform {
+      roleSet {
+        id
+      }
+    }
+  }
+`;
+
+/**
+ * __usePlatformRolesetQuery__
+ *
+ * To run a query within a React component, call `usePlatformRolesetQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformRolesetQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformRolesetQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformRolesetQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.PlatformRolesetQuery, SchemaTypes.PlatformRolesetQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PlatformRolesetQuery, SchemaTypes.PlatformRolesetQueryVariables>(
+    PlatformRolesetDocument,
+    options
+  );
+}
+
+export function usePlatformRolesetLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.PlatformRolesetQuery, SchemaTypes.PlatformRolesetQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.PlatformRolesetQuery, SchemaTypes.PlatformRolesetQueryVariables>(
+    PlatformRolesetDocument,
+    options
+  );
+}
+
+export type PlatformRolesetQueryHookResult = ReturnType<typeof usePlatformRolesetQuery>;
+export type PlatformRolesetLazyQueryHookResult = ReturnType<typeof usePlatformRolesetLazyQuery>;
+export type PlatformRolesetQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformRolesetQuery,
+  SchemaTypes.PlatformRolesetQueryVariables
+>;
+export function refetchPlatformRolesetQuery(variables?: SchemaTypes.PlatformRolesetQueryVariables) {
+  return { query: PlatformRolesetDocument, variables: variables };
+}
+
 export const AssignPlatformRoleToUserDocument = gql`
-  mutation assignPlatformRoleToUser($input: AssignRoleOnRoleSetToUserInput!) {
-    assignPlatformRoleToUser(roleData: $input) {
+  mutation assignPlatformRoleToUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
+    assignPlatformRoleToUser(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
       id
       profile {
         id
@@ -18128,7 +18183,9 @@ export type AssignPlatformRoleToUserMutationFn = Apollo.MutationFunction<
  * @example
  * const [assignPlatformRoleToUserMutation, { data, loading, error }] = useAssignPlatformRoleToUserMutation({
  *   variables: {
- *      input: // value for 'input'
+ *      roleSetId: // value for 'roleSetId'
+ *      role: // value for 'role'
+ *      contributorId: // value for 'contributorId'
  *   },
  * });
  */
@@ -18153,8 +18210,8 @@ export type AssignPlatformRoleToUserMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.AssignPlatformRoleToUserMutationVariables
 >;
 export const RemovePlatformRoleFromUserDocument = gql`
-  mutation removePlatformRoleFromUser($input: RemoveRoleOnRoleSetFromUserInput!) {
-    removePlatformRoleFromUser(roleData: $input) {
+  mutation removePlatformRoleFromUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
+    removePlatformRoleFromUser(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
       id
       profile {
         id
@@ -18181,7 +18238,9 @@ export type RemovePlatformRoleFromUserMutationFn = Apollo.MutationFunction<
  * @example
  * const [removePlatformRoleFromUserMutation, { data, loading, error }] = useRemovePlatformRoleFromUserMutation({
  *   variables: {
- *      input: // value for 'input'
+ *      roleSetId: // value for 'roleSetId'
+ *      role: // value for 'role'
+ *      contributorId: // value for 'contributorId'
  *   },
  * });
  */

@@ -6679,6 +6679,11 @@ export type UpdateInnovationPackInput = {
   searchVisibility?: InputMaybe<SearchVisibility>;
 };
 
+export type UpdateKnowledgeBaseInput = {
+  /** The Profile of the Template. */
+  profile?: InputMaybe<UpdateProfileInput>;
+};
+
 export type UpdateLicensePlanInput = {
   ID: Scalars['UUID'];
   /** Assign this plan to all new Organization accounts */
@@ -6959,6 +6964,8 @@ export type UpdateUserSettingsPrivacyInput = {
 export type UpdateVirtualContributorInput = {
   /** The ID of the Virtual Contributor to update. */
   ID: Scalars['UUID'];
+  /** The KnowledgeBase to use for this Collaboration. */
+  knowledgeBaseData?: InputMaybe<UpdateKnowledgeBaseInput>;
   /** Flag to control the visibility of the VC in the platform store. */
   listedInStore?: InputMaybe<Scalars['Boolean']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
@@ -24037,8 +24044,17 @@ export type PlatformLevelAuthorizationQuery = {
   };
 };
 
+export type PlatformRolesetQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformRolesetQuery = {
+  __typename?: 'Query';
+  platform: { __typename?: 'Platform'; roleSet: { __typename?: 'RoleSet'; id: string } };
+};
+
 export type AssignPlatformRoleToUserMutationVariables = Exact<{
-  input: AssignRoleOnRoleSetToUserInput;
+  roleSetId: Scalars['UUID'];
+  role: RoleName;
+  contributorId: Scalars['UUID'];
 }>;
 
 export type AssignPlatformRoleToUserMutation = {
@@ -24051,7 +24067,9 @@ export type AssignPlatformRoleToUserMutation = {
 };
 
 export type RemovePlatformRoleFromUserMutationVariables = Exact<{
-  input: RemoveRoleOnRoleSetFromUserInput;
+  roleSetId: Scalars['UUID'];
+  role: RoleName;
+  contributorId: Scalars['UUID'];
 }>;
 
 export type RemovePlatformRoleFromUserMutation = {

@@ -77,7 +77,7 @@ const UserProvider: FC = ({ children }) => {
       loadingMe: loadingMeAndParentQueries,
       verified,
       isAuthenticated,
-      platformRoles: platformLevelAuthorizationData?.platform.myRoles ?? [],
+      platformRoles: platformLevelAuthorizationData?.platform.roleSet.myRoles ?? [],
       accountPrivileges: meData?.me.user?.account?.authorization?.myPrivileges ?? [],
       accountEntitlements: meData?.me.user?.account?.license?.availableEntitlements ?? [],
     }),

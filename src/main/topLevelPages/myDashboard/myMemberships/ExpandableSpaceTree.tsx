@@ -82,7 +82,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
 
             {isMobile && (
               <Caption color="primary">
-                {communityRoles?.map(role => t(`common.enums.communityRole.${role}` as const)).join(', ')}
+                {communityRoles?.map(role => t(`common.enums.roles.${role}` as const)).join(', ')}
               </Caption>
             )}
           </BadgeCardView>
@@ -90,7 +90,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
           <Gutters flexDirection="row" disableGap padding={0}>
             {!isMobile && (
               <Caption color="primary" display="flex" alignItems="center">
-                {communityRoles?.map(role => t(`common.enums.communityRole.${role}` as const)).join(', ')}
+                {communityRoles?.map(role => t(`common.enums.roles.${role}` as const)).join(', ')}
               </Caption>
             )}
 
