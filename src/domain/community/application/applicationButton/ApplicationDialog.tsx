@@ -61,7 +61,7 @@ const ApplicationDialog = ({
           acc.shape({
             [val.question]: val.required
               ? yup.string().required(t('forms.validations.required')).max(val.maxLength, 'forms.validations.maxLength')
-              : yup.string().max(val.maxLength),
+              : yup.string().max(val.maxLength, 'forms.validations.maxLength'),
           }),
         yup.object()
       ),
