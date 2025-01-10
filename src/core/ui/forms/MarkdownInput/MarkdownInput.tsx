@@ -118,14 +118,38 @@ export const MarkdownInput = memo(
               const clipboardData = event.clipboardData;
               const items = clipboardData?.items;
 
+              // If no data is found, allow default behavior
               if (!items) {
-                return false; // Allow default behavior if no items are found.
+                return false; // Allow default behavior if no items are found
               }
 
+              // If hideImageOptions is enabled, block images
+              if (hideImageOptions) {
+                for (const item of items) {
+                  if (item.kind === 'file' && item.type.startsWith('image/')) {
+                    event.preventDefault();
+                    return true; // Block paste of images
+                  }
+
+                  if (item.kind === 'string' && item.type === 'text/html') {
+                    const htmlContent = clipboardData.getData('text/html');
+
+                    // Check if HTML contains <img> tags
+                    if (htmlContent.includes('<img')) {
+                      event.preventDefault();
+                      return true; // Block paste of HTML containing images
+                    }
+                  }
+                }
+
+                return false; // Allow default behavior for text
+              }
+
+              // If hideImageOptions is not enabled, execute the original logic
               const storageBucketId = storageConfig?.storageBucketId;
 
               if (!storageBucketId) {
-                return false; // Stop custom handling if storageBucketId is missing.
+                return false; // Stop custom handling if storageBucketId is missing
               }
 
               let imageProcessed = false;
@@ -160,23 +184,23 @@ export const MarkdownInput = memo(
                   const htmlContent = clipboardData.getData('text/html');
 
                   if (htmlContent.includes('<img')) {
-                    imageProcessed = true; // Mark as processed to avoid duplicates.
+                    imageProcessed = true; // Mark as processed to avoid duplicates
                   }
                 }
 
-                // Break the loop once an image or relevant HTML is handled.
+                // Break the loop once an image or relevant HTML is handled
                 if (imageProcessed) {
                   break;
                 }
               }
 
-              // Prevent default behavior only if we processed an image or relevant HTML.
+              // Prevent default behavior only if we processed an image or relevant HTML
               if (imageProcessed) {
                 event.preventDefault();
-                return true; // Block default behavior in the editor.
+                return true; // Block default behavior in the editor
               }
 
-              return false; // Allow default behavior for non-image content.
+              return false; // Allow default behavior for non-image content
             },
           },
         }),
