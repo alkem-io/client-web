@@ -6,6 +6,7 @@ import OrganizationVerifiedStatus from '@/domain/community/contributor/organizat
 import { Location } from '@/core/apollo/generated/graphql-schema';
 import { BlockTitle } from '@/core/ui/typography';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import Gutters from '@/core/ui/grid/Gutters';
 
 export interface OrganizationProfileViewEntity {
   displayName: string;
@@ -27,8 +28,8 @@ type OrganizationProfileViewProps = {
 
 const VerifiedBadge = styled(Box)(({ theme }) => ({
   position: 'absolute',
-  right: theme.spacing(3),
-  top: theme.spacing(3),
+  right: theme.spacing(0),
+  top: theme.spacing(0),
 }));
 
 export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps) => {
@@ -38,24 +39,24 @@ export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps
     <PageContentBlock>
       <CardContent sx={{ position: 'relative' }}>
         <VerifiedBadge>
-          {entity.verified !== undefined && (
+          {entity?.verified !== undefined && (
             <OrganizationVerifiedStatus
               verified={entity.verified}
               helpText={t('pages.organization.verified-status.help')}
             />
           )}
         </VerifiedBadge>
-        <Grid container spacing={2} direction="column">
-          <Grid item>
+        <Grid container spacing={3.5} direction="column">
+          <Gutters>
             <ProfileDetail title={t('components.profile.fields.bio.title')} value={entity.bio} />
-          </Grid>
+          </Gutters>
           {entity.tagsets
             ?.filter(t => t.tags.length > 0)
             .map((tagset, i) => (
-              <Grid item key={i}>
+              <Gutters key={i}>
                 <BlockTitle>{tagset.name}</BlockTitle>
                 <TagsComponent tags={tagset.tags} count={5} />
-              </Grid>
+              </Gutters>
             ))}
 
           {entity.links && entity.links.length ? (
