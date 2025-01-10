@@ -46,13 +46,9 @@ export const OrganizationProfileView = ({ entity }: OrganizationProfileViewProps
             />
           )}
         </VerifiedBadge>
-        <Grid container spacing={2} direction="column">
-          <Gutters disablePadding>
-            <ProfileDetail
-              title={t('components.profile.fields.bio.title')}
-              // value={entity.bio}
-              value="Laboris ad et magna ut officia eiusmod velit irure dolore commodo deserunt tempor dolore cupidatat. Ullamco magna ea est laboris mollit eu non consectetur minim. Mollit commodo do labore incididunt sit tempor aute culpa aute sunt mollit."
-            />
+        <Grid container spacing={3.5} direction="column">
+          <Gutters>
+            <ProfileDetail title={t('components.profile.fields.bio.title')} value={entity.bio} />
           </Gutters>
           {entity.tagsets
             ?.filter(t => t.tags.length > 0)
