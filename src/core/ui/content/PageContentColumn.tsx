@@ -16,5 +16,6 @@ const PageContentColumn = forwardRef<HTMLDivElement, PageContentColumnProps>(({ 
     <PageContentColumnBase columns={columns} {...props} ref={ref} />
   </GridItem>
 ));
+PageContentColumn.displayName = 'PageContentColumn';
 
 export default PageContentColumn;

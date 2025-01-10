@@ -31,5 +31,6 @@ const PageContentBlock = forwardRef<HTMLDivElement, PageContentBlockProps>(({ ac
     </SwapColors>
   );
 });
+PageContentBlock.displayName = 'PageContentBlock';
 
 export default PageContentBlock;

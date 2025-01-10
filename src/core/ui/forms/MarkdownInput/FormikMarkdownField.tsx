@@ -46,6 +46,9 @@ const FilledDetector = ({ value }: { value: string | undefined }) => {
   return null;
 };
 
+/**
+ * Requires StorageConfigContextProvider
+ */
 export const FormikMarkdownField = ({
   title,
   name,
