@@ -41,7 +41,8 @@ const UserProvider: FC = ({ children }) => {
 
   const { data: platformLevelAuthorizationData, loading: isLoadingPlatformLevelAuthorization } =
     usePlatformLevelAuthorizationQuery({ skip: !isAuthenticated || !meData?.me?.user });
-  const platformLevelAuthorization = platformLevelAuthorizationData?.platform.authorization;
+  const myPrivileges = platformLevelAuthorizationData?.platform.authorization;
+  const myRoles = platformLevelAuthorizationData?.platform.roleSet.myRoles;
 
   const [createUserProfile, { loading: loadingCreateUser, error }] = useCreateUserNewRegistrationMutation({
     refetchQueries: [refetchUserProviderQuery()],
@@ -64,9 +65,10 @@ const UserProvider: FC = ({ children }) => {
 
   const loadingMeAndParentQueries = loadingAuthentication || loadingMe;
 
+  console.log({ myPrivileges, myRoles });
   const userMetadata = useMemo(
-    () => (meData?.me ? toUserMetadata(meData.me.user as User, platformLevelAuthorization) : undefined),
-    [meData, platformLevelAuthorization]
+    () => (meData?.me ? toUserMetadata(meData.me.user as User, myPrivileges, myRoles) : undefined),
+    [meData, myPrivileges, myRoles]
   );
 
   const providedValue = useMemo<UserContextValue>(

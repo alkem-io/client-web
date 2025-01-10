@@ -18522,6 +18522,7 @@ export type UserProfileQuery = {
     authorization?:
       | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
+    roleSet: { __typename?: 'RoleSet'; id: string; myRoles: Array<RoleName> };
   };
 };
 
@@ -24024,13 +24025,6 @@ export type PlatformLevelAuthorizationQuery = {
   };
 };
 
-export type PlatformRolesetQueryVariables = Exact<{ [key: string]: never }>;
-
-export type PlatformRolesetQuery = {
-  __typename?: 'Query';
-  platform: { __typename?: 'Platform'; roleSet: { __typename?: 'RoleSet'; id: string } };
-};
-
 export type AssignPlatformRoleToUserMutationVariables = Exact<{
   roleSetId: Scalars['UUID'];
   role: RoleName;
@@ -24044,6 +24038,13 @@ export type AssignPlatformRoleToUserMutation = {
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
   };
+};
+
+export type PlatformRolesetQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformRolesetQuery = {
+  __typename?: 'Query';
+  platform: { __typename?: 'Platform'; roleSet: { __typename?: 'RoleSet'; id: string } };
 };
 
 export type RemovePlatformRoleFromUserMutationVariables = Exact<{

@@ -75,7 +75,7 @@ export const OrganizationPageContainer = ({ children }: PropsWithChildren<Organi
 
   const { t } = useTranslation();
 
-  const usersWithRoles = organization?.associates?.map(user => {
+  const usersWithRoles = organization?.roleSet.associatedUsers?.map(user => {
     const roleType =
       roleChecks.find(({ collection }) => {
         return organization[collection]?.some(u => u.id === user.id);

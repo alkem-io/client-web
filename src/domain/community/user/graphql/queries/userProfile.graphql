@@ -11,6 +11,10 @@ query userProfile($input: UUID_NAMEID_EMAIL!) {
     authorization {
       ...MyPrivileges
     }
+    roleSet {
+      id
+      myRoles
+    }
   }
 }
 

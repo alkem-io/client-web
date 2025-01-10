@@ -24,7 +24,7 @@ export const OrganizationAdminAuthorizationView: FC = () => {
   const orgAssociates = data?.lookup.roleSet?.associatedUsers || [];
 
   return (
-    <DashboardGenericSection headerText={t(`organization.role.${RoleName.Admin}.name` as const)}>
+    <DashboardGenericSection headerText={t(`common.roles.${RoleName.Admin}` as const)}>
       <OrganizationAssociatesContainer
         entities={{
           roleSetID: roleSetId,
