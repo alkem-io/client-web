@@ -16,7 +16,7 @@ export const OrganizationVerifiedStatus = ({ verified, helpText }: VerifiedStatu
     <BlockTitle sx={{ display: 'flex', alignItems: 'center', columnGap: 0.5 }}>
       {helpText && verified && (
         <Tooltip title={helpText} arrow placement="right">
-          <BeenhereOutlined color="primary" />
+          <BeenhereOutlined fontSize="small" color="primary" />
         </Tooltip>
       )}
       {verified ? t('common.verified-status.verified') : t('common.verified-status.not-verified')}
