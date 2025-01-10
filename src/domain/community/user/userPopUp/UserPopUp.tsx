@@ -4,7 +4,7 @@ import { DialogContent } from '@/core/ui/dialog/deprecated';
 import Loading from '@/core/ui/loading/Loading';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
-import { Box, Button, DialogActions, Grid, Typography, styled } from '@mui/material';
+import { Box, Button, DialogActions, Divider, Grid, Typography, styled } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import Link from '@mui/material/Link';
 import Table from '@mui/material/Table';
@@ -15,7 +15,6 @@ import TableRow from '@mui/material/TableRow';
 import { useTranslation } from 'react-i18next';
 import { useUserMetadata } from '../index';
 import useUserContributionDisplayNames from '../userContributions/useUserContributionDisplayNames';
-import UserPopUpDelimiter from './UserPopUpDelimiter';
 
 const Header = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -166,7 +165,7 @@ const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
             </div>
             {refs.length > 0 && (
               <>
-                <UserPopUpDelimiter />
+                <Divider />
                 <Grid container spacing={2}>
                   {refs.map((x, i) => (
                     <Grid key={i} item container justifyContent={'center'}>

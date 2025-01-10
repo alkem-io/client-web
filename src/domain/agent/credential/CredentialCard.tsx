@@ -1,9 +1,7 @@
-import { Box, CardContent, Skeleton } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
-import { PropsWithChildren } from 'react';
 import LinkCard from '@/core/ui/card/LinkCard';
 import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
+import { Box, CardContent, Skeleton, styled } from '@mui/material';
+import { PropsWithChildren } from 'react';
 
 export interface CredentialCardEntities {
   name: string;
@@ -27,25 +25,19 @@ export interface CredentialCardProps {
   loading?: boolean;
 }
 
-const useStyles = makeStyles(theme =>
-  createStyles({
-    card: {
-      height: '100%',
-      width: '100%',
-      minWidth: 254, // magic
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    cardContent: {
-      padding: theme.spacing(1.5),
-      flexGrow: 1,
-      background: theme.palette.background.default,
-    },
-    entityType: {
-      color: '#FFFFFF',
-    },
-  })
-);
+const StyledCardContent = styled(CardContent)(({ theme }) => ({
+  padding: theme.spacing(1.5),
+  flexGrow: 1,
+  background: theme.palette.background.default,
+}));
+
+const StyledCard = styled(LinkCard)(() => ({
+  height: '100%',
+  width: '100%',
+  minWidth: 254, // magic
+  display: 'flex',
+  flexDirection: 'column',
+}));
 
 const issuerResolver = (issuer: string | undefined) => {
   if (!issuer) return 'Undefined';
@@ -89,11 +81,9 @@ const CredentialCard = ({ entities: details, loading = false, children }: PropsW
     issueDate ? ` on ${issueDate.toLocaleDateString()}` : ''
   }`;
 
-  const styles = useStyles();
-
   return (
-    <LinkCard to={url} className={styles.card} aria-label="credential-card">
-      <CardContent className={styles.cardContent}>
+    <StyledCard to={url} aria-label="credential-card">
+      <StyledCardContent>
         {loading ? (
           <Box>
             <Skeleton variant="rectangular" animation="wave" />
@@ -120,8 +110,8 @@ const CredentialCard = ({ entities: details, loading = false, children }: PropsW
           </>
         )}
         {children}
-      </CardContent>
-    </LinkCard>
+      </StyledCardContent>
+    </StyledCard>
   );
 };
 
