@@ -39,6 +39,7 @@ import { info as logInfo } from '@/core/logging/sentry/log';
 import InfoDialog from '@/core/ui/dialogs/InfoDialog';
 import CreateExternalAIDialog, { ExternalVcFormValues } from './CreateExternalAIDialog';
 import { useNewVirtualContributorWizardProvided, UserAccountProps } from './useNewVirtualContributorProps';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 
 type Step =
   | 'initial'
@@ -472,54 +473,60 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
   };
 
-  const NewVirtualContributorWizard = useCallback(
-    () => (
+  const NewVirtualContributorWizard = useCallback(() => {
+    if (!targetAccount || !data?.me.user?.account) {
+      return null;
+    }
+
+    return (
       <DialogWithGrid open={dialogOpen} columns={6}>
-        {step === 'initial' && (
-          <CreateNewVirtualContributor
-            onClose={handleCloseWizard}
-            loading={loading}
-            onCreateKnowledge={handleCreateKnowledge}
-            onUseExistingKnowledge={values => onStepSelection('existingKnowledge', values)}
-            onUseExternal={values => onStepSelection('externalProvider', values)}
-          />
-        )}
-        {step === 'createSpace' && <LoadingState onClose={handleCloseWizard} />}
-        {step === 'addKnowledge' && virtualContributorInput && (
-          <AddContent
-            onClose={handleCloseWizard}
-            onCreateVC={onCreateVcWithKnowledge}
-            spaceId={selectedExistingSpaceId ?? ''}
-          />
-        )}
-        {step === 'existingKnowledge' && (
-          <ExistingSpace
-            onClose={handleCloseWizard}
-            onBack={() => setStep('initial')}
-            onSubmit={handleCreateVCWithExistingKnowledge}
-            availableSpaces={selectableSpaces}
-            loading={loading}
-          />
-        )}
-        {step === 'externalProvider' && (
-          <CreateExternalAIDialog onCreateExternal={handleCreateExternal} onClose={handleCloseWizard} />
-        )}
-        {step === 'loadingVCSetup' && <SetupVCInfo />}
-        {step === 'insufficientPrivileges' && (
-          <InfoDialog
-            entities={{
-              title: t('createVirtualContributorWizard.insufficientPrivileges.title'),
-              content: t('createVirtualContributorWizard.insufficientPrivileges.description'),
-              buttonCaption: t('buttons.ok'),
-            }}
-            actions={{ onButtonClick: handleCloseWizard }}
-            options={{ show: true }}
-          />
-        )}
+        {/* TODO: instead of user here should be account */}
+        <StorageConfigContextProvider userId={user?.user.id ?? ''} locationType="user">
+          {step === 'initial' && (
+            <CreateNewVirtualContributor
+              onClose={handleCloseWizard}
+              loading={loading}
+              onCreateKnowledge={handleCreateKnowledge}
+              onUseExistingKnowledge={values => onStepSelection('existingKnowledge', values)}
+              onUseExternal={values => onStepSelection('externalProvider', values)}
+            />
+          )}
+          {step === 'createSpace' && <LoadingState onClose={handleCloseWizard} />}
+          {step === 'addKnowledge' && virtualContributorInput && (
+            <AddContent
+              onClose={handleCloseWizard}
+              onCreateVC={onCreateVcWithKnowledge}
+              spaceId={selectedExistingSpaceId ?? ''}
+            />
+          )}
+          {step === 'existingKnowledge' && (
+            <ExistingSpace
+              onClose={handleCloseWizard}
+              onBack={() => setStep('initial')}
+              onSubmit={handleCreateVCWithExistingKnowledge}
+              availableSpaces={selectableSpaces}
+              loading={loading}
+            />
+          )}
+          {step === 'externalProvider' && (
+            <CreateExternalAIDialog onCreateExternal={handleCreateExternal} onClose={handleCloseWizard} />
+          )}
+          {step === 'loadingVCSetup' && <SetupVCInfo />}
+          {step === 'insufficientPrivileges' && (
+            <InfoDialog
+              entities={{
+                title: t('createVirtualContributorWizard.insufficientPrivileges.title'),
+                content: t('createVirtualContributorWizard.insufficientPrivileges.description'),
+                buttonCaption: t('buttons.ok'),
+              }}
+              actions={{ onButtonClick: handleCloseWizard }}
+              options={{ show: true }}
+            />
+          )}
+        </StorageConfigContextProvider>
       </DialogWithGrid>
-    ),
-    [dialogOpen, step, loading, selectableSpaces, selectedExistingSpaceId]
-  );
+    );
+  }, [dialogOpen, step, loading, selectableSpaces, selectedExistingSpaceId]);
 
   return {
     startWizard,
