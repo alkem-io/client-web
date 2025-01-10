@@ -77,7 +77,7 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, availableSpaces, loading }: 
     >
       {({ values, isValid }) => (
         <>
-          <DialogHeader onClose={onClose}>{t('createVirtualContributorWizard.existingSpace.title')}</DialogHeader>
+          <DialogHeader onClose={onClose} title={t('createVirtualContributorWizard.existingSpace.title')} />
           <DialogContent>
             {(!availableSpaces || availableSpaces.length === 0) && (
               <Caption>{t('createVirtualContributorWizard.existingSpace.noSpaces')}</Caption>

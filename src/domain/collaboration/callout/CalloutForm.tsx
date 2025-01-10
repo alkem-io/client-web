@@ -90,6 +90,7 @@ export interface CalloutFormProps {
   children?: FormikConfig<FormValueType>['children'];
   journeyTypeName: JourneyTypeName;
   temporaryLocation?: boolean;
+  disableRichMedia?: boolean; // images, videos, iframe, etc.
 }
 
 const CalloutForm = ({
@@ -102,6 +103,7 @@ const CalloutForm = ({
   journeyTypeName,
   children,
   temporaryLocation = false,
+  disableRichMedia,
 }: CalloutFormProps) => {
   const { t } = useTranslation();
 
@@ -220,6 +222,7 @@ const CalloutForm = ({
               rows={7}
               maxLength={MARKDOWN_TEXT_LENGTH}
               temporaryLocation={temporaryLocation}
+              hideImageOptions={disableRichMedia}
             />
             {editMode && formConfiguration.references && (
               <ProfileReferenceSegment

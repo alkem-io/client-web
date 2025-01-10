@@ -6732,6 +6732,11 @@ export type UpdateInnovationPackInput = {
   searchVisibility?: InputMaybe<SearchVisibility>;
 };
 
+export type UpdateKnowledgeBaseInput = {
+  /** The Profile of the Template. */
+  profile?: InputMaybe<UpdateProfileInput>;
+};
+
 export type UpdateLicensePlanInput = {
   ID: Scalars['UUID'];
   /** Assign this plan to all new Organization accounts */
@@ -7012,6 +7017,8 @@ export type UpdateUserSettingsPrivacyInput = {
 export type UpdateVirtualContributorInput = {
   /** The ID of the Virtual Contributor to update. */
   ID: Scalars['UUID'];
+  /** The KnowledgeBase to use for this Collaboration. */
+  knowledgeBaseData?: InputMaybe<UpdateKnowledgeBaseInput>;
   /** Flag to control the visibility of the VC in the platform store. */
   listedInStore?: InputMaybe<Scalars['Boolean']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
@@ -19398,6 +19405,26 @@ export type RefreshBodyOfKnowledgeMutationVariables = Exact<{
 export type RefreshBodyOfKnowledgeMutation = {
   __typename?: 'Mutation';
   refreshVirtualContributorBodyOfKnowledge: boolean;
+};
+
+export type VirtualContributorKnowledgeBaseQueryVariables = Exact<{
+  id: Scalars['UUID_NAMEID'];
+}>;
+
+export type VirtualContributorKnowledgeBaseQuery = {
+  __typename?: 'Query';
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    knowledgeBase?:
+      | {
+          __typename?: 'KnowledgeBase';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          calloutsSet: { __typename?: 'CalloutsSet'; id: string };
+        }
+      | undefined;
+  };
 };
 
 export type VcMembershipsQueryVariables = Exact<{

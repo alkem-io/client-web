@@ -73,11 +73,13 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const [step, setStep] = useState<Step>('initial');
 
   const [targetAccount, setTargetAccount] = useState<UserAccountProps>();
+  const [accountName, setAccountName] = useState<string>();
   const [createdSpaceId, setCreatedSpaceId] = useState<string>();
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps>();
 
-  const startWizard = (initAccount: UserAccountProps | undefined) => {
+  const startWizard = (initAccount: UserAccountProps | undefined, accountName?: string) => {
     setTargetAccount(initAccount);
+    setAccountName(accountName);
     setStep('initial');
     setDialogOpen(true);
   };
@@ -171,7 +173,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         spaceData: {
           accountID: myAccountId!,
           profileData: {
-            displayName: `${user?.user.profile.displayName} - ${t('common.space')}`,
+            displayName: `${accountName || user?.user.profile.displayName} - ${t('common.space')}`,
           },
           collaborationData: {
             calloutsSetData: {},
