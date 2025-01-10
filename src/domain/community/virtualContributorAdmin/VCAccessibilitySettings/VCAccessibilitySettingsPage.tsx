@@ -24,7 +24,7 @@ type VCAccessibilityProps = {
   searchVisibility?: SearchVisibility;
 };
 
-export const VCAccessibilitySettingsPage = () => {
+const VCAccessibilitySettingsPage = () => {
   const { t } = useTranslation();
 
   const { vcNameId = '' } = useUrlParams();

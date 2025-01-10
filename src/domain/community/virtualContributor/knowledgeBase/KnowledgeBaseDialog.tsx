@@ -9,6 +9,7 @@ import useKnowledgeBase from './useKnowledgeBase';
 import { CalloutGroupName, CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { DescriptionComponent } from '@/domain/common/description/DescriptionComponent';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 
 type KnowledgeBaseDialogProps = {
   onClose: () => void;
@@ -39,11 +40,13 @@ const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) =
       <DialogContent>
         <Gutters disablePadding>
           {(knowledgeBaseDescription || canCreateCallout) && (
-            <DescriptionComponent
-              description={knowledgeBaseDescription}
-              canEdit={canCreateCallout}
-              onUpdate={updateDescription}
-            />
+            <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={id}>
+              <DescriptionComponent
+                description={knowledgeBaseDescription}
+                canEdit={canCreateCallout}
+                onUpdate={updateDescription}
+              />
+            </StorageConfigContextProvider>
           )}
           <CalloutsGroupView
             calloutsSetId={calloutsSetId}
