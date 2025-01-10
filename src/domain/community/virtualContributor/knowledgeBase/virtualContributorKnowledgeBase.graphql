@@ -14,9 +14,3 @@ query VirtualContributorKnowledgeBase($id: UUID_NAMEID!) {
     }
   }
 }
-
-
-
-
-
-

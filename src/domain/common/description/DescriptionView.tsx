@@ -19,7 +19,7 @@ export const DescriptionView = ({ description, canEdit = false, onEditClick = no
       <Box flex={1} sx={{ wordWrap: 'break-word' }}>
         <WrapperMarkdown disableParagraphPadding>{description ?? ''}</WrapperMarkdown>
       </Box>
-      {canEdit && onEditClick && (
+      {canEdit && (
         <IconButton
           size="small"
           onClick={onEditClick}
