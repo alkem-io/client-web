@@ -35,10 +35,10 @@ const OpportunitySettingsView = () => {
   const [deleteOpportunity] = useDeleteSpaceMutation({
     refetchQueries: [
       refetchSubspacesInSpaceQuery({
-        spaceId: spaceId,
+        spaceId,
       }),
       refetchSpaceDashboardNavigationChallengesQuery({
-        spaceId: spaceNameId,
+        spaceId,
       }),
     ],
     onCompleted: data => {

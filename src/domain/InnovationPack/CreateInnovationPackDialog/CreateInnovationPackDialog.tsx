@@ -1,17 +1,27 @@
-import { useState } from 'react';
 import InnovationPackForm, { InnovationPackFormValues } from '../admin/InnovationPackForm'; // Assuming InnovationPackForm is in the same directory
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useTranslation } from 'react-i18next';
-import { DialogContent, IconButton } from '@mui/material';
+import { DialogContent } from '@mui/material';
 import { useCreateInnovationPackMutation } from '@/core/apollo/generated/apollo-hooks';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { BlockTitle } from '@/core/ui/typography';
-import AddIcon from '@mui/icons-material/Add';
-import RoundedIcon from '@/core/ui/icon/RoundedIcon';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useUserContext } from '@/domain/community/user';
 
-const CreateInnovationPackDialog = ({ accountId }: { accountId: string | undefined }) => {
+const CreateInnovationPackDialog = ({
+  accountId,
+  open = false,
+  onClose,
+}: {
+  accountId: string | undefined;
+  open: boolean | undefined;
+  onClose?: () => void;
+}) => {
   const { t } = useTranslation();
-  const [isOpen, setIsOpen] = useState(false);
+  const notify = useNotification();
+  const { user } = useUserContext();
+  const userId = user?.user.id;
 
   const [createInnovationPack, { loading }] = useCreateInnovationPackMutation();
 
@@ -19,7 +29,7 @@ const CreateInnovationPackDialog = ({ accountId }: { accountId: string | undefin
     if (!accountId) {
       return;
     }
-    const { data } = await createInnovationPack({
+    await createInnovationPack({
       variables: {
         packData: {
           accountID: accountId,
@@ -31,29 +41,32 @@ const CreateInnovationPackDialog = ({ accountId }: { accountId: string | undefin
         },
       },
       refetchQueries: ['AdminInnovationPacksList', 'AccountInformation', 'InnovationLibrary'],
+      onCompleted: () => {
+        notify(t('pages.admin.innovation-packs.notifications.pack-created'), 'success');
+        onClose?.();
+      },
+      onError: () => {
+        notify(t('pages.admin.innovation-packs.notifications.pack-error'), 'error');
+      },
     });
-    if (data?.createInnovationPack.nameID) {
-      setIsOpen(false);
-    }
   };
 
-  if (!accountId) {
+  if (!accountId || !userId) {
     return null;
   }
 
   return (
     <>
-      <DialogWithGrid open={isOpen} onClose={() => setIsOpen(false)} columns={6}>
-        <DialogHeader onClose={() => setIsOpen(false)}>
+      <DialogWithGrid open={open} onClose={onClose} columns={6}>
+        <DialogHeader onClose={onClose}>
           <BlockTitle>{t('pages.admin.innovation-packs.create')}</BlockTitle>
         </DialogHeader>
         <DialogContent>
-          <InnovationPackForm isNew onSubmit={handleSubmit} loading={loading || !accountId} />
+          <StorageConfigContextProvider userId={userId} locationType="user">
+            <InnovationPackForm isNew onSubmit={handleSubmit} loading={loading || !accountId} />
+          </StorageConfigContextProvider>
         </DialogContent>
       </DialogWithGrid>
-      <IconButton aria-label={t('common.add')} aria-haspopup="true" size="small" onClick={() => setIsOpen(true)}>
-        <RoundedIcon component={AddIcon} size="medium" iconSize="small" />
-      </IconButton>
     </>
   );
 };

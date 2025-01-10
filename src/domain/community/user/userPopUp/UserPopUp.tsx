@@ -1,5 +1,5 @@
+import Avatar from '@/core/ui/avatar/Avatar';
 import { DialogActions, DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
-import AlkemioAvatar from '@/core/ui/image/AlkemioAvatar';
 import { RouterLink } from '@/core/ui/link/deprecated/RouterLink';
 import Loading from '@/core/ui/loading/Loading';
 import Tag from '@/core/ui/tags/deprecated/Tag';
@@ -83,22 +83,11 @@ const useUserPopUpStyles = makeStyles(theme => ({
       padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
     },
   },
-  marginBottom: {
-    marginBottom: theme.spacing(2),
-  },
-  refRow: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-  },
-  refDiv: {
-    marginBottom: theme.spacing(1),
-  },
 }));
 
 type UserPopUpProps = {
   id: string;
   onHide: () => void;
-  terms?: Array<string>;
 };
 
 const getStringOfNames = (arr: string[]) => arr.join(', ');
@@ -126,7 +115,12 @@ const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
       <DialogTitle id="user-dialog-title" onClose={onHide}>
         <div className={styles.header}>
           <div className={styles.profile}>
-            <AlkemioAvatar src={user?.profile.avatar?.uri} size={'lg'} />
+            <Avatar
+              src={user?.profile.avatar?.uri}
+              sx={{ borderRadius: 1 }}
+              size="large"
+              aria-label={t('common.avatar-of', { user: user?.profile.displayName })}
+            />
             <div className={styles.userName}>
               <WrapperTypography variant={'h3'}>{user?.profile.displayName}</WrapperTypography>
             </div>

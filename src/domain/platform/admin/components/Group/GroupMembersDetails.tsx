@@ -1,13 +1,12 @@
+import { FC, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Box, Button, Tooltip } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import Avatar from '@/core/ui/avatar/Avatar';
 import { User } from '@/core/apollo/generated/graphql-schema';
-import AlkemioAvatar from '@/core/ui/image/AlkemioAvatar';
-import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
+import { Caption } from '@/core/ui/typography';
 import { UserAvatarsProvider } from '@/domain/community/user/containers/UserAvatarsProvider/UserAvatarsProvider';
 import UserPopUp from '@/domain/community/user/userPopUp/UserPopUp';
-import { Button } from '@mui/material';
-import { FC } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import GroupMembersDetailsAvatarContainer from './GroupMembersDetailsAvatarContainer';
 
 interface GroupMembersDetailsProps {
   members: User[];
@@ -16,34 +15,61 @@ interface GroupMembersDetailsProps {
 
 export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, editLink }) => {
   const { t } = useTranslation();
+  const [isPopUpShown, setIsPopUpShown] = useState(false);
+  const [memberId, setMemberId] = useState<string>();
+
+  const onMemberClick = (id: string) => {
+    setMemberId(id);
+    setIsPopUpShown(true);
+  };
+
+  const onHidePopUp = () => {
+    setIsPopUpShown(false);
+    setMemberId(undefined);
+  };
+
   return (
     <>
-      <WrapperTypography variant={'h4'}>Members</WrapperTypography>
+      <Caption variant={'h4'}>Members</Caption>
       <UserAvatarsProvider users={members}>
         {populated => {
-          const avatars = populated;
           return (
             <>
-              <GroupMembersDetailsAvatarContainer title={''}>
-                {avatars.map((u, i) => (
-                  <AlkemioAvatar
-                    key={i}
-                    src={u.profile.visual?.uri}
-                    name={u.profile.displayName}
-                    renderPopup={({ open, onHide }) => open && <UserPopUp id={u.id} onHide={onHide} />}
-                  />
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  flexGrow: 1,
+                  pb: 3,
+                  flexWrap: 'wrap',
+                  gap: 1,
+                  bgcolor: 'background.default',
+                  borderRadius: 1,
+                }}
+              >
+                {populated.map(u => (
+                  <Tooltip key={u.id} placement={'bottom'} id={'membersTooltip'} title={u.profile.displayName}>
+                    <Avatar
+                      src={u.profile.visual?.uri}
+                      aria-label="User avatar"
+                      alt={t('common.avatar-of', { user: u.profile.displayName })}
+                      onClick={() => onMemberClick(u.id)}
+                      sx={{ cursor: 'pointer' }}
+                    >
+                      {u.profile.displayName?.[0]}
+                    </Avatar>
+                  </Tooltip>
                 ))}
-              </GroupMembersDetailsAvatarContainer>
+              </Box>
               <div style={{ flexBasis: '100%' }} />
               {members.length - populated.length > 0 && (
-                <WrapperTypography variant="h3" as="h3" color="positive">
-                  {`... + ${members.length - populated.length} other members`}
-                </WrapperTypography>
+                <Caption color="positive.main">{`... + ${members.length - populated.length} other members`}</Caption>
               )}
             </>
           );
         }}
       </UserAvatarsProvider>
+      {isPopUpShown && memberId && <UserPopUp id={memberId} onHide={onHidePopUp} />}
       {editLink && (
         <Button component={Link} to={'members'}>
           {t('buttons.edit-members')}
