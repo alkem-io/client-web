@@ -1455,7 +1455,7 @@
       },
       "dialog-join-parent": {
         "title": "Join <strong title='Parent community name'>{{parentCommunityName}}</strong>",
-        "body": "You can join this community without applying for a membership, because you have the right credentials. But first you have to join <strong title='Parent community name'>{{parentCommunityName}}</strong> and accept the terms and conditions there, then you can join this one."
+        "body": "You can join this community without applying for a membership, but first you have to join <strong title='Parent community name'>{{parentCommunityName}}</strong> and accept the terms and conditions there."
       }
     },
     "organization-verified": {
