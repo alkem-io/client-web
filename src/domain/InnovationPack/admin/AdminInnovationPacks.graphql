@@ -16,7 +16,7 @@ query AdminInnovationPacksList {
   }
 }
 
-mutation deleteInnovationPack($innovationPackId: UUID_NAMEID!) {
+mutation deleteInnovationPack($innovationPackId: UUID!) {
   deleteInnovationPack(deleteData: { ID: $innovationPackId }) {
     id
   }

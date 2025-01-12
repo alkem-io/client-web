@@ -1,12 +1,14 @@
-query organizationSettings($orgId: UUID_NAMEID!) {
-  organization(ID: $orgId) {
-    id
-    settings {
-      membership {
-        allowUsersMatchingDomainToJoin
-      }
-      privacy {
-        contributionRolesPubliclyVisible
+query organizationSettings($orgId: UUID!) {
+  lookup {
+    organization(ID: $orgId) {
+      id
+      settings {
+        membership {
+          allowUsersMatchingDomainToJoin
+        }
+        privacy {
+          contributionRolesPubliclyVisible
+        }
       }
     }
   }

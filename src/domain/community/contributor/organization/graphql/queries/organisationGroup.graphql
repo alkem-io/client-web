@@ -1,14 +1,16 @@
-query organizationGroup($organizationId: UUID_NAMEID!, $groupId: UUID!) {
-  organization(ID: $organizationId) {
-    id
-    roleSet {
+query organizationGroup($organizationId: UUID!, $groupId: UUID!) {
+  lookup {
+    organization(ID: $organizationId) {
       id
-      associatedUsers: usersInRole(role: ASSOCIATE) {
-        ...GroupMembers
+      roleSet {
+        id
+        associatedUsers: usersInRole(role: ASSOCIATE) {
+          ...GroupMembers
+        }
       }
-    }
-    group(ID: $groupId) {
-      ...GroupInfo
+      group(ID: $groupId) {
+        ...GroupInfo
+      }
     }
   }
 }

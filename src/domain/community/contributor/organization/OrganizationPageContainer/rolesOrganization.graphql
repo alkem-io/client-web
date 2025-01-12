@@ -1,4 +1,4 @@
-query rolesOrganization($input: UUID_NAMEID!) {
+query rolesOrganization($input: UUID!) {
   rolesOrganization(rolesData: { organizationID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
     id
     spaces {

@@ -1,11 +1,13 @@
-query organizationGroups($id: UUID_NAMEID!) {
-  organization(ID: $id) {
-    id
-    groups {
+query organizationGroups($id: UUID!) {
+  lookup {
+    organization(ID: $id) {
       id
-      profile {
+      groups {
         id
-        displayName
+        profile {
+          id
+          displayName
+        }
       }
     }
   }

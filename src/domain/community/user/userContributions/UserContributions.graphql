@@ -1,4 +1,4 @@
-query UserContributions($userId: UUID_NAMEID_EMAIL!) {
+query UserContributions($userId: UUID!) {
   rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
     id
     spaces {

@@ -1,5 +1,7 @@
-query organizationInfo($organizationId: UUID_NAMEID!, $includeAssociates: Boolean = false) {
-  organization(ID: $organizationId) {
-    ...OrganizationInfo
+query organizationInfo($organizationId: UUID!, $includeAssociates: Boolean = false) {
+  lookup {
+    organization(ID: $organizationId) {
+      ...OrganizationInfo
+    }
   }
 }
