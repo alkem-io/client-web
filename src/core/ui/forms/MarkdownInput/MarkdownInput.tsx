@@ -108,13 +108,33 @@ export const MarkdownInput = memo(
         },
       });
 
+      const isImageOrHtmlWithImage = (item: DataTransferItem, clipboardData: DataTransfer | null) => {
+        if (item.kind === 'file' && item.type.startsWith('image/')) {
+          return true; // Image
+        }
+
+        if (item.kind === 'string' && item.type === 'text/html') {
+          const htmlContent = clipboardData?.getData('text/html');
+          return htmlContent?.includes('<img') ?? false; // HTML tag with image
+        }
+
+        return false; // Not an image or HTML with images
+      };
+
       const storageConfig = useStorageConfigContext();
 
       const editorOptions: Partial<EditorOptions> = useMemo(
         () => ({
           extensions: [StarterKit, ImageExtension, Link, Highlight, Iframe],
           editorProps: {
-            handlePaste: (_view: EditorView, event: ClipboardEvent) => {
+            /**
+             * Handles the paste event in the editor.
+             *
+             * @param _view - The editor view instance.
+             * @param event - The clipboard event triggered by pasting.
+             * @returns {boolean} - Returns true if the paste event is handled, otherwise false - continue execution of the default.
+             */
+            handlePaste: (_view: EditorView, event: ClipboardEvent): boolean => {
               const clipboardData = event.clipboardData;
               const items = clipboardData?.items;
 
@@ -128,29 +148,18 @@ export const MarkdownInput = memo(
                 return false;
               }
 
-              const isImageOrHtmlWithImage = (item: DataTransferItem) => {
-                if (item.kind === 'file' && item.type.startsWith('image/')) {
-                  return true; // Image
-                }
-
-                if (item.kind === 'string' && item.type === 'text/html') {
-                  const htmlContent = clipboardData.getData('text/html');
-                  return htmlContent.includes('<img'); // HTML tag with image
-                }
-
-                return false; // Not an image or HTML with images
-              };
-
               let imageProcessed = false;
 
               for (const item of items) {
-                if (hideImageOptions && isImageOrHtmlWithImage(item)) {
+                const isImage = isImageOrHtmlWithImage(item, clipboardData);
+
+                if (hideImageOptions && isImage) {
                   event.preventDefault();
 
                   return true; // Block paste of images or HTML with images
                 }
 
-                if (!imageProcessed && isImageOrHtmlWithImage(item)) {
+                if (!imageProcessed && isImage) {
                   if (item.kind === 'file' && item.type.startsWith('image/')) {
                     const file = item.getAsFile();
 
