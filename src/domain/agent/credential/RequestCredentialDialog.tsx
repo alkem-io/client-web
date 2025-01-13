@@ -66,7 +66,7 @@ const RequestCredentialDialog = ({ entities, actions, options, state }: RequestC
   }, [options.show]);
 
   return (
-    <Dialog open={options.show} aria-labelledby="confirmation-dialog" sx={{ height: '100vh' }}>
+    <Dialog open={options.show} aria-labelledby="confirmation-dialog" sx={{ '& .MuiPaper-root': { height: '100vh' } }}>
       <DialogTitle
         id="credential-request-dialog-title"
         onClose={() => {

@@ -40,7 +40,7 @@ const QRCodeDialog = ({ entities, actions, options, state }: QRCodeDialogProps) 
   }
 
   return (
-    <Dialog open={options.show} aria-labelledby="confirmation-dialog" sx={{ height: '100vh' }}>
+    <Dialog open={options.show} aria-labelledby="confirmation-dialog" sx={{ '& .MuiPaper-root': { height: '100vh' } }}>
       <DialogTitle id="confirmation-dialog-title" onClose={actions.onCancel}>
         {title}
       </DialogTitle>
