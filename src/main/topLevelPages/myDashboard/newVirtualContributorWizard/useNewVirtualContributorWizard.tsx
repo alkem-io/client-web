@@ -474,7 +474,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   };
 
   const NewVirtualContributorWizard = useCallback(() => {
-    if (!targetAccount || !data?.me.user?.account) {
+    if (!(targetAccount || data?.me.user?.account)) {
       return null;
     }
 
@@ -526,7 +526,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         </StorageConfigContextProvider>
       </DialogWithGrid>
     );
-  }, [dialogOpen, step, loading, selectableSpaces, selectedExistingSpaceId]);
+  }, [dialogOpen, step, loading, selectableSpaces, selectedExistingSpaceId, targetAccount, data]);
 
   return {
     startWizard,
