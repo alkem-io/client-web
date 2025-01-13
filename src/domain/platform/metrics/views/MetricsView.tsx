@@ -1,8 +1,8 @@
-import React, { FC, useMemo } from 'react';
-import { Grid, Typography } from '@mui/material';
-import { MetricItem } from '../utils/useMetricsItems';
 import CircleTag from '@/core/ui/tags/CircleTag';
+import { Grid, Typography } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
+import { FC, useMemo } from 'react';
+import { MetricItem } from '../utils/useMetricsItems';
 
 export interface MetricViewProps {
   activity: MetricItem[];
@@ -69,7 +69,7 @@ const MetricViewItem = ({ text, count }) => (
       <Typography>{text}</Typography>
     </Grid>
     <Grid item>
-      <CircleTag text={count} color="primary" size="small" />
+      <CircleTag count={count} />
     </Grid>
   </Grid>
 );
