@@ -41,9 +41,7 @@ fragment InnovationPackProfile on Profile {
 
 query InnovationPackResolveId($innovationPackNameId: NameID!) {
   lookupByName {
-    innovationPack(NAMEID: $innovationPackNameId) {
-      id
-    }
+    innovationPack(NAMEID: $innovationPackNameId)
   }
 }
 

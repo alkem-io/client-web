@@ -1,7 +1,5 @@
 query TemplateUrlResolver($templatesSetId: UUID!, $templateNameId: NameID!) {
   lookupByName {
-    template(templatesSetID: $templatesSetId, NAMEID: $templateNameId) {
-      id
-    }
+    template(templatesSetID: $templatesSetId, NAMEID: $templateNameId)
   }
 }

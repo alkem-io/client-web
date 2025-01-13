@@ -3081,16 +3081,18 @@ export type Location = {
 
 export type LookupByNameQueryResults = {
   __typename?: 'LookupByNameQueryResults';
-  /** Lookup the specified InnovationPack using a NameID */
-  innovationPack?: Maybe<InnovationPack>;
-  /** Lookup the specified Organization using a NameID */
-  organization?: Maybe<Organization>;
-  /** Lookup the specified Template using a templatesSetId and the template NameID */
-  template?: Maybe<Template>;
-  /** Lookup the specified User using a NameID */
-  user?: Maybe<User>;
-  /** Lookup the specified Virtual Contributor using a NameID */
-  virtualContributor?: Maybe<VirtualContributor>;
+  /** Lookup the ID of the specified InnovationPack using a NameID */
+  innovationPack?: Maybe<Scalars['String']>;
+  /** Lookup the ID of the specified Organization using a NameID */
+  organization?: Maybe<Scalars['String']>;
+  /** Lookup the ID of the specified Space using a NameID */
+  space?: Maybe<Scalars['String']>;
+  /** Lookup the ID of the specified Template using a templatesSetId and the template NameID */
+  template?: Maybe<Scalars['String']>;
+  /** Lookup the ID of the specified User using a NameID */
+  user?: Maybe<Scalars['String']>;
+  /** Lookup the ID of the specified Virtual Contributor using a NameID */
+  virtualContributor?: Maybe<Scalars['String']>;
 };
 
 export type LookupByNameQueryResultsInnovationPackArgs = {
@@ -3098,6 +3100,10 @@ export type LookupByNameQueryResultsInnovationPackArgs = {
 };
 
 export type LookupByNameQueryResultsOrganizationArgs = {
+  NAMEID: Scalars['NameID'];
+};
+
+export type LookupByNameQueryResultsSpaceArgs = {
   NAMEID: Scalars['NameID'];
 };
 
@@ -7487,10 +7493,7 @@ export type InnovationPackResolveIdQueryVariables = Exact<{
 
 export type InnovationPackResolveIdQuery = {
   __typename?: 'Query';
-  lookupByName: {
-    __typename?: 'LookupByNameQueryResults';
-    innovationPack?: { __typename?: 'InnovationPack'; id: string } | undefined;
-  };
+  lookupByName: { __typename?: 'LookupByNameQueryResults'; innovationPack?: string | undefined };
 };
 
 export type AdminInnovationPackQueryVariables = Exact<{
@@ -26859,10 +26862,7 @@ export type TemplateUrlResolverQueryVariables = Exact<{
 
 export type TemplateUrlResolverQuery = {
   __typename?: 'Query';
-  lookupByName: {
-    __typename?: 'LookupByNameQueryResults';
-    template?: { __typename?: 'Template'; id: string } | undefined;
-  };
+  lookupByName: { __typename?: 'LookupByNameQueryResults'; template?: string | undefined };
 };
 
 export type UpdateTemplateDefaultMutationVariables = Exact<{

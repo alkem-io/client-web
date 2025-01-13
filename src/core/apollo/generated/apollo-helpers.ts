@@ -1951,6 +1951,7 @@ export type LocationFieldPolicy = {
 export type LookupByNameQueryResultsKeySpecifier = (
   | 'innovationPack'
   | 'organization'
+  | 'space'
   | 'template'
   | 'user'
   | 'virtualContributor'
@@ -1959,6 +1960,7 @@ export type LookupByNameQueryResultsKeySpecifier = (
 export type LookupByNameQueryResultsFieldPolicy = {
   innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
   template?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;

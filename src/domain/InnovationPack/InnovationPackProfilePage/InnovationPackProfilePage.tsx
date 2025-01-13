@@ -36,7 +36,7 @@ const InnovationPackProfilePage = () => {
     skip: !innovationPackNameId,
   });
 
-  const innovationPackId = innovationPackResolverData?.lookupByName.innovationPack?.id;
+  const innovationPackId = innovationPackResolverData?.lookupByName.innovationPack;
   if (innovationPackNameId && !resolvingInnovationPack && !innovationPackId) {
     throw new Error('Template pack not found.');
   }
@@ -57,7 +57,7 @@ const InnovationPackProfilePage = () => {
     variables: { templatesSetId: templatesSetId!, templateNameId: templateNameId! },
     skip: !templatesSetId || !templateNameId,
   });
-  const selectedTemplateId = templateResolverData?.lookupByName.template?.id;
+  const selectedTemplateId = templateResolverData?.lookupByName.template;
 
   const loading = resolvingInnovationPack || resolvingTemplate || loadingInnovationPack;
 

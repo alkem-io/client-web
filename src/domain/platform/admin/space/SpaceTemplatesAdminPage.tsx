@@ -59,7 +59,7 @@ const SpaceTemplatesAdminPage: FC<SpaceTemplatesAdminPageProps> = ({ spaceId, ro
     variables: { templatesSetId: templatesSetId!, templateNameId: templateNameId! },
     skip: !templatesSetId || !templateNameId,
   });
-  const selectedTemplateId = templateResolverData?.lookupByName.template?.id;
+  const selectedTemplateId = templateResolverData?.lookupByName.template;
 
   const loading = loadingSpace || resolvingTemplate;
   return (

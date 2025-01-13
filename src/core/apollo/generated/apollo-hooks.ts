@@ -4224,9 +4224,7 @@ export type DeleteInnovationPackMutationOptions = Apollo.BaseMutationOptions<
 export const InnovationPackResolveIdDocument = gql`
   query InnovationPackResolveId($innovationPackNameId: NameID!) {
     lookupByName {
-      innovationPack(NAMEID: $innovationPackNameId) {
-        id
-      }
+      innovationPack(NAMEID: $innovationPackNameId)
     }
   }
 `;
@@ -21236,9 +21234,7 @@ export function refetchTemplateNameQuery(variables: SchemaTypes.TemplateNameQuer
 export const TemplateUrlResolverDocument = gql`
   query TemplateUrlResolver($templatesSetId: UUID!, $templateNameId: NameID!) {
     lookupByName {
-      template(templatesSetID: $templatesSetId, NAMEID: $templateNameId) {
-        id
-      }
+      template(templatesSetID: $templatesSetId, NAMEID: $templateNameId)
     }
   }
 `;
