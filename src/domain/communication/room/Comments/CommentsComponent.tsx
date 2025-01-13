@@ -17,6 +17,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { CommentInputFieldProps } from './CommentInputField';
 
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
+const MIN_COMMENTS_HEIGHT = '200px'; // fix for long description or device with short height
 
 export interface CommentsComponentProps {
   messages: Message[] | undefined;
@@ -112,6 +113,7 @@ const CommentsComponent = ({
           scrollerRef={commentsContainerRef}
           onScroll={handleScroll}
           margin={0}
+          sx={{ minHeight: MIN_COMMENTS_HEIGHT }}
         >
           <Gutters gap={0}>
             <MessagesThread
