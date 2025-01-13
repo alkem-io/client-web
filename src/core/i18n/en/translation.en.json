@@ -2166,7 +2166,7 @@
         "save-new-for-details": "Save the new Template Pack to edit the rest of the details",
         "saved-successfully": "Saved Successfully",
         "notifications": {
-          "pack-created": "$t(common.innovation-pack) created successfuly.",
+          "pack-created": "$t(common.innovation-pack) created successfully.",
           "pack-error": "An error occurred while creating the $t(common.innovation-pack).",
           "pack-removed": "$t(common.innovation-pack) '{{name}}' removed successfully."
         }
