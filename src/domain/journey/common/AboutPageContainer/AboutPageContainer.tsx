@@ -98,7 +98,7 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
   const communityPrivileges = membersData?.lookup.space?.community?.roleSet.authorization?.myPrivileges ?? [];
 
   const hasInvitePrivilege =
-    communityPrivileges.includes(AuthorizationPrivilege.CommunityInvite) ||
+    communityPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleInvite) ||
     communityPrivileges.includes(AuthorizationPrivilege.CommunityAddMemberVcFromAccount);
 
   const context = nonMemberContext;

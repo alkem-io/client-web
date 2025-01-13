@@ -1,24 +1,25 @@
-fragment RoleSetDetails on RoleSet {
+# Delete me
+fragment CommunityRoleSetDetails on RoleSet {
   id
   memberUsers: usersInRole(role: MEMBER) {
-    ...CommunityMemberUser
+    ...RoleSetMemberUser
   }
   leadUsers: usersInRole(role: LEAD) {
-    ...CommunityMemberUser
+    ...RoleSetMemberUser
   }
   adminUsers: usersInRole(role: ADMIN) {
-    ...CommunityMemberUser
+    ...RoleSetMemberUser
   }
 
   memberOrganizations: organizationsInRole(role: MEMBER) {
-    ...CommunityMemberOrganization
+    ...RoleSetMemberOrganization
   }
   leadOrganizations: organizationsInRole(role: LEAD) {
-    ...CommunityMemberOrganization
+    ...RoleSetMemberOrganization
   }
 
   memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
-    ...CommunityMemberVirtualContributor
+    ...RoleSetMemberVirtualContributor
   }
 
   memberRoleDefinition: roleDefinition(role: MEMBER) {

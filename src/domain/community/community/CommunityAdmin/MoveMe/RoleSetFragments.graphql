@@ -1,0 +1,65 @@
+fragment RoleSetMemberUser on User {
+  id
+  isContactable
+  profile {
+    id
+    displayName
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+    location {
+      id
+      city
+      country
+    }
+    tagsets {
+      ...TagsetDetails
+    }
+    url
+  }
+  email
+  firstName
+  lastName
+}
+
+fragment RoleSetMemberOrganization on Organization {
+  id
+  profile {
+    id
+    displayName
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+    description
+    tagsets {
+      ...TagsetDetails
+    }
+    location {
+      id
+      country
+      city
+    }
+    url
+  }
+}
+
+fragment RoleSetMemberVirtualContributor on VirtualContributor {
+  id
+  searchVisibility
+  profile {
+    id
+    displayName
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+    tagsets {
+      ...TagsetDetails
+    }
+    location {
+      id
+      city
+      country
+    }
+    url
+  }
+}

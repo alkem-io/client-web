@@ -4,6 +4,7 @@ import {
   useBodyOfKnowledgeProfileQuery,
   useUpdateVirtualContributorMutation,
   useVirtualContributorQuery,
+  useVirtualContributorUrlResolverQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import VirtualContributorForm from './VirtualContributorForm';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
@@ -18,24 +19,31 @@ import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
 
 export const VCSettingsPage = () => {
   const { t } = useTranslation();
-
-  const { vcNameId = '' } = useUrlParams();
-
   const notify = useNotification();
+
+  const { vcNameId } = useUrlParams();
+  const {
+    data: urlResolveData
+  } = useVirtualContributorUrlResolverQuery({
+    variables: { nameId: vcNameId! },
+    skip: !vcNameId,
+  });
+  const vcId = urlResolveData?.lookupByName.virtualContributor;
 
   const { data, loading } = useVirtualContributorQuery({
     variables: {
-      id: vcNameId,
+      id: vcId!,
     },
+    skip: !vcId,
   });
 
   const { data: bokProfile } = useBodyOfKnowledgeProfileQuery({
     variables: {
-      spaceId: data?.virtualContributor?.aiPersona?.bodyOfKnowledgeID!,
+      spaceId: data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeID!,
     },
     skip:
-      !data?.virtualContributor?.aiPersona?.bodyOfKnowledgeID ||
-      data?.virtualContributor?.aiPersona?.bodyOfKnowledgeType !== AiPersonaBodyOfKnowledgeType.AlkemioSpace,
+      !data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeID ||
+      data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeType !== AiPersonaBodyOfKnowledgeType.AlkemioSpace,
   });
 
   const [updateContributorMutation] = useUpdateVirtualContributorMutation();
@@ -62,20 +70,20 @@ export const VCSettingsPage = () => {
     );
   }
 
-  if (!data?.virtualContributor) {
+  if (!data?.lookup.virtualContributor) {
     return null;
   }
 
   return (
-    <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={data.virtualContributor.id}>
+    <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={data.lookup.virtualContributor?.id}>
       <VCSettingsPageLayout currentTab={SettingsSection.MyProfile}>
         <PageContent background="background.paper">
           <PageContentColumn columns={12}>
             <PageContentBlock>
               <VirtualContributorForm
-                virtualContributor={data?.virtualContributor}
+                virtualContributor={data?.lookup.virtualContributor}
                 bokProfile={bokProfile?.lookup.space?.profile}
-                avatar={data?.virtualContributor.profile.avatar}
+                avatar={data?.lookup.virtualContributor.profile.avatar}
                 onSave={handleUpdate}
               />
             </PageContentBlock>

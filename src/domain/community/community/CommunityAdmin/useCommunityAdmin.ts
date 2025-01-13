@@ -37,7 +37,7 @@ const buildOrganizationFilterObject = (filter: string | undefined) =>
     : undefined;
 
 // TODO: Inherit from CoreEntityIds when they are not NameIds
-interface useRoleSetAdminParams {
+interface useCommunityAdminParams {
   roleSetId: string;
   spaceId?: string;
   challengeId?: string;
@@ -45,7 +45,7 @@ interface useRoleSetAdminParams {
   spaceLevel: SpaceLevel | undefined;
 }
 
-const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spaceLevel }: useRoleSetAdminParams) => {
+const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spaceLevel }: useCommunityAdminParams) => {
   const journeyTypeName = getJourneyTypeName({
     spaceNameId: spaceId,
     challengeNameId: challengeId,
@@ -428,4 +428,4 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
   };
 };
 
-export default useRoleSetAdmin;
+export default useCommunityAdmin;

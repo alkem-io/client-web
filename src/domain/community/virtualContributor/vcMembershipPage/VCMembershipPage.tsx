@@ -6,25 +6,32 @@ import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLa
 import VCSettingsPageLayout from '../../virtualContributorAdmin/layout/VCSettingsPageLayout';
 import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
 import { AuthorizationPrivilege, RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { useVcMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useVcMembershipsQuery, useVirtualContributorUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   PendingMembershipsDialogType,
   usePendingMembershipsDialog,
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 
-const UserMembershipPage = () => {
+const VCMembershipPage = () => {
   const { t } = useTranslation();
   const { vcNameId = '' } = useUrlParams();
+  const {
+    data: urlResolverData
+  } = useVirtualContributorUrlResolverQuery({
+    variables: { nameId: vcNameId },
+    skip: !vcNameId,
+  });
+  const vcId = urlResolverData?.lookupByName.virtualContributor;
 
   const { data, loading, refetch } = useVcMembershipsQuery({
     variables: {
-      virtualContributorId: vcNameId!,
+      virtualContributorId: vcId!,
     },
-    skip: !vcNameId,
+    skip: !vcId,
   });
   const { setOpenDialog } = usePendingMembershipsDialog();
 
-  const canLeaveCommunities = data?.virtualContributor.authorization?.myPrivileges?.includes(
+  const canLeaveCommunities = data?.lookup.virtualContributor?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Grant
   );
 
@@ -34,11 +41,15 @@ const UserMembershipPage = () => {
     }
 
     return data.rolesVirtualContributor.spaces.reduce((acc, space) => {
+      const vcId = data.lookup.virtualContributor?.id;
+      if (!vcId) {
+        return acc;
+      }
       const currentSpace = {
         spaceID: space.id,
         id: space.id,
         spaceLevel: SpaceLevel.Space,
-        contributorId: data.virtualContributor.id,
+        contributorId: vcId,
         contributorType: RoleSetContributorType.Virtual,
       };
       acc.push(currentSpace);
@@ -47,7 +58,7 @@ const UserMembershipPage = () => {
         id: subspace.id,
         spaceID: subspace.id,
         spaceLevel: subspace.level,
-        contributorId: data.virtualContributor.id,
+        contributorId: vcId,
         contributorType: RoleSetContributorType.Virtual,
       }));
 
@@ -60,13 +71,13 @@ const UserMembershipPage = () => {
       .filter(
         invitation =>
           invitation.invitation.contributorType === RoleSetContributorType.Virtual &&
-          invitation.invitation.contributor.id === data.virtualContributor.id
+          invitation.invitation.contributor.id === data.lookup.virtualContributor?.id
       )
       .map(invitation => ({
         id: invitation.id,
         spaceID: invitation.spacePendingMembershipInfo.id,
         spaceLevel: invitation.spacePendingMembershipInfo.level,
-        contributorId: data.virtualContributor.id,
+        contributorId: data.lookup.virtualContributor?.id,
         contributorType: RoleSetContributorType.Virtual,
       }));
   }, [data]);
@@ -92,4 +103,4 @@ const UserMembershipPage = () => {
   );
 };
 
-export default UserMembershipPage;
+export default VCMembershipPage;

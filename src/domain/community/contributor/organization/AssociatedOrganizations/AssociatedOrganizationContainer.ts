@@ -34,7 +34,7 @@ export const AssociatedOrganizationContainer = ({
     },
     errorPolicy: 'all',
   });
-  const roleSetId = data?.organization.roleSet.id;
+  const roleSetId = data?.lookup.organization?.roleSet.id;
 
   const [disassociateSelfFromOrganization, { loading: removingFromOrganization }] = useRemoveRoleFromUserMutation();
   const handleRemoveSelfFromOrganization = useCallback(async () => {
@@ -53,7 +53,7 @@ export const AssociatedOrganizationContainer = ({
     });
   }, [organizationId, userId, roleSetId, disassociateSelfFromOrganization]);
 
-  const associatedOrganization = mapToAssociatedOrganization(data?.organization, organizationId, {
+  const associatedOrganization = mapToAssociatedOrganization(data?.lookup.organization, organizationId, {
     loading,
     error,
   });

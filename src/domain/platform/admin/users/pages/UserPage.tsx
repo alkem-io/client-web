@@ -31,7 +31,7 @@ const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User' 
   const { userNameId = '' } = useUrlParams();
   const { data, loading } = useUserQuery({ variables: { id: userNameId }, fetchPolicy: 'cache-and-network' });
 
-  const user = data?.user as UserModel;
+  const user = data?.lookup.user as UserModel;
 
   const [updateUser, { loading: updateMutationLoading }] = useUpdateUserMutation({
     onCompleted: () => {
@@ -156,7 +156,7 @@ const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User' 
         onSave={handleSave}
         title={title}
         user={user}
-        avatar={data?.user?.profile.avatar}
+        avatar={data?.lookup.user?.profile.avatar}
         onDelete={() => setModalOpened(true)}
       />
       <UserRemoveModal

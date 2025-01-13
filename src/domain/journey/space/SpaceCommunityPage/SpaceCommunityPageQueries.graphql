@@ -19,7 +19,7 @@ query SpaceCommunityPage($spaceNameId: UUID_NAMEID!, $includeCommunity: Boolean!
     community @include(if: $includeCommunity) {
       id
       roleSet {
-        ...RoleSetDetails
+        ...CommunityRoleSetDetails
       }
     }
     collaboration {

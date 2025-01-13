@@ -65,7 +65,6 @@ const UserProvider: FC = ({ children }) => {
 
   const loadingMeAndParentQueries = loadingAuthentication || loadingMe;
 
-  console.log({ myPrivileges, myRoles });
   const userMetadata = useMemo(
     () => (meData?.me ? toUserMetadata(meData.me.user as User, myPrivileges, myRoles) : undefined),
     [meData, myPrivileges, myRoles]

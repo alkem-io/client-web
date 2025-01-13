@@ -16,15 +16,15 @@ export const UserAdminAccountPage = () => {
 
   const { data: accountData, loading: loadingAccount } = useAccountInformationQuery({
     variables: {
-      accountId: userData?.user.account?.id!,
+      accountId: userData?.lookup.user?.account?.id!,
     },
-    skip: !userData?.user.account?.id,
+    skip: !userData?.lookup.user?.account?.id,
   });
 
   return (
     <UserAdminLayout currentTab={SettingsSection.Account}>
       <ContributorAccountView
-        accountHostName={userData?.user.profile?.displayName ?? ''}
+        accountHostName={userData?.lookup.user?.profile?.displayName ?? ''}
         account={accountData?.lookup.account}
         loading={loadingUser || loadingAccount}
       />

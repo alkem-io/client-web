@@ -17866,6 +17866,15 @@ export type VirtualContributorFullFragment = {
     | undefined;
 };
 
+export type OrganizationUrlResolverQueryVariables = Exact<{
+  nameId: Scalars['NameID'];
+}>;
+
+export type OrganizationUrlResolverQuery = {
+  __typename?: 'Query';
+  lookupByName: { __typename?: 'LookupByNameQueryResults'; organization?: string | undefined };
+};
+
 export type OrganizationAccountQueryVariables = Exact<{
   organizationId: Scalars['UUID'];
 }>;

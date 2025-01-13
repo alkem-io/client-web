@@ -17,16 +17,16 @@ export const VCProfilePage = () => {
   const { data, loading, error } = useVirtualContributorQuery({ variables: { id: vcNameId } });
 
   const isBokSpace =
-    data?.virtualContributor?.aiPersona?.bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
+    data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
 
   const { data: bokProfile } = useBodyOfKnowledgeProfileQuery({
     variables: {
-      spaceId: data?.virtualContributor?.aiPersona?.bodyOfKnowledgeID!,
+      spaceId: data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeID!,
     },
-    skip: !data?.virtualContributor?.aiPersona?.bodyOfKnowledgeID || !isBokSpace,
+    skip: !data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeID || !isBokSpace,
   });
 
-  useRestrictedRedirect({ data, error }, data => data.virtualContributor.authorization?.myPrivileges);
+  useRestrictedRedirect({ data, error }, data => data.lookup.virtualContributor?.authorization?.myPrivileges);
 
   if (loading) {
     return (
@@ -46,7 +46,7 @@ export const VCProfilePage = () => {
     <VCPageLayout>
       <VCProfilePageView
         bokProfile={isBokSpace ? bokProfile?.lookup.space?.profile : undefined}
-        virtualContributor={data?.virtualContributor}
+        virtualContributor={data?.lookup.virtualContributor}
       />
     </VCPageLayout>
   );

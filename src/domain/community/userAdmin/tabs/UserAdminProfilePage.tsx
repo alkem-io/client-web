@@ -48,13 +48,13 @@ export const UserAdminProfilePage = () => {
   });
 
   const editMode = useMemo(() => {
-    if (data?.user.id === currentUser?.user.id) return EditMode.edit;
+    if (data?.lookup.user?.id === currentUser?.user.id) return EditMode.edit;
     return EditMode.readOnly;
   }, [data, currentUser]);
 
   if (loading) return <Loading text={'Loading User Profile ...'} />;
 
-  const user = data?.user;
+  const user = data?.lookup.user;
 
   const handleSave = async (userToUpdate: UserModel) => {
     const profileId = userToUpdate.profile.id;
@@ -84,7 +84,7 @@ export const UserAdminProfilePage = () => {
   };
 
   return (
-    <StorageConfigContextProvider locationType="user" userId={user?.nameID!}>
+    <StorageConfigContextProvider locationType="user" userId={user?.id!}>
       <UserAdminLayout currentTab={SettingsSection.MyProfile}>
         <PageContentColumn columns={12}>
           <PageContentBlock>

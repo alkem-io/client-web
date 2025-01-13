@@ -1,0 +1,46 @@
+query RoleSetAuthorization(
+  $roleSetId: UUID!
+) {
+  lookup {
+    roleSet(ID: $roleSetId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      roleNames
+    }
+  }
+}
+
+query RoleSetRoleAssignment(
+  $roleSetId: UUID!
+  $roles: [RoleName!]!
+) {
+  lookup {
+    roleSet(ID: $roleSetId) {
+      id
+      usersInRoles(roles: $roles) {
+        role
+        users {
+          ...RoleSetMemberUser
+        }
+      }
+      organizationsInRoles(roles: $roles) {
+        role
+        organizations {
+          ...RoleSetMemberOrganization
+        }
+      }
+      virtualContributorsInRoles(roles: $roles) {
+        role
+        virtualContributors {
+          ...RoleSetMemberVirtualContributor
+        }
+      }
+      roleDefinitions(roles: $roles) {
+        ...RoleDefinitionPolicy
+      }
+    }
+  }
+}

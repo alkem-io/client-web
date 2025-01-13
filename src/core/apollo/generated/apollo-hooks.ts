@@ -12239,6 +12239,66 @@ export function refetchCommunityVirtualMembersListQuery(
   return { query: CommunityVirtualMembersListDocument, variables: variables };
 }
 
+export const OrganizationUrlResolverDocument = gql`
+  query OrganizationUrlResolver($nameId: NameID!) {
+    lookupByName {
+      organization(NAMEID: $nameId)
+    }
+  }
+`;
+
+/**
+ * __useOrganizationUrlResolverQuery__
+ *
+ * To run a query within a React component, call `useOrganizationUrlResolverQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationUrlResolverQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationUrlResolverQuery({
+ *   variables: {
+ *      nameId: // value for 'nameId'
+ *   },
+ * });
+ */
+export function useOrganizationUrlResolverQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OrganizationUrlResolverQuery,
+    SchemaTypes.OrganizationUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OrganizationUrlResolverQuery, SchemaTypes.OrganizationUrlResolverQueryVariables>(
+    OrganizationUrlResolverDocument,
+    options
+  );
+}
+
+export function useOrganizationUrlResolverLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrganizationUrlResolverQuery,
+    SchemaTypes.OrganizationUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OrganizationUrlResolverQuery,
+    SchemaTypes.OrganizationUrlResolverQueryVariables
+  >(OrganizationUrlResolverDocument, options);
+}
+
+export type OrganizationUrlResolverQueryHookResult = ReturnType<typeof useOrganizationUrlResolverQuery>;
+export type OrganizationUrlResolverLazyQueryHookResult = ReturnType<typeof useOrganizationUrlResolverLazyQuery>;
+export type OrganizationUrlResolverQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrganizationUrlResolverQuery,
+  SchemaTypes.OrganizationUrlResolverQueryVariables
+>;
+export function refetchOrganizationUrlResolverQuery(variables: SchemaTypes.OrganizationUrlResolverQueryVariables) {
+  return { query: OrganizationUrlResolverDocument, variables: variables };
+}
+
 export const OrganizationAccountDocument = gql`
   query OrganizationAccount($organizationId: UUID!) {
     lookup {

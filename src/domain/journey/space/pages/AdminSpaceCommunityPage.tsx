@@ -10,7 +10,7 @@ import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import CommunityUsers from '@/domain/community/community/CommunityAdmin/CommunityUsers';
-import useRoleSetAdmin from '@/domain/community/community/CommunityAdmin/useCommunityAdmin';
+import useCommunityAdmin from '@/domain/community/community/CommunityAdmin/useCommunityAdmin';
 import CommunityOrganizations from '@/domain/community/community/CommunityAdmin/CommunityOrganizations';
 import CommunityApplications from '@/domain/community/community/CommunityAdmin/CommunityApplications';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
@@ -69,7 +69,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useRoleSetAdmin({ roleSetId, spaceId, spaceLevel: SpaceLevel.Space });
+  } = useCommunityAdmin({ roleSetId, spaceId, spaceLevel: SpaceLevel.Space });
 
   const currentApplicationsUserIds = useMemo(
     () =>

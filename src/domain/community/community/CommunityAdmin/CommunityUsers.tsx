@@ -11,7 +11,7 @@ import {
 } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CommunityMemberUserFragment, RoleDefinitionPolicyFragment } from '@/core/apollo/generated/graphql-schema';
+import { RoleSetMemberUserFragment, RoleDefinitionPolicyFragment } from '@/core/apollo/generated/graphql-schema';
 import { gutters } from '@/core/ui/grid/utils';
 import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
 import DataGridTable from '@/core/ui/table/DataGridTable';
@@ -20,7 +20,7 @@ import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from './Com
 import CommunityMemberSettingsDialog from './CommunityMemberSettingsDialog';
 import useCommunityPolicyChecker from './useCommunityPolicyChecker';
 
-export interface CommunityMemberUserFragmentWithRoles extends CommunityMemberUserFragment {
+export interface CommunityMemberUserFragmentWithRoles extends RoleSetMemberUserFragment {
   isMember: boolean;
   isLead: boolean;
   isAdmin: boolean;

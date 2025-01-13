@@ -30,11 +30,11 @@ const VCSettingsPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>
   const { t } = useTranslation();
 
   const entityAttrs = {
-    displayName: data?.virtualContributor.profile.displayName || '',
-    userNameId: data?.virtualContributor.nameID || '',
+    displayName: data?.lookup.virtualContributor?.profile.displayName ?? '',
+    userNameId: data?.lookup.virtualContributor?.nameID ?? '',
   };
 
-  useRestrictedRedirect({ data, error }, data => data.virtualContributor.authorization?.myPrivileges, {
+  useRestrictedRedirect({ data, error }, data => data.lookup.virtualContributor?.authorization?.myPrivileges, {
     requiredPrivilege: AuthorizationPrivilege.Update,
   });
 
@@ -47,11 +47,11 @@ const VCSettingsPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>
           </BreadcrumbsItem>
           <BreadcrumbsItem
             loading={loading}
-            avatar={data?.virtualContributor.profile.avatar}
+            avatar={data?.lookup.virtualContributor?.profile.avatar}
             iconComponent={AssignmentIndOutlined}
-            uri={data?.virtualContributor.profile.url ?? ''}
+            uri={data?.lookup.virtualContributor?.profile.url ?? ''}
           >
-            {data?.virtualContributor.profile.displayName}
+            {data?.lookup.virtualContributor?.profile.displayName}
           </BreadcrumbsItem>
         </TopLevelPageBreadcrumbs>
       }

@@ -37,7 +37,7 @@ const VCAccessibilitySettingsPage = () => {
     },
   });
 
-  const vc = data?.virtualContributor;
+  const vc = data?.lookup.virtualContributor;
 
   const [updateContributorMutation] = useUpdateVirtualContributorMutation();
   const handleUpdate = (props: VCAccessibilityProps) => {
