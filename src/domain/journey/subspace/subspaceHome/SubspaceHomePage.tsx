@@ -30,6 +30,8 @@ import DashboardNavigation, {
 import { useConsumeAction } from '../layout/SubspacePageLayout';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import CreateJourney from './dialogs/CreateJourney';
+import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
+import { buildUpdatesUrl } from '@/main/routing/urlBuilders';
 
 const Outline = (props: DashboardNavigationProps) => {
   useConsumeAction(SubspaceDialog.Outline);
@@ -81,7 +83,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
 
   return (
     <SubspaceHomeContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
-      {({ innovationFlow, callouts, subspace, spaceReadAccess }) => {
+      {({ innovationFlow, callouts, subspace, spaceReadAccess, communityReadAccess, communityId }) => {
         const { collaboration, community, profile } = subspace ?? {};
 
         return (
@@ -163,12 +165,17 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
                 </>
               }
               infoColumnChildren={
-                <Outline
-                  currentItemId={journeyId}
-                  dashboardNavigation={dashboardNavigation.dashboardNavigation}
-                  onCreateSubspace={openCreateSubspace}
-                  onCurrentItemNotFound={dashboardNavigation.refetch}
-                />
+                <>
+                  <Outline
+                    currentItemId={journeyId}
+                    dashboardNavigation={dashboardNavigation.dashboardNavigation}
+                    onCreateSubspace={openCreateSubspace}
+                    onCurrentItemNotFound={dashboardNavigation.refetch}
+                  />
+                  {communityReadAccess && communityId && (
+                    <DashboardUpdatesSection communityId={communityId} shareUrl={buildUpdatesUrl(profile?.url ?? '')} />
+                  )}
+                </>
               }
             >
               <SubspaceHomeView
