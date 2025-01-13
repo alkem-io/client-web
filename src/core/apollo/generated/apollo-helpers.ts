@@ -2589,6 +2589,15 @@ export type OrganizationVerificationFieldPolicy = {
   status?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type OrganizationsInRolesResponseKeySpecifier = (
+  | 'organizations'
+  | 'role'
+  | OrganizationsInRolesResponseKeySpecifier
+)[];
+export type OrganizationsInRolesResponseFieldPolicy = {
+  organizations?: FieldPolicy<any> | FieldReadFunction<any>;
+  role?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type OryConfigKeySpecifier = ('issuer' | 'kratosPublicBaseURL' | OryConfigKeySpecifier)[];
 export type OryConfigFieldPolicy = {
   issuer?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3076,13 +3085,17 @@ export type RoleSetKeySpecifier = (
   | 'myRoles'
   | 'myRolesImplicit'
   | 'organizationsInRole'
+  | 'organizationsInRoles'
   | 'platformInvitations'
   | 'roleDefinition'
   | 'roleDefinitions'
+  | 'roleNames'
   | 'type'
   | 'updatedDate'
   | 'usersInRole'
+  | 'usersInRoles'
   | 'virtualContributorsInRole'
+  | 'virtualContributorsInRoles'
   | RoleSetKeySpecifier
 )[];
 export type RoleSetFieldPolicy = {
@@ -3100,13 +3113,17 @@ export type RoleSetFieldPolicy = {
   myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   myRolesImplicit?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizationsInRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   platformInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
   roleDefinition?: FieldPolicy<any> | FieldReadFunction<any>;
   roleDefinitions?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleNames?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   usersInRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  usersInRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributorsInRoles?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RolesResultKeySpecifier = ('displayName' | 'id' | 'nameID' | 'roles' | RolesResultKeySpecifier)[];
 export type RolesResultFieldPolicy = {
@@ -3835,6 +3852,11 @@ export type UserSettingsPrivacyKeySpecifier = ('contributionRolesPubliclyVisible
 export type UserSettingsPrivacyFieldPolicy = {
   contributionRolesPubliclyVisible?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type UsersInRolesResponseKeySpecifier = ('role' | 'users' | UsersInRolesResponseKeySpecifier)[];
+export type UsersInRolesResponseFieldPolicy = {
+  role?: FieldPolicy<any> | FieldReadFunction<any>;
+  users?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type VcInteractionKeySpecifier = (
   | 'createdDate'
   | 'id'
@@ -3915,6 +3937,15 @@ export type VirtualContributorUpdatedSubscriptionResultKeySpecifier = (
 )[];
 export type VirtualContributorUpdatedSubscriptionResultFieldPolicy = {
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VirtualContributorsInRolesResponseKeySpecifier = (
+  | 'role'
+  | 'virtualContributors'
+  | VirtualContributorsInRolesResponseKeySpecifier
+)[];
+export type VirtualContributorsInRolesResponseFieldPolicy = {
+  role?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VisualKeySpecifier = (
   | 'allowedTypes'
@@ -4632,6 +4663,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | OrganizationVerificationKeySpecifier | (() => undefined | OrganizationVerificationKeySpecifier);
     fields?: OrganizationVerificationFieldPolicy;
   };
+  OrganizationsInRolesResponse?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | OrganizationsInRolesResponseKeySpecifier
+      | (() => undefined | OrganizationsInRolesResponseKeySpecifier);
+    fields?: OrganizationsInRolesResponseFieldPolicy;
+  };
   OryConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OryConfigKeySpecifier | (() => undefined | OryConfigKeySpecifier);
     fields?: OryConfigFieldPolicy;
@@ -4932,6 +4970,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | UserSettingsPrivacyKeySpecifier | (() => undefined | UserSettingsPrivacyKeySpecifier);
     fields?: UserSettingsPrivacyFieldPolicy;
   };
+  UsersInRolesResponse?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UsersInRolesResponseKeySpecifier | (() => undefined | UsersInRolesResponseKeySpecifier);
+    fields?: UsersInRolesResponseFieldPolicy;
+  };
   VcInteraction?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VcInteractionKeySpecifier | (() => undefined | VcInteractionKeySpecifier);
     fields?: VcInteractionFieldPolicy;
@@ -4954,6 +4996,13 @@ export type StrictTypedTypePolicies = {
       | VirtualContributorUpdatedSubscriptionResultKeySpecifier
       | (() => undefined | VirtualContributorUpdatedSubscriptionResultKeySpecifier);
     fields?: VirtualContributorUpdatedSubscriptionResultFieldPolicy;
+  };
+  VirtualContributorsInRolesResponse?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | VirtualContributorsInRolesResponseKeySpecifier
+      | (() => undefined | VirtualContributorsInRolesResponseKeySpecifier);
+    fields?: VirtualContributorsInRolesResponseFieldPolicy;
   };
   Visual?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VisualKeySpecifier | (() => undefined | VisualKeySpecifier);

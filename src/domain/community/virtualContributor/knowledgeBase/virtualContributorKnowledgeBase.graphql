@@ -1,4 +1,4 @@
-query VirtualContributorKnowledgeBase($id: UUID_NAMEID!) {
+query VirtualContributorKnowledgeBase($id: UUID!) {
   virtualContributor(ID: $id) {
     id
     knowledgeBase {

@@ -25,6 +25,7 @@ import {
   useCalloutDetailsQuery,
   useDeleteCalloutMutation,
   useVirtualContributorQuery,
+  useVirtualContributorUrlResolverQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { TypedCalloutDetails } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import { Actions } from '@/core/ui/actions/Actions';
@@ -142,17 +143,26 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     }
   };
 
+  const { data: vcIdData } = useVirtualContributorUrlResolverQuery({
+    variables: {
+      nameId: vcNameId,
+    },
+    skip: !vcNameId,
+  });
+  const vcId = vcIdData?.lookupByName.virtualContributor;
+
   const {
     data: vcData,
     loading: vcDataLoading,
     error: vcError,
   } = useVirtualContributorQuery({
     variables: {
-      id: vcNameId,
+      id: vcId!, // ensured by skip
     },
+    skip: !vcId,
   });
 
-  useSubscribeOnVirtualContributorEvents(vcNameId);
+  useSubscribeOnVirtualContributorEvents(vcId);
 
   useEffect(() => {
     if (
@@ -160,7 +170,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
       open &&
       canCreateCallout &&
       vcData &&
-      vcData.virtualContributor.status === VirtualContributorStatus.Ready
+      vcData.lookup.virtualContributor?.status === VirtualContributorStatus.Ready
     ) {
       createCallout();
     }
@@ -184,7 +194,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
               <Caption alignSelf="center">
                 <Trans
                   i18nKey="createVirtualContributorWizard.trySection.subTitle"
-                  values={{ vcName: vcData?.virtualContributor.profile.displayName ?? '' }}
+                  values={{ vcName: vcData?.lookup.virtualContributor?.profile.displayName ?? '' }}
                   components={{
                     b: <strong />,
                     br: <br />,

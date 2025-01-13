@@ -58,7 +58,7 @@ query CommunityVirtualMembersList(
         myPrivileges
       }
       memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
-        ...CommunityMemberVirtualContributor
+        ...RoleSetMemberVirtualContributor
       }
     }
   }
