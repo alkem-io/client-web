@@ -19,6 +19,7 @@ export const WrapperMarkdown = ({
   multiline = !plain,
   disableParagraphPadding = card,
   caption = false,
+  sx,
   ...props
 }: MarkdownProps) => (
   <MarkdownOptionsProvider
@@ -28,7 +29,7 @@ export const WrapperMarkdown = ({
     disableParagraphPadding={disableParagraphPadding}
     caption={caption}
   >
-    <Box sx={{ li: { marginY: caption ? 0 : 1 }, display: plain ? 'inline' : undefined }}>
+    <Box sx={{ li: { marginY: caption ? 0 : 1 }, display: plain ? 'inline' : undefined, ...sx }}>
       <ReactMarkdown
         components={components}
         remarkPlugins={[gfm, [PlainText, { enabled: plain }], remarkVerifyIframe]}

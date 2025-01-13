@@ -12,6 +12,8 @@ import CalloutClosedMarginal from '../calloutBlock/CalloutClosedMarginal';
 import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
 import { gutters } from '@/core/ui/grid/utils';
 
+const DESCRIPTION_MAX_HEIGHT = 'calc(100vh - 400px)';
+
 const CommentsCalloutLayout = ({
   callout,
   children,
@@ -36,6 +38,9 @@ const CommentsCalloutLayout = ({
 
   const hasCalloutDetails = callout.authorName && callout.publishedAt;
 
+  // fixes comments not visible when description too long in modal/expanded
+  const expandedStyles = expanded ? { maxHeight: DESCRIPTION_MAX_HEIGHT, overflowY: 'auto' } : undefined;
+
   return (
     <>
       {callout.draft && (
@@ -54,13 +59,13 @@ const CommentsCalloutLayout = ({
         calloutActions={calloutActions}
       />
       {hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
-      <Box sx={{ wordWrap: 'break-word' }} paddingX={gutters()}>
-        <WrapperMarkdown caption className={MARKDOWN_CLASS_NAME}>
+      <Box sx={{ wordWrap: 'break-word' }} paddingX={gutters()} paddingBottom={gutters(0.5)}>
+        <WrapperMarkdown caption className={MARKDOWN_CLASS_NAME} sx={expandedStyles}>
           {callout.framing.profile.description ?? ''}
         </WrapperMarkdown>
       </Box>
       {!skipReferences && !!callout.framing.profile.references?.length && (
-        <Box padding={gutters()} paddingTop={gutters(0.5)}>
+        <Box paddingX={gutters()} paddingBottom={gutters(0.5)}>
           <References compact references={callout.framing.profile.references} />
         </Box>
       )}
