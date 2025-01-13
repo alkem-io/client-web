@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import WrapperMarkdown, { MARKDOWN_CLASS_NAME } from '@/core/ui/markdown/WrapperMarkdown';
 import { BlockTitle } from '@/core/ui/typography';
 import { Ribbon } from '@/core/ui/card/Ribbon';
 import References from '@/domain/shared/components/References/References';
@@ -55,7 +55,9 @@ const CommentsCalloutLayout = ({
       />
       {hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
       <Box sx={{ wordWrap: 'break-word' }} paddingX={gutters()}>
-        <WrapperMarkdown caption>{callout.framing.profile.description ?? ''}</WrapperMarkdown>
+        <WrapperMarkdown caption className={MARKDOWN_CLASS_NAME}>
+          {callout.framing.profile.description ?? ''}
+        </WrapperMarkdown>
       </Box>
       {!skipReferences && !!callout.framing.profile.references?.length && (
         <Box padding={gutters()} paddingTop={gutters(0.5)}>

@@ -9,6 +9,8 @@ import { remarkVerifyIframe } from './embed/remarkVerifyIframe';
 
 const allowedNodeTypes = ['iframe'] as const;
 
+export const MARKDOWN_CLASS_NAME = 'markdown'; // global styles applied
+
 export interface MarkdownProps extends ReactMarkdownOptions, Partial<MarkdownOptions> {}
 
 export const WrapperMarkdown = ({
