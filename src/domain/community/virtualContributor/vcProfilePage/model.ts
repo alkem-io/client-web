@@ -2,6 +2,7 @@ import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-sc
 import { BasicSpaceProps } from '../components/BasicSpaceCard';
 
 export type VirtualContributorProfileProps = {
+  id: string;
   profile: {
     displayName: string;
     description?: string;

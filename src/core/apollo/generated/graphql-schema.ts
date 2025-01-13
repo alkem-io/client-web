@@ -19394,6 +19394,26 @@ export type RefreshBodyOfKnowledgeMutation = {
   refreshVirtualContributorBodyOfKnowledge: boolean;
 };
 
+export type VirtualContributorKnowledgeBaseQueryVariables = Exact<{
+  id: Scalars['UUID_NAMEID'];
+}>;
+
+export type VirtualContributorKnowledgeBaseQuery = {
+  __typename?: 'Query';
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    knowledgeBase?:
+      | {
+          __typename?: 'KnowledgeBase';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          calloutsSet: { __typename?: 'CalloutsSet'; id: string };
+        }
+      | undefined;
+  };
+};
+
 export type VcMembershipsQueryVariables = Exact<{
   virtualContributorId: Scalars['UUID'];
 }>;
@@ -23306,6 +23326,25 @@ export type CreateVirtualContributorOnAccountMutation = {
     id: string;
     nameID: string;
     profile: { __typename?: 'Profile'; id: string; url: string };
+    knowledgeBase?:
+      | {
+          __typename?: 'KnowledgeBase';
+          id: string;
+          calloutsSet: {
+            __typename?: 'CalloutsSet';
+            id: string;
+            callouts: Array<{
+              __typename?: 'Callout';
+              id: string;
+              framing: {
+                __typename?: 'CalloutFraming';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string };
+              };
+            }>;
+          };
+        }
+      | undefined;
   };
 };
 
@@ -31573,11 +31612,62 @@ export type NewVirtualContributorMySpacesQuery = {
                 spaces: Array<{
                   __typename?: 'Space';
                   id: string;
+                  type: SpaceType;
                   license: {
                     __typename?: 'License';
                     id: string;
                     availableEntitlements?: Array<LicenseEntitlementType> | undefined;
                   };
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                  subspaces: Array<{
+                    __typename?: 'Space';
+                    id: string;
+                    type: SpaceType;
+                    subspaces: Array<{
+                      __typename?: 'Space';
+                      id: string;
+                      type: SpaceType;
+                      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                      community: {
+                        __typename?: 'Community';
+                        id: string;
+                        roleSet: {
+                          __typename?: 'RoleSet';
+                          id: string;
+                          authorization?:
+                            | {
+                                __typename?: 'Authorization';
+                                id: string;
+                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              }
+                            | undefined;
+                        };
+                      };
+                    }>;
+                    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                    community: {
+                      __typename?: 'Community';
+                      id: string;
+                      roleSet: {
+                        __typename?: 'RoleSet';
+                        id: string;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            }
+                          | undefined;
+                      };
+                    };
+                  }>;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                   community: {
                     __typename?: 'Community';
                     id: string;
@@ -31593,30 +31683,29 @@ export type NewVirtualContributorMySpacesQuery = {
                         | undefined;
                     };
                   };
-                  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-                  authorization?:
-                    | {
-                        __typename?: 'Authorization';
-                        id: string;
-                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      }
-                    | undefined;
-                  subspaces: Array<{
-                    __typename?: 'Space';
-                    id: string;
-                    type: SpaceType;
-                    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-                    community: {
-                      __typename?: 'Community';
-                      id: string;
-                      roleSet: { __typename?: 'RoleSet'; id: string };
-                    };
-                  }>;
                 }>;
               }
             | undefined;
         }
       | undefined;
+  };
+};
+
+export type VcSelectableSpaceFragment = {
+  __typename?: 'Space';
+  id: string;
+  type: SpaceType;
+  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+  community: {
+    __typename?: 'Community';
+    id: string;
+    roleSet: {
+      __typename?: 'RoleSet';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
   };
 };
 

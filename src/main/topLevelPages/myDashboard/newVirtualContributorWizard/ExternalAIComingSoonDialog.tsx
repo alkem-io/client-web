@@ -109,14 +109,12 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
         <Form>
           <Gutters disablePadding>
             <Box display="flex">
-              <Caption alignSelf="center">
-                {t('createVirtualContributorWizard.externalAI.commingSoon.subTitle')}
-              </Caption>
+              <Caption alignSelf="center">{t('createVirtualContributorWizard.externalAI.comingSoon.subTitle')}</Caption>
             </Box>
             <FormikInputField
               name="aiService"
-              title={t('createVirtualContributorWizard.externalAI.commingSoon.input.label')}
-              placeholder={t('createVirtualContributorWizard.externalAI.commingSoon.input.placeholder')}
+              title={t('createVirtualContributorWizard.externalAI.comingSoon.input.label')}
+              placeholder={t('createVirtualContributorWizard.externalAI.comingSoon.input.placeholder')}
             />
             <Box display="flex" marginTop={gutters()}>
               <Caption alignSelf="center">

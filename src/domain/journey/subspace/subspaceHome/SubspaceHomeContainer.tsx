@@ -3,7 +3,7 @@ import useInnovationFlowStates, {
   UseInnovationFlowStatesProvided,
 } from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
 import { UseCalloutsProvided } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
-import { SubspacePageSpaceFragment } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, SubspacePageSpaceFragment } from '@/core/apollo/generated/graphql-schema';
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useCanReadSpace, { SpaceReadAccess } from '@/domain/journey/common/authorization/useCanReadSpace';
@@ -14,6 +14,8 @@ interface SubspaceHomeContainerProvided {
   callouts: UseCalloutsProvided;
   subspace?: SubspacePageSpaceFragment;
   spaceReadAccess: SpaceReadAccess;
+  communityReadAccess: boolean;
+  communityId: string | undefined;
 }
 
 interface SubspaceHomeContainerProps extends SimpleContainerProps<SubspaceHomeContainerProvided> {
@@ -41,7 +43,21 @@ const SubspaceHomeContainer = ({ journeyId, children }: SubspaceHomeContainerPro
     collaborationId,
   });
 
-  return <>{children({ innovationFlow, callouts, subspace: data?.lookup.space, spaceReadAccess })}</>;
+  const community = data?.lookup.space?.community;
+  const communityReadAccess = (community?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
+
+  return (
+    <>
+      {children({
+        innovationFlow,
+        callouts,
+        subspace: data?.lookup.space,
+        spaceReadAccess,
+        communityReadAccess,
+        communityId: community?.id,
+      })}
+    </>
+  );
 };
 
 export default SubspaceHomeContainer;

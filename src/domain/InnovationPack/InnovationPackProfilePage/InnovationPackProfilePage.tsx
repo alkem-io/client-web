@@ -92,7 +92,7 @@ const InnovationPackProfilePage = () => {
                     </ReferencesListSmallItem>
                   ))}
                   {references && !references.length && (
-                    <Text>{t('components.referenceSegment.missing-refereneces')}</Text>
+                    <Text>{t('components.referenceSegment.missing-references')}</Text>
                   )}
                 </Box>
               </GridItem>

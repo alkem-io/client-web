@@ -104,7 +104,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
                   onClick={onClose}
                 >
                   <Typography variant="inherit" fontWeight="bold">
-                    {t('topbar.sign-in')}
+                    {t('topBar.sign-in')}
                   </Typography>
                 </NavigatableMenuItem>
               )}

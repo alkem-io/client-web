@@ -67,7 +67,7 @@ const SubspaceDialogs = ({
         onClose={handleClose}
         callouts={callouts.callouts}
         loading={callouts.loading}
-        emptyListCaption={t('pages.generic.sections.subentities.empty', {
+        emptyListCaption={t('pages.generic.sections.subEntities.empty', {
           entities: t('common.collaborationTools'),
         })}
       />

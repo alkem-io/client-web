@@ -3,6 +3,8 @@
     "EditorConfig.EditorConfig",
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
-    "graphql.vscode-graphql"
+    "graphql.vscode-graphql",
+    "streetsidesoftware.code-spell-checker",
+    "streetsidesoftware.code-spell-checker-bundled-dictionaries"
   ]
 }

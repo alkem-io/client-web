@@ -6,6 +6,22 @@ mutation CreateVirtualContributorOnAccount($virtualContributorData: CreateVirtua
       id
       url
     }
+    knowledgeBase {
+      id
+      calloutsSet {
+        id
+        callouts {
+          id
+          framing {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
+      }
+    }
   }
 }
 

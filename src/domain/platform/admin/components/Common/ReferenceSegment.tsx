@@ -97,7 +97,7 @@ export const ReferenceSegment = ({
             </Tooltip>
           </Box>
           {!compactMode && references?.length === 0 ? (
-            <Caption>{t('components.referenceSegment.missing-refereneces')}</Caption>
+            <Caption>{t('components.referenceSegment.missing-references')}</Caption>
           ) : (
             references?.map((attachment, index) => (
               <Gutters key={attachment.id ?? index} disablePadding>

@@ -3703,6 +3703,27 @@ export const ShortAccountItemFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const VcSelectableSpaceFragmentDoc = gql`
+  fragment VCSelectableSpace on Space {
+    id
+    type
+    profile {
+      id
+      displayName
+      url
+    }
+    community {
+      id
+      roleSet {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+`;
 export const RecentSpaceProfileFragmentDoc = gql`
   fragment RecentSpaceProfile on Profile {
     id
@@ -14397,6 +14418,81 @@ export type RefreshBodyOfKnowledgeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RefreshBodyOfKnowledgeMutation,
   SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
 >;
+export const VirtualContributorKnowledgeBaseDocument = gql`
+  query VirtualContributorKnowledgeBase($id: UUID_NAMEID!) {
+    virtualContributor(ID: $id) {
+      id
+      knowledgeBase {
+        id
+        profile {
+          id
+          displayName
+          description
+        }
+        calloutsSet {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useVirtualContributorKnowledgeBaseQuery__
+ *
+ * To run a query within a React component, call `useVirtualContributorKnowledgeBaseQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVirtualContributorKnowledgeBaseQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVirtualContributorKnowledgeBaseQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useVirtualContributorKnowledgeBaseQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.VirtualContributorKnowledgeBaseQuery,
+    SchemaTypes.VirtualContributorKnowledgeBaseQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.VirtualContributorKnowledgeBaseQuery,
+    SchemaTypes.VirtualContributorKnowledgeBaseQueryVariables
+  >(VirtualContributorKnowledgeBaseDocument, options);
+}
+
+export function useVirtualContributorKnowledgeBaseLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VirtualContributorKnowledgeBaseQuery,
+    SchemaTypes.VirtualContributorKnowledgeBaseQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.VirtualContributorKnowledgeBaseQuery,
+    SchemaTypes.VirtualContributorKnowledgeBaseQueryVariables
+  >(VirtualContributorKnowledgeBaseDocument, options);
+}
+
+export type VirtualContributorKnowledgeBaseQueryHookResult = ReturnType<typeof useVirtualContributorKnowledgeBaseQuery>;
+export type VirtualContributorKnowledgeBaseLazyQueryHookResult = ReturnType<
+  typeof useVirtualContributorKnowledgeBaseLazyQuery
+>;
+export type VirtualContributorKnowledgeBaseQueryResult = Apollo.QueryResult<
+  SchemaTypes.VirtualContributorKnowledgeBaseQuery,
+  SchemaTypes.VirtualContributorKnowledgeBaseQueryVariables
+>;
+export function refetchVirtualContributorKnowledgeBaseQuery(
+  variables: SchemaTypes.VirtualContributorKnowledgeBaseQueryVariables
+) {
+  return { query: VirtualContributorKnowledgeBaseDocument, variables: variables };
+}
+
 export const VcMembershipsDocument = gql`
   query VCMemberships($virtualContributorId: UUID!) {
     lookup {
@@ -17459,6 +17555,22 @@ export const CreateVirtualContributorOnAccountDocument = gql`
       profile {
         id
         url
+      }
+      knowledgeBase {
+        id
+        calloutsSet {
+          id
+          callouts {
+            id
+            framing {
+              id
+              profile {
+                id
+                displayName
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -24136,38 +24248,15 @@ export const NewVirtualContributorMySpacesDocument = gql`
               id
               availableEntitlements
             }
-            community {
-              id
-              roleSet {
-                id
-                authorization {
-                  id
-                  myPrivileges
-                }
-              }
-            }
-            profile {
-              id
-              displayName
-              url
-            }
             authorization {
               id
               myPrivileges
             }
+            ...VCSelectableSpace
             subspaces {
-              id
-              type
-              profile {
-                id
-                displayName
-                url
-              }
-              community {
-                id
-                roleSet {
-                  id
-                }
+              ...VCSelectableSpace
+              subspaces {
+                ...VCSelectableSpace
               }
             }
           }
@@ -24175,6 +24264,7 @@ export const NewVirtualContributorMySpacesDocument = gql`
       }
     }
   }
+  ${VcSelectableSpaceFragmentDoc}
 `;
 
 /**

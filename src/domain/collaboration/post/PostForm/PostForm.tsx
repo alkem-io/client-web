@@ -48,6 +48,7 @@ export interface PostFormProps {
   onAddReference?: (push: PushFunc, referencesLength: number) => void;
   onRemoveReference?: (ref: Reference, remove: RemoveFunc) => void;
   children?: FormikConfig<FormValue>['children'];
+  disableRichMedia?: boolean;
 }
 
 const PostForm = ({
@@ -62,6 +63,7 @@ const PostForm = ({
   onAddReference,
   onRemoveReference,
   children,
+  disableRichMedia,
 }: PropsWithChildren<PostFormProps>) => {
   const { t } = useTranslation();
 
@@ -137,6 +139,7 @@ const PostForm = ({
               required
               maxLength={LONG_MARKDOWN_TEXT_LENGTH}
               loading={loading}
+              hideImageOptions={disableRichMedia}
             />
             <TagsetSegment
               tagsets={tagsets}
