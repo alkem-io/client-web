@@ -4174,7 +4174,7 @@ export function refetchAdminInnovationPacksListQuery(variables?: SchemaTypes.Adm
 }
 
 export const DeleteInnovationPackDocument = gql`
-  mutation deleteInnovationPack($innovationPackId: UUID_NAMEID!) {
+  mutation deleteInnovationPack($innovationPackId: UUID!) {
     deleteInnovationPack(deleteData: { ID: $innovationPackId }) {
       id
     }
@@ -10784,41 +10784,43 @@ export function refetchContributorsVirtualInLibraryQuery(
 }
 
 export const AssociatedOrganizationDocument = gql`
-  query associatedOrganization($organizationId: UUID_NAMEID!) {
-    organization(ID: $organizationId) {
-      id
-      nameID
-      roleSet {
+  query associatedOrganization($organizationId: UUID!) {
+    lookup {
+      organization(ID: $organizationId) {
         id
-        myRoles
-      }
-      profile {
-        id
-        url
-        tagline
-        displayName
-        description
-        location {
+        nameID
+        roleSet {
           id
-          city
-          country
+          myRoles
         }
-        avatar: visual(type: AVATAR) {
-          ...VisualUri
-        }
-        tagsets {
+        profile {
           id
-          tags
+          url
+          tagline
+          displayName
+          description
+          location {
+            id
+            city
+            country
+          }
+          avatar: visual(type: AVATAR) {
+            ...VisualUri
+          }
+          tagsets {
+            id
+            tags
+          }
         }
-      }
-      verification {
-        id
-        status
-      }
-      metrics {
-        id
-        name
-        value
+        verification {
+          id
+          status
+        }
+        metrics {
+          id
+          name
+          value
+        }
       }
     }
   }
@@ -10878,7 +10880,7 @@ export function refetchAssociatedOrganizationQuery(variables: SchemaTypes.Associ
 }
 
 export const RolesOrganizationDocument = gql`
-  query rolesOrganization($input: UUID_NAMEID!) {
+  query rolesOrganization($input: UUID!) {
     rolesOrganization(rolesData: { organizationID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
       id
       spaces {
@@ -10949,9 +10951,11 @@ export function refetchRolesOrganizationQuery(variables: SchemaTypes.RolesOrgani
 }
 
 export const OrganizationInfoDocument = gql`
-  query organizationInfo($organizationId: UUID_NAMEID!, $includeAssociates: Boolean = false) {
-    organization(ID: $organizationId) {
-      ...OrganizationInfo
+  query organizationInfo($organizationId: UUID!, $includeAssociates: Boolean = false) {
+    lookup {
+      organization(ID: $organizationId) {
+        ...OrganizationInfo
+      }
     }
   }
   ${OrganizationInfoFragmentDoc}
@@ -11163,12 +11167,14 @@ export type DeleteOrganizationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteOrganizationMutationVariables
 >;
 export const OrganizationAuthorizationDocument = gql`
-  query OrganizationAuthorization($organizationId: UUID_NAMEID!) {
-    organization(ID: $organizationId) {
-      id
-      authorization {
+  query OrganizationAuthorization($organizationId: UUID!) {
+    lookup {
+      organization(ID: $organizationId) {
         id
-        myPrivileges
+        authorization {
+          id
+          myPrivileges
+        }
       }
     }
   }
@@ -11227,17 +11233,19 @@ export function refetchOrganizationAuthorizationQuery(variables: SchemaTypes.Org
 }
 
 export const OrganizationGroupDocument = gql`
-  query organizationGroup($organizationId: UUID_NAMEID!, $groupId: UUID!) {
-    organization(ID: $organizationId) {
-      id
-      roleSet {
+  query organizationGroup($organizationId: UUID!, $groupId: UUID!) {
+    lookup {
+      organization(ID: $organizationId) {
         id
-        associatedUsers: usersInRole(role: ASSOCIATE) {
-          ...GroupMembers
+        roleSet {
+          id
+          associatedUsers: usersInRole(role: ASSOCIATE) {
+            ...GroupMembers
+          }
         }
-      }
-      group(ID: $groupId) {
-        ...GroupInfo
+        group(ID: $groupId) {
+          ...GroupInfo
+        }
       }
     }
   }
@@ -11296,14 +11304,16 @@ export function refetchOrganizationGroupQuery(variables: SchemaTypes.Organizatio
 }
 
 export const OrganizationGroupsDocument = gql`
-  query organizationGroups($id: UUID_NAMEID!) {
-    organization(ID: $id) {
-      id
-      groups {
+  query organizationGroups($id: UUID!) {
+    lookup {
+      organization(ID: $id) {
         id
-        profile {
+        groups {
           id
-          displayName
+          profile {
+            id
+            displayName
+          }
         }
       }
     }
@@ -11363,9 +11373,11 @@ export function refetchOrganizationGroupsQuery(variables: SchemaTypes.Organizati
 }
 
 export const OrganizationProfileInfoDocument = gql`
-  query organizationProfileInfo($id: UUID_NAMEID!) {
-    organization(ID: $id) {
-      ...OrganizationProfileInfo
+  query organizationProfileInfo($id: UUID!) {
+    lookup {
+      organization(ID: $id) {
+        ...OrganizationProfileInfo
+      }
     }
   }
   ${OrganizationProfileInfoFragmentDoc}
@@ -12054,15 +12066,17 @@ export function refetchCommunityVirtualMembersListQuery(
 }
 
 export const OrganizationAccountDocument = gql`
-  query OrganizationAccount($organizationNameId: UUID_NAMEID!) {
-    organization(ID: $organizationNameId) {
-      id
-      profile {
+  query OrganizationAccount($organizationId: UUID!) {
+    lookup {
+      organization(ID: $organizationId) {
         id
-        displayName
-      }
-      account {
-        id
+        profile {
+          id
+          displayName
+        }
+        account {
+          id
+        }
       }
     }
   }
@@ -12080,7 +12094,7 @@ export const OrganizationAccountDocument = gql`
  * @example
  * const { data, loading, error } = useOrganizationAccountQuery({
  *   variables: {
- *      organizationNameId: // value for 'organizationNameId'
+ *      organizationId: // value for 'organizationId'
  *   },
  * });
  */
@@ -12121,15 +12135,17 @@ export function refetchOrganizationAccountQuery(variables: SchemaTypes.Organizat
 }
 
 export const OrganizationSettingsDocument = gql`
-  query organizationSettings($orgId: UUID_NAMEID!) {
-    organization(ID: $orgId) {
-      id
-      settings {
-        membership {
-          allowUsersMatchingDomainToJoin
-        }
-        privacy {
-          contributionRolesPubliclyVisible
+  query organizationSettings($orgId: UUID!) {
+    lookup {
+      organization(ID: $orgId) {
+        id
+        settings {
+          membership {
+            allowUsersMatchingDomainToJoin
+          }
+          privacy {
+            contributionRolesPubliclyVisible
+          }
         }
       }
     }
@@ -12373,12 +12389,14 @@ export function refetchPendingMembershipsSpaceQuery(variables: SchemaTypes.Pendi
 }
 
 export const PendingMembershipsUserDocument = gql`
-  query PendingMembershipsUser($userId: UUID_NAMEID_EMAIL!) {
-    user(ID: $userId) {
-      id
-      profile {
+  query PendingMembershipsUser($userId: UUID!) {
+    lookup {
+      user(ID: $userId) {
         id
-        displayName
+        profile {
+          id
+          displayName
+        }
       }
     }
   }
@@ -12580,9 +12598,11 @@ export function refetchUserSelectorQuery(variables?: SchemaTypes.UserSelectorQue
 }
 
 export const UserSelectorUserDetailsDocument = gql`
-  query UserSelectorUserDetails($id: UUID_NAMEID_EMAIL!) {
-    user(ID: $id) {
-      ...UserSelectorUserInformation
+  query UserSelectorUserDetails($id: UUID!) {
+    lookup {
+      user(ID: $id) {
+        ...UserSelectorUserInformation
+      }
     }
   }
   ${UserSelectorUserInformationFragmentDoc}
@@ -13119,22 +13139,24 @@ export type UpdatePreferenceOnUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePreferenceOnUserMutationVariables
 >;
 export const UserAccountDocument = gql`
-  query UserAccount($userId: UUID_NAMEID_EMAIL!) {
-    user(ID: $userId) {
-      id
-      profile {
+  query UserAccount($userId: UUID!) {
+    lookup {
+      user(ID: $userId) {
         id
-        displayName
-      }
-      agent {
-        id
-        credentials {
+        profile {
           id
-          type
+          displayName
         }
-      }
-      account {
-        id
+        agent {
+          id
+          credentials {
+            id
+            type
+          }
+        }
+        account {
+          id
+        }
       }
     }
   }
@@ -13187,9 +13209,11 @@ export function refetchUserAccountQuery(variables: SchemaTypes.UserAccountQueryV
 }
 
 export const UserDocument = gql`
-  query user($id: UUID_NAMEID_EMAIL!) {
-    user(ID: $id) {
-      ...UserDetails
+  query user($id: UUID!) {
+    lookup {
+      user(ID: $id) {
+        ...UserDetails
+      }
     }
   }
   ${UserDetailsFragmentDoc}
@@ -13233,20 +13257,22 @@ export function refetchUserQuery(variables: SchemaTypes.UserQueryVariables) {
 }
 
 export const UserNotificationsPreferencesDocument = gql`
-  query userNotificationsPreferences($userId: UUID_NAMEID_EMAIL!) {
-    user(ID: $userId) {
-      id
-      preferences {
+  query userNotificationsPreferences($userId: UUID!) {
+    lookup {
+      user(ID: $userId) {
         id
-        definition {
+        preferences {
           id
-          description
-          displayName
-          group
-          type
-          valueType
+          definition {
+            id
+            description
+            displayName
+            group
+            type
+            valueType
+          }
+          value
         }
-        value
       }
     }
   }
@@ -13309,10 +13335,12 @@ export function refetchUserNotificationsPreferencesQuery(
 }
 
 export const UserProfileDocument = gql`
-  query userProfile($input: UUID_NAMEID_EMAIL!) {
-    user(ID: $input) {
-      isContactable
-      ...UserDetails
+  query userProfile($input: UUID!) {
+    lookup {
+      user(ID: $input) {
+        isContactable
+        ...UserDetails
+      }
     }
     rolesUser(rolesData: { userID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
       id
@@ -13628,7 +13656,7 @@ export function refetchSpaceRoleSetContributorTypesQuery(
 }
 
 export const UserContributionDisplayNamesDocument = gql`
-  query UserContributionDisplayNames($userId: UUID_NAMEID_EMAIL!) {
+  query UserContributionDisplayNames($userId: UUID!) {
     rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
       id
       spaces {
@@ -13704,7 +13732,7 @@ export function refetchUserContributionDisplayNamesQuery(
 }
 
 export const UserContributionsDocument = gql`
-  query UserContributions($userId: UUID_NAMEID_EMAIL!) {
+  query UserContributions($userId: UUID!) {
     rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
       id
       spaces {
@@ -13773,7 +13801,7 @@ export function refetchUserContributionsQuery(variables: SchemaTypes.UserContrib
 }
 
 export const UserOrganizationIdsDocument = gql`
-  query UserOrganizationIds($userId: UUID_NAMEID_EMAIL!) {
+  query UserOrganizationIds($userId: UUID!) {
     rolesUser(rolesData: { userID: $userId }) {
       id
       organizations {
@@ -14002,53 +14030,55 @@ export function refetchUserSettingsQuery(variables: SchemaTypes.UserSettingsQuer
 }
 
 export const VirtualContributorDocument = gql`
-  query VirtualContributor($id: UUID_NAMEID!) {
-    virtualContributor(ID: $id) {
-      id
-      nameID
-      authorization {
+  query VirtualContributor($id: UUID!) {
+    lookup {
+      virtualContributor(ID: $id) {
         id
-        myPrivileges
-      }
-      provider {
-        id
+        nameID
+        authorization {
+          id
+          myPrivileges
+        }
+        provider {
+          id
+          profile {
+            id
+            displayName
+            url
+            location {
+              country
+              city
+            }
+            avatar: visual(type: AVATAR) {
+              ...VisualFull
+            }
+            tagsets {
+              id
+              tags
+            }
+          }
+        }
+        searchVisibility
+        listedInStore
+        status
+        aiPersona {
+          id
+          bodyOfKnowledgeID
+          bodyOfKnowledgeType
+          bodyOfKnowledge
+        }
         profile {
           id
           displayName
-          url
-          location {
-            country
-            city
+          description
+          tagline
+          tagsets {
+            ...TagsetDetails
           }
+          url
           avatar: visual(type: AVATAR) {
             ...VisualFull
           }
-          tagsets {
-            id
-            tags
-          }
-        }
-      }
-      searchVisibility
-      listedInStore
-      status
-      aiPersona {
-        id
-        bodyOfKnowledgeID
-        bodyOfKnowledgeType
-        bodyOfKnowledge
-      }
-      profile {
-        id
-        displayName
-        description
-        tagline
-        tagsets {
-          ...TagsetDetails
-        }
-        url
-        avatar: visual(type: AVATAR) {
-          ...VisualFull
         }
       }
     }
@@ -14110,19 +14140,21 @@ export function refetchVirtualContributorQuery(variables: SchemaTypes.VirtualCon
 }
 
 export const VirtualContributorProfileDocument = gql`
-  query VirtualContributorProfile($id: UUID_NAMEID!) {
-    virtualContributor(ID: $id) {
-      id
-      profile {
+  query VirtualContributorProfile($id: UUID!) {
+    lookup {
+      virtualContributor(ID: $id) {
         id
-        displayName
-        tagline
-        tagsets {
-          ...TagsetDetails
-        }
-        url
-        avatar: visual(type: AVATAR) {
-          ...VisualFull
+        profile {
+          id
+          displayName
+          tagline
+          tagsets {
+            ...TagsetDetails
+          }
+          url
+          avatar: visual(type: AVATAR) {
+            ...VisualFull
+          }
         }
       }
     }
@@ -14368,12 +14400,14 @@ export type RefreshBodyOfKnowledgeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RefreshBodyOfKnowledgeMutationVariables
 >;
 export const VcMembershipsDocument = gql`
-  query VCMemberships($virtualContributorId: UUID_NAMEID!) {
-    virtualContributor(ID: $virtualContributorId) {
-      id
-      authorization {
+  query VCMemberships($virtualContributorId: UUID!) {
+    lookup {
+      virtualContributor(ID: $virtualContributorId) {
         id
-        myPrivileges
+        authorization {
+          id
+          myPrivileges
+        }
       }
     }
     rolesVirtualContributor(rolesData: { virtualContributorID: $virtualContributorId }) {
@@ -14444,7 +14478,7 @@ export function refetchVcMembershipsQuery(variables: SchemaTypes.VcMembershipsQu
 }
 
 export const VirtualContributorUpdatesDocument = gql`
-  subscription virtualContributorUpdates($virtualContributorID: UUID_NAMEID!) {
+  subscription virtualContributorUpdates($virtualContributorID: UUID!) {
     virtualContributorUpdated(virtualContributorID: $virtualContributorID) {
       virtualContributor {
         id
@@ -14786,7 +14820,7 @@ export type DeleteInnovationHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteInnovationHubMutationVariables
 >;
 export const AdminInnovationHubDocument = gql`
-  query AdminInnovationHub($innovationHubId: UUID_NAMEID!) {
+  query AdminInnovationHub($innovationHubId: UUID!) {
     platform {
       id
       innovationHub(id: $innovationHubId) {
@@ -19614,11 +19648,13 @@ export function refetchCalloutPostStorageConfigQuery(variables: SchemaTypes.Call
 }
 
 export const UserStorageConfigDocument = gql`
-  query UserStorageConfig($userId: UUID_NAMEID_EMAIL!) {
-    user(ID: $userId) {
-      id
-      profile {
-        ...ProfileStorageConfig
+  query UserStorageConfig($userId: UUID!) {
+    lookup {
+      user(ID: $userId) {
+        id
+        profile {
+          ...ProfileStorageConfig
+        }
       }
     }
   }
@@ -19675,11 +19711,13 @@ export function refetchUserStorageConfigQuery(variables: SchemaTypes.UserStorage
 }
 
 export const VirtualContributorStorageConfigDocument = gql`
-  query VirtualContributorStorageConfig($virtualContributorId: UUID_NAMEID!) {
-    virtualContributor(ID: $virtualContributorId) {
-      id
-      profile {
-        ...ProfileStorageConfig
+  query VirtualContributorStorageConfig($virtualContributorId: UUID!) {
+    lookup {
+      virtualContributor(ID: $virtualContributorId) {
+        id
+        profile {
+          ...ProfileStorageConfig
+        }
       }
     }
   }
@@ -19743,11 +19781,13 @@ export function refetchVirtualContributorStorageConfigQuery(
 }
 
 export const OrganizationStorageConfigDocument = gql`
-  query OrganizationStorageConfig($organizationId: UUID_NAMEID!) {
-    organization(ID: $organizationId) {
-      id
-      profile {
-        ...ProfileStorageConfig
+  query OrganizationStorageConfig($organizationId: UUID!) {
+    lookup {
+      organization(ID: $organizationId) {
+        id
+        profile {
+          ...ProfileStorageConfig
+        }
       }
     }
   }
@@ -19875,7 +19915,7 @@ export function refetchInnovationPackStorageConfigQuery(
 }
 
 export const InnovationHubStorageConfigDocument = gql`
-  query InnovationHubStorageConfig($innovationHubId: UUID_NAMEID!) {
+  query InnovationHubStorageConfig($innovationHubId: UUID!) {
     platform {
       id
       innovationHub(id: $innovationHubId) {
@@ -22863,7 +22903,7 @@ export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) 
 }
 
 export const UserRolesSearchCardsDocument = gql`
-  query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
+  query userRolesSearchCards($userId: UUID!) {
     rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
       id
       spaces {

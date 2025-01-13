@@ -1950,12 +1950,18 @@ export type LocationFieldPolicy = {
 };
 export type LookupByNameQueryResultsKeySpecifier = (
   | 'innovationPack'
+  | 'organization'
   | 'template'
+  | 'user'
+  | 'virtualContributor'
   | LookupByNameQueryResultsKeySpecifier
 )[];
 export type LookupByNameQueryResultsFieldPolicy = {
   innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
+  organization?: FieldPolicy<any> | FieldReadFunction<any>;
   template?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LookupMyPrivilegesQueryResultsKeySpecifier = (
   | 'account'
@@ -2038,6 +2044,7 @@ export type LookupQueryResultsKeySpecifier = (
   | 'invitation'
   | 'license'
   | 'myPrivileges'
+  | 'organization'
   | 'post'
   | 'profile'
   | 'roleSet'
@@ -2073,6 +2080,7 @@ export type LookupQueryResultsFieldPolicy = {
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
   myPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
+  organization?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSet?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2846,7 +2854,6 @@ export type ProfileCredentialVerifiedFieldPolicy = {
   vc?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QueryKeySpecifier = (
-  | 'account'
   | 'accounts'
   | 'activityFeed'
   | 'activityFeedGrouped'
@@ -2884,7 +2891,6 @@ export type QueryKeySpecifier = (
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
-  account?: FieldPolicy<any> | FieldReadFunction<any>;
   accounts?: FieldPolicy<any> | FieldReadFunction<any>;
   activityFeed?: FieldPolicy<any> | FieldReadFunction<any>;
   activityFeedGrouped?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3030,11 +3036,11 @@ export type RoleKeySpecifier = (
   | 'createdDate'
   | 'credential'
   | 'id'
+  | 'name'
   | 'organizationPolicy'
   | 'parentCredentials'
   | 'requiresEntryRole'
   | 'requiresSameRoleInParentRoleSet'
-  | 'type'
   | 'updatedDate'
   | 'userPolicy'
   | 'virtualContributorPolicy'
@@ -3044,11 +3050,11 @@ export type RoleFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   credential?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationPolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   parentCredentials?: FieldPolicy<any> | FieldReadFunction<any>;
   requiresEntryRole?: FieldPolicy<any> | FieldReadFunction<any>;
   requiresSameRoleInParentRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   userPolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorPolicy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3060,7 +3066,7 @@ export type RoleSetKeySpecifier = (
   | 'availableUsersForLeadRole'
   | 'availableUsersForMemberRole'
   | 'createdDate'
-  | 'entryRoleType'
+  | 'entryRoleName'
   | 'id'
   | 'invitations'
   | 'license'
@@ -3084,7 +3090,7 @@ export type RoleSetFieldPolicy = {
   availableUsersForLeadRole?: FieldPolicy<any> | FieldReadFunction<any>;
   availableUsersForMemberRole?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  entryRoleType?: FieldPolicy<any> | FieldReadFunction<any>;
+  entryRoleName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
