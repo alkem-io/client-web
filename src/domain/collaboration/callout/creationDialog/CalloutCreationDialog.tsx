@@ -55,6 +55,8 @@ export interface CalloutCreationDialogProps {
   groupName: CalloutGroupName;
   flowState?: string;
   journeyTypeName: JourneyTypeName;
+  availableCalloutTypes?: CalloutType[];
+  disableRichMedia?: boolean;
 }
 
 const CalloutCreationDialog = ({
@@ -65,6 +67,8 @@ const CalloutCreationDialog = ({
   groupName,
   flowState,
   journeyTypeName,
+  availableCalloutTypes,
+  disableRichMedia,
 }: CalloutCreationDialogProps) => {
   const { t } = useTranslation();
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
@@ -225,6 +229,7 @@ const CalloutCreationDialog = ({
             <Gutters>
               <CalloutTypeSelect
                 onSelect={handleSelectCalloutType}
+                availableCalloutTypes={availableCalloutTypes}
                 extraButtons={
                   <Button
                     size="large"
@@ -273,6 +278,7 @@ const CalloutCreationDialog = ({
               onStatusChanged={handleStatusChange}
               journeyTypeName={journeyTypeName}
               temporaryLocation // Always true for callout creation
+              disableRichMedia={disableRichMedia}
             />
           </DialogContent>
 

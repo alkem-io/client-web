@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
-import { Box, Button, DialogActions } from '@mui/material';
-import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
-import { DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
+import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import PostForm, { PostFormOutput } from '../PostForm/PostForm';
-import { CreatePostInput } from '@/core/apollo/generated/graphql-schema';
+import { CalloutType, CreatePostInput } from '@/core/apollo/generated/graphql-schema';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
 
 export type PostCreationType = Partial<CreatePostInput>;
 export type PostCreationOutput = CreatePostInput;
@@ -19,6 +19,7 @@ export type PostCreationDialogProps = {
   calloutId: string;
   defaultDescription?: string;
   creating: boolean;
+  disableRichMedia?: boolean;
 };
 
 const PostCreationDialog = ({
@@ -29,10 +30,12 @@ const PostCreationDialog = ({
   calloutDisplayName,
   defaultDescription,
   creating,
+  disableRichMedia,
 }: PostCreationDialogProps) => {
   const { t } = useTranslation();
   const [post, setPost] = useState<PostCreationType>({});
   const [isFormValid, setIsFormValid] = useState(false);
+  const CalloutIcon = calloutIcons[CalloutType.PostCollection];
 
   const handleClose = () => {
     setPost({});
@@ -74,13 +77,13 @@ const PostCreationDialog = ({
 
   return (
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="post-creation-title">
-      <DialogTitle id="post-creation-title" onClose={handleClose}>
+      <DialogHeader onClose={handleClose}>
         <Box display="flex" alignItems="center">
           <CalloutIcon sx={{ marginRight: 1 }} />
           {t('components.post-creation.title', { calloutDisplayName: calloutDisplayName })}
         </Box>
-      </DialogTitle>
-      <DialogContent dividers>
+      </DialogHeader>
+      <DialogContent>
         <Box marginBottom={2} marginTop={2}>
           <PostForm
             post={post}
@@ -89,6 +92,7 @@ const PostCreationDialog = ({
             onStatusChanged={handleFormStatusChange}
             descriptionTemplate={defaultDescription}
             tags={[]}
+            disableRichMedia={disableRichMedia}
           />
         </Box>
       </DialogContent>

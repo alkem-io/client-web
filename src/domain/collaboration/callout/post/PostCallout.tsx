@@ -40,6 +40,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
       expanded,
       onExpand,
       onCollapse,
+      disableRichMedia,
       ...calloutSettingsProps
     },
     ref
@@ -75,6 +76,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
         items={{ posts: sortedPosts }}
         expanded={expanded}
         onExpand={onExpand}
+        disableRichMedia={disableRichMedia}
         {...calloutSettingsProps}
       >
         {calloutSettingsProvided => (
@@ -108,6 +110,7 @@ const PostCallout = forwardRef<Element, PostCalloutProps>(
               calloutId={callout.id}
               defaultDescription={callout.contributionDefaults.postDescription}
               creating={creatingPost}
+              disableRichMedia={disableRichMedia}
             />
           </>
         )}

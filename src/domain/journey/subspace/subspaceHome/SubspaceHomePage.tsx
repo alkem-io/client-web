@@ -179,7 +179,6 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
               }
             >
               <SubspaceHomeView
-                journeyId={journeyId}
                 collaborationId={collaboration?.id}
                 calloutsSetId={collaboration?.calloutsSet.id}
                 templatesSetId={subspace?.templatesManager?.templatesSet?.id}

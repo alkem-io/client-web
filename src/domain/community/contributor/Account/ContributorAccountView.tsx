@@ -501,7 +501,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             {canCreateVirtualContributor && (
               <CreationButton
                 disabled={!isEntitledToCreateVC}
-                onClick={() => startWizard(account)}
+                onClick={() => startWizard(account, accountHostName)}
                 disabledTooltip={t('pages.admin.generic.sections.account.limitNotice')}
               />
             )}
