@@ -1,21 +1,9 @@
-import React, { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { makeStyles } from '@mui/styles';
-import PageContentColumn from '@/core/ui/content/PageContentColumn';
-import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import { BlockTitle, Caption } from '@/core/ui/typography';
-import JourneyCardHorizontal, {
-  JourneyCardHorizontalSkeleton,
-} from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
-import Gutters from '@/core/ui/grid/Gutters';
-import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
-import InnovationHubCardHorizontal, {
-  InnovationHubCardHorizontalSkeleton,
-} from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
-import { Actions } from '@/core/ui/actions/Actions';
-import CreateSpaceDialog from '@/domain/journey/space/createSpace/CreateSpaceDialog';
-import useNewVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
-import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
+import {
+  useDeleteInnovationHubMutation,
+  useDeleteInnovationPackMutation,
+  useDeleteSpaceMutation,
+  useDeleteVirtualContributorOnAccountMutation,
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   LicenseEntitlement,
@@ -23,22 +11,33 @@ import {
   SpaceLevel,
   SpaceVisibility,
 } from '@/core/apollo/generated/graphql-schema';
-import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
-import { DeleteOutline } from '@mui/icons-material';
-import {
-  useDeleteInnovationHubMutation,
-  useDeleteInnovationPackMutation,
-  useDeleteSpaceMutation,
-  useDeleteVirtualContributorOnAccountMutation,
-} from '@/core/apollo/generated/apollo-hooks';
+import { Actions } from '@/core/ui/actions/Actions';
 import CreationButton from '@/core/ui/button/CreationButton';
-import TextWithTooltip from '@/core/ui/typography/TextWithTooltip';
+import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentColumn from '@/core/ui/content/PageContentColumn';
+import Gutters from '@/core/ui/grid/Gutters';
+import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
+import { BlockTitle, Caption } from '@/core/ui/typography';
+import TextWithTooltip from '@/core/ui/typography/TextWithTooltip';
+import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
 import InnovationPackCardHorizontal, {
   InnovationPackCardHorizontalSkeleton,
 } from '@/domain/InnovationPack/InnovationPackCardHorizontal/InnovationPackCardHorizontal';
-import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
+import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
+import InnovationHubCardHorizontal, {
+  InnovationHubCardHorizontalSkeleton,
+} from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
+import JourneyCardHorizontal, {
+  JourneyCardHorizontalSkeleton,
+} from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
+import CreateSpaceDialog from '@/domain/journey/space/createSpace/CreateSpaceDialog';
+import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
+import useNewVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
+import { DeleteOutline } from '@mui/icons-material';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const enum Entities {
   Space = 'Space',
@@ -123,20 +122,6 @@ export interface ContributorAccountViewProps {
   account?: AccountTabResourcesProps;
 }
 
-const useStyles = makeStyles(() => ({
-  gutters: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    height: '100%',
-  },
-  guttersRow: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-}));
-
 export const ContributorAccountView = ({ accountHostName, account, loading }: ContributorAccountViewProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
@@ -147,7 +132,6 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const [entity, setSelectedEntity] = useState<Entities | undefined>(undefined);
-  const styles = useStyles();
   const myAccountEntitlements = account?.license?.availableEntitlements || [];
   const myAccountEntitlementDetails = account?.license?.entitlements || [];
   const externalSubscriptionID = account?.externalSubscriptionID;
@@ -407,7 +391,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
   return (
     <PageContentColumn columns={12}>
       <PageContentBlock halfWidth>
-        <Gutters disablePadding disableGap className={styles.guttersRow}>
+        <Gutters disablePadding disableGap row justifyContent="space-between">
           <BlockTitle>{t('pages.admin.generic.sections.account.hostedSpaces')}</BlockTitle>
           <TextWithTooltip
             text={`${hostedSpaceUsage}/${hostedSpaceLimit}`}
@@ -419,7 +403,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
           />
         </Gutters>
 
-        <Gutters disablePadding disableGap className={styles.gutters}>
+        <Gutters disablePadding disableGap justifyContent="space-between" height="100%">
           {loading && <JourneyCardHorizontalSkeleton />}
           <Gutters disablePadding>
             {!loading &&
@@ -458,7 +442,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
         </Actions>
       </PageContentBlock>
       <PageContentBlock halfWidth>
-        <Gutters disablePadding disableGap className={styles.guttersRow}>
+        <Gutters disablePadding disableGap row justifyContent="space-between">
           <BlockTitle>{t('pages.admin.generic.sections.account.virtualContributors')}</BlockTitle>
           <TextWithTooltip
             text={`${vcUsage}/${vcLimit}`}
@@ -469,7 +453,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             })}
           />
         </Gutters>
-        <Gutters disablePadding className={styles.gutters}>
+        <Gutters disablePadding justifyContent="space-between" height="100%">
           {loading && <JourneyCardHorizontalSkeleton />}
           <Gutters disablePadding>
             {!loading &&
@@ -496,7 +480,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
         </Gutters>
       </PageContentBlock>
       <PageContentBlock halfWidth>
-        <Gutters disablePadding disableGap className={styles.guttersRow}>
+        <Gutters disablePadding disableGap row justifyContent="space-between">
           <BlockTitle>{t('pages.admin.generic.sections.account.innovationPacks')}</BlockTitle>
           <TextWithTooltip
             text={`${innovationPackUsage}/${innovationPackLimit}`}
@@ -507,7 +491,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             })}
           />
         </Gutters>
-        <Gutters disablePadding className={styles.gutters}>
+        <Gutters disablePadding justifyContent="space-between" height="100%">
           {loading && <InnovationPackCardHorizontalSkeleton />}
           {!loading &&
             innovationPacks?.map(pack => (
@@ -532,7 +516,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
         </Gutters>
       </PageContentBlock>
       <PageContentBlock halfWidth>
-        <Gutters disablePadding disableGap className={styles.guttersRow}>
+        <Gutters disablePadding disableGap row justifyContent="space-between">
           <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
           <TextWithTooltip
             text={`${innovationHubUsage}/${innovationHubLimit}`}
@@ -543,7 +527,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
             })}
           />
         </Gutters>
-        <Gutters disablePadding className={styles.gutters}>
+        <Gutters disablePadding justifyContent="space-between" height="100%">
           {loading && <InnovationHubCardHorizontalSkeleton />}
           {!loading &&
             innovationHubs?.map(hub => (
