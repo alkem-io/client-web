@@ -1455,7 +1455,7 @@
       },
       "dialog-join-parent": {
         "title": "Join <strong title='Parent community name'>{{parentCommunityName}}</strong>",
-        "body": "You can join this community without applying for a membership, because you have the right credentials. But first you have to join <strong title='Parent community name'>{{parentCommunityName}}</strong> and accept the terms and conditions there, then you can join this one."
+        "body": "You can join this community without applying for a membership, but first you have to join <strong title='Parent community name'>{{parentCommunityName}}</strong> and accept the terms and conditions there."
       }
     },
     "organization-verified": {
@@ -1958,6 +1958,8 @@
             "hostedSpaces": "Hosted Spaces",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
+            "usageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your account.",
+            "limitNotice": "Contact the Alkemio team to increase the limits on your account",
             "noTemplates": "This Template Pack doesn't have any template yet",
             "customHomepages": "Custom Homepages",
             "hostTitle": "Host",
@@ -2161,7 +2163,12 @@
         },
         "back-button": "All $t(common.innovation-packs)",
         "save-new-for-details": "Save the new Template Pack to edit the rest of the details",
-        "saved-successfully": "Saved Successfully"
+        "saved-successfully": "Saved Successfully",
+        "notifications": {
+          "pack-created": "$t(common.innovation-pack) created successfuly.",
+          "pack-error": "An error occurred while creating the $t(common.innovation-pack).",
+          "pack-removed": "$t(common.innovation-pack) '{{name}}' removed successfully."
+        }
       },
       "innovationHubs": {
         "create": "Create Innovation Hub",
