@@ -17,13 +17,16 @@ npm-debug.log
 
 /.VsCodeCounter
 
-# misc
-.DS_Store
-.build/docker/.env.base
+# ENV
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+
+# misc
+.DS_Store
+.build/docker/.env.base
+cspell-report.txt
 
 npm-debug.log*
 yarn-debug.log*

@@ -53,7 +53,7 @@ const KnowledgeBasePage = () => {
                   <PageContentBlock>
                     <CalloutsList
                       callouts={groupedCallouts[CalloutGroupName.Knowledge]}
-                      emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
+                      emptyListCaption={t('pages.generic.sections.subEntities.empty-list', {
                         entities: t('common.callouts'),
                       })}
                     />
