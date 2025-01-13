@@ -14,6 +14,8 @@ import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { JourneyFormValues } from '@/domain/shared/components/JourneyCreationDialog/JourneyCreationForm';
 import { OpportunityIcon } from '@/domain/journey/opportunity/icon/OpportunityIcon';
 import {
+  refetchAdminSpaceSubspacesPageQuery,
+  refetchSpaceDashboardNavigationChallengesQuery,
   refetchSubspacesInSpaceQuery,
   useDeleteSpaceMutation,
   useSpaceCollaborationIdLazyQuery,
@@ -34,7 +36,7 @@ import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/u
 export const OpportunityList: FC = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { spaceNameId } = useSpace();
+  const { spaceId, spaceNameId } = useSpace();
   const { subspaceId } = useSubSpace();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -63,8 +65,15 @@ export const OpportunityList: FC = () => {
   const [deleteOpportunity] = useDeleteSpaceMutation({
     refetchQueries: [
       refetchSubspacesInSpaceQuery({
-        spaceId: subspaceId,
+        spaceId,
       }),
+      refetchAdminSpaceSubspacesPageQuery({
+        spaceId,
+      }),
+      refetchSpaceDashboardNavigationChallengesQuery({
+        spaceId,
+      }),
+      'SpaceDashboardNavigationOpportunities',
     ],
     awaitRefetchQueries: true,
     onCompleted: () => notify(t('pages.admin.subsubspace.notifications.subsubspace-removed'), 'success'),

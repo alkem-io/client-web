@@ -12,6 +12,7 @@ interface CalloutTypeSelectProps {
   onSelect: (value: CalloutType | undefined) => void;
   disabled?: boolean;
   extraButtons?: ReactNode;
+  availableCalloutTypes?: CalloutType[];
 }
 
 export const AVAILABLE_CALLOUT_TYPES = [
@@ -22,7 +23,12 @@ export const AVAILABLE_CALLOUT_TYPES = [
   CalloutType.WhiteboardCollection,
 ];
 
-export const CalloutTypeSelect = ({ onSelect, disabled = false, extraButtons }: CalloutTypeSelectProps) => {
+export const CalloutTypeSelect = ({
+  onSelect,
+  disabled = false,
+  extraButtons,
+  availableCalloutTypes,
+}: CalloutTypeSelectProps) => {
   const { t } = useTranslation();
   const { locations } = useConfig();
 
@@ -30,10 +36,12 @@ export const CalloutTypeSelect = ({ onSelect, disabled = false, extraButtons }: 
     onSelect(value);
   };
 
+  const availableTypes = availableCalloutTypes ?? AVAILABLE_CALLOUT_TYPES;
+
   return (
     <>
       <>
-        {AVAILABLE_CALLOUT_TYPES.map(calloutType => {
+        {availableTypes.map(calloutType => {
           const Icon = calloutIcons[calloutType];
 
           return (
