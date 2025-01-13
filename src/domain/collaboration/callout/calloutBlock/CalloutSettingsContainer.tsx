@@ -118,6 +118,7 @@ export interface CalloutSettingsContainerProps
   expanded?: boolean;
   onExpand?: () => void;
   journeyTypeName: JourneyTypeName;
+  disableRichMedia?: boolean;
 }
 
 const CalloutSettingsContainer = ({
@@ -136,14 +137,11 @@ const CalloutSettingsContainer = ({
   onExpand,
   journeyTypeName,
   children,
+  disableRichMedia,
 }: CalloutSettingsContainerProps) => {
   const { t } = useTranslation();
 
   const { spaceNameId } = useUrlParams();
-
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space');
-  }
 
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
   const settingsOpened = Boolean(settingsAnchorEl);
@@ -186,6 +184,11 @@ const CalloutSettingsContainer = ({
 
   const { handleCreateCalloutTemplate } = useCreateCalloutTemplate();
   const handleSaveAsTemplate = async (values: CalloutTemplateFormSubmittedValues) => {
+    if (!spaceNameId) {
+      setSaveAsTemplateDialogOpen(false);
+      return;
+    }
+
     await handleCreateCalloutTemplate(values, spaceNameId);
     setSaveAsTemplateDialogOpen(false);
   };
@@ -441,6 +444,7 @@ const CalloutSettingsContainer = ({
           onDelete={() => setDeleteDialogOpen(true)}
           canChangeCalloutLocation
           journeyTypeName={journeyTypeName}
+          disableRichMedia={disableRichMedia}
         />
       )}
       <ConfirmationDialog

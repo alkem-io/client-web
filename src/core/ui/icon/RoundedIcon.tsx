@@ -7,6 +7,7 @@ export type RoundedIconProps = Pick<RoundedBadgeProps, 'size' | 'color'> &
   Omit<BoxProps, 'color'> & {
     component: ComponentType<SvgIconProps>;
     iconSize?: SvgIconProps['fontSize'] | 'xsmall';
+    disabled?: boolean;
   };
 
 const getFontSize = (theme: Theme) => (iconSize: SvgIconProps['fontSize'] | 'xsmall') => {
@@ -15,8 +16,13 @@ const getFontSize = (theme: Theme) => (iconSize: SvgIconProps['fontSize'] | 'xsm
   }
 };
 
-const RoundedIcon = ({ size, iconSize = size, component: Icon, sx, ...containerProps }: RoundedIconProps) => (
-  <RoundedBadge size={size} {...containerProps} sx={{ fontSize: theme => getFontSize(theme)(iconSize), ...sx }}>
+const RoundedIcon = ({ size, iconSize = size, component: Icon, sx, disabled, ...containerProps }: RoundedIconProps) => (
+  <RoundedBadge
+    color={disabled ? 'muted.main' : undefined}
+    size={size}
+    {...containerProps}
+    sx={{ fontSize: theme => getFontSize(theme)(iconSize), ...sx }}
+  >
     <Icon fontSize={iconSize === 'xsmall' ? 'inherit' : iconSize} />
   </RoundedBadge>
 );

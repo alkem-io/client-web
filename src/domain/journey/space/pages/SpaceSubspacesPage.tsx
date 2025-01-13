@@ -97,7 +97,6 @@ const SpaceSubspacesPage = () => {
             }
             children={
               <CalloutsGroupView
-                journeyId={spaceId}
                 calloutsSetId={calloutsSetId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces]}
                 canCreateCallout={callouts.canCreateCallout}

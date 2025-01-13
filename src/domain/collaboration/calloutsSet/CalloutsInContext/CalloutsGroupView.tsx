@@ -2,27 +2,29 @@ import CalloutCreationDialog from '../../callout/creationDialog/CalloutCreationD
 import { useCalloutCreationWithPreviewImages } from '../useCalloutCreation/useCalloutCreationWithPreviewImages';
 import AddContentButton from '@/core/ui/content/AddContentButton';
 import CalloutsView, { CalloutsViewProps } from '../CalloutsView/CalloutsView';
-import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
+import { CalloutGroupName, CalloutType } from '@/core/apollo/generated/graphql-schema';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import { useTranslation } from 'react-i18next';
 
 interface CalloutsGroupProps extends CalloutsViewProps {
-  journeyId: string | undefined;
   calloutsSetId: string | undefined;
   canCreateCallout: boolean;
   groupName: CalloutGroupName;
   flowState?: string;
   createButtonPlace?: 'top' | 'bottom';
+  availableCalloutTypes?: CalloutType[];
+  disableRichMedia?: boolean;
 }
 
 const CalloutsGroupView = ({
-  journeyId,
   canCreateCallout,
   groupName,
   flowState,
   createButtonPlace = 'bottom',
   journeyTypeName,
   calloutsSetId,
+  availableCalloutTypes,
+  disableRichMedia,
   ...calloutsViewProps
 }: CalloutsGroupProps) => {
   const {
@@ -50,7 +52,7 @@ const CalloutsGroupView = ({
   return (
     <>
       {canCreateCallout && createButtonPlace === 'top' && createButton}
-      <CalloutsView journeyTypeName={journeyTypeName} {...calloutsViewProps} />
+      <CalloutsView journeyTypeName={journeyTypeName} disableRichMedia={disableRichMedia} {...calloutsViewProps} />
       {canCreateCallout && createButtonPlace === 'bottom' && createButton}
       <CalloutCreationDialog
         open={isCalloutCreationDialogOpen}
@@ -60,6 +62,8 @@ const CalloutsGroupView = ({
         groupName={groupName}
         flowState={flowState}
         journeyTypeName={journeyTypeName}
+        availableCalloutTypes={availableCalloutTypes}
+        disableRichMedia={disableRichMedia}
       />
     </>
   );

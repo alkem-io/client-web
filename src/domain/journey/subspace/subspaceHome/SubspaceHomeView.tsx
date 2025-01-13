@@ -18,7 +18,6 @@ import InnovationFlowSettingsButton from '@/domain/collaboration/InnovationFlow/
 import { CalloutGroupNameValuesMap } from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroup';
 
 interface SubspaceHomeViewProps {
-  journeyId: string | undefined;
   collaborationId: string | undefined;
   calloutsSetId: string | undefined;
   templatesSetId: string | undefined;
@@ -33,7 +32,6 @@ interface SubspaceHomeViewProps {
 }
 
 const SubspaceHomeView = ({
-  journeyId,
   collaborationId,
   calloutsSetId,
   templatesSetId,
@@ -123,7 +121,6 @@ const SubspaceHomeView = ({
         )}
       </SubspaceInnovationFlow>
       <CalloutsGroupView
-        journeyId={journeyId}
         calloutsSetId={calloutsSetId}
         callouts={selectedFlowStateCallouts}
         canCreateCallout={canCreateCallout && isMobile}
