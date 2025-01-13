@@ -128,7 +128,6 @@ export const MarkdownInput = memo(
                 return false;
               }
 
-              // General function to check for images and HTML content with images
               const isImageOrHtmlWithImage = (item: DataTransferItem) => {
                 if (item.kind === 'file' && item.type.startsWith('image/')) {
                   return true; // Image
@@ -142,27 +141,22 @@ export const MarkdownInput = memo(
                 return false; // Not an image or HTML with images
               };
 
-              // If hideImageOptions is enabled, block images
-              if (hideImageOptions) {
-                for (const item of items) {
-                  if (isImageOrHtmlWithImage(item)) {
-                    event.preventDefault();
-                    return true; // Block paste of images or HTML with images
-                  }
-                }
-
-                return false; // Allow paste of text
-              }
-
-              // Original logic for handling images
               let imageProcessed = false;
 
               for (const item of items) {
+                if (hideImageOptions && isImageOrHtmlWithImage(item)) {
+                  event.preventDefault();
+
+                  return true; // Block paste of images or HTML with images
+                }
+
                 if (!imageProcessed && isImageOrHtmlWithImage(item)) {
                   if (item.kind === 'file' && item.type.startsWith('image/')) {
                     const file = item.getAsFile();
+
                     if (file) {
                       const reader = new FileReader();
+
                       reader.onload = () => {
                         uploadFile({
                           variables: {
@@ -171,6 +165,7 @@ export const MarkdownInput = memo(
                           },
                         });
                       };
+
                       reader.readAsDataURL(file);
                       imageProcessed = true;
                     }
@@ -187,6 +182,7 @@ export const MarkdownInput = memo(
 
               if (imageProcessed) {
                 event.preventDefault();
+
                 return true; // Block default behavior for images
               }
 
