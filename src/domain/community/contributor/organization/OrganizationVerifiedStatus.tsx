@@ -13,7 +13,7 @@ export const OrganizationVerifiedStatus = ({ verified, helpText }: VerifiedStatu
   const { t } = useTranslation();
 
   return (
-    <BlockTitle sx={{ display: 'flex', alignItems: 'center', columnGap: 0.5 }}>
+    <BlockTitle variant="caption" sx={{ display: 'flex', alignItems: 'center', columnGap: 0.5 }}>
       {helpText && verified && (
         <Tooltip title={helpText} arrow placement="right">
           <BeenhereOutlined fontSize="small" color="primary" />
