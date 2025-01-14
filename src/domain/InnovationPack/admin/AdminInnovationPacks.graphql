@@ -39,12 +39,6 @@ fragment InnovationPackProfile on Profile {
   url
 }
 
-query InnovationPackResolveId($innovationPackNameId: NameID!) {
-  lookupByName {
-    innovationPack(NAMEID: $innovationPackNameId)
-  }
-}
-
 query AdminInnovationPack($innovationPackId: UUID!) {
   lookup {
     innovationPack(ID: $innovationPackId) {

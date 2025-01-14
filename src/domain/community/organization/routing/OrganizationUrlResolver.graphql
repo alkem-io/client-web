@@ -1,5 +1,0 @@
-query OrganizationUrlResolver ($nameId: NameID!) {
-  lookupByName {
-    organization(NAMEID: $nameId)
-  }
-}

@@ -1,5 +1,0 @@
-query VirtualContributorUrlResolver ($nameId: NameID!) {
-  lookupByName {
-    virtualContributor(NAMEID: $nameId)
-  }
-}

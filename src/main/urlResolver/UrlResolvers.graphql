@@ -1,0 +1,52 @@
+query SpaceUrlResolver ($nameId: NameID!) {
+  lookupByName {
+    space(NAMEID: $nameId)
+  }
+}
+
+query OrganizationUrlResolver ($nameId: NameID!) {
+  lookupByName {
+    organization(NAMEID: $nameId)
+  }
+}
+
+query VirtualContributorUrlResolver($nameId: NameID!) {
+  lookupByName{
+    virtualContributor(NAMEID: $nameId)
+  }
+}
+
+query InnovationPackUrlResolver($innovationPackNameId: NameID!) {
+  lookupByName {
+    innovationPack(NAMEID: $innovationPackNameId)
+  }
+}
+
+query TemplatesSetUrlResolver($spaceId: UUID!, $includeSpace: Boolean = false, $innovationPackId: UUID!, $includeInnovationPack: Boolean = false) {
+  lookup {
+    space(ID: $spaceId) @include(if: $includeSpace) {
+      templatesManager {
+        templatesSet {
+          id
+        }
+      }
+    }
+    innovationPack(ID: $innovationPackId) @include(if: $includeInnovationPack) {
+      templatesSet {
+        id
+      }
+    }
+  }
+}
+
+query TemplateUrlResolver($templatesSetId: UUID!, $templateNameId: NameID!) {
+  lookupByName {
+    template(templatesSetID: $templatesSetId, NAMEID: $templateNameId)
+  }
+}
+
+query UserUrlResolver($nameId: NameID!) {
+  lookupByName {
+    user(NAMEID: $nameId)
+  }
+}

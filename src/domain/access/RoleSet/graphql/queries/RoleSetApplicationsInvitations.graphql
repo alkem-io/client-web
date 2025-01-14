@@ -56,7 +56,7 @@ fragment AdminPlatformInvitationCommunity on PlatformInvitation {
 
 fragment AdminCommunityCandidateMember on Contributor {
   id
-  nameID
+  nameID  # TODO: check if used
   profile {
     id
     displayName

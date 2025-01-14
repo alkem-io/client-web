@@ -4,7 +4,6 @@ import {
   useCreateOrganizationMutation,
   useCreateTagsetOnProfileMutation,
   useOrganizationProfileInfoQuery,
-  useOrganizationUrlResolverQuery,
   useUpdateOrganizationMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { EditMode } from '@/core/ui/forms/editMode';
@@ -14,7 +13,7 @@ import OrganizationForm from './OrganizationForm';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import useNavigate from '@/core/routing/useNavigate';
-import { useUrlParams } from '@/core/routing/useUrlParams';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 type Props = {
   title?: string;
@@ -23,14 +22,7 @@ type Props = {
 
 const OrganizationPage = ({ title, mode }: Props) => {
   const { t } = useTranslation();
-  const { organizationNameId } = useUrlParams();
-  const {
-    data: urlResolveData
-  } = useOrganizationUrlResolverQuery({
-    variables: { nameId: organizationNameId! },
-    skip: !organizationNameId,
-  });
-  const organizationId = urlResolveData?.lookupByName.organization;
+  const { organizationId } = useUrlResolver();
 
   const { data, loading } = useOrganizationProfileInfoQuery({
     variables: { id: organizationId! },

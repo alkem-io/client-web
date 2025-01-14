@@ -7530,15 +7530,6 @@ export type InnovationPackProfileFragment = {
     | undefined;
 };
 
-export type InnovationPackResolveIdQueryVariables = Exact<{
-  innovationPackNameId: Scalars['NameID'];
-}>;
-
-export type InnovationPackResolveIdQuery = {
-  __typename?: 'Query';
-  lookupByName: { __typename?: 'LookupByNameQueryResults'; innovationPack?: string | undefined };
-};
-
 export type AdminInnovationPackQueryVariables = Exact<{
   innovationPackId: Scalars['UUID'];
 }>;
@@ -9569,7 +9560,6 @@ export type ActivityLogCalloutPostCreatedFragment = {
   post: {
     __typename?: 'Post';
     id: string;
-    nameID: string;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   };
 };
@@ -9774,7 +9764,6 @@ export type ActivityCreatedSubscription = {
           post: {
             __typename?: 'Post';
             id: string;
-            nameID: string;
             profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
           };
         }
@@ -9984,7 +9973,6 @@ type ActivityLogOnCollaboration_ActivityLogEntryCalloutPostCreated_Fragment = {
   post: {
     __typename?: 'Post';
     id: string;
-    nameID: string;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   };
 };
@@ -10361,7 +10349,6 @@ export type ActivityLogOnCollaborationQuery = {
         post: {
           __typename?: 'Post';
           id: string;
-          nameID: string;
           profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
         };
       }
@@ -17866,15 +17853,6 @@ export type VirtualContributorFullFragment = {
     | undefined;
 };
 
-export type OrganizationUrlResolverQueryVariables = Exact<{
-  nameId: Scalars['NameID'];
-}>;
-
-export type OrganizationUrlResolverQuery = {
-  __typename?: 'Query';
-  lookupByName: { __typename?: 'LookupByNameQueryResults'; organization?: string | undefined };
-};
-
 export type OrganizationAccountQueryVariables = Exact<{
   organizationId: Scalars['UUID'];
 }>;
@@ -19309,15 +19287,6 @@ export type UserSettingsQuery = {
         }
       | undefined;
   };
-};
-
-export type VirtualContributorUrlResolverQueryVariables = Exact<{
-  nameId: Scalars['NameID'];
-}>;
-
-export type VirtualContributorUrlResolverQuery = {
-  __typename?: 'Query';
-  lookupByName: { __typename?: 'LookupByNameQueryResults'; virtualContributor?: string | undefined };
 };
 
 export type VirtualContributorQueryVariables = Exact<{
@@ -27090,16 +27059,6 @@ export type TemplateNameQuery = {
   };
 };
 
-export type TemplateUrlResolverQueryVariables = Exact<{
-  templatesSetId: Scalars['UUID'];
-  templateNameId: Scalars['NameID'];
-}>;
-
-export type TemplateUrlResolverQuery = {
-  __typename?: 'Query';
-  lookupByName: { __typename?: 'LookupByNameQueryResults'; template?: string | undefined };
-};
-
 export type UpdateTemplateDefaultMutationVariables = Exact<{
   templateDefaultID: Scalars['UUID'];
   templateID: Scalars['UUID'];
@@ -30763,7 +30722,6 @@ export type LatestContributionsQuery = {
           post: {
             __typename?: 'Post';
             id: string;
-            nameID: string;
             profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
           };
         }
@@ -31300,7 +31258,6 @@ export type LatestContributionsGroupedQuery = {
         post: {
           __typename?: 'Post';
           id: string;
-          nameID: string;
           profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
         };
       }
@@ -32260,4 +32217,87 @@ export type SpaceExplorerWelcomeSpaceQuery = {
     id: string;
     profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
   };
+};
+
+export type SpaceUrlResolverQueryVariables = Exact<{
+  nameId: Scalars['NameID'];
+}>;
+
+export type SpaceUrlResolverQuery = {
+  __typename?: 'Query';
+  lookupByName: { __typename?: 'LookupByNameQueryResults'; space?: string | undefined };
+};
+
+export type OrganizationUrlResolverQueryVariables = Exact<{
+  nameId: Scalars['NameID'];
+}>;
+
+export type OrganizationUrlResolverQuery = {
+  __typename?: 'Query';
+  lookupByName: { __typename?: 'LookupByNameQueryResults'; organization?: string | undefined };
+};
+
+export type VirtualContributorUrlResolverQueryVariables = Exact<{
+  nameId: Scalars['NameID'];
+}>;
+
+export type VirtualContributorUrlResolverQuery = {
+  __typename?: 'Query';
+  lookupByName: { __typename?: 'LookupByNameQueryResults'; virtualContributor?: string | undefined };
+};
+
+export type InnovationPackUrlResolverQueryVariables = Exact<{
+  innovationPackNameId: Scalars['NameID'];
+}>;
+
+export type InnovationPackUrlResolverQuery = {
+  __typename?: 'Query';
+  lookupByName: { __typename?: 'LookupByNameQueryResults'; innovationPack?: string | undefined };
+};
+
+export type TemplatesSetUrlResolverQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+  includeSpace?: InputMaybe<Scalars['Boolean']>;
+  innovationPackId: Scalars['UUID'];
+  includeInnovationPack?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type TemplatesSetUrlResolverQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          templatesManager?:
+            | {
+                __typename?: 'TemplatesManager';
+                templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+    innovationPack?:
+      | { __typename?: 'InnovationPack'; templatesSet?: { __typename?: 'TemplatesSet'; id: string } | undefined }
+      | undefined;
+  };
+};
+
+export type TemplateUrlResolverQueryVariables = Exact<{
+  templatesSetId: Scalars['UUID'];
+  templateNameId: Scalars['NameID'];
+}>;
+
+export type TemplateUrlResolverQuery = {
+  __typename?: 'Query';
+  lookupByName: { __typename?: 'LookupByNameQueryResults'; template?: string | undefined };
+};
+
+export type UserUrlResolverQueryVariables = Exact<{
+  nameId: Scalars['NameID'];
+}>;
+
+export type UserUrlResolverQuery = {
+  __typename?: 'Query';
+  lookupByName: { __typename?: 'LookupByNameQueryResults'; user?: string | undefined };
 };

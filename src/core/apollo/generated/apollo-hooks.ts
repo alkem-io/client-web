@@ -364,7 +364,6 @@ export const ActivityLogCalloutPostCreatedFragmentDoc = gql`
     }
     post {
       id
-      nameID
       profile {
         id
         url
@@ -4242,66 +4241,6 @@ export type DeleteInnovationPackMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteInnovationPackMutation,
   SchemaTypes.DeleteInnovationPackMutationVariables
 >;
-export const InnovationPackResolveIdDocument = gql`
-  query InnovationPackResolveId($innovationPackNameId: NameID!) {
-    lookupByName {
-      innovationPack(NAMEID: $innovationPackNameId)
-    }
-  }
-`;
-
-/**
- * __useInnovationPackResolveIdQuery__
- *
- * To run a query within a React component, call `useInnovationPackResolveIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useInnovationPackResolveIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useInnovationPackResolveIdQuery({
- *   variables: {
- *      innovationPackNameId: // value for 'innovationPackNameId'
- *   },
- * });
- */
-export function useInnovationPackResolveIdQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.InnovationPackResolveIdQuery,
-    SchemaTypes.InnovationPackResolveIdQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.InnovationPackResolveIdQuery, SchemaTypes.InnovationPackResolveIdQueryVariables>(
-    InnovationPackResolveIdDocument,
-    options
-  );
-}
-
-export function useInnovationPackResolveIdLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.InnovationPackResolveIdQuery,
-    SchemaTypes.InnovationPackResolveIdQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.InnovationPackResolveIdQuery,
-    SchemaTypes.InnovationPackResolveIdQueryVariables
-  >(InnovationPackResolveIdDocument, options);
-}
-
-export type InnovationPackResolveIdQueryHookResult = ReturnType<typeof useInnovationPackResolveIdQuery>;
-export type InnovationPackResolveIdLazyQueryHookResult = ReturnType<typeof useInnovationPackResolveIdLazyQuery>;
-export type InnovationPackResolveIdQueryResult = Apollo.QueryResult<
-  SchemaTypes.InnovationPackResolveIdQuery,
-  SchemaTypes.InnovationPackResolveIdQueryVariables
->;
-export function refetchInnovationPackResolveIdQuery(variables: SchemaTypes.InnovationPackResolveIdQueryVariables) {
-  return { query: InnovationPackResolveIdDocument, variables: variables };
-}
-
 export const AdminInnovationPackDocument = gql`
   query AdminInnovationPack($innovationPackId: UUID!) {
     lookup {
@@ -12239,66 +12178,6 @@ export function refetchCommunityVirtualMembersListQuery(
   return { query: CommunityVirtualMembersListDocument, variables: variables };
 }
 
-export const OrganizationUrlResolverDocument = gql`
-  query OrganizationUrlResolver($nameId: NameID!) {
-    lookupByName {
-      organization(NAMEID: $nameId)
-    }
-  }
-`;
-
-/**
- * __useOrganizationUrlResolverQuery__
- *
- * To run a query within a React component, call `useOrganizationUrlResolverQuery` and pass it any options that fit your needs.
- * When your component renders, `useOrganizationUrlResolverQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOrganizationUrlResolverQuery({
- *   variables: {
- *      nameId: // value for 'nameId'
- *   },
- * });
- */
-export function useOrganizationUrlResolverQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OrganizationUrlResolverQuery,
-    SchemaTypes.OrganizationUrlResolverQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OrganizationUrlResolverQuery, SchemaTypes.OrganizationUrlResolverQueryVariables>(
-    OrganizationUrlResolverDocument,
-    options
-  );
-}
-
-export function useOrganizationUrlResolverLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OrganizationUrlResolverQuery,
-    SchemaTypes.OrganizationUrlResolverQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.OrganizationUrlResolverQuery,
-    SchemaTypes.OrganizationUrlResolverQueryVariables
-  >(OrganizationUrlResolverDocument, options);
-}
-
-export type OrganizationUrlResolverQueryHookResult = ReturnType<typeof useOrganizationUrlResolverQuery>;
-export type OrganizationUrlResolverLazyQueryHookResult = ReturnType<typeof useOrganizationUrlResolverLazyQuery>;
-export type OrganizationUrlResolverQueryResult = Apollo.QueryResult<
-  SchemaTypes.OrganizationUrlResolverQuery,
-  SchemaTypes.OrganizationUrlResolverQueryVariables
->;
-export function refetchOrganizationUrlResolverQuery(variables: SchemaTypes.OrganizationUrlResolverQueryVariables) {
-  return { query: OrganizationUrlResolverDocument, variables: variables };
-}
-
 export const OrganizationAccountDocument = gql`
   query OrganizationAccount($organizationId: UUID!) {
     lookup {
@@ -14261,70 +14140,6 @@ export type UserSettingsQueryResult = Apollo.QueryResult<
 >;
 export function refetchUserSettingsQuery(variables: SchemaTypes.UserSettingsQueryVariables) {
   return { query: UserSettingsDocument, variables: variables };
-}
-
-export const VirtualContributorUrlResolverDocument = gql`
-  query VirtualContributorUrlResolver($nameId: NameID!) {
-    lookupByName {
-      virtualContributor(NAMEID: $nameId)
-    }
-  }
-`;
-
-/**
- * __useVirtualContributorUrlResolverQuery__
- *
- * To run a query within a React component, call `useVirtualContributorUrlResolverQuery` and pass it any options that fit your needs.
- * When your component renders, `useVirtualContributorUrlResolverQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useVirtualContributorUrlResolverQuery({
- *   variables: {
- *      nameId: // value for 'nameId'
- *   },
- * });
- */
-export function useVirtualContributorUrlResolverQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.VirtualContributorUrlResolverQuery,
-    SchemaTypes.VirtualContributorUrlResolverQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.VirtualContributorUrlResolverQuery,
-    SchemaTypes.VirtualContributorUrlResolverQueryVariables
-  >(VirtualContributorUrlResolverDocument, options);
-}
-
-export function useVirtualContributorUrlResolverLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.VirtualContributorUrlResolverQuery,
-    SchemaTypes.VirtualContributorUrlResolverQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.VirtualContributorUrlResolverQuery,
-    SchemaTypes.VirtualContributorUrlResolverQueryVariables
-  >(VirtualContributorUrlResolverDocument, options);
-}
-
-export type VirtualContributorUrlResolverQueryHookResult = ReturnType<typeof useVirtualContributorUrlResolverQuery>;
-export type VirtualContributorUrlResolverLazyQueryHookResult = ReturnType<
-  typeof useVirtualContributorUrlResolverLazyQuery
->;
-export type VirtualContributorUrlResolverQueryResult = Apollo.QueryResult<
-  SchemaTypes.VirtualContributorUrlResolverQuery,
-  SchemaTypes.VirtualContributorUrlResolverQueryVariables
->;
-export function refetchVirtualContributorUrlResolverQuery(
-  variables: SchemaTypes.VirtualContributorUrlResolverQueryVariables
-) {
-  return { query: VirtualContributorUrlResolverDocument, variables: variables };
 }
 
 export const VirtualContributorDocument = gql`
@@ -21622,67 +21437,6 @@ export function refetchTemplateNameQuery(variables: SchemaTypes.TemplateNameQuer
   return { query: TemplateNameDocument, variables: variables };
 }
 
-export const TemplateUrlResolverDocument = gql`
-  query TemplateUrlResolver($templatesSetId: UUID!, $templateNameId: NameID!) {
-    lookupByName {
-      template(templatesSetID: $templatesSetId, NAMEID: $templateNameId)
-    }
-  }
-`;
-
-/**
- * __useTemplateUrlResolverQuery__
- *
- * To run a query within a React component, call `useTemplateUrlResolverQuery` and pass it any options that fit your needs.
- * When your component renders, `useTemplateUrlResolverQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useTemplateUrlResolverQuery({
- *   variables: {
- *      templatesSetId: // value for 'templatesSetId'
- *      templateNameId: // value for 'templateNameId'
- *   },
- * });
- */
-export function useTemplateUrlResolverQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.TemplateUrlResolverQuery,
-    SchemaTypes.TemplateUrlResolverQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.TemplateUrlResolverQuery, SchemaTypes.TemplateUrlResolverQueryVariables>(
-    TemplateUrlResolverDocument,
-    options
-  );
-}
-
-export function useTemplateUrlResolverLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.TemplateUrlResolverQuery,
-    SchemaTypes.TemplateUrlResolverQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.TemplateUrlResolverQuery, SchemaTypes.TemplateUrlResolverQueryVariables>(
-    TemplateUrlResolverDocument,
-    options
-  );
-}
-
-export type TemplateUrlResolverQueryHookResult = ReturnType<typeof useTemplateUrlResolverQuery>;
-export type TemplateUrlResolverLazyQueryHookResult = ReturnType<typeof useTemplateUrlResolverLazyQuery>;
-export type TemplateUrlResolverQueryResult = Apollo.QueryResult<
-  SchemaTypes.TemplateUrlResolverQuery,
-  SchemaTypes.TemplateUrlResolverQueryVariables
->;
-export function refetchTemplateUrlResolverQuery(variables: SchemaTypes.TemplateUrlResolverQueryVariables) {
-  return { query: TemplateUrlResolverDocument, variables: variables };
-}
-
 export const UpdateTemplateDefaultDocument = gql`
   mutation updateTemplateDefault($templateDefaultID: UUID!, $templateID: UUID!) {
     updateTemplateDefault(templateDefaultData: { templateDefaultID: $templateDefaultID, templateID: $templateID }) {
@@ -25062,4 +24816,439 @@ export type SpaceExplorerWelcomeSpaceQueryResult = Apollo.QueryResult<
 >;
 export function refetchSpaceExplorerWelcomeSpaceQuery(variables: SchemaTypes.SpaceExplorerWelcomeSpaceQueryVariables) {
   return { query: SpaceExplorerWelcomeSpaceDocument, variables: variables };
+}
+
+export const SpaceUrlResolverDocument = gql`
+  query SpaceUrlResolver($nameId: NameID!) {
+    lookupByName {
+      space(NAMEID: $nameId)
+    }
+  }
+`;
+
+/**
+ * __useSpaceUrlResolverQuery__
+ *
+ * To run a query within a React component, call `useSpaceUrlResolverQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceUrlResolverQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceUrlResolverQuery({
+ *   variables: {
+ *      nameId: // value for 'nameId'
+ *   },
+ * });
+ */
+export function useSpaceUrlResolverQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SpaceUrlResolverQuery, SchemaTypes.SpaceUrlResolverQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceUrlResolverQuery, SchemaTypes.SpaceUrlResolverQueryVariables>(
+    SpaceUrlResolverDocument,
+    options
+  );
+}
+
+export function useSpaceUrlResolverLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceUrlResolverQuery,
+    SchemaTypes.SpaceUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SpaceUrlResolverQuery, SchemaTypes.SpaceUrlResolverQueryVariables>(
+    SpaceUrlResolverDocument,
+    options
+  );
+}
+
+export type SpaceUrlResolverQueryHookResult = ReturnType<typeof useSpaceUrlResolverQuery>;
+export type SpaceUrlResolverLazyQueryHookResult = ReturnType<typeof useSpaceUrlResolverLazyQuery>;
+export type SpaceUrlResolverQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceUrlResolverQuery,
+  SchemaTypes.SpaceUrlResolverQueryVariables
+>;
+export function refetchSpaceUrlResolverQuery(variables: SchemaTypes.SpaceUrlResolverQueryVariables) {
+  return { query: SpaceUrlResolverDocument, variables: variables };
+}
+
+export const OrganizationUrlResolverDocument = gql`
+  query OrganizationUrlResolver($nameId: NameID!) {
+    lookupByName {
+      organization(NAMEID: $nameId)
+    }
+  }
+`;
+
+/**
+ * __useOrganizationUrlResolverQuery__
+ *
+ * To run a query within a React component, call `useOrganizationUrlResolverQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationUrlResolverQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationUrlResolverQuery({
+ *   variables: {
+ *      nameId: // value for 'nameId'
+ *   },
+ * });
+ */
+export function useOrganizationUrlResolverQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OrganizationUrlResolverQuery,
+    SchemaTypes.OrganizationUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OrganizationUrlResolverQuery, SchemaTypes.OrganizationUrlResolverQueryVariables>(
+    OrganizationUrlResolverDocument,
+    options
+  );
+}
+
+export function useOrganizationUrlResolverLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrganizationUrlResolverQuery,
+    SchemaTypes.OrganizationUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OrganizationUrlResolverQuery,
+    SchemaTypes.OrganizationUrlResolverQueryVariables
+  >(OrganizationUrlResolverDocument, options);
+}
+
+export type OrganizationUrlResolverQueryHookResult = ReturnType<typeof useOrganizationUrlResolverQuery>;
+export type OrganizationUrlResolverLazyQueryHookResult = ReturnType<typeof useOrganizationUrlResolverLazyQuery>;
+export type OrganizationUrlResolverQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrganizationUrlResolverQuery,
+  SchemaTypes.OrganizationUrlResolverQueryVariables
+>;
+export function refetchOrganizationUrlResolverQuery(variables: SchemaTypes.OrganizationUrlResolverQueryVariables) {
+  return { query: OrganizationUrlResolverDocument, variables: variables };
+}
+
+export const VirtualContributorUrlResolverDocument = gql`
+  query VirtualContributorUrlResolver($nameId: NameID!) {
+    lookupByName {
+      virtualContributor(NAMEID: $nameId)
+    }
+  }
+`;
+
+/**
+ * __useVirtualContributorUrlResolverQuery__
+ *
+ * To run a query within a React component, call `useVirtualContributorUrlResolverQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVirtualContributorUrlResolverQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVirtualContributorUrlResolverQuery({
+ *   variables: {
+ *      nameId: // value for 'nameId'
+ *   },
+ * });
+ */
+export function useVirtualContributorUrlResolverQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.VirtualContributorUrlResolverQuery,
+    SchemaTypes.VirtualContributorUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.VirtualContributorUrlResolverQuery,
+    SchemaTypes.VirtualContributorUrlResolverQueryVariables
+  >(VirtualContributorUrlResolverDocument, options);
+}
+
+export function useVirtualContributorUrlResolverLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VirtualContributorUrlResolverQuery,
+    SchemaTypes.VirtualContributorUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.VirtualContributorUrlResolverQuery,
+    SchemaTypes.VirtualContributorUrlResolverQueryVariables
+  >(VirtualContributorUrlResolverDocument, options);
+}
+
+export type VirtualContributorUrlResolverQueryHookResult = ReturnType<typeof useVirtualContributorUrlResolverQuery>;
+export type VirtualContributorUrlResolverLazyQueryHookResult = ReturnType<
+  typeof useVirtualContributorUrlResolverLazyQuery
+>;
+export type VirtualContributorUrlResolverQueryResult = Apollo.QueryResult<
+  SchemaTypes.VirtualContributorUrlResolverQuery,
+  SchemaTypes.VirtualContributorUrlResolverQueryVariables
+>;
+export function refetchVirtualContributorUrlResolverQuery(
+  variables: SchemaTypes.VirtualContributorUrlResolverQueryVariables
+) {
+  return { query: VirtualContributorUrlResolverDocument, variables: variables };
+}
+
+export const InnovationPackUrlResolverDocument = gql`
+  query InnovationPackUrlResolver($innovationPackNameId: NameID!) {
+    lookupByName {
+      innovationPack(NAMEID: $innovationPackNameId)
+    }
+  }
+`;
+
+/**
+ * __useInnovationPackUrlResolverQuery__
+ *
+ * To run a query within a React component, call `useInnovationPackUrlResolverQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationPackUrlResolverQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationPackUrlResolverQuery({
+ *   variables: {
+ *      innovationPackNameId: // value for 'innovationPackNameId'
+ *   },
+ * });
+ */
+export function useInnovationPackUrlResolverQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationPackUrlResolverQuery,
+    SchemaTypes.InnovationPackUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.InnovationPackUrlResolverQuery,
+    SchemaTypes.InnovationPackUrlResolverQueryVariables
+  >(InnovationPackUrlResolverDocument, options);
+}
+
+export function useInnovationPackUrlResolverLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationPackUrlResolverQuery,
+    SchemaTypes.InnovationPackUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationPackUrlResolverQuery,
+    SchemaTypes.InnovationPackUrlResolverQueryVariables
+  >(InnovationPackUrlResolverDocument, options);
+}
+
+export type InnovationPackUrlResolverQueryHookResult = ReturnType<typeof useInnovationPackUrlResolverQuery>;
+export type InnovationPackUrlResolverLazyQueryHookResult = ReturnType<typeof useInnovationPackUrlResolverLazyQuery>;
+export type InnovationPackUrlResolverQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationPackUrlResolverQuery,
+  SchemaTypes.InnovationPackUrlResolverQueryVariables
+>;
+export function refetchInnovationPackUrlResolverQuery(variables: SchemaTypes.InnovationPackUrlResolverQueryVariables) {
+  return { query: InnovationPackUrlResolverDocument, variables: variables };
+}
+
+export const TemplatesSetUrlResolverDocument = gql`
+  query TemplatesSetUrlResolver(
+    $spaceId: UUID!
+    $includeSpace: Boolean = false
+    $innovationPackId: UUID!
+    $includeInnovationPack: Boolean = false
+  ) {
+    lookup {
+      space(ID: $spaceId) @include(if: $includeSpace) {
+        templatesManager {
+          templatesSet {
+            id
+          }
+        }
+      }
+      innovationPack(ID: $innovationPackId) @include(if: $includeInnovationPack) {
+        templatesSet {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useTemplatesSetUrlResolverQuery__
+ *
+ * To run a query within a React component, call `useTemplatesSetUrlResolverQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTemplatesSetUrlResolverQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTemplatesSetUrlResolverQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *      includeSpace: // value for 'includeSpace'
+ *      innovationPackId: // value for 'innovationPackId'
+ *      includeInnovationPack: // value for 'includeInnovationPack'
+ *   },
+ * });
+ */
+export function useTemplatesSetUrlResolverQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.TemplatesSetUrlResolverQuery,
+    SchemaTypes.TemplatesSetUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.TemplatesSetUrlResolverQuery, SchemaTypes.TemplatesSetUrlResolverQueryVariables>(
+    TemplatesSetUrlResolverDocument,
+    options
+  );
+}
+
+export function useTemplatesSetUrlResolverLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.TemplatesSetUrlResolverQuery,
+    SchemaTypes.TemplatesSetUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.TemplatesSetUrlResolverQuery,
+    SchemaTypes.TemplatesSetUrlResolverQueryVariables
+  >(TemplatesSetUrlResolverDocument, options);
+}
+
+export type TemplatesSetUrlResolverQueryHookResult = ReturnType<typeof useTemplatesSetUrlResolverQuery>;
+export type TemplatesSetUrlResolverLazyQueryHookResult = ReturnType<typeof useTemplatesSetUrlResolverLazyQuery>;
+export type TemplatesSetUrlResolverQueryResult = Apollo.QueryResult<
+  SchemaTypes.TemplatesSetUrlResolverQuery,
+  SchemaTypes.TemplatesSetUrlResolverQueryVariables
+>;
+export function refetchTemplatesSetUrlResolverQuery(variables: SchemaTypes.TemplatesSetUrlResolverQueryVariables) {
+  return { query: TemplatesSetUrlResolverDocument, variables: variables };
+}
+
+export const TemplateUrlResolverDocument = gql`
+  query TemplateUrlResolver($templatesSetId: UUID!, $templateNameId: NameID!) {
+    lookupByName {
+      template(templatesSetID: $templatesSetId, NAMEID: $templateNameId)
+    }
+  }
+`;
+
+/**
+ * __useTemplateUrlResolverQuery__
+ *
+ * To run a query within a React component, call `useTemplateUrlResolverQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTemplateUrlResolverQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTemplateUrlResolverQuery({
+ *   variables: {
+ *      templatesSetId: // value for 'templatesSetId'
+ *      templateNameId: // value for 'templateNameId'
+ *   },
+ * });
+ */
+export function useTemplateUrlResolverQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.TemplateUrlResolverQuery,
+    SchemaTypes.TemplateUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.TemplateUrlResolverQuery, SchemaTypes.TemplateUrlResolverQueryVariables>(
+    TemplateUrlResolverDocument,
+    options
+  );
+}
+
+export function useTemplateUrlResolverLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.TemplateUrlResolverQuery,
+    SchemaTypes.TemplateUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.TemplateUrlResolverQuery, SchemaTypes.TemplateUrlResolverQueryVariables>(
+    TemplateUrlResolverDocument,
+    options
+  );
+}
+
+export type TemplateUrlResolverQueryHookResult = ReturnType<typeof useTemplateUrlResolverQuery>;
+export type TemplateUrlResolverLazyQueryHookResult = ReturnType<typeof useTemplateUrlResolverLazyQuery>;
+export type TemplateUrlResolverQueryResult = Apollo.QueryResult<
+  SchemaTypes.TemplateUrlResolverQuery,
+  SchemaTypes.TemplateUrlResolverQueryVariables
+>;
+export function refetchTemplateUrlResolverQuery(variables: SchemaTypes.TemplateUrlResolverQueryVariables) {
+  return { query: TemplateUrlResolverDocument, variables: variables };
+}
+
+export const UserUrlResolverDocument = gql`
+  query UserUrlResolver($nameId: NameID!) {
+    lookupByName {
+      user(NAMEID: $nameId)
+    }
+  }
+`;
+
+/**
+ * __useUserUrlResolverQuery__
+ *
+ * To run a query within a React component, call `useUserUrlResolverQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserUrlResolverQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserUrlResolverQuery({
+ *   variables: {
+ *      nameId: // value for 'nameId'
+ *   },
+ * });
+ */
+export function useUserUrlResolverQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserUrlResolverQuery, SchemaTypes.UserUrlResolverQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserUrlResolverQuery, SchemaTypes.UserUrlResolverQueryVariables>(
+    UserUrlResolverDocument,
+    options
+  );
+}
+
+export function useUserUrlResolverLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserUrlResolverQuery, SchemaTypes.UserUrlResolverQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserUrlResolverQuery, SchemaTypes.UserUrlResolverQueryVariables>(
+    UserUrlResolverDocument,
+    options
+  );
+}
+
+export type UserUrlResolverQueryHookResult = ReturnType<typeof useUserUrlResolverQuery>;
+export type UserUrlResolverLazyQueryHookResult = ReturnType<typeof useUserUrlResolverLazyQuery>;
+export type UserUrlResolverQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserUrlResolverQuery,
+  SchemaTypes.UserUrlResolverQueryVariables
+>;
+export function refetchUserUrlResolverQuery(variables: SchemaTypes.UserUrlResolverQueryVariables) {
+  return { query: UserUrlResolverDocument, variables: variables };
 }

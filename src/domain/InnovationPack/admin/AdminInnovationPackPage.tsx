@@ -1,11 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import {
-  useAdminInnovationPackQuery,
-  useInnovationPackResolveIdQuery,
-  useTemplateUrlResolverQuery,
-  useUpdateInnovationPackMutation,
-} from '@/core/apollo/generated/apollo-hooks';
-import { useUrlParams } from '@/core/routing/useUrlParams';
+import { useAdminInnovationPackQuery, useUpdateInnovationPackMutation } from '@/core/apollo/generated/apollo-hooks';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
@@ -45,35 +40,15 @@ const TemplateTypePermissions = {
 const AdminInnovationPackPage = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { innovationPackNameId, templateNameId } = useUrlParams();
 
-  if (!innovationPackNameId) {
-    throw new Error('Must be within Template Pack');
-  }
-
-  const { data: innovationPackResolverData, loading: resolvingInnovationPack } = useInnovationPackResolveIdQuery({
-    variables: { innovationPackNameId },
-    skip: !innovationPackNameId,
-  });
-
-  const innovationPackId = innovationPackResolverData?.lookupByName.innovationPack;
-  if (innovationPackNameId && !resolvingInnovationPack && !innovationPackId) {
-    throw new Error('Template pack not found.');
-  }
+  const { innovationPackId, templateId, loading: resolvingUrl } = useUrlResolver();
 
   const { data, loading: loadingInnovationPack } = useAdminInnovationPackQuery({
     variables: { innovationPackId: innovationPackId! },
     skip: !innovationPackId,
   });
-
   const innovationPack = data?.lookup.innovationPack;
   const templatesSetId = innovationPack?.templatesSet?.id;
-
-  const { data: templateResolverData, loading: resolvingTemplate } = useTemplateUrlResolverQuery({
-    variables: { templatesSetId: templatesSetId!, templateNameId: templateNameId! },
-    skip: !templatesSetId || !templateNameId,
-  });
-  const selectedTemplateId = templateResolverData?.lookupByName.template;
 
   const [updateInnovationPack, { loading: updatingProfile }] = useUpdateInnovationPackMutation();
 
@@ -107,12 +82,12 @@ const AdminInnovationPackPage = () => {
     }
   };
 
-  const loading = resolvingInnovationPack || resolvingTemplate || loadingInnovationPack;
+  const loading = resolvingUrl || loadingInnovationPack;
 
   return (
     <InnovationPackProfileLayout innovationPack={innovationPack} loading={loading} showSettings settings>
       {loading && <Loading />}
-      {innovationPackId && !loading && templatesSetId && (
+      {innovationPack && !loading && templatesSetId && (
         <>
           <StorageConfigContextProvider locationType="innovationPack" innovationPackId={innovationPackId}>
             <PageContent>
@@ -130,7 +105,7 @@ const AdminInnovationPackPage = () => {
                 </PageContentBlock>
                 <TemplatesAdmin
                   templatesSetId={templatesSetId}
-                  templateId={selectedTemplateId}
+                  templateId={templateId}
                   baseUrl={buildInnovationPackSettingsUrl(innovationPack.profile.url)}
                   alwaysEditTemplate // When editing an Template pack, we don't want to see template preview, just go to Edit mode always
                   canCreateTemplates={templateType => TemplateTypePermissions.create.includes(templateType)}

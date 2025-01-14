@@ -1,28 +1,19 @@
-import { useVirtualContributorQuery, useVirtualContributorUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
-import { useUrlParams } from '@/core/routing/useUrlParams';
+import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
 import ProfilePageBanner from '@/domain/common/profile/ProfilePageBanner';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { buildSettingsProfileUrl } from '@/main/routing/urlBuilders';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 const VCPageBanner = () => {
-  const { vcNameId = '' } = useUrlParams();
-  const {
-    data: urlResolverData
-  } = useVirtualContributorUrlResolverQuery({
-    variables: { nameId: vcNameId },
-    skip: !vcNameId,
-  });
-  const vcId = urlResolverData?.lookupByName.virtualContributor;
+  const { vcId } = useUrlResolver();
 
   const { data, loading } = useVirtualContributorQuery({
     variables: { id: vcId! },
-    skip: !vcId
+    skip: !vcId,
   });
   const vc = data?.lookup.virtualContributor;
   const profile = vc?.profile;
-  const hasSettingsAccess = vc?.authorization?.myPrivileges?.includes(
-    AuthorizationPrivilege.Update
-  );
+  const hasSettingsAccess = vc?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
 
   return (
     <ProfilePageBanner

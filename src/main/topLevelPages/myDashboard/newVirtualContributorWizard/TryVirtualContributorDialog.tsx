@@ -25,12 +25,12 @@ import {
   useCalloutDetailsQuery,
   useDeleteCalloutMutation,
   useVirtualContributorQuery,
-  useVirtualContributorUrlResolverQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { TypedCalloutDetails } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import { Actions } from '@/core/ui/actions/Actions';
 import { removeVCCreationCache } from './vcCreationUtil';
 import { useSubscribeOnVirtualContributorEvents } from '@/domain/community/virtualContributor/useSubscribeOnVirtualContributorEvents';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 interface TryVirtualContributorDialogProps {
   spaceId: string;
@@ -143,13 +143,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     }
   };
 
-  const { data: vcIdData } = useVirtualContributorUrlResolverQuery({
-    variables: {
-      nameId: vcNameId,
-    },
-    skip: !vcNameId,
-  });
-  const vcId = vcIdData?.lookupByName.virtualContributor;
+  const { vcId, loading: resolvingVc } = useUrlResolver({ vcNameId });
 
   const {
     data: vcData,
@@ -182,11 +176,13 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     return null;
   }
 
+  const loading = resolvingVc || vcDataLoading;
+
   return (
     <DialogWithGrid open={open} onClose={handleClose} columns={8}>
       <DialogHeader title={t('createVirtualContributorWizard.trySection.title')} onClose={handleClose} />
       <DialogContent>
-        {vcDataLoading && demoCalloutCreationLoading && isCalloutLoading ? (
+        {loading && demoCalloutCreationLoading && isCalloutLoading ? (
           <Loading />
         ) : (
           <Gutters disablePadding>

@@ -1,10 +1,8 @@
 import Loading from '@/core/ui/loading/Loading';
-import { useUrlParams } from '@/core/routing/useUrlParams';
 import {
   useBodyOfKnowledgeProfileQuery,
   useUpdateVirtualContributorMutation,
   useVirtualContributorQuery,
-  useVirtualContributorUrlResolverQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import VirtualContributorForm from './VirtualContributorForm';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
@@ -16,19 +14,12 @@ import { useTranslation } from 'react-i18next';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 import VCSettingsPageLayout from '../layout/VCSettingsPageLayout';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 export const VCSettingsPage = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-
-  const { vcNameId } = useUrlParams();
-  const {
-    data: urlResolveData
-  } = useVirtualContributorUrlResolverQuery({
-    variables: { nameId: vcNameId! },
-    skip: !vcNameId,
-  });
-  const vcId = urlResolveData?.lookupByName.virtualContributor;
+  const { vcId } = useUrlResolver();
 
   const { data, loading } = useVirtualContributorQuery({
     variables: {
@@ -75,7 +66,10 @@ export const VCSettingsPage = () => {
   }
 
   return (
-    <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={data.lookup.virtualContributor?.id}>
+    <StorageConfigContextProvider
+      locationType="virtualContributor"
+      virtualContributorId={data.lookup.virtualContributor?.id}
+    >
       <VCSettingsPageLayout currentTab={SettingsSection.MyProfile}>
         <PageContent background="background.paper">
           <PageContentColumn columns={12}>
