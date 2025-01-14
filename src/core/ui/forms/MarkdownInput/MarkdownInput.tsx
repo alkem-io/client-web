@@ -108,75 +108,94 @@ export const MarkdownInput = memo(
         },
       });
 
+      const isImageOrHtmlWithImage = (item: DataTransferItem, clipboardData: DataTransfer | null) => {
+        if (item.kind === 'file' && item.type.startsWith('image/')) {
+          return true; // Image
+        }
+
+        if (item.kind === 'string' && item.type === 'text/html') {
+          const htmlContent = clipboardData?.getData('text/html');
+          return htmlContent?.includes('<img') ?? false; // HTML tag with image
+        }
+
+        return false; // Not an image or HTML with images
+      };
+
       const storageConfig = useStorageConfigContext();
 
       const editorOptions: Partial<EditorOptions> = useMemo(
         () => ({
           extensions: [StarterKit, ImageExtension, Link, Highlight, Iframe],
           editorProps: {
-            handlePaste: (_view: EditorView, event: ClipboardEvent) => {
+            /**
+             * Handles the paste event in the editor.
+             *
+             * @param _view - The editor view instance.
+             * @param event - The clipboard event triggered by pasting.
+             * @returns {boolean} - Returns true if the paste event is handled, otherwise false - continue execution of the default.
+             */
+            handlePaste: (_view: EditorView, event: ClipboardEvent): boolean => {
               const clipboardData = event.clipboardData;
               const items = clipboardData?.items;
 
               if (!items) {
-                return false; // Allow default behavior if no items are found.
+                return false;
               }
 
               const storageBucketId = storageConfig?.storageBucketId;
 
               if (!storageBucketId) {
-                return false; // Stop custom handling if storageBucketId is missing.
+                return false;
               }
 
               let imageProcessed = false;
 
               for (const item of items) {
-                // Handle images first
-                if (!imageProcessed && item.kind === 'file' && item.type.startsWith('image/')) {
-                  const file = item.getAsFile();
+                const isImage = isImageOrHtmlWithImage(item, clipboardData);
 
-                  if (file) {
-                    const reader = new FileReader();
+                if (hideImageOptions && isImage) {
+                  event.preventDefault();
 
-                    reader.onload = () => {
-                      uploadFile({
-                        variables: {
-                          file,
-                          uploadData: {
-                            storageBucketId,
-                            temporaryLocation,
+                  return true; // Block paste of images or HTML with images
+                }
+
+                if (!imageProcessed && isImage) {
+                  if (item.kind === 'file' && item.type.startsWith('image/')) {
+                    const file = item.getAsFile();
+
+                    if (file) {
+                      const reader = new FileReader();
+
+                      reader.onload = () => {
+                        uploadFile({
+                          variables: {
+                            file,
+                            uploadData: { storageBucketId, temporaryLocation },
                           },
-                        },
-                      });
-                    };
+                        });
+                      };
 
-                    reader.readAsDataURL(file);
-                    imageProcessed = true;
+                      reader.readAsDataURL(file);
+                      imageProcessed = true;
+                    }
+                  } else if (item.kind === 'string' && item.type === 'text/html') {
+                    imageProcessed = true; // HTML with images
                   }
                 }
 
-                // Check for HTML content containing <img> tags
-                if (!imageProcessed && item.kind === 'string' && item.type === 'text/html') {
-                  const htmlContent = clipboardData.getData('text/html');
-
-                  if (htmlContent.includes('<img')) {
-                    imageProcessed = true; // Mark as processed to avoid duplicates.
-                  }
-                }
-
-                // Break the loop once an image or relevant HTML is handled.
                 if (imageProcessed) {
+                  // Stop if we have already processed an image
                   break;
                 }
               }
 
-              // Prevent default behavior only if we processed an image or relevant HTML.
               if (imageProcessed) {
                 event.preventDefault();
-                return true; // Block default behavior in the editor.
+
+                return true; // Block default behavior for images
               }
 
-              return false; // Allow default behavior for non-image content.
+              return false; // Allow default behavior for text
             },
           },
         }),
