@@ -278,6 +278,10 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     parentRoleSetIds: string[] = [],
     spaceId: string | undefined
   ) => {
+    if (!spaceId) {
+      return false;
+    }
+
     if (parentRoleSetIds.length > 0) {
       // the VC cannot be added to the BoK community
       // if it's not part of the parent communities
@@ -292,31 +296,31 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       }
     }
 
-    if (spaceId) {
-      const communityData = await getSpaceCommunity({
-        variables: {
-          spaceId,
-        },
-      });
+    const communityData = await getSpaceCommunity({
+      variables: {
+        spaceId,
+      },
+    });
 
-      const roleSetId = communityData.data?.lookup.space?.community.roleSet.id;
-      if (!roleSetId) {
-        return false;
-      }
-
-      const addToCommunityResult = await addVirtualContributorToRole({
-        variables: {
-          roleSetId,
-          contributorId: virtualContributorId,
-          role: CommunityRoleType.Member,
-        },
-      });
-
-      return Boolean(addToCommunityResult.data?.assignRoleToVirtualContributor?.id);
-    } else {
-      console.error('Unable to find selected spaceId');
-      handleCloseWizard();
+    const roleSetId = communityData.data?.lookup.space?.community.roleSet.id;
+    if (!roleSetId) {
+      return false;
     }
+
+    const addToCommunityResult = await addVirtualContributorToRole({
+      variables: {
+        roleSetId,
+        contributorId: virtualContributorId,
+        role: CommunityRoleType.Member,
+      },
+    });
+
+    return Boolean(addToCommunityResult.data?.assignRoleToVirtualContributor?.id);
+  };
+
+  const notifyErrorOnAddToCommunity = () => {
+    // No need to spam the user with error messages, the VC was created successfully
+    console.log('Try your VC flow was skipped. Unable to add to community.');
   };
 
   // post creation navigation
@@ -437,7 +441,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       addVCCreationCache(createdVC?.nameID);
       await navigateToTryYourVC(undefined, spaceId);
     } else {
-      console.error('Failed to add VC to community');
+      notifyErrorOnAddToCommunity();
       handleCloseWizard();
     }
   };
@@ -466,6 +470,9 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       if (addToCommunity) {
         addVCCreationCache(createdVC?.nameID);
         await navigateToTryYourVC(selectedKnowledge.url, undefined);
+      } else {
+        notifyErrorOnAddToCommunity();
+        handleCloseWizard();
       }
     }
   };
@@ -497,13 +504,13 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   };
 
   const NewVirtualContributorWizard = useCallback(() => {
-    if (!(targetAccount || data?.me.user?.account)) {
+    if (!myAccountId) {
       return null;
     }
 
     return (
       <DialogWithGrid open={dialogOpen} columns={6}>
-        {/* TODO: instead of user here should be account */}
+        {/* TODO: StorageConfig, instead of user here should be account */}
         <StorageConfigContextProvider userId={user?.user.id ?? ''} locationType="user">
           {step === 'initial' && (
             <CreateNewVirtualContributor
@@ -550,7 +557,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         </StorageConfigContextProvider>
       </DialogWithGrid>
     );
-  }, [dialogOpen, step, loading, selectedExistingSpaceId, targetAccount, data, myAccountId, getSelectableSpaces]);
+  }, [dialogOpen, step, loading, selectedExistingSpaceId, myAccountId, getSelectableSpaces]);
 
   return {
     startWizard,

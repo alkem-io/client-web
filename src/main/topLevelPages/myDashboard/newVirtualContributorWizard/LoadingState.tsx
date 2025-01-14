@@ -9,10 +9,9 @@ import CancelDialog from './CancelDialog';
 
 type LoadingStateProps = {
   onClose: () => void;
-  entity?: string;
 };
 
-const LoadingState = ({ onClose, entity = 'space' }: LoadingStateProps) => {
+const LoadingState = ({ onClose }: LoadingStateProps) => {
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -20,21 +19,12 @@ const LoadingState = ({ onClose, entity = 'space' }: LoadingStateProps) => {
     setDialogOpen(true);
   };
 
-  const getTranslationBasedOnEntity = (entity: string) => {
-    switch (entity) {
-      case 'subspace':
-        return t('createVirtualContributorWizard.loadingInfo.subspaceCreation');
-      default:
-        return t('createVirtualContributorWizard.loadingInfo.vcSpaceCreation');
-    }
-  };
-
   return (
     <>
       <DialogHeader onClose={onCancel} />
       <Loading text="" />
       <Gutters padding={gutters(2)} textAlign="center">
-        <Caption>{getTranslationBasedOnEntity(entity)}</Caption>
+        <Caption>{t('createVirtualContributorWizard.loadingInfo.vcSpaceCreation')}</Caption>
       </Gutters>
       <CancelDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onConfirm={onClose} />
     </>
