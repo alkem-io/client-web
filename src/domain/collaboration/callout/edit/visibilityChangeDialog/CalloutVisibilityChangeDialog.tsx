@@ -4,7 +4,6 @@ import { Box } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import Button from '@mui/material/Button';
 import { LoadingButton } from '@mui/lab';
-import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
 import { DialogContent } from '@/core/ui/dialog/deprecated';
 import { CalloutType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { Formik } from 'formik';
@@ -68,9 +67,9 @@ const CalloutVisibilityChangeDialog = ({
       <Formik initialValues={initialValues} enableReinitialize validateOnMount onSubmit={handleVisibilityChanged}>
         {({ handleSubmit }) => (
           <>
-            <DialogHeader icon={<CalloutIcon />} title={title} onClose={onClose} />
+            <DialogHeader title={title} onClose={onClose} />
             <DialogContent>
-              <Gutters paddingTop={0}>
+              <Gutters disablePadding>
                 <Box>
                   <BlockTitle>{t('common.title')}</BlockTitle>
                   <Text>{callout?.framing.profile.displayName}</Text>

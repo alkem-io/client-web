@@ -5,9 +5,9 @@ import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import { ContributeCreationBlock } from '@/domain/journey/common/tabs/Contribute/ContributeCreationBlock';
 import MembershipBackdrop from '@/domain/shared/components/Backdrops/MembershipBackdrop';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
-import CalloutsGroupView from '../callout/CalloutsInContext/CalloutsGroupView';
+import CalloutsGroupView from '../calloutsSet/CalloutsInContext/CalloutsGroupView';
 import CalloutCreationDialog from '../callout/creationDialog/CalloutCreationDialog';
-import { useCalloutCreationWithPreviewImages } from '../callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import { useCalloutCreationWithPreviewImages } from '../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import KnowledgeBaseContainer from './KnowledgeBaseContainer';
 import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
@@ -16,7 +16,7 @@ import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import SpacePageLayout from '@/domain/journey/space/layout/SpacePageLayout';
 
 const KnowledgeBasePage = () => {
-  const { journeyId, journeyPath, collaborationId } = useRouteResolver();
+  const { journeyPath, collaborationId, calloutsSetId } = useRouteResolver();
 
   const { t } = useTranslation();
 
@@ -26,7 +26,7 @@ const KnowledgeBasePage = () => {
     handleCreateCalloutClosed,
     handleCreateCallout,
     loading: loadingCalloutCreation,
-  } = useCalloutCreationWithPreviewImages({ collaborationId });
+  } = useCalloutCreationWithPreviewImages({ calloutsSetId });
 
   const handleCreate = () => {
     handleCreateCalloutOpened();
@@ -34,11 +34,11 @@ const KnowledgeBasePage = () => {
 
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.KnowledgeBase}>
-      <KnowledgeBaseContainer collaborationId={collaborationId} journeyTypeName="space">
+      <KnowledgeBaseContainer collaborationId={collaborationId}>
         {({
           callouts: {
             loading,
-            canReadCallout,
+            canReadCalloutsSet: canReadCallout,
             canCreateCallout,
             groupedCallouts,
             onCalloutsSortOrderUpdate,
@@ -53,7 +53,7 @@ const KnowledgeBasePage = () => {
                   <PageContentBlock>
                     <CalloutsList
                       callouts={groupedCallouts[CalloutGroupName.Knowledge]}
-                      emptyListCaption={t('pages.generic.sections.subentities.empty-list', {
+                      emptyListCaption={t('pages.generic.sections.subEntities.empty-list', {
                         entities: t('common.callouts'),
                       })}
                     />
@@ -62,8 +62,7 @@ const KnowledgeBasePage = () => {
 
                 <ContentColumn>
                   <CalloutsGroupView
-                    journeyId={journeyId}
-                    collaborationId={collaborationId}
+                    calloutsSetId={calloutsSetId}
                     callouts={groupedCallouts[CalloutGroupName.Knowledge]}
                     canCreateCallout={canCreateCallout}
                     loading={loading}

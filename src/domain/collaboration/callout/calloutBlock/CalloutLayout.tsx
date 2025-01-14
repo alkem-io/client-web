@@ -17,7 +17,7 @@ import { Ribbon } from '@/core/ui/card/Ribbon';
 import { Reference, Tagset } from '@/domain/common/profile/Profile';
 import References from '@/domain/shared/components/References/References';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
-import { WhiteboardFragmentWithCallout } from '../useCallouts/useCallouts';
+import { WhiteboardFragmentWithCallout } from '../../calloutsSet/useCallouts/useCallouts';
 import { LinkDetails } from '../links/LinkCollectionCallout';
 import CalloutHeader from './CalloutHeader';
 import CalloutClosedMarginal from './CalloutClosedMarginal';

@@ -19,12 +19,12 @@ interface CollectionItems {
 interface SortDialogProps {
   open: boolean;
   onClose: () => void;
-  collaborationId: string;
+  calloutId: string;
   contributions: CollectionItems[];
   onUpdateContributionsOrder: (contributions: CollectionItems[]) => void;
 }
 
-const SortDialog = ({ open, onClose, collaborationId, contributions, onUpdateContributionsOrder }: SortDialogProps) => {
+const SortDialog = ({ open, onClose, calloutId, contributions, onUpdateContributionsOrder }: SortDialogProps) => {
   const { t } = useTranslation();
   const [items, setItems] = useState(contributions);
   useEffect(() => {
@@ -47,7 +47,7 @@ const SortDialog = ({ open, onClose, collaborationId, contributions, onUpdateCon
       <DialogContent>
         <Paper variant="outlined">
           <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId={collaborationId}>
+            <Droppable droppableId={calloutId}>
               {provided => (
                 <Gutters ref={provided.innerRef} disableGap disablePadding {...provided.droppableProps}>
                   {items?.map((item, index) => (

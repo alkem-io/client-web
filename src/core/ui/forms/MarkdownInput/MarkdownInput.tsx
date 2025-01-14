@@ -8,8 +8,10 @@ import React, {
   useLayoutEffect,
   useRef,
   useState,
+  useMemo,
 } from 'react';
 import { Box, useTheme } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { Editor, EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { InputBaseComponentProps } from '@mui/material/InputBase/InputBase';
@@ -25,6 +27,10 @@ import { Highlight } from '@tiptap/extension-highlight';
 import { Selection } from 'prosemirror-state';
 import { EditorOptions } from '@tiptap/core';
 import { Iframe } from '../MarkdownInputControls/InsertEmbedCodeButton/Iframe';
+import { EditorView } from '@tiptap/pm/view';
+import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
+import { useNotification } from '../../notifications/useNotification';
 
 interface MarkdownInputProps extends InputBaseComponentProps {
   controlsVisible?: 'always' | 'focused';
@@ -54,10 +60,6 @@ const proseMirrorStyles = {
   '& p:last-child': { marginBottom: 0 },
   '& img': { maxWidth: '100%' },
 } as const;
-
-const editorOptions: Partial<EditorOptions> = {
-  extensions: [StarterKit, ImageExtension, Link, Highlight, Iframe],
-};
 
 export const MarkdownInput = memo(
   forwardRef<MarkdownInputRefApi, MarkdownInputProps>(
@@ -89,6 +91,116 @@ export const MarkdownInput = memo(
         const content = await markdownToHTML(value);
         setHtmlContent(String(content));
       };
+
+      const { t } = useTranslation();
+
+      const notify = useNotification();
+
+      const [uploadFile] = useUploadFileMutation({
+        onCompleted: data => {
+          notify(t('components.file-upload.file-upload-success'), 'success');
+
+          editor?.commands.setImage({ src: data.uploadFileOnStorageBucket, alt: 'pasted-image' });
+        },
+
+        onError: error => {
+          console.error(error.message);
+        },
+      });
+
+      const isImageOrHtmlWithImage = (item: DataTransferItem, clipboardData: DataTransfer | null) => {
+        if (item.kind === 'file' && item.type.startsWith('image/')) {
+          return true; // Image
+        }
+
+        if (item.kind === 'string' && item.type === 'text/html') {
+          const htmlContent = clipboardData?.getData('text/html');
+          return htmlContent?.includes('<img') ?? false; // HTML tag with image
+        }
+
+        return false; // Not an image or HTML with images
+      };
+
+      const storageConfig = useStorageConfigContext();
+
+      const editorOptions: Partial<EditorOptions> = useMemo(
+        () => ({
+          extensions: [StarterKit, ImageExtension, Link, Highlight, Iframe],
+          editorProps: {
+            /**
+             * Handles the paste event in the editor.
+             *
+             * @param _view - The editor view instance.
+             * @param event - The clipboard event triggered by pasting.
+             * @returns {boolean} - Returns true if the paste event is handled, otherwise false - continue execution of the default.
+             */
+            handlePaste: (_view: EditorView, event: ClipboardEvent): boolean => {
+              const clipboardData = event.clipboardData;
+              const items = clipboardData?.items;
+
+              if (!items) {
+                return false;
+              }
+
+              const storageBucketId = storageConfig?.storageBucketId;
+
+              if (!storageBucketId) {
+                return false;
+              }
+
+              let imageProcessed = false;
+
+              for (const item of items) {
+                const isImage = isImageOrHtmlWithImage(item, clipboardData);
+
+                if (hideImageOptions && isImage) {
+                  event.preventDefault();
+
+                  return true; // Block paste of images or HTML with images
+                }
+
+                if (!imageProcessed && isImage) {
+                  if (item.kind === 'file' && item.type.startsWith('image/')) {
+                    const file = item.getAsFile();
+
+                    if (file) {
+                      const reader = new FileReader();
+
+                      reader.onload = () => {
+                        uploadFile({
+                          variables: {
+                            file,
+                            uploadData: { storageBucketId, temporaryLocation },
+                          },
+                        });
+                      };
+
+                      reader.readAsDataURL(file);
+                      imageProcessed = true;
+                    }
+                  } else if (item.kind === 'string' && item.type === 'text/html') {
+                    imageProcessed = true; // HTML with images
+                  }
+                }
+
+                if (imageProcessed) {
+                  // Stop if we have already processed an image
+                  break;
+                }
+              }
+
+              if (imageProcessed) {
+                event.preventDefault();
+
+                return true; // Block default behavior for images
+              }
+
+              return false; // Allow default behavior for text
+            },
+          },
+        }),
+        [storageConfig, temporaryLocation, uploadFile]
+      );
 
       const editor = useEditor({ ...editorOptions, content: htmlContent }, [htmlContent]);
 
@@ -275,16 +387,10 @@ export const MarkdownInput = memo(
             onDialogClose={handleDialogClose}
             temporaryLocation={temporaryLocation}
           />
-          <Box
-            width="100%"
-            maxHeight="50vh"
-            sx={{
-              overflowY: 'auto',
-              '.ProseMirror': proseMirrorStyles,
-            }}
-          >
+          <Box width="100%" maxHeight="50vh" sx={{ overflowY: 'auto', '.ProseMirror': proseMirrorStyles }}>
             <Box position="relative" style={{ minHeight: prevEditorHeight }}>
               <EditorContent editor={editor} />
+
               <CharacterCountContainer>
                 {({ characterCount }) =>
                   typeof maxLength === 'undefined' || characterCount <= maxLength ? null : (

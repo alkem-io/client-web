@@ -31,7 +31,7 @@ const WhiteboardPage = ({
     skip: !calloutNameId || !collaborationId,
   });
 
-  const calloutId = data?.lookup.collaboration?.callouts?.[0].id;
+  const calloutId = data?.lookup.collaboration?.calloutsSet.callouts?.[0].id;
 
   return (
     <WhiteboardProvider whiteboardNameId={whiteboardNameId} calloutId={calloutId}>

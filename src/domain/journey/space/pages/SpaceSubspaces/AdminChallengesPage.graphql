@@ -27,19 +27,22 @@ query AdminSpaceSubspacesPage($spaceId: UUID_NAMEID!) {
           }
           collaboration {
             id
-            callouts {
+            calloutsSet {
               id
-              type
-              sortOrder
-              framing  {
+              callouts {
                 id
-                profile {
+                type
+                sortOrder
+                framing {
                   id
-                  displayName
-                  description
-                  flowStateTagset: tagset(tagsetName: FLOW_STATE) {
+                  profile {
                     id
-                    tags
+                    displayName
+                    description
+                    flowStateTagset: tagset(tagsetName: FLOW_STATE) {
+                      id
+                      tags
+                    }
                   }
                 }
               }

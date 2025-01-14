@@ -10,7 +10,7 @@ import {
   SpaceDashboardNavigationProfileFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { keyBy } from 'lodash';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 interface UseSpaceDashboardNavigationProps {
   spaceId: string | undefined;
@@ -78,7 +78,7 @@ const useSpaceDashboardNavigation = ({
 
   const space = challengesQueryData?.lookup.space;
 
-  const readableChallengeIds = space?.subspaces.filter(isReadable).map(({ id }) => id);
+  const readableChallengeIds = space?.subspaces.filter(isReadable).map(({ id }) => id) ?? [];
 
   const {
     data: opportunitiesQueryData,
@@ -89,8 +89,14 @@ const useSpaceDashboardNavigation = ({
       spaceId: spaceId!,
       challengeIds: readableChallengeIds!,
     },
-    skip: !readableChallengeIds || skip,
+    skip: !readableChallengeIds.length || skip,
   });
+
+  useEffect(() => {
+    if (readableChallengeIds.length > 0) {
+      refetchOpportunities();
+    }
+  }, readableChallengeIds);
 
   const challengesWithOpportunitiesById = useMemo(
     () => keyBy(opportunitiesQueryData?.lookup.space?.subspaces, 'id'),

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import PageContent from '@/core/ui/content/PageContent';
 import { useUrlParams } from '@/core/routing/useUrlParams';
-import CalloutsGroupView from '@/domain/collaboration/callout/CalloutsInContext/CalloutsGroupView';
+import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import EntityDashboardLeadsSection from '@/domain/community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import ContactLeadsButton from '@/domain/community/community/ContactLeadsButton/ContactLeadsButton';
 import {
@@ -29,7 +29,7 @@ import { useUserContext } from '@/domain/community/user';
 const SpaceCommunityPage = () => {
   const { spaceNameId } = useUrlParams();
   const { isAuthenticated } = useUserContext();
-  const { spaceId, collaborationId, journeyPath } = useRouteResolver();
+  const { collaborationId, journeyPath } = useRouteResolver();
   const { communityId } = useSpace();
 
   const { t } = useTranslation();
@@ -51,6 +51,7 @@ const SpaceCommunityPage = () => {
   });
 
   const leadUsers = data?.space.community?.roleSet?.leadUsers;
+  const calloutsSetId = data?.space.collaboration?.calloutsSet?.id;
 
   const messageReceivers = useMemo(
     () =>
@@ -120,10 +121,14 @@ const SpaceCommunityPage = () => {
               <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.space.profile.url} />
             </InfoColumn>
             <ContentColumn>
-              <CommunityContributorsBlockWide users={memberUsers} organizations={memberOrganizations} />
+              <CommunityContributorsBlockWide
+                users={memberUsers}
+                showUsers={isAuthenticated}
+                organizations={memberOrganizations}
+              />
+
               <CalloutsGroupView
-                journeyId={spaceId}
-                collaborationId={collaborationId}
+                calloutsSetId={calloutsSetId}
                 callouts={callouts.groupedCallouts[CalloutGroupName.Community]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}

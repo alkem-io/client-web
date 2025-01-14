@@ -31,7 +31,7 @@ const ContributorsPage = lazyWithGlobalErrorHandler(() => import('@/domain/commu
 const AdminRoute = lazyWithGlobalErrorHandler(() => import('@/domain/platform/admin/routing/AdminRoute'));
 const UserRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/user/routing/UserRoute'));
 const OrganizationRoute = lazyWithGlobalErrorHandler(
-  () => import('@/domain/community/contributor/organization/routing/OrganizationRoute')
+  () => import('@/domain/community/organization/routing/OrganizationRoute')
 );
 const VCRoute = lazyWithGlobalErrorHandler(() => import('@/domain/community/virtualContributor/VCRoute'));
 const ForumRoute = lazyWithGlobalErrorHandler(() => import('@/domain/communication/discussion/routing/ForumRoute'));
