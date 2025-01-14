@@ -2,9 +2,8 @@ import { PropsWithChildren } from 'react';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { AssignmentIndOutlined } from '@mui/icons-material';
 import UserPageBanner from './UserPageBanner';
-import { useUrlParams } from '@/core/routing/useUrlParams';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import { useUserMetadata } from '../hooks/useUserMetadata';
-import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
@@ -13,13 +12,8 @@ import { useTranslation } from 'react-i18next';
 interface UserPageLayoutProps {}
 
 const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) => {
-  const { userNameId } = useUrlParams();
-
-  if (!userNameId) {
-    throw new Error('User nameID not present');
-  }
-
-  const { user, loading } = useUserMetadata(userNameId);
+  const { userId } = useUrlResolver();
+  const { user, loading } = useUserMetadata(userId);
 
   const { t } = useTranslation();
 
@@ -34,7 +28,7 @@ const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) =>
             loading={loading}
             avatar={user?.user.profile.avatar}
             iconComponent={AssignmentIndOutlined}
-            uri={buildUserProfileUrl(userNameId)}
+            uri={user?.user.profile.url}
           >
             {user?.user.profile.displayName}
           </BreadcrumbsItem>

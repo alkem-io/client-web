@@ -1208,6 +1208,7 @@ export const OrganizationContributorFragmentDoc = gql`
         ...VisualUri
       }
       description
+      url
     }
     verification {
       id
@@ -1246,6 +1247,7 @@ export const UserContributorFragmentDoc = gql`
       tagsets {
         ...TagsetDetails
       }
+      url
     }
   }
   ${VisualUriFragmentDoc}
@@ -1339,6 +1341,7 @@ export const OrganizationInfoFragmentDoc = gql`
           tagsets {
             ...TagsetDetails
           }
+          url
         }
       }
       adminUsers: usersInRole(role: ADMIN) {
@@ -3253,6 +3256,7 @@ export const SearchResultProfileFragmentDoc = gql`
     visual(type: AVATAR) {
       ...VisualUri
     }
+    url
   }
   ${TagsetDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
@@ -10993,8 +10997,8 @@ export function refetchAssociatedOrganizationQuery(variables: SchemaTypes.Associ
 }
 
 export const RolesOrganizationDocument = gql`
-  query rolesOrganization($input: UUID!) {
-    rolesOrganization(rolesData: { organizationID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
+  query rolesOrganization($organizationId: UUID!) {
+    rolesOrganization(rolesData: { organizationID: $organizationId, filter: { visibilities: [ACTIVE, DEMO] } }) {
       id
       spaces {
         nameID
@@ -11026,7 +11030,7 @@ export const RolesOrganizationDocument = gql`
  * @example
  * const { data, loading, error } = useRolesOrganizationQuery({
  *   variables: {
- *      input: // value for 'input'
+ *      organizationId: // value for 'organizationId'
  *   },
  * });
  */
@@ -11414,75 +11418,6 @@ export type OrganizationGroupQueryResult = Apollo.QueryResult<
 >;
 export function refetchOrganizationGroupQuery(variables: SchemaTypes.OrganizationGroupQueryVariables) {
   return { query: OrganizationGroupDocument, variables: variables };
-}
-
-export const OrganizationGroupsDocument = gql`
-  query organizationGroups($id: UUID!) {
-    lookup {
-      organization(ID: $id) {
-        id
-        groups {
-          id
-          profile {
-            id
-            displayName
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useOrganizationGroupsQuery__
- *
- * To run a query within a React component, call `useOrganizationGroupsQuery` and pass it any options that fit your needs.
- * When your component renders, `useOrganizationGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOrganizationGroupsQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useOrganizationGroupsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OrganizationGroupsQuery,
-    SchemaTypes.OrganizationGroupsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OrganizationGroupsQuery, SchemaTypes.OrganizationGroupsQueryVariables>(
-    OrganizationGroupsDocument,
-    options
-  );
-}
-
-export function useOrganizationGroupsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OrganizationGroupsQuery,
-    SchemaTypes.OrganizationGroupsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.OrganizationGroupsQuery, SchemaTypes.OrganizationGroupsQueryVariables>(
-    OrganizationGroupsDocument,
-    options
-  );
-}
-
-export type OrganizationGroupsQueryHookResult = ReturnType<typeof useOrganizationGroupsQuery>;
-export type OrganizationGroupsLazyQueryHookResult = ReturnType<typeof useOrganizationGroupsLazyQuery>;
-export type OrganizationGroupsQueryResult = Apollo.QueryResult<
-  SchemaTypes.OrganizationGroupsQuery,
-  SchemaTypes.OrganizationGroupsQueryVariables
->;
-export function refetchOrganizationGroupsQuery(variables: SchemaTypes.OrganizationGroupsQueryVariables) {
-  return { query: OrganizationGroupsDocument, variables: variables };
 }
 
 export const OrganizationProfileInfoDocument = gql`

@@ -2,7 +2,7 @@ import { forwardRef, PropsWithChildren, ReactNode, useMemo, useState } from 'rea
 import { Box, Divider, MenuList, Typography } from '@mui/material';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
-import { buildLoginUrl, buildUserProfileUrl } from '@/main/routing/urlBuilders';
+import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import PendingMembershipsUserMenuItem from '@/domain/community/pendingMembership/PendingMembershipsUserMenuItem';
 import {
   AssignmentIndOutlined,
@@ -112,11 +112,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
                 {t('pages.home.title')}
               </NavigatableMenuItem>
               {user && (
-                <NavigatableMenuItem
-                  iconComponent={AssignmentIndOutlined}
-                  route={buildUserProfileUrl(user.nameID)}
-                  onClick={onClose}
-                >
+                <NavigatableMenuItem iconComponent={AssignmentIndOutlined} route={user.profile.url} onClick={onClose}>
                   {t('pages.user-profile.title')}
                 </NavigatableMenuItem>
               )}

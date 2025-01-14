@@ -19,7 +19,6 @@ import {
   OrganizationInfoFragment,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
-import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
 import { useTranslation } from 'react-i18next';
 import {
   ADMIN_TRANSLATION_KEY,
@@ -71,7 +70,7 @@ const roleChecks = [
 ] as const;
 
 export const OrganizationPageContainer = ({ children }: PropsWithChildren<OrganizationPageContainerProps>) => {
-  const { organizationId, organizationNameId, loading, organization, canReadUsers } = useOrganization();
+  const { organizationId, loading, organization, canReadUsers } = useOrganization();
 
   const { t } = useTranslation();
 
@@ -89,9 +88,9 @@ export const OrganizationPageContainer = ({ children }: PropsWithChildren<Organi
 
   const { data: orgRolesData, loading: orgRolesLoading } = useRolesOrganizationQuery({
     variables: {
-      input: organizationNameId!,
+      organizationId: organizationId!,
     },
-    skip: !organizationNameId,
+    skip: !organizationId,
   });
 
   const socialLinks = useMemo(() => {
@@ -141,7 +140,7 @@ export const OrganizationPageContainer = ({ children }: PropsWithChildren<Organi
           country: x.profile.location?.country && COUNTRIES_BY_CODE[x.profile.location?.country],
           tags: x.profile.tagsets?.flatMap(x => x.tags) || [],
         },
-        url: buildUserProfileUrl(x.nameID),
+        url: x.profile.url,
         isContactable: x.isContactable,
         contributorType: RoleSetContributorType.User,
       })) || []

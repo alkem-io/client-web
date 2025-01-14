@@ -1,17 +1,17 @@
 import { useAccountInformationQuery, useUserAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
-import { useUrlParams } from '@/core/routing/useUrlParams';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import ContributorAccountView from '@/domain/community/contributor/Account/ContributorAccountView';
 
 export const UserAdminAccountPage = () => {
-  const { userNameId = '' } = useUrlParams();
+  const { userId } = useUrlResolver();
 
   const { data: userData, loading: loadingUser } = useUserAccountQuery({
     variables: {
-      userId: userNameId,
+      userId: userId!,
     },
-    skip: !userNameId,
+    skip: !userId,
   });
 
   const { data: accountData, loading: loadingAccount } = useAccountInformationQuery({

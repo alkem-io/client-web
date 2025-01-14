@@ -65,7 +65,7 @@ const InviteVirtualContributorDialog = ({
   const initialValues: InviteUserData = {
     message: t('components.invitations.defaultVCInvitationMessage', {
       space: spaceDisplayName,
-      name: vcProfile?.virtualContributor?.profile.displayName ?? '',
+      name: vcProfile?.lookup.virtualContributor?.profile.displayName ?? '',
     }) as string,
   };
 
@@ -87,8 +87,8 @@ const InviteVirtualContributorDialog = ({
               <GridContainer paddingLeft={0}>
                 <GridProvider columns={columns}>
                   <ProfileChip
-                    displayName={vcProfile?.virtualContributor?.profile.displayName ?? ''}
-                    avatarUrl={vcProfile?.virtualContributor?.profile.avatar?.uri ?? ''}
+                    displayName={vcProfile?.lookup.virtualContributor?.profile.displayName ?? ''}
+                    avatarUrl={vcProfile?.lookup.virtualContributor?.profile.avatar?.uri ?? ''}
                   />
                 </GridProvider>
               </GridContainer>

@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUrlParams } from '@/core/routing/useUrlParams';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import { ContributionsView } from '@/domain/community/profile/views/ProfileView';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
@@ -14,8 +14,8 @@ import { useUserContributionsQuery, useUserPendingMembershipsQuery } from '@/cor
 
 const UserAdminMembershipPage = () => {
   const { t } = useTranslation();
-  const { userNameId = '' } = useUrlParams();
-  const { user: userMetadata } = useUserMetadata(userNameId);
+  const { userId } = useUrlResolver();
+  const { user: userMetadata } = useUserMetadata(userId);
 
   const { data, loading, refetch } = useUserContributionsQuery({
     variables: {

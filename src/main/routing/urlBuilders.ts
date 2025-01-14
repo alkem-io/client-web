@@ -4,8 +4,6 @@ import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { isAbsoluteUrl } from '@/core/utils/links';
 import { TopLevelRoutePath } from './TopLevelRoutePath';
 
-export const buildOrganizationUrl = (organizationNameId: string) => `/organization/${organizationNameId}`;
-
 export const buildVirtualContributorUrl = (virtualContributorNameId: string) => `/vc/${virtualContributorNameId}`;
 
 export const buildSettingsUrl = (entityUrl: string) => {

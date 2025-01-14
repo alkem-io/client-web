@@ -9,6 +9,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '@/core/routing/useUrlParams';
 import UrlParams from '../routing/urlParams';
+import { useMemo } from 'react';
 
 type UseUrlResolverProvided = {
   spaceId: string | undefined;
@@ -86,22 +87,40 @@ const useUrlResolver = (overrideUrlParams?: UrlParams): UseUrlResolverProvided =
   });
   const vcId = virtualContributorData?.lookupByName.virtualContributor;
 
-  return {
-    spaceId,
-    organizationId,
-    innovationPackId,
-    templateId,
-    userId,
-    vcId,
-    loading:
-      spaceLoading ||
-      organizationLoading ||
-      templatesSetLoading ||
-      innovationPackLoading ||
-      templateLoading ||
-      userLoading ||
+  const result = useMemo(
+    () => ({
+      spaceId,
+      organizationId,
+      innovationPackId,
+      templateId,
+      userId,
+      vcId,
+      loading:
+        spaceLoading ||
+        organizationLoading ||
+        templatesSetLoading ||
+        innovationPackLoading ||
+        templateLoading ||
+        userLoading ||
+        virtualContributorLoading,
+    }),
+    [
+      spaceId,
+      organizationId,
+      innovationPackId,
+      templateId,
+      userId,
+      vcId,
+      spaceLoading,
+      organizationLoading,
+      templatesSetLoading,
+      innovationPackLoading,
+      templateLoading,
+      userLoading,
       virtualContributorLoading,
-  };
+    ]
+  );
+  return result;
 };
 
 export default useUrlResolver;

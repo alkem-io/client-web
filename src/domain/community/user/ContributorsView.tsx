@@ -18,7 +18,6 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
-import { buildOrganizationUrl, buildUserProfileUrl } from '@/main/routing/urlBuilders';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
@@ -35,7 +34,7 @@ const userToContributorCard = (user: UserContributorFragment): ContributorCardSq
     id: user.id,
     displayName: user.userProfile.displayName,
     avatar: user.userProfile.visual?.uri ?? '',
-    url: buildUserProfileUrl(user.nameID),
+    url: user.userProfile.url,
     tooltip: {
       tags: (user.userProfile?.tagsets || []).flatMap(y => y.tags),
       city: user.userProfile?.location?.city || '',
@@ -51,7 +50,7 @@ const organizationToContributorCard = (org: OrganizationContributorFragment): Co
     id: org.id,
     displayName: org.orgProfile.displayName,
     avatar: org.orgProfile.visual?.uri ?? '',
-    url: buildOrganizationUrl(org.nameID),
+    url: org.orgProfile.url,
     isContactable: true,
     contributorType: RoleSetContributorType.Organization,
   };

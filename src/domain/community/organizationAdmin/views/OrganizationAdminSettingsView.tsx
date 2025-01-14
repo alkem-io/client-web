@@ -32,7 +32,7 @@ export const OrganizationAdminSettingsView = () => {
   const [updateOrganizationSettings] = useUpdateOrganizationSettingsMutation();
 
   const currentSettings = useMemo(() => {
-    const settings = data?.organization.settings;
+    const settings = data?.lookup.organization?.settings;
     return {
       ...settings,
     };

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useUrlParams } from '@/core/routing/useUrlParams';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import { useOrganizationInfoQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, OrganizationInfoFragment } from '@/core/apollo/generated/graphql-schema';
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
@@ -8,7 +8,6 @@ type OrganizationContextProps = {
   organization?: OrganizationInfoFragment;
   organizationId: string;
   roleSetId: string;
-  organizationNameId: string | undefined;
   canReadUsers: boolean;
   displayName: string;
   loading: boolean;
@@ -19,22 +18,21 @@ const OrganizationContext = React.createContext<OrganizationContextProps>({
   canReadUsers: false,
   organizationId: '',
   roleSetId: '',
-  organizationNameId: '',
   displayName: '',
 });
 
 const OrganizationProvider: FC = ({ children }) => {
-  const { organizationNameId } = useUrlParams();
+  const { organizationId, loading: resolvingOrganization } = useUrlResolver();
   const { user, loading: isUserLoading } = useUserContext();
-  const { data, loading: isOrganizationLoading } = useOrganizationInfoQuery({
+  const { data, loading: loadingOrganizationInfo } = useOrganizationInfoQuery({
     variables: {
-      organizationId: organizationNameId!,
+      organizationId: organizationId!,
       includeAssociates: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
     },
     errorPolicy: 'all',
-    skip: !organizationNameId || isUserLoading,
+    skip: !organizationId || isUserLoading,
   });
-  const organization = data?.organization;
+  const organization = data?.lookup.organization;
   const displayName = organization?.profile.displayName || '';
 
   return (
@@ -43,10 +41,9 @@ const OrganizationProvider: FC = ({ children }) => {
         organization,
         organizationId: organization?.id ?? '',
         roleSetId: organization?.roleSet.id ?? '',
-        organizationNameId: organization?.nameID ?? organizationNameId,
         canReadUsers: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
         displayName,
-        loading: isUserLoading || isOrganizationLoading,
+        loading: resolvingOrganization || isUserLoading || loadingOrganizationInfo,
       }}
     >
       {children}

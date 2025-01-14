@@ -1,10 +1,12 @@
 import { useUserProfileQuery } from '@/core/apollo/generated/apollo-hooks';
-import { User } from '@/core/apollo/generated/graphql-schema';
 import { toUserMetadata } from './useUserMetadataWrapper';
-
-export const useUserMetadata = (id: string) => {
+/**
+ * @deprecated Try to avoid this one, refactor to remove it
+ */
+export const useUserMetadata = (userId: string | undefined) => {
   const { data, loading } = useUserProfileQuery({
-    variables: { input: id },
+    variables: { input: userId! },
+    skip: !userId,
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     errorPolicy: 'all',
@@ -14,7 +16,7 @@ export const useUserMetadata = (id: string) => {
   });
 
   return {
-    user: toUserMetadata(data?.lookup.user as User, data?.platform.authorization, data?.platform.roleSet.myRoles),
+    user: toUserMetadata(data?.lookup.user, data?.platform.authorization, data?.platform.roleSet.myRoles),
     loading,
   };
 };

@@ -1,9 +1,5 @@
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
-import {
-  AssociatedOrganizationQuery,
-  OrganizationVerificationEnum,
-} from '@/core/apollo/generated/graphql-schema';
-import { buildOrganizationUrl } from '@/main/routing/urlBuilders';
+import { AssociatedOrganizationQuery, OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
 import { ApolloError } from '@apollo/client';
 import { MetricType } from '@/domain/platform/metrics/MetricType';
 
@@ -38,7 +34,7 @@ interface RequestState {
 
 export const mapToAssociatedOrganization = (
   // TODO: Do not use types from graphql here
-  organization: AssociatedOrganizationQuery['organization'] | undefined,
+  organization: AssociatedOrganizationQuery['lookup']['organization'] | undefined,
   key: string,
   state?: RequestState
 ): AssociatedOrganization => {
@@ -48,7 +44,7 @@ export const mapToAssociatedOrganization = (
     seamless: true,
     associatesCount: getMetricCount(organization?.metrics || [], MetricType.Associate),
     verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
-    url: organization && buildOrganizationUrl(organization.nameID),
+    url: organization?.profile.url,
     ...state,
   };
 };

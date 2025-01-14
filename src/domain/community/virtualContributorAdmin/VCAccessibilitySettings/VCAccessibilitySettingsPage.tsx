@@ -1,4 +1,3 @@
-import { useUrlParams } from '@/core/routing/useUrlParams';
 import {
   useUpdateVirtualContributorMutation,
   useVirtualContributorQuery,
@@ -18,6 +17,7 @@ import { AiPersonaBodyOfKnowledgeType, SearchVisibility } from '@/core/apollo/ge
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 type VCAccessibilityProps = {
   listedInStore?: boolean;
@@ -26,15 +26,12 @@ type VCAccessibilityProps = {
 
 const VCAccessibilitySettingsPage = () => {
   const { t } = useTranslation();
-
-  const { vcNameId = '' } = useUrlParams();
-
   const notify = useNotification();
 
+  const { vcId } = useUrlResolver();
   const { data } = useVirtualContributorQuery({
-    variables: {
-      id: vcNameId,
-    },
+    variables: { id: vcId! },
+    skip: !vcId,
   });
 
   const vc = data?.lookup.virtualContributor;

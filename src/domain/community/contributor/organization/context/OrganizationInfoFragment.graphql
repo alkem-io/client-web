@@ -62,6 +62,7 @@ fragment OrganizationInfo on Organization {
         tagsets {
           ...TagsetDetails
         }
+        url
       }
     }
     adminUsers: usersInRole(role: ADMIN) {

@@ -16555,6 +16555,7 @@ export type ContributorsPageOrganizationsQuery = {
         id: string;
         displayName: string;
         description?: string | undefined;
+        url: string;
         visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       };
       verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
@@ -16588,6 +16589,7 @@ export type ContributorsPageUsersQuery = {
         __typename?: 'Profile';
         id: string;
         displayName: string;
+        url: string;
         location?: { __typename?: 'Location'; city?: string | undefined; country?: string | undefined } | undefined;
         visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         tagsets?:
@@ -16659,6 +16661,7 @@ export type OrganizationContributorPaginatedFragment = {
       id: string;
       displayName: string;
       description?: string | undefined;
+      url: string;
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
     verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
@@ -16681,6 +16684,7 @@ export type OrganizationContributorFragment = {
     id: string;
     displayName: string;
     description?: string | undefined;
+    url: string;
     visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
   verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
@@ -16697,6 +16701,7 @@ export type UserContributorPaginatedFragment = {
       __typename?: 'Profile';
       id: string;
       displayName: string;
+      url: string;
       location?: { __typename?: 'Location'; city?: string | undefined; country?: string | undefined } | undefined;
       visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagsets?:
@@ -16728,6 +16733,7 @@ export type UserContributorFragment = {
     __typename?: 'Profile';
     id: string;
     displayName: string;
+    url: string;
     location?: { __typename?: 'Location'; city?: string | undefined; country?: string | undefined } | undefined;
     visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     tagsets?:
@@ -16864,7 +16870,7 @@ export type AssociatedOrganizationQuery = {
 };
 
 export type RolesOrganizationQueryVariables = Exact<{
-  input: Scalars['UUID'];
+  organizationId: Scalars['UUID'];
 }>;
 
 export type RolesOrganizationQuery = {
@@ -16913,6 +16919,7 @@ export type OrganizationInfoFragment = {
         __typename?: 'Profile';
         id: string;
         displayName: string;
+        url: string;
         location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
         visual?:
           | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
@@ -17002,6 +17009,7 @@ export type OrganizationInfoQuery = {
                 __typename?: 'Profile';
                 id: string;
                 displayName: string;
+                url: string;
                 location?:
                   | { __typename?: 'Location'; country?: string | undefined; city?: string | undefined }
                   | undefined;
@@ -17266,30 +17274,6 @@ export type OrganizationGroupQuery = {
                     }
                   | undefined;
               }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type OrganizationGroupsQueryVariables = Exact<{
-  id: Scalars['UUID'];
-}>;
-
-export type OrganizationGroupsQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    organization?:
-      | {
-          __typename?: 'Organization';
-          id: string;
-          groups?:
-            | Array<{
-                __typename?: 'UserGroup';
-                id: string;
-                profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
-              }>
             | undefined;
         }
       | undefined;
@@ -29277,6 +29261,7 @@ export type SearchQuery = {
               displayName: string;
               id: string;
               description?: string | undefined;
+              url: string;
               location?:
                 | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
                 | undefined;
@@ -29312,6 +29297,7 @@ export type SearchQuery = {
               displayName: string;
               id: string;
               description?: string | undefined;
+              url: string;
               location?:
                 | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
                 | undefined;
@@ -29504,6 +29490,7 @@ export type SearchResultUserFragment = {
       displayName: string;
       id: string;
       description?: string | undefined;
+      url: string;
       location?:
         | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
         | undefined;
@@ -29595,6 +29582,7 @@ export type SearchResultOrganizationFragment = {
       displayName: string;
       id: string;
       description?: string | undefined;
+      url: string;
       location?:
         | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
         | undefined;
@@ -29617,6 +29605,7 @@ export type SearchResultProfileFragment = {
   __typename?: 'Profile';
   id: string;
   description?: string | undefined;
+  url: string;
   location?:
     | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
     | undefined;

@@ -194,6 +194,7 @@ fragment SearchResultProfile on Profile {
   visual(type: AVATAR) {
     ...VisualUri
   }
+  url
 }
 
 fragment SearchResultPostProfile on Profile {
