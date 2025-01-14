@@ -9,6 +9,7 @@ import {
   useAssignRoleToVirtualContributorMutation,
   refetchDashboardWithMembershipsQuery,
   useCreateLinkOnCalloutMutation,
+  useAccountSpacesLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AiPersonaBodyOfKnowledgeType,
@@ -75,7 +76,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const [targetAccount, setTargetAccount] = useState<UserAccountProps>();
   const [accountName, setAccountName] = useState<string>();
-  const [createdSpaceId, setCreatedSpaceId] = useState<string>();
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps>();
 
   const startWizard = (initAccount: UserAccountProps | undefined, accountName?: string) => {
@@ -100,18 +100,30 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     fetchPolicy: 'cache-and-network',
   });
 
-  const { selectedExistingSpaceId, myAccountId, selectableSpaces } = useMemo(() => {
+  const { selectedExistingSpaceId, myAccountId } = useMemo(() => {
     const account = targetAccount ?? data?.me.user?.account; // contextual or self by default
     const accountId = account?.id;
     const mySpace = account?.spaces?.[0]; // TODO: auto-selecting the first space, not ideal
-    const selectableSpaces = account?.spaces ?? [];
 
     return {
       selectedExistingSpaceId: mySpace?.id,
       myAccountId: accountId,
-      selectableSpaces,
     };
   }, [data, user, targetAccount]);
+
+  const [getAccountSpaces, { loading: availableSpacesLoading }] = useAccountSpacesLazyQuery();
+  const getSelectableSpaces = useCallback(
+    async (accountId: string) => {
+      const spaceData = await getAccountSpaces({
+        variables: {
+          accountId,
+        },
+      });
+
+      return spaceData?.data?.lookup.account?.spaces ?? [];
+    },
+    [getAccountSpaces]
+  );
 
   // get plans data in case there's no space under the account
   const { data: plansData } = usePlansTableQuery({ skip: Boolean(selectedExistingSpaceId) });
@@ -186,8 +198,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     const newlyCreatedSpaceId = newSpace?.createSpace.id;
 
     if (newlyCreatedSpaceId) {
-      setCreatedSpaceId(newlyCreatedSpaceId);
-
       return newlyCreatedSpaceId;
     }
 
@@ -263,7 +273,11 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const [addVirtualContributorToRole] = useAssignRoleToVirtualContributorMutation();
 
-  const addVCToCommunity = async (virtualContributorId: string, parentRoleSetIds: string[] = []) => {
+  const addVCToCommunity = async (
+    virtualContributorId: string,
+    parentRoleSetIds: string[] = [],
+    spaceId: string | undefined
+  ) => {
     if (parentRoleSetIds.length > 0) {
       // the VC cannot be added to the BoK community
       // if it's not part of the parent communities
@@ -277,13 +291,14 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         });
       }
     }
-    const spaceId = createdSpaceId ?? selectedExistingSpaceId;
+
     if (spaceId) {
       const communityData = await getSpaceCommunity({
         variables: {
           spaceId,
         },
       });
+
       const roleSetId = communityData.data?.lookup.space?.community.roleSet.id;
       if (!roleSetId) {
         return false;
@@ -300,20 +315,20 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       return Boolean(addToCommunityResult.data?.assignRoleToVirtualContributor?.id);
     } else {
       notify(t('createVirtualContributorWizard.errors.spaceNotSelected'), 'error');
+      handleCloseWizard();
     }
   };
 
   // post creation navigation
   const [getNewSpaceUrl] = useSpaceUrlLazyQuery();
-  const navigateToTryYourVC = async (url?: string) => {
+  const navigateToTryYourVC = async (url: string | undefined, spaceId: string | undefined) => {
     if (url) {
       navigate(url);
     } else {
-      const spaceNameId = createdSpaceId ?? selectedExistingSpaceId;
-      if (spaceNameId) {
+      if (spaceId) {
         const { data } = await getNewSpaceUrl({
           variables: {
-            spaceNameId,
+            spaceNameId: spaceId,
           },
         });
         if (data?.space?.profile?.url) {
@@ -407,19 +422,20 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     // 2. New Step - do you want ot add your VC to community? (instead of auto-adding)
 
     // create a space if no space is available under the account
+    let spaceId: string | undefined;
     if (!selectedExistingSpaceId) {
-      const spaceId = await executeCreateSpace();
+      spaceId = await executeCreateSpace();
 
       if (!spaceId) {
         return;
       }
     }
 
-    const addToCommunity = await addVCToCommunity(createdVC?.id);
+    const addToCommunity = await addVCToCommunity(createdVC?.id, undefined, spaceId);
 
     if (addToCommunity) {
       addVCCreationCache(createdVC?.nameID);
-      await navigateToTryYourVC();
+      await navigateToTryYourVC(undefined, spaceId);
     }
   };
 
@@ -438,11 +454,15 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         return;
       }
 
-      const addToCommunity = await addVCToCommunity(createdVC?.id, selectedKnowledge.parentRoleSetIds);
+      const addToCommunity = await addVCToCommunity(
+        createdVC?.id,
+        selectedKnowledge.parentRoleSetIds,
+        selectedKnowledge.id
+      );
 
       if (addToCommunity) {
         addVCCreationCache(createdVC?.nameID);
-        await navigateToTryYourVC(selectedKnowledge.url);
+        await navigateToTryYourVC(selectedKnowledge.url, undefined);
       }
     }
   };
@@ -499,13 +519,14 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
               spaceId={selectedExistingSpaceId ?? ''}
             />
           )}
-          {step === 'existingKnowledge' && (
+          {step === 'existingKnowledge' && myAccountId && (
             <ExistingSpace
               onClose={handleCloseWizard}
               onBack={() => setStep('initial')}
               onSubmit={handleCreateVCWithExistingKnowledge}
-              availableSpaces={selectableSpaces}
-              loading={loading}
+              accountId={myAccountId}
+              getSpaces={getSelectableSpaces}
+              loading={loading || availableSpacesLoading}
             />
           )}
           {step === 'externalProvider' && (
@@ -526,7 +547,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         </StorageConfigContextProvider>
       </DialogWithGrid>
     );
-  }, [dialogOpen, step, loading, selectableSpaces, selectedExistingSpaceId, targetAccount, data]);
+  }, [dialogOpen, step, loading, selectedExistingSpaceId, targetAccount, data, myAccountId, getSelectableSpaces]);
 
   return {
     startWizard,

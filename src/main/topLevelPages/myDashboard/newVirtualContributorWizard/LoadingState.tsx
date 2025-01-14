@@ -25,7 +25,7 @@ const LoadingState = ({ onClose, entity = 'space' }: LoadingStateProps) => {
       case 'subspace':
         return t('createVirtualContributorWizard.loadingInfo.subspaceCreation');
       default:
-        return t('createVirtualContributorWizard.loadingInfo.spaceAndSubspaceCreation');
+        return t('createVirtualContributorWizard.loadingInfo.vcSpaceCreation');
     }
   };
 

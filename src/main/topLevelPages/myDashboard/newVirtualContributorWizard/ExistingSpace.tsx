@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
@@ -22,12 +22,36 @@ interface ExistingSpaceProps {
   onClose: () => void;
   onBack: () => void;
   onSubmit: (subspace: SelectableKnowledgeSpace) => void;
-  availableSpaces: SelectableSpace[];
+  accountId: string;
   loading: boolean;
+  getSpaces: (accountId: string) => Promise<SelectableSpace[]>;
 }
 
-const ExistingSpace = ({ onClose, onBack, onSubmit, availableSpaces, loading }: ExistingSpaceProps) => {
+const ExistingSpace = ({ onClose, onBack, onSubmit, accountId, getSpaces, loading }: ExistingSpaceProps) => {
   const { t } = useTranslation();
+  const [availableSpaces, setAvailableSpaces] = useState<SelectableSpace[]>();
+  const prevAccountIdRef = useRef<string | undefined>(undefined);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchSubspaces = async () => {
+      const spaces = await getSpaces(accountId);
+
+      if (isMounted) {
+        setAvailableSpaces(spaces);
+      }
+    };
+
+    if (accountId !== prevAccountIdRef.current) {
+      prevAccountIdRef.current = accountId;
+      fetchSubspaces();
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [accountId]);
 
   const initialValues = {
     subspaceId: '',
@@ -46,7 +70,7 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, availableSpaces, loading }: 
     };
 
     // Hierarchy loop
-    availableSpaces.forEach((space: SelectableSpace) => {
+    availableSpaces?.forEach((space: SelectableSpace) => {
       addSelectableSpace(space);
       space.subspaces?.forEach(subspace => {
         addSelectableSpace(subspace, [space]);
@@ -55,7 +79,8 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, availableSpaces, loading }: 
         });
       });
     });
-    return result;
+
+    return result ?? [];
   }, [availableSpaces]);
 
   const validationSchema = yup.object().shape({

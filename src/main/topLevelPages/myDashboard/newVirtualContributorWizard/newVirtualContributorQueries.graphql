@@ -31,6 +31,38 @@ query NewVirtualContributorMySpaces {
   }
 }
 
+query AccountSpaces($accountId: UUID!) {
+  lookup {
+    account(ID: $accountId) {
+      id
+      spaces {
+        ...spaceProfileCommunityDetails
+        subspaces {
+          ...spaceProfileCommunityDetails
+          subspaces {
+            ...spaceProfileCommunityDetails
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment spaceProfileCommunityDetails on Space {
+  id
+  profile {
+    id
+    displayName
+    url
+  }
+  community {
+    id
+    roleSet {
+      id
+    }
+  }
+}
+
 fragment VCSelectableSpace on Space {
   id
   type

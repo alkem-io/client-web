@@ -3156,7 +3156,7 @@
     },
     "loadingInfo": {
       "subspaceCreation": "A Subspace for adding the knowledge for your Virtual Contributor is being built. This process may take a few moments to complete.",
-      "spaceAndSubspaceCreation": "A Space and Subspace for adding the knowledge for your Virtual Contributor are being built. This process may take a few moments to complete.",
+      "vcSpaceCreation": "A Space for interaction with your Virtual Contributor is being built. This process may take a few moments to complete.",
       "vcCreation": "Your Virtual Contributor is being created. This process may take a few moments to complete."
     },
     "cancel": {
