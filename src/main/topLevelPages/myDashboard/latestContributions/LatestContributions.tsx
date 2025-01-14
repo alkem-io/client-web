@@ -21,11 +21,13 @@ import BadgeCardView from '@/core/ui/list/BadgeCardView';
 import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';
 import { LatestContributionsProps, ROLE_OPTION_ALL, SPACE_OPTION_ALL } from './LatestContributionsProps';
+import { Caption } from '@/core/ui/typography';
 import Loading from '@/core/ui/loading/Loading';
+import { SpaceActivitiesDialog } from '../DashboardWithMemberships/SpaceActivitiesDialog';
 
 const SELECTABLE_ROLES = [ActivityFeedRoles.Member, ActivityFeedRoles.Admin, ActivityFeedRoles.Lead] as const;
 
-const LATEST_CONTRIBUTIONS_PAGE_SIZE = 20;
+const LATEST_CONTRIBUTIONS_PAGE_SIZE = 10;
 
 const Loader = forwardRef((props, ref) => {
   const theme = useTheme();
@@ -46,6 +48,7 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [filter, setFilter] = useState<{
     space: string;
     role: ActivityFeedRoles | typeof ROLE_OPTION_ALL;
@@ -130,28 +133,64 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
     </Box>
   );
 
+  const showMore =
+    typeof data?.activityFeed.activityFeed?.length === 'number' && data.activityFeed.activityFeed.length > 10;
+
   return (
-    <Gutters disablePadding disableGap sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
-      {renderFilters()}
-      {!data && loading ? (
-        <Loading />
-      ) : (
-        <ScrollerWithGradient>
-          <Box padding={gutters(0.5)}>
-            {data?.activityFeed.activityFeed.map(activity => {
-              return (
+    <>
+      <Gutters disablePadding disableGap sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
+        {renderFilters()}
+        {!data && loading ? (
+          <Loading />
+        ) : (
+          <ScrollerWithGradient>
+            <Box padding={gutters(0.5)}>
+              {data?.activityFeed.activityFeed?.map((activity, idx) =>
+                idx < LATEST_CONTRIBUTIONS_PAGE_SIZE ? (
+                  <ActivityViewChooser
+                    key={activity.id}
+                    activity={activity as ActivityLogResultType}
+                    avatarUrl={activity.triggeredBy.profile.avatar?.uri}
+                  />
+                ) : null
+              )}
+
+              {loader}
+            </Box>
+          </ScrollerWithGradient>
+        )}
+      </Gutters>
+
+      {showMore && (
+        <Caption sx={{ marginLeft: 'auto', cursor: 'pointer' }} onClick={() => setIsDialogOpen(true)}>
+          {t('common.show-more')}
+        </Caption>
+      )}
+
+      <SpaceActivitiesDialog
+        open={isDialogOpen}
+        title={t('pages.home.sections.latestContributions.title')}
+        onClose={() => setIsDialogOpen(false)}
+      >
+        {!data && loading ? (
+          <Loading />
+        ) : (
+          <ScrollerWithGradient>
+            <Gutters disableGap disablePadding>
+              {data?.activityFeed.activityFeed?.map(activity => (
                 <ActivityViewChooser
                   key={activity.id}
                   activity={activity as ActivityLogResultType}
                   avatarUrl={activity.triggeredBy.profile.avatar?.uri}
                 />
-              );
-            })}
-            {loader}
-          </Box>
-        </ScrollerWithGradient>
-      )}
-    </Gutters>
+              ))}
+
+              {loader}
+            </Gutters>
+          </ScrollerWithGradient>
+        )}
+      </SpaceActivitiesDialog>
+    </>
   );
 };
 

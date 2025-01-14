@@ -13,7 +13,7 @@ import {
   ActivityLogResultType,
   ActivityViewChooser,
 } from '@/domain/collaboration/activity/ActivityLog/ActivityComponent';
-import { CaptionSmall } from '@/core/ui/typography/components';
+import { Caption, CaptionSmall } from '@/core/ui/typography/components';
 import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
 import { LatestContributionsProps, SPACE_OPTION_ALL } from '../LatestContributionsProps';
 import { SelectOption } from '@mui/base';
@@ -21,8 +21,9 @@ import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
 import Loading from '@/core/ui/loading/Loading';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
+import { SpaceActivitiesDialog } from '../../DashboardWithMemberships/SpaceActivitiesDialog';
 
-const MY_LATEST_CONTRIBUTIONS_COUNT = 20;
+const MY_LATEST_CONTRIBUTIONS_COUNT = 10;
 
 const ACTIVITY_TYPES = [
   // Callout-related activities only
@@ -37,16 +38,12 @@ const ACTIVITY_TYPES = [
 
 const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) => {
   const { t } = useTranslation();
-  const [filter, setFilter] = useState<{
-    space: string;
-  }>({
-    space: SPACE_OPTION_ALL,
-  });
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [filter, setFilter] = useState<{ space: string }>({ space: SPACE_OPTION_ALL });
 
   const handleSpaceSelect = (event: SelectChangeEvent<unknown>) =>
-    setFilter({
-      space: event.target.value as string | typeof SPACE_OPTION_ALL,
-    });
+    setFilter({ space: event.target.value as string | typeof SPACE_OPTION_ALL });
 
   const { data, loading } = useLatestContributionsGroupedQuery({
     variables: {
@@ -91,42 +88,77 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
   }, [spaceMemberships, t]);
 
   const hasActivity = activities && activities.length > 0;
-  const isAllSpcesSelected = filter.space === SPACE_OPTION_ALL;
+  const isAllSpacesSelected = filter.space === SPACE_OPTION_ALL;
 
+  const showMore = typeof data?.activityFeedGrouped?.length === 'number' && data?.activityFeedGrouped.length > 10;
   return (
-    <Gutters disableGap disablePadding>
-      <Box display="flex" justifyContent="end" alignItems="center">
-        <SeamlessSelect
-          value={filter.space}
-          options={spaceOptions}
-          label={t('pages.home.sections.latestContributions.filter.space.label')}
-          onChange={handleSpaceSelect}
-        />
-      </Box>
-      {loading ? (
-        <Loading />
-      ) : (
-        <ScrollerWithGradient>
-          <Box padding={gutters(0.5)}>
-            {hasActivity &&
-              activities.map(activity => {
-                return (
+    <>
+      <Gutters disableGap disablePadding>
+        <Box display="flex" justifyContent="end" alignItems="center">
+          <SeamlessSelect
+            value={filter.space}
+            options={spaceOptions}
+            label={t('pages.home.sections.latestContributions.filter.space.label')}
+            onChange={handleSpaceSelect}
+          />
+        </Box>
+        {loading ? (
+          <Loading />
+        ) : (
+          <ScrollerWithGradient>
+            <Box padding={gutters(0.5)}>
+              {hasActivity &&
+                activities.map((activity, idx) =>
+                  idx < MY_LATEST_CONTRIBUTIONS_COUNT ? (
+                    <ActivityViewChooser
+                      key={activity.id}
+                      activity={activity as ActivityLogResultType}
+                      avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
+                    />
+                  ) : null
+                )}
+              {!hasActivity && isAllSpacesSelected && (
+                <CaptionSmall padding={gutters()}>
+                  {t('pages.home.sections.myLatestContributions.noContributions')}
+                </CaptionSmall>
+              )}
+            </Box>
+          </ScrollerWithGradient>
+        )}
+      </Gutters>
+
+      {showMore && (
+        <Caption sx={{ marginLeft: 'auto', cursor: 'pointer' }} onClick={() => setIsDialogOpen(true)}>
+          {t('common.show-more')}
+        </Caption>
+      )}
+
+      <SpaceActivitiesDialog
+        open={isDialogOpen}
+        title={t('pages.home.sections.latestContributions.title')}
+        onClose={() => setIsDialogOpen(false)}
+      >
+        {loading ? (
+          <Loading />
+        ) : (
+          <ScrollerWithGradient>
+            <Gutters disableGap disablePadding>
+              {hasActivity &&
+                activities.map(activity => (
                   <ActivityViewChooser
                     key={activity.id}
                     activity={activity as ActivityLogResultType}
                     avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
                   />
-                );
-              })}
-            {!hasActivity && isAllSpcesSelected && (
-              <CaptionSmall padding={gutters()}>
-                {t('pages.home.sections.myLatestContributions.noContributions')}
-              </CaptionSmall>
-            )}
-          </Box>
-        </ScrollerWithGradient>
-      )}
-    </Gutters>
+                ))}
+              {!hasActivity && isAllSpacesSelected && (
+                <CaptionSmall padding={gutters()}>{t('pages.home.sections.latestContributions.title')}</CaptionSmall>
+              )}
+            </Gutters>
+          </ScrollerWithGradient>
+        )}
+      </SpaceActivitiesDialog>
+    </>
   );
 };
 
