@@ -3773,8 +3773,8 @@ export type Mutation = {
   grantCredentialToUser: User;
   /** Resets the interaction with the chat engine. */
   ingest: Scalars['Boolean'];
-  /** Invite an existing Contriburor to join the specified Community as a member. */
-  inviteContributorsForRoleSetMembership: Array<Invitation>;
+  /** Invite an existing Contriburor to join the specified RoleSet in the Entry Role. */
+  inviteContributorsEntryRoleOnRoleSet: Array<Invitation>;
   /** Invite a User to join the platform and the specified RoleSet as a member. */
   inviteUserToPlatformAndRoleSet: PlatformInvitation;
   /** Join the specified RoleSet using the entry Role, without going through an approval process. */
@@ -4241,7 +4241,7 @@ export type MutationGrantCredentialToUserArgs = {
   grantCredentialData: GrantAuthorizationCredentialInput;
 };
 
-export type MutationInviteContributorsForRoleSetMembershipArgs = {
+export type MutationInviteContributorsEntryRoleOnRoleSetArgs = {
   invitationData: InviteForEntryRoleOnRoleSetInput;
 };
 
@@ -5498,11 +5498,11 @@ export type RoleSet = {
   __typename?: 'RoleSet';
   /** The Form used for Applications to this roleSet. */
   applicationForm: Form;
-  /** Applications available for this roleSet. */
+  /** Applications available for this RoleSet. */
   applications: Array<Application>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** All  users excluding the current lead users in this Community. */
+  /** All users excluding the current lead users in this Community. */
   availableUsersForLeadRole: PaginatedUsers;
   /** All available users that are potential Community members. */
   availableUsersForMemberRole: PaginatedUsers;
@@ -5526,7 +5526,7 @@ export type RoleSet = {
   organizationsInRole: Array<Organization>;
   /** All organizations that have a role in this RoleSet in the specified Roles. */
   organizationsInRoles: Array<OrganizationsInRolesResponse>;
-  /** Invitations to join this Community for users not yet on the Alkemio platform. */
+  /** Invitations to join this RoleSet in an entry role for users not yet on the Alkemio platform. */
   platformInvitations: Array<PlatformInvitation>;
   /** The Role Definitions from this RoleSet to return. */
   roleDefinition: Role;
@@ -17495,16 +17495,16 @@ export type InvitationStateEventMutation = {
   eventOnInvitation: { __typename?: 'Invitation'; id: string; nextEvents: Array<string>; state: string };
 };
 
-export type InviteContributorsForRoleSetMembershipMutationVariables = Exact<{
+export type InviteContributorsEntryRoleOnRoleSetMutationVariables = Exact<{
   contributorIds: Array<Scalars['UUID']> | Scalars['UUID'];
   roleSetId: Scalars['UUID'];
   message?: InputMaybe<Scalars['String']>;
   extraRole?: InputMaybe<RoleName>;
 }>;
 
-export type InviteContributorsForRoleSetMembershipMutation = {
+export type InviteContributorsEntryRoleOnRoleSetMutation = {
   __typename?: 'Mutation';
-  inviteContributorsForRoleSetMembership: Array<{ __typename?: 'Invitation'; id: string }>;
+  inviteContributorsEntryRoleOnRoleSet: Array<{ __typename?: 'Invitation'; id: string }>;
 };
 
 export type InviteUserToPlatformAndRoleSetMutationVariables = Exact<{

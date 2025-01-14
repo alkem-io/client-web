@@ -1,5 +1,5 @@
-mutation inviteContributorsForRoleSetMembership($contributorIds: [UUID!]!, $roleSetId: UUID!, $message: String, $extraRole: RoleName) {
-  inviteContributorsForRoleSetMembership(invitationData: {
+mutation inviteContributorsEntryRoleOnRoleSet($contributorIds: [UUID!]!, $roleSetId: UUID!, $message: String, $extraRole: RoleName) {
+  inviteContributorsEntryRoleOnRoleSet(invitationData: {
     invitedContributors: $contributorIds
     roleSetID: $roleSetId
     welcomeMessage: $message

@@ -1,5 +1,5 @@
 import {
-  useInviteContributorsForRoleSetMembershipMutation,
+  useInviteContributorsEntryRoleOnRoleSetMutation,
   useInviteUserToPlatformAndRoleSetMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
@@ -32,7 +32,7 @@ const useInviteUsers = (
   roleSetId: string | undefined,
   { onInviteContributor, onInviteExternalUser }: UseInviteUsersCallbacks = {}
 ): UseInviteUsersProvided => {
-  const [inviteExistingUser] = useInviteContributorsForRoleSetMembershipMutation();
+  const [inviteExistingUser] = useInviteContributorsEntryRoleOnRoleSetMutation();
   const [inviteUserForRoleSetAndPlatform] = useInviteUserToPlatformAndRoleSetMutation();
 
   return {

@@ -2242,7 +2242,7 @@ export type MutationKeySpecifier = (
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
   | 'ingest'
-  | 'inviteContributorsForRoleSetMembership'
+  | 'inviteContributorsEntryRoleOnRoleSet'
   | 'inviteUserToPlatformAndRoleSet'
   | 'joinRoleSet'
   | 'licenseResetOnAccount'
@@ -2411,7 +2411,7 @@ export type MutationFieldPolicy = {
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   ingest?: FieldPolicy<any> | FieldReadFunction<any>;
-  inviteContributorsForRoleSetMembership?: FieldPolicy<any> | FieldReadFunction<any>;
+  inviteContributorsEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteUserToPlatformAndRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   joinRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   licenseResetOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
