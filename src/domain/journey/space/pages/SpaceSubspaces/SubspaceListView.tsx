@@ -7,6 +7,8 @@ import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import {
   refetchAdminSpaceSubspacesPageQuery,
   refetchDashboardWithMembershipsQuery,
+  refetchSpaceDashboardNavigationChallengesQuery,
+  refetchSubspacesInSpaceQuery,
   useAdminSpaceSubspacesPageQuery,
   useDeleteSpaceMutation,
   useSpaceCollaborationIdLazyQuery,
@@ -81,9 +83,16 @@ export const SubspaceListView = () => {
 
   const [deleteSubspace] = useDeleteSpaceMutation({
     refetchQueries: [
+      refetchSubspacesInSpaceQuery({
+        spaceId,
+      }),
       refetchAdminSpaceSubspacesPageQuery({
         spaceId,
       }),
+      refetchSpaceDashboardNavigationChallengesQuery({
+        spaceId,
+      }),
+      'SpaceDashboardNavigationOpportunities',
     ],
     awaitRefetchQueries: true,
     onCompleted: () => notify(t('pages.admin.subspace.notifications.subspace-removed'), 'success'),

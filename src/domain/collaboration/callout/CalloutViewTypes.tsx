@@ -34,4 +34,5 @@ export interface BaseCalloutViewProps extends CalloutLayoutEvents, Partial<Callo
   onCollapse?: () => void;
   onCalloutUpdate?: () => void;
   disableMarginal?: boolean;
+  disableRichMedia?: boolean;
 }
