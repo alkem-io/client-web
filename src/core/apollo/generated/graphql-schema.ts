@@ -5502,10 +5502,10 @@ export type RoleSet = {
   applications: Array<Application>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** All users excluding the current lead users in this Community. */
-  availableUsersForLeadRole: PaginatedUsers;
-  /** All available users that are potential Community members. */
-  availableUsersForMemberRole: PaginatedUsers;
+  /** All users that have the entryRole in the RoleSet, minus those already in the specified role. */
+  availableUsersForElevatedRole: PaginatedUsers;
+  /** All available users that are could join this RoleSet in the entry role. */
+  availableUsersForEntryRole: PaginatedUsers;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The Role that acts as the entry Role for the RoleSet, so other roles potentially require it. */
@@ -5548,15 +5548,16 @@ export type RoleSet = {
   virtualContributorsInRoles: Array<VirtualContributorsInRolesResponse>;
 };
 
-export type RoleSetAvailableUsersForLeadRoleArgs = {
+export type RoleSetAvailableUsersForElevatedRoleArgs = {
   after?: InputMaybe<Scalars['UUID']>;
   before?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<UserFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  role: RoleName;
 };
 
-export type RoleSetAvailableUsersForMemberRoleArgs = {
+export type RoleSetAvailableUsersForEntryRoleArgs = {
   after?: InputMaybe<Scalars['UUID']>;
   before?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<UserFilterInput>;
@@ -7934,10 +7935,10 @@ export type CommunityRoleSetDetailsFragment = {
     | undefined;
 };
 
-export type RoleSetAvailableLeadUsersFragment = {
+export type RoleSetAvailableElevatedRoleUsersFragment = {
   __typename?: 'RoleSet';
   id: string;
-  availableUsersForLeadRole: {
+  availableUsersForElevatedRole: {
     __typename?: 'PaginatedUsers';
     users: Array<{
       __typename?: 'User';
@@ -7954,10 +7955,10 @@ export type RoleSetAvailableLeadUsersFragment = {
   };
 };
 
-export type RoleSetAvailableMemberUsersFragment = {
+export type RoleSetAvailableEntryRoleUsersFragment = {
   __typename?: 'RoleSet';
   id: string;
-  availableUsersForMemberRole: {
+  availableUsersForEntryRole: {
     __typename?: 'PaginatedUsers';
     users: Array<{
       __typename?: 'User';
@@ -8401,22 +8402,22 @@ export type RoleSetMembersQuery = {
   };
 };
 
-export type RoleSetAvailableMembersQueryVariables = Exact<{
+export type RoleSetAvailableEntryRoleUsersQueryVariables = Exact<{
   roleSetId: Scalars['UUID'];
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<UserFilterInput>;
 }>;
 
-export type RoleSetAvailableMembersQuery = {
+export type RoleSetAvailableEntryRoleUsersQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
-    availableMembers?:
+    availableEntryRoleUsers?:
       | {
           __typename?: 'RoleSet';
           id: string;
-          availableUsersForMemberRole: {
+          availableUsersForEntryRole: {
             __typename?: 'PaginatedUsers';
             users: Array<{
               __typename?: 'User';

@@ -33,8 +33,8 @@ export const typePolicies: TypedTypePolicies = {
   },
   RoleSet: {
     fields: {
-      availableUsersForLeadRole: paginationFieldPolicy(['filter'], 'User'),
-      availableUsersForMemberRole: paginationFieldPolicy(['filter'], 'User'),
+      availableUsersForElevatedRole: paginationFieldPolicy(['filter'], 'User'),
+      availableUsersForEntryRole: paginationFieldPolicy(['filter'], 'User'),
     },
   },
   Post: {

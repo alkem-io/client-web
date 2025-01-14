@@ -11,7 +11,7 @@ import {
   useAssignRoleToOrganizationMutation,
   useRemoveRoleFromUserMutation,
   useRemoveRoleFromOrganizationMutation,
-  useRoleSetAvailableMembersLazyQuery,
+  useRoleSetAvailableEntryRoleUsersLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { OrganizationDetailsFragmentWithRoles } from '@/domain/community/community/CommunityAdmin/CommunityOrganizations';
@@ -179,7 +179,7 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
   } = useInviteContributors({ roleSetId, spaceId, spaceLevel });
 
   // Available new members:
-  const [fetchAvailableUsers, { refetch: refetchAvailableMemberUsers }] = useRoleSetAvailableMembersLazyQuery();
+  const [fetchAvailableUsers, { refetch: refetchAvailableMemberUsers }] = useRoleSetAvailableEntryRoleUsersLazyQuery();
   const getAvailableUsers = async (filter: string | undefined) => {
     const { data } = await fetchAvailableUsers({
       variables: {
@@ -188,7 +188,7 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
         filter: buildUserFilterObject(filter),
       },
     });
-    return data?.lookup.availableMembers?.availableUsersForMemberRole?.users;
+    return data?.lookup.availableEntryRoleUsers?.availableUsersForEntryRole?.users;
   };
 
   const [fetchAllOrganizations, { refetch: refetchAvailableMemberOrganizations }] = useAllOrganizationsLazyQuery();

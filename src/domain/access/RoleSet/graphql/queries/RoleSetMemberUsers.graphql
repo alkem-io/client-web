@@ -9,10 +9,10 @@ query roleSetMembers($roleSetId: UUID!) {
   }
 }
 
-query RoleSetAvailableMembers($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
+query RoleSetAvailableEntryRoleUsers($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
   lookup {
-    availableMembers: roleSet(ID: $roleSetId) {
-      ...RoleSetAvailableMemberUsers
+    availableEntryRoleUsers: roleSet(ID: $roleSetId) {
+      ...RoleSetAvailableEntryRoleUsers
     }
   }
 }

@@ -3074,8 +3074,8 @@ export type RoleSetKeySpecifier = (
   | 'applicationForm'
   | 'applications'
   | 'authorization'
-  | 'availableUsersForLeadRole'
-  | 'availableUsersForMemberRole'
+  | 'availableUsersForElevatedRole'
+  | 'availableUsersForEntryRole'
   | 'createdDate'
   | 'entryRoleName'
   | 'id'
@@ -3102,8 +3102,8 @@ export type RoleSetFieldPolicy = {
   applicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  availableUsersForLeadRole?: FieldPolicy<any> | FieldReadFunction<any>;
-  availableUsersForMemberRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  availableUsersForElevatedRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  availableUsersForEntryRole?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   entryRoleName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;

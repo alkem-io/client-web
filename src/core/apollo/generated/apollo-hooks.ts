@@ -98,10 +98,10 @@ export const PageInfoFragmentDoc = gql`
     hasNextPage
   }
 `;
-export const RoleSetAvailableLeadUsersFragmentDoc = gql`
-  fragment RoleSetAvailableLeadUsers on RoleSet {
+export const RoleSetAvailableElevatedRoleUsersFragmentDoc = gql`
+  fragment RoleSetAvailableElevatedRoleUsers on RoleSet {
     id
-    availableUsersForLeadRole(first: $first, after: $after, filter: $filter) {
+    availableUsersForElevatedRole(role: $roleName, first: $first, after: $after, filter: $filter) {
       users {
         ...AvailableUser
       }
@@ -113,10 +113,10 @@ export const RoleSetAvailableLeadUsersFragmentDoc = gql`
   ${AvailableUserFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
-export const RoleSetAvailableMemberUsersFragmentDoc = gql`
-  fragment RoleSetAvailableMemberUsers on RoleSet {
+export const RoleSetAvailableEntryRoleUsersFragmentDoc = gql`
+  fragment RoleSetAvailableEntryRoleUsers on RoleSet {
     id
-    availableUsersForMemberRole(first: $first, after: $after, filter: $filter) {
+    availableUsersForEntryRole(first: $first, after: $after, filter: $filter) {
       users {
         ...AvailableUser
       }
@@ -5010,28 +5010,28 @@ export function refetchRoleSetMembersQuery(variables: SchemaTypes.RoleSetMembers
   return { query: RoleSetMembersDocument, variables: variables };
 }
 
-export const RoleSetAvailableMembersDocument = gql`
-  query RoleSetAvailableMembers($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
+export const RoleSetAvailableEntryRoleUsersDocument = gql`
+  query RoleSetAvailableEntryRoleUsers($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
     lookup {
-      availableMembers: roleSet(ID: $roleSetId) {
-        ...RoleSetAvailableMemberUsers
+      availableEntryRoleUsers: roleSet(ID: $roleSetId) {
+        ...RoleSetAvailableEntryRoleUsers
       }
     }
   }
-  ${RoleSetAvailableMemberUsersFragmentDoc}
+  ${RoleSetAvailableEntryRoleUsersFragmentDoc}
 `;
 
 /**
- * __useRoleSetAvailableMembersQuery__
+ * __useRoleSetAvailableEntryRoleUsersQuery__
  *
- * To run a query within a React component, call `useRoleSetAvailableMembersQuery` and pass it any options that fit your needs.
- * When your component renders, `useRoleSetAvailableMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useRoleSetAvailableEntryRoleUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRoleSetAvailableEntryRoleUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useRoleSetAvailableMembersQuery({
+ * const { data, loading, error } = useRoleSetAvailableEntryRoleUsersQuery({
  *   variables: {
  *      roleSetId: // value for 'roleSetId'
  *      first: // value for 'first'
@@ -5040,40 +5040,44 @@ export const RoleSetAvailableMembersDocument = gql`
  *   },
  * });
  */
-export function useRoleSetAvailableMembersQuery(
+export function useRoleSetAvailableEntryRoleUsersQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.RoleSetAvailableMembersQuery,
-    SchemaTypes.RoleSetAvailableMembersQueryVariables
+    SchemaTypes.RoleSetAvailableEntryRoleUsersQuery,
+    SchemaTypes.RoleSetAvailableEntryRoleUsersQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.RoleSetAvailableMembersQuery, SchemaTypes.RoleSetAvailableMembersQueryVariables>(
-    RoleSetAvailableMembersDocument,
-    options
-  );
+  return Apollo.useQuery<
+    SchemaTypes.RoleSetAvailableEntryRoleUsersQuery,
+    SchemaTypes.RoleSetAvailableEntryRoleUsersQueryVariables
+  >(RoleSetAvailableEntryRoleUsersDocument, options);
 }
 
-export function useRoleSetAvailableMembersLazyQuery(
+export function useRoleSetAvailableEntryRoleUsersLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.RoleSetAvailableMembersQuery,
-    SchemaTypes.RoleSetAvailableMembersQueryVariables
+    SchemaTypes.RoleSetAvailableEntryRoleUsersQuery,
+    SchemaTypes.RoleSetAvailableEntryRoleUsersQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.RoleSetAvailableMembersQuery,
-    SchemaTypes.RoleSetAvailableMembersQueryVariables
-  >(RoleSetAvailableMembersDocument, options);
+    SchemaTypes.RoleSetAvailableEntryRoleUsersQuery,
+    SchemaTypes.RoleSetAvailableEntryRoleUsersQueryVariables
+  >(RoleSetAvailableEntryRoleUsersDocument, options);
 }
 
-export type RoleSetAvailableMembersQueryHookResult = ReturnType<typeof useRoleSetAvailableMembersQuery>;
-export type RoleSetAvailableMembersLazyQueryHookResult = ReturnType<typeof useRoleSetAvailableMembersLazyQuery>;
-export type RoleSetAvailableMembersQueryResult = Apollo.QueryResult<
-  SchemaTypes.RoleSetAvailableMembersQuery,
-  SchemaTypes.RoleSetAvailableMembersQueryVariables
+export type RoleSetAvailableEntryRoleUsersQueryHookResult = ReturnType<typeof useRoleSetAvailableEntryRoleUsersQuery>;
+export type RoleSetAvailableEntryRoleUsersLazyQueryHookResult = ReturnType<
+  typeof useRoleSetAvailableEntryRoleUsersLazyQuery
 >;
-export function refetchRoleSetAvailableMembersQuery(variables: SchemaTypes.RoleSetAvailableMembersQueryVariables) {
-  return { query: RoleSetAvailableMembersDocument, variables: variables };
+export type RoleSetAvailableEntryRoleUsersQueryResult = Apollo.QueryResult<
+  SchemaTypes.RoleSetAvailableEntryRoleUsersQuery,
+  SchemaTypes.RoleSetAvailableEntryRoleUsersQueryVariables
+>;
+export function refetchRoleSetAvailableEntryRoleUsersQuery(
+  variables: SchemaTypes.RoleSetAvailableEntryRoleUsersQueryVariables
+) {
+  return { query: RoleSetAvailableEntryRoleUsersDocument, variables: variables };
 }
 
 export const OrganizationAssociatesDocument = gql`

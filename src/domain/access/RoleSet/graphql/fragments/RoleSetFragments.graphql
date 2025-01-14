@@ -35,9 +35,9 @@ fragment CommunityRoleSetDetails on RoleSet {
   }
 }
 
-fragment RoleSetAvailableLeadUsers on RoleSet {
+fragment RoleSetAvailableElevatedRoleUsers on RoleSet {
   id
-  availableUsersForLeadRole(first: $first, after: $after, filter: $filter) {
+  availableUsersForElevatedRole(role: $roleName, first: $first, after: $after, filter: $filter) {
     users {
       ...AvailableUser
     }
@@ -47,9 +47,9 @@ fragment RoleSetAvailableLeadUsers on RoleSet {
   }
 }
 
-fragment RoleSetAvailableMemberUsers on RoleSet {
+fragment RoleSetAvailableEntryRoleUsers on RoleSet {
   id
-  availableUsersForMemberRole(first: $first, after: $after, filter: $filter) {
+  availableUsersForEntryRole(first: $first, after: $after, filter: $filter) {
     users {
       ...AvailableUser
     }
