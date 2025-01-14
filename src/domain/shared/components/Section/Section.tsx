@@ -1,6 +1,5 @@
 import Image from '@/core/ui/image/Image';
-import { Box, Paper, Skeleton } from '@mui/material';
-import { styled } from '@mui/styles';
+import { Box, Paper, Skeleton, styled } from '@mui/material';
 import React, { FC, useState } from 'react';
 import SectionSpacer from './SectionSpacer';
 
