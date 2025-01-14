@@ -314,7 +314,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
       return Boolean(addToCommunityResult.data?.assignRoleToVirtualContributor?.id);
     } else {
-      notify(t('createVirtualContributorWizard.errors.spaceNotSelected'), 'error');
+      console.error('Unable to find selected spaceId');
       handleCloseWizard();
     }
   };
@@ -422,7 +422,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     // 2. New Step - do you want ot add your VC to community? (instead of auto-adding)
 
     // create a space if no space is available under the account
-    let spaceId: string | undefined;
+    let spaceId: string | undefined = selectedExistingSpaceId;
     if (!selectedExistingSpaceId) {
       spaceId = await executeCreateSpace();
 
@@ -436,6 +436,9 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     if (addToCommunity) {
       addVCCreationCache(createdVC?.nameID);
       await navigateToTryYourVC(undefined, spaceId);
+    } else {
+      console.error('Failed to add VC to community');
+      handleCloseWizard();
     }
   };
 

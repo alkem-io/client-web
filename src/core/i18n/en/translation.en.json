@@ -3237,9 +3237,6 @@
     "insufficientPrivileges": {
       "title": "Insufficient Privileges",
       "description": "You don't have the necessary privileges to complete the creation. Please contact the owners of this account."
-    },
-    "errors": {
-      "spaceNotSelected": "Unable to find selected spaceId"
     }
   }
 }
