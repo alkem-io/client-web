@@ -31562,7 +31562,6 @@ export type NewVirtualContributorMySpacesQuery = {
                 spaces: Array<{
                   __typename?: 'Space';
                   id: string;
-                  type: SpaceType;
                   license: {
                     __typename?: 'License';
                     id: string;
@@ -31575,64 +31574,8 @@ export type NewVirtualContributorMySpacesQuery = {
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                       }
                     | undefined;
-                  subspaces: Array<{
-                    __typename?: 'Space';
-                    id: string;
-                    type: SpaceType;
-                    subspaces: Array<{
-                      __typename?: 'Space';
-                      id: string;
-                      type: SpaceType;
-                      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-                      community: {
-                        __typename?: 'Community';
-                        id: string;
-                        roleSet: {
-                          __typename?: 'RoleSet';
-                          id: string;
-                          authorization?:
-                            | {
-                                __typename?: 'Authorization';
-                                id: string;
-                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              }
-                            | undefined;
-                        };
-                      };
-                    }>;
-                    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-                    community: {
-                      __typename?: 'Community';
-                      id: string;
-                      roleSet: {
-                        __typename?: 'RoleSet';
-                        id: string;
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
-                              id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                            }
-                          | undefined;
-                      };
-                    };
-                  }>;
                   profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-                  community: {
-                    __typename?: 'Community';
-                    id: string;
-                    roleSet: {
-                      __typename?: 'RoleSet';
-                      id: string;
-                      authorization?:
-                        | {
-                            __typename?: 'Authorization';
-                            id: string;
-                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                          }
-                        | undefined;
-                    };
-                  };
+                  community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
                 }>;
               }
             | undefined;
@@ -31681,24 +31624,6 @@ export type SpaceProfileCommunityDetailsFragment = {
   id: string;
   profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
   community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
-};
-
-export type VcSelectableSpaceFragment = {
-  __typename?: 'Space';
-  id: string;
-  type: SpaceType;
-  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-  community: {
-    __typename?: 'Community';
-    id: string;
-    roleSet: {
-      __typename?: 'RoleSet';
-      id: string;
-      authorization?:
-        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-        | undefined;
-    };
-  };
 };
 
 export type RecentSpacesQueryVariables = Exact<{

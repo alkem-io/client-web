@@ -97,7 +97,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   };
 
   const { data, loading } = useNewVirtualContributorMySpacesQuery({
-    skip: !dialogOpen,
+    skip: !dialogOpen || Boolean(targetAccount),
     fetchPolicy: 'cache-and-network',
   });
 

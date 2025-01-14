@@ -18,13 +18,7 @@ query NewVirtualContributorMySpaces {
             id
             myPrivileges
           }
-          ...VCSelectableSpace
-          subspaces {
-            ...VCSelectableSpace
-            subspaces {
-              ...VCSelectableSpace
-            }
-          }
+          ...spaceProfileCommunityDetails
         }
       }
     }
@@ -59,26 +53,6 @@ fragment spaceProfileCommunityDetails on Space {
     id
     roleSet {
       id
-    }
-  }
-}
-
-fragment VCSelectableSpace on Space {
-  id
-  type
-  profile {
-    id
-    displayName
-    url
-  }
-  community {
-    id
-    roleSet {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
     }
   }
 }

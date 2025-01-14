@@ -3748,27 +3748,6 @@ export const SpaceProfileCommunityDetailsFragmentDoc = gql`
     }
   }
 `;
-export const VcSelectableSpaceFragmentDoc = gql`
-  fragment VCSelectableSpace on Space {
-    id
-    type
-    profile {
-      id
-      displayName
-      url
-    }
-    community {
-      id
-      roleSet {
-        id
-        authorization {
-          id
-          myPrivileges
-        }
-      }
-    }
-  }
-`;
 export const RecentSpaceProfileFragmentDoc = gql`
   fragment RecentSpaceProfile on Profile {
     id
@@ -24388,19 +24367,13 @@ export const NewVirtualContributorMySpacesDocument = gql`
               id
               myPrivileges
             }
-            ...VCSelectableSpace
-            subspaces {
-              ...VCSelectableSpace
-              subspaces {
-                ...VCSelectableSpace
-              }
-            }
+            ...spaceProfileCommunityDetails
           }
         }
       }
     }
   }
-  ${VcSelectableSpaceFragmentDoc}
+  ${SpaceProfileCommunityDetailsFragmentDoc}
 `;
 
 /**

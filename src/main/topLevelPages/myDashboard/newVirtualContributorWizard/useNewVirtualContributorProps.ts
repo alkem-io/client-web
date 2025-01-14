@@ -12,10 +12,6 @@ export interface UserAccountProps {
       id: string;
       roleSet: {
         id: string;
-        authorization?: {
-          id: string;
-          myPrivileges?: AuthorizationPrivilege[] | undefined;
-        };
       };
     };
     profile: {
