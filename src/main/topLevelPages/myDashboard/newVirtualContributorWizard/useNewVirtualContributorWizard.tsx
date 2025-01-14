@@ -41,6 +41,7 @@ import InfoDialog from '@/core/ui/dialogs/InfoDialog';
 import CreateExternalAIDialog, { ExternalVcFormValues } from './CreateExternalAIDialog';
 import { useNewVirtualContributorWizardProvided, UserAccountProps } from './useNewVirtualContributorProps';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { getSpaceUrlFromSubSpace } from '@/main/routing/urlBuilders';
 
 type Step =
   | 'initial'
@@ -335,11 +336,15 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             spaceNameId: spaceId,
           },
         });
-        if (data?.space?.profile?.url) {
-          navigate(data.space.profile.url);
+        const spaceUrl = data?.space?.profile.url;
+
+        if (spaceUrl) {
+          navigate(spaceUrl);
         }
       }
     }
+
+    handleCloseWizard();
   };
 
   // ###STEP 'addKnowledge' - Add Content
@@ -469,7 +474,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
       if (addToCommunity) {
         addVCCreationCache(createdVC?.nameID);
-        await navigateToTryYourVC(selectedKnowledge.url, undefined);
+        await navigateToTryYourVC(getSpaceUrlFromSubSpace(selectedKnowledge.url ?? ''), undefined);
       } else {
         notifyErrorOnAddToCommunity();
         handleCloseWizard();
