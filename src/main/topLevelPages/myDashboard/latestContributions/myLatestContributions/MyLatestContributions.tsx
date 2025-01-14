@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
 import { useLatestContributionsGroupedQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -87,6 +87,23 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
     return spaces;
   }, [spaceMemberships, t]);
 
+  const renderActivities = useCallback(
+    (limit?: number) => (
+      <>
+        {activities?.map((activity, idx) =>
+          !limit || idx < limit ? (
+            <ActivityViewChooser
+              key={activity.id}
+              activity={activity as ActivityLogResultType}
+              avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
+            />
+          ) : null
+        )}
+      </>
+    ),
+    [activities]
+  );
+
   const hasActivity = activities && activities.length > 0;
   const isAllSpacesSelected = filter.space === SPACE_OPTION_ALL;
 
@@ -107,16 +124,8 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
         ) : (
           <ScrollerWithGradient>
             <Box padding={gutters(0.5)}>
-              {hasActivity &&
-                activities.map((activity, idx) =>
-                  idx < MY_LATEST_CONTRIBUTIONS_COUNT ? (
-                    <ActivityViewChooser
-                      key={activity.id}
-                      activity={activity as ActivityLogResultType}
-                      avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
-                    />
-                  ) : null
-                )}
+              {hasActivity && renderActivities(showMore ? MY_LATEST_CONTRIBUTIONS_COUNT : undefined)}
+
               {!hasActivity && isAllSpacesSelected && (
                 <CaptionSmall padding={gutters()}>
                   {t('pages.home.sections.myLatestContributions.noContributions')}
@@ -143,17 +152,7 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
         ) : (
           <ScrollerWithGradient>
             <Gutters disableGap disablePadding>
-              {hasActivity &&
-                activities.map(activity => (
-                  <ActivityViewChooser
-                    key={activity.id}
-                    activity={activity as ActivityLogResultType}
-                    avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
-                  />
-                ))}
-              {!hasActivity && isAllSpacesSelected && (
-                <CaptionSmall padding={gutters()}>{t('pages.home.sections.latestContributions.title')}</CaptionSmall>
-              )}
+              {hasActivity && renderActivities()}
             </Gutters>
           </ScrollerWithGradient>
         )}
