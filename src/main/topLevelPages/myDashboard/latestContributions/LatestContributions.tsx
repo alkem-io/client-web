@@ -152,7 +152,10 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
     [data?.activityFeed.activityFeed]
   );
 
-  const handleOpenActivitiesDialog = (dialogType: DashboardDialog) => () => setIsOpen(dialogType);
+  const handleOpenActivitiesDialog = useCallback(
+    (dialogType: DashboardDialog) => () => setIsOpen(dialogType),
+    [setIsOpen]
+  );
 
   const showMore =
     typeof data?.activityFeed.activityFeed?.length === 'number' && data.activityFeed.activityFeed.length > 10;

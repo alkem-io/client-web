@@ -106,7 +106,10 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
     [activities]
   );
 
-  const handleOpenActivitiesDialog = (dialogType: DashboardDialog) => () => setIsOpen(dialogType);
+  const handleOpenActivitiesDialog = useCallback(
+    (dialogType: DashboardDialog) => () => setIsOpen(dialogType),
+    [setIsOpen]
+  );
 
   const hasActivity = activities && activities.length > 0;
   const isAllSpacesSelected = filter.space === SPACE_OPTION_ALL;
