@@ -58,7 +58,7 @@ const LinksList = ({ items = [], emptyListCaption, loading = false }: LinksListP
       {!loading && items.length > COLLAPSED_LIST_ITEM_LIMIT && (
         <Collapse in={isExpanded}>
           {items.slice(COLLAPSED_LIST_ITEM_LIMIT).map(item => (
-            <ListItem key={item.id} component={RouterLink} to={item.uri}>
+            <ListItem key={item.id} component={RouterLink} to={item.uri} sx={{ marginTop: gutters(0.5) }}>
               <Avatar variant="rounded" alt="subspace avatar" src={item.cardBanner} aria-label="Subspace avatar" />
 
               <BlockSectionTitle minWidth={0} noWrap>
