@@ -36,3 +36,25 @@ export interface useNewVirtualContributorWizardProvided {
   startWizard: (initAccount?: UserAccountProps | undefined, accountName?: string) => void;
   NewVirtualContributorWizard: ComponentType<NewVirtualContributorWizardProps>;
 }
+
+export type SelectableSpace = {
+  id: string;
+  profile: {
+    displayName: string;
+    url: string;
+  };
+  community: {
+    roleSet: {
+      id: string;
+    };
+  };
+  subspaces?: SelectableSpace[];
+};
+
+export interface SelectableKnowledgeSpace {
+  id: string;
+  name: string;
+  url: string | undefined;
+  roleSetId?: string;
+  parentRoleSetIds?: string[];
+}

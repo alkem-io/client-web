@@ -28,7 +28,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { TypedCalloutDetails } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import { Actions } from '@/core/ui/actions/Actions';
-import { removeVCCreationCache } from './vcCreationUtil';
+import { removeVCCreationCache } from '../utils';
 import { useSubscribeOnVirtualContributorEvents } from '@/domain/community/virtualContributor/useSubscribeOnVirtualContributorEvents';
 
 interface TryVirtualContributorDialogProps {

@@ -10,7 +10,7 @@ import { Actions } from '@/core/ui/actions/Actions';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
-import ExternalAIComingSoonDialog from './ExternalAIComingSoonDialog';
+import ExternalAIComingSoon from './ExternalAIComingSoon';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
 
 const PROVIDERS = [
@@ -18,9 +18,9 @@ const PROVIDERS = [
   { id: AiPersonaEngine.GenericOpenai, name: 'OpenAI' },
 ];
 
-interface CreateExternalAIDialogProps {
+interface CreateExternalAIProps {
   onClose: () => void;
-  onCreateExternal: (externalparams: ExternalVcFormValues) => void;
+  onCreateExternal: (externalParams: ExternalVcFormValues) => void;
 }
 
 export interface ExternalVcFormValues {
@@ -29,7 +29,7 @@ export interface ExternalVcFormValues {
   assistantId?: string;
 }
 
-const CreateExternalAIDialog: React.FC<CreateExternalAIDialogProps> = ({ onClose, onCreateExternal }) => {
+const CreateExternalAI: React.FC<CreateExternalAIProps> = ({ onClose, onCreateExternal }) => {
   const { t } = useTranslation();
 
   const initialValues: ExternalVcFormValues = {
@@ -99,7 +99,7 @@ const CreateExternalAIDialog: React.FC<CreateExternalAIDialogProps> = ({ onClose
                 </Actions>
               </Gutters>
             </Form>
-            <ExternalAIComingSoonDialog onClose={onClose} />
+            <ExternalAIComingSoon onClose={onClose} />
           </DialogContent>
         </>
       )}
@@ -107,4 +107,4 @@ const CreateExternalAIDialog: React.FC<CreateExternalAIDialogProps> = ({ onClose
   );
 };
 
-export default CreateExternalAIDialog;
+export default CreateExternalAI;

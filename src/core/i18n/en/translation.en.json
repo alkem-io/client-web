@@ -3155,8 +3155,7 @@
       "externalAI": "External AI"
     },
     "loadingInfo": {
-      "vcSpaceCreation": "A Space for interaction with your Virtual Contributor is being built. This process may take a few moments to complete.",
-      "vcCreation": "Your Virtual Contributor is being created. This process may take a few moments to complete."
+      "vcSpaceCreation": "A Space for interaction with your Virtual Contributor is being built. This process may take a few moments to complete."
     },
     "cancel": {
       "title": "Discard Virtual Contributor",
@@ -3227,15 +3226,30 @@
       "lastInfoBox": "To <b>change the knowledge</b> of this Virtual Contributor, visit its Knowledge (Sub)Space.\nDon't forget to press the Update button on your Virtual Contributor's profile settings when you're done!",
       "continueButton": "Visit Space"
     },
+    "tryInfoSection": {
+      "title": "👍That’s it!",
+      "description": "Your Virtual Contributor is ready! To start interacting, invite the Virtual Contributor to a space and once it’s a member, simply type @{{vcName}} in a comment.\n\nEnjoy!",
+      "goToProfile": "Visit {{vcName}}'s Profile"
+    },
     "existingSpace": {
       "title": "Choose a (Sub)Space",
       "description": "Which Space or Subspace do you want to bring to life with the Virtual Contributor? Below you'll be able to choose from all Spaces and Subspaces that you are host of.",
       "label": "(Sub)Space",
       "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor, please go back and follow the Written Knowledge flow."
     },
-    "insufficientPrivileges": {
-      "title": "Insufficient Privileges",
-      "description": "You don't have the necessary privileges to complete the creation. Please contact the owners of this account."
+    "chooseCommunity": {
+      "title": "Hello, {{vcName}}!",
+      "description": "Your Virtual Contributor is ready! To start interacting, your Virtual Contributor should be added to a Space. Select one below, or continue without. In that case you will have to add the VC manually through the Community tab of a Space.",
+      "label": "Space",
+      "selectSpacesPlaceholder": "Select a Space",
+      "noSpacesPlaceholder": "No Spaces available",
+      "cancelAddToCommunity": "Proceed without membership",
+      "addToCommunity": "Add and go to Space",
+      "createAndAddToCommunity": "Create, add, and go to Space",
+      "confirm": {
+        "title": "Continue without Space membership",
+        "description": "A Virtual Contributor can only interact within a Space. Are you sure you want to proceed without adding them to a Space? You can still invite the Virtual Contributor later through the Space’s Community tab."
+      }
     }
   }
 }

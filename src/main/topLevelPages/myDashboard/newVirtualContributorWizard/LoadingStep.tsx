@@ -11,7 +11,7 @@ type LoadingStateProps = {
   onClose: () => void;
 };
 
-const LoadingState = ({ onClose }: LoadingStateProps) => {
+const LoadingStep = ({ onClose }: LoadingStateProps) => {
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -31,4 +31,4 @@ const LoadingState = ({ onClose }: LoadingStateProps) => {
   );
 };
 
-export default LoadingState;
+export default LoadingStep;

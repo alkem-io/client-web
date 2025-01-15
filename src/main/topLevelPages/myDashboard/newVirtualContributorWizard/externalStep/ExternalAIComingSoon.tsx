@@ -19,7 +19,7 @@ import { warn as logWarn } from '@/core/logging/sentry/log';
 
 const SUPPORT_EMAIL = 'support@alkem.io';
 
-interface ExternalAIComingSoonDialogProps {
+interface ExternalAIComingSoonProps {
   onClose: () => void;
 }
 
@@ -33,7 +33,7 @@ interface FormValues {
   sendResponse: string;
 }
 
-const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({ onClose }) => {
+const ExternalAIComingSoon: React.FC<ExternalAIComingSoonProps> = ({ onClose }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const notify = useNotification();
@@ -154,4 +154,4 @@ const ExternalAIComingSoonDialog: React.FC<ExternalAIComingSoonDialogProps> = ({
   );
 };
 
-export default ExternalAIComingSoonDialog;
+export default ExternalAIComingSoon;

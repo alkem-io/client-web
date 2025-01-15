@@ -8,15 +8,7 @@ import { LoadingButton } from '@mui/lab';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
-import { SelectableSpace } from './useNewVirtualContributorWizard';
-
-export interface SelectableKnowledgeSpace {
-  id: string;
-  name: string;
-  url: string | undefined;
-  roleSetId?: string;
-  parentRoleSetIds?: string[];
-}
+import { SelectableKnowledgeSpace, SelectableSpace } from '../useNewVirtualContributorProps';
 
 interface ExistingSpaceProps {
   onClose: () => void;

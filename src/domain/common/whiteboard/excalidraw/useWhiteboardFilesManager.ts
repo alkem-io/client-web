@@ -387,7 +387,7 @@ const useWhiteboardFilesManager = ({
   return useMemo<WhiteboardFilesManager>(
     () => ({
       addNewFile,
-      loadFiles, // Load external files into Excalidraw
+      loadFiles, // Load externalStep files into Excalidraw
       getUploadedFiles,
       pushFilesToExcalidraw,
       convertLocalFileToRemote,

@@ -38,7 +38,7 @@ export const VCProfileContentView = ({ bokProfile, virtualContributor }: VCProfi
 
   const vcTBase = 'pages.virtualContributorProfile.sections';
   const { t: vcT } = useTranslation('translation', { keyPrefix: vcTBase });
-  const externalVcTBase = 'pages.virtualContributorProfile.sections.external';
+  const externalVcTBase = 'pages.virtualContributorProfile.sections.externalStep';
   const { t: externalVcT } = useTranslation('translation', { keyPrefix: externalVcTBase });
 
   const vcProfile = virtualContributor?.profile;
