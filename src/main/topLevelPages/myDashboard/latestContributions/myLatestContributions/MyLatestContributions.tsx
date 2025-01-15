@@ -42,7 +42,7 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
 
   const [filter, setFilter] = useState<{ space: string }>({ space: SPACE_OPTION_ALL });
 
-  const { setIsOpen } = useDashboardContext();
+  const { isOpen, setIsOpen } = useDashboardContext();
 
   const handleSpaceSelect = (event: SelectChangeEvent<unknown>) =>
     setFilter({ space: event.target.value as string | typeof SPACE_OPTION_ALL });
@@ -115,6 +115,7 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
   const isAllSpacesSelected = filter.space === SPACE_OPTION_ALL;
 
   const showMore = typeof data?.activityFeedGrouped?.length === 'number' && data?.activityFeedGrouped.length > 10;
+
   return (
     <>
       <Gutters disableGap disablePadding>
@@ -131,7 +132,7 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
         ) : (
           <ScrollerWithGradient>
             <Gutters disableGap disablePadding padding={gutters(0.5)}>
-              {hasActivity && renderActivities(showMore ? MY_LATEST_CONTRIBUTIONS_COUNT : undefined)}
+              {hasActivity && renderActivities(isOpen ? undefined : MY_LATEST_CONTRIBUTIONS_COUNT)}
 
               {!hasActivity && isAllSpacesSelected && (
                 <CaptionSmall padding={gutters()}>
@@ -143,7 +144,7 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
         )}
       </Gutters>
 
-      {showMore && (
+      {!isOpen && showMore && (
         <Caption
           sx={{ marginLeft: 'auto', cursor: 'pointer' }}
           onClick={handleOpenActivitiesDialog(DashboardDialog.MyActivity)}

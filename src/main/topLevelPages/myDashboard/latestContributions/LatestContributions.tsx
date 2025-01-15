@@ -13,7 +13,7 @@ import {
   LatestContributionsQueryVariables,
 } from '@/core/apollo/generated/graphql-schema';
 import { Box, SelectChangeEvent, Skeleton, Theme, useMediaQuery, useTheme } from '@mui/material';
-import React, { forwardRef, useMemo, useState, useCallback } from 'react';
+import { forwardRef, useMemo, useState, useCallback } from 'react';
 import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
 import { SelectOption } from '@mui/base';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
@@ -24,11 +24,13 @@ import { LatestContributionsProps, ROLE_OPTION_ALL, SPACE_OPTION_ALL } from './L
 import { Caption } from '@/core/ui/typography';
 import Loading from '@/core/ui/loading/Loading';
 import { useDashboardContext } from '../DashboardContext';
-import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 
 const SELECTABLE_ROLES = [ActivityFeedRoles.Member, ActivityFeedRoles.Admin, ActivityFeedRoles.Lead] as const;
 
-const LATEST_CONTRIBUTIONS_PAGE_SIZE = 10;
+const LATEST_CONTRIBUTIONS_PAGE_SIZE = 20;
+const VISIBLE_LATEST_CONTRIBUTIONS_COUNT = 10;
 
 const Loader = forwardRef((props, ref) => {
   const theme = useTheme();
@@ -49,6 +51,8 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   const [filter, setFilter] = useState<{
     space: string;
     role: ActivityFeedRoles | typeof ROLE_OPTION_ALL;
@@ -57,7 +61,7 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
     role: ROLE_OPTION_ALL,
   });
 
-  const { setIsOpen } = useDashboardContext();
+  const { activityEnabled } = useDashboardContext();
 
   const handleRoleSelect = (event: SelectChangeEvent<unknown>) =>
     setFilter({
@@ -136,25 +140,18 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
   );
 
   const renderActivities = useCallback(
-    (limit?: number) => (
+    () => (
       <>
-        {data?.activityFeed.activityFeed?.map((activity, idx) =>
-          !limit || idx < limit ? (
-            <ActivityViewChooser
-              key={activity.id}
-              activity={activity as ActivityLogResultType}
-              avatarUrl={activity.triggeredBy.profile.avatar?.uri}
-            />
-          ) : null
-        )}
+        {data?.activityFeed?.activityFeed?.map(activity => (
+          <ActivityViewChooser
+            key={activity.id}
+            activity={activity as ActivityLogResultType}
+            avatarUrl={activity.triggeredBy.profile.avatar?.uri}
+          />
+        ))}
       </>
     ),
-    [data?.activityFeed.activityFeed]
-  );
-
-  const handleOpenActivitiesDialog = useCallback(
-    (dialogType: DashboardDialog) => () => setIsOpen(dialogType),
-    [setIsOpen]
+    [data?.activityFeed?.activityFeed]
   );
 
   const showMore =
@@ -162,29 +159,75 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
 
   return (
     <>
-      <Gutters disableGap disablePadding sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
-        {renderFilters()}
-        {!data && loading ? (
-          <Loading />
-        ) : (
+      {activityEnabled ? (
+        <Gutters disableGap disablePadding sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
+          {renderFilters()}
+
           <ScrollerWithGradient>
             <Gutters disableGap disablePadding padding={gutters(0.5)}>
-              {renderActivities(showMore ? LATEST_CONTRIBUTIONS_PAGE_SIZE : undefined)}
-
-              {loader}
+              {data?.activityFeed.activityFeed?.slice(0, VISIBLE_LATEST_CONTRIBUTIONS_COUNT).map(activity => (
+                <ActivityViewChooser
+                  key={activity.id}
+                  activity={activity as ActivityLogResultType}
+                  avatarUrl={activity.triggeredBy.profile.avatar?.uri}
+                />
+              ))}
             </Gutters>
           </ScrollerWithGradient>
-        )}
-      </Gutters>
+        </Gutters>
+      ) : (
+        <Gutters disablePadding disableGap sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
+          {renderFilters()}
 
-      {showMore && (
-        <Caption
-          sx={{ marginLeft: 'auto', cursor: 'pointer' }}
-          onClick={handleOpenActivitiesDialog(DashboardDialog.MySpaceActivity)}
-        >
+          {!data && loading ? (
+            <Loading />
+          ) : (
+            <ScrollerWithGradient>
+              <Box padding={gutters(0.5)}>
+                {data?.activityFeed.activityFeed.map(activity => {
+                  return (
+                    <ActivityViewChooser
+                      key={activity.id}
+                      activity={activity as ActivityLogResultType}
+                      avatarUrl={activity.triggeredBy.profile.avatar?.uri}
+                    />
+                  );
+                })}
+                {loader}
+              </Box>
+            </ScrollerWithGradient>
+          )}
+        </Gutters>
+      )}
+
+      {activityEnabled && showMore && (
+        <Caption sx={{ marginLeft: 'auto', cursor: 'pointer' }} onClick={() => setIsDialogOpen(true)}>
           {t('common.show-more')}
         </Caption>
       )}
+
+      <DialogWithGrid open={isDialogOpen} columns={4} onClose={() => setIsDialogOpen(false)}>
+        <DialogHeader
+          title={t('pages.home.sections.latestContributions.title')}
+          onClose={() => setIsDialogOpen(false)}
+        />
+
+        <Gutters disableGap disablePadding sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
+          {renderFilters()}
+
+          {!data && loading ? (
+            <Loading />
+          ) : (
+            <ScrollerWithGradient>
+              <Gutters disableGap disablePadding padding={gutters(1.5)}>
+                {renderActivities()}
+
+                {loader}
+              </Gutters>
+            </ScrollerWithGradient>
+          )}
+        </Gutters>
+      </DialogWithGrid>
     </>
   );
 };

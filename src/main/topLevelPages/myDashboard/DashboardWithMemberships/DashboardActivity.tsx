@@ -48,8 +48,9 @@ const DashboardActivity = () => {
   return (
     <>
       <RecentJourneysList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />
-      {!isMobile && [renderSpaceActivityBlock(), renderMyActivityBlock()]}
-      {isMobile && [renderMyActivityBlock(), renderSpaceActivityBlock()]}
+      {isMobile
+        ? [renderMyActivityBlock(), renderSpaceActivityBlock()]
+        : [renderSpaceActivityBlock(), renderMyActivityBlock()]}
       <MyMembershipsDialog
         Icon={SpaceIcon}
         loading={myMembershipsLoading}
