@@ -131,6 +131,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
           },
           collaborationData: {
             calloutsSetData: {},
+            addTutorialCallouts: showTutorialsInSpace,
           },
           tags: compact(values.tagsets?.reduce((acc: string[], tagset) => [...acc, ...tagset.tags], [])),
           licensePlanID: values.licensePlanId,
