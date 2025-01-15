@@ -1,5 +1,5 @@
 import { Box, CircularProgress } from '@mui/material';
-import WrapperTypography from '../typography/deprecated/WrapperTypography';
+import { Caption } from '../typography';
 
 export const Loading = ({ text = 'Loading' }: { text?: string }) => {
   return (
@@ -14,9 +14,9 @@ export const Loading = ({ text = 'Loading' }: { text?: string }) => {
       }}
     >
       <CircularProgress sx={{ color: 'primary.main' }} />
-      <WrapperTypography variant="caption" color="primary">
+      <Caption textTransform="uppercase" fontWeight="medium" color="primary.main">
         {text}
-      </WrapperTypography>
+      </Caption>
     </Box>
   );
 };
