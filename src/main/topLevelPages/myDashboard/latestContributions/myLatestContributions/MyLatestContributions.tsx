@@ -123,7 +123,7 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
           <Loading />
         ) : (
           <ScrollerWithGradient>
-            <Box padding={gutters(0.5)}>
+            <Gutters disableGap disablePadding padding={gutters(0.5)}>
               {hasActivity && renderActivities(showMore ? MY_LATEST_CONTRIBUTIONS_COUNT : undefined)}
 
               {!hasActivity && isAllSpacesSelected && (
@@ -131,7 +131,7 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
                   {t('pages.home.sections.myLatestContributions.noContributions')}
                 </CaptionSmall>
               )}
-            </Box>
+            </Gutters>
           </ScrollerWithGradient>
         )}
       </Gutters>

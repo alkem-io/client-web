@@ -155,17 +155,17 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
 
   return (
     <>
-      <Gutters disablePadding disableGap sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
+      <Gutters disableGap disablePadding sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
         {renderFilters()}
         {!data && loading ? (
           <Loading />
         ) : (
           <ScrollerWithGradient>
-            <Box padding={gutters(0.5)}>
+            <Gutters disableGap disablePadding padding={gutters(0.5)}>
               {renderActivities(showMore ? LATEST_CONTRIBUTIONS_PAGE_SIZE : undefined)}
 
               {loader}
-            </Box>
+            </Gutters>
           </ScrollerWithGradient>
         )}
       </Gutters>
