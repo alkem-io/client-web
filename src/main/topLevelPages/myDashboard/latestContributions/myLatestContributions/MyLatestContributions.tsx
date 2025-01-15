@@ -42,8 +42,12 @@ const ACTIVITY_TYPES = [
 const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) => {
   const { t } = useTranslation();
 
+  const [filter, setFilter] = useState<{
+    space: string;
+  }>({
+    space: SPACE_OPTION_ALL,
+  });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [filter, setFilter] = useState<{ space: string }>({ space: SPACE_OPTION_ALL });
 
   const { activityEnabled } = useDashboardContext();
 
@@ -93,7 +97,7 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
   }, [spaceMemberships, t]);
 
   const renderFilters = () => (
-    <Box display="flex" justifyContent="end" alignItems="center" marginTop={isDialogOpen ? gutters(-2) : 0}>
+    <Box display="flex" justifyContent="end" alignItems="center">
       <SeamlessSelect
         value={filter.space}
         options={spaceOptions}
@@ -102,6 +106,29 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
       />
     </Box>
   );
+
+  const renderActivities = (hasLimit: boolean) => {
+    const visibleActivities = hasLimit ? activities?.slice(0, VISIBLE_LATEST_CONTRIBUTIONS_COUNT) : activities;
+    return (
+      <ScrollerWithGradient>
+        <Gutters disableGap disablePadding padding={gutters(0.5)}>
+          {visibleActivities?.map(activity => (
+            <ActivityViewChooser
+              key={activity.id}
+              activity={activity as ActivityLogResultType}
+              avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
+            />
+          ))}
+
+          {!hasActivity && isAllSpacesSelected && (
+            <CaptionSmall padding={gutters()}>
+              {t('pages.home.sections.myLatestContributions.noContributions')}
+            </CaptionSmall>
+          )}
+        </Gutters>
+      </ScrollerWithGradient>
+    );
+  };
 
   const hasActivity = activities && activities.length > 0;
   const isAllSpacesSelected = filter.space === SPACE_OPTION_ALL;
@@ -114,49 +141,13 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
         <Gutters disableGap disablePadding>
           {renderFilters()}
 
-          <ScrollerWithGradient>
-            <Gutters disableGap disablePadding padding={gutters(0.5)}>
-              {activities?.slice(0, VISIBLE_LATEST_CONTRIBUTIONS_COUNT).map(activity => (
-                <ActivityViewChooser
-                  key={activity.id}
-                  activity={activity as ActivityLogResultType}
-                  avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
-                />
-              ))}
-
-              {!hasActivity && isAllSpacesSelected && (
-                <CaptionSmall padding={gutters()}>
-                  {t('pages.home.sections.myLatestContributions.noContributions')}
-                </CaptionSmall>
-              )}
-            </Gutters>
-          </ScrollerWithGradient>
+          {renderActivities(true)}
         </Gutters>
       ) : (
         <Gutters disableGap disablePadding>
           {renderFilters()}
 
-          {loading ? (
-            <Loading />
-          ) : (
-            <ScrollerWithGradient>
-              <Gutters disableGap disablePadding padding={gutters(0.5)}>
-                {activities?.map(activity => (
-                  <ActivityViewChooser
-                    key={activity.id}
-                    activity={activity as ActivityLogResultType}
-                    avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
-                  />
-                ))}
-
-                {!hasActivity && isAllSpacesSelected && (
-                  <CaptionSmall padding={gutters()}>
-                    {t('pages.home.sections.myLatestContributions.noContributions')}
-                  </CaptionSmall>
-                )}
-              </Gutters>
-            </ScrollerWithGradient>
-          )}
+          {loading ? <Loading /> : renderActivities(false)}
         </Gutters>
       )}
 

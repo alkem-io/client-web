@@ -13,7 +13,7 @@ import {
   LatestContributionsQueryVariables,
 } from '@/core/apollo/generated/graphql-schema';
 import { Box, SelectChangeEvent, Skeleton, Theme, useMediaQuery, useTheme } from '@mui/material';
-import { forwardRef, useMemo, useState } from 'react';
+import React, { forwardRef, useMemo, useState } from 'react';
 import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
 import { SelectOption } from '@mui/base';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
@@ -140,6 +140,8 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
 
   const showMore =
     typeof data?.activityFeed.activityFeed?.length === 'number' && data.activityFeed.activityFeed.length > 10;
+
+  // @@@ WIP ~ #7267 - Изнеси и тук повтарящия се JSX, както направи в МайЛейтестКонтрибуции:110
 
   return (
     <>
