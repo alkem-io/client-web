@@ -5,74 +5,97 @@ import { Link as RouterLink } from 'react-router-dom';
 import { AdminSection } from '../layout/toplevel/constants';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import PlatformRoleAssignementPage from './PlatformRoleAssignementPage';
 import { gutters } from '@/core/ui/grid/utils';
-import { usePlatformRolesetQuery } from '@/core/apollo/generated/apollo-hooks';
+import { usePlatformRoleSetQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
+import useRoleSetAdmin from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
+import { useTranslation } from 'react-i18next';
+import { useUserContext } from '@/domain/community/user';
+import EditMemberUsers from '../components/Community/EditMembersUsers';
+import usePlatformRoleSetAdminAvailableUsers from '@/domain/access/RoleSet/RoleSetAdmin/AvailableUsers/usePlatformRoleSetAdminAvailableUsers';
 
 interface AdminAuthorizationPageProps {
-  role?: RoleName;
+  selectedRole?: RoleName;
 }
 
-const tabs = [
-  {
-    title: 'Global admins',
-    platformRole: RoleName.GlobalAdmin,
-  },
-  {
-    title: 'Support',
-    platformRole: RoleName.GlobalSupport,
-  },
-  {
-    title: 'License Manager',
-    platformRole: RoleName.GlobalLicenseManager,
-  },
-  {
-    title: 'Community Reader',
-    platformRole: RoleName.GlobalCommunityReader,
-  },
-  {
-    title: 'Spaces Reader',
-    platformRole: RoleName.GlobalSpacesReader,
-  },
-  {
-    title: 'Beta Testers',
-    platformRole: RoleName.PlatformBetaTester,
-  },
-  {
-    title: 'VC Campaign',
-    platformRole: RoleName.PlatformVcCampaign,
-  },
-];
+const MANAGED_ROLES = [
+  RoleName.GlobalAdmin,
+  RoleName.GlobalSupport,
+  RoleName.GlobalLicenseManager,
+  RoleName.GlobalCommunityReader,
+  RoleName.GlobalSpacesReader,
+  RoleName.PlatformBetaTester,
+  RoleName.PlatformVcCampaign,
+] as const;
 
-const AdminAuthorizationPage = ({ role }: AdminAuthorizationPageProps) => {
-  const selectedTab: RoleName | '_none' = role ?? '_none'; // TODO: test + tidy up
+const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) => {
+  const { t } = useTranslation();
+  const { user: userMetadata } = useUserContext();
+  const [seachTerm, setSearchTerm] = React.useState<string>('');
+  const currentUser = userMetadata?.user;
 
-  const { data, loading } = usePlatformRolesetQuery();
+  const { data, loading: loadingPlatformRoleSet } = usePlatformRoleSetQuery();
   const roleSetId = data?.platform.roleSet.id;
+  const {
+    usersByRole,
+    assignPlatformRoleToUser,
+    removePlatformRoleFromUser,
+    loading: loadingRoleSet,
+    updating,
+  } = useRoleSetAdmin({
+    roleSetId,
+    relevantRoles: MANAGED_ROLES,
+    contributorTypes: ['user'],
+    refetch: () => {
+      refetch();
+    },
+  });
+
+  const {
+    users: availableMembers,
+    fetchMore,
+    hasMore,
+    refetch,
+  } = usePlatformRoleSetAdminAvailableUsers({ roleSetId, role: selectedRole, filter: seachTerm });
+
+  const loading = loadingPlatformRoleSet || loadingRoleSet;
 
   return (
     <AdminLayout currentTab={AdminSection.Authorization}>
       {loading && <Loading />}
       {!loading && roleSetId && (
-        <TabContext value={selectedTab}>
+        <TabContext value={selectedRole ?? '_none'}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabList sx={{ '.MuiTabs-flexContainer': { gap: gutters() } }}>
-              {tabs.map(tab => (
+              {MANAGED_ROLES.map(tab => (
                 <Tab
-                  key={tab.platformRole}
-                  value={tab.platformRole}
+                  key={tab}
+                  value={tab}
                   component={RouterLink}
-                  to={`/admin/authorization/roles/${tab.platformRole}`}
-                  label={tab.title}
+                  to={`/admin/authorization/roles/${tab}`}
+                  label={t(`common.roles.${tab}`)}
                 />
               ))}
             </TabList>
           </Box>
           <TabPanel value="_none" />
-          {tabs.map(tab => (
-            <TabPanel key={tab.platformRole} value={tab.platformRole}>
-              <PlatformRoleAssignementPage role={tab.platformRole} roleSetId={roleSetId} />
+          {MANAGED_ROLES.map(role => (
+            <TabPanel key={role} value={role}>
+              {role === selectedRole && (
+                <EditMemberUsers
+                  members={usersByRole[role] ?? []}
+                  availableMembers={availableMembers}
+                  executorId={currentUser?.id}
+                  onAdd={userId => assignPlatformRoleToUser(userId, role)}
+                  onRemove={userId => removePlatformRoleFromUser(userId, role)}
+                  updating={updating}
+                  loadingMembers={loading}
+                  loadingAvailableMembers={loading}
+                  onSearchTermChange={setSearchTerm}
+                  hasMore={hasMore}
+                  fetchMore={fetchMore}
+                />
+              )}
             </TabPanel>
           ))}
         </TabContext>

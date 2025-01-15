@@ -16,11 +16,3 @@ query CommunityMembersList(
   }
 }
 
-fragment AvailableUser on User {
-  id
-  profile {
-    id
-    displayName
-  }
-  email
-}

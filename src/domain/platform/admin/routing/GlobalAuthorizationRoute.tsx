@@ -8,30 +8,33 @@ const GlobalAuthorizationRoute: FC = () => {
   return (
     <Routes>
       <Route path="/" element={<AdminAuthorizationPage />} />
-      <Route path={`roles/${RoleName.GlobalAdmin}`} element={<AdminAuthorizationPage role={RoleName.GlobalAdmin} />} />
+      <Route
+        path={`roles/${RoleName.GlobalAdmin}`}
+        element={<AdminAuthorizationPage selectedRole={RoleName.GlobalAdmin} />}
+      />
       <Route
         path={`roles/${RoleName.GlobalSupport}`}
-        element={<AdminAuthorizationPage role={RoleName.GlobalSupport} />}
+        element={<AdminAuthorizationPage selectedRole={RoleName.GlobalSupport} />}
       />
       <Route
         path={`roles/${RoleName.GlobalLicenseManager}`}
-        element={<AdminAuthorizationPage role={RoleName.GlobalLicenseManager} />}
+        element={<AdminAuthorizationPage selectedRole={RoleName.GlobalLicenseManager} />}
       />
       <Route
         path={`roles/${RoleName.GlobalCommunityReader}`}
-        element={<AdminAuthorizationPage role={RoleName.GlobalCommunityReader} />}
+        element={<AdminAuthorizationPage selectedRole={RoleName.GlobalCommunityReader} />}
       />
       <Route
         path={`roles/${RoleName.GlobalSpacesReader}`}
-        element={<AdminAuthorizationPage role={RoleName.GlobalSpacesReader} />}
+        element={<AdminAuthorizationPage selectedRole={RoleName.GlobalSpacesReader} />}
       />
       <Route
         path={`roles/${RoleName.PlatformBetaTester}`}
-        element={<AdminAuthorizationPage role={RoleName.PlatformBetaTester} />}
+        element={<AdminAuthorizationPage selectedRole={RoleName.PlatformBetaTester} />}
       />
       <Route
         path={`roles/${RoleName.PlatformVcCampaign}`}
-        element={<AdminAuthorizationPage role={RoleName.PlatformVcCampaign} />}
+        element={<AdminAuthorizationPage selectedRole={RoleName.PlatformVcCampaign} />}
       />
       <Route path="*" element={<Error404 />} />
     </Routes>

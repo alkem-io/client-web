@@ -2,20 +2,22 @@ import Grid from '@mui/material/Grid';
 import TableCell from '@mui/material/TableCell';
 import React, { FC } from 'react';
 import { Member } from '@/domain/community/user/models/User';
-import { UserDisplayNameFragment } from '@/core/apollo/generated/graphql-schema';
 import { AvailableMembers, EditMembers } from './EditMembers';
 import { Box, Typography } from '@mui/material';
 
 export interface EditMemberUsersProps {
   executorId?: string;
   members: Member[];
-  availableMembers: UserDisplayNameFragment[];
+  availableMembers: {
+    id: string;
+    profile: { displayName: string };
+  }[];
   updating: boolean;
   loadingAvailableMembers: boolean;
   loadingMembers?: boolean;
   onAdd: (memberId: string) => void;
   onRemove: (memberId: string) => void;
-  fetchMore?: (amount?: number) => Promise<void>;
+  fetchMore?: (amount?: number) => Promise<unknown>;
   onSearchTermChange: (term: string) => void;
   hasMore?: boolean;
   title?: string;

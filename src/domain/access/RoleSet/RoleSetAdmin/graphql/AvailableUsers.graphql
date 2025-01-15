@@ -1,0 +1,44 @@
+fragment AvailableUserForRoleSet on User {
+  id
+  profile {
+    id
+    displayName
+  }
+  email
+}
+
+fragment AvailableUsersForRoleSetPaginated on PaginatedUsers {
+  users {
+    ...AvailableUserForRoleSet
+  }
+  pageInfo {
+    hasNextPage
+    endCursor
+  }
+}
+
+query PlatformRoleAvailableUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
+  usersPaginated(first: $first, after: $after, filter: $filter) {
+    ...AvailableUsersForRoleSetPaginated
+  }
+}
+
+query AvailableUsersForEntryRole($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
+  lookup {
+    roleSet(ID: $roleSetId) {
+      availableUsersForEntryRole (first: $first, after: $after, filter: $filter) {
+        ...AvailableUsersForRoleSetPaginated
+      }
+    }
+  }
+}
+
+query AvailableUsersForElevatedRole($roleSetId: UUID!, $role: RoleName!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
+  lookup {
+    roleSet(ID: $roleSetId) {
+      availableUsersForElevatedRole(role: $role, first: $first, after: $after, filter: $filter) {
+        ...AvailableUsersForRoleSetPaginated
+      }
+    }
+  }
+}

@@ -1,4 +1,4 @@
-query PlatformRoleset {
+query PlatformRoleSet {
   platform {
     roleSet {
       id

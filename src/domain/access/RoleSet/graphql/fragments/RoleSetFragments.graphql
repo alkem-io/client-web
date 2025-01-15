@@ -35,23 +35,25 @@ fragment CommunityRoleSetDetails on RoleSet {
   }
 }
 
+## remove?
+
 fragment RoleSetAvailableElevatedRoleUsers on RoleSet {
   id
   availableUsersForElevatedRole(role: $roleName, first: $first, after: $after, filter: $filter) {
     users {
-      ...AvailableUser
+      ...AvailableUserForRoleSet
     }
     pageInfo {
       ...PageInfo
     }
   }
 }
-
+## remove?
 fragment RoleSetAvailableEntryRoleUsers on RoleSet {
   id
   availableUsersForEntryRole(first: $first, after: $after, filter: $filter) {
     users {
-      ...AvailableUser
+      ...AvailableUserForRoleSet
     }
     pageInfo {
       ...PageInfo

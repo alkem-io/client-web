@@ -22,7 +22,12 @@ query InnovationPackUrlResolver($innovationPackNameId: NameID!) {
   }
 }
 
-query TemplatesSetUrlResolver($spaceId: UUID!, $includeSpace: Boolean = false, $innovationPackId: UUID!, $includeInnovationPack: Boolean = false) {
+query TemplatesSetUrlResolver(
+  $spaceId: UUID! = "00000000-0000-0000-0000-000000000000",
+  $includeSpace: Boolean = false,
+  $innovationPackId: UUID! = "00000000-0000-0000-0000-000000000000",
+  $includeInnovationPack: Boolean = false
+) {
   lookup {
     space(ID: $spaceId) @include(if: $includeSpace) {
       templatesManager {

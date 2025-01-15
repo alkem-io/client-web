@@ -1,6 +1,7 @@
 
 fragment RoleDefinitionPolicy on Role {
   id
+  name
   organizationPolicy {
     minimum
     maximum

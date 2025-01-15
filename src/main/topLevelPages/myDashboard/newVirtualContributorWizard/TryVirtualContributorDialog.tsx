@@ -143,7 +143,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     }
   };
 
-  const { vcId, loading: resolvingVc } = useUrlResolver({ vcNameId });
+  const { vcId, loading: resolvingVc } = useUrlResolver({ overrideUrlParams: { vcNameId } });
 
   const {
     data: vcData,

@@ -81,8 +81,8 @@ export const InnovationPackCardFragmentDoc = gql`
   ${TagsetDetailsFragmentDoc}
   ${InnovationPackProviderProfileWithAvatarFragmentDoc}
 `;
-export const AvailableUserFragmentDoc = gql`
-  fragment AvailableUser on User {
+export const AvailableUserForRoleSetFragmentDoc = gql`
+  fragment AvailableUserForRoleSet on User {
     id
     profile {
       id
@@ -90,6 +90,18 @@ export const AvailableUserFragmentDoc = gql`
     }
     email
   }
+`;
+export const AvailableUsersForRoleSetPaginatedFragmentDoc = gql`
+  fragment AvailableUsersForRoleSetPaginated on PaginatedUsers {
+    users {
+      ...AvailableUserForRoleSet
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+  ${AvailableUserForRoleSetFragmentDoc}
 `;
 export const PageInfoFragmentDoc = gql`
   fragment PageInfo on PageInfo {
@@ -103,14 +115,14 @@ export const RoleSetAvailableElevatedRoleUsersFragmentDoc = gql`
     id
     availableUsersForElevatedRole(role: $roleName, first: $first, after: $after, filter: $filter) {
       users {
-        ...AvailableUser
+        ...AvailableUserForRoleSet
       }
       pageInfo {
         ...PageInfo
       }
     }
   }
-  ${AvailableUserFragmentDoc}
+  ${AvailableUserForRoleSetFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
 export const RoleSetAvailableEntryRoleUsersFragmentDoc = gql`
@@ -118,14 +130,14 @@ export const RoleSetAvailableEntryRoleUsersFragmentDoc = gql`
     id
     availableUsersForEntryRole(first: $first, after: $after, filter: $filter) {
       users {
-        ...AvailableUser
+        ...AvailableUserForRoleSet
       }
       pageInfo {
         ...PageInfo
       }
     }
   }
-  ${AvailableUserFragmentDoc}
+  ${AvailableUserForRoleSetFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
 export const AdminCommunityCandidateMemberFragmentDoc = gql`
@@ -2313,6 +2325,7 @@ export const RoleSetMemberVirtualContributorFragmentDoc = gql`
 export const RoleDefinitionPolicyFragmentDoc = gql`
   fragment RoleDefinitionPolicy on Role {
     id
+    name
     organizationPolicy {
       minimum
       maximum
@@ -4414,6 +4427,494 @@ export type UpdateInnovationPackMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationPackMutation,
   SchemaTypes.UpdateInnovationPackMutationVariables
 >;
+export const PlatformRoleAvailableUsersDocument = gql`
+  query PlatformRoleAvailableUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
+    usersPaginated(first: $first, after: $after, filter: $filter) {
+      ...AvailableUsersForRoleSetPaginated
+    }
+  }
+  ${AvailableUsersForRoleSetPaginatedFragmentDoc}
+`;
+
+/**
+ * __usePlatformRoleAvailableUsersQuery__
+ *
+ * To run a query within a React component, call `usePlatformRoleAvailableUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformRoleAvailableUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformRoleAvailableUsersQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function usePlatformRoleAvailableUsersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformRoleAvailableUsersQuery,
+    SchemaTypes.PlatformRoleAvailableUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.PlatformRoleAvailableUsersQuery,
+    SchemaTypes.PlatformRoleAvailableUsersQueryVariables
+  >(PlatformRoleAvailableUsersDocument, options);
+}
+
+export function usePlatformRoleAvailableUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformRoleAvailableUsersQuery,
+    SchemaTypes.PlatformRoleAvailableUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.PlatformRoleAvailableUsersQuery,
+    SchemaTypes.PlatformRoleAvailableUsersQueryVariables
+  >(PlatformRoleAvailableUsersDocument, options);
+}
+
+export type PlatformRoleAvailableUsersQueryHookResult = ReturnType<typeof usePlatformRoleAvailableUsersQuery>;
+export type PlatformRoleAvailableUsersLazyQueryHookResult = ReturnType<typeof usePlatformRoleAvailableUsersLazyQuery>;
+export type PlatformRoleAvailableUsersQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformRoleAvailableUsersQuery,
+  SchemaTypes.PlatformRoleAvailableUsersQueryVariables
+>;
+export function refetchPlatformRoleAvailableUsersQuery(
+  variables: SchemaTypes.PlatformRoleAvailableUsersQueryVariables
+) {
+  return { query: PlatformRoleAvailableUsersDocument, variables: variables };
+}
+
+export const AvailableUsersForEntryRoleDocument = gql`
+  query AvailableUsersForEntryRole($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
+    lookup {
+      roleSet(ID: $roleSetId) {
+        availableUsersForEntryRole(first: $first, after: $after, filter: $filter) {
+          ...AvailableUsersForRoleSetPaginated
+        }
+      }
+    }
+  }
+  ${AvailableUsersForRoleSetPaginatedFragmentDoc}
+`;
+
+/**
+ * __useAvailableUsersForEntryRoleQuery__
+ *
+ * To run a query within a React component, call `useAvailableUsersForEntryRoleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAvailableUsersForEntryRoleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAvailableUsersForEntryRoleQuery({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useAvailableUsersForEntryRoleQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AvailableUsersForEntryRoleQuery,
+    SchemaTypes.AvailableUsersForEntryRoleQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.AvailableUsersForEntryRoleQuery,
+    SchemaTypes.AvailableUsersForEntryRoleQueryVariables
+  >(AvailableUsersForEntryRoleDocument, options);
+}
+
+export function useAvailableUsersForEntryRoleLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AvailableUsersForEntryRoleQuery,
+    SchemaTypes.AvailableUsersForEntryRoleQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.AvailableUsersForEntryRoleQuery,
+    SchemaTypes.AvailableUsersForEntryRoleQueryVariables
+  >(AvailableUsersForEntryRoleDocument, options);
+}
+
+export type AvailableUsersForEntryRoleQueryHookResult = ReturnType<typeof useAvailableUsersForEntryRoleQuery>;
+export type AvailableUsersForEntryRoleLazyQueryHookResult = ReturnType<typeof useAvailableUsersForEntryRoleLazyQuery>;
+export type AvailableUsersForEntryRoleQueryResult = Apollo.QueryResult<
+  SchemaTypes.AvailableUsersForEntryRoleQuery,
+  SchemaTypes.AvailableUsersForEntryRoleQueryVariables
+>;
+export function refetchAvailableUsersForEntryRoleQuery(
+  variables: SchemaTypes.AvailableUsersForEntryRoleQueryVariables
+) {
+  return { query: AvailableUsersForEntryRoleDocument, variables: variables };
+}
+
+export const AvailableUsersForElevatedRoleDocument = gql`
+  query AvailableUsersForElevatedRole(
+    $roleSetId: UUID!
+    $role: RoleName!
+    $first: Int!
+    $after: UUID
+    $filter: UserFilterInput
+  ) {
+    lookup {
+      roleSet(ID: $roleSetId) {
+        availableUsersForElevatedRole(role: $role, first: $first, after: $after, filter: $filter) {
+          ...AvailableUsersForRoleSetPaginated
+        }
+      }
+    }
+  }
+  ${AvailableUsersForRoleSetPaginatedFragmentDoc}
+`;
+
+/**
+ * __useAvailableUsersForElevatedRoleQuery__
+ *
+ * To run a query within a React component, call `useAvailableUsersForElevatedRoleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAvailableUsersForElevatedRoleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAvailableUsersForElevatedRoleQuery({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *      role: // value for 'role'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useAvailableUsersForElevatedRoleQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AvailableUsersForElevatedRoleQuery,
+    SchemaTypes.AvailableUsersForElevatedRoleQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.AvailableUsersForElevatedRoleQuery,
+    SchemaTypes.AvailableUsersForElevatedRoleQueryVariables
+  >(AvailableUsersForElevatedRoleDocument, options);
+}
+
+export function useAvailableUsersForElevatedRoleLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AvailableUsersForElevatedRoleQuery,
+    SchemaTypes.AvailableUsersForElevatedRoleQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.AvailableUsersForElevatedRoleQuery,
+    SchemaTypes.AvailableUsersForElevatedRoleQueryVariables
+  >(AvailableUsersForElevatedRoleDocument, options);
+}
+
+export type AvailableUsersForElevatedRoleQueryHookResult = ReturnType<typeof useAvailableUsersForElevatedRoleQuery>;
+export type AvailableUsersForElevatedRoleLazyQueryHookResult = ReturnType<
+  typeof useAvailableUsersForElevatedRoleLazyQuery
+>;
+export type AvailableUsersForElevatedRoleQueryResult = Apollo.QueryResult<
+  SchemaTypes.AvailableUsersForElevatedRoleQuery,
+  SchemaTypes.AvailableUsersForElevatedRoleQueryVariables
+>;
+export function refetchAvailableUsersForElevatedRoleQuery(
+  variables: SchemaTypes.AvailableUsersForElevatedRoleQueryVariables
+) {
+  return { query: AvailableUsersForElevatedRoleDocument, variables: variables };
+}
+
+export const AssignPlatformRoleToUserDocument = gql`
+  mutation AssignPlatformRoleToUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
+    assignPlatformRoleToUser(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export type AssignPlatformRoleToUserMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignPlatformRoleToUserMutation,
+  SchemaTypes.AssignPlatformRoleToUserMutationVariables
+>;
+
+/**
+ * __useAssignPlatformRoleToUserMutation__
+ *
+ * To run a mutation, you first call `useAssignPlatformRoleToUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignPlatformRoleToUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignPlatformRoleToUserMutation, { data, loading, error }] = useAssignPlatformRoleToUserMutation({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *      role: // value for 'role'
+ *      contributorId: // value for 'contributorId'
+ *   },
+ * });
+ */
+export function useAssignPlatformRoleToUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignPlatformRoleToUserMutation,
+    SchemaTypes.AssignPlatformRoleToUserMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AssignPlatformRoleToUserMutation,
+    SchemaTypes.AssignPlatformRoleToUserMutationVariables
+  >(AssignPlatformRoleToUserDocument, options);
+}
+
+export type AssignPlatformRoleToUserMutationHookResult = ReturnType<typeof useAssignPlatformRoleToUserMutation>;
+export type AssignPlatformRoleToUserMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignPlatformRoleToUserMutation>;
+export type AssignPlatformRoleToUserMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignPlatformRoleToUserMutation,
+  SchemaTypes.AssignPlatformRoleToUserMutationVariables
+>;
+export const RemovePlatformRoleFromUserDocument = gql`
+  mutation RemovePlatformRoleFromUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
+    removePlatformRoleFromUser(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+`;
+export type RemovePlatformRoleFromUserMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemovePlatformRoleFromUserMutation,
+  SchemaTypes.RemovePlatformRoleFromUserMutationVariables
+>;
+
+/**
+ * __useRemovePlatformRoleFromUserMutation__
+ *
+ * To run a mutation, you first call `useRemovePlatformRoleFromUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemovePlatformRoleFromUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removePlatformRoleFromUserMutation, { data, loading, error }] = useRemovePlatformRoleFromUserMutation({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *      role: // value for 'role'
+ *      contributorId: // value for 'contributorId'
+ *   },
+ * });
+ */
+export function useRemovePlatformRoleFromUserMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemovePlatformRoleFromUserMutation,
+    SchemaTypes.RemovePlatformRoleFromUserMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemovePlatformRoleFromUserMutation,
+    SchemaTypes.RemovePlatformRoleFromUserMutationVariables
+  >(RemovePlatformRoleFromUserDocument, options);
+}
+
+export type RemovePlatformRoleFromUserMutationHookResult = ReturnType<typeof useRemovePlatformRoleFromUserMutation>;
+export type RemovePlatformRoleFromUserMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemovePlatformRoleFromUserMutation>;
+export type RemovePlatformRoleFromUserMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemovePlatformRoleFromUserMutation,
+  SchemaTypes.RemovePlatformRoleFromUserMutationVariables
+>;
+export const RoleSetAuthorizationDocument = gql`
+  query RoleSetAuthorization($roleSetId: UUID!) {
+    lookup {
+      roleSet(ID: $roleSetId) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        roleNames
+      }
+    }
+  }
+`;
+
+/**
+ * __useRoleSetAuthorizationQuery__
+ *
+ * To run a query within a React component, call `useRoleSetAuthorizationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRoleSetAuthorizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRoleSetAuthorizationQuery({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *   },
+ * });
+ */
+export function useRoleSetAuthorizationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.RoleSetAuthorizationQuery,
+    SchemaTypes.RoleSetAuthorizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.RoleSetAuthorizationQuery, SchemaTypes.RoleSetAuthorizationQueryVariables>(
+    RoleSetAuthorizationDocument,
+    options
+  );
+}
+
+export function useRoleSetAuthorizationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.RoleSetAuthorizationQuery,
+    SchemaTypes.RoleSetAuthorizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.RoleSetAuthorizationQuery, SchemaTypes.RoleSetAuthorizationQueryVariables>(
+    RoleSetAuthorizationDocument,
+    options
+  );
+}
+
+export type RoleSetAuthorizationQueryHookResult = ReturnType<typeof useRoleSetAuthorizationQuery>;
+export type RoleSetAuthorizationLazyQueryHookResult = ReturnType<typeof useRoleSetAuthorizationLazyQuery>;
+export type RoleSetAuthorizationQueryResult = Apollo.QueryResult<
+  SchemaTypes.RoleSetAuthorizationQuery,
+  SchemaTypes.RoleSetAuthorizationQueryVariables
+>;
+export function refetchRoleSetAuthorizationQuery(variables: SchemaTypes.RoleSetAuthorizationQueryVariables) {
+  return { query: RoleSetAuthorizationDocument, variables: variables };
+}
+
+export const RoleSetRoleAssignmentDocument = gql`
+  query RoleSetRoleAssignment(
+    $roleSetId: UUID!
+    $roles: [RoleName!]!
+    $includeUsers: Boolean = true
+    $includeOrganizations: Boolean = true
+    $includeVirtualContributors: Boolean = true
+  ) {
+    lookup {
+      roleSet(ID: $roleSetId) {
+        id
+        usersInRoles(roles: $roles) @include(if: $includeUsers) {
+          role
+          users {
+            ...RoleSetMemberUser
+          }
+        }
+        organizationsInRoles(roles: $roles) @include(if: $includeOrganizations) {
+          role
+          organizations {
+            ...RoleSetMemberOrganization
+          }
+        }
+        virtualContributorsInRoles(roles: $roles) @include(if: $includeVirtualContributors) {
+          role
+          virtualContributors {
+            ...RoleSetMemberVirtualContributor
+          }
+        }
+        roleDefinitions(roles: $roles) {
+          ...RoleDefinitionPolicy
+        }
+      }
+    }
+  }
+  ${RoleSetMemberUserFragmentDoc}
+  ${RoleSetMemberOrganizationFragmentDoc}
+  ${RoleSetMemberVirtualContributorFragmentDoc}
+  ${RoleDefinitionPolicyFragmentDoc}
+`;
+
+/**
+ * __useRoleSetRoleAssignmentQuery__
+ *
+ * To run a query within a React component, call `useRoleSetRoleAssignmentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRoleSetRoleAssignmentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRoleSetRoleAssignmentQuery({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *      roles: // value for 'roles'
+ *      includeUsers: // value for 'includeUsers'
+ *      includeOrganizations: // value for 'includeOrganizations'
+ *      includeVirtualContributors: // value for 'includeVirtualContributors'
+ *   },
+ * });
+ */
+export function useRoleSetRoleAssignmentQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.RoleSetRoleAssignmentQuery,
+    SchemaTypes.RoleSetRoleAssignmentQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.RoleSetRoleAssignmentQuery, SchemaTypes.RoleSetRoleAssignmentQueryVariables>(
+    RoleSetRoleAssignmentDocument,
+    options
+  );
+}
+
+export function useRoleSetRoleAssignmentLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.RoleSetRoleAssignmentQuery,
+    SchemaTypes.RoleSetRoleAssignmentQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.RoleSetRoleAssignmentQuery, SchemaTypes.RoleSetRoleAssignmentQueryVariables>(
+    RoleSetRoleAssignmentDocument,
+    options
+  );
+}
+
+export type RoleSetRoleAssignmentQueryHookResult = ReturnType<typeof useRoleSetRoleAssignmentQuery>;
+export type RoleSetRoleAssignmentLazyQueryHookResult = ReturnType<typeof useRoleSetRoleAssignmentLazyQuery>;
+export type RoleSetRoleAssignmentQueryResult = Apollo.QueryResult<
+  SchemaTypes.RoleSetRoleAssignmentQuery,
+  SchemaTypes.RoleSetRoleAssignmentQueryVariables
+>;
+export function refetchRoleSetRoleAssignmentQuery(variables: SchemaTypes.RoleSetRoleAssignmentQueryVariables) {
+  return { query: RoleSetRoleAssignmentDocument, variables: variables };
+}
+
 export const ApplyForEntryRoleOnRoleSetDocument = gql`
   mutation applyForEntryRoleOnRoleSet($input: ApplyForEntryRoleOnRoleSetInput!) {
     applyForEntryRoleOnRoleSet(applicationData: $input) {
@@ -9962,159 +10463,80 @@ export function refetchSpaceApplicationQuery(variables: SchemaTypes.SpaceApplica
   return { query: SpaceApplicationDocument, variables: variables };
 }
 
-export const RoleSetAuthorizationDocument = gql`
-  query RoleSetAuthorization($roleSetId: UUID!) {
+export const CommunityMembersListDocument = gql`
+  query CommunityMembersList(
+    $roleSetId: UUID!
+    $spaceId: UUID = "00000000-0000-0000-0000-000000000000"
+    $includeSpaceHost: Boolean = false
+  ) {
     lookup {
-      roleSet(ID: $roleSetId) {
+      space(ID: $spaceId) @include(if: $includeSpaceHost) {
         id
-        authorization {
-          id
-          myPrivileges
+        provider {
+          ...ContributorDetails
         }
-        roleNames
+      }
+      roleSet(ID: $roleSetId) {
+        ...CommunityRoleSetDetails
       }
     }
   }
+  ${ContributorDetailsFragmentDoc}
+  ${CommunityRoleSetDetailsFragmentDoc}
 `;
 
 /**
- * __useRoleSetAuthorizationQuery__
+ * __useCommunityMembersListQuery__
  *
- * To run a query within a React component, call `useRoleSetAuthorizationQuery` and pass it any options that fit your needs.
- * When your component renders, `useRoleSetAuthorizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCommunityMembersListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityMembersListQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useRoleSetAuthorizationQuery({
+ * const { data, loading, error } = useCommunityMembersListQuery({
  *   variables: {
  *      roleSetId: // value for 'roleSetId'
+ *      spaceId: // value for 'spaceId'
+ *      includeSpaceHost: // value for 'includeSpaceHost'
  *   },
  * });
  */
-export function useRoleSetAuthorizationQuery(
+export function useCommunityMembersListQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.RoleSetAuthorizationQuery,
-    SchemaTypes.RoleSetAuthorizationQueryVariables
+    SchemaTypes.CommunityMembersListQuery,
+    SchemaTypes.CommunityMembersListQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.RoleSetAuthorizationQuery, SchemaTypes.RoleSetAuthorizationQueryVariables>(
-    RoleSetAuthorizationDocument,
+  return Apollo.useQuery<SchemaTypes.CommunityMembersListQuery, SchemaTypes.CommunityMembersListQueryVariables>(
+    CommunityMembersListDocument,
     options
   );
 }
 
-export function useRoleSetAuthorizationLazyQuery(
+export function useCommunityMembersListLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.RoleSetAuthorizationQuery,
-    SchemaTypes.RoleSetAuthorizationQueryVariables
+    SchemaTypes.CommunityMembersListQuery,
+    SchemaTypes.CommunityMembersListQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.RoleSetAuthorizationQuery, SchemaTypes.RoleSetAuthorizationQueryVariables>(
-    RoleSetAuthorizationDocument,
+  return Apollo.useLazyQuery<SchemaTypes.CommunityMembersListQuery, SchemaTypes.CommunityMembersListQueryVariables>(
+    CommunityMembersListDocument,
     options
   );
 }
 
-export type RoleSetAuthorizationQueryHookResult = ReturnType<typeof useRoleSetAuthorizationQuery>;
-export type RoleSetAuthorizationLazyQueryHookResult = ReturnType<typeof useRoleSetAuthorizationLazyQuery>;
-export type RoleSetAuthorizationQueryResult = Apollo.QueryResult<
-  SchemaTypes.RoleSetAuthorizationQuery,
-  SchemaTypes.RoleSetAuthorizationQueryVariables
+export type CommunityMembersListQueryHookResult = ReturnType<typeof useCommunityMembersListQuery>;
+export type CommunityMembersListLazyQueryHookResult = ReturnType<typeof useCommunityMembersListLazyQuery>;
+export type CommunityMembersListQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityMembersListQuery,
+  SchemaTypes.CommunityMembersListQueryVariables
 >;
-export function refetchRoleSetAuthorizationQuery(variables: SchemaTypes.RoleSetAuthorizationQueryVariables) {
-  return { query: RoleSetAuthorizationDocument, variables: variables };
-}
-
-export const RoleSetRoleAssignmentDocument = gql`
-  query RoleSetRoleAssignment($roleSetId: UUID!, $roles: [RoleName!]!) {
-    lookup {
-      roleSet(ID: $roleSetId) {
-        id
-        usersInRoles(roles: $roles) {
-          role
-          users {
-            ...RoleSetMemberUser
-          }
-        }
-        organizationsInRoles(roles: $roles) {
-          role
-          organizations {
-            ...RoleSetMemberOrganization
-          }
-        }
-        virtualContributorsInRoles(roles: $roles) {
-          role
-          virtualContributors {
-            ...RoleSetMemberVirtualContributor
-          }
-        }
-        roleDefinitions(roles: $roles) {
-          ...RoleDefinitionPolicy
-        }
-      }
-    }
-  }
-  ${RoleSetMemberUserFragmentDoc}
-  ${RoleSetMemberOrganizationFragmentDoc}
-  ${RoleSetMemberVirtualContributorFragmentDoc}
-  ${RoleDefinitionPolicyFragmentDoc}
-`;
-
-/**
- * __useRoleSetRoleAssignmentQuery__
- *
- * To run a query within a React component, call `useRoleSetRoleAssignmentQuery` and pass it any options that fit your needs.
- * When your component renders, `useRoleSetRoleAssignmentQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useRoleSetRoleAssignmentQuery({
- *   variables: {
- *      roleSetId: // value for 'roleSetId'
- *      roles: // value for 'roles'
- *   },
- * });
- */
-export function useRoleSetRoleAssignmentQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.RoleSetRoleAssignmentQuery,
-    SchemaTypes.RoleSetRoleAssignmentQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.RoleSetRoleAssignmentQuery, SchemaTypes.RoleSetRoleAssignmentQueryVariables>(
-    RoleSetRoleAssignmentDocument,
-    options
-  );
-}
-
-export function useRoleSetRoleAssignmentLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.RoleSetRoleAssignmentQuery,
-    SchemaTypes.RoleSetRoleAssignmentQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.RoleSetRoleAssignmentQuery, SchemaTypes.RoleSetRoleAssignmentQueryVariables>(
-    RoleSetRoleAssignmentDocument,
-    options
-  );
-}
-
-export type RoleSetRoleAssignmentQueryHookResult = ReturnType<typeof useRoleSetRoleAssignmentQuery>;
-export type RoleSetRoleAssignmentLazyQueryHookResult = ReturnType<typeof useRoleSetRoleAssignmentLazyQuery>;
-export type RoleSetRoleAssignmentQueryResult = Apollo.QueryResult<
-  SchemaTypes.RoleSetRoleAssignmentQuery,
-  SchemaTypes.RoleSetRoleAssignmentQueryVariables
->;
-export function refetchRoleSetRoleAssignmentQuery(variables: SchemaTypes.RoleSetRoleAssignmentQueryVariables) {
-  return { query: RoleSetRoleAssignmentDocument, variables: variables };
+export function refetchCommunityMembersListQuery(variables: SchemaTypes.CommunityMembersListQueryVariables) {
+  return { query: CommunityMembersListDocument, variables: variables };
 }
 
 export const RoleSetApplicationFormDocument = gql`
@@ -10521,82 +10943,6 @@ export type CreateGroupOnCommunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateGroupOnCommunityMutation,
   SchemaTypes.CreateGroupOnCommunityMutationVariables
 >;
-export const CommunityMembersListDocument = gql`
-  query CommunityMembersList(
-    $roleSetId: UUID!
-    $spaceId: UUID = "00000000-0000-0000-0000-000000000000"
-    $includeSpaceHost: Boolean = false
-  ) {
-    lookup {
-      space(ID: $spaceId) @include(if: $includeSpaceHost) {
-        id
-        provider {
-          ...ContributorDetails
-        }
-      }
-      roleSet(ID: $roleSetId) {
-        ...CommunityRoleSetDetails
-      }
-    }
-  }
-  ${ContributorDetailsFragmentDoc}
-  ${CommunityRoleSetDetailsFragmentDoc}
-`;
-
-/**
- * __useCommunityMembersListQuery__
- *
- * To run a query within a React component, call `useCommunityMembersListQuery` and pass it any options that fit your needs.
- * When your component renders, `useCommunityMembersListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCommunityMembersListQuery({
- *   variables: {
- *      roleSetId: // value for 'roleSetId'
- *      spaceId: // value for 'spaceId'
- *      includeSpaceHost: // value for 'includeSpaceHost'
- *   },
- * });
- */
-export function useCommunityMembersListQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CommunityMembersListQuery,
-    SchemaTypes.CommunityMembersListQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CommunityMembersListQuery, SchemaTypes.CommunityMembersListQueryVariables>(
-    CommunityMembersListDocument,
-    options
-  );
-}
-
-export function useCommunityMembersListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CommunityMembersListQuery,
-    SchemaTypes.CommunityMembersListQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.CommunityMembersListQuery, SchemaTypes.CommunityMembersListQueryVariables>(
-    CommunityMembersListDocument,
-    options
-  );
-}
-
-export type CommunityMembersListQueryHookResult = ReturnType<typeof useCommunityMembersListQuery>;
-export type CommunityMembersListLazyQueryHookResult = ReturnType<typeof useCommunityMembersListLazyQuery>;
-export type CommunityMembersListQueryResult = Apollo.QueryResult<
-  SchemaTypes.CommunityMembersListQuery,
-  SchemaTypes.CommunityMembersListQueryVariables
->;
-export function refetchCommunityMembersListQuery(variables: SchemaTypes.CommunityMembersListQueryVariables) {
-  return { query: CommunityMembersListDocument, variables: variables };
-}
-
 export const AllOrganizationsDocument = gql`
   query AllOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
     organizationsPaginated(first: $first, after: $after, filter: $filter) {
@@ -18260,63 +18606,8 @@ export function refetchPlatformLevelAuthorizationQuery(
   return { query: PlatformLevelAuthorizationDocument, variables: variables };
 }
 
-export const AssignPlatformRoleToUserDocument = gql`
-  mutation AssignPlatformRoleToUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
-    assignPlatformRoleToUser(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type AssignPlatformRoleToUserMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignPlatformRoleToUserMutation,
-  SchemaTypes.AssignPlatformRoleToUserMutationVariables
->;
-
-/**
- * __useAssignPlatformRoleToUserMutation__
- *
- * To run a mutation, you first call `useAssignPlatformRoleToUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignPlatformRoleToUserMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [assignPlatformRoleToUserMutation, { data, loading, error }] = useAssignPlatformRoleToUserMutation({
- *   variables: {
- *      roleSetId: // value for 'roleSetId'
- *      role: // value for 'role'
- *      contributorId: // value for 'contributorId'
- *   },
- * });
- */
-export function useAssignPlatformRoleToUserMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignPlatformRoleToUserMutation,
-    SchemaTypes.AssignPlatformRoleToUserMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AssignPlatformRoleToUserMutation,
-    SchemaTypes.AssignPlatformRoleToUserMutationVariables
-  >(AssignPlatformRoleToUserDocument, options);
-}
-
-export type AssignPlatformRoleToUserMutationHookResult = ReturnType<typeof useAssignPlatformRoleToUserMutation>;
-export type AssignPlatformRoleToUserMutationResult =
-  Apollo.MutationResult<SchemaTypes.AssignPlatformRoleToUserMutation>;
-export type AssignPlatformRoleToUserMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignPlatformRoleToUserMutation,
-  SchemaTypes.AssignPlatformRoleToUserMutationVariables
->;
-export const PlatformRolesetDocument = gql`
-  query PlatformRoleset {
+export const PlatformRoleSetDocument = gql`
+  query PlatformRoleSet {
     platform {
       roleSet {
         id
@@ -18326,105 +18617,50 @@ export const PlatformRolesetDocument = gql`
 `;
 
 /**
- * __usePlatformRolesetQuery__
+ * __usePlatformRoleSetQuery__
  *
- * To run a query within a React component, call `usePlatformRolesetQuery` and pass it any options that fit your needs.
- * When your component renders, `usePlatformRolesetQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `usePlatformRoleSetQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformRoleSetQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = usePlatformRolesetQuery({
+ * const { data, loading, error } = usePlatformRoleSetQuery({
  *   variables: {
  *   },
  * });
  */
-export function usePlatformRolesetQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.PlatformRolesetQuery, SchemaTypes.PlatformRolesetQueryVariables>
+export function usePlatformRoleSetQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.PlatformRoleSetQuery, SchemaTypes.PlatformRoleSetQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.PlatformRolesetQuery, SchemaTypes.PlatformRolesetQueryVariables>(
-    PlatformRolesetDocument,
+  return Apollo.useQuery<SchemaTypes.PlatformRoleSetQuery, SchemaTypes.PlatformRoleSetQueryVariables>(
+    PlatformRoleSetDocument,
     options
   );
 }
 
-export function usePlatformRolesetLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.PlatformRolesetQuery, SchemaTypes.PlatformRolesetQueryVariables>
+export function usePlatformRoleSetLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.PlatformRoleSetQuery, SchemaTypes.PlatformRoleSetQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.PlatformRolesetQuery, SchemaTypes.PlatformRolesetQueryVariables>(
-    PlatformRolesetDocument,
+  return Apollo.useLazyQuery<SchemaTypes.PlatformRoleSetQuery, SchemaTypes.PlatformRoleSetQueryVariables>(
+    PlatformRoleSetDocument,
     options
   );
 }
 
-export type PlatformRolesetQueryHookResult = ReturnType<typeof usePlatformRolesetQuery>;
-export type PlatformRolesetLazyQueryHookResult = ReturnType<typeof usePlatformRolesetLazyQuery>;
-export type PlatformRolesetQueryResult = Apollo.QueryResult<
-  SchemaTypes.PlatformRolesetQuery,
-  SchemaTypes.PlatformRolesetQueryVariables
+export type PlatformRoleSetQueryHookResult = ReturnType<typeof usePlatformRoleSetQuery>;
+export type PlatformRoleSetLazyQueryHookResult = ReturnType<typeof usePlatformRoleSetLazyQuery>;
+export type PlatformRoleSetQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformRoleSetQuery,
+  SchemaTypes.PlatformRoleSetQueryVariables
 >;
-export function refetchPlatformRolesetQuery(variables?: SchemaTypes.PlatformRolesetQueryVariables) {
-  return { query: PlatformRolesetDocument, variables: variables };
+export function refetchPlatformRoleSetQuery(variables?: SchemaTypes.PlatformRoleSetQueryVariables) {
+  return { query: PlatformRoleSetDocument, variables: variables };
 }
 
-export const RemovePlatformRoleFromUserDocument = gql`
-  mutation RemovePlatformRoleFromUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
-    removePlatformRoleFromUser(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
-      id
-      profile {
-        id
-        displayName
-      }
-    }
-  }
-`;
-export type RemovePlatformRoleFromUserMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemovePlatformRoleFromUserMutation,
-  SchemaTypes.RemovePlatformRoleFromUserMutationVariables
->;
-
-/**
- * __useRemovePlatformRoleFromUserMutation__
- *
- * To run a mutation, you first call `useRemovePlatformRoleFromUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemovePlatformRoleFromUserMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removePlatformRoleFromUserMutation, { data, loading, error }] = useRemovePlatformRoleFromUserMutation({
- *   variables: {
- *      roleSetId: // value for 'roleSetId'
- *      role: // value for 'role'
- *      contributorId: // value for 'contributorId'
- *   },
- * });
- */
-export function useRemovePlatformRoleFromUserMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemovePlatformRoleFromUserMutation,
-    SchemaTypes.RemovePlatformRoleFromUserMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemovePlatformRoleFromUserMutation,
-    SchemaTypes.RemovePlatformRoleFromUserMutationVariables
-  >(RemovePlatformRoleFromUserDocument, options);
-}
-
-export type RemovePlatformRoleFromUserMutationHookResult = ReturnType<typeof useRemovePlatformRoleFromUserMutation>;
-export type RemovePlatformRoleFromUserMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemovePlatformRoleFromUserMutation>;
-export type RemovePlatformRoleFromUserMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemovePlatformRoleFromUserMutation,
-  SchemaTypes.RemovePlatformRoleFromUserMutationVariables
->;
 export const AssignLicensePlanToAccountDocument = gql`
   mutation AssignLicensePlanToAccount($licensePlanId: UUID!, $accountId: UUID!, $licensingId: UUID!) {
     assignLicensePlanToAccount(
@@ -25042,9 +25278,9 @@ export function refetchInnovationPackUrlResolverQuery(variables: SchemaTypes.Inn
 
 export const TemplatesSetUrlResolverDocument = gql`
   query TemplatesSetUrlResolver(
-    $spaceId: UUID!
+    $spaceId: UUID! = "00000000-0000-0000-0000-000000000000"
     $includeSpace: Boolean = false
-    $innovationPackId: UUID!
+    $innovationPackId: UUID! = "00000000-0000-0000-0000-000000000000"
     $includeInnovationPack: Boolean = false
   ) {
     lookup {
@@ -25084,7 +25320,7 @@ export const TemplatesSetUrlResolverDocument = gql`
  * });
  */
 export function useTemplatesSetUrlResolverQuery(
-  baseOptions: Apollo.QueryHookOptions<
+  baseOptions?: Apollo.QueryHookOptions<
     SchemaTypes.TemplatesSetUrlResolverQuery,
     SchemaTypes.TemplatesSetUrlResolverQueryVariables
   >
@@ -25115,7 +25351,7 @@ export type TemplatesSetUrlResolverQueryResult = Apollo.QueryResult<
   SchemaTypes.TemplatesSetUrlResolverQuery,
   SchemaTypes.TemplatesSetUrlResolverQueryVariables
 >;
-export function refetchTemplatesSetUrlResolverQuery(variables: SchemaTypes.TemplatesSetUrlResolverQueryVariables) {
+export function refetchTemplatesSetUrlResolverQuery(variables?: SchemaTypes.TemplatesSetUrlResolverQueryVariables) {
   return { query: TemplatesSetUrlResolverDocument, variables: variables };
 }
 

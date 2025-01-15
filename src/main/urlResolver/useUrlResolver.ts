@@ -10,6 +10,7 @@ import {
 import { useUrlParams } from '@/core/routing/useUrlParams';
 import UrlParams from '../routing/urlParams';
 import { useMemo } from 'react';
+import { NotFoundError } from '@/core/notFound/NotFoundErrorBoundary';
 
 type UseUrlResolverProvided = {
   spaceId: string | undefined;
@@ -21,7 +22,15 @@ type UseUrlResolverProvided = {
   loading: boolean;
 };
 
-const useUrlResolver = (overrideUrlParams?: UrlParams): UseUrlResolverProvided => {
+type useUrlResolverParams = {
+  throwIfNotFound?: boolean;
+  overrideUrlParams?: UrlParams;
+};
+
+const useUrlResolver = ({
+  throwIfNotFound = true,
+  overrideUrlParams,
+}: useUrlResolverParams = {}): UseUrlResolverProvided => {
   const urlParams = {
     ...useUrlParams(),
     ...overrideUrlParams,
@@ -35,6 +44,9 @@ const useUrlResolver = (overrideUrlParams?: UrlParams): UseUrlResolverProvided =
     skip: !spaceNameId,
   });
   const spaceId = spaceData?.lookupByName.space;
+  if (throwIfNotFound && spaceNameId && !spaceLoading && !spaceId) {
+    throw new NotFoundError(`Space '${spaceNameId}' not found`);
+  }
 
   // Organization
   const { data: organizationData, loading: organizationLoading } = useOrganizationUrlResolverQuery({
@@ -42,6 +54,9 @@ const useUrlResolver = (overrideUrlParams?: UrlParams): UseUrlResolverProvided =
     skip: !organizationNameId,
   });
   const organizationId = organizationData?.lookupByName.organization;
+  if (throwIfNotFound && organizationNameId && !organizationLoading && !organizationId) {
+    throw new NotFoundError(`Organization '${organizationNameId}' not found`);
+  }
 
   // Innovation Packs
   const { data: innovationPackData, loading: innovationPackLoading } = useInnovationPackUrlResolverQuery({
@@ -49,6 +64,9 @@ const useUrlResolver = (overrideUrlParams?: UrlParams): UseUrlResolverProvided =
     skip: !innovationPackNameId,
   });
   const innovationPackId = innovationPackData?.lookupByName.innovationPack;
+  if (throwIfNotFound && innovationPackNameId && !innovationPackLoading && !innovationPackId) {
+    throw new NotFoundError(`InnovationPack '${innovationPackNameId}' not found`);
+  }
 
   // Templates:
   // Templates need a templatesSetId to resolve the templateId, either from a space or from an innovation pack
@@ -72,6 +90,34 @@ const useUrlResolver = (overrideUrlParams?: UrlParams): UseUrlResolverProvided =
     skip: !templatesSetId || !templateNameId,
   });
   const templateId = templateData?.lookupByName.template;
+  if (throwIfNotFound && templateNameId && !spaceNameId && !innovationPackNameId) {
+    console.error('Template cannot be resolved without a space or innovation pack', {
+      throwIfNotFound,
+      templateNameId,
+      spaceNameId,
+      innovationPackNameId,
+    });
+    throw new NotFoundError(`Template '${templateNameId}' cannot be found. Space or InnovationPack must be provided`);
+  }
+  if (
+    throwIfNotFound &&
+    templateNameId &&
+    !innovationPackLoading &&
+    !spaceLoading &&
+    !templatesSetLoading &&
+    !templateLoading &&
+    !templateId
+  ) {
+    console.error('Template not found', {
+      throwIfNotFound,
+      templateNameId,
+      innovationPackLoading,
+      spaceLoading,
+      templatesSetLoading,
+      templateId,
+    });
+    throw new NotFoundError(`Template '${templateNameId}' not found`);
+  }
 
   // User
   const { data: userData, loading: userLoading } = useUserUrlResolverQuery({
@@ -79,13 +125,19 @@ const useUrlResolver = (overrideUrlParams?: UrlParams): UseUrlResolverProvided =
     skip: !userNameId,
   });
   const userId = userData?.lookupByName.user;
+  if (throwIfNotFound && userNameId && !userLoading && !userId) {
+    throw new NotFoundError(`User '${userNameId}' not found`);
+  }
 
   // Virtual Contributor
-  const { data: virtualContributorData, loading: virtualContributorLoading } = useVirtualContributorUrlResolverQuery({
+  const { data: vcData, loading: vcLoading } = useVirtualContributorUrlResolverQuery({
     variables: { nameId: vcNameId! },
     skip: !vcNameId,
   });
-  const vcId = virtualContributorData?.lookupByName.virtualContributor;
+  const vcId = vcData?.lookupByName.virtualContributor;
+  if (throwIfNotFound && vcNameId && !vcLoading && !vcId) {
+    throw new NotFoundError(`User '${vcNameId}' not found`);
+  }
 
   const result = useMemo(
     () => ({
@@ -102,7 +154,7 @@ const useUrlResolver = (overrideUrlParams?: UrlParams): UseUrlResolverProvided =
         innovationPackLoading ||
         templateLoading ||
         userLoading ||
-        virtualContributorLoading,
+        vcLoading,
     }),
     [
       spaceId,
@@ -117,7 +169,7 @@ const useUrlResolver = (overrideUrlParams?: UrlParams): UseUrlResolverProvided =
       innovationPackLoading,
       templateLoading,
       userLoading,
-      virtualContributorLoading,
+      vcLoading,
     ]
   );
   return result;

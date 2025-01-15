@@ -7749,11 +7749,359 @@ export type InnovationPackCardFragment = {
       };
 };
 
+export type AvailableUserForRoleSetFragment = {
+  __typename?: 'User';
+  id: string;
+  email: string;
+  profile: { __typename?: 'Profile'; id: string; displayName: string };
+};
+
+export type AvailableUsersForRoleSetPaginatedFragment = {
+  __typename?: 'PaginatedUsers';
+  users: Array<{
+    __typename?: 'User';
+    id: string;
+    email: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  }>;
+  pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
+};
+
+export type PlatformRoleAvailableUsersQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type PlatformRoleAvailableUsersQuery = {
+  __typename?: 'Query';
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{
+      __typename?: 'User';
+      id: string;
+      email: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string };
+    }>;
+    pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
+  };
+};
+
+export type AvailableUsersForEntryRoleQueryVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type AvailableUsersForEntryRoleQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    roleSet?:
+      | {
+          __typename?: 'RoleSet';
+          availableUsersForEntryRole: {
+            __typename?: 'PaginatedUsers';
+            users: Array<{
+              __typename?: 'User';
+              id: string;
+              email: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }>;
+            pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
+          };
+        }
+      | undefined;
+  };
+};
+
+export type AvailableUsersForElevatedRoleQueryVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  role: RoleName;
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type AvailableUsersForElevatedRoleQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    roleSet?:
+      | {
+          __typename?: 'RoleSet';
+          availableUsersForElevatedRole: {
+            __typename?: 'PaginatedUsers';
+            users: Array<{
+              __typename?: 'User';
+              id: string;
+              email: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string };
+            }>;
+            pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
+          };
+        }
+      | undefined;
+  };
+};
+
+export type AssignPlatformRoleToUserMutationVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  role: RoleName;
+  contributorId: Scalars['UUID'];
+}>;
+
+export type AssignPlatformRoleToUserMutation = {
+  __typename?: 'Mutation';
+  assignPlatformRoleToUser: {
+    __typename?: 'User';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+};
+
+export type RemovePlatformRoleFromUserMutationVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  role: RoleName;
+  contributorId: Scalars['UUID'];
+}>;
+
+export type RemovePlatformRoleFromUserMutation = {
+  __typename?: 'Mutation';
+  removePlatformRoleFromUser: {
+    __typename?: 'User';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
+};
+
+export type RoleSetAuthorizationQueryVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+}>;
+
+export type RoleSetAuthorizationQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    roleSet?:
+      | {
+          __typename?: 'RoleSet';
+          id: string;
+          roleNames: Array<RoleName>;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type RoleSetRoleAssignmentQueryVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  roles: Array<RoleName> | RoleName;
+  includeUsers?: InputMaybe<Scalars['Boolean']>;
+  includeOrganizations?: InputMaybe<Scalars['Boolean']>;
+  includeVirtualContributors?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type RoleSetRoleAssignmentQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    roleSet?:
+      | {
+          __typename?: 'RoleSet';
+          id: string;
+          usersInRoles?: Array<{
+            __typename?: 'UsersInRolesResponse';
+            role: RoleName;
+            users: Array<{
+              __typename?: 'User';
+              id: string;
+              isContactable: boolean;
+              email: string;
+              firstName: string;
+              lastName: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                location?:
+                  | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                  | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
+              };
+            }>;
+          }>;
+          organizationsInRoles?: Array<{
+            __typename?: 'OrganizationsInRolesResponse';
+            role: RoleName;
+            organizations: Array<{
+              __typename?: 'Organization';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                description?: string | undefined;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
+                location?:
+                  | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+                  | undefined;
+              };
+            }>;
+          }>;
+          virtualContributorsInRoles?: Array<{
+            __typename?: 'VirtualContributorsInRolesResponse';
+            role: RoleName;
+            virtualContributors: Array<{
+              __typename?: 'VirtualContributor';
+              id: string;
+              searchVisibility: SearchVisibility;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                tagsets?:
+                  | Array<{
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }>
+                  | undefined;
+                location?:
+                  | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+                  | undefined;
+              };
+            }>;
+          }>;
+          roleDefinitions: Array<{
+            __typename?: 'Role';
+            id: string;
+            name: RoleName;
+            organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
+            userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
+          }>;
+        }
+      | undefined;
+  };
+};
+
 export type RoleDefinitionPolicyFragment = {
   __typename?: 'Role';
   id: string;
+  name: RoleName;
   organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
   userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
+};
+
+export type RoleSetMemberUserFragment = {
+  __typename?: 'User';
+  id: string;
+  isContactable: boolean;
+  email: string;
+  firstName: string;
+  lastName: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    url: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    location?:
+      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+      | undefined;
+    tagsets?:
+      | Array<{
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }>
+      | undefined;
+  };
+};
+
+export type RoleSetMemberOrganizationFragment = {
+  __typename?: 'Organization';
+  id: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    url: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    tagsets?:
+      | Array<{
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }>
+      | undefined;
+    location?:
+      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+      | undefined;
+  };
+};
+
+export type RoleSetMemberVirtualContributorFragment = {
+  __typename?: 'VirtualContributor';
+  id: string;
+  searchVisibility: SearchVisibility;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    url: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    tagsets?:
+      | Array<{
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }>
+      | undefined;
+    location?:
+      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+      | undefined;
+  };
 };
 
 export type CommunityRoleSetDetailsFragment = {
@@ -7921,12 +8269,14 @@ export type CommunityRoleSetDetailsFragment = {
   memberRoleDefinition: {
     __typename?: 'Role';
     id: string;
+    name: RoleName;
     organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
     userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
   };
   leadRoleDefinition: {
     __typename?: 'Role';
     id: string;
+    name: RoleName;
     organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
     userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
   };
@@ -15736,475 +16086,6 @@ export type SpaceApplicationQuery = {
   };
 };
 
-export type RoleSetAuthorizationQueryVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-}>;
-
-export type RoleSetAuthorizationQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    roleSet?:
-      | {
-          __typename?: 'RoleSet';
-          id: string;
-          roleNames: Array<RoleName>;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type RoleSetRoleAssignmentQueryVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-  roles: Array<RoleName> | RoleName;
-}>;
-
-export type RoleSetRoleAssignmentQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    roleSet?:
-      | {
-          __typename?: 'RoleSet';
-          id: string;
-          usersInRoles: Array<{
-            __typename?: 'UsersInRolesResponse';
-            role: RoleName;
-            users: Array<{
-              __typename?: 'User';
-              id: string;
-              isContactable: boolean;
-              email: string;
-              firstName: string;
-              lastName: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                location?:
-                  | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                  | undefined;
-                tagsets?:
-                  | Array<{
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }>
-                  | undefined;
-              };
-            }>;
-          }>;
-          organizationsInRoles: Array<{
-            __typename?: 'OrganizationsInRolesResponse';
-            role: RoleName;
-            organizations: Array<{
-              __typename?: 'Organization';
-              id: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                description?: string | undefined;
-                url: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                tagsets?:
-                  | Array<{
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }>
-                  | undefined;
-                location?:
-                  | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-                  | undefined;
-              };
-            }>;
-          }>;
-          virtualContributorsInRoles: Array<{
-            __typename?: 'VirtualContributorsInRolesResponse';
-            role: RoleName;
-            virtualContributors: Array<{
-              __typename?: 'VirtualContributor';
-              id: string;
-              searchVisibility: SearchVisibility;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                tagsets?:
-                  | Array<{
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }>
-                  | undefined;
-                location?:
-                  | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-                  | undefined;
-              };
-            }>;
-          }>;
-          roleDefinitions: Array<{
-            __typename?: 'Role';
-            id: string;
-            organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
-            userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
-          }>;
-        }
-      | undefined;
-  };
-};
-
-export type RoleSetMemberUserFragment = {
-  __typename?: 'User';
-  id: string;
-  isContactable: boolean;
-  email: string;
-  firstName: string;
-  lastName: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    url: string;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    location?:
-      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-      | undefined;
-    tagsets?:
-      | Array<{
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }>
-      | undefined;
-  };
-};
-
-export type RoleSetMemberOrganizationFragment = {
-  __typename?: 'Organization';
-  id: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    url: string;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    tagsets?:
-      | Array<{
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }>
-      | undefined;
-    location?:
-      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-      | undefined;
-  };
-};
-
-export type RoleSetMemberVirtualContributorFragment = {
-  __typename?: 'VirtualContributor';
-  id: string;
-  searchVisibility: SearchVisibility;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    url: string;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    tagsets?:
-      | Array<{
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }>
-      | undefined;
-    location?:
-      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-      | undefined;
-  };
-};
-
-export type RoleSetApplicationFormQueryVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-}>;
-
-export type RoleSetApplicationFormQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    roleSet?:
-      | {
-          __typename?: 'RoleSet';
-          id: string;
-          applicationForm: {
-            __typename?: 'Form';
-            id: string;
-            description?: string | undefined;
-            questions: Array<{
-              __typename?: 'FormQuestion';
-              question: string;
-              explanation: string;
-              maxLength: number;
-              required: boolean;
-              sortOrder: number;
-            }>;
-          };
-        }
-      | undefined;
-  };
-};
-
-export type ApplicationFormFragment = {
-  __typename?: 'Form';
-  id: string;
-  description?: string | undefined;
-  questions: Array<{
-    __typename?: 'FormQuestion';
-    question: string;
-    explanation: string;
-    maxLength: number;
-    required: boolean;
-    sortOrder: number;
-  }>;
-};
-
-export type UpdateApplicationFormOnRoleSetMutationVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-  formData: UpdateFormInput;
-}>;
-
-export type UpdateApplicationFormOnRoleSetMutation = {
-  __typename?: 'Mutation';
-  updateApplicationFormOnRoleSet: { __typename?: 'RoleSet'; id: string };
-};
-
-export type CommunityDetailsFragment = {
-  __typename?: 'Community';
-  id: string;
-  roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
-  communication: {
-    __typename?: 'Communication';
-    id: string;
-    authorization?:
-      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
-  };
-};
-
-export type SpaceCommunityQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
-  includeDetails?: InputMaybe<Scalars['Boolean']>;
-}>;
-
-export type SpaceCommunityQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    space?:
-      | {
-          __typename?: 'Space';
-          id: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-          community: {
-            __typename?: 'Community';
-            id: string;
-            roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
-            communication: {
-              __typename?: 'Communication';
-              id: string;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-            };
-          };
-        }
-      | undefined;
-  };
-};
-
-export type CommunityGuidelinesQueryVariables = Exact<{
-  communityId: Scalars['UUID'];
-}>;
-
-export type CommunityGuidelinesQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    community?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          guidelines: {
-            __typename?: 'CommunityGuidelines';
-            id: string;
-            profile: {
-              __typename?: 'Profile';
-              id: string;
-              displayName: string;
-              description?: string | undefined;
-              references?:
-                | Array<{
-                    __typename?: 'Reference';
-                    id: string;
-                    name: string;
-                    uri: string;
-                    description?: string | undefined;
-                  }>
-                | undefined;
-            };
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-          };
-        }
-      | undefined;
-  };
-};
-
-export type CommunityGuidelinesDetailsFragment = {
-  __typename?: 'CommunityGuidelines';
-  id: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    references?:
-      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-      | undefined;
-  };
-  authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-    | undefined;
-};
-
-export type UpdateCommunityGuidelinesMutationVariables = Exact<{
-  communityGuidelinesData: UpdateCommunityGuidelinesEntityInput;
-}>;
-
-export type UpdateCommunityGuidelinesMutation = {
-  __typename?: 'Mutation';
-  updateCommunityGuidelines: {
-    __typename?: 'CommunityGuidelines';
-    id: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      description?: string | undefined;
-      references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-        | undefined;
-    };
-    authorization?:
-      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
-  };
-};
-
-export type RemoveCommunityGuidelinesContentMutationVariables = Exact<{
-  communityGuidelinesData: RemoveCommunityGuidelinesContentInput;
-}>;
-
-export type RemoveCommunityGuidelinesContentMutation = {
-  __typename?: 'Mutation';
-  removeCommunityGuidelinesContent: {
-    __typename?: 'CommunityGuidelines';
-    id: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      description?: string | undefined;
-      references?:
-        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
-        | undefined;
-    };
-    authorization?:
-      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
-  };
-};
-
-export type CommunityPageMembersFragment = {
-  __typename?: 'User';
-  id: string;
-  nameID: string;
-  email: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
-    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    tagsets?:
-      | Array<{
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }>
-      | undefined;
-  };
-};
-
-export type CreateGroupOnCommunityMutationVariables = Exact<{
-  input: CreateUserGroupInput;
-}>;
-
-export type CreateGroupOnCommunityMutation = {
-  __typename?: 'Mutation';
-  createGroupOnCommunity: {
-    __typename?: 'UserGroup';
-    id: string;
-    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
-  };
-};
-
-export type BasicOrganizationDetailsFragment = {
-  __typename?: 'Organization';
-  id: string;
-  nameID: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    url: string;
-    displayName: string;
-    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-  };
-};
-
 export type CommunityMembersListQueryVariables = Exact<{
   roleSetId: Scalars['UUID'];
   spaceId?: InputMaybe<Scalars['UUID']>;
@@ -16466,12 +16347,14 @@ export type CommunityMembersListQuery = {
           memberRoleDefinition: {
             __typename?: 'Role';
             id: string;
+            name: RoleName;
             organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
             userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
           };
           leadRoleDefinition: {
             __typename?: 'Role';
             id: string;
+            name: RoleName;
             organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
             userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
           };
@@ -16483,11 +16366,257 @@ export type CommunityMembersListQuery = {
   };
 };
 
-export type AvailableUserFragment = {
+export type RoleSetApplicationFormQueryVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+}>;
+
+export type RoleSetApplicationFormQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    roleSet?:
+      | {
+          __typename?: 'RoleSet';
+          id: string;
+          applicationForm: {
+            __typename?: 'Form';
+            id: string;
+            description?: string | undefined;
+            questions: Array<{
+              __typename?: 'FormQuestion';
+              question: string;
+              explanation: string;
+              maxLength: number;
+              required: boolean;
+              sortOrder: number;
+            }>;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type ApplicationFormFragment = {
+  __typename?: 'Form';
+  id: string;
+  description?: string | undefined;
+  questions: Array<{
+    __typename?: 'FormQuestion';
+    question: string;
+    explanation: string;
+    maxLength: number;
+    required: boolean;
+    sortOrder: number;
+  }>;
+};
+
+export type UpdateApplicationFormOnRoleSetMutationVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  formData: UpdateFormInput;
+}>;
+
+export type UpdateApplicationFormOnRoleSetMutation = {
+  __typename?: 'Mutation';
+  updateApplicationFormOnRoleSet: { __typename?: 'RoleSet'; id: string };
+};
+
+export type CommunityDetailsFragment = {
+  __typename?: 'Community';
+  id: string;
+  roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+  communication: {
+    __typename?: 'Communication';
+    id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
+};
+
+export type SpaceCommunityQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
+  includeDetails?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type SpaceCommunityQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string };
+          community: {
+            __typename?: 'Community';
+            id: string;
+            roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+            communication: {
+              __typename?: 'Communication';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
+export type CommunityGuidelinesQueryVariables = Exact<{
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityGuidelinesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          guidelines: {
+            __typename?: 'CommunityGuidelines';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              references?:
+                | Array<{
+                    __typename?: 'Reference';
+                    id: string;
+                    name: string;
+                    uri: string;
+                    description?: string | undefined;
+                  }>
+                | undefined;
+            };
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type CommunityGuidelinesDetailsFragment = {
+  __typename?: 'CommunityGuidelines';
+  id: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+      | undefined;
+  };
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+};
+
+export type UpdateCommunityGuidelinesMutationVariables = Exact<{
+  communityGuidelinesData: UpdateCommunityGuidelinesEntityInput;
+}>;
+
+export type UpdateCommunityGuidelinesMutation = {
+  __typename?: 'Mutation';
+  updateCommunityGuidelines: {
+    __typename?: 'CommunityGuidelines';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+    };
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
+};
+
+export type RemoveCommunityGuidelinesContentMutationVariables = Exact<{
+  communityGuidelinesData: RemoveCommunityGuidelinesContentInput;
+}>;
+
+export type RemoveCommunityGuidelinesContentMutation = {
+  __typename?: 'Mutation';
+  removeCommunityGuidelinesContent: {
+    __typename?: 'CommunityGuidelines';
+    id: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
+        | undefined;
+    };
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
+};
+
+export type CommunityPageMembersFragment = {
   __typename?: 'User';
   id: string;
+  nameID: string;
   email: string;
-  profile: { __typename?: 'Profile'; id: string; displayName: string };
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    tagsets?:
+      | Array<{
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }>
+      | undefined;
+  };
+};
+
+export type CreateGroupOnCommunityMutationVariables = Exact<{
+  input: CreateUserGroupInput;
+}>;
+
+export type CreateGroupOnCommunityMutation = {
+  __typename?: 'Mutation';
+  createGroupOnCommunity: {
+    __typename?: 'UserGroup';
+    id: string;
+    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+  };
+};
+
+export type BasicOrganizationDetailsFragment = {
+  __typename?: 'Organization';
+  id: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    url: string;
+    displayName: string;
+    visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  };
 };
 
 export type AllOrganizationsQueryVariables = Exact<{
@@ -20600,12 +20729,14 @@ export type AboutPageMembersQuery = {
               memberRoleDefinition: {
                 __typename?: 'Role';
                 id: string;
+                name: RoleName;
                 organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
                 userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
               };
               leadRoleDefinition: {
                 __typename?: 'Role';
                 id: string;
+                name: RoleName;
                 organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
                 userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
               };
@@ -21516,12 +21647,14 @@ export type SpaceCommunityPageQuery = {
         memberRoleDefinition: {
           __typename?: 'Role';
           id: string;
+          name: RoleName;
           organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
           userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
         };
         leadRoleDefinition: {
           __typename?: 'Role';
           id: string;
+          name: RoleName;
           organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
           userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
         };
@@ -23279,12 +23412,14 @@ export type SpaceProfileFragment = {
       memberRoleDefinition: {
         __typename?: 'Role';
         id: string;
+        name: RoleName;
         organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
         userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
       };
       leadRoleDefinition: {
         __typename?: 'Role';
         id: string;
+        name: RoleName;
         organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
         userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
       };
@@ -24088,12 +24223,14 @@ export type SubspacePageQuery = {
               memberRoleDefinition: {
                 __typename?: 'Role';
                 id: string;
+                name: RoleName;
                 organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
                 userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
               };
               leadRoleDefinition: {
                 __typename?: 'Role';
                 id: string;
+                name: RoleName;
                 organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
                 userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
               };
@@ -24300,12 +24437,14 @@ export type SubspacePageSpaceFragment = {
       memberRoleDefinition: {
         __typename?: 'Role';
         id: string;
+        name: RoleName;
         organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
         userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
       };
       leadRoleDefinition: {
         __typename?: 'Role';
         id: string;
+        name: RoleName;
         organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
         userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
       };
@@ -24338,41 +24477,11 @@ export type PlatformLevelAuthorizationQuery = {
   };
 };
 
-export type AssignPlatformRoleToUserMutationVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-  role: RoleName;
-  contributorId: Scalars['UUID'];
-}>;
+export type PlatformRoleSetQueryVariables = Exact<{ [key: string]: never }>;
 
-export type AssignPlatformRoleToUserMutation = {
-  __typename?: 'Mutation';
-  assignPlatformRoleToUser: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
-};
-
-export type PlatformRolesetQueryVariables = Exact<{ [key: string]: never }>;
-
-export type PlatformRolesetQuery = {
+export type PlatformRoleSetQuery = {
   __typename?: 'Query';
   platform: { __typename?: 'Platform'; roleSet: { __typename?: 'RoleSet'; id: string } };
-};
-
-export type RemovePlatformRoleFromUserMutationVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-  role: RoleName;
-  contributorId: Scalars['UUID'];
-}>;
-
-export type RemovePlatformRoleFromUserMutation = {
-  __typename?: 'Mutation';
-  removePlatformRoleFromUser: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
 };
 
 export type AssignLicensePlanToAccountMutationVariables = Exact<{
@@ -32199,9 +32308,9 @@ export type InnovationPackUrlResolverQuery = {
 };
 
 export type TemplatesSetUrlResolverQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
+  spaceId?: Scalars['UUID'];
   includeSpace?: InputMaybe<Scalars['Boolean']>;
-  innovationPackId: Scalars['UUID'];
+  innovationPackId?: Scalars['UUID'];
   includeInnovationPack?: InputMaybe<Scalars['Boolean']>;
 }>;
 
