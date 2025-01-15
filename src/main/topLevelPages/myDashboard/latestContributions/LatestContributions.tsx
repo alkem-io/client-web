@@ -23,7 +23,8 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { LatestContributionsProps, ROLE_OPTION_ALL, SPACE_OPTION_ALL } from './LatestContributionsProps';
 import { Caption } from '@/core/ui/typography';
 import Loading from '@/core/ui/loading/Loading';
-import { SpaceActivitiesDialog } from '../DashboardWithMemberships/SpaceActivitiesDialog';
+import { useDashboardContext } from '../DashboardContext';
+import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
 
 const SELECTABLE_ROLES = [ActivityFeedRoles.Member, ActivityFeedRoles.Admin, ActivityFeedRoles.Lead] as const;
 
@@ -48,7 +49,6 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [filter, setFilter] = useState<{
     space: string;
     role: ActivityFeedRoles | typeof ROLE_OPTION_ALL;
@@ -56,6 +56,8 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
     space: SPACE_OPTION_ALL,
     role: ROLE_OPTION_ALL,
   });
+
+  const { setIsOpen } = useDashboardContext();
 
   const handleRoleSelect = (event: SelectChangeEvent<unknown>) =>
     setFilter({
@@ -150,6 +152,8 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
     [data?.activityFeed.activityFeed]
   );
 
+  const handleOpenActivitiesDialog = (dialogType: DashboardDialog) => () => setIsOpen(dialogType);
+
   const showMore =
     typeof data?.activityFeed.activityFeed?.length === 'number' && data.activityFeed.activityFeed.length > 10;
 
@@ -171,28 +175,13 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
       </Gutters>
 
       {showMore && (
-        <Caption sx={{ marginLeft: 'auto', cursor: 'pointer' }} onClick={() => setIsDialogOpen(true)}>
+        <Caption
+          sx={{ marginLeft: 'auto', cursor: 'pointer' }}
+          onClick={handleOpenActivitiesDialog(DashboardDialog.MySpaceActivity)}
+        >
           {t('common.show-more')}
         </Caption>
       )}
-
-      <SpaceActivitiesDialog
-        open={isDialogOpen}
-        title={t('pages.home.sections.latestContributions.title')}
-        onClose={() => setIsDialogOpen(false)}
-      >
-        {!data && loading ? (
-          <Loading />
-        ) : (
-          <ScrollerWithGradient>
-            <Gutters disableGap disablePadding>
-              {renderActivities()}
-
-              {loader}
-            </Gutters>
-          </ScrollerWithGradient>
-        )}
-      </SpaceActivitiesDialog>
     </>
   );
 };

@@ -21,7 +21,8 @@ import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
 import Loading from '@/core/ui/loading/Loading';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
-import { SpaceActivitiesDialog } from '../../DashboardWithMemberships/SpaceActivitiesDialog';
+import { useDashboardContext } from '../../DashboardContext';
+import { DashboardDialog } from '../../DashboardDialogs/DashboardDialogsProps';
 
 const MY_LATEST_CONTRIBUTIONS_COUNT = 10;
 
@@ -39,8 +40,9 @@ const ACTIVITY_TYPES = [
 const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) => {
   const { t } = useTranslation();
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [filter, setFilter] = useState<{ space: string }>({ space: SPACE_OPTION_ALL });
+
+  const { setIsOpen } = useDashboardContext();
 
   const handleSpaceSelect = (event: SelectChangeEvent<unknown>) =>
     setFilter({ space: event.target.value as string | typeof SPACE_OPTION_ALL });
@@ -104,6 +106,8 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
     [activities]
   );
 
+  const handleOpenActivitiesDialog = (dialogType: DashboardDialog) => () => setIsOpen(dialogType);
+
   const hasActivity = activities && activities.length > 0;
   const isAllSpacesSelected = filter.space === SPACE_OPTION_ALL;
 
@@ -137,26 +141,13 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
       </Gutters>
 
       {showMore && (
-        <Caption sx={{ marginLeft: 'auto', cursor: 'pointer' }} onClick={() => setIsDialogOpen(true)}>
+        <Caption
+          sx={{ marginLeft: 'auto', cursor: 'pointer' }}
+          onClick={handleOpenActivitiesDialog(DashboardDialog.MyActivity)}
+        >
           {t('common.show-more')}
         </Caption>
       )}
-
-      <SpaceActivitiesDialog
-        open={isDialogOpen}
-        title={t('pages.home.sections.latestContributions.title')}
-        onClose={() => setIsDialogOpen(false)}
-      >
-        {loading ? (
-          <Loading />
-        ) : (
-          <ScrollerWithGradient>
-            <Gutters disableGap disablePadding>
-              {hasActivity && renderActivities()}
-            </Gutters>
-          </ScrollerWithGradient>
-        )}
-      </SpaceActivitiesDialog>
     </>
   );
 };
