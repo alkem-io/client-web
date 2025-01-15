@@ -80,7 +80,7 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, accountId, getSpaces, loadin
       });
     });
 
-    return result ?? [];
+    return result;
   }, [availableSpaces]);
 
   const validationSchema = yup.object().shape({
