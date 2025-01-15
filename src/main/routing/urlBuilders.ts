@@ -2,7 +2,6 @@ import { _AUTH_LOGIN_PATH } from '@/core/auth/authentication/constants/authentic
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { isAbsoluteUrl } from '@/core/utils/links';
-import { TopLevelRoutePath } from './TopLevelRoutePath';
 
 export const buildVirtualContributorUrl = (virtualContributorNameId: string) => `/vc/${virtualContributorNameId}`;
 
@@ -41,9 +40,6 @@ export const buildAboutUrl = (journeyLocation: string | undefined) => {
   return journeyLocation && `${journeyLocation}/about`;
 };
 
-export const buildInnovationPackUrl = (innovationPackNameId: string) =>
-  `/${TopLevelRoutePath.InnovationPacks}/${innovationPackNameId}`;
-
 export const buildInnovationPackSettingsUrl = buildSettingsUrl;
 
 export const buildInnovationHubUrl = (subdomain: string): string => {
@@ -75,3 +71,11 @@ export const getAccountLink = (profileUrl?: string) => {
 };
 
 export const buildWelcomeSpaceUrl = () => '/welcome-space';
+
+export const getSpaceUrlFromSubSpace = (subSpaceUrl: string) => {
+  const url = new URL(subSpaceUrl, window.location.origin);
+  const urlSegments = url.pathname.split('/challenges');
+
+  url.pathname = urlSegments[0];
+  return url.href;
+};

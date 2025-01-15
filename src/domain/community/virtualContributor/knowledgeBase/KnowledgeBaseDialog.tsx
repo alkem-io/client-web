@@ -38,30 +38,30 @@ const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) =
     <DialogWithGrid open columns={10}>
       <DialogHeader onClose={onClose} title={title} />
       <DialogContent>
-        <Gutters disablePadding>
-          {(knowledgeBaseDescription || canCreateCallout) && (
-            <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={id}>
+        <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={id}>
+          <Gutters disablePadding>
+            {(knowledgeBaseDescription || canCreateCallout) && (
               <DescriptionComponent
                 description={knowledgeBaseDescription}
                 canEdit={canCreateCallout}
                 onUpdate={updateDescription}
               />
-            </StorageConfigContextProvider>
-          )}
-          <CalloutsGroupView
-            calloutsSetId={calloutsSetId}
-            callouts={callouts}
-            canCreateCallout={canCreateCallout}
-            loading={loading}
-            journeyTypeName="space"
-            onSortOrderUpdate={onCalloutsSortOrderUpdate}
-            onCalloutUpdate={refetchCallout}
-            groupName={CalloutGroupName.Knowledge}
-            createButtonPlace="bottom"
-            availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
-            disableRichMedia
-          />
-        </Gutters>
+            )}
+            <CalloutsGroupView
+              calloutsSetId={calloutsSetId}
+              callouts={callouts}
+              canCreateCallout={canCreateCallout}
+              loading={loading}
+              journeyTypeName="space"
+              onSortOrderUpdate={onCalloutsSortOrderUpdate}
+              onCalloutUpdate={refetchCallout}
+              groupName={CalloutGroupName.Knowledge}
+              createButtonPlace="bottom"
+              availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
+              disableRichMedia
+            />
+          </Gutters>
+        </StorageConfigContextProvider>
       </DialogContent>
       {canCreateCallout && (
         <DialogActions>
