@@ -39,6 +39,7 @@ const NameIdField = ({
     <FormikInputField
       {...props}
       name={name}
+      sx={{ whiteSpace: 'nowrap' }}
       onBlur={() => setIsTouchedByUser(true)}
       InputProps={{
         startAdornment: <Typography color="neutral.light">{`${origin}/`}</Typography>,

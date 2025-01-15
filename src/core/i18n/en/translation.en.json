@@ -3034,6 +3034,7 @@
   },
   "createSpace": {
     "title": "Create a Space",
+    "addTutorialsLabel": "Show Tutorials in this Space",
     "terms": {
       "checkboxLabel": "I have read and accept the <terms>terms and agreements (click here to open them)</terms> for creating a Space.",
       "dialogTitle": "Terms and Conditions for creating a Space",

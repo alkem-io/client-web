@@ -35,6 +35,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { TagCategoryValues, info } from '@/core/logging/sentry/log';
 import { compact } from 'lodash';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import Gutters from '@/core/ui/grid/Gutters';
 
 interface FormValues extends SpaceEditFormValuesType {
   licensePlanId: string;
@@ -100,6 +101,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
   const { accountId: currentUserAccountId } = useUserContext();
 
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
+  const [showTutorialsInSpace, setShowTutorialsInSpace] = useState(false);
 
   const [isTermsDialogOpen, setIsTermsDialogOpen] = useState(false);
 
@@ -198,31 +200,43 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
                       maxLength={SMALL_TEXT_LENGTH}
                     />
                     <TagsetSegment title={`${t('common.tags')} (${t('common.optional')})`} tagsets={tagsets} />
-                    <FormControlLabel
-                      value={hasAcceptedTerms}
-                      onChange={(event, isChecked) => setHasAcceptedTerms(isChecked)}
-                      required
-                      control={<Checkbox />}
-                      label={
-                        <Caption>
-                          <Trans
-                            i18nKey="createSpace.terms.checkboxLabel"
-                            components={{
-                              terms: (
-                                <Link
-                                  underline="always"
-                                  onClick={event => {
-                                    event.stopPropagation();
-                                    event.preventDefault();
-                                    setIsTermsDialogOpen(true);
-                                  }}
-                                />
-                              ),
-                            }}
-                          />
-                        </Caption>
-                      }
-                    />
+
+                    <Gutters disableGap disablePadding>
+                      <FormControlLabel
+                        value={showTutorialsInSpace}
+                        onChange={(event, isChecked) => setShowTutorialsInSpace(isChecked)}
+                        required
+                        control={<Checkbox />}
+                        label={<Caption>{t('createSpace.addTutorialsLabel')}</Caption>}
+                      />
+
+                      <FormControlLabel
+                        value={hasAcceptedTerms}
+                        onChange={(event, isChecked) => setHasAcceptedTerms(isChecked)}
+                        required
+                        control={<Checkbox />}
+                        label={
+                          <Caption>
+                            <Trans
+                              i18nKey="createSpace.terms.checkboxLabel"
+                              components={{
+                                terms: (
+                                  <Link
+                                    underline="always"
+                                    onClick={event => {
+                                      event.stopPropagation();
+                                      event.preventDefault();
+                                      setIsTermsDialogOpen(true);
+                                    }}
+                                  />
+                                ),
+                              }}
+                            />
+                          </Caption>
+                        }
+                      />
+                    </Gutters>
+
                     <DialogFooter>
                       <Actions justifyContent="end" padding={gutters()}>
                         <Button
