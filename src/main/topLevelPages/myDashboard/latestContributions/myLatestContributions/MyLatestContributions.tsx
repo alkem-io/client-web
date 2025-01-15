@@ -93,7 +93,7 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
   }, [spaceMemberships, t]);
 
   const renderFilters = () => (
-    <Box display="flex" justifyContent="end" alignItems="center">
+    <Box display="flex" justifyContent="end" alignItems="center" marginTop={isDialogOpen ? gutters(-2) : 0}>
       <SeamlessSelect
         value={filter.space}
         options={spaceOptions}
