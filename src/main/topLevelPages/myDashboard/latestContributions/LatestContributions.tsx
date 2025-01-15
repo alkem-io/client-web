@@ -13,7 +13,7 @@ import {
   LatestContributionsQueryVariables,
 } from '@/core/apollo/generated/graphql-schema';
 import { Box, SelectChangeEvent, Skeleton, Theme, useMediaQuery, useTheme } from '@mui/material';
-import { forwardRef, useMemo, useState, useCallback } from 'react';
+import { forwardRef, useMemo, useState } from 'react';
 import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
 import { SelectOption } from '@mui/base';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
@@ -51,8 +51,6 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
   const [filter, setFilter] = useState<{
     space: string;
     role: ActivityFeedRoles | typeof ROLE_OPTION_ALL;
@@ -60,6 +58,7 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
     space: SPACE_OPTION_ALL,
     role: ROLE_OPTION_ALL,
   });
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { activityEnabled } = useDashboardContext();
 
@@ -139,21 +138,6 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
     </Box>
   );
 
-  const renderActivities = useCallback(
-    () => (
-      <>
-        {data?.activityFeed?.activityFeed?.map(activity => (
-          <ActivityViewChooser
-            key={activity.id}
-            activity={activity as ActivityLogResultType}
-            avatarUrl={activity.triggeredBy.profile.avatar?.uri}
-          />
-        ))}
-      </>
-    ),
-    [data?.activityFeed?.activityFeed]
-  );
-
   const showMore =
     typeof data?.activityFeed.activityFeed?.length === 'number' && data.activityFeed.activityFeed.length > 10;
 
@@ -184,15 +168,14 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
           ) : (
             <ScrollerWithGradient>
               <Box padding={gutters(0.5)}>
-                {data?.activityFeed.activityFeed.map(activity => {
-                  return (
-                    <ActivityViewChooser
-                      key={activity.id}
-                      activity={activity as ActivityLogResultType}
-                      avatarUrl={activity.triggeredBy.profile.avatar?.uri}
-                    />
-                  );
-                })}
+                {data?.activityFeed.activityFeed.map(activity => (
+                  <ActivityViewChooser
+                    key={activity.id}
+                    activity={activity as ActivityLogResultType}
+                    avatarUrl={activity.triggeredBy.profile.avatar?.uri}
+                  />
+                ))}
+
                 {loader}
               </Box>
             </ScrollerWithGradient>
@@ -220,7 +203,13 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
           ) : (
             <ScrollerWithGradient>
               <Gutters disableGap disablePadding padding={gutters(1.5)}>
-                {renderActivities()}
+                {data?.activityFeed?.activityFeed?.map(activity => (
+                  <ActivityViewChooser
+                    key={activity.id}
+                    activity={activity as ActivityLogResultType}
+                    avatarUrl={activity.triggeredBy.profile.avatar?.uri}
+                  />
+                ))}
 
                 {loader}
               </Gutters>

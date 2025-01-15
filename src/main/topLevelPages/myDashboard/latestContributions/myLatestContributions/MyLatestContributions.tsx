@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
 import { useLatestContributionsGroupedQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -21,10 +21,12 @@ import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
 import Loading from '@/core/ui/loading/Loading';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useDashboardContext } from '../../DashboardContext';
-import { DashboardDialog } from '../../DashboardDialogs/DashboardDialogsProps';
 
-const MY_LATEST_CONTRIBUTIONS_COUNT = 10;
+const MY_LATEST_CONTRIBUTIONS_COUNT = 20;
+const VISIBLE_LATEST_CONTRIBUTIONS_COUNT = 10;
 
 const ACTIVITY_TYPES = [
   // Callout-related activities only
@@ -40,9 +42,10 @@ const ACTIVITY_TYPES = [
 const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) => {
   const { t } = useTranslation();
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [filter, setFilter] = useState<{ space: string }>({ space: SPACE_OPTION_ALL });
 
-  const { isOpen, setIsOpen } = useDashboardContext();
+  const { activityEnabled } = useDashboardContext();
 
   const handleSpaceSelect = (event: SelectChangeEvent<unknown>) =>
     setFilter({ space: event.target.value as string | typeof SPACE_OPTION_ALL });
@@ -89,26 +92,15 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
     return spaces;
   }, [spaceMemberships, t]);
 
-  const renderActivities = useCallback(
-    (limit?: number) => (
-      <>
-        {activities?.map((activity, idx) =>
-          !limit || idx < limit ? (
-            <ActivityViewChooser
-              key={activity.id}
-              activity={activity as ActivityLogResultType}
-              avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
-            />
-          ) : null
-        )}
-      </>
-    ),
-    [activities]
-  );
-
-  const handleOpenActivitiesDialog = useCallback(
-    (dialogType: DashboardDialog) => () => setIsOpen(dialogType),
-    [setIsOpen]
+  const renderFilters = () => (
+    <Box display="flex" justifyContent="end" alignItems="center">
+      <SeamlessSelect
+        value={filter.space}
+        options={spaceOptions}
+        label={t('pages.home.sections.latestContributions.filter.space.label')}
+        onChange={handleSpaceSelect}
+      />
+    </Box>
   );
 
   const hasActivity = activities && activities.length > 0;
@@ -118,21 +110,19 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
 
   return (
     <>
-      <Gutters disableGap disablePadding>
-        <Box display="flex" justifyContent="end" alignItems="center">
-          <SeamlessSelect
-            value={filter.space}
-            options={spaceOptions}
-            label={t('pages.home.sections.latestContributions.filter.space.label')}
-            onChange={handleSpaceSelect}
-          />
-        </Box>
-        {loading ? (
-          <Loading />
-        ) : (
+      {activityEnabled ? (
+        <Gutters disableGap disablePadding>
+          {renderFilters()}
+
           <ScrollerWithGradient>
             <Gutters disableGap disablePadding padding={gutters(0.5)}>
-              {hasActivity && renderActivities(isOpen ? undefined : MY_LATEST_CONTRIBUTIONS_COUNT)}
+              {activities?.slice(0, VISIBLE_LATEST_CONTRIBUTIONS_COUNT).map(activity => (
+                <ActivityViewChooser
+                  key={activity.id}
+                  activity={activity as ActivityLogResultType}
+                  avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
+                />
+              ))}
 
               {!hasActivity && isAllSpacesSelected && (
                 <CaptionSmall padding={gutters()}>
@@ -141,17 +131,73 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
               )}
             </Gutters>
           </ScrollerWithGradient>
-        )}
-      </Gutters>
+        </Gutters>
+      ) : (
+        <Gutters disableGap disablePadding>
+          {renderFilters()}
 
-      {!isOpen && showMore && (
-        <Caption
-          sx={{ marginLeft: 'auto', cursor: 'pointer' }}
-          onClick={handleOpenActivitiesDialog(DashboardDialog.MyActivity)}
-        >
+          {loading ? (
+            <Loading />
+          ) : (
+            <ScrollerWithGradient>
+              <Gutters disableGap disablePadding padding={gutters(0.5)}>
+                {activities?.map(activity => (
+                  <ActivityViewChooser
+                    key={activity.id}
+                    activity={activity as ActivityLogResultType}
+                    avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
+                  />
+                ))}
+
+                {!hasActivity && isAllSpacesSelected && (
+                  <CaptionSmall padding={gutters()}>
+                    {t('pages.home.sections.myLatestContributions.noContributions')}
+                  </CaptionSmall>
+                )}
+              </Gutters>
+            </ScrollerWithGradient>
+          )}
+        </Gutters>
+      )}
+
+      {activityEnabled && showMore && (
+        <Caption sx={{ marginLeft: 'auto', cursor: 'pointer' }} onClick={() => setIsDialogOpen(true)}>
           {t('common.show-more')}
         </Caption>
       )}
+
+      <DialogWithGrid open={isDialogOpen} columns={4} onClose={() => setIsDialogOpen(false)}>
+        <DialogHeader
+          title={t('pages.home.sections.myLatestContributions.title')}
+          onClose={() => setIsDialogOpen(false)}
+        />
+
+        <Gutters disableGap disablePadding padding={gutters(1.5)}>
+          {renderFilters()}
+
+          {loading ? (
+            <Loading />
+          ) : (
+            <ScrollerWithGradient>
+              <Gutters disableGap disablePadding padding={gutters(0.5)}>
+                {activities?.map(activity => (
+                  <ActivityViewChooser
+                    key={activity.id}
+                    activity={activity as ActivityLogResultType}
+                    avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
+                  />
+                ))}
+
+                {!hasActivity && isAllSpacesSelected && (
+                  <CaptionSmall padding={gutters()}>
+                    {t('pages.home.sections.myLatestContributions.noContributions')}
+                  </CaptionSmall>
+                )}
+              </Gutters>
+            </ScrollerWithGradient>
+          )}
+        </Gutters>
+      </DialogWithGrid>
     </>
   );
 };
