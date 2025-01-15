@@ -28,6 +28,7 @@ import { GlobalErrorDialog } from './core/lazyLoading/GlobalErrorDialog';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { InAppNotificationsDialog } from './main/inAppNotifications/InAppNotificationsDialog';
 
+// MARKDOWN_CLASS_NAME used in the styles below
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
     '*': {
@@ -59,6 +60,9 @@ const useGlobalStyles = makeStyles(theme => ({
       flexDirection: 'column',
     },
     '[aria-role="heading"]': subHeading,
+    '.markdown > pre': {
+      whiteSpace: 'pre-wrap',
+    },
   },
 }));
 

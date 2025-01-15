@@ -9,6 +9,8 @@ import { remarkVerifyIframe } from './embed/remarkVerifyIframe';
 
 const allowedNodeTypes = ['iframe'] as const;
 
+export const MARKDOWN_CLASS_NAME = 'markdown'; // global styles applied
+
 export interface MarkdownProps extends ReactMarkdownOptions, Partial<MarkdownOptions> {}
 
 export const WrapperMarkdown = ({
@@ -17,6 +19,7 @@ export const WrapperMarkdown = ({
   multiline = !plain,
   disableParagraphPadding = card,
   caption = false,
+  sx,
   ...props
 }: MarkdownProps) => (
   <MarkdownOptionsProvider
@@ -26,7 +29,7 @@ export const WrapperMarkdown = ({
     disableParagraphPadding={disableParagraphPadding}
     caption={caption}
   >
-    <Box sx={{ li: { marginY: caption ? 0 : 1 }, display: plain ? 'inline' : undefined }}>
+    <Box sx={{ li: { marginY: caption ? 0 : 1 }, display: plain ? 'inline' : undefined, ...sx }}>
       <ReactMarkdown
         components={components}
         remarkPlugins={[gfm, [PlainText, { enabled: plain }], remarkVerifyIframe]}
