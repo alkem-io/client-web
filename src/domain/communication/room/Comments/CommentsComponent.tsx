@@ -104,9 +104,11 @@ const CommentsComponent = ({
 
   const lastMessage = last(messages);
 
+  const hasMessages = messages.length > 0;
+
   return (
     <>
-      {!isShowingLastMessage && (
+      {!isShowingLastMessage && hasMessages && (
         <ScrollerWithGradient
           maxHeight={maxHeight}
           scrollerRef={commentsContainerRef}

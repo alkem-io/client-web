@@ -1,4 +1,5 @@
 import { createContext, PropsWithChildren, useContext } from 'react';
+import { SxProps } from '@mui/material';
 
 export interface MarkdownOptions {
   card: boolean;
@@ -6,6 +7,7 @@ export interface MarkdownOptions {
   multiline: boolean;
   disableParagraphPadding: boolean;
   caption: boolean;
+  sx?: SxProps;
 }
 
 const MarkdownOptionsContext = createContext<MarkdownOptions | undefined>(undefined);
