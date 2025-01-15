@@ -1,6 +1,6 @@
 import LinkCard from '@/core/ui/card/LinkCard';
-import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
-import { Box, CardContent, Skeleton, styled } from '@mui/material';
+import { Caption } from '@/core/ui/typography';
+import { Box, CardContent, Skeleton, Typography, styled } from '@mui/material';
 import { PropsWithChildren } from 'react';
 
 export interface CredentialCardEntities {
@@ -54,14 +54,14 @@ let i = 0;
 const claimParser = claims => {
   return (
     <>
-      <WrapperTypography variant="h6" color="neutralMedium">
+      <Typography variant="h6" color="neutralMedium.main" fontWeight="medium" fontSize={16}>
         Claims:
-      </WrapperTypography>
+      </Typography>
       {claims.map(claim => (
         <Box sx={{ whiteSpace: 'initial', wordBreak: 'break-all' }}>
-          <WrapperTypography key={i++} variant="h6" color="neutralMedium">
+          <Typography key={i++} variant="h6" color="neutralMedium.main" fontWeight="medium" fontSize={16}>
             {claim.name}: {claim.value}
-          </WrapperTypography>
+          </Typography>
         </Box>
       ))}
     </>
@@ -93,18 +93,20 @@ const CredentialCard = ({ entities: details, loading = false, children }: PropsW
         ) : (
           <>
             <Box display="flex" flexDirection="column" justifyContent="space-between">
-              <WrapperTypography color="primary" weight="boldLight">
+              <Typography color="primary.main" fontWeight="bold" fontSize={16}>
                 {name}
-              </WrapperTypography>
+              </Typography>
               {expiryDate && (
-                <WrapperTypography variant="caption">Valid before {expiryDate.toLocaleDateString()}</WrapperTypography>
+                <Caption textTransform="uppercase" fontWeight="medium">
+                  Valid before {expiryDate.toLocaleDateString()}
+                </Caption>
               )}
             </Box>
             <Box paddingY={1}>
-              {descriptionText && <WrapperTypography variant="body2">{descriptionText}</WrapperTypography>}
-              <WrapperTypography variant="body2" color="neutralMedium">
+              {descriptionText && <Typography fontSize={16}>{descriptionText}</Typography>}
+              <Typography fontSize={16} color="neutralMedium.main">
                 {credentialInfo}
-              </WrapperTypography>
+              </Typography>
               <pre>{claimParser(claims)}</pre>
             </Box>
           </>

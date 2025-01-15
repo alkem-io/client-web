@@ -1,5 +1,4 @@
-import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
-import { Box, Container } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import Grid, { GridSize } from '@mui/material/Grid';
 import React, { PropsWithChildren } from 'react';
 
@@ -7,9 +6,9 @@ export const Header = ({ text }: { text?: string }) => {
   return (
     <Grid container>
       <Grid item xs={12}>
-        <WrapperTypography as="h2" variant="h2" weight="bold">
+        <Typography variant="h2" textTransform="uppercase" mt={1.5} mb={1}>
           {text}
-        </WrapperTypography>
+        </Typography>
       </Grid>
     </Grid>
   );

@@ -1,5 +1,4 @@
-import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import WrapperBackdrop from './WrapperBackdrop';
@@ -35,7 +34,9 @@ const MembershipBackdrop: FC<BackdropProps> = ({ children, blockName, show = fal
           padding: 4,
         }}
       >
-        <WrapperTypography variant="h3">{t('components.backdrop.private', { blockName })}</WrapperTypography>
+        <Typography variant="h3" mb={1} fontWeight="medium">
+          {t('components.backdrop.private', { blockName })}
+        </Typography>
       </Box>
     </div>
   );

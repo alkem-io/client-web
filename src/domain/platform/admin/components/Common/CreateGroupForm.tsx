@@ -1,6 +1,5 @@
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
-import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
-import { Button, Grid } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import { Form, Formik } from 'formik';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -28,7 +27,9 @@ export const CreateGroupForm: FC<CreateGroupFormProps> = ({ onCreate }) => {
   return (
     <Grid container spacing={2} direction={'column'}>
       <Grid item>
-        <WrapperTypography variant="h3">Create group</WrapperTypography>
+        <Typography variant="h3" mb={1} fontWeight="medium">
+          Create group
+        </Typography>
       </Grid>
       <Grid item>
         <Formik
