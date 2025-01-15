@@ -41,7 +41,7 @@ export type Account = {
   authorization?: Maybe<Authorization>;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
-  /** The externalStep subscription ID for this Account. */
+  /** The external subscription ID for this Account. */
   externalSubscriptionID?: Maybe<Scalars['String']>;
   /** The Account host. */
   host?: Maybe<Contributor>;
@@ -2424,7 +2424,7 @@ export type ExploreSpacesInput = {
 };
 
 export type ExternalConfig = {
-  /** The API key for the externalStep LLM provider. */
+  /** The API key for the external LLM provider. */
   apiKey?: InputMaybe<Scalars['String']>;
   /** The assistent ID backing the service in OpenAI`s assistant API */
   assistantId?: InputMaybe<Scalars['String']>;
@@ -4792,7 +4792,7 @@ export type Platform = {
   __typename?: 'Platform';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** Alkemio configuration. Provides configuration to externalStep services in the Alkemio ecosystem. */
+  /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
@@ -4854,7 +4854,7 @@ export type PlatformInvitation = {
   createdBy: User;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
-  /** The email address of the externalStep user being invited */
+  /** The email address of the external user being invited */
   email: Scalars['String'];
   firstName?: Maybe<Scalars['String']>;
   /** The ID of the entity */
