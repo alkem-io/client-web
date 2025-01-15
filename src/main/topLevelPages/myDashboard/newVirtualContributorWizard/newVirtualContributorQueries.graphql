@@ -18,12 +18,23 @@ query NewVirtualContributorMySpaces {
             id
             myPrivileges
           }
-          ...VCSelectableSpace
+          ...spaceProfileCommunityDetails
+        }
+      }
+    }
+  }
+}
+
+query AccountSpaces($accountId: UUID!) {
+  lookup {
+    account(ID: $accountId) {
+      id
+      spaces {
+        ...spaceProfileCommunityDetails
+        subspaces {
+          ...spaceProfileCommunityDetails
           subspaces {
-            ...VCSelectableSpace
-            subspaces {
-              ...VCSelectableSpace
-            }
+            ...spaceProfileCommunityDetails
           }
         }
       }
@@ -31,9 +42,8 @@ query NewVirtualContributorMySpaces {
   }
 }
 
-fragment VCSelectableSpace on Space {
+fragment spaceProfileCommunityDetails on Space {
   id
-  type
   profile {
     id
     displayName
@@ -43,10 +53,6 @@ fragment VCSelectableSpace on Space {
     id
     roleSet {
       id
-      authorization {
-        id
-        myPrivileges
-      }
     }
   }
 }
