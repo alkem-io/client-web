@@ -50,7 +50,7 @@ const issuerResolver = (issuer: string | undefined) => {
   }
 };
 const issuerURLResolver = _ => 'url-to-issuer';
-let i = 0;
+
 const claimParser = claims => {
   return (
     <>
@@ -58,8 +58,8 @@ const claimParser = claims => {
         Claims:
       </Typography>
       {claims.map(claim => (
-        <Box sx={{ whiteSpace: 'initial', wordBreak: 'break-all' }}>
-          <Typography key={i++} variant="h6" color="neutralMedium.main" fontWeight="medium" fontSize={16}>
+        <Box key={claim.name} sx={{ whiteSpace: 'initial', wordBreak: 'break-all' }}>
+          <Typography variant="h6" color="neutralMedium.main" fontWeight="medium" fontSize={16}>
             {claim.name}: {claim.value}
           </Typography>
         </Box>

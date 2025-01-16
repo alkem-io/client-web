@@ -25,17 +25,6 @@ type SectionProps = {
 const Section = ({ children, avatar, details }: PropsWithChildren<SectionProps>) => {
   return (
     <Container maxWidth="xl" sx={{ pt: 2, pb: 2, background: 'background.paper', position: 'relative' }}>
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 0,
-          background: 'transparent',
-        }}
-      />
       <Grid container spacing={2}>
         <Grid item md={12} lg={3} zIndex={1}>
           <Box

@@ -25,7 +25,12 @@ export const QRCode = ({ qrCodeJwt, qrCodeImg, sx }: QRCodeProps) => {
         container.append(whiteboard);
       } else if (container && qrCodeImg && typeof height !== 'undefined' && typeof width !== 'undefined') {
         const size = Math.min(height, width);
-        container.innerHTML = `<img src ='${qrCodeImg}' alt='qr code' height='${size}px' width =  '${size}px' />`;
+        const img = document.createElement('img');
+        img.src = qrCodeImg;
+        img.alt = 'qr code';
+        img.height = size;
+        img.width = size;
+        container.appendChild(img);
       }
     }
 
