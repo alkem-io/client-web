@@ -14,7 +14,7 @@ import InnovationHubCardHorizontal, {
 } from '@/domain/innovationHub/InnovationHubCardHorizontal/InnovationHubCardHorizontal';
 import { Actions } from '@/core/ui/actions/Actions';
 import CreateSpaceDialog from '@/domain/journey/space/createSpace/CreateSpaceDialog';
-import useNewVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
+import useVirtualContributorWizard from '@/domain/vcFlow/useVirtualContributorWizard';
 import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
 import {
   AuthorizationPrivilege,
@@ -140,7 +140,7 @@ const useStyles = makeStyles(() => ({
 export const ContributorAccountView = ({ accountHostName, account, loading }: ContributorAccountViewProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
+  const { startWizard, VirtualContributorWizard } = useVirtualContributorWizard();
   const [createSpaceDialogOpen, setCreateSpaceDialogOpen] = useState(false);
   const [createInnovationHubDialogOpen, setCreateInnovationHubDialogOpen] = useState(false);
   const [createInnovationPackDialogOpen, setCreateInnovationPackDialogOpen] = useState(false);
@@ -492,7 +492,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               />
             )}
           </Actions>
-          <NewVirtualContributorWizard />
+          <VirtualContributorWizard />
         </Gutters>
       </PageContentBlock>
       <PageContentBlock halfWidth>

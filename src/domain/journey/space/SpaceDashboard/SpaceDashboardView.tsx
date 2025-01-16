@@ -31,11 +31,8 @@ import ContentColumn from '@/core/ui/content/ContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
-import {
-  getVCCreationCache,
-  removeVCCreationCache,
-} from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/utils';
-import TryVirtualContributorDialog from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/tryVcStep/TryVirtualContributorDialog';
+import { getVCCreationCache, removeVCCreationCache } from '@/domain/vcFlow/utils';
+import TryVirtualContributorDialog from '@/domain/vcFlow/tryVcStep/TryVirtualContributorDialog';
 
 type SpaceDashboardViewProps = {
   spaceId: string | undefined;

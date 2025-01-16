@@ -30,11 +30,11 @@ export interface UserAccountProps {
   }>;
 }
 
-interface NewVirtualContributorWizardProps {}
+interface virtualContributorWizardProps {}
 
-export interface useNewVirtualContributorWizardProvided {
+export interface useVirtualContributorWizardProvided {
   startWizard: (initAccount?: UserAccountProps | undefined, accountName?: string) => void;
-  NewVirtualContributorWizard: ComponentType<NewVirtualContributorWizardProps>;
+  VirtualContributorWizard: ComponentType<virtualContributorWizardProps>;
 }
 
 export type SelectableSpace = {

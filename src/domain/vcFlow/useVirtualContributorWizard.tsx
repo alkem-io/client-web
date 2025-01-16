@@ -42,21 +42,24 @@ import ExistingSpace from './existingKnowledgeStep/ExistingSpace';
 import CreateExternalAI, { ExternalVcFormValues } from './externalStep/CreateExternalAI';
 import {
   SelectableKnowledgeSpace,
-  useNewVirtualContributorWizardProvided,
+  useVirtualContributorWizardProvided,
   UserAccountProps,
-} from './useNewVirtualContributorProps';
+} from './virtualContributorProps';
 import { addVCCreationCache } from './utils';
 
-type Step =
-  | 'initial'
-  | 'loadingStep'
-  | 'addKnowledge'
-  | 'existingKnowledge'
-  | 'externalProvider'
-  | 'chooseCommunity'
-  | 'tryVcInfo';
+const steps = {
+  initial: 'initial',
+  loadingStep: 'loadingStep',
+  addKnowledge: 'addKnowledge',
+  existingKnowledge: 'existingKnowledge',
+  externalProvider: 'externalProvider',
+  chooseCommunity: 'chooseCommunity',
+  tryVcInfo: 'tryVcInfo',
+} as const;
 
-const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvided => {
+type Step = keyof typeof steps;
+
+const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   const { t } = useTranslation();
   const { user } = useUserContext();
   const notify = useNotification();
@@ -76,7 +79,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const startWizard = (initAccount: UserAccountProps | undefined, accountName?: string) => {
     setTargetAccount(initAccount);
     setAccountName(accountName);
-    setStep('initial');
+    setStep(steps.initial);
     setDialogOpen(true);
   };
 
@@ -87,11 +90,11 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const handleCloseWizard = () => {
     setDialogOpen(false);
-    setStep('initial');
+    setStep(steps.initial);
   };
 
   const handleCloseChooseCommunity = () => {
-    setStep('tryVcInfo');
+    setStep(steps.tryVcInfo);
   };
 
   const { data, loading } = useNewVirtualContributorMySpacesQuery({
@@ -150,7 +153,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
 
     // loading
-    setStep('loadingStep');
+    setStep(steps.loadingStep);
 
     const { data: newSpace } = await CreateNewSpace({
       variables: {
@@ -173,7 +176,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
 
     // in case of failure
-    setStep('addKnowledge');
+    // todo: handle
   };
 
   const [createVirtualContributor] = useCreateVirtualContributorOnAccountMutation({
@@ -324,7 +327,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   // ###STEP 'addKnowledge' - Add Content
   const handleCreateKnowledge = async (values: VirtualContributorFromProps) => {
     setVirtualContributorInput(values);
-    setStep('addKnowledge');
+    setStep(steps.addKnowledge);
   };
 
   const [createLinkOnCallout] = useCreateLinkOnCalloutMutation();
@@ -405,7 +408,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     // TODO: after the VC creation:
     // 1. reingest the VC in case of documents?
 
-    setStep('chooseCommunity');
+    setStep(steps.chooseCommunity);
   };
 
   // ###STEP 'chooseCommunityStep' - Choose Community
@@ -488,7 +491,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
   };
 
-  const NewVirtualContributorWizard = useCallback(() => {
+  const VirtualContributorWizard = useCallback(() => {
     if (!myAccountId) {
       return null;
     }
@@ -497,7 +500,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       <DialogWithGrid open={dialogOpen} columns={6}>
         {/* TODO: StorageConfig, instead of user here should be account */}
         <StorageConfigContextProvider userId={user?.user.id ?? ''} locationType="user">
-          {step === 'initial' && (
+          {step === steps.initial && (
             <CreateNewVirtualContributor
               onClose={handleCloseWizard}
               loading={loading}
@@ -506,15 +509,15 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
               onUseExternal={values => onStepSelection('externalProvider', values)}
             />
           )}
-          {step === 'loadingStep' && <LoadingStep onClose={handleCloseWizard} />}
-          {step === 'addKnowledge' && virtualContributorInput && (
+          {step === steps.loadingStep && <LoadingStep onClose={handleCloseWizard} />}
+          {step === steps.addKnowledge && virtualContributorInput && (
             <AddContent
               onClose={handleCloseWizard}
               onCreateVC={onCreateVcWithKnowledge}
               spaceId={selectedExistingSpaceId ?? ''}
             />
           )}
-          {step === 'chooseCommunity' && (
+          {step === steps.chooseCommunity && (
             <ChooseCommunity
               onClose={handleCloseChooseCommunity}
               accountId={myAccountId}
@@ -524,24 +527,24 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
               loading={loading || availableSpacesLoading}
             />
           )}
-          {step === 'tryVcInfo' && (
+          {step === steps.tryVcInfo && (
             <TryVcInfo
               vcName={virtualContributorInput?.name ?? ''}
               vcNameId={createdVcId.nameID}
               onClose={handleCloseWizard}
             />
           )}
-          {step === 'existingKnowledge' && myAccountId && (
+          {step === steps.existingKnowledge && myAccountId && (
             <ExistingSpace
               onClose={handleCloseWizard}
-              onBack={() => setStep('initial')}
+              onBack={() => setStep(steps.initial)}
               onSubmit={handleCreateVCWithExistingKnowledge}
               accountId={myAccountId}
               getSpaces={getSelectableSpaces}
               loading={loading || availableSpacesLoading}
             />
           )}
-          {step === 'externalProvider' && (
+          {step === steps.externalProvider && (
             <CreateExternalAI onCreateExternal={handleCreateExternal} onClose={handleCloseWizard} />
           )}
         </StorageConfigContextProvider>
@@ -551,8 +554,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   return {
     startWizard,
-    NewVirtualContributorWizard,
+    VirtualContributorWizard,
   };
 };
 
-export default useNewVirtualContributorWizard;
+export default useVirtualContributorWizard;
