@@ -101,7 +101,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
   const { accountId: currentUserAccountId } = useUserContext();
 
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
-  const [showTutorialsInSpace, setShowTutorialsInSpace] = useState(false);
+  const [addTutorialCallouts, setAddTutorialCallouts] = useState(false);
 
   const [isTermsDialogOpen, setIsTermsDialogOpen] = useState(false);
 
@@ -131,7 +131,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
           },
           collaborationData: {
             calloutsSetData: {},
-            addTutorialCallouts: showTutorialsInSpace,
+            addTutorialCallouts,
           },
           tags: compact(values.tagsets?.reduce((acc: string[], tagset) => [...acc, ...tagset.tags], [])),
           licensePlanID: values.licensePlanId,
@@ -204,8 +204,8 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
 
                     <Gutters disableGap disablePadding>
                       <FormControlLabel
-                        value={showTutorialsInSpace}
-                        onChange={(event, isChecked) => setShowTutorialsInSpace(isChecked)}
+                        value={addTutorialCallouts}
+                        onChange={(event, isChecked) => setAddTutorialCallouts(isChecked)}
                         required
                         control={<Checkbox />}
                         label={<Caption>{t('createSpace.addTutorialsLabel')}</Caption>}
