@@ -1,7 +1,7 @@
 import NegativeButton from '@/core/ui/button/NegativeButton';
-import { DialogActions, DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
+import { DialogActions, DialogTitle } from '@/core/ui/dialog/deprecated';
 import Loading from '@/core/ui/loading/Loading';
-import Dialog from '@mui/material/Dialog';
+import { Dialog, DialogContent } from '@mui/material';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 

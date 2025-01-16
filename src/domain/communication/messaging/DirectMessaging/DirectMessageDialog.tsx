@@ -1,19 +1,18 @@
-import { ReactNode, useState } from 'react';
-import { Alert, DialogActions } from '@mui/material';
-import { Formik, FormikState } from 'formik';
-import * as yup from 'yup';
-import { useTranslation } from 'react-i18next';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import DialogContent from '@/core/ui/dialog/DialogContent';
-import { Caption } from '@/core/ui/typography/components';
-import SendButton from '@/domain/shared/components/SendButton';
-import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
+import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import { gutters } from '@/core/ui/grid/utils';
+import { Caption } from '@/core/ui/typography/components';
 import { ProfileChip } from '@/domain/community/contributor/ProfileChip/ProfileChip';
+import SendButton from '@/domain/shared/components/SendButton';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { Alert, DialogActions, DialogContent } from '@mui/material';
+import { Formik, FormikState } from 'formik';
+import { ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
 
 export interface MessageReceiverChipData {
   id: string;

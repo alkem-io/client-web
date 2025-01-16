@@ -1,10 +1,9 @@
 import Avatar from '@/core/ui/avatar/Avatar';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { DialogContent } from '@/core/ui/dialog/deprecated';
 import Loading from '@/core/ui/loading/Loading';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
 import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
-import { Box, Button, DialogActions, Divider, Grid, Typography, styled } from '@mui/material';
+import { Box, Button, DialogActions, DialogContent, Divider, Grid, Typography, styled } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import Link from '@mui/material/Link';
 import Table from '@mui/material/Table';

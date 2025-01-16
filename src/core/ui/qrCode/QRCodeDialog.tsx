@@ -1,8 +1,9 @@
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
+import { DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DialogContent, DialogTitle } from '../dialog/deprecated';
+import { DialogTitle } from '../dialog/deprecated';
 import Loading from '../loading/Loading';
 import QRCode from './QRCode';
 

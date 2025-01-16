@@ -2,7 +2,6 @@ import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErr
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { DialogContent } from '@/core/ui/dialog/deprecated';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { gutters } from '@/core/ui/grid/utils';
 import Loading from '@/core/ui/loading/Loading';
@@ -18,7 +17,7 @@ import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
 import { Delete, Save } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
-import { Box, Button } from '@mui/material';
+import { Box, Button, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';

@@ -2,7 +2,6 @@ import { useWhiteboardLastUpdatedDateQuery } from '@/core/apollo/generated/apoll
 import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
 import { TagCategoryValues, error as logError } from '@/core/logging/sentry/log';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { DialogContent } from '@/core/ui/dialog/deprecated';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { useGlobalGridColumns } from '@/core/ui/grid/constants';
 import Loading from '@/core/ui/loading/Loading';
@@ -16,6 +15,7 @@ import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/Whit
 import { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
 import type { ExportedDataState } from '@alkemio/excalidraw/dist/excalidraw/data/types';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/excalidraw/types';
+import { DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { Formik } from 'formik';
 import { FormikProps } from 'formik/dist/types';

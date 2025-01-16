@@ -1,6 +1,5 @@
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { DialogContent } from '@/core/ui/dialog/deprecated';
 import Loading from '@/core/ui/loading/Loading';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { Caption, Text } from '@/core/ui/typography';
@@ -19,7 +18,7 @@ import type {
   ExcalidrawProps,
 } from '@alkemio/excalidraw/dist/excalidraw/types';
 import { LoadingButton } from '@mui/lab';
-import { Box, Button, DialogActions } from '@mui/material';
+import { Box, Button, DialogActions, DialogContent } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { debounce, merge } from 'lodash';
 import React, { PropsWithChildren, Ref, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';

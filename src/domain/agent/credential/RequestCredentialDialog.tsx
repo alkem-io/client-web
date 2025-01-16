@@ -3,13 +3,14 @@ import {
   CredentialMetadataOutput,
 } from '@/core/apollo/generated/graphql-schema';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
+import { DialogTitle } from '@/core/ui/dialog/deprecated';
 import Loading from '@/core/ui/loading/Loading';
 import QRCode from '@/core/ui/qrCode/QRCode';
 import {
   Box,
   Button,
   DialogActions,
+  DialogContent,
   DialogContentText,
   List,
   ListItemButton,
