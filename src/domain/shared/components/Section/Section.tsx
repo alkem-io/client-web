@@ -28,6 +28,7 @@ const Section: FC<SectionProps> = ({ bannerUrl, alwaysShowBanner, bannerOverlay,
           <BannerContainer>
             <Image
               src={bannerUrl}
+              alt="Section banner"
               onLoad={() => setBannerLoading(false)}
               sx={theme => ({
                 height: theme.spacing(12),
