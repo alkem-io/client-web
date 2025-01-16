@@ -87,7 +87,6 @@ export type ApplicationDialogDataType = {
   }[];
   contributor?: {
     id: string;
-    nameID: string;
     profile: {
       displayName: string;
       avatar?: {

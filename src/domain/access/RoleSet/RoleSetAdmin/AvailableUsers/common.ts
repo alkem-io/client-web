@@ -1,4 +1,4 @@
-export const AVAILABLE_USERS_PAGE_SIZE = 2;
+export const AVAILABLE_USERS_PAGE_SIZE = 10;
 
 export type AvailableUsersResponse = {
   users: {

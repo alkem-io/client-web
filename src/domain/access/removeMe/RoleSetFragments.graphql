@@ -49,20 +49,4 @@ fragment RoleSetAvailableElevatedRoleUsers on RoleSet {
   }
 }
 ## remove?
-fragment RoleSetAvailableEntryRoleUsers on RoleSet {
-  id
-  availableUsersForEntryRole(first: $first, after: $after, filter: $filter) {
-    users {
-      ...AvailableUserForRoleSet
-    }
-    pageInfo {
-      ...PageInfo
-    }
-  }
-}
 
-fragment MyMembershipsRoleSet on RoleSet {
-  id
-  myMembershipStatus
-  myRoles
-}

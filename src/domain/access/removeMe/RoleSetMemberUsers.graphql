@@ -1,0 +1,16 @@
+# Remove?
+query RoleSetAvailableEntryRoleUsers($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
+  lookup {
+    availableEntryRoleUsers: roleSet(ID: $roleSetId) {
+      id
+      availableUsersForEntryRole(first: $first, after: $after, filter: $filter) {
+        users {
+          ...AvailableUserForRoleSet
+        }
+        pageInfo {
+          ...PageInfo
+        }
+      }
+    }
+  }
+}
