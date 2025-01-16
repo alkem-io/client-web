@@ -1,4 +1,3 @@
-
 fragment RoleDefinitionPolicy on Role {
   id
   name

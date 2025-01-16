@@ -5,31 +5,22 @@ import { useOrganization } from '@/domain/community/contributor/organization/hoo
 import Loading from '@/core/ui/loading/Loading';
 import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
-import { useOrganizationAssociatesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
 
 export const OrganizationAdminAuthorizationView: FC = () => {
   const { roleSetId, loading: isLoadingOrganization } = useOrganization();
   const { t } = useTranslation();
 
-  const { data, loading: isLoadingAssociates } = useOrganizationAssociatesQuery({
-    variables: { roleSetId: roleSetId },
-    skip: isLoadingOrganization,
-  });
-
-  if (isLoadingOrganization || isLoadingAssociates) {
+  if (isLoadingOrganization) {
     return <Loading />;
   }
-
-  const orgAssociates = data?.lookup.roleSet?.associatedUsers || [];
 
   return (
     <DashboardGenericSection headerText={t(`common.roles.${RoleName.Admin}` as const)}>
       <OrganizationAssociatesContainer
         entities={{
           roleSetID: roleSetId,
-          existingAssociatedUsers: orgAssociates,
-          role: RoleName.Admin,
+          role: RoleName.Owner,
         }}
       >
         {({ entities, actions, state }) => (

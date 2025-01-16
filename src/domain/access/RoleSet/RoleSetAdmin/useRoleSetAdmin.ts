@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+import { PartialRecord } from '@/core/utils/PartialRecords';
 import { useRoleSetAuthorizationQuery, useRoleSetRoleAssignmentQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -6,11 +8,26 @@ import {
   RoleSetMemberUserFragment,
   RoleSetMemberVirtualContributorFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import { useMemo } from 'react';
-import useRoleSetAdminMutations, { useRoleSetAdminMutationsProvided } from './useRoleSetAdminMutations';
-import { PartialRecord } from '@/core/utils/PartialRecords';
+import { AvailableUsersResponse } from './AvailableUsers/common';
+import useRoleSetAdminAvailableUsersOnPlatform from './AvailableUsers/useRoleSetAdminAvailableUsersOnPlatform';
+import useRoleSetAdminAvailableUsers from './AvailableUsers/useRoleSetAdminAvailableUsers';
+import useRoleSetAdminRolesAssignment, { useRoleSetAdminRolesAssignmentProvided } from './RolesAssignament/useRoleSetAdminRolesAssignment';
 
 type RoleSetMemberType = 'user' | 'organization' | 'virtualContributor';
+
+export const RelevantRoles = {
+  'community': [RoleName.Admin, RoleName.Lead, RoleName.Member],
+  'organization': [RoleName.Owner, RoleName.Admin, RoleName.Associate],
+  'platform': [
+    RoleName.GlobalAdmin,
+    RoleName.GlobalSupport,
+    RoleName.GlobalLicenseManager,
+    RoleName.GlobalCommunityReader,
+    RoleName.GlobalSpacesReader,
+    RoleName.PlatformBetaTester,
+    RoleName.PlatformVcCampaign
+  ],
+} as const;
 
 type RoleDefinition = {
   name: RoleName;
@@ -39,7 +56,7 @@ export interface RoleSetMemberVirtualContributorFragmentWithRoles extends RoleSe
   isContactable: boolean;
 }
 
-interface useRoleSetAdminProvided extends useRoleSetAdminMutationsProvided {
+interface useRoleSetAdminProvided extends useRoleSetAdminRolesAssignmentProvided {
   myPrivileges: AuthorizationPrivilege[] | undefined;
   roleNames: RoleName[] | undefined;
 
@@ -47,22 +64,25 @@ interface useRoleSetAdminProvided extends useRoleSetAdminMutationsProvided {
   organizationsByRole: PartialRecord<RoleName, RoleSetMemberOrganizationFragmentWithRoles[]>;
   virtualContributorsByRole: PartialRecord<RoleName, RoleSetMemberVirtualContributorFragmentWithRoles[]>;
   rolesDefinitions: Record<RoleName, RoleDefinition> | undefined;
-  /*
-    getUsersWithRole: (role?: RoleName) => RoleSetMemberUserFragmentWithRoles[];
-    getOrganizationsWithRole: (role?: RoleName) => RoleSetMemberOrganizationFragmentWithRoles[];
-    getVirtualContributorsWithRole: (role?: RoleName) => RoleSetMemberVirtualContributorFragmentWithRoles[];
-    getRoleDefinition: (role: RoleName) => RoleDefinition | undefined;
-  */
+  availableUsersForRole: AvailableUsersResponse | undefined;
+
   loading: boolean;
   updating: boolean;
 }
 
 type useRoleSetAdminParams = {
   roleSetId: string | undefined;
-  relevantRoles: readonly RoleName[];
+  relevantRoles: readonly RoleName[] | keyof typeof RelevantRoles;
   contributorTypes?: readonly RoleSetMemberType[];
   parentRoleSetId?: string;
-  refetch?: () => void;
+
+  availableUsersForRoleSearch?: {
+    enabled: boolean;
+    mode: 'platform' | 'roleSet';
+    role: RoleName;
+    filter?: string;
+  }
+
   skip?: boolean;
 };
 
@@ -70,9 +90,12 @@ const useRoleSetAdmin = ({
   roleSetId,
   relevantRoles,
   contributorTypes = ['user', 'organization', 'virtualContributor'],
-  refetch,
+  availableUsersForRoleSearch,
   skip,
 }: useRoleSetAdminParams): useRoleSetAdminProvided => {
+  if (typeof relevantRoles === 'string') {
+    relevantRoles = RelevantRoles[relevantRoles];
+  }
   if (!roleSetId || !relevantRoles || relevantRoles.length === 0) {
     skip = true;
   }
@@ -197,25 +220,53 @@ const useRoleSetAdmin = ({
   const refetchAll = () => {
     refetchRoleSet();
     refetchRoleSetData();
-    refetch?.();
   };
-  /*
-    const getUsersWithRole = (role?: RoleName) =>
-      role ? data.usersByRole[role] ?? [] : Object.values(data.usersById);
+  // Wraps any function call into an await + refetch
+  const refetchAfterMutation = (mutation: (...args) => Promise<unknown>) =>
+    async (...args) => {
+      await mutation(...args);
+      refetchAll();
+    };
 
-    const getOrganizationsWithRole = (role?: RoleName) =>
-      role ? data.organizationsByRole[role] ?? [] : Object.values(data.organizationsById);
 
-    const getVirtualContributorsWithRole = (role?: RoleName) =>
-      role ? data.virtualContributorsByRole[role] ?? [] : Object.values(data.virtualContributorsById);
-
-    const getRoleDefinition = (role: RoleName) => data.rolesDefinitions?.[role];
-  */
   const {
+    assignRoleToUser,
+    removeRoleFromUser,
     assignPlatformRoleToUser,
     removePlatformRoleFromUser,
     loading: updatingRoleSet,
-  } = useRoleSetAdminMutations({ roleSetId });
+  } = useRoleSetAdminRolesAssignment({ roleSetId });
+
+
+  const availableUsersForRoleSetRole = useRoleSetAdminAvailableUsers({
+    roleSetId: roleSetId,
+    role: availableUsersForRoleSearch?.role,
+    filter: availableUsersForRoleSearch?.filter,
+    skip: (
+      !availableUsersForRoleSearch ||
+      !availableUsersForRoleSearch.enabled ||
+      !(availableUsersForRoleSearch.mode === 'roleSet')
+    ),
+    usersAlreadyInRole: data.usersByRole[availableUsersForRoleSearch?.role!]
+  });
+
+  const availableUsersForPlatformRoleSetRole = useRoleSetAdminAvailableUsersOnPlatform({
+    filter: availableUsersForRoleSearch?.filter,
+    skip: (
+      !availableUsersForRoleSearch ||
+      !availableUsersForRoleSearch.enabled ||
+      !(availableUsersForRoleSearch.mode === 'platform')
+    ),
+    usersAlreadyInRole: data.usersByRole[availableUsersForRoleSearch?.role!]
+  });
+
+  const availableUsersForRole =
+    availableUsersForRoleSearch?.mode === 'roleSet' ?
+      availableUsersForRoleSetRole : (
+        availableUsersForRoleSearch?.mode === 'platform' ?
+          availableUsersForPlatformRoleSetRole :
+          undefined
+      );
 
   return {
     myPrivileges,
@@ -226,20 +277,12 @@ const useRoleSetAdmin = ({
     organizationsByRole: data.organizationsByRole,
     virtualContributorsByRole: data.virtualContributorsByRole,
     rolesDefinitions: data.rolesDefinitions,
+    availableUsersForRole,
 
-    /*getUsersWithRole,
-    getOrganizationsWithRole,
-    getVirtualContributorsWithRole,
-    getRoleDefinition,
-*/
-    assignPlatformRoleToUser: async (...params) => {
-      await assignPlatformRoleToUser(...params);
-      refetchAll();
-    },
-    removePlatformRoleFromUser: async (...params) => {
-      await removePlatformRoleFromUser(...params);
-      refetchAll();
-    },
+    assignRoleToUser: refetchAfterMutation(assignRoleToUser),
+    assignPlatformRoleToUser: refetchAfterMutation(assignPlatformRoleToUser),
+    removeRoleFromUser: refetchAfterMutation(removeRoleFromUser),
+    removePlatformRoleFromUser: refetchAfterMutation(removePlatformRoleFromUser),
     updating: updatingRoleSet,
   };
 };

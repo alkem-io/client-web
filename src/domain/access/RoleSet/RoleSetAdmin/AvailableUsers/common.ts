@@ -11,5 +11,4 @@ export type AvailableUsersResponse = {
   hasMore: boolean;
   fetchMore: () => Promise<unknown>;
   loading: boolean;
-  refetch: () => Promise<unknown>;
 };

@@ -4,6 +4,10 @@ import OrganizationAdminAuthorizationView from '../views/OrganizationAdminAuthor
 import OrganizationOwnerAuthorizationView from '../views/OrganizationOwnerAuthorizationView';
 import { SectionSpacer } from '@/domain/shared/components/Section/Section';
 
+/**
+ *
+ * //!! Change this entirely
+ */
 const OrganizationAdminAuthorizationPage = () => (
   <OrganizationAdminLayout currentTab={SettingsSection.Authorization}>
     <OrganizationAdminAuthorizationView />

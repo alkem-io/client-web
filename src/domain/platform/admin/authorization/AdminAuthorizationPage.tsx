@@ -8,17 +8,17 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { gutters } from '@/core/ui/grid/utils';
 import { usePlatformRoleSetQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
-import useRoleSetAdmin from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetAdmin, { RelevantRoles } from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
 import { useTranslation } from 'react-i18next';
 import { useUserContext } from '@/domain/community/user';
 import EditMemberUsers from '../components/Community/EditMembersUsers';
-import usePlatformRoleSetAdminAvailableUsers from '@/domain/access/RoleSet/RoleSetAdmin/AvailableUsers/usePlatformRoleSetAdminAvailableUsers';
 
 interface AdminAuthorizationPageProps {
   selectedRole?: RoleName;
 }
 
-const MANAGED_ROLES = [
+const MANAGED_ROLES = RelevantRoles['platform'];
+/*[
   RoleName.GlobalAdmin,
   RoleName.GlobalSupport,
   RoleName.GlobalLicenseManager,
@@ -27,6 +27,7 @@ const MANAGED_ROLES = [
   RoleName.PlatformBetaTester,
   RoleName.PlatformVcCampaign,
 ] as const;
+ */
 
 const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) => {
   const { t } = useTranslation();
@@ -36,27 +37,31 @@ const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) =
 
   const { data, loading: loadingPlatformRoleSet } = usePlatformRoleSetQuery();
   const roleSetId = data?.platform.roleSet.id;
+
   const {
     usersByRole,
     assignPlatformRoleToUser,
     removePlatformRoleFromUser,
     loading: loadingRoleSet,
+    availableUsersForRole,
     updating,
   } = useRoleSetAdmin({
     roleSetId,
     relevantRoles: MANAGED_ROLES,
     contributorTypes: ['user'],
-    refetch: () => {
-      refetch();
-    },
+    availableUsersForRoleSearch: {
+      enabled: !!selectedRole,
+      mode: 'platform',
+      role: selectedRole!,
+      filter: seachTerm
+    }
   });
 
   const {
-    users: availableMembers,
+    users: availableMembers = [],
     fetchMore,
-    hasMore,
-    refetch,
-  } = usePlatformRoleSetAdminAvailableUsers({ roleSetId, role: selectedRole, filter: seachTerm });
+    hasMore
+  } = availableUsersForRole ?? {};
 
   const loading = loadingPlatformRoleSet || loadingRoleSet;
 

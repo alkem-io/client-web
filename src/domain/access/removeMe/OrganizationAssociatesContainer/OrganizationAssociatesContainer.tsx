@@ -1,14 +1,13 @@
-import React, { PropsWithChildren, useCallback, useMemo } from 'react';
+import React, { PropsWithChildren, useMemo } from 'react';
 import { useUserContext } from '@/domain/community/user';
-import { RoleName, UserDisplayNameFragment } from '@/core/apollo/generated/graphql-schema';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { Member } from '@/domain/community/user/models/User';
 import { AvailableMembersResults } from '@/domain/access/removeMe/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
-import { useAssignRoleToUserMutation, useRemoveRoleFromUserMutation } from '@/core/apollo/generated/apollo-hooks';
+import useRoleSetAdmin from '../../RoleSet/RoleSetAdmin/useRoleSetAdmin';
 
 export interface OrganizationAssociatesProps {
   entities: {
     roleSetID: string;
-    existingAssociatedUsers?: Member[];
     role: RoleName;
   };
   children: (provided: {
@@ -25,7 +24,7 @@ export interface OrganizationAssociatesActions {
   handleRemoveAdmin: (memberId: string) => void;
   handleAssignOwner: (memberId: string) => void;
   handleRemoveOwner: (memberId: string) => void;
-  fetchMoreUsers: () => Promise<void>;
+  fetchMoreUsers: () => Promise<unknown>;
   setSearchTerm: AvailableMembersResults['setSearchTerm'];
 }
 
@@ -36,69 +35,50 @@ export interface OrganizationAssociatesState {
 }
 
 export interface OrganizationAssociatesEntities {
-  availableMembers: UserDisplayNameFragment[];
+  availableMembers: {
+    id: string;
+    profile: {
+      displayName: string;
+    }
+  }[];
   allMembers: Member[];
   currentMember?: Member;
 }
-
+/**
+ * @deprecated Use directly useRoleSetAdmin
+ */
 export const OrganizationAssociatesContainer = ({
   children,
   entities,
 }: PropsWithChildren<OrganizationAssociatesProps>) => {
   const { user } = useUserContext();
-
-  const [assignRoleToUser, { loading: loadingAssign }] = useAssignRoleToUserMutation();
-  const [revokeRoleToUser, { loading: loadingRevoke }] = useRemoveRoleFromUserMutation();
-
-  const handleAssignRole = useCallback(
-    (memberId: string, role: RoleName) => {
-      assignRoleToUser({
-        variables: {
-          roleSetId: entities.roleSetID,
-          contributorId: memberId,
-          role,
-        },
-        refetchQueries: [
-          refetchUsersWithRoleQuery({
-            input: { role, roleSetID: entities.roleSetID },
-          }),
-        ],
-        awaitRefetchQueries: true,
-      });
-    },
-    [entities, assignRoleToUser]
-  );
-
-  const handleRevokeRole = useCallback(
-    (memberId: string, role: RoleName) => {
-      revokeRoleToUser({
-        variables: {
-          contributorId: memberId,
-          roleSetId: entities.roleSetID,
-          role,
-        },
-        refetchQueries: [
-          refetchUsersWithRoleQuery({
-            input: { role, roleSetID: entities.roleSetID },
-          }),
-        ],
-        awaitRefetchQueries: true,
-      });
-    },
-    [entities, revokeRoleToUser]
-  );
+  const [searchTerm, setSearchTerm] = React.useState<string>('');
 
   const {
-    availableMembers,
-    currentMembers: allMembers,
-    loading: loadingUsers,
-    fetchMore: fetchMoreUsers,
-    hasMore: hasMoreUsers,
-    setSearchTerm,
-  } = useAvailableUsers({
-    role: entities.role,
+    usersByRole,
+    assignRoleToUser,
+    removeRoleFromUser,
+    availableUsersForRole,
+    loading,
+    updating,
+  } = useRoleSetAdmin({
     roleSetId: entities.roleSetID,
+    relevantRoles: [RoleName.Associate, RoleName.Admin, RoleName.Owner],
+    availableUsersForRoleSearch: {
+      enabled: true,
+      mode: 'roleSet',
+      role: entities.role,
+      filter: searchTerm,
+    },
   });
+  const allMembers = usersByRole[entities.role] ?? [];
+
+  const {
+    users: availableMembers = [],
+    fetchMore: fetchMoreUsers = () => Promise.resolve(),
+    hasMore: hasMoreUsers,
+  } = availableUsersForRole ?? {};
+
 
   const currentMember = useMemo<Member | undefined>(() => {
     if (user)
@@ -116,16 +96,16 @@ export const OrganizationAssociatesContainer = ({
 
   const actions = useMemo(
     () => ({
-      handleAssignAssociate: (memberId: string) => handleAssignRole(memberId, RoleName.Associate),
-      handleRemoveAssociate: (memberId: string) => handleRevokeRole(memberId, RoleName.Associate),
-      handleAssignAdmin: (memberId: string) => handleAssignRole(memberId, RoleName.Admin),
-      handleRemoveAdmin: (memberId: string) => handleRevokeRole(memberId, RoleName.Admin),
-      handleAssignOwner: (memberId: string) => handleAssignRole(memberId, RoleName.Owner),
-      handleRemoveOwner: (memberId: string) => handleRevokeRole(memberId, RoleName.Owner),
+      handleAssignAssociate: (memberId: string) => assignRoleToUser(memberId, RoleName.Associate),
+      handleRemoveAssociate: (memberId: string) => removeRoleFromUser(memberId, RoleName.Associate),
+      handleAssignAdmin: (memberId: string) => assignRoleToUser(memberId, RoleName.Admin),
+      handleRemoveAdmin: (memberId: string) => removeRoleFromUser(memberId, RoleName.Admin),
+      handleAssignOwner: (memberId: string) => assignRoleToUser(memberId, RoleName.Owner),
+      handleRemoveOwner: (memberId: string) => removeRoleFromUser(memberId, RoleName.Owner),
       fetchMoreUsers,
       setSearchTerm,
     }),
-    [handleAssignRole, handleRevokeRole, fetchMoreUsers, setSearchTerm]
+    [assignRoleToUser, removeRoleFromUser, fetchMoreUsers, setSearchTerm]
   );
 
   return (
@@ -134,8 +114,8 @@ export const OrganizationAssociatesContainer = ({
         entities: { availableMembers, allMembers, currentMember },
         actions,
         state: {
-          updatingRoles: loadingAssign || loadingRevoke,
-          loadingUsers,
+          updatingRoles: updating,
+          loadingUsers: loading,
           hasMoreUsers,
         },
       })}

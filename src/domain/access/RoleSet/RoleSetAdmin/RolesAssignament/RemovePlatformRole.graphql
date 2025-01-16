@@ -1,5 +1,5 @@
 mutation RemovePlatformRoleFromUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
-  removePlatformRoleFromUser(roleData: { roleSetID: $roleSetId, contributorID: $contributorId, role: $role }) {
+  removePlatformRoleFromUser(roleData: { roleSetID: $roleSetId, role: $role, contributorID: $contributorId }) {
     id
     profile {
       id

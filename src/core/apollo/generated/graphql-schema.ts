@@ -7854,11 +7854,40 @@ export type AssignPlatformRoleToUserMutationVariables = Exact<{
 
 export type AssignPlatformRoleToUserMutation = {
   __typename?: 'Mutation';
-  assignPlatformRoleToUser: {
-    __typename?: 'User';
-    id: string;
-    profile: { __typename?: 'Profile'; id: string; displayName: string };
-  };
+  assignPlatformRoleToUser: { __typename?: 'User'; id: string };
+};
+
+export type AssignRoleToUserMutationVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  role: RoleName;
+  contributorId: Scalars['UUID'];
+}>;
+
+export type AssignRoleToUserMutation = {
+  __typename?: 'Mutation';
+  assignRoleToUser: { __typename?: 'User'; id: string };
+};
+
+export type AssignRoleToOrganizationMutationVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  role: RoleName;
+  contributorId: Scalars['UUID'];
+}>;
+
+export type AssignRoleToOrganizationMutation = {
+  __typename?: 'Mutation';
+  assignRoleToOrganization: { __typename?: 'Organization'; id: string };
+};
+
+export type AssignRoleToVirtualContributorMutationVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  role: RoleName;
+  contributorId: Scalars['UUID'];
+}>;
+
+export type AssignRoleToVirtualContributorMutation = {
+  __typename?: 'Mutation';
+  assignRoleToVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
 };
 
 export type RemovePlatformRoleFromUserMutationVariables = Exact<{
@@ -7874,6 +7903,39 @@ export type RemovePlatformRoleFromUserMutation = {
     id: string;
     profile: { __typename?: 'Profile'; id: string; displayName: string };
   };
+};
+
+export type RemoveRoleFromUserMutationVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  role: RoleName;
+  contributorId: Scalars['UUID'];
+}>;
+
+export type RemoveRoleFromUserMutation = {
+  __typename?: 'Mutation';
+  removeRoleFromUser: { __typename?: 'User'; id: string };
+};
+
+export type RemoveRoleFromOrganizationMutationVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  role: RoleName;
+  contributorId: Scalars['UUID'];
+}>;
+
+export type RemoveRoleFromOrganizationMutation = {
+  __typename?: 'Mutation';
+  removeRoleFromOrganization: { __typename?: 'Organization'; id: string };
+};
+
+export type RemoveRoleFromVirtualContributorMutationVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+  role: RoleName;
+  contributorId: Scalars['UUID'];
+}>;
+
+export type RemoveRoleFromVirtualContributorMutation = {
+  __typename?: 'Mutation';
+  removeRoleFromVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
 };
 
 export type RoleSetAuthorizationQueryVariables = Exact<{
@@ -8011,95 +8073,6 @@ export type RoleSetRoleAssignmentQuery = {
             userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
           }>;
         }
-      | undefined;
-  };
-};
-
-export type RoleDefinitionPolicyFragment = {
-  __typename?: 'Role';
-  id: string;
-  name: RoleName;
-  organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
-  userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
-};
-
-export type RoleSetMemberUserFragment = {
-  __typename?: 'User';
-  id: string;
-  isContactable: boolean;
-  email: string;
-  firstName: string;
-  lastName: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    url: string;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    location?:
-      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
-      | undefined;
-    tagsets?:
-      | Array<{
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }>
-      | undefined;
-  };
-};
-
-export type RoleSetMemberOrganizationFragment = {
-  __typename?: 'Organization';
-  id: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    description?: string | undefined;
-    url: string;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    tagsets?:
-      | Array<{
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }>
-      | undefined;
-    location?:
-      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-      | undefined;
-  };
-};
-
-export type RoleSetMemberVirtualContributorFragment = {
-  __typename?: 'VirtualContributor';
-  id: string;
-  searchVisibility: SearchVisibility;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    displayName: string;
-    url: string;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    tagsets?:
-      | Array<{
-          __typename?: 'Tagset';
-          id: string;
-          name: string;
-          tags: Array<string>;
-          allowedValues: Array<string>;
-          type: TagsetType;
-        }>
-      | undefined;
-    location?:
-      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
       | undefined;
   };
 };
@@ -8332,6 +8305,95 @@ export type MyMembershipsRoleSetFragment = {
   myRoles: Array<RoleName>;
 };
 
+export type RoleDefinitionPolicyFragment = {
+  __typename?: 'Role';
+  id: string;
+  name: RoleName;
+  organizationPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
+  userPolicy: { __typename?: 'ContributorRolePolicy'; minimum: number; maximum: number };
+};
+
+export type RoleSetMemberUserFragment = {
+  __typename?: 'User';
+  id: string;
+  isContactable: boolean;
+  email: string;
+  firstName: string;
+  lastName: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    url: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    location?:
+      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+      | undefined;
+    tagsets?:
+      | Array<{
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }>
+      | undefined;
+  };
+};
+
+export type RoleSetMemberOrganizationFragment = {
+  __typename?: 'Organization';
+  id: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    url: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    tagsets?:
+      | Array<{
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }>
+      | undefined;
+    location?:
+      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+      | undefined;
+  };
+};
+
+export type RoleSetMemberVirtualContributorFragment = {
+  __typename?: 'VirtualContributor';
+  id: string;
+  searchVisibility: SearchVisibility;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    url: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    tagsets?:
+      | Array<{
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }>
+      | undefined;
+    location?:
+      | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
+      | undefined;
+  };
+};
+
 export type ApplyForEntryRoleOnRoleSetMutationVariables = Exact<{
   input: ApplyForEntryRoleOnRoleSetInput;
 }>;
@@ -8355,72 +8417,6 @@ export type JoinRoleSetMutationVariables = Exact<{
 }>;
 
 export type JoinRoleSetMutation = { __typename?: 'Mutation'; joinRoleSet: { __typename?: 'RoleSet'; id: string } };
-
-export type AssignRoleToUserMutationVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-  role: RoleName;
-  contributorId: Scalars['UUID'];
-}>;
-
-export type AssignRoleToUserMutation = {
-  __typename?: 'Mutation';
-  assignRoleToUser: { __typename?: 'User'; id: string };
-};
-
-export type RemoveRoleFromUserMutationVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-  role: RoleName;
-  contributorId: Scalars['UUID'];
-}>;
-
-export type RemoveRoleFromUserMutation = {
-  __typename?: 'Mutation';
-  removeRoleFromUser: { __typename?: 'User'; id: string };
-};
-
-export type AssignRoleToOrganizationMutationVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-  role: RoleName;
-  contributorId: Scalars['UUID'];
-}>;
-
-export type AssignRoleToOrganizationMutation = {
-  __typename?: 'Mutation';
-  assignRoleToOrganization: { __typename?: 'Organization'; id: string };
-};
-
-export type RemoveRoleFromOrganizationMutationVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-  role: RoleName;
-  contributorId: Scalars['UUID'];
-}>;
-
-export type RemoveRoleFromOrganizationMutation = {
-  __typename?: 'Mutation';
-  removeRoleFromOrganization: { __typename?: 'Organization'; id: string };
-};
-
-export type AssignRoleToVirtualContributorMutationVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-  role: RoleName;
-  contributorId: Scalars['UUID'];
-}>;
-
-export type AssignRoleToVirtualContributorMutation = {
-  __typename?: 'Mutation';
-  assignRoleToVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
-};
-
-export type RemoveRoleFromVirtualContributorMutationVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-  role: RoleName;
-  contributorId: Scalars['UUID'];
-}>;
-
-export type RemoveRoleFromVirtualContributorMutation = {
-  __typename?: 'Mutation';
-  removeRoleFromVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
-};
 
 export type CommunityApplicationsInvitationsQueryVariables = Exact<{
   roleSetId: Scalars['UUID'];
