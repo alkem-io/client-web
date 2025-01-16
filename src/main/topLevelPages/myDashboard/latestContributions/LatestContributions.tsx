@@ -138,10 +138,27 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
     </Box>
   );
 
-  const showMore =
-    typeof data?.activityFeed.activityFeed?.length === 'number' && data.activityFeed.activityFeed.length > 10;
+  const activityFeed = data?.activityFeed?.activityFeed;
 
-  // @@@ WIP ~ #7267 - Изнеси и тук повтарящия се JSX, както направи в МайЛейтестКонтрибуции:110
+  const renderActivities = (hasLimit: boolean) => {
+    const visibleActivities = hasLimit ? activityFeed?.slice(0, VISIBLE_LATEST_CONTRIBUTIONS_COUNT) : activityFeed;
+
+    return (
+      <ScrollerWithGradient>
+        <Gutters disableGap disablePadding padding={gutters(0.5)}>
+          {visibleActivities?.map(activity => (
+            <ActivityViewChooser
+              key={activity.id}
+              activity={activity as ActivityLogResultType}
+              avatarUrl={activity.triggeredBy.profile.avatar?.uri}
+            />
+          ))}
+        </Gutters>
+      </ScrollerWithGradient>
+    );
+  };
+
+  const showMore = typeof activityFeed?.length === 'number' && activityFeed.length > 10;
 
   return (
     <>
@@ -149,39 +166,13 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
         <Gutters disableGap disablePadding sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
           {renderFilters()}
 
-          <ScrollerWithGradient>
-            <Gutters disableGap disablePadding padding={gutters(0.5)}>
-              {data?.activityFeed.activityFeed?.slice(0, VISIBLE_LATEST_CONTRIBUTIONS_COUNT).map(activity => (
-                <ActivityViewChooser
-                  key={activity.id}
-                  activity={activity as ActivityLogResultType}
-                  avatarUrl={activity.triggeredBy.profile.avatar?.uri}
-                />
-              ))}
-            </Gutters>
-          </ScrollerWithGradient>
+          {renderActivities(true)}
         </Gutters>
       ) : (
         <Gutters disablePadding disableGap sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
           {renderFilters()}
 
-          {!data && loading ? (
-            <Loading />
-          ) : (
-            <ScrollerWithGradient>
-              <Box padding={gutters(0.5)}>
-                {data?.activityFeed.activityFeed.map(activity => (
-                  <ActivityViewChooser
-                    key={activity.id}
-                    activity={activity as ActivityLogResultType}
-                    avatarUrl={activity.triggeredBy.profile.avatar?.uri}
-                  />
-                ))}
-
-                {loader}
-              </Box>
-            </ScrollerWithGradient>
-          )}
+          {!data && loading ? <Loading /> : renderActivities(false)}
         </Gutters>
       )}
 
@@ -205,7 +196,7 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
           ) : (
             <ScrollerWithGradient>
               <Gutters disableGap disablePadding padding={gutters(1.5)}>
-                {data?.activityFeed?.activityFeed?.map(activity => (
+                {activityFeed?.map(activity => (
                   <ActivityViewChooser
                     key={activity.id}
                     activity={activity as ActivityLogResultType}

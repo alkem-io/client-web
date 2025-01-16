@@ -109,6 +109,7 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
 
   const renderActivities = (hasLimit: boolean) => {
     const visibleActivities = hasLimit ? activities?.slice(0, VISIBLE_LATEST_CONTRIBUTIONS_COUNT) : activities;
+
     return (
       <ScrollerWithGradient>
         <Gutters disableGap disablePadding padding={gutters(0.5)}>
@@ -130,10 +131,11 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
     );
   };
 
+  const activityFeedGrouped = data?.activityFeedGrouped;
   const hasActivity = activities && activities.length > 0;
   const isAllSpacesSelected = filter.space === SPACE_OPTION_ALL;
 
-  const showMore = typeof data?.activityFeedGrouped?.length === 'number' && data?.activityFeedGrouped.length > 10;
+  const showMore = typeof activityFeedGrouped?.length === 'number' && activityFeedGrouped.length > 10;
 
   return (
     <>
@@ -163,14 +165,14 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
           onClose={() => setIsDialogOpen(false)}
         />
 
-        <Gutters disableGap disablePadding padding={gutters(1.5)}>
+        <Gutters disableGap disablePadding sx={{ flexGrow: 1, flexShrink: 1, flexBasis: 0 }}>
           {renderFilters()}
 
           {loading ? (
             <Loading />
           ) : (
             <ScrollerWithGradient>
-              <Gutters disableGap disablePadding padding={gutters(0.5)}>
+              <Gutters disableGap disablePadding padding={gutters(1.5)}>
                 {activities?.map(activity => (
                   <ActivityViewChooser
                     key={activity.id}
