@@ -6,7 +6,6 @@ import WrapperBackdrop from './WrapperBackdrop';
 interface BackdropProps {
   show?: boolean;
   blockName?: React.ReactNode;
-  message?: string;
 }
 
 /**
