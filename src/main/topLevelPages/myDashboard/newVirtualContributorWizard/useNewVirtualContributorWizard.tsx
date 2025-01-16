@@ -7,9 +7,9 @@ import {
   useSpaceUrlLazyQuery,
   useSubspaceCommunityAndRoleSetIdLazyQuery,
   useAssignRoleToVirtualContributorMutation,
-  refetchDashboardWithMembershipsQuery,
   useCreateLinkOnCalloutMutation,
   useAccountSpacesLazyQuery,
+  refetchMyResourcesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AiPersonaBodyOfKnowledgeType,
@@ -112,14 +112,11 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     fetchPolicy: 'cache-and-network',
   });
 
-  const { selectedExistingSpaceId, myAccountId, accountSpaces } = useMemo(() => {
+  const { myAccountId, accountSpaces } = useMemo(() => {
     const account = targetAccount ?? data?.me.user?.account; // contextual or self by default
-    const accountId = account?.id;
-    const mySpace = account?.spaces?.[0]; // TODO: auto-selecting the first space, not ideal
 
     return {
-      selectedExistingSpaceId: mySpace?.id,
-      myAccountId: accountId,
+      myAccountId: account?.id,
       accountSpaces: account?.spaces ?? [],
     };
   }, [data, user, targetAccount]);
@@ -138,9 +135,10 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     [getAccountSpaces]
   );
 
-  // get plans data in case there's no space under the account
-  const { data: plansData } = usePlansTableQuery({ skip: Boolean(selectedExistingSpaceId) });
-  const { isPlanAvailable } = usePlanAvailability({ skip: Boolean(selectedExistingSpaceId) });
+  // get plans data todo: make lazy, usePlanAvailability is temp
+  const skipPlansQueries = Boolean(accountSpaces.length);
+  const { data: plansData } = usePlansTableQuery({ skip: skipPlansQueries });
+  const { isPlanAvailable } = usePlanAvailability({ skip: skipPlansQueries });
 
   const plans = useMemo(
     () =>
@@ -153,7 +151,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   );
 
   const [CreateNewSpace] = useCreateSpaceMutation({
-    refetchQueries: ['MyAccount', 'AccountInformation', refetchDashboardWithMembershipsQuery()],
+    refetchQueries: ['MyAccount', 'AccountInformation', 'LatestContributionsSpacesFlat'],
   });
 
   const executeCreateSpace = async () => {
@@ -190,7 +188,13 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   };
 
   const [createVirtualContributor] = useCreateVirtualContributorOnAccountMutation({
-    refetchQueries: ['MyAccount', 'AccountInformation'],
+    refetchQueries: [
+      'MyAccount',
+      'AccountInformation',
+      refetchMyResourcesQuery({
+        accountId: myAccountId ?? '',
+      }),
+    ],
   });
 
   const executeVcCreation = async ({
@@ -521,11 +525,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           )}
           {step === steps.loadingStep && <LoadingState onClose={handleCloseWizard} />}
           {step === steps.addKnowledge && virtualContributorInput && (
-            <AddContent
-              onClose={handleCloseWizard}
-              onCreateVC={onCreateVcWithKnowledge}
-              spaceId={selectedExistingSpaceId ?? ''}
-            />
+            <AddContent onClose={handleCloseWizard} onCreateVC={onCreateVcWithKnowledge} />
           )}
           {step === steps.chooseCommunity && (
             <ChooseCommunity
@@ -559,7 +559,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         </StorageConfigContextProvider>
       </DialogWithGrid>
     );
-  }, [dialogOpen, step, loading, selectedExistingSpaceId, myAccountId, getSelectableSpaces]);
+  }, [dialogOpen, step, myAccountId, getSelectableSpaces, loading, availableSpacesLoading]);
 
   return {
     startWizard,
