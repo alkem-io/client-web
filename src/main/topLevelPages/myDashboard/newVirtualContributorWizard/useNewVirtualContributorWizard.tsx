@@ -35,22 +35,25 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import useNavigate from '@/core/routing/useNavigate';
 import { usePlanAvailability } from '@/domain/journey/space/createSpace/plansTable/usePlanAvailability';
 import { addVCCreationCache } from './vcCreationUtil';
-import SetupVCInfo from './SetupVCInfo';
 import { info as logInfo } from '@/core/logging/sentry/log';
-import InfoDialog from '@/core/ui/dialogs/InfoDialog';
 import CreateExternalAIDialog, { ExternalVcFormValues } from './CreateExternalAIDialog';
 import { useNewVirtualContributorWizardProvided, UserAccountProps } from './useNewVirtualContributorProps';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { getSpaceUrlFromSubSpace } from '@/main/routing/urlBuilders';
+import ChooseCommunity from './ChooseCommunity';
+import TryVcInfo from './TryVcInfo';
 
-type Step =
-  | 'initial'
-  | 'createSpace'
-  | 'addKnowledge'
-  | 'existingKnowledge'
-  | 'externalProvider'
-  | 'loadingVCSetup'
-  | 'insufficientPrivileges'; // not used ATM
+const steps = {
+  initial: 'initial',
+  loadingStep: 'loadingStep',
+  addKnowledge: 'addKnowledge',
+  existingKnowledge: 'existingKnowledge',
+  externalProvider: 'externalProvider',
+  chooseCommunity: 'chooseCommunity',
+  tryVcInfo: 'tryVcInfo',
+} as const;
+
+type Step = keyof typeof steps;
 
 export type SelectableSpace = {
   id: string;
@@ -73,16 +76,20 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   const navigate = useNavigate();
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [step, setStep] = useState<Step>('initial');
+  const [step, setStep] = useState<Step>(steps.initial);
 
   const [targetAccount, setTargetAccount] = useState<UserAccountProps>();
   const [accountName, setAccountName] = useState<string>();
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps>();
+  const [createdVcId, setCreatedVc] = useState<{ id: string; nameID: string }>({
+    id: '',
+    nameID: '',
+  });
 
   const startWizard = (initAccount: UserAccountProps | undefined, accountName?: string) => {
     setTargetAccount(initAccount);
     setAccountName(accountName);
-    setStep('initial');
+    setStep(steps.initial);
     setDialogOpen(true);
   };
 
@@ -93,7 +100,11 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const handleCloseWizard = () => {
     setDialogOpen(false);
-    setStep('initial');
+    setStep(steps.initial);
+  };
+
+  const handleCloseChooseCommunity = () => {
+    setStep(steps.tryVcInfo);
   };
 
   const { data, loading } = useNewVirtualContributorMySpacesQuery({
@@ -140,34 +151,6 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     [plansData, isPlanAvailable]
   );
 
-  // TODO: review both the privileges and the space as it's preselected no matter the user selection
-  // const hasPrivilegesOnSpaceAndCommunity = () => {
-  //   // in case of clean creation, the user is an admin of the space
-  //   // no way and need to check the privileges
-  //   if (!selectedExistingSpaceId) {
-  //     return true;
-  //   }
-  //
-  //   const { myPrivileges: myPrivilegesOnCollaboration } = spacePrivileges.collaboration;
-  //
-  //   const hasRequiredPrivileges = myPrivilegesOnCollaboration?.includes(
-  //     AuthorizationPrivilege.CommunityAddMemberVcFromAccount
-  //   );
-  //
-  //   if (!hasRequiredPrivileges) {
-  //     logInfo(
-  //       `Insufficient privileges to create a VC, Collaboration Privileges: ${JSON.stringify(
-  //         myPrivilegesOnCollaboration
-  //       )}`,
-  //       {
-  //         category: TagCategoryValues.VC,
-  //       }
-  //     );
-  //   }
-  //
-  //   return hasRequiredPrivileges;
-  // };
-
   const [CreateNewSpace] = useCreateSpaceMutation({
     refetchQueries: ['MyAccount', 'AccountInformation', refetchDashboardWithMembershipsQuery()],
   });
@@ -180,7 +163,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
 
     // loading
-    setStep('createSpace');
+    setStep(steps.loadingStep);
 
     const { data: newSpace } = await CreateNewSpace({
       variables: {
@@ -202,8 +185,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       return newlyCreatedSpaceId;
     }
 
-    // in case of failure
-    setStep('addKnowledge');
+    // TODO: in case of failure handle
   };
 
   const [createVirtualContributor] = useCreateVirtualContributorOnAccountMutation({
@@ -274,11 +256,15 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   const [addVirtualContributorToRole] = useAssignRoleToVirtualContributorMutation();
 
-  const addVCToCommunity = async (
-    virtualContributorId: string,
-    parentRoleSetIds: string[] = [],
-    spaceId: string | undefined
-  ) => {
+  const addVCToCommunity = async ({
+    virtualContributorId,
+    parentRoleSetIds = [],
+    spaceId,
+  }: {
+    virtualContributorId: string;
+    parentRoleSetIds?: string[];
+    spaceId: string;
+  }) => {
     if (!spaceId) {
       return false;
     }
@@ -350,7 +336,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   // ###STEP 'addKnowledge' - Add Content
   const handleCreateKnowledge = async (values: VirtualContributorFromProps) => {
     setVirtualContributorInput(values);
-    setStep('addKnowledge');
+    setStep(steps.addKnowledge);
   };
 
   const [createLinkOnCallout] = useCreateLinkOnCalloutMutation();
@@ -419,6 +405,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       return;
     }
 
+    setCreatedVc(createdVC);
+
     if (hasDocuments) {
       const createdLinkCollection = createdVC.knowledgeBase?.calloutsSet?.callouts?.find(
         c => c.framing.profile.displayName === documentsLinkCollectionName
@@ -428,11 +416,15 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
     // TODO: after the VC creation:
     // 1. reingest the VC in case of documents?
-    // 2. New Step - do you want ot add your VC to community? (instead of auto-adding)
 
-    // create a space if no space is available under the account
-    let spaceId: string | undefined = selectedExistingSpaceId;
-    if (!selectedExistingSpaceId) {
+    setStep(steps.chooseCommunity);
+  };
+
+  // ###STEP 'chooseCommunityStep' - Choose Community
+  const onChooseCommunity = async (selectedSpace: SelectableKnowledgeSpace) => {
+    let spaceId: string | undefined = selectedSpace?.id;
+
+    if (!spaceId) {
       spaceId = await executeCreateSpace();
 
       if (!spaceId) {
@@ -440,10 +432,10 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
       }
     }
 
-    const addToCommunity = await addVCToCommunity(createdVC?.id, undefined, spaceId);
+    const addToCommunity = await addVCToCommunity({ virtualContributorId: createdVcId.id, spaceId });
 
     if (addToCommunity) {
-      addVCCreationCache(createdVC?.nameID);
+      addVCCreationCache(createdVcId.nameID);
       await navigateToTryYourVC(undefined, spaceId);
     } else {
       notifyErrorOnAddToCommunity();
@@ -466,11 +458,11 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         return;
       }
 
-      const addToCommunity = await addVCToCommunity(
-        createdVC?.id,
-        selectedKnowledge.parentRoleSetIds,
-        selectedKnowledge.id
-      );
+      const addToCommunity = await addVCToCommunity({
+        virtualContributorId: createdVC?.id,
+        parentRoleSetIds: selectedKnowledge.parentRoleSetIds,
+        spaceId: selectedKnowledge.id,
+      });
 
       if (addToCommunity) {
         addVCCreationCache(createdVC?.nameID);
@@ -526,38 +518,43 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
               onUseExternal={values => onStepSelection('externalProvider', values)}
             />
           )}
-          {step === 'createSpace' && <LoadingState onClose={handleCloseWizard} />}
-          {step === 'addKnowledge' && virtualContributorInput && (
+          {step === steps.loadingStep && <LoadingState onClose={handleCloseWizard} />}
+          {step === steps.addKnowledge && virtualContributorInput && (
             <AddContent
               onClose={handleCloseWizard}
               onCreateVC={onCreateVcWithKnowledge}
               spaceId={selectedExistingSpaceId ?? ''}
             />
           )}
-          {step === 'existingKnowledge' && myAccountId && (
+          {step === steps.chooseCommunity && (
+            <ChooseCommunity
+              onClose={handleCloseChooseCommunity}
+              accountId={myAccountId}
+              vcName={virtualContributorInput?.name}
+              getSpaces={getSelectableSpaces}
+              onSubmit={onChooseCommunity}
+              loading={loading || availableSpacesLoading}
+            />
+          )}
+          {step === steps.tryVcInfo && (
+            <TryVcInfo
+              vcName={virtualContributorInput?.name ?? ''}
+              vcNameId={createdVcId.nameID}
+              onClose={handleCloseWizard}
+            />
+          )}
+          {step === steps.existingKnowledge && myAccountId && (
             <ExistingSpace
               onClose={handleCloseWizard}
-              onBack={() => setStep('initial')}
+              onBack={() => setStep(steps.initial)}
               onSubmit={handleCreateVCWithExistingKnowledge}
               accountId={myAccountId}
               getSpaces={getSelectableSpaces}
               loading={loading || availableSpacesLoading}
             />
           )}
-          {step === 'externalProvider' && (
+          {step === steps.externalProvider && (
             <CreateExternalAIDialog onCreateExternal={handleCreateExternal} onClose={handleCloseWizard} />
-          )}
-          {step === 'loadingVCSetup' && <SetupVCInfo />}
-          {step === 'insufficientPrivileges' && (
-            <InfoDialog
-              entities={{
-                title: t('createVirtualContributorWizard.insufficientPrivileges.title'),
-                content: t('createVirtualContributorWizard.insufficientPrivileges.description'),
-                buttonCaption: t('buttons.ok'),
-              }}
-              actions={{ onButtonClick: handleCloseWizard }}
-              options={{ show: true }}
-            />
           )}
         </StorageConfigContextProvider>
       </DialogWithGrid>
