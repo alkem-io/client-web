@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
@@ -15,16 +15,13 @@ import { SelectableKnowledgeSpace } from './ExistingSpace';
 interface ChooseCommunityProps {
   onClose: () => void;
   onSubmit: (space: SelectableKnowledgeSpace) => void;
-  accountId: string;
   vcName?: string;
   loading: boolean;
-  getSpaces: (accountId: string) => Promise<SelectableSpace[]>;
+  spaces: SelectableSpace[];
 }
 
-const ChooseCommunity = ({ onClose, onSubmit, accountId, vcName = '', getSpaces, loading }: ChooseCommunityProps) => {
+const ChooseCommunity = ({ onClose, onSubmit, vcName = '', spaces, loading }: ChooseCommunityProps) => {
   const { t } = useTranslation();
-  const [availableSpaces, setAvailableSpaces] = useState<SelectableSpace[]>();
-  const prevAccountIdRef = useRef<string | undefined>(undefined);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
   const onCancel = () => {
@@ -35,44 +32,23 @@ const ChooseCommunity = ({ onClose, onSubmit, accountId, vcName = '', getSpaces,
     setConfirmDialogOpen(false);
   };
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchSubspaces = async () => {
-      const spaces = await getSpaces(accountId);
-
-      if (isMounted) {
-        setAvailableSpaces(spaces);
-      }
-    };
-
-    if (accountId !== prevAccountIdRef.current) {
-      prevAccountIdRef.current = accountId;
-      fetchSubspaces();
-    }
-
-    return () => {
-      isMounted = false;
-    };
-  }, [accountId]);
-
   const listItems = useMemo(() => {
     const result: SelectableKnowledgeSpace[] = [];
-    const addSelectableSpace = (space: SelectableSpace, parentSpaces: SelectableSpace[] = []) => {
+    const addSelectableSpace = (space: SelectableSpace) => {
       result.push({
         id: space.id,
-        name: `${space.profile.displayName}${parentSpaces.length > 0 ? '' : ` (${t('common.space')})`}`,
-        url: parentSpaces.length > 0 ? parentSpaces[parentSpaces.length - 1].profile.url : space.profile.url, // If available, go to the parent space
+        name: `${space.profile.displayName}`,
+        url: space.profile.url,
         roleSetId: space.community.roleSet.id,
       });
     };
 
-    availableSpaces?.forEach((space: SelectableSpace) => {
+    spaces?.forEach((space: SelectableSpace) => {
       addSelectableSpace(space);
     });
 
     return result;
-  }, [availableSpaces]);
+  }, [spaces]);
 
   const initialValues = {
     spaceId: '',
@@ -87,7 +63,7 @@ const ChooseCommunity = ({ onClose, onSubmit, accountId, vcName = '', getSpaces,
     onSubmit(bok);
   };
 
-  const hasAvailableSpaces = availableSpaces && availableSpaces.length > 0;
+  const hasAvailableSpaces = spaces && spaces.length > 0;
 
   return (
     <Formik
@@ -106,23 +82,21 @@ const ChooseCommunity = ({ onClose, onSubmit, accountId, vcName = '', getSpaces,
             })}
           />
           <DialogContent>
-            {availableSpaces && (
-              <Gutters disablePadding>
-                <Caption>{t('createVirtualContributorWizard.chooseCommunity.description')}</Caption>
-                <FormikAutocomplete
-                  name="spaceId"
-                  disabled={loading || !hasAvailableSpaces}
-                  title={t('createVirtualContributorWizard.chooseCommunity.label')}
-                  values={listItems}
-                  disablePortal={false}
-                  placeholder={
-                    hasAvailableSpaces
-                      ? t('createVirtualContributorWizard.chooseCommunity.selectSpacesPlaceholder')
-                      : t('createVirtualContributorWizard.chooseCommunity.noSpacesPlaceholder')
-                  }
-                />
-              </Gutters>
-            )}
+            <Gutters disablePadding>
+              <Caption>{t('createVirtualContributorWizard.chooseCommunity.description')}</Caption>
+              <FormikAutocomplete
+                name="spaceId"
+                disabled={loading || !hasAvailableSpaces}
+                title={t('createVirtualContributorWizard.chooseCommunity.label')}
+                values={listItems}
+                disablePortal={false}
+                placeholder={
+                  hasAvailableSpaces
+                    ? t('createVirtualContributorWizard.chooseCommunity.selectSpacesPlaceholder')
+                    : t('createVirtualContributorWizard.chooseCommunity.noSpacesPlaceholder')
+                }
+              />
+            </Gutters>
           </DialogContent>
           <DialogActions>
             <Button variant="text" onClick={onCancel}>

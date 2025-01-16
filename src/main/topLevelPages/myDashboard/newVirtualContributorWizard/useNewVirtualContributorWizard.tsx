@@ -112,7 +112,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     fetchPolicy: 'cache-and-network',
   });
 
-  const { selectedExistingSpaceId, myAccountId } = useMemo(() => {
+  const { selectedExistingSpaceId, myAccountId, accountSpaces } = useMemo(() => {
     const account = targetAccount ?? data?.me.user?.account; // contextual or self by default
     const accountId = account?.id;
     const mySpace = account?.spaces?.[0]; // TODO: auto-selecting the first space, not ideal
@@ -120,6 +120,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     return {
       selectedExistingSpaceId: mySpace?.id,
       myAccountId: accountId,
+      accountSpaces: account?.spaces ?? [],
     };
   }, [data, user, targetAccount]);
 
@@ -529,9 +530,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
           {step === steps.chooseCommunity && (
             <ChooseCommunity
               onClose={handleCloseChooseCommunity}
-              accountId={myAccountId}
               vcName={virtualContributorInput?.name}
-              getSpaces={getSelectableSpaces}
+              spaces={accountSpaces}
               onSubmit={onChooseCommunity}
               loading={loading || availableSpacesLoading}
             />
