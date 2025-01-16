@@ -27,7 +27,7 @@ import { usePlanAvailability } from '@/domain/journey/space/createSpace/plansTab
 import { info as logInfo } from '@/core/logging/sentry/log';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { getSpaceUrlFromSubSpace } from '@/main/routing/urlBuilders';
-import CreateNewVirtualContributor, { VirtualContributorFromProps } from './initStep/CreateNewVirtualContributor';
+import CreateNewVirtualContributor from './initStep/CreateNewVirtualContributor';
 import LoadingStep from './LoadingStep';
 import AddContent from './addKnowledgeStep/AddContent';
 import ChooseCommunity from './chooseCommunityStep/ChooseCommunity';
@@ -44,6 +44,7 @@ import {
   SelectableKnowledgeSpace,
   useVirtualContributorWizardProvided,
   UserAccountProps,
+  CreateVcFromProps,
 } from './virtualContributorProps';
 import { addVCCreationCache } from './utils';
 
@@ -70,7 +71,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
 
   const [targetAccount, setTargetAccount] = useState<UserAccountProps>();
   const [accountName, setAccountName] = useState<string>();
-  const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps>();
+  const [virtualContributorInput, setVirtualContributorInput] = useState<CreateVcFromProps>();
   const [createdVcId, setCreatedVc] = useState<{ id: string; nameID: string }>({
     id: '',
     nameID: '',
@@ -83,7 +84,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     setDialogOpen(true);
   };
 
-  const onStepSelection = (step: Step, values: VirtualContributorFromProps) => {
+  const onStepSelection = (step: Step, values: CreateVcFromProps) => {
     setVirtualContributorInput(values);
     setStep(step);
   };
@@ -189,7 +190,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     vcBoKId,
     callouts,
   }: {
-    values: VirtualContributorFromProps;
+    values: CreateVcFromProps;
     accountId: string;
     vcBoKId?: string;
     callouts?: Array<CreateCalloutInput>;
@@ -325,7 +326,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   };
 
   // ###STEP 'addKnowledge' - Add Content
-  const handleCreateKnowledge = async (values: VirtualContributorFromProps) => {
+  const handleCreateKnowledge = async (values: CreateVcFromProps) => {
     setVirtualContributorInput(values);
     setStep(steps.addKnowledge);
   };

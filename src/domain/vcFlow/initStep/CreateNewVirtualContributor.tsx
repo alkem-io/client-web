@@ -21,12 +21,13 @@ import { useColumns } from '@/core/ui/grid/GridContext';
 import FormikMarkdownField from '@/core/ui/forms/MarkdownInput/FormikMarkdownField';
 import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { AiPersonaBodyOfKnowledgeType, AiPersonaEngine } from '@/core/apollo/generated/graphql-schema';
+import { CreateVcFromProps } from '../virtualContributorProps';
 
 type CreateNewVirtualContributorProps = {
   onClose: () => void;
-  onCreateKnowledge: (values: VirtualContributorFromProps) => void;
-  onUseExistingKnowledge: (values: VirtualContributorFromProps) => void;
-  onUseExternal: (values: VirtualContributorFromProps) => void;
+  onCreateKnowledge: (values: CreateVcFromProps) => void;
+  onUseExistingKnowledge: (values: CreateVcFromProps) => void;
+  onUseExternal: (values: CreateVcFromProps) => void;
   loading?: boolean;
 };
 
@@ -34,18 +35,6 @@ enum VCSourceOptions {
   WRITTEN_KNOWLEDGE = 'createSpace',
   EXISTING_SPACE = 'existingSpace',
   EXTERNAL = 'external',
-}
-
-export interface VirtualContributorFromProps {
-  name: string;
-  tagline: string;
-  description: string;
-  externalConfig?: {
-    apiKey?: string;
-    assistantId?: string;
-  };
-  engine: AiPersonaEngine;
-  bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
 }
 
 const BigButton = ({
@@ -91,7 +80,7 @@ const CreateNewVirtualContributor = ({
   const cols = useColumns();
   const isMobile = cols < 5;
 
-  const initialValues: VirtualContributorFromProps = {
+  const initialValues: CreateVcFromProps = {
     name: '',
     tagline: '',
     description: '',
@@ -110,7 +99,7 @@ const CreateNewVirtualContributor = ({
     setSource(event.currentTarget.value as VCSourceOptions);
   };
 
-  const handleSubmit = (values: VirtualContributorFromProps) => {
+  const handleSubmit = (values: CreateVcFromProps) => {
     const name = values.name.trim();
     const newValues = { ...values, name };
     switch (source) {

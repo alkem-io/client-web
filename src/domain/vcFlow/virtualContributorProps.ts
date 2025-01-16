@@ -1,5 +1,10 @@
 import { ComponentType } from 'react';
-import { AuthorizationPrivilege, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
+import {
+  AiPersonaBodyOfKnowledgeType,
+  AiPersonaEngine,
+  AuthorizationPrivilege,
+  LicenseEntitlementType,
+} from '@/core/apollo/generated/graphql-schema';
 
 export interface UserAccountProps {
   id: string;
@@ -37,7 +42,7 @@ export interface useVirtualContributorWizardProvided {
   VirtualContributorWizard: ComponentType<virtualContributorWizardProps>;
 }
 
-export type SelectableSpace = {
+export interface SelectableSpace {
   id: string;
   profile: {
     displayName: string;
@@ -49,7 +54,7 @@ export type SelectableSpace = {
     };
   };
   subspaces?: SelectableSpace[];
-};
+}
 
 export interface SelectableKnowledgeSpace {
   id: string;
@@ -57,4 +62,16 @@ export interface SelectableKnowledgeSpace {
   url: string | undefined;
   roleSetId?: string;
   parentRoleSetIds?: string[];
+}
+
+export interface CreateVcFromProps {
+  name: string;
+  tagline: string;
+  description: string;
+  externalConfig?: {
+    apiKey?: string;
+    assistantId?: string;
+  };
+  engine: AiPersonaEngine;
+  bodyOfKnowledgeType: AiPersonaBodyOfKnowledgeType;
 }

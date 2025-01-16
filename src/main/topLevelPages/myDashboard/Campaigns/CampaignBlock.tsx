@@ -1,7 +1,7 @@
 import { useCampaignBlockCredentialsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { LicenseEntitlementType, PlatformRole } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import useVirtualContributorWizard from '../../../../domain/vcFlow/useVirtualContributorWizard';
+import useVirtualContributorWizard from '@/domain/vcFlow/useVirtualContributorWizard';
 import CampaignBlockCreateVC from './CampaignBlockCreateVC';
 
 const CampaignBlock = () => {

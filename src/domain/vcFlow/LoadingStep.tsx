@@ -7,11 +7,11 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
 import CancelDialog from './CancelDialog';
 
-type LoadingStateProps = {
+type LoadingStepProps = {
   onClose: () => void;
 };
 
-const LoadingStep = ({ onClose }: LoadingStateProps) => {
+const LoadingStep = ({ onClose }: LoadingStepProps) => {
   const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
 
