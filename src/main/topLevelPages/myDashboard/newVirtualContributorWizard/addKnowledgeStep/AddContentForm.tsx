@@ -13,7 +13,7 @@ import { MessageWithPayload } from '@/domain/shared/i18n/ValidationMessageTransl
 import MarkdownValidator from '@/core/ui/forms/MarkdownInput/MarkdownValidator';
 import { BoKCalloutsFormValues } from './AddContentProps';
 import { PostItem } from './PostItem';
-import { DocumentItem } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/addKnowledgeStep/DocumentItem';
+import { DocumentItem } from './DocumentItem';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 
 const MAX_POSTS = 25;

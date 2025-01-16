@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useCreateSpaceMutation,
   useCreateVirtualContributorOnAccountMutation,
@@ -18,36 +19,33 @@ import {
   CreateVirtualContributorOnAccountMutationVariables,
   LicensingCredentialBasedPlanType,
 } from '@/core/apollo/generated/graphql-schema';
-import CreateNewVirtualContributor, { VirtualContributorFromProps } from './initStep/CreateNewVirtualContributor';
-import LoadingStep from './LoadingStep';
-import AddContent from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/addKnowledgeStep/AddContent';
-import {
-  BoKCalloutsFormValues,
-  DocumentValues,
-  getDocumentCalloutRequestData,
-  getPostCalloutRequestData,
-} from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/addKnowledgeStep/AddContentProps';
-import ExistingSpace from './existingKnowledgeStep/ExistingSpace';
-import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useUserContext } from '@/domain/community/user';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import useNavigate from '@/core/routing/useNavigate';
 import { usePlanAvailability } from '@/domain/journey/space/createSpace/plansTable/usePlanAvailability';
-import { addVCCreationCache } from './utils';
 import { info as logInfo } from '@/core/logging/sentry/log';
-import CreateExternalAI, {
-  ExternalVcFormValues,
-} from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/externalStep/CreateExternalAI';
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { getSpaceUrlFromSubSpace } from '@/main/routing/urlBuilders';
+import CreateNewVirtualContributor, { VirtualContributorFromProps } from './initStep/CreateNewVirtualContributor';
+import LoadingStep from './LoadingStep';
+import AddContent from './addKnowledgeStep/AddContent';
+import ChooseCommunity from './chooseCommunityStep/ChooseCommunity';
+import TryVcInfo from './tryVcStep/TryVcInfo';
+import {
+  BoKCalloutsFormValues,
+  DocumentValues,
+  getDocumentCalloutRequestData,
+  getPostCalloutRequestData,
+} from './addKnowledgeStep/AddContentProps';
+import ExistingSpace from './existingKnowledgeStep/ExistingSpace';
+import CreateExternalAI, { ExternalVcFormValues } from './externalStep/CreateExternalAI';
 import {
   SelectableKnowledgeSpace,
   useNewVirtualContributorWizardProvided,
   UserAccountProps,
 } from './useNewVirtualContributorProps';
-import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import { getSpaceUrlFromSubSpace } from '@/main/routing/urlBuilders';
-import ChooseCommunity from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/chooseCommunityStep/ChooseCommunity';
-import TryVcInfo from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/tryVcStep/TryVcInfo';
+import { addVCCreationCache } from './utils';
 
 type Step =
   | 'initial'

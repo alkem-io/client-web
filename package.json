@@ -18,7 +18,7 @@
     "gulp": "gulp",
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "lint:fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
-    "lint:prod": "tsc --noEmit && cross-env NODE_ENV=production eslint src/**/*.ts{,x}",
+    "lint:prod": "cross-env NODE_OPTIONS=--max-old-space-size=8192 tsc --noEmit && cross-env NODE_ENV=production eslint src/**/*.ts{,x}",
     "prune": "rm -rf node_modules && npm install",
     "serve:dev": "serve -s build -l 3001",
     "spellcheck": "npx cspell '**/*.{ts,tsx}' >> cspell-report.txt",
@@ -26,7 +26,7 @@
     "test": "vitest",
     "test:coverage": "cross-env NODE_ENV=test node buildConfiguration && vitest run --coverage.enabled --coverage.provider=istanbul --coverage.all --coverage.reporter=lcov",
     "test:upload:coverage": "npm run test:coverage && cat ./coverage/lcov.info | coveralls ",
-    "ts:watch": "tsc --noEmit --watch"
+    "ts:watch": "cross-env NODE_OPTIONS=--max-old-space-size=8192 tsc --noEmit --watch"
   },
   "husky": {
     "hooks": {
@@ -61,7 +61,8 @@
   "eslintIgnore": [
     "src/generated/graphql.tsx",
     "**/node_modules/**",
-    "**/build**"
+    "**/build**",
+    "**/coveage/**"
   ],
   "jest": {
     "coveragePathIgnorePatterns": [
@@ -114,7 +115,6 @@
     "apollo-upload-client": "^18.0.1",
     "axios": "^0.21.2",
     "clsx": "^1.1.1",
-    "cross-env": "^7.0.3",
     "dayjs": "^1.11.7",
     "dotenv": "^16.3.1",
     "dotenv-expand": "^10.0.0",
@@ -189,6 +189,7 @@
     "@vitest/browser": "^2.0.3",
     "@vitest/coverage-istanbul": "^2.0.3",
     "coveralls": "^3.1.1",
+    "cross-env": "^7.0.3",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-react-app": "^7.0.1",
