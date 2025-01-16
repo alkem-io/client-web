@@ -1,11 +1,12 @@
 import React, { FC } from 'react';
 import EditMemberUsers from '@/domain/platform/admin/components/Community/EditMembersUsers';
 import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
-import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetAdmin from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
 import { useUserContext } from '../../user';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 
 export const OrganizationAssociatesView: FC = () => {
   const { t } = useTranslation();
@@ -36,7 +37,8 @@ export const OrganizationAssociatesView: FC = () => {
   const { users: availableAssociates, fetchMore, hasMore, loading: searchingUsers } = availableUsersForRole!;
 
   return (
-    <DashboardGenericSection headerText={t('common.members')}>
+    <PageContentBlock>
+      <PageContentBlockHeader title={t('common.members')} />
       <EditMemberUsers
         members={usersByRole[RoleName.Associate] ?? []}
         availableMembers={availableAssociates ?? []}
@@ -50,7 +52,7 @@ export const OrganizationAssociatesView: FC = () => {
         loadingAvailableMembers={searchingUsers}
         onSearchTermChange={setSearchTerm}
       />
-    </DashboardGenericSection>
+    </PageContentBlock>
   );
 };
 

@@ -6,7 +6,7 @@ import { RoleName } from '@/core/apollo/generated/graphql-schema';
 
 const OrganizationAdminAuthorizationPage = () => (
   <OrganizationAdminLayout currentTab={SettingsSection.Authorization}>
-    <Gutters>
+    <Gutters disablePadding>
       <OrganizationAuthorizationRoleAssignementView role={RoleName.Admin} />
       <OrganizationAuthorizationRoleAssignementView role={RoleName.Owner} />
     </Gutters>
