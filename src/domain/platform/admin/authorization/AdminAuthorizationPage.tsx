@@ -8,7 +8,7 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { gutters } from '@/core/ui/grid/utils';
 import { usePlatformRoleSetQuery } from '@/core/apollo/generated/apollo-hooks';
 import Loading from '@/core/ui/loading/Loading';
-import useRoleSetAdmin, { RelevantRoles } from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
 import { useTranslation } from 'react-i18next';
 import { useUserContext } from '@/domain/community/user';
 import EditMemberUsers from '../components/Community/EditMembersUsers';
@@ -17,17 +17,7 @@ interface AdminAuthorizationPageProps {
   selectedRole?: RoleName;
 }
 
-const MANAGED_ROLES = RelevantRoles['platform'];
-/*[
-  RoleName.GlobalAdmin,
-  RoleName.GlobalSupport,
-  RoleName.GlobalLicenseManager,
-  RoleName.GlobalCommunityReader,
-  RoleName.GlobalSpacesReader,
-  RoleName.PlatformBetaTester,
-  RoleName.PlatformVcCampaign,
-] as const;
- */
+const MANAGED_ROLES = RELEVANT_ROLES.Platform;
 
 const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) => {
   const { t } = useTranslation();
@@ -52,16 +42,11 @@ const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) =
     availableUsersForRoleSearch: {
       enabled: !!selectedRole,
       mode: 'platform',
-      role: selectedRole!,
-      filter: seachTerm
-    }
+      filter: seachTerm,
+    },
   });
 
-  const {
-    users: availableMembers = [],
-    fetchMore,
-    hasMore
-  } = availableUsersForRole ?? {};
+  const { users: availableMembers = [], fetchMore, hasMore } = availableUsersForRole!;
 
   const loading = loadingPlatformRoleSet || loadingRoleSet;
 

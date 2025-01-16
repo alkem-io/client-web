@@ -1,18 +1,15 @@
 import OrganizationAdminLayout from '../layout/OrganizationAdminLayout';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
-import OrganizationAdminAuthorizationView from '../views/OrganizationAdminAuthorizationView';
-import OrganizationOwnerAuthorizationView from '../views/OrganizationOwnerAuthorizationView';
-import { SectionSpacer } from '@/domain/shared/components/Section/Section';
+import OrganizationAuthorizationRoleAssignementView from '../views/OrganizationAuthorizationRoleAssignementView';
+import Gutters from '@/core/ui/grid/Gutters';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 
-/**
- *
- * //!! Change this entirely
- */
 const OrganizationAdminAuthorizationPage = () => (
   <OrganizationAdminLayout currentTab={SettingsSection.Authorization}>
-    <OrganizationAdminAuthorizationView />
-    <SectionSpacer />
-    <OrganizationOwnerAuthorizationView />
+    <Gutters>
+      <OrganizationAuthorizationRoleAssignementView role={RoleName.Admin} />
+      <OrganizationAuthorizationRoleAssignementView role={RoleName.Owner} />
+    </Gutters>
   </OrganizationAdminLayout>
 );
 

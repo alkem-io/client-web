@@ -1,0 +1,5 @@
+mutation JoinRoleSet($roleSetId: UUID!) {
+  joinRoleSet(joinData: { roleSetID: $roleSetId }){
+    id
+  }
+}

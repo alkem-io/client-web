@@ -1,4 +1,4 @@
-import { ApplicationButtonProps } from '../applicationButton/ApplicationButton';
+import { ApplicationButtonProps } from '../../../../community/application/applicationButton/ApplicationButton';
 import { useUserContext } from '@/domain/community/user';
 import {
   useCommunityUserPrivilegesQuery,
@@ -153,7 +153,7 @@ export const ApplicationButtonContainer = ({
       throw new Error('Community is not loaded');
     }
     await joinCommunity({
-      variables: { joiningData: { roleSetID: roleSetId } },
+      variables: { roleSetId },
     });
     if (userId) {
       getUserProfile({

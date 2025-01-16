@@ -11,21 +11,23 @@ import {
 import { AvailableUsersResponse } from './AvailableUsers/common';
 import useRoleSetAdminAvailableUsersOnPlatform from './AvailableUsers/useRoleSetAdminAvailableUsersOnPlatform';
 import useRoleSetAdminAvailableUsers from './AvailableUsers/useRoleSetAdminAvailableUsers';
-import useRoleSetAdminRolesAssignment, { useRoleSetAdminRolesAssignmentProvided } from './RolesAssignament/useRoleSetAdminRolesAssignment';
+import useRoleSetAdminRolesAssignment, {
+  useRoleSetAdminRolesAssignmentProvided,
+} from './RolesAssignament/useRoleSetAdminRolesAssignment';
 
 type RoleSetMemberType = 'user' | 'organization' | 'virtualContributor';
 
-export const RelevantRoles = {
-  'community': [RoleName.Admin, RoleName.Lead, RoleName.Member],
-  'organization': [RoleName.Owner, RoleName.Admin, RoleName.Associate],
-  'platform': [
+export const RELEVANT_ROLES = {
+  Community: [RoleName.Admin, RoleName.Lead, RoleName.Member],
+  Organization: [RoleName.Owner, RoleName.Admin, RoleName.Associate],
+  Platform: [
     RoleName.GlobalAdmin,
     RoleName.GlobalSupport,
     RoleName.GlobalLicenseManager,
     RoleName.GlobalCommunityReader,
     RoleName.GlobalSpacesReader,
     RoleName.PlatformBetaTester,
-    RoleName.PlatformVcCampaign
+    RoleName.PlatformVcCampaign,
   ],
 } as const;
 
@@ -72,16 +74,23 @@ interface useRoleSetAdminProvided extends useRoleSetAdminRolesAssignmentProvided
 
 type useRoleSetAdminParams = {
   roleSetId: string | undefined;
-  relevantRoles: readonly RoleName[] | keyof typeof RelevantRoles;
+  relevantRoles: readonly RoleName[];
   contributorTypes?: readonly RoleSetMemberType[];
   parentRoleSetId?: string;
 
   availableUsersForRoleSearch?: {
     enabled: boolean;
-    mode: 'platform' | 'roleSet';
-    role: RoleName;
     filter?: string;
-  }
+  } & (
+    | {
+        mode: 'platform';
+        role?: RoleName;
+      }
+    | {
+        mode: 'roleSet';
+        role: RoleName;
+      }
+  );
 
   skip?: boolean;
 };
@@ -93,9 +102,6 @@ const useRoleSetAdmin = ({
   availableUsersForRoleSearch,
   skip,
 }: useRoleSetAdminParams): useRoleSetAdminProvided => {
-  if (typeof relevantRoles === 'string') {
-    relevantRoles = RelevantRoles[relevantRoles];
-  }
   if (!roleSetId || !relevantRoles || relevantRoles.length === 0) {
     skip = true;
   }
@@ -222,12 +228,12 @@ const useRoleSetAdmin = ({
     refetchRoleSetData();
   };
   // Wraps any function call into an await + refetch
-  const refetchAfterMutation = (mutation: (...args) => Promise<unknown>) =>
+  const refetchAfterMutation =
+    (mutation: (...args) => Promise<unknown>) =>
     async (...args) => {
       await mutation(...args);
       refetchAll();
     };
-
 
   const {
     assignRoleToUser,
@@ -237,36 +243,32 @@ const useRoleSetAdmin = ({
     loading: updatingRoleSet,
   } = useRoleSetAdminRolesAssignment({ roleSetId });
 
-
   const availableUsersForRoleSetRole = useRoleSetAdminAvailableUsers({
     roleSetId: roleSetId,
     role: availableUsersForRoleSearch?.role,
     filter: availableUsersForRoleSearch?.filter,
-    skip: (
+    skip:
       !availableUsersForRoleSearch ||
       !availableUsersForRoleSearch.enabled ||
-      !(availableUsersForRoleSearch.mode === 'roleSet')
-    ),
-    usersAlreadyInRole: data.usersByRole[availableUsersForRoleSearch?.role!]
+      !(availableUsersForRoleSearch.mode === 'roleSet'),
+    usersAlreadyInRole: data.usersByRole[availableUsersForRoleSearch?.role!],
   });
 
   const availableUsersForPlatformRoleSetRole = useRoleSetAdminAvailableUsersOnPlatform({
     filter: availableUsersForRoleSearch?.filter,
-    skip: (
+    skip:
       !availableUsersForRoleSearch ||
       !availableUsersForRoleSearch.enabled ||
-      !(availableUsersForRoleSearch.mode === 'platform')
-    ),
-    usersAlreadyInRole: data.usersByRole[availableUsersForRoleSearch?.role!]
+      !(availableUsersForRoleSearch.mode === 'platform'),
+    usersAlreadyInRole: data.usersByRole[availableUsersForRoleSearch?.role!],
   });
 
   const availableUsersForRole =
-    availableUsersForRoleSearch?.mode === 'roleSet' ?
-      availableUsersForRoleSetRole : (
-        availableUsersForRoleSearch?.mode === 'platform' ?
-          availableUsersForPlatformRoleSetRole :
-          undefined
-      );
+    availableUsersForRoleSearch?.mode === 'roleSet'
+      ? availableUsersForRoleSetRole
+      : availableUsersForRoleSearch?.mode === 'platform'
+      ? availableUsersForPlatformRoleSetRole
+      : undefined;
 
   return {
     myPrivileges,

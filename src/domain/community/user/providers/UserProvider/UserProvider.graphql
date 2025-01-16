@@ -17,35 +17,6 @@ query UserProvider {
   }
 }
 
-query UserPendingMemberships {
-  me {
-    user {
-      ...UserDetails
-    }
-    communityApplications(states: ["new"]) {
-      id
-      spacePendingMembershipInfo {
-        id
-        level
-        profile {
-          id
-          displayName
-          tagline
-          url
-        }
-      }
-      application {
-        id
-        state
-        createdDate
-      }
-    }
-    communityInvitations(states: ["invited"]) {
-      ...InvitationData
-    }
-  }
-}
-
 fragment InvitationData on CommunityInvitationResult {
   id
   spacePendingMembershipInfo {

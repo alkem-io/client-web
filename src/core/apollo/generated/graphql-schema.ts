@@ -7749,6 +7749,30 @@ export type InnovationPackCardFragment = {
       };
 };
 
+export type ApplyForEntryRoleOnRoleSetMutationVariables = Exact<{
+  input: ApplyForEntryRoleOnRoleSetInput;
+}>;
+
+export type ApplyForEntryRoleOnRoleSetMutation = {
+  __typename?: 'Mutation';
+  applyForEntryRoleOnRoleSet: { __typename?: 'Application'; id: string };
+};
+
+export type EventOnApplicationMutationVariables = Exact<{
+  input: ApplicationEventInput;
+}>;
+
+export type EventOnApplicationMutation = {
+  __typename?: 'Mutation';
+  eventOnApplication: { __typename?: 'Application'; id: string; nextEvents: Array<string>; state: string };
+};
+
+export type JoinRoleSetMutationVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+}>;
+
+export type JoinRoleSetMutation = { __typename?: 'Mutation'; joinRoleSet: { __typename?: 'RoleSet'; id: string } };
+
 export type AvailableUserForRoleSetFragment = {
   __typename?: 'User';
   id: string;
@@ -8393,30 +8417,6 @@ export type RoleSetMemberVirtualContributorFragment = {
       | undefined;
   };
 };
-
-export type ApplyForEntryRoleOnRoleSetMutationVariables = Exact<{
-  input: ApplyForEntryRoleOnRoleSetInput;
-}>;
-
-export type ApplyForEntryRoleOnRoleSetMutation = {
-  __typename?: 'Mutation';
-  applyForEntryRoleOnRoleSet: { __typename?: 'Application'; id: string };
-};
-
-export type EventOnApplicationMutationVariables = Exact<{
-  input: ApplicationEventInput;
-}>;
-
-export type EventOnApplicationMutation = {
-  __typename?: 'Mutation';
-  eventOnApplication: { __typename?: 'Application'; id: string; nextEvents: Array<string>; state: string };
-};
-
-export type JoinRoleSetMutationVariables = Exact<{
-  joiningData: JoinAsEntryRoleOnRoleSetInput;
-}>;
-
-export type JoinRoleSetMutation = { __typename?: 'Mutation'; joinRoleSet: { __typename?: 'RoleSet'; id: string } };
 
 export type CommunityApplicationsInvitationsQueryVariables = Exact<{
   roleSetId: Scalars['UUID'];

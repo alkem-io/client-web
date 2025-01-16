@@ -10,7 +10,7 @@ import DashboardUpdatesSection from '@/domain/shared/components/DashboardSection
 import PageContent from '@/core/ui/content/PageContent';
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import DashboardCalendarSection from '@/domain/shared/components/DashboardSections/DashboardCalendarSection';
-import ApplicationButtonContainer from '@/domain/community/application/containers/ApplicationButtonContainer';
+import ApplicationButtonContainer from '@/domain/access/RoleSet/RoleSetAdmin/Applications/ApplicationButtonContainer';
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
 import { Theme } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';

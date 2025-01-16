@@ -1,13 +1,14 @@
-import React, { FC } from 'react';
+import React from 'react';
 import EditMemberUsers from '@/domain/platform/admin/components/Community/EditMembersUsers';
 import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
-import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
-import useRoleSetAdmin from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
 import { useUserContext } from '../../user';
+import useRoleSetAdmin from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 
-export const OrganizationAssociatesView: FC = () => {
+export const OrganizationAuthorizationRoleAssignementView = ({ role }: { role: RoleName }) => {
   const { t } = useTranslation();
   const { user } = useUserContext();
 
@@ -23,12 +24,12 @@ export const OrganizationAssociatesView: FC = () => {
     updating,
   } = useRoleSetAdmin({
     roleSetId,
-    relevantRoles: [RoleName.Associate],
+    relevantRoles: [role],
     contributorTypes: ['user'],
     availableUsersForRoleSearch: {
       enabled: true,
-      mode: 'platform', // Look in the entire platform, AssociateRole doesn't require an EntryRole
-      role: RoleName.Associate,
+      mode: 'roleSet',
+      role: role,
       filter: searchTerm,
     },
   });
@@ -36,22 +37,23 @@ export const OrganizationAssociatesView: FC = () => {
   const { users: availableAssociates, fetchMore, hasMore, loading: searchingUsers } = availableUsersForRole!;
 
   return (
-    <DashboardGenericSection headerText={t('common.members')}>
+    <PageContentBlock>
+      <PageContentBlockHeader title={t(`common.roles.${role}`)} />
       <EditMemberUsers
-        members={usersByRole[RoleName.Associate] ?? []}
+        members={usersByRole[role] ?? []}
         availableMembers={availableAssociates ?? []}
         updating={updating}
         executorId={user?.user?.id}
-        onAdd={userId => assignRoleToUser(userId, RoleName.Associate)}
-        onRemove={userId => removeRoleFromUser(userId, RoleName.Associate)}
+        onAdd={userId => assignRoleToUser(userId, role)}
+        onRemove={userId => removeRoleFromUser(userId, role)}
         fetchMore={fetchMore}
         hasMore={hasMore}
         loadingMembers={loadingRoleSet}
         loadingAvailableMembers={searchingUsers}
         onSearchTermChange={setSearchTerm}
       />
-    </DashboardGenericSection>
+    </PageContentBlock>
   );
 };
 
-export default OrganizationAssociatesView;
+export default OrganizationAuthorizationRoleAssignementView;

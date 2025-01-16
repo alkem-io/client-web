@@ -12,8 +12,8 @@ export interface EditMemberUsersProps {
     id: string;
     profile: { displayName: string };
   }[];
-  updating: boolean;
-  loadingAvailableMembers: boolean;
+  updating?: boolean;
+  loadingAvailableMembers?: boolean;
   loadingMembers?: boolean;
   onAdd: (memberId: string) => void;
   onRemove: (memberId: string) => void;
@@ -27,7 +27,7 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
   executorId,
   members,
   availableMembers,
-  updating,
+  updating = false,
   loadingAvailableMembers = false,
   loadingMembers = false,
   onAdd = () => {},

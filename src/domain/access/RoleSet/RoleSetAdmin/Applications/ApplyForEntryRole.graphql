@@ -1,0 +1,5 @@
+mutation ApplyForEntryRoleOnRoleSet($input: ApplyForEntryRoleOnRoleSetInput!) {
+  applyForEntryRoleOnRoleSet(applicationData: $input) {
+    id
+  }
+}

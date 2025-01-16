@@ -1,4 +1,4 @@
-mutation eventOnApplication($input: ApplicationEventInput!) {
+mutation EventOnApplication($input: ApplicationEventInput!) {
   eventOnApplication(eventData: $input) {
     id
     nextEvents

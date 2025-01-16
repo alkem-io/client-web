@@ -4427,6 +4427,150 @@ export type UpdateInnovationPackMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationPackMutation,
   SchemaTypes.UpdateInnovationPackMutationVariables
 >;
+export const ApplyForEntryRoleOnRoleSetDocument = gql`
+  mutation ApplyForEntryRoleOnRoleSet($input: ApplyForEntryRoleOnRoleSetInput!) {
+    applyForEntryRoleOnRoleSet(applicationData: $input) {
+      id
+    }
+  }
+`;
+export type ApplyForEntryRoleOnRoleSetMutationFn = Apollo.MutationFunction<
+  SchemaTypes.ApplyForEntryRoleOnRoleSetMutation,
+  SchemaTypes.ApplyForEntryRoleOnRoleSetMutationVariables
+>;
+
+/**
+ * __useApplyForEntryRoleOnRoleSetMutation__
+ *
+ * To run a mutation, you first call `useApplyForEntryRoleOnRoleSetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useApplyForEntryRoleOnRoleSetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [applyForEntryRoleOnRoleSetMutation, { data, loading, error }] = useApplyForEntryRoleOnRoleSetMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useApplyForEntryRoleOnRoleSetMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.ApplyForEntryRoleOnRoleSetMutation,
+    SchemaTypes.ApplyForEntryRoleOnRoleSetMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.ApplyForEntryRoleOnRoleSetMutation,
+    SchemaTypes.ApplyForEntryRoleOnRoleSetMutationVariables
+  >(ApplyForEntryRoleOnRoleSetDocument, options);
+}
+
+export type ApplyForEntryRoleOnRoleSetMutationHookResult = ReturnType<typeof useApplyForEntryRoleOnRoleSetMutation>;
+export type ApplyForEntryRoleOnRoleSetMutationResult =
+  Apollo.MutationResult<SchemaTypes.ApplyForEntryRoleOnRoleSetMutation>;
+export type ApplyForEntryRoleOnRoleSetMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.ApplyForEntryRoleOnRoleSetMutation,
+  SchemaTypes.ApplyForEntryRoleOnRoleSetMutationVariables
+>;
+export const EventOnApplicationDocument = gql`
+  mutation EventOnApplication($input: ApplicationEventInput!) {
+    eventOnApplication(eventData: $input) {
+      id
+      nextEvents
+      state
+    }
+  }
+`;
+export type EventOnApplicationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.EventOnApplicationMutation,
+  SchemaTypes.EventOnApplicationMutationVariables
+>;
+
+/**
+ * __useEventOnApplicationMutation__
+ *
+ * To run a mutation, you first call `useEventOnApplicationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEventOnApplicationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [eventOnApplicationMutation, { data, loading, error }] = useEventOnApplicationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useEventOnApplicationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.EventOnApplicationMutation,
+    SchemaTypes.EventOnApplicationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.EventOnApplicationMutation, SchemaTypes.EventOnApplicationMutationVariables>(
+    EventOnApplicationDocument,
+    options
+  );
+}
+
+export type EventOnApplicationMutationHookResult = ReturnType<typeof useEventOnApplicationMutation>;
+export type EventOnApplicationMutationResult = Apollo.MutationResult<SchemaTypes.EventOnApplicationMutation>;
+export type EventOnApplicationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.EventOnApplicationMutation,
+  SchemaTypes.EventOnApplicationMutationVariables
+>;
+export const JoinRoleSetDocument = gql`
+  mutation JoinRoleSet($roleSetId: UUID!) {
+    joinRoleSet(joinData: { roleSetID: $roleSetId }) {
+      id
+    }
+  }
+`;
+export type JoinRoleSetMutationFn = Apollo.MutationFunction<
+  SchemaTypes.JoinRoleSetMutation,
+  SchemaTypes.JoinRoleSetMutationVariables
+>;
+
+/**
+ * __useJoinRoleSetMutation__
+ *
+ * To run a mutation, you first call `useJoinRoleSetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useJoinRoleSetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [joinRoleSetMutation, { data, loading, error }] = useJoinRoleSetMutation({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *   },
+ * });
+ */
+export function useJoinRoleSetMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.JoinRoleSetMutation, SchemaTypes.JoinRoleSetMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.JoinRoleSetMutation, SchemaTypes.JoinRoleSetMutationVariables>(
+    JoinRoleSetDocument,
+    options
+  );
+}
+
+export type JoinRoleSetMutationHookResult = ReturnType<typeof useJoinRoleSetMutation>;
+export type JoinRoleSetMutationResult = Apollo.MutationResult<SchemaTypes.JoinRoleSetMutation>;
+export type JoinRoleSetMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.JoinRoleSetMutation,
+  SchemaTypes.JoinRoleSetMutationVariables
+>;
 export const PlatformRoleAvailableUsersDocument = gql`
   query PlatformRoleAvailableUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
     usersPaginated(first: $first, after: $after, filter: $filter) {
@@ -5219,150 +5363,6 @@ export function refetchRoleSetRoleAssignmentQuery(variables: SchemaTypes.RoleSet
   return { query: RoleSetRoleAssignmentDocument, variables: variables };
 }
 
-export const ApplyForEntryRoleOnRoleSetDocument = gql`
-  mutation applyForEntryRoleOnRoleSet($input: ApplyForEntryRoleOnRoleSetInput!) {
-    applyForEntryRoleOnRoleSet(applicationData: $input) {
-      id
-    }
-  }
-`;
-export type ApplyForEntryRoleOnRoleSetMutationFn = Apollo.MutationFunction<
-  SchemaTypes.ApplyForEntryRoleOnRoleSetMutation,
-  SchemaTypes.ApplyForEntryRoleOnRoleSetMutationVariables
->;
-
-/**
- * __useApplyForEntryRoleOnRoleSetMutation__
- *
- * To run a mutation, you first call `useApplyForEntryRoleOnRoleSetMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useApplyForEntryRoleOnRoleSetMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [applyForEntryRoleOnRoleSetMutation, { data, loading, error }] = useApplyForEntryRoleOnRoleSetMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useApplyForEntryRoleOnRoleSetMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.ApplyForEntryRoleOnRoleSetMutation,
-    SchemaTypes.ApplyForEntryRoleOnRoleSetMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.ApplyForEntryRoleOnRoleSetMutation,
-    SchemaTypes.ApplyForEntryRoleOnRoleSetMutationVariables
-  >(ApplyForEntryRoleOnRoleSetDocument, options);
-}
-
-export type ApplyForEntryRoleOnRoleSetMutationHookResult = ReturnType<typeof useApplyForEntryRoleOnRoleSetMutation>;
-export type ApplyForEntryRoleOnRoleSetMutationResult =
-  Apollo.MutationResult<SchemaTypes.ApplyForEntryRoleOnRoleSetMutation>;
-export type ApplyForEntryRoleOnRoleSetMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.ApplyForEntryRoleOnRoleSetMutation,
-  SchemaTypes.ApplyForEntryRoleOnRoleSetMutationVariables
->;
-export const EventOnApplicationDocument = gql`
-  mutation eventOnApplication($input: ApplicationEventInput!) {
-    eventOnApplication(eventData: $input) {
-      id
-      nextEvents
-      state
-    }
-  }
-`;
-export type EventOnApplicationMutationFn = Apollo.MutationFunction<
-  SchemaTypes.EventOnApplicationMutation,
-  SchemaTypes.EventOnApplicationMutationVariables
->;
-
-/**
- * __useEventOnApplicationMutation__
- *
- * To run a mutation, you first call `useEventOnApplicationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useEventOnApplicationMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [eventOnApplicationMutation, { data, loading, error }] = useEventOnApplicationMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useEventOnApplicationMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.EventOnApplicationMutation,
-    SchemaTypes.EventOnApplicationMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.EventOnApplicationMutation, SchemaTypes.EventOnApplicationMutationVariables>(
-    EventOnApplicationDocument,
-    options
-  );
-}
-
-export type EventOnApplicationMutationHookResult = ReturnType<typeof useEventOnApplicationMutation>;
-export type EventOnApplicationMutationResult = Apollo.MutationResult<SchemaTypes.EventOnApplicationMutation>;
-export type EventOnApplicationMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.EventOnApplicationMutation,
-  SchemaTypes.EventOnApplicationMutationVariables
->;
-export const JoinRoleSetDocument = gql`
-  mutation joinRoleSet($joiningData: JoinAsEntryRoleOnRoleSetInput!) {
-    joinRoleSet(joinData: $joiningData) {
-      id
-    }
-  }
-`;
-export type JoinRoleSetMutationFn = Apollo.MutationFunction<
-  SchemaTypes.JoinRoleSetMutation,
-  SchemaTypes.JoinRoleSetMutationVariables
->;
-
-/**
- * __useJoinRoleSetMutation__
- *
- * To run a mutation, you first call `useJoinRoleSetMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useJoinRoleSetMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [joinRoleSetMutation, { data, loading, error }] = useJoinRoleSetMutation({
- *   variables: {
- *      joiningData: // value for 'joiningData'
- *   },
- * });
- */
-export function useJoinRoleSetMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.JoinRoleSetMutation, SchemaTypes.JoinRoleSetMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.JoinRoleSetMutation, SchemaTypes.JoinRoleSetMutationVariables>(
-    JoinRoleSetDocument,
-    options
-  );
-}
-
-export type JoinRoleSetMutationHookResult = ReturnType<typeof useJoinRoleSetMutation>;
-export type JoinRoleSetMutationResult = Apollo.MutationResult<SchemaTypes.JoinRoleSetMutation>;
-export type JoinRoleSetMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.JoinRoleSetMutation,
-  SchemaTypes.JoinRoleSetMutationVariables
->;
 export const CommunityApplicationsInvitationsDocument = gql`
   query CommunityApplicationsInvitations($roleSetId: UUID!) {
     lookup {
