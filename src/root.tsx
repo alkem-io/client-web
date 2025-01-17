@@ -19,7 +19,7 @@ import { privateGraphQLEndpoint, publicGraphQLEndpoint } from '@/main/constants/
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import GlobalStyles from '@mui/material/GlobalStyles';
-import { StyledEngineProvider } from '@mui/material/styles';
+import { StyledEngineProvider, Theme } from '@mui/material/styles';
 import { FC } from 'react';
 import { CookiesProvider } from 'react-cookie';
 import { BrowserRouter } from 'react-router-dom';
@@ -29,7 +29,7 @@ import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotif
 import { InAppNotificationsDialog } from './main/inAppNotifications/InAppNotificationsDialog';
 
 // MARKDOWN_CLASS_NAME used in the styles below
-const globalStyles = theme => ({
+const globalStyles = (theme: Theme) => ({
   '*': {
     scrollbarColor: `${theme.palette.primary.main} transparent`,
   },
@@ -61,6 +61,9 @@ const globalStyles = theme => ({
   '[aria-role="heading"]': subHeading,
   '.markdown > pre': {
     whiteSpace: 'pre-wrap',
+  },
+  '.excalidraw-modal-container': {
+    zIndex: `${theme.zIndex.modal + 1} !important`,
   },
 });
 

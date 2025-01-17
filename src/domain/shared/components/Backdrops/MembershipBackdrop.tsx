@@ -8,9 +8,6 @@ interface BackdropProps {
   blockName?: React.ReactNode;
 }
 
-/**
- * @deprecated figure out whether it's still needed
- */
 const MembershipBackdrop: FC<BackdropProps> = ({ children, blockName, show = false }) => {
   const { t } = useTranslation();
 
