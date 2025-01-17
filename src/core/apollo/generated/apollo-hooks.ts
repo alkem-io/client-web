@@ -4826,8 +4826,8 @@ export function refetchAvailableUsersForElevatedRoleQuery(
 }
 
 export const AssignPlatformRoleToUserDocument = gql`
-  mutation AssignPlatformRoleToUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
-    assignPlatformRoleToUser(roleData: { roleSetID: $roleSetId, role: $role, contributorID: $contributorId }) {
+  mutation AssignPlatformRoleToUser($role: RoleName!, $contributorId: UUID!) {
+    assignPlatformRoleToUser(roleData: { role: $role, contributorID: $contributorId }) {
       id
     }
   }
@@ -4850,7 +4850,6 @@ export type AssignPlatformRoleToUserMutationFn = Apollo.MutationFunction<
  * @example
  * const [assignPlatformRoleToUserMutation, { data, loading, error }] = useAssignPlatformRoleToUserMutation({
  *   variables: {
- *      roleSetId: // value for 'roleSetId'
  *      role: // value for 'role'
  *      contributorId: // value for 'contributorId'
  *   },
@@ -5031,8 +5030,8 @@ export type AssignRoleToVirtualContributorMutationOptions = Apollo.BaseMutationO
   SchemaTypes.AssignRoleToVirtualContributorMutationVariables
 >;
 export const RemovePlatformRoleFromUserDocument = gql`
-  mutation RemovePlatformRoleFromUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
-    removePlatformRoleFromUser(roleData: { roleSetID: $roleSetId, role: $role, contributorID: $contributorId }) {
+  mutation RemovePlatformRoleFromUser($role: RoleName!, $contributorId: UUID!) {
+    removePlatformRoleFromUser(roleData: { role: $role, contributorID: $contributorId }) {
       id
       profile {
         id
@@ -5059,7 +5058,6 @@ export type RemovePlatformRoleFromUserMutationFn = Apollo.MutationFunction<
  * @example
  * const [removePlatformRoleFromUserMutation, { data, loading, error }] = useRemovePlatformRoleFromUserMutation({
  *   variables: {
- *      roleSetId: // value for 'roleSetId'
  *      role: // value for 'role'
  *      contributorId: // value for 'contributorId'
  *   },

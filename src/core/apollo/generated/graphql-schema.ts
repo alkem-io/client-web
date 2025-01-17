@@ -742,6 +742,11 @@ export type AssignLicensePlanToSpace = {
   spaceID: Scalars['UUID'];
 };
 
+export type AssignPlatformRoleInput = {
+  contributorID: Scalars['UUID'];
+  role: RoleName;
+};
+
 export type AssignRoleOnRoleSetToOrganizationInput = {
   contributorID: Scalars['UUID'];
   role: RoleName;
@@ -3994,7 +3999,7 @@ export type MutationAssignLicensePlanToSpaceArgs = {
 };
 
 export type MutationAssignPlatformRoleToUserArgs = {
-  roleData: AssignRoleOnRoleSetToUserInput;
+  roleData: AssignPlatformRoleInput;
 };
 
 export type MutationAssignRoleToOrganizationArgs = {
@@ -4278,7 +4283,7 @@ export type MutationRemoveMessageOnRoomArgs = {
 };
 
 export type MutationRemovePlatformRoleFromUserArgs = {
-  roleData: RemoveRoleOnRoleSetFromUserInput;
+  roleData: RemovePlatformRoleInput;
 };
 
 export type MutationRemoveReactionToMessageInRoomArgs = {
@@ -5394,6 +5399,11 @@ export type RelayPaginatedSpacePageInfo = {
 export type RemoveCommunityGuidelinesContentInput = {
   /** ID of the CommunityGuidelines that will be emptied */
   communityGuidelinesID: Scalars['UUID'];
+};
+
+export type RemovePlatformRoleInput = {
+  contributorID: Scalars['UUID'];
+  role: RoleName;
 };
 
 export type RemoveRoleOnRoleSetFromOrganizationInput = {
@@ -7968,7 +7978,6 @@ export type AvailableUsersForElevatedRoleQuery = {
 };
 
 export type AssignPlatformRoleToUserMutationVariables = Exact<{
-  roleSetId: Scalars['UUID'];
   role: RoleName;
   contributorId: Scalars['UUID'];
 }>;
@@ -8012,7 +8021,6 @@ export type AssignRoleToVirtualContributorMutation = {
 };
 
 export type RemovePlatformRoleFromUserMutationVariables = Exact<{
-  roleSetId: Scalars['UUID'];
   role: RoleName;
   contributorId: Scalars['UUID'];
 }>;

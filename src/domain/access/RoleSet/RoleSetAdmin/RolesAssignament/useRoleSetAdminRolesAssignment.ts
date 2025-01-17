@@ -21,7 +21,9 @@ export type useRoleSetAdminRolesAssignmentProvided = {
 /**
  * Do not use this hook directly, normally you should use useRoleSetAdmin instead
  */
-const useRoleSetAdminRolesAssignment = ({ roleSetId }: useRoleSetAdminRolesAssignmentParams): useRoleSetAdminRolesAssignmentProvided => {
+const useRoleSetAdminRolesAssignment = ({
+  roleSetId,
+}: useRoleSetAdminRolesAssignmentParams): useRoleSetAdminRolesAssignmentProvided => {
   // Platform Roles:
   const [runAssignPlatformRoleToUser, { loading: assignPlatformRoleToUserLoading }] =
     useAssignPlatformRoleToUserMutation();
@@ -32,7 +34,6 @@ const useRoleSetAdminRolesAssignment = ({ roleSetId }: useRoleSetAdminRolesAssig
       variables: {
         contributorId: userId,
         role,
-        roleSetId: roleSetId!,
       },
     });
   };
@@ -42,16 +43,13 @@ const useRoleSetAdminRolesAssignment = ({ roleSetId }: useRoleSetAdminRolesAssig
       variables: {
         contributorId: userId,
         role,
-        roleSetId: roleSetId!,
       },
     });
   };
 
   // Platform Roles:
-  const [runAssignRoleToUser, { loading: assignRoleToUserLoading }] =
-    useAssignRoleToUserMutation();
-  const [runRemoveRoleFromUser, { loading: removeRoleFromUserLoading }] =
-    useRemoveRoleFromUserMutation();
+  const [runAssignRoleToUser, { loading: assignRoleToUserLoading }] = useAssignRoleToUserMutation();
+  const [runRemoveRoleFromUser, { loading: removeRoleFromUserLoading }] = useRemoveRoleFromUserMutation();
   const assignRoleToUser = (userId: string, role: RoleName) => {
     return runAssignRoleToUser({
       variables: {
@@ -72,7 +70,11 @@ const useRoleSetAdminRolesAssignment = ({ roleSetId }: useRoleSetAdminRolesAssig
     });
   };
 
-  const loading = assignPlatformRoleToUserLoading || removePlatformRoleFromUserLoading || assignRoleToUserLoading || removeRoleFromUserLoading;
+  const loading =
+    assignPlatformRoleToUserLoading ||
+    removePlatformRoleFromUserLoading ||
+    assignRoleToUserLoading ||
+    removeRoleFromUserLoading;
   if (!roleSetId) {
     return {
       assignPlatformRoleToUser: () => Promise.reject('roleSetId is not defined'),

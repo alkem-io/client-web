@@ -1,5 +1,5 @@
-mutation AssignPlatformRoleToUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
-  assignPlatformRoleToUser(roleData: { roleSetID: $roleSetId, role: $role, contributorID: $contributorId }) {
+mutation AssignPlatformRoleToUser($role: RoleName!, $contributorId: UUID!) {
+  assignPlatformRoleToUser(roleData: { role: $role, contributorID: $contributorId }) {
     id
   }
 }
