@@ -24,7 +24,7 @@ export const useCalloutsSetAuthorization = ({
 
   const calloutsSetPrivileges = calloutsSetData?.lookup.calloutsSet?.authorization?.myPrivileges ?? [];
   const canReadCalloutsSet = calloutsSetPrivileges.includes(AuthorizationPrivilege.Read);
-  const canCreateCallout = calloutsSetPrivileges.includes(AuthorizationPrivilege.Create);
+  const canCreateCallout = calloutsSetPrivileges.includes(AuthorizationPrivilege.CreateCallout);
 
   return {
     calloutsSetPrivileges,
