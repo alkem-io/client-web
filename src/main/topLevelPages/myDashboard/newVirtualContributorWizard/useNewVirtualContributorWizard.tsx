@@ -10,6 +10,7 @@ import {
   useCreateLinkOnCalloutMutation,
   useAccountSpacesLazyQuery,
   refetchMyResourcesQuery,
+  useRefreshBodyOfKnowledgeMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AiPersonaBodyOfKnowledgeType,
@@ -339,6 +340,17 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   };
 
   // ###STEP 'addKnowledge' - Add Content
+  const [updateBodyOfKnowledge] = useRefreshBodyOfKnowledgeMutation();
+  const refreshIngestion = (vcId: string) => {
+    updateBodyOfKnowledge({
+      variables: {
+        refreshData: {
+          virtualContributorID: vcId,
+        },
+      },
+    });
+  };
+
   const handleCreateKnowledge = async (values: VirtualContributorFromProps) => {
     setVirtualContributorInput(values);
     setStep(steps.addKnowledge);
@@ -417,10 +429,10 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         c => c.framing.profile.displayName === documentsLinkCollectionName
       );
       await addDocumentLinksToCallout(documents, createdLinkCollection?.id);
-    }
 
-    // TODO: after the VC creation:
-    // 1. reingest the VC in case of documents?
+      // Only in case of documents upload, reingest the VC knowledge
+      refreshIngestion(createdVC.id);
+    }
 
     setStep(steps.chooseCommunity);
   };
