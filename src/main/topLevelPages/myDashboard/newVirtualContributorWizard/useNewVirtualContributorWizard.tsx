@@ -429,10 +429,10 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         c => c.framing.profile.displayName === documentsLinkCollectionName
       );
       await addDocumentLinksToCallout(documents, createdLinkCollection?.id);
-
-      // Only in case of documents upload, reingest the VC knowledge
-      refreshIngestion(createdVC.id);
     }
+
+    // Refresh explicitly the ingestion after callouts creation
+    refreshIngestion(createdVC.id);
 
     setStep(steps.chooseCommunity);
   };
