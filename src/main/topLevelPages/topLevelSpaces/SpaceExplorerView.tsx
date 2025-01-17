@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -37,6 +37,7 @@ export interface SpaceExplorerViewProps {
     url: string;
   };
   fetchWelcomeSpace?: (args: { variables: { spaceNameId: string } }) => void;
+  loadingSearchResults?: boolean | null;
 }
 
 export enum SpacesExplorerMembershipFilter {
@@ -95,14 +96,14 @@ const collectParentAvatars = <Journey extends WithBanner & WithParent<WithBanner
   { profile, parent }: Journey,
   initial: string[] = []
 ) => {
+  if (!profile) {
+    return initial;
+  }
+
   const { cardBanner, avatar = cardBanner } = profile;
   const collected = [avatar?.uri ?? '', ...initial];
 
-  if (!parent) {
-    return collected;
-  } else {
-    return collectParentAvatars(parent, collected);
-  }
+  return parent ? collectParentAvatars(parent, collected) : collected;
 };
 
 export const ITEMS_LIMIT = 10;
@@ -119,6 +120,7 @@ export const SpaceExplorerView = ({
   authenticated,
   welcomeSpace,
   fetchWelcomeSpace,
+  loadingSearchResults = null,
 }: SpaceExplorerViewProps) => {
   const { t } = useTranslation();
 
@@ -149,6 +151,47 @@ export const SpaceExplorerView = ({
   const hasNoMemberSpaces =
     (membershipFilter === SpacesExplorerMembershipFilter.Member && !authenticated) || spaces?.length === 0;
 
+  const renderVisibleSpaces = useCallback(() => {
+    const vs: JSX.Element[] = [];
+
+    if (!visibleSpaces) {
+      return vs;
+    }
+
+    visibleSpaces.forEach(space => {
+      if (!space) {
+        return;
+      }
+
+      vs.push(
+        <SpaceSubspaceCard
+          key={space.id}
+          tagline={space.profile?.tagline ?? ''}
+          displayName={space.profile?.displayName}
+          vision={space.context?.vision ?? ''}
+          journeyUri={space.profile?.url}
+          type={space.profile?.type!}
+          banner={space.profile?.cardBanner}
+          avatarUris={collectParentAvatars(space)}
+          tags={space.matchedTerms ?? space.profile?.tagset?.tags.length ? space.profile?.tagset?.tags : undefined}
+          spaceDisplayName={space.parent?.profile?.displayName}
+          matchedTerms={!!space.matchedTerms}
+          label={
+            shouldDisplayPrivacyInfo && (
+              <SpaceSubspaceCardLabel
+                type={space.profile?.type!}
+                member={space.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
+                isPrivate={space.settings.privacy?.mode === SpacePrivacyMode.Private}
+              />
+            )
+          }
+        />
+      );
+    });
+
+    return vs;
+  }, [visibleSpaces, shouldDisplayPrivacyInfo]);
+
   useEffect(() => {
     if (hasNoMemberSpaces) {
       fetchWelcomeSpace?.({
@@ -158,6 +201,8 @@ export const SpaceExplorerView = ({
   }, [hasNoMemberSpaces]);
 
   const getGridItemStyle = useGridItem();
+
+  const spacesLength = spaces?.length ?? 0;
 
   return (
     <PageContentBlock>
@@ -199,38 +244,21 @@ export const SpaceExplorerView = ({
           {t('pages.exploreSpaces.noSpaceMemberships', { welcomeSpace: welcomeSpace?.displayName })}
         </CaptionSmall>
       )}
-      {searchTerms.length !== 0 && spaces && spaces.length === 0 && (
+      {searchTerms.length !== 0 && spacesLength === 0 && loadingSearchResults === false && (
         <CaptionSmall marginX="auto" paddingY={gutters()}>
           {t('pages.exploreSpaces.search.noResults')}
         </CaptionSmall>
       )}
-      {spaces && spaces.length > 0 && (
+      {loadingSearchResults && (
+        <Gutters>
+          <Caption>{t('pages.exploreSpaces.search.searching')}</Caption>
+        </Gutters>
+      )}
+      {spacesLength > 0 && (
         <>
           <ScrollableCardsLayoutContainer>
-            {visibleSpaces!.map(space => (
-              <SpaceSubspaceCard
-                key={space.id}
-                tagline={space.profile.tagline ?? ''}
-                displayName={space.profile.displayName}
-                vision={space.context?.vision ?? ''}
-                journeyUri={space.profile.url}
-                type={space.profile.type!}
-                banner={space.profile.cardBanner}
-                avatarUris={collectParentAvatars(space)}
-                tags={space.matchedTerms ?? space.profile.tagset?.tags.length ? space.profile.tagset?.tags : undefined}
-                spaceDisplayName={space.parent?.profile?.displayName}
-                matchedTerms={!!space.matchedTerms}
-                label={
-                  shouldDisplayPrivacyInfo && (
-                    <SpaceSubspaceCardLabel
-                      type={space.profile.type!}
-                      member={space.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
-                      isPrivate={space.settings.privacy?.mode === SpacePrivacyMode.Private}
-                    />
-                  )
-                }
-              />
-            ))}
+            {renderVisibleSpaces()}
+
             {enableLazyLoading && loader}
           </ScrollableCardsLayoutContainer>
           {enableShowAll && (

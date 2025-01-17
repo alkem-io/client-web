@@ -38,18 +38,19 @@ export interface ChallengeExplorerContainerEntities {
       }
     | undefined;
   fetchWelcomeSpace?: (args: { variables: { spaceNameId: string } }) => void;
+  setSearchTerms: React.Dispatch<React.SetStateAction<string[]>>;
+  loadingSearchResults: boolean | null;
 }
 
-interface SpaceExplorerContainerProps extends SimpleContainerProps<ChallengeExplorerContainerEntities> {
-  searchTerms: string[];
-}
+interface SpaceExplorerContainerProps extends SimpleContainerProps<ChallengeExplorerContainerEntities> {}
 
-const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContainerProps) => {
+const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
   const { user: userMetadata, isAuthenticated, loading: loadingUser } = useUserContext();
 
-  const shouldSearch = searchTerms.length > 0;
-
+  const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [membershipFilter, setMembershipFilter] = useState(SpacesExplorerMembershipFilter.All);
+
+  const shouldSearch = searchTerms.length > 0;
 
   // PRIVATE: Challenges if the user is logged in
   const { data: spaceMembershipsData, loading: loadingUserData } = useChallengeExplorerPageQuery({
@@ -217,6 +218,8 @@ const SpaceExplorerContainer = ({ searchTerms, children }: SpaceExplorerContaine
     hasMore,
     welcomeSpace: welcomeSpaceData?.space.profile,
     fetchWelcomeSpace,
+    setSearchTerms,
+    loadingSearchResults,
   };
 
   return <>{children(provided)}</>;

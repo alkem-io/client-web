@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SpaceExplorerContainer from './SpaceExplorerContainer';
 import { SpaceExplorerView } from './SpaceExplorerView';
@@ -10,7 +9,6 @@ import TopLevelPageBreadcrumbs from '../topLevelPageBreadcrumbs/TopLevelPageBrea
 
 const SpaceExplorerPage = () => {
   const { t } = useTranslation();
-  const [searchTerms, setSearchTerms] = useState<string[]>([]);
 
   const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfSpace.subspaces' });
 
@@ -26,9 +24,9 @@ const SpaceExplorerPage = () => {
         </TopLevelPageBreadcrumbs>
       }
     >
-      <SpaceExplorerContainer searchTerms={searchTerms}>
+      <SpaceExplorerContainer>
         {provided => {
-          return <SpaceExplorerView {...provided} setSearchTerms={setSearchTerms} />;
+          return <SpaceExplorerView {...provided} />;
         }}
       </SpaceExplorerContainer>
     </TopLevelPageLayout>

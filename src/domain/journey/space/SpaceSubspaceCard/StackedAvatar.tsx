@@ -4,7 +4,7 @@ import JourneyAvatar from '@/domain/journey/common/JourneyAvatar/JourneyAvatar';
 
 const StackedAvatar = ({ avatarUris }: { avatarUris: string[] }) => (
   <Box sx={{ width: gutters(2), height: gutters(2), position: 'relative', flex: '0 0 15%' }}>
-    {avatarUris.map((avatarUri, index) => {
+    {avatarUris?.map((avatarUri, index) => {
       return (
         <JourneyAvatar
           key={index}
