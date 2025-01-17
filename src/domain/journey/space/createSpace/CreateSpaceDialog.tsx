@@ -101,7 +101,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
   const { accountId: currentUserAccountId } = useUserContext();
 
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
-  const [addTutorialCallouts, setAddTutorialCallouts] = useState(false);
+  const [addTutorialCallouts, setAddTutorialCallouts] = useState(true);
 
   const [isTermsDialogOpen, setIsTermsDialogOpen] = useState(false);
 
@@ -206,7 +206,6 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
                       <FormControlLabel
                         value={addTutorialCallouts}
                         onChange={(event, isChecked) => setAddTutorialCallouts(isChecked)}
-                        required
                         control={<Checkbox />}
                         label={<Caption>{t('createSpace.addTutorialsLabel')}</Caption>}
                       />
