@@ -619,7 +619,6 @@ export type AuthenticationProviderConfigFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthorizationKeySpecifier = (
-  | 'anonymousReadAccess'
   | 'createdDate'
   | 'credentialRules'
   | 'id'
@@ -631,7 +630,6 @@ export type AuthorizationKeySpecifier = (
   | AuthorizationKeySpecifier
 )[];
 export type AuthorizationFieldPolicy = {
-  anonymousReadAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   credentialRules?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;

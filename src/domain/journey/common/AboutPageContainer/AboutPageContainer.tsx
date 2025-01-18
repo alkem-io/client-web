@@ -99,7 +99,7 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
 
   const hasInvitePrivilege =
     communityPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleInvite) ||
-    communityPrivileges.includes(AuthorizationPrivilege.CommunityAddMemberVcFromAccount);
+    communityPrivileges.includes(AuthorizationPrivilege.CommunityAssignVcFromAccount);
 
   const context = nonMemberContext;
 

@@ -801,7 +801,6 @@ export enum AuthenticationType {
 
 export type Authorization = {
   __typename?: 'Authorization';
-  anonymousReadAccess?: Maybe<Scalars['Boolean']>;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The set of credential rules that are contained by this Authorization Policy. */
@@ -823,6 +822,7 @@ export type Authorization = {
 export enum AuthorizationCredential {
   BetaTester = 'BETA_TESTER',
   GlobalAdmin = 'GLOBAL_ADMIN',
+  GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
@@ -927,7 +927,7 @@ export enum AuthorizationPolicyType {
 export enum AuthorizationPrivilege {
   AccessInteractiveGuidance = 'ACCESS_INTERACTIVE_GUIDANCE',
   AuthorizationReset = 'AUTHORIZATION_RESET',
-  CommunityAddMemberVcFromAccount = 'COMMUNITY_ADD_MEMBER_VC_FROM_ACCOUNT',
+  CommunityAssignVcFromAccount = 'COMMUNITY_ASSIGN_VC_FROM_ACCOUNT',
   Contribute = 'CONTRIBUTE',
   Create = 'CREATE',
   CreateCallout = 'CREATE_CALLOUT',
@@ -953,11 +953,12 @@ export enum AuthorizationPrivilege {
   MovePost = 'MOVE_POST',
   PlatformAdmin = 'PLATFORM_ADMIN',
   Read = 'READ',
+  ReadAbout = 'READ_ABOUT',
   ReadUsers = 'READ_USERS',
   ReadUserPii = 'READ_USER_PII',
   ReadUserSettings = 'READ_USER_SETTINGS',
-  RolesetEntryRoleAdd = 'ROLESET_ENTRY_ROLE_ADD',
   RolesetEntryRoleApply = 'ROLESET_ENTRY_ROLE_APPLY',
+  RolesetEntryRoleAssign = 'ROLESET_ENTRY_ROLE_ASSIGN',
   RolesetEntryRoleInvite = 'ROLESET_ENTRY_ROLE_INVITE',
   RolesetEntryRoleInviteAccept = 'ROLESET_ENTRY_ROLE_INVITE_ACCEPT',
   RolesetEntryRoleJoin = 'ROLESET_ENTRY_ROLE_JOIN',
@@ -2171,6 +2172,7 @@ export enum CredentialType {
   AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
   BetaTester = 'BETA_TESTER',
   GlobalAdmin = 'GLOBAL_ADMIN',
+  GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
@@ -3705,7 +3707,7 @@ export type Mutation = {
   /** Creates a new Reference on the specified Profile. */
   createReferenceOnProfile: Reference;
   /** Creates a new Level Zero Space within the specified Account. */
-  createSpace: Account;
+  createSpace: Space;
   /** Creates a new Subspace within the specified Space. */
   createSubspace: Space;
   /** Creates a new Tagset on the specified Profile */
@@ -22428,7 +22430,7 @@ export type CreateSpaceMutationVariables = Exact<{
   spaceData: CreateSpaceOnAccountInput;
 }>;
 
-export type CreateSpaceMutation = { __typename?: 'Mutation'; createSpace: { __typename?: 'Account'; id: string } };
+export type CreateSpaceMutation = { __typename?: 'Mutation'; createSpace: { __typename?: 'Space'; id: string } };
 
 export type PlansTableQueryVariables = Exact<{ [key: string]: never }>;
 

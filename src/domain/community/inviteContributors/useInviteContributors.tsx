@@ -59,11 +59,11 @@ const useInviteContributors = ({
   // Determine the permissions based on the user's privileges
   const roleSetMyPrivileges = roleSetData?.lookup.roleSet?.authorization?.myPrivileges ?? [];
   const permissions = {
-    canAddMembers: roleSetMyPrivileges.some(priv => priv === AuthorizationPrivilege.RolesetEntryRoleAdd),
+    canAddMembers: roleSetMyPrivileges.some(priv => priv === AuthorizationPrivilege.RolesetEntryRoleAssign),
     // the following privilege allows Admins of a space without CommunityAddMember privilege, to
     // be able to add VC from the account; CommunityAddMember overrides this privilege as it's not granted to PAs
     canAddVirtualContributorsFromAccount: roleSetMyPrivileges.some(
-      priv => priv === AuthorizationPrivilege.CommunityAddMemberVcFromAccount
+      priv => priv === AuthorizationPrivilege.CommunityAssignVcFromAccount
     ),
   };
 
