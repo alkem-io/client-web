@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
 import { useLatestContributionsGroupedQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -35,7 +35,7 @@ const ACTIVITY_TYPES = [
   ActivityEventType.DiscussionComment,
 ];
 
-const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) => {
+const MyLatestContributions = ({ limit, spaceMemberships, makeShowMoreButtonVisible }: LatestContributionsProps) => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<{
     space: string;
@@ -53,7 +53,7 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
       filter: {
         myActivity: true,
         types: ACTIVITY_TYPES,
-        limit: MY_LATEST_CONTRIBUTIONS_COUNT,
+        limit: limit ?? MY_LATEST_CONTRIBUTIONS_COUNT,
         spaceIds: filter.space === SPACE_OPTION_ALL ? undefined : [filter.space],
       },
     },
@@ -89,6 +89,10 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
 
     return spaces;
   }, [spaceMemberships, t]);
+
+  useEffect(() => {
+    typeof activities?.length === 'number' && makeShowMoreButtonVisible?.(activities?.length > 10);
+  }, [activities, makeShowMoreButtonVisible]);
 
   const hasActivity = activities && activities.length > 0;
   const isAllSpcesSelected = filter.space === SPACE_OPTION_ALL;

@@ -11,4 +11,6 @@ export interface LatestContributionsProps {
         };
       })[]
     | undefined;
+  limit?: number;
+  makeShowMoreButtonVisible?: (isVisible: boolean) => void;
 }

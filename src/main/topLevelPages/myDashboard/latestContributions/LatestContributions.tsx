@@ -13,7 +13,7 @@ import {
   LatestContributionsQueryVariables,
 } from '@/core/apollo/generated/graphql-schema';
 import { Box, SelectChangeEvent, Skeleton, Theme, useMediaQuery, useTheme } from '@mui/material';
-import React, { forwardRef, useMemo, useState } from 'react';
+import React, { forwardRef, useMemo, useState, useEffect } from 'react';
 import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
 import { SelectOption } from '@mui/base';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
@@ -42,7 +42,7 @@ const Loader = forwardRef((props, ref) => {
   );
 });
 
-const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => {
+const LatestContributions = ({ limit, spaceMemberships, makeShowMoreButtonVisible }: LatestContributionsProps) => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 
@@ -87,7 +87,7 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
   >({
     useQuery: useLatestContributionsQuery,
     getPageInfo: data => data.activityFeed.pageInfo,
-    pageSize: LATEST_CONTRIBUTIONS_PAGE_SIZE,
+    pageSize: limit ?? LATEST_CONTRIBUTIONS_PAGE_SIZE,
     variables: {
       filter: {
         spaceIds: filter.space === SPACE_OPTION_ALL ? undefined : [filter.space],
@@ -130,6 +130,11 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
     </Box>
   );
 
+  const activityFeed = data?.activityFeed?.activityFeed;
+  useEffect(() => {
+    typeof activityFeed?.length === 'number' && makeShowMoreButtonVisible?.(activityFeed?.length > 10);
+  }, [activityFeed, makeShowMoreButtonVisible]);
+
   return (
     <Gutters disablePadding disableGap sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
       {renderFilters()}
@@ -138,15 +143,25 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
       ) : (
         <ScrollerWithGradient>
           <Box padding={gutters(0.5)}>
-            {data?.activityFeed.activityFeed.map(activity => {
-              return (
-                <ActivityViewChooser
-                  key={activity.id}
-                  activity={activity as ActivityLogResultType}
-                  avatarUrl={activity.triggeredBy.profile.avatar?.uri}
-                />
-              );
-            })}
+            {limit && typeof activityFeed?.length === 'number' && activityFeed.length > limit
+              ? activityFeed?.slice(0, limit).map(activity => {
+                  return (
+                    <ActivityViewChooser
+                      key={activity.id}
+                      activity={activity as ActivityLogResultType}
+                      avatarUrl={activity.triggeredBy.profile.avatar?.uri}
+                    />
+                  );
+                })
+              : activityFeed?.map(activity => {
+                  return (
+                    <ActivityViewChooser
+                      key={activity.id}
+                      activity={activity as ActivityLogResultType}
+                      avatarUrl={activity.triggeredBy.profile.avatar?.uri}
+                    />
+                  );
+                })}
             {loader}
           </Box>
         </ScrollerWithGradient>
