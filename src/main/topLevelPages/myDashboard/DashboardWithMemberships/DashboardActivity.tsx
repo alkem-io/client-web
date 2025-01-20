@@ -32,7 +32,7 @@ const DashboardActivity = () => {
       <PageContentColumn key="space-activity" columns={blockColumns}>
         <PageContentBlock>
           <PageContentBlockHeader title={t('pages.home.sections.latestContributions.title')} />
-          <LatestContributions limit={10} isBlockElement spaceMemberships={flatSpacesWithMemberships} />
+          <LatestContributions limit={10} spaceMemberships={flatSpacesWithMemberships} />
         </PageContentBlock>
       </PageContentColumn>
     ),
@@ -44,7 +44,7 @@ const DashboardActivity = () => {
       <PageContentColumn key="my-activity" columns={blockColumns}>
         <PageContentBlock>
           <PageContentBlockHeader title={t('pages.home.sections.myLatestContributions.title')} />
-          <MyLatestContributions limit={10} isBlockElement spaceMemberships={flatSpacesWithMemberships} />
+          <MyLatestContributions limit={10} spaceMemberships={flatSpacesWithMemberships} />
         </PageContentBlock>
       </PageContentColumn>
     ),

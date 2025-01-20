@@ -45,7 +45,7 @@ const Loader = forwardRef((props, ref) => {
   );
 });
 
-const LatestContributions = ({ limit, isBlockElement, spaceMemberships }: LatestContributionsProps) => {
+const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsProps) => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 
@@ -138,7 +138,7 @@ const LatestContributions = ({ limit, isBlockElement, spaceMemberships }: Latest
   const activityFeed = data?.activityFeed?.activityFeed;
 
   const renderActivities = () =>
-    (limit && isBlockElement ? (activityFeed ?? []).slice(0, limit) : activityFeed ?? [])?.map(activity => (
+    (typeof limit === 'number' ? (activityFeed ?? []).slice(0, limit) : activityFeed ?? [])?.map(activity => (
       <ActivityViewChooser
         key={activity.id}
         activity={activity as ActivityLogResultType}
@@ -158,13 +158,13 @@ const LatestContributions = ({ limit, isBlockElement, spaceMemberships }: Latest
             <Box padding={gutters(0.5)}>
               {renderActivities()}
 
-              {isOpen && !isBlockElement && loader}
+              {isOpen && typeof limit !== 'number' && loader}
             </Box>
           </ScrollerWithGradient>
         )}
       </Gutters>
 
-      {limit && isBlockElement && activityFeed && activityFeed?.length > limit && (
+      {typeof limit === 'number' && activityFeed && activityFeed?.length > limit && (
         <Caption
           sx={{ marginLeft: 'auto', cursor: 'pointer' }}
           onClick={() => setIsOpen(DashboardDialog.MySpaceActivity)}

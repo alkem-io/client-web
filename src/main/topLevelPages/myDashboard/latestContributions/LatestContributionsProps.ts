@@ -12,5 +12,4 @@ export interface LatestContributionsProps {
       })[]
     | undefined;
   limit?: number;
-  isBlockElement?: boolean;
 }

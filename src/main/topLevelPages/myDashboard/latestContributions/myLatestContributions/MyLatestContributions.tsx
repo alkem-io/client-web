@@ -37,7 +37,7 @@ const ACTIVITY_TYPES = [
   ActivityEventType.DiscussionComment,
 ];
 
-const MyLatestContributions = ({ limit, isBlockElement, spaceMemberships }: LatestContributionsProps) => {
+const MyLatestContributions = ({ limit, spaceMemberships }: LatestContributionsProps) => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<{
     space: string;
@@ -96,7 +96,7 @@ const MyLatestContributions = ({ limit, isBlockElement, spaceMemberships }: Late
 
   const renderActivities = () => {
     if (hasActivity) {
-      return (limit && isBlockElement ? (activities ?? [])?.slice(0, limit) : activities ?? []).map(activity => (
+      return (typeof limit === 'number' ? (activities ?? [])?.slice(0, limit) : activities ?? []).map(activity => (
         <ActivityViewChooser
           key={activity.id}
           activity={activity as ActivityLogResultType}
@@ -137,7 +137,7 @@ const MyLatestContributions = ({ limit, isBlockElement, spaceMemberships }: Late
         )}
       </Gutters>
 
-      {limit && isBlockElement && activities && activities?.length > limit && (
+      {typeof limit === 'number' && activities && activities?.length > limit && (
         <Caption sx={{ marginLeft: 'auto', cursor: 'pointer' }} onClick={() => setIsOpen(DashboardDialog.MyActivity)}>
           {t('common.show-more')}
         </Caption>
