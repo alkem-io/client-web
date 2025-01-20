@@ -86,7 +86,7 @@ const WhiteboardCollectionCalloutContainer = ({ callout, children }: WhiteboardC
         input: {
           calloutID: calloutId,
           whiteboard: {
-            profileData: {
+            profile: {
               displayName: t('pages.whiteboard.defaultWhiteboardDisplayName'),
             },
             content: callout.contributionDefaults?.whiteboardContent ?? JSON.stringify(EmptyWhiteboard),

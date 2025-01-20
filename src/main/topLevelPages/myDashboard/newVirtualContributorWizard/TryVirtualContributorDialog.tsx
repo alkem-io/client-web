@@ -3,9 +3,8 @@ import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Trans, useTranslation } from 'react-i18next';
 import Gutters from '@/core/ui/grid/Gutters';
-import { Box, Button, DialogContent, Paper, Tooltip } from '@mui/material';
+import { Box, Button, DialogContent, Paper } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { gutters } from '@/core/ui/grid/utils';
 import {
   CalloutCreationParams,
@@ -195,16 +194,6 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
                     b: <strong />,
                     br: <br />,
                     i: <em />,
-                    icon: <InfoOutlinedIcon fontSize="small" color="primary" style={{ verticalAlign: 'bottom' }} />,
-                    tooltip: (
-                      <Tooltip
-                        title={t('createVirtualContributorWizard.trySection.subTitleInfo')}
-                        arrow
-                        placement="top"
-                      >
-                        <></>
-                      </Tooltip>
-                    ),
                   }}
                 />
               </Caption>
@@ -228,17 +217,6 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
                 />
               </Paper>
             )}
-            <Box display="flex" gap={gutters(0.5)}>
-              <InfoOutlinedIcon color="primary" fontSize="small" />
-              <Caption alignSelf="center">
-                <Trans
-                  i18nKey="createVirtualContributorWizard.trySection.lastInfoBox"
-                  components={{
-                    b: <strong />,
-                  }}
-                />
-              </Caption>
-            </Box>
             <Actions justifyContent="end">
               <Button variant="contained" onClick={handleClose}>
                 {t('createVirtualContributorWizard.trySection.continueButton')}

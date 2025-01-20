@@ -1269,23 +1269,23 @@ export type CreateLocationDataFieldPolicy = {
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateProfileDataKeySpecifier = (
-  | 'avatarURL'
   | 'description'
   | 'displayName'
   | 'location'
   | 'referencesData'
   | 'tagline'
   | 'tagsets'
+  | 'visuals'
   | CreateProfileDataKeySpecifier
 )[];
 export type CreateProfileDataFieldPolicy = {
-  avatarURL?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   location?: FieldPolicy<any> | FieldReadFunction<any>;
   referencesData?: FieldPolicy<any> | FieldReadFunction<any>;
   tagline?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsets?: FieldPolicy<any> | FieldReadFunction<any>;
+  visuals?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateReferenceDataKeySpecifier = ('description' | 'name' | 'uri' | CreateReferenceDataKeySpecifier)[];
 export type CreateReferenceDataFieldPolicy = {
@@ -1299,9 +1299,16 @@ export type CreateTagsetDataFieldPolicy = {
   tags?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CreateWhiteboardDataKeySpecifier = ('content' | CreateWhiteboardDataKeySpecifier)[];
+export type CreateVisualOnProfileDataKeySpecifier = ('name' | 'uri' | CreateVisualOnProfileDataKeySpecifier)[];
+export type CreateVisualOnProfileDataFieldPolicy = {
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  uri?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateWhiteboardDataKeySpecifier = ('content' | 'nameID' | 'profile' | CreateWhiteboardDataKeySpecifier)[];
 export type CreateWhiteboardDataFieldPolicy = {
   content?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CredentialKeySpecifier = (
   | 'createdDate'
@@ -4420,6 +4427,13 @@ export type StrictTypedTypePolicies = {
   CreateTagsetData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateTagsetDataKeySpecifier | (() => undefined | CreateTagsetDataKeySpecifier);
     fields?: CreateTagsetDataFieldPolicy;
+  };
+  CreateVisualOnProfileData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateVisualOnProfileDataKeySpecifier
+      | (() => undefined | CreateVisualOnProfileDataKeySpecifier);
+    fields?: CreateVisualOnProfileDataFieldPolicy;
   };
   CreateWhiteboardData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateWhiteboardDataKeySpecifier | (() => undefined | CreateWhiteboardDataKeySpecifier);
