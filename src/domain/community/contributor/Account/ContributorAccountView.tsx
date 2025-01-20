@@ -33,6 +33,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import CreationButton from '@/core/ui/button/CreationButton';
 import TextWithTooltip from '@/core/ui/typography/TextWithTooltip';
+import { Text } from '@/core/ui/typography/components';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
 import InnovationPackCardHorizontal, {
@@ -412,7 +413,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
           <TextWithTooltip
             text={`${hostedSpaceUsage}/${hostedSpaceLimit}`}
             tooltip={t('pages.admin.generic.sections.account.usageNotice', {
-              type: t('pages.admin.generic.sections.account.virtualContributors'),
+              type: t('pages.admin.generic.sections.account.hostedSpaces'),
               usage: hostedSpaceUsage,
               limit: hostedSpaceLimit,
             })}
@@ -534,14 +535,18 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
       <PageContentBlock halfWidth>
         <Gutters disablePadding disableGap className={styles.guttersRow}>
           <BlockTitle>{t('pages.admin.generic.sections.account.customHomepages')}</BlockTitle>
-          <TextWithTooltip
-            text={`${innovationHubUsage}/${innovationHubLimit}`}
-            tooltip={t('pages.admin.generic.sections.account.usageNotice', {
-              type: t('pages.admin.generic.sections.account.customHomepages'),
-              usage: innovationHubUsage,
-              limit: innovationHubLimit,
-            })}
-          />
+          {canCreateInnovationHub || innovationHubUsage > 0 ? (
+            <TextWithTooltip
+              text={`${innovationHubUsage}/${innovationHubLimit}`}
+              tooltip={t('pages.admin.generic.sections.account.usageNotice', {
+                type: t('pages.admin.generic.sections.account.customHomepages'),
+                usage: innovationHubUsage,
+                limit: innovationHubLimit,
+              })}
+            />
+          ) : (
+            <Text>{t('pages.admin.generic.sections.account.notAvailable')}</Text>
+          )}
         </Gutters>
         <Gutters disablePadding className={styles.gutters}>
           {loading && <InnovationHubCardHorizontalSkeleton />}
