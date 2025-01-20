@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 import RouterLink from '@/core/ui/link/RouterLink';
+import { buildVCProfileUrl } from '@/main/routing/urlBuilders';
 
 interface TryVcInfoProps {
   vcNameId: string;
@@ -22,7 +23,7 @@ const TryVcInfo = ({ vcNameId, vcName, onClose }: TryVcInfoProps) => {
         </Caption>
       </DialogContent>
       <DialogActions>
-        <Button component={RouterLink} to={`/vc/${vcNameId}`}>
+        <Button component={RouterLink} to={`${buildVCProfileUrl(vcNameId)}`}>
           {t('createVirtualContributorWizard.tryInfoSection.goToProfile', { vcName })}
         </Button>
       </DialogActions>
