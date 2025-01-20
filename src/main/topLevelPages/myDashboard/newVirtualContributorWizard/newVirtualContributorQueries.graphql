@@ -53,6 +53,10 @@ fragment spaceProfileCommunityDetails on Space {
     id
     roleSet {
       id
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
 }
