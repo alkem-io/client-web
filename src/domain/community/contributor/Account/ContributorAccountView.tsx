@@ -182,9 +182,9 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
 
   // Temporarily we're ordering the priority in this way: Display usage/limit from FREE / PLUS / PREMIUM
   const { limit: hostedSpaceLimit = 0, usage: hostedSpaceUsage = 0 } =
-    myAccountEntitlementDetails.find(entitlement => entitlement.type === LicenseEntitlementType.AccountSpaceFree) ||
-    myAccountEntitlementDetails.find(entitlement => entitlement.type === LicenseEntitlementType.AccountSpacePlus) ||
-    myAccountEntitlementDetails.find(entitlement => entitlement.type === LicenseEntitlementType.AccountSpacePremium) ||
+    myAccountEntitlementDetails.find(entitlement => entitlement.type === LicenseEntitlementType.AccountSpaceFree) ??
+    myAccountEntitlementDetails.find(entitlement => entitlement.type === LicenseEntitlementType.AccountSpacePlus) ??
+    myAccountEntitlementDetails.find(entitlement => entitlement.type === LicenseEntitlementType.AccountSpacePremium) ??
     {};
 
   const { limit: vcLimit = 0, usage: vcUsage = 0 } =
