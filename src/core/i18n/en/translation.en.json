@@ -3156,8 +3156,7 @@
       "externalAI": "External AI"
     },
     "loadingInfo": {
-      "vcSpaceCreation": "A Space for interaction with your Virtual Contributor is being built. This process may take a few moments to complete.",
-      "vcCreation": "Your Virtual Contributor is being created. This process may take a few moments to complete."
+      "vcSpaceCreation": "A Space for interaction with your Virtual Contributor is being built. This process may take a few moments to complete."
     },
     "cancel": {
       "title": "Discard Virtual Contributor",
@@ -3220,13 +3219,16 @@
       "success": "Message sent successfully!"
     },
     "trySection": {
-      "title": "🎉 Try it out!",
-      "subTitle": "Your Virtual Contributor is successfully created and we added it to your Personal Space <tooltip><icon /></tooltip>.<br/>You can interact with it by typing <b>@{{vcName}}</b> in a comment on any post in your Space. Give it a try in the preview below!",
-      "subTitleInfo": "When you create your first VC, we automatically generate a Space for you. This Space functions like any other Space on Alkemio, and you can customize the settings according to your preferences.",
+      "title": "👍That’s it!",
+      "subTitle": "To start interacting, simply type @{{vcName}} in a comment. Give it a try in the preview below.",
       "postTitle": "Example post",
-      "postDescription": "At Alkemio, we utilize Posts to facilitate collaborative interactions with AI. Unlike private chats, other members within a Space can learn from and contribute to these interactions.\n\nSimilar to mentioning a human contributor, you can use the \"@\" symbol followed by the Virtual Contributor's name.",
-      "lastInfoBox": "To <b>change the knowledge</b> of this Virtual Contributor, visit its Knowledge (Sub)Space.\nDon't forget to press the Update button on your Virtual Contributor's profile settings when you're done!",
+      "postDescription": "At Alkemio, we utilize Posts to facilitate collaborative interactions with AI. Unlike private chats, other members within a Space can learn from and contribute to these interactions. Similar to mentioning a human contributor, you can use the ‘@’ symbol followed by the Virtual Contributor’s name.",
       "continueButton": "Visit Space"
+    },
+    "tryInfoSection": {
+      "title": "👍That’s it!",
+      "description": "Your Virtual Contributor is ready! To start interacting, invite the Virtual Contributor to a space and once it’s a member, simply type @{{vcName}} in a comment.\n\nEnjoy!",
+      "goToProfile": "Visit {{vcName}}'s Profile"
     },
     "existingSpace": {
       "title": "Choose a (Sub)Space",
@@ -3234,9 +3236,19 @@
       "label": "(Sub)Space",
       "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor, please go back and follow the Written Knowledge flow."
     },
-    "insufficientPrivileges": {
-      "title": "Insufficient Privileges",
-      "description": "You don't have the necessary privileges to complete the creation. Please contact the owners of this account."
+    "chooseCommunity": {
+      "title": "Hello, {{vcName}}!",
+      "description": "Your Virtual Contributor is ready! To start interacting, your Virtual Contributor should be added to a Space. Select one below, or continue without. In that case you will have to add the VC manually through the Community tab of a Space.",
+      "label": "Space",
+      "selectSpacesPlaceholder": "Select a Space",
+      "noSpacesPlaceholder": "No Spaces available",
+      "cancelAddToCommunity": "Proceed without membership",
+      "addToCommunity": "Add and go to Space",
+      "createAndAddToCommunity": "Create, add, and go to Space",
+      "confirm": {
+        "title": "Continue without Space membership",
+        "description": "A Virtual Contributor can only interact within a Space. Are you sure you want to proceed without adding them to a Space? You can still invite the Virtual Contributor later through the Space’s Community tab."
+      }
     }
   }
 }

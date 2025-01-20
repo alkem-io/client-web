@@ -18,7 +18,6 @@ export interface BoKCalloutsFormValues {
 export type AddContentProps = {
   onClose: () => void;
   onCreateVC: (values: BoKCalloutsFormValues) => Promise<void>;
-  spaceId: string;
 };
 
 export const getPostCalloutRequestData = (title: string, description: string) => ({
