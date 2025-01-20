@@ -1962,6 +1962,7 @@
             "usageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your account.",
             "limitNotice": "Contact the Alkemio team to increase the limits on your account",
             "notAvailable": "Not available",
+            "notAvailableNotice": "Contact the Alkemio team to enable this feature on your account",
             "noTemplates": "This Template Pack doesn't have any template yet",
             "customHomepages": "Custom Homepages",
             "hostTitle": "Host",
