@@ -24,7 +24,7 @@ interface AuthorData extends Identifiable {
 }
 
 export const buildAuthorFromUser = (user: AuthorData): Author => {
-  const avatarURL = user.profile.avatar ? user.profile.avatar?.uri : user.profile.visual?.uri;
+  const avatarUrl = user.profile.avatar ? user.profile.avatar?.uri : user.profile.visual?.uri;
   const tags = user?.profile?.tagsets?.flatMap(tagset => tagset.tags);
   const firstName = user.firstName ?? user.profile.displayName.split(' ')[0];
   const lastName = user.lastName ?? user.profile.displayName.split(' ')[1];
@@ -33,7 +33,7 @@ export const buildAuthorFromUser = (user: AuthorData): Author => {
     firstName,
     lastName,
     displayName: user.profile.displayName,
-    avatarUrl: avatarURL,
+    avatarUrl,
     url: user.profile.url,
     tags: tags ?? [],
     city: user.profile.location?.city,

@@ -807,7 +807,6 @@ export enum AuthenticationType {
 
 export type Authorization = {
   __typename?: 'Authorization';
-  anonymousReadAccess?: Maybe<Scalars['Boolean']>;
   /** The date at which the entity was created. */
   createdDate?: Maybe<Scalars['DateTime']>;
   /** The set of credential rules that are contained by this Authorization Policy. */
@@ -829,6 +828,7 @@ export type Authorization = {
 export enum AuthorizationCredential {
   BetaTester = 'BETA_TESTER',
   GlobalAdmin = 'GLOBAL_ADMIN',
+  GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
@@ -964,6 +964,7 @@ export enum AuthorizationPrivilege {
   MovePost = 'MOVE_POST',
   PlatformAdmin = 'PLATFORM_ADMIN',
   Read = 'READ',
+  ReadAbout = 'READ_ABOUT',
   ReadUsers = 'READ_USERS',
   ReadUserPii = 'READ_USER_PII',
   ReadUserSettings = 'READ_USER_SETTINGS',
@@ -1990,13 +1991,10 @@ export type CreatePostInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
-  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateProfileData = {
   __typename?: 'CreateProfileData';
-  /** The URL of the avatar of the user */
-  avatarURL?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['Markdown']>;
   /** The display name for the entity. */
   displayName: Scalars['String'];
@@ -2005,11 +2003,11 @@ export type CreateProfileData = {
   /** A memorable short description for this entity. */
   tagline?: Maybe<Scalars['String']>;
   tagsets?: Maybe<Array<CreateTagsetData>>;
+  /** The visuals URLs */
+  visuals?: Maybe<Array<CreateVisualOnProfileData>>;
 };
 
 export type CreateProfileInput = {
-  /** The URL of the avatar of the user */
-  avatarURL?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['Markdown']>;
   /** The display name for the entity. */
   displayName: Scalars['String'];
@@ -2018,6 +2016,8 @@ export type CreateProfileInput = {
   /** A memorable short description for this entity. */
   tagline?: InputMaybe<Scalars['String']>;
   tagsets?: InputMaybe<Array<CreateTagsetInput>>;
+  /** The visuals URLs */
+  visuals?: InputMaybe<Array<CreateVisualOnProfileInput>>;
 };
 
 export type CreateReferenceData = {
@@ -2093,7 +2093,6 @@ export type CreateTemplateFromCollaborationOnTemplatesSetInput = {
   profileData: CreateProfileInput;
   tags?: InputMaybe<Array<Scalars['String']>>;
   templatesSetID: Scalars['UUID'];
-  visualUri?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateTemplateOnTemplatesSetInput = {
@@ -2112,7 +2111,6 @@ export type CreateTemplateOnTemplatesSetInput = {
   templatesSetID: Scalars['UUID'];
   /** The type of the Template to be created. */
   type: TemplateType;
-  visualUri?: InputMaybe<Scalars['String']>;
   /** The Whiteboard to associate with this template. */
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
@@ -2145,16 +2143,34 @@ export type CreateVirtualContributorOnAccountInput = {
   profileData: CreateProfileInput;
 };
 
+export type CreateVisualOnProfileData = {
+  __typename?: 'CreateVisualOnProfileData';
+  /** The type of visual. */
+  name: VisualType;
+  /** The URI of the image. Needs to be a url inside Alkemio already uploaded to a StorageBucket. It will be then copied to the Profile holding this Visual. */
+  uri: Scalars['String'];
+};
+
+export type CreateVisualOnProfileInput = {
+  /** The type of visual. */
+  name: VisualType;
+  /** The URI of the image. Needs to be a url inside Alkemio already uploaded to a StorageBucket. It will be then copied to the Profile holding this Visual. */
+  uri: Scalars['String'];
+};
+
 export type CreateWhiteboardData = {
   __typename?: 'CreateWhiteboardData';
   content?: Maybe<Scalars['WhiteboardContent']>;
+  /** A readable identifier, unique within the containing scope. */
+  nameID?: Maybe<Scalars['NameID']>;
+  profile?: Maybe<CreateProfileData>;
 };
 
 export type CreateWhiteboardInput = {
   content?: InputMaybe<Scalars['WhiteboardContent']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
-  profileData: CreateProfileInput;
+  profile?: InputMaybe<CreateProfileInput>;
 };
 
 export type Credential = {
@@ -2201,6 +2217,7 @@ export enum CredentialType {
   AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
   BetaTester = 'BETA_TESTER',
   GlobalAdmin = 'GLOBAL_ADMIN',
+  GlobalAnonymous = 'GLOBAL_ANONYMOUS',
   GlobalCommunityRead = 'GLOBAL_COMMUNITY_READ',
   GlobalLicenseManager = 'GLOBAL_LICENSE_MANAGER',
   GlobalRegistered = 'GLOBAL_REGISTERED',
@@ -3707,7 +3724,7 @@ export type Mutation = {
   /** Creates a new Reference on the specified Profile. */
   createReferenceOnProfile: Reference;
   /** Creates a new Level Zero Space within the specified Account. */
-  createSpace: Account;
+  createSpace: Space;
   /** Creates a new Subspace within the specified Space. */
   createSubspace: Space;
   /** Creates a new Tagset on the specified Profile */
@@ -22287,7 +22304,7 @@ export type CreateSpaceMutationVariables = Exact<{
   spaceData: CreateSpaceOnAccountInput;
 }>;
 
-export type CreateSpaceMutation = { __typename?: 'Mutation'; createSpace: { __typename?: 'Account'; id: string } };
+export type CreateSpaceMutation = { __typename?: 'Mutation'; createSpace: { __typename?: 'Space'; id: string } };
 
 export type PlansTableQueryVariables = Exact<{ [key: string]: never }>;
 

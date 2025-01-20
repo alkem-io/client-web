@@ -9,7 +9,7 @@ import { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/Whiteb
 
 export interface WhiteboardFieldSubmittedValues {
   content: string;
-  profileData: CreateProfileInput;
+  profile: CreateProfileInput;
 }
 
 export interface WhiteboardFieldSubmittedValuesWithPreviewImages extends WhiteboardFieldSubmittedValues {
@@ -23,7 +23,7 @@ export const CalloutWhiteboardField = ({ name }: { name: string }) => {
 
   const handleChangeContent = (newContent: string, previewImages?: WhiteboardPreviewImage[]) => {
     helpers.setValue({
-      profileData: {
+      profile: {
         displayName: t('common.whiteboard'),
       },
       content: newContent,
