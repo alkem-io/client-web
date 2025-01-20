@@ -11,4 +11,5 @@ export interface LatestContributionsProps {
         };
       })[]
     | undefined;
+  limit?: number;
 }
