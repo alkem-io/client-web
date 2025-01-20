@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import RecentJourneysList from '../recentSpaces/RecentJourneysList';
 import LatestContributions from '../latestContributions/LatestContributions';
 import MyLatestContributions from '../latestContributions/myLatestContributions/MyLatestContributions';
@@ -40,41 +40,63 @@ const DashboardActivity = () => {
     </Caption>
   );
 
-  const renderSpaceActivityBlock = () => (
-    <PageContentColumn key="space-activity" columns={blockColumns}>
-      <PageContentBlock>
-        <PageContentBlockHeader title={t('pages.home.sections.latestContributions.title')} />
-        <LatestContributions
-          limit={10}
-          spaceMemberships={flatSpacesWithMemberships}
-          makeShowMoreButtonVisible={(isVisible: boolean) => setShowLatestActivitiesShowMore(isVisible)}
-        />
+  const renderSpaceActivityBlock = useCallback(
+    () => (
+      <PageContentColumn key="space-activity" columns={blockColumns}>
+        <PageContentBlock>
+          <PageContentBlockHeader title={t('pages.home.sections.latestContributions.title')} />
+          <LatestContributions
+            limit={10}
+            spaceMemberships={flatSpacesWithMemberships}
+            makeShowMoreButtonVisible={(isVisible: boolean) => setShowLatestActivitiesShowMore(isVisible)}
+          />
 
-        {showLatestActivitiesShowMore && renderShowMoreButton(DashboardDialog.MySpaceActivity)}
-      </PageContentBlock>
-    </PageContentColumn>
+          {showLatestActivitiesShowMore && renderShowMoreButton(DashboardDialog.MySpaceActivity)}
+        </PageContentBlock>
+      </PageContentColumn>
+    ),
+    [
+      blockColumns,
+      flatSpacesWithMemberships,
+      showLatestActivitiesShowMore,
+      t,
+      renderShowMoreButton,
+      setShowLatestActivitiesShowMore,
+    ]
   );
 
-  const renderMyActivityBlock = () => (
-    <PageContentColumn key="my-activity" columns={blockColumns}>
-      <PageContentBlock>
-        <PageContentBlockHeader title={t('pages.home.sections.myLatestContributions.title')} />
-        <MyLatestContributions
-          limit={10}
-          spaceMemberships={flatSpacesWithMemberships}
-          makeShowMoreButtonVisible={(isVisible: boolean) => setShowMyLatestActivitiesShowMore(isVisible)}
-        />
+  const renderMyActivityBlock = useCallback(
+    () => (
+      <PageContentColumn key="my-activity" columns={blockColumns}>
+        <PageContentBlock>
+          <PageContentBlockHeader title={t('pages.home.sections.myLatestContributions.title')} />
+          <MyLatestContributions
+            limit={10}
+            spaceMemberships={flatSpacesWithMemberships}
+            makeShowMoreButtonVisible={(isVisible: boolean) => setShowMyLatestActivitiesShowMore(isVisible)}
+          />
 
-        {showMyLatestActivitiesShowMore && renderShowMoreButton(DashboardDialog.MyActivity)}
-      </PageContentBlock>
-    </PageContentColumn>
+          {showMyLatestActivitiesShowMore && renderShowMoreButton(DashboardDialog.MyActivity)}
+        </PageContentBlock>
+      </PageContentColumn>
+    ),
+    [
+      blockColumns,
+      flatSpacesWithMemberships,
+      showMyLatestActivitiesShowMore,
+      t,
+      renderShowMoreButton,
+      setShowMyLatestActivitiesShowMore,
+    ]
   );
 
   return (
     <>
       <RecentJourneysList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />
-      {!isMobile && [renderSpaceActivityBlock(), renderMyActivityBlock()]}
-      {isMobile && [renderMyActivityBlock(), renderSpaceActivityBlock()]}
+      {isMobile
+        ? [renderMyActivityBlock(), renderSpaceActivityBlock()]
+        : [renderSpaceActivityBlock(), renderMyActivityBlock()]}
+
       <MyMembershipsDialog
         Icon={SpaceIcon}
         loading={myMembershipsLoading}

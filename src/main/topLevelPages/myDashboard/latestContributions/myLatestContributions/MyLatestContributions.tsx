@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import ScrollerWithGradient from '@/core/ui/overflow/ScrollerWithGradient';
 import { useLatestContributionsGroupedQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -53,7 +53,7 @@ const MyLatestContributions = ({ limit, spaceMemberships, makeShowMoreButtonVisi
       filter: {
         myActivity: true,
         types: ACTIVITY_TYPES,
-        limit: limit ?? MY_LATEST_CONTRIBUTIONS_COUNT,
+        limit: MY_LATEST_CONTRIBUTIONS_COUNT,
         spaceIds: filter.space === SPACE_OPTION_ALL ? undefined : [filter.space],
       },
     },
@@ -90,12 +90,36 @@ const MyLatestContributions = ({ limit, spaceMemberships, makeShowMoreButtonVisi
     return spaces;
   }, [spaceMemberships, t]);
 
+  const renderActivities = useCallback(() => {
+    if (hasActivity) {
+      if (limit) {
+        return (activities ?? [])
+          .slice(0, limit)
+          .map(activity => (
+            <ActivityViewChooser
+              key={activity.id}
+              activity={activity as ActivityLogResultType}
+              avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
+            />
+          ));
+      }
+
+      return (activities ?? []).map(activity => (
+        <ActivityViewChooser
+          key={activity.id}
+          activity={activity as ActivityLogResultType}
+          avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
+        />
+      ));
+    }
+  }, [limit, activities]);
+
   useEffect(() => {
-    typeof activities?.length === 'number' && makeShowMoreButtonVisible?.(activities?.length > 10);
-  }, [activities, makeShowMoreButtonVisible]);
+    limit && typeof activities?.length === 'number' && makeShowMoreButtonVisible?.(activities?.length > limit);
+  }, [limit, activities, makeShowMoreButtonVisible]);
 
   const hasActivity = activities && activities.length > 0;
-  const isAllSpcesSelected = filter.space === SPACE_OPTION_ALL;
+  const isAllSpacesSelected = filter.space === SPACE_OPTION_ALL;
 
   return (
     <Gutters disableGap disablePadding>
@@ -112,17 +136,9 @@ const MyLatestContributions = ({ limit, spaceMemberships, makeShowMoreButtonVisi
       ) : (
         <ScrollerWithGradient>
           <Box padding={gutters(0.5)}>
-            {hasActivity &&
-              activities.map(activity => {
-                return (
-                  <ActivityViewChooser
-                    key={activity.id}
-                    activity={activity as ActivityLogResultType}
-                    avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
-                  />
-                );
-              })}
-            {!hasActivity && isAllSpcesSelected && (
+            {renderActivities()}
+
+            {!hasActivity && isAllSpacesSelected && (
               <CaptionSmall padding={gutters()}>
                 {t('pages.home.sections.myLatestContributions.noContributions')}
               </CaptionSmall>

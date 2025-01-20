@@ -13,7 +13,7 @@ import {
   LatestContributionsQueryVariables,
 } from '@/core/apollo/generated/graphql-schema';
 import { Box, SelectChangeEvent, Skeleton, Theme, useMediaQuery, useTheme } from '@mui/material';
-import React, { forwardRef, useMemo, useState, useEffect } from 'react';
+import React, { forwardRef, useMemo, useState, useEffect, useCallback } from 'react';
 import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
 import { SelectOption } from '@mui/base';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
@@ -22,6 +22,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';
 import { LatestContributionsProps, ROLE_OPTION_ALL, SPACE_OPTION_ALL } from './LatestContributionsProps';
 import Loading from '@/core/ui/loading/Loading';
+import { useDashboardContext } from '../DashboardContext';
 
 const SELECTABLE_ROLES = [ActivityFeedRoles.Member, ActivityFeedRoles.Admin, ActivityFeedRoles.Lead] as const;
 
@@ -53,6 +54,8 @@ const LatestContributions = ({ limit, spaceMemberships, makeShowMoreButtonVisibl
     space: SPACE_OPTION_ALL,
     role: ROLE_OPTION_ALL,
   });
+
+  const { isOpen } = useDashboardContext();
 
   const handleRoleSelect = (event: SelectChangeEvent<unknown>) =>
     setFilter({
@@ -87,7 +90,7 @@ const LatestContributions = ({ limit, spaceMemberships, makeShowMoreButtonVisibl
   >({
     useQuery: useLatestContributionsQuery,
     getPageInfo: data => data.activityFeed.pageInfo,
-    pageSize: limit ?? LATEST_CONTRIBUTIONS_PAGE_SIZE,
+    pageSize: LATEST_CONTRIBUTIONS_PAGE_SIZE,
     variables: {
       filter: {
         spaceIds: filter.space === SPACE_OPTION_ALL ? undefined : [filter.space],
@@ -131,38 +134,45 @@ const LatestContributions = ({ limit, spaceMemberships, makeShowMoreButtonVisibl
   );
 
   const activityFeed = data?.activityFeed?.activityFeed;
+
+  const renderActivities = useCallback(() => {
+    if (limit && !isOpen) {
+      return (activityFeed ?? [])
+        .slice(0, limit)
+        .map(activity => (
+          <ActivityViewChooser
+            key={activity.id}
+            activity={activity as ActivityLogResultType}
+            avatarUrl={activity.triggeredBy.profile.avatar?.uri}
+          />
+        ));
+    }
+
+    return (activityFeed ?? []).map(activity => (
+      <ActivityViewChooser
+        key={activity.id}
+        activity={activity as ActivityLogResultType}
+        avatarUrl={activity.triggeredBy.profile.avatar?.uri}
+      />
+    ));
+  }, [limit, isOpen, activityFeed]);
+
   useEffect(() => {
-    typeof activityFeed?.length === 'number' && makeShowMoreButtonVisible?.(activityFeed?.length > 10);
-  }, [activityFeed, makeShowMoreButtonVisible]);
+    limit && typeof activityFeed?.length === 'number' && makeShowMoreButtonVisible?.(activityFeed?.length > limit);
+  }, [limit, activityFeed, makeShowMoreButtonVisible]);
 
   return (
     <Gutters disablePadding disableGap sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
       {renderFilters()}
+
       {!data && loading ? (
         <Loading />
       ) : (
         <ScrollerWithGradient>
           <Box padding={gutters(0.5)}>
-            {limit && typeof activityFeed?.length === 'number' && activityFeed.length > limit
-              ? activityFeed?.slice(0, limit).map(activity => {
-                  return (
-                    <ActivityViewChooser
-                      key={activity.id}
-                      activity={activity as ActivityLogResultType}
-                      avatarUrl={activity.triggeredBy.profile.avatar?.uri}
-                    />
-                  );
-                })
-              : activityFeed?.map(activity => {
-                  return (
-                    <ActivityViewChooser
-                      key={activity.id}
-                      activity={activity as ActivityLogResultType}
-                      avatarUrl={activity.triggeredBy.profile.avatar?.uri}
-                    />
-                  );
-                })}
-            {loader}
+            {renderActivities()}
+
+            {isOpen && loader}
           </Box>
         </ScrollerWithGradient>
       )}
