@@ -137,7 +137,7 @@ const CalloutForm = ({
             previewImages: undefined,
           }
         : {
-            profileData: {
+            profile: {
               displayName: t('common.whiteboard'),
             },
             content: EmptyWhiteboardString,
