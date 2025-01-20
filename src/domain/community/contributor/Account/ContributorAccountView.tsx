@@ -21,7 +21,6 @@ import {
   LicenseEntitlement,
   LicenseEntitlementType,
   SpaceLevel,
-  SpaceType,
   SpaceVisibility,
 } from '@/core/apollo/generated/graphql-schema';
 import MenuItemWithIcon from '@/core/ui/menu/MenuItemWithIcon';
@@ -84,19 +83,6 @@ export interface AccountTabResourcesProps {
       id: string;
       availableEntitlements?: LicenseEntitlementType[];
     };
-    subspaces: {
-      id: string;
-      profile: AccountProfile & {
-        cardBanner?: { uri: string };
-      };
-      community: {
-        id: string;
-        roleSet: {
-          id: string;
-        };
-      };
-      type: SpaceType;
-    }[];
   }[];
   virtualContributors: {
     id: string;

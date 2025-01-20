@@ -1,5 +1,5 @@
 import { ComponentType } from 'react';
-import { AuthorizationPrivilege, LicenseEntitlementType, SpaceType } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 
 export interface UserAccountProps {
   id: string;
@@ -12,10 +12,6 @@ export interface UserAccountProps {
       id: string;
       roleSet: {
         id: string;
-        authorization?: {
-          id: string;
-          myPrivileges?: AuthorizationPrivilege[] | undefined;
-        };
       };
     };
     profile: {
@@ -31,24 +27,6 @@ export interface UserAccountProps {
       id: string;
       myPrivileges?: AuthorizationPrivilege[] | undefined;
     };
-    subspaces: Array<{
-      id: string;
-      type: SpaceType;
-      profile: {
-        id: string;
-        displayName: string;
-        url: string;
-      };
-      community: {
-        id: string;
-        roleSet: {
-          id: string;
-          authorization?: {
-            myPrivileges?: AuthorizationPrivilege[] | undefined;
-          };
-        };
-      };
-    }>;
   }>;
 }
 

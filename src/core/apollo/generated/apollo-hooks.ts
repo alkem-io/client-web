@@ -3732,10 +3732,9 @@ export const ShortAccountItemFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const VcSelectableSpaceFragmentDoc = gql`
-  fragment VCSelectableSpace on Space {
+export const SpaceProfileCommunityDetailsFragmentDoc = gql`
+  fragment spaceProfileCommunityDetails on Space {
     id
-    type
     profile {
       id
       displayName
@@ -3745,10 +3744,6 @@ export const VcSelectableSpaceFragmentDoc = gql`
       id
       roleSet {
         id
-        authorization {
-          id
-          myPrivileges
-        }
       }
     }
   }
@@ -5192,19 +5187,6 @@ export const AccountInformationDocument = gql`
               authorization {
                 id
                 myPrivileges
-              }
-            }
-          }
-          subspaces {
-            id
-            profile {
-              ...AccountItemProfile
-            }
-            type
-            community {
-              id
-              roleSet {
-                id
               }
             }
           }
@@ -24385,19 +24367,13 @@ export const NewVirtualContributorMySpacesDocument = gql`
               id
               myPrivileges
             }
-            ...VCSelectableSpace
-            subspaces {
-              ...VCSelectableSpace
-              subspaces {
-                ...VCSelectableSpace
-              }
-            }
+            ...spaceProfileCommunityDetails
           }
         }
       }
     }
   }
-  ${VcSelectableSpaceFragmentDoc}
+  ${SpaceProfileCommunityDetailsFragmentDoc}
 `;
 
 /**
@@ -24453,6 +24429,72 @@ export function refetchNewVirtualContributorMySpacesQuery(
   variables?: SchemaTypes.NewVirtualContributorMySpacesQueryVariables
 ) {
   return { query: NewVirtualContributorMySpacesDocument, variables: variables };
+}
+
+export const AccountSpacesDocument = gql`
+  query AccountSpaces($accountId: UUID!) {
+    lookup {
+      account(ID: $accountId) {
+        id
+        spaces {
+          ...spaceProfileCommunityDetails
+          subspaces {
+            ...spaceProfileCommunityDetails
+            subspaces {
+              ...spaceProfileCommunityDetails
+            }
+          }
+        }
+      }
+    }
+  }
+  ${SpaceProfileCommunityDetailsFragmentDoc}
+`;
+
+/**
+ * __useAccountSpacesQuery__
+ *
+ * To run a query within a React component, call `useAccountSpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountSpacesQuery({
+ *   variables: {
+ *      accountId: // value for 'accountId'
+ *   },
+ * });
+ */
+export function useAccountSpacesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AccountSpacesQuery, SchemaTypes.AccountSpacesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AccountSpacesQuery, SchemaTypes.AccountSpacesQueryVariables>(
+    AccountSpacesDocument,
+    options
+  );
+}
+
+export function useAccountSpacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AccountSpacesQuery, SchemaTypes.AccountSpacesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AccountSpacesQuery, SchemaTypes.AccountSpacesQueryVariables>(
+    AccountSpacesDocument,
+    options
+  );
+}
+
+export type AccountSpacesQueryHookResult = ReturnType<typeof useAccountSpacesQuery>;
+export type AccountSpacesLazyQueryHookResult = ReturnType<typeof useAccountSpacesLazyQuery>;
+export type AccountSpacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.AccountSpacesQuery,
+  SchemaTypes.AccountSpacesQueryVariables
+>;
+export function refetchAccountSpacesQuery(variables: SchemaTypes.AccountSpacesQueryVariables) {
+  return { query: AccountSpacesDocument, variables: variables };
 }
 
 export const RecentSpacesDocument = gql`

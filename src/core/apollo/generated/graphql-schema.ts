@@ -8541,20 +8541,6 @@ export type AccountInformationQuery = {
                   | undefined;
               };
             };
-            subspaces: Array<{
-              __typename?: 'Space';
-              id: string;
-              type: SpaceType;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                description?: string | undefined;
-                url: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              };
-              community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
-            }>;
           }>;
           virtualContributors: Array<{
             __typename?: 'VirtualContributor';
@@ -31589,7 +31575,6 @@ export type NewVirtualContributorMySpacesQuery = {
                 spaces: Array<{
                   __typename?: 'Space';
                   id: string;
-                  type: SpaceType;
                   license: {
                     __typename?: 'License';
                     id: string;
@@ -31602,64 +31587,8 @@ export type NewVirtualContributorMySpacesQuery = {
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                       }
                     | undefined;
-                  subspaces: Array<{
-                    __typename?: 'Space';
-                    id: string;
-                    type: SpaceType;
-                    subspaces: Array<{
-                      __typename?: 'Space';
-                      id: string;
-                      type: SpaceType;
-                      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-                      community: {
-                        __typename?: 'Community';
-                        id: string;
-                        roleSet: {
-                          __typename?: 'RoleSet';
-                          id: string;
-                          authorization?:
-                            | {
-                                __typename?: 'Authorization';
-                                id: string;
-                                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                              }
-                            | undefined;
-                        };
-                      };
-                    }>;
-                    profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-                    community: {
-                      __typename?: 'Community';
-                      id: string;
-                      roleSet: {
-                        __typename?: 'RoleSet';
-                        id: string;
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
-                              id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                            }
-                          | undefined;
-                      };
-                    };
-                  }>;
                   profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-                  community: {
-                    __typename?: 'Community';
-                    id: string;
-                    roleSet: {
-                      __typename?: 'RoleSet';
-                      id: string;
-                      authorization?:
-                        | {
-                            __typename?: 'Authorization';
-                            id: string;
-                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                          }
-                        | undefined;
-                    };
-                  };
+                  community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
                 }>;
               }
             | undefined;
@@ -31668,22 +31597,46 @@ export type NewVirtualContributorMySpacesQuery = {
   };
 };
 
-export type VcSelectableSpaceFragment = {
+export type AccountSpacesQueryVariables = Exact<{
+  accountId: Scalars['UUID'];
+}>;
+
+export type AccountSpacesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    account?:
+      | {
+          __typename?: 'Account';
+          id: string;
+          spaces: Array<{
+            __typename?: 'Space';
+            id: string;
+            subspaces: Array<{
+              __typename?: 'Space';
+              id: string;
+              subspaces: Array<{
+                __typename?: 'Space';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
+              }>;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+              community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
+            }>;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type SpaceProfileCommunityDetailsFragment = {
   __typename?: 'Space';
   id: string;
-  type: SpaceType;
   profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-  community: {
-    __typename?: 'Community';
-    id: string;
-    roleSet: {
-      __typename?: 'RoleSet';
-      id: string;
-      authorization?:
-        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-        | undefined;
-    };
-  };
+  community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
 };
 
 export type RecentSpacesQueryVariables = Exact<{

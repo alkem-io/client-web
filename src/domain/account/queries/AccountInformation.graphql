@@ -49,19 +49,6 @@ query AccountInformation($accountId: UUID!) {
             }
           }
         }
-        subspaces {
-          id
-          profile {
-            ...AccountItemProfile
-          }
-          type
-          community {
-            id
-            roleSet {
-              id
-            }
-          }
-        }
       }
       virtualContributors {
         id
