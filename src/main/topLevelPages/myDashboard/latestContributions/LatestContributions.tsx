@@ -13,7 +13,7 @@ import {
   LatestContributionsQueryVariables,
 } from '@/core/apollo/generated/graphql-schema';
 import { Box, SelectChangeEvent, Skeleton, Theme, useMediaQuery, useTheme } from '@mui/material';
-import React, { forwardRef, useMemo, useState, useEffect, useCallback } from 'react';
+import React, { forwardRef, useMemo, useState } from 'react';
 import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
 import { SelectOption } from '@mui/base';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
@@ -23,6 +23,8 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { LatestContributionsProps, ROLE_OPTION_ALL, SPACE_OPTION_ALL } from './LatestContributionsProps';
 import Loading from '@/core/ui/loading/Loading';
 import { useDashboardContext } from '../DashboardContext';
+import { Caption } from '@/core/ui/typography';
+import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
 
 const SELECTABLE_ROLES = [ActivityFeedRoles.Member, ActivityFeedRoles.Admin, ActivityFeedRoles.Lead] as const;
 
@@ -43,7 +45,7 @@ const Loader = forwardRef((props, ref) => {
   );
 });
 
-const LatestContributions = ({ limit, spaceMemberships, makeShowMoreButtonVisible }: LatestContributionsProps) => {
+const LatestContributions = ({ limit, isBlockElement, spaceMemberships }: LatestContributionsProps) => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 
@@ -55,7 +57,7 @@ const LatestContributions = ({ limit, spaceMemberships, makeShowMoreButtonVisibl
     role: ROLE_OPTION_ALL,
   });
 
-  const { isOpen } = useDashboardContext();
+  const { isOpen, setIsOpen } = useDashboardContext();
 
   const handleRoleSelect = (event: SelectChangeEvent<unknown>) =>
     setFilter({
@@ -135,48 +137,42 @@ const LatestContributions = ({ limit, spaceMemberships, makeShowMoreButtonVisibl
 
   const activityFeed = data?.activityFeed?.activityFeed;
 
-  const renderActivities = useCallback(() => {
-    if (limit && !isOpen) {
-      return (activityFeed ?? [])
-        .slice(0, limit)
-        .map(activity => (
-          <ActivityViewChooser
-            key={activity.id}
-            activity={activity as ActivityLogResultType}
-            avatarUrl={activity.triggeredBy.profile.avatar?.uri}
-          />
-        ));
-    }
-
-    return (activityFeed ?? []).map(activity => (
+  const renderActivities = () =>
+    (limit && isBlockElement ? (activityFeed ?? []).slice(0, limit) : activityFeed ?? [])?.map(activity => (
       <ActivityViewChooser
         key={activity.id}
         activity={activity as ActivityLogResultType}
         avatarUrl={activity.triggeredBy.profile.avatar?.uri}
       />
     ));
-  }, [limit, isOpen, activityFeed]);
-
-  useEffect(() => {
-    limit && typeof activityFeed?.length === 'number' && makeShowMoreButtonVisible?.(activityFeed?.length > limit);
-  }, [limit, activityFeed, makeShowMoreButtonVisible]);
 
   return (
-    <Gutters disablePadding disableGap sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
-      {renderFilters()}
+    <>
+      <Gutters disablePadding disableGap sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
+        {renderFilters()}
 
-      {!data && loading ? (
-        <Loading />
-      ) : (
-        <ScrollerWithGradient>
-          <Box padding={gutters(0.5)}>
-            {renderActivities()}
+        {!data && loading ? (
+          <Loading />
+        ) : (
+          <ScrollerWithGradient>
+            <Box padding={gutters(0.5)}>
+              {renderActivities()}
 
-            {isOpen && loader}
-          </Box>
-        </ScrollerWithGradient>
+              {isOpen && !isBlockElement && loader}
+            </Box>
+          </ScrollerWithGradient>
+        )}
+      </Gutters>
+
+      {limit && isBlockElement && activityFeed && activityFeed?.length > limit && (
+        <Caption
+          sx={{ marginLeft: 'auto', cursor: 'pointer' }}
+          onClick={() => setIsOpen(DashboardDialog.MySpaceActivity)}
+        >
+          {t('common.show-more')}
+        </Caption>
       )}
-    </Gutters>
+    </>
   );
 };
 
