@@ -13,7 +13,7 @@ import {
   ActivityLogResultType,
   ActivityViewChooser,
 } from '@/domain/collaboration/activity/ActivityLog/ActivityComponent';
-import { CaptionSmall } from '@/core/ui/typography/components';
+import { Caption, CaptionSmall } from '@/core/ui/typography/components';
 import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
 import { LatestContributionsProps, SPACE_OPTION_ALL } from '../LatestContributionsProps';
 import { SelectOption } from '@mui/base';
@@ -21,6 +21,8 @@ import SeamlessSelect from '@/core/ui/forms/select/SeamlessSelect';
 import Loading from '@/core/ui/loading/Loading';
 import Gutters from '@/core/ui/grid/Gutters';
 import { gutters } from '@/core/ui/grid/utils';
+import { useDashboardContext } from '../../DashboardContext';
+import { DashboardDialog } from '../../DashboardDialogs/DashboardDialogsProps';
 
 const MY_LATEST_CONTRIBUTIONS_COUNT = 20;
 
@@ -35,13 +37,15 @@ const ACTIVITY_TYPES = [
   ActivityEventType.DiscussionComment,
 ];
 
-const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) => {
+const MyLatestContributions = ({ limit, spaceMemberships }: LatestContributionsProps) => {
   const { t } = useTranslation();
   const [filter, setFilter] = useState<{
     space: string;
   }>({
     space: SPACE_OPTION_ALL,
   });
+
+  const { setIsOpen } = useDashboardContext();
 
   const handleSpaceSelect = (event: SelectChangeEvent<unknown>) =>
     setFilter({
@@ -90,43 +94,55 @@ const MyLatestContributions = ({ spaceMemberships }: LatestContributionsProps) =
     return spaces;
   }, [spaceMemberships, t]);
 
+  const renderActivities = () => {
+    if (hasActivity) {
+      return (typeof limit === 'number' ? (activities ?? [])?.slice(0, limit) : activities ?? []).map(activity => (
+        <ActivityViewChooser
+          key={activity.id}
+          activity={activity as ActivityLogResultType}
+          avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
+        />
+      ));
+    }
+  };
+
   const hasActivity = activities && activities.length > 0;
-  const isAllSpcesSelected = filter.space === SPACE_OPTION_ALL;
+  const isAllSpacesSelected = filter.space === SPACE_OPTION_ALL;
 
   return (
-    <Gutters disableGap disablePadding>
-      <Box display="flex" justifyContent="end" alignItems="center">
-        <SeamlessSelect
-          value={filter.space}
-          options={spaceOptions}
-          label={t('pages.home.sections.latestContributions.filter.space.label')}
-          onChange={handleSpaceSelect}
-        />
-      </Box>
-      {loading ? (
-        <Loading />
-      ) : (
-        <ScrollerWithGradient>
-          <Box padding={gutters(0.5)}>
-            {hasActivity &&
-              activities.map(activity => {
-                return (
-                  <ActivityViewChooser
-                    key={activity.id}
-                    activity={activity as ActivityLogResultType}
-                    avatarUrl={activity.space?.profile.avatar?.uri || defaultVisualUrls[VisualType.Avatar]}
-                  />
-                );
-              })}
-            {!hasActivity && isAllSpcesSelected && (
-              <CaptionSmall padding={gutters()}>
-                {t('pages.home.sections.myLatestContributions.noContributions')}
-              </CaptionSmall>
-            )}
-          </Box>
-        </ScrollerWithGradient>
+    <>
+      <Gutters disableGap disablePadding>
+        <Box display="flex" justifyContent="end" alignItems="center">
+          <SeamlessSelect
+            value={filter.space}
+            options={spaceOptions}
+            label={t('pages.home.sections.latestContributions.filter.space.label')}
+            onChange={handleSpaceSelect}
+          />
+        </Box>
+        {loading ? (
+          <Loading />
+        ) : (
+          <ScrollerWithGradient>
+            <Box padding={gutters(0.5)}>
+              {renderActivities()}
+
+              {!hasActivity && isAllSpacesSelected && (
+                <CaptionSmall padding={gutters()}>
+                  {t('pages.home.sections.myLatestContributions.noContributions')}
+                </CaptionSmall>
+              )}
+            </Box>
+          </ScrollerWithGradient>
+        )}
+      </Gutters>
+
+      {typeof limit === 'number' && activities && activities?.length > limit && (
+        <Caption sx={{ marginLeft: 'auto', cursor: 'pointer' }} onClick={() => setIsOpen(DashboardDialog.MyActivity)}>
+          {t('common.show-more')}
+        </Caption>
       )}
-    </Gutters>
+    </>
   );
 };
 
