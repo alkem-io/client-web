@@ -7,10 +7,11 @@ export interface GuttersProps extends BoxProps {
   row?: boolean;
   disablePadding?: boolean;
   disableGap?: boolean;
+  fullHeight?: boolean;
 }
 
 const Gutters = forwardRef(
-  ({ row = false, disablePadding = false, disableGap = false, ...props }: GuttersProps, ref) => {
+  ({ row = false, disablePadding = false, disableGap = false, fullHeight = false, ...props }: GuttersProps, ref) => {
     return (
       <Box
         ref={ref}
@@ -18,6 +19,12 @@ const Gutters = forwardRef(
         flexDirection={row ? 'row' : 'column'}
         padding={disablePadding ? 0 : gutters()}
         gap={disableGap ? undefined : gutters()}
+        {...(fullHeight
+          ? {
+              height: '100%',
+              justifyContent: 'space-between',
+            }
+          : undefined)}
         {...props}
       />
     );
