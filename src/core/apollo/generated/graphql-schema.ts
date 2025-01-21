@@ -3103,6 +3103,8 @@ export type Location = {
 
 export type LookupByNameQueryResults = {
   __typename?: 'LookupByNameQueryResults';
+  /** Lookup the ID of the specified InnovationHub using a NameID */
+  innovationHub?: Maybe<Scalars['String']>;
   /** Lookup the ID of the specified InnovationPack using a NameID */
   innovationPack?: Maybe<Scalars['String']>;
   /** Lookup the ID of the specified Organization using a NameID */
@@ -3115,6 +3117,10 @@ export type LookupByNameQueryResults = {
   user?: Maybe<Scalars['String']>;
   /** Lookup the ID of the specified Virtual Contributor using a NameID */
   virtualContributor?: Maybe<Scalars['String']>;
+};
+
+export type LookupByNameQueryResultsInnovationHubArgs = {
+  NAMEID: Scalars['NameID'];
 };
 
 export type LookupByNameQueryResultsInnovationPackArgs = {
@@ -32008,6 +32014,15 @@ export type VirtualContributorUrlResolverQueryVariables = Exact<{
 export type VirtualContributorUrlResolverQuery = {
   __typename?: 'Query';
   lookupByName: { __typename?: 'LookupByNameQueryResults'; virtualContributor?: string | undefined };
+};
+
+export type InnovationHubUrlResolverQueryVariables = Exact<{
+  innovationHubNameId: Scalars['NameID'];
+}>;
+
+export type InnovationHubUrlResolverQuery = {
+  __typename?: 'Query';
+  lookupByName: { __typename?: 'LookupByNameQueryResults'; innovationHub?: string | undefined };
 };
 
 export type InnovationPackUrlResolverQueryVariables = Exact<{

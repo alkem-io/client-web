@@ -24741,6 +24741,66 @@ export function refetchVirtualContributorUrlResolverQuery(
   return { query: VirtualContributorUrlResolverDocument, variables: variables };
 }
 
+export const InnovationHubUrlResolverDocument = gql`
+  query InnovationHubUrlResolver($innovationHubNameId: NameID!) {
+    lookupByName {
+      innovationHub(NAMEID: $innovationHubNameId)
+    }
+  }
+`;
+
+/**
+ * __useInnovationHubUrlResolverQuery__
+ *
+ * To run a query within a React component, call `useInnovationHubUrlResolverQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInnovationHubUrlResolverQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInnovationHubUrlResolverQuery({
+ *   variables: {
+ *      innovationHubNameId: // value for 'innovationHubNameId'
+ *   },
+ * });
+ */
+export function useInnovationHubUrlResolverQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.InnovationHubUrlResolverQuery,
+    SchemaTypes.InnovationHubUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.InnovationHubUrlResolverQuery, SchemaTypes.InnovationHubUrlResolverQueryVariables>(
+    InnovationHubUrlResolverDocument,
+    options
+  );
+}
+
+export function useInnovationHubUrlResolverLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.InnovationHubUrlResolverQuery,
+    SchemaTypes.InnovationHubUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.InnovationHubUrlResolverQuery,
+    SchemaTypes.InnovationHubUrlResolverQueryVariables
+  >(InnovationHubUrlResolverDocument, options);
+}
+
+export type InnovationHubUrlResolverQueryHookResult = ReturnType<typeof useInnovationHubUrlResolverQuery>;
+export type InnovationHubUrlResolverLazyQueryHookResult = ReturnType<typeof useInnovationHubUrlResolverLazyQuery>;
+export type InnovationHubUrlResolverQueryResult = Apollo.QueryResult<
+  SchemaTypes.InnovationHubUrlResolverQuery,
+  SchemaTypes.InnovationHubUrlResolverQueryVariables
+>;
+export function refetchInnovationHubUrlResolverQuery(variables: SchemaTypes.InnovationHubUrlResolverQueryVariables) {
+  return { query: InnovationHubUrlResolverDocument, variables: variables };
+}
+
 export const InnovationPackUrlResolverDocument = gql`
   query InnovationPackUrlResolver($innovationPackNameId: NameID!) {
     lookupByName {

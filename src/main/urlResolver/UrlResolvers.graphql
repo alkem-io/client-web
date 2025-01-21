@@ -16,6 +16,12 @@ query VirtualContributorUrlResolver($nameId: NameID!) {
   }
 }
 
+query InnovationHubUrlResolver($innovationHubNameId: NameID!) {
+  lookupByName {
+    innovationHub(NAMEID: $innovationHubNameId)
+  }
+}
+
 query InnovationPackUrlResolver($innovationPackNameId: NameID!) {
   lookupByName {
     innovationPack(NAMEID: $innovationPackNameId)

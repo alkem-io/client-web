@@ -1954,6 +1954,7 @@ export type LocationFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LookupByNameQueryResultsKeySpecifier = (
+  | 'innovationHub'
   | 'innovationPack'
   | 'organization'
   | 'space'
@@ -1963,6 +1964,7 @@ export type LookupByNameQueryResultsKeySpecifier = (
   | LookupByNameQueryResultsKeySpecifier
 )[];
 export type LookupByNameQueryResultsFieldPolicy = {
+  innovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;

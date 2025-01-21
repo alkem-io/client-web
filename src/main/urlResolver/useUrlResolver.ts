@@ -1,4 +1,5 @@
 import {
+  useInnovationHubUrlResolverQuery,
   useInnovationPackUrlResolverQuery,
   useOrganizationUrlResolverQuery,
   useSpaceUrlResolverQuery,
@@ -16,6 +17,7 @@ type UseUrlResolverProvided = {
   spaceId: string | undefined;
   organizationId: string | undefined;
   innovationPackId: string | undefined;
+  innovationHubId: string | undefined;
   templateId: string | undefined;
   userId: string | undefined;
   vcId: string | undefined;
@@ -36,7 +38,15 @@ const useUrlResolver = ({
     ...overrideUrlParams,
   };
 
-  const { spaceNameId, organizationNameId, innovationPackNameId, templateNameId, userNameId, vcNameId } = urlParams;
+  const {
+    spaceNameId,
+    organizationNameId,
+    innovationHubNameId,
+    innovationPackNameId,
+    templateNameId,
+    userNameId,
+    vcNameId,
+  } = urlParams;
 
   // Space
   const { data: spaceData, loading: spaceLoading } = useSpaceUrlResolverQuery({
@@ -56,6 +66,16 @@ const useUrlResolver = ({
   const organizationId = organizationData?.lookupByName.organization;
   if (throwIfNotFound && organizationNameId && !organizationLoading && !organizationId) {
     throw new NotFoundError(`Organization '${organizationNameId}' not found`);
+  }
+
+  // Innovation Hubs
+  const { data: innovationHubData, loading: innovationHubLoading } = useInnovationHubUrlResolverQuery({
+    variables: { innovationHubNameId: innovationHubNameId! },
+    skip: !innovationHubNameId,
+  });
+  const innovationHubId = innovationHubData?.lookupByName.innovationHub;
+  if (throwIfNotFound && innovationHubNameId && !innovationHubLoading && !innovationHubId) {
+    throw new NotFoundError(`InnovationHub '${innovationHubNameId}' not found`);
   }
 
   // Innovation Packs
@@ -144,6 +164,7 @@ const useUrlResolver = ({
       spaceId,
       organizationId,
       innovationPackId,
+      innovationHubId,
       templateId,
       userId,
       vcId,
@@ -151,6 +172,7 @@ const useUrlResolver = ({
         spaceLoading ||
         organizationLoading ||
         templatesSetLoading ||
+        innovationHubLoading ||
         innovationPackLoading ||
         templateLoading ||
         userLoading ||
@@ -160,12 +182,14 @@ const useUrlResolver = ({
       spaceId,
       organizationId,
       innovationPackId,
+      innovationHubId,
       templateId,
       userId,
       vcId,
       spaceLoading,
       organizationLoading,
       templatesSetLoading,
+      innovationHubLoading,
       innovationPackLoading,
       templateLoading,
       userLoading,
