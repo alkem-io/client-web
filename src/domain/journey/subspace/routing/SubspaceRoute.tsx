@@ -5,7 +5,7 @@ import { nameOfUrl } from '@/main/routing/urlParams';
 import SubspaceProvider from '../context/SubspaceProvider';
 import { CommunityContextProvider } from '@/domain/community/community/CommunityContext';
 import { NotFoundPageLayout } from '@/domain/journey/common/EntityPageLayout';
-import { routes } from '../routes/challengeRoutes';
+import { routes } from './challengeRoutes';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
 import SubspaceAboutPage from '../pages/SubspaceAboutPage';
 import SubspaceHomePage from '../subspaceHome/SubspaceHomePage';

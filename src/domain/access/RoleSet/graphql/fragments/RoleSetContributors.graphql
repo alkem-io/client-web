@@ -41,6 +41,10 @@ fragment RoleSetMemberOrganization on Organization {
     }
     url
   }
+  verification {
+    id
+    status
+  }
 }
 
 fragment RoleSetMemberVirtualContributor on VirtualContributor {

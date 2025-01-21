@@ -1,9 +1,20 @@
 import { useMemo } from 'react';
-import { UserCardFragment } from '@/core/apollo/generated/graphql-schema';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { UserCardProps } from '@/domain/community/user/userCard/UserCard';
 
-const useUserCardProps = (data: UserCardFragment[] | undefined): (Identifiable & UserCardProps)[] | undefined => {
+type UserCardData = {
+  id: string;
+  profile: {
+    displayName: string;
+    visual?: { uri: string };
+    location?: { city?: string; country?: string };
+    url?: string;
+    tagsets?: { tags: string[] }[];
+  };
+  isContactable: boolean;
+};
+
+const useUserCardProps = (data: UserCardData[] | undefined): (Identifiable & UserCardProps)[] | undefined => {
   return useMemo(() => {
     if (!data) {
       return;
