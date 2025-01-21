@@ -31755,7 +31755,21 @@ export type NewVirtualContributorMySpacesQuery = {
                       }
                     | undefined;
                   profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-                  community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
+                  community: {
+                    __typename?: 'Community';
+                    id: string;
+                    roleSet: {
+                      __typename?: 'RoleSet';
+                      id: string;
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          }
+                        | undefined;
+                    };
+                  };
                 }>;
               }
             | undefined;
@@ -31786,13 +31800,55 @@ export type AccountSpacesQuery = {
                 __typename?: 'Space';
                 id: string;
                 profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-                community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
+                community: {
+                  __typename?: 'Community';
+                  id: string;
+                  roleSet: {
+                    __typename?: 'RoleSet';
+                    id: string;
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
+                  };
+                };
               }>;
               profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-              community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
+              community: {
+                __typename?: 'Community';
+                id: string;
+                roleSet: {
+                  __typename?: 'RoleSet';
+                  id: string;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                };
+              };
             }>;
             profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-            community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
+            community: {
+              __typename?: 'Community';
+              id: string;
+              roleSet: {
+                __typename?: 'RoleSet';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              };
+            };
           }>;
         }
       | undefined;
@@ -31803,7 +31859,17 @@ export type SpaceProfileCommunityDetailsFragment = {
   __typename?: 'Space';
   id: string;
   profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-  community: { __typename?: 'Community'; id: string; roleSet: { __typename?: 'RoleSet'; id: string } };
+  community: {
+    __typename?: 'Community';
+    id: string;
+    roleSet: {
+      __typename?: 'RoleSet';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
+  };
 };
 
 export type RecentSpacesQueryVariables = Exact<{

@@ -14,6 +14,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AiPersonaBodyOfKnowledgeType,
+  AuthorizationPrivilege,
   RoleName,
   CreateCalloutInput,
   CreateVirtualContributorOnAccountMutationVariables,
@@ -65,6 +66,9 @@ export type SelectableSpace = {
   community: {
     roleSet: {
       id: string;
+      authorization?: {
+        myPrivileges?: AuthorizationPrivilege[];
+      };
     };
   };
   subspaces?: SelectableSpace[];
@@ -113,12 +117,19 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     fetchPolicy: 'cache-and-network',
   });
 
-  const { myAccountId, accountSpaces } = useMemo(() => {
+  const hasCommunityPrivilege = (space: SelectableSpace) => {
+    return space.community.roleSet?.authorization?.myPrivileges?.includes(
+      AuthorizationPrivilege.CommunityAssignVcFromAccount
+    );
+  };
+
+  const { myAccountId, allAccountSpaces, availableSpaces } = useMemo(() => {
     const account = targetAccount ?? data?.me.user?.account; // contextual or self by default
 
     return {
       myAccountId: account?.id,
-      accountSpaces: account?.spaces ?? [],
+      allAccountSpaces: account?.spaces ?? [],
+      availableSpaces: account?.spaces?.filter(hasCommunityPrivilege) ?? [],
     };
   }, [data, user, targetAccount]);
 
@@ -137,7 +148,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
   );
 
   // get plans data todo: make lazy, usePlanAvailability is temp
-  const skipPlansQueries = Boolean(accountSpaces.length);
+  const skipPlansQueries = Boolean(allAccountSpaces.length);
   const { data: plansData } = usePlansTableQuery({ skip: skipPlansQueries });
   const { isPlanAvailable } = usePlanAvailability({ skip: skipPlansQueries });
 
@@ -434,7 +445,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     // Refresh explicitly the ingestion after callouts creation
     refreshIngestion(createdVC.id);
 
-    setStep(steps.chooseCommunity);
+    setChooseCommunityStep();
   };
 
   // ###STEP 'chooseCommunityStep' - Choose Community
@@ -457,6 +468,17 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     } else {
       notifyErrorOnAddToCommunity();
       handleCloseWizard();
+    }
+  };
+
+  // If there are spaces under the account, but there are no spaces with the privilege to add a VC
+  // navigate to the try info VC step
+  // otherwise, navigate to the choose community step
+  const setChooseCommunityStep = () => {
+    if (allAccountSpaces.length > 0 && availableSpaces.length === 0) {
+      setStep(steps.tryVcInfo);
+    } else {
+      setStep(steps.chooseCommunity);
     }
   };
 
@@ -543,7 +565,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
             <ChooseCommunity
               onClose={handleCloseChooseCommunity}
               vcName={virtualContributorInput?.name}
-              spaces={accountSpaces}
+              spaces={availableSpaces}
               onSubmit={onChooseCommunity}
               loading={loading || availableSpacesLoading}
             />

@@ -151,12 +151,13 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
     };
   }, [
     spacePrivileges,
-    contextPrivileges,
     canReadSubspaces,
-    communityPrivileges,
-    canCreate,
     canCreateSubspaces,
+    canCreateTemplates,
+    canCreate,
+    communityPrivileges,
     collaborationPrivileges,
+    contextPrivileges,
   ]);
 
   const profile = useMemo(() => {
