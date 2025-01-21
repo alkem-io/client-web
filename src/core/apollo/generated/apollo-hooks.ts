@@ -3744,6 +3744,10 @@ export const SpaceProfileCommunityDetailsFragmentDoc = gql`
       id
       roleSet {
         id
+        authorization {
+          id
+          myPrivileges
+        }
       }
     }
   }
