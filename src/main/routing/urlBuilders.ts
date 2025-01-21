@@ -3,8 +3,6 @@ import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { isAbsoluteUrl } from '@/core/utils/links';
 
-export const buildVirtualContributorUrl = (virtualContributorNameId: string) => `/vc/${virtualContributorNameId}`;
-
 export const buildSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings`;
 };
@@ -14,11 +12,6 @@ export const buildSettingsProfileUrl = (entityUrl: string) => {
 };
 
 export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
-
-export const buildVCProfileUrl = (vcNameId: string) => `/vc/${vcNameId}`;
-
-export const buildUserProfileSettingsUrl = (userNameId: string) =>
-  `${buildUserProfileUrl(userNameId)}/settings/profile`;
 
 export const buildReturnUrlParam = (returnUrl = ROUTE_HOME, origin = window.location.origin) => {
   const fullReturnUrl = isAbsoluteUrl(returnUrl) ? returnUrl : `${origin}${returnUrl}`;

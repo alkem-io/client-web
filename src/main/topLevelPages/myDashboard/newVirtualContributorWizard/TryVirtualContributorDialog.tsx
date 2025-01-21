@@ -29,13 +29,12 @@ import { TypedCalloutDetails } from '@/domain/collaboration/calloutsSet/useCallo
 import { Actions } from '@/core/ui/actions/Actions';
 import { removeVCCreationCache } from './vcCreationUtil';
 import { useSubscribeOnVirtualContributorEvents } from '@/domain/community/virtualContributor/useSubscribeOnVirtualContributorEvents';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 interface TryVirtualContributorDialogProps {
   spaceId: string;
   collaborationId: string | undefined;
   calloutsSetId: string | undefined;
-  vcNameId: string;
+  vcId: string;
   open: boolean;
   onClose: () => void;
 }
@@ -43,7 +42,7 @@ interface TryVirtualContributorDialogProps {
 const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = ({
   spaceId,
   calloutsSetId,
-  vcNameId,
+  vcId,
   open,
   onClose,
 }) => {
@@ -142,8 +141,6 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     }
   };
 
-  const { vcId, loading: resolvingVc } = useUrlResolver({ overrideUrlParams: { vcNameId } });
-
   const {
     data: vcData,
     loading: vcDataLoading,
@@ -175,7 +172,7 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     return null;
   }
 
-  const loading = resolvingVc || vcDataLoading;
+  const loading = vcDataLoading;
 
   return (
     <DialogWithGrid open={open} onClose={handleClose} columns={8}>

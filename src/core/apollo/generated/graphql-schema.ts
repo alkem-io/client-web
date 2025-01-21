@@ -23487,7 +23487,6 @@ export type CreateVirtualContributorOnAccountMutation = {
   createVirtualContributor: {
     __typename?: 'VirtualContributor';
     id: string;
-    nameID: string;
     profile: { __typename?: 'Profile'; id: string; url: string };
     knowledgeBase?:
       | {

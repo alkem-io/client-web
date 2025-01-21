@@ -3,15 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { buildVCProfileUrl } from '@/main/routing/urlBuilders';
 
 interface TryVcInfoProps {
-  vcNameId: string;
   vcName: string;
+  url: string | undefined;
   onClose: () => void;
 }
 
-const TryVcInfo = ({ vcNameId, vcName, onClose }: TryVcInfoProps) => {
+const TryVcInfo = ({ vcName, url, onClose }: TryVcInfoProps) => {
   const { t } = useTranslation();
 
   return (
@@ -23,9 +22,11 @@ const TryVcInfo = ({ vcNameId, vcName, onClose }: TryVcInfoProps) => {
         </Caption>
       </DialogContent>
       <DialogActions>
-        <Button component={RouterLink} to={`${buildVCProfileUrl(vcNameId)}`}>
-          {t('createVirtualContributorWizard.tryInfoSection.goToProfile', { vcName })}
-        </Button>
+        {url && (
+          <Button component={RouterLink} to={url}>
+            {t('createVirtualContributorWizard.tryInfoSection.goToProfile', { vcName })}
+          </Button>
+        )}
       </DialogActions>
     </>
   );

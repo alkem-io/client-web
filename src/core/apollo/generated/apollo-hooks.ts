@@ -17700,7 +17700,6 @@ export const CreateVirtualContributorOnAccountDocument = gql`
   mutation CreateVirtualContributorOnAccount($virtualContributorData: CreateVirtualContributorOnAccountInput!) {
     createVirtualContributor(virtualContributorData: $virtualContributorData) {
       id
-      nameID
       profile {
         id
         url
