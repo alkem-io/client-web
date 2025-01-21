@@ -159,7 +159,7 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
       return rawSearchResults?.search?.journeyResults.map(result => {
         const entry = result as TypedSearchResult<SearchResultType.Space, SpaceExplorerSearchSpaceFragment>;
 
-        if (entry.type === SearchResultType.Space) {
+        if (entry.type === SearchResultType.Space || entry.type === SearchResultType.Subspace) {
           return {
             ...entry.space,
             parent: undefined,
