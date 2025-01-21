@@ -26,6 +26,8 @@ export const buildNewOrganizationUrl = () => {
   return '/admin/organizations/new';
 };
 
+export const buildPostDashboardUrl = (postUrl: string) => `${postUrl}/dashboard`;
+
 export const buildUpdatesUrl = (journeyLocation: string) => {
   const updatesPath = `/${EntityPageSection.Dashboard}/updates`;
   return `${journeyLocation}${updatesPath}`;

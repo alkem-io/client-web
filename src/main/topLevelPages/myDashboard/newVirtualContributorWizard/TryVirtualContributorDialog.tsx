@@ -172,13 +172,11 @@ const TryVirtualContributorDialog: React.FC<TryVirtualContributorDialogProps> = 
     return null;
   }
 
-  const loading = vcDataLoading;
-
   return (
     <DialogWithGrid open={open} onClose={handleClose} columns={8}>
       <DialogHeader title={t('createVirtualContributorWizard.trySection.title')} onClose={handleClose} />
       <DialogContent>
-        {loading && demoCalloutCreationLoading && isCalloutLoading ? (
+        {vcDataLoading && demoCalloutCreationLoading && isCalloutLoading ? (
           <Loading />
         ) : (
           <Gutters disablePadding>

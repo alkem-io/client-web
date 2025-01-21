@@ -15,8 +15,12 @@ import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 const VCMembershipPage = () => {
   const { t } = useTranslation();
 
-  const { vcId } = useUrlResolver();
-  const { data, loading, refetch } = useVcMembershipsQuery({
+  const { vcId, loading: resolving } = useUrlResolver();
+  const {
+    data,
+    loading: loadingVc,
+    refetch,
+  } = useVcMembershipsQuery({
     variables: {
       virtualContributorId: vcId!,
     },
@@ -79,6 +83,7 @@ const VCMembershipPage = () => {
       }));
   }, [data]);
 
+  const loading = resolving || loadingVc;
   return (
     <VCSettingsPageLayout currentTab={SettingsSection.Membership}>
       <ContributionsView
