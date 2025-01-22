@@ -5,7 +5,6 @@ import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import { ContributionsView } from '@/domain/community/profile/views/ProfileView';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
-import { useUserMetadata } from '../../user/hooks/useUserMetadata';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import SectionSpacer from '@/domain/shared/components/Section/SectionSpacer';
 import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
@@ -15,13 +14,12 @@ import { useUserContributionsQuery, useUserPendingMembershipsQuery } from '@/cor
 const UserAdminMembershipPage = () => {
   const { t } = useTranslation();
   const { userId } = useUrlResolver();
-  const { user: userMetadata } = useUserMetadata(userId);
 
   const { data, loading, refetch } = useUserContributionsQuery({
     variables: {
-      userId: userMetadata?.user.id!,
+      userId: userId!,
     },
-    skip: !userMetadata?.user.id,
+    skip: !userId,
   });
 
   const memberships = useMemo(() => {
@@ -34,7 +32,7 @@ const UserAdminMembershipPage = () => {
         spaceID: space.id,
         id: space.id,
         spaceLevel: SpaceLevel.Space,
-        contributorId: userMetadata?.user.id!,
+        contributorId: userId!,
         contributorType: RoleSetContributorType.User,
       };
       acc.push(currentSpace);
@@ -43,7 +41,7 @@ const UserAdminMembershipPage = () => {
         id: subspace.id,
         spaceID: subspace.id,
         spaceLevel: subspace.level,
-        contributorId: userMetadata?.user.id!,
+        contributorId: userId!,
         contributorType: RoleSetContributorType.User,
       }));
 
@@ -54,18 +52,18 @@ const UserAdminMembershipPage = () => {
   // TODO: I think this is wrong, we are seeing the memberships of certain user, not ours.
   const { data: pendingMembershipsData } = useUserPendingMembershipsQuery();
   const applications = useMemo<SpaceHostedItem[] | undefined>(() => {
-    if (!pendingMembershipsData || !userMetadata) {
+    if (!pendingMembershipsData || !userId) {
       return undefined;
     } else {
       return pendingMembershipsData.me.communityApplications.map(application => ({
         id: application.id,
         spaceID: application.spacePendingMembershipInfo.id,
         spaceLevel: application.spacePendingMembershipInfo.level,
-        contributorId: userMetadata.user.id,
+        contributorId: userId,
         contributorType: RoleSetContributorType.User,
       }));
     }
-  }, [userMetadata, pendingMembershipsData]);
+  }, [userId, pendingMembershipsData]);
 
   return (
     <UserAdminLayout currentTab={SettingsSection.Membership}>
