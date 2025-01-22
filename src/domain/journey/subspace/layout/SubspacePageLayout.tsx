@@ -35,7 +35,7 @@ import { UrlBaseProvider } from '@/core/ui/link/UrlBase';
 import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import { theme } from '@/core/ui/themes/default/Theme';
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
-import ApplicationButtonContainer from '@/domain/access/RoleSet/RoleSetAdmin/Applications/ApplicationButtonContainer';
+import ApplicationButtonContainer from '@/domain/access/RoleSet/RoleSetAdmin/ApplicationsAndInvitations/ApplicationButtonContainer';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { SpaceReadAccess } from '@/domain/journey/common/authorization/useCanReadSpace';
