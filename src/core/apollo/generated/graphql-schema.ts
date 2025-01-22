@@ -7816,7 +7816,6 @@ export type UserPendingMembershipsQuery = {
       | {
           __typename?: 'User';
           id: string;
-          nameID: string;
           firstName: string;
           lastName: string;
           email: string;
@@ -7828,7 +7827,9 @@ export type UserPendingMembershipsQuery = {
             tagline?: string | undefined;
             description?: string | undefined;
             url: string;
-            location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+              | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -16136,31 +16137,27 @@ export type SpaceApplicationQuery = {
   };
 };
 
-export type CommunityMembersListQueryVariables = Exact<{
-  roleSetId: Scalars['UUID'];
-  spaceId?: InputMaybe<Scalars['UUID']>;
-  includeSpaceHost?: InputMaybe<Scalars['Boolean']>;
+export type CommunityProviderDetailsQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
 }>;
 
-export type CommunityMembersListQuery = {
+export type CommunityProviderDetailsQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
     space?:
       | {
           __typename?: 'Space';
-          id: string;
           provider:
             | {
                 __typename?: 'Organization';
                 id: string;
-                nameID: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  url: string;
                   description?: string | undefined;
+                  url: string;
                   avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagsets?:
                     | Array<{
@@ -16175,62 +16172,28 @@ export type CommunityMembersListQuery = {
                   location?:
                     | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
                     | undefined;
+                };
+                verification: {
+                  __typename?: 'OrganizationVerification';
+                  id: string;
+                  status: OrganizationVerificationEnum;
                 };
               }
-            | {
-                __typename?: 'User';
-                id: string;
-                nameID: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  description?: string | undefined;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  tagsets?:
-                    | Array<{
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }>
-                    | undefined;
-                  location?:
-                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-                    | undefined;
-                };
-              }
-            | {
-                __typename?: 'VirtualContributor';
-                id: string;
-                nameID: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  displayName: string;
-                  url: string;
-                  description?: string | undefined;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  tagsets?:
-                    | Array<{
-                        __typename?: 'Tagset';
-                        id: string;
-                        name: string;
-                        tags: Array<string>;
-                        allowedValues: Array<string>;
-                        type: TagsetType;
-                      }>
-                    | undefined;
-                  location?:
-                    | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
-                    | undefined;
-                };
-              };
+            | { __typename?: 'User' }
+            | { __typename?: 'VirtualContributor' };
         }
       | undefined;
+  };
+};
+
+export type CommunityMembersListQueryVariables = Exact<{
+  roleSetId: Scalars['UUID'];
+}>;
+
+export type CommunityMembersListQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
     roleSet?:
       | {
           __typename?: 'RoleSet';
@@ -18199,7 +18162,6 @@ export type UserAvatarsQuery = {
 export type UserDetailsFragment = {
   __typename?: 'User';
   id: string;
-  nameID: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -18211,7 +18173,9 @@ export type UserDetailsFragment = {
     tagline?: string | undefined;
     description?: string | undefined;
     url: string;
-    location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+    location?:
+      | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+      | undefined;
     avatar?:
       | {
           __typename?: 'Visual';
@@ -18337,7 +18301,6 @@ export type CreateUserMutation = {
   createUser: {
     __typename?: 'User';
     id: string;
-    nameID: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -18349,7 +18312,9 @@ export type CreateUserMutation = {
       tagline?: string | undefined;
       description?: string | undefined;
       url: string;
-      location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+      location?:
+        | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+        | undefined;
       avatar?:
         | {
             __typename?: 'Visual';
@@ -18389,7 +18354,6 @@ export type CreateUserNewRegistrationMutation = {
   createUserNewRegistration: {
     __typename?: 'User';
     id: string;
-    nameID: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -18401,7 +18365,9 @@ export type CreateUserNewRegistrationMutation = {
       tagline?: string | undefined;
       description?: string | undefined;
       url: string;
-      location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+      location?:
+        | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+        | undefined;
       avatar?:
         | {
             __typename?: 'Visual';
@@ -18555,7 +18521,6 @@ export type UserQuery = {
       | {
           __typename?: 'User';
           id: string;
-          nameID: string;
           firstName: string;
           lastName: string;
           email: string;
@@ -18567,7 +18532,9 @@ export type UserQuery = {
             tagline?: string | undefined;
             description?: string | undefined;
             url: string;
-            location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+              | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -18652,7 +18619,6 @@ export type UserProfileQuery = {
           __typename?: 'User';
           isContactable: boolean;
           id: string;
-          nameID: string;
           firstName: string;
           lastName: string;
           email: string;
@@ -18664,7 +18630,9 @@ export type UserProfileQuery = {
             tagline?: string | undefined;
             description?: string | undefined;
             url: string;
-            location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+              | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -18753,7 +18721,6 @@ export type UserProviderQuery = {
       | {
           __typename?: 'User';
           id: string;
-          nameID: string;
           firstName: string;
           lastName: string;
           email: string;
@@ -18783,7 +18750,9 @@ export type UserProviderQuery = {
             tagline?: string | undefined;
             description?: string | undefined;
             url: string;
-            location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+            location?:
+              | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+              | undefined;
             avatar?:
               | {
                   __typename?: 'Visual';
@@ -18926,7 +18895,6 @@ export type UpdateUserMutation = {
   updateUser: {
     __typename?: 'User';
     id: string;
-    nameID: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -18938,7 +18906,9 @@ export type UpdateUserMutation = {
       tagline?: string | undefined;
       description?: string | undefined;
       url: string;
-      location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
+      location?:
+        | { __typename?: 'Location'; id: string; country?: string | undefined; city?: string | undefined }
+        | undefined;
       avatar?:
         | {
             __typename?: 'Visual';

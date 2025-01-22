@@ -1484,7 +1484,6 @@ export const UserSelectorUserInformationFragmentDoc = gql`
 export const UserDetailsFragmentDoc = gql`
   fragment UserDetails on User {
     id
-    nameID
     firstName
     lastName
     email
@@ -1494,6 +1493,7 @@ export const UserDetailsFragmentDoc = gql`
       displayName
       tagline
       location {
+        id
         country
         city
       }
@@ -10328,25 +10328,79 @@ export function refetchSpaceApplicationQuery(variables: SchemaTypes.SpaceApplica
   return { query: SpaceApplicationDocument, variables: variables };
 }
 
-export const CommunityMembersListDocument = gql`
-  query CommunityMembersList(
-    $roleSetId: UUID!
-    $spaceId: UUID = "00000000-0000-0000-0000-000000000000"
-    $includeSpaceHost: Boolean = false
-  ) {
+export const CommunityProviderDetailsDocument = gql`
+  query CommunityProviderDetails($spaceId: UUID!) {
     lookup {
-      space(ID: $spaceId) @include(if: $includeSpaceHost) {
-        id
+      space(ID: $spaceId) {
         provider {
-          ...ContributorDetails
+          ...RoleSetMemberOrganization
         }
       }
+    }
+  }
+  ${RoleSetMemberOrganizationFragmentDoc}
+`;
+
+/**
+ * __useCommunityProviderDetailsQuery__
+ *
+ * To run a query within a React component, call `useCommunityProviderDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityProviderDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityProviderDetailsQuery({
+ *   variables: {
+ *      spaceId: // value for 'spaceId'
+ *   },
+ * });
+ */
+export function useCommunityProviderDetailsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityProviderDetailsQuery,
+    SchemaTypes.CommunityProviderDetailsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CommunityProviderDetailsQuery, SchemaTypes.CommunityProviderDetailsQueryVariables>(
+    CommunityProviderDetailsDocument,
+    options
+  );
+}
+
+export function useCommunityProviderDetailsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityProviderDetailsQuery,
+    SchemaTypes.CommunityProviderDetailsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CommunityProviderDetailsQuery,
+    SchemaTypes.CommunityProviderDetailsQueryVariables
+  >(CommunityProviderDetailsDocument, options);
+}
+
+export type CommunityProviderDetailsQueryHookResult = ReturnType<typeof useCommunityProviderDetailsQuery>;
+export type CommunityProviderDetailsLazyQueryHookResult = ReturnType<typeof useCommunityProviderDetailsLazyQuery>;
+export type CommunityProviderDetailsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityProviderDetailsQuery,
+  SchemaTypes.CommunityProviderDetailsQueryVariables
+>;
+export function refetchCommunityProviderDetailsQuery(variables: SchemaTypes.CommunityProviderDetailsQueryVariables) {
+  return { query: CommunityProviderDetailsDocument, variables: variables };
+}
+
+export const CommunityMembersListDocument = gql`
+  query CommunityMembersList($roleSetId: UUID!) {
+    lookup {
       roleSet(ID: $roleSetId) {
         ...CommunityRoleSetDetails
       }
     }
   }
-  ${ContributorDetailsFragmentDoc}
   ${CommunityRoleSetDetailsFragmentDoc}
 `;
 
@@ -10363,8 +10417,6 @@ export const CommunityMembersListDocument = gql`
  * const { data, loading, error } = useCommunityMembersListQuery({
  *   variables: {
  *      roleSetId: // value for 'roleSetId'
- *      spaceId: // value for 'spaceId'
- *      includeSpaceHost: // value for 'includeSpaceHost'
  *   },
  * });
  */

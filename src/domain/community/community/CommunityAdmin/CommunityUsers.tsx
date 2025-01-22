@@ -11,7 +11,7 @@ import {
 } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RoleSetMemberUserFragment, RoleDefinitionPolicyFragment } from '@/core/apollo/generated/graphql-schema';
+import { CommunityMemberUserFragmentWithRoles } from './useCommunityAdmin';
 import { gutters } from '@/core/ui/grid/utils';
 import DataGridSkeleton from '@/core/ui/table/DataGridSkeleton';
 import DataGridTable from '@/core/ui/table/DataGridTable';
@@ -19,13 +19,6 @@ import { BlockTitle } from '@/core/ui/typography';
 import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from './CommunityAddMembersDialog';
 import CommunityMemberSettingsDialog from './CommunityMemberSettingsDialog';
 import useCommunityPolicyChecker from './useCommunityPolicyChecker';
-
-export interface CommunityMemberUserFragmentWithRoles extends RoleSetMemberUserFragment {
-  isMember: boolean;
-  isLead: boolean;
-  isAdmin: boolean;
-  isContactable: boolean;
-}
 
 type RenderParams = GridRenderCellParams<string, CommunityMemberUserFragmentWithRoles>;
 type GetterParams = GridValueGetterParams<string, CommunityMemberUserFragmentWithRoles>;
@@ -55,8 +48,14 @@ interface CommunityUsersProps {
   canAddMembers: boolean;
   onAddMember: (memberId: string) => Promise<unknown> | undefined;
   fetchAvailableUsers: CommunityAddMembersDialogProps['fetchAvailableEntities'];
-  memberRoleDefinition?: RoleDefinitionPolicyFragment;
-  leadRoleDefinition?: RoleDefinitionPolicyFragment;
+  memberRoleDefinition?: {
+    organizationPolicy: { minimum: number; maximum: number };
+    userPolicy: { minimum: number; maximum: number };
+  };
+  leadRoleDefinition?: {
+    organizationPolicy: { minimum: number; maximum: number };
+    userPolicy: { minimum: number; maximum: number };
+  };
   loading?: boolean;
 }
 

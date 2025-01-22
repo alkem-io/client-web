@@ -61,12 +61,15 @@ interface useRoleSetAdminProvided extends useRoleSetAdminRolesAssignmentProvided
   myPrivileges: AuthorizationPrivilege[] | undefined;
   roleNames: RoleName[] | undefined;
 
+  users: RoleSetMemberUserFragmentWithRoles[];
+  organizations: RoleSetMemberOrganizationFragmentWithRoles[];
+  virtualContributors: RoleSetMemberVirtualContributorFragmentWithRoles[];
   usersByRole: PartialRecord<RoleName, RoleSetMemberUserFragmentWithRoles[]>;
   organizationsByRole: PartialRecord<RoleName, RoleSetMemberOrganizationFragmentWithRoles[]>;
   virtualContributorsByRole: PartialRecord<RoleName, RoleSetMemberVirtualContributorFragmentWithRoles[]>;
   rolesDefinitions: Record<RoleName, RoleDefinition> | undefined;
   availableUsersForRole: AvailableUsersResponse | undefined;
-
+  refetch: () => Promise<unknown>;
   loading: boolean;
   updating: boolean;
 }
@@ -143,7 +146,6 @@ const useRoleSetAdmin = ({
   });
 
   const data = useMemo(() => {
-    console.log('inside memo');
     const roleSet = roleSetData?.lookup.roleSet;
 
     const usersById: Record<string, RoleSetMemberUserFragmentWithRoles> = {};
@@ -212,6 +214,9 @@ const useRoleSetAdmin = ({
       }, {} as Record<RoleName, RoleDefinition>);
 
     return {
+      users: Object.values(usersById),
+      organizations: Object.values(organizationsById),
+      virtualContributors: Object.values(virtualContributorsById),
       usersById,
       organizationsById,
       virtualContributorsById,
@@ -222,10 +227,8 @@ const useRoleSetAdmin = ({
     };
   }, [roleSetData?.lookup]);
 
-  const refetchAll = () => {
-    refetchRoleSet();
-    refetchRoleSetData();
-  };
+  const refetchAll = () => Promise.all([refetchRoleSet(), refetchRoleSetData()]);
+
   // Wraps any function call into an await + refetch
   const refetchAfterMutation =
     (mutation: (...args) => Promise<unknown>) =>
@@ -274,6 +277,9 @@ const useRoleSetAdmin = ({
     roleNames: validRoles,
     loading: loadingRoleSet || loadingRoleSetData,
 
+    users: data.users,
+    organizations: data.organizations,
+    virtualContributors: data.virtualContributors,
     usersByRole: data.usersByRole,
     organizationsByRole: data.organizationsByRole,
     virtualContributorsByRole: data.virtualContributorsByRole,
@@ -285,6 +291,7 @@ const useRoleSetAdmin = ({
     removeRoleFromUser: refetchAfterMutation(removeRoleFromUser),
     removePlatformRoleFromUser: refetchAfterMutation(removePlatformRoleFromUser),
     updating: updatingRoleSet,
+    refetch: refetchAll,
   };
 };
 

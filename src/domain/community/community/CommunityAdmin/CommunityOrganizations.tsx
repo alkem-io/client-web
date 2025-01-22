@@ -19,7 +19,6 @@ import CommunityMemberSettingsDialog from './CommunityMemberSettingsDialog';
 import CommunityAddMembersDialog, { CommunityAddMembersDialogProps } from './CommunityAddMembersDialog';
 import useCommunityPolicyChecker from './useCommunityPolicyChecker';
 import { ContributorViewProps } from '../EntityDashboardContributorsSection/Types';
-import { RoleDefinitionPolicyFragment } from '@/core/apollo/generated/graphql-schema';
 
 export interface OrganizationDetailsFragmentWithRoles extends ContributorViewProps {
   isMember: boolean;
@@ -54,8 +53,14 @@ interface CommunityOrganizationsProps {
   onAddMember: (organizationId) => Promise<unknown> | undefined;
   fetchAvailableOrganizations: CommunityAddMembersDialogProps['fetchAvailableEntities'];
   onRemoveMember: (organizationId) => Promise<unknown> | void;
-  memberRoleDefinition?: RoleDefinitionPolicyFragment;
-  leadRoleDefinition?: RoleDefinitionPolicyFragment;
+  memberRoleDefinition?: {
+    organizationPolicy: { minimum: number; maximum: number };
+    userPolicy: { minimum: number; maximum: number };
+  };
+  leadRoleDefinition?: {
+    organizationPolicy: { minimum: number; maximum: number };
+    userPolicy: { minimum: number; maximum: number };
+  };
   loading?: boolean;
 }
 
