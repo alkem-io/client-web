@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
@@ -9,6 +9,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
 import { SelectableSpace } from './useVirtualContributorWizard';
+import Loading from '@/core/ui/loading/Loading';
 
 export interface SelectableKnowledgeSpace {
   id: string;
@@ -22,36 +23,13 @@ interface ExistingSpaceProps {
   onClose: () => void;
   onBack: () => void;
   onSubmit: (subspace: SelectableKnowledgeSpace) => void;
-  accountId: string;
   loading: boolean;
-  getSpaces: (accountId: string) => Promise<SelectableSpace[]>;
+  spaces: SelectableSpace[];
 }
 
-const ExistingSpace = ({ onClose, onBack, onSubmit, accountId, getSpaces, loading }: ExistingSpaceProps) => {
+const ExistingSpace = ({ onClose, onBack, onSubmit, spaces, loading }: ExistingSpaceProps) => {
   const { t } = useTranslation();
-  const [availableSpaces, setAvailableSpaces] = useState<SelectableSpace[]>();
-  const prevAccountIdRef = useRef<string | undefined>(undefined);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchSubspaces = async () => {
-      const spaces = await getSpaces(accountId);
-
-      if (isMounted) {
-        setAvailableSpaces(spaces);
-      }
-    };
-
-    if (accountId !== prevAccountIdRef.current) {
-      prevAccountIdRef.current = accountId;
-      fetchSubspaces();
-    }
-
-    return () => {
-      isMounted = false;
-    };
-  }, [accountId]);
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   const initialValues = {
     subspaceId: '',
@@ -70,7 +48,7 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, accountId, getSpaces, loadin
     };
 
     // Hierarchy loop
-    availableSpaces?.forEach((space: SelectableSpace) => {
+    spaces.forEach((space: SelectableSpace) => {
       addSelectableSpace(space);
       space.subspaces?.forEach(subspace => {
         addSelectableSpace(subspace, [space]);
@@ -81,15 +59,20 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, accountId, getSpaces, loadin
     });
 
     return result;
-  }, [availableSpaces]);
+  }, [spaces]);
 
   const validationSchema = yup.object().shape({
     subspaceId: yup.string().required(),
   });
 
-  const onCreate = (values: { subspaceId: string }) => {
+  const onCreate = async (values: { subspaceId: string }) => {
+    setSubmitLoading(true);
+
     const bok = listItems.filter(s => s.id === values.subspaceId)[0];
-    bok && onSubmit(bok);
+    if (bok) {
+      await onSubmit(bok);
+    }
+    setSubmitLoading(false);
   };
 
   return (
@@ -104,10 +87,11 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, accountId, getSpaces, loadin
         <>
           <DialogHeader onClose={onClose} title={t('createVirtualContributorWizard.existingSpace.title')} />
           <DialogContent>
-            {(!availableSpaces || availableSpaces.length === 0) && (
+            {loading && spaces.length === 0 && <Loading />}
+            {!loading && spaces.length === 0 && (
               <Caption>{t('createVirtualContributorWizard.existingSpace.noSpaces')}</Caption>
             )}
-            {availableSpaces && availableSpaces.length > 0 && (
+            {spaces.length > 0 && (
               <Gutters disablePadding>
                 <Caption>{t('createVirtualContributorWizard.existingSpace.description')}</Caption>
                 <FormikAutocomplete
@@ -124,11 +108,11 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, accountId, getSpaces, loadin
             <Button variant="text" onClick={onBack}>
               {t('buttons.back')}
             </Button>
-            {availableSpaces && availableSpaces.length > 0 && (
+            {spaces.length > 0 && (
               <LoadingButton
                 variant="contained"
-                disabled={!isValid || loading}
-                loading={loading}
+                disabled={!isValid || loading || submitLoading}
+                loading={submitLoading}
                 onClick={() => onCreate(values)}
               >
                 {t('buttons.create')}

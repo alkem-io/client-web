@@ -8,7 +8,7 @@ import {
   useSubspaceCommunityAndRoleSetIdLazyQuery,
   useAssignRoleToVirtualContributorMutation,
   useCreateLinkOnCalloutMutation,
-  useAccountSpacesLazyQuery,
+  useAllSpaceSubspacesLazyQuery,
   refetchMyResourcesQuery,
   useRefreshBodyOfKnowledgeMutation,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -90,6 +90,8 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     id: '',
     nameID: '',
   });
+  const [availableExistingSpaces, setAvailableExistingSpaces] = useState<SelectableSpace[]>([]);
+  const [availableExistingSpacesLoading, setAvailableExistingSpacesLoading] = useState(false);
 
   const startWizard = (initAccount: UserAccountProps | undefined, accountName?: string) => {
     setTargetAccount(initAccount);
@@ -133,19 +135,30 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     };
   }, [data, user, targetAccount]);
 
-  const [getAccountSpaces, { loading: availableSpacesLoading }] = useAccountSpacesLazyQuery();
-  const getSelectableSpaces = useCallback(
-    async (accountId: string) => {
-      const spaceData = await getAccountSpaces({
+  const [allSpaceSubspaces] = useAllSpaceSubspacesLazyQuery();
+  // For all the available spaces get their subspaces (and their subspaces)
+  // then filter them as well and
+  const getSelectableSpaces = useCallback(async () => {
+    setAvailableExistingSpacesLoading(true);
+    const result: SelectableSpace[] = [];
+
+    for (const space of availableSpaces) {
+      const subspaceData = await allSpaceSubspaces({
         variables: {
-          accountId,
+          spaceId: space.id,
         },
       });
+      const availableSubspaces = subspaceData?.data?.lookup.space?.subspaces?.filter(hasCommunityPrivilege) ?? [];
 
-      return spaceData?.data?.lookup.account?.spaces ?? [];
-    },
-    [getAccountSpaces]
-  );
+      result.push({
+        ...space,
+        subspaces: availableSubspaces,
+      });
+    }
+
+    setAvailableExistingSpacesLoading(false);
+    setAvailableExistingSpaces(result);
+  }, [allSpaceSubspaces, availableSpaces]);
 
   // get plans data todo: make lazy, usePlanAvailability is temp
   const skipPlansQueries = Boolean(allAccountSpaces.length);
@@ -553,7 +566,10 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
               onClose={handleCloseWizard}
               loading={loading}
               onCreateKnowledge={handleCreateKnowledge}
-              onUseExistingKnowledge={values => onStepSelection('existingKnowledge', values)}
+              onUseExistingKnowledge={values => {
+                getSelectableSpaces();
+                onStepSelection('existingKnowledge', values);
+              }}
               onUseExternal={values => onStepSelection('externalProvider', values)}
             />
           )}
@@ -567,7 +583,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
               vcName={virtualContributorInput?.name}
               spaces={availableSpaces}
               onSubmit={onChooseCommunity}
-              loading={loading || availableSpacesLoading}
+              loading={loading}
             />
           )}
           {step === steps.tryVcInfo && (
@@ -577,14 +593,13 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
               onClose={handleCloseWizard}
             />
           )}
-          {step === steps.existingKnowledge && myAccountId && (
+          {step === steps.existingKnowledge && (
             <ExistingSpace
               onClose={handleCloseWizard}
               onBack={() => setStep(steps.initial)}
+              spaces={availableExistingSpaces}
               onSubmit={handleCreateVCWithExistingKnowledge}
-              accountId={myAccountId}
-              getSpaces={getSelectableSpaces}
-              loading={loading || availableSpacesLoading}
+              loading={loading || availableExistingSpacesLoading}
             />
           )}
           {step === steps.externalProvider && (
@@ -593,7 +608,15 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
         </StorageConfigContextProvider>
       </DialogWithGrid>
     );
-  }, [dialogOpen, step, myAccountId, getSelectableSpaces, loading, availableSpacesLoading]);
+  }, [
+    dialogOpen,
+    step,
+    myAccountId,
+    loading,
+    availableExistingSpacesLoading,
+    getSelectableSpaces,
+    availableExistingSpaces,
+  ]);
 
   return {
     startWizard,
