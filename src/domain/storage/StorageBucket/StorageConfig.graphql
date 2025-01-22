@@ -120,6 +120,28 @@ query PlatformStorageConfig {
   }
 }
 
+query AccountStorageConfig($accountId: UUID_NAMEID!) {
+  account(ID: $accountId) {
+    id
+    storageAggregator {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      directStorageBucket {
+        id
+        allowedMimeTypes
+        maxFileSize
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+}
+
 fragment ProfileStorageConfig on Profile {
   id
   storageBucket {

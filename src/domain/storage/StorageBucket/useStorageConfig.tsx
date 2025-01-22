@@ -1,4 +1,5 @@
 import {
+  useAccountStorageConfigQuery,
   useCalloutPostStorageConfigQuery,
   useCalloutStorageConfigQuery,
   useInnovationHubStorageConfigQuery,
@@ -31,7 +32,8 @@ type StorageConfigLocation =
   | 'template'
   | 'innovationPack'
   | 'innovationHub'
-  | 'platform';
+  | 'platform'
+  | 'account';
 
 interface UseStorageConfigOptionsBase {
   locationType: StorageConfigLocation;
@@ -88,6 +90,11 @@ interface UseStorageConfigOptionsPlatform extends UseStorageConfigOptionsBase {
   locationType: 'platform';
 }
 
+interface UseStorageConfigOptionsAccount extends UseStorageConfigOptionsBase {
+  accountId: string;
+  locationType: 'account';
+}
+
 export type StorageConfigOptions =
   | UseStorageConfigOptionsSpace
   | UseStorageConfigOptionsUser
@@ -98,7 +105,8 @@ export type StorageConfigOptions =
   | UseStorageConfigOptionsTemplate
   | UseStorageConfigOptionsInnovationPack
   | UseStorageConfigOptionsInnovationHub
-  | UseStorageConfigOptionsPlatform;
+  | UseStorageConfigOptionsPlatform
+  | UseStorageConfigOptionsAccount;
 
 export interface StorageConfigProvided {
   storageConfig: StorageConfig | undefined;
@@ -178,6 +186,12 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     skip: skip || locationType !== 'platform',
   });
 
+  const accountOptions = options as UseStorageConfigOptionsAccount;
+  const { data: accountContributorStorageConfigData } = useAccountStorageConfigQuery({
+    variables: accountOptions,
+    skip: skip || locationType !== 'account',
+  });
+
   const journey = journeyStorageConfigData?.lookup.space;
 
   const callout = calloutStorageConfigData?.lookup.callout;
@@ -197,7 +211,9 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     {};
 
   const storageConfig =
-    profile?.storageBucket ?? platformStorageConfigData?.platform.storageAggregator.directStorageBucket;
+    profile?.storageBucket ??
+    accountContributorStorageConfigData?.account?.storageAggregator.directStorageBucket ??
+    platformStorageConfigData?.platform.storageAggregator.directStorageBucket;
 
   return useMemo(
     () => ({

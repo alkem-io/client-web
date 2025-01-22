@@ -20353,6 +20353,82 @@ export function refetchPlatformStorageConfigQuery(variables?: SchemaTypes.Platfo
   return { query: PlatformStorageConfigDocument, variables: variables };
 }
 
+export const AccountStorageConfigDocument = gql`
+  query AccountStorageConfig($accountId: UUID_NAMEID!) {
+    account(ID: $accountId) {
+      id
+      storageAggregator {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        directStorageBucket {
+          id
+          allowedMimeTypes
+          maxFileSize
+          authorization {
+            id
+            myPrivileges
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useAccountStorageConfigQuery__
+ *
+ * To run a query within a React component, call `useAccountStorageConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountStorageConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountStorageConfigQuery({
+ *   variables: {
+ *      accountId: // value for 'accountId'
+ *   },
+ * });
+ */
+export function useAccountStorageConfigQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AccountStorageConfigQuery,
+    SchemaTypes.AccountStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AccountStorageConfigQuery, SchemaTypes.AccountStorageConfigQueryVariables>(
+    AccountStorageConfigDocument,
+    options
+  );
+}
+
+export function useAccountStorageConfigLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AccountStorageConfigQuery,
+    SchemaTypes.AccountStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AccountStorageConfigQuery, SchemaTypes.AccountStorageConfigQueryVariables>(
+    AccountStorageConfigDocument,
+    options
+  );
+}
+
+export type AccountStorageConfigQueryHookResult = ReturnType<typeof useAccountStorageConfigQuery>;
+export type AccountStorageConfigLazyQueryHookResult = ReturnType<typeof useAccountStorageConfigLazyQuery>;
+export type AccountStorageConfigQueryResult = Apollo.QueryResult<
+  SchemaTypes.AccountStorageConfigQuery,
+  SchemaTypes.AccountStorageConfigQueryVariables
+>;
+export function refetchAccountStorageConfigQuery(variables: SchemaTypes.AccountStorageConfigQueryVariables) {
+  return { query: AccountStorageConfigDocument, variables: variables };
+}
+
 export const SpaceCollaborationTemplatesDocument = gql`
   query SpaceCollaborationTemplates($spaceId: UUID!) {
     lookup {

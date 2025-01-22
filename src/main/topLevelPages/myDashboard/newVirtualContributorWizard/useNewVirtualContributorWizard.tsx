@@ -546,8 +546,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
     return (
       <DialogWithGrid open={dialogOpen} columns={6}>
-        {/* TODO: StorageConfig, instead of user here should be account */}
-        <StorageConfigContextProvider userId={user?.user.id ?? ''} locationType="user">
+        <StorageConfigContextProvider accountId={myAccountId} locationType="account">
           {step === 'initial' && (
             <CreateNewVirtualContributor
               onClose={handleCloseWizard}
