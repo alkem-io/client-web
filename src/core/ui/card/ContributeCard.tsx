@@ -35,7 +35,7 @@ const ContributeCard = forwardRef<HTMLDivElement, PropsWithChildren<ContributeCa
           state,
         };
       }
-      return Paper;
+      return {};
     };
 
     return (
