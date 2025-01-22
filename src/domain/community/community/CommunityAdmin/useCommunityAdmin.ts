@@ -24,21 +24,6 @@ import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import useInviteContributors from '../../inviteContributors/useInviteContributors';
 import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
 
-const MAX_AVAILABLE_MEMBERS = 100;
-const buildUserFilterObject = (filter: string | undefined) =>
-  filter
-    ? {
-        email: filter,
-        displayName: filter,
-      }
-    : undefined;
-
-const buildOrganizationFilterObject = (filter: string | undefined) =>
-  filter
-    ? {
-        displayName: filter,
-      }
-    : undefined;
 
 // TODO: Inherit from CoreEntityIds when they are not NameIds
 interface useCommunityAdminParams {
@@ -114,6 +99,7 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
     }
     return result;
   }, [organizations]);
+
 
   const {
     data: dataApplications,

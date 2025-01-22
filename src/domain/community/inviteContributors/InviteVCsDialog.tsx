@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
 import { DialogContent, DialogActions, Button } from '@mui/material';
-import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaBodyOfKnowledgeType, RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
@@ -20,6 +20,7 @@ import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
+import useRoleSetAdmin from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
@@ -28,9 +29,16 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { spaceId, roleSetId } = useSpace();
   const { spaceLevel } = useRouteResolver();
 
-  // data
   const {
     virtualContributors,
+  } = useRoleSetAdmin({
+    roleSetId,
+    relevantRoles: [RoleName.Member],
+    contributorTypes: [RoleSetContributorType.Virtual],
+  });
+
+  // data
+  const {
     getAvailableVirtualContributors,
     getAvailableVirtualContributorsInLibrary,
     inviteExistingUser,

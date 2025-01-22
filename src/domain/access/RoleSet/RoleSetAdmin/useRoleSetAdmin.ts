@@ -10,8 +10,7 @@ import {
   RoleSetMemberVirtualContributorFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { AvailableUsersResponse } from './AvailableUsers/common';
-import useRoleSetAdminAvailableUsersOnPlatform from './AvailableUsers/useRoleSetAdminAvailableUsersOnPlatform';
-import useRoleSetAdminAvailableUsers from './AvailableUsers/useRoleSetAdminAvailableUsers';
+import useRoleSetAdminAvailableUsers, { AvailableUsersForRoleSearchParams } from './AvailableUsers/useRoleSetAdminAvailableUsers';
 import useRoleSetAdminRolesAssignment, {
   useRoleSetAdminRolesAssignmentProvided,
 } from './RolesAssignament/useRoleSetAdminRolesAssignment';
@@ -79,20 +78,7 @@ type useRoleSetAdminParams = {
   relevantRoles: readonly RoleName[];
   contributorTypes?: readonly RoleSetContributorType[];
   parentRoleSetId?: string;
-
-  availableUsersForRoleSearch?: {
-    enabled: boolean;
-    filter?: string;
-  } & (
-    | {
-        mode: 'platform';
-        role?: RoleName;
-      }
-    | {
-        mode: 'roleSet';
-        role: RoleName;
-      }
-  );
+  availableUsersForRoleSearchParams?: AvailableUsersForRoleSearchParams;
 
   skip?: boolean;
 };
@@ -101,7 +87,7 @@ const useRoleSetAdmin = ({
   roleSetId,
   relevantRoles,
   contributorTypes = [RoleSetContributorType.User, RoleSetContributorType.Organization, RoleSetContributorType.Virtual],
-  availableUsersForRoleSearch,
+  availableUsersForRoleSearchParams,
   skip,
 }: useRoleSetAdminParams): useRoleSetAdminProvided => {
   if (!roleSetId || !relevantRoles || relevantRoles.length === 0) {
@@ -245,32 +231,20 @@ const useRoleSetAdmin = ({
     loading: updatingRoleSet,
   } = useRoleSetAdminRolesAssignment({ roleSetId });
 
-  const availableUsersForRoleSetRole = useRoleSetAdminAvailableUsers({
+  const availableUsersForRole = useRoleSetAdminAvailableUsers({
     roleSetId: roleSetId,
-    role: availableUsersForRoleSearch?.role,
-    filter: availableUsersForRoleSearch?.filter,
-    skip:
-      !availableUsersForRoleSearch ||
-      !availableUsersForRoleSearch.enabled ||
-      !(availableUsersForRoleSearch.mode === 'roleSet'),
-    usersAlreadyInRole: data.usersByRole[availableUsersForRoleSearch?.role!],
+    ...(availableUsersForRoleSearchParams ?? { enabled: false }),
+    usersAlreadyInRole: data.usersByRole[availableUsersForRoleSearchParams?.role!],
   });
 
-  const availableUsersForPlatformRoleSetRole = useRoleSetAdminAvailableUsersOnPlatform({
-    filter: availableUsersForRoleSearch?.filter,
-    skip:
-      !availableUsersForRoleSearch ||
-      !availableUsersForRoleSearch.enabled ||
-      !(availableUsersForRoleSearch.mode === 'platform'),
-    usersAlreadyInRole: data.usersByRole[availableUsersForRoleSearch?.role!],
+  const {
+    data: dataApplications,
+    loading: loadingApplications,
+    refetch: refetchApplicationsAndInvitations,
+  } = useCommunityApplicationsInvitationsQuery({
+    variables: { roleSetId },
+    skip: !roleSetId,
   });
-
-  const availableUsersForRole =
-    availableUsersForRoleSearch?.mode === 'roleSet'
-      ? availableUsersForRoleSetRole
-      : availableUsersForRoleSearch?.mode === 'platform'
-      ? availableUsersForPlatformRoleSetRole
-      : undefined;
 
   return {
     myPrivileges,

@@ -39,7 +39,7 @@ const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) =
     roleSetId,
     relevantRoles: MANAGED_ROLES,
     contributorTypes: [RoleSetContributorType.User],
-    availableUsersForRoleSearch: {
+    availableUsersForRoleSearchParams: {
       enabled: !!selectedRole,
       mode: 'platform',
       filter: seachTerm,

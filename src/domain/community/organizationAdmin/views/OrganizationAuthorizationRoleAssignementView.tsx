@@ -26,7 +26,7 @@ export const OrganizationAuthorizationRoleAssignementView = ({ role }: { role: R
     roleSetId,
     relevantRoles: [role],
     contributorTypes: [RoleSetContributorType.User],
-    availableUsersForRoleSearch: {
+    availableUsersForRoleSearchParams: {
       enabled: true,
       mode: 'roleSet',
       role: role,

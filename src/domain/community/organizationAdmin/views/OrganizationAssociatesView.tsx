@@ -26,7 +26,7 @@ export const OrganizationAssociatesView: FC = () => {
     roleSetId,
     relevantRoles: [RoleName.Associate],
     contributorTypes: [RoleSetContributorType.User],
-    availableUsersForRoleSearch: {
+    availableUsersForRoleSearchParams: {
       enabled: true,
       mode: 'platform', // Look in the entire platform, AssociateRole doesn't require an EntryRole
       role: RoleName.Associate,

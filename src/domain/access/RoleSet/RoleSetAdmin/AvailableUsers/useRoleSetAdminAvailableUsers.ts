@@ -1,52 +1,66 @@
-import { useAvailableUsersForElevatedRoleQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AVAILABLE_USERS_PAGE_SIZE, AvailableUsersResponse } from './common';
-import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
-import { Identifiable } from '@/core/utils/Identifiable';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import useRoleSetAdminAvailableUsersOnPlatform from './useRoleSetAdminAvailableUsersOnPlatform';
+import useRoleSetAdminAvailableUsersOnRoleSet from './useRoleSetAdminAvailableUsersOnRoleSet';
+import { Identifiable } from '@/core/utils/Identifiable';
+import { AvailableUsersResponse } from './common';
 
-type useRoleSetAdminAvailableUsersParams = {
-  roleSetId: string | undefined;
-  role: RoleName | undefined;
-  usersAlreadyInRole?: Identifiable[];
+export type AvailableUsersForRoleSearchParams = undefined | {
+  enabled: false | undefined;
+  mode?: undefined;
+  role?: undefined;
+  filter?: undefined;
+} | ({
+  enabled: true;
   filter?: string;
-  skip?: boolean;
-};
+} & (
+    | {
+      mode: 'platform';
+      role?: RoleName;
+    }
+    | {
+      mode: 'roleSet';
+      role: RoleName;
+    }
+  )
+  );
 
-interface useRoleSetAdminAvailableUsersProvided extends AvailableUsersResponse {}
+type useRoleSetAdminAvailableUsersParams = AvailableUsersForRoleSearchParams & {
+  roleSetId: string | undefined;
+  usersAlreadyInRole?: Identifiable[];
+}
 
-/**
- * Do not use this hook directly, normally you should use useRoleSetAdmin instead
- */
 const useRoleSetAdminAvailableUsers = ({
   roleSetId,
+  mode,
   role,
+  enabled,
   filter,
-  skip,
-}: useRoleSetAdminAvailableUsersParams): useRoleSetAdminAvailableUsersProvided => {
-  const { data, loading, fetchMore, hasMore } = usePaginatedQuery({
-    useQuery: useAvailableUsersForElevatedRoleQuery,
-    options: {
-      fetchPolicy: 'cache-first',
-      nextFetchPolicy: 'cache-first',
-      skip: skip || !roleSetId || !role,
-    },
-    pageSize: AVAILABLE_USERS_PAGE_SIZE,
-    variables: {
-      roleSetId: roleSetId!,
-      role: role!,
-      filter: { displayName: filter },
-    },
-    getPageInfo: data => data?.lookup.roleSet?.availableUsersForElevatedRole.pageInfo,
+  usersAlreadyInRole,
+}: useRoleSetAdminAvailableUsersParams): AvailableUsersResponse => {
+  const availableUsersForRoleSetRole = useRoleSetAdminAvailableUsersOnRoleSet({
+    roleSetId: roleSetId,
+    role: role,
+    filter: filter,
+    skip:
+      !enabled || mode !== 'roleSet' || !role,
+    usersAlreadyInRole,
   });
 
-  const users = data?.lookup.roleSet?.availableUsersForElevatedRole.users ?? [];
+  const availableUsersForPlatformRoleSetRole = useRoleSetAdminAvailableUsersOnPlatform({
+    filter: filter,
+    skip:
+      !enabled || mode !== 'platform',
+    usersAlreadyInRole,
+  });
 
-  return {
-    users,
-    hasMore: hasMore ?? false,
-    fetchMore,
-    loading,
-  };
-};
+  const availableUsersForRole =
+    mode === 'roleSet'
+      ? availableUsersForRoleSetRole
+      : mode === 'platform'
+        ? availableUsersForPlatformRoleSetRole
+        : undefined;
+
+  return availableUsersForRole;
+}
 
 export default useRoleSetAdminAvailableUsers;
