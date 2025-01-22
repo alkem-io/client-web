@@ -39,7 +39,7 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
   const { usersByRole, organizationsByRole, virtualContributorsByRole } = useRoleSetAdmin({
     roleSetId,
     relevantRoles: [RoleName.Member],
-    contributorTypes: ['user', 'organization'],
+    contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
   });
   const memberUsers = usersByRole[RoleName.Member] ?? [];
   const memberOrganizations = organizationsByRole[RoleName.Member] ?? [];

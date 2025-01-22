@@ -3,7 +3,7 @@ import AdminLayout from '../layout/toplevel/AdminLayout';
 import { Box, Tab } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { AdminSection } from '../layout/toplevel/constants';
-import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { gutters } from '@/core/ui/grid/utils';
 import { usePlatformRoleSetQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -38,7 +38,7 @@ const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) =
   } = useRoleSetAdmin({
     roleSetId,
     relevantRoles: MANAGED_ROLES,
-    contributorTypes: ['user'],
+    contributorTypes: [RoleSetContributorType.User],
     availableUsersForRoleSearch: {
       enabled: !!selectedRole,
       mode: 'platform',

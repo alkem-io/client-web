@@ -17075,38 +17075,7 @@ export type OrganizationInfoFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
-  roleSet: {
-    __typename?: 'RoleSet';
-    id: string;
-    associatedUsers: Array<{
-      __typename?: 'User';
-      id: string;
-      nameID: string;
-      isContactable: boolean;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        displayName: string;
-        url: string;
-        location?: { __typename?: 'Location'; country?: string | undefined; city?: string | undefined } | undefined;
-        visual?:
-          | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: string }
-          | undefined;
-        tagsets?:
-          | Array<{
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }>
-          | undefined;
-      };
-    }>;
-    adminUsers: Array<{ __typename?: 'User'; id: string }>;
-    ownerUsers: Array<{ __typename?: 'User'; id: string }>;
-  };
+  roleSet: { __typename?: 'RoleSet'; id: string };
   verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
   profile: {
     __typename?: 'Profile';
@@ -17147,7 +17116,6 @@ export type OrganizationInfoFragment = {
 
 export type OrganizationInfoQueryVariables = Exact<{
   organizationId: Scalars['UUID'];
-  includeAssociates?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type OrganizationInfoQuery = {
@@ -17165,46 +17133,7 @@ export type OrganizationInfoQuery = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
-          roleSet: {
-            __typename?: 'RoleSet';
-            id: string;
-            associatedUsers: Array<{
-              __typename?: 'User';
-              id: string;
-              nameID: string;
-              isContactable: boolean;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                displayName: string;
-                url: string;
-                location?:
-                  | { __typename?: 'Location'; country?: string | undefined; city?: string | undefined }
-                  | undefined;
-                visual?:
-                  | {
-                      __typename?: 'Visual';
-                      alternativeText?: string | undefined;
-                      id: string;
-                      uri: string;
-                      name: string;
-                    }
-                  | undefined;
-                tagsets?:
-                  | Array<{
-                      __typename?: 'Tagset';
-                      id: string;
-                      name: string;
-                      tags: Array<string>;
-                      allowedValues: Array<string>;
-                      type: TagsetType;
-                    }>
-                  | undefined;
-              };
-            }>;
-            adminUsers: Array<{ __typename?: 'User'; id: string }>;
-            ownerUsers: Array<{ __typename?: 'User'; id: string }>;
-          };
+          roleSet: { __typename?: 'RoleSet'; id: string };
           verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
           profile: {
             __typename?: 'Profile';

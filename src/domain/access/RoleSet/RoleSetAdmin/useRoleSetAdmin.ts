@@ -4,6 +4,7 @@ import { useRoleSetAuthorizationQuery, useRoleSetRoleAssignmentQuery } from '@/c
 import {
   AuthorizationPrivilege,
   RoleName,
+  RoleSetContributorType,
   RoleSetMemberOrganizationFragment,
   RoleSetMemberUserFragment,
   RoleSetMemberVirtualContributorFragment,
@@ -14,8 +15,6 @@ import useRoleSetAdminAvailableUsers from './AvailableUsers/useRoleSetAdminAvail
 import useRoleSetAdminRolesAssignment, {
   useRoleSetAdminRolesAssignmentProvided,
 } from './RolesAssignament/useRoleSetAdminRolesAssignment';
-
-type RoleSetMemberType = 'user' | 'organization' | 'virtualContributor';
 
 export const RELEVANT_ROLES = {
   Community: [RoleName.Admin, RoleName.Lead, RoleName.Member],
@@ -75,7 +74,7 @@ interface useRoleSetAdminProvided extends useRoleSetAdminRolesAssignmentProvided
 type useRoleSetAdminParams = {
   roleSetId: string | undefined;
   relevantRoles: readonly RoleName[];
-  contributorTypes?: readonly RoleSetMemberType[];
+  contributorTypes?: readonly RoleSetContributorType[];
   parentRoleSetId?: string;
 
   availableUsersForRoleSearch?: {
@@ -98,7 +97,7 @@ type useRoleSetAdminParams = {
 const useRoleSetAdmin = ({
   roleSetId,
   relevantRoles,
-  contributorTypes = ['user', 'organization', 'virtualContributor'],
+  contributorTypes = [RoleSetContributorType.User, RoleSetContributorType.Organization, RoleSetContributorType.Virtual],
   availableUsersForRoleSearch,
   skip,
 }: useRoleSetAdminParams): useRoleSetAdminProvided => {
@@ -136,9 +135,9 @@ const useRoleSetAdmin = ({
     variables: {
       roleSetId: roleSetId!,
       roles: relevantRoles as RoleName[],
-      includeUsers: contributorTypes.includes('user'),
-      includeOrganizations: contributorTypes.includes('organization'),
-      includeVirtualContributors: contributorTypes.includes('virtualContributor'),
+      includeUsers: contributorTypes.includes(RoleSetContributorType.User),
+      includeOrganizations: contributorTypes.includes(RoleSetContributorType.Organization),
+      includeVirtualContributors: contributorTypes.includes(RoleSetContributorType.Virtual),
     },
     skip: skip || !roleSetId || loadingRoleSet || !relevantRoles || relevantRoles.length === 0,
   });

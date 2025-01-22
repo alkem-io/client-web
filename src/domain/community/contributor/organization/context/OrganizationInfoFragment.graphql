@@ -42,34 +42,4 @@ fragment OrganizationInfo on Organization {
     name
     value
   }
-  roleSet @include(if: $includeAssociates) {
-    id
-    associatedUsers: usersInRole(role: ASSOCIATE) {
-      id
-      nameID
-      isContactable
-      profile {
-        id
-        displayName
-        location {
-          country
-          city
-        }
-        visual(type: AVATAR) {
-          ...VisualUri
-          alternativeText
-        }
-        tagsets {
-          ...TagsetDetails
-        }
-        url
-      }
-    }
-    adminUsers: usersInRole(role: ADMIN) {
-      id
-    }
-    ownerUsers: usersInRole(role: OWNER) {
-      id
-    }
-  }
 }

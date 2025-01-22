@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import EditMemberUsers from '@/domain/platform/admin/components/Community/EditMembersUsers';
 import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
 import { useTranslation } from 'react-i18next';
-import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetAdmin from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
 import { useUserContext } from '../../user';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -25,7 +25,7 @@ export const OrganizationAssociatesView: FC = () => {
   } = useRoleSetAdmin({
     roleSetId,
     relevantRoles: [RoleName.Associate],
-    contributorTypes: ['user'],
+    contributorTypes: [RoleSetContributorType.User],
     availableUsersForRoleSearch: {
       enabled: true,
       mode: 'platform', // Look in the entire platform, AssociateRole doesn't require an EntryRole

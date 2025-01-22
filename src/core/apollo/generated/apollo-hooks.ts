@@ -1317,36 +1317,6 @@ export const OrganizationInfoFragmentDoc = gql`
       name
       value
     }
-    roleSet @include(if: $includeAssociates) {
-      id
-      associatedUsers: usersInRole(role: ASSOCIATE) {
-        id
-        nameID
-        isContactable
-        profile {
-          id
-          displayName
-          location {
-            country
-            city
-          }
-          visual(type: AVATAR) {
-            ...VisualUri
-            alternativeText
-          }
-          tagsets {
-            ...TagsetDetails
-          }
-          url
-        }
-      }
-      adminUsers: usersInRole(role: ADMIN) {
-        id
-      }
-      ownerUsers: usersInRole(role: OWNER) {
-        id
-      }
-    }
   }
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
@@ -11295,7 +11265,7 @@ export function refetchRolesOrganizationQuery(variables: SchemaTypes.RolesOrgani
 }
 
 export const OrganizationInfoDocument = gql`
-  query organizationInfo($organizationId: UUID!, $includeAssociates: Boolean = false) {
+  query organizationInfo($organizationId: UUID!) {
     lookup {
       organization(ID: $organizationId) {
         ...OrganizationInfo
@@ -11318,7 +11288,6 @@ export const OrganizationInfoDocument = gql`
  * const { data, loading, error } = useOrganizationInfoQuery({
  *   variables: {
  *      organizationId: // value for 'organizationId'
- *      includeAssociates: // value for 'includeAssociates'
  *   },
  * });
  */

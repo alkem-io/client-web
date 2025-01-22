@@ -5,7 +5,7 @@ import useUserCardProps from '../utils/useUserCardProps';
 import NoOrganizations from '../RoleSetContributors/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
-import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetAdmin from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
 
 const SubspaceContributorsDialogContent = ({ dialogOpen }: ContributorsDialogContentProps) => {
@@ -22,7 +22,7 @@ const SubspaceContributorsDialogContent = ({ dialogOpen }: ContributorsDialogCon
   const { usersByRole, organizationsByRole } = useRoleSetAdmin({
     roleSetId,
     relevantRoles: [RoleName.Member],
-    contributorTypes: ['user', 'organization'],
+    contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
   });
   const memberUsers = usersByRole[RoleName.Member] ?? [];
   const memberOrganizations = organizationsByRole[RoleName.Member] ?? [];

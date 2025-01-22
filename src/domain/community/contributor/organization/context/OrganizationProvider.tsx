@@ -27,7 +27,6 @@ const OrganizationProvider: FC = ({ children }) => {
   const { data, loading: loadingOrganizationInfo } = useOrganizationInfoQuery({
     variables: {
       organizationId: organizationId!,
-      includeAssociates: user?.hasPlatformPrivilege(AuthorizationPrivilege.ReadUsers) ?? false,
     },
     errorPolicy: 'all',
     skip: !organizationId || isUserLoading,

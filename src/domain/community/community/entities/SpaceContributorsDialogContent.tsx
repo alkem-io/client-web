@@ -5,7 +5,7 @@ import RoleSetContributorTypesView from '../RoleSetContributors/RoleSetContribut
 import NoOrganizations from '../RoleSetContributors/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
 import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
-import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 
 const SpaceContributorsDialogContent = ({ dialogOpen }: ContributorsDialogContentProps) => {
   const { roleSetId } = useSpace();
@@ -13,7 +13,7 @@ const SpaceContributorsDialogContent = ({ dialogOpen }: ContributorsDialogConten
   const { usersByRole, organizationsByRole, loading } = useRoleSetAdmin({
     roleSetId,
     relevantRoles: RELEVANT_ROLES.Community,
-    contributorTypes: ['organization', 'user'],
+    contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
     skip: !dialogOpen,
   });
   const memberOrganizations = organizationsByRole[RoleName.Member] ?? [];
