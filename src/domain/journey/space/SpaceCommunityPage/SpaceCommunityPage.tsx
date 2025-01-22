@@ -10,7 +10,7 @@ import {
   DirectMessageDialog,
   MessageReceiverChipData,
 } from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
-import CommunityContributorsBlockWide from '@/domain/community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWide';
+import RoleSetContributorsBlockWide from '@/domain/community/contributor/RoleSetContributorsBlockWide/RoleSetContributorsBlockWide';
 import { useSpaceCommunityPageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/useSendMessageToCommunityLeads';
 import useCommunityMembersAsCardProps from '@/domain/community/community/utils/useCommunityMembersAsCardProps';
@@ -123,7 +123,7 @@ const SpaceCommunityPage = () => {
               <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.space.profile.url} />
             </InfoColumn>
             <ContentColumn>
-              <CommunityContributorsBlockWide
+              <RoleSetContributorsBlockWide
                 users={memberUsers}
                 showUsers={isAuthenticated}
                 organizations={memberOrganizations}

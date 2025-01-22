@@ -20,7 +20,7 @@ type RoleSetContributorTypesBlockWideProps = {
 
 const COMPACT_VIEW_ROWS = 3;
 
-const CommunityVirtualContributorsBlockWide = ({
+const RoleSetVirtualContributorsBlockWide = ({
   virtualContributors,
   isLoading,
 }: RoleSetContributorTypesBlockWideProps) => {
@@ -85,4 +85,4 @@ const CommunityVirtualContributorsBlockWide = ({
   );
 };
 
-export default CommunityVirtualContributorsBlockWide;
+export default RoleSetVirtualContributorsBlockWide;
