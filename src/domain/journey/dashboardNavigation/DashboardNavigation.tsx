@@ -91,7 +91,7 @@ const DashboardNavigation = ({
     for (const key of difference(Object.keys(itemRefs), ids)) {
       itemRefs[key] = null;
     }
-  }, [ids]);
+  }, [ids.join(',')]);
 
   const rootItem = dashboardNavigationRoot && itemRefs[dashboardNavigationRoot.id];
 
