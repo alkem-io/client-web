@@ -12,7 +12,6 @@ import {
   useInAppNotificationsQuery,
   useUpdateNotificationStateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { useUserContext } from '@/domain/community/user';
 import { useInAppNotificationsContext } from './InAppNotificationsContext';
 
 const POLLING_INTERVAL = 30 * 1000; // 30 seconds
@@ -89,7 +88,6 @@ export interface InAppNotificationProps {
 }
 
 export const useInAppNotifications = () => {
-  const { user } = useUserContext();
   const { isEnabled } = useInAppNotificationsContext();
 
   const [updateState] = useUpdateNotificationStateMutation();
@@ -120,7 +118,7 @@ export const useInAppNotifications = () => {
         ID: id,
         state: status,
       },
-      refetchQueries: [refetchInAppNotificationsQuery({ receiverID: user?.user.id! })],
+      refetchQueries: [refetchInAppNotificationsQuery()],
     });
   };
 
