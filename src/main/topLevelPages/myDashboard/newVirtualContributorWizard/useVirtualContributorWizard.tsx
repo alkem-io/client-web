@@ -36,14 +36,14 @@ import { useUserContext } from '@/domain/community/user';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import useNavigate from '@/core/routing/useNavigate';
 import { usePlanAvailability } from '@/domain/journey/space/createSpace/plansTable/usePlanAvailability';
-import { addVCCreationCache } from './vcCreationUtil';
+import { addVCCreationCache } from './TryVC/utils';
 import { info as logInfo } from '@/core/logging/sentry/log';
 import CreateExternalAIDialog, { ExternalVcFormValues } from './CreateExternalAIDialog';
-import { useNewVirtualContributorWizardProvided, UserAccountProps } from './useNewVirtualContributorProps';
+import { useVirtualContributorWizardProvided, UserAccountProps } from './virtualContributorProps';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { getSpaceUrlFromSubSpace } from '@/main/routing/urlBuilders';
 import ChooseCommunity from './ChooseCommunity';
-import TryVcInfo from './TryVcInfo';
+import TryVcInfo from './TryVC/TryVcInfo';
 
 const steps = {
   initial: 'initial',
@@ -74,7 +74,7 @@ export type SelectableSpace = {
   subspaces?: SelectableSpace[];
 };
 
-const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvided => {
+const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   const { t } = useTranslation();
   const { user } = useUserContext();
   const notify = useNotification();
@@ -539,7 +539,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
   };
 
-  const NewVirtualContributorWizard = useCallback(() => {
+  const VirtualContributorWizard = useCallback(() => {
     if (!myAccountId) {
       return null;
     }
@@ -597,8 +597,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
 
   return {
     startWizard,
-    NewVirtualContributorWizard,
+    VirtualContributorWizard,
   };
 };
 
-export default useNewVirtualContributorWizard;
+export default useVirtualContributorWizard;

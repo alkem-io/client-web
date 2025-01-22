@@ -34,8 +34,8 @@ import { ContributorViewProps } from '@/domain/community/community/EntityDashboa
 import {
   getVCCreationCache,
   removeVCCreationCache,
-} from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/vcCreationUtil';
-import TryVirtualContributorDialog from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVirtualContributorDialog';
+} from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/utils';
+import TryVirtualContributorDialog from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/TryVC/TryVirtualContributorDialog';
 
 type SpaceDashboardViewProps = {
   spaceId: string | undefined;

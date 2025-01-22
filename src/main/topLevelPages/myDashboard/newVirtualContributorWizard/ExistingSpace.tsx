@@ -8,7 +8,7 @@ import { LoadingButton } from '@mui/lab';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
-import { SelectableSpace } from './useNewVirtualContributorWizard';
+import { SelectableSpace } from './useVirtualContributorWizard';
 
 export interface SelectableKnowledgeSpace {
   id: string;
