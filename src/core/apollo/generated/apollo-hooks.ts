@@ -22714,8 +22714,8 @@ export function refetchGuidanceRoomMessagesQuery(variables: SchemaTypes.Guidance
 }
 
 export const InAppNotificationsDocument = gql`
-  query InAppNotifications($receiverID: UUID!) {
-    notifications(receiverID: $receiverID) {
+  query InAppNotifications {
+    notifications {
       id
       type
       category
@@ -22749,12 +22749,11 @@ export const InAppNotificationsDocument = gql`
  * @example
  * const { data, loading, error } = useInAppNotificationsQuery({
  *   variables: {
- *      receiverID: // value for 'receiverID'
  *   },
  * });
  */
 export function useInAppNotificationsQuery(
-  baseOptions: Apollo.QueryHookOptions<
+  baseOptions?: Apollo.QueryHookOptions<
     SchemaTypes.InAppNotificationsQuery,
     SchemaTypes.InAppNotificationsQueryVariables
   >
@@ -22785,7 +22784,7 @@ export type InAppNotificationsQueryResult = Apollo.QueryResult<
   SchemaTypes.InAppNotificationsQuery,
   SchemaTypes.InAppNotificationsQueryVariables
 >;
-export function refetchInAppNotificationsQuery(variables: SchemaTypes.InAppNotificationsQueryVariables) {
+export function refetchInAppNotificationsQuery(variables?: SchemaTypes.InAppNotificationsQueryVariables) {
   return { query: InAppNotificationsDocument, variables: variables };
 }
 

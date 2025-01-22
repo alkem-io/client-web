@@ -1,5 +1,5 @@
-query InAppNotifications ($receiverID: UUID!) {
-  notifications (receiverID: $receiverID) {
+query InAppNotifications {
+  notifications {
     id
     type
     category
