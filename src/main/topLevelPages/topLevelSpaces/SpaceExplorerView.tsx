@@ -21,6 +21,7 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { compact } from 'lodash';
+import Loading from '@/core/ui/loading/Loading';
 
 export interface SpaceExplorerViewProps {
   spaces: SpaceWithParent[] | undefined;
@@ -249,11 +250,7 @@ export const SpaceExplorerView = ({
           {t('pages.exploreSpaces.search.noResults')}
         </CaptionSmall>
       )}
-      {loadingSearchResults && (
-        <Gutters>
-          <Caption>{t('pages.exploreSpaces.search.searching')}</Caption>
-        </Gutters>
-      )}
+      {loadingSearchResults && <Loading text={t('pages.exploreSpaces.search.searching')} />}
       {spacesLength > 0 && (
         <>
           <ScrollableCardsLayoutContainer>
