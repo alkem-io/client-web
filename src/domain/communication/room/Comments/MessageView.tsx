@@ -30,7 +30,7 @@ const MessageActionsContainer = styled('ul')(({ theme }) => ({
     listStyleType: 'none',
     display: 'flex',
     alignItems: 'center',
-    '&:not(:first-child):before': {
+    '&:not(:first-of-type):before': {
       content: '""',
       width: theme.spacing(0.1),
       marginLeft: theme.spacing(0.4),

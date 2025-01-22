@@ -148,6 +148,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
         onClick={() => setEmojiSelectorOpen(!isEmojiSelectorOpen)}
         disabled={inactive || readOnly}
         aria-label={t('messaging.insertEmoji')}
+        sx={{ marginLeft: theme => theme.spacing(-1) }}
       >
         <EmojiEmotionsOutlinedIcon fontSize="small" />
       </IconButton>
@@ -194,20 +195,7 @@ export const FormikCommentInputField: FC<FormikCommentInputFieldProps> = ({
                     height: '100%',
                   },
             })}
-            startAdornment={
-              !compactMode && (
-                <InputAdornment
-                  position="start"
-                  sx={{
-                    '& > :first-child': theme => ({
-                      marginLeft: theme.spacing(-1),
-                    }),
-                  }}
-                >
-                  {buttons}
-                </InputAdornment>
-              )
-            }
+            startAdornment={!compactMode && <InputAdornment position="start">{buttons}</InputAdornment>}
             endAdornment={
               <InputAdornment position="end">
                 <IconButton size="small" type="submit" disabled={submitDisabled} aria-label={t('buttons.send')}>

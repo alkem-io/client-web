@@ -96,7 +96,7 @@ const useSpaceDashboardNavigation = ({
     if (readableChallengeIds.length > 0) {
       refetchOpportunities();
     }
-  }, readableChallengeIds);
+  }, [readableChallengeIds.join(',')]);
 
   const challengesWithOpportunitiesById = useMemo(
     () => keyBy(opportunitiesQueryData?.lookup.space?.subspaces, 'id'),
