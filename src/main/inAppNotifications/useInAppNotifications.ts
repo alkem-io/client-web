@@ -95,9 +95,6 @@ export const useInAppNotifications = () => {
   const [updateState] = useUpdateNotificationStateMutation();
 
   const { data, loading, startPolling, stopPolling } = useInAppNotificationsQuery({
-    variables: {
-      receiverID: user?.user.id!,
-    },
     skip: !isEnabled,
   });
 
