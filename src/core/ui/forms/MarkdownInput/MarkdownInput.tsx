@@ -56,7 +56,7 @@ const proseMirrorStyles = {
   outline: 'none',
   minHeight: gutters(4),
   padding: gutters(0.5),
-  '& p:first-child': { marginTop: 0 },
+  '& p:first-of-type': { marginTop: 0 },
   '& p:last-child': { marginBottom: 0 },
   '& img': { maxWidth: '100%' },
 } as const;
