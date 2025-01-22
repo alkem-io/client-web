@@ -38,9 +38,9 @@ const CreateInnovationHubDialog = ({
           nameID: formData.nameID,
           subdomain: formData.subdomain,
           profileData: {
-            displayName: formData.profile.displayName,
-            tagline: formData.profile.tagline,
-            description: formData.profile.description,
+            displayName: formData.createInnovationHub.displayName,
+            tagline: formData.createInnovationHub.tagline,
+            description: formData.createInnovationHub.description,
           },
           type: InnovationHubType.List,
           spaceListFilter: [],

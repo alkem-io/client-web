@@ -60,14 +60,14 @@ const AdminInnovationPackPage = () => {
           listedInStore: formData.listedInStore,
           searchVisibility: formData.searchVisibility,
           profileData: {
-            displayName: formData.profile.displayName,
-            description: formData.profile.description,
-            tagsets: formData.profile.tagsets.map(tagset => ({
+            displayName: formData.createInnovationPack.displayName,
+            description: formData.createInnovationPack.description,
+            tagsets: formData.createInnovationPack.tagsets.map(tagset => ({
               ID: tagset.id,
               name: tagset.name,
               tags: tagset.tags,
             })),
-            references: formData.profile.references.map(r => ({
+            references: formData.createInnovationPack.references.map(r => ({
               ID: r.id,
               name: r.name,
               description: r.description,

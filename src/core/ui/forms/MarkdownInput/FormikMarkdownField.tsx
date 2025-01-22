@@ -106,7 +106,7 @@ export const FormikMarkdownField = ({
     if (!isError) {
       return validInputHelperText;
     }
-    return tErr(meta.error as TranslationKey, { field: title });
+    return tErr(`${meta.error?.split(' ')[0]}.errorMessage` as TranslationKey, { fieldName: title });
   }, [isError, meta.error, validInputHelperText, tErr, title]);
 
   const handleChange = useCallback(
