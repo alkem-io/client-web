@@ -13,7 +13,7 @@ import {
   Title,
   Undo,
 } from '@mui/icons-material';
-import { Collapse, IconButton, IconButtonProps, Tabs } from '@mui/material';
+import { Box, Collapse, IconButton, IconButtonProps, Tabs } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { gutters } from '@/core/ui/grid/utils';
 import { ChainedCommands } from '@tiptap/core/dist/packages/core/src/types';
@@ -229,7 +229,8 @@ const MarkdownInputControls = memo(
             </ControlsButton>
             <ToggleLinkButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
             {!hideImageOptions && (
-              <>
+              // Keep the Box and don't use Fragments since it's not a valid MUI code - https://stackoverflow.com/questions/75083605/mui-the-menu-component-doesnt-accept-a-fragment-as-a-child-consider-providing
+              <Box>
                 <InsertImageButton
                   editor={editor}
                   onDialogOpen={onDialogOpen}
@@ -237,7 +238,7 @@ const MarkdownInputControls = memo(
                   temporaryLocation={temporaryLocation}
                 />
                 <InsertEmbedCodeButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
-              </>
+              </Box>
             )}
 
             <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />

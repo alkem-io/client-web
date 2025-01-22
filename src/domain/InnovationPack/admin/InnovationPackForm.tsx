@@ -19,7 +19,7 @@ import FormikSelect from '@/core/ui/forms/FormikSelect';
 
 export interface InnovationPackFormValues {
   nameID: string;
-  profile: {
+  createInnovationPack: {
     displayName: string;
     description: string;
     tagsets: Pick<Tagset, 'id' | 'tags' | 'name' | 'allowedValues' | 'type'>[];
@@ -64,7 +64,7 @@ const InnovationPackForm = ({
 
   const initialValues: InnovationPackFormValues = {
     nameID: nameID ?? '',
-    profile: {
+    createInnovationPack: {
       displayName: profile?.displayName ?? '',
       description: profile?.description ?? '',
       tagsets: [
@@ -78,7 +78,7 @@ const InnovationPackForm = ({
 
   const validationSchema = yup.object().shape({
     nameID: nameSegmentSchema.fields?.nameID ?? yup.string(),
-    profile: yup.object().shape({
+    createInnovationPack: yup.object().shape({
       displayName: nameSegmentSchema.fields?.name ?? yup.string(),
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
       references: referenceSegmentSchema,
@@ -90,10 +90,10 @@ const InnovationPackForm = ({
 
   return (
     <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
-      {({ values: { profile }, handleSubmit }) => {
+      {({ values: { createInnovationPack }, handleSubmit }) => {
         return (
           <Gutters disablePadding>
-            <NameSegment disabled={!isNew} required={isNew} nameFieldName="profile.displayName" />
+            <NameSegment disabled={!isNew} required={isNew} nameFieldName="createInnovationPack.displayName" />
             {!isNew && (
               <>
                 <TextField
@@ -119,17 +119,17 @@ const InnovationPackForm = ({
             )}
             <FormikMarkdownField
               temporaryLocation={isNew}
-              title={t('common.description')}
-              name="profile.description"
+              title={t('createInnovationPack.description.placeholder')}
+              name="createInnovationPack.description"
               maxLength={MARKDOWN_TEXT_LENGTH}
             />
             {!isNew && profileId ? (
               <>
                 <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
-                <TagsetSegment fieldName="profile.tagsets" tagsets={profile.tagsets} />
+                <TagsetSegment fieldName="profile.tagsets" tagsets={createInnovationPack.tagsets} />
                 <ContextReferenceSegment
                   fieldName="profile.references"
-                  references={profile.references || []}
+                  references={createInnovationPack.references || []}
                   profileId={profileId}
                 />
               </>

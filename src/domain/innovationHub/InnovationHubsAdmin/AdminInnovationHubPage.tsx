@@ -54,10 +54,10 @@ const AdminInnovationHubPage = () => {
         hubData: {
           ID: innovationHub.id,
           profileData: {
-            displayName: formData.profile.displayName,
-            description: formData.profile.description,
-            tagline: formData.profile.tagline,
-            tagsets: formData.profile.tagsets.map(tagset => ({
+            displayName: formData.createInnovationHub.displayName,
+            description: formData.createInnovationHub.description,
+            tagline: formData.createInnovationHub.tagline,
+            tagsets: formData.createInnovationHub.tagsets.map(tagset => ({
               ID: tagset.id,
               name: tagset.name,
               tags: tagset.tags,
