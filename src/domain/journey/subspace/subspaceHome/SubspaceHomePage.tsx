@@ -83,7 +83,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
 
   return (
     <SubspaceHomeContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
-      {({ innovationFlow, callouts, subspace, spaceReadAccess, communityReadAccess, communityId }) => {
+      {({ innovationFlow, callouts, subspace, spaceReadAccess, communityReadAccess, communityId, roleSet }) => {
         const { collaboration, community, profile } = subspace ?? {};
 
         return (
@@ -98,9 +98,9 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
               welcome={
                 <JourneyDashboardWelcomeBlock
                   vision={subspace?.context?.vision ?? ''}
-                  leadUsers={community?.roleSet?.leadUsers ?? []}
+                  leadUsers={roleSet.leadUsers}
                   onContactLeadUser={receiver => sendMessage('user', receiver)}
-                  leadOrganizations={community?.roleSet?.leadOrganizations}
+                  leadOrganizations={roleSet.leadOrganizations}
                   onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
                   journeyTypeName="subspace"
                   member={community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}

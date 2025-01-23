@@ -167,27 +167,135 @@ export const AvailableUsersForRoleSetPaginatedFragmentDoc = gql`
   }
   ${AvailableUserForRoleSetFragmentDoc}
 `;
-export const PageInfoFragmentDoc = gql`
-  fragment PageInfo on PageInfo {
-    startCursor
-    endCursor
-    hasNextPage
-  }
-`;
-export const RoleSetAvailableElevatedRoleUsersFragmentDoc = gql`
-  fragment RoleSetAvailableElevatedRoleUsers on RoleSet {
+export const RoleSetMemberUserFragmentDoc = gql`
+  fragment RoleSetMemberUser on User {
     id
-    availableUsersForElevatedRole(role: $roleName, first: $first, after: $after, filter: $filter) {
-      users {
-        ...AvailableUserForRoleSet
+    isContactable
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
       }
-      pageInfo {
-        ...PageInfo
+      location {
+        id
+        city
+        country
       }
+      tagsets {
+        ...TagsetDetails
+      }
+      url
+    }
+    email
+    firstName
+    lastName
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
+export const RoleSetMemberOrganizationFragmentDoc = gql`
+  fragment RoleSetMemberOrganization on Organization {
+    id
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      description
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        id
+        country
+        city
+      }
+      url
+    }
+    verification {
+      id
+      status
     }
   }
-  ${AvailableUserForRoleSetFragmentDoc}
-  ${PageInfoFragmentDoc}
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
+export const RoleSetMemberVirtualContributorFragmentDoc = gql`
+  fragment RoleSetMemberVirtualContributor on VirtualContributor {
+    id
+    searchVisibility
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        id
+        city
+        country
+      }
+      url
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
+export const RoleDefinitionPolicyFragmentDoc = gql`
+  fragment RoleDefinitionPolicy on Role {
+    id
+    name
+    organizationPolicy {
+      minimum
+      maximum
+    }
+    userPolicy {
+      minimum
+      maximum
+    }
+  }
+`;
+export const CommunityRoleSetDetailsFragmentDoc = gql`
+  fragment CommunityRoleSetDetails on RoleSet {
+    id
+    memberUsers: usersInRole(role: MEMBER) {
+      ...RoleSetMemberUser
+    }
+    leadUsers: usersInRole(role: LEAD) {
+      ...RoleSetMemberUser
+    }
+    adminUsers: usersInRole(role: ADMIN) {
+      ...RoleSetMemberUser
+    }
+    memberOrganizations: organizationsInRole(role: MEMBER) {
+      ...RoleSetMemberOrganization
+    }
+    leadOrganizations: organizationsInRole(role: LEAD) {
+      ...RoleSetMemberOrganization
+    }
+    memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
+      ...RoleSetMemberVirtualContributor
+    }
+    memberRoleDefinition: roleDefinition(role: MEMBER) {
+      ...RoleDefinitionPolicy
+    }
+    leadRoleDefinition: roleDefinition(role: LEAD) {
+      ...RoleDefinitionPolicy
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${RoleSetMemberUserFragmentDoc}
+  ${RoleSetMemberOrganizationFragmentDoc}
+  ${RoleSetMemberVirtualContributorFragmentDoc}
+  ${RoleDefinitionPolicyFragmentDoc}
 `;
 export const AccountItemProfileFragmentDoc = gql`
   fragment AccountItemProfile on Profile {
@@ -1213,6 +1321,13 @@ export const OrganizationContributorFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const PageInfoFragmentDoc = gql`
+  fragment PageInfo on PageInfo {
+    startCursor
+    endCursor
+    hasNextPage
+  }
+`;
 export const OrganizationContributorPaginatedFragmentDoc = gql`
   fragment OrganizationContributorPaginated on PaginatedOrganization {
     organization {
@@ -1738,61 +1853,6 @@ export const ContextJourneyDataFragmentDoc = gql`
     impact
   }
 `;
-export const RoleSetMemberUserFragmentDoc = gql`
-  fragment RoleSetMemberUser on User {
-    id
-    isContactable
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      location {
-        id
-        city
-        country
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      url
-    }
-    email
-    firstName
-    lastName
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export const RoleSetMemberOrganizationFragmentDoc = gql`
-  fragment RoleSetMemberOrganization on Organization {
-    id
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      description
-      tagsets {
-        ...TagsetDetails
-      }
-      location {
-        id
-        country
-        city
-      }
-      url
-    }
-    verification {
-      id
-      status
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
 export const JourneyCommunityFragmentDoc = gql`
   fragment JourneyCommunity on Community {
     id
@@ -2174,143 +2234,6 @@ export const SubspacesOnSpaceFragmentDoc = gql`
   }
   ${SubspaceCardFragmentDoc}
 `;
-export const RoleSetMemberVirtualContributorFragmentDoc = gql`
-  fragment RoleSetMemberVirtualContributor on VirtualContributor {
-    id
-    searchVisibility
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      location {
-        id
-        city
-        country
-      }
-      url
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export const RoleDefinitionPolicyFragmentDoc = gql`
-  fragment RoleDefinitionPolicy on Role {
-    id
-    name
-    organizationPolicy {
-      minimum
-      maximum
-    }
-    userPolicy {
-      minimum
-      maximum
-    }
-  }
-`;
-export const CommunityRoleSetDetailsFragmentDoc = gql`
-  fragment CommunityRoleSetDetails on RoleSet {
-    id
-    memberUsers: usersInRole(role: MEMBER) {
-      ...RoleSetMemberUser
-    }
-    leadUsers: usersInRole(role: LEAD) {
-      ...RoleSetMemberUser
-    }
-    adminUsers: usersInRole(role: ADMIN) {
-      ...RoleSetMemberUser
-    }
-    memberOrganizations: organizationsInRole(role: MEMBER) {
-      ...RoleSetMemberOrganization
-    }
-    leadOrganizations: organizationsInRole(role: LEAD) {
-      ...RoleSetMemberOrganization
-    }
-    memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
-      ...RoleSetMemberVirtualContributor
-    }
-    memberRoleDefinition: roleDefinition(role: MEMBER) {
-      ...RoleDefinitionPolicy
-    }
-    leadRoleDefinition: roleDefinition(role: LEAD) {
-      ...RoleDefinitionPolicy
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-  ${RoleSetMemberUserFragmentDoc}
-  ${RoleSetMemberOrganizationFragmentDoc}
-  ${RoleSetMemberVirtualContributorFragmentDoc}
-  ${RoleDefinitionPolicyFragmentDoc}
-`;
-export const SpaceProfileFragmentDoc = gql`
-  fragment SpaceProfile on Space {
-    id
-    nameID
-    metrics {
-      id
-      name
-      value
-    }
-    profile {
-      id
-      url
-      tagline
-      displayName
-      visuals {
-        ...VisualFull
-      }
-      tagset {
-        ...TagsetDetails
-      }
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-    context {
-      id
-      vision
-      authorization {
-        id
-        myPrivileges
-      }
-    }
-    collaboration {
-      id
-      innovationFlow {
-        id
-        states {
-          displayName
-          description
-        }
-        currentState {
-          displayName
-        }
-      }
-      ...DashboardTopCallouts
-      ...DashboardTimelineAuthorization
-    }
-    community {
-      id
-      roleSet {
-        ...CommunityRoleSetDetails
-        myMembershipStatus
-      }
-    }
-  }
-  ${VisualFullFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-  ${DashboardTopCalloutsFragmentDoc}
-  ${DashboardTimelineAuthorizationFragmentDoc}
-  ${CommunityRoleSetDetailsFragmentDoc}
-`;
 export const SpaceSettingsFragmentDoc = gql`
   fragment SpaceSettings on SpaceSettings {
     privacy {
@@ -2428,7 +2351,7 @@ export const SubspacePageSpaceFragmentDoc = gql`
         myPrivileges
       }
       roleSet {
-        ...CommunityRoleSetDetails
+        id
         myMembershipStatus
       }
     }
@@ -2445,7 +2368,6 @@ export const SubspacePageSpaceFragmentDoc = gql`
       }
     }
   }
-  ${CommunityRoleSetDetailsFragmentDoc}
 `;
 export const AdminSpaceFragmentDoc = gql`
   fragment AdminSpace on Space {
@@ -15214,16 +15136,6 @@ export const AboutPageNonMembersDocument = gql`
           }
           roleSet {
             id
-            authorization {
-              id
-              myPrivileges
-            }
-            memberUsers: usersInRole(role: MEMBER, limit: 8) {
-              ...RoleSetMemberUser
-            }
-            memberOrganizations: organizationsInRole(role: MEMBER) {
-              ...RoleSetMemberOrganization
-            }
           }
         }
         context {
@@ -15249,8 +15161,6 @@ export const AboutPageNonMembersDocument = gql`
   ${VisualFullFragmentDoc}
   ${ContributorDetailsFragmentDoc}
   ${MetricsItemFragmentDoc}
-  ${RoleSetMemberUserFragmentDoc}
-  ${RoleSetMemberOrganizationFragmentDoc}
   ${ContextTabFragmentDoc}
 `;
 
@@ -15314,7 +15224,7 @@ export const AboutPageMembersDocument = gql`
         community {
           id
           roleSet {
-            ...CommunityRoleSetDetails
+            id
           }
         }
         profile {
@@ -15331,7 +15241,6 @@ export const AboutPageMembersDocument = gql`
       }
     }
   }
-  ${CommunityRoleSetDetailsFragmentDoc}
   ${ReferenceDetailsFragmentDoc}
 `;
 
@@ -15988,7 +15897,7 @@ export const SpaceCommunityPageDocument = gql`
       community @include(if: $includeCommunity) {
         id
         roleSet {
-          ...CommunityRoleSetDetails
+          id
         }
       }
       collaboration {
@@ -16000,7 +15909,6 @@ export const SpaceCommunityPageDocument = gql`
     }
   }
   ${ContributorDetailsFragmentDoc}
-  ${CommunityRoleSetDetailsFragmentDoc}
 `;
 
 /**

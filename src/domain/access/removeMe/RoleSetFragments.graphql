@@ -37,16 +37,4 @@ fragment CommunityRoleSetDetails on RoleSet {
 
 ## remove?
 
-fragment RoleSetAvailableElevatedRoleUsers on RoleSet {
-  id
-  availableUsersForElevatedRole(role: $roleName, first: $first, after: $after, filter: $filter) {
-    users {
-      ...AvailableUserForRoleSet
-    }
-    pageInfo {
-      ...PageInfo
-    }
-  }
-}
-## remove?
 
