@@ -1539,52 +1539,6 @@ export const UserDetailsFragmentDoc = gql`
   ${VisualFullFragmentDoc}
   ${TagsetDetailsFragmentDoc}
 `;
-export const GroupDetailsFragmentDoc = gql`
-  fragment GroupDetails on UserGroup {
-    id
-    profile {
-      id
-      displayName
-    }
-  }
-`;
-export const GroupInfoFragmentDoc = gql`
-  fragment GroupInfo on UserGroup {
-    id
-    profile {
-      id
-      displayName
-      visual(type: AVATAR) {
-        ...VisualFull
-      }
-      description
-      tagline
-      references {
-        id
-        uri
-        name
-        description
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-    }
-  }
-  ${VisualFullFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export const GroupMembersFragmentDoc = gql`
-  fragment GroupMembers on User {
-    id
-    profile {
-      id
-      displayName
-    }
-    firstName
-    lastName
-    email
-  }
-`;
 export const UserDisplayNameFragmentDoc = gql`
   fragment UserDisplayName on User {
     id
@@ -10786,55 +10740,6 @@ export type RemoveCommunityGuidelinesContentMutationOptions = Apollo.BaseMutatio
   SchemaTypes.RemoveCommunityGuidelinesContentMutation,
   SchemaTypes.RemoveCommunityGuidelinesContentMutationVariables
 >;
-export const CreateGroupOnCommunityDocument = gql`
-  mutation createGroupOnCommunity($input: CreateUserGroupInput!) {
-    createGroupOnCommunity(groupData: $input) {
-      ...GroupDetails
-    }
-  }
-  ${GroupDetailsFragmentDoc}
-`;
-export type CreateGroupOnCommunityMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateGroupOnCommunityMutation,
-  SchemaTypes.CreateGroupOnCommunityMutationVariables
->;
-
-/**
- * __useCreateGroupOnCommunityMutation__
- *
- * To run a mutation, you first call `useCreateGroupOnCommunityMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateGroupOnCommunityMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createGroupOnCommunityMutation, { data, loading, error }] = useCreateGroupOnCommunityMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateGroupOnCommunityMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateGroupOnCommunityMutation,
-    SchemaTypes.CreateGroupOnCommunityMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.CreateGroupOnCommunityMutation,
-    SchemaTypes.CreateGroupOnCommunityMutationVariables
-  >(CreateGroupOnCommunityDocument, options);
-}
-
-export type CreateGroupOnCommunityMutationHookResult = ReturnType<typeof useCreateGroupOnCommunityMutation>;
-export type CreateGroupOnCommunityMutationResult = Apollo.MutationResult<SchemaTypes.CreateGroupOnCommunityMutation>;
-export type CreateGroupOnCommunityMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateGroupOnCommunityMutation,
-  SchemaTypes.CreateGroupOnCommunityMutationVariables
->;
 export const AllOrganizationsDocument = gql`
   query AllOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
     organizationsPaginated(first: $first, after: $after, filter: $filter) {
@@ -12769,58 +12674,6 @@ export function refetchUserAvatarsQuery(variables: SchemaTypes.UserAvatarsQueryV
   return { query: UserAvatarsDocument, variables: variables };
 }
 
-export const AssignUserToGroupDocument = gql`
-  mutation assignUserToGroup($input: AssignUserGroupMemberInput!) {
-    assignUserToGroup(membershipData: $input) {
-      id
-      members {
-        ...GroupMembers
-      }
-    }
-  }
-  ${GroupMembersFragmentDoc}
-`;
-export type AssignUserToGroupMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignUserToGroupMutation,
-  SchemaTypes.AssignUserToGroupMutationVariables
->;
-
-/**
- * __useAssignUserToGroupMutation__
- *
- * To run a mutation, you first call `useAssignUserToGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignUserToGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [assignUserToGroupMutation, { data, loading, error }] = useAssignUserToGroupMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAssignUserToGroupMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignUserToGroupMutation,
-    SchemaTypes.AssignUserToGroupMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.AssignUserToGroupMutation, SchemaTypes.AssignUserToGroupMutationVariables>(
-    AssignUserToGroupDocument,
-    options
-  );
-}
-
-export type AssignUserToGroupMutationHookResult = ReturnType<typeof useAssignUserToGroupMutation>;
-export type AssignUserToGroupMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserToGroupMutation>;
-export type AssignUserToGroupMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignUserToGroupMutation,
-  SchemaTypes.AssignUserToGroupMutationVariables
->;
 export const CreateUserDocument = gql`
   mutation createUser($input: CreateUserInput!) {
     createUser(userData: $input) {
@@ -12916,54 +12769,6 @@ export type CreateUserNewRegistrationMutationOptions = Apollo.BaseMutationOption
   SchemaTypes.CreateUserNewRegistrationMutation,
   SchemaTypes.CreateUserNewRegistrationMutationVariables
 >;
-export const DeleteGroupDocument = gql`
-  mutation deleteGroup($input: DeleteUserGroupInput!) {
-    deleteUserGroup(deleteData: $input) {
-      id
-      profile {
-        displayName
-      }
-    }
-  }
-`;
-export type DeleteGroupMutationFn = Apollo.MutationFunction<
-  SchemaTypes.DeleteGroupMutation,
-  SchemaTypes.DeleteGroupMutationVariables
->;
-
-/**
- * __useDeleteGroupMutation__
- *
- * To run a mutation, you first call `useDeleteGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteGroupMutation, { data, loading, error }] = useDeleteGroupMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useDeleteGroupMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.DeleteGroupMutation, SchemaTypes.DeleteGroupMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.DeleteGroupMutation, SchemaTypes.DeleteGroupMutationVariables>(
-    DeleteGroupDocument,
-    options
-  );
-}
-
-export type DeleteGroupMutationHookResult = ReturnType<typeof useDeleteGroupMutation>;
-export type DeleteGroupMutationResult = Apollo.MutationResult<SchemaTypes.DeleteGroupMutation>;
-export type DeleteGroupMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.DeleteGroupMutation,
-  SchemaTypes.DeleteGroupMutationVariables
->;
 export const DeleteUserDocument = gql`
   mutation deleteUser($input: DeleteUserInput!) {
     deleteUser(deleteData: $input) {
@@ -13009,127 +12814,9 @@ export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteUserMutation,
   SchemaTypes.DeleteUserMutationVariables
 >;
-export const RemoveUserFromGroupDocument = gql`
-  mutation removeUserFromGroup($input: RemoveUserGroupMemberInput!) {
-    removeUserFromGroup(membershipData: $input) {
-      id
-      profile {
-        displayName
-      }
-      members {
-        ...GroupMembers
-      }
-    }
-  }
-  ${GroupMembersFragmentDoc}
-`;
-export type RemoveUserFromGroupMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUserFromGroupMutation,
-  SchemaTypes.RemoveUserFromGroupMutationVariables
->;
-
-/**
- * __useRemoveUserFromGroupMutation__
- *
- * To run a mutation, you first call `useRemoveUserFromGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserFromGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserFromGroupMutation, { data, loading, error }] = useRemoveUserFromGroupMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useRemoveUserFromGroupMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUserFromGroupMutation,
-    SchemaTypes.RemoveUserFromGroupMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.RemoveUserFromGroupMutation, SchemaTypes.RemoveUserFromGroupMutationVariables>(
-    RemoveUserFromGroupDocument,
-    options
-  );
-}
-
-export type RemoveUserFromGroupMutationHookResult = ReturnType<typeof useRemoveUserFromGroupMutation>;
-export type RemoveUserFromGroupMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserFromGroupMutation>;
-export type RemoveUserFromGroupMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUserFromGroupMutation,
-  SchemaTypes.RemoveUserFromGroupMutationVariables
->;
-export const UpdateGroupDocument = gql`
-  mutation updateGroup($input: UpdateUserGroupInput!) {
-    updateUserGroup(userGroupData: $input) {
-      id
-      profile {
-        id
-        displayName
-        visual(type: AVATAR) {
-          ...VisualUri
-        }
-        description
-        references {
-          uri
-          name
-          description
-        }
-        tagsets {
-          ...TagsetDetails
-        }
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export type UpdateGroupMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateGroupMutation,
-  SchemaTypes.UpdateGroupMutationVariables
->;
-
-/**
- * __useUpdateGroupMutation__
- *
- * To run a mutation, you first call `useUpdateGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateGroupMutation, { data, loading, error }] = useUpdateGroupMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateGroupMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateGroupMutation, SchemaTypes.UpdateGroupMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UpdateGroupMutation, SchemaTypes.UpdateGroupMutationVariables>(
-    UpdateGroupDocument,
-    options
-  );
-}
-
-export type UpdateGroupMutationHookResult = ReturnType<typeof useUpdateGroupMutation>;
-export type UpdateGroupMutationResult = Apollo.MutationResult<SchemaTypes.UpdateGroupMutation>;
-export type UpdateGroupMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateGroupMutation,
-  SchemaTypes.UpdateGroupMutationVariables
->;
 export const UpdatePreferenceOnUserDocument = gql`
-  mutation updatePreferenceOnUser($input: UpdateUserPreferenceInput!) {
-    updatePreferenceOnUser(preferenceData: $input) {
+  mutation updatePreferenceOnUser($userId: UUID!, $type: PreferenceType!, $value: String!) {
+    updatePreferenceOnUser(preferenceData: { userID: $userId, type: $type, value: $value }) {
       id
       value
     }
@@ -13153,7 +12840,9 @@ export type UpdatePreferenceOnUserMutationFn = Apollo.MutationFunction<
  * @example
  * const [updatePreferenceOnUserMutation, { data, loading, error }] = useUpdatePreferenceOnUserMutation({
  *   variables: {
- *      input: // value for 'input'
+ *      userId: // value for 'userId'
+ *      type: // value for 'type'
+ *      value: // value for 'value'
  *   },
  * });
  */

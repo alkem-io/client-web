@@ -16379,19 +16379,6 @@ export type CommunityPageMembersFragment = {
   };
 };
 
-export type CreateGroupOnCommunityMutationVariables = Exact<{
-  input: CreateUserGroupInput;
-}>;
-
-export type CreateGroupOnCommunityMutation = {
-  __typename?: 'Mutation';
-  createGroupOnCommunity: {
-    __typename?: 'UserGroup';
-    id: string;
-    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
-  };
-};
-
 export type BasicOrganizationDetailsFragment = {
   __typename?: 'Organization';
   id: string;
@@ -17797,89 +17784,10 @@ export type UserDetailsFragment = {
   };
 };
 
-export type GroupDetailsFragment = {
-  __typename?: 'UserGroup';
-  id: string;
-  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
-};
-
-export type GroupInfoFragment = {
-  __typename?: 'UserGroup';
-  id: string;
-  profile?:
-    | {
-        __typename?: 'Profile';
-        id: string;
-        displayName: string;
-        description?: string | undefined;
-        tagline?: string | undefined;
-        visual?:
-          | {
-              __typename?: 'Visual';
-              id: string;
-              uri: string;
-              name: string;
-              allowedTypes: Array<string>;
-              aspectRatio: number;
-              maxHeight: number;
-              maxWidth: number;
-              minHeight: number;
-              minWidth: number;
-              alternativeText?: string | undefined;
-            }
-          | undefined;
-        references?:
-          | Array<{ __typename?: 'Reference'; id: string; uri: string; name: string; description?: string | undefined }>
-          | undefined;
-        tagsets?:
-          | Array<{
-              __typename?: 'Tagset';
-              id: string;
-              name: string;
-              tags: Array<string>;
-              allowedValues: Array<string>;
-              type: TagsetType;
-            }>
-          | undefined;
-      }
-    | undefined;
-};
-
-export type GroupMembersFragment = {
-  __typename?: 'User';
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  profile: { __typename?: 'Profile'; id: string; displayName: string };
-};
-
 export type UserDisplayNameFragment = {
   __typename?: 'User';
   id: string;
   profile: { __typename?: 'Profile'; id: string; displayName: string };
-};
-
-export type AssignUserToGroupMutationVariables = Exact<{
-  input: AssignUserGroupMemberInput;
-}>;
-
-export type AssignUserToGroupMutation = {
-  __typename?: 'Mutation';
-  assignUserToGroup: {
-    __typename?: 'UserGroup';
-    id: string;
-    members?:
-      | Array<{
-          __typename?: 'User';
-          id: string;
-          firstName: string;
-          lastName: string;
-          email: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        }>
-      | undefined;
-  };
 };
 
 export type CreateUserMutationVariables = Exact<{
@@ -17990,84 +17898,16 @@ export type CreateUserNewRegistrationMutation = {
   };
 };
 
-export type DeleteGroupMutationVariables = Exact<{
-  input: DeleteUserGroupInput;
-}>;
-
-export type DeleteGroupMutation = {
-  __typename?: 'Mutation';
-  deleteUserGroup: {
-    __typename?: 'UserGroup';
-    id: string;
-    profile?: { __typename?: 'Profile'; displayName: string } | undefined;
-  };
-};
-
 export type DeleteUserMutationVariables = Exact<{
   input: DeleteUserInput;
 }>;
 
 export type DeleteUserMutation = { __typename?: 'Mutation'; deleteUser: { __typename?: 'User'; id: string } };
 
-export type RemoveUserFromGroupMutationVariables = Exact<{
-  input: RemoveUserGroupMemberInput;
-}>;
-
-export type RemoveUserFromGroupMutation = {
-  __typename?: 'Mutation';
-  removeUserFromGroup: {
-    __typename?: 'UserGroup';
-    id: string;
-    profile?: { __typename?: 'Profile'; displayName: string } | undefined;
-    members?:
-      | Array<{
-          __typename?: 'User';
-          id: string;
-          firstName: string;
-          lastName: string;
-          email: string;
-          profile: { __typename?: 'Profile'; id: string; displayName: string };
-        }>
-      | undefined;
-  };
-};
-
-export type UpdateGroupMutationVariables = Exact<{
-  input: UpdateUserGroupInput;
-}>;
-
-export type UpdateGroupMutation = {
-  __typename?: 'Mutation';
-  updateUserGroup: {
-    __typename?: 'UserGroup';
-    id: string;
-    profile?:
-      | {
-          __typename?: 'Profile';
-          id: string;
-          displayName: string;
-          description?: string | undefined;
-          visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          references?:
-            | Array<{ __typename?: 'Reference'; uri: string; name: string; description?: string | undefined }>
-            | undefined;
-          tagsets?:
-            | Array<{
-                __typename?: 'Tagset';
-                id: string;
-                name: string;
-                tags: Array<string>;
-                allowedValues: Array<string>;
-                type: TagsetType;
-              }>
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
 export type UpdatePreferenceOnUserMutationVariables = Exact<{
-  input: UpdateUserPreferenceInput;
+  userId: Scalars['UUID'];
+  type: PreferenceType;
+  value: Scalars['String'];
 }>;
 
 export type UpdatePreferenceOnUserMutation = {

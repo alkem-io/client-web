@@ -141,7 +141,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
   const userOptions = options as UseStorageConfigOptionsUser;
   const { data: userStorageConfigData } = useUserStorageConfigQuery({
     variables: userOptions,
-    skip: skip || locationType !== 'user',
+    skip: skip || locationType !== 'user' || !userOptions.userId,
   });
 
   const virtualContributorOptions = options as UseStorageConfigOptionsVirtualContributor;

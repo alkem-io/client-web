@@ -36,7 +36,7 @@ const UserNotificationsContainer = ({ children }: PropsWithChildren<UserNotifica
     skip: !userId,
   });
 
-  const [updatePreferenceOnUser] = useUpdatePreferenceOnUserMutation({});
+  const [updatePreferenceOnUser] = useUpdatePreferenceOnUserMutation();
   const updatePreference = (type: PreferenceType, checked: boolean, id: string) => {
     if (!userId) {
       return;
@@ -44,11 +44,9 @@ const UserNotificationsContainer = ({ children }: PropsWithChildren<UserNotifica
 
     updatePreferenceOnUser({
       variables: {
-        input: {
-          type: type,
-          userID: userId,
-          value: checked ? 'true' : 'false',
-        },
+        userId,
+        type: type,
+        value: checked ? 'true' : 'false',
       },
       optimisticResponse: {
         updatePreferenceOnUser: {
