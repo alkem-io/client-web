@@ -22,7 +22,7 @@ export interface SelectableKnowledgeSpace {
 interface ExistingSpaceProps {
   onClose: () => void;
   onBack: () => void;
-  onSubmit: (subspace: SelectableKnowledgeSpace) => void;
+  onSubmit: (subspace: SelectableKnowledgeSpace) => Promise<void>;
   loading: boolean;
   spaces: SelectableSpace[];
 }
