@@ -17,24 +17,23 @@ import { UserModel } from '@/domain/community/user/models/User';
 import { createUserNameID } from '@/domain/community/user/utils/createUserNameId';
 import { getUpdateUserInput } from '@/domain/community/user/utils/getUpdateUserInput';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useUrlParams } from '@/core/routing/useUrlParams';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 interface UserPageProps {
   mode: EditMode;
-  title?: string;
 }
 
-const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User' }) => {
+const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly }) => {
   const notify = useNotification();
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const navigate = useNavigate();
-  const { userNameId } = useUrlParams();
+  const { userId, loading: resolving } = useUrlResolver();
 
-  const { data, loading } = useUserQuery({
+  const { data, loading: loadingData } = useUserQuery({
     variables: {
-      id: userNameId!, // ensured by skip
+      id: userId!, // ensured by skip
     },
-    skip: !userNameId,
+    skip: !userId,
     fetchPolicy: 'cache-and-network',
   });
 
@@ -153,7 +152,7 @@ const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User' 
     setModalOpened(false);
   };
 
-  if (loading || !userNameId) return <Loading text={'Loading user...'} />;
+  if (loadingData || resolving) return <Loading text={'Loading user...'} />;
 
   return (
     <>
@@ -161,7 +160,6 @@ const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User' 
       <UserForm
         editMode={mode}
         onSave={handleSave}
-        title={title}
         user={user}
         avatar={data?.lookup.user?.profile.avatar}
         onDelete={() => setModalOpened(true)}
