@@ -4193,8 +4193,8 @@ export type UpdateInnovationPackMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationPackMutationVariables
 >;
 export const ApplyForEntryRoleOnRoleSetDocument = gql`
-  mutation ApplyForEntryRoleOnRoleSet($input: ApplyForEntryRoleOnRoleSetInput!) {
-    applyForEntryRoleOnRoleSet(applicationData: $input) {
+  mutation ApplyForEntryRoleOnRoleSet($roleSetId: UUID!, $questions: [CreateNVPInput!]!) {
+    applyForEntryRoleOnRoleSet(applicationData: { roleSetID: $roleSetId, questions: $questions }) {
       id
     }
   }
@@ -4217,7 +4217,8 @@ export type ApplyForEntryRoleOnRoleSetMutationFn = Apollo.MutationFunction<
  * @example
  * const [applyForEntryRoleOnRoleSetMutation, { data, loading, error }] = useApplyForEntryRoleOnRoleSetMutation({
  *   variables: {
- *      input: // value for 'input'
+ *      roleSetId: // value for 'roleSetId'
+ *      questions: // value for 'questions'
  *   },
  * });
  */

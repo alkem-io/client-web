@@ -1,4 +1,7 @@
-import { useCommunityApplicationsInvitationsQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useApplyForEntryRoleOnRoleSetMutation,
+  useCommunityApplicationsInvitationsQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { useMemo } from 'react';
 
@@ -67,15 +70,20 @@ type PlatformInvitationProvided = {
 };
 
 type useRoleSetApplicationsAndInvitationsParams = {
-  roleSetId: string | undefined;
+  roleSetId?: string;
 };
 
 type useRoleSetApplicationsAndInvitationsProvided = {
   applications: ApplicationProvided[];
   invitations: InvitationProvided[];
   platformInvitations: PlatformInvitationProvided[];
+  applyForEntryRoleOnRoleSet: (
+    roleSetId: string,
+    questions: { name: string; value: string; sortOrder: number }[]
+  ) => Promise<unknown>;
   refetch: () => Promise<unknown>;
   loading: boolean;
+  isApplying: boolean;
 };
 
 const addContributorType = (
@@ -120,12 +128,29 @@ const useRoleSetApplicationsAndInvitations = ({
     };
   }, [data]);
 
+  const [applyForEntryRoleOnRoleSet, { loading: isApplying }] = useApplyForEntryRoleOnRoleSetMutation({
+    onCompleted: () => refetch(),
+  });
+  const handleApplyForEntryRoleOnRoleSet = (
+    roleSetId: string,
+    questions: { name: string; sortOrder: number; value: string }[]
+  ) => {
+    return applyForEntryRoleOnRoleSet({
+      variables: {
+        roleSetId,
+        questions,
+      },
+    });
+  };
+
   return {
     applications,
     invitations,
     platformInvitations,
     refetch,
     loading,
+    applyForEntryRoleOnRoleSet: handleApplyForEntryRoleOnRoleSet,
+    isApplying,
   };
 };
 

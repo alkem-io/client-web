@@ -7779,7 +7779,8 @@ export type InnovationPackCardFragment = {
 };
 
 export type ApplyForEntryRoleOnRoleSetMutationVariables = Exact<{
-  input: ApplyForEntryRoleOnRoleSetInput;
+  roleSetId: Scalars['UUID'];
+  questions: Array<CreateNvpInput> | CreateNvpInput;
 }>;
 
 export type ApplyForEntryRoleOnRoleSetMutation = {
