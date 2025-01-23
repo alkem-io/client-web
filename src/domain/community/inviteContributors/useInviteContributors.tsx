@@ -1,17 +1,15 @@
 import { useMemo } from 'react';
 import {
   useAssignRoleToVirtualContributorMutation,
-  useAvailableVirtualContributorsLazyQuery,
-  useAvailableVirtualContributorsInLibraryLazyQuery,
   useBodyOfKnowledgeProfileLazyQuery,
   useCommunityVirtualMembersListQuery,
   useRemoveRoleFromVirtualContributorMutation,
   refetchSpaceCommunityPageQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, RoleName, SearchVisibility, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useInviteUsers from '@/domain/community/invitations/useInviteUsers';
 import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
-import { Identifiable } from '@/core/utils/Identifiable';
+import useRoleSetAvailableContributors from '@/domain/access/RoleSet/RoleSetAdmin/AvailableContributors/useRoleSetAvailableContributors';
 
 // TODO: Inherit from CoreEntityIds when they are not NameIds
 interface useInviteContributorsParams {
@@ -20,13 +18,6 @@ interface useInviteContributorsParams {
   challengeId?: string;
   opportunityId?: string;
   spaceLevel: SpaceLevel | undefined;
-}
-
-interface VirtualContributorNameProps extends Identifiable {
-  profile: {
-    id: string;
-    displayName: string;
-  };
 }
 
 const useInviteContributors = ({
@@ -84,57 +75,22 @@ const useInviteContributors = ({
     return roleSet?.memberVirtualContributors ?? [];
   }, [roleSetData]);
 
-  // Filter functions for virtual contributors
-  const filterByName = (vc: VirtualContributorNameProps, filter?: string) =>
-    vc.profile.displayName.toLowerCase().includes(filter?.toLowerCase() ?? '');
-  const filterExisting = (vc: VirtualContributorNameProps, existingVCs) =>
-    !existingVCs.some(member => member.id === vc.id);
+  const {
+    findAvailableVirtualContributorsForRoleSet,
+    findAvailableVirtualContributorsInLibrary,
+    loading: availableVCsLoading,
+  } = useRoleSetAvailableContributors({
+    roleSetId,
+    filterCurrentMembers: virtualContributors,
+  });
 
-  // TODO: need pagination in the future
-  const [fetchAllVirtualContributorsInLibrary, { loading: libraryVCsLoading }] =
-    useAvailableVirtualContributorsInLibraryLazyQuery();
   const getAvailableVirtualContributorsInLibrary = async (filter: string | undefined) => {
-    const { data } = await fetchAllVirtualContributorsInLibrary();
-
-    return (data?.platform.library.virtualContributors ?? []).filter(
-      vc =>
-        vc.searchVisibility === SearchVisibility.Public &&
-        filterExisting(vc, virtualContributors) &&
-        filterByName(vc, filter)
-    );
+    const { virtualContributors } = await findAvailableVirtualContributorsInLibrary(filter);
+    return virtualContributors;
   };
-
-  const [fetchAllVirtualContributors, { loading: accountVCsLoading }] = useAvailableVirtualContributorsLazyQuery();
-  const getAvailableVirtualContributors = async (filter: string | undefined, all: boolean = false) => {
-    const { data } = await fetchAllVirtualContributors({
-      variables: {
-        filterSpace: !all || spaceLevel !== SpaceLevel.Space,
-        filterSpaceId: spaceId,
-      },
-    });
-    const roleSet = data?.lookup?.space?.community?.roleSet;
-
-    // Results for Space Level - on Account if !all (filter in the query)
-    if (spaceLevel === SpaceLevel.Space) {
-      return (data?.lookup?.space?.account.virtualContributors ?? data?.virtualContributors ?? []).filter(
-        vc => filterExisting(vc, virtualContributors) && filterByName(vc, filter)
-      );
-    }
-
-    // Results for Subspaces - Community Members including External VCs (filter in the query)
-    if (all) {
-      return (roleSet?.virtualContributorsInRole ?? []).filter(
-        vc => filterExisting(vc, virtualContributors) && filterByName(vc, filter)
-      );
-    }
-
-    // Results for Subspaces - Only Community Members On Account (filter in the query)
-    return (roleSet?.virtualContributorsInRole ?? []).filter(
-      vc =>
-        data?.lookup?.space?.account.virtualContributors.some(member => member.id === vc.id) &&
-        filterExisting(vc, virtualContributors) &&
-        filterByName(vc, filter)
-    );
+  const getAvailableVirtualContributors = async (filter?: string, all: boolean = false) => {
+    const { virtualContributors } = await findAvailableVirtualContributorsForRoleSet(spaceLevel, spaceId, all, filter);
+    return virtualContributors;
   };
 
   const [addVirtualContributor] = useAssignRoleToVirtualContributorMutation();
@@ -185,8 +141,7 @@ const useInviteContributors = ({
     getBoKProfile,
     loadingMembers,
     bokProfileLoading,
-    accountVCsLoading,
-    libraryVCsLoading,
+    availableVCsLoading,
   };
 };
 

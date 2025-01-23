@@ -4,24 +4,23 @@ import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
 import { useMemo } from 'react';
 import { Identifiable } from '@/core/utils/Identifiable';
 
-type useRoleSetAdminAvailableUsersOnPlatformParams = {
-  usersAlreadyInRole?: Identifiable[]
+type useRoleSetAvailableUsersOnPlatformParams = {
+  usersAlreadyInRole?: Identifiable[];
   filter?: string;
   skip?: boolean;
 };
 
-interface useRoleSetAdminAvailableUsersOnPlatformProvided extends AvailableUsersResponse { }
+interface useRoleSetAvailableUsersOnPlatformProvided extends AvailableUsersResponse {}
 
 /**
- * Do not use this hook directly, normally you should use useRoleSetAdmin instead
+ * Do not use this hook directly, normally you should use useRoleSetAvailableUsers instead
  */
-const useRoleSetAdminAvailableUsersOnPlatform = ({
+const useRoleSetAvailableUsersOnPlatform = ({
   usersAlreadyInRole,
   filter,
   skip,
-}: useRoleSetAdminAvailableUsersOnPlatformParams): useRoleSetAdminAvailableUsersOnPlatformProvided => {
-
-  const { data, loading, fetchMore, hasMore } = usePaginatedQuery({
+}: useRoleSetAvailableUsersOnPlatformParams): useRoleSetAvailableUsersOnPlatformProvided => {
+  const { data, loading, fetchMore, refetch, hasMore } = usePaginatedQuery({
     useQuery: usePlatformRoleAvailableUsersQuery,
     options: {
       fetchPolicy: 'cache-first',
@@ -48,8 +47,9 @@ const useRoleSetAdminAvailableUsersOnPlatform = ({
     users,
     hasMore: hasMore ?? false,
     fetchMore,
+    refetch,
     loading,
   };
 };
 
-export default useRoleSetAdminAvailableUsersOnPlatform;
+export default useRoleSetAvailableUsersOnPlatform;

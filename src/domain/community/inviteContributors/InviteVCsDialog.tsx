@@ -29,9 +29,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { spaceId, roleSetId } = useSpace();
   const { spaceLevel } = useRouteResolver();
 
-  const {
-    virtualContributors,
-  } = useRoleSetAdmin({
+  const { virtualContributors } = useRoleSetAdmin({
     roleSetId,
     relevantRoles: [RoleName.Member],
     contributorTypes: [RoleSetContributorType.Virtual],
@@ -45,8 +43,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     onAddVirtualContributor,
     getBoKProfile,
     permissions,
-    accountVCsLoading,
-    libraryVCsLoading,
+    availableVCsLoading,
   } = useInviteContributors({ roleSetId, spaceId, spaceLevel });
 
   // state
@@ -147,7 +144,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     ? getContributorById(selectedVirtualContributorId)
     : undefined;
 
-  const showOnAccount = onAccount && onAccount.length > 0 && !accountVCsLoading;
+  const showOnAccount = onAccount && onAccount.length > 0 && !availableVCsLoading;
   const availableActions =
     (permissions?.canAddMembers || permissions?.canAddVirtualContributorsFromAccount) && !actionButtonDisabled;
 
@@ -167,10 +164,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   );
 
   const isEmpty =
-    (!onAccount || onAccount.length === 0) &&
-    (!inLibrary || inLibrary.length === 0) &&
-    !accountVCsLoading &&
-    !libraryVCsLoading;
+    (!onAccount || onAccount.length === 0) && (!inLibrary || inLibrary.length === 0) && !availableVCsLoading;
 
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
@@ -185,7 +179,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
               <PageContentBlockHeader title={t('components.inviteContributorsDialog.vcs.inLibrary.title')} />
             </Gutters>
           )}
-          {libraryVCsLoading ? (
+          {availableVCsLoading ? (
             <Loading />
           ) : (
             <InviteContributorsList contributors={inLibrary} onCardClick={onLibraryContributorClick} />

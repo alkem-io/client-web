@@ -9,8 +9,6 @@ import {
   RoleSetMemberUserFragment,
   RoleSetMemberVirtualContributorFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import { AvailableUsersResponse } from './AvailableUsers/common';
-import useRoleSetAdminAvailableUsers, { AvailableUsersForRoleSearchParams } from './AvailableUsers/useRoleSetAdminAvailableUsers';
 import useRoleSetAdminRolesAssignment, {
   useRoleSetAdminRolesAssignmentProvided,
 } from './RolesAssignament/useRoleSetAdminRolesAssignment';
@@ -67,7 +65,6 @@ interface useRoleSetAdminProvided extends useRoleSetAdminRolesAssignmentProvided
   organizationsByRole: PartialRecord<RoleName, RoleSetMemberOrganizationFragmentWithRoles[]>;
   virtualContributorsByRole: PartialRecord<RoleName, RoleSetMemberVirtualContributorFragmentWithRoles[]>;
   rolesDefinitions: Record<RoleName, RoleDefinition> | undefined;
-  availableUsersForRole: AvailableUsersResponse | undefined;
   refetch: () => Promise<unknown>;
   loading: boolean;
   updating: boolean;
@@ -78,8 +75,7 @@ type useRoleSetAdminParams = {
   relevantRoles: readonly RoleName[];
   contributorTypes?: readonly RoleSetContributorType[];
   parentRoleSetId?: string;
-  availableUsersForRoleSearchParams?: AvailableUsersForRoleSearchParams;
-
+  onRefetch?: () => void;
   skip?: boolean;
 };
 
@@ -87,7 +83,7 @@ const useRoleSetAdmin = ({
   roleSetId,
   relevantRoles,
   contributorTypes = [RoleSetContributorType.User, RoleSetContributorType.Organization, RoleSetContributorType.Virtual],
-  availableUsersForRoleSearchParams,
+  onRefetch,
   skip,
 }: useRoleSetAdminParams): useRoleSetAdminProvided => {
   if (!roleSetId || !relevantRoles || relevantRoles.length === 0) {
@@ -213,7 +209,7 @@ const useRoleSetAdmin = ({
     };
   }, [roleSetData?.lookup]);
 
-  const refetchAll = () => Promise.all([refetchRoleSet(), refetchRoleSetData()]);
+  const refetchAll = () => Promise.all([refetchRoleSet(), refetchRoleSetData(), onRefetch?.()]);
 
   // Wraps any function call into an await + refetch
   const refetchAfterMutation =
@@ -231,11 +227,7 @@ const useRoleSetAdmin = ({
     loading: updatingRoleSet,
   } = useRoleSetAdminRolesAssignment({ roleSetId });
 
-  const availableUsersForRole = useRoleSetAdminAvailableUsers({
-    roleSetId: roleSetId,
-    ...(availableUsersForRoleSearchParams ?? { enabled: false }),
-    usersAlreadyInRole: data.usersByRole[availableUsersForRoleSearchParams?.role!],
-  });
+  /*
 
   const {
     data: dataApplications,
@@ -245,7 +237,7 @@ const useRoleSetAdmin = ({
     variables: { roleSetId },
     skip: !roleSetId,
   });
-
+*/
   return {
     myPrivileges,
     roleNames: validRoles,
@@ -258,7 +250,6 @@ const useRoleSetAdmin = ({
     organizationsByRole: data.organizationsByRole,
     virtualContributorsByRole: data.virtualContributorsByRole,
     rolesDefinitions: data.rolesDefinitions,
-    availableUsersForRole,
 
     assignRoleToUser: refetchAfterMutation(assignRoleToUser),
     assignPlatformRoleToUser: refetchAfterMutation(assignPlatformRoleToUser),

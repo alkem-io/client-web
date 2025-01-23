@@ -7,6 +7,7 @@ import useRoleSetAdmin from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmi
 import { useUserContext } from '../../user';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import useRoleSetAvailableUsers from '@/domain/access/RoleSet/RoleSetAdmin/AvailableContributors/useRoleSetAvailableUsers';
 
 export const OrganizationAssociatesView: FC = () => {
   const { t } = useTranslation();
@@ -19,19 +20,20 @@ export const OrganizationAssociatesView: FC = () => {
     usersByRole,
     assignRoleToUser,
     removeRoleFromUser,
-    availableUsersForRole,
     loading: loadingRoleSet,
     updating,
   } = useRoleSetAdmin({
     roleSetId,
     relevantRoles: [RoleName.Associate],
     contributorTypes: [RoleSetContributorType.User],
-    availableUsersForRoleSearchParams: {
-      enabled: true,
-      mode: 'platform', // Look in the entire platform, AssociateRole doesn't require an EntryRole
-      role: RoleName.Associate,
-      filter: searchTerm,
-    },
+  });
+
+  const availableUsersForRole = useRoleSetAvailableUsers({
+    roleSetId: roleSetId,
+    mode: 'platform', // Look in the entire platform, AssociateRole doesn't require an EntryRole
+    role: RoleName.Associate,
+    filter: searchTerm,
+    usersAlreadyInRole: usersByRole?.[RoleName.Associate],
   });
 
   const { users: availableAssociates, fetchMore, hasMore, loading: searchingUsers } = availableUsersForRole!;

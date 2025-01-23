@@ -4,7 +4,7 @@ import usePaginatedQuery from '@/domain/shared/pagination/usePaginatedQuery';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
 
-type useRoleSetAdminAvailableUsersParams = {
+type useRoleSetAvailableUsersParams = {
   roleSetId: string | undefined;
   role: RoleName | undefined;
   usersAlreadyInRole?: Identifiable[];
@@ -12,18 +12,18 @@ type useRoleSetAdminAvailableUsersParams = {
   skip?: boolean;
 };
 
-interface useRoleSetAdminAvailableUsersOnRoleSetProvided extends AvailableUsersResponse { }
+interface useRoleSetAvailableUsersOnRoleSetProvided extends AvailableUsersResponse {}
 
 /**
- * Do not use this hook directly, normally you should use useRoleSetAdmin instead
+ * Do not use this hook directly, normally you should use useRoleSetAvailableUsers instead
  */
-const useRoleSetAdminAvailableUsersOnRoleSet = ({
+const useRoleSetAvailableUsersOnRoleSet = ({
   roleSetId,
   role,
   filter,
   skip,
-}: useRoleSetAdminAvailableUsersParams): useRoleSetAdminAvailableUsersProvided => {
-  const { data, loading, fetchMore, hasMore } = usePaginatedQuery({
+}: useRoleSetAvailableUsersParams): useRoleSetAvailableUsersOnRoleSetProvided => {
+  const { data, loading, fetchMore, hasMore, refetch } = usePaginatedQuery({
     useQuery: useAvailableUsersForElevatedRoleQuery,
     options: {
       fetchPolicy: 'cache-first',
@@ -40,13 +40,26 @@ const useRoleSetAdminAvailableUsersOnRoleSet = ({
   });
 
   const users = data?.lookup.roleSet?.availableUsersForElevatedRole.users ?? [];
-
+  /*
+  In theory this is done on the server
+  const firstPage = data?.lookup.roleSet?.availableUsersForElevatedRole;
+  const users = useMemo(() => {
+    if (!firstPage?.users) {
+      return [];
+    }
+    if (!usersAlreadyInRole) {
+      return firstPage.users;
+    }
+    return firstPage.users.filter(user => !usersAlreadyInRole?.find(current => current.id === user.id));
+  }, [firstPage, loading, usersAlreadyInRole, filter, skip]);
+*/
   return {
     users,
     hasMore: hasMore ?? false,
     fetchMore,
+    refetch,
     loading,
   };
 };
 
-export default useRoleSetAdminAvailableUsersOnRoleSet;
+export default useRoleSetAvailableUsersOnRoleSet;

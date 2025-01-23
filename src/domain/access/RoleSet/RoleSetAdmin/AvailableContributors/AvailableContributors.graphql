@@ -42,3 +42,58 @@ query AvailableUsersForElevatedRole($roleSetId: UUID!, $role: RoleName!, $first:
     }
   }
 }
+
+query AvailableOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
+  organizationsPaginated(first: $first, after: $after, filter: $filter) {
+    organization {
+      ...BasicOrganizationDetails
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query AvailableVirtualContributorsInLibrary {
+  platform {
+    id
+    library {
+      id
+      virtualContributors {
+        searchVisibility
+        ...VirtualContributorFull
+      }
+    }
+  }
+}
+
+query AvailableVirtualContributors(
+  $filterSpace: Boolean = false
+  $filterSpaceId: UUID = "00000000-0000-0000-0000-000000000000"
+) {
+  lookup @include(if: $filterSpace) {
+    space(ID: $filterSpaceId) {
+      id
+      community {
+        id
+        roleSet {
+          id
+          virtualContributorsInRole(role: MEMBER) {
+            ...VirtualContributorFull
+          }
+        }
+      }
+      account {
+        id
+        virtualContributors {
+          ...VirtualContributorFull
+        }
+      }
+    }
+  }
+  virtualContributors @skip(if: $filterSpace) {
+    ...VirtualContributorFull
+  }
+}
+

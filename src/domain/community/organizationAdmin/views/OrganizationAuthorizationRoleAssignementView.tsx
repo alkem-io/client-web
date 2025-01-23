@@ -7,6 +7,7 @@ import { useUserContext } from '../../user';
 import useRoleSetAdmin from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import useRoleSetAvailableUsers from '@/domain/access/RoleSet/RoleSetAdmin/AvailableContributors/useRoleSetAvailableUsers';
 
 export const OrganizationAuthorizationRoleAssignementView = ({ role }: { role: RoleName }) => {
   const { t } = useTranslation();
@@ -15,23 +16,29 @@ export const OrganizationAuthorizationRoleAssignementView = ({ role }: { role: R
   const { roleSetId } = useOrganization();
   const [searchTerm, setSearchTerm] = React.useState<string>('');
 
+  const refetch = () => {
+    availableUsersForRole.refetch();
+  };
+
   const {
     usersByRole,
     assignRoleToUser,
     removeRoleFromUser,
-    availableUsersForRole,
     loading: loadingRoleSet,
     updating,
   } = useRoleSetAdmin({
     roleSetId,
     relevantRoles: [role],
     contributorTypes: [RoleSetContributorType.User],
-    availableUsersForRoleSearchParams: {
-      enabled: true,
-      mode: 'roleSet',
-      role: role,
-      filter: searchTerm,
-    },
+    onRefetch: refetch,
+  });
+
+  const availableUsersForRole = useRoleSetAvailableUsers({
+    roleSetId: roleSetId,
+    mode: 'roleSet',
+    role: role,
+    filter: searchTerm,
+    usersAlreadyInRole: usersByRole?.[role],
   });
 
   const { users: availableAssociates, fetchMore, hasMore, loading: searchingUsers } = availableUsersForRole!;

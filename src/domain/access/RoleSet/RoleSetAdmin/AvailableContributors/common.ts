@@ -1,9 +1,10 @@
 export const AVAILABLE_USERS_PAGE_SIZE = 10;
-export const AVAILABLE_USERS_PAGE_SIZE_LAZY = 100;
+export const AVAILABLE_CONTRIBUTORS_PAGE_SIZE = 100;
 
 type AvailableContributorsResponse = {
   hasMore: boolean;
   fetchMore: () => Promise<unknown>;
+  refetch: () => Promise<unknown>;
   loading: boolean;
 };
 

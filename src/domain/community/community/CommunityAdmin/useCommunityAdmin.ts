@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import {
-  useAllOrganizationsLazyQuery,
   useEventOnApplicationMutation,
   useCommunityApplicationsInvitationsQuery,
   useInvitationStateEventMutation,
@@ -10,7 +9,6 @@ import {
   useAssignRoleToOrganizationMutation,
   useRemoveRoleFromUserMutation,
   useRemoveRoleFromOrganizationMutation,
-  useRoleSetAvailableEntryRoleUsersLazyQuery,
   useCommunityProviderDetailsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
@@ -23,7 +21,7 @@ import useInviteUsers from '@/domain/community/invitations/useInviteUsers';
 import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import useInviteContributors from '../../inviteContributors/useInviteContributors';
 import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
-
+import useRoleSetAdminAvailableContributors from '@/domain/access/RoleSet/RoleSetAdmin/AvailableContributors/useRoleSetAvailableContributors';
 
 // TODO: Inherit from CoreEntityIds when they are not NameIds
 interface useCommunityAdminParams {
@@ -100,7 +98,6 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
     return result;
   }, [organizations]);
 
-
   const {
     data: dataApplications,
     loading: loadingApplications,
@@ -121,30 +118,20 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
   } = useInviteContributors({ roleSetId, spaceId, spaceLevel });
 
   // Available new members:
-  const [fetchAvailableUsers, { refetch: refetchAvailableMemberUsers }] = useRoleSetAvailableEntryRoleUsersLazyQuery();
+  const {
+    refetch: refetchAvailableContributors,
+    findAvailableUsersForRoleSetEntryRole,
+    findAvailableOrganizationsForRoleSet,
+  } = useRoleSetAdminAvailableContributors({
+    roleSetId,
+  });
   const getAvailableUsers = async (filter: string | undefined) => {
-    const { data } = await fetchAvailableUsers({
-      variables: {
-        roleSetId,
-        first: MAX_AVAILABLE_MEMBERS,
-        filter: buildUserFilterObject(filter),
-      },
-    });
-    return data?.lookup.availableEntryRoleUsers?.availableUsersForEntryRole?.users;
+    const { users } = await findAvailableUsersForRoleSetEntryRole(filter);
+    return users;
   };
-
-  const [fetchAllOrganizations, { refetch: refetchAvailableMemberOrganizations }] = useAllOrganizationsLazyQuery();
   const getAvailableOrganizations = async (filter: string | undefined) => {
-    const { data } = await fetchAllOrganizations({
-      variables: {
-        first: MAX_AVAILABLE_MEMBERS,
-        filter: buildOrganizationFilterObject(filter),
-      },
-    });
-    // Filter out organizations that already have a role in the community
-    return data?.organizationsPaginated.organization.filter(
-      org => organizations.find(member => member.id === org.id) === undefined
-    );
+    const { organizations } = await findAvailableOrganizationsForRoleSet(filter);
+    return organizations;
   };
 
   // Adding new members:
@@ -160,7 +147,7 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
         role: RoleName.Member,
       },
     });
-    await refetchAvailableMemberUsers();
+    await refetchAvailableContributors();
     return refetch();
   };
 
@@ -176,7 +163,7 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
         role: RoleName.Member,
       },
     });
-    await refetchAvailableMemberOrganizations();
+    await refetchAvailableContributors();
     return refetch();
   };
 

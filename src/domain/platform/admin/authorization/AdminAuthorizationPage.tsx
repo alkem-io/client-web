@@ -12,6 +12,7 @@ import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSet/RoleSet
 import { useTranslation } from 'react-i18next';
 import { useUserContext } from '@/domain/community/user';
 import EditMemberUsers from '../components/Community/EditMembersUsers';
+import useRoleSetAvailableUsers from '@/domain/access/RoleSet/RoleSetAdmin/AvailableContributors/useRoleSetAvailableUsers';
 
 interface AdminAuthorizationPageProps {
   selectedRole?: RoleName;
@@ -22,7 +23,7 @@ const MANAGED_ROLES = RELEVANT_ROLES.Platform;
 const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) => {
   const { t } = useTranslation();
   const { user: userMetadata } = useUserContext();
-  const [seachTerm, setSearchTerm] = React.useState<string>('');
+  const [searchTerm, setSearchTerm] = React.useState<string>('');
   const currentUser = userMetadata?.user;
 
   const { data, loading: loadingPlatformRoleSet } = usePlatformRoleSetQuery();
@@ -33,17 +34,19 @@ const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) =
     assignPlatformRoleToUser,
     removePlatformRoleFromUser,
     loading: loadingRoleSet,
-    availableUsersForRole,
     updating,
   } = useRoleSetAdmin({
     roleSetId,
     relevantRoles: MANAGED_ROLES,
     contributorTypes: [RoleSetContributorType.User],
-    availableUsersForRoleSearchParams: {
-      enabled: !!selectedRole,
-      mode: 'platform',
-      filter: seachTerm,
-    },
+  });
+
+  const availableUsersForRole = useRoleSetAvailableUsers({
+    roleSetId: roleSetId,
+    skip: !selectedRole,
+    mode: 'platform',
+    filter: searchTerm,
+    usersAlreadyInRole: selectedRole && usersByRole?.[selectedRole] ? usersByRole[selectedRole] : [],
   });
 
   const { users: availableMembers = [], fetchMore, hasMore } = availableUsersForRole!;
