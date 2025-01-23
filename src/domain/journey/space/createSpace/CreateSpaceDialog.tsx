@@ -204,8 +204,8 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
 
                     <Gutters disableGap disablePadding>
                       <FormControlLabel
-                        value={addTutorialCallouts}
-                        onChange={(event, isChecked) => setAddTutorialCallouts(isChecked)}
+                        checked={addTutorialCallouts}
+                        onChange={(_event, isChecked) => setAddTutorialCallouts(isChecked)}
                         control={<Checkbox />}
                         label={<Caption>{t('createSpace.addTutorialsLabel')}</Caption>}
                       />

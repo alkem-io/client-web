@@ -5120,7 +5120,7 @@ export type Query = {
   lookupByName: LookupByNameQueryResults;
   /** Information about the current authenticated user */
   me: MeQueryResults;
-  /** Get all notifications for a receiver. */
+  /** Get all notifications for the logged in user. */
   notifications: Array<InAppNotification>;
   /** A particular Organization */
   organization: Organization;
@@ -5186,10 +5186,6 @@ export type QueryAdminCommunicationMembershipArgs = {
 
 export type QueryExploreSpacesArgs = {
   options?: InputMaybe<ExploreSpacesInput>;
-};
-
-export type QueryNotificationsArgs = {
-  receiverID: Scalars['UUID'];
 };
 
 export type QueryOrganizationArgs = {
@@ -28231,9 +28227,7 @@ export type GuidanceRoomMessagesQuery = {
   };
 };
 
-export type InAppNotificationsQueryVariables = Exact<{
-  receiverID: Scalars['UUID'];
-}>;
+export type InAppNotificationsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type InAppNotificationsQuery = {
   __typename?: 'Query';
