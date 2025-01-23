@@ -227,17 +227,6 @@ const useRoleSetAdmin = ({
     loading: updatingRoleSet,
   } = useRoleSetAdminRolesAssignment({ roleSetId });
 
-  /*
-
-  const {
-    data: dataApplications,
-    loading: loadingApplications,
-    refetch: refetchApplicationsAndInvitations,
-  } = useCommunityApplicationsInvitationsQuery({
-    variables: { roleSetId },
-    skip: !roleSetId,
-  });
-*/
   return {
     myPrivileges,
     roleNames: validRoles,

@@ -21,12 +21,12 @@ interface ContributorNameProps extends Identifiable {
   };
 }
 
-type useRoleSetAdminAvailableContributorsParams = {
+type useRoleSetAvailableContributorsParams = {
   roleSetId: string | undefined;
   filterCurrentMembers?: Identifiable[];
 };
 
-interface useRoleSetAdminAvailableContributorsProvided {
+interface useRoleSetAvailableContributorsProvided {
   findAvailableUsersForRoleSetEntryRole: (filter?: string) => Promise<AvailableUsersResponse>;
   findAvailableUsersForRoleSetElevatedRole: (role: RoleName, filter?: string) => Promise<AvailableUsersResponse>;
   findAvailableUsersForPlatformRoleSet: (filter?: string) => Promise<AvailableUsersResponse>;
@@ -57,10 +57,10 @@ const buildOrganizationFilterObject = (filter: string | undefined) =>
       }
     : undefined;
 
-const useRoleSetAdminAvailableContributors = ({
+const useRoleSetAvailableContributors = ({
   roleSetId,
   filterCurrentMembers = [],
-}: useRoleSetAdminAvailableContributorsParams): useRoleSetAdminAvailableContributorsProvided => {
+}: useRoleSetAvailableContributorsParams): useRoleSetAvailableContributorsProvided => {
   const [
     fetchAvailableUsersForRoleSetEntryRole,
     { loading: loadingAvailableUsersForRoleSetEntryRole, refetch: refetchAvailableUsersForRoleSetEntryRole },
@@ -299,4 +299,4 @@ const useRoleSetAdminAvailableContributors = ({
   };
 };
 
-export default useRoleSetAdminAvailableContributors;
+export default useRoleSetAvailableContributors;

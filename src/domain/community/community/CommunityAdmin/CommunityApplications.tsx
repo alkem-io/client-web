@@ -9,13 +9,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {
-  AdminCommunityApplicationFragment,
-  AdminPlatformInvitationCommunityFragment,
-  AdminCommunityInvitationFragment,
-  RoleSetContributorType,
-  User,
-} from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType, User } from '@/core/apollo/generated/graphql-schema';
 import { ApplicationDialog } from '@/domain/community/application/dialogs/ApplicationDialog';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { formatDateTime } from '@/core/utils/time/utils';
@@ -130,12 +124,56 @@ const sortState = (state: string | undefined) => {
   }
 };
 
+type CommunityApplication = {
+  id: string;
+  createdDate: Date;
+  updatedDate: Date;
+  state: string;
+  nextEvents: Array<string>;
+  contributorType: RoleSetContributorType;
+  contributor: {
+    id: string;
+    profile: {
+      displayName: string;
+      email?: string;
+      url: string;
+      avatar?: { uri: string; name: string };
+      location?: { city?: string; country?: string };
+    };
+  };
+  questions: { id: string; name: string; value: string }[];
+};
+
+type CommunityInvitation = {
+  id: string;
+  createdDate: Date;
+  updatedDate: Date;
+  state: string;
+  nextEvents: Array<string>;
+  contributorType: RoleSetContributorType;
+  contributor: {
+    id: string;
+    profile: {
+      displayName: string;
+      url: string;
+      avatar?: { uri: string };
+      location?: { city?: string; country?: string };
+    };
+  };
+};
+
+type PlatformInvitation = {
+  id: string;
+  createdDate?: Date;
+  email: string;
+};
+
 interface CommunityApplicationsProps {
-  applications: AdminCommunityApplicationFragment[] | undefined;
+  applications: CommunityApplication[] | undefined;
   onApplicationStateChange: (applicationId: string, state: string) => Promise<unknown>;
   canHandleInvitations?: boolean;
-  invitations?: AdminCommunityInvitationFragment[] | undefined;
-  platformInvitations?: AdminPlatformInvitationCommunityFragment[] | undefined;
+  invitations?: CommunityInvitation[] | undefined;
+  platformInvitations?: PlatformInvitation[] | undefined;
   onInvitationStateChange?: (invitationId: string, state: string) => Promise<unknown>;
   onDeleteInvitation?: (invitationId: string) => Promise<unknown>;
   onDeletePlatformInvitation?: (invitationId: string) => Promise<unknown>;
@@ -144,7 +182,7 @@ interface CommunityApplicationsProps {
 
 const NO_DATA_PLACEHOLDER = '—';
 
-const CreatePendingMembershipForApplication = (application: AdminCommunityApplicationFragment) => {
+const CreatePendingMembershipForApplication = (application: CommunityApplication) => {
   const applicant = application.contributor;
   const result: MembershipTableItem = {
     id: application.id,
@@ -163,7 +201,7 @@ const CreatePendingMembershipForApplication = (application: AdminCommunityApplic
   return result;
 };
 
-const CreatePendingMembershipForInvitation = (invitation: AdminCommunityInvitationFragment) => {
+const CreatePendingMembershipForInvitation = (invitation: CommunityInvitation) => {
   const contributor = invitation.contributor;
   const result: MembershipTableItem = {
     id: invitation.id,
@@ -182,7 +220,7 @@ const CreatePendingMembershipForInvitation = (invitation: AdminCommunityInvitati
   return result;
 };
 
-const CreatePendingMembershipForPlatformInvitation = (invitation: AdminPlatformInvitationCommunityFragment) => {
+const CreatePendingMembershipForPlatformInvitation = (invitation: PlatformInvitation) => {
   const result: MembershipTableItem = {
     id: invitation.id,
     type: MembershipType.PlatformInvitation,

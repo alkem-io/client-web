@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import {
   useEventOnApplicationMutation,
-  useCommunityApplicationsInvitationsQuery,
   useInvitationStateEventMutation,
   useDeleteInvitationMutation,
   useDeletePlatformInvitationMutation,
@@ -21,7 +20,8 @@ import useInviteUsers from '@/domain/community/invitations/useInviteUsers';
 import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import useInviteContributors from '../../inviteContributors/useInviteContributors';
 import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
-import useRoleSetAdminAvailableContributors from '@/domain/access/RoleSet/RoleSetAdmin/AvailableContributors/useRoleSetAvailableContributors';
+import useRoleSetAvailableContributors from '@/domain/access/RoleSet/RoleSetAdmin/AvailableContributors/useRoleSetAvailableContributors';
+import useRoleSetApplicationsAndInvitations from '@/domain/access/RoleSet/RoleSetAdmin/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 
 // TODO: Inherit from CoreEntityIds when they are not NameIds
 interface useCommunityAdminParams {
@@ -98,15 +98,6 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
     return result;
   }, [organizations]);
 
-  const {
-    data: dataApplications,
-    loading: loadingApplications,
-    refetch: refetchApplicationsAndInvitations,
-  } = useCommunityApplicationsInvitationsQuery({
-    variables: { roleSetId },
-    skip: !roleSetId,
-  });
-
   // Virtual Contributors community related extracted in useInviteContributors
   const {
     permissions,
@@ -122,9 +113,10 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
     refetch: refetchAvailableContributors,
     findAvailableUsersForRoleSetEntryRole,
     findAvailableOrganizationsForRoleSet,
-  } = useRoleSetAdminAvailableContributors({
+  } = useRoleSetAvailableContributors({
     roleSetId,
   });
+
   const getAvailableUsers = async (filter: string | undefined) => {
     const { users } = await findAvailableUsersForRoleSetEntryRole(filter);
     return users;
@@ -322,7 +314,16 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
     });
     await refetchApplicationsAndInvitations();
   };
-  const roleSetPending = dataApplications?.lookup.roleSet;
+
+  const {
+    applications,
+    invitations,
+    platformInvitations,
+    loading: loadingApplicationsAndInvitations,
+    refetch: refetchApplicationsAndInvitations,
+  } = useRoleSetApplicationsAndInvitations({
+    roleSetId,
+  });
 
   return {
     users: communityUsers,
@@ -331,9 +332,9 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
     memberRoleDefinition,
     leadRoleDefinition,
     permissions,
-    applications: roleSetPending?.applications,
-    invitations: roleSetPending?.invitations,
-    platformInvitations: roleSetPending?.platformInvitations,
+    applications,
+    invitations,
+    platformInvitations,
     onApplicationStateChange: handleApplicationStateChange,
     onInvitationStateChange: handleInvitationStateChange,
     onUserLeadChange: handleUserLeadChange,
@@ -353,7 +354,7 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
     getAvailableVirtualContributorsInLibrary,
     inviteExistingUser,
     inviteExternalUser,
-    loading: loadingCommunityProvider || loading || loadingApplications,
+    loading: loadingCommunityProvider || loading || loadingApplicationsAndInvitations,
   };
 };
 
