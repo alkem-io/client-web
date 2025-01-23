@@ -19,9 +19,9 @@ import {
 import useInviteUsers from '@/domain/community/invitations/useInviteUsers';
 import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import useInviteContributors from '../../inviteContributors/useInviteContributors';
-import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
-import useRoleSetAvailableContributors from '@/domain/access/RoleSet/RoleSetAdmin/AvailableContributors/useRoleSetAvailableContributors';
-import useRoleSetApplicationsAndInvitations from '@/domain/access/RoleSet/RoleSetAdmin/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
+import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
+import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 
 // TODO: Inherit from CoreEntityIds when they are not NameIds
 interface useCommunityAdminParams {

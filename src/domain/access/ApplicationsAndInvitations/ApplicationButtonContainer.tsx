@@ -1,4 +1,4 @@
-import { ApplicationButtonProps } from '../../../../community/application/applicationButton/ApplicationButton';
+import { ApplicationButtonProps } from '../../community/application/applicationButton/ApplicationButton';
 import { useUserContext } from '@/domain/community/user';
 import {
   useCommunityUserPrivilegesQuery,

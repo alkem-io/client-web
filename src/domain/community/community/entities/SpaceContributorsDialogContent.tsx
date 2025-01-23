@@ -4,7 +4,7 @@ import useUserCardProps from '../utils/useUserCardProps';
 import RoleSetContributorTypesView from '../RoleSetContributors/RoleSetContributorTypesView';
 import NoOrganizations from '../RoleSetContributors/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
-import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
 import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 
 const SpaceContributorsDialogContent = ({ dialogOpen }: ContributorsDialogContentProps) => {

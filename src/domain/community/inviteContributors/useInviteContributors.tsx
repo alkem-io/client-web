@@ -9,7 +9,7 @@ import {
 import { AuthorizationPrivilege, RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useInviteUsers from '@/domain/community/invitations/useInviteUsers';
 import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
-import useRoleSetAvailableContributors from '@/domain/access/RoleSet/RoleSetAdmin/AvailableContributors/useRoleSetAvailableContributors';
+import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
 
 // TODO: Inherit from CoreEntityIds when they are not NameIds
 interface useInviteContributorsParams {

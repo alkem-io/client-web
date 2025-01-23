@@ -21,7 +21,7 @@ import { MetricType } from '@/domain/platform/metrics/MetricType';
 import { InnovationFlowDetails } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
-import useRoleSetAdmin from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
 
 interface AboutPagePermissions {
   communityReadAccess: boolean;

@@ -21,7 +21,7 @@ import {
   RoleName,
 } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
-import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
 
 export interface OrganizationContainerEntities {
   organization?: OrganizationInfoFragment;

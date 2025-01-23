@@ -3,11 +3,11 @@ import EditMemberUsers from '@/domain/platform/admin/components/Community/EditMe
 import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
 import { useTranslation } from 'react-i18next';
 import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
-import useRoleSetAdmin from '@/domain/access/RoleSet/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
 import { useUserContext } from '../../user';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
-import useRoleSetAvailableUsers from '@/domain/access/RoleSet/RoleSetAdmin/AvailableContributors/useRoleSetAvailableUsers';
+import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
 
 export const OrganizationAssociatesView: FC = () => {
   const { t } = useTranslation();
