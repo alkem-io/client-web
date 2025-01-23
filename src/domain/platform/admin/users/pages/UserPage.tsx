@@ -28,8 +28,15 @@ const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User' 
   const notify = useNotification();
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const navigate = useNavigate();
-  const { userNameId = '' } = useUrlParams();
-  const { data, loading } = useUserQuery({ variables: { id: userNameId }, fetchPolicy: 'cache-and-network' });
+  const { userNameId } = useUrlParams();
+
+  const { data, loading } = useUserQuery({
+    variables: {
+      id: userNameId!, // ensured by skip
+    },
+    skip: !userNameId,
+    fetchPolicy: 'cache-and-network',
+  });
 
   const user = data?.lookup.user as UserModel;
 
@@ -146,7 +153,7 @@ const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User' 
     setModalOpened(false);
   };
 
-  if (loading) return <Loading text={'Loading user...'} />;
+  if (loading || !userNameId) return <Loading text={'Loading user...'} />;
 
   return (
     <>

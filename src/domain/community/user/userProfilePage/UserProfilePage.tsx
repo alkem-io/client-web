@@ -27,7 +27,7 @@ export const UserProfilePage = () => {
 
   const organizationIds = useUserOrganizationIds(userMetadata?.user.id);
 
-  if (loading || loadingUser) return <Loading text={'Loading User Profile ...'} />;
+  if (loading || loadingUser || !userId) return <Loading text={'Loading User Profile ...'} />;
 
   if (!userMetadata) {
     return (

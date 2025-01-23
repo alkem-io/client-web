@@ -25,7 +25,7 @@ const UserPageLayout = ({ ...props }: PropsWithChildren<UserPageLayoutProps>) =>
             {t('pages.contributors.shortName')}
           </BreadcrumbsItem>
           <BreadcrumbsItem
-            loading={loading}
+            loading={loading || !user}
             avatar={user?.user.profile.avatar}
             iconComponent={AssignmentIndOutlined}
             uri={user?.user.profile.url}
