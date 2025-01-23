@@ -12,9 +12,14 @@ import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-sc
 
 export const VCProfilePage = () => {
   const { t } = useTranslation();
-  const { vcId = '' } = useUrlResolver();
+  const { vcId } = useUrlResolver();
 
-  const { data, loading, error } = useVirtualContributorQuery({ variables: { id: vcId } });
+  const { data, loading, error } = useVirtualContributorQuery({
+    variables: {
+      id: vcId!, // ensured by skip
+    },
+    skip: !vcId,
+  });
 
   const isBokSpace =
     data?.lookup.virtualContributor?.aiPersona?.bodyOfKnowledgeType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
@@ -28,7 +33,7 @@ export const VCProfilePage = () => {
 
   useRestrictedRedirect({ data, error }, data => data.lookup.virtualContributor?.authorization?.myPrivileges);
 
-  if (loading) {
+  if (loading || !vcId) {
     return (
       <Loading text={t('components.loading.message', { blockName: t('pages.virtualContributorProfile.title') })} />
     );
