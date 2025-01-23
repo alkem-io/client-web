@@ -7,7 +7,7 @@ import {
   refetchSpaceCommunityPageQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import useInviteUsers from '@/domain/community/invitations/useInviteUsers';
+import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
 
@@ -126,8 +126,8 @@ const useInviteContributors = ({
     return refetchCommunityVirtualMembers();
   };
 
-  const { inviteContributor: inviteExistingUser, platformInviteToCommunity: inviteExternalUser } =
-    useInviteUsers(roleSetId);
+  const { inviteContributorOnRoleSet: inviteExistingUser, inviteContributorOnPlatformRoleSet: inviteExternalUser } =
+    useRoleSetApplicationsAndInvitations({});
 
   return {
     permissions,

@@ -1,4 +1,4 @@
-query organizationSettings($orgId: UUID!) {
+query OrganizationSettings($orgId: UUID!) {
   lookup {
     organization(ID: $orgId) {
       id

@@ -22,32 +22,6 @@ query CommunityVirtualMembersList(
   }
 }
 
-fragment VirtualContributorFull on VirtualContributor {
-  id
-  nameID
-  profile {
-    id
-    displayName
-    description
-    avatar: visual(type: AVATAR) {
-      ...VisualUri
-    }
-    tagsets {
-      ...TagsetDetails
-    }
-    location {
-      id
-      city
-      country
-    }
-    url
-  }
-  aiPersona {
-    bodyOfKnowledge
-    bodyOfKnowledgeType
-    bodyOfKnowledgeID
-  }
-}
 
 
 

@@ -167,6 +167,36 @@ export const AvailableUsersForRoleSetPaginatedFragmentDoc = gql`
   }
   ${AvailableUserForRoleSetFragmentDoc}
 `;
+export const VirtualContributorFullFragmentDoc = gql`
+  fragment VirtualContributorFull on VirtualContributor {
+    id
+    nameID
+    profile {
+      id
+      displayName
+      description
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        id
+        city
+        country
+      }
+      url
+    }
+    aiPersona {
+      bodyOfKnowledge
+      bodyOfKnowledgeType
+      bodyOfKnowledgeID
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
 export const RoleDefinitionPolicyFragmentDoc = gql`
   fragment RoleDefinitionPolicy on Role {
     id
@@ -1394,36 +1424,6 @@ export const AccountResourceProfileFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
-`;
-export const VirtualContributorFullFragmentDoc = gql`
-  fragment VirtualContributorFull on VirtualContributor {
-    id
-    nameID
-    profile {
-      id
-      displayName
-      description
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      location {
-        id
-        city
-        country
-      }
-      url
-    }
-    aiPersona {
-      bodyOfKnowledge
-      bodyOfKnowledgeType
-      bodyOfKnowledgeID
-    }
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
 `;
 export const PendingMembershipsJourneyProfileFragmentDoc = gql`
   fragment PendingMembershipsJourneyProfile on Profile {
@@ -4291,6 +4291,278 @@ export type JoinRoleSetMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.JoinRoleSetMutation,
   SchemaTypes.JoinRoleSetMutationVariables
 >;
+export const InvitationStateEventDocument = gql`
+  mutation InvitationStateEvent($eventName: String!, $invitationId: UUID!) {
+    eventOnInvitation(eventData: { eventName: $eventName, invitationID: $invitationId }) {
+      id
+      nextEvents
+      state
+    }
+  }
+`;
+export type InvitationStateEventMutationFn = Apollo.MutationFunction<
+  SchemaTypes.InvitationStateEventMutation,
+  SchemaTypes.InvitationStateEventMutationVariables
+>;
+
+/**
+ * __useInvitationStateEventMutation__
+ *
+ * To run a mutation, you first call `useInvitationStateEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInvitationStateEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [invitationStateEventMutation, { data, loading, error }] = useInvitationStateEventMutation({
+ *   variables: {
+ *      eventName: // value for 'eventName'
+ *      invitationId: // value for 'invitationId'
+ *   },
+ * });
+ */
+export function useInvitationStateEventMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.InvitationStateEventMutation,
+    SchemaTypes.InvitationStateEventMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.InvitationStateEventMutation,
+    SchemaTypes.InvitationStateEventMutationVariables
+  >(InvitationStateEventDocument, options);
+}
+
+export type InvitationStateEventMutationHookResult = ReturnType<typeof useInvitationStateEventMutation>;
+export type InvitationStateEventMutationResult = Apollo.MutationResult<SchemaTypes.InvitationStateEventMutation>;
+export type InvitationStateEventMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.InvitationStateEventMutation,
+  SchemaTypes.InvitationStateEventMutationVariables
+>;
+export const InviteContributorsEntryRoleOnRoleSetDocument = gql`
+  mutation InviteContributorsEntryRoleOnRoleSet(
+    $contributorIds: [UUID!]!
+    $roleSetId: UUID!
+    $message: String
+    $extraRole: RoleName
+  ) {
+    inviteContributorsEntryRoleOnRoleSet(
+      invitationData: {
+        invitedContributors: $contributorIds
+        roleSetID: $roleSetId
+        welcomeMessage: $message
+        extraRole: $extraRole
+      }
+    ) {
+      id
+    }
+  }
+`;
+export type InviteContributorsEntryRoleOnRoleSetMutationFn = Apollo.MutationFunction<
+  SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutation,
+  SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutationVariables
+>;
+
+/**
+ * __useInviteContributorsEntryRoleOnRoleSetMutation__
+ *
+ * To run a mutation, you first call `useInviteContributorsEntryRoleOnRoleSetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInviteContributorsEntryRoleOnRoleSetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [inviteContributorsEntryRoleOnRoleSetMutation, { data, loading, error }] = useInviteContributorsEntryRoleOnRoleSetMutation({
+ *   variables: {
+ *      contributorIds: // value for 'contributorIds'
+ *      roleSetId: // value for 'roleSetId'
+ *      message: // value for 'message'
+ *      extraRole: // value for 'extraRole'
+ *   },
+ * });
+ */
+export function useInviteContributorsEntryRoleOnRoleSetMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutation,
+    SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutation,
+    SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutationVariables
+  >(InviteContributorsEntryRoleOnRoleSetDocument, options);
+}
+
+export type InviteContributorsEntryRoleOnRoleSetMutationHookResult = ReturnType<
+  typeof useInviteContributorsEntryRoleOnRoleSetMutation
+>;
+export type InviteContributorsEntryRoleOnRoleSetMutationResult =
+  Apollo.MutationResult<SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutation>;
+export type InviteContributorsEntryRoleOnRoleSetMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutation,
+  SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutationVariables
+>;
+export const InviteUserToPlatformAndRoleSetDocument = gql`
+  mutation InviteUserToPlatformAndRoleSet($email: String!, $roleSetId: UUID!, $message: String, $extraRole: RoleName) {
+    inviteUserToPlatformAndRoleSet(
+      invitationData: { email: $email, roleSetID: $roleSetId, welcomeMessage: $message, roleSetExtraRole: $extraRole }
+    ) {
+      ... on PlatformInvitation {
+        id
+      }
+    }
+  }
+`;
+export type InviteUserToPlatformAndRoleSetMutationFn = Apollo.MutationFunction<
+  SchemaTypes.InviteUserToPlatformAndRoleSetMutation,
+  SchemaTypes.InviteUserToPlatformAndRoleSetMutationVariables
+>;
+
+/**
+ * __useInviteUserToPlatformAndRoleSetMutation__
+ *
+ * To run a mutation, you first call `useInviteUserToPlatformAndRoleSetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInviteUserToPlatformAndRoleSetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [inviteUserToPlatformAndRoleSetMutation, { data, loading, error }] = useInviteUserToPlatformAndRoleSetMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      roleSetId: // value for 'roleSetId'
+ *      message: // value for 'message'
+ *      extraRole: // value for 'extraRole'
+ *   },
+ * });
+ */
+export function useInviteUserToPlatformAndRoleSetMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.InviteUserToPlatformAndRoleSetMutation,
+    SchemaTypes.InviteUserToPlatformAndRoleSetMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.InviteUserToPlatformAndRoleSetMutation,
+    SchemaTypes.InviteUserToPlatformAndRoleSetMutationVariables
+  >(InviteUserToPlatformAndRoleSetDocument, options);
+}
+
+export type InviteUserToPlatformAndRoleSetMutationHookResult = ReturnType<
+  typeof useInviteUserToPlatformAndRoleSetMutation
+>;
+export type InviteUserToPlatformAndRoleSetMutationResult =
+  Apollo.MutationResult<SchemaTypes.InviteUserToPlatformAndRoleSetMutation>;
+export type InviteUserToPlatformAndRoleSetMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.InviteUserToPlatformAndRoleSetMutation,
+  SchemaTypes.InviteUserToPlatformAndRoleSetMutationVariables
+>;
+export const DeleteInvitationDocument = gql`
+  mutation DeleteInvitation($invitationId: UUID!) {
+    deleteInvitation(deleteData: { ID: $invitationId }) {
+      id
+    }
+  }
+`;
+export type DeleteInvitationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteInvitationMutation,
+  SchemaTypes.DeleteInvitationMutationVariables
+>;
+
+/**
+ * __useDeleteInvitationMutation__
+ *
+ * To run a mutation, you first call `useDeleteInvitationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteInvitationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteInvitationMutation, { data, loading, error }] = useDeleteInvitationMutation({
+ *   variables: {
+ *      invitationId: // value for 'invitationId'
+ *   },
+ * });
+ */
+export function useDeleteInvitationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteInvitationMutation,
+    SchemaTypes.DeleteInvitationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.DeleteInvitationMutation, SchemaTypes.DeleteInvitationMutationVariables>(
+    DeleteInvitationDocument,
+    options
+  );
+}
+
+export type DeleteInvitationMutationHookResult = ReturnType<typeof useDeleteInvitationMutation>;
+export type DeleteInvitationMutationResult = Apollo.MutationResult<SchemaTypes.DeleteInvitationMutation>;
+export type DeleteInvitationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteInvitationMutation,
+  SchemaTypes.DeleteInvitationMutationVariables
+>;
+export const DeletePlatformInvitationDocument = gql`
+  mutation DeletePlatformInvitation($invitationId: UUID!) {
+    deletePlatformInvitation(deleteData: { ID: $invitationId }) {
+      id
+    }
+  }
+`;
+export type DeletePlatformInvitationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeletePlatformInvitationMutation,
+  SchemaTypes.DeletePlatformInvitationMutationVariables
+>;
+
+/**
+ * __useDeletePlatformInvitationMutation__
+ *
+ * To run a mutation, you first call `useDeletePlatformInvitationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePlatformInvitationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deletePlatformInvitationMutation, { data, loading, error }] = useDeletePlatformInvitationMutation({
+ *   variables: {
+ *      invitationId: // value for 'invitationId'
+ *   },
+ * });
+ */
+export function useDeletePlatformInvitationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeletePlatformInvitationMutation,
+    SchemaTypes.DeletePlatformInvitationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeletePlatformInvitationMutation,
+    SchemaTypes.DeletePlatformInvitationMutationVariables
+  >(DeletePlatformInvitationDocument, options);
+}
+
+export type DeletePlatformInvitationMutationHookResult = ReturnType<typeof useDeletePlatformInvitationMutation>;
+export type DeletePlatformInvitationMutationResult =
+  Apollo.MutationResult<SchemaTypes.DeletePlatformInvitationMutation>;
+export type DeletePlatformInvitationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeletePlatformInvitationMutation,
+  SchemaTypes.DeletePlatformInvitationMutationVariables
+>;
 export const CommunityApplicationsInvitationsDocument = gql`
   query CommunityApplicationsInvitations($roleSetId: UUID!) {
     lookup {
@@ -5311,6 +5583,90 @@ export type RemoveRoleFromVirtualContributorMutationOptions = Apollo.BaseMutatio
   SchemaTypes.RemoveRoleFromVirtualContributorMutation,
   SchemaTypes.RemoveRoleFromVirtualContributorMutationVariables
 >;
+export const CommunityVirtualMembersListDocument = gql`
+  query CommunityVirtualMembersList(
+    $roleSetId: UUID!
+    $spaceId: UUID = "00000000-0000-0000-0000-000000000000"
+    $includeSpaceHost: Boolean = false
+  ) {
+    lookup {
+      space(ID: $spaceId) @include(if: $includeSpaceHost) {
+        id
+        provider {
+          ...ContributorDetails
+        }
+      }
+      roleSet(ID: $roleSetId) {
+        authorization {
+          id
+          myPrivileges
+        }
+        memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
+          ...RoleSetMemberVirtualContributor
+        }
+      }
+    }
+  }
+  ${ContributorDetailsFragmentDoc}
+  ${RoleSetMemberVirtualContributorFragmentDoc}
+`;
+
+/**
+ * __useCommunityVirtualMembersListQuery__
+ *
+ * To run a query within a React component, call `useCommunityVirtualMembersListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityVirtualMembersListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityVirtualMembersListQuery({
+ *   variables: {
+ *      roleSetId: // value for 'roleSetId'
+ *      spaceId: // value for 'spaceId'
+ *      includeSpaceHost: // value for 'includeSpaceHost'
+ *   },
+ * });
+ */
+export function useCommunityVirtualMembersListQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityVirtualMembersListQuery,
+    SchemaTypes.CommunityVirtualMembersListQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CommunityVirtualMembersListQuery,
+    SchemaTypes.CommunityVirtualMembersListQueryVariables
+  >(CommunityVirtualMembersListDocument, options);
+}
+
+export function useCommunityVirtualMembersListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityVirtualMembersListQuery,
+    SchemaTypes.CommunityVirtualMembersListQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CommunityVirtualMembersListQuery,
+    SchemaTypes.CommunityVirtualMembersListQueryVariables
+  >(CommunityVirtualMembersListDocument, options);
+}
+
+export type CommunityVirtualMembersListQueryHookResult = ReturnType<typeof useCommunityVirtualMembersListQuery>;
+export type CommunityVirtualMembersListLazyQueryHookResult = ReturnType<typeof useCommunityVirtualMembersListLazyQuery>;
+export type CommunityVirtualMembersListQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityVirtualMembersListQuery,
+  SchemaTypes.CommunityVirtualMembersListQueryVariables
+>;
+export function refetchCommunityVirtualMembersListQuery(
+  variables: SchemaTypes.CommunityVirtualMembersListQueryVariables
+) {
+  return { query: CommunityVirtualMembersListDocument, variables: variables };
+}
+
 export const RoleSetAuthorizationDocument = gql`
   query RoleSetAuthorization($roleSetId: UUID!) {
     lookup {
@@ -11652,362 +12008,6 @@ export function refetchAccountResourcesInfoQuery(variables: SchemaTypes.AccountR
   return { query: AccountResourcesInfoDocument, variables: variables };
 }
 
-export const DeleteInvitationDocument = gql`
-  mutation DeleteInvitation($invitationId: UUID!) {
-    deleteInvitation(deleteData: { ID: $invitationId }) {
-      id
-    }
-  }
-`;
-export type DeleteInvitationMutationFn = Apollo.MutationFunction<
-  SchemaTypes.DeleteInvitationMutation,
-  SchemaTypes.DeleteInvitationMutationVariables
->;
-
-/**
- * __useDeleteInvitationMutation__
- *
- * To run a mutation, you first call `useDeleteInvitationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteInvitationMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteInvitationMutation, { data, loading, error }] = useDeleteInvitationMutation({
- *   variables: {
- *      invitationId: // value for 'invitationId'
- *   },
- * });
- */
-export function useDeleteInvitationMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.DeleteInvitationMutation,
-    SchemaTypes.DeleteInvitationMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.DeleteInvitationMutation, SchemaTypes.DeleteInvitationMutationVariables>(
-    DeleteInvitationDocument,
-    options
-  );
-}
-
-export type DeleteInvitationMutationHookResult = ReturnType<typeof useDeleteInvitationMutation>;
-export type DeleteInvitationMutationResult = Apollo.MutationResult<SchemaTypes.DeleteInvitationMutation>;
-export type DeleteInvitationMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.DeleteInvitationMutation,
-  SchemaTypes.DeleteInvitationMutationVariables
->;
-export const DeletePlatformInvitationDocument = gql`
-  mutation DeletePlatformInvitation($invitationId: UUID!) {
-    deletePlatformInvitation(deleteData: { ID: $invitationId }) {
-      id
-    }
-  }
-`;
-export type DeletePlatformInvitationMutationFn = Apollo.MutationFunction<
-  SchemaTypes.DeletePlatformInvitationMutation,
-  SchemaTypes.DeletePlatformInvitationMutationVariables
->;
-
-/**
- * __useDeletePlatformInvitationMutation__
- *
- * To run a mutation, you first call `useDeletePlatformInvitationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeletePlatformInvitationMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deletePlatformInvitationMutation, { data, loading, error }] = useDeletePlatformInvitationMutation({
- *   variables: {
- *      invitationId: // value for 'invitationId'
- *   },
- * });
- */
-export function useDeletePlatformInvitationMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.DeletePlatformInvitationMutation,
-    SchemaTypes.DeletePlatformInvitationMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.DeletePlatformInvitationMutation,
-    SchemaTypes.DeletePlatformInvitationMutationVariables
-  >(DeletePlatformInvitationDocument, options);
-}
-
-export type DeletePlatformInvitationMutationHookResult = ReturnType<typeof useDeletePlatformInvitationMutation>;
-export type DeletePlatformInvitationMutationResult =
-  Apollo.MutationResult<SchemaTypes.DeletePlatformInvitationMutation>;
-export type DeletePlatformInvitationMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.DeletePlatformInvitationMutation,
-  SchemaTypes.DeletePlatformInvitationMutationVariables
->;
-export const InvitationStateEventDocument = gql`
-  mutation InvitationStateEvent($eventName: String!, $invitationId: UUID!) {
-    eventOnInvitation(eventData: { eventName: $eventName, invitationID: $invitationId }) {
-      id
-      nextEvents
-      state
-    }
-  }
-`;
-export type InvitationStateEventMutationFn = Apollo.MutationFunction<
-  SchemaTypes.InvitationStateEventMutation,
-  SchemaTypes.InvitationStateEventMutationVariables
->;
-
-/**
- * __useInvitationStateEventMutation__
- *
- * To run a mutation, you first call `useInvitationStateEventMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useInvitationStateEventMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [invitationStateEventMutation, { data, loading, error }] = useInvitationStateEventMutation({
- *   variables: {
- *      eventName: // value for 'eventName'
- *      invitationId: // value for 'invitationId'
- *   },
- * });
- */
-export function useInvitationStateEventMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.InvitationStateEventMutation,
-    SchemaTypes.InvitationStateEventMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.InvitationStateEventMutation,
-    SchemaTypes.InvitationStateEventMutationVariables
-  >(InvitationStateEventDocument, options);
-}
-
-export type InvitationStateEventMutationHookResult = ReturnType<typeof useInvitationStateEventMutation>;
-export type InvitationStateEventMutationResult = Apollo.MutationResult<SchemaTypes.InvitationStateEventMutation>;
-export type InvitationStateEventMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.InvitationStateEventMutation,
-  SchemaTypes.InvitationStateEventMutationVariables
->;
-export const InviteContributorsEntryRoleOnRoleSetDocument = gql`
-  mutation inviteContributorsEntryRoleOnRoleSet(
-    $contributorIds: [UUID!]!
-    $roleSetId: UUID!
-    $message: String
-    $extraRole: RoleName
-  ) {
-    inviteContributorsEntryRoleOnRoleSet(
-      invitationData: {
-        invitedContributors: $contributorIds
-        roleSetID: $roleSetId
-        welcomeMessage: $message
-        extraRole: $extraRole
-      }
-    ) {
-      id
-    }
-  }
-`;
-export type InviteContributorsEntryRoleOnRoleSetMutationFn = Apollo.MutationFunction<
-  SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutation,
-  SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutationVariables
->;
-
-/**
- * __useInviteContributorsEntryRoleOnRoleSetMutation__
- *
- * To run a mutation, you first call `useInviteContributorsEntryRoleOnRoleSetMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useInviteContributorsEntryRoleOnRoleSetMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [inviteContributorsEntryRoleOnRoleSetMutation, { data, loading, error }] = useInviteContributorsEntryRoleOnRoleSetMutation({
- *   variables: {
- *      contributorIds: // value for 'contributorIds'
- *      roleSetId: // value for 'roleSetId'
- *      message: // value for 'message'
- *      extraRole: // value for 'extraRole'
- *   },
- * });
- */
-export function useInviteContributorsEntryRoleOnRoleSetMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutation,
-    SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutation,
-    SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutationVariables
-  >(InviteContributorsEntryRoleOnRoleSetDocument, options);
-}
-
-export type InviteContributorsEntryRoleOnRoleSetMutationHookResult = ReturnType<
-  typeof useInviteContributorsEntryRoleOnRoleSetMutation
->;
-export type InviteContributorsEntryRoleOnRoleSetMutationResult =
-  Apollo.MutationResult<SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutation>;
-export type InviteContributorsEntryRoleOnRoleSetMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutation,
-  SchemaTypes.InviteContributorsEntryRoleOnRoleSetMutationVariables
->;
-export const InviteUserToPlatformAndRoleSetDocument = gql`
-  mutation inviteUserToPlatformAndRoleSet($email: String!, $roleSetId: UUID!, $message: String, $extraRole: RoleName) {
-    inviteUserToPlatformAndRoleSet(
-      invitationData: { email: $email, roleSetID: $roleSetId, welcomeMessage: $message, roleSetExtraRole: $extraRole }
-    ) {
-      ... on PlatformInvitation {
-        id
-      }
-    }
-  }
-`;
-export type InviteUserToPlatformAndRoleSetMutationFn = Apollo.MutationFunction<
-  SchemaTypes.InviteUserToPlatformAndRoleSetMutation,
-  SchemaTypes.InviteUserToPlatformAndRoleSetMutationVariables
->;
-
-/**
- * __useInviteUserToPlatformAndRoleSetMutation__
- *
- * To run a mutation, you first call `useInviteUserToPlatformAndRoleSetMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useInviteUserToPlatformAndRoleSetMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [inviteUserToPlatformAndRoleSetMutation, { data, loading, error }] = useInviteUserToPlatformAndRoleSetMutation({
- *   variables: {
- *      email: // value for 'email'
- *      roleSetId: // value for 'roleSetId'
- *      message: // value for 'message'
- *      extraRole: // value for 'extraRole'
- *   },
- * });
- */
-export function useInviteUserToPlatformAndRoleSetMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.InviteUserToPlatformAndRoleSetMutation,
-    SchemaTypes.InviteUserToPlatformAndRoleSetMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.InviteUserToPlatformAndRoleSetMutation,
-    SchemaTypes.InviteUserToPlatformAndRoleSetMutationVariables
-  >(InviteUserToPlatformAndRoleSetDocument, options);
-}
-
-export type InviteUserToPlatformAndRoleSetMutationHookResult = ReturnType<
-  typeof useInviteUserToPlatformAndRoleSetMutation
->;
-export type InviteUserToPlatformAndRoleSetMutationResult =
-  Apollo.MutationResult<SchemaTypes.InviteUserToPlatformAndRoleSetMutation>;
-export type InviteUserToPlatformAndRoleSetMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.InviteUserToPlatformAndRoleSetMutation,
-  SchemaTypes.InviteUserToPlatformAndRoleSetMutationVariables
->;
-export const CommunityVirtualMembersListDocument = gql`
-  query CommunityVirtualMembersList(
-    $roleSetId: UUID!
-    $spaceId: UUID = "00000000-0000-0000-0000-000000000000"
-    $includeSpaceHost: Boolean = false
-  ) {
-    lookup {
-      space(ID: $spaceId) @include(if: $includeSpaceHost) {
-        id
-        provider {
-          ...ContributorDetails
-        }
-      }
-      roleSet(ID: $roleSetId) {
-        authorization {
-          id
-          myPrivileges
-        }
-        memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
-          ...RoleSetMemberVirtualContributor
-        }
-      }
-    }
-  }
-  ${ContributorDetailsFragmentDoc}
-  ${RoleSetMemberVirtualContributorFragmentDoc}
-`;
-
-/**
- * __useCommunityVirtualMembersListQuery__
- *
- * To run a query within a React component, call `useCommunityVirtualMembersListQuery` and pass it any options that fit your needs.
- * When your component renders, `useCommunityVirtualMembersListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCommunityVirtualMembersListQuery({
- *   variables: {
- *      roleSetId: // value for 'roleSetId'
- *      spaceId: // value for 'spaceId'
- *      includeSpaceHost: // value for 'includeSpaceHost'
- *   },
- * });
- */
-export function useCommunityVirtualMembersListQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CommunityVirtualMembersListQuery,
-    SchemaTypes.CommunityVirtualMembersListQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.CommunityVirtualMembersListQuery,
-    SchemaTypes.CommunityVirtualMembersListQueryVariables
-  >(CommunityVirtualMembersListDocument, options);
-}
-
-export function useCommunityVirtualMembersListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CommunityVirtualMembersListQuery,
-    SchemaTypes.CommunityVirtualMembersListQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.CommunityVirtualMembersListQuery,
-    SchemaTypes.CommunityVirtualMembersListQueryVariables
-  >(CommunityVirtualMembersListDocument, options);
-}
-
-export type CommunityVirtualMembersListQueryHookResult = ReturnType<typeof useCommunityVirtualMembersListQuery>;
-export type CommunityVirtualMembersListLazyQueryHookResult = ReturnType<typeof useCommunityVirtualMembersListLazyQuery>;
-export type CommunityVirtualMembersListQueryResult = Apollo.QueryResult<
-  SchemaTypes.CommunityVirtualMembersListQuery,
-  SchemaTypes.CommunityVirtualMembersListQueryVariables
->;
-export function refetchCommunityVirtualMembersListQuery(
-  variables: SchemaTypes.CommunityVirtualMembersListQueryVariables
-) {
-  return { query: CommunityVirtualMembersListDocument, variables: variables };
-}
-
 export const OrganizationAccountDocument = gql`
   query OrganizationAccount($organizationId: UUID!) {
     lookup {
@@ -12078,7 +12078,7 @@ export function refetchOrganizationAccountQuery(variables: SchemaTypes.Organizat
 }
 
 export const OrganizationSettingsDocument = gql`
-  query organizationSettings($orgId: UUID!) {
+  query OrganizationSettings($orgId: UUID!) {
     lookup {
       organization(ID: $orgId) {
         id

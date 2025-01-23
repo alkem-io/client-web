@@ -11,7 +11,7 @@ import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import SendButton from '@/domain/shared/components/SendButton';
 import Gutters from '@/core/ui/grid/Gutters';
 import { FormikUserSelector } from '../user/FormikUserSelector/FormikUserSelector';
-import { InviteContributorsData } from './useInviteUsers';
+import { InviteContributorsData } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { sortBy } from 'lodash';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
@@ -23,7 +23,7 @@ type MessageDialogProps = {
   open: boolean;
   spaceDisplayName: string;
   onClose: () => void;
-  onInviteUser: (params: InviteContributorsData) => Promise<void>;
+  onInviteUser: (params: InviteContributorsData) => Promise<unknown>;
   title?: ReactNode;
   subtitle?: ReactNode;
   currentApplicationsUserIds: string[];

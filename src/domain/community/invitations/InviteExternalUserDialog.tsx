@@ -10,7 +10,7 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import SendButton from '@/domain/shared/components/SendButton';
 import Gutters from '@/core/ui/grid/Gutters';
-import { InviteExternalUserData } from './useInviteUsers';
+import { InviteExternalUserData } from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import FormikSelect from '@/core/ui/forms/FormikSelect';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
@@ -19,7 +19,7 @@ type MessageDialogProps = {
   open: boolean;
   spaceDisplayName: string;
   onClose: () => void;
-  onInviteUser: (params: InviteExternalUserData) => Promise<void>;
+  onInviteUser: (params: InviteExternalUserData) => Promise<unknown>;
   title?: ReactNode;
   subtitle?: ReactNode;
   communityRoles: readonly RoleName[];

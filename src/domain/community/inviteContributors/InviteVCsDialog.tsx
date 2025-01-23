@@ -6,7 +6,7 @@ import { AiPersonaBodyOfKnowledgeType, RoleName, RoleSetContributorType } from '
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
-import useInviteContributors from '@/domain/community/inviteContributors/useInviteContributors';
+import useInviteContributors from '@/domain/access/_removeMe/useInviteContributors';
 import { ContributorProps, InviteContributorDialogProps } from './InviteContributorsProps';
 import InviteContributorsList from './InviteContributorsList';
 import InviteVirtualContributorDialog from '../invitations/InviteVirtualContributorDialog';
@@ -199,7 +199,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
           open={openInviteDialog}
           onClose={onCloseInvite}
           contributorId={selectedVirtualContributorId}
-          onInviteUser={inviteExistingUser}
+          onInviteUser={inviteData => inviteExistingUser({ roleSetId, ...inviteData })}
         />
       )}
       {openPreviewDialog && selectedContributor && (

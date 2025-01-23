@@ -12,12 +12,14 @@ import {
   RoleSetMemberUserFragment,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
-import useInviteUsers from '@/domain/community/invitations/useInviteUsers';
 import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
-import useInviteContributors from '../../inviteContributors/useInviteContributors';
+import useInviteContributors from '../../../access/_removeMe/useInviteContributors';
 import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
 import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
-import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
+import useRoleSetApplicationsAndInvitations, {
+  InviteContributorsData,
+  InviteExternalUserData,
+} from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 
 // TODO: Inherit from CoreEntityIds when they are not NameIds
 interface useCommunityAdminParams {
@@ -255,31 +257,25 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
     return refetch();
   };
 
-  const onInviteUser = async () => {
-    await refetchApplicationsAndInvitations();
-  };
-
-  const { inviteContributor: inviteExistingUser, platformInviteToCommunity: inviteExternalUser } = useInviteUsers(
-    roleSetId,
-    {
-      onInviteContributor: onInviteUser,
-      onInviteExternalUser: onInviteUser,
-    }
-  );
-
   const {
     applications,
     invitations,
     platformInvitations,
     applicationStateChange,
+    inviteContributorOnRoleSet,
+    inviteContributorOnPlatformRoleSet,
     invitationStateChange,
     deleteInvitation,
     deletePlatformInvitation,
     loading: loadingApplicationsAndInvitations,
-    refetch: refetchApplicationsAndInvitations,
   } = useRoleSetApplicationsAndInvitations({
     roleSetId,
   });
+
+  const inviteExistingUser = (inviteData: InviteContributorsData) =>
+    inviteContributorOnRoleSet({ roleSetId, ...inviteData });
+  const inviteExternalUser = (inviteData: InviteExternalUserData) =>
+    inviteContributorOnPlatformRoleSet({ roleSetId, ...inviteData });
 
   return {
     users: communityUsers,

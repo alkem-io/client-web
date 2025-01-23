@@ -10,7 +10,10 @@ import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField'
 import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import SendButton from '@/domain/shared/components/SendButton';
 import Gutters from '@/core/ui/grid/Gutters';
-import { InviteContributorsData, InviteUserData } from './useInviteUsers';
+import {
+  InviteContributorsData,
+  InviteUserData,
+} from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import GridContainer from '@/core/ui/grid/GridContainer';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -22,7 +25,7 @@ type MessageDialogProps = {
   open: boolean;
   spaceDisplayName: string;
   onClose: () => void;
-  onInviteUser: (params: InviteContributorsData) => Promise<void>;
+  onInviteUser: (params: InviteContributorsData) => Promise<unknown>;
   title?: ReactNode;
   subtitle?: ReactNode;
   contributorId: string;

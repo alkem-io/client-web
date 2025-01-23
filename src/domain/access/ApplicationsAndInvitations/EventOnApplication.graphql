@@ -1,7 +1,0 @@
-mutation EventOnApplication($input: ApplicationEventInput!) {
-  eventOnApplication(eventData: $input) {
-    id
-    nextEvents
-    state
-  }
-}
