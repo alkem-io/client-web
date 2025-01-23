@@ -25,7 +25,6 @@ import CommunityVirtualContributors from '@/domain/community/community/Community
 import CommunityGuidelinesContainer, {
   CommunityGuidelines,
 } from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesContainer';
-import { useUrlParams } from '@/core/routing/useUrlParams';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';
@@ -91,11 +90,6 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
   const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState(false);
-
-  const { spaceNameId } = useUrlParams();
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space');
-  }
 
   const [fetchSpaceTemplatesSetId] = useSpaceTemplatesSetIdLazyQuery();
 

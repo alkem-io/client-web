@@ -167,60 +167,19 @@ export const AvailableUsersForRoleSetPaginatedFragmentDoc = gql`
   }
   ${AvailableUserForRoleSetFragmentDoc}
 `;
-export const RoleSetMemberUserFragmentDoc = gql`
-  fragment RoleSetMemberUser on User {
+export const RoleDefinitionPolicyFragmentDoc = gql`
+  fragment RoleDefinitionPolicy on Role {
     id
-    isContactable
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      location {
-        id
-        city
-        country
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-      url
+    name
+    organizationPolicy {
+      minimum
+      maximum
     }
-    email
-    firstName
-    lastName
-  }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
-`;
-export const RoleSetMemberOrganizationFragmentDoc = gql`
-  fragment RoleSetMemberOrganization on Organization {
-    id
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        ...VisualUri
-      }
-      description
-      tagsets {
-        ...TagsetDetails
-      }
-      location {
-        id
-        country
-        city
-      }
-      url
-    }
-    verification {
-      id
-      status
+    userPolicy {
+      minimum
+      maximum
     }
   }
-  ${VisualUriFragmentDoc}
-  ${TagsetDetailsFragmentDoc}
 `;
 export const RoleSetMemberVirtualContributorFragmentDoc = gql`
   fragment RoleSetMemberVirtualContributor on VirtualContributor {
@@ -245,57 +204,6 @@ export const RoleSetMemberVirtualContributorFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
   ${TagsetDetailsFragmentDoc}
-`;
-export const RoleDefinitionPolicyFragmentDoc = gql`
-  fragment RoleDefinitionPolicy on Role {
-    id
-    name
-    organizationPolicy {
-      minimum
-      maximum
-    }
-    userPolicy {
-      minimum
-      maximum
-    }
-  }
-`;
-export const CommunityRoleSetDetailsFragmentDoc = gql`
-  fragment CommunityRoleSetDetails on RoleSet {
-    id
-    memberUsers: usersInRole(role: MEMBER) {
-      ...RoleSetMemberUser
-    }
-    leadUsers: usersInRole(role: LEAD) {
-      ...RoleSetMemberUser
-    }
-    adminUsers: usersInRole(role: ADMIN) {
-      ...RoleSetMemberUser
-    }
-    memberOrganizations: organizationsInRole(role: MEMBER) {
-      ...RoleSetMemberOrganization
-    }
-    leadOrganizations: organizationsInRole(role: LEAD) {
-      ...RoleSetMemberOrganization
-    }
-    memberVirtualContributors: virtualContributorsInRole(role: MEMBER) {
-      ...RoleSetMemberVirtualContributor
-    }
-    memberRoleDefinition: roleDefinition(role: MEMBER) {
-      ...RoleDefinitionPolicy
-    }
-    leadRoleDefinition: roleDefinition(role: LEAD) {
-      ...RoleDefinitionPolicy
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-  ${RoleSetMemberUserFragmentDoc}
-  ${RoleSetMemberOrganizationFragmentDoc}
-  ${RoleSetMemberVirtualContributorFragmentDoc}
-  ${RoleDefinitionPolicyFragmentDoc}
 `;
 export const AccountItemProfileFragmentDoc = gql`
   fragment AccountItemProfile on Profile {
@@ -1852,6 +1760,61 @@ export const ContextJourneyDataFragmentDoc = gql`
     who
     impact
   }
+`;
+export const RoleSetMemberUserFragmentDoc = gql`
+  fragment RoleSetMemberUser on User {
+    id
+    isContactable
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      location {
+        id
+        city
+        country
+      }
+      tagsets {
+        ...TagsetDetails
+      }
+      url
+    }
+    email
+    firstName
+    lastName
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+`;
+export const RoleSetMemberOrganizationFragmentDoc = gql`
+  fragment RoleSetMemberOrganization on Organization {
+    id
+    profile {
+      id
+      displayName
+      avatar: visual(type: AVATAR) {
+        ...VisualUri
+      }
+      description
+      tagsets {
+        ...TagsetDetails
+      }
+      location {
+        id
+        country
+        city
+      }
+      url
+    }
+    verification {
+      id
+      status
+    }
+  }
+  ${VisualUriFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
 `;
 export const JourneyCommunityFragmentDoc = gql`
   fragment JourneyCommunity on Community {
@@ -5627,85 +5590,6 @@ export function refetchSubspaceCommunityAndRoleSetIdQuery(
   variables: SchemaTypes.SubspaceCommunityAndRoleSetIdQueryVariables
 ) {
   return { query: SubspaceCommunityAndRoleSetIdDocument, variables: variables };
-}
-
-export const RoleSetAvailableEntryRoleUsersDocument = gql`
-  query RoleSetAvailableEntryRoleUsers($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
-    lookup {
-      availableEntryRoleUsers: roleSet(ID: $roleSetId) {
-        id
-        availableUsersForEntryRole(first: $first, after: $after, filter: $filter) {
-          users {
-            ...AvailableUserForRoleSet
-          }
-          pageInfo {
-            ...PageInfo
-          }
-        }
-      }
-    }
-  }
-  ${AvailableUserForRoleSetFragmentDoc}
-  ${PageInfoFragmentDoc}
-`;
-
-/**
- * __useRoleSetAvailableEntryRoleUsersQuery__
- *
- * To run a query within a React component, call `useRoleSetAvailableEntryRoleUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useRoleSetAvailableEntryRoleUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useRoleSetAvailableEntryRoleUsersQuery({
- *   variables: {
- *      roleSetId: // value for 'roleSetId'
- *      first: // value for 'first'
- *      after: // value for 'after'
- *      filter: // value for 'filter'
- *   },
- * });
- */
-export function useRoleSetAvailableEntryRoleUsersQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.RoleSetAvailableEntryRoleUsersQuery,
-    SchemaTypes.RoleSetAvailableEntryRoleUsersQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.RoleSetAvailableEntryRoleUsersQuery,
-    SchemaTypes.RoleSetAvailableEntryRoleUsersQueryVariables
-  >(RoleSetAvailableEntryRoleUsersDocument, options);
-}
-
-export function useRoleSetAvailableEntryRoleUsersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.RoleSetAvailableEntryRoleUsersQuery,
-    SchemaTypes.RoleSetAvailableEntryRoleUsersQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.RoleSetAvailableEntryRoleUsersQuery,
-    SchemaTypes.RoleSetAvailableEntryRoleUsersQueryVariables
-  >(RoleSetAvailableEntryRoleUsersDocument, options);
-}
-
-export type RoleSetAvailableEntryRoleUsersQueryHookResult = ReturnType<typeof useRoleSetAvailableEntryRoleUsersQuery>;
-export type RoleSetAvailableEntryRoleUsersLazyQueryHookResult = ReturnType<
-  typeof useRoleSetAvailableEntryRoleUsersLazyQuery
->;
-export type RoleSetAvailableEntryRoleUsersQueryResult = Apollo.QueryResult<
-  SchemaTypes.RoleSetAvailableEntryRoleUsersQuery,
-  SchemaTypes.RoleSetAvailableEntryRoleUsersQueryVariables
->;
-export function refetchRoleSetAvailableEntryRoleUsersQuery(
-  variables: SchemaTypes.RoleSetAvailableEntryRoleUsersQueryVariables
-) {
-  return { query: RoleSetAvailableEntryRoleUsersDocument, variables: variables };
 }
 
 export const AccountInformationDocument = gql`
@@ -15880,34 +15764,36 @@ export function refetchSpacePrivilegesQuery(variables: SchemaTypes.SpacePrivileg
 }
 
 export const SpaceCommunityPageDocument = gql`
-  query SpaceCommunityPage($spaceNameId: UUID_NAMEID!, $includeCommunity: Boolean!) {
-    space(ID: $spaceNameId) {
-      id
-      authorization {
+  query SpaceCommunityPage($spaceId: UUID!, $includeCommunity: Boolean!) {
+    lookup {
+      space(ID: $spaceId) {
         id
-        myPrivileges
-      }
-      profile {
-        id
-        url
-      }
-      provider {
-        ...ContributorDetails
-      }
-      authorization {
-        id
-        myPrivileges
-      }
-      community @include(if: $includeCommunity) {
-        id
-        roleSet {
+        authorization {
           id
+          myPrivileges
         }
-      }
-      collaboration {
-        id
-        calloutsSet {
+        profile {
           id
+          url
+        }
+        provider {
+          ...ContributorDetails
+        }
+        authorization {
+          id
+          myPrivileges
+        }
+        community @include(if: $includeCommunity) {
+          id
+          roleSet {
+            id
+          }
+        }
+        collaboration {
+          id
+          calloutsSet {
+            id
+          }
         }
       }
     }
@@ -15927,7 +15813,7 @@ export const SpaceCommunityPageDocument = gql`
  * @example
  * const { data, loading, error } = useSpaceCommunityPageQuery({
  *   variables: {
- *      spaceNameId: // value for 'spaceNameId'
+ *      spaceId: // value for 'spaceId'
  *      includeCommunity: // value for 'includeCommunity'
  *   },
  * });

@@ -6,7 +6,6 @@ import { Error404 } from '@/core/pages/Errors/Error404';
 import SpaceCommunicationsPage from '@/domain/journey/space/pages/SpaceCommunication/SpaceCommunicationsPage';
 import SpaceProfilePage from '@/domain/journey/space/pages/SpaceProfile/SpaceProfilePage';
 import SpaceSettingsPage from '@/domain/journey/space/pages/SpaceSettings/SpaceSettingsPage';
-import { ApplicationsAdminRoutes } from '@/domain/platform/admin/community/routes/ApplicationsAdminRoutes';
 import SpaceTemplatesAdminRoutes from '@/domain/platform/admin/space/SpaceTemplatesAdminRoutes';
 import SpaceContextPage from '@/domain/journey/space/pages/SpaceContext/SpaceContextPage';
 import SpaceStorageAdminPage from '@/domain/platform/admin/space/storage/SpaceStorageAdminPage';
@@ -34,7 +33,6 @@ export const SpaceRoute: FC = () => {
           <Route path="communications" element={<SpaceCommunicationsPage communityId={communityId} />} />
           <Route path="templates/*" element={<SpaceTemplatesAdminRoutes spaceId={spaceId} />} />
           <Route path="storage" element={<SpaceStorageAdminPage spaceId={spaceId} />} />
-          <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
           <Route path="challenges/*" element={<ChallengesRoute />} />
           <Route path="*" element={<Error404 />} />
         </Routes>

@@ -88,13 +88,7 @@ export const UserAdminProfilePage = () => {
       <UserAdminLayout currentTab={SettingsSection.MyProfile}>
         <PageContentColumn columns={12}>
           <PageContentBlock>
-            <UserForm
-              title="Profile"
-              user={user}
-              avatar={user?.profile.avatar}
-              editMode={editMode}
-              onSave={handleSave}
-            />
+            <UserForm user={user} avatar={user?.profile.avatar} editMode={editMode} onSave={handleSave} />
           </PageContentBlock>
         </PageContentColumn>
       </UserAdminLayout>

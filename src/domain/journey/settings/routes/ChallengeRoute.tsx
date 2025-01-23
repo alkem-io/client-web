@@ -4,7 +4,6 @@ import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import SubspaceCommunicationsPage from '@/domain/journey/subspace/pages/SubspaceCommunications/SubspaceCommunicationsPage';
 import SubspaceProfilePage from '@/domain/journey/subspace/pages/SubspaceProfile/SubspaceProfilePage';
-import { ApplicationsAdminRoutes } from '@/domain/platform/admin/community/routes/ApplicationsAdminRoutes';
 
 import ChallengeAuthorizationRoute from '@/domain/platform/admin/subspace/routing/ChallengeAuthorizationRoute';
 import SubspaceContextPage from '@/domain/journey/subspace/pages/SubspaceContext/SubspaceContextPage';
@@ -30,7 +29,6 @@ export const ChallengeRoute: FC = () => {
             <Route path="opportunities/*" element={<ChallengeOpportunitiesPage />} />
             <Route path="community" element={<AdminSubspaceCommunityPage />} />
             <Route path="settings" element={<SpaceSettingsPage />} />
-            <Route path="community/applications/*" element={<ApplicationsAdminRoutes />} />
             <Route path="authorization/*" element={<ChallengeAuthorizationRoute />} />
             <Route path="*" element={<Error404 />} />
           </Route>

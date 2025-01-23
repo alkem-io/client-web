@@ -141,6 +141,7 @@ const CalloutSettingsContainer = ({
 }: CalloutSettingsContainerProps) => {
   const { t } = useTranslation();
 
+  // SpaceNameId is needed to save callout as template in this space
   const { spaceNameId } = useUrlParams();
 
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);

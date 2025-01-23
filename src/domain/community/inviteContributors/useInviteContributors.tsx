@@ -104,7 +104,7 @@ const useInviteContributors = ({
         contributorId: virtualContributorId,
         role: RoleName.Member,
       },
-      refetchQueries: [refetchSpaceCommunityPageQuery({ spaceNameId: spaceId ?? '', includeCommunity: true })],
+      refetchQueries: [refetchSpaceCommunityPageQuery({ spaceId: spaceId!, includeCommunity: true })],
     });
 
     return refetchCommunityVirtualMembers();

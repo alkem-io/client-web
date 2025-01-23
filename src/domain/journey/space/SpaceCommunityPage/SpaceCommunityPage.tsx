@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import PageContent from '@/core/ui/content/PageContent';
-import { useUrlParams } from '@/core/routing/useUrlParams';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import EntityDashboardLeadsSection from '@/domain/community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import ContactLeadsButton from '@/domain/community/community/ContactLeadsButton/ContactLeadsButton';
@@ -34,14 +33,13 @@ import { useUserContext } from '@/domain/community/user';
 import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
 
 const SpaceCommunityPage = () => {
-  const { spaceNameId } = useUrlParams();
   const { isAuthenticated } = useUserContext();
   const { collaborationId, journeyPath } = useRouteResolver();
-  const { communityId } = useSpace();
+  const { spaceId, loading: loadingSpace, communityId } = useSpace();
 
   const { t } = useTranslation();
 
-  if (!spaceNameId) {
+  if (!spaceId && !loadingSpace) {
     throw new TypeError('Must be within a Space');
   }
 
@@ -54,11 +52,15 @@ const SpaceCommunityPage = () => {
   };
 
   const { data, loading } = useSpaceCommunityPageQuery({
-    variables: { spaceNameId, includeCommunity: isAuthenticated },
+    variables: {
+      spaceId,
+      includeCommunity: isAuthenticated,
+    },
+    skip: !spaceId,
   });
 
   const { usersByRole, organizationsByRole, virtualContributorsByRole, myPrivileges } = useRoleSetAdmin({
-    roleSetId: data?.space.community?.roleSet.id,
+    roleSetId: data?.lookup.space?.community?.roleSet.id,
     relevantRoles: [RoleName.Member, RoleName.Lead],
     contributorTypes: [
       RoleSetContributorType.User,
@@ -78,7 +80,7 @@ const SpaceCommunityPage = () => {
     }
   );
 
-  const calloutsSetId = data?.space.collaboration?.calloutsSet?.id;
+  const calloutsSetId = data?.lookup.space?.collaboration?.calloutsSet?.id;
 
   const messageReceivers = useMemo(
     () =>
@@ -92,11 +94,14 @@ const SpaceCommunityPage = () => {
     [leadUsers]
   );
 
-  const hostOrganizations = useMemo(() => data?.space.provider && [data.space.provider], [data?.space.provider]);
+  const hostOrganizations = useMemo(
+    () => data?.lookup.space?.provider && [data.lookup.space.provider],
+    [data?.lookup.space?.provider]
+  );
 
-  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(data?.space.community?.id);
+  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(data?.lookup.space?.community?.id);
 
-  const hasReadPrivilege = data?.space.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
+  const hasReadPrivilege = data?.lookup.space?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read);
   let virtualContributors: VirtualContributorProps[] = [];
   if (hasReadPrivilege) {
     virtualContributors =
@@ -140,7 +145,7 @@ const SpaceCommunityPage = () => {
                   showInviteOption={hasInvitePrivilege}
                 />
               )}
-              <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.space.profile.url} />
+              <CommunityGuidelinesBlock communityId={communityId} journeyUrl={data?.lookup.space?.profile.url} />
             </InfoColumn>
             <ContentColumn>
               <RoleSetContributorsBlockWide
