@@ -28,7 +28,6 @@ import { Selection } from 'prosemirror-state';
 import { EditorOptions } from '@tiptap/core';
 import { Iframe } from '../MarkdownInputControls/InsertEmbedCodeButton/Iframe';
 import { EditorView } from '@tiptap/pm/view';
-import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '../../notifications/useNotification';
 
@@ -37,6 +36,7 @@ interface MarkdownInputProps extends InputBaseComponentProps {
   maxLength?: number;
   hideImageOptions?: boolean;
   temporaryLocation?: boolean;
+  storageBucketId: string | undefined;
 }
 
 type Offset = {
@@ -72,6 +72,7 @@ export const MarkdownInput = memo(
         hideImageOptions,
         onFocus,
         onBlur,
+        storageBucketId,
         temporaryLocation = false,
       },
       ref
@@ -121,85 +122,87 @@ export const MarkdownInput = memo(
         return false; // Not an image or HTML with images
       };
 
-      const storageConfig = useStorageConfigContext();
+      /**
+       * Handles the paste event in the editor.
+       *
+       * @param _view - The editor view instance.
+       * @param event - The clipboard event triggered by pasting.
+       * @returns {boolean} - Returns true if the paste event is handled, otherwise false - continue execution of the default.
+       *
+       * Reference to alternative way of handling paste events in Tiptap: https://tiptap.dev/docs/editor/extensions/functionality/filehandler
+       *
+       */
+      const handlePaste = useCallback(
+        (_view: EditorView, event: ClipboardEvent): boolean => {
+          const clipboardData = event.clipboardData;
+          const items = clipboardData?.items;
+
+          if (!items) {
+            return false;
+          }
+
+          if (!storageBucketId) {
+            return false;
+          }
+
+          let imageProcessed = false;
+
+          for (const item of items) {
+            const isImage = isImageOrHtmlWithImage(item, clipboardData);
+
+            if (hideImageOptions && isImage) {
+              event.preventDefault();
+
+              return true; // Block paste of images or HTML with images
+            }
+
+            if (!imageProcessed && isImage) {
+              if (item.kind === 'file' && item.type.startsWith('image/')) {
+                const file = item.getAsFile();
+
+                if (file) {
+                  const reader = new FileReader();
+
+                  reader.onload = () => {
+                    uploadFile({
+                      variables: {
+                        file,
+                        uploadData: { storageBucketId, temporaryLocation },
+                      },
+                    });
+                  };
+
+                  reader.readAsDataURL(file);
+                  imageProcessed = true;
+                }
+              } else if (item.kind === 'string' && item.type === 'text/html') {
+                imageProcessed = true; // HTML with images
+              }
+            }
+
+            if (imageProcessed) {
+              // Stop if we have already processed an image
+              break;
+            }
+          }
+
+          if (imageProcessed) {
+            event.preventDefault();
+
+            return true; // Block default behavior for images
+          }
+
+          return false; // Allow default behavior for text
+        },
+        [storageBucketId, hideImageOptions, temporaryLocation, uploadFile, isImageOrHtmlWithImage]
+      );
 
       const editorOptions: Partial<EditorOptions> = useMemo(
         () => ({
           extensions: [StarterKit, ImageExtension, Link, Highlight, Iframe],
-          editorProps: {
-            /**
-             * Handles the paste event in the editor.
-             *
-             * @param _view - The editor view instance.
-             * @param event - The clipboard event triggered by pasting.
-             * @returns {boolean} - Returns true if the paste event is handled, otherwise false - continue execution of the default.
-             */
-            handlePaste: (_view: EditorView, event: ClipboardEvent): boolean => {
-              const clipboardData = event.clipboardData;
-              const items = clipboardData?.items;
-
-              if (!items) {
-                return false;
-              }
-
-              const storageBucketId = storageConfig?.storageBucketId;
-
-              if (!storageBucketId) {
-                return false;
-              }
-
-              let imageProcessed = false;
-
-              for (const item of items) {
-                const isImage = isImageOrHtmlWithImage(item, clipboardData);
-
-                if (hideImageOptions && isImage) {
-                  event.preventDefault();
-
-                  return true; // Block paste of images or HTML with images
-                }
-
-                if (!imageProcessed && isImage) {
-                  if (item.kind === 'file' && item.type.startsWith('image/')) {
-                    const file = item.getAsFile();
-
-                    if (file) {
-                      const reader = new FileReader();
-
-                      reader.onload = () => {
-                        uploadFile({
-                          variables: {
-                            file,
-                            uploadData: { storageBucketId, temporaryLocation },
-                          },
-                        });
-                      };
-
-                      reader.readAsDataURL(file);
-                      imageProcessed = true;
-                    }
-                  } else if (item.kind === 'string' && item.type === 'text/html') {
-                    imageProcessed = true; // HTML with images
-                  }
-                }
-
-                if (imageProcessed) {
-                  // Stop if we have already processed an image
-                  break;
-                }
-              }
-
-              if (imageProcessed) {
-                event.preventDefault();
-
-                return true; // Block default behavior for images
-              }
-
-              return false; // Allow default behavior for text
-            },
-          },
+          editorProps: { handlePaste },
         }),
-        [storageConfig, temporaryLocation, uploadFile]
+        [handlePaste]
       );
 
       const editor = useEditor({ ...editorOptions, content: htmlContent }, [htmlContent]);
