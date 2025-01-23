@@ -25,17 +25,14 @@ query NewVirtualContributorMySpaces {
   }
 }
 
-query AccountSpaces($accountId: UUID!) {
+query AllSpaceSubspaces($spaceId: UUID!) {
   lookup {
-    account(ID: $accountId) {
+    space(ID: $spaceId) {
       id
-      spaces {
+      subspaces {
         ...spaceProfileCommunityDetails
         subspaces {
           ...spaceProfileCommunityDetails
-          subspaces {
-            ...spaceProfileCommunityDetails
-          }
         }
       }
     }

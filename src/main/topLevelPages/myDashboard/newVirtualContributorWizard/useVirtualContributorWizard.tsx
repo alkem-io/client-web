@@ -8,7 +8,7 @@ import {
   useSubspaceCommunityAndRoleSetIdLazyQuery,
   useAssignRoleToVirtualContributorMutation,
   useCreateLinkOnCalloutMutation,
-  useAccountSpacesLazyQuery,
+  useAllSpaceSubspacesLazyQuery,
   refetchMyResourcesQuery,
   useRefreshBodyOfKnowledgeMutation,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -36,14 +36,14 @@ import { useUserContext } from '@/domain/community/user';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import useNavigate from '@/core/routing/useNavigate';
 import { usePlanAvailability } from '@/domain/journey/space/createSpace/plansTable/usePlanAvailability';
-import { addVCCreationCache } from './vcCreationUtil';
+import { addVCCreationCache } from './TryVC/utils';
 import { info as logInfo } from '@/core/logging/sentry/log';
 import CreateExternalAIDialog, { ExternalVcFormValues } from './CreateExternalAIDialog';
-import { useNewVirtualContributorWizardProvided, UserAccountProps } from './useNewVirtualContributorProps';
+import { useVirtualContributorWizardProvided, UserAccountProps } from './virtualContributorProps';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { getSpaceUrlFromSubSpace } from '@/main/routing/urlBuilders';
 import ChooseCommunity from './ChooseCommunity';
-import TryVcInfo from './TryVcInfo';
+import TryVcInfo from './TryVC/TryVcInfo';
 
 const steps = {
   initial: 'initial',
@@ -74,7 +74,7 @@ export type SelectableSpace = {
   subspaces?: SelectableSpace[];
 };
 
-const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvided => {
+const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   const { t } = useTranslation();
   const { user } = useUserContext();
   const notify = useNotification();
@@ -90,6 +90,8 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     id: '',
     nameID: '',
   });
+  const [availableExistingSpaces, setAvailableExistingSpaces] = useState<SelectableSpace[]>([]);
+  const [availableExistingSpacesLoading, setAvailableExistingSpacesLoading] = useState(false);
 
   const startWizard = (initAccount: UserAccountProps | undefined, accountName?: string) => {
     setTargetAccount(initAccount);
@@ -133,19 +135,30 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     };
   }, [data, user, targetAccount]);
 
-  const [getAccountSpaces, { loading: availableSpacesLoading }] = useAccountSpacesLazyQuery();
-  const getSelectableSpaces = useCallback(
-    async (accountId: string) => {
-      const spaceData = await getAccountSpaces({
+  const [allSpaceSubspaces] = useAllSpaceSubspacesLazyQuery();
+  // For all the available spaces get their subspaces (and their subspaces)
+  // then filter them as well and
+  const getSelectableSpaces = useCallback(async () => {
+    setAvailableExistingSpacesLoading(true);
+    const result: SelectableSpace[] = [];
+
+    for (const space of availableSpaces) {
+      const subspaceData = await allSpaceSubspaces({
         variables: {
-          accountId,
+          spaceId: space.id,
         },
       });
+      const availableSubspaces = subspaceData?.data?.lookup.space?.subspaces?.filter(hasCommunityPrivilege) ?? [];
 
-      return spaceData?.data?.lookup.account?.spaces ?? [];
-    },
-    [getAccountSpaces]
-  );
+      result.push({
+        ...space,
+        subspaces: availableSubspaces,
+      });
+    }
+
+    setAvailableExistingSpacesLoading(false);
+    setAvailableExistingSpaces(result);
+  }, [allSpaceSubspaces, availableSpaces]);
 
   // get plans data todo: make lazy, usePlanAvailability is temp
   const skipPlansQueries = Boolean(allAccountSpaces.length);
@@ -539,7 +552,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
     }
   };
 
-  const NewVirtualContributorWizard = useCallback(() => {
+  const VirtualContributorWizard = useCallback(() => {
     if (!myAccountId) {
       return null;
     }
@@ -553,7 +566,10 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
               onClose={handleCloseWizard}
               loading={loading}
               onCreateKnowledge={handleCreateKnowledge}
-              onUseExistingKnowledge={values => onStepSelection('existingKnowledge', values)}
+              onUseExistingKnowledge={values => {
+                getSelectableSpaces();
+                onStepSelection('existingKnowledge', values);
+              }}
               onUseExternal={values => onStepSelection('externalProvider', values)}
             />
           )}
@@ -567,7 +583,7 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
               vcName={virtualContributorInput?.name}
               spaces={availableSpaces}
               onSubmit={onChooseCommunity}
-              loading={loading || availableSpacesLoading}
+              loading={loading}
             />
           )}
           {step === steps.tryVcInfo && (
@@ -577,14 +593,13 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
               onClose={handleCloseWizard}
             />
           )}
-          {step === steps.existingKnowledge && myAccountId && (
+          {step === steps.existingKnowledge && (
             <ExistingSpace
               onClose={handleCloseWizard}
               onBack={() => setStep(steps.initial)}
+              spaces={availableExistingSpaces}
               onSubmit={handleCreateVCWithExistingKnowledge}
-              accountId={myAccountId}
-              getSpaces={getSelectableSpaces}
-              loading={loading || availableSpacesLoading}
+              loading={loading || availableExistingSpacesLoading}
             />
           )}
           {step === steps.externalProvider && (
@@ -593,12 +608,20 @@ const useNewVirtualContributorWizard = (): useNewVirtualContributorWizardProvide
         </StorageConfigContextProvider>
       </DialogWithGrid>
     );
-  }, [dialogOpen, step, myAccountId, getSelectableSpaces, loading, availableSpacesLoading]);
+  }, [
+    dialogOpen,
+    step,
+    myAccountId,
+    loading,
+    availableExistingSpacesLoading,
+    getSelectableSpaces,
+    availableExistingSpaces,
+  ]);
 
   return {
     startWizard,
-    NewVirtualContributorWizard,
+    VirtualContributorWizard,
   };
 };
 
-export default useNewVirtualContributorWizard;
+export default useVirtualContributorWizard;
