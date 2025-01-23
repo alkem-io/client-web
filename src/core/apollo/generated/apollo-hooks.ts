@@ -15136,6 +15136,10 @@ export const AboutPageNonMembersDocument = gql`
           }
           roleSet {
             id
+            authorization {
+              id
+              myPrivileges
+            }
           }
         }
         context {

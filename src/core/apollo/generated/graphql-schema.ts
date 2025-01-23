@@ -19861,7 +19861,13 @@ export type AboutPageNonMembersQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
-            roleSet: { __typename?: 'RoleSet'; id: string };
+            roleSet: {
+              __typename?: 'RoleSet';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            };
           };
           context: {
             __typename?: 'Context';

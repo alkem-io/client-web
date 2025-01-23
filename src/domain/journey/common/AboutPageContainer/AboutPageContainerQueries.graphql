@@ -52,12 +52,6 @@ query AboutPageNonMembers($spaceId: UUID!) {
             id
             myPrivileges
           }
-          memberUsers: usersInRole(role: MEMBER, limit: 8) {
-            ...RoleSetMemberUser
-          }
-          memberOrganizations: organizationsInRole(role: MEMBER) {
-            ...RoleSetMemberOrganization
-          }
         }
       }
       context {
@@ -87,7 +81,7 @@ query AboutPageMembers($spaceId: UUID!) {
       community {
         id
         roleSet {
-          ...CommunityRoleSetDetails
+          id
         }
       }
       profile {

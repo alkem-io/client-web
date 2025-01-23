@@ -5,7 +5,7 @@ import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants'
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { ContributorViewProps, EntityDashboardContributors } from '../EntityDashboardContributorsSection/Types';
 
-export interface RoleSetMembers {
+interface RoleSetMembers {
   memberUsers?: ContributorViewProps[];
   memberOrganizations?: ContributorViewProps[];
 }
