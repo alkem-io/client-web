@@ -1,6 +1,10 @@
 import {
   useApplyForEntryRoleOnRoleSetMutation,
   useCommunityApplicationsInvitationsQuery,
+  useDeleteInvitationMutation,
+  useDeletePlatformInvitationMutation,
+  useEventOnApplicationMutation,
+  useInvitationStateEventMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { useMemo } from 'react';
@@ -81,6 +85,10 @@ type useRoleSetApplicationsAndInvitationsProvided = {
     roleSetId: string,
     questions: { name: string; value: string; sortOrder: number }[]
   ) => Promise<unknown>;
+  applicationStateChange: (roleSetId: string, eventName: string) => Promise<unknown>;
+  invitationStateChange: (invitationId: string, eventName: string) => Promise<unknown>;
+  deleteInvitation: (invitationId: string) => Promise<unknown>;
+  deletePlatformInvitation: (invitationId: string) => Promise<unknown>;
   refetch: () => Promise<unknown>;
   loading: boolean;
   isApplying: boolean;
@@ -128,20 +136,58 @@ const useRoleSetApplicationsAndInvitations = ({
     };
   }, [data]);
 
-  const [applyForEntryRoleOnRoleSet, { loading: isApplying }] = useApplyForEntryRoleOnRoleSetMutation({
-    onCompleted: () => refetch(),
-  });
+  const [applyForEntryRoleOnRoleSet, { loading: isApplying }] = useApplyForEntryRoleOnRoleSetMutation();
   const handleApplyForEntryRoleOnRoleSet = (
     roleSetId: string,
     questions: { name: string; sortOrder: number; value: string }[]
-  ) => {
-    return applyForEntryRoleOnRoleSet({
+  ) =>
+    applyForEntryRoleOnRoleSet({
       variables: {
         roleSetId,
         questions,
       },
+      onCompleted: () => refetch(),
     });
-  };
+
+  const [eventOnApplication] = useEventOnApplicationMutation();
+  const handleApplicationStateChange = (applicationId: string, newState: string) =>
+    eventOnApplication({
+      variables: {
+        input: {
+          applicationID: applicationId,
+          eventName: newState,
+        },
+      },
+      onCompleted: () => refetch(),
+    });
+
+  const [sendInvitationStateEvent] = useInvitationStateEventMutation();
+  const handleInvitationStateChange = (invitationId: string, eventName: string) =>
+    sendInvitationStateEvent({
+      variables: {
+        invitationId,
+        eventName,
+      },
+      onCompleted: () => refetch(),
+    });
+
+  const [deleteInvitation] = useDeleteInvitationMutation();
+  const handleDeleteInvitation = (invitationId: string) =>
+    deleteInvitation({
+      variables: {
+        invitationId,
+      },
+      onCompleted: () => refetch(),
+    });
+
+  const [deletePlatformInvitation] = useDeletePlatformInvitationMutation();
+  const handleDeletePlatformInvitation = (invitationId: string) =>
+    deletePlatformInvitation({
+      variables: {
+        invitationId,
+      },
+      onCompleted: () => refetch(),
+    });
 
   return {
     applications,
@@ -150,6 +196,10 @@ const useRoleSetApplicationsAndInvitations = ({
     refetch,
     loading,
     applyForEntryRoleOnRoleSet: handleApplyForEntryRoleOnRoleSet,
+    applicationStateChange: handleApplicationStateChange,
+    invitationStateChange: handleInvitationStateChange,
+    deleteInvitation: handleDeleteInvitation,
+    deletePlatformInvitation: handleDeletePlatformInvitation,
     isApplying,
   };
 };

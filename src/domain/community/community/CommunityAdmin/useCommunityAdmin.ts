@@ -1,9 +1,5 @@
 import { useMemo } from 'react';
 import {
-  useEventOnApplicationMutation,
-  useInvitationStateEventMutation,
-  useDeleteInvitationMutation,
-  useDeletePlatformInvitationMutation,
   useAssignRoleToUserMutation,
   useAssignRoleToOrganizationMutation,
   useRemoveRoleFromUserMutation,
@@ -160,18 +156,6 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
   };
 
   // Mutations:
-  const [updateApplication] = useEventOnApplicationMutation({});
-  const handleApplicationStateChange = async (applicationId: string, newState: string) => {
-    await updateApplication({
-      variables: {
-        input: {
-          applicationID: applicationId,
-          eventName: newState,
-        },
-      },
-    });
-    return refetch();
-  };
 
   const [assignRoleToUser] = useAssignRoleToUserMutation();
   const [removeRoleFromUser] = useRemoveRoleFromUserMutation();
@@ -283,42 +267,14 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
     }
   );
 
-  const [sendInvitationStateEvent] = useInvitationStateEventMutation();
-
-  const [deleteInvitation] = useDeleteInvitationMutation();
-  const [deletePlatformInvitation] = useDeletePlatformInvitationMutation();
-
-  const handleInvitationStateChange = async (invitationId: string, eventName: string) => {
-    await sendInvitationStateEvent({
-      variables: {
-        invitationId,
-        eventName,
-      },
-    });
-    await refetchApplicationsAndInvitations();
-  };
-
-  const handleDeleteInvitation = async (invitationId: string) => {
-    await deleteInvitation({
-      variables: {
-        invitationId,
-      },
-    });
-    await refetchApplicationsAndInvitations();
-  };
-  const handleDeletePlatformInvitation = async (invitationId: string) => {
-    await deletePlatformInvitation({
-      variables: {
-        invitationId,
-      },
-    });
-    await refetchApplicationsAndInvitations();
-  };
-
   const {
     applications,
     invitations,
     platformInvitations,
+    applicationStateChange,
+    invitationStateChange,
+    deleteInvitation,
+    deletePlatformInvitation,
     loading: loadingApplicationsAndInvitations,
     refetch: refetchApplicationsAndInvitations,
   } = useRoleSetApplicationsAndInvitations({
@@ -335,8 +291,8 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
     applications,
     invitations,
     platformInvitations,
-    onApplicationStateChange: handleApplicationStateChange,
-    onInvitationStateChange: handleInvitationStateChange,
+    onApplicationStateChange: applicationStateChange,
+    onInvitationStateChange: invitationStateChange,
     onUserLeadChange: handleUserLeadChange,
     onUserAuthorizationChange: handleUserAuthorizationChange,
     onOrganizationLeadChange: onOrganizationLeadChange,
@@ -346,8 +302,8 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
     onRemoveUser: handleRemoveUser,
     onRemoveOrganization: handleRemoveOrganization,
     onRemoveVirtualContributor,
-    onDeleteInvitation: handleDeleteInvitation,
-    onDeletePlatformInvitation: handleDeletePlatformInvitation,
+    onDeleteInvitation: deleteInvitation,
+    onDeletePlatformInvitation: deletePlatformInvitation,
     getAvailableUsers,
     getAvailableOrganizations,
     getAvailableVirtualContributors,
