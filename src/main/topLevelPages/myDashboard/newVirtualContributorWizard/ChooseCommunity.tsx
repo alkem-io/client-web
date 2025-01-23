@@ -9,7 +9,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
-import { SelectableSpace } from './useNewVirtualContributorWizard';
+import { SelectableSpace } from './useVirtualContributorWizard';
 import { SelectableKnowledgeSpace } from './ExistingSpace';
 
 interface ChooseCommunityProps {
