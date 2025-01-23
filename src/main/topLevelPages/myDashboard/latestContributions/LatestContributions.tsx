@@ -60,16 +60,16 @@ const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsPro
   const { isOpen, setIsOpen } = useDashboardContext();
 
   const handleRoleSelect = (event: SelectChangeEvent<unknown>) =>
-    setFilter({
-      space: SPACE_OPTION_ALL,
+    setFilter(prevState => ({
+      ...prevState,
       role: event.target.value as ActivityFeedRoles | typeof ROLE_OPTION_ALL,
-    });
+    }));
 
   const handleSpaceSelect = (event: SelectChangeEvent<unknown>) =>
-    setFilter({
+    setFilter(prevState => ({
+      ...prevState,
       space: event.target.value as string | typeof SPACE_OPTION_ALL,
-      role: ROLE_OPTION_ALL,
-    });
+    }));
 
   const spaceOptions = useMemo(() => {
     const spaces: Partial<SelectOption<string | typeof SPACE_OPTION_ALL>>[] =
