@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import useNavigate from '@/core/routing/useNavigate';
 import { Button } from '@mui/material';
 import BookIcon from '@mui/icons-material/Book';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
@@ -16,6 +18,9 @@ import { type VCProfilePageViewProps } from './model';
 import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 import KnowledgeBaseDialog from '@/domain/community/virtualContributor/knowledgeBase/KnowledgeBaseDialog';
 
+// a temporary Knowledge Base route - `${vcProfileUrl}/${KNOWLEDGE_BASE_PATH}
+const KNOWLEDGE_BASE_PATH = 'knowledge-base';
+
 const SectionTitle = ({ children }) => {
   return (
     <BlockTitle display={'flex'} alignItems={'center'} gap={gutters(0.5)}>
@@ -31,6 +36,9 @@ const SectionContent = ({ children }) => {
 export const VCProfileContentView = ({ bokProfile, virtualContributor }: VCProfilePageViewProps) => {
   const { palette } = useTheme();
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const pathname = location.pathname;
 
   const [showKnowledgeBase, setShowKnowledgeBase] = useState(false);
 
@@ -49,9 +57,46 @@ export const VCProfileContentView = ({ bokProfile, virtualContributor }: VCProfi
   const isExternal = vcType === AiPersonaBodyOfKnowledgeType.None;
   const hasSpaceKnowledge = vcType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
 
+  const isKnowledgeBasePath = (pathname: string) => {
+    const pathParts = pathname.split('/');
+
+    return pathParts[pathParts.length - 1] === KNOWLEDGE_BASE_PATH;
+  };
+
+  const removeKnowledgeBaseFromPath = (pathname: string) => {
+    const pathParts = pathname.split('/');
+
+    if (pathParts[pathParts.length - 1] === KNOWLEDGE_BASE_PATH) {
+      pathParts.pop();
+
+      const newPath = pathParts.join('/');
+      navigate(newPath, { replace: true });
+    }
+  };
+
+  const addKnowledgeBaseToPath = (pathname: string) => {
+    if (!isKnowledgeBasePath(pathname)) {
+      const newPath = `${pathname}/${KNOWLEDGE_BASE_PATH}`;
+
+      navigate(newPath, { replace: true });
+    }
+  };
+
   const handleKnowledgeBaseClick = () => {
     setShowKnowledgeBase(true);
+    addKnowledgeBaseToPath(pathname);
   };
+
+  const onCloseKnowledgeBase = () => {
+    setShowKnowledgeBase(false);
+    removeKnowledgeBaseFromPath(pathname);
+  };
+
+  useEffect(() => {
+    if (isKnowledgeBasePath(pathname)) {
+      setShowKnowledgeBase(true);
+    }
+  }, [pathname, virtualContributor]);
 
   return (
     <>
@@ -133,7 +178,7 @@ export const VCProfileContentView = ({ bokProfile, virtualContributor }: VCProfi
         <KnowledgeBaseDialog
           id={virtualContributor?.id ?? ''}
           title={`${name}: ${t('virtualContributorSpaceSettings.bodyOfKnowledge')}`}
-          onClose={() => setShowKnowledgeBase(false)}
+          onClose={onCloseKnowledgeBase}
         />
       )}
     </>
