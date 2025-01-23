@@ -86,6 +86,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   const [targetAccount, setTargetAccount] = useState<UserAccountProps>();
   const [accountName, setAccountName] = useState<string>();
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps>();
+
   const [createdVc, setCreatedVc] = useState<{ id: string; profile: { url: string } } | undefined>(undefined);
   const [availableExistingSpaces, setAvailableExistingSpaces] = useState<SelectableSpace[]>([]);
   const [availableExistingSpacesLoading, setAvailableExistingSpacesLoading] = useState(false);
