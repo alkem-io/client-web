@@ -37,7 +37,7 @@ const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly }) => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const user = data?.lookup.user as UserModel;
+  const user = data?.lookup.user;
 
   const [updateUser, { loading: updateMutationLoading }] = useUpdateUserMutation({
     onCompleted: () => {
