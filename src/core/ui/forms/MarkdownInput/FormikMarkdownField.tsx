@@ -11,6 +11,7 @@ import { MarkdownTextMaxLength } from '../field-length.constants';
 import { error as logError } from '@/core/logging/sentry/log';
 import { isMarkdownMaxLengthError } from './MarkdownValidator';
 import { useTranslation } from 'react-i18next';
+import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 
 interface MarkdownFieldProps extends InputProps {
   title: string;
@@ -120,6 +121,8 @@ export const FormikMarkdownField = ({
 
   const labelOffset = inputElement?.getLabelOffset();
 
+  const storageConfig = useStorageConfigContext();
+
   return (
     <FormControl required={required} disabled={disabled} error={isError} fullWidth>
       <CharacterCountContextProvider>
@@ -141,7 +144,7 @@ export const FormikMarkdownField = ({
           onChange={handleChange}
           onBlur={handleBlur}
           label={title}
-          inputComponent={MarkdownInput}
+          inputComponent={props => <MarkdownInput {...props} storageBucketId={storageConfig?.storageBucketId} />}
           inputRef={inputRef}
           inputProps={{
             controlsVisible,
