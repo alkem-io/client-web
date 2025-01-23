@@ -24434,18 +24434,15 @@ export function refetchNewVirtualContributorMySpacesQuery(
   return { query: NewVirtualContributorMySpacesDocument, variables: variables };
 }
 
-export const AccountSpacesDocument = gql`
-  query AccountSpaces($accountId: UUID!) {
+export const AllSpaceSubspacesDocument = gql`
+  query AllSpaceSubspaces($spaceId: UUID!) {
     lookup {
-      account(ID: $accountId) {
+      space(ID: $spaceId) {
         id
-        spaces {
+        subspaces {
           ...spaceProfileCommunityDetails
           subspaces {
             ...spaceProfileCommunityDetails
-            subspaces {
-              ...spaceProfileCommunityDetails
-            }
           }
         }
       }
@@ -24455,49 +24452,52 @@ export const AccountSpacesDocument = gql`
 `;
 
 /**
- * __useAccountSpacesQuery__
+ * __useAllSpaceSubspacesQuery__
  *
- * To run a query within a React component, call `useAccountSpacesQuery` and pass it any options that fit your needs.
- * When your component renders, `useAccountSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useAllSpaceSubspacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllSpaceSubspacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAccountSpacesQuery({
+ * const { data, loading, error } = useAllSpaceSubspacesQuery({
  *   variables: {
- *      accountId: // value for 'accountId'
+ *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
-export function useAccountSpacesQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AccountSpacesQuery, SchemaTypes.AccountSpacesQueryVariables>
+export function useAllSpaceSubspacesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AllSpaceSubspacesQuery, SchemaTypes.AllSpaceSubspacesQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AccountSpacesQuery, SchemaTypes.AccountSpacesQueryVariables>(
-    AccountSpacesDocument,
+  return Apollo.useQuery<SchemaTypes.AllSpaceSubspacesQuery, SchemaTypes.AllSpaceSubspacesQueryVariables>(
+    AllSpaceSubspacesDocument,
     options
   );
 }
 
-export function useAccountSpacesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AccountSpacesQuery, SchemaTypes.AccountSpacesQueryVariables>
+export function useAllSpaceSubspacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AllSpaceSubspacesQuery,
+    SchemaTypes.AllSpaceSubspacesQueryVariables
+  >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AccountSpacesQuery, SchemaTypes.AccountSpacesQueryVariables>(
-    AccountSpacesDocument,
+  return Apollo.useLazyQuery<SchemaTypes.AllSpaceSubspacesQuery, SchemaTypes.AllSpaceSubspacesQueryVariables>(
+    AllSpaceSubspacesDocument,
     options
   );
 }
 
-export type AccountSpacesQueryHookResult = ReturnType<typeof useAccountSpacesQuery>;
-export type AccountSpacesLazyQueryHookResult = ReturnType<typeof useAccountSpacesLazyQuery>;
-export type AccountSpacesQueryResult = Apollo.QueryResult<
-  SchemaTypes.AccountSpacesQuery,
-  SchemaTypes.AccountSpacesQueryVariables
+export type AllSpaceSubspacesQueryHookResult = ReturnType<typeof useAllSpaceSubspacesQuery>;
+export type AllSpaceSubspacesLazyQueryHookResult = ReturnType<typeof useAllSpaceSubspacesLazyQuery>;
+export type AllSpaceSubspacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.AllSpaceSubspacesQuery,
+  SchemaTypes.AllSpaceSubspacesQueryVariables
 >;
-export function refetchAccountSpacesQuery(variables: SchemaTypes.AccountSpacesQueryVariables) {
-  return { query: AccountSpacesDocument, variables: variables };
+export function refetchAllSpaceSubspacesQuery(variables: SchemaTypes.AllSpaceSubspacesQueryVariables) {
+  return { query: AllSpaceSubspacesDocument, variables: variables };
 }
 
 export const RecentSpacesDocument = gql`

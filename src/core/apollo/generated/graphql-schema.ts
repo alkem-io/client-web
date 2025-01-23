@@ -31609,44 +31609,24 @@ export type NewVirtualContributorMySpacesQuery = {
   };
 };
 
-export type AccountSpacesQueryVariables = Exact<{
-  accountId: Scalars['UUID'];
+export type AllSpaceSubspacesQueryVariables = Exact<{
+  spaceId: Scalars['UUID'];
 }>;
 
-export type AccountSpacesQuery = {
+export type AllSpaceSubspacesQuery = {
   __typename?: 'Query';
   lookup: {
     __typename?: 'LookupQueryResults';
-    account?:
+    space?:
       | {
-          __typename?: 'Account';
+          __typename?: 'Space';
           id: string;
-          spaces: Array<{
+          subspaces: Array<{
             __typename?: 'Space';
             id: string;
             subspaces: Array<{
               __typename?: 'Space';
               id: string;
-              subspaces: Array<{
-                __typename?: 'Space';
-                id: string;
-                profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
-                community: {
-                  __typename?: 'Community';
-                  id: string;
-                  roleSet: {
-                    __typename?: 'RoleSet';
-                    id: string;
-                    authorization?:
-                      | {
-                          __typename?: 'Authorization';
-                          id: string;
-                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                        }
-                      | undefined;
-                  };
-                };
-              }>;
               profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
               community: {
                 __typename?: 'Community';
