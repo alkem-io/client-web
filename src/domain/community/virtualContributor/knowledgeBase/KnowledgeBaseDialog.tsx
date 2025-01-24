@@ -59,7 +59,7 @@ const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) =
               createButtonPlace="bottom"
               availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
               disableRichMedia
-              acceptNewResponses={false}
+              disablePostResponses
             />
           </Gutters>
         </StorageConfigContextProvider>

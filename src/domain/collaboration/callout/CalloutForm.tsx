@@ -91,7 +91,7 @@ export interface CalloutFormProps {
   journeyTypeName: JourneyTypeName;
   temporaryLocation?: boolean;
   disableRichMedia?: boolean; // images, videos, iframe, etc.
-  acceptNewResponses?: boolean;
+  disablePostResponses?: boolean;
 }
 
 const CalloutForm = ({
@@ -105,7 +105,7 @@ const CalloutForm = ({
   children,
   temporaryLocation = false,
   disableRichMedia,
-  acceptNewResponses = true,
+  disablePostResponses = false,
 }: CalloutFormProps) => {
   const { t } = useTranslation();
 
@@ -129,7 +129,7 @@ const CalloutForm = ({
       type: calloutType,
       tagsets,
       references: callout?.references ?? [],
-      opened: acceptNewResponses && (callout?.state ?? CalloutState.Open) === CalloutState.Open,
+      opened: !disablePostResponses && (callout?.state ?? CalloutState.Open) === CalloutState.Open,
       groupName: callout?.groupName ?? CalloutGroupName.Knowledge,
       postDescription: callout.postDescription ?? '',
       whiteboardContent: callout.whiteboardContent ?? EmptyWhiteboardString,
@@ -196,7 +196,7 @@ const CalloutForm = ({
     tags: true,
     postTemplate: calloutType === CalloutType.PostCollection,
     whiteboardTemplate: calloutType === CalloutType.WhiteboardCollection,
-    newResponses: acceptNewResponses && calloutType !== CalloutType.Whiteboard,
+    newResponses: !disablePostResponses && calloutType !== CalloutType.Whiteboard,
     locationChange: editMode && Boolean(canChangeCalloutLocation),
     whiteboard: calloutType === CalloutType.Whiteboard,
   };
