@@ -2209,6 +2209,7 @@ export type MutationKeySpecifier = (
   | 'createUser'
   | 'createUserNewRegistration'
   | 'createVirtualContributor'
+  | 'createWingbackAccount'
   | 'deleteActor'
   | 'deleteActorGroup'
   | 'deleteCalendarEvent'
@@ -2381,6 +2382,7 @@ export type MutationFieldPolicy = {
   createUser?: FieldPolicy<any> | FieldReadFunction<any>;
   createUserNewRegistration?: FieldPolicy<any> | FieldReadFunction<any>;
   createVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  createWingbackAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteActor?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;

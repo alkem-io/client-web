@@ -3739,6 +3739,8 @@ export type Mutation = {
   createUserNewRegistration: User;
   /** Creates a new VirtualContributor on an Account. */
   createVirtualContributor: VirtualContributor;
+  /** Creates an account in Wingback */
+  createWingbackAccount: Scalars['String'];
   /** Deletes the specified Actor. */
   deleteActor: Actor;
   /** Deletes the specified Actor Group, including contained Actors. */
@@ -4159,6 +4161,10 @@ export type MutationCreateUserArgs = {
 
 export type MutationCreateVirtualContributorArgs = {
   virtualContributorData: CreateVirtualContributorOnAccountInput;
+};
+
+export type MutationCreateWingbackAccountArgs = {
+  accountID: Scalars['UUID'];
 };
 
 export type MutationDeleteActorArgs = {
@@ -16456,6 +16462,12 @@ export type RemoveRoleFromVirtualContributorMutation = {
   __typename?: 'Mutation';
   removeRoleFromVirtualContributor: { __typename?: 'VirtualContributor'; id: string };
 };
+
+export type CreateWingbackAccountMutationVariables = Exact<{
+  accountID: Scalars['UUID'];
+}>;
+
+export type CreateWingbackAccountMutation = { __typename?: 'Mutation'; createWingbackAccount: string };
 
 export type ContributorsPageOrganizationsQueryVariables = Exact<{
   first: Scalars['Int'];
