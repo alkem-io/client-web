@@ -19525,22 +19525,24 @@ export function refetchPlatformStorageConfigQuery(variables?: SchemaTypes.Platfo
 }
 
 export const AccountStorageConfigDocument = gql`
-  query AccountStorageConfig($accountId: UUID_NAMEID!) {
-    account(ID: $accountId) {
-      id
-      storageAggregator {
+  query AccountStorageConfig($accountId: UUID!) {
+    lookup {
+      account(ID: $accountId) {
         id
-        authorization {
+        storageAggregator {
           id
-          myPrivileges
-        }
-        directStorageBucket {
-          id
-          allowedMimeTypes
-          maxFileSize
           authorization {
             id
             myPrivileges
+          }
+          directStorageBucket {
+            id
+            allowedMimeTypes
+            maxFileSize
+            authorization {
+              id
+              myPrivileges
+            }
           }
         }
       }

@@ -3356,6 +3356,8 @@ export type LookupQueryResults = {
   innovationPack?: Maybe<InnovationPack>;
   /** Lookup the specified Invitation */
   invitation?: Maybe<Invitation>;
+  /** Lookup as specific KnowledgeBase */
+  knowledgeBase: KnowledgeBase;
   /** Lookup the specified License */
   license?: Maybe<License>;
   /** Lookup myPrivileges on the specified entity. */
@@ -3456,6 +3458,10 @@ export type LookupQueryResultsInnovationPackArgs = {
 };
 
 export type LookupQueryResultsInvitationArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type LookupQueryResultsKnowledgeBaseArgs = {
   ID: Scalars['UUID'];
 };
 
@@ -23541,30 +23547,35 @@ export type PlatformStorageConfigQuery = {
 };
 
 export type AccountStorageConfigQueryVariables = Exact<{
-  accountId: Scalars['UUID_NAMEID'];
+  accountId: Scalars['UUID'];
 }>;
 
 export type AccountStorageConfigQuery = {
   __typename?: 'Query';
-  account: {
-    __typename?: 'Account';
-    id: string;
-    storageAggregator: {
-      __typename?: 'StorageAggregator';
-      id: string;
-      authorization?:
-        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-        | undefined;
-      directStorageBucket: {
-        __typename?: 'StorageBucket';
-        id: string;
-        allowedMimeTypes: Array<string>;
-        maxFileSize: number;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-      };
-    };
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    account?:
+      | {
+          __typename?: 'Account';
+          id: string;
+          storageAggregator: {
+            __typename?: 'StorageAggregator';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+            directStorageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
   };
 };
 
