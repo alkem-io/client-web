@@ -1,18 +1,16 @@
 import { useMemo } from 'react';
+type RolePolicy = {
+  minimum: number;
+  maximum: number;
+};
+type RoleDefinition = {
+  organizationPolicy: RolePolicy;
+  userPolicy: RolePolicy;
+};
 
 const useCommunityPolicyChecker = (
-  memberRoleDefinition:
-    | {
-        organizationPolicy: { minimum: number; maximum: number };
-        userPolicy: { minimum: number; maximum: number };
-      }
-    | undefined,
-  leadRoleDefinition:
-    | {
-        organizationPolicy: { minimum: number; maximum: number };
-        userPolicy: { minimum: number; maximum: number };
-      }
-    | undefined,
+  memberRoleDefinition: RoleDefinition | undefined,
+  leadRoleDefinition: RoleDefinition | undefined,
   entities: { isLead: boolean }[] | undefined
 ) =>
   useMemo(() => {

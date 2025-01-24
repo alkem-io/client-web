@@ -1,9 +1,8 @@
 import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
-import { ContributorType } from './types';
 
-const NoOrganizations = ({ type }: { type: ContributorType }) => {
+const NoOrganizations = ({ type }: { type: 'leading' | 'member' }) => {
   const { t } = useTranslation();
 
   return (
