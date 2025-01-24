@@ -1,4 +1,5 @@
 import {
+  refetchUserPendingMembershipsQuery,
   useApplyForEntryRoleOnRoleSetMutation,
   useCommunityApplicationsInvitationsQuery,
   useDeleteInvitationMutation,
@@ -142,10 +143,21 @@ const addContributorType = (
 const useRoleSetApplicationsAndInvitations = ({
   roleSetId,
 }: useRoleSetApplicationsAndInvitationsParams): useRoleSetApplicationsAndInvitationsProvided => {
-  const { data, loading, refetch } = useCommunityApplicationsInvitationsQuery({
+  const {
+    data,
+    loading,
+    refetch: refetchCommunityApplicationsInvitations,
+  } = useCommunityApplicationsInvitationsQuery({
     variables: { roleSetId: roleSetId! },
     skip: !roleSetId,
   });
+
+  const refetch = async () => {
+    if (roleSetId) {
+      await refetchCommunityApplicationsInvitations();
+      await refetchUserPendingMembershipsQuery();
+    }
+  };
 
   const { applications, invitations, platformInvitations } = useMemo(() => {
     return {
