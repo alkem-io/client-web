@@ -65,7 +65,7 @@ const CreateInnovationHubDialog = ({
           <BlockTitle>{t('pages.admin.innovationHubs.create')}</BlockTitle>
         </DialogHeader>
         <DialogContent>
-          <StorageConfigContextProvider userId={userId} locationType="user">
+          <StorageConfigContextProvider accountId={accountId} locationType="account">
             <InnovationHubForm
               isNew
               accounts={[{ id: accountId, name: accountHostName }]}
