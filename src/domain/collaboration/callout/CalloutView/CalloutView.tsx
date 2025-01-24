@@ -29,7 +29,7 @@ const CalloutView = ({ callout, ...props }: CalloutViewProps) => {
         </WhiteboardCollectionCalloutContainer>
       );
     case CalloutType.Post:
-      return <CommentsCallout callout={callout} {...props} />;
+      return <CommentsCallout callout={callout} disablePostResponses {...props} />;
     case CalloutType.LinkCollection:
       return <LinkCollectionCallout callout={callout} {...props} />;
     case CalloutType.Whiteboard:
