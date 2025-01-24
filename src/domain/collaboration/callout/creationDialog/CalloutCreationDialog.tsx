@@ -57,6 +57,7 @@ export interface CalloutCreationDialogProps {
   journeyTypeName: JourneyTypeName;
   availableCalloutTypes?: CalloutType[];
   disableRichMedia?: boolean;
+  acceptNewResponses?: boolean;
 }
 
 const CalloutCreationDialog = ({
@@ -69,6 +70,7 @@ const CalloutCreationDialog = ({
   journeyTypeName,
   availableCalloutTypes,
   disableRichMedia,
+  acceptNewResponses,
 }: CalloutCreationDialogProps) => {
   const { t } = useTranslation();
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
@@ -279,6 +281,7 @@ const CalloutCreationDialog = ({
               journeyTypeName={journeyTypeName}
               temporaryLocation // Always true for callout creation
               disableRichMedia={disableRichMedia}
+              acceptNewResponses={acceptNewResponses}
             />
           </DialogContent>
 
