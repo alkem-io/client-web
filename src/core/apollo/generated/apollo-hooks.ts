@@ -24333,6 +24333,79 @@ export function refetchVirtualContributorUrlResolverQuery(
   return { query: VirtualContributorUrlResolverDocument, variables: variables };
 }
 
+export const VirtualContributorKnowledgeBaseUrlResolverDocument = gql`
+  query VirtualContributorKnowledgeBaseUrlResolver($virtualContributorId: UUID!, $calloutNameId: UUID_NAMEID!) {
+    virtualContributor(ID: $virtualContributorId) {
+      knowledgeBase {
+        calloutsSet {
+          callouts(IDs: [$calloutNameId]) {
+            id
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useVirtualContributorKnowledgeBaseUrlResolverQuery__
+ *
+ * To run a query within a React component, call `useVirtualContributorKnowledgeBaseUrlResolverQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVirtualContributorKnowledgeBaseUrlResolverQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVirtualContributorKnowledgeBaseUrlResolverQuery({
+ *   variables: {
+ *      virtualContributorId: // value for 'virtualContributorId'
+ *      calloutNameId: // value for 'calloutNameId'
+ *   },
+ * });
+ */
+export function useVirtualContributorKnowledgeBaseUrlResolverQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.VirtualContributorKnowledgeBaseUrlResolverQuery,
+    SchemaTypes.VirtualContributorKnowledgeBaseUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.VirtualContributorKnowledgeBaseUrlResolverQuery,
+    SchemaTypes.VirtualContributorKnowledgeBaseUrlResolverQueryVariables
+  >(VirtualContributorKnowledgeBaseUrlResolverDocument, options);
+}
+
+export function useVirtualContributorKnowledgeBaseUrlResolverLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VirtualContributorKnowledgeBaseUrlResolverQuery,
+    SchemaTypes.VirtualContributorKnowledgeBaseUrlResolverQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.VirtualContributorKnowledgeBaseUrlResolverQuery,
+    SchemaTypes.VirtualContributorKnowledgeBaseUrlResolverQueryVariables
+  >(VirtualContributorKnowledgeBaseUrlResolverDocument, options);
+}
+
+export type VirtualContributorKnowledgeBaseUrlResolverQueryHookResult = ReturnType<
+  typeof useVirtualContributorKnowledgeBaseUrlResolverQuery
+>;
+export type VirtualContributorKnowledgeBaseUrlResolverLazyQueryHookResult = ReturnType<
+  typeof useVirtualContributorKnowledgeBaseUrlResolverLazyQuery
+>;
+export type VirtualContributorKnowledgeBaseUrlResolverQueryResult = Apollo.QueryResult<
+  SchemaTypes.VirtualContributorKnowledgeBaseUrlResolverQuery,
+  SchemaTypes.VirtualContributorKnowledgeBaseUrlResolverQueryVariables
+>;
+export function refetchVirtualContributorKnowledgeBaseUrlResolverQuery(
+  variables: SchemaTypes.VirtualContributorKnowledgeBaseUrlResolverQueryVariables
+) {
+  return { query: VirtualContributorKnowledgeBaseUrlResolverDocument, variables: variables };
+}
+
 export const InnovationHubUrlResolverDocument = gql`
   query InnovationHubUrlResolver($innovationHubNameId: NameID!) {
     lookupByName {

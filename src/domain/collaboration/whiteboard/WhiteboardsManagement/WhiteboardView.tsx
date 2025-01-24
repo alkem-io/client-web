@@ -17,7 +17,7 @@ export interface WhiteboardNavigationMethods {
 }
 
 export interface WhiteboardViewProps extends ActiveWhiteboardIdHolder, WhiteboardNavigationMethods {
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: JourneyTypeName | 'knowledge-base';
   whiteboard: WhiteboardDetails | undefined;
   authorization: { myPrivileges?: AuthorizationPrivilege[] } | undefined;
   whiteboardShareUrl: string;
@@ -83,7 +83,7 @@ const WhiteboardView = ({
             dialogTitle: displayName,
             readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
             fullscreen,
-            headerActions: (
+            headerActions: journeyTypeName !== 'knowledge-base' && (
               <>
                 <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
                   {hasUpdatePrivileges && (

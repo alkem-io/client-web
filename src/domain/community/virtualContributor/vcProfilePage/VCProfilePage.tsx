@@ -10,9 +10,13 @@ import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
 import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 
-export const VCProfilePage = () => {
+type VCProfilePageProps = {
+  openKnowledgeBaseDialog?: boolean;
+};
+
+export const VCProfilePage = ({ openKnowledgeBaseDialog }: VCProfilePageProps) => {
   const { t } = useTranslation();
-  const { vcId } = useUrlResolver();
+  const { vcId, vcCalloutId } = useUrlResolver();
 
   const { data, loading, error } = useVirtualContributorQuery({
     variables: {
@@ -52,7 +56,9 @@ export const VCProfilePage = () => {
       <VCProfilePageView
         bokProfile={isBokSpace ? bokProfile?.lookup.space?.profile : undefined}
         virtualContributor={data?.lookup.virtualContributor}
+        openKnowledgeBaseDialog={openKnowledgeBaseDialog}
       />
+      {vcCalloutId}
     </VCPageLayout>
   );
 };

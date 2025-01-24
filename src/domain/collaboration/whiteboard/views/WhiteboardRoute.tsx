@@ -6,7 +6,7 @@ import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 
 export interface WhiteboardRouteProps {
   parentPagePath: string;
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: JourneyTypeName | 'knowledge-base';
 }
 
 const WhiteboardRoute = ({ parentPagePath, journeyTypeName }: WhiteboardRouteProps) => {

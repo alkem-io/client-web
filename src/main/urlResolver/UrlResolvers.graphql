@@ -15,6 +15,18 @@ query VirtualContributorUrlResolver($nameId: NameID!) {
     virtualContributor(NAMEID: $nameId)
   }
 }
+# We need a better route resolver for this
+query VirtualContributorKnowledgeBaseUrlResolver($virtualContributorId: UUID!, $calloutNameId: UUID_NAMEID!) {
+  virtualContributor(ID: $virtualContributorId) {
+    knowledgeBase {
+      calloutsSet {
+        callouts(IDs: [$calloutNameId]) {
+          id
+        }
+      }
+    }
+  }
+}
 
 query InnovationHubUrlResolver($innovationHubNameId: NameID!) {
   lookupByName {

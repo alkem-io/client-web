@@ -88,7 +88,7 @@ export interface CalloutFormProps {
   onChange?: (callout: CalloutFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<FormValueType>['children'];
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: JourneyTypeName | 'knowledge-base';
   temporaryLocation?: boolean;
   disableRichMedia?: boolean; // images, videos, iframe, etc.
   disablePostResponses?: boolean;

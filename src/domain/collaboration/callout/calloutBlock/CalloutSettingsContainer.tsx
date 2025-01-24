@@ -117,7 +117,7 @@ export interface CalloutSettingsContainerProps
   };
   expanded?: boolean;
   onExpand?: () => void;
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: JourneyTypeName | 'knowledge-base';
   disableRichMedia?: boolean;
   disablePostResponses?: boolean;
 }

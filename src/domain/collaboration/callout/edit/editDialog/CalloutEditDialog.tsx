@@ -22,7 +22,7 @@ export interface CalloutEditDialogProps {
   onDelete: (callout: CalloutDeleteType) => void;
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
   canChangeCalloutLocation?: boolean;
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: JourneyTypeName | 'knowledge-base';
   disableRichMedia?: boolean;
   disablePostResponses?: boolean;
 }

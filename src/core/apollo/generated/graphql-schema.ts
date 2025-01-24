@@ -30285,6 +30285,24 @@ export type VirtualContributorUrlResolverQuery = {
   lookupByName: { __typename?: 'LookupByNameQueryResults'; virtualContributor?: string | undefined };
 };
 
+export type VirtualContributorKnowledgeBaseUrlResolverQueryVariables = Exact<{
+  virtualContributorId: Scalars['UUID'];
+  calloutNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type VirtualContributorKnowledgeBaseUrlResolverQuery = {
+  __typename?: 'Query';
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
+    knowledgeBase?:
+      | {
+          __typename?: 'KnowledgeBase';
+          calloutsSet: { __typename?: 'CalloutsSet'; callouts: Array<{ __typename?: 'Callout'; id: string }> };
+        }
+      | undefined;
+  };
+};
+
 export type InnovationHubUrlResolverQueryVariables = Exact<{
   innovationHubNameId: Scalars['NameID'];
 }>;

@@ -54,7 +54,7 @@ export interface CalloutCreationDialogProps {
   loading: boolean;
   groupName: CalloutGroupName;
   flowState?: string;
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: JourneyTypeName | 'knowledge-base';
   availableCalloutTypes?: CalloutType[];
   disableRichMedia?: boolean;
   disablePostResponses?: boolean;

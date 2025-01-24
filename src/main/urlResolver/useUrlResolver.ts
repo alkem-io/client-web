@@ -6,6 +6,7 @@ import {
   useTemplatesSetUrlResolverQuery,
   useTemplateUrlResolverQuery,
   useUserUrlResolverQuery,
+  useVirtualContributorKnowledgeBaseUrlResolverQuery,
   useVirtualContributorUrlResolverQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '@/core/routing/useUrlParams';
@@ -21,6 +22,7 @@ type UseUrlResolverProvided = {
   templateId: string | undefined;
   userId: string | undefined;
   vcId: string | undefined;
+  vcCalloutId: string | undefined;
   loading: boolean;
 };
 
@@ -46,6 +48,7 @@ const useUrlResolver = ({
     templateNameId,
     userNameId,
     vcNameId,
+    calloutNameId,
   } = urlParams;
 
   // Space
@@ -156,7 +159,17 @@ const useUrlResolver = ({
   });
   const vcId = vcData?.lookupByName.virtualContributor;
   if (throwIfNotFound && vcNameId && !vcLoading && !vcId) {
-    throw new NotFoundError(`User '${vcNameId}' not found`);
+    throw new NotFoundError(`VirtualContributor '${vcNameId}' not found`);
+  }
+
+  // Virtual Contributor with callout open
+  const { data: vcCalloutData, loading: vcCalloutLoading } = useVirtualContributorKnowledgeBaseUrlResolverQuery({
+    variables: { virtualContributorId: vcId!, calloutNameId: calloutNameId! },
+    skip: !vcNameId || !vcId || !calloutNameId,
+  });
+  const vcCalloutId = vcCalloutData?.virtualContributor.knowledgeBase?.calloutsSet.callouts[0]?.id;
+  if (throwIfNotFound && vcNameId && !vcLoading && !vcId && !vcCalloutLoading && !vcCalloutId) {
+    throw new NotFoundError(`Callout '${calloutNameId}' not found in VC '${vcNameId}'`);
   }
 
   const result = useMemo(
@@ -168,6 +181,7 @@ const useUrlResolver = ({
       templateId,
       userId,
       vcId,
+      vcCalloutId,
       loading:
         spaceLoading ||
         organizationLoading ||
@@ -176,7 +190,8 @@ const useUrlResolver = ({
         innovationPackLoading ||
         templateLoading ||
         userLoading ||
-        vcLoading,
+        vcLoading ||
+        vcCalloutLoading,
     }),
     [
       spaceId,
@@ -194,6 +209,7 @@ const useUrlResolver = ({
       templateLoading,
       userLoading,
       vcLoading,
+      vcCalloutLoading,
     ]
   );
   return result;

@@ -9,7 +9,7 @@ export interface WhiteboardPageProps {
   whiteboardNameId: string;
   calloutNameId: string;
   parentUrl: string;
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: JourneyTypeName | 'knowledge-base';
 }
 
 const WhiteboardPage = ({

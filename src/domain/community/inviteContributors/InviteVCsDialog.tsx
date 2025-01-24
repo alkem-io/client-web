@@ -12,7 +12,6 @@ import InviteContributorsList from './InviteContributorsList';
 import InviteVirtualContributorDialog from '../invitations/InviteVirtualContributorDialog';
 import PreviewContributorDialog from './PreviewContributorDialog';
 import VCProfileContentView from '../virtualContributor/vcProfilePage/VCProfileContentView';
-import { VirtualContributorProfileProps } from '../virtualContributor/vcProfilePage/model';
 import { BasicSpaceProps } from '../virtualContributor/components/BasicSpaceCard';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -210,8 +209,9 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
           actions={renderActions()}
         >
           <VCProfileContentView
-            bokProfile={bokProfile as BasicSpaceProps}
-            virtualContributor={selectedContributor as VirtualContributorProfileProps}
+            bokProfile={bokProfile}
+            virtualContributor={selectedContributor}
+            openKnowledgeBaseDialog={false /* //!! */}
           />
         </PreviewContributorDialog>
       )}

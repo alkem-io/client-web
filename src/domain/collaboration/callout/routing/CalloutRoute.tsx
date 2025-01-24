@@ -7,7 +7,7 @@ import { nameOfUrl } from '@/main/routing/urlParams';
 
 export interface CalloutRouteProps {
   parentPagePath: string;
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: JourneyTypeName | 'knowledge-base';
 }
 
 const CalloutRoute = ({ parentPagePath, journeyTypeName }: CalloutRouteProps) => (

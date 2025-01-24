@@ -32,7 +32,7 @@ const CalloutsViewSkeleton = () => (
 
 export interface CalloutsViewProps {
   callouts: TypedCallout[] | undefined;
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: JourneyTypeName | 'knowledge-base';
   onSortOrderUpdate?: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
   onCalloutUpdate?: (calloutId: string) => void;
   loading?: boolean;
