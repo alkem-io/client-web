@@ -5,7 +5,7 @@ import BackButton from '@/core/ui/actions/BackButton';
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
 import ApplicationButtonContainer, {
   ApplicationButtonContainerProps,
-} from '@/domain/community/application/containers/ApplicationButtonContainer';
+} from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import PageContentRibbon from '@/core/ui/content/PageContentRibbon';
 import { LockOutlined } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';

@@ -39,28 +39,34 @@ query CalloutPostStorageConfig($postId: UUID_NAMEID!, $calloutId: UUID!) {
   }
 }
 
-query UserStorageConfig($userId: UUID_NAMEID_EMAIL!) {
-  user(ID: $userId) {
-    id
-    profile {
-      ...ProfileStorageConfig
+query UserStorageConfig($userId: UUID!) {
+  lookup {
+    user(ID: $userId) {
+      id
+      profile {
+        ...ProfileStorageConfig
+      }
     }
   }
 }
-query VirtualContributorStorageConfig($virtualContributorId: UUID_NAMEID!) {
-  virtualContributor(ID: $virtualContributorId) {
-    id
-    profile {
-      ...ProfileStorageConfig
+query VirtualContributorStorageConfig($virtualContributorId: UUID!) {
+  lookup {
+    virtualContributor(ID: $virtualContributorId) {
+      id
+      profile {
+        ...ProfileStorageConfig
+      }
     }
   }
 }
 
-query OrganizationStorageConfig($organizationId: UUID_NAMEID!) {
-  organization(ID: $organizationId) {
-    id
-    profile {
-      ...ProfileStorageConfig
+query OrganizationStorageConfig($organizationId: UUID!) {
+  lookup {
+    organization(ID: $organizationId) {
+      id
+      profile {
+        ...ProfileStorageConfig
+      }
     }
   }
 }
@@ -76,7 +82,7 @@ query InnovationPackStorageConfig($innovationPackId: UUID!) {
   }
 }
 
-query InnovationHubStorageConfig($innovationHubId: UUID_NAMEID!) {
+query InnovationHubStorageConfig($innovationHubId: UUID!) {
   platform {
     id
     innovationHub(id: $innovationHubId) {

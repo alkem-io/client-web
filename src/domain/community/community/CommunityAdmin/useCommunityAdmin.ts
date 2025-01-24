@@ -1,43 +1,28 @@
 import { useMemo } from 'react';
 import {
-  useAllOrganizationsLazyQuery,
-  useEventOnApplicationMutation,
-  useCommunityApplicationsInvitationsQuery,
-  useInvitationStateEventMutation,
-  useDeleteInvitationMutation,
-  useDeletePlatformInvitationMutation,
-  useCommunityMembersListQuery,
   useAssignRoleToUserMutation,
   useAssignRoleToOrganizationMutation,
   useRemoveRoleFromUserMutation,
   useRemoveRoleFromOrganizationMutation,
-  useRoleSetAvailableMembersLazyQuery,
+  useCommunityProviderDetailsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { CommunityRoleType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
-import { OrganizationDetailsFragmentWithRoles } from '@/domain/community/community/CommunityAdmin/CommunityOrganizations';
-import { CommunityMemberUserFragmentWithRoles } from '@/domain/community/community/CommunityAdmin/CommunityUsers';
-import useInviteUsers from '@/domain/community/invitations/useInviteUsers';
+import {
+  RoleName,
+  RoleSetMemberOrganizationFragment,
+  RoleSetMemberUserFragment,
+  SpaceLevel,
+} from '@/core/apollo/generated/graphql-schema';
 import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
-import useInviteContributors from '../../inviteContributors/useInviteContributors';
-
-const MAX_AVAILABLE_MEMBERS = 100;
-const buildUserFilterObject = (filter: string | undefined) =>
-  filter
-    ? {
-        email: filter,
-        displayName: filter,
-      }
-    : undefined;
-
-const buildOrganizationFilterObject = (filter: string | undefined) =>
-  filter
-    ? {
-        displayName: filter,
-      }
-    : undefined;
+import useInviteContributors from '../../../access/_removeMe/useInviteContributors';
+import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
+import useRoleSetApplicationsAndInvitations, {
+  InviteContributorsData,
+  InviteExternalUserData,
+} from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 
 // TODO: Inherit from CoreEntityIds when they are not NameIds
-interface useRoleSetAdminParams {
+interface useCommunityAdminParams {
   roleSetId: string;
   spaceId?: string;
   challengeId?: string;
@@ -45,133 +30,76 @@ interface useRoleSetAdminParams {
   spaceLevel: SpaceLevel | undefined;
 }
 
-const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spaceLevel }: useRoleSetAdminParams) => {
+export interface CommunityMemberUserFragmentWithRoles extends RoleSetMemberUserFragment {
+  isMember: boolean;
+  isLead: boolean;
+  isAdmin: boolean;
+  isContactable: boolean;
+}
+export interface CommunityMemberOrganizationFragmentWithRoles extends RoleSetMemberOrganizationFragment {
+  isMember: boolean;
+  isLead: boolean;
+  isFacilitating: boolean;
+}
+
+const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spaceLevel }: useCommunityAdminParams) => {
   const journeyTypeName = getJourneyTypeName({
     spaceNameId: spaceId,
     challengeNameId: challengeId,
     opportunityNameId: opportunityId,
   })!;
-
-  const {
-    data: roleSetData,
-    loading: loadingMembers,
-    refetch: refetchCommunityMembers,
-  } = useCommunityMembersListQuery({
+  const { data: communityProviderData, loading: loadingCommunityProvider } = useCommunityProviderDetailsQuery({
     variables: {
-      roleSetId,
-      spaceId,
-      includeSpaceHost: journeyTypeName === 'space',
+      spaceId: spaceId!,
     },
-    skip: !roleSetId || !spaceId,
+    skip: !spaceId || journeyTypeName !== 'space',
   });
 
-  const roleSet = roleSetData?.lookup.roleSet;
-
-  const memberRoleDefinition = roleSet?.memberRoleDefinition;
-  const leadRoleDefinition = roleSet?.leadRoleDefinition;
-
-  const {
-    data: dataApplications,
-    loading: loadingApplications,
-    refetch: refetchApplicationsAndInvitations,
-  } = useCommunityApplicationsInvitationsQuery({
-    variables: { roleSetId },
-    skip: !roleSetId,
+  const { users, organizations, virtualContributors, rolesDefinitions, loading, refetch } = useRoleSetAdmin({
+    roleSetId,
+    relevantRoles: RELEVANT_ROLES.Community,
   });
+  const memberRoleDefinition = rolesDefinitions?.[RoleName.Member];
+  const leadRoleDefinition = rolesDefinitions?.[RoleName.Lead];
 
-  // Members:
-  const users = useMemo(() => {
-    const roleSet = roleSetData?.lookup.roleSet;
-    const members = roleSet?.memberUsers ?? [];
-    const leads = roleSet?.leadUsers ?? [];
-    const admins = roleSet?.adminUsers ?? [];
+  const communityProvider = communityProviderData?.lookup.space?.provider;
+  const communityUsers = useMemo(
+    () =>
+      users.map<CommunityMemberUserFragmentWithRoles>(user => ({
+        ...user,
+        isMember: user.roles.includes(RoleName.Member),
+        isLead: user.roles.includes(RoleName.Lead),
+        isAdmin: user.roles.includes(RoleName.Admin),
+      })),
+    [users]
+  );
 
-    const result = members.map<CommunityMemberUserFragmentWithRoles>(user => ({
-      ...user,
-      isMember: true,
-      isLead: leads.find(lead => lead.id === user.id) !== undefined,
-      isAdmin: admins.find(admins => admins.id === user.id) !== undefined,
-      isContactable: user.isContactable,
+  const communityOrganizations = useMemo(() => {
+    const result = organizations.map<CommunityMemberOrganizationFragmentWithRoles>(organization => ({
+      ...organization,
+      isMember: organization.roles.includes(RoleName.Member),
+      isLead: organization.roles.includes(RoleName.Lead),
+      isFacilitating: communityProvider?.__typename === 'Organization' && communityProvider.id === organization.id,
     }));
-
-    // Push the rest of the leads that are not yet in the list of members
-    leads.forEach(lead => {
-      const member = result.find(user => user.id === lead.id);
+    // Add the community provider if it's not yet in the list
+    if (communityProvider && communityProvider.__typename === 'Organization') {
+      const member = result.find(organization => organization.id === communityProvider.id);
       if (!member) {
         result.push({
-          ...lead,
-          isMember: false,
-          isLead: true,
-          isAdmin: admins.find(admins => admins.id === lead.id) !== undefined,
-          isContactable: lead.isContactable,
-        });
-      }
-    });
-
-    // Push the admins that are not yet in the list of members and leads
-    admins.forEach(admin => {
-      const member = result.find(user => user.id === admin.id);
-      if (!member) {
-        result.push({
-          ...admin,
-          isMember: false,
-          isLead: false,
-          isAdmin: true,
-          isContactable: admin.isContactable,
-        });
-      }
-    });
-
-    return result;
-  }, [roleSetData]);
-
-  const organizations = useMemo(() => {
-    const roleSet = roleSetData?.lookup.roleSet;
-    const members = roleSet?.memberOrganizations ?? [];
-    const leads = roleSet?.leadOrganizations ?? [];
-
-    const result = members.map<OrganizationDetailsFragmentWithRoles>(member => ({
-      ...member,
-      isMember: true,
-      isLead: leads.find(lead => lead.id === member.id) !== undefined,
-      isFacilitating: roleSetData?.lookup.space?.provider.id === member.id,
-      isContactable: false, // TODO: Implement contactable for organizations
-    }));
-
-    // Push the rest of the leads that are not yet in the list of members
-    leads.forEach(lead => {
-      const member = result.find(organization => organization.id === lead.id);
-      if (!member) {
-        result.push({
-          ...lead,
-          isMember: false,
-          isLead: true,
-          isFacilitating: roleSetData?.lookup.space?.provider.id === lead.id,
-          isContactable: false, // TODO: Implement contactable for organizations
-        });
-      }
-    });
-
-    // Add Facilitating if it's not yet in the result
-    if (roleSetData?.lookup.space?.provider) {
-      const member = result.find(organization => organization.id === roleSetData.lookup.space?.provider.id);
-      if (!member) {
-        result.push({
-          ...roleSetData.lookup.space.provider,
+          ...communityProvider,
           isMember: false,
           isLead: false,
           isFacilitating: true,
-          isContactable: false,
         });
       }
     }
     return result;
-  }, [roleSetData]);
+  }, [organizations]);
 
   // Virtual Contributors community related extracted in useInviteContributors
   const {
     permissions,
-    virtualContributors,
+    // virtualContributors,
     getAvailableVirtualContributors,
     getAvailableVirtualContributorsInLibrary,
     onAddVirtualContributor,
@@ -179,30 +107,21 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
   } = useInviteContributors({ roleSetId, spaceId, spaceLevel });
 
   // Available new members:
-  const [fetchAvailableUsers, { refetch: refetchAvailableMemberUsers }] = useRoleSetAvailableMembersLazyQuery();
-  const getAvailableUsers = async (filter: string | undefined) => {
-    const { data } = await fetchAvailableUsers({
-      variables: {
-        roleSetId,
-        first: MAX_AVAILABLE_MEMBERS,
-        filter: buildUserFilterObject(filter),
-      },
-    });
-    return data?.lookup.availableMembers?.availableUsersForMemberRole?.users;
-  };
+  const {
+    refetch: refetchAvailableContributors,
+    findAvailableUsersForRoleSetEntryRole,
+    findAvailableOrganizationsForRoleSet,
+  } = useRoleSetAvailableContributors({
+    roleSetId,
+  });
 
-  const [fetchAllOrganizations, { refetch: refetchAvailableMemberOrganizations }] = useAllOrganizationsLazyQuery();
+  const getAvailableUsers = async (filter: string | undefined) => {
+    const { users } = await findAvailableUsersForRoleSetEntryRole(filter);
+    return users;
+  };
   const getAvailableOrganizations = async (filter: string | undefined) => {
-    const { data } = await fetchAllOrganizations({
-      variables: {
-        first: MAX_AVAILABLE_MEMBERS,
-        filter: buildOrganizationFilterObject(filter),
-      },
-    });
-    // Filter out already member organizations
-    return data?.organizationsPaginated.organization.filter(
-      org => organizations.find(member => member.id === org.id) === undefined
-    );
+    const { organizations } = await findAvailableOrganizationsForRoleSet(filter);
+    return organizations;
   };
 
   // Adding new members:
@@ -215,11 +134,11 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
       variables: {
         roleSetId,
         contributorId: memberId,
-        role: CommunityRoleType.Member,
+        role: RoleName.Member,
       },
     });
-    await refetchAvailableMemberUsers();
-    return refetchCommunityMembers();
+    await refetchAvailableContributors();
+    return refetch();
   };
 
   const [addOrganizationToCommunity] = useAssignRoleToOrganizationMutation();
@@ -231,26 +150,14 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
       variables: {
         roleSetId,
         contributorId: memberId,
-        role: CommunityRoleType.Member,
+        role: RoleName.Member,
       },
     });
-    await refetchAvailableMemberOrganizations();
-    return refetchCommunityMembers();
+    await refetchAvailableContributors();
+    return refetch();
   };
 
   // Mutations:
-  const [updateApplication] = useEventOnApplicationMutation({});
-  const handleApplicationStateChange = async (applicationId: string, newState: string) => {
-    await updateApplication({
-      variables: {
-        input: {
-          applicationID: applicationId,
-          eventName: newState,
-        },
-      },
-    });
-    return refetchCommunityMembers();
-  };
 
   const [assignRoleToUser] = useAssignRoleToUserMutation();
   const [removeRoleFromUser] = useRemoveRoleFromUserMutation();
@@ -263,7 +170,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
         variables: {
           contributorId: memberId,
           roleSetId,
-          role: CommunityRoleType.Lead,
+          role: RoleName.Lead,
         },
       });
     } else {
@@ -271,11 +178,11 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
         variables: {
           contributorId: memberId,
           roleSetId,
-          role: CommunityRoleType.Lead,
+          role: RoleName.Lead,
         },
       });
     }
-    return refetchCommunityMembers();
+    return refetch();
   };
 
   const handleUserAuthorizationChange = async (memberId: string, isAdmin: boolean) => {
@@ -284,14 +191,14 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
     }
     if (isAdmin) {
       await assignRoleToUser({
-        variables: { roleSetId: roleSetId, role: CommunityRoleType.Admin, contributorId: memberId },
+        variables: { roleSetId: roleSetId, role: RoleName.Admin, contributorId: memberId },
       });
     } else {
       await removeRoleFromUser({
-        variables: { roleSetId: roleSetId, role: CommunityRoleType.Admin, contributorId: memberId },
+        variables: { roleSetId: roleSetId, role: RoleName.Admin, contributorId: memberId },
       });
     }
-    return refetchCommunityMembers();
+    return refetch();
   };
 
   const [removeUserAsCommunityMember] = useRemoveRoleFromUserMutation();
@@ -303,10 +210,10 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
       variables: {
         contributorId: memberId,
         roleSetId,
-        role: CommunityRoleType.Member,
+        role: RoleName.Member,
       },
     });
-    return refetchCommunityMembers();
+    return refetch();
   };
 
   const [assignOrganizationAsCommunityLead] = useAssignRoleToOrganizationMutation();
@@ -320,7 +227,7 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
         variables: {
           contributorId: memberId,
           roleSetId,
-          role: CommunityRoleType.Lead,
+          role: RoleName.Lead,
         },
       });
     } else {
@@ -328,11 +235,11 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
         variables: {
           contributorId: memberId,
           roleSetId,
-          role: CommunityRoleType.Lead,
+          role: RoleName.Lead,
         },
       });
     }
-    return refetchCommunityMembers();
+    return refetch();
   };
 
   const [removeOrganizationAsCommunityMember] = useRemoveRoleFromOrganizationMutation();
@@ -344,69 +251,44 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
       variables: {
         contributorId: memberId,
         roleSetId,
-        role: CommunityRoleType.Member,
+        role: RoleName.Member,
       },
     });
-    return refetchCommunityMembers();
+    return refetch();
   };
 
-  const onInviteUser = async () => {
-    await refetchApplicationsAndInvitations();
-  };
-
-  const { inviteContributor: inviteExistingUser, platformInviteToCommunity: inviteExternalUser } = useInviteUsers(
+  const {
+    applications,
+    invitations,
+    platformInvitations,
+    applicationStateChange,
+    inviteContributorOnRoleSet,
+    inviteContributorOnPlatformRoleSet,
+    invitationStateChange,
+    deleteInvitation,
+    deletePlatformInvitation,
+    loading: loadingApplicationsAndInvitations,
+  } = useRoleSetApplicationsAndInvitations({
     roleSetId,
-    {
-      onInviteContributor: onInviteUser,
-      onInviteExternalUser: onInviteUser,
-    }
-  );
+  });
 
-  const [sendInvitationStateEvent] = useInvitationStateEventMutation();
-
-  const [deleteInvitation] = useDeleteInvitationMutation();
-  const [deletePlatformInvitation] = useDeletePlatformInvitationMutation();
-
-  const handleInvitationStateChange = async (invitationId: string, eventName: string) => {
-    await sendInvitationStateEvent({
-      variables: {
-        invitationId,
-        eventName,
-      },
-    });
-    await refetchApplicationsAndInvitations();
-  };
-
-  const handleDeleteInvitation = async (invitationId: string) => {
-    await deleteInvitation({
-      variables: {
-        invitationId,
-      },
-    });
-    await refetchApplicationsAndInvitations();
-  };
-  const handleDeletePlatformInvitation = async (invitationId: string) => {
-    await deletePlatformInvitation({
-      variables: {
-        invitationId,
-      },
-    });
-    await refetchApplicationsAndInvitations();
-  };
-  const roleSetPending = dataApplications?.lookup.roleSet;
+  const inviteExistingUser = (inviteData: InviteContributorsData) =>
+    inviteContributorOnRoleSet({ roleSetId, ...inviteData });
+  const inviteExternalUser = (inviteData: InviteExternalUserData) =>
+    inviteContributorOnPlatformRoleSet({ roleSetId, ...inviteData });
 
   return {
-    users,
-    organizations,
+    users: communityUsers,
+    organizations: communityOrganizations,
     virtualContributors,
     memberRoleDefinition,
     leadRoleDefinition,
     permissions,
-    applications: roleSetPending?.applications,
-    invitations: roleSetPending?.invitations,
-    platformInvitations: roleSetPending?.platformInvitations,
-    onApplicationStateChange: handleApplicationStateChange,
-    onInvitationStateChange: handleInvitationStateChange,
+    applications,
+    invitations,
+    platformInvitations,
+    onApplicationStateChange: applicationStateChange,
+    onInvitationStateChange: invitationStateChange,
     onUserLeadChange: handleUserLeadChange,
     onUserAuthorizationChange: handleUserAuthorizationChange,
     onOrganizationLeadChange: onOrganizationLeadChange,
@@ -416,16 +298,16 @@ const useRoleSetAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, space
     onRemoveUser: handleRemoveUser,
     onRemoveOrganization: handleRemoveOrganization,
     onRemoveVirtualContributor,
-    onDeleteInvitation: handleDeleteInvitation,
-    onDeletePlatformInvitation: handleDeletePlatformInvitation,
+    onDeleteInvitation: deleteInvitation,
+    onDeletePlatformInvitation: deletePlatformInvitation,
     getAvailableUsers,
     getAvailableOrganizations,
     getAvailableVirtualContributors,
     getAvailableVirtualContributorsInLibrary,
     inviteExistingUser,
     inviteExternalUser,
-    loading: loadingMembers || loadingApplications,
+    loading: loadingCommunityProvider || loading || loadingApplicationsAndInvitations,
   };
 };
 
-export default useRoleSetAdmin;
+export default useCommunityAdmin;

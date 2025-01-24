@@ -4,25 +4,26 @@ import OrganizationPageView from '../views/OrganizationPageView';
 import Loading from '@/core/ui/loading/Loading';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import { useOrganization } from '../../contributor/organization/hooks/useOrganization';
 import { useOrganizationAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 import useAccountResources from '@/domain/community/contributor/useAccountResources/useAccountResources';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 export const OrganizationPage = () => {
-  const { organization, loading } = useOrganization();
+  const { organizationId, loading: resolvingOrganization } = useUrlResolver();
 
   const { data: organizationData, loading: loadingOrganization } = useOrganizationAccountQuery({
     variables: {
-      organizationNameId: organization?.nameID!,
+      organizationId: organizationId!,
     },
-    skip: !organization?.nameID,
+    skip: !organizationId,
   });
 
-  const accountResources = useAccountResources(organizationData?.organization.account?.id);
+  const accountResources = useAccountResources(organizationData?.lookup.organization?.account?.id);
+  const loading = resolvingOrganization || loadingOrganization;
 
   if (loading) return <Loading />;
 
-  if (!organization && !loading && !loadingOrganization) {
+  if (!organizationData && !loading) {
     return (
       <TopLevelLayout>
         <Error404 />

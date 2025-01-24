@@ -10,14 +10,17 @@ import RadioButton from '@/domain/shared/components/RadioButtons/RadioButton';
 import { Caption } from '@/core/ui/typography';
 import { useSpaceSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import InviteExistingUserDialog from './InviteExistingUserDialog';
-import { InviteContributorsData, InviteExternalUserData } from './useInviteUsers';
+import {
+  InviteContributorsData,
+  InviteExternalUserData,
+} from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import InviteExternalUserDialog from './InviteExternalUserDialog';
-import { CommunityRoleType } from '@/core/apollo/generated/graphql-schema';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 
 type InvitationOptionsBlockProps = {
   spaceDisplayName: string | undefined;
-  inviteExistingUser: (params: InviteContributorsData) => Promise<void>;
-  inviteExternalUser: (params: InviteExternalUserData) => Promise<void>;
+  inviteExistingUser: (params: InviteContributorsData) => Promise<unknown>;
+  inviteExternalUser: (params: InviteExternalUserData) => Promise<unknown>;
   currentApplicationsUserIds: string[];
   currentInvitationsUserIds: string[];
   currentMembersIds: string[];
@@ -30,7 +33,7 @@ enum UserInvite {
   External,
 }
 
-const AVAILABLE_COMMUNITY_ROLES = [CommunityRoleType.Member, CommunityRoleType.Admin, CommunityRoleType.Lead] as const;
+const AVAILABLE_COMMUNITY_ROLES = [RoleName.Member, RoleName.Admin, RoleName.Lead] as const;
 
 const InvitationOptionsBlock = ({
   spaceDisplayName = '',

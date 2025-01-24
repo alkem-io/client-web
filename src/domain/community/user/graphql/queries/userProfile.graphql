@@ -1,15 +1,39 @@
-query userProfile($input: UUID_NAMEID_EMAIL!) {
-  user(ID: $input) {
-    isContactable
-    ...UserDetails
+query userProfile($input: UUID!) {
+  lookup {
+    user(ID: $input) {
+      isContactable
+      ...UserDetails
+    }
   }
   rolesUser(rolesData: { userID: $input, filter: { visibilities: [ACTIVE, DEMO] } }) {
     id
-    ...UserRolesDetails
+    spaces {
+        id
+        nameID
+        displayName
+        roles
+        visibility
+        subspaces {
+        id
+        nameID
+        displayName
+        roles
+        }
+    }
+    organizations {
+        id
+        nameID
+        displayName
+        roles
+    }
   }
   platform {
     authorization {
       ...MyPrivileges
+    }
+    roleSet {
+      id
+      myRoles
     }
   }
 }

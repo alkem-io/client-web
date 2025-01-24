@@ -386,12 +386,6 @@
       "not-verified": ""
     },
     "enums": {
-      "communityRole": {
-        "ADMIN": "$t(common.admin)",
-        "LEAD": "$t(common.lead)",
-        "HOST": "$t(common.host)",
-        "MEMBER": "$t(common.member)"
-      },
       "innovationFlowState": {
         "new": "New",
         "beingRefined": "Being Refined",
@@ -409,103 +403,6 @@
         "ACCOUNT": "Account",
         "HIDDEN": "Hidden",
         "PUBLIC": "Public"
-      },
-      "authorization-credentials": {
-        "GLOBAL_ADMIN": {
-          "name": "Global Admin",
-          "order": 0,
-          "hidden": false
-        },
-        "GLOBAL_ADMIN_HUBS": {
-          "name": "Global Admin Spaces",
-          "order": 1,
-          "hidden": false
-        },
-        "GLOBAL_ADMIN_COMMUNITY": {
-          "name": "Global Community Admin",
-          "order": 2,
-          "hidden": false
-        },
-        "GLOBAL_REGISTERED": {
-          "name": "Registered",
-          "order": 999,
-          "hidden": true
-        },
-        "HUB_ADMIN": {
-          "name": "Space Admin",
-          "order": 3,
-          "hidden": false
-        },
-        "HUB_HOST": {
-          "name": "Space Host",
-          "order": 4,
-          "hidden": true
-        },
-        "HUB_MEMBER": {
-          "name": "Space Member",
-          "order": 5,
-          "hidden": true
-        },
-        "subspace_ADMIN": {
-          "name": "Subspace Admin",
-          "order": 6,
-          "hidden": false
-        },
-        "subspace_LEAD": {
-          "name": "Subspace Lead",
-          "order": 7,
-          "hidden": true
-        },
-        "subspace_MEMBER": {
-          "name": "Subspace Member",
-          "order": 8,
-          "hidden": true
-        },
-        "OPPORTUNITY_ADMIN": {
-          "name": "Subspace Admin",
-          "order": 9,
-          "hidden": true
-        },
-        "OPPORTUNITY_MEMBER": {
-          "name": "Subspace Member",
-          "order": 10,
-          "hidden": true
-        },
-        "OPPORTUNITY_LEAD": {
-          "name": "Subspace Lead",
-          "order": 11,
-          "hidden": true
-        },
-        "ORGANIZATION_OWNER": {
-          "name": "Organization Owner",
-          "order": 12,
-          "hidden": false
-        },
-        "ORGANIZATION_ADMIN": {
-          "name": "Organization Admin",
-          "order": 13,
-          "hidden": false
-        },
-        "ORGANIZATION_ASSOCIATE": {
-          "name": "Organization Associate",
-          "order": 14,
-          "hidden": true
-        },
-        "USER_SELF_MANAGEMENT": {
-          "name": "User Self Management",
-          "order": 15,
-          "hidden": true
-        },
-        "USER_GROUP_MEMBER": {
-          "name": "User Group Member",
-          "order": 16,
-          "hidden": true
-        },
-        "INNOVATION_PACK_PROVIDER": {
-          "name": "Template Pack Provider",
-          "order": 17,
-          "hidden": true
-        }
       },
       "edit-mode": {
         "new": "New",
@@ -550,6 +447,21 @@
       "users-contributing": "users that are contributing",
       "all-contributing-users": "all contributing users"
     },
+    "roles": {
+      "ADMIN": "$t(common.admin)",
+      "LEAD": "$t(common.lead)",
+      "HOST": "$t(common.host)",
+      "MEMBER": "$t(common.member)",
+      "ASSOCIATE": "Associate",
+      "OWNER": "Owner",
+      "GLOBAL_ADMIN": "Global Admin",
+      "GLOBAL_SUPPORT": "Support Admin",
+      "GLOBAL_LICENSE_MANAGER": "License Manager",
+      "GLOBAL_COMMUNITY_READER": "Community Manager",
+      "GLOBAL_SPACES_READER": "Spaces Reader",
+      "PLATFORM_BETA_TESTER": "Beta Tester",
+      "PLATFORM_VC_CAMPAIGN": "VC Early Access"
+    },
     "time": {
       "short": {
         "timeAgo": "{{time}}",
@@ -581,13 +493,6 @@
         "year": "{{count}} year",
         "year_plural": "{{count}} years"
       }
-    },
-    "roles": {
-      "GLOBAL_ADMIN": "Global Admin",
-      "SUPPORT": "Support Admin",
-      "LICENSE_MANAGER": "License Manager",
-      "BETA_TESTER": "Beta Tester",
-      "VC_CAMPAIGN": "VC Early Access"
     }
   },
   "community": {

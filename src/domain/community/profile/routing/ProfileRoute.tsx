@@ -1,6 +1,5 @@
 import { Navigate } from 'react-router-dom';
 import { useUserContext } from '@/domain/community/user';
-import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
 
 export const ProfileRoute = () => {
   const { user, loading } = useUserContext();
@@ -9,7 +8,7 @@ export const ProfileRoute = () => {
     return <></>;
   }
 
-  if (user) return <Navigate to={buildUserProfileUrl(user?.user.nameID)} replace />;
+  if (user) return <Navigate to={user?.user.profile.url} replace />;
   return <Navigate to={'/'} />;
 };
 

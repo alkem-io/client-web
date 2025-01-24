@@ -1,0 +1,11 @@
+query CommunityProviderDetails(
+  $spaceId: UUID!
+) {
+  lookup {
+    space(ID: $spaceId) {
+      provider {
+        ...RoleSetMemberOrganization
+      }
+    }
+  }
+}

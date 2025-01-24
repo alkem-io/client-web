@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import useNavigate from '@/core/routing/useNavigate';
 import { UserForm } from '../../user/userForm/UserForm';
 import Loading from '@/core/ui/loading/Loading';
-import { useUrlParams } from '@/core/routing/useUrlParams';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import { useUserContext } from '../../user/hooks/useUserContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
@@ -12,7 +12,6 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { EditMode } from '@/core/ui/forms/editMode';
 import { UserModel } from '../../user/models/User';
-import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
 import { getUpdateUserInput } from '../../user/utils/getUpdateUserInput';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
@@ -22,14 +21,15 @@ import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLa
 
 export const UserAdminProfilePage = () => {
   const navigate = useNavigate();
-  const { userNameId = '' } = useUrlParams();
+  const { userId } = useUrlResolver();
 
   const { user: currentUser } = useUserContext();
 
   const { data, loading } = useUserQuery({
     variables: {
-      id: userNameId,
+      id: userId!,
     },
+    skip: !userId,
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',
     errorPolicy: 'all',
@@ -48,13 +48,13 @@ export const UserAdminProfilePage = () => {
   });
 
   const editMode = useMemo(() => {
-    if (data?.user.id === currentUser?.user.id) return EditMode.edit;
+    if (data?.lookup.user?.id === currentUser?.user.id) return EditMode.edit;
     return EditMode.readOnly;
   }, [data, currentUser]);
 
   if (loading) return <Loading text={'Loading User Profile ...'} />;
 
-  const user = data?.user;
+  const user = data?.lookup.user;
 
   const handleSave = async (userToUpdate: UserModel) => {
     const profileId = userToUpdate.profile.id;
@@ -79,22 +79,16 @@ export const UserAdminProfilePage = () => {
     });
 
     if (currentUser) {
-      navigate(buildUserProfileUrl(currentUser.user.nameID), { replace: true });
+      navigate(currentUser.user.profile.url, { replace: true });
     }
   };
 
   return (
-    <StorageConfigContextProvider locationType="user" userId={user?.nameID!}>
+    <StorageConfigContextProvider locationType="user" userId={user?.id!}>
       <UserAdminLayout currentTab={SettingsSection.MyProfile}>
         <PageContentColumn columns={12}>
           <PageContentBlock>
-            <UserForm
-              title="Profile"
-              user={user}
-              avatar={user?.profile.avatar}
-              editMode={editMode}
-              onSave={handleSave}
-            />
+            <UserForm user={user} avatar={user?.profile.avatar} editMode={editMode} onSave={handleSave} />
           </PageContentBlock>
         </PageContentColumn>
       </UserAdminLayout>

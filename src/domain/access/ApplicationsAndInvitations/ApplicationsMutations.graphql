@@ -1,0 +1,19 @@
+mutation ApplyForEntryRoleOnRoleSet($roleSetId: UUID!, $questions: [CreateNVPInput!]!) {
+  applyForEntryRoleOnRoleSet(applicationData: { roleSetID: $roleSetId, questions: $questions }) {
+    id
+  }
+}
+
+mutation EventOnApplication($input: ApplicationEventInput!) {
+  eventOnApplication(eventData: $input) {
+    id
+    nextEvents
+    state
+  }
+}
+
+mutation JoinRoleSet($roleSetId: UUID!) {
+  joinRoleSet(joinData: { roleSetID: $roleSetId }){
+    id
+  }
+}

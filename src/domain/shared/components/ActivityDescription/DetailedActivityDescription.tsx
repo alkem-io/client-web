@@ -5,7 +5,7 @@ import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import spaceIcon from '../JourneyIcon/JourneyIcon';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { CommunityContributorType } from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 
 export interface ActivityDescriptionProps {
   i18nKey: TranslationKey;
@@ -20,7 +20,7 @@ export interface ActivityDescriptionProps {
     url?: string;
   };
   withLinkToParent?: boolean;
-  type?: CommunityContributorType;
+  type?: RoleSetContributorType;
 }
 
 const PARENT_NAME_MAX_LENGTH = 20;
@@ -60,7 +60,7 @@ const DetailedActivityDescription = ({
     mergedValues['journey'] = journeyDisplayName;
 
     mergedValues['invitedEntity'] =
-      type === CommunityContributorType.Virtual
+      type === RoleSetContributorType.Virtual
         ? t('community.pendingMembership.vc')
         : t('community.pendingMembership.you');
 

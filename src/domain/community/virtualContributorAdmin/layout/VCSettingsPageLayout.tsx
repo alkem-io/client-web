@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { AssignmentIndOutlined } from '@mui/icons-material';
-import { useUrlParams } from '@/core/routing/useUrlParams';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import { useTranslation } from 'react-i18next';
@@ -23,18 +23,16 @@ const tabs = [SettingsSection.MyProfile, SettingsSection.Membership, SettingsSec
 );
 
 const VCSettingsPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
-  const { vcNameId = '' } = useUrlParams();
+  const { vcId } = useUrlResolver();
 
-  const { data, loading, error } = useVirtualContributorQuery({ variables: { id: vcNameId } });
+  const { data, loading, error } = useVirtualContributorQuery({
+    variables: { id: vcId! },
+    skip: !vcId,
+  });
 
   const { t } = useTranslation();
 
-  const entityAttrs = {
-    displayName: data?.virtualContributor.profile.displayName || '',
-    userNameId: data?.virtualContributor.nameID || '',
-  };
-
-  useRestrictedRedirect({ data, error }, data => data.virtualContributor.authorization?.myPrivileges, {
+  useRestrictedRedirect({ data, error }, data => data.lookup.virtualContributor?.authorization?.myPrivileges, {
     requiredPrivilege: AuthorizationPrivilege.Update,
   });
 
@@ -47,18 +45,17 @@ const VCSettingsPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>
           </BreadcrumbsItem>
           <BreadcrumbsItem
             loading={loading}
-            avatar={data?.virtualContributor.profile.avatar}
+            avatar={data?.lookup.virtualContributor?.profile.avatar}
             iconComponent={AssignmentIndOutlined}
-            uri={data?.virtualContributor.profile.url ?? ''}
+            uri={data?.lookup.virtualContributor?.profile.url ?? ''}
           >
-            {data?.virtualContributor.profile.displayName}
+            {data?.lookup.virtualContributor?.profile.displayName}
           </BreadcrumbsItem>
         </TopLevelPageBreadcrumbs>
       }
       entityTypeName="user"
       subheaderTabs={tabs}
       pageBannerComponent={VCPageBanner}
-      {...entityAttrs}
       {...props}
     />
   );

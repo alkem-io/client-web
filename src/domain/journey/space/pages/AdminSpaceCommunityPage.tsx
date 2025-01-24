@@ -10,7 +10,7 @@ import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import CommunityUsers from '@/domain/community/community/CommunityAdmin/CommunityUsers';
-import useRoleSetAdmin from '@/domain/community/community/CommunityAdmin/useCommunityAdmin';
+import useCommunityAdmin from '@/domain/community/community/CommunityAdmin/useCommunityAdmin';
 import CommunityOrganizations from '@/domain/community/community/CommunityAdmin/CommunityOrganizations';
 import CommunityApplications from '@/domain/community/community/CommunityAdmin/CommunityApplications';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
@@ -25,7 +25,6 @@ import CommunityVirtualContributors from '@/domain/community/community/Community
 import CommunityGuidelinesContainer, {
   CommunityGuidelines,
 } from '@/domain/community/community/CommunityGuidelines/CommunityGuidelinesContainer';
-import { useUrlParams } from '@/core/routing/useUrlParams';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { SpaceLevel, TemplateType } from '@/core/apollo/generated/graphql-schema';
 import { LoadingButton } from '@mui/lab';
@@ -69,7 +68,7 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useRoleSetAdmin({ roleSetId, spaceId, spaceLevel: SpaceLevel.Space });
+  } = useCommunityAdmin({ roleSetId, spaceId, spaceLevel: SpaceLevel.Space });
 
   const currentApplicationsUserIds = useMemo(
     () =>
@@ -91,11 +90,6 @@ const AdminSpaceCommunityPage = ({ routePrefix = '../' }: SettingsPageProps) => 
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
   const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState(false);
-
-  const { spaceNameId } = useUrlParams();
-  if (!spaceNameId) {
-    throw new Error('Must be within a Space');
-  }
 
   const [fetchSpaceTemplatesSetId] = useSpaceTemplatesSetIdLazyQuery();
 

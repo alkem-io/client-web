@@ -1,6 +1,6 @@
 import { sortBy } from 'lodash';
 import { PropsWithChildren, useMemo } from 'react';
-import { useUrlParams } from '@/core/routing/useUrlParams';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import {
   useUpdatePreferenceOnUserMutation,
   useUserNotificationsPreferencesQuery,
@@ -28,30 +28,25 @@ export interface UserNotificationsContainerProps
   > {}
 
 const UserNotificationsContainer = ({ children }: PropsWithChildren<UserNotificationsContainerProps>) => {
-  const { userNameId = '' } = useUrlParams();
-
+  const { userId } = useUrlResolver();
   const { data, loading } = useUserNotificationsPreferencesQuery({
     variables: {
-      userId: userNameId,
+      userId: userId!,
     },
+    skip: !userId,
   });
 
-  const [updatePreferenceOnUser] = useUpdatePreferenceOnUserMutation({});
-
-  const userUUID = data?.user.id;
-
+  const [updatePreferenceOnUser] = useUpdatePreferenceOnUserMutation();
   const updatePreference = (type: PreferenceType, checked: boolean, id: string) => {
-    if (!userUUID) {
+    if (!userId) {
       return;
     }
 
     updatePreferenceOnUser({
       variables: {
-        input: {
-          type: type,
-          userID: userUUID,
-          value: checked ? 'true' : 'false',
-        },
+        userId,
+        type: type,
+        value: checked ? 'true' : 'false',
       },
       optimisticResponse: {
         updatePreferenceOnUser: {
@@ -63,7 +58,10 @@ const UserNotificationsContainer = ({ children }: PropsWithChildren<UserNotifica
     });
   };
 
-  const preferences = useMemo(() => sortBy(data?.user.preferences ?? [], x => x.definition.displayName), [data]);
+  const preferences = useMemo(
+    () => sortBy(data?.lookup.user?.preferences ?? [], x => x.definition.displayName),
+    [data]
+  );
 
   return (
     <>

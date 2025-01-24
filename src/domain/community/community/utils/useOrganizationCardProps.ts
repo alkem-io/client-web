@@ -1,12 +1,23 @@
 import { useMemo } from 'react';
-import { OrganizationCardFragment, OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
+import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
-import { buildOrganizationUrl } from '@/main/routing/urlBuilders';
 import { Identifiable } from '@/core/utils/Identifiable';
 import { MetricType } from '@/domain/platform/metrics/MetricType';
-import { OrganizationCardProps } from '../CommunityContributors/ContributingOrganizations';
+import { OrganizationCardProps } from '../RoleSetContributors/ContributingOrganizations';
 
-export const toOrganizationCardProps = (org: OrganizationCardFragment): OrganizationCardProps & Identifiable => ({
+type OrganizationCardData = {
+  id: string;
+  profile: {
+    displayName: string;
+    visual?: { uri: string };
+    location?: { city?: string; country?: string };
+    url?: string;
+  };
+  metrics?: { name: string; value: string }[];
+  verification: { status: OrganizationVerificationEnum };
+};
+
+export const toOrganizationCardProps = (org: OrganizationCardData): OrganizationCardProps & Identifiable => ({
   id: org.id,
   name: org.profile.displayName,
   avatar: org.profile.visual?.uri,
@@ -14,11 +25,11 @@ export const toOrganizationCardProps = (org: OrganizationCardFragment): Organiza
   country: org.profile.location?.country,
   associatesCount: getMetricCount(org.metrics ?? [], MetricType.Associate),
   verified: org.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
-  url: buildOrganizationUrl(org.nameID),
+  url: org.profile.url,
 });
 
 const useOrganizationCardProps = (
-  organizations: OrganizationCardFragment[] | undefined
+  organizations: OrganizationCardData[] | undefined
 ): (OrganizationCardProps & Identifiable)[] | undefined => {
   return useMemo(() => organizations?.map(org => toOrganizationCardProps(org)), [organizations]);
 };

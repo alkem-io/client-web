@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import {
   CalloutType,
-  CommunityContributorType,
+  RoleSetContributorType,
   InAppNotificationCategory,
   InAppNotificationState,
   NotificationEventType,
@@ -34,7 +34,7 @@ export interface InAppNotificationProps {
       | undefined;
   };
   contributor?: {
-    type: CommunityContributorType;
+    type: RoleSetContributorType;
     profile:
       | {
           displayName: string;

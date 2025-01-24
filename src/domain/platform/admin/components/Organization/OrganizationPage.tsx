@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   useCreateOrganizationMutation,
@@ -14,6 +13,7 @@ import OrganizationForm from './OrganizationForm';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import useNavigate from '@/core/routing/useNavigate';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 type Props = {
   title?: string;
@@ -22,15 +22,15 @@ type Props = {
 
 const OrganizationPage = ({ title, mode }: Props) => {
   const { t } = useTranslation();
-  const { organizationNameId } = useOrganization();
+  const { organizationId } = useUrlResolver();
 
   const { data, loading } = useOrganizationProfileInfoQuery({
-    variables: { id: organizationNameId! },
+    variables: { id: organizationId! },
     fetchPolicy: 'cache-and-network',
-    skip: !organizationNameId,
+    skip: !organizationId,
   });
 
-  const organization = data?.organization;
+  const organization = data?.lookup.organization;
 
   const notify = useNotification();
   const navigate = useNavigate();
@@ -139,7 +139,7 @@ const OrganizationPage = ({ title, mode }: Props) => {
   if (loading) return <Loading text={t('components.loading.message', { blockName: t('common.organization') })} />;
 
   return (
-    <StorageConfigContextProvider locationType="organization" organizationId={organizationNameId}>
+    <StorageConfigContextProvider locationType="organization" organizationId={organizationId}>
       <OrganizationForm
         organization={organization as Organization}
         onSave={handleSubmit}

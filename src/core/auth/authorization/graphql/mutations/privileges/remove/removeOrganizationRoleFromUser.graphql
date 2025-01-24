@@ -1,9 +1,0 @@
-mutation removeOrganizationRoleFromUser($input: RemoveOrganizationRoleFromUserInput!) {
-  removeOrganizationRoleFromUser(membershipData: $input) {
-    id
-    profile {
-      id
-      displayName
-    }
-  }
-}

@@ -15,7 +15,7 @@ import {
 import {
   AiPersonaBodyOfKnowledgeType,
   AuthorizationPrivilege,
-  CommunityRoleType,
+  RoleName,
   CreateCalloutInput,
   CreateVirtualContributorOnAccountMutationVariables,
   LicensingCredentialBasedPlanType,
@@ -86,10 +86,8 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   const [targetAccount, setTargetAccount] = useState<UserAccountProps>();
   const [accountName, setAccountName] = useState<string>();
   const [virtualContributorInput, setVirtualContributorInput] = useState<VirtualContributorFromProps>();
-  const [createdVcId, setCreatedVc] = useState<{ id: string; nameID: string }>({
-    id: '',
-    nameID: '',
-  });
+
+  const [createdVc, setCreatedVc] = useState<{ id: string; profile: { url: string } } | undefined>(undefined);
   const [availableExistingSpaces, setAvailableExistingSpaces] = useState<SelectableSpace[]>([]);
   const [availableExistingSpacesLoading, setAvailableExistingSpacesLoading] = useState(false);
 
@@ -121,7 +119,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
 
   const hasCommunityPrivilege = (space: SelectableSpace) => {
     return space.community.roleSet?.authorization?.myPrivileges?.includes(
-      AuthorizationPrivilege.CommunityAddMemberVcFromAccount
+      AuthorizationPrivilege.CommunityAssignVcFromAccount
     );
   };
 
@@ -307,7 +305,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
           variables: {
             roleSetId,
             contributorId: virtualContributorId,
-            role: CommunityRoleType.Member,
+            role: RoleName.Member,
           },
         });
       }
@@ -328,7 +326,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       variables: {
         roleSetId,
         contributorId: virtualContributorId,
-        role: CommunityRoleType.Member,
+        role: RoleName.Member,
       },
     });
 
@@ -436,27 +434,27 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
     }
 
     // create the VC
-    const createdVC = await executeVcCreation({
+    const createdVCData = await executeVcCreation({
       values: virtualContributorInput,
       accountId: myAccountId,
       callouts,
     });
 
-    if (!createdVC?.id) {
+    if (!createdVCData?.id) {
       return;
     }
 
-    setCreatedVc(createdVC);
+    setCreatedVc(createdVCData);
 
     if (hasDocuments) {
-      const createdLinkCollection = createdVC.knowledgeBase?.calloutsSet?.callouts?.find(
+      const createdLinkCollection = createdVCData.knowledgeBase?.calloutsSet?.callouts?.find(
         c => c.framing.profile.displayName === documentsLinkCollectionName
       );
       await addDocumentLinksToCallout(documents, createdLinkCollection?.id);
     }
 
     // Refresh explicitly the ingestion after callouts creation
-    refreshIngestion(createdVC.id);
+    refreshIngestion(createdVCData.id);
 
     setChooseCommunityStep();
   };
@@ -464,7 +462,9 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
   // ###STEP 'chooseCommunityStep' - Choose Community
   const onChooseCommunity = async (selectedSpace: SelectableKnowledgeSpace) => {
     let spaceId: string | undefined = selectedSpace?.id;
-
+    if (!createdVc) {
+      return;
+    }
     if (!spaceId) {
       spaceId = await executeCreateSpace();
 
@@ -473,10 +473,10 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       }
     }
 
-    const addToCommunity = await addVCToCommunity({ virtualContributorId: createdVcId.id, spaceId });
+    const addToCommunity = await addVCToCommunity({ virtualContributorId: createdVc.id, spaceId });
 
     if (addToCommunity) {
-      addVCCreationCache(createdVcId.nameID);
+      addVCCreationCache(createdVc.id);
       await navigateToTryYourVC(undefined, spaceId);
     } else {
       notifyErrorOnAddToCommunity();
@@ -517,7 +517,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
       });
 
       if (addToCommunity) {
-        addVCCreationCache(createdVC?.nameID);
+        addVCCreationCache(createdVC?.id);
         await navigateToTryYourVC(getSpaceUrlFromSubSpace(selectedKnowledge.url ?? ''), undefined);
       } else {
         notifyErrorOnAddToCommunity();
@@ -588,7 +588,7 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
           {step === steps.tryVcInfo && (
             <TryVcInfo
               vcName={virtualContributorInput?.name ?? ''}
-              vcNameId={createdVcId.nameID}
+              url={createdVc?.profile.url}
               onClose={handleCloseWizard}
             />
           )}
