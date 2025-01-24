@@ -1,9 +1,16 @@
 import { useMemo } from 'react';
-import { RoleDefinitionPolicyFragment } from '@/core/apollo/generated/graphql-schema';
+type RolePolicy = {
+  minimum: number;
+  maximum: number;
+};
+type RoleDefinition = {
+  organizationPolicy: RolePolicy;
+  userPolicy: RolePolicy;
+};
 
 const useCommunityPolicyChecker = (
-  memberRoleDefinition: RoleDefinitionPolicyFragment | undefined,
-  leadRoleDefinition: RoleDefinitionPolicyFragment | undefined,
+  memberRoleDefinition: RoleDefinition | undefined,
+  leadRoleDefinition: RoleDefinition | undefined,
   entities: { isLead: boolean }[] | undefined
 ) =>
   useMemo(() => {

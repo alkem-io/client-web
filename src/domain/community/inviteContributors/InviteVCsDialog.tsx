@@ -2,11 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
 import { DialogContent, DialogActions, Button } from '@mui/material';
-import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
+import { AiPersonaBodyOfKnowledgeType, RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import Gutters from '@/core/ui/grid/Gutters';
 import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
-import useInviteContributors from '@/domain/community/inviteContributors/useInviteContributors';
+import useInviteContributors from '@/domain/access/_removeMe/useInviteContributors';
 import { ContributorProps, InviteContributorDialogProps } from './InviteContributorsProps';
 import InviteContributorsList from './InviteContributorsList';
 import InviteVirtualContributorDialog from '../invitations/InviteVirtualContributorDialog';
@@ -20,6 +20,7 @@ import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
+import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
@@ -28,17 +29,21 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { spaceId, roleSetId } = useSpace();
   const { spaceLevel } = useRouteResolver();
 
+  const { virtualContributors } = useRoleSetAdmin({
+    roleSetId,
+    relevantRoles: [RoleName.Member],
+    contributorTypes: [RoleSetContributorType.Virtual],
+  });
+
   // data
   const {
-    virtualContributors,
     getAvailableVirtualContributors,
     getAvailableVirtualContributorsInLibrary,
     inviteExistingUser,
     onAddVirtualContributor,
     getBoKProfile,
     permissions,
-    accountVCsLoading,
-    libraryVCsLoading,
+    availableVCsLoading,
   } = useInviteContributors({ roleSetId, spaceId, spaceLevel });
 
   // state
@@ -139,7 +144,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
     ? getContributorById(selectedVirtualContributorId)
     : undefined;
 
-  const showOnAccount = onAccount && onAccount.length > 0 && !accountVCsLoading;
+  const showOnAccount = onAccount && onAccount.length > 0 && !availableVCsLoading;
   const availableActions =
     (permissions?.canAddMembers || permissions?.canAddVirtualContributorsFromAccount) && !actionButtonDisabled;
 
@@ -159,10 +164,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   );
 
   const isEmpty =
-    (!onAccount || onAccount.length === 0) &&
-    (!inLibrary || inLibrary.length === 0) &&
-    !accountVCsLoading &&
-    !libraryVCsLoading;
+    (!onAccount || onAccount.length === 0) && (!inLibrary || inLibrary.length === 0) && !availableVCsLoading;
 
   return (
     <DialogWithGrid open={open} onClose={onClose} columns={12}>
@@ -177,7 +179,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
               <PageContentBlockHeader title={t('components.inviteContributorsDialog.vcs.inLibrary.title')} />
             </Gutters>
           )}
-          {libraryVCsLoading ? (
+          {availableVCsLoading ? (
             <Loading />
           ) : (
             <InviteContributorsList contributors={inLibrary} onCardClick={onLibraryContributorClick} />
@@ -197,7 +199,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
           open={openInviteDialog}
           onClose={onCloseInvite}
           contributorId={selectedVirtualContributorId}
-          onInviteUser={inviteExistingUser}
+          onInviteUser={inviteData => inviteExistingUser({ roleSetId, ...inviteData })}
         />
       )}
       {openPreviewDialog && selectedContributor && (

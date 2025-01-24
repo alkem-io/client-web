@@ -2,10 +2,10 @@ import { ContributorCardSquareProps } from '@/domain/community/contributor/Contr
 import { UserCardProps } from '@/domain/community/user/userCard/UserCard';
 import { useMemo } from 'react';
 import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
-import { CommunityContributorType } from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { ContributorViewProps, EntityDashboardContributors } from '../EntityDashboardContributorsSection/Types';
 
-export interface RoleSetMembers {
+interface RoleSetMembers {
   memberUsers?: ContributorViewProps[];
   memberOrganizations?: ContributorViewProps[];
 }
@@ -31,7 +31,7 @@ const mapUserToContributorCardProps = (user: ContributorViewProps): ContributorC
     country: user.profile.location?.country ? COUNTRIES_BY_CODE[user.profile.location.country] : undefined,
   },
   isContactable: user.isContactable,
-  contributorType: CommunityContributorType.User,
+  contributorType: RoleSetContributorType.User,
 });
 
 export const mapUserCardPropsToContributorCardProps = (user: UserCardProps): ContributorCardSquareProps => ({
@@ -45,7 +45,7 @@ export const mapUserCardPropsToContributorCardProps = (user: UserCardProps): Con
     country: user.country,
   },
   isContactable: user.isContactable ?? true,
-  contributorType: CommunityContributorType.User,
+  contributorType: RoleSetContributorType.User,
 });
 
 const mapOrganizationToContributorCardProps = (org: ContributorViewProps): ContributorCardSquareProps => ({
@@ -57,7 +57,7 @@ const mapOrganizationToContributorCardProps = (org: ContributorViewProps): Contr
     tags: org.profile.tagsets?.flatMap(x => x.tags.map(t => t)) ?? [],
   },
   isContactable: true,
-  contributorType: CommunityContributorType.Organization,
+  contributorType: RoleSetContributorType.Organization,
 });
 
 const applyLimit = <Item>(items: Item[] | undefined, limit?: number): Item[] | undefined =>

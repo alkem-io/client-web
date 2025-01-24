@@ -6,7 +6,6 @@ import OrganizationPageBanner from '@/domain/community/contributor/organization/
 import OrganizationPageContainer from '@/domain/community/contributor/organization/OrganizationPageContainer/OrganizationPageContainer';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import { Diversity3Outlined, Settings } from '@mui/icons-material';
-import { buildOrganizationUrl } from '@/main/routing/urlBuilders';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { useTranslation } from 'react-i18next';
 import { organizationAdminTabs } from '../OrganizationAdminTabs';
@@ -42,7 +41,7 @@ const OrganizationAdminLayout: FC<OrganizationAdminLayoutProps> = props => {
                 loading={loading}
                 avatar={organization?.profile.avatar}
                 iconComponent={Diversity3Outlined}
-                uri={organization?.nameID && buildOrganizationUrl(organization?.nameID)}
+                uri={organization?.profile.url}
               >
                 {organization?.profile.displayName}
               </BreadcrumbsItem>

@@ -31,12 +31,6 @@ interface Community {
   id: string;
   name: string;
   type: string;
-  groups: Group[];
-}
-
-interface Group {
-  id: string;
-  name: string;
 }
 
 export const defaultUser: UserModel = {

@@ -15,17 +15,13 @@ import {
 } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import {
   AuthorizationPrivilege,
-  CommunityContributorType,
+  RoleSetContributorType,
   OrganizationInfoFragment,
   SpaceLevel,
+  RoleName,
 } from '@/core/apollo/generated/graphql-schema';
-import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
 import { useTranslation } from 'react-i18next';
-import {
-  ADMIN_TRANSLATION_KEY,
-  MEMBER_TRANSLATION_KEY,
-  OWNER_TRANSLATION_KEY,
-} from '@/domain/community/user/constants/translation.constants';
+import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
 
 export interface OrganizationContainerEntities {
   organization?: OrganizationInfoFragment;
@@ -59,39 +55,23 @@ export interface OrganizationPageContainerProps
 
 const NO_PRIVILEGES = [];
 
-const roleChecks = [
-  {
-    collection: 'owners',
-    translation: OWNER_TRANSLATION_KEY,
-  },
-  {
-    collection: 'admins',
-    translation: ADMIN_TRANSLATION_KEY,
-  },
-] as const;
-
 export const OrganizationPageContainer = ({ children }: PropsWithChildren<OrganizationPageContainerProps>) => {
-  const { organizationId, organizationNameId, loading, organization, canReadUsers } = useOrganization();
+  const { organizationId, roleSetId, loading, organization, canReadUsers } = useOrganization();
 
   const { t } = useTranslation();
-
-  const usersWithRoles = organization?.associates?.map(user => {
-    const roleType =
-      roleChecks.find(({ collection }) => {
-        return organization[collection]?.some(u => u.id === user.id);
-      })?.translation ?? MEMBER_TRANSLATION_KEY;
-
-    return {
-      ...user,
-      roleName: t(roleType),
-    };
+  const { usersByRole } = useRoleSetAdmin({
+    roleSetId,
+    relevantRoles: RELEVANT_ROLES.Organization,
+    contributorTypes: [RoleSetContributorType.User],
+    skip: !organizationId,
   });
+  const usersWithRoles = usersByRole[RoleName.Associate];
 
   const { data: orgRolesData, loading: orgRolesLoading } = useRolesOrganizationQuery({
     variables: {
-      input: organizationNameId!,
+      organizationId: organizationId!,
     },
-    skip: !organizationNameId,
+    skip: !organizationId || !canReadUsers,
   });
 
   const socialLinks = useMemo(() => {
@@ -133,17 +113,16 @@ export const OrganizationPageContainer = ({ children }: PropsWithChildren<Organi
       usersWithRoles?.map<ContributorCardSquareProps>(x => ({
         id: x.id,
         displayName: x.profile.displayName,
-        roleName: x.roleName,
-        avatar: x.profile.visual?.uri || '',
-        avatarAltText: x.profile.visual?.alternativeText,
+        roleName: x.roles.map(role => t(`common.roles.${role}`)).join(', '),
+        avatar: x.profile.avatar?.uri,
         tooltip: {
-          city: x.profile.location?.city || '',
+          city: x.profile.location?.city,
           country: x.profile.location?.country && COUNTRIES_BY_CODE[x.profile.location?.country],
           tags: x.profile.tagsets?.flatMap(x => x.tags) || [],
         },
-        url: buildUserProfileUrl(x.nameID),
+        url: x.profile.url,
         isContactable: x.isContactable,
-        contributorType: CommunityContributorType.User,
+        contributorType: RoleSetContributorType.User,
       })) || []
     );
   }, [usersWithRoles]);
@@ -155,7 +134,7 @@ export const OrganizationPageContainer = ({ children }: PropsWithChildren<Organi
       spaceLevel: SpaceLevel.Space,
       id: x.id,
       contributorId: organizationId,
-      contributorType: CommunityContributorType.Organization,
+      contributorType: RoleSetContributorType.Organization,
       roles: x.roles,
     }));
 
@@ -166,7 +145,7 @@ export const OrganizationPageContainer = ({ children }: PropsWithChildren<Organi
           spaceLevel: c.level,
           id: c.id,
           contributorId: organizationId,
-          contributorType: CommunityContributorType.Organization,
+          contributorType: RoleSetContributorType.Organization,
           roles: c.roles,
         }))
       ) || [];

@@ -1,0 +1,5 @@
+fragment MyMembershipsRoleSet on RoleSet {
+  id
+  myMembershipStatus
+  myRoles
+}

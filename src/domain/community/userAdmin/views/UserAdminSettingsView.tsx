@@ -6,7 +6,7 @@ import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import { BlockTitle } from '@/core/ui/typography/components';
 import SwitchSettingsGroup from '@/core/ui/forms/SettingsGroups/SwitchSettingsGroup';
-import { useUrlParams } from '@/core/routing/useUrlParams';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import { useUserMetadata } from '@/domain/community/user/hooks/useUserMetadata';
 
 const defaultUserSettings = {
@@ -19,8 +19,8 @@ const defaultUserSettings = {
 };
 
 export const UserAdminSettingsView = () => {
-  const { userNameId = '' } = useUrlParams();
-  const { user: userMetadata, loading: isLoadingUser } = useUserMetadata(userNameId);
+  const { userId } = useUrlResolver();
+  const { user: userMetadata, loading: isLoadingUser } = useUserMetadata(userId);
 
   const { t } = useTranslation();
   const userID = userMetadata?.user.id ?? '';

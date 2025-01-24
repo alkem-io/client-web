@@ -13,7 +13,7 @@ import VCIcon from '@/domain/community/virtualContributor/VirtualContributorsIco
 import Gutters from '@/core/ui/grid/Gutters';
 import { DashboardAddButton } from '@/domain/shared/components/DashboardSections/DashboardAddButton';
 import InviteContributorDialog from '@/domain/community/inviteContributors/InviteContributorsDialog';
-import { CommunityContributorType } from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 
 export const VIRTUAL_CONTRIBUTORS_LIMIT = 3;
 
@@ -77,7 +77,7 @@ const VirtualContributorsBlock = ({
         <InviteContributorDialog
           open={inviteDialogOpen}
           onClose={closeInviteDialog}
-          type={CommunityContributorType.Virtual}
+          type={RoleSetContributorType.Virtual}
         />
       )}
     </PageContentBlock>

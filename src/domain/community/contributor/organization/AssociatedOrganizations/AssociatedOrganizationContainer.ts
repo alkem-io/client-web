@@ -3,11 +3,11 @@ import { useUserContext } from '@/domain/community/user';
 import {
   refetchUserOrganizationIdsQuery,
   useAssociatedOrganizationQuery,
-  useRemoveOrganizationRoleFromUserMutation,
+  useRemoveRoleFromUserMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { ContainerPropsWithProvided, renderComponentOrChildrenFn } from '@/core/container/ComponentOrChildrenFn';
 import { AssociatedOrganization, mapToAssociatedOrganization } from './AssociatedOrganization';
-import { OrganizationRole } from '@/core/apollo/generated/graphql-schema';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 
 export type OrganizationDetailsContainerProps = ContainerPropsWithProvided<
   {
@@ -26,6 +26,7 @@ export const AssociatedOrganizationContainer = ({
   ...rendered
 }: OrganizationDetailsContainerProps) => {
   const { user } = useUserContext();
+  const userId = user?.user.id;
 
   const { data, loading, error } = useAssociatedOrganizationQuery({
     variables: {
@@ -33,29 +34,26 @@ export const AssociatedOrganizationContainer = ({
     },
     errorPolicy: 'all',
   });
+  const roleSetId = data?.lookup.organization?.roleSet.id;
 
-  const [disassociateSelfFromOrganization, { loading: removingFromOrganization }] =
-    useRemoveOrganizationRoleFromUserMutation();
-
+  const [disassociateSelfFromOrganization, { loading: removingFromOrganization }] = useRemoveRoleFromUserMutation();
   const handleRemoveSelfFromOrganization = useCallback(async () => {
-    if (!user) {
-      throw new Error('User is not loaded');
+    if (!userId || !roleSetId) {
+      throw new Error('Data not yet loaded');
     }
 
     await disassociateSelfFromOrganization({
       variables: {
-        input: {
-          userID: user.user.id,
-          organizationID: organizationId,
-          role: OrganizationRole.Associate,
-        },
+        contributorId: user.user.id,
+        roleSetId,
+        role: RoleName.Associate,
       },
-      refetchQueries: [refetchUserOrganizationIdsQuery({ userId: user.user.id })],
+      refetchQueries: [refetchUserOrganizationIdsQuery({ userId })],
       awaitRefetchQueries: true,
     });
-  }, [user?.user.id, organizationId, disassociateSelfFromOrganization]);
+  }, [organizationId, userId, roleSetId, disassociateSelfFromOrganization]);
 
-  const associatedOrganization = mapToAssociatedOrganization(data?.organization, organizationId, {
+  const associatedOrganization = mapToAssociatedOrganization(data?.lookup.organization, organizationId, {
     loading,
     error,
   });

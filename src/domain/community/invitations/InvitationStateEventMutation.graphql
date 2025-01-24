@@ -1,7 +1,0 @@
-mutation InvitationStateEvent($eventName: String!, $invitationId: UUID!) {
-  eventOnInvitation(eventData: { eventName: $eventName, invitationID: $invitationId }) {
-    id
-    nextEvents
-    state
-  }
-}

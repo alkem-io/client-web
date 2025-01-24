@@ -135,6 +135,7 @@ fragment SpaceExplorerSubspace on Space {
   }
 }
 
+# Keep NameId here, it is in the translation
 query SpaceExplorerWelcomeSpace($spaceNameId: UUID_NAMEID!) {
   space(ID: $spaceNameId) {
     id

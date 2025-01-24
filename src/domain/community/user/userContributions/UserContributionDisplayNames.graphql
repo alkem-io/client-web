@@ -1,4 +1,4 @@
-query UserContributionDisplayNames($userId: UUID_NAMEID_EMAIL!) {
+query UserContributionDisplayNames($userId: UUID!) {
   rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
     id
     spaces {

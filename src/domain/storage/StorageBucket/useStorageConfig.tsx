@@ -141,7 +141,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
   const userOptions = options as UseStorageConfigOptionsUser;
   const { data: userStorageConfigData } = useUserStorageConfigQuery({
     variables: userOptions,
-    skip: skip || locationType !== 'user',
+    skip: skip || locationType !== 'user' || !userOptions.userId,
   });
 
   const virtualContributorOptions = options as UseStorageConfigOptionsVirtualContributor;
@@ -189,9 +189,9 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     callout?.framing ??
     contribution?.post ??
     templateStorageConfigData?.lookup.template ??
-    userStorageConfigData?.user ??
-    virtualContributorStorageConfigData?.virtualContributor ??
-    organizationStorageConfigData?.organization ??
+    userStorageConfigData?.lookup.user ??
+    virtualContributorStorageConfigData?.lookup.virtualContributor ??
+    organizationStorageConfigData?.lookup.organization ??
     innovationPackStorageConfigData?.lookup.innovationPack ??
     innovationHubStorageConfigData?.platform.innovationHub ??
     {};

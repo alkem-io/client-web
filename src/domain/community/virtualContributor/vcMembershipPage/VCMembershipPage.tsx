@@ -1,30 +1,34 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUrlParams } from '@/core/routing/useUrlParams';
 import { ContributionsView } from '@/domain/community/profile/views/ProfileView';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import VCSettingsPageLayout from '../../virtualContributorAdmin/layout/VCSettingsPageLayout';
 import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
-import { AuthorizationPrivilege, CommunityContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useVcMembershipsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   PendingMembershipsDialogType,
   usePendingMembershipsDialog,
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
-const UserMembershipPage = () => {
+const VCMembershipPage = () => {
   const { t } = useTranslation();
-  const { vcNameId = '' } = useUrlParams();
 
-  const { data, loading, refetch } = useVcMembershipsQuery({
+  const { vcId, loading: resolving } = useUrlResolver();
+  const {
+    data,
+    loading: loadingVc,
+    refetch,
+  } = useVcMembershipsQuery({
     variables: {
-      virtualContributorId: vcNameId!,
+      virtualContributorId: vcId!,
     },
-    skip: !vcNameId,
+    skip: !vcId,
   });
   const { setOpenDialog } = usePendingMembershipsDialog();
 
-  const canLeaveCommunities = data?.virtualContributor.authorization?.myPrivileges?.includes(
+  const canLeaveCommunities = data?.lookup.virtualContributor?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Grant
   );
 
@@ -34,12 +38,16 @@ const UserMembershipPage = () => {
     }
 
     return data.rolesVirtualContributor.spaces.reduce((acc, space) => {
+      const vcId = data.lookup.virtualContributor?.id;
+      if (!vcId) {
+        return acc;
+      }
       const currentSpace = {
         spaceID: space.id,
         id: space.id,
         spaceLevel: SpaceLevel.Space,
-        contributorId: data.virtualContributor.id,
-        contributorType: CommunityContributorType.Virtual,
+        contributorId: vcId,
+        contributorType: RoleSetContributorType.Virtual,
       };
       acc.push(currentSpace);
 
@@ -47,8 +55,8 @@ const UserMembershipPage = () => {
         id: subspace.id,
         spaceID: subspace.id,
         spaceLevel: subspace.level,
-        contributorId: data.virtualContributor.id,
-        contributorType: CommunityContributorType.Virtual,
+        contributorId: vcId,
+        contributorType: RoleSetContributorType.Virtual,
       }));
 
       return acc.concat(subspaces);
@@ -56,21 +64,26 @@ const UserMembershipPage = () => {
   }, [data]);
 
   const pendingInvitations = useMemo<SpaceHostedItem[] | undefined>(() => {
+    const vcId = data?.lookup.virtualContributor?.id;
+    if (!vcId) {
+      return [];
+    }
     return data?.me.communityInvitations
       .filter(
         invitation =>
-          invitation.invitation.contributorType === CommunityContributorType.Virtual &&
-          invitation.invitation.contributor.id === data.virtualContributor.id
+          invitation.invitation.contributorType === RoleSetContributorType.Virtual &&
+          invitation.invitation.contributor.id === data.lookup.virtualContributor?.id
       )
       .map(invitation => ({
         id: invitation.id,
         spaceID: invitation.spacePendingMembershipInfo.id,
         spaceLevel: invitation.spacePendingMembershipInfo.level,
-        contributorId: data.virtualContributor.id,
-        contributorType: CommunityContributorType.Virtual,
+        contributorId: vcId,
+        contributorType: RoleSetContributorType.Virtual,
       }));
   }, [data]);
 
+  const loading = resolving || loadingVc;
   return (
     <VCSettingsPageLayout currentTab={SettingsSection.Membership}>
       <ContributionsView
@@ -92,4 +105,4 @@ const UserMembershipPage = () => {
   );
 };
 
-export default UserMembershipPage;
+export default VCMembershipPage;

@@ -2,7 +2,6 @@ import { sortBy } from 'lodash';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { useUrlParams } from '@/core/routing/useUrlParams';
 import {
   useAccountsListQuery,
   useAdminInnovationHubQuery,
@@ -19,18 +18,16 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Button } from '@mui/material';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import InnovationHubSpacesField from './InnovationHubSpacesField';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 const AdminInnovationHubPage = () => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { innovationHubNameId } = useUrlParams();
-
-  if (!innovationHubNameId) {
-    throw new Error('Must be within Innovation Hub');
-  }
+  const { innovationHubId } = useUrlResolver();
 
   const { data, loading } = useAdminInnovationHubQuery({
-    variables: { innovationHubId: innovationHubNameId },
+    variables: { innovationHubId: innovationHubId! },
+    skip: !innovationHubId,
   });
 
   const innovationHub = data?.platform.innovationHub;

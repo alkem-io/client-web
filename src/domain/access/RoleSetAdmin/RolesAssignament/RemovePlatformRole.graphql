@@ -1,0 +1,9 @@
+mutation RemovePlatformRoleFromUser($role: RoleName!, $contributorId: UUID!) {
+  removePlatformRoleFromUser(roleData: { role: $role, contributorID: $contributorId }) {
+    id
+    profile {
+      id
+      displayName
+    }
+  }
+}

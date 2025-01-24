@@ -1,0 +1,63 @@
+query SpaceUrlResolver ($nameId: NameID!) {
+  lookupByName {
+    space(NAMEID: $nameId)
+  }
+}
+
+query OrganizationUrlResolver ($nameId: NameID!) {
+  lookupByName {
+    organization(NAMEID: $nameId)
+  }
+}
+
+query VirtualContributorUrlResolver($nameId: NameID!) {
+  lookupByName{
+    virtualContributor(NAMEID: $nameId)
+  }
+}
+
+query InnovationHubUrlResolver($innovationHubNameId: NameID!) {
+  lookupByName {
+    innovationHub(NAMEID: $innovationHubNameId)
+  }
+}
+
+query InnovationPackUrlResolver($innovationPackNameId: NameID!) {
+  lookupByName {
+    innovationPack(NAMEID: $innovationPackNameId)
+  }
+}
+
+query TemplatesSetUrlResolver(
+  $spaceId: UUID! = "00000000-0000-0000-0000-000000000000",
+  $includeSpace: Boolean = false,
+  $innovationPackId: UUID! = "00000000-0000-0000-0000-000000000000",
+  $includeInnovationPack: Boolean = false
+) {
+  lookup {
+    space(ID: $spaceId) @include(if: $includeSpace) {
+      templatesManager {
+        templatesSet {
+          id
+        }
+      }
+    }
+    innovationPack(ID: $innovationPackId) @include(if: $includeInnovationPack) {
+      templatesSet {
+        id
+      }
+    }
+  }
+}
+
+query TemplateUrlResolver($templatesSetId: UUID!, $templateNameId: NameID!) {
+  lookupByName {
+    template(templatesSetID: $templatesSetId, NAMEID: $templateNameId)
+  }
+}
+
+query UserUrlResolver($nameId: NameID!) {
+  lookupByName {
+    user(NAMEID: $nameId)
+  }
+}

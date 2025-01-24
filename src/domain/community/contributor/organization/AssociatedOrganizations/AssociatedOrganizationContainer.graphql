@@ -1,38 +1,40 @@
-query associatedOrganization($organizationId: UUID_NAMEID!) {
-  organization(ID: $organizationId) {
-    ...AssociatedOrganizationDetails
-  }
-}
-
-fragment AssociatedOrganizationDetails on Organization {
-  id
-  nameID
-  profile {
-    id
-    url
-    tagline
-    displayName
-    description
-    location {
+query associatedOrganization($organizationId: UUID!) {
+  lookup {
+    organization(ID: $organizationId) {
       id
-      city
-      country
+      nameID
+      roleSet {
+        id
+        myRoles
+      }
+      profile {
+        id
+        url
+        tagline
+        displayName
+        description
+        location {
+          id
+          city
+          country
+        }
+        avatar: visual(type: AVATAR) {
+          ...VisualUri
+        }
+        tagsets {
+          id
+          tags
+        }
+      }
+      verification {
+        id
+        status
+      }
+      metrics {
+        id
+        name
+        value
+      }
     }
-    avatar: visual(type: AVATAR) {
-      ...VisualUri
-    }
-    tagsets {
-      id
-      tags
-    }
-  }
-  verification {
-    id
-    status
-  }
-  metrics {
-    id
-    name
-    value
   }
 }

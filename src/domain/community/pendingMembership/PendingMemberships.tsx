@@ -99,7 +99,7 @@ export const InvitationHydrator = ({
     },
   });
 
-  const createdBy = userData?.user;
+  const createdBy = userData?.lookup.user;
 
   const hydratedInvitation = useMemo<InvitationWithMeta | undefined>(() => {
     if (!invitation) {

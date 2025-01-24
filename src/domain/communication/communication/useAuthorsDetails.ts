@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react';
 import { Author } from '@/domain/shared/components/AuthorAvatar/models/author';
-import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
 import { useAuthorDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { uniq } from 'lodash';
 import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
@@ -24,7 +23,7 @@ export const useAuthorsDetails = (authorIds: string[]) => {
           firstName: author.firstName,
           lastName: author.lastName,
           avatarUrl: author.profile.visual?.uri || '',
-          url: buildUserProfileUrl(author.nameID),
+          url: author.profile.url,
           tags: author.profile.tagsets?.flatMap(x => x.tags),
           city: author.profile.location?.city,
           country: COUNTRIES_BY_CODE[author.profile.location?.country || ''],

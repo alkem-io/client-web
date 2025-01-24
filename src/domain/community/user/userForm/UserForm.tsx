@@ -47,7 +47,6 @@ type UserProps = {
   onSave?: (user: UserModel) => Promise<void>;
   onDelete?: (userId: string) => void;
   onVerify?: (type: string) => Promise<void>;
-  title?: string;
 };
 
 export const UserForm = ({

@@ -1,45 +1,60 @@
 import React, { FC } from 'react';
 import EditMemberUsers from '@/domain/platform/admin/components/Community/EditMembersUsers';
-import OrganizationAssociates from '@/domain/community/contributor/organization/OrganizationAssociatesContainer/OrganizationAssociatesContainer';
 import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
-import { AuthorizationCredential } from '@/core/apollo/generated/graphql-schema';
-import DashboardGenericSection from '@/domain/shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
-import Loading from '@/core/ui/loading/Loading';
+import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import { useUserContext } from '../../user';
+import PageContentBlock from '@/core/ui/content/PageContentBlock';
+import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
+import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
 
 export const OrganizationAssociatesView: FC = () => {
-  const { organizationId, loading } = useOrganization();
   const { t } = useTranslation();
+  const { user } = useUserContext();
 
-  if (loading) {
-    return <Loading />;
-  }
+  const { roleSetId } = useOrganization();
+  const [searchTerm, setSearchTerm] = React.useState<string>('');
+
+  const {
+    usersByRole,
+    assignRoleToUser,
+    removeRoleFromUser,
+    loading: loadingRoleSet,
+    updating,
+  } = useRoleSetAdmin({
+    roleSetId,
+    relevantRoles: [RoleName.Associate],
+    contributorTypes: [RoleSetContributorType.User],
+  });
+
+  const availableUsersForRole = useRoleSetAvailableUsers({
+    roleSetId: roleSetId,
+    mode: 'platform', // Look in the entire platform, AssociateRole doesn't require an EntryRole
+    role: RoleName.Associate,
+    filter: searchTerm,
+    usersAlreadyInRole: usersByRole?.[RoleName.Associate],
+  });
+
+  const { users: availableAssociates, fetchMore, hasMore, loading: searchingUsers } = availableUsersForRole!;
 
   return (
-    <DashboardGenericSection headerText={t('common.members')}>
-      <OrganizationAssociates
-        entities={{
-          organizationId,
-          credential: AuthorizationCredential.OrganizationAssociate,
-        }}
-      >
-        {({ entities, actions, state }) => (
-          <EditMemberUsers
-            members={entities.allMembers}
-            availableMembers={entities.availableMembers}
-            updating={state.updatingRoles}
-            executorId={entities.currentMember?.id}
-            onAdd={actions.handleAssignAssociate}
-            onRemove={actions.handleRemoveAssociate}
-            fetchMore={actions.fetchMoreUsers}
-            hasMore={state.hasMoreUsers}
-            loadingMembers={state.loadingUsers}
-            loadingAvailableMembers={state.loadingUsers}
-            onSearchTermChange={actions.setSearchTerm}
-          />
-        )}
-      </OrganizationAssociates>
-    </DashboardGenericSection>
+    <PageContentBlock>
+      <PageContentBlockHeader title={t('common.members')} />
+      <EditMemberUsers
+        members={usersByRole[RoleName.Associate] ?? []}
+        availableMembers={availableAssociates ?? []}
+        updating={updating}
+        executorId={user?.user?.id}
+        onAdd={userId => assignRoleToUser(userId, RoleName.Associate)}
+        onRemove={userId => removeRoleFromUser(userId, RoleName.Associate)}
+        fetchMore={fetchMore}
+        hasMore={hasMore}
+        loadingMembers={loadingRoleSet}
+        loadingAvailableMembers={searchingUsers}
+        onSearchTermChange={setSearchTerm}
+      />
+    </PageContentBlock>
   );
 };
 

@@ -10,7 +10,7 @@ import DashboardUpdatesSection from '@/domain/shared/components/DashboardSection
 import PageContent from '@/core/ui/content/PageContent';
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import DashboardCalendarSection from '@/domain/shared/components/DashboardSections/DashboardCalendarSection';
-import ApplicationButtonContainer from '@/domain/community/application/containers/ApplicationButtonContainer';
+import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
 import { Theme } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -88,7 +88,7 @@ const SpaceDashboardView = ({
   const { t } = useTranslation();
 
   const [tryVirtualContributorOpen, setTryVirtualContributorOpen] = useState(false);
-  const [vcNameId, setVcNameId] = useState<string>('');
+  const [vcId, setVcId] = useState<string>('');
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
@@ -110,7 +110,7 @@ const SpaceDashboardView = ({
     const cachedVC = getVCCreationCache();
 
     if (cachedVC) {
-      setVcNameId(cachedVC);
+      setVcId(cachedVC);
       setTryVirtualContributorOpen(true);
     }
 
@@ -189,7 +189,7 @@ const SpaceDashboardView = ({
             spaceId={spaceId}
             collaborationId={collaborationId}
             calloutsSetId={calloutsSetId}
-            vcNameId={vcNameId}
+            vcId={vcId}
           />
         )}
       </PageContent>

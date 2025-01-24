@@ -6,9 +6,11 @@ query UserSelector($filter: UserFilterInput, $first: Int) {
   }
 }
 
-query UserSelectorUserDetails($id: UUID_NAMEID_EMAIL!) {
-  user(ID: $id) {
-    ...UserSelectorUserInformation
+query UserSelectorUserDetails($id: UUID!) {
+  lookup {
+    user(ID: $id) {
+      ...UserSelectorUserInformation
+    }
   }
 }
 

@@ -5,7 +5,7 @@ interface Options {
   hasMore: boolean | undefined;
   loading: boolean;
   updating?: boolean;
-  fetchMore: () => Promise<void>;
+  fetchMore: () => Promise<unknown>;
 }
 
 const useLazyLoading = <RefValue,>(Loader: ComponentType<{ ref: Ref<RefValue> }>, options: Options) => {

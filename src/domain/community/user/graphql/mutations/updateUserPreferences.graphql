@@ -1,5 +1,5 @@
-mutation updatePreferenceOnUser($input: UpdateUserPreferenceInput!) {
-  updatePreferenceOnUser(preferenceData: $input) {
+mutation updatePreferenceOnUser($userId: UUID!, $type: PreferenceType!, $value: String!) {
+  updatePreferenceOnUser(preferenceData: { userID: $userId, type: $type, value: $value }) {
     id
     value
   }

@@ -1,9 +1,11 @@
-query OrganizationAuthorization($organizationId: UUID_NAMEID!) {
-  organization(ID: $organizationId) {
-    id
-    authorization {
+query OrganizationAuthorization($organizationId: UUID!) {
+  lookup {
+    organization(ID: $organizationId) {
       id
-      myPrivileges
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
 }
