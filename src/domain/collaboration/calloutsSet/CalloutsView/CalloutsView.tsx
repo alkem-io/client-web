@@ -41,7 +41,7 @@ export interface CalloutsViewProps {
     | ((callout: TypedCallout, index: number) => Partial<PageContentBlockProps> | undefined);
   disableMarginal?: boolean;
   disableRichMedia?: boolean;
-  acceptNewResponses?: boolean;
+  disablePostResponses?: boolean;
 }
 
 const CalloutsView = ({
@@ -53,7 +53,7 @@ const CalloutsView = ({
   blockProps,
   disableMarginal,
   disableRichMedia,
-  acceptNewResponses,
+  disablePostResponses,
 }: CalloutsViewProps) => {
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
@@ -140,7 +140,7 @@ const CalloutsView = ({
                         onExpand={() => handleExpand(calloutDetails)}
                         disableMarginal={disableMarginal}
                         disableRichMedia={disableRichMedia}
-                        acceptNewResponses={acceptNewResponses}
+                        disablePostResponses={disablePostResponses}
                         {...sortEvents}
                         {...sortProps}
                       />

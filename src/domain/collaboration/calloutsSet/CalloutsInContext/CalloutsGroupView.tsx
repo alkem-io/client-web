@@ -14,7 +14,7 @@ interface CalloutsGroupProps extends CalloutsViewProps {
   createButtonPlace?: 'top' | 'bottom';
   availableCalloutTypes?: CalloutType[];
   disableRichMedia?: boolean;
-  acceptNewResponses?: boolean;
+  disablePostResponses?: boolean;
 }
 
 const CalloutsGroupView = ({
@@ -26,7 +26,7 @@ const CalloutsGroupView = ({
   calloutsSetId,
   availableCalloutTypes,
   disableRichMedia,
-  acceptNewResponses,
+  disablePostResponses,
   ...calloutsViewProps
 }: CalloutsGroupProps) => {
   const {
@@ -57,7 +57,7 @@ const CalloutsGroupView = ({
       <CalloutsView
         journeyTypeName={journeyTypeName}
         disableRichMedia={disableRichMedia}
-        acceptNewResponses={acceptNewResponses}
+        disablePostResponses={disablePostResponses}
         {...calloutsViewProps}
       />
       {canCreateCallout && createButtonPlace === 'bottom' && createButton}
@@ -71,7 +71,7 @@ const CalloutsGroupView = ({
         journeyTypeName={journeyTypeName}
         availableCalloutTypes={availableCalloutTypes}
         disableRichMedia={disableRichMedia}
-        acceptNewResponses={acceptNewResponses}
+        disablePostResponses={disablePostResponses}
       />
     </>
   );

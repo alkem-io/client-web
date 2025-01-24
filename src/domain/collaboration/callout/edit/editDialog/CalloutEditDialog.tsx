@@ -24,7 +24,7 @@ export interface CalloutEditDialogProps {
   canChangeCalloutLocation?: boolean;
   journeyTypeName: JourneyTypeName;
   disableRichMedia?: boolean;
-  acceptNewResponses?: boolean;
+  disablePostResponses?: boolean;
 }
 
 const CalloutEditDialog = ({
@@ -37,7 +37,7 @@ const CalloutEditDialog = ({
   canChangeCalloutLocation,
   journeyTypeName,
   disableRichMedia,
-  acceptNewResponses = true,
+  disablePostResponses = false,
 }: CalloutEditDialogProps) => {
   const { t } = useTranslation();
 
@@ -113,7 +113,7 @@ const CalloutEditDialog = ({
               canChangeCalloutLocation={canChangeCalloutLocation}
               journeyTypeName={journeyTypeName}
               disableRichMedia={disableRichMedia}
-              acceptNewResponses={acceptNewResponses}
+              disablePostResponses={disablePostResponses}
             />
           </StorageConfigContextProvider>
         </DialogContent>
