@@ -443,7 +443,6 @@ const CalloutSettingsContainer = ({
           onCalloutEdit={handleCalloutEdit}
           onDelete={() => setDeleteDialogOpen(true)}
           canChangeCalloutLocation
-          journeyTypeName={journeyTypeName}
           disableRichMedia={disableRichMedia}
           disablePostResponses={disablePostResponses && callout.type === CalloutType.Post}
         />

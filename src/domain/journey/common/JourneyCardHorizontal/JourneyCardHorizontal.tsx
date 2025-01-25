@@ -68,6 +68,7 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
 ) => <ListItemButton component={RouterLink} {...props} />;
 
 // TODO: remove this + review the usage in the translation file below
+const journeyTypeName = 'space';
 const JourneyCardHorizontal = ({
   journey,
   deepness = !journeyTypeName || journeyTypeName === 'subspace' ? 0 : 1,

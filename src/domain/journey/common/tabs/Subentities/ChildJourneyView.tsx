@@ -6,14 +6,12 @@ import { Button, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { ValueType } from '@/core/utils/filtering/filterFn';
 import ErrorBlock from '@/core/ui/error/ErrorBlock';
-import getJourneyChildrenTranslation from '@/domain/journey/subspace/getJourneyChildrenTranslation';
 import PageContent from '@/core/ui/content/PageContent';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import LinksList from '@/core/ui/list/LinksList';
 import { Caption } from '@/core/ui/typography';
 import MembershipBackdrop from '@/domain/shared/components/Backdrops/MembershipBackdrop';
 import { CardLayoutContainer } from '@/core/ui/card/cardsLayout/CardsLayout';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import ChildJourneyCreate from './ChildJourneyCreate';
 import Loading from '@/core/ui/loading/Loading';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
@@ -43,7 +41,6 @@ interface BaseChildEntity extends Identifiable {
 }
 
 export interface ChildJourneyViewProps<ChildEntity extends BaseChildEntity> {
-  journeyTypeName: JourneyTypeName;
   childEntities: ChildEntity[] | undefined;
   childEntitiesIcon: ReactElement;
   childEntityReadAccess?: boolean;
