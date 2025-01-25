@@ -147,7 +147,7 @@ const SpaceDashboardView = ({
               onContactLeadUser={receiver => sendMessage('user', receiver)}
               leadOrganizations={welcomeBlockContributors}
               onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
-              journeyTypeName="space"
+              level="space"
               member={myMembershipStatus === CommunityMembershipStatus.Member}
             />
           </PageContentBlock>

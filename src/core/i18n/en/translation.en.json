@@ -207,6 +207,11 @@
     }
   },
   "common": {
+    "space-level": {
+      "l0": "Space",
+      "l1": "Subspace",
+      "l2": "Subsubspace"
+    },
     "account": "Account",
     "all": "All",
     "knowledge-base": "Knowledge base",

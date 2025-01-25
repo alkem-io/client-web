@@ -102,7 +102,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
                   onContactLeadUser={receiver => sendMessage('user', receiver)}
                   leadOrganizations={roleSet.leadOrganizations}
                   onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
-                  journeyTypeName="subspace"
+                  level="subspace"
                   member={community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
                 />
               }

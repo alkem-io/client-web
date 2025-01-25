@@ -11,7 +11,7 @@ import SeeMore from '@/core/ui/content/SeeMore';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 
 export interface JourneyDashboardWelcomeBlockProps {
-  journeyTypeName: 'space' | 'subspace';
+  level: 'space' | 'subspace';
   vision: string;
   leadUsers: ContributorViewProps[];
   onContactLeadUser: (receiver: MessageReceiverChipData) => void;
@@ -23,7 +23,7 @@ export interface JourneyDashboardWelcomeBlockProps {
 const JourneyDashboardWelcomeBlock = ({
   leadUsers,
   leadOrganizations,
-  journeyTypeName,
+  level: journeyTypeName,
   onContactLeadUser,
   onContactLeadOrganization,
   vision,
