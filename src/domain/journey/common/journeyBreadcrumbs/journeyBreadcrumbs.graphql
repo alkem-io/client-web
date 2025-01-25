@@ -1,25 +1,27 @@
 query JourneyBreadcrumbsSpace(
-  $spaceNameId: UUID!
-  $subspaceLevel1NameId: UUID = "00000000-0000-0000-0000-000000000000"
-  $subspaceLevel2NameId: UUID = "00000000-0000-0000-0000-000000000000"
+  $spaceNameId: NameID!
+  $subspaceLevel1NameId: NameID = "00000000-0000-0000-0000-000000000000"
+  $subspaceLevel2NameId: NameID = "00000000-0000-0000-0000-000000000000"
   $includeSubspaceLevel1: Boolean = false
   $includeSubspaceLevel2: Boolean = false
   $visualType: VisualType! = AVATAR
 ) {
-  space(ID: $spaceNameId) {
-    id
-    profile {
-      ...JourneyBreadcrumbsProfile
-    }
-    subspace(ID: $subspaceLevel1NameId) @include(if: $includeSubspaceLevel1) {
+  lookupByName {
+    space(NAMEID: $spaceNameId) {
       id
       profile {
         ...JourneyBreadcrumbsProfile
       }
-      subspace(ID: $subspaceLevel2NameId) @include(if: $includeSubspaceLevel2) {
+      subspaceByNameID(NAMEID: $subspaceLevel1NameId) @include(if: $includeSubspaceLevel1) {
         id
         profile {
           ...JourneyBreadcrumbsProfile
+        }
+        subspaceByNameID(NAMEID: $subspaceLevel2NameId) @include(if: $includeSubspaceLevel2) {
+          id
+          profile {
+            ...JourneyBreadcrumbsProfile
+          }
         }
       }
     }

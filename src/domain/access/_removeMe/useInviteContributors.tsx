@@ -29,7 +29,7 @@ const useInviteContributors = ({ roleSetId, spaceId, spaceLevel }: useInviteCont
     variables: {
       roleSetId,
       spaceId,
-      includeSpaceHost: spaceLevel === SpaceLevel.Space,
+      includeSpaceHost: spaceLevel === SpaceLevel.L0,
     },
     skip: !roleSetId || !spaceId,
   });

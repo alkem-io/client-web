@@ -1,6 +1,8 @@
 query SpaceUrlResolver ($nameId: NameID!) {
   lookupByName {
-    space(NAMEID: $nameId)
+    space(NAMEID: $nameId) {
+      id
+    }
   }
 }
 

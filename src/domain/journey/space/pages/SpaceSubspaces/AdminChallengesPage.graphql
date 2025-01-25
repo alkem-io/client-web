@@ -1,61 +1,63 @@
 query AdminSpaceSubspacesPage($spaceId: UUID!) {
-  space(ID: $spaceId) {
-    id
-    subspaces {
+  lookup {
+    space(ID: $spaceId) {
       id
-      profile {
+      subspaces {
         id
-        displayName
-        url
-        avatar: visual(type: AVATAR) {
-          ...VisualUri
+        profile {
+          id
+          displayName
+          url
+          avatar: visual(type: AVATAR) {
+            ...VisualUri
+          }
         }
       }
-    }
-    templatesManager {
-      id
-      templatesSet {
+      templatesManager {
         id
-      }
-      templateDefaults {
-        id
-        type
-        template {
+        templatesSet {
           id
-          profile {
-            ...InnovationFlowProfile
-          }
-          collaboration {
+        }
+        templateDefaults {
+          id
+          type
+          template {
             id
-            calloutsSet {
+            profile {
+              ...InnovationFlowProfile
+            }
+            collaboration {
               id
-              callouts {
+              calloutsSet {
                 id
-                type
-                sortOrder
-                framing {
+                callouts {
                   id
-                  profile {
+                  type
+                  sortOrder
+                  framing {
                     id
-                    displayName
-                    description
-                    flowStateTagset: tagset(tagsetName: FLOW_STATE) {
+                    profile {
                       id
-                      tags
+                      displayName
+                      description
+                      flowStateTagset: tagset(tagsetName: FLOW_STATE) {
+                        id
+                        tags
+                      }
                     }
                   }
                 }
               }
-            }
-            innovationFlow {
-              id
-              profile {
+              innovationFlow {
                 id
-                displayName
-              }
-              states {
-                displayName
-                description
+                profile {
+                  id
+                  displayName
+                }
+                states {
+                  displayName
+                  description
+                }
               }
             }
           }

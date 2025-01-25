@@ -55,9 +55,9 @@ const ContributionDetailsContainer = ({ entities, children }: PropsWithChildren<
     },
   });
 
-  let childSpaceLevel = SpaceLevel.Challenge;
-  if (spaceLevel === SpaceLevel.Space) {
-    childSpaceLevel = SpaceLevel.Opportunity;
+  let childSpaceLevel = SpaceLevel.L1;
+  if (spaceLevel === SpaceLevel.L0) {
+    childSpaceLevel = SpaceLevel.L2;
   }
 
   const [userLeaveCommunity, { loading: userIsLeavingCommunity }] = useRemoveRoleFromUserMutation();

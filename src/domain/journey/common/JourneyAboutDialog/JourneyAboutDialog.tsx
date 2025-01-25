@@ -32,7 +32,6 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import useDirectMessageDialog from '@/domain/communication/messaging/DirectMessaging/useDirectMessageDialog';
 import ShareButton from '@/domain/shared/components/ShareDialog/ShareButton';
-import { getSpaceLabel } from '@/domain/journey/JourneyTypeName';
 import Loading from '@/core/ui/loading/Loading';
 import VirtualContributorsBlock from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsBlock';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';

@@ -46,7 +46,7 @@ const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdmin
     variables: {
       spaceId: spaceId!,
     },
-    skip: !spaceId || spaceLevel !== SpaceLevel.Space,
+    skip: !spaceId || spaceLevel !== SpaceLevel.L0,
   });
 
   const { users, organizations, virtualContributors, rolesDefinitions, loading, refetch } = useRoleSetAdmin({

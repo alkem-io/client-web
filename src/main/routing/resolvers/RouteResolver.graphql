@@ -1,16 +1,18 @@
 query JourneyRouteResolver(
-  $spaceNameId: UUID!
-  $challengeNameId: UUID! = "00000000-0000-0000-0000-000000000000"
-  $opportunityNameId: UUID! = "00000000-0000-0000-0000-000000000000"
+  $spaceNameId: NameID!
+  $challengeNameId: NameID! = "00000000-0000-0000-0000-000000000000"
+  $opportunityNameId: NameID! = "00000000-0000-0000-0000-000000000000"
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
 ) {
-  space(ID: $spaceNameId) {
-    id
-    subspace(ID: $challengeNameId) @include(if: $includeChallenge) {
+  lookupByName {
+    space(NAMEID: $spaceNameId) {
       id
-      subspace(ID: $opportunityNameId) @include(if: $includeOpportunity) {
+      subspaceByNameID(NAMEID: $challengeNameId) @include(if: $includeChallenge) {
         id
+        subspaceByNameID(NAMEID: $opportunityNameId) @include(if: $includeOpportunity) {
+          id
+        }
       }
     }
   }

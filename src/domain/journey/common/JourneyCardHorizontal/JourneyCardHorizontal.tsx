@@ -17,7 +17,7 @@ import withElevationOnHover from '@/domain/shared/components/withElevationOnHove
 import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
 import spaceIcon from '@/domain/shared/components/JourneyIcon/JourneyIcon';
 import BlockTitleWithIcon from '@/core/ui/content/BlockTitleWithIcon';
-import { RoleName } from '@/core/apollo/generated/graphql-schema';
+import { RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import { intersection } from 'lodash';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
@@ -50,6 +50,7 @@ export interface JourneyCardHorizontalProps {
         myRoles?: RoleName[];
       };
     };
+    level: SpaceLevel;
   };
   deepness?: number;
   seamless?: boolean;

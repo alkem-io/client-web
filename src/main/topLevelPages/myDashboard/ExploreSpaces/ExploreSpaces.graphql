@@ -22,9 +22,11 @@ query ExploreAllSpaces {
   }
 }
 
-query WelcomeSpace($spaceNameId: UUID!) {
-  space(ID: $spaceNameId) {
-    ...ExploreSpaces
+query WelcomeSpace($spaceNameId: NameID!) {
+  lookupByName {
+    space(NAMEID: $spaceNameId) {
+      ...ExploreSpaces
+    }
   }
 }
 

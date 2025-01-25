@@ -2896,7 +2896,6 @@ export type QueryKeySpecifier = (
   | 'rolesUser'
   | 'rolesVirtualContributor'
   | 'search'
-  | 'space'
   | 'spaces'
   | 'spacesPaginated'
   | 'task'
@@ -2933,7 +2932,6 @@ export type QueryFieldPolicy = {
   rolesUser?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   search?: FieldPolicy<any> | FieldReadFunction<any>;
-  space?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
   spacesPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   task?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3000,7 +2998,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'settings'
   | 'storageAggregator'
   | 'subscriptions'
-  | 'subspace'
+  | 'subspaceByNameID'
   | 'subspaces'
   | 'templatesManager'
   | 'type'
@@ -3028,7 +3026,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
-  subspace?: FieldPolicy<any> | FieldReadFunction<any>;
+  subspaceByNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3387,7 +3385,7 @@ export type SpaceKeySpecifier = (
   | 'settings'
   | 'storageAggregator'
   | 'subscriptions'
-  | 'subspace'
+  | 'subspaceByNameID'
   | 'subspaces'
   | 'templatesManager'
   | 'type'
@@ -3415,7 +3413,7 @@ export type SpaceFieldPolicy = {
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   subscriptions?: FieldPolicy<any> | FieldReadFunction<any>;
-  subspace?: FieldPolicy<any> | FieldReadFunction<any>;
+  subspaceByNameID?: FieldPolicy<any> | FieldReadFunction<any>;
   subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;

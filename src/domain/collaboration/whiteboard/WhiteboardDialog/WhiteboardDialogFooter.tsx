@@ -76,32 +76,32 @@ const WhiteboardDialogFooter = ({
   const subsubspaceContext = useOpportunity();
 
   // TODO: this must be refactored to use just a space...
-  let spaceLevel = SpaceLevel.Space;
+  let spaceLevel = SpaceLevel.L0;
   if (pathname.includes('opportunities')) {
-    spaceLevel = SpaceLevel.Opportunity;
+    spaceLevel = SpaceLevel.L2;
   } else if (pathname.includes('challenges')) {
-    spaceLevel = SpaceLevel.Challenge;
+    spaceLevel = SpaceLevel.L1;
   }
-  const journeyTypeName = spaceLevel === SpaceLevel.Space ? 'space' : 'subspace';
+  const journeyTypeName = spaceLevel === SpaceLevel.L0 ? 'space' : 'subspace';
 
   const getMyMembershipStatus = () => {
     switch (spaceLevel) {
-      case SpaceLevel.Space:
+      case SpaceLevel.L0:
         return spaceContext.myMembershipStatus;
-      case SpaceLevel.Challenge:
+      case SpaceLevel.L1:
         return subspaceContext.myMembershipStatus;
-      case SpaceLevel.Opportunity:
+      case SpaceLevel.L2:
         return subsubspaceContext.myMembershipStatus;
     }
   };
 
   const getJourneyProfile = () => {
     switch (spaceLevel) {
-      case SpaceLevel.Space:
+      case SpaceLevel.L0:
         return spaceContext.profile;
-      case SpaceLevel.Challenge:
+      case SpaceLevel.L1:
         return subspaceContext.profile;
-      case SpaceLevel.Opportunity:
+      case SpaceLevel.L2:
         return subsubspaceContext.profile;
     }
   };

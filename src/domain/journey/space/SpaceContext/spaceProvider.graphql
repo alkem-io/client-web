@@ -19,26 +19,28 @@ query SpaceUrl($spaceId: UUID!) {
 }
 
 query SpaceHost($spaceId: UUID!) {
-  space(ID: $spaceId) {
-    id
-    provider {
+  lookup {
+    space(ID: $spaceId) {
       id
-      nameID
-      profile {
+      provider {
         id
-        displayName
-        avatar: visual(type: AVATAR) {
+        nameID
+        profile {
           id
-          uri
-        }
-        location {
-          id
-          city
-          country
-        }
-        tagsets {
-          id
-          tags
+          displayName
+          avatar: visual(type: AVATAR) {
+            id
+            uri
+          }
+          location {
+            id
+            city
+            country
+          }
+          tagsets {
+            id
+            tags
+          }
         }
       }
     }

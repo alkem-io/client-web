@@ -16,7 +16,6 @@ import {
 import {
   AuthorizationPrivilege,
   CommunityMembershipPolicy,
-  SpaceLevel,
   SpacePrivacyMode,
   SpaceSettingsCollaboration,
   TemplateType,
@@ -70,16 +69,16 @@ const defaultSpaceSettings = {
 
 const errorColor = '#940000';
 
-export const SpaceSettingsView = ({}: SpaceSettingsViewProps) => {
+export const SpaceSettingsView = ({ level: SpaceLevel }: SpaceSettingsViewProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const navigate = useNavigate();
   // TODO: remove this
   const { pathname } = useLocation();
   const isSubspace = pathname.includes('challenges');
-  let spaceLevel = SpaceLevel.Space;
+  let spaceLevel = SpaceLevel.L0;
   if (isSubspace) {
-    spaceLevel = SpaceLevel.Challenge;
+    spaceLevel = SpaceLevel.L1;
   }
 
   const { subspaceId } = useSubSpace();
@@ -220,7 +219,7 @@ export const SpaceSettingsView = ({}: SpaceSettingsViewProps) => {
     };
 
     switch (spaceLevel) {
-      case SpaceLevel.Space: {
+      case SpaceLevel.L0: {
         await updateSpaceSettings({
           variables: {
             settingsData: {
@@ -231,7 +230,7 @@ export const SpaceSettingsView = ({}: SpaceSettingsViewProps) => {
         });
         break;
       }
-      case SpaceLevel.Challenge: {
+      case SpaceLevel.L1: {
         await updateSpaceSettings({
           variables: {
             settingsData: {

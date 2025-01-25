@@ -22,7 +22,7 @@ export const CollaborationCalloutPublishedView = ({
       calloutType = t(`components.calloutTypeSelect.label.${callout?.type}` as const);
     }
 
-    const spaceLevel = space?.level ?? SpaceLevel.Space;
+    const spaceLevel = space?.level ?? SpaceLevel.L0;
     const notificationTextValues = {
       defaultValue: '',
       spaceName: space?.profile?.displayName,

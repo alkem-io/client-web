@@ -1,12 +1,14 @@
-query SpaceTemplatesSetId($spaceNameId: UUID!) {
-  space(ID: $spaceNameId) {
-    id
-    templatesManager {
+query SpaceTemplatesSetId($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      templatesSet {
+      templatesManager {
         id
-        authorization {
-          myPrivileges
+        templatesSet {
+          id
+          authorization {
+            myPrivileges
+          }
         }
       }
     }
