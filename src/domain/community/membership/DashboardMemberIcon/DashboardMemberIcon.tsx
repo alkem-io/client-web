@@ -3,9 +3,11 @@ import { Box, Tooltip } from '@mui/material';
 import { HowToRegOutlined } from '@mui/icons-material';
 import { Caption } from '@/core/ui/typography';
 
-const DashboardMemberIcon = ({ journeyTypeName }: { journeyTypeName: 'space' | 'subspace' }) => {
+const DashboardMemberIcon = () => {
   const { t } = useTranslation();
 
+  // TODO: remove this + review the usage in the translation file below
+  const journeyTypeName = 'space';
   const translatedJourneyTypeName = t(`common.${journeyTypeName}` as const);
 
   return (

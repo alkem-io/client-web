@@ -7,11 +7,9 @@ import {
 import { ContainerChildProps } from '@/core/container/container';
 import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 import { useUserContext } from '@/domain/community/user/hooks/useUserContext';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import { SpaceHostedItem } from '@/domain/journey/utils/SpaceHostedItem';
-import { RoleSetContributorType, RoleName } from '@/core/apollo/generated/graphql-schema';
-import { getChildJourneyTypeName } from '@/domain/shared/utils/spaceLevel';
+import { RoleSetContributorType, RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface EntityDetailsContainerEntities {
   details?: ContributionDetails;
@@ -37,7 +35,6 @@ interface EntityDetailsContainerProps
 
 export interface ContributionDetails {
   displayName: string;
-  journeyTypeName: JourneyTypeName;
   banner?: {
     uri: string;
     alternativeText?: string;
@@ -58,6 +55,11 @@ const ContributionDetailsContainer = ({ entities, children }: PropsWithChildren<
     },
   });
 
+  let childSpaceLevel = SpaceLevel.Challenge;
+  if (spaceLevel === SpaceLevel.Space) {
+    childSpaceLevel = SpaceLevel.Opportunity;
+  }
+
   const [userLeaveCommunity, { loading: userIsLeavingCommunity }] = useRemoveRoleFromUserMutation();
   const [vcLeaveCommunity, { loading: vcIsLeavingCommunity }] = useRemoveRoleFromVirtualContributorMutation();
 
@@ -66,7 +68,7 @@ const ContributionDetailsContainer = ({ entities, children }: PropsWithChildren<
       const space = spaceData.lookup.space;
       return {
         displayName: space.profile.displayName!,
-        journeyTypeName: getChildJourneyTypeName({ level: spaceLevel }) as JourneyTypeName,
+        spaceLevel: childSpaceLevel,
         banner: getVisualByType(VisualName.CARD, space.profile.visuals),
         tags: space.profile.tagset?.tags ?? [],
         journeyUri: space.profile.url,

@@ -15,7 +15,6 @@ import { Caption } from '@/core/ui/typography';
 import { Visual } from '@/domain/common/visual/Visual';
 import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
 import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import spaceIcon from '@/domain/shared/components/JourneyIcon/JourneyIcon';
 import BlockTitleWithIcon from '@/core/ui/content/BlockTitleWithIcon';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
@@ -54,7 +53,6 @@ export interface JourneyCardHorizontalProps {
   };
   deepness?: number;
   seamless?: boolean;
-  journeyTypeName: JourneyTypeName | undefined;
   sx?: PaperProps['sx'];
   actions?: ReactNode;
   size?: AvatarSize;
@@ -69,9 +67,9 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
   props: ListItemButtonProps<D, P> & RouterLinkProps
 ) => <ListItemButton component={RouterLink} {...props} />;
 
+// TODO: remove this + review the usage in the translation file below
 const JourneyCardHorizontal = ({
   journey,
-  journeyTypeName,
   deepness = !journeyTypeName || journeyTypeName === 'subspace' ? 0 : 1,
   seamless,
   sx,
@@ -110,9 +108,7 @@ const JourneyCardHorizontal = ({
             <Chip
               variant="filled"
               color="primary"
-              label={
-                <Typography variant="button">{t(`common.roles.${communityRole}` as const)}</Typography>
-              }
+              label={<Typography variant="button">{t(`common.roles.${communityRole}` as const)}</Typography>}
             />
           )}
         </BlockTitleWithIcon>

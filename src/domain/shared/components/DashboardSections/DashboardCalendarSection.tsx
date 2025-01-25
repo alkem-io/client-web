@@ -16,7 +16,6 @@ import FullCalendar, { INTERNAL_DATE_FORMAT } from '@/domain/timeline/calendar/c
 import { HIGHLIGHT_PARAM_NAME, INIT_CREATING_EVENT_PARAM } from '@/domain/timeline/calendar/CalendarDialog';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { Actions } from '@/core/ui/actions/Actions';
 
@@ -39,7 +38,6 @@ const CalendarSkeleton = () => {
 
 export interface DashboardCalendarSectionProps {
   journeyId: string | undefined;
-  journeyTypeName: JourneyTypeName;
 }
 
 const DashboardCalendarSection = ({ journeyId, journeyTypeName }: DashboardCalendarSectionProps) => {

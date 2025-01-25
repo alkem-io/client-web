@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useCalloutEdit } from '../../callout/edit/useCalloutEdit/useCalloutEdit';
 import { OrderUpdate, TypedCallout, TypedCalloutDetails } from '../useCallouts/useCallouts';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { CalloutSortEvents, CalloutSortProps } from '../../callout/CalloutViewTypes';
 import CalloutView from '../../callout/CalloutView/CalloutView';
 import useNavigate from '@/core/routing/useNavigate';
@@ -32,7 +31,6 @@ const CalloutsViewSkeleton = () => (
 
 export interface CalloutsViewProps {
   callouts: TypedCallout[] | undefined;
-  journeyTypeName: JourneyTypeName;
   onSortOrderUpdate?: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
   onCalloutUpdate?: (calloutId: string) => void;
   loading?: boolean;
@@ -46,7 +44,6 @@ export interface CalloutsViewProps {
 
 const CalloutsView = ({
   callouts,
-  journeyTypeName,
   loading = false,
   onSortOrderUpdate,
   onCalloutUpdate,
@@ -132,7 +129,6 @@ const CalloutsView = ({
                       <CalloutView
                         callout={calloutDetails}
                         contributionsCount={callout.activity}
-                        journeyTypeName={journeyTypeName}
                         onCalloutEdit={handleEdit}
                         onCalloutUpdate={() => onCalloutUpdate?.(callout.id)}
                         onVisibilityChange={handleVisibilityChange}

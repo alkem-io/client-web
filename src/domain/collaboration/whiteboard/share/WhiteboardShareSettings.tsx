@@ -7,7 +7,7 @@ import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal'
 import { Location } from '@/core/ui/location/getLocationString';
 import { useEffect, useState } from 'react';
 import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import { useLocation } from 'react-router-dom';
 
 type WhiteboardShareSettingsProps = {
   createdBy:
@@ -26,7 +26,6 @@ type WhiteboardShareSettingsProps = {
   onChange?: (contentUpdatePolicy: ContentUpdatePolicy) => void;
   loading?: boolean;
   updating?: boolean;
-  journeyTypeName: JourneyTypeName;
 };
 
 const OPTIONS = [ContentUpdatePolicy.Contributors, ContentUpdatePolicy.Admins, ContentUpdatePolicy.Owner];
@@ -37,9 +36,12 @@ const WhiteboardShareSettings = ({
   onChange,
   loading = false,
   updating = false,
-  journeyTypeName,
 }: WhiteboardShareSettingsProps) => {
   const { t } = useTranslation();
+
+  // TODO: remove this + review the usage in the translation file below
+  const isL0Space = !useLocation().pathname.includes('challenges');
+  const journeyTypeName = isL0Space ? 'space' : 'subspace';
 
   const [shareSettings, setShareSettings] = useState(value);
 

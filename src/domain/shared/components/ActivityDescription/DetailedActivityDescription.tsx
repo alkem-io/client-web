@@ -1,7 +1,6 @@
 import { ReactElement, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import spaceIcon from '../JourneyIcon/JourneyIcon';
 import RouterLink from '@/core/ui/link/RouterLink';
@@ -14,7 +13,6 @@ export interface ActivityDescriptionProps {
   createdDate: Date | string;
   journeyDisplayName?: string; // Callout name or Journey name
   journeyUrl?: string;
-  journeyTypeName: JourneyTypeName | undefined;
   author?: {
     displayName?: string;
     url?: string;
@@ -30,7 +28,6 @@ const DetailedActivityDescription = ({
   createdDate,
   journeyDisplayName,
   journeyUrl,
-  journeyTypeName,
   author,
   values = {},
   components = {},

@@ -9,7 +9,6 @@ import CalloutForm, { CalloutFormInput, CalloutFormOutput } from '@/domain/colla
 import { CalloutType, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import { CalloutLayoutProps } from '@/domain/collaboration/callout/calloutBlock/CalloutLayout';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -22,7 +21,6 @@ export interface CalloutEditDialogProps {
   onDelete: (callout: CalloutDeleteType) => void;
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
   canChangeCalloutLocation?: boolean;
-  journeyTypeName: JourneyTypeName;
   disableRichMedia?: boolean;
   disablePostResponses?: boolean;
 }
@@ -35,7 +33,6 @@ const CalloutEditDialog = ({
   onDelete,
   onCalloutEdit,
   canChangeCalloutLocation,
-  journeyTypeName,
   disableRichMedia,
   disablePostResponses = false,
 }: CalloutEditDialogProps) => {
@@ -111,7 +108,6 @@ const CalloutEditDialog = ({
               onStatusChanged={handleStatusChanged}
               onChange={handleChange}
               canChangeCalloutLocation={canChangeCalloutLocation}
-              journeyTypeName={journeyTypeName}
               disableRichMedia={disableRichMedia}
               disablePostResponses={disablePostResponses}
             />

@@ -1,6 +1,5 @@
 import React, { ReactElement, ReactNode, useMemo } from 'react';
 import { useCalloutPageCalloutQuery } from '@/core/apollo/generated/apollo-hooks';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import CalloutView from '../callout/CalloutView/CalloutView';
 import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import { useCalloutEdit } from '../callout/edit/useCalloutEdit/useCalloutEdit';
@@ -25,12 +24,10 @@ import useCanReadSpace from '@/domain/journey/common/authorization/useCanReadSpa
 import { CalloutDeleteType } from '../callout/edit/CalloutEditType';
 
 type CalloutLocation = {
-  journeyTypeName: JourneyTypeName;
   parentPagePath: string;
 };
 
 export interface CalloutPageProps {
-  journeyTypeName: JourneyTypeName;
   renderPage: (calloutGroupName?: string) => ReactElement;
   parentRoute: string | ((calloutGroup: string | undefined) => string);
   children?: (props: CalloutLocation) => ReactNode;
@@ -44,17 +41,17 @@ export interface LocationStateCachedCallout extends NavigationState {
 
 /**
  *
- * @param journeyTypeName
  * @param parentRoute
  * @param renderPage - defines what page is to be rendered behind the Callout dialog
  * @param children - Typical usage for the children fn is to render nested dialog/routes
  *                   (such as routes for Post/Whiteboard dialogs).
  * @constructor
  */
-const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: CalloutPageProps) => {
+const CalloutPage = ({ parentRoute, renderPage, children }: CalloutPageProps) => {
   const { calloutId, journeyId, parentSpaceId, journeyPath } = useRouteResolver();
 
   const locationState = (useLocation().state ?? {}) as LocationStateCachedCallout;
+  const isL0Space = !useLocation().pathname.includes('challenges');
 
   const { t } = useTranslation();
 
@@ -100,7 +97,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
 
   const isSmallScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
-  const PageLayout = usePageLayoutByEntity(journeyTypeName);
+  const PageLayout = usePageLayoutByEntity(isL0Space);
 
   const spaceReadAccess = useCanReadSpace({ spaceId: journeyId });
 
@@ -163,7 +160,6 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
       <DialogWithGrid open columns={12} onClose={handleClose} fullScreen={isSmallScreen}>
         <CalloutView
           callout={typedCalloutDetails}
-          journeyTypeName={journeyTypeName}
           contributionsCount={typedCalloutDetails.activity}
           onVisibilityChange={handleVisibilityChange}
           onCalloutEdit={handleEdit}
@@ -173,7 +169,7 @@ const CalloutPage = ({ journeyTypeName, parentRoute, renderPage, children }: Cal
           expanded
         />
       </DialogWithGrid>
-      {children?.({ parentPagePath, journeyTypeName })}
+      {children?.({ parentPagePath })}
     </>
   );
 };

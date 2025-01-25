@@ -7,7 +7,7 @@ export interface WhiteboardRouteProps {
   parentPagePath: string;
 }
 
-const WhiteboardRoute = ({ parentPagePath, journeyTypeName }: WhiteboardRouteProps) => {
+const WhiteboardRoute = ({ parentPagePath }: WhiteboardRouteProps) => {
   const { calloutNameId, whiteboardNameId } = useUrlParams();
 
   const { collaborationId } = useRouteResolver();
@@ -30,7 +30,6 @@ const WhiteboardRoute = ({ parentPagePath, journeyTypeName }: WhiteboardRoutePro
             whiteboardNameId={whiteboardNameId}
             calloutNameId={calloutNameId}
             parentUrl={parentPagePath}
-            journeyTypeName={journeyTypeName}
           />
         }
       />

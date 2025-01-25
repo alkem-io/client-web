@@ -2,15 +2,13 @@ import { Route, Routes } from 'react-router-dom';
 import PostProvider from '@/domain/collaboration/post/context/PostProvider';
 import PostRoute from '@/domain/collaboration/post/views/PostRoute';
 import WhiteboardRoute from '@/domain/collaboration/whiteboard/views/WhiteboardRoute';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { nameOfUrl } from '@/main/routing/urlParams';
 
 export interface CalloutRouteProps {
   parentPagePath: string;
-  journeyTypeName: JourneyTypeName;
 }
 
-const CalloutRoute = ({ parentPagePath, journeyTypeName }: CalloutRouteProps) => (
+const CalloutRoute = ({ parentPagePath }: CalloutRouteProps) => (
   <Routes>
     <Route
       path={`posts/:${nameOfUrl.postNameId}/*`}
@@ -22,7 +20,7 @@ const CalloutRoute = ({ parentPagePath, journeyTypeName }: CalloutRouteProps) =>
     />
     <Route
       path={`whiteboards/:${nameOfUrl.whiteboardNameId}/*`}
-      element={<WhiteboardRoute parentPagePath={parentPagePath} journeyTypeName={journeyTypeName} />}
+      element={<WhiteboardRoute parentPagePath={parentPagePath} />}
     />
   </Routes>
 );

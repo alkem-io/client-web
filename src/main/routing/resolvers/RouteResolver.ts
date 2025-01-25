@@ -4,7 +4,6 @@ import {
   useJourneyRouteResolverQuery,
   useSpaceKeyEntitiesIDsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { getJourneyTypeName, JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { takeWhile } from 'lodash';
 import { useMemo } from 'react';
 import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
@@ -36,11 +35,7 @@ interface JourneyRouteParams {
    * use journeyId or journeyPath instead
    */
   subSubSpaceId?: string;
-  /**
-   * @deprecated
-   * introduce type JourneyLevel = 0 | 1 | 2 instead
-   */
-  journeyTypeName: JourneyTypeName;
+
   collaborationId: string | undefined;
   calloutsSetId: string | undefined;
 }
@@ -164,11 +159,7 @@ export const useRouteResolver = ({ failOnNotFound = true }: RouteResolverOptions
     type: RouteType.Journey,
     journeyId: spaceId,
     parentSpaceId: getParentSpaceId(),
-    journeyTypeName: getJourneyTypeName({
-      spaceNameId,
-      challengeNameId: subspaceNameId,
-      opportunityNameId: subsubspaceNameId,
-    })!,
+
     spaceLevel,
     collaborationId,
     calloutsSetId,

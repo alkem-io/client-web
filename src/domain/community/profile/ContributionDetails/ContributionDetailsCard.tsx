@@ -7,15 +7,14 @@ import { BlockTitle } from '@/core/ui/typography';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import CardActions from '@/core/ui/card/CardActions';
 import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import spaceIcon from '@/domain/shared/components/JourneyIcon/JourneyIcon';
 import CardRibbon from '@/core/ui/card/CardRibbon';
 import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
+import { useLocation } from 'react-router-dom';
 
 interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconComponent' | 'header'> {
   tagline: string;
-  journeyTypeName: JourneyTypeName;
   displayName: string;
   enableLeave?: boolean;
   leavingCommunityDialogOpen?: boolean;
@@ -29,7 +28,6 @@ interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconCompo
 const ContributionDetailsCard = ({
   displayName,
   tagline,
-  journeyTypeName,
   enableLeave,
   leavingCommunityDialogOpen = false,
   leavingCommunity,
@@ -40,6 +38,15 @@ const ContributionDetailsCard = ({
   ...props
 }: ContributionDetailsCardProps) => {
   const { t } = useTranslation();
+
+  // TODO: remove this + review the usage in the translation file below
+  const { pathname } = useLocation();
+  let journeyTypeName = 'space';
+  if (pathname.includes('opportunities')) {
+    journeyTypeName = 'subsubspace';
+  } else {
+    journeyTypeName = pathname.includes('challenges') ? 'subspace' : 'space';
+  }
 
   const ribbon =
     visibility && visibility !== SpaceVisibility.Active ? (

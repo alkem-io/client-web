@@ -4,5 +4,5 @@ import { ContextSegment, ContextSegmentProps } from '../components/Common/Contex
 export interface SpaceContextSegmentProps extends ContextSegmentProps {}
 
 export const SpaceContextSegment: FC<SpaceContextSegmentProps> = ({ ...props }) => {
-  return <ContextSegment contextType="space" {...props} />;
+  return <ContextSegment spaceLevel="space" {...props} />;
 };

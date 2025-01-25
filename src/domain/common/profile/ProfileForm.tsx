@@ -11,12 +11,12 @@ import { TagsetSegment, tagsetsSegmentSchema } from '@/domain/platform/admin/com
 import { LocationSegment } from '../location/LocationSegment';
 import { EmptyLocation, Location } from '../location/Location';
 import { formatLocation } from '../location/LocationUtils';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
 import { DEFAULT_TAGSET } from '../tags/tagset.constants';
+import { useLocation } from 'react-router-dom';
 
 export interface ProfileFormValues {
   name: string;
@@ -29,7 +29,6 @@ export interface ProfileFormValues {
 
 type ProfileFormProps = {
   profile?: Omit<Profile, 'storageBucket' | 'url'>;
-  journeyType: JourneyTypeName;
   name?: string;
   nameID?: string;
   tagset?: Tagset;
@@ -41,7 +40,6 @@ type ProfileFormProps = {
 
 const ProfileForm = ({
   profile,
-  journeyType,
   name,
   nameID,
   tagset,
@@ -63,6 +61,10 @@ const ProfileForm = ({
       },
     ] as Tagset[];
   }, [tagset]);
+
+  // TODO: remove this + review the usage in the translation file below
+  const { pathname } = useLocation();
+  const journeyType = pathname.includes('challenges') ? 'subspace' : 'space';
 
   const initialValues: ProfileFormValues = {
     name: name || '',

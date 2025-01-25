@@ -23,7 +23,7 @@ import BackButton from '@/core/ui/actions/BackButton';
 import useNavigate from '@/core/routing/useNavigate';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
 import { defer } from 'lodash';
-import { getChildJourneyTypeName } from '@/domain/shared/utils/spaceLevel';
+import { getChildSpaceLevel } from '@/domain/shared/utils/spaceLevel';
 
 type ButtonImplementationParams = {
   header: ReactNode;
@@ -141,7 +141,7 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
                     {({ application: hydratedApplication }) =>
                       hydratedApplication && (
                         <JourneyCard
-                          iconComponent={spaceIcon[getChildJourneyTypeName(hydratedApplication.space)]}
+                          iconComponent={spaceIcon[getChildSpaceLevel(hydratedApplication.space)]}
                           header={hydratedApplication.space.profile.displayName}
                           tags={hydratedApplication.space.profile.tagset?.tags ?? []}
                           banner={hydratedApplication.space.profile.visual}

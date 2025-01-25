@@ -1,17 +1,12 @@
 import { useBannerInnovationHubQuery } from '@/core/apollo/generated/apollo-hooks';
 import { Trans, useTranslation } from 'react-i18next';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import PageContentRibbon from '@/core/ui/content/PageContentRibbon';
 
 type UseInnovationHubJourneyBannerRibbonOptions = {
   spaceId: string | undefined;
-  journeyTypeName: JourneyTypeName;
 };
 
-const useInnovationHubJourneyBannerRibbon = ({
-  spaceId,
-  journeyTypeName,
-}: UseInnovationHubJourneyBannerRibbonOptions) => {
+const useInnovationHubJourneyBannerRibbon = ({ spaceId }: UseInnovationHubJourneyBannerRibbonOptions) => {
   const { data: innovationHubData } = useBannerInnovationHubQuery();
 
   const { innovationHub } = innovationHubData?.platform ?? {};
@@ -23,6 +18,9 @@ const useInnovationHubJourneyBannerRibbon = ({
   if (!isForeignJourney) {
     return undefined;
   }
+
+  // TODO: remove
+  const journeyTypeName = 'space';
 
   return (
     <PageContentRibbon>

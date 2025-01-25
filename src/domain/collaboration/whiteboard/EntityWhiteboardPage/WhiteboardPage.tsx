@@ -1,5 +1,4 @@
 import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { useCalloutIdQuery } from '@/core/apollo/generated/apollo-hooks';
 import WhiteboardView from '../WhiteboardsManagement/WhiteboardView';
 import { WhiteboardProvider } from '../containers/WhiteboardProvider';
@@ -9,7 +8,6 @@ export interface WhiteboardPageProps {
   whiteboardNameId: string;
   calloutNameId: string;
   parentUrl: string;
-  journeyTypeName: JourneyTypeName;
 }
 
 const WhiteboardPage = ({
@@ -17,7 +15,6 @@ const WhiteboardPage = ({
   whiteboardNameId,
   parentUrl,
   calloutNameId,
-  journeyTypeName,
   ...props
 }: WhiteboardPageProps) => {
   const [backToExplore] = useBackToParentPage(parentUrl, { keepScroll: true });
@@ -39,7 +36,6 @@ const WhiteboardPage = ({
         <WhiteboardView
           whiteboardId={entities.whiteboard?.id}
           backToWhiteboards={backToWhiteboards}
-          journeyTypeName={journeyTypeName}
           whiteboardShareUrl={entities.whiteboard?.profile.url ?? ''}
           whiteboard={entities.whiteboard}
           authorization={entities.whiteboard?.authorization}

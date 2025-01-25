@@ -8,9 +8,9 @@ import SettingsPageContent from './SettingsPageContent';
 import EntityPageLayout from '@/domain/journey/common/EntityPageLayout/EntityPageLayout';
 import PageContent from '@/core/ui/content/PageContent';
 import { PlatformNavigationBarProps } from '@/main/ui/platformNavigation/PlatformNavigationBar';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 
-type EntityTypeName = JourneyTypeName | 'organization' | 'user';
+// TODO:
+type EntityTypeName = 'space' | 'subspace' | 'subsubspace' | 'organization' | 'user';
 
 interface EntitySettingsLayoutProps extends Omit<EntityPageLayoutProps, 'tabs' | 'currentSection'> {
   entityTypeName: EntityTypeName;

@@ -12,7 +12,6 @@ import {
   RoleSetMemberUserFragment,
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
-import { getJourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import useInviteContributors from '../../../access/_removeMe/useInviteContributors';
 import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
 import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
@@ -42,17 +41,12 @@ export interface CommunityMemberOrganizationFragmentWithRoles extends RoleSetMem
   isFacilitating: boolean;
 }
 
-const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spaceLevel }: useCommunityAdminParams) => {
-  const journeyTypeName = getJourneyTypeName({
-    spaceNameId: spaceId,
-    challengeNameId: challengeId,
-    opportunityNameId: opportunityId,
-  })!;
+const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdminParams) => {
   const { data: communityProviderData, loading: loadingCommunityProvider } = useCommunityProviderDetailsQuery({
     variables: {
       spaceId: spaceId!,
     },
-    skip: !spaceId || journeyTypeName !== 'space',
+    skip: !spaceId || spaceLevel !== SpaceLevel.Space,
   });
 
   const { users, organizations, virtualContributors, rolesDefinitions, loading, refetch } = useRoleSetAdmin({
