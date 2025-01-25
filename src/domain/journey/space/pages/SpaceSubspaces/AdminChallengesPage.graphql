@@ -1,4 +1,4 @@
-query AdminSpaceSubspacesPage($spaceId: UUID_NAMEID!) {
+query AdminSpaceSubspacesPage($spaceId: UUID!) {
   space(ID: $spaceId) {
     id
     subspaces {

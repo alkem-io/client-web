@@ -1,6 +1,6 @@
 query PostProvider(
   $calloutId: UUID!
-  $postNameId: UUID_NAMEID!
+  $postNameId: UUID!
 ) {
   lookup {
     callout(ID: $calloutId) {

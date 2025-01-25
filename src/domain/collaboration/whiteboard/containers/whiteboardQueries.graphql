@@ -111,7 +111,7 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
   }
 }
 
-query WhiteboardFromCallout($calloutId: UUID!, $whiteboardId: UUID_NAMEID!) {
+query WhiteboardFromCallout($calloutId: UUID!, $whiteboardId: UUID!) {
   lookup {
     callout(ID: $calloutId) {
       ...CalloutWithWhiteboard

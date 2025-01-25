@@ -1,4 +1,4 @@
-query SearchScopeDetailsSpace($spaceNameId: UUID_NAMEID!) {
+query SearchScopeDetailsSpace($spaceNameId: UUID!) {
   space(ID: $spaceNameId) {
     id
     profile {

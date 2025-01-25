@@ -1,7 +1,7 @@
 query JourneyBreadcrumbsSpace(
-  $spaceNameId: UUID_NAMEID!
-  $subspaceLevel1NameId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
-  $subspaceLevel2NameId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+  $spaceNameId: UUID!
+  $subspaceLevel1NameId: UUID = "00000000-0000-0000-0000-000000000000"
+  $subspaceLevel2NameId: UUID = "00000000-0000-0000-0000-000000000000"
   $includeSubspaceLevel1: Boolean = false
   $includeSubspaceLevel2: Boolean = false
   $visualType: VisualType! = AVATAR

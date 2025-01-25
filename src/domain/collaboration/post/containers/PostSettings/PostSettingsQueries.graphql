@@ -1,4 +1,4 @@
-query PostSettings($postNameId: UUID_NAMEID!, $calloutId: UUID!) {
+query PostSettings($postNameId: UUID!, $calloutId: UUID!) {
   lookup {
     callout(ID: $calloutId) {
       ...PostSettingsCallout

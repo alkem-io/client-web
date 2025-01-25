@@ -1,7 +1,7 @@
 query JourneyRouteResolver(
-  $spaceNameId: UUID_NAMEID!
-  $challengeNameId: UUID_NAMEID! = "00000000-0000-0000-0000-000000000000"
-  $opportunityNameId: UUID_NAMEID! = "00000000-0000-0000-0000-000000000000"
+  $spaceNameId: UUID!
+  $challengeNameId: UUID! = "00000000-0000-0000-0000-000000000000"
+  $opportunityNameId: UUID! = "00000000-0000-0000-0000-000000000000"
   $includeChallenge: Boolean = false
   $includeOpportunity: Boolean = false
 ) {
@@ -33,7 +33,7 @@ query SpaceKeyEntitiesIDs($spaceId: UUID!) {
   }
 }
 
-query CalloutId($calloutNameId: UUID_NAMEID!, $collaborationId: UUID!) {
+query CalloutId($calloutNameId: UUID!, $collaborationId: UUID!) {
   lookup {
     collaboration(ID: $collaborationId) {
       id

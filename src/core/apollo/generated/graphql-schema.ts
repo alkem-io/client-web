@@ -19,8 +19,8 @@ export type Scalars = {
   MessageID: string;
   NameID: string;
   UUID: string;
-  UUID_NAMEID: string;
-  UUID_NAMEID_EMAIL: string;
+  UUID: string;
+  UUID_EMAIL: string;
   Upload: File;
   WhiteboardContent: string;
 };
@@ -1075,7 +1075,7 @@ export type Callout = {
 };
 
 export type CalloutContributionsArgs = {
-  IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
+  IDs?: InputMaybe<Array<Scalars['UUID']>>;
   filter?: InputMaybe<CalloutContributionFilterArgs>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
@@ -1121,9 +1121,9 @@ export type CalloutContributionFilterArgs = {
   /** Include Contributions with Link ids of contributions to include. */
   linkIDs?: InputMaybe<Array<Scalars['UUID']>>;
   /** Include Contributions with Post ids/nameIds. */
-  postIDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
+  postIDs?: InputMaybe<Array<Scalars['UUID']>>;
   /** Include Contributions with Whiteboard ids/nameIds. */
-  whiteboardIDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
+  whiteboardIDs?: InputMaybe<Array<Scalars['UUID']>>;
 };
 
 export type CalloutContributionPolicy = {
@@ -1230,7 +1230,7 @@ export type CalloutsSet = {
 };
 
 export type CalloutsSetCalloutsArgs = {
-  IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
+  IDs?: InputMaybe<Array<Scalars['UUID']>>;
   groups?: InputMaybe<Array<Scalars['String']>>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
@@ -5230,7 +5230,7 @@ export type QuerySearchArgs = {
 };
 
 export type QuerySpaceArgs = {
-  ID: Scalars['UUID_NAMEID'];
+  ID: Scalars['UUID'];
 };
 
 export type QuerySpacesArgs = {
@@ -5255,7 +5255,7 @@ export type QueryTasksArgs = {
 };
 
 export type QueryUserArgs = {
-  ID: Scalars['UUID_NAMEID_EMAIL'];
+  ID: Scalars['UUID_EMAIL'];
 };
 
 export type QueryUserAuthorizationPrivilegesArgs = {
@@ -5395,7 +5395,7 @@ export type RelayPaginatedSpace = {
 };
 
 export type RelayPaginatedSpaceSubspaceArgs = {
-  ID: Scalars['UUID_NAMEID'];
+  ID: Scalars['UUID'];
 };
 
 export type RelayPaginatedSpaceSubspacesArgs = {
@@ -6026,7 +6026,7 @@ export type Space = {
 };
 
 export type SpaceSubspaceArgs = {
-  ID: Scalars['UUID_NAMEID'];
+  ID: Scalars['UUID'];
 };
 
 export type SpaceSubspacesArgs = {
@@ -6634,7 +6634,7 @@ export type UpdateCalloutVisibilityInput = {
 
 export type UpdateCalloutsSortOrderInput = {
   /** The IDs of the callouts to update the sort order on */
-  calloutIDs: Array<Scalars['UUID_NAMEID']>;
+  calloutIDs: Array<Scalars['UUID']>;
   calloutsSetID: Scalars['UUID'];
 };
 
@@ -12026,7 +12026,7 @@ export type WhiteboardCollectionCalloutCardFragment = {
 
 export type UpdateCalloutsSortOrderMutationVariables = Exact<{
   calloutsSetID: Scalars['UUID'];
-  calloutIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
+  calloutIds: Array<Scalars['UUID']> | Scalars['UUID'];
 }>;
 
 export type UpdateCalloutsSortOrderMutation = {
@@ -12375,7 +12375,7 @@ export type CreateCalloutMutation = {
 export type CalloutsQueryVariables = Exact<{
   calloutsSetId: Scalars['UUID'];
   groups?: InputMaybe<Array<Scalars['String']> | Scalars['String']>;
-  calloutIds?: InputMaybe<Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID']>;
+  calloutIds?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
 }>;
 
 export type CalloutsQuery = {
@@ -13101,7 +13101,7 @@ export type CalloutContentQuery = {
 
 export type PostQueryVariables = Exact<{
   calloutId: Scalars['UUID'];
-  postNameId: Scalars['UUID_NAMEID'];
+  postNameId: Scalars['UUID'];
 }>;
 
 export type PostQuery = {
@@ -13496,7 +13496,7 @@ export type UpdatePostMutation = {
 };
 
 export type PostSettingsQueryVariables = Exact<{
-  postNameId: Scalars['UUID_NAMEID'];
+  postNameId: Scalars['UUID'];
   calloutId: Scalars['UUID'];
 }>;
 
@@ -13689,7 +13689,7 @@ export type PostSettingsCalloutFragment = {
 
 export type PostProviderQueryVariables = Exact<{
   calloutId: Scalars['UUID'];
-  postNameId: Scalars['UUID_NAMEID'];
+  postNameId: Scalars['UUID'];
 }>;
 
 export type PostProviderQuery = {
@@ -14256,7 +14256,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
 
 export type WhiteboardFromCalloutQueryVariables = Exact<{
   calloutId: Scalars['UUID'];
-  whiteboardId: Scalars['UUID_NAMEID'];
+  whiteboardId: Scalars['UUID'];
 }>;
 
 export type WhiteboardFromCalloutQuery = {
@@ -19934,9 +19934,9 @@ export type JourneyBreadcrumbsInnovationHubQuery = {
 };
 
 export type JourneyBreadcrumbsSpaceQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
-  subspaceLevel1NameId?: InputMaybe<Scalars['UUID_NAMEID']>;
-  subspaceLevel2NameId?: InputMaybe<Scalars['UUID_NAMEID']>;
+  spaceNameId: Scalars['UUID'];
+  subspaceLevel1NameId?: InputMaybe<Scalars['UUID']>;
+  subspaceLevel2NameId?: InputMaybe<Scalars['UUID']>;
   includeSubspaceLevel1?: InputMaybe<Scalars['Boolean']>;
   includeSubspaceLevel2?: InputMaybe<Scalars['Boolean']>;
   visualType?: VisualType;
@@ -20354,7 +20354,7 @@ export type SpaceDetailsFragment = {
 };
 
 export type SpaceProviderQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
+  spaceNameId: Scalars['UUID'];
 }>;
 
 export type SpaceProviderQuery = {
@@ -20452,7 +20452,7 @@ export type SpaceProviderQuery = {
 };
 
 export type SpaceUrlQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
+  spaceNameId: Scalars['UUID'];
 }>;
 
 export type SpaceUrlQuery = {
@@ -20461,7 +20461,7 @@ export type SpaceUrlQuery = {
 };
 
 export type SpaceTemplatesManagerQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
+  spaceNameId: Scalars['UUID'];
 }>;
 
 export type SpaceTemplatesManagerQuery = {
@@ -20580,7 +20580,7 @@ export type SpaceInfoFragment = {
 };
 
 export type SpaceHostQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
+  spaceNameId: Scalars['UUID'];
 }>;
 
 export type SpaceHostQuery = {
@@ -21778,7 +21778,7 @@ export type SpaceSettingsFragment = {
 };
 
 export type SpaceSubspacesQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceSubspacesQuery = {
@@ -21917,7 +21917,7 @@ export type DeleteVirtualContributorOnAccountMutation = {
 };
 
 export type AdminSpaceSubspacesPageQueryVariables = Exact<{
-  spaceId: Scalars['UUID_NAMEID'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type AdminSpaceSubspacesPageQuery = {
@@ -23297,7 +23297,7 @@ export type CalloutStorageConfigQuery = {
 };
 
 export type CalloutPostStorageConfigQueryVariables = Exact<{
-  postId: Scalars['UUID_NAMEID'];
+  postId: Scalars['UUID'];
   calloutId: Scalars['UUID'];
 }>;
 
@@ -24140,7 +24140,7 @@ export type SpaceDefaultTemplatesQuery = {
 };
 
 export type SpaceTemplatesSetIdQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
+  spaceNameId: Scalars['UUID'];
 }>;
 
 export type SpaceTemplatesSetIdQuery = {
@@ -27058,9 +27058,9 @@ export type InAppNotificationUserMentionedFragment = {
 };
 
 export type JourneyRouteResolverQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
-  challengeNameId?: Scalars['UUID_NAMEID'];
-  opportunityNameId?: Scalars['UUID_NAMEID'];
+  spaceNameId: Scalars['UUID'];
+  challengeNameId?: Scalars['UUID'];
+  opportunityNameId?: Scalars['UUID'];
   includeChallenge?: InputMaybe<Scalars['Boolean']>;
   includeOpportunity?: InputMaybe<Scalars['Boolean']>;
 }>;
@@ -27098,7 +27098,7 @@ export type SpaceKeyEntitiesIDsQuery = {
 };
 
 export type CalloutIdQueryVariables = Exact<{
-  calloutNameId: Scalars['UUID_NAMEID'];
+  calloutNameId: Scalars['UUID'];
   collaborationId: Scalars['UUID'];
 }>;
 
@@ -27745,7 +27745,7 @@ export type UserRolesSearchCardsQuery = {
 };
 
 export type SearchScopeDetailsSpaceQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
+  spaceNameId: Scalars['UUID'];
 }>;
 
 export type SearchScopeDetailsSpaceQuery = {
@@ -28446,7 +28446,7 @@ export type ExploreAllSpacesQuery = {
 };
 
 export type WelcomeSpaceQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
+  spaceNameId: Scalars['UUID'];
 }>;
 
 export type WelcomeSpaceQuery = {
@@ -30246,7 +30246,7 @@ export type SpaceExplorerSubspaceFragment = {
 };
 
 export type SpaceExplorerWelcomeSpaceQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
+  spaceNameId: Scalars['UUID'];
 }>;
 
 export type SpaceExplorerWelcomeSpaceQuery = {

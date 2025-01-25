@@ -1,4 +1,4 @@
-query Callouts($calloutsSetId: UUID!, $groups: [String!], $calloutIds: [UUID_NAMEID!]) {
+query Callouts($calloutsSetId: UUID!, $groups: [String!], $calloutIds: [UUID!]) {
   lookup {
     calloutsSet(ID: $calloutsSetId) {
       id

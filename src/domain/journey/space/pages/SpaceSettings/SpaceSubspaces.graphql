@@ -1,4 +1,4 @@
-query SpaceSubspaces($spaceId: UUID_NAMEID!) {
+query SpaceSubspaces($spaceId: UUID!) {
   space(ID: $spaceId) {
     id
     profile {

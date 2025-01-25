@@ -7891,7 +7891,7 @@ export function refetchCalloutWhiteboardsQuery(variables: SchemaTypes.CalloutWhi
 }
 
 export const UpdateCalloutsSortOrderDocument = gql`
-  mutation UpdateCalloutsSortOrder($calloutsSetID: UUID!, $calloutIds: [UUID_NAMEID!]!) {
+  mutation UpdateCalloutsSortOrder($calloutsSetID: UUID!, $calloutIds: [UUID!]!) {
     updateCalloutsSortOrder(sortOrderData: { calloutsSetID: $calloutsSetID, calloutIDs: $calloutIds }) {
       id
       sortOrder
@@ -8107,7 +8107,7 @@ export type CreateCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateCalloutMutationVariables
 >;
 export const CalloutsDocument = gql`
-  query Callouts($calloutsSetId: UUID!, $groups: [String!], $calloutIds: [UUID_NAMEID!]) {
+  query Callouts($calloutsSetId: UUID!, $groups: [String!], $calloutIds: [UUID!]) {
     lookup {
       calloutsSet(ID: $calloutsSetId) {
         id
@@ -8307,7 +8307,7 @@ export function refetchCalloutContentQuery(variables: SchemaTypes.CalloutContent
 }
 
 export const PostDocument = gql`
-  query Post($calloutId: UUID!, $postNameId: UUID_NAMEID!) {
+  query Post($calloutId: UUID!, $postNameId: UUID!) {
     lookup {
       callout(ID: $calloutId) {
         id
@@ -8424,7 +8424,7 @@ export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePostMutationVariables
 >;
 export const PostSettingsDocument = gql`
-  query PostSettings($postNameId: UUID_NAMEID!, $calloutId: UUID!) {
+  query PostSettings($postNameId: UUID!, $calloutId: UUID!) {
     lookup {
       callout(ID: $calloutId) {
         ...PostSettingsCallout
@@ -8482,7 +8482,7 @@ export function refetchPostSettingsQuery(variables: SchemaTypes.PostSettingsQuer
 }
 
 export const PostProviderDocument = gql`
-  query PostProvider($calloutId: UUID!, $postNameId: UUID_NAMEID!) {
+  query PostProvider($calloutId: UUID!, $postNameId: UUID!) {
     lookup {
       callout(ID: $calloutId) {
         id
@@ -8650,7 +8650,7 @@ export type MoveContributionToCalloutMutationOptions = Apollo.BaseMutationOption
   SchemaTypes.MoveContributionToCalloutMutationVariables
 >;
 export const WhiteboardFromCalloutDocument = gql`
-  query WhiteboardFromCallout($calloutId: UUID!, $whiteboardId: UUID_NAMEID!) {
+  query WhiteboardFromCallout($calloutId: UUID!, $whiteboardId: UUID!) {
     lookup {
       callout(ID: $calloutId) {
         ...CalloutWithWhiteboard
@@ -15247,9 +15247,9 @@ export function refetchJourneyBreadcrumbsInnovationHubQuery(
 
 export const JourneyBreadcrumbsSpaceDocument = gql`
   query JourneyBreadcrumbsSpace(
-    $spaceNameId: UUID_NAMEID!
-    $subspaceLevel1NameId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
-    $subspaceLevel2NameId: UUID_NAMEID = "00000000-0000-0000-0000-000000000000"
+    $spaceNameId: UUID!
+    $subspaceLevel1NameId: UUID = "00000000-0000-0000-0000-000000000000"
+    $subspaceLevel2NameId: UUID = "00000000-0000-0000-0000-000000000000"
     $includeSubspaceLevel1: Boolean = false
     $includeSubspaceLevel2: Boolean = false
     $visualType: VisualType! = AVATAR
@@ -15545,7 +15545,7 @@ export function refetchSpaceCommunityPageQuery(variables: SchemaTypes.SpaceCommu
 }
 
 export const SpaceProviderDocument = gql`
-  query SpaceProvider($spaceNameId: UUID_NAMEID!) {
+  query SpaceProvider($spaceNameId: UUID!) {
     space(ID: $spaceNameId) {
       ...SpaceInfo
     }
@@ -15600,7 +15600,7 @@ export function refetchSpaceProviderQuery(variables: SchemaTypes.SpaceProviderQu
 }
 
 export const SpaceUrlDocument = gql`
-  query SpaceUrl($spaceNameId: UUID_NAMEID!) {
+  query SpaceUrl($spaceNameId: UUID!) {
     space(ID: $spaceNameId) {
       id
       profile {
@@ -15649,7 +15649,7 @@ export function refetchSpaceUrlQuery(variables: SchemaTypes.SpaceUrlQueryVariabl
 }
 
 export const SpaceTemplatesManagerDocument = gql`
-  query SpaceTemplatesManager($spaceNameId: UUID_NAMEID!) {
+  query SpaceTemplatesManager($spaceNameId: UUID!) {
     space(ID: $spaceNameId) {
       id
       templatesManager {
@@ -15719,7 +15719,7 @@ export function refetchSpaceTemplatesManagerQuery(variables: SchemaTypes.SpaceTe
 }
 
 export const SpaceHostDocument = gql`
-  query SpaceHost($spaceNameId: UUID_NAMEID!) {
+  query SpaceHost($spaceNameId: UUID!) {
     space(ID: $spaceNameId) {
       id
       provider {
@@ -16862,7 +16862,7 @@ export function refetchSpaceSettingsQuery(variables: SchemaTypes.SpaceSettingsQu
 }
 
 export const SpaceSubspacesDocument = gql`
-  query SpaceSubspaces($spaceId: UUID_NAMEID!) {
+  query SpaceSubspaces($spaceId: UUID!) {
     space(ID: $spaceId) {
       id
       profile {
@@ -17144,7 +17144,7 @@ export type DeleteVirtualContributorOnAccountMutationOptions = Apollo.BaseMutati
   SchemaTypes.DeleteVirtualContributorOnAccountMutationVariables
 >;
 export const AdminSpaceSubspacesPageDocument = gql`
-  query AdminSpaceSubspacesPage($spaceId: UUID_NAMEID!) {
+  query AdminSpaceSubspacesPage($spaceId: UUID!) {
     space(ID: $spaceId) {
       id
       subspaces {
@@ -18977,7 +18977,7 @@ export function refetchCalloutStorageConfigQuery(variables: SchemaTypes.CalloutS
 }
 
 export const CalloutPostStorageConfigDocument = gql`
-  query CalloutPostStorageConfig($postId: UUID_NAMEID!, $calloutId: UUID!) {
+  query CalloutPostStorageConfig($postId: UUID!, $calloutId: UUID!) {
     lookup {
       callout(ID: $calloutId) {
         id
@@ -20089,7 +20089,7 @@ export function refetchSpaceDefaultTemplatesQuery(variables: SchemaTypes.SpaceDe
 }
 
 export const SpaceTemplatesSetIdDocument = gql`
-  query SpaceTemplatesSetId($spaceNameId: UUID_NAMEID!) {
+  query SpaceTemplatesSetId($spaceNameId: UUID!) {
     space(ID: $spaceNameId) {
       id
       templatesManager {
@@ -22023,9 +22023,9 @@ export type UpdateNotificationStateMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const JourneyRouteResolverDocument = gql`
   query JourneyRouteResolver(
-    $spaceNameId: UUID_NAMEID!
-    $challengeNameId: UUID_NAMEID! = "00000000-0000-0000-0000-000000000000"
-    $opportunityNameId: UUID_NAMEID! = "00000000-0000-0000-0000-000000000000"
+    $spaceNameId: UUID!
+    $challengeNameId: UUID! = "00000000-0000-0000-0000-000000000000"
+    $opportunityNameId: UUID! = "00000000-0000-0000-0000-000000000000"
     $includeChallenge: Boolean = false
     $includeOpportunity: Boolean = false
   ) {
@@ -22169,7 +22169,7 @@ export function refetchSpaceKeyEntitiesIDsQuery(variables: SchemaTypes.SpaceKeyE
 }
 
 export const CalloutIdDocument = gql`
-  query CalloutId($calloutNameId: UUID_NAMEID!, $collaborationId: UUID!) {
+  query CalloutId($calloutNameId: UUID!, $collaborationId: UUID!) {
     lookup {
       collaboration(ID: $collaborationId) {
         id
@@ -22391,7 +22391,7 @@ export function refetchUserRolesSearchCardsQuery(variables: SchemaTypes.UserRole
 }
 
 export const SearchScopeDetailsSpaceDocument = gql`
-  query SearchScopeDetailsSpace($spaceNameId: UUID_NAMEID!) {
+  query SearchScopeDetailsSpace($spaceNameId: UUID!) {
     space(ID: $spaceNameId) {
       id
       profile {
@@ -22907,7 +22907,7 @@ export function refetchExploreAllSpacesQuery(variables?: SchemaTypes.ExploreAllS
 }
 
 export const WelcomeSpaceDocument = gql`
-  query WelcomeSpace($spaceNameId: UUID_NAMEID!) {
+  query WelcomeSpace($spaceNameId: UUID!) {
     space(ID: $spaceNameId) {
       ...ExploreSpaces
     }
@@ -24088,7 +24088,7 @@ export function refetchSpaceExplorerSubspacesQuery(variables?: SchemaTypes.Space
 }
 
 export const SpaceExplorerWelcomeSpaceDocument = gql`
-  query SpaceExplorerWelcomeSpace($spaceNameId: UUID_NAMEID!) {
+  query SpaceExplorerWelcomeSpace($spaceNameId: UUID!) {
     space(ID: $spaceNameId) {
       id
       profile {

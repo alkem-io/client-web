@@ -1,29 +1,62 @@
-query SpaceProvider($spaceNameId: UUID_NAMEID!) {
-  space(ID: $spaceNameId) {
-    ...SpaceInfo
-  }
-}
-
-query SpaceUrl($spaceNameId: UUID_NAMEID!) {
-  space(ID: $spaceNameId) {
-    id
-    profile {
-      id
-      url
+query SpaceInfo($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      ...SpaceInfo
     }
   }
 }
 
-query SpaceTemplatesManager($spaceNameId: UUID_NAMEID!) {
-  space(ID: $spaceNameId) {
-    id
-    templatesManager {
+query SpaceUrl($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      templatesSet {
+      profile {
         id
-        authorization {
+        url
+      }
+    }
+  }
+}
+
+query SpaceHost($spaceId: UUID!) {
+  space(ID: $spaceId) {
+    id
+    provider {
+      id
+      nameID
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
           id
-          myPrivileges
+          uri
+        }
+        location {
+          id
+          city
+          country
+        }
+        tagsets {
+          id
+          tags
+        }
+      }
+    }
+  }
+}
+
+query SpaceTemplatesManager($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      templatesManager {
+        id
+        templatesSet {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
         }
       }
     }
@@ -67,31 +100,4 @@ fragment SpaceInfo on Space {
   }
 
   visibility
-}
-
-query SpaceHost($spaceNameId: UUID_NAMEID!) {
-  space(ID: $spaceNameId) {
-    id
-    provider {
-      id
-      nameID
-      profile {
-        id
-        displayName
-        avatar: visual(type: AVATAR) {
-          id
-          uri
-        }
-        location {
-          id
-          city
-          country
-        }
-        tagsets {
-          id
-          tags
-        }
-      }
-    }
-  }
 }
