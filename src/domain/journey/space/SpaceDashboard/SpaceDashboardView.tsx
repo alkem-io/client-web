@@ -8,7 +8,6 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import DashboardUpdatesSection from '@/domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import PageContent from '@/core/ui/content/PageContent';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import DashboardCalendarSection from '@/domain/shared/components/DashboardSections/DashboardCalendarSection';
 import ApplicationButtonContainer from '@/domain/access/ApplicationsAndInvitations/ApplicationButtonContainer';
 import ApplicationButton from '@/domain/community/application/applicationButton/ApplicationButton';
@@ -53,7 +52,6 @@ type SpaceDashboardViewProps = {
   entityReadAccess: boolean;
   readUsersAccess: boolean;
   childEntitiesCount?: number;
-  journeyTypeName: JourneyTypeName;
   recommendations?: ReactNode;
   loading: boolean;
   shareUpdatesUrl: string;
@@ -80,7 +78,6 @@ const SpaceDashboardView = ({
   timelineReadAccess = false,
   host,
   leadUsers,
-  journeyTypeName,
   callouts,
   shareUpdatesUrl,
   myMembershipStatus,
@@ -92,7 +89,8 @@ const SpaceDashboardView = ({
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
-  const translatedJourneyTypeName = t(`common.${journeyTypeName}` as const);
+  // TODO: fix me
+  const translatedJourneyTypeName = ''; //t(`common.${journeyTypeName}` as const);
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
@@ -166,7 +164,7 @@ const SpaceDashboardView = ({
             dashboardNavigation={dashboardNavigation}
             loading={dashboardNavigationLoading}
           />
-          {timelineReadAccess && <DashboardCalendarSection journeyId={spaceId} journeyTypeName={journeyTypeName} />}
+          {timelineReadAccess && <DashboardCalendarSection journeyId={spaceId} />}
           {communityReadAccess && <DashboardUpdatesSection communityId={communityId} shareUrl={shareUpdatesUrl} />}
         </InfoColumn>
 
@@ -176,7 +174,6 @@ const SpaceDashboardView = ({
             callouts={callouts.groupedCallouts[CalloutGroupName.Home]}
             canCreateCallout={callouts.canCreateCallout}
             loading={callouts.loading}
-            journeyTypeName={journeyTypeName}
             onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
             onCalloutUpdate={callouts.refetchCallout}
             groupName={CalloutGroupName.Home}

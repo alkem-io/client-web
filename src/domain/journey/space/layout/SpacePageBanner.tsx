@@ -1,7 +1,6 @@
 import { Box, Link, Skeleton, styled, useTheme } from '@mui/material';
 import { ReactNode, useState } from 'react';
 import useAutomaticTooltip from '@/domain/shared/utils/useAutomaticTooltip';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { Caption, PageTitle, Tagline } from '@/core/ui/typography';
 import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
 import { MAX_CONTENT_WIDTH_GUTTERS } from '@/core/ui/grid/constants';
@@ -134,7 +133,6 @@ export interface JourneyPageBannerProps extends BasePageBannerProps {
   bannerAltText?: string;
   ribbon?: ReactNode;
   loading?: boolean;
-  journeyTypeName: JourneyTypeName | 'admin';
 }
 
 const SpacePageBanner = ({
@@ -143,7 +141,6 @@ const SpacePageBanner = ({
   bannerUrl,
   bannerAltText,
   ribbon,
-  journeyTypeName,
   loading: dataLoading = false,
   watermark,
 }: JourneyPageBannerProps) => {

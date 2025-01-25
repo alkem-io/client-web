@@ -82,7 +82,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
   };
 
   return (
-    <SubspaceHomeContainer journeyId={journeyId} journeyTypeName={journeyTypeName}>
+    <SubspaceHomeContainer spaceId={journeyId} journeyTypeName={journeyTypeName}>
       {({ innovationFlow, callouts, subspace, spaceReadAccess, communityReadAccess, communityId, roleSet }) => {
         const { collaboration, community, profile } = subspace ?? {};
 

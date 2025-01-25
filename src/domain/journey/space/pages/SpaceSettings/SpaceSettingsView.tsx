@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import {
   refetchAdminSpaceSubspacesPageQuery,
@@ -16,6 +16,7 @@ import {
 import {
   AuthorizationPrivilege,
   CommunityMembershipPolicy,
+  SpaceLevel,
   SpacePrivacyMode,
   SpaceSettingsCollaboration,
   TemplateType,
@@ -32,7 +33,6 @@ import { BlockSectionTitle, BlockTitle, Caption, Text } from '@/core/ui/typograp
 import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { Box, Button, CircularProgress } from '@mui/material';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import DeleteIcon from './icon/DeleteIcon';
 import EntityConfirmDeleteDialog from './EntityConfirmDeleteDialog';
@@ -46,8 +46,7 @@ import ButtonWithTooltip from '@/core/ui/button/ButtonWithTooltip';
 import { noop } from 'lodash';
 
 type SpaceSettingsViewProps = {
-  journeyId: string;
-  journeyTypeName: JourneyTypeName; // TODO: The idea is to just pass isSubspace as a boolean here
+  journeyId: string; // TODO: The idea is to just pass isSubspace as a boolean here
 };
 
 const defaultSpaceSettings = {
@@ -71,11 +70,17 @@ const defaultSpaceSettings = {
 
 const errorColor = '#940000';
 
-export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsViewProps) => {
+export const SpaceSettingsView = ({}: SpaceSettingsViewProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const navigate = useNavigate();
-  const isSubspace = journeyTypeName !== 'space';
+  // TODO: remove this
+  const { pathname } = useLocation();
+  const isSubspace = pathname.includes('challenges');
+  let spaceLevel = SpaceLevel.Space;
+  if (isSubspace) {
+    spaceLevel = SpaceLevel.Challenge;
+  }
 
   const { subspaceId } = useSubSpace();
   const { spaceId, spaceNameId } = useSpace();
@@ -126,14 +131,14 @@ export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsV
   };
 
   const { data: hostData } = useSpaceHostQuery({
-    variables: { spaceNameId: journeyId },
+    variables: { spaceId },
     skip: isSubspace,
   });
   const hostId = hostData?.space.provider.id;
 
   const { data: settingsData, loading } = useSpaceSettingsQuery({
     variables: {
-      spaceId: journeyId,
+      spaceId,
     },
   });
   const roleSetId = settingsData?.lookup.space?.community?.roleSet.id;
@@ -141,8 +146,8 @@ export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsV
 
   // check for TemplateCreation privileges
   const { data: templateData } = useSpaceTemplatesSetIdQuery({
-    variables: { spaceNameId },
-    skip: !spaceNameId,
+    variables: { spaceId },
+    skip: !spaceId,
   });
 
   const templateSetPrivileges = templateData?.space.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
@@ -214,23 +219,23 @@ export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsV
       } as SpaceSettingsCollaboration,
     };
 
-    switch (journeyTypeName) {
-      case 'space': {
+    switch (spaceLevel) {
+      case SpaceLevel.Space: {
         await updateSpaceSettings({
           variables: {
             settingsData: {
-              spaceID: journeyId,
+              spaceID: spaceId,
               settings: settingsVariable,
             },
           },
         });
         break;
       }
-      case 'subspace': {
+      case SpaceLevel.Challenge: {
         await updateSpaceSettings({
           variables: {
             settingsData: {
-              spaceID: journeyId,
+              spaceID: spaceId,
               settings: settingsVariable,
             },
           },

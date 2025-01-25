@@ -9,7 +9,6 @@ import {
   RoleSetContributorType,
   SubspacePageSpaceFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useCanReadSpace, { SpaceReadAccess } from '@/domain/journey/common/authorization/useCanReadSpace';
 import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
@@ -30,11 +29,10 @@ interface SubspaceHomeContainerProvided {
 }
 
 interface SubspaceHomeContainerProps extends SimpleContainerProps<SubspaceHomeContainerProvided> {
-  journeyId: string | undefined;
-  journeyTypeName: JourneyTypeName;
+  spaceId: string | undefined;
 }
 
-const SubspaceHomeContainer = ({ journeyId, children }: SubspaceHomeContainerProps) => {
+const SubspaceHomeContainer = ({ spaceId: journeyId, children }: SubspaceHomeContainerProps) => {
   const spaceReadAccess = useCanReadSpace({ spaceId: journeyId });
 
   const { data } = useSubspacePageQuery({

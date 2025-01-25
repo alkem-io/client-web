@@ -5,7 +5,6 @@ import LoadingListItem from '@/domain/shared/components/SearchableList/LoadingLi
 import { ListItemLinkProps } from '@/domain/shared/components/SearchableList/ListItemLink';
 import JourneyCardHorizontal from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
 import { Visual } from '@/domain/common/visual/Visual';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 
 const MAX_ITEMS_LIMIT = 1000;
 
@@ -14,7 +13,6 @@ export interface SearchableListProps<
   Item extends SearchableListItem & Omit<ItemViewProps, keyof ListItemLinkProps>
 > {
   data: Item[];
-  journeyTypeName?: JourneyTypeName;
   getActions?: (item: SearchableListItem) => React.ReactNode | undefined;
   loading?: boolean;
 }
@@ -46,7 +44,6 @@ export const SearchableList = <
 >({
   data = [],
   loading,
-  journeyTypeName = 'subspace',
   getActions,
 }: SearchableListProps<ItemViewProps, Item>) => {
   const { t } = useTranslation();
@@ -90,7 +87,6 @@ export const SearchableList = <
           <JourneyCardHorizontal
             key={item.id}
             size="medium"
-            journeyTypeName={journeyTypeName}
             journey={{ profile: item.profile, community: {} }}
             deepness={0}
             seamless

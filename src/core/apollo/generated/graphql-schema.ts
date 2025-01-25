@@ -20580,7 +20580,7 @@ export type SpaceInfoFragment = {
 };
 
 export type SpaceHostQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SpaceHostQuery = {

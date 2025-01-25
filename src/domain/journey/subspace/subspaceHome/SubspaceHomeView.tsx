@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Theme, useMediaQuery } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
@@ -28,7 +27,6 @@ interface SubspaceHomeViewProps {
   loading: boolean;
   refetchCallout: (calloutId: string) => void;
   onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
-  journeyTypeName: JourneyTypeName;
 }
 
 const SubspaceHomeView = ({
@@ -42,7 +40,6 @@ const SubspaceHomeView = ({
   loading,
   onCalloutsSortOrderUpdate,
   refetchCallout,
-  journeyTypeName,
 }: SubspaceHomeViewProps) => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
@@ -125,7 +122,6 @@ const SubspaceHomeView = ({
         callouts={selectedFlowStateCallouts}
         canCreateCallout={canCreateCallout && isMobile}
         loading={loading}
-        journeyTypeName={journeyTypeName}
         onSortOrderUpdate={onCalloutsSortOrderUpdate}
         onCalloutUpdate={refetchCallout}
         groupName={CalloutGroupName.Home}
@@ -138,7 +134,6 @@ const SubspaceHomeView = ({
         onCreateCallout={handleCreateCallout}
         loading={loading}
         groupName={CalloutGroupName.Home}
-        journeyTypeName={journeyTypeName}
         flowState={selectedInnovationFlowState}
       />
     </>
