@@ -6041,9 +6041,9 @@ export type SpaceFilterInput = {
 };
 
 export enum SpaceLevel {
-  Challenge = 'CHALLENGE',
-  Opportunity = 'OPPORTUNITY',
-  Space = 'SPACE',
+  L0 = 'L0',
+  L1 = 'L1',
+  L2 = 'L2',
 }
 
 export type SpacePendingMembershipInfo = {

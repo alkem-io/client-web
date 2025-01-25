@@ -74,7 +74,7 @@ const getMetricsSpec = (spaceLevel: SpaceLevel | undefined) => {
   if (!spaceLevel) {
     return undefined;
   }
-  if (spaceLevel === SpaceLevel.Opportunity) {
+  if (spaceLevel === SpaceLevel.L2) {
     return OpportunityMetrics;
   }
   return SpaceMetrics;
@@ -114,7 +114,7 @@ const JourneyAboutDialog = ({
 }: JourneyAboutDialogProps) => {
   const { t } = useTranslation();
 
-  const isSpace = spaceLevel === SpaceLevel.Space;
+  const isSpace = spaceLevel === SpaceLevel.L0;
   const leadOrganizationsHeader = isSpace
     ? 'pages.space.sections.dashboard.leadingOrganizations'
     : 'community.leading-organizations';
