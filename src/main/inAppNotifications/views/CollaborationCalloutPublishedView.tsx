@@ -26,7 +26,7 @@ export const CollaborationCalloutPublishedView = ({
     const notificationTextValues = {
       defaultValue: '',
       spaceName: space?.profile?.displayName,
-      spaceType: t(`common.${spaceLevel}`),
+      spaceType: t(`common.space-level.${spaceLevel}`),
       calloutName: callout?.framing?.profile?.displayName,
       calloutType: calloutType,
       contributorName: triggeredBy?.profile?.displayName,

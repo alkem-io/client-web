@@ -133,7 +133,7 @@ const SpaceDashboardView = ({
                   component={FullWidthButton}
                   extended={hasExtendedApplicationButton}
                   journeyId={spaceId}
-                  spaceLevel={SpaceLevel.Space}
+                  spaceLevel={SpaceLevel.L0}
                 />
               </PageContentColumn>
             );

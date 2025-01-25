@@ -151,11 +151,11 @@ const SubspacePageLayout = ({
   });
 
   const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
-  let spaceLevel = SpaceLevel.Space;
+  let spaceLevel = SpaceLevel.L0;
   if (journeyPath.length === 2) {
-    spaceLevel = SpaceLevel.Challenge;
+    spaceLevel = SpaceLevel.L1;
   } else if (journeyPath.length === 3) {
-    spaceLevel = SpaceLevel.Opportunity;
+    spaceLevel = SpaceLevel.L2;
   }
 
   return (

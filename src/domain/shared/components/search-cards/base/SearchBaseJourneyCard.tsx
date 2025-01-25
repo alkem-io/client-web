@@ -51,7 +51,7 @@ const SearchBaseJourneyCard = ({
       expansion={<JourneyCardDescription>{vision}</JourneyCardDescription>}
       expansionActions={
         <CardActions>
-          <JourneyCardGoToButton journeyUri={props.journeyUri} subspace={spaceLevel !== SpaceLevel.Space} />
+          <JourneyCardGoToButton journeyUri={props.journeyUri} subspace={spaceLevel !== SpaceLevel.L0} />
         </CardActions>
       }
       {...props}

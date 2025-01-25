@@ -237,14 +237,14 @@ const useRoleSetAvailableContributors = ({
   ) => {
     const { data, refetch } = await fetchAvailableVirtualContributorsForRoleSet({
       variables: {
-        filterSpace: !all || spaceLevel !== SpaceLevel.Space,
+        filterSpace: !all || spaceLevel !== SpaceLevel.L0,
         filterSpaceId: spaceId,
       },
     });
     const roleSet = data?.lookup?.space?.community?.roleSet;
 
     // Results for Space Level - on Account if !all (filter in the query)
-    if (spaceLevel === SpaceLevel.Space) {
+    if (spaceLevel === SpaceLevel.L0) {
       return mockPaginatedResponse(
         (data?.lookup?.space?.account.virtualContributors ?? data?.virtualContributors ?? []).filter(
           vc => filterByName(vc, filter) && filterExisting(vc)

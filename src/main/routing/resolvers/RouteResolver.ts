@@ -71,26 +71,26 @@ const getSpaceLevel = (urlParams: Partial<JourneyLocation>): SpaceLevel => {
   const depth = takeWhile(JOURNEY_PARAM_NESTING, param => urlParams[param]).length - 1;
 
   if (depth === 0) {
-    return SpaceLevel.Space;
+    return SpaceLevel.L0;
   }
   if (depth === 1) {
-    return SpaceLevel.Challenge;
+    return SpaceLevel.L1;
   }
   if (depth === 2) {
-    return SpaceLevel.Opportunity;
+    return SpaceLevel.L2;
   }
   // TODO: should be an error, every space has a level.
-  return SpaceLevel.Space;
+  return SpaceLevel.L0;
 };
 
 const getSpaceDepth = (spaceLevel: SpaceLevel | undefined): number => {
-  if (spaceLevel === SpaceLevel.Space) {
+  if (spaceLevel === SpaceLevel.L0) {
     return 0;
   }
-  if (spaceLevel === SpaceLevel.Challenge) {
+  if (spaceLevel === SpaceLevel.L1) {
     return 1;
   }
-  if (spaceLevel === SpaceLevel.Opportunity) {
+  if (spaceLevel === SpaceLevel.L2) {
     return 2;
   }
   return -1;
@@ -143,9 +143,9 @@ export const useRouteResolver = ({ failOnNotFound = true }: RouteResolverOptions
 
   const getParentSpaceId = () => {
     switch (spaceLevel) {
-      case SpaceLevel.Challenge:
+      case SpaceLevel.L1:
         return data?.space.id;
-      case SpaceLevel.Opportunity:
+      case SpaceLevel.L2:
         return data?.space.subspace?.id;
       default:
         return undefined;

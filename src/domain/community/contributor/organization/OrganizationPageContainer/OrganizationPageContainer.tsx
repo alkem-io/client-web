@@ -131,7 +131,7 @@ export const OrganizationPageContainer = ({ children }: PropsWithChildren<Organi
   const contributions = useMemo(() => {
     const spaceContributions = (orgRolesData?.rolesOrganization?.spaces ?? []).map<SpaceHostedItem>(x => ({
       spaceID: x.id,
-      spaceLevel: SpaceLevel.Space,
+      spaceLevel: SpaceLevel.L0,
       id: x.id,
       contributorId: organizationId,
       contributorType: RoleSetContributorType.Organization,

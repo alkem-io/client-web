@@ -102,7 +102,7 @@ const hydrateSpaceCard = (
       return null;
     }
 
-    const parentIcon = data.parentSpace.level === SpaceLevel.Space ? SpaceIcon : SubspaceIcon;
+    const parentIcon = data.parentSpace.level === SpaceLevel.L0 ? SpaceIcon : SubspaceIcon;
 
     return (
       <CardParentJourneySegment
