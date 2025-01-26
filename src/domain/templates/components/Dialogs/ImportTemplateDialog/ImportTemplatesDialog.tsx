@@ -54,9 +54,9 @@ const ImportTemplatesDialog = ({
   templateType,
 }: ImportTemplatesDialogProps) => {
   const { t } = useTranslation();
-  const { spaceNameId } = useUrlParams();
+  const { spaceNameId: spaceId } = useUrlParams();
 
-  const canUseSpaceTemplates = !disableSpaceTemplates && !!spaceNameId;
+  const canUseSpaceTemplates = !disableSpaceTemplates && !!spaceId;
   const [loadPlatformTemplates, setLoadPlatformTemplates] = useState(!canUseSpaceTemplates);
 
   const [previewTemplate, setPreviewTemplate] = useState<AnyTemplate>();
@@ -77,10 +77,10 @@ const ImportTemplatesDialog = ({
   };
 
   const { data: templatesSetData } = useSpaceTemplatesSetIdQuery({
-    variables: { spaceNameId: spaceNameId! },
+    variables: { spaceId: spaceId! },
     skip: !open || !canUseSpaceTemplates,
   });
-  const templatesSetId = templatesSetData?.space.templatesManager?.templatesSet?.id;
+  const templatesSetId = templatesSetData?.lookup.space?.templatesManager?.templatesSet?.id;
 
   const { data: templatesData, loading: loadingTemplates } = useImportTemplateDialogQuery({
     fetchPolicy: 'network-only',

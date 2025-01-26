@@ -50,7 +50,9 @@ const CollaborationFromSpaceUrlForm: React.FC<CollaborationFromSpaceUrlFormProps
         },
       });
       const spaceId =
-        journeyResult?.space.subspace?.subspace?.id ?? journeyResult?.space.subspace?.id ?? journeyResult?.space.id;
+        journeyResult?.lookupByName.space?.subspaceByNameID?.subspaceByNameID?.id ??
+        journeyResult?.lookupByName.space?.subspaceByNameID?.id ??
+        journeyResult?.lookupByName.space?.id;
       if (!spaceId) {
         setUrlError(t('templateLibrary.collaborationTemplates.findByUrl.spaceNotFoundError'));
       } else {

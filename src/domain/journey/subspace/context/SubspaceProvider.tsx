@@ -2,6 +2,7 @@ import React, { FC, useMemo } from 'react';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
+  SpaceLevel,
   SubspacePendingMembershipInfoFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
@@ -18,6 +19,7 @@ interface SubspacePermissions {
 interface SubspaceContextProps {
   subspace?: SubspacePendingMembershipInfoFragment;
   subspaceId: string;
+  level: SpaceLevel;
   subspaceNameId: string;
   communityId: string;
   roleSetId: string;
@@ -29,6 +31,7 @@ interface SubspaceContextProps {
 
 export const SubspaceContext = React.createContext<SubspaceContextProps>({
   loading: true,
+  level: SpaceLevel.L1,
   subspaceId: '',
   subspaceNameId: '',
   communityId: '',
@@ -104,6 +107,7 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
     <SubspaceContext.Provider
       value={{
         subspace,
+        level: subspace?.level,
         subspaceId: journeyId ?? '',
         subspaceNameId,
         communityId,

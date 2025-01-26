@@ -102,7 +102,7 @@ const ExploreSpacesContainer = ({ searchTerms, selectedFilter, children }: Explo
     loading,
     hasMore,
     filtersConfig,
-    welcomeSpace: welcomeSpaceData?.space,
+    welcomeSpace: welcomeSpaceData?.lookupByName.space,
   };
 
   return <>{children(provided)}</>;

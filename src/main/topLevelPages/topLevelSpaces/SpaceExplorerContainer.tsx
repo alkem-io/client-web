@@ -216,7 +216,7 @@ const SpaceExplorerContainer = ({ children }: SpaceExplorerContainerProps) => {
     fetchMore,
     loading,
     hasMore,
-    welcomeSpace: welcomeSpaceData?.space.profile,
+    welcomeSpace: welcomeSpaceData?.lookupByName.space?.profile,
     fetchWelcomeSpace,
     setSearchTerms,
     loadingSearchResults,

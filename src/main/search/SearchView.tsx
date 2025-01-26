@@ -87,7 +87,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
 
   const queryParams = useQueryParams();
 
-  const spaceNameId = queryParams.get(SEARCH_SPACE_URL_PARAM) ?? undefined;
+  const spaceId = queryParams.get(SEARCH_SPACE_URL_PARAM) ?? undefined;
 
   const termsFromUrl = useMemo(() => {
     const terms = queryParams.getAll(SEARCH_TERMS_URL_PARAM).filter(identity);
@@ -149,7 +149,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
         terms: termsFromUrl,
         tagsetNames,
         typesFilter: filters,
-        searchInSpaceFilter: spaceNameId,
+        searchInSpaceFilter: spaceId,
       },
     },
     fetchPolicy: 'no-cache',
@@ -171,9 +171,9 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
 
   const { data: spaceDetails, loading } = useSearchScopeDetailsSpaceQuery({
     variables: {
-      spaceNameId: spaceNameId!,
+      spaceId: spaceId!,
     },
-    skip: !spaceNameId,
+    skip: !spaceId,
   });
 
   const convertedCalloutResults = calloutResults as SearchResultCalloutFragment[];
@@ -184,16 +184,16 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
         <PageContentBlockSeamless disablePadding>
           <MultipleSelect size="small" onChange={handleTermsChange} value={searchTerms} minLength={2} autoFocus />
         </PageContentBlockSeamless>
-        {spaceNameId && (
+        {spaceId && (
           <SearchResultsScope
             currentScope={
               <SearchResultsScopeCard
-                avatar={spaceDetails?.space.profile.avatar}
+                avatar={spaceDetails?.lookup.space?.profile.avatar}
                 iconComponent={SpaceIcon}
                 loading={loading}
                 onDelete={handleSearchInPlatform}
               >
-                {spaceDetails?.space.profile.displayName}
+                {spaceDetails?.lookup.space?.profile.displayName}
               </SearchResultsScopeCard>
             }
             alternativeScope={

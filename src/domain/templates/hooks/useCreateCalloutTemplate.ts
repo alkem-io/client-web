@@ -13,9 +13,9 @@ export const useCreateCalloutTemplate = (): CalloutCreationUtils => {
   const [fetchTemplatesSetId] = useSpaceTemplatesSetIdLazyQuery();
 
   const handleCreateCalloutTemplate = useCallback(
-    async (values: CalloutTemplateFormSubmittedValues, spaceNameId: string) => {
-      const { data: templatesData } = await fetchTemplatesSetId({ variables: { spaceNameId } });
-      const templatesSetId = templatesData?.space.templatesManager?.templatesSet?.id;
+    async (values: CalloutTemplateFormSubmittedValues, spaceId: string) => {
+      const { data: templatesData } = await fetchTemplatesSetId({ variables: { spaceId } });
+      const templatesSetId = templatesData?.lookup.space?.templatesManager?.templatesSet?.id;
       if (!templatesSetId) {
         throw new TypeError('TemplateSet not found!');
       }
