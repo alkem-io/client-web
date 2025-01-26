@@ -18,10 +18,11 @@ query SpaceUrl($spaceId: UUID!) {
   }
 }
 
-query SpaceHost($spaceId: UUID!) {
-  lookup {
-    space(ID: $spaceId) {
+query SpaceHost($spaceNameId: NameID!) {
+  lookupByName {
+    space(NAMEID: $spaceNameId) {
       id
+      ...SpaceInfo
       provider {
         id
         nameID

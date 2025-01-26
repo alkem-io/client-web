@@ -60,9 +60,10 @@ const SpaceSubspacesPage = () => {
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Subspaces}>
       <SubspacesContainer spaceId={spaceId}>
-        {({ subspaces }, state) => (
+        {({ subspaces, level }, state) => (
           <ChildJourneyView
             childEntities={subspaces}
+            level={level}
             childEntitiesIcon={<SubspaceIcon />}
             childEntityReadAccess={permissions.canReadSubspaces}
             childEntityValueGetter={journeyCardValueGetter}

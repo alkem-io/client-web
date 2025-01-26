@@ -127,10 +127,10 @@ export const SpaceSettingsView = ({ level }: SpaceSettingsViewProps) => {
   };
 
   const { data: hostData } = useSpaceHostQuery({
-    variables: { spaceId },
+    variables: { spaceNameId },
     skip: isSubspace,
   });
-  const hostId = hostData?.lookup.space?.provider.id;
+  const hostId = hostData?.lookupByName.space?.provider.id;
 
   const { data: settingsData, loading } = useSpaceSettingsQuery({
     variables: {
@@ -352,7 +352,7 @@ export const SpaceSettingsView = ({ level }: SpaceSettingsViewProps) => {
                           t={t}
                           i18nKey="pages.admin.space.settings.membership.hostOrganizationJoin"
                           values={{
-                            host: hostData?.lookup.space?.provider.profile?.displayName,
+                            host: hostData?.lookupByName.space?.provider.profile?.displayName,
                           }}
                           components={{ b: <strong />, i: <em /> }}
                         />

@@ -1,1 +1,1 @@
-export type EntityTypeName = 'organization' | 'user' | 'innovationPack';
+export type EntityTypeName = 'space' | 'subspace' | 'subsubspace' | 'organization' | 'user' | 'innovationPack';

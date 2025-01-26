@@ -21,7 +21,7 @@ type JourneyTileProps = {
           url: string;
           cardBanner?: Visual;
         };
-        level: SpaceLevel;
+        level?: SpaceLevel;
       }
     | undefined;
   columns?: number;

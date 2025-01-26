@@ -20475,17 +20475,19 @@ export type SpaceUrlQuery = {
 };
 
 export type SpaceHostQueryVariables = Exact<{
-  spaceId: Scalars['UUID'];
+  spaceNameId: Scalars['NameID'];
 }>;
 
 export type SpaceHostQuery = {
   __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
+  lookupByName: {
+    __typename?: 'LookupByNameQueryResults';
     space?:
       | {
           __typename?: 'Space';
           id: string;
+          visibility: SpaceVisibility;
+          nameID: string;
           provider:
             | {
                 __typename?: 'Organization';
@@ -20532,6 +20534,96 @@ export type SpaceHostQuery = {
                   tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
                 };
               };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          community: {
+            __typename?: 'Community';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+            roleSet: { __typename?: 'RoleSet'; id: string; myMembershipStatus?: CommunityMembershipStatus | undefined };
+          };
+          context: {
+            __typename?: 'Context';
+            id: string;
+            vision?: string | undefined;
+            impact?: string | undefined;
+            who?: string | undefined;
+            authorization?:
+              | {
+                  __typename?: 'Authorization';
+                  id: string;
+                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  type?: AuthorizationPolicyType | undefined;
+                }
+              | undefined;
+          };
+          collaboration: {
+            __typename?: 'Collaboration';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+            calloutsSet: { __typename?: 'CalloutsSet'; id: string };
+          };
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagline?: string | undefined;
+            url: string;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  description?: string | undefined;
+                  uri: string;
+                }>
+              | undefined;
+            visuals: Array<{
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+              alternativeText?: string | undefined;
+            }>;
+            location?:
+              | {
+                  __typename?: 'Location';
+                  id: string;
+                  country?: string | undefined;
+                  city?: string | undefined;
+                  addressLine1?: string | undefined;
+                  addressLine2?: string | undefined;
+                  stateOrProvince?: string | undefined;
+                  postalCode?: string | undefined;
+                }
+              | undefined;
+          };
+          settings: {
+            __typename?: 'SpaceSettings';
+            privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };
+          };
         }
       | undefined;
   };
@@ -21157,6 +21249,7 @@ export type SpaceSubspaceCardsQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          level: SpaceLevel;
           subspaces: Array<{
             __typename?: 'Space';
             id: string;

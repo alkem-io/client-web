@@ -1,7 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useUrlParams } from '@/core/routing/useUrlParams';
-import { useSpaceProviderQuery, useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceHostQuery, useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CommunityMembershipStatus,
@@ -83,17 +83,18 @@ const NO_PRIVILEGES = [];
 const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const { spaceNameId = '' } = useUrlParams();
 
+  // TODO: remove usage of nameID for this
   const {
     data,
     loading,
     refetch: refetchSpace,
-  } = useSpaceProviderQuery({
+  } = useSpaceHostQuery({
     variables: { spaceNameId },
     errorPolicy: 'all',
     skip: !spaceNameId,
   });
 
-  const space = data?.space;
+  const space = data?.lookupByName.space;
   const spaceId = space?.id || '';
   const visibility = space?.visibility || SpaceVisibility.Active;
 

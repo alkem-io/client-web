@@ -926,8 +926,8 @@
       "editableBy": {
         "title": "This whiteboard can be edited by:",
         "options": {
-          "CONTRIBUTORS": "Everyone who can contribute in this {{journey}}",
-          "ADMINS": "The owner and the admins and leads of this {{journey}}",
+          "CONTRIBUTORS": "Everyone who can contribute in this (sub)space",
+          "ADMINS": "The owner and the admins and leads of this (sub)space",
           "OWNER": "The owner of this whiteboard"
         }
       }

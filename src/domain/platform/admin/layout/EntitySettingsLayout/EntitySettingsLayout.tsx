@@ -9,7 +9,6 @@ import EntityPageLayout from '@/domain/journey/common/EntityPageLayout/EntityPag
 import PageContent from '@/core/ui/content/PageContent';
 import { PlatformNavigationBarProps } from '@/main/ui/platformNavigation/PlatformNavigationBar';
 
-// TODO:
 type EntityTypeName = 'space' | 'subspace' | 'subsubspace' | 'organization' | 'user';
 
 interface EntitySettingsLayoutProps extends Omit<EntityPageLayoutProps, 'tabs' | 'currentSection'> {

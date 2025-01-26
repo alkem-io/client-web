@@ -48,7 +48,7 @@ interface Space extends Identifiable {
     avatar?: Visual;
     cardBanner?: Visual;
   };
-  level: SpaceLevel;
+  level?: SpaceLevel;
 }
 
 export interface ExploreSpacesViewProps {

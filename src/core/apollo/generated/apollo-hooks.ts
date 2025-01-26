@@ -15653,10 +15653,11 @@ export function refetchSpaceUrlQuery(variables: SchemaTypes.SpaceUrlQueryVariabl
 }
 
 export const SpaceHostDocument = gql`
-  query SpaceHost($spaceId: UUID!) {
-    lookup {
-      space(ID: $spaceId) {
+  query SpaceHost($spaceNameId: NameID!) {
+    lookupByName {
+      space(NAMEID: $spaceNameId) {
         id
+        ...SpaceInfo
         provider {
           id
           nameID
@@ -15681,6 +15682,7 @@ export const SpaceHostDocument = gql`
       }
     }
   }
+  ${SpaceInfoFragmentDoc}
 `;
 
 /**
@@ -15695,7 +15697,7 @@ export const SpaceHostDocument = gql`
  * @example
  * const { data, loading, error } = useSpaceHostQuery({
  *   variables: {
- *      spaceId: // value for 'spaceId'
+ *      spaceNameId: // value for 'spaceNameId'
  *   },
  * });
  */
@@ -15928,6 +15930,7 @@ export const SpaceSubspaceCardsDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
+        level
         subspaces {
           ...SubspaceCard
         }

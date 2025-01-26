@@ -8,7 +8,7 @@ import { Formik } from 'formik';
 import { Trans, useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
-import { Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import * as yup from 'yup';
 import { nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
 import { contextSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
@@ -158,11 +158,11 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
       if (redirectOnComplete) {
         const { data: spaceUrlData } = await getSpaceUrl({
           variables: {
-            spaceNameId: newSpace.createSpace.id,
+            spaceId: newSpace.createSpace.id,
           },
         });
 
-        const spaceUrl = spaceUrlData?.space.profile.url;
+        const spaceUrl = spaceUrlData?.lookup.space?.profile.url;
         if (spaceUrl) {
           navigate(spaceUrl);
           return;
@@ -196,7 +196,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
                     <NameIdField name="nameID" title={t('common.url')} required />
                     <FormikInputField
                       name="tagline"
-                      title={`${t('context.space.tagline.title')} (${t('common.optional')})`}
+                      title={`${t(`context.${SpaceLevel.L0}.tagline.title`)} (${t('common.optional')})`}
                       rows={3}
                       maxLength={SMALL_TEXT_LENGTH}
                     />

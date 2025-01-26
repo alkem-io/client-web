@@ -154,8 +154,6 @@ const JourneyAboutDialog = ({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
-  const spaceType = t(`common.space-level.${spaceLevel}`);
-
   return (
     <DialogWithGrid
       open={open}
@@ -202,19 +200,19 @@ const JourneyAboutDialog = ({
             )}
             {background && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t(`context.${spaceType}.background.title` as const)} />
+                <PageContentBlockHeader title={t(`context.${spaceLevel}.background.title` as const)} />
                 <WrapperMarkdown>{background}</WrapperMarkdown>
               </PageContentBlock>
             )}
             {impact && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t(`context.${spaceType}.impact.title` as const)} />
+                <PageContentBlockHeader title={t(`context.${spaceLevel}.impact.title` as const)} />
                 <WrapperMarkdown>{impact}</WrapperMarkdown>
               </PageContentBlock>
             )}
             {who && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t(`context.${spaceType}.who.title` as const)} />
+                <PageContentBlockHeader title={t(`context.${spaceLevel}.who.title` as const)} />
                 <WrapperMarkdown>{who}</WrapperMarkdown>
               </PageContentBlock>
             )}
@@ -225,7 +223,9 @@ const JourneyAboutDialog = ({
               {leftColumnChildrenTop}
               <PageContentBlock>
                 <PageContentBlockHeader
-                  title={t('components.journeyMetrics.title', { journey: t(`common.${spaceType}` as const) })}
+                  title={t('components.journeyMetrics.title', {
+                    journey: t(`common.space-level.${spaceLevel}` as const),
+                  })}
                 />
                 <ActivityView activity={metricsItems} loading={loading} />
               </PageContentBlock>

@@ -2,7 +2,7 @@ import { Formik } from 'formik';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Profile, Reference, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import { Profile, Reference, SpaceLevel, Tagset, TagsetType } from '@/core/apollo/generated/graphql-schema';
 import ContextReferenceSegment from '@/domain/platform/admin/components/Common/ContextReferenceSegment';
 import { contextSegmentSchema } from '@/domain/platform/admin/components/Common/ContextSegment';
 import { NameSegment, nameSegmentSchema } from '@/domain/platform/admin/components/Common/NameSegment';
@@ -80,8 +80,8 @@ const ProfileForm = ({
 
   let isSubmitWired = false;
 
-  // TODO: why does the spaceType get used here?
-  const spaceType = 'space';
+  // TODO: why is this needed on a profile?
+  const spaceLevel = SpaceLevel.L0;
 
   return (
     <Formik
@@ -110,7 +110,7 @@ const ProfileForm = ({
             />
             <FormikInputField
               name={'tagline'}
-              title={t(`context.${spaceType}.tagline.title` as const)}
+              title={t(`context.${spaceLevel}.tagline.title` as const)}
               rows={3}
               maxLength={SMALL_TEXT_LENGTH}
             />
