@@ -12,7 +12,7 @@ import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface JourneyDashboardWelcomeBlockProps {
-  level: SpaceLevel;
+  level: SpaceLevel | undefined;
   vision: string;
   leadUsers: ContributorViewProps[];
   onContactLeadUser: (receiver: MessageReceiverChipData) => void;
@@ -34,6 +34,7 @@ const JourneyDashboardWelcomeBlock = ({
     () => leadOrganizations?.filter(({ id }) => !leadUsers?.some(user => user.id === id)),
     [leadOrganizations, leadUsers]
   );
+  const spaceLevel = !level ? SpaceLevel.L0 : level;
 
   return (
     <>
@@ -41,7 +42,7 @@ const JourneyDashboardWelcomeBlock = ({
         maxHeight={gutters(11)}
         overflowMarker={<SeeMore label="buttons.readMore" to={EntityPageSection.About} sx={{ marginTop: -1 }} />}
       >
-        {member && <DashboardMemberIcon level={level} />}
+        {member && <DashboardMemberIcon level={spaceLevel} />}
         <WrapperMarkdown disableParagraphPadding>{vision}</WrapperMarkdown>
       </OverflowGradient>
       {leadUsers && leadUsers.length > 0 && (

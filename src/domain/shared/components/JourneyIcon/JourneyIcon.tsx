@@ -5,16 +5,6 @@ import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { ComponentType } from 'react';
 import { SvgIconProps } from '@mui/material';
 
-/**
- * @deprecated
- */
-const spaceIcon = {
-  space: SpaceIcon,
-  subspace: SubspaceIcon,
-  subsubspace: OpportunityIcon,
-  undefined: SpaceIcon,
-} as const;
-
 export const spaceIconByLevel = [
   SpaceIcon,
   SubspaceIcon,

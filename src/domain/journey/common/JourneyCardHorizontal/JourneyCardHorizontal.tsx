@@ -15,7 +15,6 @@ import { Caption } from '@/core/ui/typography';
 import { Visual } from '@/domain/common/visual/Visual';
 import withElevationOnHover from '@/domain/shared/components/withElevationOnHover';
 import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
-import spaceIcon from '@/domain/shared/components/JourneyIcon/JourneyIcon';
 import BlockTitleWithIcon from '@/core/ui/content/BlockTitleWithIcon';
 import { RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +23,7 @@ import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import JourneyAvatar from '../JourneyAvatar/JourneyAvatar';
 import ActionsMenu from '@/core/ui/card/ActionsMenu';
 import { AvatarSize } from '@/core/ui/avatar/Avatar';
+import { spaceIconByLevel } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
 
 export const JourneyCardHorizontalSkeleton = () => (
   <ElevatedPaper sx={{ padding: gutters() }}>
@@ -68,18 +68,16 @@ const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultCom
   props: ListItemButtonProps<D, P> & RouterLinkProps
 ) => <ListItemButton component={RouterLink} {...props} />;
 
-// TODO: remove this + review the usage in the translation file below
-const journeyTypeName = 'space';
 const JourneyCardHorizontal = ({
   journey,
-  deepness = !journeyTypeName || journeyTypeName === 'subspace' ? 0 : 1,
+  deepness = !journey.level || journey.level === SpaceLevel.L1 ? 0 : 1,
   seamless,
   sx,
   actions,
   size,
   disableHoverState = false,
 }: JourneyCardHorizontalProps) => {
-  const Icon = journeyTypeName ? spaceIcon[journeyTypeName] : undefined;
+  const Icon = journey.level ? spaceIconByLevel[journey.level] : undefined;
 
   const { t } = useTranslation();
 

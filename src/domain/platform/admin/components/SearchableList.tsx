@@ -5,6 +5,7 @@ import LoadingListItem from '@/domain/shared/components/SearchableList/LoadingLi
 import { ListItemLinkProps } from '@/domain/shared/components/SearchableList/ListItemLink';
 import JourneyCardHorizontal from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
 import { Visual } from '@/domain/common/visual/Visual';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 const MAX_ITEMS_LIMIT = 1000;
 
@@ -19,12 +20,19 @@ export interface SearchableListProps<
 
 export const searchableListItemMapper =
   (editSuffix?: string) =>
-  (item: { id: string; displayName: string; nameID?: string; url?: string }): SearchableListItem => ({
+  (item: {
+    id: string;
+    displayName: string;
+    nameID?: string;
+    url?: string;
+    level?: SpaceLevel;
+  }): SearchableListItem => ({
     id: item.id,
     profile: {
       displayName: item.displayName,
       url: item.url ?? `${item.nameID ?? item.id}${editSuffix ?? ''}`,
     },
+    level: item.level ?? SpaceLevel.L0,
   });
 
 export interface SearchableListItem {
@@ -36,6 +44,7 @@ export interface SearchableListItem {
     avatar?: Visual;
     cardBanner?: Visual;
   };
+  level: SpaceLevel;
 }
 
 export const SearchableList = <
@@ -87,7 +96,7 @@ export const SearchableList = <
           <JourneyCardHorizontal
             key={item.id}
             size="medium"
-            journey={{ profile: item.profile, community: {} }}
+            journey={{ profile: item.profile, level: item.level, community: {} }}
             deepness={0}
             seamless
             sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}

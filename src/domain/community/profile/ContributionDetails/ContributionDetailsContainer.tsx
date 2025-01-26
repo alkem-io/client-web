@@ -40,9 +40,10 @@ export interface ContributionDetails {
     alternativeText?: string;
   };
   tags: string[];
-  journeyUri: string;
+  url: string;
   roleSetId?: string;
   tagline: string;
+  level: SpaceLevel;
 }
 
 const ContributionDetailsContainer = ({ entities, children }: PropsWithChildren<EntityDetailsContainerProps>) => {
@@ -55,11 +56,6 @@ const ContributionDetailsContainer = ({ entities, children }: PropsWithChildren<
     },
   });
 
-  let childSpaceLevel = SpaceLevel.L1;
-  if (spaceLevel === SpaceLevel.L0) {
-    childSpaceLevel = SpaceLevel.L2;
-  }
-
   const [userLeaveCommunity, { loading: userIsLeavingCommunity }] = useRemoveRoleFromUserMutation();
   const [vcLeaveCommunity, { loading: vcIsLeavingCommunity }] = useRemoveRoleFromVirtualContributorMutation();
 
@@ -68,13 +64,13 @@ const ContributionDetailsContainer = ({ entities, children }: PropsWithChildren<
       const space = spaceData.lookup.space;
       return {
         displayName: space.profile.displayName!,
-        spaceLevel: childSpaceLevel,
         banner: getVisualByType(VisualName.CARD, space.profile.visuals),
         tags: space.profile.tagset?.tags ?? [],
-        journeyUri: space.profile.url,
+        url: space.profile.url,
         communityId: space.community?.id,
         roleSetId: space.community?.roleSet.id,
         tagline: space.profile.tagline ?? '',
+        level: space.level,
       };
     }
   }, [spaceData, spaceLevel]);

@@ -2,13 +2,12 @@ import { useTranslation } from 'react-i18next';
 import { Box, Tooltip } from '@mui/material';
 import { HowToRegOutlined } from '@mui/icons-material';
 import { Caption } from '@/core/ui/typography';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
-const DashboardMemberIcon = () => {
+const DashboardMemberIcon = ({ level }: { level: SpaceLevel }) => {
   const { t } = useTranslation();
 
-  // TODO: remove this + review the usage in the translation file below
-  const journeyTypeName = 'space';
-  const translatedJourneyTypeName = t(`common.${journeyTypeName}` as const);
+  const translatedJourneyTypeName = t(`common.space-level.${level}` as const);
 
   return (
     <Tooltip

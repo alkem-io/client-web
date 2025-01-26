@@ -2,9 +2,9 @@ import { ReactElement, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
-import spaceIcon from '../JourneyIcon/JourneyIcon';
+import { spaceIconByLevel } from '../JourneyIcon/JourneyIcon';
 import RouterLink from '@/core/ui/link/RouterLink';
-import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface ActivityDescriptionProps {
   i18nKey: TranslationKey;
@@ -13,6 +13,7 @@ export interface ActivityDescriptionProps {
   createdDate: Date | string;
   journeyDisplayName?: string; // Callout name or Journey name
   journeyUrl?: string;
+  spaceLevel?: SpaceLevel;
   author?: {
     displayName?: string;
     url?: string;
@@ -28,6 +29,7 @@ const DetailedActivityDescription = ({
   createdDate,
   journeyDisplayName,
   journeyUrl,
+  spaceLevel,
   author,
   values = {},
   components = {},
@@ -69,7 +71,7 @@ const DetailedActivityDescription = ({
       mergedValues['journeyDisplayName'] = truncatedParentName;
     }
 
-    const JourneyIcon = journeyTypeName ? spaceIcon[journeyTypeName] : undefined;
+    const JourneyIcon = spaceLevel ? spaceIconByLevel[spaceLevel] : undefined;
     if (JourneyIcon) {
       mergedComponents['parenticon'] = <JourneyIcon fontSize="small" sx={{ verticalAlign: 'bottom' }} />;
       mergedComponents['journeyicon'] = <JourneyIcon fontSize="inherit" />;

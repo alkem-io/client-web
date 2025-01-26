@@ -42,7 +42,7 @@ const Outline = (props: DashboardNavigationProps) => {
 const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
   const { t } = useTranslation();
 
-  const { journeyId, journeyTypeName, journeyPath, parentSpaceId, loading } = useRouteResolver();
+  const { journeyId, spaceLevel, journeyPath, parentSpaceId, loading } = useRouteResolver();
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
@@ -82,9 +82,9 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
   };
 
   return (
-    <SubspaceHomeContainer spaceId={journeyId} journeyTypeName={journeyTypeName}>
+    <SubspaceHomeContainer spaceId={journeyId}>
       {({ innovationFlow, callouts, subspace, spaceReadAccess, communityReadAccess, communityId, roleSet }) => {
-        const { collaboration, community, profile } = subspace ?? {};
+        const { collaboration, community, profile, level } = subspace ?? {};
 
         return (
           <>
@@ -102,7 +102,7 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
                   onContactLeadUser={receiver => sendMessage('user', receiver)}
                   leadOrganizations={roleSet.leadOrganizations}
                   onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
-                  level="subspace"
+                  level={spaceLevel}
                   member={community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member}
                 />
               }
@@ -179,10 +179,10 @@ const SubspaceHomePage = ({ dialog }: { dialog?: SubspaceDialog }) => {
               }
             >
               <SubspaceHomeView
+                spaceLevel={level}
                 collaborationId={collaboration?.id}
                 calloutsSetId={collaboration?.calloutsSet.id}
                 templatesSetId={subspace?.templatesManager?.templatesSet?.id}
-                journeyTypeName={journeyTypeName}
                 {...innovationFlow}
                 {...callouts}
               />

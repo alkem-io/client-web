@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import {
   refetchAdminSpaceSubspacesPageQuery,
@@ -16,6 +16,7 @@ import {
 import {
   AuthorizationPrivilege,
   CommunityMembershipPolicy,
+  SpaceLevel,
   SpacePrivacyMode,
   SpaceSettingsCollaboration,
   TemplateType,
@@ -46,6 +47,7 @@ import { noop } from 'lodash';
 
 type SpaceSettingsViewProps = {
   journeyId: string; // TODO: The idea is to just pass isSubspace as a boolean here
+  level: SpaceLevel;
 };
 
 const defaultSpaceSettings = {
@@ -69,17 +71,12 @@ const defaultSpaceSettings = {
 
 const errorColor = '#940000';
 
-export const SpaceSettingsView = ({ level: SpaceLevel }: SpaceSettingsViewProps) => {
+export const SpaceSettingsView = ({ level }: SpaceSettingsViewProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const navigate = useNavigate();
-  // TODO: remove this
-  const { pathname } = useLocation();
-  const isSubspace = pathname.includes('challenges');
-  let spaceLevel = SpaceLevel.L0;
-  if (isSubspace) {
-    spaceLevel = SpaceLevel.L1;
-  }
+
+  let isSubspace = level !== SpaceLevel.L0;
 
   const { subspaceId } = useSubSpace();
   const { spaceId, spaceNameId } = useSpace();
@@ -133,7 +130,7 @@ export const SpaceSettingsView = ({ level: SpaceLevel }: SpaceSettingsViewProps)
     variables: { spaceId },
     skip: isSubspace,
   });
-  const hostId = hostData?.space.provider.id;
+  const hostId = hostData?.lookup.space?.provider.id;
 
   const { data: settingsData, loading } = useSpaceSettingsQuery({
     variables: {
@@ -149,7 +146,8 @@ export const SpaceSettingsView = ({ level: SpaceLevel }: SpaceSettingsViewProps)
     skip: !spaceId,
   });
 
-  const templateSetPrivileges = templateData?.space.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
+  const templateSetPrivileges =
+    templateData?.lookup.space?.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
   const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
 
   const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
@@ -218,7 +216,7 @@ export const SpaceSettingsView = ({ level: SpaceLevel }: SpaceSettingsViewProps)
       } as SpaceSettingsCollaboration,
     };
 
-    switch (spaceLevel) {
+    switch (level) {
       case SpaceLevel.L0: {
         await updateSpaceSettings({
           variables: {
@@ -354,7 +352,7 @@ export const SpaceSettingsView = ({ level: SpaceLevel }: SpaceSettingsViewProps)
                           t={t}
                           i18nKey="pages.admin.space.settings.membership.hostOrganizationJoin"
                           values={{
-                            host: hostData?.space?.provider.profile?.displayName,
+                            host: hostData?.lookup.space?.provider.profile?.displayName,
                           }}
                           components={{ b: <strong />, i: <em /> }}
                         />

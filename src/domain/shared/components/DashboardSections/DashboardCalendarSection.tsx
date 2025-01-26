@@ -15,7 +15,7 @@ import PageContentBlockFooter from '@/core/ui/content/PageContentBlockFooter';
 import FullCalendar, { INTERNAL_DATE_FORMAT } from '@/domain/timeline/calendar/components/FullCalendar';
 import { HIGHLIGHT_PARAM_NAME, INIT_CREATING_EVENT_PARAM } from '@/domain/timeline/calendar/CalendarDialog';
 import { useQueryParams } from '@/core/routing/useQueryParams';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import RoundedIcon from '@/core/ui/icon/RoundedIcon';
 import { Actions } from '@/core/ui/actions/Actions';
 
@@ -38,9 +38,10 @@ const CalendarSkeleton = () => {
 
 export interface DashboardCalendarSectionProps {
   journeyId: string | undefined;
+  level: SpaceLevel | undefined;
 }
 
-const DashboardCalendarSection = ({ journeyId, journeyTypeName }: DashboardCalendarSectionProps) => {
+const DashboardCalendarSection = ({ journeyId, level }: DashboardCalendarSectionProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const urlQueryParams = useQueryParams();
@@ -49,7 +50,7 @@ const DashboardCalendarSection = ({ journeyId, journeyTypeName }: DashboardCalen
 
   const { data: spaceData, loading } = useSpaceCalendarEventsQuery({
     variables: { spaceId: journeyId! },
-    skip: !journeyId || journeyTypeName !== 'space',
+    skip: !journeyId || level !== SpaceLevel.L0,
   });
 
   const collaboration = spaceData?.lookup.space?.collaboration;

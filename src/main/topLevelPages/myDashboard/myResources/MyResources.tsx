@@ -43,8 +43,7 @@ const MyResources = () => {
       {spaces.map(space => (
         <JourneyCardHorizontal
           key={space.id}
-          journeyTypeName={undefined}
-          journey={{ profile: space.profile, community: {} }}
+          journey={{ profile: space.profile, level: space.level, community: {} }}
           size="small"
           seamless
           sx={{ display: 'inline-block', maxWidth: '100%', padding: 0 }}

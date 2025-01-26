@@ -13,7 +13,6 @@ import {
 } from './PendingMemberships';
 import InvitationCardHorizontal from '../invitations/InvitationCardHorizontal/InvitationCardHorizontal';
 import JourneyCard from '@/domain/journey/common/JourneyCard/JourneyCard';
-import spaceIcon from '@/domain/shared/components/JourneyIcon/JourneyIcon';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
 import InvitationDialog from '../invitations/InvitationDialog';
@@ -23,7 +22,7 @@ import BackButton from '@/core/ui/actions/BackButton';
 import useNavigate from '@/core/routing/useNavigate';
 import { PendingMembershipsDialogType, usePendingMembershipsDialog } from './PendingMembershipsDialogContext';
 import { defer } from 'lodash';
-import { getChildSpaceLevel } from '@/domain/shared/utils/spaceLevel';
+import { spaceIconByLevel } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
 
 type ButtonImplementationParams = {
   header: ReactNode;
@@ -141,7 +140,7 @@ const PendingMembershipsUserMenuItem = ({ children }: PendingMembershipsUserMenu
                     {({ application: hydratedApplication }) =>
                       hydratedApplication && (
                         <JourneyCard
-                          iconComponent={spaceIcon[getChildSpaceLevel(hydratedApplication.space)]}
+                          iconComponent={spaceIconByLevel[hydratedApplication.space.level]}
                           header={hydratedApplication.space.profile.displayName}
                           tags={hydratedApplication.space.profile.tagset?.tags ?? []}
                           banner={hydratedApplication.space.profile.visual}

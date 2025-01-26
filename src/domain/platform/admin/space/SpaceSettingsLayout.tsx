@@ -87,7 +87,6 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
 
   const ribbon = useInnovationHubJourneyBannerRibbon({
     spaceId,
-    journeyTypeName: 'space',
   });
 
   const { journeyPath } = useRouteResolver();
@@ -104,7 +103,6 @@ const SpaceSettingsLayout = (props: PropsWithChildren<SpaceSettingsLayoutProps>)
           bannerUrl={visual?.uri}
           bannerAltText={visual?.alternativeText}
           ribbon={ribbon}
-          journeyTypeName="space"
         />
       }
       tabsComponent={SpaceTabs}

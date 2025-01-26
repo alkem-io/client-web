@@ -439,8 +439,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               account?.spaces.map(space => (
                 <JourneyCardHorizontal
                   key={space.id}
-                  journeyTypeName="space"
-                  journey={{ profile: space.profile, community: {} }}
+                  journey={{ profile: space.profile, level: space.level, community: {} }}
                   size="medium"
                   deepness={0}
                   seamless

@@ -158,7 +158,6 @@ const SpaceCommunityPage = () => {
                 callouts={callouts.groupedCallouts[CalloutGroupName.Community]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}
-                journeyTypeName="space"
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
                 groupName={CalloutGroupName.Community}

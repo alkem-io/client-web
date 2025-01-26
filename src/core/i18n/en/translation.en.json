@@ -208,9 +208,9 @@
   },
   "common": {
     "space-level": {
-      "l0": "Space",
-      "l1": "Subspace",
-      "l2": "Subsubspace"
+      "L0": "Space",
+      "L1": "Subspace",
+      "L2": "Subsubspace"
     },
     "account": "Account",
     "all": "All",

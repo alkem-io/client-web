@@ -19,7 +19,7 @@ interface JourneyRouteParams {
   journeyId: string | undefined;
   parentSpaceId?: string;
   journeyPath: JourneyPath;
-  spaceLevel: SpaceLevel; // TODO not sure maybe remove as well, can be calculated from journeyPath
+  spaceLevel: SpaceLevel;
   /**
    * @deprecated
    * use journeyId or journeyPath instead
@@ -118,7 +118,10 @@ export const useRouteResolver = ({ failOnNotFound = true }: RouteResolverOptions
     skip: !spaceNameId,
   });
 
-  const spaceId = data?.space.subspace?.subspace?.id ?? data?.space.subspace?.id ?? data?.space.id;
+  const spaceId =
+    data?.lookupByName.space?.subspaceByNameID?.subspaceByNameID?.id ??
+    data?.lookupByName.space?.subspaceByNameID?.id ??
+    data?.lookupByName.space?.id;
 
   const { data: dataSpaceEntities, loading: loadingSpaceEntities } = useSpaceKeyEntitiesIDsQuery({
     variables: {
@@ -136,7 +139,11 @@ export const useRouteResolver = ({ failOnNotFound = true }: RouteResolverOptions
   const journeyPath = useMemo(
     () =>
       (data
-        ? [data?.space.id, data?.space.subspace?.id, data?.space.subspace?.subspace?.id].slice(0, journeyLength)
+        ? [
+            data?.lookupByName.space?.id,
+            data?.lookupByName.space?.subspaceByNameID?.id,
+            data?.lookupByName.space?.subspaceByNameID?.subspaceByNameID?.id,
+          ].slice(0, journeyLength)
         : []) as JourneyPath,
     [data, journeyLength]
   );
@@ -144,18 +151,18 @@ export const useRouteResolver = ({ failOnNotFound = true }: RouteResolverOptions
   const getParentSpaceId = () => {
     switch (spaceLevel) {
       case SpaceLevel.L1:
-        return data?.space.id;
+        return data?.lookupByName.space?.id;
       case SpaceLevel.L2:
-        return data?.space.subspace?.id;
+        return data?.lookupByName.space?.subspaceByNameID?.id;
       default:
         return undefined;
     }
   };
 
   const resolvedJourney: JourneyRouteParams = {
-    spaceId: data?.space.id,
-    subSpaceId: data?.space.subspace?.id,
-    subSubSpaceId: data?.space.subspace?.subspace?.id,
+    spaceId: data?.lookupByName.space?.id,
+    subSpaceId: data?.lookupByName.space?.subspaceByNameID?.id,
+    subSubSpaceId: data?.lookupByName.space?.subspaceByNameID?.subspaceByNameID?.id,
     type: RouteType.Journey,
     journeyId: spaceId,
     parentSpaceId: getParentSpaceId(),

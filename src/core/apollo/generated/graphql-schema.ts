@@ -17614,6 +17614,7 @@ export type SpaceContributionDetailsQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          level: SpaceLevel;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -22348,6 +22349,7 @@ export type SubspacePageQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          level: SpaceLevel;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -22382,6 +22384,7 @@ export type SubspacePageQuery = {
 export type SubspacePageSpaceFragment = {
   __typename?: 'Space';
   id: string;
+  level: SpaceLevel;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -29971,6 +29974,7 @@ export type RecentSpacesQuery = {
       space: {
         __typename: 'Space';
         id: string;
+        level: SpaceLevel;
         settings: {
           __typename?: 'SpaceSettings';
           privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode };

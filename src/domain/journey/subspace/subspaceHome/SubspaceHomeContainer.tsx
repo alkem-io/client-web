@@ -7,6 +7,7 @@ import {
   AuthorizationPrivilege,
   RoleName,
   RoleSetContributorType,
+  SpaceLevel,
   SubspacePageSpaceFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -16,6 +17,7 @@ import { ContributorViewProps } from '@/domain/community/community/EntityDashboa
 import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
 
 interface SubspaceHomeContainerProvided {
+  level: SpaceLevel | undefined;
   innovationFlow: UseInnovationFlowStatesProvided;
   callouts: UseCalloutsProvided;
   subspace?: SubspacePageSpaceFragment;
@@ -64,6 +66,7 @@ const SubspaceHomeContainer = ({ spaceId: journeyId, children }: SubspaceHomeCon
   return (
     <>
       {children({
+        level: data?.lookup.space?.level,
         innovationFlow,
         callouts,
         subspace: data?.lookup.space,

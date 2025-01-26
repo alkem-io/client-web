@@ -4,7 +4,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import PageContentBlockGrid from '@/core/ui/content/PageContentBlockGrid';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
 import JourneyTile from '@/domain/journey/common/JourneyTile/JourneyTile';
-import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { BlockTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
 import { useTranslation } from 'react-i18next';
@@ -102,8 +102,8 @@ export const AccountResourcesView = ({ accountResources, title }: AccountResourc
                     url: contributionItem.profile.url,
                     cardBanner: contributionItem.profile.cardBanner,
                   },
+                  level: SpaceLevel.L0,
                 }}
-                journeyTypeName="space"
               />
             ))}
           </ScrollableCardsLayoutContainer>

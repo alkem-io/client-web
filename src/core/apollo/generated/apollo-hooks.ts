@@ -2244,6 +2244,7 @@ export const SubspacePendingMembershipInfoFragmentDoc = gql`
 export const SubspacePageSpaceFragmentDoc = gql`
   fragment SubspacePageSpace on Space {
     id
+    level
     authorization {
       id
       myPrivileges
@@ -12402,6 +12403,7 @@ export const SpaceContributionDetailsDocument = gql`
     lookup {
       space(ID: $spaceId) {
         id
+        level
         profile {
           id
           url
@@ -23719,6 +23721,7 @@ export const RecentSpacesDocument = gql`
           profile {
             ...RecentSpaceProfile
           }
+          level
           __typename
         }
       }

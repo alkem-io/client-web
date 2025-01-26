@@ -7,11 +7,10 @@ import { BlockTitle } from '@/core/ui/typography';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
 import CardActions from '@/core/ui/card/CardActions';
 import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
-import spaceIcon from '@/domain/shared/components/JourneyIcon/JourneyIcon';
 import CardRibbon from '@/core/ui/card/CardRibbon';
-import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import { useLocation } from 'react-router-dom';
+import { spaceIconByLevel } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
 
 interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconComponent' | 'header'> {
   tagline: string;
@@ -23,6 +22,7 @@ interface ContributionDetailsCardProps extends Omit<JourneyCardProps, 'iconCompo
   handleLeaveCommunity?: () => void;
   loading?: boolean;
   visibility?: SpaceVisibility;
+  level?: SpaceLevel;
 }
 
 const ContributionDetailsCard = ({
@@ -35,18 +35,10 @@ const ContributionDetailsCard = ({
   handleLeaveCommunity,
   loading,
   visibility,
+  level,
   ...props
 }: ContributionDetailsCardProps) => {
   const { t } = useTranslation();
-
-  // TODO: remove this + review the usage in the translation file below
-  const { pathname } = useLocation();
-  let journeyTypeName = 'space';
-  if (pathname.includes('opportunities')) {
-    journeyTypeName = 'subsubspace';
-  } else {
-    journeyTypeName = pathname.includes('challenges') ? 'subspace' : 'space';
-  }
 
   const ribbon =
     visibility && visibility !== SpaceVisibility.Active ? (
@@ -57,7 +49,7 @@ const ContributionDetailsCard = ({
     <>
       <JourneyCard
         {...props}
-        iconComponent={spaceIcon[journeyTypeName]}
+        iconComponent={spaceIconByLevel[level || SpaceLevel.L0]}
         header={
           <BlockTitle component="div" sx={webkitLineClamp(2)}>
             {displayName}
