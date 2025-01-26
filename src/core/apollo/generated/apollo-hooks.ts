@@ -2194,6 +2194,7 @@ export const SubspacePendingMembershipInfoFragmentDoc = gql`
   fragment SubspacePendingMembershipInfo on Space {
     id
     nameID
+    level
     profile {
       id
       displayName
@@ -17160,6 +17161,7 @@ export const AdminSpaceSubspacesPageDocument = gql`
         id
         subspaces {
           id
+          level
           profile {
             id
             displayName

@@ -6,11 +6,11 @@ import { useSubSpace } from '../hooks/useSubSpace';
 const renderPage = () => <SubspaceHomePage />;
 
 const ChallengeCalloutPage = (props: JourneyCalloutDialogProps) => {
-  const { profile } = useSubSpace();
+  const { profile, level } = useSubSpace();
 
   const getPageRoute = () => profile.url;
 
-  return <CalloutPage parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
+  return <CalloutPage level={level} parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
 };
 
 export default ChallengeCalloutPage;

@@ -18,7 +18,7 @@ import SubspaceTemplateSelector from '@/domain/templates/components/TemplateSele
 import Gutters from '@/core/ui/grid/Gutters';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import FormikVisualUpload from '@/core/ui/upload/FormikVisualUpload/FormikVisualUpload';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { Theme, useMediaQuery } from '@mui/material';
 import { gutters } from '@/core/ui/grid/utils';
 
@@ -81,6 +81,7 @@ export const CreateSubspaceForm = ({
     tags: yup.array().of(yup.string().min(2)).notRequired(),
     collaborationTemplateId: yup.string().nullable(),
   });
+  const level = SpaceLevel.L1;
 
   return (
     <Formik
@@ -95,23 +96,23 @@ export const CreateSubspaceForm = ({
           <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
           <FormikInputField
             name="displayName"
-            title={t('context.subspace.displayName.title')}
-            helperText={t('context.subspace.displayName.description')}
+            title={t(`context.${level}.displayName.title`)}
+            helperText={t(`context.${level}.displayName.description`)}
             disabled={isSubmitting}
             maxLength={SMALL_TEXT_LENGTH}
           />
           <FormikInputField
             name="tagline"
-            title={t('context.subspace.tagline.title')}
-            helperText={t('context.subspace.tagline.description')}
+            title={t(`context.${level}.tagline.title`)}
+            helperText={t(`context.${level}.tagline.description`)}
             disabled={isSubmitting}
             maxLength={SMALL_TEXT_LENGTH}
           />
           <FormikMarkdownField
             name="background"
-            title={t('context.subspace.background.title')}
+            title={t(`context.${level}.background.title`)}
             rows={5}
-            helperText={t('context.subspace.background.description')}
+            helperText={t(`context.${level}.background.description`)}
             disabled={isSubmitting}
             maxLength={MARKDOWN_TEXT_LENGTH}
             temporaryLocation
@@ -119,9 +120,9 @@ export const CreateSubspaceForm = ({
           <TagsetField
             name="tags"
             disabled={isSubmitting}
-            title={t('context.subspace.tags.title')}
-            helperText={t('context.subspace.tags.description')}
-            helpTextIcon={t('context.subspace.tags.tooltip')}
+            title={t(`context.${level}.tags.title`)}
+            helperText={t(`context.${level}.tags.description`)}
+            helpTextIcon={t(`context.${level}.tags.tooltip`)}
           />
           <Gutters padding={theme => `${gutters()(theme)} 0 0 0`}>
             <PageContentBlock sx={{ flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between' }}>

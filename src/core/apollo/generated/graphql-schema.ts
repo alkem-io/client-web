@@ -21963,6 +21963,7 @@ export type AdminSpaceSubspacesPageQuery = {
           subspaces: Array<{
             __typename?: 'Space';
             id: string;
+            level: SpaceLevel;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -22194,6 +22195,7 @@ export type SubspacePendingMembershipInfoQuery = {
           __typename?: 'Space';
           id: string;
           nameID: string;
+          level: SpaceLevel;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -22270,6 +22272,7 @@ export type SubspacePendingMembershipInfoFragment = {
   __typename?: 'Space';
   id: string;
   nameID: string;
+  level: SpaceLevel;
   profile: {
     __typename?: 'Profile';
     id: string;

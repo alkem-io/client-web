@@ -107,7 +107,7 @@ const SubspaceProvider: FC<SubspaceProviderProps> = ({ children }) => {
     <SubspaceContext.Provider
       value={{
         subspace,
-        level: subspace?.level,
+        level: subspace?.level || SpaceLevel.L1,
         subspaceId: journeyId ?? '',
         subspaceNameId,
         communityId,

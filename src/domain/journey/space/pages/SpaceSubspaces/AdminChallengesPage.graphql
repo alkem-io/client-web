@@ -4,6 +4,7 @@ query AdminSpaceSubspacesPage($spaceId: UUID!) {
       id
       subspaces {
         id
+        level
         profile {
           id
           displayName

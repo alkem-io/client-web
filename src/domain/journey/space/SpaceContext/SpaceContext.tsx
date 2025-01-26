@@ -117,13 +117,13 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   let canCreateTemplates = false;
 
   const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
-    variables: { spaceNameId },
-    skip: !spaceNameId || !canAccessTemplatesManager,
+    variables: { spaceId },
+    skip: !spaceId || !canAccessTemplatesManager,
   });
 
   if (canAccessTemplatesManager) {
     canCreateTemplates =
-      templatesManagerData?.space.templatesManager?.templatesSet?.authorization?.myPrivileges?.includes(
+      templatesManagerData?.lookup.space?.templatesManager?.templatesSet?.authorization?.myPrivileges?.includes(
         AuthorizationPrivilege.Create
       ) ?? false;
   }
@@ -174,7 +174,7 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
     <SpaceContext.Provider
       value={{
         spaceId,
-        spaceNameId,
+        spaceNameId: spaceId,
         communityId,
         collaborationId,
         calloutsSetId,

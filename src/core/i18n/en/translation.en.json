@@ -715,7 +715,7 @@
     }
   },
   "context": {
-    "space": {
+    "L0": {
       "tagline": {
         "title": "Tagline",
         "description": "Explain in one sentence what this Space is about.",
@@ -742,7 +742,7 @@
         "placeholder": ""
       }
     },
-    "subspace": {
+    "L1": {
       "displayName": {
         "title": "Title *",
         "description": "",
@@ -787,7 +787,7 @@
         "defaultTemplate": "Default Alkemio template for subspaces"
       }
     },
-    "subsubspace": {
+    "L2": {
       "displayName": {
         "title": "Title",
         "description": "Try to keep it short, descriptive and engaging",

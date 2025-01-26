@@ -35,7 +35,12 @@ import Gutters from '@/core/ui/grid/Gutters';
 import SearchableList, { SearchableListItem } from '@/domain/platform/admin/components/SearchableList';
 import EntityConfirmDeleteDialog from '../SpaceSettings/EntityConfirmDeleteDialog';
 import CreateTemplateDialog from '@/domain/templates/components/Dialogs/CreateEditTemplateDialog/CreateTemplateDialog';
-import { AuthorizationPrivilege, TemplateDefaultType, TemplateType } from '@/core/apollo/generated/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  SpaceLevel,
+  TemplateDefaultType,
+  TemplateType,
+} from '@/core/apollo/generated/graphql-schema';
 import { CollaborationTemplateFormSubmittedValues } from '@/domain/templates/components/Forms/CollaborationTemplateForm';
 import { useCreateCollaborationTemplate } from '@/domain/templates/hooks/useCreateCollaborationTemplate';
 import { useSubspaceCreation } from '@/domain/shared/utils/useSubspaceCreation/useSubspaceCreation';
@@ -61,14 +66,14 @@ export const SubspaceListView = () => {
   });
   const [fetchCollaborationId] = useSpaceCollaborationIdLazyQuery();
 
-  const templateDefaults = data?.space.templatesManager?.templateDefaults;
+  const templateDefaults = data?.lookup.space?.templatesManager?.templateDefaults;
   const defaultSubspaceTemplate = templateDefaults?.find(
     templateDefault => templateDefault.type === TemplateDefaultType.SpaceSubspace
   );
 
   const subspaces = useMemo(() => {
     return (
-      data?.space?.subspaces?.map(s => ({
+      data?.lookup.space?.subspaces?.map(s => ({
         id: s.id,
         profile: {
           displayName: s.profile.displayName,
@@ -77,6 +82,7 @@ export const SubspaceListView = () => {
             uri: s.profile.avatar?.uri ?? '',
           },
         },
+        level: s.level,
       })) || []
     );
   }, [data]);
@@ -164,11 +170,12 @@ export const SubspaceListView = () => {
 
   // check for TemplateCreation privileges
   const { data: templateData } = useSpaceTemplatesSetIdQuery({
-    variables: { spaceNameId },
-    skip: !spaceNameId,
+    variables: { spaceId },
+    skip: !spaceId,
   });
 
-  const templateSetPrivileges = templateData?.space.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
+  const templateSetPrivileges =
+    templateData?.lookup.space?.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
   const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
 
   const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
@@ -222,6 +229,8 @@ export const SubspaceListView = () => {
     </>
   );
 
+  const level = SpaceLevel.L1;
+
   return (
     <>
       <PageContentBlock>
@@ -247,7 +256,7 @@ export const SubspaceListView = () => {
             />
           </>
         ) : (
-          <BlockSectionTitle>{t('context.subspace.template.defaultTemplate')}</BlockSectionTitle>
+          <BlockSectionTitle>{t(`context.${level}.template.defaultTemplate`)}</BlockSectionTitle>
         )}
 
         <Actions justifyContent="end">

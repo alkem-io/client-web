@@ -53,7 +53,7 @@ const useUrlResolver = ({
     variables: { nameId: spaceNameId! },
     skip: !spaceNameId,
   });
-  const spaceId = spaceData?.lookupByName.space;
+  const spaceId = spaceData?.lookupByName.space?.id;
   if (throwIfNotFound && spaceNameId && !spaceLoading && !spaceId) {
     throw new NotFoundError(`Space '${spaceNameId}' not found`);
   }
