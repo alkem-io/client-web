@@ -2033,6 +2033,7 @@ export const DashboardTimelineAuthorizationFragmentDoc = gql`
 export const SpacePageFragmentDoc = gql`
   fragment SpacePage on Space {
     id
+    level
     nameID
     provider {
       ...ContributorDetails
@@ -16518,6 +16519,7 @@ export const SubspacesInSpaceDocument = gql`
               ...VisualUri
             }
           }
+          level
         }
       }
     }

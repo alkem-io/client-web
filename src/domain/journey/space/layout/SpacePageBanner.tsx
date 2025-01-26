@@ -5,7 +5,7 @@ import { Caption, PageTitle, Tagline } from '@/core/ui/typography';
 import ImageBlurredSides from '@/core/ui/image/ImageBlurredSides';
 import { MAX_CONTENT_WIDTH_GUTTERS } from '@/core/ui/grid/constants';
 import { gutters } from '@/core/ui/grid/utils';
-import { SpaceVisibility, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, SpaceVisibility, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useSpace } from '../SpaceContext/useSpace';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { TranslateWithElements } from '@/domain/shared/i18n/TranslateWithElements';
@@ -47,10 +47,11 @@ const TopNotices = styled(Box)(() => ({
 }));
 
 interface PageNoticeProps extends BoxProps {
-  journeyTypeName: JourneyPageBannerProps['journeyTypeName'];
+  level: JourneyPageBannerProps['level'];
+  isAdmin: JourneyPageBannerProps['isAdmin'];
 }
 
-const PageNotice = ({ journeyTypeName, sx, ...boxProps }: PageNoticeProps) => {
+const PageNotice = ({ level, isAdmin, sx, ...boxProps }: PageNoticeProps) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const tLinks = TranslateWithElements(
@@ -60,12 +61,12 @@ const PageNotice = ({ journeyTypeName, sx, ...boxProps }: PageNoticeProps) => {
   const { visibility } = useSpace();
 
   if (visibility === SpaceVisibility.Active) return null;
-  if (journeyTypeName === 'admin') return null;
+  if (isAdmin) return null;
 
   let message: ReactNode = undefined;
 
-  switch (journeyTypeName) {
-    case 'space': {
+  switch (level) {
+    case SpaceLevel.L0: {
       if (visibility === SpaceVisibility.Archived) {
         message = tLinks('pages.generic.archived-notice.archived-space', {
           contact: { href: locations?.feedback, target: '_blank' },
@@ -85,7 +86,7 @@ const PageNotice = ({ journeyTypeName, sx, ...boxProps }: PageNoticeProps) => {
           {
             contact: { href: locations?.feedback, target: '_blank' },
           },
-          { journey: t(`common.${journeyTypeName}` as const) }
+          { journey: t(`common.space-level.${level || SpaceLevel.L0}`) }
         );
       }
       if (visibility === SpaceVisibility.Demo) {
@@ -94,7 +95,7 @@ const PageNotice = ({ journeyTypeName, sx, ...boxProps }: PageNoticeProps) => {
           {
             alkemio: { href: '/', target: '_blank' },
           },
-          { journey: t(`common.${journeyTypeName}` as const) }
+          { journey: t(`common.space-level.${level || SpaceLevel.L0}`) }
         );
       }
       break;
@@ -133,6 +134,8 @@ export interface JourneyPageBannerProps extends BasePageBannerProps {
   bannerAltText?: string;
   ribbon?: ReactNode;
   loading?: boolean;
+  level?: SpaceLevel;
+  isAdmin?: boolean;
 }
 
 const SpacePageBanner = ({
@@ -141,6 +144,8 @@ const SpacePageBanner = ({
   bannerUrl,
   bannerAltText,
   ribbon,
+  level,
+  isAdmin,
   loading: dataLoading = false,
   watermark,
 }: JourneyPageBannerProps) => {
@@ -160,7 +165,7 @@ const SpacePageBanner = ({
       {!dataLoading && (
         <>
           <TopNotices>
-            <PageNotice journeyTypeName={journeyTypeName} />
+            <PageNotice level={level} isAdmin={isAdmin} />
           </TopNotices>
           <Box>
             <ImageBlurredSides

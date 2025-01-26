@@ -24,7 +24,7 @@ import CardParentJourneySegment from '@/domain/journey/common/SpaceChildJourneyC
 import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
 import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import SearchBaseJourneyCard from '@/domain/shared/components/search-cards/base/SearchBaseJourneyCard';
-import { spaceIconByLevel } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
+import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
 
 const hydrateUserCard = (data: TypedSearchResult<SearchResultType.User, SearchResultUserFragment>) => {
   const user = data.user;

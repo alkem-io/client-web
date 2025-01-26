@@ -2,7 +2,7 @@ import { ReactElement, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
-import { spaceIconByLevel } from '../JourneyIcon/JourneyIcon';
+import { spaceIconByLevel } from '../SpaceIcon/SpaceIcon';
 import RouterLink from '@/core/ui/link/RouterLink';
 import { RoleSetContributorType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
@@ -77,27 +77,13 @@ const DetailedActivityDescription = ({
       mergedComponents['journeyicon'] = <JourneyIcon fontSize="inherit" />;
     }
 
-    if (journeyTypeName) {
-      mergedValues['journeyType'] = t(`common.${journeyTypeName}` as const);
-    }
-
     mergedComponents['parentlink'] = journeyUrl ? <RouterLink to={journeyUrl} /> : <span />;
 
     return {
       values: mergedValues,
       components: mergedComponents,
     };
-  }, [
-    createdDate,
-    t,
-    author,
-    author?.displayName,
-    author?.url,
-    journeyDisplayName,
-    journeyTypeName,
-    journeyUrl,
-    i18nKey,
-  ]);
+  }, [createdDate, t, author, author?.displayName, author?.url, journeyDisplayName, spaceLevel, journeyUrl, i18nKey]);
 
   return (
     <>

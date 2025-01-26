@@ -29,6 +29,7 @@ query SpaceDashboardReferences($spaceId: UUID!) {
 
 fragment SpacePage on Space {
   id
+  level
   nameID
   provider {
     ...ContributorDetails

@@ -367,7 +367,7 @@
       "male": "Чоловіча",
       "female": "Жіноча"
     },
-    "journeyTypes": {
+    "spaceTypes": {
       "space": "$t(common.space)",
       "space_plural": "$t(common.spaces)",
       "subspace": "$t(common.subspace)",
@@ -1215,8 +1215,8 @@
     "activity-log-section": {
       "title": "Recent Contributions",
       "activity-sign-in-error-message": "To see the recent contributions, please sign in.",
-      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{journeyType}}.",
-      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{journeyType}}."
+      "activity-join-error-message": "To see the recent contributions, please join if you are not yet a member of this {{spaceType}}.",
+      "activity-sign-in-and-join-error-message": "To see the recent contributions, please sign in and join if you are not yet a member of this {{spaceType}}."
     },
     "activityLogView": {
       "description": {
@@ -2526,8 +2526,8 @@
       "readonlyReason": {
         "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
         "contentUpdatePolicy": "You don't have the rights to edit this whiteboard. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the settings if you want to contribute.",
-        "noMembership": "You have to be a member of the {{journeyType}} this whiteboard is in, to be able to edit. Click here to <journeylink>join/apply</journeylink>",
-        "unauthenticated": "You have to be signed in and a member of the {{journeyType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
+        "noMembership": "You have to be a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <journeylink>join/apply</journeylink>",
+        "unauthenticated": "You have to be signed in and a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       },
       "readonlyDialog": {
         "title": "View only mode",

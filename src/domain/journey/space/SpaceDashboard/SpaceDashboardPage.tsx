@@ -50,7 +50,7 @@ const SpaceDashboardPage = ({
               leadUsers={entities.space?.community?.roleSet?.leadUsers ?? []}
               host={entities.provider}
               callouts={callouts}
-              journeyTypeName="space"
+              level={entities.space?.level}
               myMembershipStatus={entities.space?.community?.roleSet?.myMembershipStatus}
               shareUpdatesUrl={buildUpdatesUrl(entities.space?.profile.url ?? '')}
             />

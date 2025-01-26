@@ -1,10 +1,10 @@
 import CalloutPage from '@/domain/collaboration/CalloutPage/CalloutPage';
 import SpaceDashboardPage from '../SpaceDashboard/SpaceDashboardPage';
 import SpaceSubspacesPage from '../pages/SpaceSubspacesPage';
-import KnowedgeBasePage from '@/domain/collaboration/KnowledgeBase/KnowedgeBasePage';
+import KnowledgeBasePage from '@/domain/collaboration/KnowledgeBase/KnowledgeBasePage';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { JourneyCalloutDialogProps } from '@/domain/journey/common/JourneyCalloutDialog/JourneyCalloutDialog';
-import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
+import { CalloutGroupName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 import { useSpace } from '../SpaceContext/useSpace';
 
@@ -30,7 +30,7 @@ const renderPage = (calloutGroup: string | undefined) => {
     case CalloutGroupName.Community:
       return <SpaceCommunityPage />;
     default:
-      return <KnowedgeBasePage />;
+      return <KnowledgeBasePage />;
   }
 };
 
@@ -41,7 +41,7 @@ const SpaceCalloutPage = (props: JourneyCalloutDialogProps) => {
     return `${profile.url}/${getPageSection(calloutGroup)}`;
   };
 
-  return <CalloutPage journeyTypeName="space" parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
+  return <CalloutPage level={SpaceLevel.L0} parentRoute={getPageRoute} renderPage={renderPage} {...props} />;
 };
 
 export default SpaceCalloutPage;

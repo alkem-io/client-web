@@ -27,7 +27,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const notify = useNotification();
 
   const { spaceId, roleSetId } = useSpace();
-  const { spaceLevel } = useRouteResolver();
+  const { level: spaceLevel } = useRouteResolver();
 
   const { virtualContributors } = useRoleSetAdmin({
     roleSetId,

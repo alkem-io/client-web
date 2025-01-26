@@ -52,7 +52,6 @@ const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) =
               callouts={callouts}
               canCreateCallout={canCreateCallout}
               loading={loading}
-              journeyTypeName="space"
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}
               groupName={CalloutGroupName.Knowledge}

@@ -7,12 +7,12 @@ import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 const DashboardMemberIcon = ({ level }: { level: SpaceLevel }) => {
   const { t } = useTranslation();
 
-  const translatedJourneyTypeName = t(`common.space-level.${level}` as const);
+  const translatedSpaceLevel = t(`common.space-level.${level}` as const);
 
   return (
     <Tooltip
       arrow
-      title={<Caption>{t('pages.generic.sections.dashboard.memberOf', { entity: translatedJourneyTypeName })}</Caption>}
+      title={<Caption>{t('pages.generic.sections.dashboard.memberOf', { entity: translatedSpaceLevel })}</Caption>}
       placement="left"
     >
       <Box paddingLeft={0.5} paddingBottom={1} sx={{ float: 'right' }}>

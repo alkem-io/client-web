@@ -367,7 +367,7 @@
       "male": "masculino",
       "female": "feminino"
     },
-    "journeyTypes": {
+    "spaceTypes": {
       "space": "$t(common.space)",
       "space_plural": "$t(common.spaces)",
       "subspace": "$t(common.subspace)",
@@ -1215,8 +1215,8 @@
     "activity-log-section": {
       "title": "Contribuições Recentes",
       "activity-sign-in-error-message": "Para ver as contribuições recentes, faça login.",
-      "activity-join-error-message": "Para ver as recentes contribuições, junte-se se você ainda não é um membro deste {{journeyType}}.",
-      "activity-sign-in-and-join-error-message": "Para ver as recentes contribuições, por favor entre e junte-se se você ainda não é um membro deste {{journeyType}}."
+      "activity-join-error-message": "Para ver as recentes contribuições, junte-se se você ainda não é um membro deste {{spaceType}}.",
+      "activity-sign-in-and-join-error-message": "Para ver as recentes contribuições, por favor entre e junte-se se você ainda não é um membro deste {{spaceType}}."
     },
     "activityLogView": {
       "description": {
@@ -2526,8 +2526,8 @@
       "readonlyReason": {
         "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
         "contentUpdatePolicy": "You don't have the rights to edit this whiteboard. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the settings if you want to contribute.",
-        "noMembership": "You have to be a member of the {{journeyType}} this whiteboard is in, to be able to edit. Click here to <journeylink>join/apply</journeylink>",
-        "unauthenticated": "You have to be signed in and a member of the {{journeyType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
+        "noMembership": "You have to be a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <journeylink>join/apply</journeylink>",
+        "unauthenticated": "You have to be signed in and a member of the {{spaceType}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
       },
       "readonlyDialog": {
         "title": "View only mode",

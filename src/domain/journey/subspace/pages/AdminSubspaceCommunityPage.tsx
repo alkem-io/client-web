@@ -40,7 +40,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
 
   const [communityGuidelinesTemplatesDialogOpen, setCommunityGuidelinesTemplatesDialogOpen] = useState(false);
 
-  const { spaceId, spaceLevel } = useRouteResolver();
+  const { spaceId, level: spaceLevel } = useRouteResolver();
 
   const {
     users,

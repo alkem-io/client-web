@@ -60,6 +60,7 @@ export const OpportunityList: FC = () => {
           uri: s.profile.cardBanner?.uri ?? '',
         },
       },
+      level: s.level,
     })) || [];
 
   const [deleteOpportunity] = useDeleteSpaceMutation({
@@ -122,11 +123,12 @@ export const OpportunityList: FC = () => {
 
   // check for TemplateCreation privileges
   const { data: templateData } = useSpaceTemplatesSetIdQuery({
-    variables: { spaceNameId },
+    variables: { spaceId },
     skip: !spaceNameId,
   });
 
-  const templateSetPrivileges = templateData?.space.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
+  const templateSetPrivileges =
+    templateData?.lookup.space?.templatesManager?.templatesSet?.authorization?.myPrivileges ?? [];
   const canCreateTemplate = templateSetPrivileges?.includes(AuthorizationPrivilege.Create);
 
   const { handleCreateCollaborationTemplate } = useCreateCollaborationTemplate();
@@ -199,7 +201,7 @@ export const OpportunityList: FC = () => {
           {t('buttons.create')}
         </Button>
         <Gutters disablePadding>
-          <SearchableList data={subsubspaces} getActions={getActions} journeyTypeName="subsubspace" />
+          <SearchableList data={subsubspaces} getActions={getActions} />
         </Gutters>
       </Box>
       <JourneyCreationDialog

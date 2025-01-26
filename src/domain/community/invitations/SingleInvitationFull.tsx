@@ -17,7 +17,7 @@ import References from '@/domain/shared/components/References/References';
 import { gutters } from '@/core/ui/grid/utils';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import { Actions } from '@/core/ui/actions/Actions';
-import { spaceIconByLevel } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
+import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
 
 type SingleInvitationFullProps = {
   invitation: InvitationItem | undefined;

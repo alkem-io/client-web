@@ -82,7 +82,6 @@ const WhiteboardDialogFooter = ({
   } else if (pathname.includes('challenges')) {
     spaceLevel = SpaceLevel.L1;
   }
-  const journeyTypeName = spaceLevel === SpaceLevel.L0 ? 'space' : 'subspace';
 
   const getMyMembershipStatus = () => {
     switch (spaceLevel) {
@@ -178,7 +177,7 @@ const WhiteboardDialogFooter = ({
             <Trans
               i18nKey={`pages.whiteboard.readonlyReason.${readonlyReason}` as const}
               values={{
-                journeyType: t(`common.${journeyTypeName}` as const),
+                spaceLevel: t(`common.space-level.${spaceLevel}`),
                 ownerName: createdBy?.profile.displayName,
               }}
               components={{

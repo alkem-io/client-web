@@ -26,7 +26,7 @@ const SubspaceSettingsLayout: FC<SubspaceSettingsLayoutProps> = props => {
 
   const { t } = useTranslation();
 
-  const { journeyId, journeyPath, spaceLevel } = useRouteResolver();
+  const { journeyId, journeyPath, level: spaceLevel } = useRouteResolver();
 
   const tabs = useMemo(() => {
     const tabs: TabDefinition<SettingsSection>[] = [

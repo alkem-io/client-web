@@ -25,7 +25,7 @@ import OpportunityMetrics from '@/domain/journey/opportunity/utils/useOpportunit
 import { Theme } from '@mui/material/styles';
 import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import { spaceIconByLevel } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
+import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
 import References from '@/domain/shared/components/References/References';
 import { Reference, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -154,7 +154,7 @@ const JourneyAboutDialog = ({
     dialogTitle: t('send-message-dialog.direct-message-title'),
   });
 
-  const journeyTypeName = getSpaceLabel(spaceLevel);
+  const spaceType = t(`common.space-level.${spaceLevel}`);
 
   return (
     <DialogWithGrid
@@ -202,19 +202,19 @@ const JourneyAboutDialog = ({
             )}
             {background && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t(`context.${journeyTypeName}.background.title` as const)} />
+                <PageContentBlockHeader title={t(`context.${spaceType}.background.title` as const)} />
                 <WrapperMarkdown>{background}</WrapperMarkdown>
               </PageContentBlock>
             )}
             {impact && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t(`context.${journeyTypeName}.impact.title` as const)} />
+                <PageContentBlockHeader title={t(`context.${spaceType}.impact.title` as const)} />
                 <WrapperMarkdown>{impact}</WrapperMarkdown>
               </PageContentBlock>
             )}
             {who && (
               <PageContentBlock>
-                <PageContentBlockHeader title={t(`context.${journeyTypeName}.who.title` as const)} />
+                <PageContentBlockHeader title={t(`context.${spaceType}.who.title` as const)} />
                 <WrapperMarkdown>{who}</WrapperMarkdown>
               </PageContentBlock>
             )}
@@ -225,7 +225,7 @@ const JourneyAboutDialog = ({
               {leftColumnChildrenTop}
               <PageContentBlock>
                 <PageContentBlockHeader
-                  title={t('components.journeyMetrics.title', { journey: t(`common.${journeyTypeName}` as const) })}
+                  title={t('components.journeyMetrics.title', { journey: t(`common.${spaceType}` as const) })}
                 />
                 <ActivityView activity={metricsItems} loading={loading} />
               </PageContentBlock>

@@ -24,6 +24,7 @@ import InfoColumn from '@/core/ui/content/InfoColumn';
 import ContentColumn from '@/core/ui/content/ContentColumn';
 import SearchField from '@/core/ui/search/SearchField';
 import defaultSubspaceAvatar from '@/domain/journey/defaultVisuals/Card.jpg';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export interface JourneySubentitiesState {
   loading: boolean;
@@ -44,6 +45,7 @@ export interface ChildJourneyViewProps<ChildEntity extends BaseChildEntity> {
   childEntities: ChildEntity[] | undefined;
   childEntitiesIcon: ReactElement;
   childEntityReadAccess?: boolean;
+  level: SpaceLevel;
   renderChildEntityCard?: (childEntity: ChildEntity) => ReactElement;
   childEntityValueGetter: (childEntity: ChildEntity) => ValueType;
   childEntityTagsGetter: (childEntity: ChildEntity) => string[];
@@ -56,10 +58,10 @@ export interface ChildJourneyViewProps<ChildEntity extends BaseChildEntity> {
 }
 
 const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
-  journeyTypeName,
   childEntities = [],
   childEntitiesIcon,
   childEntityReadAccess,
+  level,
   renderChildEntityCard,
   childEntityValueGetter,
   childEntityTagsGetter,
@@ -90,11 +92,11 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
   );
 
   return (
-    <MembershipBackdrop show={!childEntityReadAccess} blockName={getJourneyChildrenTranslation(t, journeyTypeName)}>
+    <MembershipBackdrop show={!childEntityReadAccess} blockName={t(`common.space-level.${level}`)}>
       <PageContent>
         <InfoColumn>
           <ChildJourneyCreate
-            journeyTypeName={journeyTypeName}
+            level={level}
             canCreateSubentity={childEntityCreateAccess}
             onCreateSubentity={childEntityOnCreate}
           />
@@ -119,8 +121,8 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
             <PageContentBlockSeamless>
               <Caption textAlign="center">
                 {t('pages.generic.sections.subEntities.empty', {
-                  entities: getJourneyChildrenTranslation(t, journeyTypeName),
-                  parentEntity: t(`common.${journeyTypeName}` as const),
+                  entities: t(`common.space-level.${level}`),
+                  parentEntity: t(`common.space-level.${level}`),
                 })}
               </Caption>
             </PageContentBlockSeamless>
@@ -133,7 +135,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
                   valueGetter={childEntityValueGetter}
                   tagsGetter={childEntityTagsGetter}
                   title={t('common.entitiesWithCount', {
-                    entityType: getJourneyChildrenTranslation(t, journeyTypeName),
+                    entityType: t(`common.space-level.${level}`),
                     count: childEntities.length,
                   })}
                 >
@@ -163,11 +165,11 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
               onClick={childEntityOnCreate}
               sx={{ width: '100%' }}
             >
-              {t('common.create-new-entity', { entity: getJourneyChildrenTranslation(t, journeyTypeName, 1) })}
+              {t('common.create-new-entity', { entity: t(`common.space-level.${level}`) })}
             </Button>
           )}
           {children}
-          {state.error && <ErrorBlock blockName={t(`common.${journeyTypeName}` as const)} />}
+          {state.error && <ErrorBlock blockName={t(`common.space-level.${level}`)} />}
         </ContentColumn>
       </PageContent>
     </MembershipBackdrop>

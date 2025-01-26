@@ -367,7 +367,7 @@
       "male": "man",
       "female": "vrouw"
     },
-    "journeyTypes": {
+    "spaceTypes": {
       "space": "$t(common.space)",
       "space_plural": "$t(common.spaces)",
       "subspace": "$t(common.subspace)",
@@ -1215,8 +1215,8 @@
     "activity-log-section": {
       "title": "Recente bijdragen",
       "activity-sign-in-error-message": "Meld u aan om recente bijdragen te zien.",
-      "activity-join-error-message": "Om recente bijdragen te zien, kunt u zich aansluiten als u nog geen lid bent van deze {{journeyType}}.",
-      "activity-sign-in-and-join-error-message": "Log in of meld je aan om de recente bijdragen te zien als je nog geen lid bent van deze {{journeyType}}."
+      "activity-join-error-message": "Om recente bijdragen te zien, kunt u zich aansluiten als u nog geen lid bent van deze {{spaceType}}.",
+      "activity-sign-in-and-join-error-message": "Log in of meld je aan om de recente bijdragen te zien als je nog geen lid bent van deze {{spaceType}}."
     },
     "activityLogView": {
       "description": {
@@ -2526,8 +2526,8 @@
       "readonlyReason": {
         "readonly": "<strong>Alleen bekijken modus</strong> <learnwhy>lees hier waarom</learnwhy>",
         "contentUpdatePolicy": "Je hebt geen rechten om dit whiteboard te bewerken. Vraag de beheerder, <ownerlink>{{ownerName}}</ownerlink>, om de instellingen te wijzigen als je wilt bijdragen.",
-        "noMembership": "Je moet lid zijn van {{journeyType}} om dit whiteboard te kunnen bewerken. <journeylink>Klik hier om je aan te melden</journeylink>",
-        "unauthenticated": "Om te kunnen bewerken dien je ingelogd en een lid van de {{journeyType}} te zijn. Klik hier om <signinlink>in te loggen</signinlink>"
+        "noMembership": "Je moet lid zijn van {{spaceType}} om dit whiteboard te kunnen bewerken. <journeylink>Klik hier om je aan te melden</journeylink>",
+        "unauthenticated": "Om te kunnen bewerken dien je ingelogd en een lid van de {{spaceType}} te zijn. Klik hier om <signinlink>in te loggen</signinlink>"
       },
       "readonlyDialog": {
         "title": "Alleen bekijken modus",

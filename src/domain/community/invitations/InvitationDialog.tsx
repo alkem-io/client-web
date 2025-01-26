@@ -4,7 +4,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
 import { CheckOutlined, HdrStrongOutlined } from '@mui/icons-material';
 import JourneyCard from '@/domain/journey/common/JourneyCard/JourneyCard';
-import { spaceIconByLevel } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
+import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
 import JourneyCardTagline from '@/domain/journey/common/JourneyCard/JourneyCardTagline';
 import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';

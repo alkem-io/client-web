@@ -20,7 +20,7 @@ const useInnovationHubJourneyBannerRibbon = ({ spaceId }: UseInnovationHubJourne
   }
 
   // TODO: remove
-  const journeyTypeName = 'space';
+  const spaceType = t('common.space');
 
   return (
     <PageContentRibbon>
@@ -28,7 +28,7 @@ const useInnovationHubJourneyBannerRibbon = ({ spaceId }: UseInnovationHubJourne
         t={t}
         i18nKey="innovationHub.foreignJourney"
         values={{
-          journey: t(`common.${journeyTypeName}` as const),
+          journey: spaceType,
           space: innovationHub?.profile?.displayName,
         }}
         components={{ strong: <strong /> }}

@@ -20,5 +20,3 @@ export const spaceLevelIcon: Record<SpaceLevel, ComponentType<SvgIconProps>> = {
   // [SpaceType.BlankSlate]: SpaceIcon,
   // [SpaceType.Knowledge]: SpaceIcon,
 };
-
-export default spaceIcon;

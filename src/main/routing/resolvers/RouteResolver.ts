@@ -19,7 +19,7 @@ interface JourneyRouteParams {
   journeyId: string | undefined;
   parentSpaceId?: string;
   journeyPath: JourneyPath;
-  spaceLevel: SpaceLevel;
+  level: SpaceLevel;
   /**
    * @deprecated
    * use journeyId or journeyPath instead
@@ -167,7 +167,7 @@ export const useRouteResolver = ({ failOnNotFound = true }: RouteResolverOptions
     journeyId: spaceId,
     parentSpaceId: getParentSpaceId(),
 
-    spaceLevel,
+    level: spaceLevel,
     collaborationId,
     calloutsSetId,
     journeyPath,

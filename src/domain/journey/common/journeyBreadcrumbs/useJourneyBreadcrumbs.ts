@@ -31,7 +31,11 @@ export const useJourneyBreadcrumbs = ({ journeyPath, loading = false }: UseJourn
     skip: !journeyPath || journeyPath.length === 0 || loading,
   });
 
-  const journeyProfiles = [data?.space.profile, data?.space.subspace?.profile, data?.space.subspace?.subspace?.profile];
+  const journeyProfiles = [
+    data?.lookupByName.space?.profile,
+    data?.lookupByName.space?.subspaceByNameID?.profile,
+    data?.lookupByName.space?.subspaceByNameID?.subspaceByNameID?.profile,
+  ];
 
   const breadcrumbs = useMemo<BreadcrumbsItem[]>(() => {
     if (isLoadingBreadcrumbs) {
@@ -44,7 +48,6 @@ export const useJourneyBreadcrumbs = ({ journeyPath, loading = false }: UseJourn
       return {
         displayName,
         uri: journeyUri,
-        // journeyTypeName: JOURNEY_NESTING[journey],
         avatar: profile?.avatar,
       };
     });

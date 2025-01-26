@@ -6,8 +6,7 @@ import GridItem from '@/core/ui/grid/GridItem';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
 import { Location } from '@/core/ui/location/getLocationString';
 import { useEffect, useState } from 'react';
-import { ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
-import { useLocation } from 'react-router-dom';
+import { ContentUpdatePolicy, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 type WhiteboardShareSettingsProps = {
   createdBy:
@@ -23,6 +22,7 @@ type WhiteboardShareSettingsProps = {
       }
     | undefined;
   value: ContentUpdatePolicy | undefined;
+  level: SpaceLevel;
   onChange?: (contentUpdatePolicy: ContentUpdatePolicy) => void;
   loading?: boolean;
   updating?: boolean;
@@ -33,15 +33,12 @@ const OPTIONS = [ContentUpdatePolicy.Contributors, ContentUpdatePolicy.Admins, C
 const WhiteboardShareSettings = ({
   createdBy,
   value,
+  level,
   onChange,
   loading = false,
   updating = false,
 }: WhiteboardShareSettingsProps) => {
   const { t } = useTranslation();
-
-  // TODO: remove this + review the usage in the translation file below
-  const isL0Space = !useLocation().pathname.includes('challenges');
-  const journeyTypeName = isL0Space ? 'space' : 'subspace';
 
   const [shareSettings, setShareSettings] = useState(value);
 
@@ -86,7 +83,7 @@ const WhiteboardShareSettings = ({
                     label={
                       <Caption>
                         {t(`components.shareSettings.editableBy.options.${option}` as const, {
-                          journey: t(`common.${journeyTypeName}` as const),
+                          journey: t(`common.space-level.${level}`),
                         })}
                       </Caption>
                     }

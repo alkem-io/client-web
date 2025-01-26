@@ -367,7 +367,7 @@
       "male": "crwdns8628:0crwdne8628:0",
       "female": "crwdns8630:0crwdne8630:0"
     },
-    "journeyTypes": {
+    "spaceTypes": {
       "space": "crwdns8632:0$t(common.space)crwdne8632:0",
       "space_plural": "crwdns8634:0$t(common.spaces)crwdne8634:0",
       "subspace": "crwdns11554:0$t(common.subspace)crwdne11554:0",
@@ -1215,8 +1215,8 @@
     "activity-log-section": {
       "title": "crwdns9414:0crwdne9414:0",
       "activity-sign-in-error-message": "crwdns9416:0crwdne9416:0",
-      "activity-join-error-message": "crwdns9418:0{{journeyType}}crwdne9418:0",
-      "activity-sign-in-and-join-error-message": "crwdns9420:0{{journeyType}}crwdne9420:0"
+      "activity-join-error-message": "crwdns9418:0{{spaceType}}crwdne9418:0",
+      "activity-sign-in-and-join-error-message": "crwdns9420:0{{spaceType}}crwdne9420:0"
     },
     "activityLogView": {
       "description": {
@@ -2535,8 +2535,8 @@
       "readonlyReason": {
         "readonly": "crwdns11340:0crwdne11340:0",
         "contentUpdatePolicy": "crwdns11456:0{{ownerName}}crwdne11456:0",
-        "noMembership": "crwdns11182:0{{journeyType}}crwdne11182:0",
-        "unauthenticated": "crwdns11184:0{{journeyType}}crwdne11184:0"
+        "noMembership": "crwdns11182:0{{spaceType}}crwdne11182:0",
+        "unauthenticated": "crwdns11184:0{{spaceType}}crwdne11184:0"
       },
       "readonlyDialog": {
         "title": "crwdns11342:0crwdne11342:0",

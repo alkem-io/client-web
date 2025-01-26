@@ -26,7 +26,7 @@ const SubspaceAboutPage = () => {
 
   const { t } = useTranslation();
 
-  const { journeyId, spaceLevel } = useRouteResolver();
+  const { journeyId, level: spaceLevel } = useRouteResolver();
 
   return (
     <>

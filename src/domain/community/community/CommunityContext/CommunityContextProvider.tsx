@@ -5,6 +5,7 @@ import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
 import { useSubSpace } from '@/domain/journey/subspace/hooks/useSubSpace';
 import { useOpportunity } from '@/domain/journey/opportunity/hooks/useOpportunity';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 /**
  * @deprecated
@@ -14,7 +15,7 @@ import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
  * @constructor
  */
 const CommunityContextProvider: FC = ({ children }) => {
-  const { spaceId, subSpaceId: challengeId, subSubSpaceId: opportunityId, journeyTypeName } = useRouteResolver();
+  const { spaceId, subSpaceId: challengeId, subSubSpaceId: opportunityId, level: spaceLevel } = useRouteResolver();
 
   const { permissions: spacePermissions } = useSpace();
   const { permissions: challengePermissions } = useSubSpace();
@@ -23,7 +24,7 @@ const CommunityContextProvider: FC = ({ children }) => {
   const { data: spaceData, loading: isLoadingSpace } = useSpaceCommunityQuery({
     variables: { spaceId: spaceId!, includeDetails: spacePermissions.communityReadAccess },
     errorPolicy: 'all',
-    skip: journeyTypeName !== 'space' || !spaceId,
+    skip: spaceLevel !== SpaceLevel.L0 || !spaceId,
   });
 
   const { data: challengeData, loading: isLoadingChallenge } = useSpaceCommunityQuery({
@@ -32,7 +33,7 @@ const CommunityContextProvider: FC = ({ children }) => {
       includeDetails: challengePermissions.canReadCommunity,
     },
     errorPolicy: 'all',
-    skip: journeyTypeName !== 'subspace' || !challengeId,
+    skip: spaceLevel !== SpaceLevel.L1 || !challengeId,
   });
 
   const { data: opportunityData, loading: isLoadingOpportunity } = useSpaceCommunityQuery({
@@ -41,7 +42,7 @@ const CommunityContextProvider: FC = ({ children }) => {
       includeDetails: opportunityPermissions.communityReadAccess,
     },
     errorPolicy: 'all',
-    skip: journeyTypeName !== 'subsubspace' || !opportunityId,
+    skip: spaceLevel !== SpaceLevel.L2 || !opportunityId,
   });
 
   const community =

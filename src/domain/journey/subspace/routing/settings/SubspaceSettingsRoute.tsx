@@ -5,7 +5,7 @@ import { OpportunityProvider } from '@/domain/journey/opportunity/context/Opport
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 const SubspaceSettingsRoute = () => {
-  const { spaceLevel } = useRouteResolver();
+  const { level: spaceLevel } = useRouteResolver();
 
   switch (spaceLevel) {
     case SpaceLevel.L1:

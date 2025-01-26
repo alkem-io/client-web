@@ -16,7 +16,6 @@ import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { BlockSectionTitle } from '@/core/ui/typography';
 import Gutters from '@/core/ui/grid/Gutters';
 import { DEFAULT_TAGSET } from '../tags/tagset.constants';
-import { useLocation } from 'react-router-dom';
 
 export interface ProfileFormValues {
   name: string;
@@ -62,10 +61,6 @@ const ProfileForm = ({
     ] as Tagset[];
   }, [tagset]);
 
-  // TODO: remove this + review the usage in the translation file below
-  const { pathname } = useLocation();
-  const journeyType = pathname.includes('challenges') ? 'subspace' : 'space';
-
   const initialValues: ProfileFormValues = {
     name: name || '',
     nameID: nameID || '',
@@ -84,6 +79,9 @@ const ProfileForm = ({
   });
 
   let isSubmitWired = false;
+
+  // TODO: why does the spaceType get used here?
+  const spaceType = 'space';
 
   return (
     <Formik
@@ -112,7 +110,7 @@ const ProfileForm = ({
             />
             <FormikInputField
               name={'tagline'}
-              title={t(`context.${journeyType}.tagline.title` as const)}
+              title={t(`context.${spaceType}.tagline.title` as const)}
               rows={3}
               maxLength={SMALL_TEXT_LENGTH}
             />

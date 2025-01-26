@@ -67,7 +67,6 @@ const SpaceSubspacesPage = () => {
             childEntityReadAccess={permissions.canReadSubspaces}
             childEntityValueGetter={journeyCardValueGetter}
             childEntityTagsGetter={journeyCardTagsGetter}
-            journeyTypeName="space"
             state={{ loading: state.loading, error: state.error }}
             renderChildEntityCard={item => (
               <SubspaceCard
@@ -101,7 +100,6 @@ const SpaceSubspacesPage = () => {
                 callouts={callouts.groupedCallouts[CalloutGroupName.Subspaces]}
                 canCreateCallout={callouts.canCreateCallout}
                 loading={callouts.loading}
-                journeyTypeName="space"
                 onSortOrderUpdate={callouts.onCalloutsSortOrderUpdate}
                 onCalloutUpdate={callouts.refetchCallout}
                 groupName={CalloutGroupName.Subspaces}

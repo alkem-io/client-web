@@ -12,6 +12,7 @@ query SubspacesInSpace($spaceId: UUID!) {
             ...VisualUri
           }
         }
+        level
       }
     }
   }

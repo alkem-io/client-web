@@ -1,7 +1,7 @@
 import React, { ReactElement, ReactNode, useMemo } from 'react';
 import { useCalloutPageCalloutQuery } from '@/core/apollo/generated/apollo-hooks';
 import CalloutView from '../callout/CalloutView/CalloutView';
-import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalloutVisibility, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useCalloutEdit } from '../callout/edit/useCalloutEdit/useCalloutEdit';
 import { TypedCalloutDetails } from '../calloutsSet/useCallouts/useCallouts';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -30,6 +30,7 @@ type CalloutLocation = {
 export interface CalloutPageProps {
   renderPage: (calloutGroupName?: string) => ReactElement;
   parentRoute: string | ((calloutGroup: string | undefined) => string);
+  level: SpaceLevel;
   children?: (props: CalloutLocation) => ReactNode;
 }
 

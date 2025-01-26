@@ -38,6 +38,7 @@ import TryVirtualContributorDialog from '@/main/topLevelPages/myDashboard/newVir
 
 type SpaceDashboardViewProps = {
   spaceId: string | undefined;
+  level: SpaceLevel | undefined;
   collaborationId: string | undefined;
   calloutsSetId: string | undefined;
   dashboardNavigation: DashboardNavigationItem | undefined;
@@ -68,6 +69,7 @@ type SpaceDashboardViewProps = {
 
 const SpaceDashboardView = ({
   spaceId,
+  level,
   collaborationId,
   calloutsSetId,
   vision = '',
@@ -87,10 +89,9 @@ const SpaceDashboardView = ({
   const [tryVirtualContributorOpen, setTryVirtualContributorOpen] = useState(false);
   const [vcId, setVcId] = useState<string>('');
 
-  const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
+  const translatedSpaceLevel = t(`common.space-level.${level || SpaceLevel.L0}`);
 
-  // TODO: fix me
-  const translatedJourneyTypeName = ''; //t(`common.${journeyTypeName}` as const);
+  const hasExtendedApplicationButton = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
   const { sendMessage, directMessageDialog } = useDirectMessageDialog({
     dialogTitle: t('send-message-dialog.direct-message-title'),
@@ -133,7 +134,7 @@ const SpaceDashboardView = ({
                   component={FullWidthButton}
                   extended={hasExtendedApplicationButton}
                   journeyId={spaceId}
-                  spaceLevel={SpaceLevel.L0}
+                  spaceLevel={level}
                 />
               </PageContentColumn>
             );
@@ -147,7 +148,7 @@ const SpaceDashboardView = ({
               onContactLeadUser={receiver => sendMessage('user', receiver)}
               leadOrganizations={welcomeBlockContributors}
               onContactLeadOrganization={receiver => sendMessage('organization', receiver)}
-              level="space"
+              level={level}
               member={myMembershipStatus === CommunityMembershipStatus.Member}
             />
           </PageContentBlock>
@@ -157,14 +158,14 @@ const SpaceDashboardView = ({
             to={EntityPageSection.About}
             variant="contained"
           >
-            {t('common.aboutThis', { entity: translatedJourneyTypeName })}
+            {t('common.aboutThis', { entity: translatedSpaceLevel })}
           </FullWidthButton>
           <DashboardNavigation
             currentItemId={spaceId}
             dashboardNavigation={dashboardNavigation}
             loading={dashboardNavigationLoading}
           />
-          {timelineReadAccess && <DashboardCalendarSection journeyId={spaceId} />}
+          {timelineReadAccess && <DashboardCalendarSection journeyId={spaceId} level={level} />}
           {communityReadAccess && <DashboardUpdatesSection communityId={communityId} shareUrl={shareUpdatesUrl} />}
         </InfoColumn>
 

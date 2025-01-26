@@ -34,7 +34,6 @@ const SpacePageLayout = ({
 
   const ribbon = useInnovationHubJourneyBannerRibbon({
     spaceId,
-    journeyTypeName: 'space',
   });
 
   const spaceReadAccess = useCanReadSpace({ spaceId });
@@ -51,7 +50,6 @@ const SpacePageLayout = ({
           bannerUrl={visual?.uri}
           bannerAltText={visual?.alternativeText}
           ribbon={ribbon}
-          journeyTypeName="space"
         />
       }
       tabsComponent={SpaceTabs}

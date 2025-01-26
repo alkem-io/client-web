@@ -20675,6 +20675,7 @@ export type SpacePageQuery = {
       | {
           __typename?: 'Space';
           id: string;
+          level: SpaceLevel;
           nameID: string;
           provider:
             | {
@@ -20929,6 +20930,7 @@ export type SpaceDashboardReferencesQuery = {
 export type SpacePageFragment = {
   __typename?: 'Space';
   id: string;
+  level: SpaceLevel;
   nameID: string;
   provider:
     | {
@@ -21561,6 +21563,7 @@ export type SubspacesInSpaceQuery = {
           subspaces: Array<{
             __typename?: 'Space';
             id: string;
+            level: SpaceLevel;
             profile: {
               __typename?: 'Profile';
               id: string;
