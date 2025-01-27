@@ -1,11 +1,16 @@
 import {
+  useCalloutUrlResolverQuery,
   useInnovationHubUrlResolverQuery,
   useInnovationPackUrlResolverQuery,
   useOrganizationUrlResolverQuery,
+  usePostInCalloutUrlResolverQuery,
+  useSpaceKeyEntitiesIDsQuery,
   useSpaceUrlResolverQuery,
+  useSubspaceUrlResolverQuery,
   useTemplatesSetUrlResolverQuery,
   useTemplateUrlResolverQuery,
   useUserUrlResolverQuery,
+  useVirtualContributorKeyEntitiesIDsQuery,
   useVirtualContributorUrlResolverQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '@/core/routing/useUrlParams';
@@ -15,10 +20,16 @@ import { NotFoundError } from '@/core/notFound/NotFoundErrorBoundary';
 
 type UseUrlResolverProvided = {
   spaceId: string | undefined;
+  subspaceIds: [string, string] | [string, string, string] | undefined; // level0, level1, level2
+  subspaceId: string | undefined;
   organizationId: string | undefined;
   innovationPackId: string | undefined;
   innovationHubId: string | undefined;
   templateId: string | undefined;
+  calloutsSetId: string | undefined;
+  calloutId: string | undefined;
+  contributionId: string | undefined;
+  postId: string | undefined;
   userId: string | undefined;
   vcId: string | undefined;
   loading: boolean;
@@ -40,13 +51,18 @@ const useUrlResolver = ({
 
   const {
     spaceNameId,
+    subspaceNameId,
+    subsubspaceNameId,
     organizationNameId,
     innovationHubNameId,
     innovationPackNameId,
     templateNameId,
     userNameId,
     vcNameId,
+    calloutNameId,
+    postNameId,
   } = urlParams;
+  let loading = false;
 
   // Space
   const { data: spaceData, loading: spaceLoading } = useSpaceUrlResolverQuery({
@@ -54,9 +70,43 @@ const useUrlResolver = ({
     skip: !spaceNameId,
   });
   const spaceId = spaceData?.lookupByName.space;
+  loading = loading || spaceLoading;
   if (throwIfNotFound && spaceNameId && !spaceLoading && !spaceId) {
     throw new NotFoundError(`Space '${spaceNameId}' not found`);
   }
+
+  // Subspace
+  const { data: subspaceData, loading: subspaceDataLoading } = useSubspaceUrlResolverQuery({
+    variables: {
+      spaceNameId: spaceNameId!,
+      level1: !!subspaceNameId,
+      level1subspaceNameId: subspaceNameId,
+      level2: !!subsubspaceNameId,
+      level2subspaceNameId: subsubspaceNameId,
+    },
+    skip: !spaceNameId || !subspaceNameId,
+  });
+  const subspaceIds = !spaceId
+    ? undefined
+    : subspaceData?.space.subspace?.subspace?.id && subspaceData?.space.subspace?.id
+    ? ([spaceId, subspaceData.space.subspace.id, subspaceData.space.subspace.subspace.id] as [string, string, string])
+    : subspaceData?.space.subspace?.id
+    ? ([spaceId, subspaceData.space.subspace.id] as [string, string])
+    : undefined;
+  const subspaceId = subspaceData?.space.subspace?.subspace?.id ?? subspaceData?.space.subspace?.id;
+  loading = loading || subspaceDataLoading;
+  if (throwIfNotFound && spaceNameId && subspaceNameId && !subspaceDataLoading && !subspaceId) {
+    throw new NotFoundError(`Subspace '${subspaceNameId}/${subsubspaceNameId}/' not found on '${spaceNameId}'`);
+  }
+
+  const { data: spaceKeyEntitiesData, loading: spaceKeyEntitiesLoading } = useSpaceKeyEntitiesIDsQuery({
+    variables: {
+      spaceId: subspaceId ?? spaceId!,
+    },
+    skip: (!spaceId && !subspaceId) || !calloutNameId,
+  });
+  loading = loading || spaceKeyEntitiesLoading;
+  const spaceCalloutsSetId = spaceKeyEntitiesData?.lookup.space?.collaboration?.calloutsSet.id;
 
   // Organization
   const { data: organizationData, loading: organizationLoading } = useOrganizationUrlResolverQuery({
@@ -64,6 +114,7 @@ const useUrlResolver = ({
     skip: !organizationNameId,
   });
   const organizationId = organizationData?.lookupByName.organization;
+  loading = loading || organizationLoading;
   if (throwIfNotFound && organizationNameId && !organizationLoading && !organizationId) {
     throw new NotFoundError(`Organization '${organizationNameId}' not found`);
   }
@@ -74,6 +125,7 @@ const useUrlResolver = ({
     skip: !innovationHubNameId,
   });
   const innovationHubId = innovationHubData?.lookupByName.innovationHub;
+  loading = loading || innovationHubLoading;
   if (throwIfNotFound && innovationHubNameId && !innovationHubLoading && !innovationHubId) {
     throw new NotFoundError(`InnovationHub '${innovationHubNameId}' not found`);
   }
@@ -84,6 +136,7 @@ const useUrlResolver = ({
     skip: !innovationPackNameId,
   });
   const innovationPackId = innovationPackData?.lookupByName.innovationPack;
+  loading = loading || innovationPackLoading;
   if (throwIfNotFound && innovationPackNameId && !innovationPackLoading && !innovationPackId) {
     throw new NotFoundError(`InnovationPack '${innovationPackNameId}' not found`);
   }
@@ -101,6 +154,7 @@ const useUrlResolver = ({
       !templateNameId || // Only retrieve the templatesSetId if we have to because we want to resolve a templateNameId
       (!spaceId && !innovationPackId),
   });
+  loading = loading || templatesSetLoading;
   const templatesSetId = spaceId
     ? templatesSetData?.lookup.space?.templatesManager?.templatesSet?.id
     : templatesSetData?.lookup.innovationPack?.templatesSet?.id;
@@ -109,6 +163,7 @@ const useUrlResolver = ({
     variables: { templatesSetId: templatesSetId!, templateNameId: templateNameId! },
     skip: !templatesSetId || !templateNameId,
   });
+  loading = loading || templateLoading;
   const templateId = templateData?.lookupByName.template;
   if (throwIfNotFound && templateNameId && !spaceNameId && !innovationPackNameId) {
     console.error('Template cannot be resolved without a space or innovation pack', {
@@ -119,6 +174,7 @@ const useUrlResolver = ({
     });
     throw new NotFoundError(`Template '${templateNameId}' cannot be found. Space or InnovationPack must be provided`);
   }
+
   if (
     throwIfNotFound &&
     templateNameId &&
@@ -144,6 +200,7 @@ const useUrlResolver = ({
     variables: { nameId: userNameId! },
     skip: !userNameId,
   });
+  loading = loading || userLoading;
   const userId = userData?.lookupByName.user;
   if (throwIfNotFound && userNameId && !userLoading && !userId) {
     throw new NotFoundError(`User '${userNameId}' not found`);
@@ -155,28 +212,59 @@ const useUrlResolver = ({
     skip: !vcNameId,
   });
   const vcId = vcData?.lookupByName.virtualContributor;
+  loading = loading || vcLoading;
   if (throwIfNotFound && vcNameId && !vcLoading && !vcId) {
-    throw new NotFoundError(`User '${vcNameId}' not found`);
+    throw new NotFoundError(`VirtualContributor '${vcNameId}' not found`);
+  }
+
+  // Virtual Contributor with callout open
+  const { data: vcCalloutsSetData, loading: vcCalloutsSetLoading } = useVirtualContributorKeyEntitiesIDsQuery({
+    variables: { virtualContributorId: vcId! },
+    skip: !vcId || !calloutNameId,
+  });
+  const vcCalloutsSetId = vcCalloutsSetData?.virtualContributor.knowledgeBase?.calloutsSet.id;
+  loading = loading || vcCalloutsSetLoading;
+
+  // Callouts
+  const calloutsSetId = vcCalloutsSetId ?? spaceCalloutsSetId;
+  const { data: calloutData, loading: calloutDataLoading } = useCalloutUrlResolverQuery({
+    variables: { calloutsSetId: calloutsSetId!, calloutNameId: calloutNameId! },
+    skip: !calloutsSetId || !calloutNameId,
+  });
+  const calloutId = calloutData?.lookup.calloutsSet?.callouts?.[0].id;
+  loading = loading || calloutDataLoading;
+  if (throwIfNotFound && calloutNameId && calloutsSetId && !calloutDataLoading && !calloutId) {
+    throw new NotFoundError(`Callout '${calloutNameId}' not found in VC '${vcNameId}'`);
+  }
+
+  // Callout for posts and a post open
+  const { data: calloutPostData, loading: calloutPostLoading } = usePostInCalloutUrlResolverQuery({
+    variables: { calloutId: calloutId!, postNameId: postNameId! },
+    skip: !calloutId || !postNameId,
+  });
+  const contributionId = calloutPostData?.lookup.callout?.contributions[0]?.id;
+  const postId = calloutPostData?.lookup.callout?.contributions[0]?.post?.id;
+  loading = loading || calloutPostLoading;
+  if (throwIfNotFound && calloutId && postNameId && !calloutPostLoading && !postId) {
+    throw new NotFoundError(`Post '${postNameId}' in callout '${calloutNameId}' ${calloutId} not found`);
   }
 
   const result = useMemo(
     () => ({
       spaceId,
+      subspaceId,
+      subspaceIds,
       organizationId,
       innovationPackId,
       innovationHubId,
       templateId,
       userId,
       vcId,
-      loading:
-        spaceLoading ||
-        organizationLoading ||
-        templatesSetLoading ||
-        innovationHubLoading ||
-        innovationPackLoading ||
-        templateLoading ||
-        userLoading ||
-        vcLoading,
+      calloutId,
+      calloutsSetId,
+      contributionId,
+      postId,
+      loading,
     }),
     [
       spaceId,
@@ -186,14 +274,11 @@ const useUrlResolver = ({
       templateId,
       userId,
       vcId,
-      spaceLoading,
-      organizationLoading,
-      templatesSetLoading,
-      innovationHubLoading,
-      innovationPackLoading,
-      templateLoading,
-      userLoading,
-      vcLoading,
+      calloutId,
+      calloutsSetId,
+      contributionId,
+      postId,
+      loading,
     ]
   );
   return result;
