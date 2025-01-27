@@ -10,7 +10,6 @@ import { CalloutGroupName, CalloutType } from '@/core/apollo/generated/graphql-s
 import { DescriptionComponent } from '@/domain/common/description/DescriptionComponent';
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
-import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 type KnowledgeBaseDialogProps = {
   onClose: () => void;
@@ -21,7 +20,6 @@ type KnowledgeBaseDialogProps = {
 const AVAILABLE_CALLOUT_TYPES = [CalloutType.Post, CalloutType.LinkCollection, CalloutType.PostCollection];
 
 const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) => {
-  const { calloutId } = useUrlResolver();
   const { t } = useTranslation();
   const {
     calloutsSetId,
@@ -35,57 +33,50 @@ const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) =
     ingestKnowledge,
     ingestLoading,
   } = useKnowledgeBase({ id });
-  const fullScreenCallout = callouts?.find(callout => callout.id === calloutId);
 
   return (
-    <>
-      <DialogWithGrid open columns={10}>
-        <DialogHeader onClose={onClose} title={title} />
-        <DialogContent>
-          <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={id}>
-            <Gutters disablePadding>
-              {(knowledgeBaseDescription || canCreateCallout) && (
-                <DescriptionComponent
-                  description={knowledgeBaseDescription}
-                  canEdit={canCreateCallout}
-                  onUpdate={updateDescription}
-                />
-              )}
-              <CalloutsGroupView
-                calloutsSetId={calloutsSetId}
-                callouts={callouts}
-                canCreateCallout={canCreateCallout}
-                loading={loading}
-                journeyTypeName="knowledge-base"
-                onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                onCalloutUpdate={refetchCallout}
-                groupName={CalloutGroupName.Knowledge}
-                createButtonPlace="bottom"
-                availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
-                disableRichMedia
-                disablePostResponses
+    <DialogWithGrid open columns={10}>
+      <DialogHeader onClose={onClose} title={title} />
+      <DialogContent>
+        <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={id}>
+          <Gutters disablePadding>
+            {(knowledgeBaseDescription || canCreateCallout) && (
+              <DescriptionComponent
+                description={knowledgeBaseDescription}
+                canEdit={canCreateCallout}
+                onUpdate={updateDescription}
               />
-            </Gutters>
-          </StorageConfigContextProvider>
-        </DialogContent>
-        {canCreateCallout && (
-          <DialogActions>
-            <LoadingButton
-              variant="outlined"
-              startIcon={<SyncOutlinedIcon />}
-              loading={ingestLoading}
-              onClick={ingestKnowledge}
-            >
-              {t('pages.virtualContributorProfile.settings.ingestion.refreshBtn')}
-            </LoadingButton>
-          </DialogActions>
-        )}
-      </DialogWithGrid>
-      <DialogWithGrid open={!!fullScreenCallout} onClose={() => {}}>
-        <DialogHeader>Callout</DialogHeader>
-        <DialogContent />
-      </DialogWithGrid>
-    </>
+            )}
+            <CalloutsGroupView
+              calloutsSetId={calloutsSetId}
+              callouts={callouts}
+              canCreateCallout={canCreateCallout}
+              loading={loading}
+              journeyTypeName="knowledge-base"
+              onSortOrderUpdate={onCalloutsSortOrderUpdate}
+              onCalloutUpdate={refetchCallout}
+              groupName={CalloutGroupName.Knowledge}
+              createButtonPlace="bottom"
+              availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
+              disableRichMedia
+              disablePostResponses
+            />
+          </Gutters>
+        </StorageConfigContextProvider>
+      </DialogContent>
+      {canCreateCallout && (
+        <DialogActions>
+          <LoadingButton
+            variant="outlined"
+            startIcon={<SyncOutlinedIcon />}
+            loading={ingestLoading}
+            onClick={ingestKnowledge}
+          >
+            {t('pages.virtualContributorProfile.settings.ingestion.refreshBtn')}
+          </LoadingButton>
+        </DialogActions>
+      )}
+    </DialogWithGrid>
   );
 };
 

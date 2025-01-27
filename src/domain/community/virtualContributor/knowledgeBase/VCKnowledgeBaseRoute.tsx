@@ -3,11 +3,11 @@ import { Route, Routes } from 'react-router-dom';
 import VCProfilePage from '../vcProfilePage/VCProfilePage';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
 import { useUrlParams } from '@/core/routing/useUrlParams';
-import { buildCalloutOnVCKnowledgeBaseUrl } from '@/main/routing/urlBuilders';
+import { buildVCKnowledgeBaseUrl } from '@/main/routing/urlBuilders';
 
 export const VCKnowledgeBaseRoute = () => {
-  const { vcNameId, calloutNameId } = useUrlParams();
-  const parentPagePath = vcNameId && calloutNameId ? buildCalloutOnVCKnowledgeBaseUrl(vcNameId, calloutNameId) : '/';
+  const { vcNameId } = useUrlParams();
+  const parentPagePath = vcNameId ? buildVCKnowledgeBaseUrl(vcNameId) : '/';
 
   return (
     <Routes>
@@ -15,7 +15,11 @@ export const VCKnowledgeBaseRoute = () => {
       <Route path={`/:${nameOfUrl.calloutNameId}`} element={<VCProfilePage openKnowledgeBaseDialog />} />
       <Route
         path={`/:${nameOfUrl.calloutNameId}/*`}
-        element={<CalloutRoute parentPagePath={parentPagePath} journeyTypeName="knowledge-base" />}
+        element={
+          <VCProfilePage openKnowledgeBaseDialog>
+            <CalloutRoute parentPagePath={parentPagePath} journeyTypeName="knowledge-base" />
+          </VCProfilePage>
+        }
       />
     </Routes>
   );

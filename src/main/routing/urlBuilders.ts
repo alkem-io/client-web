@@ -13,8 +13,7 @@ export const buildSettingsProfileUrl = (entityUrl: string) => {
 };
 
 const buildVCProfileUrl = (vcNameId: string) => `/vc/${vcNameId}`;
-export const buildCalloutOnVCKnowledgeBaseUrl = (vcNameId: string, calloutNameId: string) =>
-  `${buildVCProfileUrl(vcNameId)}/${KNOWLEDGE_BASE_PATH}/${calloutNameId}`;
+export const buildVCKnowledgeBaseUrl = (vcNameId: string) => `${buildVCProfileUrl(vcNameId)}/${KNOWLEDGE_BASE_PATH}`;
 
 export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
 
