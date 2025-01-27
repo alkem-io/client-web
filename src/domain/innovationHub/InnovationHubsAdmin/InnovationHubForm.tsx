@@ -19,7 +19,7 @@ import Gutters from '@/core/ui/grid/Gutters';
 export interface InnovationHubFormValues {
   nameID: string;
   subdomain: string;
-  profile: {
+  createInnovationHub: {
     displayName: string;
     description: string;
     tagline: string;
@@ -66,7 +66,7 @@ const InnovationHubForm = ({
   const initialValues: InnovationHubFormValues = {
     nameID: nameID ?? '',
     subdomain: subdomain ?? '',
-    profile: {
+    createInnovationHub: {
       displayName: profile?.displayName ?? '',
       description: profile?.description ?? '',
       tagline: profile?.tagline ?? '',
@@ -78,7 +78,7 @@ const InnovationHubForm = ({
   const validationSchema = yup.object().shape({
     nameID: nameIdValidator,
     subdomain: nameIdValidator,
-    profile: yup.object().shape({
+    createInnovationHub: yup.object().shape({
       displayName: nameSegmentSchema.fields?.name ?? yup.string(),
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
       tagline: yup.string().max(MID_TEXT_LENGTH),
@@ -89,7 +89,7 @@ const InnovationHubForm = ({
 
   return (
     <Formik initialValues={initialValues} validationSchema={validationSchema} enableReinitialize onSubmit={onSubmit}>
-      {({ values: { profile }, errors, handleSubmit }) => {
+      {({ values: { createInnovationHub }, errors, handleSubmit }) => {
         return (
           <Gutters disablePadding>
             <FormikInputField
@@ -98,7 +98,7 @@ const InnovationHubForm = ({
               required
               disabled={!isNew}
             />
-            <NameSegment disabled={!isNew} required={isNew} nameFieldName="profile.displayName" />
+            <NameSegment disabled={!isNew} required={isNew} nameFieldName="createInnovationHub.displayName" />
             <FormGroup>
               <FormikAutocomplete
                 title={t('pages.admin.innovationHubs.fields.host')}
@@ -108,14 +108,14 @@ const InnovationHubForm = ({
               />
             </FormGroup>
             <FormikInputField
-              name="profile.tagline"
+              name="createInnovationHub.tagline"
               title={t('components.profile.fields.tagline.title')}
               maxLength={MID_TEXT_LENGTH}
             />
             <FormGroup>
               <FormikMarkdownField
-                title={t('common.description')}
-                name="profile.description"
+                title={t('createInnovationHub.description.placeholder')}
+                name="createInnovationHub.description"
                 maxLength={MARKDOWN_TEXT_LENGTH}
                 temporaryLocation={isNew}
               />
@@ -123,7 +123,7 @@ const InnovationHubForm = ({
             {!isNew && profileId ? (
               <>
                 <BlockSectionTitle>{t('common.tags')}</BlockSectionTitle>
-                <TagsetSegment fieldName="profile.tagsets" tagsets={profile.tagsets} />
+                <TagsetSegment fieldName="profile.tagsets" tagsets={createInnovationHub.tagsets} />
                 <BlockSectionTitle>{t('components.visualSegment.banner')}</BlockSectionTitle>
                 <VisualUpload
                   visual={banner}

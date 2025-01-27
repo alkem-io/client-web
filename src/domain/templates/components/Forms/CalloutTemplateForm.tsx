@@ -128,7 +128,7 @@ const CalloutTemplateForm = ({ template, onSubmit, actions, temporaryLocation = 
   }, [t]);
 
   const initialValues: CalloutTemplateFormSubmittedValues = {
-    profile: mapTemplateProfileToUpdateProfile(template?.profile),
+    createNewCollaborationToolTemplate: mapTemplateProfileToUpdateProfile(template?.profile),
     callout: {
       framing: {
         profile: {

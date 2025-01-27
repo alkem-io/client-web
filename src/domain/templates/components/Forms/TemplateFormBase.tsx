@@ -29,7 +29,7 @@ export interface TemplateFormWithPreviewImages {
 }
 
 export interface TemplateFormProfileSubmittedValues {
-  profile: {
+  createNewCollaborationToolTemplate: {
     // Match CreateProfileInput | UpdateProfileInput;
     displayName?: string;
     description?: string;
@@ -72,7 +72,7 @@ const TemplateFormBase = <T extends TemplateFormProfileSubmittedValues>({
   const { t } = useTranslation();
 
   const validationSchema = yup.object().shape({
-    profile: yup.object().shape({
+    createNewCollaborationToolTemplate: yup.object().shape({
       displayName: displayNameValidator,
       description: MarkdownValidator(MARKDOWN_TEXT_LENGTH).required(),
       tagsets: yup.array().of(
@@ -104,16 +104,19 @@ const TemplateFormBase = <T extends TemplateFormProfileSubmittedValues>({
               >
                 {t('templateDialog.profile.title')}
               </BlockSectionTitleWithIcon>
-              <FormikInputField name="profile.displayName" title={t('templateDialog.profile.fields.displayName')} />
+              <FormikInputField
+                name="createNewCollaborationToolTemplate.displayName"
+                title={t('templateDialog.profile.fields.displayName')}
+              />
               <Box marginBottom={gutters(-1)}>
                 <FormikMarkdownField
-                  name="profile.description"
+                  name="createNewCollaborationToolTemplate.description"
                   title={t('templateDialog.profile.fields.description')}
                   maxLength={MARKDOWN_TEXT_LENGTH}
                 />
               </Box>
               <TagsetField
-                name="profile.tagsets[0].tags"
+                name="createNewCollaborationToolTemplate.tagsets[0].tags"
                 title={t('templateDialog.profile.fields.tags')}
                 helpTextIcon={t('components.post-creation.info-step.tags-help-text')}
               />

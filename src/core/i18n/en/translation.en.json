@@ -657,6 +657,13 @@
       "filter": {
         "placeholder": "Find collaboration tools..."
       }
+    },
+    "framing": {
+      "profile": {
+        "description": {
+          "errorMessage": "{{fieldName}} is a required field"
+        }
+      }
     }
   },
   "journey-creation": {
@@ -3171,6 +3178,25 @@
         "title": "Continue without Space membership",
         "description": "A Virtual Contributor can only interact within a Space. Are you sure you want to proceed without adding them to a Space? You can still invite the Virtual Contributor later through the Space’s Community tab."
       }
+    }
+  },
+  "createInnovationPack": {
+    "description": {
+      "placeholder": "Description",
+      "errorMessage": "{{fieldName}} is a required field"
+    }
+  },
+  "createInnovationHub": {
+    "description": {
+      "placeholder": "Description",
+      "errorMessage": "{{fieldName}} is a required field"
+    }
+  },
+  "createNewCollaborationToolTemplate": {
+    "description": {
+      "placeholder": "Description",
+      "templateDescription": "Template description",
+      "errorMessage": "{{fieldName}} is a required field"
     }
   }
 }
