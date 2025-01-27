@@ -16,7 +16,7 @@ type VCProfilePageProps = {
 
 export const VCProfilePage = ({ openKnowledgeBaseDialog }: VCProfilePageProps) => {
   const { t } = useTranslation();
-  const { vcId, vcCalloutId } = useUrlResolver();
+  const { vcId } = useUrlResolver();
 
   const { data, loading, error } = useVirtualContributorQuery({
     variables: {
@@ -58,7 +58,6 @@ export const VCProfilePage = ({ openKnowledgeBaseDialog }: VCProfilePageProps) =
         virtualContributor={data?.lookup.virtualContributor}
         openKnowledgeBaseDialog={openKnowledgeBaseDialog}
       />
-      {vcCalloutId}
     </VCPageLayout>
   );
 };

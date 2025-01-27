@@ -10,7 +10,6 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   PostSettingsFragment,
   AuthorizationPrivilege,
-  CalloutType,
   Visual,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
@@ -18,23 +17,25 @@ import EditVisualsView from '@/domain/common/visual/EditVisuals/EditVisualsView'
 import SectionSpacer from '@/domain/shared/components/Section/SectionSpacer';
 import { PostDialogSection } from '../views/PostDialogSection';
 import { PostLayout } from '../views/PostLayoutWithOutlet';
-import { useMoveContributionToCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useMoveContributionToCalloutMutation,
+  usePostCalloutsInCalloutSetQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { LoadingButton } from '@mui/lab';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import { normalizeLink } from '@/core/utils/links';
 import { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
-import useCalloutsOnCollaboration from '../../useCalloutsOnCollaboration';
 
 export interface PostSettingsPageProps {
   onClose: () => void;
-  collaborationId: string | undefined;
   calloutId: string | undefined;
-  postNameId: string | undefined;
+  postId: string | undefined;
+  calloutsSetId: string | undefined;
 }
 
-const PostSettingsPage = ({ collaborationId, postNameId, calloutId, onClose }: PostSettingsPageProps) => {
+const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSettingsPageProps) => {
   const { t } = useTranslation();
 
   const navigate = useNavigate();
@@ -54,7 +55,7 @@ const PostSettingsPage = ({ collaborationId, postNameId, calloutId, onClose }: P
     };
 
   const postSettings = usePostSettings({
-    postNameId,
+    postId,
     calloutId,
   });
 
@@ -72,11 +73,14 @@ const PostSettingsPage = ({ collaborationId, postNameId, calloutId, onClose }: P
 
   const isMoveEnabled = Boolean(targetCalloutId) && targetCalloutId !== postSettings.parentCallout?.id;
 
-  const { callouts, refetchCallouts } = useCalloutsOnCollaboration({
-    collaborationId,
+  const { data: calloutsData, refetch: refetchCallouts } = usePostCalloutsInCalloutSetQuery({
+    variables: {
+      calloutsSetId: calloutsSetId!,
+    },
+    skip: !calloutsSetId,
   });
 
-  const calloutsOfTypePost = callouts?.filter(({ type }) => type === CalloutType.PostCollection);
+  const calloutsOfTypePost = calloutsData?.lookup.calloutsSet?.callouts;
 
   // TODO This page component exposes too much of inner logic that should be encapsulated
   // either in a container/hook or a rendered view
@@ -129,7 +133,7 @@ const PostSettingsPage = ({ collaborationId, postNameId, calloutId, onClose }: P
 
   return (
     <PostLayout currentSection={PostDialogSection.Settings} onClose={onClose}>
-      <StorageConfigContextProvider locationType="post" postId={postNameId} calloutId={calloutId}>
+      <StorageConfigContextProvider locationType="post" postId={postId} calloutId={calloutId}>
         <PostForm
           edit
           loading={postSettings.loading || postSettings.updating || isMovingContribution}
@@ -162,7 +166,7 @@ const PostSettingsPage = ({ collaborationId, postNameId, calloutId, onClose }: P
                     <Autocomplete
                       disablePortal
                       options={calloutsOfTypePost ?? []}
-                      value={callouts?.find(({ id }) => id === targetCalloutId) ?? null!}
+                      value={calloutsOfTypePost?.find(({ id }) => id === targetCalloutId) ?? null!}
                       getOptionLabel={callout => callout.framing.profile.displayName}
                       onChange={(event, callout) => {
                         setTargetCalloutId(callout?.id);

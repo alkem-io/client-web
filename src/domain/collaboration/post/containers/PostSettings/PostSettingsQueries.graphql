@@ -1,7 +1,10 @@
-query PostSettings($postNameId: UUID_NAMEID!, $calloutId: UUID!) {
+query PostSettings($postId: UUID!, $calloutId: UUID!) {
   lookup {
     callout(ID: $calloutId) {
       ...PostSettingsCallout
+    }
+    post(ID: $postId) {
+      ...PostSettings
     }
   }
 }
@@ -36,10 +39,10 @@ fragment PostSettingsCallout on Callout {
   id
   nameID
   type
-  contributions(filter: { postIDs: [$postNameId] }) {
+    contributions {
     id
     post {
-      ...PostSettings
+      id
     }
   }
   postNames: contributions {

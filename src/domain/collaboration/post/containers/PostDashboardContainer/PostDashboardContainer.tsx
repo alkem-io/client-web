@@ -9,9 +9,10 @@ import { ContainerPropsWithProvided, renderComponentOrChildrenFn } from '@/core/
 import { buildAuthorFromUser } from '@/domain/community/user/utils/buildAuthorFromUser';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 type EntityIds = {
-  postNameId: string | undefined;
+  postId: string | undefined;
   calloutId: string | undefined;
 };
 
@@ -38,24 +39,24 @@ type Provided = {
 
 export type PostDashboardContainerProps = ContainerPropsWithProvided<EntityIds, Provided>;
 
-const PostDashboardContainer = ({ calloutId, postNameId, ...rendered }: PostDashboardContainerProps) => {
+const PostDashboardContainer = ({ calloutId, postId, ...rendered }: PostDashboardContainerProps) => {
   const { user: userMetadata, isAuthenticated } = useUserContext();
+  // TODO: This is temporary:
+
+  // Disabling all comments interaction with this Posts in the VC knowledge-base until we have server fixed
+  const { vcId } = useUrlResolver();
 
   const user = userMetadata?.user;
 
   const { data, loading, error } = usePostQuery({
     variables: {
-      postNameId: postNameId!,
-      calloutId: calloutId!,
+      postId: postId!,
     },
-    skip: !calloutId || !postNameId,
+    skip: !calloutId || !postId,
     fetchPolicy: 'cache-and-network',
   });
 
-  const parentCallout = data?.lookup.callout;
-
-  const post = parentCallout?.contributions?.find(x => x.post && x.post.nameID === postNameId)?.post;
-
+  const post = data?.lookup.post;
   const roomId = post?.comments.id;
 
   const isSubscribedToMessages = useSubscribeOnRoomEvents(roomId);
@@ -82,15 +83,15 @@ const PostDashboardContainer = ({ calloutId, postNameId, ...rendered }: PostDash
   const vcInteractions = useMemo(() => post?.comments?.vcInteractions ?? [], [post?.comments?.vcInteractions]);
 
   const commentsPrivileges = post?.comments?.authorization?.myPrivileges ?? [];
-  const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
+  const canDeleteComments = !vcId && commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteComment = useCallback(
     authorId => canDeleteComments || (isAuthenticated && authorId === user?.id),
     [user, isAuthenticated, canDeleteComments]
   );
 
-  const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
-  const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage);
-  const canAddReaction = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessageReaction);
+  const canReadComments = !vcId && commentsPrivileges.includes(AuthorizationPrivilege.Read);
+  const canPostComments = !vcId && commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage);
+  const canAddReaction = !vcId && commentsPrivileges.includes(AuthorizationPrivilege.CreateMessageReaction);
 
   const [deleteComment, { loading: deletingComment }] = useRemoveMessageOnRoomMutation({
     update: (cache, { data }) =>
