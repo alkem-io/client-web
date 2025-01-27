@@ -1224,7 +1224,7 @@ export type CalloutsSet = {
   /** The tagset templates on this CalloutsSet. */
   tagsetTemplates?: Maybe<Array<TagsetTemplate>>;
   /** The set of CalloutGroups in use in this CalloutsSet. */
-  type: Array<CalloutGroup>;
+  type: CalloutsSetType;
   /** The date at which the entity was last updated. */
   updatedDate?: Maybe<Scalars['DateTime']>;
 };
@@ -1237,6 +1237,11 @@ export type CalloutsSetCalloutsArgs = {
   sortByActivity?: InputMaybe<Scalars['Boolean']>;
   tagsets?: InputMaybe<Array<TagsetArgs>>;
 };
+
+export enum CalloutsSetType {
+  Collaboration = 'COLLABORATION',
+  KnowledgeBase = 'KNOWLEDGE_BASE',
+}
 
 export type ChatGuidanceAnswerRelevanceInput = {
   /** The answer id. */
