@@ -30,7 +30,14 @@ const ConfigProvider: FC<ConfigProviderProps> = ({ children, url }) => {
   const [requestConfig, loading, error] = useLoadingStateWithHandlers(
     async (url: string) => {
       const result = await queryRequest<ConfigurationQuery>(url, ConfigurationDocument);
-      setConfig(result.data.data.platform.configuration);
+      const platformConfiguration = result.data.data.platform.configuration;
+      const settings = result.data.data.platform.settings;
+      const combinedConfiguration: Configuration = {
+        ...platformConfiguration,
+        ...settings,
+      };
+
+      setConfig(combinedConfiguration);
     },
     {
       onError: err => logWarn(err, { category: TagCategoryValues.CONFIG }),

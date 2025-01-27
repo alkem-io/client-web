@@ -18613,6 +18613,11 @@ export const ConfigurationDocument = gql`
       configuration {
         ...Configuration
       }
+      settings {
+        integration {
+          iframeAllowedUrls
+        }
+      }
     }
   }
   ${ConfigurationFragmentDoc}

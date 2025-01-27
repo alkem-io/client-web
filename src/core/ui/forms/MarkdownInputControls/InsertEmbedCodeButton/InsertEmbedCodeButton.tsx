@@ -14,7 +14,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { gutters } from '@/core/ui/grid/utils';
-import { ALLOWED_EMBED_URLS } from '@/core/ui/markdown/embed/allowedEmbedUrls';
+import { useConfig } from '@/domain/platform/config/useConfig';
 
 interface InsertEmbedCodeButtonProps extends IconButtonProps {
   editor: Editor | null;
@@ -33,6 +33,9 @@ export const InsertEmbedCodeButton = ({
   const { t } = useTranslation();
 
   const notify = useNotification();
+
+  const { integration } = useConfig();
+  const iframeAllowedUrls = integration?.iframeAllowedUrls || [];
 
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -98,7 +101,7 @@ export const InsertEmbedCodeButton = ({
     }
 
     const srcOrigin = new URL(embedCodeSrc).origin;
-    const isValidSource = ALLOWED_EMBED_URLS.some(vS => vS === srcOrigin);
+    const isValidSource = iframeAllowedUrls.some(vS => vS === srcOrigin);
 
     if (!isValidSource) {
       notify(t('components.wysiwyg-editor.embed.invalidOrUnsupportedEmbed'), 'error');
