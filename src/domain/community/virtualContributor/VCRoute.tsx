@@ -5,8 +5,7 @@ import { Error404 } from '@/core/pages/Errors/Error404';
 import VCSettingsRoute from '../virtualContributorAdmin/VCSettingsRoute';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import VCKnowledgeBaseRoute from './knowledgeBase/VCKnowledgeBaseRoute';
-
-export const KNOWLEDGE_BASE_PATH = 'knowledge-base';
+import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
 
 export const VCRoute = () => (
   <Routes>
