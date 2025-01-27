@@ -31,7 +31,7 @@ import CalloutWhiteboardField, {
   WhiteboardFieldSubmittedValues,
   WhiteboardFieldSubmittedValuesWithPreviewImages,
 } from './creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import { CalloutsSetParentType } from '@/domain/journey/JourneyTypeName';
 import { JourneyCalloutGroupNameOptions } from '../calloutsSet/CalloutsInContext/CalloutsGroup';
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import PostTemplateSelector from '@/domain/templates/components/TemplateSelectors/PostTemplateSelector';
@@ -88,7 +88,7 @@ export interface CalloutFormProps {
   onChange?: (callout: CalloutFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<FormValueType>['children'];
-  journeyTypeName: JourneyTypeName | 'knowledge-base';
+  journeyTypeName: CalloutsSetParentType;
   temporaryLocation?: boolean;
   disableRichMedia?: boolean; // images, videos, iframe, etc.
   disablePostResponses?: boolean;

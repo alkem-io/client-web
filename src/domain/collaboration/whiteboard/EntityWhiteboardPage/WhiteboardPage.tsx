@@ -1,5 +1,5 @@
 import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import { CalloutsSetParentType } from '@/domain/journey/JourneyTypeName';
 import { useCalloutIdQuery } from '@/core/apollo/generated/apollo-hooks';
 import WhiteboardView from '../WhiteboardsManagement/WhiteboardView';
 import { WhiteboardProvider } from '../containers/WhiteboardProvider';
@@ -9,7 +9,7 @@ export interface WhiteboardPageProps {
   whiteboardNameId: string;
   calloutNameId: string;
   parentUrl: string;
-  journeyTypeName: JourneyTypeName | 'knowledge-base';
+  journeyTypeName: CalloutsSetParentType;
 }
 
 const WhiteboardPage = ({

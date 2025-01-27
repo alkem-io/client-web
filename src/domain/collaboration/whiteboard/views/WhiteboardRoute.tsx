@@ -1,12 +1,12 @@
 import { Route, Routes } from 'react-router-dom';
 import { useUrlParams } from '@/core/routing/useUrlParams';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import { CalloutsSetParentType } from '@/domain/journey/JourneyTypeName';
 import WhiteboardPage from '../EntityWhiteboardPage/WhiteboardPage';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 
 export interface WhiteboardRouteProps {
   parentPagePath: string;
-  journeyTypeName: JourneyTypeName | 'knowledge-base';
+  journeyTypeName: CalloutsSetParentType;
 }
 
 const WhiteboardRoute = ({ parentPagePath, journeyTypeName }: WhiteboardRouteProps) => {

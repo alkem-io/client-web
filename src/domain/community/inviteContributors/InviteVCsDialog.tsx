@@ -208,11 +208,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
           contributor={selectedContributor}
           actions={renderActions()}
         >
-          <VCProfileContentView
-            bokProfile={bokProfile}
-            virtualContributor={selectedContributor}
-            openKnowledgeBaseDialog={false /* //!! */}
-          />
+          <VCProfileContentView bokProfile={bokProfile} virtualContributor={selectedContributor} />
         </PreviewContributorDialog>
       )}
     </DialogWithGrid>
