@@ -1,5 +1,5 @@
 import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
-import { CalloutsSetParentType } from '@/domain/journey/JourneyTypeName';
+import { CalloutsSetParentType, KnowledgeBaseCalloutsSetType } from '@/domain/journey/JourneyTypeName';
 
 export enum CalloutGroupNameValuesMap {
   Home = 'HOME',
@@ -13,5 +13,5 @@ export const JourneyCalloutGroupNameOptions: Record<CalloutsSetParentType, Callo
   space: [CalloutGroupName.Home, CalloutGroupName.Community, CalloutGroupName.Subspaces, CalloutGroupName.Knowledge],
   subspace: [CalloutGroupName.Home],
   subsubspace: [CalloutGroupName.Home],
-  'knowledge-base': [CalloutGroupName.Home],
+  [KnowledgeBaseCalloutsSetType]: [CalloutGroupName.Home],
 };

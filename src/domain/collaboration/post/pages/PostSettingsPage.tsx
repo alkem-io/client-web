@@ -80,7 +80,7 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
     skip: !calloutsSetId,
   });
 
-  const calloutsOfTypePost = calloutsData?.lookup.calloutsSet?.callouts;
+  const calloutsOfTypePost = calloutsData?.lookup.calloutsSet?.callouts ?? [];
 
   // TODO This page component exposes too much of inner logic that should be encapsulated
   // either in a container/hook or a rendered view
@@ -165,8 +165,8 @@ const PostSettingsPage = ({ postId, calloutId, calloutsSetId, onClose }: PostSet
                     <SectionSpacer />
                     <Autocomplete
                       disablePortal
-                      options={calloutsOfTypePost ?? []}
-                      value={calloutsOfTypePost?.find(({ id }) => id === targetCalloutId) ?? null!}
+                      options={calloutsOfTypePost}
+                      value={calloutsOfTypePost.find(({ id }) => id === targetCalloutId)}
                       getOptionLabel={callout => callout.framing.profile.displayName}
                       onChange={(event, callout) => {
                         setTargetCalloutId(callout?.id);

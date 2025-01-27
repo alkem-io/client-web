@@ -24193,8 +24193,8 @@ export function refetchSpaceUrlResolverQuery(variables: SchemaTypes.SpaceUrlReso
 export const SubspaceUrlResolverDocument = gql`
   query SubspaceUrlResolver(
     $spaceNameId: UUID_NAMEID!
-    $level1subspaceNameId: UUID_NAMEID! = "NameId"
-    $level2subspaceNameId: UUID_NAMEID! = "NameId"
+    $level1subspaceNameId: UUID_NAMEID! = "00000000-0000-0000-0000-000000000000"
+    $level2subspaceNameId: UUID_NAMEID! = "00000000-0000-0000-0000-000000000000"
     $level1: Boolean = false
     $level2: Boolean = false
   ) {

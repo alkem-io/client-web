@@ -4,6 +4,7 @@ import VCProfilePage from '../vcProfilePage/VCProfilePage';
 import CalloutRoute from '@/domain/collaboration/callout/routing/CalloutRoute';
 import { useUrlParams } from '@/core/routing/useUrlParams';
 import { buildVCKnowledgeBaseUrl } from '@/main/routing/urlBuilders';
+import { KnowledgeBaseCalloutsSetType } from '@/domain/journey/JourneyTypeName';
 
 export const VCKnowledgeBaseRoute = () => {
   const { vcNameId } = useUrlParams();
@@ -17,7 +18,7 @@ export const VCKnowledgeBaseRoute = () => {
         path={`/:${nameOfUrl.calloutNameId}/*`}
         element={
           <VCProfilePage openKnowledgeBaseDialog>
-            <CalloutRoute parentPagePath={parentPagePath} journeyTypeName="knowledge-base" />
+            <CalloutRoute parentPagePath={parentPagePath} journeyTypeName={KnowledgeBaseCalloutsSetType} />
           </VCProfilePage>
         }
       />
