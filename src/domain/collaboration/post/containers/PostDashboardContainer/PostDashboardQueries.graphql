@@ -1,18 +1,9 @@
 query Post(
-  $calloutId: UUID!
-  $postNameId: UUID_NAMEID!
+  $postId: UUID!
 ) {
   lookup {
-    callout(ID: $calloutId) {
-      id
-      nameID
-      type
-      contributions(filter: { postIDs: [$postNameId] }) {
-        id
-        post {
-          ...PostDashboard
-        }
-      }
+    post(ID: $postId) {
+      ...PostDashboard
     }
   }
 }

@@ -8,7 +8,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { type VCProfilePageViewProps } from './model';
 import VCProfileContentView from './VCProfileContentView';
 
-export const VCProfilePageView = ({ bokProfile, virtualContributor }: VCProfilePageViewProps) => {
+export const VCProfilePageView = ({ virtualContributor, ...pageProps }: VCProfilePageViewProps) => {
   const { t } = useTranslation();
 
   return (
@@ -28,7 +28,7 @@ export const VCProfilePageView = ({ bokProfile, virtualContributor }: VCProfileP
       </PageContentColumn>
 
       <PageContentColumn columns={8}>
-        <VCProfileContentView virtualContributor={virtualContributor} bokProfile={bokProfile} />
+        <VCProfileContentView virtualContributor={virtualContributor} {...pageProps} />
       </PageContentColumn>
     </PageContent>
   );

@@ -7,12 +7,12 @@ import { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
 export interface PostDashboardPageProps {
   onClose: () => void;
   calloutId: string | undefined;
-  postNameId: string | undefined;
+  postId: string | undefined;
 }
 
-const PostDashboardPage = ({ onClose, postNameId, calloutId }: PostDashboardPageProps) => (
+const PostDashboardPage = ({ onClose, postId, calloutId }: PostDashboardPageProps) => (
   <PostLayout currentSection={PostDialogSection.Dashboard} onClose={onClose}>
-    <PostDashboardContainer postNameId={postNameId} calloutId={calloutId}>
+    <PostDashboardContainer postId={postId} calloutId={calloutId}>
       {({ post, messages, roomId, ...rest }) => (
         <PostDashboardView
           mode="messages"

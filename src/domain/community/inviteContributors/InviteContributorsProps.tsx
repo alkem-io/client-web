@@ -8,9 +8,8 @@ export interface InviteContributorDialogProps {
 }
 
 export interface ContributorProps extends Identifiable {
-  nameID?: string;
   email?: string;
-  profile?: {
+  profile: {
     displayName: string;
     description?: string;
     avatar?: {
@@ -21,7 +20,7 @@ export interface ContributorProps extends Identifiable {
       city?: string;
       country?: string;
     };
-    url?: string;
+    url: string;
   };
   aiPersona?: {
     bodyOfKnowledge?: string;
