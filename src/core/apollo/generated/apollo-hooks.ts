@@ -1718,7 +1718,7 @@ export const ContextJourneyDataFragmentDoc = gql`
 export const RoleSetMemberUserFragmentDoc = gql`
   fragment RoleSetMemberUser on User {
     id
-    isContactable
+    isContactable @skip(if: $authorizedReadAccessCommunity)
     profile {
       id
       displayName
@@ -5741,6 +5741,7 @@ export const RoleSetRoleAssignmentDocument = gql`
     $includeUsers: Boolean = true
     $includeOrganizations: Boolean = true
     $includeVirtualContributors: Boolean = true
+    $authorizedReadAccessCommunity: Boolean = false
   ) {
     lookup {
       roleSet(ID: $roleSetId) {
@@ -5792,6 +5793,7 @@ export const RoleSetRoleAssignmentDocument = gql`
  *      includeUsers: // value for 'includeUsers'
  *      includeOrganizations: // value for 'includeOrganizations'
  *      includeVirtualContributors: // value for 'includeVirtualContributors'
+ *      authorizedReadAccessCommunity: // value for 'authorizedReadAccessCommunity'
  *   },
  * });
  */
@@ -14943,7 +14945,11 @@ export function refetchJourneyCommunityPrivilegesQuery(
 }
 
 export const JourneyDataDocument = gql`
-  query JourneyData($spaceId: UUID!, $includeCommunity: Boolean = false) {
+  query JourneyData(
+    $spaceId: UUID!
+    $includeCommunity: Boolean = false
+    $authorizedReadAccessCommunity: Boolean = false
+  ) {
     lookup {
       space(ID: $spaceId) {
         id
@@ -14986,6 +14992,7 @@ export const JourneyDataDocument = gql`
  *   variables: {
  *      spaceId: // value for 'spaceId'
  *      includeCommunity: // value for 'includeCommunity'
+ *      authorizedReadAccessCommunity: // value for 'authorizedReadAccessCommunity'
  *   },
  * });
  */

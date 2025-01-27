@@ -1,6 +1,6 @@
 fragment RoleSetMemberUser on User {
   id
-  isContactable
+  isContactable  @skip(if: $authorizedReadAccessCommunity)
   profile {
     id
     displayName

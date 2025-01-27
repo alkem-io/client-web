@@ -1,4 +1,4 @@
-query JourneyData($spaceId: UUID!, $includeCommunity: Boolean = false) {
+query JourneyData($spaceId: UUID!, $includeCommunity: Boolean = false, $authorizedReadAccessCommunity: Boolean = false) {
   lookup {
     space(ID: $spaceId) {
       id

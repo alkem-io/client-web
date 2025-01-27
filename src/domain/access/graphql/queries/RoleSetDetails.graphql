@@ -19,6 +19,7 @@ query RoleSetRoleAssignment(
   $includeUsers: Boolean = true,
   $includeOrganizations: Boolean = true,
   $includeVirtualContributors: Boolean = true,
+  $authorizedReadAccessCommunity: Boolean = false
 ) {
   lookup {
     roleSet(ID: $roleSetId) {

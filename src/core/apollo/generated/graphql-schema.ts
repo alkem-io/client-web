@@ -8835,7 +8835,7 @@ export type RoleDefinitionPolicyFragment = {
 export type RoleSetMemberUserFragment = {
   __typename?: 'User';
   id: string;
-  isContactable: boolean;
+  isContactable?: boolean;
   email: string;
   firstName: string;
   lastName: string;
@@ -8941,6 +8941,7 @@ export type RoleSetRoleAssignmentQueryVariables = Exact<{
   includeUsers?: InputMaybe<Scalars['Boolean']>;
   includeOrganizations?: InputMaybe<Scalars['Boolean']>;
   includeVirtualContributors?: InputMaybe<Scalars['Boolean']>;
+  authorizedReadAccessCommunity?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type RoleSetRoleAssignmentQuery = {
@@ -8957,7 +8958,7 @@ export type RoleSetRoleAssignmentQuery = {
             users: Array<{
               __typename?: 'User';
               id: string;
-              isContactable: boolean;
+              isContactable?: boolean;
               email: string;
               firstName: string;
               lastName: string;
@@ -19590,6 +19591,7 @@ export type JourneyCommunityPrivilegesQuery = {
 export type JourneyDataQueryVariables = Exact<{
   spaceId: Scalars['UUID'];
   includeCommunity?: InputMaybe<Scalars['Boolean']>;
+  authorizedReadAccessCommunity?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type JourneyDataQuery = {
@@ -19631,7 +19633,7 @@ export type JourneyDataQuery = {
               leadUsers: Array<{
                 __typename?: 'User';
                 id: string;
-                isContactable: boolean;
+                isContactable?: boolean;
                 email: string;
                 firstName: string;
                 lastName: string;
@@ -19803,7 +19805,7 @@ export type JourneyCommunityFragment = {
     leadUsers: Array<{
       __typename?: 'User';
       id: string;
-      isContactable: boolean;
+      isContactable?: boolean;
       email: string;
       firstName: string;
       lastName: string;
@@ -20815,7 +20817,7 @@ export type SpacePageQuery = {
               leadUsers: Array<{
                 __typename?: 'User';
                 id: string;
-                isContactable: boolean;
+                isContactable?: boolean;
                 email: string;
                 firstName: string;
                 lastName: string;
@@ -21069,7 +21071,7 @@ export type SpacePageFragment = {
       leadUsers: Array<{
         __typename?: 'User';
         id: string;
-        isContactable: boolean;
+        isContactable?: boolean;
         email: string;
         firstName: string;
         lastName: string;
