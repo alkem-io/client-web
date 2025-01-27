@@ -40,7 +40,6 @@ const SubspaceRoute = () => {
         {/* Redirecting legacy dashboard links to Subspace Home */}
         <Route path={routes.Dashboard} element={<Navigate replace to="/" />} />
         <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
-        <Route path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}`} element={<SubspaceCalloutPage />} />
         <Route
           path={`${routes.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
           element={<SubspaceCalloutPage>{props => <CalloutRoute {...props} />}</SubspaceCalloutPage>}

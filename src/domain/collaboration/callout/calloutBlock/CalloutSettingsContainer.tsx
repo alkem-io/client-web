@@ -35,7 +35,7 @@ import {
   VerticalAlignTopOutlined,
 } from '@mui/icons-material';
 import { Reference, Tagset } from '@/domain/common/profile/Profile';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import { CalloutsSetParentType } from '@/domain/journey/JourneyTypeName';
 import { WhiteboardFragmentWithCallout } from '../../calloutsSet/useCallouts/useCallouts';
 import { FormatedLink, LinkDetails } from '../links/LinkCollectionCallout';
 import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
@@ -117,7 +117,7 @@ export interface CalloutSettingsContainerProps
   };
   expanded?: boolean;
   onExpand?: () => void;
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: CalloutsSetParentType;
   disableRichMedia?: boolean;
   disablePostResponses?: boolean;
 }
