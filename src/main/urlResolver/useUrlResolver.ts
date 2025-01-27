@@ -91,7 +91,7 @@ const useUrlResolver = ({
     : subspaceData?.space.subspace?.subspace?.id && subspaceData?.space.subspace?.id
     ? ([spaceId, subspaceData.space.subspace.id, subspaceData.space.subspace.subspace.id] as [string, string, string])
     : subspaceData?.space.subspace?.id
-    ? ([spaceId, subspaceData.space.subspace.subspace.id] as [string, string])
+    ? ([spaceId, subspaceData.space.subspace.id] as [string, string])
     : undefined;
   const subspaceId = subspaceData?.space.subspace?.subspace?.id ?? subspaceData?.space.subspace?.id;
   loading = loading || subspaceDataLoading;
