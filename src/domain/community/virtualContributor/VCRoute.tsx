@@ -6,7 +6,7 @@ import VCSettingsRoute from '../virtualContributorAdmin/VCSettingsRoute';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import VCKnowledgeBaseRoute from './knowledgeBase/VCKnowledgeBaseRoute';
 
-const KNOWLEDGE_BASE_PATH = 'knowledge-base';
+export const KNOWLEDGE_BASE_PATH = 'knowledge-base';
 
 export const VCRoute = () => (
   <Routes>

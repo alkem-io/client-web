@@ -41,10 +41,6 @@ export type PostDashboardContainerProps = ContainerPropsWithProvided<EntityIds, 
 
 const PostDashboardContainer = ({ calloutId, postId, ...rendered }: PostDashboardContainerProps) => {
   const { user: userMetadata, isAuthenticated } = useUserContext();
-  // TODO: This is temporary:
-
-  // Disabling all comments interaction with this Posts in the VC knowledge-base until we have server fixed
-  const { vcId } = useUrlResolver();
 
   const user = userMetadata?.user;
 
@@ -82,16 +78,20 @@ const PostDashboardContainer = ({ calloutId, postId, ...rendered }: PostDashboar
 
   const vcInteractions = useMemo(() => post?.comments?.vcInteractions ?? [], [post?.comments?.vcInteractions]);
 
-  const commentsPrivileges = post?.comments?.authorization?.myPrivileges ?? [];
-  const canDeleteComments = !vcId && commentsPrivileges.includes(AuthorizationPrivilege.Delete);
+  // TODO: This is temporary:
+  // Disabling all comments interaction with this Posts in the VC knowledge-base until we have server fixed
+  const { vcId } = useUrlResolver();
+  const commentsPrivileges = vcId ? [] : post?.comments?.authorization?.myPrivileges ?? [];
+
+  const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteComment = useCallback(
     authorId => canDeleteComments || (isAuthenticated && authorId === user?.id),
     [user, isAuthenticated, canDeleteComments]
   );
 
-  const canReadComments = !vcId && commentsPrivileges.includes(AuthorizationPrivilege.Read);
-  const canPostComments = !vcId && commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage);
-  const canAddReaction = !vcId && commentsPrivileges.includes(AuthorizationPrivilege.CreateMessageReaction);
+  const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
+  const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessage);
+  const canAddReaction = commentsPrivileges.includes(AuthorizationPrivilege.CreateMessageReaction);
 
   const [deleteComment, { loading: deletingComment }] = useRemoveMessageOnRoomMutation({
     update: (cache, { data }) =>

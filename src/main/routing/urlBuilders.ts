@@ -2,6 +2,7 @@ import { _AUTH_LOGIN_PATH } from '@/core/auth/authentication/constants/authentic
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { isAbsoluteUrl } from '@/core/utils/links';
+import { KNOWLEDGE_BASE_PATH } from '@/domain/community/virtualContributor/VCRoute';
 
 export const buildSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings`;
@@ -10,6 +11,10 @@ export const buildSettingsUrl = (entityUrl: string) => {
 export const buildSettingsProfileUrl = (entityUrl: string) => {
   return `${entityUrl}/settings/profile`;
 };
+
+const buildVCProfileUrl = (vcNameId: string) => `/vc/${vcNameId}`;
+export const buildCalloutOnVCKnowledgeBaseUrl = (vcNameId: string, calloutNameId: string) =>
+  `${buildVCProfileUrl(vcNameId)}/${KNOWLEDGE_BASE_PATH}/${calloutNameId}`;
 
 export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
 

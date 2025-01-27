@@ -142,7 +142,7 @@ const usePostSettings = ({
 
   return {
     contributionId: postContribution?.id,
-    post: post,
+    post,
     postsNames: parentCalloutPostNames,
     parentCallout,
     loading,

@@ -39,7 +39,8 @@ fragment PostSettingsCallout on Callout {
   id
   nameID
   type
-    contributions {
+  # TODO This is done to find the contributionId for this postId (see usePostSettings), there must be an easier way
+  contributions {
     id
     post {
       id
