@@ -26,25 +26,18 @@ const COLLAPSED_LIST_ITEM_LIMIT = 5;
 const LinksList = ({ items = [], emptyListCaption, loading = false }: LinksListProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleExpand = () => {
-    setIsExpanded(!isExpanded);
+  const handleExpand = () => setIsExpanded(!isExpanded);
+
+  const listItemStyles = {
+    height: gutters(2),
+    gap: 1,
+    display: 'flex',
+    alignItems: 'center',
   };
 
   return (
     <List sx={{ p: 0 }}>
-      {loading &&
-        times(3, i => (
-          <ListItem
-            key={i}
-            component={Skeleton}
-            sx={{
-              height: gutters(2),
-              gap: 1,
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          />
-        ))}
+      {loading && times(3, i => <ListItem key={i} component={Skeleton} sx={listItemStyles} />)}
       {!loading && items.length === 0 && emptyListCaption && <CaptionSmall>{emptyListCaption}</CaptionSmall>}
       {!loading &&
         items.length > 0 &&
@@ -53,13 +46,7 @@ const LinksList = ({ items = [], emptyListCaption, loading = false }: LinksListP
             key={item.id}
             component={RouterLink}
             to={item.uri}
-            sx={{
-              height: gutters(2),
-              gap: 1,
-              display: 'flex',
-              alignItems: 'center',
-              marginTop: gutters(0.5),
-            }}
+            sx={{ ...listItemStyles, marginTop: gutters(0.5) }}
           >
             <Avatar variant="rounded" alt="subspace avatar" src={item.cardBanner} aria-label="Subspace avatar" />
 
@@ -75,13 +62,7 @@ const LinksList = ({ items = [], emptyListCaption, loading = false }: LinksListP
               key={item.id}
               component={RouterLink}
               to={item.uri}
-              sx={{
-                height: gutters(2),
-                gap: 1,
-                display: 'flex',
-                alignItems: 'center',
-                marginTop: gutters(0.5),
-              }}
+              sx={{ ...listItemStyles, marginTop: gutters(0.5) }}
             >
               <Avatar variant="rounded" alt="subspace avatar" src={item.cardBanner} aria-label="Subspace avatar" />
 
