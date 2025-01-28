@@ -62,7 +62,7 @@ const CreateInnovationPackDialog = ({
           <BlockTitle>{t('pages.admin.innovation-packs.create')}</BlockTitle>
         </DialogHeader>
         <DialogContent>
-          <StorageConfigContextProvider userId={userId} locationType="user">
+          <StorageConfigContextProvider accountId={accountId} locationType="account">
             <InnovationPackForm isNew onSubmit={handleSubmit} loading={loading || !accountId} />
           </StorageConfigContextProvider>
         </DialogContent>

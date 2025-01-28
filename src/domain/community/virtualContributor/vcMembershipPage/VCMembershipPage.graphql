@@ -1,9 +1,11 @@
-query VCMemberships($virtualContributorId: UUID_NAMEID!) {
-  virtualContributor(ID: $virtualContributorId) {
-    id
-    authorization {
+query VCMemberships($virtualContributorId: UUID!) {
+  lookup {
+    virtualContributor(ID: $virtualContributorId) {
       id
-      myPrivileges
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
   rolesVirtualContributor(rolesData: { virtualContributorID: $virtualContributorId }) {

@@ -16,11 +16,11 @@ import { gutters } from '@/core/ui/grid/utils';
 import { MembershipProps } from './MyMembershipsDialog.model';
 import { useColumns } from '@/core/ui/grid/GridContext';
 import webkitLineClamp from '@/core/ui/utils/webkitLineClamp';
-import { SpaceLevel, CommunityRoleType, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, RoleName, VisualType } from '@/core/apollo/generated/graphql-schema';
 
 import { defaultVisualUrls } from '@/domain/journey/defaultVisuals/defaultVisualUrls';
 
-const VISIBLE_COMMUNITY_ROLES = [CommunityRoleType.Admin, CommunityRoleType.Lead];
+const VISIBLE_COMMUNITY_ROLES = [RoleName.Admin, RoleName.Lead];
 
 export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProps }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -82,7 +82,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
 
             {isMobile && (
               <Caption color="primary">
-                {communityRoles?.map(role => t(`common.enums.communityRole.${role}` as const)).join(', ')}
+                {communityRoles?.map(role => t(`common.roles.${role}` as const)).join(', ')}
               </Caption>
             )}
           </BadgeCardView>
@@ -90,7 +90,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
           <Gutters flexDirection="row" disableGap padding={0}>
             {!isMobile && (
               <Caption color="primary" display="flex" alignItems="center">
-                {communityRoles?.map(role => t(`common.enums.communityRole.${role}` as const)).join(', ')}
+                {communityRoles?.map(role => t(`common.roles.${role}` as const)).join(', ')}
               </Caption>
             )}
 

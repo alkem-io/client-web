@@ -619,7 +619,6 @@ export type AuthenticationProviderConfigFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthorizationKeySpecifier = (
-  | 'anonymousReadAccess'
   | 'createdDate'
   | 'credentialRules'
   | 'id'
@@ -631,7 +630,6 @@ export type AuthorizationKeySpecifier = (
   | AuthorizationKeySpecifier
 )[];
 export type AuthorizationFieldPolicy = {
-  anonymousReadAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   credentialRules?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1271,23 +1269,23 @@ export type CreateLocationDataFieldPolicy = {
   stateOrProvince?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateProfileDataKeySpecifier = (
-  | 'avatarURL'
   | 'description'
   | 'displayName'
   | 'location'
   | 'referencesData'
   | 'tagline'
   | 'tagsets'
+  | 'visuals'
   | CreateProfileDataKeySpecifier
 )[];
 export type CreateProfileDataFieldPolicy = {
-  avatarURL?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   location?: FieldPolicy<any> | FieldReadFunction<any>;
   referencesData?: FieldPolicy<any> | FieldReadFunction<any>;
   tagline?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsets?: FieldPolicy<any> | FieldReadFunction<any>;
+  visuals?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateReferenceDataKeySpecifier = ('description' | 'name' | 'uri' | CreateReferenceDataKeySpecifier)[];
 export type CreateReferenceDataFieldPolicy = {
@@ -1301,9 +1299,16 @@ export type CreateTagsetDataFieldPolicy = {
   tags?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CreateWhiteboardDataKeySpecifier = ('content' | CreateWhiteboardDataKeySpecifier)[];
+export type CreateVisualOnProfileDataKeySpecifier = ('name' | 'uri' | CreateVisualOnProfileDataKeySpecifier)[];
+export type CreateVisualOnProfileDataFieldPolicy = {
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  uri?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateWhiteboardDataKeySpecifier = ('content' | 'nameID' | 'profile' | CreateWhiteboardDataKeySpecifier)[];
 export type CreateWhiteboardDataFieldPolicy = {
   content?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CredentialKeySpecifier = (
   | 'createdDate'
@@ -1949,13 +1954,23 @@ export type LocationFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LookupByNameQueryResultsKeySpecifier = (
+  | 'innovationHub'
   | 'innovationPack'
+  | 'organization'
+  | 'space'
   | 'template'
+  | 'user'
+  | 'virtualContributor'
   | LookupByNameQueryResultsKeySpecifier
 )[];
 export type LookupByNameQueryResultsFieldPolicy = {
+  innovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
+  organization?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
   template?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LookupMyPrivilegesQueryResultsKeySpecifier = (
   | 'account'
@@ -2036,8 +2051,10 @@ export type LookupQueryResultsKeySpecifier = (
   | 'innovationHub'
   | 'innovationPack'
   | 'invitation'
+  | 'knowledgeBase'
   | 'license'
   | 'myPrivileges'
+  | 'organization'
   | 'post'
   | 'profile'
   | 'roleSet'
@@ -2071,8 +2088,10 @@ export type LookupQueryResultsFieldPolicy = {
   innovationHub?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPack?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
+  knowledgeBase?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
   myPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
+  organization?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSet?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2163,7 +2182,6 @@ export type MutationKeySpecifier = (
   | 'askChatGuidanceQuestion'
   | 'assignLicensePlanToAccount'
   | 'assignLicensePlanToSpace'
-  | 'assignOrganizationRoleToUser'
   | 'assignPlatformRoleToUser'
   | 'assignRoleToOrganization'
   | 'assignRoleToUser'
@@ -2233,9 +2251,8 @@ export type MutationKeySpecifier = (
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
   | 'ingest'
-  | 'inviteContributorsForRoleSetMembership'
+  | 'inviteContributorsEntryRoleOnRoleSet'
   | 'inviteUserToPlatformAndRoleSet'
-  | 'inviteUserToPlatformWithRole'
   | 'joinRoleSet'
   | 'licenseResetOnAccount'
   | 'messageUser'
@@ -2244,7 +2261,6 @@ export type MutationKeySpecifier = (
   | 'refreshVirtualContributorBodyOfKnowledge'
   | 'removeCommunityGuidelinesContent'
   | 'removeMessageOnRoom'
-  | 'removeOrganizationRoleFromUser'
   | 'removePlatformRoleFromUser'
   | 'removeReactionToMessageInRoom'
   | 'removeRoleFromOrganization'
@@ -2335,7 +2351,6 @@ export type MutationFieldPolicy = {
   askChatGuidanceQuestion?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignOrganizationRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignPlatformRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   assignRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2405,9 +2420,8 @@ export type MutationFieldPolicy = {
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   ingest?: FieldPolicy<any> | FieldReadFunction<any>;
-  inviteContributorsForRoleSetMembership?: FieldPolicy<any> | FieldReadFunction<any>;
+  inviteContributorsEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteUserToPlatformAndRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
-  inviteUserToPlatformWithRole?: FieldPolicy<any> | FieldReadFunction<any>;
   joinRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   licenseResetOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2416,7 +2430,6 @@ export type MutationFieldPolicy = {
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeOrganizationRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2502,9 +2515,7 @@ export type NVPFieldPolicy = {
 };
 export type OrganizationKeySpecifier = (
   | 'account'
-  | 'admins'
   | 'agent'
-  | 'associates'
   | 'authorization'
   | 'contactEmail'
   | 'createdDate'
@@ -2514,10 +2525,9 @@ export type OrganizationKeySpecifier = (
   | 'id'
   | 'legalEntityName'
   | 'metrics'
-  | 'myRoles'
   | 'nameID'
-  | 'owners'
   | 'profile'
+  | 'roleSet'
   | 'settings'
   | 'storageAggregator'
   | 'updatedDate'
@@ -2527,9 +2537,7 @@ export type OrganizationKeySpecifier = (
 )[];
 export type OrganizationFieldPolicy = {
   account?: FieldPolicy<any> | FieldReadFunction<any>;
-  admins?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
-  associates?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   contactEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2539,10 +2547,9 @@ export type OrganizationFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   legalEntityName?: FieldPolicy<any> | FieldReadFunction<any>;
   metrics?: FieldPolicy<any> | FieldReadFunction<any>;
-  myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  owners?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2590,6 +2597,15 @@ export type OrganizationVerificationFieldPolicy = {
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   status?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type OrganizationsInRolesResponseKeySpecifier = (
+  | 'organizations'
+  | 'role'
+  | OrganizationsInRolesResponseKeySpecifier
+)[];
+export type OrganizationsInRolesResponseFieldPolicy = {
+  organizations?: FieldPolicy<any> | FieldReadFunction<any>;
+  role?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OryConfigKeySpecifier = ('issuer' | 'kratosPublicBaseURL' | OryConfigKeySpecifier)[];
 export type OryConfigFieldPolicy = {
@@ -2643,8 +2659,7 @@ export type PlatformKeySpecifier = (
   | 'library'
   | 'licensingFramework'
   | 'metadata'
-  | 'myRoles'
-  | 'platformInvitations'
+  | 'roleSet'
   | 'storageAggregator'
   | 'templatesManager'
   | 'updatedDate'
@@ -2661,8 +2676,7 @@ export type PlatformFieldPolicy = {
   library?: FieldPolicy<any> | FieldReadFunction<any>;
   licensingFramework?: FieldPolicy<any> | FieldReadFunction<any>;
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
-  myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
-  platformInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2860,7 +2874,6 @@ export type ProfileCredentialVerifiedFieldPolicy = {
   vc?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QueryKeySpecifier = (
-  | 'account'
   | 'accounts'
   | 'activityFeed'
   | 'activityFeedGrouped'
@@ -2898,7 +2911,6 @@ export type QueryKeySpecifier = (
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
-  account?: FieldPolicy<any> | FieldReadFunction<any>;
   accounts?: FieldPolicy<any> | FieldReadFunction<any>;
   activityFeed?: FieldPolicy<any> | FieldReadFunction<any>;
   activityFeedGrouped?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3044,11 +3056,11 @@ export type RoleKeySpecifier = (
   | 'createdDate'
   | 'credential'
   | 'id'
+  | 'name'
   | 'organizationPolicy'
   | 'parentCredentials'
   | 'requiresEntryRole'
   | 'requiresSameRoleInParentRoleSet'
-  | 'type'
   | 'updatedDate'
   | 'userPolicy'
   | 'virtualContributorPolicy'
@@ -3058,11 +3070,11 @@ export type RoleFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   credential?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationPolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   parentCredentials?: FieldPolicy<any> | FieldReadFunction<any>;
   requiresEntryRole?: FieldPolicy<any> | FieldReadFunction<any>;
   requiresSameRoleInParentRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
-  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   userPolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorPolicy?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3071,10 +3083,10 @@ export type RoleSetKeySpecifier = (
   | 'applicationForm'
   | 'applications'
   | 'authorization'
-  | 'availableUsersForLeadRole'
-  | 'availableUsersForMemberRole'
+  | 'availableUsersForElevatedRole'
+  | 'availableUsersForEntryRole'
   | 'createdDate'
-  | 'entryRoleType'
+  | 'entryRoleName'
   | 'id'
   | 'invitations'
   | 'license'
@@ -3082,22 +3094,27 @@ export type RoleSetKeySpecifier = (
   | 'myRoles'
   | 'myRolesImplicit'
   | 'organizationsInRole'
+  | 'organizationsInRoles'
   | 'platformInvitations'
   | 'roleDefinition'
   | 'roleDefinitions'
+  | 'roleNames'
+  | 'type'
   | 'updatedDate'
   | 'usersInRole'
+  | 'usersInRoles'
   | 'virtualContributorsInRole'
+  | 'virtualContributorsInRoles'
   | RoleSetKeySpecifier
 )[];
 export type RoleSetFieldPolicy = {
   applicationForm?: FieldPolicy<any> | FieldReadFunction<any>;
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  availableUsersForLeadRole?: FieldPolicy<any> | FieldReadFunction<any>;
-  availableUsersForMemberRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  availableUsersForElevatedRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  availableUsersForEntryRole?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  entryRoleType?: FieldPolicy<any> | FieldReadFunction<any>;
+  entryRoleName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   invitations?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3105,12 +3122,17 @@ export type RoleSetFieldPolicy = {
   myRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   myRolesImplicit?: FieldPolicy<any> | FieldReadFunction<any>;
   organizationsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizationsInRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   platformInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
   roleDefinition?: FieldPolicy<any> | FieldReadFunction<any>;
   roleDefinitions?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleNames?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   usersInRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  usersInRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorsInRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributorsInRoles?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RolesResultKeySpecifier = ('displayName' | 'id' | 'nameID' | 'roles' | RolesResultKeySpecifier)[];
 export type RolesResultFieldPolicy = {
@@ -3839,6 +3861,11 @@ export type UserSettingsPrivacyKeySpecifier = ('contributionRolesPubliclyVisible
 export type UserSettingsPrivacyFieldPolicy = {
   contributionRolesPubliclyVisible?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type UsersInRolesResponseKeySpecifier = ('role' | 'users' | UsersInRolesResponseKeySpecifier)[];
+export type UsersInRolesResponseFieldPolicy = {
+  role?: FieldPolicy<any> | FieldReadFunction<any>;
+  users?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type VcInteractionKeySpecifier = (
   | 'createdDate'
   | 'id'
@@ -3919,6 +3946,15 @@ export type VirtualContributorUpdatedSubscriptionResultKeySpecifier = (
 )[];
 export type VirtualContributorUpdatedSubscriptionResultFieldPolicy = {
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VirtualContributorsInRolesResponseKeySpecifier = (
+  | 'role'
+  | 'virtualContributors'
+  | VirtualContributorsInRolesResponseKeySpecifier
+)[];
+export type VirtualContributorsInRolesResponseFieldPolicy = {
+  role?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VisualKeySpecifier = (
   | 'allowedTypes'
@@ -4396,6 +4432,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CreateTagsetDataKeySpecifier | (() => undefined | CreateTagsetDataKeySpecifier);
     fields?: CreateTagsetDataFieldPolicy;
   };
+  CreateVisualOnProfileData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateVisualOnProfileDataKeySpecifier
+      | (() => undefined | CreateVisualOnProfileDataKeySpecifier);
+    fields?: CreateVisualOnProfileDataFieldPolicy;
+  };
   CreateWhiteboardData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateWhiteboardDataKeySpecifier | (() => undefined | CreateWhiteboardDataKeySpecifier);
     fields?: CreateWhiteboardDataFieldPolicy;
@@ -4635,6 +4678,13 @@ export type StrictTypedTypePolicies = {
   OrganizationVerification?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OrganizationVerificationKeySpecifier | (() => undefined | OrganizationVerificationKeySpecifier);
     fields?: OrganizationVerificationFieldPolicy;
+  };
+  OrganizationsInRolesResponse?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | OrganizationsInRolesResponseKeySpecifier
+      | (() => undefined | OrganizationsInRolesResponseKeySpecifier);
+    fields?: OrganizationsInRolesResponseFieldPolicy;
   };
   OryConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OryConfigKeySpecifier | (() => undefined | OryConfigKeySpecifier);
@@ -4936,6 +4986,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | UserSettingsPrivacyKeySpecifier | (() => undefined | UserSettingsPrivacyKeySpecifier);
     fields?: UserSettingsPrivacyFieldPolicy;
   };
+  UsersInRolesResponse?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UsersInRolesResponseKeySpecifier | (() => undefined | UsersInRolesResponseKeySpecifier);
+    fields?: UsersInRolesResponseFieldPolicy;
+  };
   VcInteraction?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VcInteractionKeySpecifier | (() => undefined | VcInteractionKeySpecifier);
     fields?: VcInteractionFieldPolicy;
@@ -4958,6 +5012,13 @@ export type StrictTypedTypePolicies = {
       | VirtualContributorUpdatedSubscriptionResultKeySpecifier
       | (() => undefined | VirtualContributorUpdatedSubscriptionResultKeySpecifier);
     fields?: VirtualContributorUpdatedSubscriptionResultFieldPolicy;
+  };
+  VirtualContributorsInRolesResponse?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | VirtualContributorsInRolesResponseKeySpecifier
+      | (() => undefined | VirtualContributorsInRolesResponseKeySpecifier);
+    fields?: VirtualContributorsInRolesResponseFieldPolicy;
   };
   Visual?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VisualKeySpecifier | (() => undefined | VisualKeySpecifier);

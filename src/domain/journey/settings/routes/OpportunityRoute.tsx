@@ -5,12 +5,11 @@ import AdminOpportunityCommunityPage from '@/domain/journey/opportunity/pages/Ad
 import OpportunityCommunicationsPage from '@/domain/platform/admin/opportunity/pages/OpportunityCommunications/OpportunityCommunicationsPage';
 import OpportunityContextPage from '@/domain/platform/admin/opportunity/pages/OpportunityContext/OpportunityContextPage';
 import OpportunityProfilePage from '@/domain/platform/admin/opportunity/pages/OpportunityProfile/OpportunityProfilePage';
-import CommunityGroupsRoute from '@/domain/platform/admin/community/routes/CommunityGroupsAdminRoutes';
 import OpportunitySettingsPage from '@/domain/platform/admin/opportunity/pages/OpportunitySettings/OpportunitySettingsPage';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import NonSpaceAdminRedirect from '../nonSpaceAdminRedirect/NonSpaceAdminRedirect';
 
-export const OpportunityRoute = ({ parentCommunityId }: { parentCommunityId: string | undefined }) => {
+export const OpportunityRoute = () => {
   const { subspace } = useSubSpace();
 
   return (
@@ -25,12 +24,6 @@ export const OpportunityRoute = ({ parentCommunityId }: { parentCommunityId: str
             element={<OpportunityCommunicationsPage communityId={subspace?.community?.id} />}
           />
           <Route path="community" element={<AdminOpportunityCommunityPage />} />
-          <Route
-            path="community/groups/*"
-            element={
-              <CommunityGroupsRoute communityId={subspace?.community?.id} parentCommunityId={parentCommunityId} />
-            }
-          />
           <Route path="settings" element={<OpportunitySettingsPage />} />
           <Route path="*" element={<Error404 />} />
         </Routes>

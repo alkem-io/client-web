@@ -3,29 +3,29 @@ import OrganizationAdminLayout from '../layout/OrganizationAdminLayout';
 import { SettingsSection } from '../../../platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '../../../platform/admin/layout/EntitySettingsLayout/types';
 import ContributorAccountView from '@/domain/community/contributor/Account/ContributorAccountView';
-import { useUrlParams } from '@/core/routing/useUrlParams';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import { useAccountInformationQuery, useOrganizationAccountQuery } from '@/core/apollo/generated/apollo-hooks';
 
 const OrganizationAccountPage: FC<SettingsPageProps> = () => {
-  const { organizationNameId = '' } = useUrlParams();
+  const { organizationId } = useUrlResolver();
   const { data: organizationData, loading: loadingOrganization } = useOrganizationAccountQuery({
     variables: {
-      organizationNameId,
+      organizationId: organizationId!,
     },
-    skip: !organizationNameId,
+    skip: !organizationId,
   });
 
   const { data: accountData, loading: loadingAccount } = useAccountInformationQuery({
     variables: {
-      accountId: organizationData?.organization.account?.id!,
+      accountId: organizationData?.lookup.organization?.account?.id!,
     },
-    skip: !organizationData?.organization.account?.id,
+    skip: !organizationData?.lookup.organization?.account?.id,
   });
 
   return (
     <OrganizationAdminLayout currentTab={SettingsSection.Account}>
       <ContributorAccountView
-        accountHostName={organizationData?.organization.profile?.displayName ?? ''}
+        accountHostName={organizationData?.lookup.organization?.profile?.displayName ?? ''}
         account={accountData?.lookup.account}
         loading={loadingOrganization || loadingAccount}
       />

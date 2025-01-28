@@ -1,0 +1,21 @@
+mutation RemoveRoleFromUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
+  removeRoleFromUser(roleData: { roleSetID: $roleSetId, role: $role, contributorID: $contributorId }) {
+    id
+  }
+}
+
+mutation removeRoleFromOrganization($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
+  removeRoleFromOrganization(
+    roleData: { roleSetID: $roleSetId, role: $role, contributorID: $contributorId }
+  ) {
+    id
+  }
+}
+
+mutation removeRoleFromVirtualContributor($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
+  removeRoleFromVirtualContributor(
+    roleData: { roleSetID: $roleSetId, role: $role, contributorID: $contributorId }
+  ) {
+    id
+  }
+}

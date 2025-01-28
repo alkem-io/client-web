@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import useNavigate from '@/core/routing/useNavigate';
 import { Button } from '@mui/material';
 import BookIcon from '@mui/icons-material/Book';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
@@ -28,11 +28,14 @@ const SectionContent = ({ children }) => {
   return <Text>{children}</Text>;
 };
 
-export const VCProfileContentView = ({ bokProfile, virtualContributor }: VCProfilePageViewProps) => {
+export const VCProfileContentView = ({
+  bokProfile,
+  virtualContributor,
+  openKnowledgeBaseDialog,
+}: VCProfilePageViewProps) => {
   const { palette } = useTheme();
   const { t } = useTranslation();
-
-  const [showKnowledgeBase, setShowKnowledgeBase] = useState(false);
+  const navigate = useNavigate();
 
   const darkIcons = palette.icons.dark;
 
@@ -50,7 +53,15 @@ export const VCProfileContentView = ({ bokProfile, virtualContributor }: VCProfi
   const hasSpaceKnowledge = vcType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
 
   const handleKnowledgeBaseClick = () => {
-    setShowKnowledgeBase(true);
+    if (virtualContributor) {
+      navigate(`${virtualContributor.profile.url}/knowledge-base`);
+    }
+  };
+
+  const onCloseKnowledgeBase = () => {
+    if (virtualContributor) {
+      navigate(virtualContributor.profile.url);
+    }
   };
 
   return (
@@ -129,11 +140,11 @@ export const VCProfileContentView = ({ bokProfile, virtualContributor }: VCProfi
           />
         </SectionContent>
       </PageContentBlock>
-      {showKnowledgeBase && (
+      {openKnowledgeBaseDialog && (
         <KnowledgeBaseDialog
           id={virtualContributor?.id ?? ''}
           title={`${name}: ${t('virtualContributorSpaceSettings.bodyOfKnowledge')}`}
-          onClose={() => setShowKnowledgeBase(false)}
+          onClose={onCloseKnowledgeBase}
         />
       )}
     </>

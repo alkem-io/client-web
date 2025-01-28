@@ -152,6 +152,7 @@ const useCallouts = ({
           tagset => tagset.name === CALLOUT_DISPLAY_LOCATION_TAGSET_NAME
         );
         const flowStates = innovationFlowTagset?.tags;
+
         return {
           ...callout,
           framing: {
@@ -167,7 +168,7 @@ const useCallouts = ({
           groupName: getCalloutGroupNameValue(groupNameTagset?.tags),
         } as TypedCallout;
       }),
-    [calloutsSet]
+    [calloutsSet, canSaveAsTemplate, entitledToSaveAsTemplate]
   );
 
   const submitCalloutsSortOrder = useCallback(

@@ -386,12 +386,6 @@
       "not-verified": ""
     },
     "enums": {
-      "communityRole": {
-        "ADMIN": "$t(common.admin)",
-        "LEAD": "$t(common.lead)",
-        "HOST": "$t(common.host)",
-        "MEMBER": "$t(common.member)"
-      },
       "innovationFlowState": {
         "new": "New",
         "beingRefined": "Being Refined",
@@ -409,103 +403,6 @@
         "ACCOUNT": "Account",
         "HIDDEN": "Hidden",
         "PUBLIC": "Public"
-      },
-      "authorization-credentials": {
-        "GLOBAL_ADMIN": {
-          "name": "Global Admin",
-          "order": 0,
-          "hidden": false
-        },
-        "GLOBAL_ADMIN_HUBS": {
-          "name": "Global Admin Spaces",
-          "order": 1,
-          "hidden": false
-        },
-        "GLOBAL_ADMIN_COMMUNITY": {
-          "name": "Global Community Admin",
-          "order": 2,
-          "hidden": false
-        },
-        "GLOBAL_REGISTERED": {
-          "name": "Registered",
-          "order": 999,
-          "hidden": true
-        },
-        "HUB_ADMIN": {
-          "name": "Space Admin",
-          "order": 3,
-          "hidden": false
-        },
-        "HUB_HOST": {
-          "name": "Space Host",
-          "order": 4,
-          "hidden": true
-        },
-        "HUB_MEMBER": {
-          "name": "Space Member",
-          "order": 5,
-          "hidden": true
-        },
-        "subspace_ADMIN": {
-          "name": "Subspace Admin",
-          "order": 6,
-          "hidden": false
-        },
-        "subspace_LEAD": {
-          "name": "Subspace Lead",
-          "order": 7,
-          "hidden": true
-        },
-        "subspace_MEMBER": {
-          "name": "Subspace Member",
-          "order": 8,
-          "hidden": true
-        },
-        "OPPORTUNITY_ADMIN": {
-          "name": "Subspace Admin",
-          "order": 9,
-          "hidden": true
-        },
-        "OPPORTUNITY_MEMBER": {
-          "name": "Subspace Member",
-          "order": 10,
-          "hidden": true
-        },
-        "OPPORTUNITY_LEAD": {
-          "name": "Subspace Lead",
-          "order": 11,
-          "hidden": true
-        },
-        "ORGANIZATION_OWNER": {
-          "name": "Organization Owner",
-          "order": 12,
-          "hidden": false
-        },
-        "ORGANIZATION_ADMIN": {
-          "name": "Organization Admin",
-          "order": 13,
-          "hidden": false
-        },
-        "ORGANIZATION_ASSOCIATE": {
-          "name": "Organization Associate",
-          "order": 14,
-          "hidden": true
-        },
-        "USER_SELF_MANAGEMENT": {
-          "name": "User Self Management",
-          "order": 15,
-          "hidden": true
-        },
-        "USER_GROUP_MEMBER": {
-          "name": "User Group Member",
-          "order": 16,
-          "hidden": true
-        },
-        "INNOVATION_PACK_PROVIDER": {
-          "name": "Template Pack Provider",
-          "order": 17,
-          "hidden": true
-        }
       },
       "edit-mode": {
         "new": "New",
@@ -550,6 +447,21 @@
       "users-contributing": "users that are contributing",
       "all-contributing-users": "all contributing users"
     },
+    "roles": {
+      "ADMIN": "$t(common.admin)",
+      "LEAD": "$t(common.lead)",
+      "HOST": "$t(common.host)",
+      "MEMBER": "$t(common.member)",
+      "ASSOCIATE": "Associate",
+      "OWNER": "Owner",
+      "GLOBAL_ADMIN": "Global Admin",
+      "GLOBAL_SUPPORT": "Support Admin",
+      "GLOBAL_LICENSE_MANAGER": "License Manager",
+      "GLOBAL_COMMUNITY_READER": "Community Manager",
+      "GLOBAL_SPACES_READER": "Spaces Reader",
+      "PLATFORM_BETA_TESTER": "Beta Tester",
+      "PLATFORM_VC_CAMPAIGN": "VC Early Access"
+    },
     "time": {
       "short": {
         "timeAgo": "{{time}}",
@@ -581,13 +493,6 @@
         "year": "{{count}} year",
         "year_plural": "{{count}} years"
       }
-    },
-    "roles": {
-      "GLOBAL_ADMIN": "Global Admin",
-      "SUPPORT": "Support Admin",
-      "LICENSE_MANAGER": "License Manager",
-      "BETA_TESTER": "Beta Tester",
-      "VC_CAMPAIGN": "VC Early Access"
     }
   },
   "community": {
@@ -1961,6 +1866,8 @@
             "innovationPacks": "$t(common.innovation-packs)",
             "usageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your account.",
             "limitNotice": "Contact the Alkemio team to increase the limits on your account",
+            "notAvailable": "Not available",
+            "notAvailableNotice": "Contact the Alkemio team to enable this feature on your account",
             "noTemplates": "This Template Pack doesn't have any template yet",
             "customHomepages": "Custom Homepages",
             "hostTitle": "Host",
@@ -2297,7 +2204,8 @@
       "noSpaceMemberships": "You’re not currently a member of any Space. Click here to visit our {{welcomeSpace}}, which is a fantastic starting point for your journey on Alkemio!",
       "search": {
         "placeholder": "Search…",
-        "noResults": "No results matched your search terms."
+        "noResults": "No results matched your search terms.",
+        "searching": "Searching…"
       },
       "seeAll": "Show more",
       "activeSpacesFilter": "Most Active Spaces"
@@ -3034,6 +2942,7 @@
   },
   "createSpace": {
     "title": "Create a Space",
+    "addTutorialsLabel": "Show Tutorials in this Space",
     "terms": {
       "checkboxLabel": "I have read and accept the <terms>terms and agreements (click here to open them)</terms> for creating a Space.",
       "dialogTitle": "Terms and Conditions for creating a Space",
@@ -3155,8 +3064,7 @@
       "externalAI": "External AI"
     },
     "loadingInfo": {
-      "vcSpaceCreation": "A Space for interaction with your Virtual Contributor is being built. This process may take a few moments to complete.",
-      "vcCreation": "Your Virtual Contributor is being created. This process may take a few moments to complete."
+      "vcSpaceCreation": "A Space for interaction with your Virtual Contributor is being built. This process may take a few moments to complete."
     },
     "cancel": {
       "title": "Discard Virtual Contributor",
@@ -3219,13 +3127,16 @@
       "success": "Message sent successfully!"
     },
     "trySection": {
-      "title": "🎉 Try it out!",
-      "subTitle": "Your Virtual Contributor is successfully created and we added it to your Personal Space <tooltip><icon /></tooltip>.<br/>You can interact with it by typing <b>@{{vcName}}</b> in a comment on any post in your Space. Give it a try in the preview below!",
-      "subTitleInfo": "When you create your first VC, we automatically generate a Space for you. This Space functions like any other Space on Alkemio, and you can customize the settings according to your preferences.",
+      "title": "👍That’s it!",
+      "subTitle": "To start interacting, simply type @{{vcName}} in a comment. Give it a try in the preview below.",
       "postTitle": "Example post",
-      "postDescription": "At Alkemio, we utilize Posts to facilitate collaborative interactions with AI. Unlike private chats, other members within a Space can learn from and contribute to these interactions.\n\nSimilar to mentioning a human contributor, you can use the \"@\" symbol followed by the Virtual Contributor's name.",
-      "lastInfoBox": "To <b>change the knowledge</b> of this Virtual Contributor, visit its Knowledge (Sub)Space.\nDon't forget to press the Update button on your Virtual Contributor's profile settings when you're done!",
+      "postDescription": "At Alkemio, we utilize Posts to facilitate collaborative interactions with AI. Unlike private chats, other members within a Space can learn from and contribute to these interactions. Similar to mentioning a human contributor, you can use the ‘@’ symbol followed by the Virtual Contributor’s name.",
       "continueButton": "Visit Space"
+    },
+    "tryInfoSection": {
+      "title": "👍That’s it!",
+      "description": "Your Virtual Contributor is ready! To start interacting, invite the Virtual Contributor to a space and once it’s a member, simply type @{{vcName}} in a comment.\n\nEnjoy!",
+      "goToProfile": "Visit {{vcName}}'s Profile"
     },
     "existingSpace": {
       "title": "Choose a (Sub)Space",
@@ -3233,9 +3144,19 @@
       "label": "(Sub)Space",
       "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor, please go back and follow the Written Knowledge flow."
     },
-    "insufficientPrivileges": {
-      "title": "Insufficient Privileges",
-      "description": "You don't have the necessary privileges to complete the creation. Please contact the owners of this account."
+    "chooseCommunity": {
+      "title": "Hello, {{vcName}}!",
+      "description": "Your Virtual Contributor is ready! To start interacting, your Virtual Contributor should be added to a Space. Select one below, or continue without. In that case you will have to add the VC manually through the Community tab of a Space.",
+      "label": "Space",
+      "selectSpacesPlaceholder": "Select a Space",
+      "noSpacesPlaceholder": "No Spaces available",
+      "cancelAddToCommunity": "Proceed without membership",
+      "addToCommunity": "Add and go to Space",
+      "createAndAddToCommunity": "Create, add, and go to Space",
+      "confirm": {
+        "title": "Continue without Space membership",
+        "description": "A Virtual Contributor can only interact within a Space. Are you sure you want to proceed without adding them to a Space? You can still invite the Virtual Contributor later through the Space’s Community tab."
+      }
     }
   }
 }

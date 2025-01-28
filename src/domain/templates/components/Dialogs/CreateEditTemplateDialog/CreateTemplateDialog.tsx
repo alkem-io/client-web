@@ -28,6 +28,7 @@ const CreateTemplateDialog = ({
   const { t } = useTranslation();
   const [confirmCloseDialogOpen, setConfirmCloseDialogOpen] = useState<boolean>(false);
   const [defaultValues, setDefaultValues] = useState<AnyTemplate | undefined>();
+
   useEffect(() => {
     (async () => {
       if (open) {
@@ -73,7 +74,10 @@ const CreateTemplateDialog = ({
         }}
         actions={{
           onCancel: () => setConfirmCloseDialogOpen(false),
-          onConfirm: () => onClose?.(),
+          onConfirm: () => {
+            onClose?.();
+            setConfirmCloseDialogOpen(false);
+          },
         }}
         options={{
           show: confirmCloseDialogOpen,

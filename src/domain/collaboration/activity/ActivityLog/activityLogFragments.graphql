@@ -30,7 +30,6 @@ fragment ActivityLogCalloutPostCreated on ActivityLogEntryCalloutPostCreated {
   }
   post {
     id
-    nameID
     profile {
       id
       url

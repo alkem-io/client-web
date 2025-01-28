@@ -1,4 +1,4 @@
-import { CommunityContributorType } from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { Actions } from '@/core/ui/actions/Actions';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Gutters from '@/core/ui/grid/Gutters';
@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 export type ApplicationDialogDataType = {
   id: string;
-  contributorType: CommunityContributorType;
+  contributorType: RoleSetContributorType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   nextEvents: string[];
   email?: string;
@@ -23,7 +23,6 @@ export type ApplicationDialogDataType = {
   }[];
   contributor?: {
     id: string;
-    nameID: string;
     profile: {
       displayName: string;
       avatar?: {

@@ -15,7 +15,9 @@ interface CollaborationTemplatePreviewProps {
       innovationFlow?: {
         states: InnovationFlowState[];
       };
-      callouts?: InnovationFlowCalloutsPreviewProps['callouts'];
+      calloutsSet?: {
+        callouts?: InnovationFlowCalloutsPreviewProps['callouts'];
+      };
     };
   };
 }
@@ -23,6 +25,7 @@ interface CollaborationTemplatePreviewProps {
 const CollaborationTemplatePreview = ({ template, loading }: CollaborationTemplatePreviewProps) => {
   const [selectedState, setSelectedState] = useState<string | undefined>(undefined);
   const templateStates = template?.collaboration?.innovationFlow?.states ?? [];
+  const callouts = template?.collaboration?.calloutsSet?.callouts ?? [];
 
   useEffect(() => {
     if (
@@ -55,11 +58,7 @@ const CollaborationTemplatePreview = ({ template, loading }: CollaborationTempla
           onSelectState={state => setSelectedState(state.displayName)}
         />
       )}
-      <InnovationFlowCalloutsPreview
-        callouts={template?.collaboration?.callouts}
-        selectedState={selectedState}
-        loading={loading}
-      />
+      <InnovationFlowCalloutsPreview callouts={callouts} selectedState={selectedState} loading={loading} />
     </PageContentBlock>
   );
 };

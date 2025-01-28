@@ -7,7 +7,7 @@ import { CalloutLayoutProps } from '@/domain/collaboration/callout/calloutBlock/
 import calloutIcons from '@/domain/collaboration/callout/utils/calloutIcons';
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import { CalloutsSetParentType } from '@/domain/journey/JourneyTypeName';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { LoadingButton } from '@mui/lab';
 import { DialogContent } from '@mui/material';
@@ -23,8 +23,9 @@ export interface CalloutEditDialogProps {
   onDelete: (callout: CalloutDeleteType) => void;
   onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
   canChangeCalloutLocation?: boolean;
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: CalloutsSetParentType;
   disableRichMedia?: boolean;
+  disablePostResponses?: boolean;
 }
 
 const CalloutEditDialog = ({
@@ -37,6 +38,7 @@ const CalloutEditDialog = ({
   canChangeCalloutLocation,
   journeyTypeName,
   disableRichMedia,
+  disablePostResponses = false,
 }: CalloutEditDialogProps) => {
   const { t } = useTranslation();
 
@@ -112,6 +114,7 @@ const CalloutEditDialog = ({
               canChangeCalloutLocation={canChangeCalloutLocation}
               journeyTypeName={journeyTypeName}
               disableRichMedia={disableRichMedia}
+              disablePostResponses={disablePostResponses}
             />
           </StorageConfigContextProvider>
         </DialogContent>

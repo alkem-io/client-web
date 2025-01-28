@@ -194,6 +194,7 @@ fragment SearchResultProfile on Profile {
   visual(type: AVATAR) {
     ...VisualUri
   }
+  url
 }
 
 fragment SearchResultPostProfile on Profile {
@@ -254,7 +255,7 @@ fragment SearchResultSpace on SearchResultSpace {
   }
 }
 
-query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
+query userRolesSearchCards($userId: UUID!) {
   rolesUser(rolesData: { userID: $userId, filter: { visibilities: [ACTIVE, DEMO] } }) {
     id
     spaces {

@@ -13,7 +13,7 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { InvitationItem } from '../user/providers/UserProvider/InvitationItem';
 import { useTranslation } from 'react-i18next';
-import { CommunityContributorType, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { RoleSetContributorType, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { Box, DialogActions, DialogContent, Theme, useMediaQuery } from '@mui/material';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import References from '@/domain/shared/components/References/References';
@@ -49,7 +49,7 @@ const InvitationDialog = ({
   const isMobile = useMediaQuery<Theme>(theme => theme.breakpoints.down('sm'));
 
   const getTitle = (invitation: InvitationWithMeta) => {
-    if (invitation.invitation.contributorType === CommunityContributorType.Virtual) {
+    if (invitation.invitation.contributorType === RoleSetContributorType.Virtual) {
       return t('community.pendingMembership.invitationDialog.vc.title', {
         journey: invitation?.space.profile.displayName,
       });
@@ -61,7 +61,7 @@ const InvitationDialog = ({
   };
 
   const getAcceptLabel = (invitation: InvitationWithMeta) => {
-    if (invitation.invitation.contributorType === CommunityContributorType.Virtual) {
+    if (invitation.invitation.contributorType === RoleSetContributorType.Virtual) {
       return t('community.pendingMembership.invitationDialog.actions.accept');
     }
 

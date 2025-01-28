@@ -34,6 +34,7 @@ export interface Provided<Data> {
   loading: boolean;
   error: ApolloError | undefined;
   fetchMore: (itemsNumber?: number) => Promise<void>;
+  refetch: () => Promise<unknown>;
   hasMore: undefined | boolean;
   pageSize: number;
   firstPageSize: number;
@@ -46,7 +47,7 @@ const useQuery = <Data, Variables extends PaginationVariables>(
   const { variables, pageSize, firstPageSize = pageSize } = options;
 
   if ('useQuery' in options) {
-    const { data, loading, error, fetchMore } = options.useQuery({
+    const { data, loading, error, fetchMore, refetch } = options.useQuery({
       ...options.options,
       variables: {
         first: firstPageSize,
@@ -59,9 +60,10 @@ const useQuery = <Data, Variables extends PaginationVariables>(
       loading,
       error,
       fetchMore,
+      refetch: () => refetch(variables as Variables),
     };
   } else {
-    const [loadQuery, { data, loading, error, fetchMore }] = options.useLazyQuery({
+    const [loadQuery, { data, loading, error, fetchMore, refetch }] = options.useLazyQuery({
       ...options.options,
       variables: {
         first: firstPageSize,
@@ -74,6 +76,7 @@ const useQuery = <Data, Variables extends PaginationVariables>(
       loading,
       error,
       fetchMore,
+      refetch: () => refetch(variables as Variables),
       loadQuery,
     };
   }
@@ -92,6 +95,7 @@ const usePaginatedQuery = <Data, Variables extends PaginationVariables>(
     error,
     fetchMore: fetchMoreRaw,
     loadQuery: loadQueryRaw = loadNonLazyQuery,
+    refetch,
   } = useQuery(options);
 
   const hasMore = data && getPageInfo(data)?.hasNextPage;
@@ -122,6 +126,7 @@ const usePaginatedQuery = <Data, Variables extends PaginationVariables>(
     loading,
     error,
     fetchMore,
+    refetch,
     hasMore,
     pageSize,
     firstPageSize,

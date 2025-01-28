@@ -10,7 +10,7 @@ import { PLATFORM_NAVIGATION_MENU_Z_INDEX } from './constants';
 import NavigationItemContainer from '@/core/ui/navigation/NavigationItemContainer';
 import { useTranslation } from 'react-i18next';
 import BadgeLabel from '@/core/ui/icon/BadgeLabel';
-import { PlatformRole } from '@/core/apollo/generated/graphql-schema';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 
 interface PlatformNavigationUserAvatarProps {
   children: ReactElement<{ onClose?: () => void }>;
@@ -23,7 +23,7 @@ const PlatformNavigationUserAvatar = ({ drawer, children }: PlatformNavigationUs
 
   const theme = useTheme();
 
-  const showBetaBadge = user && isAuthenticated && platformRoles.includes(PlatformRole.BetaTester);
+  const showBetaBadge = user && isAuthenticated && platformRoles.includes(RoleName.PlatformBetaTester);
 
   return (
     <MenuTriggerButton

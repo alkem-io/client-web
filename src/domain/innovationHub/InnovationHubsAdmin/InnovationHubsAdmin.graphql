@@ -35,7 +35,7 @@ fragment InnovationHubProfile on Profile {
   }
 }
 
-query AdminInnovationHub($innovationHubId: UUID_NAMEID!) {
+query AdminInnovationHub($innovationHubId: UUID!) {
   platform {
     id
     innovationHub(id: $innovationHubId) {

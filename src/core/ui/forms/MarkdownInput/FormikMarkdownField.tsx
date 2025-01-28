@@ -1,5 +1,22 @@
-import { ChangeEvent, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { FormControl, FormHelperText, InputLabel, InputProps, OutlinedInput, useFormControl } from '@mui/material';
+import {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  PropsWithChildren,
+} from 'react';
+import {
+  FormControl,
+  FormHelperText,
+  InputBaseComponentProps,
+  InputLabel,
+  InputProps,
+  OutlinedInput,
+  useFormControl,
+} from '@mui/material';
 import { useField } from 'formik';
 import CharacterCounter from '../characterCounter/CharacterCounter';
 import TranslationKey from '@/core/i18n/utils/TranslationKey';
@@ -11,6 +28,7 @@ import { MarkdownTextMaxLength } from '../field-length.constants';
 import { error as logError } from '@/core/logging/sentry/log';
 import { isMarkdownMaxLengthError } from './MarkdownValidator';
 import { useTranslation } from 'react-i18next';
+import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 
 interface MarkdownFieldProps extends InputProps {
   title: string;
@@ -120,6 +138,15 @@ export const FormikMarkdownField = ({
 
   const labelOffset = inputElement?.getLabelOffset();
 
+  const storageConfig = useStorageConfigContext();
+
+  const MDInput = useCallback(
+    (props: PropsWithChildren<InputBaseComponentProps>) => (
+      <MarkdownInput {...props} storageBucketId={storageConfig?.storageBucketId} />
+    ),
+    [storageConfig?.storageBucketId]
+  );
+
   return (
     <FormControl required={required} disabled={disabled} error={isError} fullWidth>
       <CharacterCountContextProvider>
@@ -141,7 +168,7 @@ export const FormikMarkdownField = ({
           onChange={handleChange}
           onBlur={handleBlur}
           label={title}
-          inputComponent={MarkdownInput}
+          inputComponent={MDInput}
           inputRef={inputRef}
           inputProps={{
             controlsVisible,

@@ -1,24 +1,23 @@
 import { PropsWithChildren } from 'react';
 import TopLevelPageBreadcrumbs from '@/main/topLevelPages/topLevelPageBreadcrumbs/TopLevelPageBreadcrumbs';
 import { AssignmentIndOutlined } from '@mui/icons-material';
-import { useUrlParams } from '@/core/routing/useUrlParams';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import { useTranslation } from 'react-i18next';
 import VCPageBanner from './VCPageBanner';
 import { useVirtualContributorQuery } from '@/core/apollo/generated/apollo-hooks';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 interface VCPageLayoutProps {}
 
 const VCPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
-  const { vcNameId = '' } = useUrlParams();
-
+  const { vcId } = useUrlResolver();
   const { data, loading } = useVirtualContributorQuery({
-    variables: {
-      id: vcNameId,
-    },
+    variables: { id: vcId! },
+    skip: !vcId,
   });
+  const vc = data?.lookup.virtualContributor;
 
   const { t } = useTranslation();
 
@@ -31,11 +30,11 @@ const VCPageLayout = ({ ...props }: PropsWithChildren<VCPageLayoutProps>) => {
           </BreadcrumbsItem>
           <BreadcrumbsItem
             loading={loading}
-            avatar={data?.virtualContributor.profile.avatar}
+            avatar={vc?.profile.avatar}
             iconComponent={AssignmentIndOutlined}
-            uri={data?.virtualContributor.profile.url ?? ''}
+            uri={vc?.profile.url ?? ''}
           >
-            {data?.virtualContributor.profile.displayName}
+            {vc?.profile.displayName}
           </BreadcrumbsItem>
         </TopLevelPageBreadcrumbs>
       }

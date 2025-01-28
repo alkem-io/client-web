@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useUrlParams } from '@/core/routing/useUrlParams';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import UserAdminLayout from '@/domain/community/userAdmin/layout/UserAdminLayout';
 import AssociatedOrganizationsLazilyFetched from '@/domain/community/contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
@@ -10,8 +10,8 @@ import useUserOrganizationIds from '../../user/userContributions/useUserOrganiza
 
 const UserAdminOrganizationsPage = () => {
   const { t } = useTranslation();
-  const { userNameId = '' } = useUrlParams();
-  const { user: userMetadata, loading } = useUserMetadata(userNameId);
+  const { userId } = useUrlResolver();
+  const { user: userMetadata, loading } = useUserMetadata(userId);
   const organizationIds = useUserOrganizationIds(userMetadata?.user.id);
 
   return (

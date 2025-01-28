@@ -22,6 +22,9 @@ import { gutters } from '@/core/ui/grid/utils';
 import Gutters from '@/core/ui/grid/Gutters';
 import { LatestContributionsProps, ROLE_OPTION_ALL, SPACE_OPTION_ALL } from './LatestContributionsProps';
 import Loading from '@/core/ui/loading/Loading';
+import { useDashboardContext } from '../DashboardContext';
+import { Caption } from '@/core/ui/typography';
+import { DashboardDialog } from '../DashboardDialogs/DashboardDialogsProps';
 
 const SELECTABLE_ROLES = [ActivityFeedRoles.Member, ActivityFeedRoles.Admin, ActivityFeedRoles.Lead] as const;
 
@@ -42,7 +45,7 @@ const Loader = forwardRef((props, ref) => {
   );
 });
 
-const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => {
+const LatestContributions = ({ limit, spaceMemberships }: LatestContributionsProps) => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'));
 
@@ -54,17 +57,19 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
     role: ROLE_OPTION_ALL,
   });
 
+  const { isOpen, setIsOpen } = useDashboardContext();
+
   const handleRoleSelect = (event: SelectChangeEvent<unknown>) =>
-    setFilter({
-      space: SPACE_OPTION_ALL,
+    setFilter(prevState => ({
+      ...prevState,
       role: event.target.value as ActivityFeedRoles | typeof ROLE_OPTION_ALL,
-    });
+    }));
 
   const handleSpaceSelect = (event: SelectChangeEvent<unknown>) =>
-    setFilter({
+    setFilter(prevState => ({
+      ...prevState,
       space: event.target.value as string | typeof SPACE_OPTION_ALL,
-      role: ROLE_OPTION_ALL,
-    });
+    }));
 
   const spaceOptions = useMemo(() => {
     const spaces: Partial<SelectOption<string | typeof SPACE_OPTION_ALL>>[] =
@@ -102,7 +107,7 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
   const roleOptions = useMemo(() => {
     const options: Partial<SelectOption<ActivityFeedRoles | typeof ROLE_OPTION_ALL>>[] = SELECTABLE_ROLES.map(role => ({
       value: role,
-      label: t(`common.enums.communityRole.${role}` as const),
+      label: t(`common.roles.${role}` as const),
     }));
 
     options.unshift({
@@ -130,28 +135,44 @@ const LatestContributions = ({ spaceMemberships }: LatestContributionsProps) => 
     </Box>
   );
 
+  const activityFeed = data?.activityFeed?.activityFeed;
+
+  const renderActivities = () =>
+    (typeof limit === 'number' ? (activityFeed ?? []).slice(0, limit) : activityFeed ?? [])?.map(activity => (
+      <ActivityViewChooser
+        key={activity.id}
+        activity={activity as ActivityLogResultType}
+        avatarUrl={activity.triggeredBy.profile.avatar?.uri}
+      />
+    ));
+
   return (
-    <Gutters disablePadding disableGap sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
-      {renderFilters()}
-      {!data && loading ? (
-        <Loading />
-      ) : (
-        <ScrollerWithGradient>
-          <Box padding={gutters(0.5)}>
-            {data?.activityFeed.activityFeed.map(activity => {
-              return (
-                <ActivityViewChooser
-                  key={activity.id}
-                  activity={activity as ActivityLogResultType}
-                  avatarUrl={activity.triggeredBy.profile.avatar?.uri}
-                />
-              );
-            })}
-            {loader}
-          </Box>
-        </ScrollerWithGradient>
+    <>
+      <Gutters disablePadding disableGap sx={{ flexGrow: 1, flexShrink: 1, flexBasis: isMobile ? gutters(30) : 0 }}>
+        {renderFilters()}
+
+        {!data && loading ? (
+          <Loading />
+        ) : (
+          <ScrollerWithGradient>
+            <Box padding={gutters(0.5)}>
+              {renderActivities()}
+
+              {isOpen && typeof limit !== 'number' && loader}
+            </Box>
+          </ScrollerWithGradient>
+        )}
+      </Gutters>
+
+      {typeof limit === 'number' && activityFeed && activityFeed?.length > limit && (
+        <Caption
+          sx={{ marginLeft: 'auto', cursor: 'pointer' }}
+          onClick={() => setIsOpen(DashboardDialog.MySpaceActivity)}
+        >
+          {t('common.show-more')}
+        </Caption>
       )}
-    </Gutters>
+    </>
   );
 };
 

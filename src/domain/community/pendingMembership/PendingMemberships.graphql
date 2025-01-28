@@ -20,12 +20,14 @@ query PendingMembershipsSpace(
   }
 }
 
-query PendingMembershipsUser($userId: UUID_NAMEID_EMAIL!) {
-  user(ID: $userId) {
-    id
-    profile {
+query PendingMembershipsUser($userId: UUID!) {
+  lookup {
+    user(ID: $userId) {
       id
-      displayName
+      profile {
+        id
+        displayName
+      }
     }
   }
 }

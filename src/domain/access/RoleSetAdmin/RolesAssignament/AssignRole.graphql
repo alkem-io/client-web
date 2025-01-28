@@ -1,0 +1,18 @@
+mutation AssignRoleToUser($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID! ) {
+  assignRoleToUser(roleData: { roleSetID: $roleSetId, role: $role, contributorID: $contributorId }) {
+    id
+  }
+}
+
+mutation AssignRoleToOrganization($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
+  assignRoleToOrganization(roleData: { roleSetID: $roleSetId, role: $role, contributorID: $contributorId }) {
+    id
+  }
+}
+
+mutation AssignRoleToVirtualContributor($roleSetId: UUID!, $role: RoleName!, $contributorId: UUID!) {
+  assignRoleToVirtualContributor(roleData: { roleSetID: $roleSetId, role: $role, contributorID: $contributorId }) {
+    id
+  }
+}
+

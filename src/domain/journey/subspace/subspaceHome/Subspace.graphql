@@ -32,7 +32,7 @@ fragment SubspacePageSpace on Space {
       myPrivileges
     }
     roleSet {
-      ...RoleSetDetails
+      id
       myMembershipStatus
     }
   }

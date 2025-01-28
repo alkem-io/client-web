@@ -1,4 +1,5 @@
 import {
+  useAccountStorageConfigQuery,
   useCalloutPostStorageConfigQuery,
   useCalloutStorageConfigQuery,
   useInnovationHubStorageConfigQuery,
@@ -31,7 +32,8 @@ type StorageConfigLocation =
   | 'template'
   | 'innovationPack'
   | 'innovationHub'
-  | 'platform';
+  | 'platform'
+  | 'account';
 
 interface UseStorageConfigOptionsBase {
   locationType: StorageConfigLocation;
@@ -88,6 +90,11 @@ interface UseStorageConfigOptionsPlatform extends UseStorageConfigOptionsBase {
   locationType: 'platform';
 }
 
+interface UseStorageConfigOptionsAccount extends UseStorageConfigOptionsBase {
+  accountId: string;
+  locationType: 'account';
+}
+
 export type StorageConfigOptions =
   | UseStorageConfigOptionsSpace
   | UseStorageConfigOptionsUser
@@ -98,7 +105,8 @@ export type StorageConfigOptions =
   | UseStorageConfigOptionsTemplate
   | UseStorageConfigOptionsInnovationPack
   | UseStorageConfigOptionsInnovationHub
-  | UseStorageConfigOptionsPlatform;
+  | UseStorageConfigOptionsPlatform
+  | UseStorageConfigOptionsAccount;
 
 export interface StorageConfigProvided {
   storageConfig: StorageConfig | undefined;
@@ -118,7 +126,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     variables: {
       calloutId: calloutOptions.calloutId,
     },
-    skip: skip || locationType !== 'callout',
+    skip: skip || locationType !== 'callout' || !calloutOptions.calloutId,
   });
 
   const postOptions = options as UseStorageConfigOptionsPost;
@@ -141,13 +149,13 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
   const userOptions = options as UseStorageConfigOptionsUser;
   const { data: userStorageConfigData } = useUserStorageConfigQuery({
     variables: userOptions,
-    skip: skip || locationType !== 'user',
+    skip: skip || locationType !== 'user' || !userOptions.userId,
   });
 
   const virtualContributorOptions = options as UseStorageConfigOptionsVirtualContributor;
   const { data: virtualContributorStorageConfigData } = useVirtualContributorStorageConfigQuery({
     variables: virtualContributorOptions,
-    skip: skip || locationType !== 'virtualContributor',
+    skip: skip || locationType !== 'virtualContributor' || !virtualContributorOptions.virtualContributorId,
   });
 
   const organizationOptions = options as UseStorageConfigOptionsOrganization;
@@ -178,6 +186,12 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     skip: skip || locationType !== 'platform',
   });
 
+  const accountOptions = options as UseStorageConfigOptionsAccount;
+  const { data: accountContributorStorageConfigData } = useAccountStorageConfigQuery({
+    variables: accountOptions,
+    skip: skip || locationType !== 'account' || !accountOptions.accountId,
+  });
+
   const journey = journeyStorageConfigData?.lookup.space;
 
   const callout = calloutStorageConfigData?.lookup.callout;
@@ -189,15 +203,17 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     callout?.framing ??
     contribution?.post ??
     templateStorageConfigData?.lookup.template ??
-    userStorageConfigData?.user ??
-    virtualContributorStorageConfigData?.virtualContributor ??
-    organizationStorageConfigData?.organization ??
+    userStorageConfigData?.lookup.user ??
+    virtualContributorStorageConfigData?.lookup.virtualContributor ??
+    organizationStorageConfigData?.lookup.organization ??
     innovationPackStorageConfigData?.lookup.innovationPack ??
     innovationHubStorageConfigData?.platform.innovationHub ??
     {};
 
   const storageConfig =
-    profile?.storageBucket ?? platformStorageConfigData?.platform.storageAggregator.directStorageBucket;
+    profile?.storageBucket ??
+    accountContributorStorageConfigData?.lookup.account?.storageAggregator.directStorageBucket ??
+    platformStorageConfigData?.platform.storageAggregator.directStorageBucket;
 
   return useMemo(
     () => ({

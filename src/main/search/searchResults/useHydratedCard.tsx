@@ -9,7 +9,6 @@ import {
   SpacePrivacyMode,
   UserRolesSearchCardsQuery,
 } from '@/core/apollo/generated/graphql-schema';
-import { buildOrganizationUrl, buildUserProfileUrl } from '@/main/routing/urlBuilders';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import { getVisualByType } from '@/domain/common/visual/utils/visuals.utils';
 import { useUserRolesSearchCardsQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -32,7 +31,6 @@ const hydrateUserCard = (data: TypedSearchResult<SearchResultType.User, SearchRe
   const profile = user.profile;
   const avatarUri = profile.visual?.uri;
   const { country, city } = profile.location ?? {};
-  const url = buildUserProfileUrl(user.nameID);
   const tags = profile.tagsets?.[0]?.tags ?? [];
 
   return (
@@ -44,7 +42,7 @@ const hydrateUserCard = (data: TypedSearchResult<SearchResultType.User, SearchRe
       city={city}
       country={country}
       tags={tags}
-      userUri={url}
+      userUri={user.profile.url}
       matchedTerms={data.terms}
       isContactable={user.isContactable}
     />
@@ -59,7 +57,7 @@ const _hydrateOrganizationCard = (
   const profile = data.organization.profile;
   const avatarUri = profile.visual?.uri;
   const { country, city } = profile.location ?? {};
-  const url = buildOrganizationUrl(organization.nameID);
+  const url = organization.profile.url;
   const tags = profile.tagsets?.[0]?.tags ?? [];
 
   const organizationRoles = userRoles?.organizations.find(x => x.id === organization.id);

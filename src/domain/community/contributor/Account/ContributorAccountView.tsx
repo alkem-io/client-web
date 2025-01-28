@@ -34,7 +34,7 @@ import JourneyCardHorizontal, {
 } from '@/domain/journey/common/JourneyCardHorizontal/JourneyCardHorizontal';
 import CreateSpaceDialog from '@/domain/journey/space/createSpace/CreateSpaceDialog';
 import EntityConfirmDeleteDialog from '@/domain/journey/space/pages/SpaceSettings/EntityConfirmDeleteDialog';
-import useNewVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useNewVirtualContributorWizard';
+import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
 import { DeleteOutline } from '@mui/icons-material';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -125,7 +125,7 @@ export interface ContributorAccountViewProps {
 export const ContributorAccountView = ({ accountHostName, account, loading }: ContributorAccountViewProps) => {
   const { t } = useTranslation();
   const notify = useNotification();
-  const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
+  const { startWizard, VirtualContributorWizard } = useVirtualContributorWizard();
   const [createSpaceDialogOpen, setCreateSpaceDialogOpen] = useState(false);
   const [createInnovationHubDialogOpen, setCreateInnovationHubDialogOpen] = useState(false);
   const [createInnovationPackDialogOpen, setCreateInnovationPackDialogOpen] = useState(false);
@@ -164,13 +164,12 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
 
   const canDeleteEntities = privileges.includes(AuthorizationPrivilege.Delete);
 
+  // Temporarily we're ordering the priority in this way: Display usage/limit from FREE / PLUS / PREMIUM
   const { limit: hostedSpaceLimit = 0, usage: hostedSpaceUsage = 0 } =
-    myAccountEntitlementDetails.find(
-      entitlement =>
-        entitlement.type === LicenseEntitlementType.AccountSpaceFree ||
-        entitlement.type === LicenseEntitlementType.AccountSpacePlus ||
-        entitlement.type === LicenseEntitlementType.AccountSpacePremium
-    ) ?? {};
+    myAccountEntitlementDetails.find(entitlement => entitlement.type === LicenseEntitlementType.AccountSpaceFree) ??
+    myAccountEntitlementDetails.find(entitlement => entitlement.type === LicenseEntitlementType.AccountSpacePlus) ??
+    myAccountEntitlementDetails.find(entitlement => entitlement.type === LicenseEntitlementType.AccountSpacePremium) ??
+    {};
 
   const { limit: vcLimit = 0, usage: vcUsage = 0 } =
     myAccountEntitlementDetails.find(
@@ -476,7 +475,7 @@ export const ContributorAccountView = ({ accountHostName, account, loading }: Co
               />
             )}
           </Actions>
-          <NewVirtualContributorWizard />
+          <VirtualContributorWizard />
         </Gutters>
       </PageContentBlock>
       <PageContentBlock halfWidth>

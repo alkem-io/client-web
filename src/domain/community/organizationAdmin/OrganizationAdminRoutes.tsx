@@ -3,7 +3,6 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import OrganizationAdminProfilePage from './tabs/OrganizationAdminProfilePage';
 import OrganizationAccountPage from './tabs/OrganizationAdminAccountPage';
-import { OrganizationGroupsRoute } from './OrganizationGroupsRoute';
 import OrganizationAdminCommunityPage from './tabs/OrganizationAdminCommunityPage';
 import OrganizationAdminAuthorizationPage from './tabs/OrganizationAdminAuthorizationPage';
 import NonAdminRedirect from '@/main/admin/NonAdminRedirect';
@@ -37,7 +36,6 @@ const OrganizationAdminRoutes: FC = () => {
         <Route path="profile" element={<OrganizationAdminProfilePage />} />
         <Route path="account" element={<OrganizationAccountPage />} />
         <Route path="community" element={<OrganizationAdminCommunityPage />} />
-        <Route path="community/groups/*" element={<OrganizationGroupsRoute />} />
         <Route path="authorization" element={<OrganizationAdminAuthorizationPage />} />
         <Route path="settings" element={<OrganizationAdminSettingsPage />} />
         <Route path="*" element={<Error404 />} />

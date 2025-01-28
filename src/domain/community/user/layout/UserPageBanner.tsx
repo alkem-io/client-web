@@ -1,27 +1,19 @@
 import { useCallback, useMemo } from 'react';
 import { useSendMessageToUserMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useUserContext } from '../hooks/useUserContext';
-import { buildUserProfileSettingsUrl } from '@/main/routing/urlBuilders';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { useUserMetadata } from '../hooks/useUserMetadata';
-import { useUrlParams } from '@/core/routing/useUrlParams';
 import ProfilePageBanner from '@/domain/common/profile/ProfilePageBanner';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 const UserPageBanner = () => {
-  const { userNameId } = useUrlParams();
-
-  if (!userNameId) {
-    throw new Error('User nameID not present');
-  }
-
   const { user: currentUser } = useUserContext();
-
-  const { user, loading } = useUserMetadata(userNameId);
+  const { userId } = useUrlResolver();
+  const { user, loading } = useUserMetadata(userId);
 
   const isCurrentUser = useMemo(() => user?.user.id === currentUser?.user.id, [user, currentUser]);
 
   const profile = user?.user.profile;
-
-  const userId = user?.user.id;
 
   const [sendMessageToUser] = useSendMessageToUserMutation();
 
@@ -48,7 +40,7 @@ const UserPageBanner = () => {
       entityId={userId}
       profile={profile}
       onSendMessage={handleSendMessage}
-      settingsUri={user && isCurrentUser ? buildUserProfileSettingsUrl(user.user.nameID) : undefined}
+      settingsUri={user && isCurrentUser ? buildSettingsUrl(user.user.profile.url) : undefined}
       loading={loading}
     />
   );

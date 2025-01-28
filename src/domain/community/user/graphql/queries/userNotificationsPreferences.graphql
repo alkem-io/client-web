@@ -1,17 +1,19 @@
-query userNotificationsPreferences($userId: UUID_NAMEID_EMAIL!) {
-  user(ID: $userId) {
-    id
-    preferences {
+query userNotificationsPreferences($userId: UUID!) {
+  lookup {
+    user(ID: $userId) {
       id
-      definition {
+      preferences {
         id
-        description
-        displayName
-        group
-        type
-        valueType
+        definition {
+          id
+          description
+          displayName
+          group
+          type
+          valueType
+        }
+        value
       }
-      value
     }
   }
 }

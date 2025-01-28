@@ -1,6 +1,5 @@
 fragment UserDetails on User {
   id
-  nameID
   firstName
   lastName
   email
@@ -10,6 +9,7 @@ fragment UserDetails on User {
     displayName
     tagline
     location {
+      id
       country
       city
     }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import RecentJourneysList from '../recentSpaces/RecentJourneysList';
 import LatestContributions from '../latestContributions/LatestContributions';
 import MyLatestContributions from '../latestContributions/myLatestContributions/MyLatestContributions';
@@ -27,29 +27,37 @@ const DashboardActivity = () => {
 
   const blockColumns = isMobile ? columns : columns / 2;
 
-  const renderSpaceActivityBlock = () => (
-    <PageContentColumn key="space-activity" columns={blockColumns}>
-      <PageContentBlock>
-        <PageContentBlockHeader title={t('pages.home.sections.latestContributions.title')} />
-        <LatestContributions spaceMemberships={flatSpacesWithMemberships} />
-      </PageContentBlock>
-    </PageContentColumn>
+  const renderSpaceActivityBlock = useCallback(
+    () => (
+      <PageContentColumn key="space-activity" columns={blockColumns}>
+        <PageContentBlock>
+          <PageContentBlockHeader title={t('pages.home.sections.latestContributions.title')} />
+          <LatestContributions limit={10} spaceMemberships={flatSpacesWithMemberships} />
+        </PageContentBlock>
+      </PageContentColumn>
+    ),
+    [blockColumns, flatSpacesWithMemberships, t]
   );
 
-  const renderMyActivityBlock = () => (
-    <PageContentColumn key="my-activity" columns={blockColumns}>
-      <PageContentBlock>
-        <PageContentBlockHeader title={t('pages.home.sections.myLatestContributions.title')} />
-        <MyLatestContributions spaceMemberships={flatSpacesWithMemberships} />
-      </PageContentBlock>
-    </PageContentColumn>
+  const renderMyActivityBlock = useCallback(
+    () => (
+      <PageContentColumn key="my-activity" columns={blockColumns}>
+        <PageContentBlock>
+          <PageContentBlockHeader title={t('pages.home.sections.myLatestContributions.title')} />
+          <MyLatestContributions limit={10} spaceMemberships={flatSpacesWithMemberships} />
+        </PageContentBlock>
+      </PageContentColumn>
+    ),
+    [blockColumns, flatSpacesWithMemberships, t]
   );
 
   return (
     <>
       <RecentJourneysList onSeeMore={() => setIsMyMembershipsDialogOpen(true)} />
-      {!isMobile && [renderSpaceActivityBlock(), renderMyActivityBlock()]}
-      {isMobile && [renderMyActivityBlock(), renderSpaceActivityBlock()]}
+      {isMobile
+        ? [renderMyActivityBlock(), renderSpaceActivityBlock()]
+        : [renderSpaceActivityBlock(), renderMyActivityBlock()]}
+
       <MyMembershipsDialog
         Icon={SpaceIcon}
         loading={myMembershipsLoading}
