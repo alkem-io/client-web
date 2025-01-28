@@ -42,6 +42,7 @@ export const VCProfilePageView = ({ virtualContributor, ...pageProps }: VCProfil
 
           <Gutters disableGap disablePadding sx={{ marginTop: gutters(1) }}>
             <BlockSectionTitle>{t('components.profile.fields.links.title')}</BlockSectionTitle>
+
             <References
               references={links[OTHER_LINK_GROUP]}
               noItemsView={<CardText color="neutral.main">{t('common.no-references')}</CardText>}

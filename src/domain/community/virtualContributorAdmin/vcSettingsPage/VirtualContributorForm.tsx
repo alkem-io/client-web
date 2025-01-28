@@ -196,9 +196,12 @@ export const VirtualContributorForm = ({
                         <TagsetSegment tagsets={keywordsTagsetWrapped} title={t('common.tags')} />
                       ) : null}
 
-                      {/* <ReferenceSegment compactMode references={[...(references ?? []), ...(vcReferences ?? [])]} /> */}
-
-                      <ProfileReferenceSegment compactMode profileId={vcProfileId} references={references ?? []} />
+                      <ProfileReferenceSegment
+                        fullWidth
+                        compactMode
+                        profileId={vcProfileId}
+                        references={references ?? []}
+                      />
 
                       {hostDisplayName && <HostFields />}
                       <Actions marginTop={theme.spacing(2)} sx={{ justifyContent: 'end' }}>
