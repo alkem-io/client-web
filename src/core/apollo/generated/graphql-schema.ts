@@ -27660,21 +27660,26 @@ export type UserRolesSearchCardsQuery = {
 };
 
 export type SearchScopeDetailsSpaceQueryVariables = Exact<{
-  spaceNameId: Scalars['UUID_NAMEID'];
+  spaceId: Scalars['UUID'];
 }>;
 
 export type SearchScopeDetailsSpaceQuery = {
   __typename?: 'Query';
-  space: {
-    __typename?: 'Space';
-    id: string;
-    visibility: SpaceVisibility;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      displayName: string;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-    };
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          visibility: SpaceVisibility;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
+        }
+      | undefined;
   };
 };
 
