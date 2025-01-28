@@ -142,6 +142,7 @@ const useRoleSetAdmin = ({
           usersById[user.id] = {
             ...user,
             roles: [usersInRole.role],
+            isContactable: user.isContactable ?? false,
           };
         }
       });
