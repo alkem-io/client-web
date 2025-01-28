@@ -11,6 +11,7 @@ import { DescriptionComponent } from '@/domain/common/description/DescriptionCom
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { KnowledgeBaseCalloutsSetType } from '@/domain/journey/JourneyTypeName';
+import { Caption } from '@/core/ui/typography';
 
 type KnowledgeBaseDialogProps = {
   onClose: () => void;
@@ -27,13 +28,26 @@ const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) =
     callouts,
     canCreateCallout,
     loading,
+    calloutsSetLoading,
     onCalloutsSortOrderUpdate,
     refetchCallout,
     knowledgeBaseDescription,
     updateDescription,
     ingestKnowledge,
     ingestLoading,
+    hasReadAccess,
   } = useKnowledgeBase({ id });
+
+  if (!hasReadAccess && !loading) {
+    return (
+      <DialogWithGrid open columns={10}>
+        <DialogHeader onClose={onClose} title={t('pages.virtualContributorProfile.knowledgeBase.noAccess.title')} />
+        <DialogContent>
+          <Caption>{t('pages.virtualContributorProfile.knowledgeBase.noAccess.description')}</Caption>
+        </DialogContent>
+      </DialogWithGrid>
+    );
+  }
 
   return (
     <DialogWithGrid open columns={10}>
@@ -52,7 +66,7 @@ const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) =
               calloutsSetId={calloutsSetId}
               callouts={callouts}
               canCreateCallout={canCreateCallout}
-              loading={loading}
+              loading={calloutsSetLoading}
               journeyTypeName={KnowledgeBaseCalloutsSetType}
               onSortOrderUpdate={onCalloutsSortOrderUpdate}
               onCalloutUpdate={refetchCallout}

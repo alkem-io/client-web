@@ -3,6 +3,10 @@ query VirtualContributorKnowledgeBase($id: UUID!) {
     id
     knowledgeBase {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       profile {
         id
         displayName

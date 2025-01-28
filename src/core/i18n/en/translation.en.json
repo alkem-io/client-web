@@ -2695,10 +2695,20 @@
             "hidden": "<b>Hidden:</b> This Virtual Contributor cannot be invited."
           }
         },
+        "privacy": {
+          "title": "Privacy",
+          "description": "Private Virtual Contributor Knowledge"
+        },
         "ingestion": {
           "title": "Update Knowledge",
           "infoText": "By clicking the button below, you will make sure your Virtual Contributor is based on the latest knowledge in the Subspace.",
           "refreshBtn": "Update Knowledge"
+        }
+      },
+      "knowledgeBase": {
+        "noAccess": {
+          "title": "Private Virtual Contributor Knowledge",
+          "description": "You don't have access to the knowledge base of this Virtual Contributor. Please contact the owner of the Virtual Contributor for more information."
         }
       }
     },

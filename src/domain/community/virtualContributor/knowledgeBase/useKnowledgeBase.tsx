@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { CalloutsQueryVariables } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, CalloutsQueryVariables } from '@/core/apollo/generated/graphql-schema';
 import useCallouts, { TypedCallout } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import { OrderUpdate } from '@/domain/collaboration/useCalloutsOnCollaboration';
 import {
@@ -19,6 +19,7 @@ interface useKnowledgeBaseProvided {
   canCreateCallout: boolean;
   canReadCalloutsSet: boolean;
   loading: boolean;
+  calloutsSetLoading: boolean;
   refetchCallouts: (variables?: Partial<CalloutsQueryVariables>) => void;
   refetchCallout: (calloutId: string) => void;
   onCalloutsSortOrderUpdate: (movedCalloutId: string) => (update: OrderUpdate) => Promise<unknown>;
@@ -26,6 +27,7 @@ interface useKnowledgeBaseProvided {
   updateDescription: (values: { description: string }) => Promise<void>;
   ingestKnowledge: () => Promise<unknown>;
   ingestLoading: boolean;
+  hasReadAccess: boolean;
 }
 
 /**
@@ -47,6 +49,7 @@ const useKnowledgeBase = ({ id }: useKnowledgeBaseParams): useKnowledgeBaseProvi
   });
   const knowledgeBase = knowledgeBaseData?.virtualContributor?.knowledgeBase;
   const calloutsSetId = knowledgeBase?.calloutsSet?.id ?? '';
+  const hasReadAccess = knowledgeBase?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read) ?? false;
 
   const [updateVC] = useUpdateVirtualContributorMutation({
     refetchQueries: ['VirtualContributorKnowledgeBase'],
@@ -99,7 +102,8 @@ const useKnowledgeBase = ({ id }: useKnowledgeBaseParams): useKnowledgeBaseProvi
     calloutsSetId,
     canCreateCallout,
     canReadCalloutsSet,
-    loading: knowledgeBaseLoading || calloutsSetLoading,
+    loading: knowledgeBaseLoading,
+    calloutsSetLoading,
     refetchCallouts,
     refetchCallout,
     onCalloutsSortOrderUpdate,
@@ -107,6 +111,7 @@ const useKnowledgeBase = ({ id }: useKnowledgeBaseParams): useKnowledgeBaseProvi
     updateDescription,
     ingestKnowledge,
     ingestLoading,
+    hasReadAccess,
   };
 };
 

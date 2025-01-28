@@ -2,6 +2,7 @@ import {
   useUpdateVirtualContributorMutation,
   useVirtualContributorQuery,
   useRefreshBodyOfKnowledgeMutation,
+  useUpdateVirtualContributorSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
@@ -43,6 +44,25 @@ const VCAccessibilitySettingsPage = () => {
         virtualContributorData: {
           ID: vc?.id ?? '',
           ...props,
+        },
+      },
+      onCompleted: () => {
+        notify(t('pages.virtualContributorProfile.success', { entity: t('common.settings') }), 'success');
+      },
+    });
+  };
+
+  const [updateSettings, { loading: loadingSettings }] = useUpdateVirtualContributorSettingsMutation();
+  const handleUpdateSettings = (isVisible: boolean) => {
+    updateSettings({
+      variables: {
+        settingsData: {
+          virtualContributorID: vc?.id ?? '',
+          settings: {
+            privacy: {
+              knowledgeBaseContentVisible: isVisible,
+            },
+          },
         },
       },
       onCompleted: () => {
@@ -127,6 +147,19 @@ const VCAccessibilitySettingsPage = () => {
                   },
                 }}
                 onChange={(key, newValue) => updateListedInStore(newValue)}
+              />
+            </PageContentBlock>
+            <PageContentBlock>
+              <BlockTitle>{t('pages.virtualContributorProfile.settings.privacy.title')}</BlockTitle>
+              <SwitchSettingsGroup
+                options={{
+                  listedInStore: {
+                    checked: !vc?.settings.privacy.knowledgeBaseContentVisible,
+                    disabled: loadingSettings,
+                    label: t('pages.virtualContributorProfile.settings.privacy.description'),
+                  },
+                }}
+                onChange={(_, newValue) => handleUpdateSettings(!newValue)}
               />
             </PageContentBlock>
           </PageContentColumn>
