@@ -25,7 +25,7 @@ import OpportunityMetrics from '@/domain/journey/opportunity/utils/useOpportunit
 import { Theme } from '@mui/material/styles';
 import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import { spaceIconByLevel } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
+import { spaceLevelIcon } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
 import References from '@/domain/shared/components/References/References';
 import { Reference, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -142,9 +142,7 @@ const JourneyAboutDialog = ({
     [leadUsers]
   );
 
-  // @ts-ignore TS5UPGRADE
-  const JourneyIcon = spaceLevel > -1 ? spaceIconByLevel[spaceLevel] : undefined;
-
+  const JourneyIcon = spaceLevelIcon[spaceLevel];
   const metricsItems = useMetricsItems(metrics, getMetricsSpec(spaceLevel));
 
   const breakpoint = useCurrentBreakpoint();

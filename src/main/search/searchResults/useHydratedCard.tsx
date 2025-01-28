@@ -24,7 +24,9 @@ import CardParentJourneySegment from '@/domain/journey/common/SpaceChildJourneyC
 import { CalloutIcon } from '@/domain/collaboration/callout/icon/CalloutIcon';
 import { VisualName } from '@/domain/common/visual/constants/visuals.constants';
 import SearchBaseJourneyCard from '@/domain/shared/components/search-cards/base/SearchBaseJourneyCard';
-import { spaceIconByLevel } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
+import { spaceLevelIcon } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
+import { ComponentType } from 'react';
+import { SvgIconProps } from '@mui/material';
 
 const hydrateUserCard = (data: TypedSearchResult<SearchResultType.User, SearchResultUserFragment>) => {
   const user = data.user;
@@ -133,17 +135,22 @@ const hydrateSpaceCard = (
   );
 };
 
-const getContributionParentInformation = (data: TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>) => {
-  const info = {
+interface ContributionParentInformation {
+  displayName: string;
+  locked: boolean;
+  url: string;
+  icon: ComponentType<SvgIconProps>;
+}
+
+const getContributionParentInformation = (
+  data: TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>
+): ContributionParentInformation => {
+  return {
     displayName: data.space.profile.displayName,
     locked: data.space?.settings.privacy?.mode === SpacePrivacyMode.Private,
     url: data.space.profile.url,
-    icon: SpaceIcon,
+    icon: spaceLevelIcon[data.space.level] ?? SpaceIcon,
   };
-
-  info.icon = spaceIconByLevel[data.space.level];
-
-  return info;
 };
 
 const hydrateContributionPost = (data: TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>) => {

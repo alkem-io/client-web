@@ -14,21 +14,10 @@ const spaceIcon = {
   subsubspace: OpportunityIcon,
   undefined: SpaceIcon,
 } as const;
-
-export const spaceIconByLevel = [
-  SpaceIcon,
-  SubspaceIcon,
-  OpportunityIcon,
-  undefined, // for Typescript to correctly assume you can get undefined as well
-] as const;
+export default spaceIcon;
 
 export const spaceLevelIcon: Record<SpaceLevel, ComponentType<SvgIconProps>> = {
   [SpaceLevel.L0]: SpaceIcon,
   [SpaceLevel.L1]: SubspaceIcon,
   [SpaceLevel.L2]: OpportunityIcon,
-  // TODO icons below to be defined
-  // [SpaceType.BlankSlate]: SpaceIcon,
-  // [SpaceType.Knowledge]: SpaceIcon,
 };
-
-export default spaceIcon;
