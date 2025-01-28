@@ -102,6 +102,9 @@ const useRoleSetAdmin = ({
   });
 
   const myPrivileges = roleSetDetails?.lookup.roleSet?.authorization?.myPrivileges;
+  const canReadRoleSet =
+    (myPrivileges?.includes(AuthorizationPrivilege.Read) && myPrivileges?.includes(AuthorizationPrivilege.ReadUsers)) ??
+    false;
 
   const validRoles = roleSetDetails?.lookup.roleSet?.roleNames;
   if (!skip && !loadingRoleSet && validRoles) {
@@ -124,7 +127,7 @@ const useRoleSetAdmin = ({
       includeOrganizations: contributorTypes.includes(RoleSetContributorType.Organization),
       includeVirtualContributors: contributorTypes.includes(RoleSetContributorType.Virtual),
     },
-    skip: skip || !roleSetId || loadingRoleSet || !relevantRoles || relevantRoles.length === 0,
+    skip: skip || !canReadRoleSet || !roleSetId || loadingRoleSet || !relevantRoles || relevantRoles.length === 0,
   });
 
   const data = useMemo(() => {
