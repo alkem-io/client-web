@@ -32,6 +32,7 @@ export type AvailableVirtualContributorsResponse = {
     id: string;
     profile: {
       displayName: string;
+      url: string;
     };
   }[];
 } & AvailableContributorsResponse;

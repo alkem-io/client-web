@@ -9,8 +9,14 @@ import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 import useRestrictedRedirect from '@/core/routing/useRestrictedRedirect';
 import { isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
+import { ReactNode } from 'react';
 
-export const VCProfilePage = () => {
+type VCProfilePageProps = {
+  openKnowledgeBaseDialog?: boolean;
+  children?: ReactNode;
+};
+
+export const VCProfilePage = ({ openKnowledgeBaseDialog, children }: VCProfilePageProps) => {
   const { t } = useTranslation();
   const { vcId } = useUrlResolver();
 
@@ -52,7 +58,9 @@ export const VCProfilePage = () => {
       <VCProfilePageView
         bokProfile={isBokSpace ? bokProfile?.lookup.space?.profile : undefined}
         virtualContributor={data?.lookup.virtualContributor}
+        openKnowledgeBaseDialog={openKnowledgeBaseDialog}
       />
+      {children}
     </VCPageLayout>
   );
 };

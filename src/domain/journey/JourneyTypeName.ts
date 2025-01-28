@@ -1,6 +1,8 @@
 import { ProfileType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 
 export type JourneyTypeName = 'space' | 'subspace' | 'subsubspace';
+export const KnowledgeBaseCalloutsSetType = 'knowledge-base';
+export type CalloutsSetParentType = JourneyTypeName | typeof KnowledgeBaseCalloutsSetType;
 
 interface JourneyLocation {
   spaceNameId: string;

@@ -7,17 +7,17 @@ import { DialogFooter } from '@/core/ui/dialog/DialogWithGrid';
 export interface PostSharePageProps {
   onClose: () => void;
   calloutId: string | undefined;
-  postNameId: string | undefined;
+  postId: string | undefined;
 }
 
-const PostSharePage = ({ onClose, postNameId, calloutId }: PostSharePageProps) => {
-  if (!postNameId) {
+const PostSharePage = ({ onClose, postId, calloutId }: PostSharePageProps) => {
+  if (!postId) {
     throw new Error('Must be within a Post route');
   }
 
   return (
     <PostLayout currentSection={PostDialogSection.Share} onClose={onClose}>
-      <PostDashboardContainer calloutId={calloutId} postNameId={postNameId}>
+      <PostDashboardContainer calloutId={calloutId} postId={postId}>
         {({ post, messages, roomId, ...rest }) => (
           <PostDashboardView
             mode="share"
