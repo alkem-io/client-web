@@ -22,18 +22,17 @@ export interface LinksListProps {
 }
 
 const COLLAPSED_LIST_ITEM_LIMIT = 5;
+const listItemStyles = {
+  height: gutters(2),
+  gap: 1,
+  display: 'flex',
+  alignItems: 'center',
+} as const;
 
 const LinksList = ({ items = [], emptyListCaption, loading = false }: LinksListProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleExpand = () => setIsExpanded(!isExpanded);
-
-  const listItemStyles = {
-    height: gutters(2),
-    gap: 1,
-    display: 'flex',
-    alignItems: 'center',
-  };
 
   return (
     <List sx={{ p: 0 }}>
