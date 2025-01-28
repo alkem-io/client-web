@@ -212,61 +212,63 @@ const CalloutForm = ({
       validateOnMount
       onSubmit={() => {}}
     >
-      {formikState => (
-        <>
-          <Gutters>
-            <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
-            <FormikInputField name="displayName" title={t('common.title')} placeholder={t('common.title')} />
-            {!editMode && formConfiguration.whiteboard && <CalloutWhiteboardField name="whiteboard" />}
-            <FormikMarkdownField
-              name="description"
-              title={t('components.callout-creation.info-step.description')}
-              rows={7}
-              maxLength={MARKDOWN_TEXT_LENGTH}
-              temporaryLocation={temporaryLocation}
-              hideImageOptions={disableRichMedia}
-            />
-            {editMode && formConfiguration.references && (
-              <ProfileReferenceSegment
-                compactMode
-                references={formikState.values.references}
-                profileId={callout?.profileId}
-                marginTop={gutters(-1)}
-              />
-            )}
-            {!editMode && formConfiguration.references && (
-              <ReferenceSegment
-                compactMode
-                references={formikState.values.references}
-                marginTop={gutters(-1)}
+      {formikState => {
+        return (
+          <>
+            <Gutters>
+              <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
+              <FormikInputField name="displayName" title={t('common.title')} placeholder={t('common.title')} />
+              {!editMode && formConfiguration.whiteboard && <CalloutWhiteboardField name="whiteboard" />}
+              <FormikMarkdownField
+                name="description"
+                title={t('components.callout-creation.info-step.description')}
+                rows={7}
+                maxLength={MARKDOWN_TEXT_LENGTH}
                 temporaryLocation={temporaryLocation}
+                hideImageOptions={disableRichMedia}
               />
-            )}
-            {formConfiguration.tags && (
-              <TagsetSegment
-                tagsets={tagsets}
-                title={t('common.tags')}
-                helpText={t('components.post-creation.info-step.tags-help-text')}
-              />
-            )}
-            {!editMode && formConfiguration.linkCollectionAdd && (
-              <Caption>{t('callout.link-collection.save-to-add')}</Caption>
-            )}
-            {formConfiguration.postTemplate && <PostTemplateSelector name="postDescription" />}
-            {formConfiguration.whiteboardTemplate && <WhiteboardTemplateSelector name="whiteboardContent" />}
-            {formConfiguration.newResponses && <FormikSwitch name="opened" title={t('callout.state-permission')} />}
-            {formConfiguration.locationChange && journeyTypeName === 'space' && (
-              <FormControlLabel
-                sx={{ margin: 0, '& > span': { marginRight: theme => theme.spacing(2) } }}
-                labelPlacement="start"
-                control={<FormikSelect name="groupName" values={calloutsGroups} />}
-                label={t('callout.callout-location')}
-              />
-            )}
-          </Gutters>
-          {typeof children === 'function' ? (children as Function)(formikState) : children}
-        </>
-      )}
+              {editMode && formConfiguration.references && (
+                <ProfileReferenceSegment
+                  compactMode
+                  references={formikState.values.references}
+                  profileId={callout?.profileId}
+                  marginTop={gutters(-1)}
+                />
+              )}
+              {!editMode && formConfiguration.references && (
+                <ReferenceSegment
+                  compactMode
+                  references={formikState.values.references}
+                  marginTop={gutters(-1)}
+                  temporaryLocation={temporaryLocation}
+                />
+              )}
+              {formConfiguration.tags && (
+                <TagsetSegment
+                  tagsets={tagsets}
+                  title={t('common.tags')}
+                  helpText={t('components.post-creation.info-step.tags-help-text')}
+                />
+              )}
+              {!editMode && formConfiguration.linkCollectionAdd && (
+                <Caption>{t('callout.link-collection.save-to-add')}</Caption>
+              )}
+              {formConfiguration.postTemplate && <PostTemplateSelector name="postDescription" />}
+              {formConfiguration.whiteboardTemplate && <WhiteboardTemplateSelector name="whiteboardContent" />}
+              {formConfiguration.newResponses && <FormikSwitch name="opened" title={t('callout.state-permission')} />}
+              {formConfiguration.locationChange && journeyTypeName === 'space' && (
+                <FormControlLabel
+                  sx={{ margin: 0, '& > span': { marginRight: theme => theme.spacing(2) } }}
+                  labelPlacement="start"
+                  control={<FormikSelect name="groupName" values={calloutsGroups} />}
+                  label={t('callout.callout-location')}
+                />
+              )}
+            </Gutters>
+            {typeof children === 'function' ? (children as Function)(formikState) : children}
+          </>
+        );
+      }}
     </Formik>
   );
 };

@@ -18579,6 +18579,15 @@ export type VirtualContributorQuery = {
                   alternativeText?: string | undefined;
                 }
               | undefined;
+            references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
+              | undefined;
           };
         }
       | undefined;
@@ -18627,6 +18636,15 @@ export type VirtualContributorProfileQuery = {
                   minWidth: number;
                   alternativeText?: string | undefined;
                 }
+              | undefined;
+            references?:
+              | Array<{
+                  __typename?: 'Reference';
+                  id: string;
+                  name: string;
+                  uri: string;
+                  description?: string | undefined;
+                }>
               | undefined;
           };
         }
@@ -18727,6 +18745,9 @@ export type UpdateVirtualContributorSettingsMutation = {
             allowedValues: Array<string>;
             type: TagsetType;
           }>
+        | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description?: string | undefined }>
         | undefined;
     };
   };
