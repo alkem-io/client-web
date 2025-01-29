@@ -1,0 +1,24 @@
+fragment DashboardTopCallouts on Collaboration {
+  calloutsSet {
+    id
+    callouts(sortByActivity: true) {
+      ...DashboardTopCallout
+    }
+  }
+}
+
+fragment DashboardTopCallout on Callout {
+  id
+  framing {
+    id
+    profile {
+      id
+      url
+      displayName
+      description
+    }
+  }
+  type
+  visibility
+  activity
+}

@@ -1,19 +1,21 @@
-query UserAccount($userId: UUID_NAMEID_EMAIL!) {
-  user(ID: $userId) {
-    id
-    profile {
+query UserAccount($userId: UUID!) {
+  lookup {
+    user(ID: $userId) {
       id
-      displayName
-    }
-    agent {
-      id
-      credentials {
+      profile {
         id
-        type
+        displayName
       }
-    }
-    account {
-      id
+      agent {
+        id
+        credentials {
+          id
+          type
+        }
+      }
+      account {
+        id
+      }
     }
   }
 }

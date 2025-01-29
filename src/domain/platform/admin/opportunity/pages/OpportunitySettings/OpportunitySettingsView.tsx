@@ -7,6 +7,7 @@ import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { Caption } from '@/core/ui/typography';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
+  refetchAdminSpaceSubspacesPageQuery,
   refetchSpaceDashboardNavigationChallengesQuery,
   refetchSubspacesInSpaceQuery,
   useDeleteSpaceMutation,
@@ -35,11 +36,15 @@ const OpportunitySettingsView = () => {
   const [deleteOpportunity] = useDeleteSpaceMutation({
     refetchQueries: [
       refetchSubspacesInSpaceQuery({
-        spaceId: spaceId,
+        spaceId,
+      }),
+      refetchAdminSpaceSubspacesPageQuery({
+        spaceId,
       }),
       refetchSpaceDashboardNavigationChallengesQuery({
-        spaceId: spaceNameId,
+        spaceId,
       }),
+      'SpaceDashboardNavigationOpportunities',
     ],
     onCompleted: data => {
       notify(t('pages.admin.space.notifications.space-removed', { name: data.deleteSpace.nameID }), 'success');

@@ -1,4 +1,4 @@
-import React from 'react';
+import { useMemo, useState } from 'react';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { Caption } from '@/core/ui/typography';
@@ -7,39 +7,72 @@ import Gutters from '@/core/ui/grid/Gutters';
 import { LoadingButton } from '@mui/lab';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import FormikSelect from '@/core/ui/forms/FormikSelect';
+import FormikAutocomplete from '@/core/ui/forms/FormikAutocomplete';
+import { SelectableSpace } from './useVirtualContributorWizard';
+import Loading from '@/core/ui/loading/Loading';
 
-export interface SelectableKnowledgeProps {
+export interface SelectableKnowledgeSpace {
   id: string;
   name: string;
-  accountId: string;
   url: string | undefined;
   roleSetId?: string;
-  parentRoleSetId?: string;
+  parentRoleSetIds?: string[];
 }
 
 interface ExistingSpaceProps {
   onClose: () => void;
   onBack: () => void;
-  onSubmit: (subspace: SelectableKnowledgeProps) => void;
-  availableSpaces: SelectableKnowledgeProps[];
+  onSubmit: (subspace: SelectableKnowledgeSpace) => Promise<void>;
   loading: boolean;
+  spaces: SelectableSpace[];
 }
 
-const ExistingSpace = ({ onClose, onBack, onSubmit, availableSpaces, loading }: ExistingSpaceProps) => {
+const ExistingSpace = ({ onClose, onBack, onSubmit, spaces, loading }: ExistingSpaceProps) => {
   const { t } = useTranslation();
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   const initialValues = {
     subspaceId: '',
   };
 
+  const listItems = useMemo(() => {
+    const result: SelectableKnowledgeSpace[] = [];
+    const addSelectableSpace = (space: SelectableSpace, parentSpaces: SelectableSpace[] = []) => {
+      result.push({
+        id: space.id,
+        name: `${space.profile.displayName}${parentSpaces.length > 0 ? '' : ` (${t('common.space')})`}`,
+        url: parentSpaces.length > 0 ? parentSpaces[parentSpaces.length - 1].profile.url : space.profile.url, // If available, go to the parent space
+        roleSetId: space.community.roleSet.id,
+        parentRoleSetIds: parentSpaces.map(space => space?.community.roleSet.id),
+      });
+    };
+
+    // Hierarchy loop
+    spaces.forEach((space: SelectableSpace) => {
+      addSelectableSpace(space);
+      space.subspaces?.forEach(subspace => {
+        addSelectableSpace(subspace, [space]);
+        subspace.subspaces?.forEach(subsubspace => {
+          addSelectableSpace(subsubspace, [space, subspace]);
+        });
+      });
+    });
+
+    return result;
+  }, [spaces]);
+
   const validationSchema = yup.object().shape({
     subspaceId: yup.string().required(),
   });
 
-  const onCreate = (values: { subspaceId: string }) => {
-    const bok = availableSpaces.filter(s => s.id === values.subspaceId)[0];
-    bok && onSubmit(bok);
+  const onCreate = async (values: { subspaceId: string }) => {
+    setSubmitLoading(true);
+
+    const bok = listItems.filter(s => s.id === values.subspaceId)[0];
+    if (bok) {
+      await onSubmit(bok);
+    }
+    setSubmitLoading(false);
   };
 
   return (
@@ -52,19 +85,21 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, availableSpaces, loading }: 
     >
       {({ values, isValid }) => (
         <>
-          <DialogHeader onClose={onClose}>{t('createVirtualContributorWizard.existingSpace.title')}</DialogHeader>
+          <DialogHeader onClose={onClose} title={t('createVirtualContributorWizard.existingSpace.title')} />
           <DialogContent>
-            {(!availableSpaces || availableSpaces.length === 0) && (
+            {loading && spaces.length === 0 && <Loading />}
+            {!loading && spaces.length === 0 && (
               <Caption>{t('createVirtualContributorWizard.existingSpace.noSpaces')}</Caption>
             )}
-            {availableSpaces && availableSpaces.length > 0 && (
+            {spaces.length > 0 && (
               <Gutters disablePadding>
                 <Caption>{t('createVirtualContributorWizard.existingSpace.description')}</Caption>
-                <FormikSelect
+                <FormikAutocomplete
                   name="subspaceId"
                   title={t('createVirtualContributorWizard.existingSpace.label')}
-                  values={availableSpaces}
+                  values={listItems}
                   required
+                  disablePortal={false}
                 />
               </Gutters>
             )}
@@ -73,11 +108,11 @@ const ExistingSpace = ({ onClose, onBack, onSubmit, availableSpaces, loading }: 
             <Button variant="text" onClick={onBack}>
               {t('buttons.back')}
             </Button>
-            {availableSpaces && availableSpaces.length > 0 && (
+            {spaces.length > 0 && (
               <LoadingButton
                 variant="contained"
-                disabled={!isValid || loading}
-                loading={loading}
+                disabled={!isValid || loading || submitLoading}
+                loading={submitLoading}
                 onClick={() => onCreate(values)}
               >
                 {t('buttons.create')}

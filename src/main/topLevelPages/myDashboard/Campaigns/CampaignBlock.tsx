@@ -1,19 +1,19 @@
 import { useCampaignBlockCredentialsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { LicenseEntitlementType, PlatformRole } from '@/core/apollo/generated/graphql-schema';
+import { LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
-import useNewVirtualContributorWizard from '../newVirtualContributorWizard/useNewVirtualContributorWizard';
 import CampaignBlockCreateVC from './CampaignBlockCreateVC';
+import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
 
 const CampaignBlock = () => {
   const { data } = useCampaignBlockCredentialsQuery({ fetchPolicy: 'cache-and-network' });
-  const { startWizard, NewVirtualContributorWizard } = useNewVirtualContributorWizard();
+  const { startWizard, VirtualContributorWizard } = useVirtualContributorWizard();
   // Do not remove: Inside the blocks startWizard() is being called with a ClickEvent and that messes up with the param that startWizard expects
   const handleStartWizard = () => startWizard();
 
-  const userPlatformRoles: PlatformRole[] | undefined = data?.platform.myRoles;
+  const userPlatformRoles: RoleName[] | undefined = data?.platform.roleSet.myRoles;
   const userAccountEntitlements: LicenseEntitlementType[] | undefined =
     data?.me.user?.account?.license?.availableEntitlements;
-  const platfromRolesToDisplayCampaignBlockTo = [PlatformRole.VcCampaign];
+  const platfromRolesToDisplayCampaignBlockTo = [RoleName.PlatformVcCampaign];
   const entitlementsAvailableTo = [LicenseEntitlementType.AccountVirtualContributor];
 
   // the campaign block should be visible only for VcCampaign users ATM
@@ -27,7 +27,7 @@ const CampaignBlock = () => {
   return (
     <PageContentBlock>
       <CampaignBlockCreateVC startWizard={handleStartWizard} />
-      <NewVirtualContributorWizard />
+      <VirtualContributorWizard />
     </PageContentBlock>
   );
 };

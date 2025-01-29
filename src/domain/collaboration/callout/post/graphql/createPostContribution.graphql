@@ -1,0 +1,20 @@
+mutation CreatePostFromContributeTab($postData: CreateContributionOnCalloutInput!) {
+  createContributionOnCallout(contributionData: $postData) {
+    post {
+      id
+      nameID
+      profile {
+        id
+        displayName
+        description
+        url
+        tagset {
+          ...TagsetDetails
+        }
+        visual(type: CARD) {
+          ...VisualUri
+        }
+      }
+    }
+  }
+}

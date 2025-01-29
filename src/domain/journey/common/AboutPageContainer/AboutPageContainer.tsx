@@ -6,14 +6,14 @@ import {
   MetricsItemFragment,
   Profile,
   ReferenceDetailsFragment,
+  RoleName,
+  RoleSetContributorType,
   SearchVisibility,
   Tagset,
 } from '@/core/apollo/generated/graphql-schema';
 import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
 import { WithId } from '@/core/utils/WithId';
-import useCommunityMembersAsCardProps, {
-  RoleSetMembers,
-} from '@/domain/community/community/utils/useCommunityMembersAsCardProps';
+import useCommunityMembersAsCardProps from '@/domain/community/community/utils/useCommunityMembersAsCardProps';
 import { ContainerChildProps } from '@/core/container/container';
 import { useAboutPageMembersQuery, useAboutPageNonMembersQuery } from '@/core/apollo/generated/apollo-hooks';
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
@@ -21,6 +21,7 @@ import { MetricType } from '@/domain/platform/metrics/MetricType';
 import { InnovationFlowDetails } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
+import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
 
 interface AboutPagePermissions {
   communityReadAccess: boolean;
@@ -87,45 +88,60 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
     skip: nonMembersDataLoading || !journeyId || !communityReadAccess,
   });
 
+  const {
+    usersByRole,
+    organizationsByRole,
+    virtualContributors,
+    myPrivileges: communityPrivileges,
+  } = useRoleSetAdmin({
+    roleSetId: membersData?.lookup.space?.community.roleSet.id,
+    relevantRoles: [RoleName.Member, RoleName.Lead],
+    contributorTypes: [
+      RoleSetContributorType.User,
+      RoleSetContributorType.Organization,
+      RoleSetContributorType.Virtual,
+    ],
+    skip: !communityReadAccess,
+  });
+  const publicVirtualContributors = virtualContributors.filter(vc => vc.searchVisibility === SearchVisibility.Public);
   const memberProfile = membersData?.lookup.space?.profile;
-  const virtualContributors = membersData?.lookup.space?.community.roleSet.memberVirtualContributors.filter(
-    vc => vc.searchVisibility === SearchVisibility.Public
-  );
+
   const hasReadPrivilege = membersData?.lookup.space?.authorization?.myPrivileges?.includes(
     AuthorizationPrivilege.Read
   );
 
-  const communityPrivileges = membersData?.lookup.space?.community?.roleSet.authorization?.myPrivileges ?? [];
-
   const hasInvitePrivilege =
-    communityPrivileges.includes(AuthorizationPrivilege.CommunityInvite) ||
-    communityPrivileges.includes(AuthorizationPrivilege.CommunityAddMemberVcFromAccount);
+    communityPrivileges?.includes(AuthorizationPrivilege.RolesetEntryRoleInvite) ||
+    communityPrivileges?.includes(AuthorizationPrivilege.CommunityAssignVcFromAccount) ||
+    false;
 
   const context = nonMemberContext;
 
   const nonMemberJourney = nonMembersData?.lookup.space;
-  const nonMemberRoleSet = nonMemberJourney?.community.roleSet;
-  const memberJourney = membersData?.lookup.space;
-  const memberRoleset = memberJourney?.community.roleSet;
 
   const tagset = nonMemberJourney?.profile?.tagset;
   // TODO looks like space is missing
   const collaboration = nonMembersData?.lookup.space?.collaboration;
 
   const provider = nonMembersData?.lookup.space?.provider;
-  const communityRoleSet: RoleSetMembers = {
-    ...nonMemberRoleSet,
-    ...memberRoleset,
-  };
-  const leadUsers = memberJourney?.community?.roleSet.leadUsers;
-  const leadOrganizations = memberJourney?.community?.roleSet.leadOrganizations;
+
+  const leadUsers = usersByRole[RoleName.Lead];
+  const leadOrganizations = organizationsByRole[RoleName.Lead];
   const references = memberProfile?.references;
 
   const metrics = nonMemberJourney?.metrics;
 
+  const memberUsers = usersByRole[RoleName.Member];
+  const memberOrganizations = organizationsByRole[RoleName.Member];
   const membersCount = getMetricCount(metrics, MetricType.Member);
-  const memberUsersCount = membersCount - (communityRoleSet.memberOrganizations?.length ?? 0); // Todo: may not be safe, better to simply report out metrics on member users + member orgs
-  const contributors = useCommunityMembersAsCardProps(communityRoleSet, { memberUsersCount });
+  const memberUsersCount = membersCount - (memberOrganizations?.length ?? 0); // Todo: may not be safe, better to simply report out metrics on member users + member orgs
+  const contributors = useCommunityMembersAsCardProps(
+    {
+      memberUsers,
+      memberOrganizations,
+    },
+    { memberUsersCount }
+  );
 
   const permissions: AboutPagePermissions = {
     communityReadAccess,
@@ -160,7 +176,7 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
           leadOrganizations,
           provider,
           references,
-          virtualContributors,
+          virtualContributors: publicVirtualContributors,
           hasReadPrivilege,
           hasInvitePrivilege,
           ...contributors,

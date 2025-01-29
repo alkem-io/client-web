@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import useNavigate from '@/core/routing/useNavigate';
 import { BackdropProps } from './BackdropWithMessage';
@@ -11,33 +11,47 @@ const Root = styled(Box)(() => ({
   overflow: 'hidden',
 }));
 
-const Background = styled(ImageFadeIn)(() => ({
+const Background = styled(ImageFadeIn)(({ theme }) => ({
+  display: 'grid',
+  placeContent: 'center',
+
   width: '100%',
   height: '100%',
-}));
+  objectFit: 'cover',
 
-const Message = styled(Box)(() => ({
-  position: 'absolute',
-  top: 0,
-  width: '100%',
-  height: '100%',
-  display: 'flex',
-  flexWrap: 'wrap',
-  textAlign: 'center',
-  alignItems: 'center',
-}));
+  [theme.breakpoints.up('sm')]: {
+    width: '100%',
+  },
 
-const ButtonsWrapper = styled(Box)(({ theme }) => ({
-  flexBasis: '100%',
-  textAlign: 'center',
-  '& > button': {
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
+  [theme.breakpoints.down('sm')]: {
+    height: 160,
   },
 }));
 
-const FlexSpacer = styled(Box)(() => ({
-  flexBasis: '50%',
+const Message = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  inset: 0,
+
+  display: 'grid',
+  placeContent: 'center',
+
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(0.5),
+  },
+}));
+
+const ButtonsWrapper = styled(Box)(({ theme }) => ({
+  textAlign: 'center',
+  '& > button': {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    marginTop: theme.spacing(1),
+
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(2),
+      marginRight: theme.spacing(2),
+    },
+  },
 }));
 
 interface ImageBackdropProps extends BackdropProps {
@@ -65,23 +79,23 @@ const ImageBackdrop: FC<ImageBackdropProps> = ({
       {show && (
         <Root>
           <Background src={src} sx={imageSx} />
+
           {children}
+
           <Message>
-            <FlexSpacer />
             <Typography variant="h5" sx={messageSx} width="100%" textAlign="center">
-              {t(`components.backdrop.${backdropMessage}` as const, {
-                blockName: t(`common.blocks.${blockName}` as const),
-              })}
+              {t(`components.backdrop.${backdropMessage}`, { blockName: t(`common.blocks.${blockName}`) })}
             </Typography>
+
             <ButtonsWrapper>
               <Button variant={'contained'} onClick={() => navigate(_AUTH_LOGIN_PATH, { replace: true })}>
                 {t('authentication.sign-in')}
               </Button>
+
               <Button variant={'contained'} onClick={() => navigate(AUTH_SIGN_UP_PATH, { replace: true })}>
                 {t('authentication.sign-up')}
               </Button>
             </ButtonsWrapper>
-            <FlexSpacer />
           </Message>
         </Root>
       )}

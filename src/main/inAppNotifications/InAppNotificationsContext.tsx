@@ -1,4 +1,4 @@
-import { PlatformRole } from '@/core/apollo/generated/graphql-schema';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { useUserContext } from '@/domain/community/user';
 import { createContext, useState, useContext, ReactNode, useMemo } from 'react';
 
@@ -15,7 +15,7 @@ export const InAppNotificationsProvider = ({ children }: { children: ReactNode }
   const [isOpen, setIsOpen] = useState(false);
 
   const isEnabled = useMemo(() => {
-    return Boolean(user?.user.id && platformRoles?.includes(PlatformRole.BetaTester));
+    return Boolean(user?.user.id && platformRoles?.includes(RoleName.PlatformBetaTester));
   }, [user, platformRoles]);
 
   return <InAppNotifications.Provider value={{ isEnabled, isOpen, setIsOpen }}>{children}</InAppNotifications.Provider>;

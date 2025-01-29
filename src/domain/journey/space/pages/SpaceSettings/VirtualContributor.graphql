@@ -1,10 +1,25 @@
 mutation CreateVirtualContributorOnAccount($virtualContributorData: CreateVirtualContributorOnAccountInput!) {
   createVirtualContributor(virtualContributorData: $virtualContributorData) {
     id
-    nameID
     profile {
       id
       url
+    }
+    knowledgeBase {
+      id
+      calloutsSet {
+        id
+        callouts {
+          id
+          framing {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
+      }
     }
   }
 }

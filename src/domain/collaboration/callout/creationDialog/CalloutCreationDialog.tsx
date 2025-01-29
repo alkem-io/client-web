@@ -8,7 +8,7 @@ import {
   CalloutGroupName,
   TemplateType,
 } from '@/core/apollo/generated/graphql-schema';
-import { CalloutCreationTypeWithPreviewImages } from './useCalloutCreation/useCalloutCreationWithPreviewImages';
+import { CalloutCreationTypeWithPreviewImages } from '../../calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
 import { DialogContent } from '@/core/ui/dialog/deprecated';
 import { LoadingButton } from '@mui/lab';
@@ -25,7 +25,7 @@ import FlexSpacer from '@/core/ui/utils/FlexSpacer';
 import Gutters from '@/core/ui/grid/Gutters';
 import { WhiteboardFieldSubmittedValuesWithPreviewImages } from './CalloutWhiteboardField/CalloutWhiteboardField';
 import { INNOVATION_FLOW_STATES_TAGSET_NAME } from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/useInnovationFlowStates';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import { CalloutsSetParentType } from '@/domain/journey/JourneyTypeName';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { findDefaultTagset } from '@/domain/common/tags/utils';
 import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
@@ -54,7 +54,10 @@ export interface CalloutCreationDialogProps {
   loading: boolean;
   groupName: CalloutGroupName;
   flowState?: string;
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: CalloutsSetParentType;
+  availableCalloutTypes?: CalloutType[];
+  disableRichMedia?: boolean;
+  disablePostResponses?: boolean;
 }
 
 const CalloutCreationDialog = ({
@@ -65,6 +68,9 @@ const CalloutCreationDialog = ({
   groupName,
   flowState,
   journeyTypeName,
+  availableCalloutTypes,
+  disableRichMedia,
+  disablePostResponses,
 }: CalloutCreationDialogProps) => {
   const { t } = useTranslation();
   const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
@@ -151,12 +157,12 @@ const CalloutCreationDialog = ({
         };
 
         result = await onCreateCallout(newCallout);
+        setCallout({});
         scrollToTop();
       } catch (ex) {
         // eslint-disable-next-line no-console
         console.error(ex);
       } finally {
-        setCallout({});
         closePublishDialog();
         return result;
       }
@@ -201,7 +207,7 @@ const CalloutCreationDialog = ({
       whiteboardContent: templateCallout.contributionDefaults?.whiteboardContent,
       whiteboard: whiteboard && {
         content: whiteboard.content,
-        profileData: {
+        profile: {
           displayName: 'Whiteboard',
         },
         previewImages: [],
@@ -225,6 +231,7 @@ const CalloutCreationDialog = ({
             <Gutters>
               <CalloutTypeSelect
                 onSelect={handleSelectCalloutType}
+                availableCalloutTypes={availableCalloutTypes}
                 extraButtons={
                   <Button
                     size="large"
@@ -273,6 +280,8 @@ const CalloutCreationDialog = ({
               onStatusChanged={handleStatusChange}
               journeyTypeName={journeyTypeName}
               temporaryLocation // Always true for callout creation
+              disableRichMedia={disableRichMedia}
+              disablePostResponses={disablePostResponses && selectedCalloutType === CalloutType.Post}
             />
           </DialogContent>
 

@@ -1,3 +1,5 @@
+import useNavigate from '@/core/routing/useNavigate';
+import { Button } from '@mui/material';
 import BookIcon from '@mui/icons-material/Book';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
@@ -11,6 +13,8 @@ import { BlockTitle, Text } from '@/core/ui/typography';
 import BasicSpaceCard from '../components/BasicSpaceCard';
 import { gutters } from '@/core/ui/grid/utils';
 import { type VCProfilePageViewProps } from './model';
+import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
+import KnowledgeBaseDialog from '@/domain/community/virtualContributor/knowledgeBase/KnowledgeBaseDialog';
 
 const SectionTitle = ({ children }) => {
   return (
@@ -24,27 +28,46 @@ const SectionContent = ({ children }) => {
   return <Text>{children}</Text>;
 };
 
-export const VCProfileContentView = ({ bokProfile, virtualContributor }: VCProfilePageViewProps) => {
+export const VCProfileContentView = ({
+  bokProfile,
+  virtualContributor,
+  openKnowledgeBaseDialog,
+}: VCProfilePageViewProps) => {
   const { palette } = useTheme();
-
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const darkIcons = palette.icons.dark;
+
   const vcTBase = 'pages.virtualContributorProfile.sections';
   const { t: vcT } = useTranslation('translation', { keyPrefix: vcTBase });
   const externalVcTBase = 'pages.virtualContributorProfile.sections.external';
   const { t: externalVcT } = useTranslation('translation', { keyPrefix: externalVcTBase });
 
-  const darkIcons = palette.icons.dark;
-  const hasBokProfile = Boolean(bokProfile);
   const vcProfile = virtualContributor?.profile;
   const name = vcProfile?.displayName || t('pages.virtualContributorProfile.defaultName');
 
   const bokDescription = virtualContributor?.aiPersona?.bodyOfKnowledge;
-  const hasBokId = Boolean(virtualContributor?.aiPersona?.bodyOfKnowledgeID);
+  const vcType = virtualContributor?.aiPersona?.bodyOfKnowledgeType;
+  const isExternal = vcType === AiPersonaBodyOfKnowledgeType.None;
+  const hasSpaceKnowledge = vcType === AiPersonaBodyOfKnowledgeType.AlkemioSpace;
+
+  const handleKnowledgeBaseClick = () => {
+    if (virtualContributor) {
+      navigate(`${virtualContributor.profile.url}/knowledge-base`);
+    }
+  };
+
+  const onCloseKnowledgeBase = () => {
+    if (virtualContributor) {
+      navigate(virtualContributor.profile.url);
+    }
+  };
 
   return (
     <>
       <PageContentBlock>
-        {hasBokId && (
+        {!isExternal && (
           <>
             <SectionTitle>
               <BookIcon htmlColor={darkIcons} sx={{ fontSize: '18px' }} />
@@ -54,12 +77,16 @@ export const VCProfileContentView = ({ bokProfile, virtualContributor }: VCProfi
             <SectionContent>
               {vcT('knowledge.description', { name })}
 
-              {hasBokProfile ? (
+              {hasSpaceKnowledge ? (
                 <BasicSpaceCard space={bokProfile} />
               ) : (
-                <WrapperMarkdown>{bokDescription ?? ''}</WrapperMarkdown>
+                <>
+                  <WrapperMarkdown>{bokDescription ?? ''}</WrapperMarkdown>
+                  <Button variant="outlined" color="primary" onClick={handleKnowledgeBaseClick}>
+                    {t('buttons.visit')}
+                  </Button>
+                </>
               )}
-
               <Spacer />
             </SectionContent>
           </>
@@ -72,16 +99,16 @@ export const VCProfileContentView = ({ bokProfile, virtualContributor }: VCProfi
         </SectionTitle>
 
         <SectionContent>
-          {hasBokId ? (
-            vcT('personality.description', { name })
-          ) : (
+          {isExternal ? (
             <Trans i18nKey={`${externalVcTBase}.personality.description`} components={{ strong: <strong /> }} />
+          ) : (
+            vcT('personality.description', { name })
           )}
 
           <Spacer />
         </SectionContent>
 
-        {hasBokId && (
+        {!isExternal && (
           <>
             <SectionTitle>
               <CloudDownloadIcon htmlColor={darkIcons} sx={{ fontSize: '18px' }} />
@@ -105,14 +132,21 @@ export const VCProfileContentView = ({ bokProfile, virtualContributor }: VCProfi
         </SectionTitle>
 
         <SectionContent>
-          {hasBokId ? vcT('privacy.description', { name }) : externalVcT('privacy.description')}
+          {isExternal ? externalVcT('privacy.description') : vcT('privacy.description', { name })}
 
           <Trans
-            i18nKey={hasBokId ? `${vcTBase}.privacy.bullets` : `${externalVcTBase}.privacy.bullets`}
+            i18nKey={isExternal ? `${externalVcTBase}.privacy.bullets` : `${vcTBase}.privacy.bullets`}
             components={{ ul: <ul />, li: <li /> }}
           />
         </SectionContent>
       </PageContentBlock>
+      {openKnowledgeBaseDialog && (
+        <KnowledgeBaseDialog
+          id={virtualContributor?.id ?? ''}
+          title={`${name}: ${t('virtualContributorSpaceSettings.bodyOfKnowledge')}`}
+          onClose={onCloseKnowledgeBase}
+        />
+      )}
     </>
   );
 };

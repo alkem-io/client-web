@@ -35,6 +35,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { TagCategoryValues, info } from '@/core/logging/sentry/log';
 import { compact } from 'lodash';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import Gutters from '@/core/ui/grid/Gutters';
 
 interface FormValues extends SpaceEditFormValuesType {
   licensePlanId: string;
@@ -100,6 +101,7 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
   const { accountId: currentUserAccountId } = useUserContext();
 
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
+  const [addTutorialCallouts, setAddTutorialCallouts] = useState(true);
 
   const [isTermsDialogOpen, setIsTermsDialogOpen] = useState(false);
 
@@ -127,7 +129,11 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
             displayName: values.name!, // ensured by yup validation
             tagline: values.tagline!,
           },
-          collaborationData: {},
+          collaborationData: {
+            calloutsSetData: {},
+            addCallouts: !addTutorialCallouts,
+            addTutorialCallouts,
+          },
           tags: compact(values.tagsets?.reduce((acc: string[], tagset) => [...acc, ...tagset.tags], [])),
           licensePlanID: values.licensePlanId,
         },
@@ -196,31 +202,42 @@ const CreateSpaceDialog = ({ redirectOnComplete = true, onClose, account }: Crea
                       maxLength={SMALL_TEXT_LENGTH}
                     />
                     <TagsetSegment title={`${t('common.tags')} (${t('common.optional')})`} tagsets={tagsets} />
-                    <FormControlLabel
-                      value={hasAcceptedTerms}
-                      onChange={(event, isChecked) => setHasAcceptedTerms(isChecked)}
-                      required
-                      control={<Checkbox />}
-                      label={
-                        <Caption>
-                          <Trans
-                            i18nKey="createSpace.terms.checkboxLabel"
-                            components={{
-                              terms: (
-                                <Link
-                                  underline="always"
-                                  onClick={event => {
-                                    event.stopPropagation();
-                                    event.preventDefault();
-                                    setIsTermsDialogOpen(true);
-                                  }}
-                                />
-                              ),
-                            }}
-                          />
-                        </Caption>
-                      }
-                    />
+
+                    <Gutters disableGap disablePadding>
+                      <FormControlLabel
+                        checked={addTutorialCallouts}
+                        onChange={(_event, isChecked) => setAddTutorialCallouts(isChecked)}
+                        control={<Checkbox />}
+                        label={<Caption>{t('createSpace.addTutorialsLabel')}</Caption>}
+                      />
+
+                      <FormControlLabel
+                        value={hasAcceptedTerms}
+                        onChange={(event, isChecked) => setHasAcceptedTerms(isChecked)}
+                        required
+                        control={<Checkbox />}
+                        label={
+                          <Caption>
+                            <Trans
+                              i18nKey="createSpace.terms.checkboxLabel"
+                              components={{
+                                terms: (
+                                  <Link
+                                    underline="always"
+                                    onClick={event => {
+                                      event.stopPropagation();
+                                      event.preventDefault();
+                                      setIsTermsDialogOpen(true);
+                                    }}
+                                  />
+                                ),
+                              }}
+                            />
+                          </Caption>
+                        }
+                      />
+                    </Gutters>
+
                     <DialogFooter>
                       <Actions justifyContent="end" padding={gutters()}>
                         <Button

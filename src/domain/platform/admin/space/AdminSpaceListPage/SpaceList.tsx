@@ -4,7 +4,6 @@ import {
   refetchAdminSpacesListQuery,
   useAdminSpacesListQuery,
   useDeleteSpaceMutation,
-  useOrganizationsListQuery,
   usePlatformLicensingPlansQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -19,20 +18,14 @@ import {
 import { useTranslation } from 'react-i18next';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import SpaceListItem from './SpaceListItem';
-import { sortBy } from 'lodash';
 
 export const SpaceList: FC = () => {
   const notify = useNotification();
   const { t } = useTranslation();
 
   const { data: spacesData, loading: loadingSpaces } = useAdminSpacesListQuery();
-  const { data: organizationData } = useOrganizationsListQuery();
   const { data: platformLicensingData } = usePlatformLicensingPlansQuery();
-  const organizations = useMemo(() => {
-    const organizationNames =
-      organizationData?.organizations.map(org => ({ id: org.id, name: org.profile.displayName })) ?? [];
-    return sortBy(organizationNames, org => org.name);
-  }, [organizationData]);
+
 
   const allLicensePlans = platformLicensingData?.platform.licensingFramework.plans ?? [];
   const spaceLicensePlans = allLicensePlans.filter(
@@ -83,7 +76,7 @@ export const SpaceList: FC = () => {
           };
         }) ?? []
     );
-  }, [spacesData, organizations]);
+  }, [spacesData]);
 
   const [deleteSpace] = useDeleteSpaceMutation({
     refetchQueries: [refetchAdminSpacesListQuery()],

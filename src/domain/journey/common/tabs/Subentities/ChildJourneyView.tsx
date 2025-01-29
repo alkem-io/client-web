@@ -108,7 +108,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
             {childEntities.length > 3 && (
               <SearchField
                 value={filter}
-                placeholder={t('pages.generic.sections.subentities.searchPlaceholder')}
+                placeholder={t('pages.generic.sections.subEntities.searchPlaceholder')}
                 onChange={event => setFilter(event.target.value)}
               />
             )}
@@ -121,7 +121,7 @@ const ChildJourneyView = <ChildEntity extends BaseChildEntity>({
           {!state.loading && childEntities.length === 0 && (
             <PageContentBlockSeamless>
               <Caption textAlign="center">
-                {t('pages.generic.sections.subentities.empty', {
+                {t('pages.generic.sections.subEntities.empty', {
                   entities: getJourneyChildrenTranslation(t, journeyTypeName),
                   parentEntity: t(`common.${journeyTypeName}` as const),
                 })}

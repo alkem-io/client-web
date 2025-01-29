@@ -2,6 +2,7 @@ query AccountInformation($accountId: UUID!) {
   lookup {
     account(ID: $accountId) {
       id
+      externalSubscriptionID
       authorization {
         id
         myPrivileges
@@ -9,6 +10,11 @@ query AccountInformation($accountId: UUID!) {
       license {
         id
         availableEntitlements
+        entitlements {
+          type
+          limit
+          usage
+        }
       }
       host {
         id
@@ -40,19 +46,6 @@ query AccountInformation($accountId: UUID!) {
             authorization {
               id
               myPrivileges
-            }
-          }
-        }
-        subspaces {
-          id
-          profile {
-            ...AccountItemProfile
-          }
-          type
-          community {
-            id
-            roleSet {
-              id
             }
           }
         }

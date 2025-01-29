@@ -1,5 +1,7 @@
-query user($id: UUID_NAMEID_EMAIL!) {
-  user(ID: $id) {
-    ...UserDetails
+query user($id: UUID!) {
+  lookup {
+    user(ID: $id) {
+      ...UserDetails
+    }
   }
 }

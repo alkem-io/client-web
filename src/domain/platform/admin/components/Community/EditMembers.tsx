@@ -119,7 +119,7 @@ export const EditMembers = <Member extends Identifiable>({
 
 interface AvailableMembersProps<Member extends Identifiable> extends CustomizedTable<Member> {
   onAdd: (memberId: string) => void;
-  fetchMore: (amount?: number) => Promise<void>;
+  fetchMore: (amount?: number) => Promise<unknown>;
   hasMore: boolean;
   onSearchTermChange: (term: string) => void;
   filteredMembers: Member[];

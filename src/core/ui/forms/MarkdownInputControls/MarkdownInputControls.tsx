@@ -229,15 +229,16 @@ const MarkdownInputControls = memo(
             </ControlsButton>
             <ToggleLinkButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
             {!hideImageOptions && (
-              <InsertImageButton
-                editor={editor}
-                onDialogOpen={onDialogOpen}
-                onDialogClose={onDialogClose}
-                temporaryLocation={temporaryLocation}
-              />
+              <>
+                <InsertImageButton
+                  editor={editor}
+                  onDialogOpen={onDialogOpen}
+                  onDialogClose={onDialogClose}
+                  temporaryLocation={temporaryLocation}
+                />
+                <InsertEmbedCodeButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
+              </>
             )}
-
-            <InsertEmbedCodeButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
 
             <InsertEmojiButton editor={editor} onDialogOpen={onDialogOpen} onDialogClose={onDialogClose} />
           </Toolbar>

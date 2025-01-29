@@ -2,16 +2,17 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DialogContent } from '@mui/material';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
-import CommunityContributorsBlockWide from '@/domain/community/contributor/CommunityContributorsBlockWide/CommunityContributorsBlockWide';
-import { useSpaceCommunityContributorsQuery } from '@/core/apollo/generated/apollo-hooks';
+import RoleSetContributorsBlockWide from '@/domain/community/contributor/RoleSetContributorsBlockWide/RoleSetContributorsBlockWide';
+import { useSubspaceCommunityAndRoleSetIdQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ContributorCardSquareProps } from '@/domain/community/contributor/ContributorCardSquare/ContributorCardSquare';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
 import { useUserContext } from '@/domain/community/user';
 import { BlockTitle, Caption } from '@/core/ui/typography';
-import CommunityVirtualContributorsBlockWide from '@/domain/community/contributor/CommunityContributorsBlockWide/CommunityVirtualContributorsBlockWide';
-import { CommunityContributorType, SearchVisibility } from '@/core/apollo/generated/graphql-schema';
+import RoleSetVirtualContributorsBlockWide from '@/domain/community/contributor/RoleSetContributorsBlockWide/RoleSetVirtualContributorsBlockWide';
+import { RoleName, RoleSetContributorType, SearchVisibility } from '@/core/apollo/generated/graphql-schema';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import Gutters from '@/core/ui/grid/Gutters';
+import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
 
 export interface ContributorsToggleDialogProps {
   open?: boolean;
@@ -27,32 +28,41 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
   const { isAuthenticated } = useUserContext();
   const { t } = useTranslation();
 
-  const { loading, data } = useSpaceCommunityContributorsQuery({
+  const { data: subspaceData, loading } = useSubspaceCommunityAndRoleSetIdQuery({
     variables: {
       spaceId: journeyId,
     },
-    skip: !open || !journeyId || !isAuthenticated,
+    skip: !open || !journeyId,
   });
-  const roleSet = data?.lookup.space?.community?.roleSet;
+  const roleSetId = subspaceData?.lookup.space?.community.roleSet.id;
 
-  const users: ContributorCardSquareProps[] | undefined = roleSet?.memberUsers.map(user => ({
+  const { usersByRole, organizationsByRole, virtualContributorsByRole } = useRoleSetAdmin({
+    roleSetId,
+    relevantRoles: [RoleName.Member],
+    contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],
+  });
+  const memberUsers = usersByRole[RoleName.Member] ?? [];
+  const memberOrganizations = organizationsByRole[RoleName.Member] ?? [];
+  const memberVirtualContributors = virtualContributorsByRole[RoleName.Member] ?? [];
+
+  const users: ContributorCardSquareProps[] | undefined = memberUsers.map(user => ({
     id: user.id,
-    avatar: user.profile.visual?.uri || '',
-    displayName: user.profile.displayName || '',
+    avatar: user.profile.avatar?.uri,
+    displayName: user.profile.displayName,
     url: user.profile.url,
-    contributorType: CommunityContributorType.User,
+    contributorType: RoleSetContributorType.User,
   }));
 
-  const organizations: ContributorCardSquareProps[] | undefined = roleSet?.memberOrganizations.map(organization => ({
+  const organizations: ContributorCardSquareProps[] | undefined = memberOrganizations.map(organization => ({
     id: organization.id,
-    avatar: organization.profile.visual?.uri || '',
-    displayName: organization.profile.displayName || '',
+    avatar: organization.profile.avatar?.uri,
+    displayName: organization.profile.displayName,
     url: organization.profile.url,
-    contributorType: CommunityContributorType.Organization,
+    contributorType: RoleSetContributorType.Organization,
   }));
 
   const virtualContributors: VirtualContributorProps[] =
-    roleSet?.virtualContributors.filter(vc => vc.searchVisibility !== SearchVisibility.Hidden) ?? [];
+    memberVirtualContributors.filter(vc => vc.searchVisibility !== SearchVisibility.Hidden) ?? [];
 
   return (
     <DialogWithGrid open={open} fullWidth columns={12} aria-labelledby="contributors-dialog-title">
@@ -61,7 +71,8 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
         {!isAuthenticated && <Caption>{t('pages.contributors.unauthorized')}</Caption>}
         {isAuthenticated && (
           <Gutters disablePadding>
-            <CommunityContributorsBlockWide
+            <RoleSetContributorsBlockWide
+              showUsers
               users={users}
               organizations={organizations}
               isLoading={loading}
@@ -70,7 +81,7 @@ const ContributorsToggleDialog = ({ open = false, journeyId, onClose }: Contribu
             {virtualContributors && virtualContributors?.length > 0 && (
               <>
                 <BlockTitle>{t('pages.contributors.virtualContributors.title')}</BlockTitle>
-                <CommunityVirtualContributorsBlockWide virtualContributors={virtualContributors} />
+                <RoleSetVirtualContributorsBlockWide virtualContributors={virtualContributors} />
               </>
             )}
           </Gutters>

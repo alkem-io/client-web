@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import CalloutsListDialog from '@/domain/collaboration/callout/calloutsList/CalloutsListDialog';
 import { useBackToStaticPath } from '@/core/routing/useBackToPath';
 import { useTranslation } from 'react-i18next';
-import { UseCalloutsProvided } from '@/domain/collaboration/callout/useCallouts/useCallouts';
+import { UseCalloutsProvided } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import { SubspaceDialog } from '@/domain/journey/subspace/layout/SubspaceDialog';
 import SubspacesListDialog from '@/domain/journey/subspace/dialogs/SubspacesListDialog';
 import ContributorsToggleDialog from '@/domain/journey/subspace/dialogs/ContributorsToggleDialog';
@@ -67,7 +67,7 @@ const SubspaceDialogs = ({
         onClose={handleClose}
         callouts={callouts.callouts}
         loading={callouts.loading}
-        emptyListCaption={t('pages.generic.sections.subentities.empty', {
+        emptyListCaption={t('pages.generic.sections.subEntities.empty', {
           entities: t('common.collaborationTools'),
         })}
       />

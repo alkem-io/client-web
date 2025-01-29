@@ -2,7 +2,7 @@ import { forwardRef, PropsWithChildren, ReactNode, useMemo, useState } from 'rea
 import { Box, Divider, MenuList, Typography } from '@mui/material';
 import { BlockTitle, Caption } from '@/core/ui/typography';
 import { gutters } from '@/core/ui/grid/utils';
-import { buildLoginUrl, buildUserProfileUrl } from '@/main/routing/urlBuilders';
+import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import PendingMembershipsUserMenuItem from '@/domain/community/pendingMembership/PendingMembershipsUserMenuItem';
 import {
   AssignmentIndOutlined,
@@ -15,7 +15,7 @@ import {
 import SettingsIcon from '@mui/icons-material/SettingsOutlined';
 import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { useTranslation } from 'react-i18next';
-import { AuthorizationPrivilege, PlatformRole } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, RoleName } from '@/core/apollo/generated/graphql-schema';
 import { useUserContext } from '@/domain/community/user';
 import Gutters from '@/core/ui/grid/Gutters';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
@@ -49,7 +49,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
 
     const { user: { user, hasPlatformPrivilege } = {}, isAuthenticated, platformRoles } = useUserContext();
 
-    // todo: change with PlatformRole.GlobalAdmin?
+    // todo: change with RoleName.GlobalAdmin?
     const isAdmin = hasPlatformPrivilege?.(AuthorizationPrivilege.PlatformAdmin);
 
     const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
@@ -58,16 +58,16 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
     const role = useMemo(() => {
       for (const platformRole of platformRoles) {
         switch (platformRole) {
-          case PlatformRole.GlobalAdmin:
+          case RoleName.GlobalAdmin:
             return t('common.roles.GLOBAL_ADMIN');
-          case PlatformRole.Support:
-            return t('common.roles.SUPPORT');
-          case PlatformRole.LicenseManager:
-            return t('common.roles.LICENSE_MANAGER');
-          case PlatformRole.BetaTester:
-            return t('common.roles.BETA_TESTER');
-          case PlatformRole.VcCampaign:
-            return t('common.roles.VC_CAMPAIGN');
+          case RoleName.GlobalSupport:
+            return t('common.roles.GLOBAL_SUPPORT');
+          case RoleName.GlobalLicenseManager:
+            return t('common.roles.GLOBAL_LICENSE_MANAGER');
+          case RoleName.PlatformBetaTester:
+            return t('common.roles.PLATFORM_BETA_TESTER');
+          case RoleName.PlatformVcCampaign:
+            return t('common.roles.PLATFORM_VC_CAMPAIGN');
           default:
             return null;
         }
@@ -104,7 +104,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
                   onClick={onClose}
                 >
                   <Typography variant="inherit" fontWeight="bold">
-                    {t('topbar.sign-in')}
+                    {t('topBar.sign-in')}
                   </Typography>
                 </NavigatableMenuItem>
               )}
@@ -112,11 +112,7 @@ const PlatformNavigationUserMenu = forwardRef<HTMLDivElement, PropsWithChildren<
                 {t('pages.home.title')}
               </NavigatableMenuItem>
               {user && (
-                <NavigatableMenuItem
-                  iconComponent={AssignmentIndOutlined}
-                  route={buildUserProfileUrl(user.nameID)}
-                  onClick={onClose}
-                >
+                <NavigatableMenuItem iconComponent={AssignmentIndOutlined} route={user.profile.url} onClick={onClose}>
                   {t('pages.user-profile.title')}
                 </NavigatableMenuItem>
               )}

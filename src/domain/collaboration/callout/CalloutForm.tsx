@@ -31,8 +31,8 @@ import CalloutWhiteboardField, {
   WhiteboardFieldSubmittedValues,
   WhiteboardFieldSubmittedValuesWithPreviewImages,
 } from './creationDialog/CalloutWhiteboardField/CalloutWhiteboardField';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
-import { JourneyCalloutGroupNameOptions } from './CalloutsInContext/CalloutsGroup';
+import { CalloutsSetParentType } from '@/domain/journey/JourneyTypeName';
+import { JourneyCalloutGroupNameOptions } from '../calloutsSet/CalloutsInContext/CalloutsGroup';
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
 import PostTemplateSelector from '@/domain/templates/components/TemplateSelectors/PostTemplateSelector';
 import WhiteboardTemplateSelector from '@/domain/templates/components/TemplateSelectors/WhiteboardTemplateSelector';
@@ -88,8 +88,10 @@ export interface CalloutFormProps {
   onChange?: (callout: CalloutFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<FormValueType>['children'];
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: CalloutsSetParentType;
   temporaryLocation?: boolean;
+  disableRichMedia?: boolean; // images, videos, iframe, etc.
+  disablePostResponses?: boolean;
 }
 
 const CalloutForm = ({
@@ -102,6 +104,8 @@ const CalloutForm = ({
   journeyTypeName,
   children,
   temporaryLocation = false,
+  disableRichMedia,
+  disablePostResponses = false,
 }: CalloutFormProps) => {
   const { t } = useTranslation();
 
@@ -125,7 +129,7 @@ const CalloutForm = ({
       type: calloutType,
       tagsets,
       references: callout?.references ?? [],
-      opened: (callout?.state ?? CalloutState.Open) === CalloutState.Open,
+      opened: !disablePostResponses && (callout?.state ?? CalloutState.Open) === CalloutState.Open,
       groupName: callout?.groupName ?? CalloutGroupName.Knowledge,
       postDescription: callout.postDescription ?? '',
       whiteboardContent: callout.whiteboardContent ?? EmptyWhiteboardString,
@@ -135,7 +139,7 @@ const CalloutForm = ({
             previewImages: undefined,
           }
         : {
-            profileData: {
+            profile: {
               displayName: t('common.whiteboard'),
             },
             content: EmptyWhiteboardString,
@@ -192,7 +196,7 @@ const CalloutForm = ({
     tags: true,
     postTemplate: calloutType === CalloutType.PostCollection,
     whiteboardTemplate: calloutType === CalloutType.WhiteboardCollection,
-    newResponses: calloutType !== CalloutType.Whiteboard,
+    newResponses: !disablePostResponses && calloutType !== CalloutType.Whiteboard,
     locationChange: editMode && Boolean(canChangeCalloutLocation),
     whiteboard: calloutType === CalloutType.Whiteboard,
   };
@@ -220,6 +224,7 @@ const CalloutForm = ({
               rows={7}
               maxLength={MARKDOWN_TEXT_LENGTH}
               temporaryLocation={temporaryLocation}
+              hideImageOptions={disableRichMedia}
             />
             {editMode && formConfiguration.references && (
               <ProfileReferenceSegment

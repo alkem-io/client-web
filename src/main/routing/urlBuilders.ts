@@ -2,11 +2,7 @@ import { _AUTH_LOGIN_PATH } from '@/core/auth/authentication/constants/authentic
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 import { isAbsoluteUrl } from '@/core/utils/links';
-import { TopLevelRoutePath } from './TopLevelRoutePath';
-
-export const buildOrganizationUrl = (organizationNameId: string) => `/organization/${organizationNameId}`;
-
-export const buildVirtualContributorUrl = (virtualContributorNameId: string) => `/vc/${virtualContributorNameId}`;
+export const KNOWLEDGE_BASE_PATH = 'knowledge-base';
 
 export const buildSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings`;
@@ -16,10 +12,10 @@ export const buildSettingsProfileUrl = (entityUrl: string) => {
   return `${entityUrl}/settings/profile`;
 };
 
-export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
+const buildVCProfileUrl = (vcNameId: string) => `/vc/${vcNameId}`;
+export const buildVCKnowledgeBaseUrl = (vcNameId: string) => `${buildVCProfileUrl(vcNameId)}/${KNOWLEDGE_BASE_PATH}`;
 
-export const buildUserProfileSettingsUrl = (userNameId: string) =>
-  `${buildUserProfileUrl(userNameId)}/settings/profile`;
+export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
 
 export const buildReturnUrlParam = (returnUrl = ROUTE_HOME, origin = window.location.origin) => {
   const fullReturnUrl = isAbsoluteUrl(returnUrl) ? returnUrl : `${origin}${returnUrl}`;
@@ -34,6 +30,8 @@ export const buildNewOrganizationUrl = () => {
   return '/admin/organizations/new';
 };
 
+export const buildPostDashboardUrl = (postUrl: string) => `${postUrl}/dashboard`;
+
 export const buildUpdatesUrl = (journeyLocation: string) => {
   const updatesPath = `/${EntityPageSection.Dashboard}/updates`;
   return `${journeyLocation}${updatesPath}`;
@@ -42,9 +40,6 @@ export const buildUpdatesUrl = (journeyLocation: string) => {
 export const buildAboutUrl = (journeyLocation: string | undefined) => {
   return journeyLocation && `${journeyLocation}/about`;
 };
-
-export const buildInnovationPackUrl = (innovationPackNameId: string) =>
-  `/${TopLevelRoutePath.InnovationPacks}/${innovationPackNameId}`;
 
 export const buildInnovationPackSettingsUrl = buildSettingsUrl;
 
@@ -77,3 +72,11 @@ export const getAccountLink = (profileUrl?: string) => {
 };
 
 export const buildWelcomeSpaceUrl = () => '/welcome-space';
+
+export const getSpaceUrlFromSubSpace = (subSpaceUrl: string) => {
+  const url = new URL(subSpaceUrl, window.location.origin);
+  const urlSegments = url.pathname.split('/challenges');
+
+  url.pathname = urlSegments[0];
+  return url.href;
+};

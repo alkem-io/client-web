@@ -16,7 +16,7 @@ query AdminInnovationPacksList {
   }
 }
 
-mutation deleteInnovationPack($innovationPackId: UUID_NAMEID!) {
+mutation deleteInnovationPack($innovationPackId: UUID!) {
   deleteInnovationPack(deleteData: { ID: $innovationPackId }) {
     id
   }
@@ -37,14 +37,6 @@ fragment InnovationPackProfile on Profile {
     uri
   }
   url
-}
-
-query InnovationPackResolveId($innovationPackNameId: NameID!) {
-  lookupByName {
-    innovationPack(NAMEID: $innovationPackNameId) {
-      id
-    }
-  }
 }
 
 query AdminInnovationPack($innovationPackId: UUID!) {

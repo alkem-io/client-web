@@ -1,5 +1,5 @@
 import useBackToParentPage from '@/core/routing/deprecated/useBackToParentPage';
-import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
+import { CalloutsSetParentType } from '@/domain/journey/JourneyTypeName';
 import { useCalloutIdQuery } from '@/core/apollo/generated/apollo-hooks';
 import WhiteboardView from '../WhiteboardsManagement/WhiteboardView';
 import { WhiteboardProvider } from '../containers/WhiteboardProvider';
@@ -9,7 +9,7 @@ export interface WhiteboardPageProps {
   whiteboardNameId: string;
   calloutNameId: string;
   parentUrl: string;
-  journeyTypeName: JourneyTypeName;
+  journeyTypeName: CalloutsSetParentType;
 }
 
 const WhiteboardPage = ({
@@ -31,7 +31,7 @@ const WhiteboardPage = ({
     skip: !calloutNameId || !collaborationId,
   });
 
-  const calloutId = data?.lookup.collaboration?.callouts?.[0].id;
+  const calloutId = data?.lookup.collaboration?.calloutsSet.callouts?.[0].id;
 
   return (
     <WhiteboardProvider whiteboardNameId={whiteboardNameId} calloutId={calloutId}>

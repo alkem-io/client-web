@@ -1,7 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useUrlParams } from '@/core/routing/useUrlParams';
-import { useConfig } from '@/domain/platform/config/useConfig';
 import { useSpaceProviderQuery, useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
@@ -29,6 +28,7 @@ interface SpaceContextProps {
   spaceNameId: string;
   communityId: string;
   collaborationId: string;
+  calloutsSetId: string;
   roleSetId: string;
   isPrivate?: boolean;
   loading: boolean;
@@ -50,6 +50,7 @@ const SpaceContext = React.createContext<SpaceContextProps>({
   spaceNameId: '',
   communityId: '',
   collaborationId: '',
+  calloutsSetId: '',
   roleSetId: '',
   permissions: {
     canRead: false,
@@ -81,11 +82,8 @@ const NO_PRIVILEGES = [];
 
 const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
   const { spaceNameId = '' } = useUrlParams();
-  // todo: still needed?
-  const { error: configError } = useConfig();
 
   const {
-    error: spaceError,
     data,
     loading,
     refetch: refetchSpace,
@@ -101,9 +99,9 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
 
   const communityId = space?.community?.id ?? '';
   const collaborationId = space?.collaboration?.id ?? '';
+  const calloutsSetId = space?.collaboration?.calloutsSet?.id ?? '';
   const roleSetId = space?.community?.roleSet?.id ?? '';
   const isPrivate = space && space.settings.privacy?.mode === SpacePrivacyMode.Private;
-  const error = configError || spaceError;
 
   const contextPrivileges = space?.context?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const spacePrivileges = space?.authorization?.myPrivileges ?? NO_PRIVILEGES;
@@ -141,19 +139,22 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
       canCreateSubspaces: canCreateSubspaces,
       canCreateTemplates,
       canCreate,
-      communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
+      communityReadAccess:
+        communityPrivileges.includes(AuthorizationPrivilege.Read) &&
+        communityPrivileges.includes(AuthorizationPrivilege.ReadUsers),
       canReadCollaboration: collaborationPrivileges.includes(AuthorizationPrivilege.Read),
       canReadPosts: contextPrivileges.includes(AuthorizationPrivilege.Read),
       contextPrivileges,
     };
   }, [
     spacePrivileges,
-    contextPrivileges,
     canReadSubspaces,
-    communityPrivileges,
-    canCreate,
     canCreateSubspaces,
+    canCreateTemplates,
+    canCreate,
+    communityPrivileges,
     collaborationPrivileges,
+    contextPrivileges,
   ]);
 
   const profile = useMemo(() => {
@@ -178,11 +179,11 @@ const SpaceContextProvider: FC<SpaceProviderProps> = ({ children }) => {
         spaceNameId,
         communityId,
         collaborationId,
+        calloutsSetId,
         roleSetId,
         permissions,
         isPrivate,
         loading,
-        error,
         refetchSpace,
         profile,
         context: space?.context,

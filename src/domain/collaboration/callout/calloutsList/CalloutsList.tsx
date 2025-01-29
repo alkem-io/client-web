@@ -6,7 +6,7 @@ import { times } from 'lodash';
 import { BlockSectionTitle, Caption } from '@/core/ui/typography';
 import RouterLink from '@/core/ui/link/RouterLink';
 import SearchField from '@/core/ui/search/SearchField';
-import JourneyCalloutsListItemTitle from '../JourneyCalloutsTabView/JourneyCalloutsListItemTitle';
+import JourneyCalloutsListItemTitle from '../../calloutsSet/CalloutsView/CalloutsListItemTitle';
 
 export interface CalloutInfo {
   id: string;

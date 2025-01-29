@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import scrollToTop from '@/core/ui/utils/scrollToTop';
 import {
   refetchAdminSpaceSubspacesPageQuery,
+  refetchSpaceDashboardNavigationChallengesQuery,
+  refetchSubspacesInSpaceQuery,
   useDeleteSpaceMutation,
   useSpaceHostQuery,
   useSpacePrivilegesQuery,
@@ -28,7 +30,7 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { BlockSectionTitle, BlockTitle, Caption, Text } from '@/core/ui/typography';
 import CommunityApplicationForm from '@/domain/community/community/CommunityApplicationForm/CommunityApplicationForm';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { Box, Button, CircularProgress } from '@mui/material';
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
@@ -76,7 +78,7 @@ export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsV
   const isSubspace = journeyTypeName !== 'space';
 
   const { subspaceId } = useSubSpace();
-  const { spaceNameId } = useSpace();
+  const { spaceId, spaceNameId } = useSpace();
 
   const [saveAsTemplateDialogOpen, setSaveAsTemplateDialogOpen] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -85,9 +87,16 @@ export const SpaceSettingsView = ({ journeyId, journeyTypeName }: SpaceSettingsV
 
   const [deleteSpace] = useDeleteSpaceMutation({
     refetchQueries: [
-      refetchAdminSpaceSubspacesPageQuery({
-        spaceId: spaceNameId,
+      refetchSubspacesInSpaceQuery({
+        spaceId,
       }),
+      refetchAdminSpaceSubspacesPageQuery({
+        spaceId,
+      }),
+      refetchSpaceDashboardNavigationChallengesQuery({
+        spaceId,
+      }),
+      'SpaceDashboardNavigationOpportunities',
     ],
     awaitRefetchQueries: true,
     onCompleted: data => {

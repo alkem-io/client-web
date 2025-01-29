@@ -18,7 +18,7 @@ import RouterLink, { RouterLinkProps } from '@/core/ui/link/RouterLink';
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import spaceIcon from '@/domain/shared/components/JourneyIcon/JourneyIcon';
 import BlockTitleWithIcon from '@/core/ui/content/BlockTitleWithIcon';
-import { CommunityRoleType } from '@/core/apollo/generated/graphql-schema';
+import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import { intersection } from 'lodash';
 import FlexSpacer from '@/core/ui/utils/FlexSpacer';
@@ -48,7 +48,7 @@ export interface JourneyCardHorizontalProps {
     };
     community?: {
       roleSet?: {
-        myRoles?: CommunityRoleType[];
+        myRoles?: RoleName[];
       };
     };
   };
@@ -63,7 +63,7 @@ export interface JourneyCardHorizontalProps {
 
 const ElevatedPaper = withElevationOnHover(Paper) as typeof Paper;
 
-const VISIBLE_COMMUNITY_ROLES = [CommunityRoleType.Admin, CommunityRoleType.Lead] as const;
+const VISIBLE_COMMUNITY_ROLES = [RoleName.Admin, RoleName.Lead] as const;
 
 const Wrapper = <D extends React.ElementType = ListItemButtonTypeMap['defaultComponent'], P = Record<string, unknown>>(
   props: ListItemButtonProps<D, P> & RouterLinkProps
@@ -111,7 +111,7 @@ const JourneyCardHorizontal = ({
               variant="filled"
               color="primary"
               label={
-                <Typography variant="button">{t(`common.enums.communityRole.${communityRole}` as const)}</Typography>
+                <Typography variant="button">{t(`common.roles.${communityRole}` as const)}</Typography>
               }
             />
           )}

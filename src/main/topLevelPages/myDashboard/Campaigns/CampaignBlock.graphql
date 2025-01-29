@@ -1,7 +1,10 @@
 query CampaignBlockCredentials {
   platform {
     id
-    myRoles
+    roleSet {
+      id
+      myRoles
+    }
   }
   me {
     user {

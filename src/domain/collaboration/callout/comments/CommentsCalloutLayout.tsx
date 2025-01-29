@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import WrapperMarkdown, { MARKDOWN_CLASS_NAME } from '@/core/ui/markdown/WrapperMarkdown';
 import { BlockTitle } from '@/core/ui/typography';
 import { Ribbon } from '@/core/ui/card/Ribbon';
 import References from '@/domain/shared/components/References/References';
@@ -11,6 +11,8 @@ import CalloutHeader from '../calloutBlock/CalloutHeader';
 import CalloutClosedMarginal from '../calloutBlock/CalloutClosedMarginal';
 import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
 import { gutters } from '@/core/ui/grid/utils';
+
+const DESCRIPTION_MAX_HEIGHT = 'calc(100vh - 400px)';
 
 const CommentsCalloutLayout = ({
   callout,
@@ -36,6 +38,9 @@ const CommentsCalloutLayout = ({
 
   const hasCalloutDetails = callout.authorName && callout.publishedAt;
 
+  // fixes comments not visible when description too long in modal/expanded
+  const expandedStyles = expanded ? { maxHeight: DESCRIPTION_MAX_HEIGHT, overflowY: 'auto' } : undefined;
+
   return (
     <>
       {callout.draft && (
@@ -54,11 +59,13 @@ const CommentsCalloutLayout = ({
         calloutActions={calloutActions}
       />
       {hasCalloutDetails && <BlockTitle noWrap>{callout.framing.profile.displayName}</BlockTitle>}
-      <Box sx={{ wordWrap: 'break-word' }} paddingX={gutters()}>
-        <WrapperMarkdown caption>{callout.framing.profile.description ?? ''}</WrapperMarkdown>
+      <Box sx={{ wordWrap: 'break-word' }} paddingX={gutters()} paddingBottom={gutters(0.5)}>
+        <WrapperMarkdown caption className={MARKDOWN_CLASS_NAME} sx={expandedStyles}>
+          {callout.framing.profile.description ?? ''}
+        </WrapperMarkdown>
       </Box>
       {!skipReferences && !!callout.framing.profile.references?.length && (
-        <Box padding={gutters()} paddingTop={gutters(0.5)}>
+        <Box paddingX={gutters()} paddingBottom={gutters(0.5)}>
           <References compact references={callout.framing.profile.references} />
         </Box>
       )}

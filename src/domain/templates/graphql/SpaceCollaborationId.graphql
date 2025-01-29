@@ -6,6 +6,9 @@ query SpaceCollaborationId($spaceId: UUID!) {
       id
       collaboration {
         id
+        calloutsSet {
+          id
+        }
       }
     }
   }

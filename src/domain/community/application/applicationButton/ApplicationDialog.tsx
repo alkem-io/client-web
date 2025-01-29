@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import FormikInputField from '@/core/ui/forms/FormikInputField/FormikInputField';
 import { useApplicationCommunityQuery } from '../containers/useApplicationCommunityQuery';
-import { refetchUserProviderQuery, useApplyForEntryRoleOnRoleSetMutation } from '@/core/apollo/generated/apollo-hooks';
 import { CreateNvpInput } from '@/core/apollo/generated/graphql-schema';
 import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { BlockTitle } from '@/core/ui/typography';
@@ -17,6 +16,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { Actions } from '@/core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
 import FormikEffectFactory from '@/core/ui/forms/FormikEffect';
+import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 
 const FormikEffect = FormikEffectFactory<Record<string, string>>();
 
@@ -44,10 +44,7 @@ const ApplicationDialog = ({
   const { data } = useApplicationCommunityQuery(journeyId, canJoinCommunity);
   const { description, questions = [], roleSetId = '', displayName: communityName, communityGuidelines } = data || {};
 
-  const [createApplication, { loading: isCreationLoading }] = useApplyForEntryRoleOnRoleSetMutation({
-    // refetch user applications
-    refetchQueries: [refetchUserProviderQuery()],
-  });
+  const { applyForEntryRoleOnRoleSet, isApplying } = useRoleSetApplicationsAndInvitations({});
 
   const initialValues: Record<string, string> = useMemo(
     () => questions.reduce((acc, val) => ({ ...acc, [val.question]: '' }), {} as Record<string, string>),
@@ -59,7 +56,9 @@ const ApplicationDialog = ({
       questions.reduce(
         (acc, val) =>
           acc.shape({
-            [val.question]: val.required ? yup.string().required(t('forms.validations.required')) : yup.string(),
+            [val.question]: val.required
+              ? yup.string().required(t('forms.validations.required')).max(val.maxLength, 'forms.validations.maxLength')
+              : yup.string().max(val.maxLength, 'forms.validations.maxLength'),
           }),
         yup.object()
       ),
@@ -91,14 +90,7 @@ const ApplicationDialog = ({
       return;
     }
 
-    await createApplication({
-      variables: {
-        input: {
-          roleSetID: roleSetId,
-          questions: applicationQuestions,
-        },
-      },
-    });
+    await applyForEntryRoleOnRoleSet(roleSetId, applicationQuestions);
     onClose();
     onApply?.();
   };
@@ -159,7 +151,7 @@ const ApplicationDialog = ({
       </DialogContent>
       <Actions padding={gutters()} justifyContent="end">
         <LoadingButton
-          loading={isCreationLoading}
+          loading={isApplying}
           loadingIndicator={`${t('buttons.processing')}...`}
           onClick={() => onSubmit()}
           variant="contained"

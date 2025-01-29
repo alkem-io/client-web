@@ -1,29 +1,34 @@
-query SpaceCommunityPage($spaceNameId: UUID_NAMEID!, $includeCommunity: Boolean!) {
-  space(ID: $spaceNameId) {
-    id
-    authorization {
+query SpaceCommunityPage($spaceId: UUID!, $includeCommunity: Boolean!) {
+  lookup {
+    space(ID: $spaceId) {
       id
-      myPrivileges
-    }
-    profile {
-      id
-      url
-    }
-    provider {
-      ...ContributorDetails
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-    community @include(if: $includeCommunity) {
-      id
-      roleSet {
-        ...RoleSetDetails
+      authorization {
+        id
+        myPrivileges
       }
-    }
-    collaboration {
-      id
+      profile {
+        id
+        url
+      }
+      provider {
+        ...ContributorDetails
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+      community @include(if: $includeCommunity) {
+        id
+        roleSet {
+          id
+        }
+      }
+      collaboration {
+        id
+        calloutsSet {
+          id
+        }
+      }
     }
   }
 }

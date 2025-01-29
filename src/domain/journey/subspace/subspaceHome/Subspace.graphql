@@ -32,12 +32,15 @@ fragment SubspacePageSpace on Space {
       myPrivileges
     }
     roleSet {
-      ...RoleSetDetails
+      id
       myMembershipStatus
     }
   }
   collaboration {
     id
+    calloutsSet {
+      id
+    }
   }
   templatesManager {
     id

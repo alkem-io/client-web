@@ -12,13 +12,12 @@ import {
   VirtualContributor,
 } from '../contributor/ContributorsSearch/ContributorsSearchContainer';
 import {
-  CommunityContributorType,
+  RoleSetContributorType,
   OrganizationContributorFragment,
   UserContributorFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import ImageBackdrop from '@/domain/shared/components/Backdrops/ImageBackdrop';
-import { buildOrganizationUrl, buildUserProfileUrl } from '@/main/routing/urlBuilders';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import ScrollableCardsLayoutContainer from '@/core/ui/card/cardsLayout/ScrollableCardsLayoutContainer';
@@ -27,7 +26,7 @@ import { useColumns } from '@/core/ui/grid/GridContext';
 import GridProvider from '@/core/ui/grid/GridProvider';
 import { Identifiable } from '@/core/utils/Identifiable';
 
-const USERS_GRAYED_OUT_IMAGE = '/contributors/users-grayed.png';
+const grayedOutUsersImgSrc = '/contributors/users-grayed.png';
 export const ITEMS_PER_PAGE = 32;
 
 const userToContributorCard = (user: UserContributorFragment): ContributorCardSquareProps => {
@@ -35,14 +34,14 @@ const userToContributorCard = (user: UserContributorFragment): ContributorCardSq
     id: user.id,
     displayName: user.userProfile.displayName,
     avatar: user.userProfile.visual?.uri ?? '',
-    url: buildUserProfileUrl(user.nameID),
+    url: user.userProfile.url,
     tooltip: {
       tags: (user.userProfile?.tagsets || []).flatMap(y => y.tags),
       city: user.userProfile?.location?.city || '',
       country: user.userProfile?.location?.country || '',
     },
     isContactable: user.isContactable,
-    contributorType: CommunityContributorType.User,
+    contributorType: RoleSetContributorType.User,
   };
 };
 
@@ -51,9 +50,9 @@ const organizationToContributorCard = (org: OrganizationContributorFragment): Co
     id: org.id,
     displayName: org.orgProfile.displayName,
     avatar: org.orgProfile.visual?.uri ?? '',
-    url: buildOrganizationUrl(org.nameID),
+    url: org.orgProfile.url,
     isContactable: true,
-    contributorType: CommunityContributorType.Organization,
+    contributorType: RoleSetContributorType.Organization,
   };
 };
 
@@ -69,7 +68,7 @@ const vcToContributorCard = (vc: VirtualContributor): ContributorCardSquareProps
       country: vc.profile?.location?.country ?? '',
     },
     isContactable: false,
-    contributorType: CommunityContributorType.Virtual,
+    contributorType: RoleSetContributorType.Virtual,
   };
 };
 
@@ -155,16 +154,12 @@ const ContributorsView = ({
         {!showUsers && (
           <Grid item>
             <ImageBackdrop
-              src={USERS_GRAYED_OUT_IMAGE}
-              backdropMessage={'login'}
-              blockName={'all-contributing-users'}
+              src={grayedOutUsersImgSrc}
+              backdropMessage="login"
+              blockName="all-contributing-users"
               messageSx={theme => ({
                 [theme.breakpoints.up('sm')]: {
                   fontWeight: 'bold',
-                },
-                [theme.breakpoints.up('lg')]: {
-                  marginTop: theme.spacing(10),
-                  marginBottom: theme.spacing(-10),
                 },
               })}
             />

@@ -168,13 +168,16 @@ fragment LibraryTemplates on TemplatesSet {
           description
         }
       }
-      callouts {
+      calloutsSet {
         id
-        framing {
+        callouts {
           id
-          profile {
+          framing {
             id
-            displayName
+            profile {
+              id
+              displayName
+            }
           }
         }
       }

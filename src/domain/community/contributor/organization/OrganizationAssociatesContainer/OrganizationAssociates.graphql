@@ -1,8 +1,0 @@
-query organizationAssociates($id: UUID_NAMEID!) {
-  organization(ID: $id) {
-    id
-    associates {
-      ...GroupMembers
-    }
-  }
-}

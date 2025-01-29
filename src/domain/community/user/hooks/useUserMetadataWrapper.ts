@@ -2,6 +2,7 @@ import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '@/domain/common/tags/tagset.cons
 import {
   AuthorizationPrivilege,
   MyPrivilegesFragment,
+  RoleName,
   SpaceLevel,
   UserDetailsFragment,
 } from '@/core/apollo/generated/graphql-schema';
@@ -25,13 +26,15 @@ export interface PendingApplication extends Identifiable {
 export interface UserMetadata {
   user: UserDetailsFragment;
   hasPlatformPrivilege: (privilege: AuthorizationPrivilege) => boolean | undefined;
+  hasPlatformRole: (role: RoleName) => boolean | undefined;
   keywords: string[];
   skills: string[];
 }
 
 export const toUserMetadata = (
   user: UserDetailsFragment | undefined,
-  platformLevelAuthorization: MyPrivilegesFragment | undefined
+  platformLevelAuthorization: MyPrivilegesFragment | undefined,
+  myRoles: RoleName[] | undefined
 ): UserMetadata | undefined => {
   if (!user) {
     return;
@@ -43,9 +46,14 @@ export const toUserMetadata = (
     return myPrivileges?.includes(privilege);
   };
 
+  const hasPlatformRole = (role: RoleName) => {
+    return myRoles?.includes(role);
+  };
+
   return {
     user,
-    hasPlatformPrivilege: hasPlatformPrivilege,
+    hasPlatformPrivilege,
+    hasPlatformRole,
     keywords: user.profile.tagsets?.find(t => t.name.toLowerCase() === KEYWORDS_TAGSET)?.tags ?? [],
     skills: user.profile.tagsets?.find(t => t.name.toLowerCase() === SKILLS_TAGSET)?.tags ?? [],
   };

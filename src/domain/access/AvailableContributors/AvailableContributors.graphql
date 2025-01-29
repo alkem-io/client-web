@@ -1,0 +1,127 @@
+fragment AvailableUserForRoleSet on User {
+  id
+  profile {
+    id
+    displayName
+  }
+  email
+}
+
+fragment AvailableUsersForRoleSetPaginated on PaginatedUsers {
+  users {
+    ...AvailableUserForRoleSet
+  }
+  pageInfo {
+    hasNextPage
+    endCursor
+  }
+}
+
+query PlatformRoleAvailableUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
+  usersPaginated(first: $first, after: $after, filter: $filter) {
+    ...AvailableUsersForRoleSetPaginated
+  }
+}
+
+query AvailableUsersForEntryRole($roleSetId: UUID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
+  lookup {
+    roleSet(ID: $roleSetId) {
+      availableUsersForEntryRole (first: $first, after: $after, filter: $filter) {
+        ...AvailableUsersForRoleSetPaginated
+      }
+    }
+  }
+}
+
+query AvailableUsersForElevatedRole($roleSetId: UUID!, $role: RoleName!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
+  lookup {
+    roleSet(ID: $roleSetId) {
+      availableUsersForElevatedRole(role: $role, first: $first, after: $after, filter: $filter) {
+        ...AvailableUsersForRoleSetPaginated
+      }
+    }
+  }
+}
+
+query AvailableOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
+  organizationsPaginated(first: $first, after: $after, filter: $filter) {
+    organization {
+      ...BasicOrganizationDetails
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query AvailableVirtualContributorsInLibrary {
+  platform {
+    id
+    library {
+      id
+      virtualContributors {
+        searchVisibility
+        ...VirtualContributorFull
+      }
+    }
+  }
+}
+
+query AvailableVirtualContributors(
+  $filterSpace: Boolean = false
+  $filterSpaceId: UUID = "00000000-0000-0000-0000-000000000000"
+) {
+  lookup @include(if: $filterSpace) {
+    space(ID: $filterSpaceId) {
+      id
+      community {
+        id
+        roleSet {
+          id
+          virtualContributorsInRole(role: MEMBER) {
+            ...VirtualContributorFull
+          }
+        }
+      }
+      account {
+        id
+        virtualContributors {
+          ...VirtualContributorFull
+        }
+      }
+    }
+  }
+  virtualContributors @skip(if: $filterSpace) {
+    ...VirtualContributorFull
+  }
+}
+
+fragment VirtualContributorFull on VirtualContributor {
+  id
+  nameID
+  profile {
+    id
+    displayName
+    description
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+    tagsets {
+      ...TagsetDetails
+    }
+    location {
+      id
+      city
+      country
+    }
+    url
+  }
+  aiPersona {
+    bodyOfKnowledge
+    bodyOfKnowledgeType
+    bodyOfKnowledgeID
+  }
+}
+
+

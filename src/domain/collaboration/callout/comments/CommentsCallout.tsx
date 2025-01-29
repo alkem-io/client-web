@@ -1,6 +1,6 @@
 import { CalloutLayoutProps } from '../calloutBlock/CalloutLayout';
 import { useCallback, useMemo } from 'react';
-import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts/useCallouts';
+import { CommentsWithMessagesFragmentWithCallout } from '../../calloutsSet/useCallouts/useCallouts';
 import CommentsComponent from '@/domain/communication/room/Comments/CommentsComponent';
 import { useUserContext } from '@/domain/community/user';
 import { useRemoveCommentFromCalloutMutation } from '@/core/apollo/generated/apollo-hooks';

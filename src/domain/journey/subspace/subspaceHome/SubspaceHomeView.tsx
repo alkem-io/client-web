@@ -4,22 +4,22 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { JourneyTypeName } from '@/domain/journey/JourneyTypeName';
 import { CalloutGroupName } from '@/core/apollo/generated/graphql-schema';
 import InnovationFlowStates from '@/domain/collaboration/InnovationFlow/InnovationFlowStates/InnovationFlowStates';
-import CalloutsGroupView from '@/domain/collaboration/callout/CalloutsInContext/CalloutsGroupView';
-import { OrderUpdate, TypedCallout } from '@/domain/collaboration/callout/useCallouts/useCallouts';
+import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
+import { OrderUpdate, TypedCallout } from '@/domain/collaboration/calloutsSet/useCallouts/useCallouts';
 import { InnovationFlowState } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
 import React, { useEffect, useMemo, useState } from 'react';
 import { SubspaceInnovationFlow, useConsumeAction } from '../layout/SubspacePageLayout';
-import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/callout/creationDialog/useCalloutCreation/useCalloutCreationWithPreviewImages';
+import { useCalloutCreationWithPreviewImages } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreationWithPreviewImages';
 import CalloutCreationDialog from '@/domain/collaboration/callout/creationDialog/CalloutCreationDialog';
 import { SubspaceDialog } from '../layout/SubspaceDialog';
 import InnovationFlowVisualizerMobile from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowVisualizerMobile';
 import InnovationFlowChips from '@/domain/collaboration/InnovationFlow/InnovationFlowVisualizers/InnovationFlowChips';
 import InnovationFlowSettingsButton from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/InnovationFlowSettingsButton';
-import { CalloutGroupNameValuesMap } from '@/domain/collaboration/callout/CalloutsInContext/CalloutsGroup';
+import { CalloutGroupNameValuesMap } from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroup';
 
 interface SubspaceHomeViewProps {
-  journeyId: string | undefined;
   collaborationId: string | undefined;
+  calloutsSetId: string | undefined;
   templatesSetId: string | undefined;
   innovationFlowStates: InnovationFlowState[] | undefined;
   currentInnovationFlowState: string | undefined;
@@ -32,8 +32,8 @@ interface SubspaceHomeViewProps {
 }
 
 const SubspaceHomeView = ({
-  journeyId,
   collaborationId,
+  calloutsSetId,
   templatesSetId,
   innovationFlowStates,
   currentInnovationFlowState,
@@ -47,7 +47,7 @@ const SubspaceHomeView = ({
   const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
   const { isCalloutCreationDialogOpen, handleCreateCalloutOpened, handleCreateCalloutClosed, handleCreateCallout } =
-    useCalloutCreationWithPreviewImages({ collaborationId });
+    useCalloutCreationWithPreviewImages({ calloutsSetId });
 
   const createButton = (
     <Button
@@ -121,8 +121,7 @@ const SubspaceHomeView = ({
         )}
       </SubspaceInnovationFlow>
       <CalloutsGroupView
-        journeyId={journeyId}
-        collaborationId={collaborationId}
+        calloutsSetId={calloutsSetId}
         callouts={selectedFlowStateCallouts}
         canCreateCallout={canCreateCallout && isMobile}
         loading={loading}

@@ -1,9 +1,8 @@
 import React, { FC, useContext } from 'react';
-import { useUrlParams } from '@/core/routing/useUrlParams';
 import { usePostProviderQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ApolloError } from '@apollo/client';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
+import useUrlResolver from '@/main/urlResolver/useUrlResolver';
 
 interface PostPermissions {
   canUpdate: boolean;
@@ -26,21 +25,16 @@ const PostContext = React.createContext<PostContextProps>({
 });
 
 const PostProvider: FC = ({ children }) => {
-  const { postNameId } = useUrlParams();
-
-  const { calloutId } = useRouteResolver();
+  const { postId } = useUrlResolver();
 
   const { data, loading, error } = usePostProviderQuery({
     variables: {
-      postNameId: postNameId!,
-      calloutId: calloutId!,
+      postId: postId!,
     },
-    skip: !calloutId || !postNameId,
+    skip: !postId,
   });
 
-  const parentCallout = data?.lookup.callout;
-
-  const post = parentCallout?.contributions?.find(x => x.post && x.post.nameID === postNameId)?.post;
+  const post = data?.lookup.post;
 
   const myPrivileges = post?.authorization?.myPrivileges;
 

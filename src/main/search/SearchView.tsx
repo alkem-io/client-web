@@ -35,6 +35,7 @@ import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
 import { findKey, groupBy, identity } from 'lodash';
 import SearchResultPostChooser from './searchResults/SearchResultPostChooser';
 import SearchResultsCalloutCard from './searchResults/searchResultsCallout/SearchResultsCalloutCard';
+import useUrlResolver from '../urlResolver/useUrlResolver';
 
 export const MAX_TERMS_SEARCH = 5;
 
@@ -142,6 +143,10 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
     () => [...journeyFilter.value, ...contributionFilter.value, ...contributorFilter.value, ...calloutFilter.value],
     [journeyFilter, contributionFilter, contributorFilter, calloutFilter]
   );
+  const { spaceId, loading: resolvingSpace } = useUrlResolver({
+    throwIfNotFound: false,
+    overrideUrlParams: { spaceNameId },
+  });
 
   const { data, loading: isSearching } = useSearchQuery({
     variables: {
@@ -149,11 +154,11 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
         terms: termsFromUrl,
         tagsetNames,
         typesFilter: filters,
-        searchInSpaceFilter: spaceNameId,
+        searchInSpaceFilter: spaceId,
       },
     },
     fetchPolicy: 'no-cache',
-    skip: termsFromUrl.length === 0,
+    skip: termsFromUrl.length === 0 || resolvingSpace,
   });
 
   const results = termsFromUrl.length === 0 ? undefined : toResultType(data);
@@ -171,9 +176,9 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
 
   const { data: spaceDetails, loading } = useSearchScopeDetailsSpaceQuery({
     variables: {
-      spaceNameId: spaceNameId!,
+      spaceId: spaceId!,
     },
-    skip: !spaceNameId,
+    skip: !spaceId,
   });
 
   const convertedCalloutResults = calloutResults as SearchResultCalloutFragment[];
@@ -184,16 +189,16 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
         <PageContentBlockSeamless disablePadding>
           <MultipleSelect size="small" onChange={handleTermsChange} value={searchTerms} minLength={2} autoFocus />
         </PageContentBlockSeamless>
-        {spaceNameId && (
+        {spaceId && (
           <SearchResultsScope
             currentScope={
               <SearchResultsScopeCard
-                avatar={spaceDetails?.space.profile.avatar}
+                avatar={spaceDetails?.lookup.space?.profile.avatar}
                 iconComponent={SpaceIcon}
                 loading={loading}
                 onDelete={handleSearchInPlatform}
               >
-                {spaceDetails?.space.profile.displayName}
+                {spaceDetails?.lookup.space?.profile.displayName}
               </SearchResultsScopeCard>
             }
             alternativeScope={

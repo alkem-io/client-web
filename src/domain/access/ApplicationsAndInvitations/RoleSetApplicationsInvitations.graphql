@@ -1,0 +1,72 @@
+query CommunityApplicationsInvitations($roleSetId: UUID!) {
+  lookup {
+    roleSet(ID: $roleSetId) {
+      applications {
+        ...AdminCommunityApplication
+      }
+      invitations {
+        ...AdminCommunityInvitation
+      }
+      platformInvitations {
+        ...AdminPlatformInvitationCommunity
+      }
+    }
+  }
+}
+
+fragment AdminCommunityApplication on Application {
+  id
+  createdDate
+  updatedDate
+  state
+  nextEvents
+  contributor {
+    ...AdminCommunityCandidateMember
+    ... on User {
+      email
+    }
+  }
+  questions {
+    id
+    name
+    value
+  }
+}
+
+fragment AdminCommunityInvitation on Invitation {
+  id
+  createdDate
+  updatedDate
+  state
+  nextEvents
+  contributorType
+  contributor {
+    ...AdminCommunityCandidateMember
+    ... on User {
+      email
+    }
+  }
+}
+
+fragment AdminPlatformInvitationCommunity on PlatformInvitation {
+  id
+  createdDate
+  email
+}
+
+fragment AdminCommunityCandidateMember on Contributor {
+  id
+  profile {
+    id
+    displayName
+    avatar: visual(type: AVATAR) {
+      ...VisualUri
+    }
+    location {
+      id
+      city
+      country
+    }
+    url
+  }
+}

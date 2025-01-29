@@ -1,11 +1,9 @@
-import { DialogActions, DialogContent, DialogTitle } from '@/core/ui/dialog/deprecated';
-import AlkemioAvatar from '@/core/ui/image/AlkemioAvatar';
-import { RouterLink } from '@/core/ui/link/deprecated/RouterLink';
+import Avatar from '@/core/ui/avatar/Avatar';
+import { DialogContent } from '@/core/ui/dialog/deprecated';
 import Loading from '@/core/ui/loading/Loading';
 import Tag from '@/core/ui/tags/deprecated/Tag';
 import WrapperTypography from '@/core/ui/typography/deprecated/WrapperTypography';
-import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
-import { Button, Grid } from '@mui/material';
+import { Button, DialogActions, Grid } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import Link from '@mui/material/Link';
 import Table from '@mui/material/Table';
@@ -19,6 +17,8 @@ import { useUserMetadata } from '../index';
 import useUserContributionDisplayNames from '../userContributions/useUserContributionDisplayNames';
 import UserPopUpDelimiter from './UserPopUpDelimiter';
 import UserPopUpTagContainer from './UserPopUpTagContainer';
+import RouterLink from '@/core/ui/link/RouterLink';
+import DialogHeader from '@/core/ui/dialog/DialogHeader';
 
 const useUserPopUpStyles = makeStyles(theme => ({
   header: {
@@ -83,22 +83,11 @@ const useUserPopUpStyles = makeStyles(theme => ({
       padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
     },
   },
-  marginBottom: {
-    marginBottom: theme.spacing(2),
-  },
-  refRow: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-  },
-  refDiv: {
-    marginBottom: theme.spacing(1),
-  },
 }));
 
 type UserPopUpProps = {
   id: string;
   onHide: () => void;
-  terms?: Array<string>;
 };
 
 const getStringOfNames = (arr: string[]) => arr.join(', ');
@@ -123,10 +112,15 @@ const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
 
   return (
     <Dialog open maxWidth="md" fullWidth aria-labelledby="user-dialog-title">
-      <DialogTitle id="user-dialog-title" onClose={onHide}>
+      <DialogHeader onClose={onHide}>
         <div className={styles.header}>
           <div className={styles.profile}>
-            <AlkemioAvatar src={user?.profile.avatar?.uri} size={'lg'} />
+            <Avatar
+              src={user?.profile.avatar?.uri}
+              sx={{ borderRadius: 1 }}
+              size="large"
+              aria-label={t('common.avatar-of', { user: user?.profile.displayName })}
+            />
             <div className={styles.userName}>
               <WrapperTypography variant={'h3'}>{user?.profile.displayName}</WrapperTypography>
             </div>
@@ -139,7 +133,7 @@ const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
             </div>
           )}
         </div>
-      </DialogTitle>
+      </DialogHeader>
       <DialogContent dividers className={styles.body}>
         {loading ? (
           <Loading text={'Loading user'} />
@@ -242,11 +236,13 @@ const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
         )}
       </DialogContent>
       <DialogActions>
-        <Link component={RouterLink} to={buildUserProfileUrl(user?.nameID || '')} underline="none">
-          <Button variant="outlined" aria-label="user-profile-button">
-            {t('buttons.view-profile')}
-          </Button>
-        </Link>
+        {user?.profile.url && (
+          <Link component={RouterLink} to={user.profile.url} underline="none">
+            <Button variant="outlined" aria-label="user-profile-button">
+              {t('buttons.view-profile')}
+            </Button>
+          </Link>
+        )}
       </DialogActions>
     </Dialog>
   );

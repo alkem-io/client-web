@@ -7,8 +7,8 @@ import PageContentColumn from '@/core/ui/content/PageContentColumn';
 import CommunityApplications from '@/domain/community/community/CommunityAdmin/CommunityApplications';
 import CommunityOrganizations from '@/domain/community/community/CommunityAdmin/CommunityOrganizations';
 import CommunityUsers from '@/domain/community/community/CommunityAdmin/CommunityUsers';
-import useRoleSetAdmin from '@/domain/community/community/CommunityAdmin/useCommunityAdmin';
-import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/constants';
+import useCommunityAdmin from '@/domain/community/community/CommunityAdmin/useCommunityAdmin';
+import { SettingsSection } from '@/domain/platform/admin/layout/EntitySettingsLayout/SettingsSection';
 import { SettingsPageProps } from '@/domain/platform/admin/layout/EntitySettingsLayout/types';
 import { useSubSpace } from '../hooks/useSubSpace';
 import SubspaceSettingsLayout from '@/domain/platform/admin/subspace/SubspaceSettingsLayout';
@@ -72,7 +72,7 @@ const AdminSubspaceCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '../'
     loading,
     inviteExternalUser,
     inviteExistingUser,
-  } = useRoleSetAdmin({ roleSetId, spaceId, challengeId, spaceLevel });
+  } = useCommunityAdmin({ roleSetId, spaceId, challengeId, spaceLevel });
 
   const currentApplicationsUserIds = useMemo(
     () =>

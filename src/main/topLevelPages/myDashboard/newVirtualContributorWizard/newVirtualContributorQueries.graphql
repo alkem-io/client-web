@@ -14,42 +14,45 @@ query NewVirtualContributorMySpaces {
             id
             availableEntitlements
           }
-          community {
-            id
-            roleSet {
-              id
-              authorization {
-                id
-                myPrivileges
-              }
-            }
-          }
-          profile {
-            id
-            displayName
-            url
-          }
           authorization {
             id
             myPrivileges
           }
-
-          subspaces {
-            id
-            type
-            profile {
-              id
-              displayName
-              url
-            }
-            community {
-              id
-              roleSet {
-                id
-              }
-            }
-          }
+          ...spaceProfileCommunityDetails
         }
+      }
+    }
+  }
+}
+
+query AllSpaceSubspaces($spaceId: UUID!) {
+  lookup {
+    space(ID: $spaceId) {
+      id
+      subspaces {
+        ...spaceProfileCommunityDetails
+        subspaces {
+          ...spaceProfileCommunityDetails
+        }
+      }
+    }
+  }
+}
+
+fragment spaceProfileCommunityDetails on Space {
+  id
+  profile {
+    id
+    displayName
+    url
+  }
+  community {
+    id
+    roleSet {
+      id
+      authorization {
+        id
+        myPrivileges
       }
     }
   }
