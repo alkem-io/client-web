@@ -22455,18 +22455,20 @@ export function refetchUserRolesSearchCardsQuery(variables: SchemaTypes.UserRole
 }
 
 export const SearchScopeDetailsSpaceDocument = gql`
-  query SearchScopeDetailsSpace($spaceNameId: UUID_NAMEID!) {
-    space(ID: $spaceNameId) {
-      id
-      profile {
+  query SearchScopeDetailsSpace($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
         id
-        displayName
-        avatar: visual(type: AVATAR) {
+        profile {
           id
-          uri
+          displayName
+          avatar: visual(type: AVATAR) {
+            id
+            uri
+          }
         }
+        visibility
       }
-      visibility
     }
   }
 `;
@@ -22483,7 +22485,7 @@ export const SearchScopeDetailsSpaceDocument = gql`
  * @example
  * const { data, loading, error } = useSearchScopeDetailsSpaceQuery({
  *   variables: {
- *      spaceNameId: // value for 'spaceNameId'
+ *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
