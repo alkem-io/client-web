@@ -8,9 +8,9 @@ const SubspaceSettingsRoute = () => {
   const { spaceLevel } = useRouteResolver();
 
   switch (spaceLevel) {
-    case SpaceLevel.Challenge:
+    case SpaceLevel.L1:
       return <ChallengeRoute />;
-    case SpaceLevel.Opportunity:
+    case SpaceLevel.L2:
       return (
         <OpportunityProvider>
           <OpportunityRoute />

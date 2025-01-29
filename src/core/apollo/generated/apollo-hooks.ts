@@ -1770,14 +1770,18 @@ export const JourneyCommunityFragmentDoc = gql`
   ${RoleSetMemberUserFragmentDoc}
   ${RoleSetMemberOrganizationFragmentDoc}
 `;
-export const JourneyBreadcrumbsProfileFragmentDoc = gql`
-  fragment JourneyBreadcrumbsProfile on Profile {
+export const JourneyBreadcrumbsSpaceFragmentDoc = gql`
+  fragment JourneyBreadcrumbsSpace on Space {
     id
-    url
-    displayName
-    avatar: visual(type: $visualType) {
+    level
+    profile {
       id
-      ...VisualUri
+      url
+      displayName
+      avatar: visual(type: $visualType) {
+        id
+        ...VisualUri
+      }
     }
   }
   ${VisualUriFragmentDoc}
@@ -5650,6 +5654,11 @@ export function refetchCommunityVirtualMembersListQuery(
 
 export const RoleSetAuthorizationDocument = gql`
   query RoleSetAuthorization($roleSetId: UUID!) {
+    platform {
+      authorization {
+        myPrivileges
+      }
+    }
     lookup {
       roleSet(ID: $roleSetId) {
         id
@@ -15390,25 +15399,16 @@ export const JourneyBreadcrumbsSpaceDocument = gql`
     $visualType: VisualType! = AVATAR
   ) {
     space(ID: $spaceNameId) {
-      id
-      profile {
-        ...JourneyBreadcrumbsProfile
-      }
+      ...JourneyBreadcrumbsSpace
       subspace(ID: $subspaceLevel1NameId) @include(if: $includeSubspaceLevel1) {
-        id
-        profile {
-          ...JourneyBreadcrumbsProfile
-        }
+        ...JourneyBreadcrumbsSpace
         subspace(ID: $subspaceLevel2NameId) @include(if: $includeSubspaceLevel2) {
-          id
-          profile {
-            ...JourneyBreadcrumbsProfile
-          }
+          ...JourneyBreadcrumbsSpace
         }
       }
     }
   }
-  ${JourneyBreadcrumbsProfileFragmentDoc}
+  ${JourneyBreadcrumbsSpaceFragmentDoc}
 `;
 
 /**

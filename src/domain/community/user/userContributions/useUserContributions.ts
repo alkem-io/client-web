@@ -22,7 +22,7 @@ const useUserContributions = (userId: string | undefined) => {
       contributions.push({
         spaceID: e.id,
         id: e.id,
-        spaceLevel: SpaceLevel.Space,
+        spaceLevel: SpaceLevel.L0,
         contributorId: userId!,
         contributorType: RoleSetContributorType.User,
         roles: e.roles,
