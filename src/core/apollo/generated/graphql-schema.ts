@@ -8921,6 +8921,12 @@ export type RoleSetAuthorizationQueryVariables = Exact<{
 
 export type RoleSetAuthorizationQuery = {
   __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    authorization?:
+      | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+  };
   lookup: {
     __typename?: 'LookupQueryResults';
     roleSet?:

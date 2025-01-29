@@ -100,10 +100,12 @@ const useRoleSetAdmin = ({
     },
     skip: skip || !roleSetId,
   });
-
+  const platformPrivileges = roleSetDetails?.platform.authorization?.myPrivileges;
   const myPrivileges = roleSetDetails?.lookup.roleSet?.authorization?.myPrivileges;
+
   const canReadRoleSet =
-    (myPrivileges?.includes(AuthorizationPrivilege.Read) && myPrivileges?.includes(AuthorizationPrivilege.ReadUsers)) ??
+    (myPrivileges?.includes(AuthorizationPrivilege.Read) &&
+      platformPrivileges?.includes(AuthorizationPrivilege.ReadUsers)) ??
     false;
 
   const validRoles = roleSetDetails?.lookup.roleSet?.roleNames;
