@@ -14181,6 +14181,79 @@ export function refetchVirtualContributorKnowledgeBaseQuery(
   return { query: VirtualContributorKnowledgeBaseDocument, variables: variables };
 }
 
+export const VirtualContributorKnowledgePrivilegesDocument = gql`
+  query VirtualContributorKnowledgePrivileges($id: UUID!) {
+    virtualContributor(ID: $id) {
+      id
+      knowledgeBase {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useVirtualContributorKnowledgePrivilegesQuery__
+ *
+ * To run a query within a React component, call `useVirtualContributorKnowledgePrivilegesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVirtualContributorKnowledgePrivilegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVirtualContributorKnowledgePrivilegesQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useVirtualContributorKnowledgePrivilegesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.VirtualContributorKnowledgePrivilegesQuery,
+    SchemaTypes.VirtualContributorKnowledgePrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.VirtualContributorKnowledgePrivilegesQuery,
+    SchemaTypes.VirtualContributorKnowledgePrivilegesQueryVariables
+  >(VirtualContributorKnowledgePrivilegesDocument, options);
+}
+
+export function useVirtualContributorKnowledgePrivilegesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VirtualContributorKnowledgePrivilegesQuery,
+    SchemaTypes.VirtualContributorKnowledgePrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.VirtualContributorKnowledgePrivilegesQuery,
+    SchemaTypes.VirtualContributorKnowledgePrivilegesQueryVariables
+  >(VirtualContributorKnowledgePrivilegesDocument, options);
+}
+
+export type VirtualContributorKnowledgePrivilegesQueryHookResult = ReturnType<
+  typeof useVirtualContributorKnowledgePrivilegesQuery
+>;
+export type VirtualContributorKnowledgePrivilegesLazyQueryHookResult = ReturnType<
+  typeof useVirtualContributorKnowledgePrivilegesLazyQuery
+>;
+export type VirtualContributorKnowledgePrivilegesQueryResult = Apollo.QueryResult<
+  SchemaTypes.VirtualContributorKnowledgePrivilegesQuery,
+  SchemaTypes.VirtualContributorKnowledgePrivilegesQueryVariables
+>;
+export function refetchVirtualContributorKnowledgePrivilegesQuery(
+  variables: SchemaTypes.VirtualContributorKnowledgePrivilegesQueryVariables
+) {
+  return { query: VirtualContributorKnowledgePrivilegesDocument, variables: variables };
+}
+
 export const VcMembershipsDocument = gql`
   query VCMemberships($virtualContributorId: UUID!) {
     lookup {

@@ -19,6 +19,8 @@ import { BlockTitle, Caption } from '@/core/ui/typography';
 import { Actions } from '@/core/ui/actions/Actions';
 import { LoadingButton } from '@mui/lab';
 import useUrlResolver from '@/main/urlResolver/useUrlResolver';
+import Gutters from '@/core/ui/grid/Gutters';
+import { Box, Tooltip } from '@mui/material';
 
 type VCAccessibilityProps = {
   listedInStore?: boolean;
@@ -149,19 +151,6 @@ const VCAccessibilitySettingsPage = () => {
                 onChange={(key, newValue) => updateListedInStore(newValue)}
               />
             </PageContentBlock>
-            <PageContentBlock>
-              <BlockTitle>{t('pages.virtualContributorProfile.settings.privacy.title')}</BlockTitle>
-              <SwitchSettingsGroup
-                options={{
-                  listedInStore: {
-                    checked: !vc?.settings.privacy.knowledgeBaseContentVisible,
-                    disabled: loadingSettings,
-                    label: t('pages.virtualContributorProfile.settings.privacy.description'),
-                  },
-                }}
-                onChange={(_, newValue) => handleUpdateSettings(!newValue)}
-              />
-            </PageContentBlock>
           </PageContentColumn>
         </PageContent>
         {ingestionAvailable && (
@@ -169,6 +158,32 @@ const VCAccessibilitySettingsPage = () => {
             <PageContentColumn columns={12}>
               <PageContentBlock>
                 <BlockTitle>{t('pages.virtualContributorProfile.settings.ingestion.title')}</BlockTitle>
+                <Tooltip
+                  title={
+                    <>
+                      <Box>
+                        {t('pages.virtualContributorProfile.settings.privacy.tooltip1', {
+                          vcName: vc?.profile?.displayName,
+                        })}
+                      </Box>
+                      <Box>{t('pages.virtualContributorProfile.settings.privacy.tooltip2')}</Box>
+                    </>
+                  }
+                  placement="top-start"
+                >
+                  <Gutters disablePadding>
+                    <SwitchSettingsGroup
+                      options={{
+                        listedInStore: {
+                          checked: !vc?.settings.privacy.knowledgeBaseContentVisible,
+                          disabled: loadingSettings,
+                          label: t('pages.virtualContributorProfile.settings.privacy.description'),
+                        },
+                      }}
+                      onChange={(_, newValue) => handleUpdateSettings(!newValue)}
+                    />
+                  </Gutters>
+                </Tooltip>
                 <Caption>{t('pages.virtualContributorProfile.settings.ingestion.infoText')}</Caption>
                 <Actions>
                   <LoadingButton variant="contained" loading={updateLoading} onClick={refreshIngestion}>

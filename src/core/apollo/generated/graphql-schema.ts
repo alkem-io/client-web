@@ -963,7 +963,8 @@ export enum AuthorizationPrivilege {
   RolesetEntryRoleInvite = 'ROLESET_ENTRY_ROLE_INVITE',
   RolesetEntryRoleInviteAccept = 'ROLESET_ENTRY_ROLE_INVITE_ACCEPT',
   RolesetEntryRoleJoin = 'ROLESET_ENTRY_ROLE_JOIN',
-  TransferResource = 'TRANSFER_RESOURCE',
+  TransferResourceAccept = 'TRANSFER_RESOURCE_ACCEPT',
+  TransferResourceOffer = 'TRANSFER_RESOURCE_OFFER',
   Update = 'UPDATE',
   UpdateCalloutPublisher = 'UPDATE_CALLOUT_PUBLISHER',
   UpdateContent = 'UPDATE_CONTENT',
@@ -5199,7 +5200,7 @@ export type Query = {
   usersWithAuthorizationCredential: Array<User>;
   /** A particular VirtualContributor */
   virtualContributor: VirtualContributor;
-  /** The VirtualContributors on this platform */
+  /** The VirtualContributors on this platform; only accessible to platform admins */
   virtualContributors: Array<VirtualContributor>;
 };
 
@@ -18758,6 +18759,27 @@ export type VirtualContributorKnowledgeBaseQuery = {
             | undefined;
           profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           calloutsSet: { __typename?: 'CalloutsSet'; id: string };
+        }
+      | undefined;
+  };
+};
+
+export type VirtualContributorKnowledgePrivilegesQueryVariables = Exact<{
+  id: Scalars['UUID'];
+}>;
+
+export type VirtualContributorKnowledgePrivilegesQuery = {
+  __typename?: 'Query';
+  virtualContributor: {
+    __typename?: 'VirtualContributor';
+    id: string;
+    knowledgeBase?:
+      | {
+          __typename?: 'KnowledgeBase';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
         }
       | undefined;
   };

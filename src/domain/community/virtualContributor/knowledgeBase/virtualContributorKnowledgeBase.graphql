@@ -18,3 +18,16 @@ query VirtualContributorKnowledgeBase($id: UUID!) {
     }
   }
 }
+
+query VirtualContributorKnowledgePrivileges($id: UUID!) {
+  virtualContributor(ID: $id) {
+    id
+    knowledgeBase {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+}

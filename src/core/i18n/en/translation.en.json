@@ -2697,14 +2697,16 @@
             "hidden": "<b>Hidden:</b> This Virtual Contributor cannot be invited."
           }
         },
-        "privacy": {
-          "title": "Privacy",
-          "description": "Private Virtual Contributor Knowledge"
-        },
         "ingestion": {
-          "title": "Update Knowledge",
+          "title": "Knowledge Base",
           "infoText": "By clicking the button below, you will make sure your Virtual Contributor is based on the latest knowledge in the Subspace.",
           "refreshBtn": "Update Knowledge"
+        },
+        "privacy": {
+          "title": "Privacy",
+          "description": "Private Virtual Contributor Knowledge",
+          "tooltip1": "Public: When users visit {{vcName}}'s profile, they can see the content of its body of knowledge.",
+          "tooltip2": "Private: Only the account admins can see the content of the body of knowledge."
         }
       },
       "knowledgeBase": {
