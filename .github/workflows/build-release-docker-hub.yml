@@ -39,25 +39,25 @@ jobs:
           echo "tags=${TAGS}" >> $GITHUB_OUTPUT
           echo "created={$(date -u +'%Y-%m-%dT%H:%M:%SZ')}" >> $GITHUB_OUTPUT
 
-      - name: 'Download and extract translations'
-        uses: crowdin/github-action@v2.1.3
-        with:
-          command: 'download'
-          command_args: '--all --verbose'
-          source: ./src/core/i18n/en/translation.en.json
-          translation: ./src/core/i18n/%two_letters_code%/translation.%two_letters_code%.json
-
-          download_translations: false
-          upload_sources: false
-          upload_translations: false
-          push_translations: false
-          push_sources: false
-
-          project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
-          token: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
-        env:
-          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
-          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+#      - name: 'Download and extract translations'
+#        uses: crowdin/github-action@v2.1.3
+#        with:
+#          command: 'download'
+#          command_args: '--all --verbose'
+#          source: ./src/core/i18n/en/translation.en.json
+#          translation: ./src/core/i18n/%two_letters_code%/translation.%two_letters_code%.json
+#
+#          download_translations: false
+#          upload_sources: false
+#          upload_translations: false
+#          push_translations: false
+#          push_sources: false
+#
+#          project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
+#          token: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+#        env:
+#          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+#          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.0.0
