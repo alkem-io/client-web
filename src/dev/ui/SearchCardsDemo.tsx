@@ -56,7 +56,7 @@ const searchResults: SearchResult[] = [
         displayName: 'Parent Challenge',
         url: '/space1',
       },
-      level: SpaceLevel.Challenge,
+      level: SpaceLevel.L1,
     },
   },
   {
@@ -90,7 +90,7 @@ const searchResults: SearchResult[] = [
         displayName: 'Parent Space',
         url: '/space2',
       },
-      level: SpaceLevel.Space,
+      level: SpaceLevel.L0,
     },
   },
 ];

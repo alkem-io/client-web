@@ -6047,9 +6047,9 @@ export type SpaceFilterInput = {
 };
 
 export enum SpaceLevel {
-  Challenge = 'CHALLENGE',
-  Opportunity = 'OPPORTUNITY',
-  Space = 'SPACE',
+  L0 = 'L0',
+  L1 = 'L1',
+  L2 = 'L2',
 }
 
 export type SpacePendingMembershipInfo = {
@@ -19891,26 +19891,15 @@ export type JourneyBreadcrumbsSpaceQuery = {
   space: {
     __typename?: 'Space';
     id: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      url: string;
-      displayName: string;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    };
+    level: SpaceLevel;
     subspace?: {
       __typename?: 'Space';
       id: string;
-      profile: {
-        __typename?: 'Profile';
-        id: string;
-        url: string;
-        displayName: string;
-        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      };
+      level: SpaceLevel;
       subspace?: {
         __typename?: 'Space';
         id: string;
+        level: SpaceLevel;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -19919,16 +19908,35 @@ export type JourneyBreadcrumbsSpaceQuery = {
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
       };
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        url: string;
+        displayName: string;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      };
+    };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      url: string;
+      displayName: string;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
   };
 };
 
-export type JourneyBreadcrumbsProfileFragment = {
-  __typename?: 'Profile';
+export type JourneyBreadcrumbsSpaceFragment = {
+  __typename?: 'Space';
   id: string;
-  url: string;
-  displayName: string;
-  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  level: SpaceLevel;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    url: string;
+    displayName: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  };
 };
 
 export type SubspaceProviderQueryVariables = Exact<{
