@@ -1048,9 +1048,10 @@
       "inviteToRole": "Invite to be a: "
     },
     "inviteContributorsDialog": {
+      "title": "Virtual Contributors Store",
       "vcs": {
         "onAccount": {
-          "title": "Virtual Contributors from my account"
+          "title": "Virtual Contributors linked to this Space's account"
         },
         "inLibrary": {
           "title": "Other Virtual Contributors"
