@@ -1,4 +1,4 @@
-query SpaceInfo($spaceId: UUID!) {
+query SpaceInfo($spaceId: UUID!) { #//!! To check if using NameIds
   lookup {
     space(ID: $spaceId) {
       ...SpaceInfo
@@ -6,7 +6,7 @@ query SpaceInfo($spaceId: UUID!) {
   }
 }
 
-query SpaceUrl($spaceId: UUID!) {
+query SpaceUrl($spaceId: UUID!) { #//!! To check if using NameIds, remove this query?
   lookup {
     space(ID: $spaceId) {
       id
@@ -18,14 +18,12 @@ query SpaceUrl($spaceId: UUID!) {
   }
 }
 
-query SpaceHost($spaceNameId: NameID!) {
-  lookupByName {
-    space(NAMEID: $spaceNameId) {
+query SpaceHost($spaceId: UUID!) { #//!! To check if using NameIds
+  lookup {
+    space(ID: $spaceId) {
       id
-      ...SpaceInfo
       provider {
-        id
-        nameID
+        id  #//!! Removed nameID
         profile {
           id
           displayName
@@ -48,7 +46,7 @@ query SpaceHost($spaceNameId: NameID!) {
   }
 }
 
-query SpaceTemplatesManager($spaceId: UUID!) {
+query SpaceTemplatesManager($spaceId: UUID!) { #//!! To check if using NameIds
   lookup {
     space(ID: $spaceId) {
       id

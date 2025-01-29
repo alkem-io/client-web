@@ -135,10 +135,9 @@ fragment SpaceExplorerSubspace on Space {
   }
 }
 
-# Keep NameId here, it is in the translation
-query SpaceExplorerWelcomeSpace($spaceNameId: NameID!) {
-  lookupByName {
-    space(NAMEID: $spaceNameId) {
+query SpaceExplorerWelcomeSpace($spaceId: UUID!) { #//!! To check if using NameIds
+  lookup {
+    space(ID: $spaceId) {
       id
       profile {
         id
@@ -148,3 +147,4 @@ query SpaceExplorerWelcomeSpace($spaceNameId: NameID!) {
     }
   }
 }
+

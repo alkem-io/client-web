@@ -63,27 +63,6 @@ fragment WhiteboardContent on Whiteboard {
   content
 }
 
-fragment CalloutWithWhiteboard on Callout {
-  id
-  nameID
-  type
-  authorization {
-    id
-    myPrivileges
-  }
-  framing {
-    id
-    whiteboard {
-      ...WhiteboardDetails
-    }
-  }
-  contributions(filter: { whiteboardIDs: [$whiteboardId] }) {
-    whiteboard {
-      ...WhiteboardDetails
-    }
-  }
-}
-
 fragment CollaborationWithWhiteboardDetails on Collaboration {
   id
   calloutsSet {
@@ -111,10 +90,27 @@ fragment CollaborationWithWhiteboardDetails on Collaboration {
   }
 }
 
-query WhiteboardFromCallout($calloutId: UUID!, $whiteboardId: UUID!) {
+query WhiteboardFromCallout($calloutId: UUID!, $contributionId: UUID!) {  #//!! To check if using NameIds
   lookup {
     callout(ID: $calloutId) {
-      ...CalloutWithWhiteboard
+      id
+      nameID
+      type
+      authorization {
+        id
+        myPrivileges
+      }
+      framing {
+        id
+        whiteboard {
+          ...WhiteboardDetails
+        }
+      }
+      contributions(IDs: [$contributionId]) { #//!! To check if using contributionId or whiteboardId (Probably wb!) To check if using NameIds
+        whiteboard {
+          ...WhiteboardDetails
+        }
+      }
     }
   }
 }

@@ -1,53 +1,40 @@
-query PostSettings($postNameId: UUID!, $calloutId: UUID!) {
+query PostSettings($calloutId: UUID!, $postId: UUID!) {
   lookup {
     callout(ID: $calloutId) {
-      ...PostSettingsCallout
-    }
-  }
-}
-
-fragment PostSettings on Post {
-  id
-  nameID
-  authorization {
-    id
-    myPrivileges
-  }
-  profile {
-    id
-    displayName
-    description
-    tagset {
-      ...TagsetDetails
-    }
-    references {
       id
-      name
-      uri
-      description
+      type
+      postNames: contributions {
+        post {
+          id
+          profile {
+            id
+            displayName
+          }
+        }
+      }
     }
-    visuals {
-      ...VisualFull
-    }
-  }
-}
-
-fragment PostSettingsCallout on Callout {
-  id
-  nameID
-  type
-  contributions(filter: { postIDs: [$postNameId] }) {
-    id
-    post {
-      ...PostSettings
-    }
-  }
-  postNames: contributions {
-    post {
+    post(ID: $postId) {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       profile {
         id
         displayName
+        description
+        tagset {
+          ...TagsetDetails
+        }
+        references {
+          id
+          name
+          uri
+          description
+        }
+        visuals {
+          ...VisualFull
+        }
       }
     }
   }

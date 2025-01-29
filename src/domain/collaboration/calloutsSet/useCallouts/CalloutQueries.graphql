@@ -1,4 +1,4 @@
-query Callouts($calloutsSetId: UUID!, $groups: [String!], $calloutIds: [UUID!]) {
+query Callouts($calloutsSetId: UUID!, $groups: [String!], $calloutIds: [UUID!]) { #//!! To check if using NameIds
   lookup {
     calloutsSet(ID: $calloutsSetId) {
       id

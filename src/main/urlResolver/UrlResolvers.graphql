@@ -1,3 +1,26 @@
+query UrlResolver($url: String!) {
+  urlResolver(url: $url) {
+    type
+    space {
+      id
+      level
+      levelZeroSpaceID
+      collaboration {
+        id
+        calloutId
+        calloutsSetId
+        contributionId
+        postId
+        whiteboardId
+      }
+      parentSpaces
+    }
+    organizationId
+    userId
+    vcId
+  }
+}
+
 query SpaceUrlResolver ($nameId: NameID!) {
   lookupByName {
     space(NAMEID: $nameId) {

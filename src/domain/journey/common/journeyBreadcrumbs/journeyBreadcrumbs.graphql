@@ -1,39 +1,32 @@
-query JourneyBreadcrumbsSpace(
-  $spaceNameId: NameID!
-  $subspaceLevel1NameId: NameID = "00000000-0000-0000-0000-000000000000"
-  $subspaceLevel2NameId: NameID = "00000000-0000-0000-0000-000000000000"
-  $includeSubspaceLevel1: Boolean = false
-  $includeSubspaceLevel2: Boolean = false
-  $visualType: VisualType! = AVATAR
+query JourneyBreadcrumbsSpace(  #//!! To check if passing NameIds
+  $spaceId: UUID!,
+  $subspaceL1Id: UUID = "00000000-0000-0000-0000-000000000000",
+  $subspaceL2Id: UUID = "00000000-0000-0000-0000-000000000000",
+  $includeSubspaceL1: Boolean = false,
+  $includeSubspaceL2: Boolean = false,
 ) {
-  lookupByName {
-    space(NAMEID: $spaceNameId) {
-      id
-      profile {
-        ...JourneyBreadcrumbsProfile
-      }
-      subspaceByNameID(NAMEID: $subspaceLevel1NameId) @include(if: $includeSubspaceLevel1) {
-        id
-        profile {
-          ...JourneyBreadcrumbsProfile
-        }
-        subspaceByNameID(NAMEID: $subspaceLevel2NameId) @include(if: $includeSubspaceLevel2) {
-          id
-          profile {
-            ...JourneyBreadcrumbsProfile
-          }
-        }
-      }
+  lookup {
+    space(ID: $spaceId) {
+      ...JourneyBreadcrumbsSpace
+    }
+    subspaceL1: space(ID: $subspaceL1Id) @include(if: $includeSubspaceL1) {
+      ...JourneyBreadcrumbsSpace
+    }
+    subspaceL2: space(ID: $subspaceL2Id) @include(if: $includeSubspaceL2) {
+      ...JourneyBreadcrumbsSpace
     }
   }
 }
 
-fragment JourneyBreadcrumbsProfile on Profile {
+fragment JourneyBreadcrumbsSpace on Space {
   id
-  url
-  displayName
-  avatar: visual(type: $visualType) {
+  profile {
     id
-    ...VisualUri
+    url
+    displayName
+    avatar: visual(type: BANNER) {
+      id
+      ...VisualUri
+    }
   }
 }

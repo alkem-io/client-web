@@ -1,34 +1,26 @@
 query PostProvider(
   $calloutId: UUID!
-  $postNameId: UUID!
+  $postId: UUID!
 ) {
   lookup {
     callout(ID: $calloutId) {
       id
-      nameID
       type
-      contributions(filter: { postIDs: [$postNameId] }) {
-        post {
-          ...PostProvided
-        }
+    }
+    post(ID: $postId) {
+      id
+      profile {
+        id
+        displayName
+      }
+      authorization {
+        id
+        myPrivileges
+      }
+      comments {
+        id
+        messagesCount
       }
     }
-  }
-}
-
-fragment PostProvided on Post {
-  id
-  nameID
-  profile {
-    id
-    displayName
-  }
-  authorization {
-    id
-    myPrivileges
-  }
-  comments {
-    id
-    messagesCount
   }
 }

@@ -23,17 +23,12 @@ query CalloutStorageConfig($calloutId: UUID!) {
   }
 }
 
-query CalloutPostStorageConfig($postId: UUID!, $calloutId: UUID!) {
+query CalloutPostStorageConfig($postId: UUID!) { #//!! Rewrite this, not using calloutId anymore
   lookup {
-    callout(ID: $calloutId) {
+    post(ID: $postId) {
       id
-      contributions(filter: { postIDs: [$postId] }) {
-        post {
-          id
-          profile {
-            ...ProfileStorageConfig
-          }
-        }
+      profile {
+        ...ProfileStorageConfig
       }
     }
   }

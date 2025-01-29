@@ -1,4 +1,4 @@
-mutation UpdateCalloutsSortOrder($calloutsSetID: UUID!, $calloutIds: [UUID!]!) {
+mutation UpdateCalloutsSortOrder($calloutsSetID: UUID!, $calloutIds: [UUID!]!) {  #//!! To check if using NameIds
   updateCalloutsSortOrder(sortOrderData: { calloutsSetID: $calloutsSetID, calloutIDs: $calloutIds }) {
     id
     sortOrder

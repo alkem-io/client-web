@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useJourneyBreadcrumbsSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import { JourneyPath } from '@/main/routing/resolvers/RouteResolver';
-import { VisualType } from '@/core/apollo/generated/graphql-schema';
 
 export interface BreadcrumbsItem {
   displayName: string;
@@ -21,12 +20,11 @@ export const useJourneyBreadcrumbs = ({ journeyPath, loading = false }: UseJourn
 
   const { data, loading: isLoadingBreadcrumbs } = useJourneyBreadcrumbsSpaceQuery({
     variables: {
-      spaceNameId: journeyPath[0]!,
-      subspaceLevel1NameId: journeyPath[1]!,
-      subspaceLevel2NameId: journeyPath[2]!,
-      includeSubspaceLevel1: journeyPath.length > 1,
-      includeSubspaceLevel2: journeyPath.length > 2,
-      visualType: VisualType.Banner,
+      spaceId: journeyPath[0]!, //!!
+      subspaceL1Id: journeyPath[1]!,
+      subspaceL2Id: journeyPath[2]!,
+      includeSubspaceL1: journeyPath.length > 1,
+      includeSubspaceL2: journeyPath.length > 2
     },
     skip: !journeyPath || journeyPath.length === 0 || loading,
   });

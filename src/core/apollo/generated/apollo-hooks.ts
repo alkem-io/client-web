@@ -887,133 +887,6 @@ export const CalloutDetailsFragmentDoc = gql`
   ${LinkDetailsWithAuthorizationFragmentDoc}
   ${CommentsWithMessagesFragmentDoc}
 `;
-export const PostDashboardFragmentDoc = gql`
-  fragment PostDashboard on Post {
-    id
-    nameID
-    createdDate
-    profile {
-      id
-      url
-      displayName
-      description
-      tagset {
-        ...TagsetDetails
-      }
-      references {
-        id
-        name
-        uri
-        description
-      }
-      visual(type: BANNER) {
-        ...VisualUri
-      }
-    }
-    createdBy {
-      id
-      profile {
-        id
-        displayName
-        avatar: visual(type: AVATAR) {
-          id
-          uri
-        }
-        tagsets {
-          ...TagsetDetails
-        }
-      }
-    }
-    comments {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-      messages {
-        ...MessageDetails
-      }
-      vcInteractions {
-        id
-        threadID
-        virtualContributorID
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualUriFragmentDoc}
-  ${MessageDetailsFragmentDoc}
-`;
-export const PostSettingsFragmentDoc = gql`
-  fragment PostSettings on Post {
-    id
-    nameID
-    authorization {
-      id
-      myPrivileges
-    }
-    profile {
-      id
-      displayName
-      description
-      tagset {
-        ...TagsetDetails
-      }
-      references {
-        id
-        name
-        uri
-        description
-      }
-      visuals {
-        ...VisualFull
-      }
-    }
-  }
-  ${TagsetDetailsFragmentDoc}
-  ${VisualFullFragmentDoc}
-`;
-export const PostSettingsCalloutFragmentDoc = gql`
-  fragment PostSettingsCallout on Callout {
-    id
-    nameID
-    type
-    contributions(filter: { postIDs: [$postNameId] }) {
-      id
-      post {
-        ...PostSettings
-      }
-    }
-    postNames: contributions {
-      post {
-        id
-        profile {
-          id
-          displayName
-        }
-      }
-    }
-  }
-  ${PostSettingsFragmentDoc}
-`;
-export const PostProvidedFragmentDoc = gql`
-  fragment PostProvided on Post {
-    id
-    nameID
-    profile {
-      id
-      displayName
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-    comments {
-      id
-      messagesCount
-    }
-  }
-`;
 export const WhiteboardSummaryFragmentDoc = gql`
   fragment WhiteboardSummary on Whiteboard {
     id
@@ -1024,29 +897,6 @@ export const WhiteboardSummaryFragmentDoc = gql`
       displayName
     }
   }
-`;
-export const CalloutWithWhiteboardFragmentDoc = gql`
-  fragment CalloutWithWhiteboard on Callout {
-    id
-    nameID
-    type
-    authorization {
-      id
-      myPrivileges
-    }
-    framing {
-      id
-      whiteboard {
-        ...WhiteboardDetails
-      }
-    }
-    contributions(filter: { whiteboardIDs: [$whiteboardId] }) {
-      whiteboard {
-        ...WhiteboardDetails
-      }
-    }
-  }
-  ${WhiteboardDetailsFragmentDoc}
 `;
 export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
   fragment CollaborationWithWhiteboardDetails on Collaboration {
@@ -1789,14 +1639,17 @@ export const JourneyCommunityFragmentDoc = gql`
   ${RoleSetMemberUserFragmentDoc}
   ${RoleSetMemberOrganizationFragmentDoc}
 `;
-export const JourneyBreadcrumbsProfileFragmentDoc = gql`
-  fragment JourneyBreadcrumbsProfile on Profile {
+export const JourneyBreadcrumbsSpaceFragmentDoc = gql`
+  fragment JourneyBreadcrumbsSpace on Space {
     id
-    url
-    displayName
-    avatar: visual(type: $visualType) {
+    profile {
       id
-      ...VisualUri
+      url
+      displayName
+      avatar: visual(type: BANNER) {
+        id
+        ...VisualUri
+      }
     }
   }
   ${VisualUriFragmentDoc}
@@ -8310,22 +8163,70 @@ export function refetchCalloutContentQuery(variables: SchemaTypes.CalloutContent
 }
 
 export const PostDocument = gql`
-  query Post($calloutId: UUID!, $postNameId: UUID!) {
+  query Post($calloutId: UUID!, $postId: UUID!) {
     lookup {
+      post(ID: $postId) {
+        id
+        nameID
+        createdDate
+        profile {
+          id
+          url
+          displayName
+          description
+          tagset {
+            ...TagsetDetails
+          }
+          references {
+            id
+            name
+            uri
+            description
+          }
+          visual(type: BANNER) {
+            ...VisualUri
+          }
+        }
+        createdBy {
+          id
+          profile {
+            id
+            displayName
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+            tagsets {
+              ...TagsetDetails
+            }
+          }
+        }
+        comments {
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+          messages {
+            ...MessageDetails
+          }
+          vcInteractions {
+            id
+            threadID
+            virtualContributorID
+          }
+        }
+      }
       callout(ID: $calloutId) {
         id
         nameID
         type
-        contributions(filter: { postIDs: [$postNameId] }) {
-          id
-          post {
-            ...PostDashboard
-          }
-        }
       }
     }
   }
-  ${PostDashboardFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+  ${VisualUriFragmentDoc}
+  ${MessageDetailsFragmentDoc}
 `;
 
 /**
@@ -8341,7 +8242,7 @@ export const PostDocument = gql`
  * const { data, loading, error } = usePostQuery({
  *   variables: {
  *      calloutId: // value for 'calloutId'
- *      postNameId: // value for 'postNameId'
+ *      postId: // value for 'postId'
  *   },
  * });
  */
@@ -8427,14 +8328,49 @@ export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePostMutationVariables
 >;
 export const PostSettingsDocument = gql`
-  query PostSettings($postNameId: UUID!, $calloutId: UUID!) {
+  query PostSettings($calloutId: UUID!, $postId: UUID!) {
     lookup {
       callout(ID: $calloutId) {
-        ...PostSettingsCallout
+        id
+        type
+        postNames: contributions {
+          post {
+            id
+            profile {
+              id
+              displayName
+            }
+          }
+        }
+      }
+      post(ID: $postId) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        profile {
+          id
+          displayName
+          description
+          tagset {
+            ...TagsetDetails
+          }
+          references {
+            id
+            name
+            uri
+            description
+          }
+          visuals {
+            ...VisualFull
+          }
+        }
       }
     }
   }
-  ${PostSettingsCalloutFragmentDoc}
+  ${TagsetDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
 `;
 
 /**
@@ -8449,8 +8385,8 @@ export const PostSettingsDocument = gql`
  * @example
  * const { data, loading, error } = usePostSettingsQuery({
  *   variables: {
- *      postNameId: // value for 'postNameId'
  *      calloutId: // value for 'calloutId'
+ *      postId: // value for 'postId'
  *   },
  * });
  */
@@ -8485,21 +8421,29 @@ export function refetchPostSettingsQuery(variables: SchemaTypes.PostSettingsQuer
 }
 
 export const PostProviderDocument = gql`
-  query PostProvider($calloutId: UUID!, $postNameId: UUID!) {
+  query PostProvider($calloutId: UUID!, $postId: UUID!) {
     lookup {
       callout(ID: $calloutId) {
         id
-        nameID
         type
-        contributions(filter: { postIDs: [$postNameId] }) {
-          post {
-            ...PostProvided
-          }
+      }
+      post(ID: $postId) {
+        id
+        profile {
+          id
+          displayName
+        }
+        authorization {
+          id
+          myPrivileges
+        }
+        comments {
+          id
+          messagesCount
         }
       }
     }
   }
-  ${PostProvidedFragmentDoc}
 `;
 
 /**
@@ -8515,7 +8459,7 @@ export const PostProviderDocument = gql`
  * const { data, loading, error } = usePostProviderQuery({
  *   variables: {
  *      calloutId: // value for 'calloutId'
- *      postNameId: // value for 'postNameId'
+ *      postId: // value for 'postId'
  *   },
  * });
  */
@@ -8653,14 +8597,31 @@ export type MoveContributionToCalloutMutationOptions = Apollo.BaseMutationOption
   SchemaTypes.MoveContributionToCalloutMutationVariables
 >;
 export const WhiteboardFromCalloutDocument = gql`
-  query WhiteboardFromCallout($calloutId: UUID!, $whiteboardId: UUID!) {
+  query WhiteboardFromCallout($calloutId: UUID!, $contributionId: UUID!) {
     lookup {
       callout(ID: $calloutId) {
-        ...CalloutWithWhiteboard
+        id
+        nameID
+        type
+        authorization {
+          id
+          myPrivileges
+        }
+        framing {
+          id
+          whiteboard {
+            ...WhiteboardDetails
+          }
+        }
+        contributions(IDs: [$contributionId]) {
+          whiteboard {
+            ...WhiteboardDetails
+          }
+        }
       }
     }
   }
-  ${CalloutWithWhiteboardFragmentDoc}
+  ${WhiteboardDetailsFragmentDoc}
 `;
 
 /**
@@ -8676,7 +8637,7 @@ export const WhiteboardFromCalloutDocument = gql`
  * const { data, loading, error } = useWhiteboardFromCalloutQuery({
  *   variables: {
  *      calloutId: // value for 'calloutId'
- *      whiteboardId: // value for 'whiteboardId'
+ *      contributionId: // value for 'contributionId'
  *   },
  * });
  */
@@ -15251,35 +15212,25 @@ export function refetchJourneyBreadcrumbsInnovationHubQuery(
 
 export const JourneyBreadcrumbsSpaceDocument = gql`
   query JourneyBreadcrumbsSpace(
-    $spaceNameId: NameID!
-    $subspaceLevel1NameId: NameID = "00000000-0000-0000-0000-000000000000"
-    $subspaceLevel2NameId: NameID = "00000000-0000-0000-0000-000000000000"
-    $includeSubspaceLevel1: Boolean = false
-    $includeSubspaceLevel2: Boolean = false
-    $visualType: VisualType! = AVATAR
+    $spaceId: UUID!
+    $subspaceL1Id: UUID = "00000000-0000-0000-0000-000000000000"
+    $subspaceL2Id: UUID = "00000000-0000-0000-0000-000000000000"
+    $includeSubspaceL1: Boolean = false
+    $includeSubspaceL2: Boolean = false
   ) {
-    lookupByName {
-      space(NAMEID: $spaceNameId) {
-        id
-        profile {
-          ...JourneyBreadcrumbsProfile
-        }
-        subspaceByNameID(NAMEID: $subspaceLevel1NameId) @include(if: $includeSubspaceLevel1) {
-          id
-          profile {
-            ...JourneyBreadcrumbsProfile
-          }
-          subspaceByNameID(NAMEID: $subspaceLevel2NameId) @include(if: $includeSubspaceLevel2) {
-            id
-            profile {
-              ...JourneyBreadcrumbsProfile
-            }
-          }
-        }
+    lookup {
+      space(ID: $spaceId) {
+        ...JourneyBreadcrumbsSpace
+      }
+      subspaceL1: space(ID: $subspaceL1Id) @include(if: $includeSubspaceL1) {
+        ...JourneyBreadcrumbsSpace
+      }
+      subspaceL2: space(ID: $subspaceL2Id) @include(if: $includeSubspaceL2) {
+        ...JourneyBreadcrumbsSpace
       }
     }
   }
-  ${JourneyBreadcrumbsProfileFragmentDoc}
+  ${JourneyBreadcrumbsSpaceFragmentDoc}
 `;
 
 /**
@@ -15294,12 +15245,11 @@ export const JourneyBreadcrumbsSpaceDocument = gql`
  * @example
  * const { data, loading, error } = useJourneyBreadcrumbsSpaceQuery({
  *   variables: {
- *      spaceNameId: // value for 'spaceNameId'
- *      subspaceLevel1NameId: // value for 'subspaceLevel1NameId'
- *      subspaceLevel2NameId: // value for 'subspaceLevel2NameId'
- *      includeSubspaceLevel1: // value for 'includeSubspaceLevel1'
- *      includeSubspaceLevel2: // value for 'includeSubspaceLevel2'
- *      visualType: // value for 'visualType'
+ *      spaceId: // value for 'spaceId'
+ *      subspaceL1Id: // value for 'subspaceL1Id'
+ *      subspaceL2Id: // value for 'subspaceL2Id'
+ *      includeSubspaceL1: // value for 'includeSubspaceL1'
+ *      includeSubspaceL2: // value for 'includeSubspaceL2'
  *   },
  * });
  */
@@ -15653,14 +15603,12 @@ export function refetchSpaceUrlQuery(variables: SchemaTypes.SpaceUrlQueryVariabl
 }
 
 export const SpaceHostDocument = gql`
-  query SpaceHost($spaceNameId: NameID!) {
-    lookupByName {
-      space(NAMEID: $spaceNameId) {
+  query SpaceHost($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
         id
-        ...SpaceInfo
         provider {
           id
-          nameID
           profile {
             id
             displayName
@@ -15682,7 +15630,6 @@ export const SpaceHostDocument = gql`
       }
     }
   }
-  ${SpaceInfoFragmentDoc}
 `;
 
 /**
@@ -15697,7 +15644,7 @@ export const SpaceHostDocument = gql`
  * @example
  * const { data, loading, error } = useSpaceHostQuery({
  *   variables: {
- *      spaceNameId: // value for 'spaceNameId'
+ *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
@@ -16889,7 +16836,6 @@ export const SpaceSubspacesDocument = gql`
           }
           virtualContributors {
             id
-            nameID
             profile {
               id
               displayName
@@ -18994,17 +18940,12 @@ export function refetchCalloutStorageConfigQuery(variables: SchemaTypes.CalloutS
 }
 
 export const CalloutPostStorageConfigDocument = gql`
-  query CalloutPostStorageConfig($postId: UUID!, $calloutId: UUID!) {
+  query CalloutPostStorageConfig($postId: UUID!) {
     lookup {
-      callout(ID: $calloutId) {
+      post(ID: $postId) {
         id
-        contributions(filter: { postIDs: [$postId] }) {
-          post {
-            id
-            profile {
-              ...ProfileStorageConfig
-            }
-          }
+        profile {
+          ...ProfileStorageConfig
         }
       }
     }
@@ -19025,7 +18966,6 @@ export const CalloutPostStorageConfigDocument = gql`
  * const { data, loading, error } = useCalloutPostStorageConfigQuery({
  *   variables: {
  *      postId: // value for 'postId'
- *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
@@ -22040,212 +21980,6 @@ export type UpdateNotificationStateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateNotificationStateMutation,
   SchemaTypes.UpdateNotificationStateMutationVariables
 >;
-export const JourneyRouteResolverDocument = gql`
-  query JourneyRouteResolver(
-    $spaceNameId: NameID!
-    $challengeNameId: NameID! = "00000000-0000-0000-0000-000000000000"
-    $opportunityNameId: NameID! = "00000000-0000-0000-0000-000000000000"
-    $includeChallenge: Boolean = false
-    $includeOpportunity: Boolean = false
-  ) {
-    lookupByName {
-      space(NAMEID: $spaceNameId) {
-        id
-        subspaceByNameID(NAMEID: $challengeNameId) @include(if: $includeChallenge) {
-          id
-          subspaceByNameID(NAMEID: $opportunityNameId) @include(if: $includeOpportunity) {
-            id
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useJourneyRouteResolverQuery__
- *
- * To run a query within a React component, call `useJourneyRouteResolverQuery` and pass it any options that fit your needs.
- * When your component renders, `useJourneyRouteResolverQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useJourneyRouteResolverQuery({
- *   variables: {
- *      spaceNameId: // value for 'spaceNameId'
- *      challengeNameId: // value for 'challengeNameId'
- *      opportunityNameId: // value for 'opportunityNameId'
- *      includeChallenge: // value for 'includeChallenge'
- *      includeOpportunity: // value for 'includeOpportunity'
- *   },
- * });
- */
-export function useJourneyRouteResolverQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.JourneyRouteResolverQuery,
-    SchemaTypes.JourneyRouteResolverQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.JourneyRouteResolverQuery, SchemaTypes.JourneyRouteResolverQueryVariables>(
-    JourneyRouteResolverDocument,
-    options
-  );
-}
-
-export function useJourneyRouteResolverLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.JourneyRouteResolverQuery,
-    SchemaTypes.JourneyRouteResolverQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.JourneyRouteResolverQuery, SchemaTypes.JourneyRouteResolverQueryVariables>(
-    JourneyRouteResolverDocument,
-    options
-  );
-}
-
-export type JourneyRouteResolverQueryHookResult = ReturnType<typeof useJourneyRouteResolverQuery>;
-export type JourneyRouteResolverLazyQueryHookResult = ReturnType<typeof useJourneyRouteResolverLazyQuery>;
-export type JourneyRouteResolverQueryResult = Apollo.QueryResult<
-  SchemaTypes.JourneyRouteResolverQuery,
-  SchemaTypes.JourneyRouteResolverQueryVariables
->;
-export function refetchJourneyRouteResolverQuery(variables: SchemaTypes.JourneyRouteResolverQueryVariables) {
-  return { query: JourneyRouteResolverDocument, variables: variables };
-}
-
-export const SpaceKeyEntitiesIDsDocument = gql`
-  query SpaceKeyEntitiesIDs($spaceId: UUID!) {
-    lookup {
-      space(ID: $spaceId) {
-        id
-        community {
-          id
-        }
-        collaboration {
-          id
-          calloutsSet {
-            id
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useSpaceKeyEntitiesIDsQuery__
- *
- * To run a query within a React component, call `useSpaceKeyEntitiesIDsQuery` and pass it any options that fit your needs.
- * When your component renders, `useSpaceKeyEntitiesIDsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSpaceKeyEntitiesIDsQuery({
- *   variables: {
- *      spaceId: // value for 'spaceId'
- *   },
- * });
- */
-export function useSpaceKeyEntitiesIDsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.SpaceKeyEntitiesIDsQuery,
-    SchemaTypes.SpaceKeyEntitiesIDsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SpaceKeyEntitiesIDsQuery, SchemaTypes.SpaceKeyEntitiesIDsQueryVariables>(
-    SpaceKeyEntitiesIDsDocument,
-    options
-  );
-}
-
-export function useSpaceKeyEntitiesIDsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.SpaceKeyEntitiesIDsQuery,
-    SchemaTypes.SpaceKeyEntitiesIDsQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SpaceKeyEntitiesIDsQuery, SchemaTypes.SpaceKeyEntitiesIDsQueryVariables>(
-    SpaceKeyEntitiesIDsDocument,
-    options
-  );
-}
-
-export type SpaceKeyEntitiesIDsQueryHookResult = ReturnType<typeof useSpaceKeyEntitiesIDsQuery>;
-export type SpaceKeyEntitiesIDsLazyQueryHookResult = ReturnType<typeof useSpaceKeyEntitiesIDsLazyQuery>;
-export type SpaceKeyEntitiesIDsQueryResult = Apollo.QueryResult<
-  SchemaTypes.SpaceKeyEntitiesIDsQuery,
-  SchemaTypes.SpaceKeyEntitiesIDsQueryVariables
->;
-export function refetchSpaceKeyEntitiesIDsQuery(variables: SchemaTypes.SpaceKeyEntitiesIDsQueryVariables) {
-  return { query: SpaceKeyEntitiesIDsDocument, variables: variables };
-}
-
-export const CalloutIdDocument = gql`
-  query CalloutId($calloutNameId: UUID!, $collaborationId: UUID!) {
-    lookup {
-      collaboration(ID: $collaborationId) {
-        id
-        calloutsSet {
-          id
-          callouts(IDs: [$calloutNameId]) {
-            id
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useCalloutIdQuery__
- *
- * To run a query within a React component, call `useCalloutIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useCalloutIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCalloutIdQuery({
- *   variables: {
- *      calloutNameId: // value for 'calloutNameId'
- *      collaborationId: // value for 'collaborationId'
- *   },
- * });
- */
-export function useCalloutIdQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CalloutIdQuery, SchemaTypes.CalloutIdQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CalloutIdQuery, SchemaTypes.CalloutIdQueryVariables>(CalloutIdDocument, options);
-}
-
-export function useCalloutIdLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CalloutIdQuery, SchemaTypes.CalloutIdQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.CalloutIdQuery, SchemaTypes.CalloutIdQueryVariables>(
-    CalloutIdDocument,
-    options
-  );
-}
-
-export type CalloutIdQueryHookResult = ReturnType<typeof useCalloutIdQuery>;
-export type CalloutIdLazyQueryHookResult = ReturnType<typeof useCalloutIdLazyQuery>;
-export type CalloutIdQueryResult = Apollo.QueryResult<SchemaTypes.CalloutIdQuery, SchemaTypes.CalloutIdQueryVariables>;
-export function refetchCalloutIdQuery(variables: SchemaTypes.CalloutIdQueryVariables) {
-  return { query: CalloutIdDocument, variables: variables };
-}
-
 export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
@@ -22930,9 +22664,9 @@ export function refetchExploreAllSpacesQuery(variables?: SchemaTypes.ExploreAllS
 }
 
 export const WelcomeSpaceDocument = gql`
-  query WelcomeSpace($spaceNameId: NameID!) {
-    lookupByName {
-      space(NAMEID: $spaceNameId) {
+  query WelcomeSpace($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
         ...ExploreSpaces
       }
     }
@@ -22952,7 +22686,7 @@ export const WelcomeSpaceDocument = gql`
  * @example
  * const { data, loading, error } = useWelcomeSpaceQuery({
  *   variables: {
- *      spaceNameId: // value for 'spaceNameId'
+ *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
@@ -24114,9 +23848,9 @@ export function refetchSpaceExplorerSubspacesQuery(variables?: SchemaTypes.Space
 }
 
 export const SpaceExplorerWelcomeSpaceDocument = gql`
-  query SpaceExplorerWelcomeSpace($spaceNameId: NameID!) {
-    lookupByName {
-      space(NAMEID: $spaceNameId) {
+  query SpaceExplorerWelcomeSpace($spaceId: UUID!) {
+    lookup {
+      space(ID: $spaceId) {
         id
         profile {
           id
@@ -24140,7 +23874,7 @@ export const SpaceExplorerWelcomeSpaceDocument = gql`
  * @example
  * const { data, loading, error } = useSpaceExplorerWelcomeSpaceQuery({
  *   variables: {
- *      spaceNameId: // value for 'spaceNameId'
+ *      spaceId: // value for 'spaceId'
  *   },
  * });
  */
@@ -24178,6 +23912,77 @@ export type SpaceExplorerWelcomeSpaceQueryResult = Apollo.QueryResult<
 >;
 export function refetchSpaceExplorerWelcomeSpaceQuery(variables: SchemaTypes.SpaceExplorerWelcomeSpaceQueryVariables) {
   return { query: SpaceExplorerWelcomeSpaceDocument, variables: variables };
+}
+
+export const UrlResolverDocument = gql`
+  query UrlResolver($url: String!) {
+    urlResolver(url: $url) {
+      type
+      space {
+        id
+        level
+        levelZeroSpaceID
+        collaboration {
+          id
+          calloutId
+          calloutsSetId
+          contributionId
+          postId
+          whiteboardId
+        }
+        parentSpaces
+      }
+      organizationId
+      userId
+      vcId
+    }
+  }
+`;
+
+/**
+ * __useUrlResolverQuery__
+ *
+ * To run a query within a React component, call `useUrlResolverQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUrlResolverQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUrlResolverQuery({
+ *   variables: {
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useUrlResolverQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UrlResolverQuery, SchemaTypes.UrlResolverQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UrlResolverQuery, SchemaTypes.UrlResolverQueryVariables>(
+    UrlResolverDocument,
+    options
+  );
+}
+
+export function useUrlResolverLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UrlResolverQuery, SchemaTypes.UrlResolverQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UrlResolverQuery, SchemaTypes.UrlResolverQueryVariables>(
+    UrlResolverDocument,
+    options
+  );
+}
+
+export type UrlResolverQueryHookResult = ReturnType<typeof useUrlResolverQuery>;
+export type UrlResolverLazyQueryHookResult = ReturnType<typeof useUrlResolverLazyQuery>;
+export type UrlResolverQueryResult = Apollo.QueryResult<
+  SchemaTypes.UrlResolverQuery,
+  SchemaTypes.UrlResolverQueryVariables
+>;
+export function refetchUrlResolverQuery(variables: SchemaTypes.UrlResolverQueryVariables) {
+  return { query: UrlResolverDocument, variables: variables };
 }
 
 export const SpaceUrlResolverDocument = gql`

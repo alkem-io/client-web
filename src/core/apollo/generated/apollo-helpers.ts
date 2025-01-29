@@ -2900,6 +2900,7 @@ export type QueryKeySpecifier = (
   | 'spacesPaginated'
   | 'task'
   | 'tasks'
+  | 'urlResolver'
   | 'user'
   | 'userAuthorizationPrivileges'
   | 'users'
@@ -2936,6 +2937,7 @@ export type QueryFieldPolicy = {
   spacesPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   task?: FieldPolicy<any> | FieldReadFunction<any>;
   tasks?: FieldPolicy<any> | FieldReadFunction<any>;
+  urlResolver?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   userAuthorizationPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3771,6 +3773,53 @@ export type TimelineFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UrlResolverQueryResultCollaborationKeySpecifier = (
+  | 'calloutId'
+  | 'calloutsSetId'
+  | 'contributionId'
+  | 'id'
+  | 'postId'
+  | 'whiteboardId'
+  | UrlResolverQueryResultCollaborationKeySpecifier
+)[];
+export type UrlResolverQueryResultCollaborationFieldPolicy = {
+  calloutId?: FieldPolicy<any> | FieldReadFunction<any>;
+  calloutsSetId?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributionId?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  postId?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardId?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UrlResolverQueryResultSpaceKeySpecifier = (
+  | 'collaboration'
+  | 'id'
+  | 'level'
+  | 'levelZeroSpaceID'
+  | 'parentSpaces'
+  | UrlResolverQueryResultSpaceKeySpecifier
+)[];
+export type UrlResolverQueryResultSpaceFieldPolicy = {
+  collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  level?: FieldPolicy<any> | FieldReadFunction<any>;
+  levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UrlResolverQueryResultsKeySpecifier = (
+  | 'organizationId'
+  | 'space'
+  | 'type'
+  | 'userId'
+  | 'vcId'
+  | UrlResolverQueryResultsKeySpecifier
+)[];
+export type UrlResolverQueryResultsFieldPolicy = {
+  organizationId?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  userId?: FieldPolicy<any> | FieldReadFunction<any>;
+  vcId?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserKeySpecifier = (
   | 'account'
@@ -4956,6 +5005,24 @@ export type StrictTypedTypePolicies = {
   Timeline?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TimelineKeySpecifier | (() => undefined | TimelineKeySpecifier);
     fields?: TimelineFieldPolicy;
+  };
+  UrlResolverQueryResultCollaboration?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UrlResolverQueryResultCollaborationKeySpecifier
+      | (() => undefined | UrlResolverQueryResultCollaborationKeySpecifier);
+    fields?: UrlResolverQueryResultCollaborationFieldPolicy;
+  };
+  UrlResolverQueryResultSpace?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UrlResolverQueryResultSpaceKeySpecifier
+      | (() => undefined | UrlResolverQueryResultSpaceKeySpecifier);
+    fields?: UrlResolverQueryResultSpaceFieldPolicy;
+  };
+  UrlResolverQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UrlResolverQueryResultsKeySpecifier | (() => undefined | UrlResolverQueryResultsKeySpecifier);
+    fields?: UrlResolverQueryResultsFieldPolicy;
   };
   User?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserKeySpecifier | (() => undefined | UserKeySpecifier);

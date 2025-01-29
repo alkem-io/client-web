@@ -1,71 +1,64 @@
 query Post(
   $calloutId: UUID!
-  $postNameId: UUID!
+  $postId: UUID!
 ) {
   lookup {
+    post (ID: $postId) {
+      id
+      nameID
+      createdDate
+      profile {
+        id
+        url
+        displayName
+        description
+        tagset {
+          ...TagsetDetails
+        }
+        references {
+          id
+          name
+          uri
+          description
+        }
+        visual(type: BANNER) {
+          ...VisualUri
+        }
+      }
+      createdBy {
+        id
+        profile {
+          id
+          displayName
+          avatar: visual(type: AVATAR) {
+            id
+            uri
+          }
+          tagsets {
+            ...TagsetDetails
+          }
+        }
+      }
+      comments {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        messages {
+          ...MessageDetails
+        }
+        vcInteractions {
+          id
+          threadID
+          virtualContributorID
+        }
+      }
+    }
     callout(ID: $calloutId) {
       id
       nameID
       type
-      contributions(filter: { postIDs: [$postNameId] }) {
-        id
-        post {
-          ...PostDashboard
-        }
-      }
-    }
-  }
-}
-
-fragment PostDashboard on Post {
-  id
-  nameID
-  createdDate
-  profile {
-    id
-    url
-    displayName
-    description
-    tagset {
-      ...TagsetDetails
-    }
-    references {
-      id
-      name
-      uri
-      description
-    }
-    visual(type: BANNER) {
-      ...VisualUri
-    }
-  }
-  createdBy {
-    id
-    profile {
-      id
-      displayName
-      avatar: visual(type: AVATAR) {
-        id
-        uri
-      }
-      tagsets {
-        ...TagsetDetails
-      }
-    }
-  }
-  comments {
-    id
-    authorization {
-      id
-      myPrivileges
-    }
-    messages {
-      ...MessageDetails
-    }
-    vcInteractions {
-      id
-      threadID
-      virtualContributorID
     }
   }
 }
