@@ -5650,6 +5650,11 @@ export function refetchCommunityVirtualMembersListQuery(
 
 export const RoleSetAuthorizationDocument = gql`
   query RoleSetAuthorization($roleSetId: UUID!) {
+    platform {
+      authorization {
+        myPrivileges
+      }
+    }
     lookup {
       roleSet(ID: $roleSetId) {
         id
