@@ -25,7 +25,7 @@ import OpportunityMetrics from '@/domain/journey/opportunity/utils/useOpportunit
 import { Theme } from '@mui/material/styles';
 import useCurrentBreakpoint from '@/core/ui/utils/useCurrentBreakpoint';
 import PageContentBlockSeamless from '@/core/ui/content/PageContentBlockSeamless';
-import { spaceIconByLevel } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
+import { spaceLevelIcon } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
 import References from '@/domain/shared/components/References/References';
 import { Reference, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -74,7 +74,7 @@ const getMetricsSpec = (spaceLevel: SpaceLevel | undefined) => {
   if (!spaceLevel) {
     return undefined;
   }
-  if (spaceLevel === SpaceLevel.Opportunity) {
+  if (spaceLevel === SpaceLevel.L2) {
     return OpportunityMetrics;
   }
   return SpaceMetrics;
@@ -114,7 +114,7 @@ const JourneyAboutDialog = ({
 }: JourneyAboutDialogProps) => {
   const { t } = useTranslation();
 
-  const isSpace = spaceLevel === SpaceLevel.Space;
+  const isSpace = spaceLevel === SpaceLevel.L0;
   const leadOrganizationsHeader = isSpace
     ? 'pages.space.sections.dashboard.leadingOrganizations'
     : 'community.leading-organizations';
@@ -142,9 +142,7 @@ const JourneyAboutDialog = ({
     [leadUsers]
   );
 
-  // @ts-ignore TS5UPGRADE
-  const JourneyIcon = spaceLevel > -1 ? spaceIconByLevel[spaceLevel] : undefined;
-
+  const JourneyIcon = spaceLevelIcon[spaceLevel];
   const metricsItems = useMetricsItems(metrics, getMetricsSpec(spaceLevel));
 
   const breakpoint = useCurrentBreakpoint();

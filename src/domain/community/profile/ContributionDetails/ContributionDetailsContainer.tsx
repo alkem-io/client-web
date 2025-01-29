@@ -66,7 +66,7 @@ const ContributionDetailsContainer = ({ entities, children }: PropsWithChildren<
       const space = spaceData.lookup.space;
       return {
         displayName: space.profile.displayName!,
-        journeyTypeName: getChildJourneyTypeName({ level: spaceLevel }) as JourneyTypeName,
+        journeyTypeName: getChildJourneyTypeName({ level: spaceLevel }),
         banner: getVisualByType(VisualName.CARD, space.profile.visuals),
         tags: space.profile.tagset?.tags ?? [],
         journeyUri: space.profile.url,

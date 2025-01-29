@@ -34,9 +34,9 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
   const toggleExpanded = () => setIsExpanded(wasExpanded => !wasExpanded);
 
   const paddingLeftMap = {
-    [SpaceLevel.Space]: 0,
-    [SpaceLevel.Challenge]: 5,
-    [SpaceLevel.Opportunity]: 10,
+    [SpaceLevel.L0]: 0,
+    [SpaceLevel.L1]: 5,
+    [SpaceLevel.L2]: 10,
   };
   const {
     childMemberships,
@@ -49,7 +49,7 @@ export const ExpandableSpaceTree = ({ membership }: { membership: MembershipProp
   const avatar = cardBanner?.uri;
   const roles = community?.roleSet?.myRoles;
   const paddingLeft = paddingLeftMap[level] ?? 0;
-  const verticalOffset = level === SpaceLevel.Space ? 1 : 0.5;
+  const verticalOffset = level === SpaceLevel.L0 ? 1 : 0.5;
   const communityRoles = roles?.filter(role => VISIBLE_COMMUNITY_ROLES.includes(role)).sort();
 
   return (
