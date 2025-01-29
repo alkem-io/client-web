@@ -1,6 +1,11 @@
 query RoleSetAuthorization(
   $roleSetId: UUID!
 ) {
+  platform {
+    authorization {
+      myPrivileges
+    }
+  }
   lookup {
     roleSet(ID: $roleSetId) {
       id
