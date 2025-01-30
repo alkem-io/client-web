@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import PostForm, { PostFormInput, PostFormOutput } from '../PostForm/PostForm';
-import usePostSettings from '../containers/PostSettings/usePostSettings';
+import usePostSettings from '../graphql/usePostSettings';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   PostSettingsFragment,

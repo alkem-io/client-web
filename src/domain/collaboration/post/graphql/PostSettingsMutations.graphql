@@ -1,0 +1,39 @@
+mutation UpdatePost($input: UpdatePostInput!) {
+  updatePost(postData: $input) {
+    id
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        ...TagsetDetails
+      }
+      references {
+        id
+        name
+        description
+        uri
+      }
+    }
+  }
+}
+
+mutation DeletePost($postId: UUID!) {
+  deletePost(deleteData: { ID: $postId}) {
+    id
+  }
+}
+
+mutation MoveContributionToCallout($contributionId: UUID!, $calloutId: UUID!) {
+  moveContributionToCallout(moveContributionData: { contributionID: $contributionId, calloutID: $calloutId }) {
+    id
+    post {
+      id
+      nameID
+      profile {
+        id
+        url
+      }
+    }
+  }
+}

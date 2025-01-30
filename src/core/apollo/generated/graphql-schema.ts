@@ -13210,7 +13210,6 @@ export type CalloutContentQuery = {
 };
 
 export type PostQueryVariables = Exact<{
-  calloutId: Scalars['UUID'];
   postId: Scalars['UUID'];
 }>;
 
@@ -13222,14 +13221,13 @@ export type PostQuery = {
       | {
           __typename?: 'Post';
           id: string;
-          nameID: string;
           createdDate: Date;
           profile: {
             __typename?: 'Profile';
             id: string;
-            url: string;
             displayName: string;
             description?: string | undefined;
+            url: string;
             tagset?:
               | {
                   __typename?: 'Tagset';
@@ -13249,7 +13247,7 @@ export type PostQuery = {
                   description?: string | undefined;
                 }>
               | undefined;
-            visual?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           };
           createdBy?:
             | {
@@ -13259,7 +13257,7 @@ export type PostQuery = {
                   __typename?: 'Profile';
                   id: string;
                   displayName: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagsets?:
                     | Array<{
                         __typename?: 'Tagset';
@@ -13402,7 +13400,6 @@ export type PostQuery = {
           };
         }
       | undefined;
-    callout?: { __typename?: 'Callout'; id: string; nameID: string; type: CalloutType } | undefined;
   };
 };
 
@@ -13434,6 +13431,33 @@ export type UpdatePostMutation = {
         | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
         | undefined;
     };
+  };
+};
+
+export type DeletePostMutationVariables = Exact<{
+  postId: Scalars['UUID'];
+}>;
+
+export type DeletePostMutation = { __typename?: 'Mutation'; deletePost: { __typename?: 'Post'; id: string } };
+
+export type MoveContributionToCalloutMutationVariables = Exact<{
+  contributionId: Scalars['UUID'];
+  calloutId: Scalars['UUID'];
+}>;
+
+export type MoveContributionToCalloutMutation = {
+  __typename?: 'Mutation';
+  moveContributionToCallout: {
+    __typename?: 'CalloutContribution';
+    id: string;
+    post?:
+      | {
+          __typename?: 'Post';
+          id: string;
+          nameID: string;
+          profile: { __typename?: 'Profile'; id: string; url: string };
+        }
+      | undefined;
   };
 };
 
@@ -13655,33 +13679,6 @@ export type PostSettingsCalloutFragment = {
         }
       | undefined;
   }>;
-};
-
-export type DeletePostMutationVariables = Exact<{
-  input: DeletePostInput;
-}>;
-
-export type DeletePostMutation = { __typename?: 'Mutation'; deletePost: { __typename?: 'Post'; id: string } };
-
-export type MoveContributionToCalloutMutationVariables = Exact<{
-  contributionId: Scalars['UUID'];
-  calloutId: Scalars['UUID'];
-}>;
-
-export type MoveContributionToCalloutMutation = {
-  __typename?: 'Mutation';
-  moveContributionToCallout: {
-    __typename?: 'CalloutContribution';
-    id: string;
-    post?:
-      | {
-          __typename?: 'Post';
-          id: string;
-          nameID: string;
-          profile: { __typename?: 'Profile'; id: string; url: string };
-        }
-      | undefined;
-  };
 };
 
 export type PostCalloutsInCalloutSetQueryVariables = Exact<{

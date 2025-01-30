@@ -1,3 +1,4 @@
+import * as Apollo from '@apollo/client';
 import {
   useCalloutUrlResolverQuery,
   useInnovationHubUrlResolverQuery,
@@ -9,14 +10,19 @@ import {
   useSubspaceUrlResolverQuery,
   useTemplatesSetUrlResolverQuery,
   useTemplateUrlResolverQuery,
+  useUrlResolverLazyQuery,
+  useUrlResolverQuery,
   useUserUrlResolverQuery,
   useVirtualContributorKeyEntitiesIDsQuery,
   useVirtualContributorUrlResolverQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { useUrlParams } from '@/core/routing/useUrlParams';
 import UrlParams from '../routing/urlParams';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { NotFoundError } from '@/core/notFound/NotFoundErrorBoundary';
+import { compact, uniq } from 'lodash';
+import { useLocation } from 'react-router-dom';
+import { SpaceLevel, UrlType } from '@/core/apollo/generated/graphql-schema';
 
 type UseUrlResolverProvided = {
   spaceId: string | undefined;
@@ -64,6 +70,48 @@ const useUrlResolver = ({
   } = urlParams;
   let loading = false;
 
+  const { data: urlResolverData, loading: urlResolverLoading } = useUrlResolverQuery({
+    variables: {
+      url: window.location.href,
+    }
+  });
+
+  const result: UseUrlResolverProvided = useMemo(() => {
+
+    const spaceId = urlResolverData?.urlResolver.space?.level === SpaceLevel.L0 ?
+      urlResolverData?.urlResolver.space.id :
+      urlResolverData?.urlResolver.space?.levelZeroSpaceID;
+
+    const subspaceIds = urlResolverData?.urlResolver.space?.level === SpaceLevel.L0 ?
+      [spaceId] :
+      urlResolverData?.urlResolver.space?.level === SpaceLevel.L1 ?
+        [spaceId, urlResolverData?.urlResolver.space?.id] :
+        urlResolverData?.urlResolver.space?.level === SpaceLevel.L2 ?
+          [spaceId, urlResolverData?.urlResolver.space.parentSpaces[0], urlResolverData?.urlResolver.space?.id] :
+          undefined;
+
+    const subspaceId = urlResolverData?.urlResolver.space?.level === SpaceLevel.L0 ? undefined : urlResolverData?.urlResolver.space?.id;
+
+    return {
+      spaceId,
+      subspaceIds,
+      subspaceId,
+      organizationId: urlResolverData?.urlResolver.organizationId,
+      calloutsSetId: urlResolverData?.urlResolver.space?.collaboration.calloutsSetId,
+      calloutId: urlResolverData?.urlResolver.space?.collaboration.calloutId,
+      contributionId: urlResolverData?.urlResolver.space?.collaboration.contributionId,
+      postId: urlResolverData?.urlResolver.space?.collaboration.postId,
+      userId: urlResolverData?.urlResolver.userId,
+      vcId: urlResolverData?.urlResolver.vcId,
+      //PENDING
+      innovationPackId: undefined,
+      innovationHubId: undefined,
+      templateId: undefined,
+      loading: urlResolverLoading
+    }
+  }, [urlResolverData, urlResolverLoading]);
+
+/*
   // Space
   const { data: spaceData, loading: spaceLoading } = useSpaceUrlResolverQuery({
     variables: { nameId: spaceNameId! },
@@ -79,21 +127,15 @@ const useUrlResolver = ({
   const { data: subspaceData, loading: subspaceDataLoading } = useSubspaceUrlResolverQuery({
     variables: {
       spaceNameId: spaceNameId!,
-      level1: !!subspaceNameId,
-      level1subspaceNameId: subspaceNameId,
-      level2: !!subsubspaceNameId,
-      level2subspaceNameId: subsubspaceNameId,
+      subspaceL1NameId: subspaceNameId,
+      subspaceL2NameId: subsubspaceNameId,
+      includeSubspaceL1: !!subspaceNameId,
+      includeSubspaceL2: !!subsubspaceNameId,
     },
     skip: !spaceNameId || !subspaceNameId,
   });
-  const subspaceIds = !spaceId
-    ? undefined
-    : subspaceData?.space.subspace?.subspace?.id && subspaceData?.space.subspace?.id
-    ? ([spaceId, subspaceData.space.subspace.id, subspaceData.space.subspace.subspace.id] as [string, string, string])
-    : subspaceData?.space.subspace?.id
-    ? ([spaceId, subspaceData.space.subspace.id] as [string, string])
-    : undefined;
-  const subspaceId = subspaceData?.space.subspace?.subspace?.id ?? subspaceData?.space.subspace?.id;
+  const subspaceIds = compact([spaceId, subspaceData?.lookupByName.space?.subspaceByNameID?.id, subspaceData?.lookupByName.space?.subspaceByNameID?.subspaceByNameID?.id])
+  const subspaceId = subspaceIds[subspaceIds.length - 1];
   loading = loading || subspaceDataLoading;
   if (throwIfNotFound && spaceNameId && subspaceNameId && !subspaceDataLoading && !subspaceId) {
     throw new NotFoundError(`Subspace '${subspaceNameId}/${subsubspaceNameId}/' not found on '${spaceNameId}'`);
@@ -281,6 +323,7 @@ const useUrlResolver = ({
       loading,
     ]
   );
+  */
   return result;
 };
 

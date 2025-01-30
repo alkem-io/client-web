@@ -8238,27 +8238,23 @@ export function refetchCalloutContentQuery(variables: SchemaTypes.CalloutContent
 }
 
 export const PostDocument = gql`
-  query Post($calloutId: UUID!, $postId: UUID!) {
+  query Post($postId: UUID!) {
     lookup {
       post(ID: $postId) {
         id
-        nameID
         createdDate
         profile {
           id
-          url
           displayName
           description
+          url
           tagset {
             ...TagsetDetails
           }
           references {
-            id
-            name
-            uri
-            description
+            ...ReferenceDetails
           }
-          visual(type: BANNER) {
+          banner: visual(type: BANNER) {
             ...VisualUri
           }
         }
@@ -8268,8 +8264,7 @@ export const PostDocument = gql`
             id
             displayName
             avatar: visual(type: AVATAR) {
-              id
-              uri
+              ...VisualUri
             }
             tagsets {
               ...TagsetDetails
@@ -8292,14 +8287,10 @@ export const PostDocument = gql`
           }
         }
       }
-      callout(ID: $calloutId) {
-        id
-        nameID
-        type
-      }
     }
   }
   ${TagsetDetailsFragmentDoc}
+  ${ReferenceDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
   ${MessageDetailsFragmentDoc}
 `;
@@ -8316,7 +8307,6 @@ export const PostDocument = gql`
  * @example
  * const { data, loading, error } = usePostQuery({
  *   variables: {
- *      calloutId: // value for 'calloutId'
  *      postId: // value for 'postId'
  *   },
  * });
@@ -8343,7 +8333,7 @@ export function refetchPostQuery(variables: SchemaTypes.PostQueryVariables) {
 }
 
 export const UpdatePostDocument = gql`
-  mutation updatePost($input: UpdatePostInput!) {
+  mutation UpdatePost($input: UpdatePostInput!) {
     updatePost(postData: $input) {
       id
       profile {
@@ -8402,71 +8392,9 @@ export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePostMutation,
   SchemaTypes.UpdatePostMutationVariables
 >;
-export const PostSettingsDocument = gql`
-  query PostSettings($postId: UUID!, $calloutId: UUID!) {
-    lookup {
-      callout(ID: $calloutId) {
-        ...PostSettingsCallout
-      }
-      post(ID: $postId) {
-        ...PostSettings
-      }
-    }
-  }
-  ${PostSettingsCalloutFragmentDoc}
-  ${PostSettingsFragmentDoc}
-`;
-
-/**
- * __usePostSettingsQuery__
- *
- * To run a query within a React component, call `usePostSettingsQuery` and pass it any options that fit your needs.
- * When your component renders, `usePostSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = usePostSettingsQuery({
- *   variables: {
- *      postId: // value for 'postId'
- *      calloutId: // value for 'calloutId'
- *   },
- * });
- */
-export function usePostSettingsQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.PostSettingsQuery, SchemaTypes.PostSettingsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.PostSettingsQuery, SchemaTypes.PostSettingsQueryVariables>(
-    PostSettingsDocument,
-    options
-  );
-}
-
-export function usePostSettingsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.PostSettingsQuery, SchemaTypes.PostSettingsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.PostSettingsQuery, SchemaTypes.PostSettingsQueryVariables>(
-    PostSettingsDocument,
-    options
-  );
-}
-
-export type PostSettingsQueryHookResult = ReturnType<typeof usePostSettingsQuery>;
-export type PostSettingsLazyQueryHookResult = ReturnType<typeof usePostSettingsLazyQuery>;
-export type PostSettingsQueryResult = Apollo.QueryResult<
-  SchemaTypes.PostSettingsQuery,
-  SchemaTypes.PostSettingsQueryVariables
->;
-export function refetchPostSettingsQuery(variables: SchemaTypes.PostSettingsQueryVariables) {
-  return { query: PostSettingsDocument, variables: variables };
-}
-
 export const DeletePostDocument = gql`
-  mutation deletePost($input: DeletePostInput!) {
-    deletePost(deleteData: $input) {
+  mutation DeletePost($postId: UUID!) {
+    deletePost(deleteData: { ID: $postId }) {
       id
     }
   }
@@ -8489,7 +8417,7 @@ export type DeletePostMutationFn = Apollo.MutationFunction<
  * @example
  * const [deletePostMutation, { data, loading, error }] = useDeletePostMutation({
  *   variables: {
- *      input: // value for 'input'
+ *      postId: // value for 'postId'
  *   },
  * });
  */
@@ -8567,6 +8495,68 @@ export type MoveContributionToCalloutMutationOptions = Apollo.BaseMutationOption
   SchemaTypes.MoveContributionToCalloutMutation,
   SchemaTypes.MoveContributionToCalloutMutationVariables
 >;
+export const PostSettingsDocument = gql`
+  query PostSettings($postId: UUID!, $calloutId: UUID!) {
+    lookup {
+      callout(ID: $calloutId) {
+        ...PostSettingsCallout
+      }
+      post(ID: $postId) {
+        ...PostSettings
+      }
+    }
+  }
+  ${PostSettingsCalloutFragmentDoc}
+  ${PostSettingsFragmentDoc}
+`;
+
+/**
+ * __usePostSettingsQuery__
+ *
+ * To run a query within a React component, call `usePostSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePostSettingsQuery({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function usePostSettingsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.PostSettingsQuery, SchemaTypes.PostSettingsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PostSettingsQuery, SchemaTypes.PostSettingsQueryVariables>(
+    PostSettingsDocument,
+    options
+  );
+}
+
+export function usePostSettingsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.PostSettingsQuery, SchemaTypes.PostSettingsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.PostSettingsQuery, SchemaTypes.PostSettingsQueryVariables>(
+    PostSettingsDocument,
+    options
+  );
+}
+
+export type PostSettingsQueryHookResult = ReturnType<typeof usePostSettingsQuery>;
+export type PostSettingsLazyQueryHookResult = ReturnType<typeof usePostSettingsLazyQuery>;
+export type PostSettingsQueryResult = Apollo.QueryResult<
+  SchemaTypes.PostSettingsQuery,
+  SchemaTypes.PostSettingsQueryVariables
+>;
+export function refetchPostSettingsQuery(variables: SchemaTypes.PostSettingsQueryVariables) {
+  return { query: PostSettingsDocument, variables: variables };
+}
+
 export const PostCalloutsInCalloutSetDocument = gql`
   query PostCalloutsInCalloutSet($calloutsSetId: UUID!) {
     lookup {

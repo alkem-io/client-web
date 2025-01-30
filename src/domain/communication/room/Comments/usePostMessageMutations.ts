@@ -1,9 +1,11 @@
 import ensurePresence from '@/core/utils/ensurePresence';
 import {
   MessageDetailsFragmentDoc,
+  useRemoveMessageOnRoomMutation,
   useReplyToMessageMutation,
   useSendMessageToRoomMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
 
 interface UsePostMessageMutationsOptions {
   roomId: string | undefined;
@@ -106,11 +108,28 @@ const usePostMessageMutations = ({ roomId, isSubscribedToMessages }: UsePostMess
     });
   };
 
+  const [deleteMessage, { loading: deletingMessage }] = useRemoveMessageOnRoomMutation({
+    update: (cache, { data }) =>
+      data?.removeMessageOnRoom && evictFromCache(cache, String(data.removeMessageOnRoom), 'Message'),
+  });
+
+  const handleDeleteMessage = (commentsId: string, messageId: string) =>
+    deleteMessage({
+      variables: {
+        messageData: {
+          roomID: commentsId,
+          messageID: messageId,
+        },
+      },
+    });
+
   return {
     postMessage: handlePostMessage,
     postReply: handleReply,
+    deleteMessage: handleDeleteMessage,
     postingMessage,
     postingReply,
+    deletingMessage,
   };
 };
 

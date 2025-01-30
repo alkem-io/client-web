@@ -57,44 +57,31 @@ const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) =
         {loadingPrivileges || loading ? (
           <Loading />
         ) : (
-          <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={id}>
-            <Gutters disablePadding>
-              {(knowledgeBaseDescription || canCreateCallout) && (
-                <DescriptionComponent
-                  description={knowledgeBaseDescription}
-                  canEdit={canCreateCallout}
-                  onUpdate={updateDescription}
+            <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={id}>
+              <Gutters disablePadding>
+                {(knowledgeBaseDescription || canCreateCallout) && (
+                  <DescriptionComponent
+                    description={knowledgeBaseDescription}
+                    canEdit={canCreateCallout}
+                    onUpdate={updateDescription}
+                  />
+                )}
+                <CalloutsGroupView
+                  calloutsSetId={calloutsSetId}
+                  callouts={callouts}
+                  canCreateCallout={canCreateCallout}
+                  loading={calloutsSetLoading}
+                  onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                  onCalloutUpdate={refetchCallout}
+                  groupName={CalloutGroupName.Knowledge}
+                  createButtonPlace="bottom"
+                  availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
+                  disableRichMedia
+                  disablePostResponses
                 />
-              )}
-              <CalloutsGroupView
-                calloutsSetId={calloutsSetId}
-                callouts={callouts}
-                canCreateCallout={canCreateCallout}
-                loading={calloutsSetLoading}
-                onSortOrderUpdate={onCalloutsSortOrderUpdate}
-                onCalloutUpdate={refetchCallout}
-                groupName={CalloutGroupName.Knowledge}
-                createButtonPlace="bottom"
-                availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
-                disableRichMedia
-                disablePostResponses
-              />
-            )}
-            <CalloutsGroupView
-              calloutsSetId={calloutsSetId}
-              callouts={callouts}
-              canCreateCallout={canCreateCallout}
-              loading={loading}
-              onSortOrderUpdate={onCalloutsSortOrderUpdate}
-              onCalloutUpdate={refetchCallout}
-              groupName={CalloutGroupName.Knowledge}
-              createButtonPlace="bottom"
-              availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
-              disableRichMedia
-              disablePostResponses
-            />
-          </Gutters>
-        </StorageConfigContextProvider>
+              </Gutters>
+            </StorageConfigContextProvider>
+        )}
       </DialogContent>
       {canCreateCallout && (
         <DialogActions>

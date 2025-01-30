@@ -80,7 +80,7 @@ const WhiteboardView = ({
             dialogTitle: displayName,
             readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
             fullscreen,
-            headerActions: journeyTypeName !== KnowledgeBaseCalloutsSetType && (
+            headerActions: (
               <>
                 <ShareButton url={whiteboardShareUrl} entityTypeName="whiteboard" disabled={!whiteboardShareUrl}>
                   {hasUpdatePrivileges && (

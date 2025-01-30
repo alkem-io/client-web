@@ -1,28 +1,22 @@
-#//!! See if we can reduce this
 query Post(
-  $calloutId: UUID!
   $postId: UUID!
 ) {
   lookup {
-    post (ID: $postId) {
+    post(ID: $postId) {
       id
-      nameID
       createdDate
       profile {
         id
-        url
         displayName
         description
+        url
         tagset {
           ...TagsetDetails
         }
         references {
-          id
-          name
-          uri
-          description
+          ...ReferenceDetails
         }
-        visual(type: BANNER) {
+        banner: visual(type: BANNER) {
           ...VisualUri
         }
       }
@@ -32,8 +26,7 @@ query Post(
           id
           displayName
           avatar: visual(type: AVATAR) {
-            id
-            uri
+            ...VisualUri
           }
           tagsets {
             ...TagsetDetails
@@ -55,11 +48,6 @@ query Post(
           virtualContributorID
         }
       }
-    }
-    callout(ID: $calloutId) {
-      id
-      nameID
-      type
     }
   }
 }
