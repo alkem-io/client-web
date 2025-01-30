@@ -2017,7 +2017,9 @@
           "visibility": {
             "title": "Visibility",
             "public": "<b>Public:</b> This space and its contents are visible for everyone on the platform. Users can only contribute if they are a member.",
-            "private": "<b>Private:</b> This space is visible to everyone on the platform, but the content is only visible to members. Please note that both the information in the profile and the context are publicly visible."
+            "private": "<b>Private:</b> This space is visible to everyone on the platform, but the content is only visible to members. Please note that both the information in the profile and the context are publicly visible.",
+            "publicSubspace": "<b>Public:</b> This Subspace and all its contents are visible to everyone who has access to the Space it belongs to. If the Space itself is public, this Subspace and its contents will be visible to all users, including those outside the Space.",
+            "privateSubspace": "<b>Private:</b> This Subspace is visible to all members of the Space, but its contents are restricted and can only be accessed by members of the Subspace. No application required: All Space members can directly join, without you having to review their application."
           },
           "license-features": {
             "title": "Space Features",
@@ -2029,7 +2031,7 @@
           },
           "membership": {
             "title": "Membership",
-            "open": "<b>No Application required:</b> All Alkemio users can directly join, without you having to review their application. Others will first have to create an Alkemio account, but can then also join this Space directly.",
+            "open": "<b>No Application required:</b> All Space members can directly join, without you having to review their application.",
             "applications": "<b>Application required:</b> If people want to become a member, they have to fill in the application form. You receive their applications (<community>see Community tab here</community>) and can choose to accept these or not. If you want, you can choose to leave the form empty.",
             "invitations": "<b>Invitation only:</b> Users can only become a member after you’ve invited them (<community>which you can do from the Community tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
             "trustedApplicants": "Trusted applicants",
@@ -2278,7 +2280,16 @@
             "title": "...or look for your Community below",
             "searchSuggestions": "Search suggestions:"
           },
-          "suggestionsArray": ["Innovation", "Energy", "Inclusive", "3D", "Community", "Transition", "SSI", "Privacy"]
+          "suggestionsArray": [
+            "Innovation",
+            "Energy",
+            "Inclusive",
+            "3D",
+            "Community",
+            "Transition",
+            "SSI",
+            "Privacy"
+          ]
         },
         "newMemberships": {
           "title": "New Memberships",
@@ -2696,9 +2707,21 @@
           }
         },
         "ingestion": {
-          "title": "Update Knowledge",
+          "title": "Body of Knowledge",
           "infoText": "By clicking the button below, you will make sure your Virtual Contributor is based on the latest knowledge in the Subspace.",
           "refreshBtn": "Update Knowledge"
+        },
+        "privacy": {
+          "title": "Privacy",
+          "description": "Private Virtual Contributor Knowledge",
+          "tooltip1": "Public: When users visit {{vcName}}'s profile, they can see the content of its body of knowledge.",
+          "tooltip2": "Private: Only the account admins can see the content of the body of knowledge."
+        }
+      },
+      "knowledgeBase": {
+        "noAccess": {
+          "title": "Private Virtual Contributor Knowledge",
+          "description": "You don't have access to the knowledge base of this Virtual Contributor. Please contact the owner of the Virtual Contributor for more information."
         }
       }
     },
@@ -2883,27 +2906,42 @@
       {
         "key": "energy-transition",
         "name": "Energy Transition",
-        "tags": ["Energy Transition", "Energietransitie"]
+        "tags": [
+          "Energy Transition",
+          "Energietransitie"
+        ]
       },
       {
         "key": "inclusive-society",
         "name": "Inclusive Society",
-        "tags": ["Inclusive Society", "Inclusieve Samenleving"]
+        "tags": [
+          "Inclusive Society",
+          "Inclusieve Samenleving"
+        ]
       },
       {
         "key": "public-services",
         "name": "Public Services",
-        "tags": ["Public Services", "Publieke Diensten"]
+        "tags": [
+          "Public Services",
+          "Publieke Diensten"
+        ]
       },
       {
         "key": "innovation",
         "name": "Innovation",
-        "tags": ["Innovation", "Innovatie"]
+        "tags": [
+          "Innovation",
+          "Innovatie"
+        ]
       },
       {
         "key": "digitalization-of-society",
         "name": "Digitalization of Society",
-        "tags": ["Digitalization of Society", "Digitalisering"]
+        "tags": [
+          "Digitalization of Society",
+          "Digitalisering"
+        ]
       }
     ]
   },
@@ -2970,7 +3008,10 @@
         "name": "SPACE_LICENSE_FREE",
         "displayName": "Free",
         "priceDescription": "For Change-Makers Exploring Alkemio",
-        "features": ["Up to 10 members", "Various tools, including standard Whiteboards"],
+        "features": [
+          "Up to 10 members",
+          "Various tools, including standard Whiteboards"
+        ],
         "disclaimer": "Free Spaces are limited to 1 Space per user",
         "disabledDisclaimer": "Each user can have 1 free space. It seems like you’ve already used yours!"
       },
@@ -2978,7 +3019,11 @@
         "name": "SPACE_LICENSE_PLUS",
         "displayName": "Plus",
         "priceDescription": "For Starting Communities, coalitions, programs...",
-        "features": ["Up to 100 members", "Realtime, multi-user Whiteboards", "Create your Virtual Contributor"],
+        "features": [
+          "Up to 100 members",
+          "Realtime, multi-user Whiteboards",
+          "Create your Virtual Contributor"
+        ],
         "disclaimer": "",
         "disabledDisclaimer": ""
       },
@@ -3113,7 +3158,7 @@
       },
       "comingSoon": {
         "title": "🚀 Coming soon!",
-        "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
+        "subTitle": "Looking for a different AI service? Let us know!",
         "input": {
           "label": "AI Service",
           "placeholder": "E.g. the AI that xx created to xx"
@@ -3142,7 +3187,7 @@
       "title": "Choose a (Sub)Space",
       "description": "Which Space or Subspace do you want to bring to life with the Virtual Contributor? Below you'll be able to choose from all Spaces and Subspaces that you are host of.",
       "label": "(Sub)Space",
-      "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor, please go back and follow the Written Knowledge flow."
+      "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor without a Space, please go back and follow the Written Knowledge flow."
     },
     "chooseCommunity": {
       "title": "Hello, {{vcName}}!",
