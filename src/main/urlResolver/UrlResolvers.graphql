@@ -29,22 +29,21 @@ query SpaceUrlResolver ($nameId: NameID!) {
   }
 }
 
-query SubspaceUrlResolver (
-  $spaceNameId: UUID_NAMEID!,
-  $level1subspaceNameId: UUID_NAMEID! = "00000000-0000-0000-0000-000000000000",
-  $level2subspaceNameId: UUID_NAMEID! = "00000000-0000-0000-0000-000000000000",
-  $level1: Boolean = false,
-  $level2: Boolean = false
+query SubspaceUrlResolver(
+  $spaceNameId: NameID!,
+  $subspaceL1NameId: NameID = "nameid",
+  $subspaceL2NameId: NameID = "nameid",
+  $includeSubspaceL1: Boolean = false,
+  $includeSubspaceL2: Boolean = false,
 ) {
-  space(ID: $spaceNameId) {
-    id
-    subspace(ID:$level1subspaceNameId) @include(if: $level1) {
+  lookupByName {
+    space(NAMEID: $spaceNameId) {
       id
-    }
-    subspace(ID:$level1subspaceNameId) @include(if: $level2) {
-      id
-      subspace(ID:$level2subspaceNameId) {
+      subspaceByNameID(NAMEID: $subspaceL1NameId) @include(if: $includeSubspaceL1) {
         id
+        subspaceByNameID(NAMEID: $subspaceL2NameId) @include(if: $includeSubspaceL2) {
+          id
+        }
       }
     }
   }
@@ -90,11 +89,11 @@ query VirtualContributorKeyEntitiesIDs($virtualContributorId: UUID!) {
   }
 }
 
-query CalloutUrlResolver($calloutsSetId: UUID!, $calloutNameId: UUID_NAMEID!) {
+query CalloutUrlResolver($calloutsSetId: UUID!, $calloutIds: UUID!) { #//!! Rewrite this, I need to pass nameId
   lookup {
     calloutsSet(ID: $calloutsSetId) {
       id
-      callouts(IDs: [$calloutNameId]) {
+      callouts(IDs: [$calloutIds]) {
         id
       }
     }
@@ -113,10 +112,10 @@ query InnovationPackUrlResolver($innovationPackNameId: NameID!) {
   }
 }
 
-query PostInCalloutUrlResolver($calloutId: UUID!, $postNameId: UUID_NAMEID!) {
+query PostInCalloutUrlResolver($calloutId: UUID!, $postNameId: UUID!) { #//!! Rewrite this, I need to pass nameId
   lookup {
     callout(ID: $calloutId) {
-      contributions(filter: { postIDs: [$postNameId] }) {
+      contributions( IDs: [$postNameId]) {
         id
         post {
           id
