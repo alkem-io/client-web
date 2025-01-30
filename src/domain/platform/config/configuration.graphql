@@ -3,6 +3,11 @@ query configuration {
     configuration {
       ...Configuration
     }
+    settings {
+      integration {
+        iframeAllowedUrls
+      }
+    }
   }
 }
 

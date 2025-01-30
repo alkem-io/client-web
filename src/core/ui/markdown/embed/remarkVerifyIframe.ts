@@ -1,9 +1,7 @@
-import { Pluggable } from 'unified';
+import { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
-import { ALLOWED_EMBED_URLS } from './allowedEmbedUrls';
-
-const isAllowedUrl = (url: string) => {
+const isAllowedUrl = (url: string, allowedIFrameOrigins: string[]) => {
   try {
     const parsedUrl = new URL(url);
 
@@ -13,7 +11,7 @@ const isAllowedUrl = (url: string) => {
 
     const srcOrigin = parsedUrl.origin;
 
-    return ALLOWED_EMBED_URLS.some(vS => vS === srcOrigin);
+    return allowedIFrameOrigins.some(vS => vS === srcOrigin);
   } catch (e) {
     console.error('Invalid iframe URL:', url, e);
 
@@ -21,10 +19,12 @@ const isAllowedUrl = (url: string) => {
   }
 };
 
-export const remarkVerifyIframe: Pluggable = () => {
+export const remarkVerifyIframe: Plugin<[{ allowedIFrameOrigins?: string[] }]> = ({
+  allowedIFrameOrigins = [],
+} = {}) => {
   return tree => {
     visit(tree, 'html', (node: { value: string }) => {
-      if (node && typeof node.value === 'string') {
+      if (node && node.value) {
         const nodeValue: string = node.value;
         if (nodeValue.toLowerCase().includes('<iframe')) {
           try {
@@ -38,7 +38,7 @@ export const remarkVerifyIframe: Pluggable = () => {
             } else {
               for (let iframe of iframes) {
                 const src = iframe.getAttribute('src');
-                if (!src || !isAllowedUrl(src)) {
+                if (!src || !isAllowedUrl(src, allowedIFrameOrigins)) {
                   node.value = '';
                   return;
                 }
