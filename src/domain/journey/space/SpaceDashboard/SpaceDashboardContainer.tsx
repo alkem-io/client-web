@@ -70,6 +70,7 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
   });
 
   const space = spaceData?.lookup.space;
+  console.log('1. @@@ space >>>', space);
 
   const isMember = space?.community?.roleSet?.myMembershipStatus === CommunityMembershipStatus.Member;
 

@@ -32,81 +32,84 @@ const SpaceDashboardPage = ({
   return (
     <SpacePageLayout journeyPath={journeyPath} currentSection={EntityPageSection.Dashboard}>
       <SpaceDashboardContainer spaceId={spaceId}>
-        {({ callouts, dashboardNavigation, ...entities }, state) => (
-          <>
-            <SpaceDashboardView
-              spaceId={spaceId}
-              collaborationId={collaborationId}
-              calloutsSetId={entities.space?.collaboration?.calloutsSet?.id}
-              vision={entities.space?.context?.vision}
-              dashboardNavigation={dashboardNavigation}
-              dashboardNavigationLoading={state.loading}
-              loading={state.loading}
-              communityId={entities.space?.community?.id}
-              communityReadAccess={entities.permissions.communityReadAccess}
-              timelineReadAccess={entities.permissions.timelineReadAccess}
-              entityReadAccess={entities.permissions.spaceReadAccess}
-              readUsersAccess={entities.permissions.readUsers}
-              leadUsers={entities.space?.community?.roleSet?.leadUsers ?? []}
-              host={entities.provider}
-              callouts={callouts}
-              journeyTypeName="space"
-              myMembershipStatus={entities.space?.community?.roleSet?.myMembershipStatus}
-              shareUpdatesUrl={buildUpdatesUrl(entities.space?.profile.url ?? '')}
-            />
-            <CommunityUpdatesDialog
-              open={dialog === 'updates'}
-              onClose={backToDashboard}
-              communityId={entities.space?.community?.id}
-              shareUrl={buildUpdatesUrl(entities.space?.profile.url ?? '')}
-              loading={state.loading}
-            />
-            <ContributorsDialog
-              open={dialog === 'contributors'}
-              onClose={backToDashboard}
-              dialogContent={SpaceContributorsDialogContent}
-            />
-            {entities.permissions.timelineReadAccess && (
-              <CalendarDialog
-                open={dialog === 'calendar'}
-                onClose={backToDashboard}
-                journeyId={spaceId}
-                parentSpaceId={undefined}
-                parentPath={entities.space?.profile.url ?? ''}
-                calendarEventNameId={calendarEventNameId}
+        {({ callouts, dashboardNavigation, ...entities }, state) => {
+          console.log('2. @@@ LEAD_USERS >>>', entities.space?.community?.roleSet?.leadUsers);
+          return (
+            <>
+              <SpaceDashboardView
+                spaceId={spaceId}
+                collaborationId={collaborationId}
+                calloutsSetId={entities.space?.collaboration?.calloutsSet?.id}
+                vision={entities.space?.context?.vision}
+                dashboardNavigation={dashboardNavigation}
+                dashboardNavigationLoading={state.loading}
+                loading={state.loading}
+                communityId={entities.space?.community?.id}
+                communityReadAccess={entities.permissions.communityReadAccess}
+                timelineReadAccess={entities.permissions.timelineReadAccess}
+                entityReadAccess={entities.permissions.spaceReadAccess}
+                readUsersAccess={entities.permissions.readUsers}
+                leadUsers={entities.space?.community?.roleSet?.leadUsers ?? []} // @@@ WIP ~ #7563
+                host={entities.provider}
+                callouts={callouts}
+                journeyTypeName="space"
+                myMembershipStatus={entities.space?.community?.roleSet?.myMembershipStatus}
+                shareUpdatesUrl={buildUpdatesUrl(entities.space?.profile.url ?? '')}
               />
-            )}
-            <JourneyAboutDialog
-              open={dialog === 'about'}
-              spaceLevel={SpaceLevel.L0}
-              displayName={entities.space?.profile.displayName}
-              tagline={entities.space?.profile.tagline}
-              references={entities.references}
-              sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
-              metrics={entities.space?.metrics}
-              description={entities.space?.context?.vision}
-              background={entities.space?.profile.description}
-              who={entities.space?.context?.who}
-              impact={entities.space?.context?.impact}
-              guidelines={
-                <CommunityGuidelinesBlock
-                  communityId={entities.space?.community?.id}
-                  journeyUrl={entities.space?.profile.url}
+              <CommunityUpdatesDialog
+                open={dialog === 'updates'}
+                onClose={backToDashboard}
+                communityId={entities.space?.community?.id}
+                shareUrl={buildUpdatesUrl(entities.space?.profile.url ?? '')}
+                loading={state.loading}
+              />
+              <ContributorsDialog
+                open={dialog === 'contributors'}
+                onClose={backToDashboard}
+                dialogContent={SpaceContributorsDialogContent}
+              />
+              {entities.permissions.timelineReadAccess && (
+                <CalendarDialog
+                  open={dialog === 'calendar'}
+                  onClose={backToDashboard}
+                  journeyId={spaceId}
+                  parentSpaceId={undefined}
+                  parentPath={entities.space?.profile.url ?? ''}
+                  calendarEventNameId={calendarEventNameId}
                 />
-              }
-              loading={state.loading}
-              leadUsers={entities.space?.community?.roleSet?.leadUsers}
-              provider={entities.provider}
-              leadOrganizations={entities.space?.community?.roleSet?.leadOrganizations}
-              endButton={
-                <IconButton onClick={backToDashboard} aria-label={t('buttons.close')}>
-                  <Close />
-                </IconButton>
-              }
-              shareUrl={buildAboutUrl(entities.space?.profile.url)}
-            />
-          </>
-        )}
+              )}
+              <JourneyAboutDialog
+                open={dialog === 'about'}
+                spaceLevel={SpaceLevel.L0}
+                displayName={entities.space?.profile.displayName}
+                tagline={entities.space?.profile.tagline}
+                references={entities.references}
+                sendMessageToCommunityLeads={entities.sendMessageToCommunityLeads}
+                metrics={entities.space?.metrics}
+                description={entities.space?.context?.vision}
+                background={entities.space?.profile.description}
+                who={entities.space?.context?.who}
+                impact={entities.space?.context?.impact}
+                guidelines={
+                  <CommunityGuidelinesBlock
+                    communityId={entities.space?.community?.id}
+                    journeyUrl={entities.space?.profile.url}
+                  />
+                }
+                loading={state.loading}
+                leadUsers={entities.space?.community?.roleSet?.leadUsers}
+                provider={entities.provider}
+                leadOrganizations={entities.space?.community?.roleSet?.leadOrganizations}
+                endButton={
+                  <IconButton onClick={backToDashboard} aria-label={t('buttons.close')}>
+                    <Close />
+                  </IconButton>
+                }
+                shareUrl={buildAboutUrl(entities.space?.profile.url)}
+              />
+            </>
+          );
+        }}
       </SpaceDashboardContainer>
     </SpacePageLayout>
   );

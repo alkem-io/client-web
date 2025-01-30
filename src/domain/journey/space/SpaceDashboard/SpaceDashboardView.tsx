@@ -85,6 +85,7 @@ const SpaceDashboardView = ({
   shareUpdatesUrl,
   myMembershipStatus,
 }: SpaceDashboardViewProps) => {
+  console.log('3. @@@ LEAD_USERS >>>', leadUsers);
   const { t } = useTranslation();
 
   const [tryVirtualContributorOpen, setTryVirtualContributorOpen] = useState(false);
@@ -143,6 +144,7 @@ const SpaceDashboardView = ({
         </ApplicationButtonContainer>
         <InfoColumn>
           <PageContentBlock accent>
+            {/* @@@ WIP ~ #7563 - Синият информационен блок на пространството вляво */}
             <JourneyDashboardWelcomeBlock
               vision={vision}
               leadUsers={leadUsers}

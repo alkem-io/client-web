@@ -30,7 +30,7 @@ const JourneyDashboardWelcomeBlock = ({
   member = false,
 }: JourneyDashboardWelcomeBlockProps) => {
   const leadOrganizationsUnique = useMemo(
-    () => leadOrganizations?.filter(({ id }) => !leadUsers?.some(user => user.id === id)),
+    () => leadOrganizations?.filter(({ id }) => !leadUsers?.some(user => user.id === id)), // @@@ WIP ~ #7563 - ПРОВЕРИ ЗАЩО НЕ СЕ ВИЖДАТ ЛИЙДОВЕТЕ, ПРИ ПОЛОЖЕНИЕ, ЧЕ ОТЗАДЕНДА ВЕЧЕ ГИ ПОВРЪЩА!
     [leadOrganizations, leadUsers]
   );
 
