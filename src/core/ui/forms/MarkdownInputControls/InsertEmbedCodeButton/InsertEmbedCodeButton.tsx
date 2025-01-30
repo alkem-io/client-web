@@ -34,8 +34,7 @@ export const InsertEmbedCodeButton = ({
 
   const notify = useNotification();
 
-  const { integration } = useConfig();
-  const iframeAllowedUrls = integration?.iframeAllowedUrls || [];
+  const { integration: { iframeAllowedUrls = [] } = {} } = useConfig();
 
   const buttonRef = useRef<HTMLButtonElement>(null);
 
