@@ -14,7 +14,7 @@ import { useSubspacePageQuery } from '@/core/apollo/generated/apollo-hooks';
 import useCanReadSpace, { SpaceReadAccess } from '@/domain/journey/common/authorization/useCanReadSpace';
 import useCalloutsOnCollaboration from '@/domain/collaboration/useCalloutsOnCollaboration';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
-import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 
 interface SubspaceHomeContainerProvided {
   level: SpaceLevel | undefined;
@@ -57,7 +57,7 @@ const SubspaceHomeContainer = ({ spaceId: journeyId, children }: SubspaceHomeCon
   const community = data?.lookup.space?.community;
   const communityReadAccess = (community?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
 
-  const { organizations, users } = useRoleSetAdmin({
+  const { organizations, users } = useRoleSetManager({
     roleSetId: community?.roleSet.id,
     relevantRoles: [RoleName.Lead],
     contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],

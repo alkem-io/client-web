@@ -21,7 +21,7 @@ import { MetricType } from '@/domain/platform/metrics/MetricType';
 import { InnovationFlowDetails } from '@/domain/collaboration/InnovationFlow/InnovationFlow';
 import { ContributorViewProps } from '@/domain/community/community/EntityDashboardContributorsSection/Types';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
-import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 
 interface AboutPagePermissions {
   communityReadAccess: boolean;
@@ -93,7 +93,7 @@ const AboutPageContainer = ({ journeyId, children }: PropsWithChildren<AboutPage
     organizationsByRole,
     virtualContributors,
     myPrivileges: communityPrivileges,
-  } = useRoleSetAdmin({
+  } = useRoleSetManager({
     roleSetId: membersData?.lookup.space?.community.roleSet.id,
     relevantRoles: [RoleName.Member, RoleName.Lead],
     contributorTypes: [

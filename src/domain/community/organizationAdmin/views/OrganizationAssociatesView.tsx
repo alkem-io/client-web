@@ -3,7 +3,7 @@ import EditMemberUsers from '@/domain/platform/admin/components/Community/EditMe
 import { useOrganization } from '@/domain/community/contributor/organization/hooks/useOrganization';
 import { useTranslation } from 'react-i18next';
 import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
-import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import { useUserContext } from '../../user';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
@@ -22,7 +22,7 @@ export const OrganizationAssociatesView: FC = () => {
     removeRoleFromUser,
     loading: loadingRoleSet,
     updating,
-  } = useRoleSetAdmin({
+  } = useRoleSetManager({
     roleSetId,
     relevantRoles: [RoleName.Associate],
     contributorTypes: [RoleSetContributorType.User],

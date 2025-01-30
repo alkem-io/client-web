@@ -19,7 +19,7 @@ import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
-import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 
 const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { t } = useTranslation();
@@ -28,7 +28,7 @@ const InviteVCsDialog = ({ open, onClose }: InviteContributorDialogProps) => {
   const { spaceId, roleSetId } = useSpace();
   const { level: spaceLevel } = useRouteResolver();
 
-  const { virtualContributors } = useRoleSetAdmin({
+  const { virtualContributors } = useRoleSetManager({
     roleSetId,
     relevantRoles: [RoleName.Member],
     contributorTypes: [RoleSetContributorType.Virtual],

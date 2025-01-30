@@ -9,9 +9,9 @@ import {
   RoleSetMemberUserFragment,
   RoleSetMemberVirtualContributorFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import useRoleSetAdminRolesAssignment, {
-  useRoleSetAdminRolesAssignmentProvided,
-} from './RolesAssignament/useRoleSetAdminRolesAssignment';
+import useRoleSetManagerRolesAssignment, {
+  useRoleSetManagerRolesAssignmentProvided,
+} from './RolesAssignament/useRoleSetManagerRolesAssignment';
 
 export const RELEVANT_ROLES = {
   Community: [RoleName.Admin, RoleName.Lead, RoleName.Member],
@@ -54,7 +54,7 @@ export interface RoleSetMemberVirtualContributorFragmentWithRoles extends RoleSe
   isContactable: boolean;
 }
 
-interface useRoleSetAdminProvided extends useRoleSetAdminRolesAssignmentProvided {
+interface useRoleSetManagerProvided extends useRoleSetManagerRolesAssignmentProvided {
   myPrivileges: AuthorizationPrivilege[] | undefined;
   roleNames: RoleName[] | undefined;
 
@@ -70,7 +70,7 @@ interface useRoleSetAdminProvided extends useRoleSetAdminRolesAssignmentProvided
   updating: boolean;
 }
 
-type useRoleSetAdminParams = {
+type useRoleSetManagerParams = {
   roleSetId: string | undefined;
   relevantRoles: readonly RoleName[];
   contributorTypes?: readonly RoleSetContributorType[];
@@ -79,13 +79,13 @@ type useRoleSetAdminParams = {
   skip?: boolean;
 };
 
-const useRoleSetAdmin = ({
+const useRoleSetManager = ({
   roleSetId,
   relevantRoles,
   contributorTypes = [RoleSetContributorType.User, RoleSetContributorType.Organization, RoleSetContributorType.Virtual],
   onRefetch,
   skip,
-}: useRoleSetAdminParams): useRoleSetAdminProvided => {
+}: useRoleSetManagerParams): useRoleSetManagerProvided => {
   if (!roleSetId || !relevantRoles || relevantRoles.length === 0) {
     skip = true;
   }
@@ -230,7 +230,7 @@ const useRoleSetAdmin = ({
     assignPlatformRoleToUser,
     removePlatformRoleFromUser,
     loading: updatingRoleSet,
-  } = useRoleSetAdminRolesAssignment({ roleSetId });
+  } = useRoleSetManagerRolesAssignment({ roleSetId });
 
   return {
     myPrivileges,
@@ -254,4 +254,4 @@ const useRoleSetAdmin = ({
   };
 };
 
-export default useRoleSetAdmin;
+export default useRoleSetManager;

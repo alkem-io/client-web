@@ -10,15 +10,13 @@ import { AuthorizationPrivilege, RoleName, SpaceLevel } from '@/core/apollo/gene
 import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
 import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
 
-// TODO: Inherit from CoreEntityIds when they are not NameIds
 interface useInviteContributorsParams {
   roleSetId: string;
   spaceId?: string;
-  challengeId?: string;
-  opportunityId?: string;
   spaceLevel: SpaceLevel | undefined;
 }
 
+//!! Use rolesetManager for this
 const useInviteContributors = ({ roleSetId, spaceId, spaceLevel }: useInviteContributorsParams) => {
   // Fetch community virtual members list
   const {

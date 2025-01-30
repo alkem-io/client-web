@@ -30,7 +30,7 @@ import ContentColumn from '@/core/ui/content/ContentColumn';
 import VirtualContributorsBlock from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsBlock';
 import { VirtualContributorProps } from '@/domain/community/community/VirtualContributorsBlock/VirtualContributorsDialog';
 import { useUserContext } from '@/domain/community/user';
-import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 
 const SpaceCommunityPage = () => {
   const { isAuthenticated } = useUserContext();
@@ -59,7 +59,7 @@ const SpaceCommunityPage = () => {
     skip: !spaceId,
   });
 
-  const { usersByRole, organizationsByRole, virtualContributorsByRole, myPrivileges } = useRoleSetAdmin({
+  const { usersByRole, organizationsByRole, virtualContributorsByRole, myPrivileges } = useRoleSetManager({
     roleSetId: data?.lookup.space?.community?.roleSet.id,
     relevantRoles: [RoleName.Member, RoleName.Lead],
     contributorTypes: [

@@ -6,11 +6,11 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
 
-type useRoleSetAdminRolesAssignmentParams = {
+type useRoleSetManagerRolesAssignmentParams = {
   roleSetId: string | undefined;
 };
 
-export type useRoleSetAdminRolesAssignmentProvided = {
+export type useRoleSetManagerRolesAssignmentProvided = {
   assignPlatformRoleToUser: (userId: string, roleName: RoleName) => Promise<unknown>;
   removePlatformRoleFromUser: (userId: string, roleName: RoleName) => Promise<unknown>;
   assignRoleToUser: (userId: string, roleName: RoleName) => Promise<unknown>;
@@ -19,11 +19,11 @@ export type useRoleSetAdminRolesAssignmentProvided = {
 };
 
 /**
- * Do not use this hook directly, normally you should use useRoleSetAdmin instead
+ * Do not use this hook directly, normally you should use useRoleSetManager instead
  */
-const useRoleSetAdminRolesAssignment = ({
+const useRoleSetManagerRolesAssignment = ({
   roleSetId,
-}: useRoleSetAdminRolesAssignmentParams): useRoleSetAdminRolesAssignmentProvided => {
+}: useRoleSetManagerRolesAssignmentParams): useRoleSetManagerRolesAssignmentProvided => {
   // Platform Roles:
   const [runAssignPlatformRoleToUser, { loading: assignPlatformRoleToUserLoading }] =
     useAssignPlatformRoleToUserMutation();
@@ -94,4 +94,4 @@ const useRoleSetAdminRolesAssignment = ({
   }
 };
 
-export default useRoleSetAdminRolesAssignment;
+export default useRoleSetManagerRolesAssignment;

@@ -6,7 +6,7 @@ import NoOrganizations from '../RoleSetContributors/NoOrganizations';
 import { ContributorsDialogContentProps } from '../ContributorsDialog/ContributorsDialog';
 import { useRouteResolver } from '@/main/routing/resolvers/RouteResolver';
 import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
-import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 
 const SubspaceContributorsDialogContent = ({ dialogOpen }: ContributorsDialogContentProps) => {
   const { journeyId } = useRouteResolver();
@@ -19,7 +19,7 @@ const SubspaceContributorsDialogContent = ({ dialogOpen }: ContributorsDialogCon
   });
   const roleSetId = subspaceData?.lookup.space?.community.roleSet.id;
 
-  const { usersByRole, organizationsByRole } = useRoleSetAdmin({
+  const { usersByRole, organizationsByRole } = useRoleSetManager({
     roleSetId,
     relevantRoles: [RoleName.Member],
     contributorTypes: [RoleSetContributorType.User, RoleSetContributorType.Organization],

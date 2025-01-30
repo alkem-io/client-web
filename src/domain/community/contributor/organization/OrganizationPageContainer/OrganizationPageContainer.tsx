@@ -21,7 +21,7 @@ import {
   RoleName,
 } from '@/core/apollo/generated/graphql-schema';
 import { useTranslation } from 'react-i18next';
-import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
 
 export interface OrganizationContainerEntities {
   organization?: OrganizationInfoFragment;
@@ -59,7 +59,7 @@ export const OrganizationPageContainer = ({ children }: PropsWithChildren<Organi
   const { organizationId, roleSetId, loading, organization, canReadUsers } = useOrganization();
 
   const { t } = useTranslation();
-  const { usersByRole } = useRoleSetAdmin({
+  const { usersByRole } = useRoleSetManager({
     roleSetId,
     relevantRoles: RELEVANT_ROLES.Organization,
     contributorTypes: [RoleSetContributorType.User],

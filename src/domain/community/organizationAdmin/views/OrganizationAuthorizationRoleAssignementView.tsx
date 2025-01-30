@@ -4,7 +4,7 @@ import { useOrganization } from '@/domain/community/contributor/organization/hoo
 import { useTranslation } from 'react-i18next';
 import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
 import { useUserContext } from '../../user';
-import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import PageContentBlock from '@/core/ui/content/PageContentBlock';
 import PageContentBlockHeader from '@/core/ui/content/PageContentBlockHeader';
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
@@ -26,7 +26,7 @@ export const OrganizationAuthorizationRoleAssignementView = ({ role }: { role: R
     removeRoleFromUser,
     loading: loadingRoleSet,
     updating,
-  } = useRoleSetAdmin({
+  } = useRoleSetManager({
     roleSetId,
     relevantRoles: [role],
     contributorTypes: [RoleSetContributorType.User],

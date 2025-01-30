@@ -13,7 +13,7 @@ import {
   SpaceLevel,
 } from '@/core/apollo/generated/graphql-schema';
 import useInviteContributors from '../../../access/_removeMe/useInviteContributors';
-import useRoleSetAdmin, { RELEVANT_ROLES } from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
+import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
 import useRoleSetApplicationsAndInvitations, {
   InviteContributorsData,
@@ -49,7 +49,7 @@ const useCommunityAdmin = ({ roleSetId, spaceId, spaceLevel }: useCommunityAdmin
     skip: !spaceId || spaceLevel !== SpaceLevel.L0,
   });
 
-  const { users, organizations, virtualContributors, rolesDefinitions, loading, refetch } = useRoleSetAdmin({
+  const { users, organizations, virtualContributors, rolesDefinitions, loading, refetch } = useRoleSetManager({
     roleSetId,
     relevantRoles: RELEVANT_ROLES.Community,
   });
