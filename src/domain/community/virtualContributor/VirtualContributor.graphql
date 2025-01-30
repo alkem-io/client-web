@@ -7,6 +7,11 @@ query VirtualContributor($id: UUID!) {
         id
         myPrivileges
       }
+      settings {
+        privacy {
+          knowledgeBaseContentVisible
+        }
+      }
       provider {
         id
         profile {
@@ -100,6 +105,34 @@ mutation UpdateVirtualContributor($virtualContributorData: UpdateVirtualContribu
     listedInStore
     status
     searchVisibility
+    settings {
+      privacy {
+        knowledgeBaseContentVisible
+      }
+    }
+    profile {
+      id
+      tagline
+      tagsets {
+        ...TagsetDetails
+      }
+      displayName
+      description
+    }
+  }
+}
+
+mutation UpdateVirtualContributorSettings($settingsData: UpdateVirtualContributorSettingsInput!) {
+  updateVirtualContributorSettings(settingsData: $settingsData) {
+    id
+    listedInStore
+    status
+    searchVisibility
+    settings {
+      privacy {
+        knowledgeBaseContentVisible
+      }
+    }
     profile {
       id
       tagline

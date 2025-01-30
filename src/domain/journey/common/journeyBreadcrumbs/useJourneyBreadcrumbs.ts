@@ -1,10 +1,13 @@
 import { useMemo } from 'react';
 import { useJourneyBreadcrumbsSpaceQuery } from '@/core/apollo/generated/apollo-hooks';
 import { JourneyPath } from '@/main/routing/resolvers/RouteResolver';
+import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { compact } from 'lodash';
 
 export interface BreadcrumbsItem {
   displayName: string;
   uri: string;
+  level: SpaceLevel;
   avatar?: {
     uri?: string;
   };
@@ -29,23 +32,21 @@ export const useJourneyBreadcrumbs = ({ journeyPath, loading = false }: UseJourn
     skip: !journeyPath || journeyPath.length === 0 || loading,
   });
 
-  const journeyProfiles = [
-    data?.lookupByName.space?.profile,
-    data?.lookupByName.space?.subspaceByNameID?.profile,
-    data?.lookupByName.space?.subspaceByNameID?.subspaceByNameID?.profile,
-  ];
+  const pathSpaces = compact([data?.lookup.space, data?.lookup.subspaceL1, data?.lookup.subspaceL2]);
 
   const breadcrumbs = useMemo<BreadcrumbsItem[]>(() => {
     if (isLoadingBreadcrumbs) {
       return [];
     }
 
-    return journeyProfiles.slice(0, currentJourneyIndex + 1).map(profile => {
-      const displayName = profile?.displayName!;
-      const journeyUri = profile?.url!;
+    return pathSpaces.slice(0, currentJourneyIndex + 1).map(space => {
+      const profile = space.profile;
+      const displayName = profile.displayName!;
+      const journeyUri = profile.url!;
       return {
         displayName,
         uri: journeyUri,
+        level: space.level,
         avatar: profile?.avatar,
       };
     });

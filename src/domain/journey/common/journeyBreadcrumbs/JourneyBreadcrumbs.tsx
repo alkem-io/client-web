@@ -1,6 +1,6 @@
 import { useJourneyBreadcrumbs, UseJourneyBreadcrumbsParams } from './useJourneyBreadcrumbs';
 import Breadcrumbs, { BreadcrumbsProps } from '@/core/ui/navigation/Breadcrumbs';
-import { spaceIconByLevel } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
+import { spaceLevelIcon } from '@/domain/shared/components/SpaceIcon/SpaceIcon';
 import BreadcrumbsRootItem from '@/main/ui/breadcrumbs/BreadcrumbsRootItem';
 import BreadcrumbsItem from '@/core/ui/navigation/BreadcrumbsItem';
 import { Expandable } from '@/core/ui/navigation/Expandable';
@@ -30,14 +30,8 @@ const JourneyBreadcrumbs = forwardRef<Collapsible, JourneyBreadcrumbsProps<Expan
     return (
       <Breadcrumbs ref={ref} {...props}>
         <BreadcrumbsRootItem />
-        {breadcrumbs.map(({ displayName, ...item }, level) => (
-          <BreadcrumbsItem
-            key={level}
-            iconComponent={spaceIconByLevel[level]}
-            accent
-            aria-label={displayName}
-            {...item}
-          >
+        {breadcrumbs.map(({ displayName, level, ...item }) => (
+          <BreadcrumbsItem key={level} iconComponent={spaceLevelIcon[level]} accent aria-label={displayName} {...item}>
             {displayName}
           </BreadcrumbsItem>
         ))}

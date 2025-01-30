@@ -510,6 +510,9 @@ const useVirtualContributorWizard = (): useVirtualContributorWizardProvided => {
         return;
       }
 
+      // Refresh explicitly the ingestion
+      refreshIngestion(createdVC.id);
+
       const addToCommunity = await addVCToCommunity({
         virtualContributorId: createdVC?.id,
         parentRoleSetIds: selectedKnowledge.parentRoleSetIds,

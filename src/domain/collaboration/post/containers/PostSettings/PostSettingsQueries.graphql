@@ -1,19 +1,52 @@
-query PostSettings($calloutId: UUID!, $postId: UUID!) {
+query PostSettings($postId: UUID!, $calloutId: UUID!) {
   lookup {
     callout(ID: $calloutId) {
-      id
-      type
-      postNames: contributions {
-        post {
-          id
-          profile {
-            id
-            displayName
-          }
-        }
-      }
+      ...PostSettingsCallout
     }
     post(ID: $postId) {
+      ...PostSettings
+    }
+  }
+}
+
+fragment PostSettings on Post {
+  id
+  nameID
+  authorization {
+    id
+    myPrivileges
+  }
+  profile {
+    id
+    displayName
+    description
+    tagset {
+      ...TagsetDetails
+    }
+    references {
+      id
+      name
+      uri
+    }
+    visuals {
+      ...VisualFull
+    }
+  }
+}
+
+fragment PostSettingsCallout on Callout {
+  id
+  nameID
+  type
+  # TODO This is done to find the contributionId for this postId (see usePostSettings), there must be an easier way
+  contributions {
+    id
+    post {
+      id
+    }
+  }
+  postNames: contributions {
+    post {
       id
       authorization {
         id

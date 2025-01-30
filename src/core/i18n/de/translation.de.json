@@ -33,7 +33,7 @@
     ]
   },
   "releaseNotes": {
-    "title": "<small><icon/>Our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy> have been updated. Click on the titles to review them, or dismiss this notification.</small>",
+    "title": "<small><icon/>Unsere <terms>Nutzungsbedingungen</terms> und <privacy>Datenschutzerklärung</privacy> wurden aktualisiert. Klicken Sie auf die Titel, um sie zu überprüfen, oder schließen Sie diese Benachrichtigung.</small>",
     "url": "NotClickableTermsUpdate-Oct-2024",
     "isClickable": "FALSE"
   },
@@ -122,6 +122,7 @@
     "submit": "Einreichen",
     "remove": "Entfernen",
     "cancel": "Abbrechen",
+    "upload": "Upload",
     "explore-and-connect": "Entdecken und verbinden",
     "send-message": "Nachricht senden",
     "edit-members": "Mitglieder bearbeiten",
@@ -170,14 +171,17 @@
     "scrollToTop": "Scroll to top",
     "addSubject": "Add {{subject}}",
     "toolPosition": "Position of tool",
-    "createOwnSpace": "...or click here to create your own Space"
+    "createOwnSpace": "...or click here to create your own Space",
+    "notifications": "Notifications Button",
+    "invite": "Invite",
+    "visit": "Visit"
   },
   "tooltips": {
     "click-more-info": "Hier tippen für weitere Informationen",
     "click-delete": "Klick zum Löschen"
   },
-  "topbar": {
-    "sign-in": "Einloggen / Anmelden"
+  "topBar": {
+    "sign-in": "Log In | Sign Up"
   },
   "authentication": {
     "sign-in": "Anmelden",
@@ -250,7 +254,7 @@
     "explore": "Beitragen",
     "edit-entity": "{{ entity}} bearbeiten",
     "filter": "Filter",
-    "filterby": "Filtern nach...",
+    "filterBy": "Filter by...",
     "forum": "Forum",
     "email": "Email",
     "state": "Zustand",
@@ -382,12 +386,6 @@
       "not-verified": ""
     },
     "enums": {
-      "communityRole": {
-        "ADMIN": "$t(common.admin)",
-        "LEAD": "$t(common.lead)",
-        "HOST": "$t(common.host)",
-        "MEMBER": "$t(common.member)"
-      },
       "innovationFlowState": {
         "new": "Neu",
         "beingRefined": "Verfeinert werden",
@@ -405,103 +403,6 @@
         "ACCOUNT": "Account",
         "HIDDEN": "Hidden",
         "PUBLIC": "Public"
-      },
-      "authorization-credentials": {
-        "GLOBAL_ADMIN": {
-          "name": "Globale Admins",
-          "order": 0,
-          "hidden": false
-        },
-        "GLOBAL_ADMIN_HUBS": {
-          "name": "Globale Admins",
-          "order": 1,
-          "hidden": false
-        },
-        "GLOBAL_ADMIN_COMMUNITY": {
-          "name": "Globaler Community-Admin",
-          "order": 2,
-          "hidden": false
-        },
-        "GLOBAL_REGISTERED": {
-          "name": "Registriert",
-          "order": 999,
-          "hidden": true
-        },
-        "HUB_ADMIN": {
-          "name": "Space Admin",
-          "order": 3,
-          "hidden": false
-        },
-        "HUB_HOST": {
-          "name": "Weltraumserver",
-          "order": 4,
-          "hidden": true
-        },
-        "HUB_MEMBER": {
-          "name": "Raum-Mitglied",
-          "order": 5,
-          "hidden": true
-        },
-        "subspace_ADMIN": {
-          "name": "Subspace Admin",
-          "order": 6,
-          "hidden": false
-        },
-        "subspace_LEAD": {
-          "name": "Subspace Lead",
-          "order": 7,
-          "hidden": true
-        },
-        "subspace_MEMBER": {
-          "name": "Subspace Member",
-          "order": 8,
-          "hidden": true
-        },
-        "OPPORTUNITY_ADMIN": {
-          "name": "Verkaufschance Admin",
-          "order": 9,
-          "hidden": true
-        },
-        "OPPORTUNITY_MEMBER": {
-          "name": "Verkaufschance Mitglied",
-          "order": 10,
-          "hidden": true
-        },
-        "OPPORTUNITY_LEAD": {
-          "name": "Verkaufschance Lead",
-          "order": 11,
-          "hidden": true
-        },
-        "ORGANIZATION_OWNER": {
-          "name": "Organisationsbesitzer",
-          "order": 12,
-          "hidden": false
-        },
-        "ORGANIZATION_ADMIN": {
-          "name": "Organisationsbesitzer",
-          "order": 13,
-          "hidden": false
-        },
-        "ORGANIZATION_ASSOCIATE": {
-          "name": "Organisationszugehörigkeit",
-          "order": 14,
-          "hidden": true
-        },
-        "USER_SELF_MANAGEMENT": {
-          "name": "Benutzermanagement",
-          "order": 15,
-          "hidden": true
-        },
-        "USER_GROUP_MEMBER": {
-          "name": "Mitglieder der Benutzergruppe",
-          "order": 16,
-          "hidden": true
-        },
-        "INNOVATION_PACK_PROVIDER": {
-          "name": "Anbieter von Innovationspaketen",
-          "order": 17,
-          "hidden": true
-        }
       },
       "edit-mode": {
         "new": "Neu",
@@ -545,6 +446,21 @@
     "blocks": {
       "users-contributing": "benutzer, die einen Beitrag leisten",
       "all-contributing-users": "alle teilnehmenden Benutzer"
+    },
+    "roles": {
+      "ADMIN": "$t(common.admin)",
+      "LEAD": "$t(common.lead)",
+      "HOST": "$t(common.host)",
+      "MEMBER": "$t(common.member)",
+      "ASSOCIATE": "Associate",
+      "OWNER": "Owner",
+      "GLOBAL_ADMIN": "Global Admin",
+      "GLOBAL_SUPPORT": "Support Admin",
+      "GLOBAL_LICENSE_MANAGER": "License Manager",
+      "GLOBAL_COMMUNITY_READER": "Community Manager",
+      "GLOBAL_SPACES_READER": "Spaces Reader",
+      "PLATFORM_BETA_TESTER": "Beta Tester",
+      "PLATFORM_VC_CAMPAIGN": "VC Early Access"
     },
     "time": {
       "short": {
@@ -602,7 +518,8 @@
       },
       "inviteExternalVC": "Invite External VC",
       "externalVCsInfo": "At the moment, only Alkemio Support can add an external Virtual Contributor to your Space. Please contact Support <click>here</click> if you wish to do so, we are happy to help!",
-      "searchVC": "Find Virtual Contributor"
+      "searchVC": "Find Virtual Contributor",
+      "inviteBtn": "Invite Virtual Contributor"
     },
     "application-form": {
       "title": "Bewerbungsformular",
@@ -615,13 +532,15 @@
     },
     "communityGuidelines": {
       "title": "Community Guidelines",
+      "saveAndDeleteContentSuccessMessage": "Community guidelines content removed and saved successfully.",
       "updatedSuccessfully": "Community guidelines updated successfully.",
       "adminsOnly": "Since there are no Community Guidelines specified, this block is only visible for admins and leads.",
       "communityGuidelinesRedirect": "Click here to update the Community Guidelines in the Space settings.",
       "confirmationDialog": {
         "title": "Updating Community Guidelines",
         "description": "Are you sure you want to replace your existing Community Guidelines? This action cannot be undone."
-      }
+      },
+      "deleteCommunityGuidelines": "Delete Community Guidelines"
     },
     "applicationsHelp": "Hier finden Sie alle, die sich angemeldet haben, Mitglied dieses Bereichs zu werden. Wenn Sie auf diese klicken, können Sie ihre Bewerbung überprüfen und sie akzeptieren oder ablehnen.",
     "applicationStatus": {
@@ -683,6 +602,10 @@
         "dialogTitle": "Bist du sicher, dass du diesen Kommentar löschen willst?",
         "dialogContent": "By clicking CONFIRM, {{member}} will be removed from this Community and all the underlying Challenges and Opportunities {{memberFirstName}} may be member of. {{memberFirstName}}’s contributions will remain in place."
       }
+    },
+    "removeGuidelinesConfirmationDialog": {
+      "title": "Remove Community Guidelines Content",
+      "content": "Are you sure you want to remove the Community Guidelines? This action cannot be undone."
     }
   },
   "callout": {
@@ -699,7 +622,7 @@
     "delete-confirm-title": "Anruf löschen?",
     "delete-confirm-text": "Alle Karten, Whiteboards und Nachrichten unter dem Callout werden ebenfalls gelöscht.",
     "state-permission": "Neue Antworten akzeptieren",
-    "permission-helptext": "Benutzen Sie den Schalter unten, um diesen Aufruf für neue Einträge zu schließen.",
+    "permission-help-text": "Use the switch below to close this callout for new entries.",
     "callout-location": "Standort: ",
     "sortContributions": "Sort contributions",
     "saveAsTemplate": "Save as Template",
@@ -817,17 +740,17 @@
     "subspace": {
       "displayName": {
         "title": "Title",
-        "description": "Try to keep it short, descriptive and engaging",
+        "description": "",
         "placeholder": ""
       },
       "tagline": {
         "title": "Subspace Statement",
-        "description": "Explain in one sentence what this Subspace is about. It is also possible to frame it as a question, starting with 'How might we...'",
+        "description": "",
         "placeholder": ""
       },
       "background": {
         "title": "Current Reality",
-        "description": "Give a brief impression of the current state of the Subspace. Think of the 'What, where, when and who'.",
+        "description": "",
         "placeholder": ""
       },
       "impact": {
@@ -847,17 +770,16 @@
       },
       "tags": {
         "title": "Tags",
-        "description": "Enter words that are key to the Subspace to make it stand out and easier to find.",
-        "placeholder": ""
-      },
-      "addCallouts": {
-        "title": "Add default template's collaboration tools"
+        "description": "",
+        "placeholder": "",
+        "tooltip": "Tags"
       },
       "addTutorialCallouts": {
         "title": "Add tutorials collaboration tools"
       },
-      "innovationFlow": {
-        "title": "Subspace Flow"
+      "template": {
+        "title": "Template:",
+        "defaultTemplate": "Default Alkemio template for subspaces"
       }
     },
     "subsubspace": {
@@ -949,10 +871,6 @@
       "editDialogTitle": "Edit Whiteboard Template",
       "errorImporting": "Error importing Whiteboard Template"
     },
-    "innovationFlowTemplates": {
-      "name": "$t(common.enums.templateType.INNOVATION_FLOW)",
-      "title": "$t(common.templateLibrary): $t(common.enums.templateType.INNOVATION_FLOW_plural)"
-    },
     "collaborationTemplates": {
       "name": "$t(common.enums.templateType.COLLABORATION)",
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
@@ -961,7 +879,8 @@
         "description": "Enter the URL of the Subspace you want to copy as a template.",
         "use": "Use this space",
         "spaceNotFoundError": "Space not found",
-        "collaborationNotFoundError": "Collaboration not found"
+        "collaborationNotFoundError": "Collaboration not found",
+        "selectAnother": "Update Collaboration from another Space"
       }
     },
     "communityGuidelinesTemplates": {
@@ -1074,6 +993,7 @@
         "editState": "Edit Details",
         "deleteState": "Delete",
         "addState": "Add Phase",
+        "invalidChars": "A phase name cannot contain special characters.",
         "noRepeatedStates": "A phase with the same name already exists.",
         "createDialog": {
           "title": "Create Flow Phase"
@@ -1127,6 +1047,18 @@
       },
       "inviteToRole": "Invite to be a: "
     },
+    "inviteContributorsDialog": {
+      "vcs": {
+        "onAccount": {
+          "title": "Virtual Contributors from my account"
+        },
+        "inLibrary": {
+          "title": "Other Virtual Contributors"
+        },
+        "emptyMessage": "No available Virtual Contributors"
+      },
+      "successfullyAdded": "{{contributor}} added successfully"
+    },
     "confirmation-dialog": {
       "delete-comment": {
         "confirmation-title": "Kommentar löschen",
@@ -1171,7 +1103,8 @@
         "list.ordered": "Geordnete Liste",
         "list.indent": "Einrücken",
         "list.outdent": "Einzug entfernen",
-        "remove.remove": "Entfernen"
+        "remove.remove": "Entfernen",
+        "embed.video": "Embed Video or other Media"
       },
       "image": {
         "dialogHeader": "Bild einfügen"
@@ -1181,6 +1114,13 @@
       },
       "validation": {
         "maxLength": "Der resultierende Text geht über die vom Server akzeptierte Größe hinaus."
+      },
+      "embed": {
+        "iframeAria": "{{title}}",
+        "dialogTitle": "Embed Video or other Media",
+        "embedCodeTextAreaAriaLabel": "Empty textarea",
+        "pasteEmbedCode": "Paste the embed/iframe code here",
+        "invalidOrUnsupportedEmbed": "Unfortunately, this code is either not valid or not supported. Please check the code carefully or contact support@alkem.io"
       }
     },
     "top-callouts": {
@@ -1439,7 +1379,7 @@
     "referenceSegment": {
       "title": "Referenzen",
       "description": "Please keep in mind that all the files you attach here become publicly available. If you only want the members of this Space to be able to access the files, attach it to a post or a collection of links on one of the member pages.",
-      "missing-refereneces": "Es wurde noch keine Referenz gesetzt",
+      "missing-references": "No references yet",
       "tooltips": {
         "add-reference": "Referenz hinzufügen",
         "remove-reference": "Referenz entfernen"
@@ -1562,8 +1502,8 @@
       },
       "parentSpace": "in: {{space}}"
     },
-    "errorblock": {
-      "message": "Sorry, an error occurred while loading this conversation."
+    "errorBlock": {
+      "message": "Sorry, an error occurred while loading {{blockName}}."
     },
     "loading": {
       "message": "Lade {{blockName}}..."
@@ -1719,9 +1659,31 @@
         "explore": "Entdecken Sie weitere Diskussionen"
       }
     },
-    "innovationFlowTemplateSelect": {
-      "select": "Select different Flow",
-      "required": "Please select an Innovation Flow"
+    "inAppNotifications": {
+      "action": {
+        "read": "Mark as read",
+        "unread": "Mark as unread",
+        "delete": "Delete Notification"
+      },
+      "type": {
+        "COLLABORATION_CALLOUT_PUBLISHED": {
+          "subject": "{{spaceName}} - New {{calloutType}} is published \"{{calloutName}}\", have a look!",
+          "description": "{{contributorName}} published a new {{calloutType}} in {{spaceType}}: {{spaceName}}, with name: {{calloutName}}."
+        },
+        "COMMUNICATION_USER_MENTION": {
+          "subject": "{{commenterName}} mentioned you in a comment on {{calloutName}}:",
+          "description": ""
+        },
+        "COMMUNITY_NEW_MEMBER": {
+          "subject": "{{spaceName}} - Welcome to the Community!",
+          "description": "Thank you for joining {{spaceName}}!<br /> You can now start contributing to the various posts and whiteboards, further deepen your knowledge about this topic, and connect with other Contributors."
+        },
+        "COMMUNITY_NEW_MEMBER_ADMIN": {
+          "subject": "{{memberType}} \"{{memberName}}\" joined {{spaceName}}",
+          "description": "The {{memberType}} {{memberName}} has joined {{spaceName}}, of which you are an admin."
+        }
+      },
+      "emptyInbox": "No pending notifications"
     }
   },
   "navigation": {
@@ -1783,11 +1745,12 @@
         "profile": {
           "description": ""
         },
-        "subentities": {
-          "description": "Hier kannst du die **{{entities}}** in diesem {{parentEntity}} finden. Filtere nach Schlüsselwörtern, um nur die Themen anzuzeigen, die dir am Herzen liegen.",
-          "list": "Liste der Entitäten",
-          "empty": "Keine {{entities}} in diesem {{parentEntity}} gefunden.",
-          "empty-list": "Es gibt noch keine {{entities}} in diesem {{parentEntity}}."
+        "subEntities": {
+          "description": "Here you can explore the hosted **{{entities}}**. Filter by key words to show just the topics you care about.",
+          "list": "List view",
+          "empty": "No {{entities}} found.",
+          "empty-list": "There are no {{entities}} yet.",
+          "searchPlaceholder": "Find Subspaces..."
         },
         "recommendations": {
           "title": "Von den Besten empfohlen"
@@ -1901,6 +1864,10 @@
             "hostedSpaces": "Hosted Spaces",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
+            "usageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your account.",
+            "limitNotice": "Contact the Alkemio team to increase the limits on your account",
+            "notAvailable": "Not available",
+            "notAvailableNotice": "Contact the Alkemio team to enable this feature on your account",
             "noTemplates": "This Innovation Pack doesn't have any template yet",
             "customHomepages": "Custom Homepages",
             "hostTitle": "Host",
@@ -1919,19 +1886,42 @@
             "deleteSpace_disallowed": "The Space can only be deleted by the host of this Space.",
             "moreInfo": "More about Alkemio licenses can be found <moreinfo>here</moreinfo>.",
             "moreInfoUrl": "$t(plansTable.seeMoreUrl)",
-            "licenseUpdated": "License updated successfully"
+            "licenseUpdated": "License updated successfully",
+            "deletedSuccessfully": "{{entity}} deleted successfully"
           },
           "settings": {
             "description": "Here you can edit the visibility settings of your {{entity}}."
           }
         }
       },
+      "user": {
+        "settings": {
+          "title": "Settings",
+          "subtitle": "This section allows you to modify the User settings",
+          "communication": {
+            "allowOtherUsersToSendMessages": "Allow other users to message me."
+          },
+          "privacy": {
+            "contributorRolesVisible": "Show contributor roles to all registered users"
+          }
+        }
+      },
       "organization": {
         "create-organization": "Erstellen Sie eine Organisation",
         "authorization": {
-          "preferences": {
-            "title": "Autorisierung",
-            "subtitle": "Dieser Abschnitt erlaubt Ihnen die Autorisierung der Organisationen zu ändern"
+          "title": "Authorization",
+          "subtitle": "This section allows you to modify the organizations authorization"
+        },
+        "settings": {
+          "title": "Settings",
+          "subtitle": "This section allows you to modify the organization settings",
+          "membership": {
+            "usersMatchingEmail": "Allow users with emails matching the domain of the Organization to associate themselves."
+          },
+          "privacy": {
+            "title": "Privacy",
+            "subtitle": "This section allows you to modify the organization privacy settings",
+            "contributorRolesVisible": "Show contributor roles to all registered users"
           }
         },
         "notifications": {
@@ -1968,7 +1958,8 @@
         "notifications": {
           "subsubspace-created": "Subspace created successfully.",
           "subsubspace-removed": "Subspace removed successfully.",
-          "subsubspace-updated": "Subspace updated successfully."
+          "subsubspace-updated": "Subspace updated successfully.",
+          "error-creating-subsubspace": "An error occurred while creating the Subspace."
         }
       },
       "subspace": {
@@ -2057,6 +2048,7 @@
             "title": "Copy Subspace",
             "description": "To utilize this Subspace setup, you can either duplicate it within the same Space or save it as a template for use across the platform. In both scenarios, the innovation flow and all collaboration tools will be replicated. Please note that comments or contributions to a tool will not be included in the template or duplicated Subspace.",
             "createTemplate": "Create Template",
+            "createTemplateTooltip": "To create a template from this Subspace, you need Space admin permissions.",
             "duplicate": "Duplicate"
           },
           "account": {
@@ -2079,7 +2071,12 @@
         },
         "back-button": "$t(common.innovation-packs)",
         "save-new-for-details": "Speichern Sie das neue Innovationspaket um die restlichen Details zu bearbeiten",
-        "saved-successfully": "Erfolgreich gespeichert"
+        "saved-successfully": "Erfolgreich gespeichert",
+        "notifications": {
+          "pack-created": "$t(common.innovation-pack) created successfully.",
+          "pack-error": "An error occurred while creating the $t(common.innovation-pack).",
+          "pack-removed": "$t(common.innovation-pack) '{{name}}' removed successfully."
+        }
       },
       "innovationHubs": {
         "create": "Create Innovation Hub",
@@ -2105,9 +2102,6 @@
             "subtitle": "The order below is the order in which the Spaces will be visible on the Custom Homepage"
           }
         }
-      },
-      "virtualContributors": {
-        "title": "Virtual Contributors"
       }
     },
     "feedback": {
@@ -2122,23 +2116,27 @@
       }
     },
     "visualEdit": {
-      "avatar": {
+      "AVATAR": {
         "title": "Avatar",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
         "description2": "Usage: Journey card on page banner",
         "description": "Description: {{alternativeText}}"
       },
-      "banner": {
+      "BANNER": {
         "title": "Page banner",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
         "description2": "Usage: Banner on dashboard tab",
         "description": "Description: {{alternativeText}}"
       },
-      "cardBanner": {
+      "CARD": {
         "title": "Card banner",
         "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
         "description2": "Usage: Banner on cards",
         "description": "Description: {{alternativeText}}"
+      },
+      "BANNER_WIDE": {
+        "title": "Wide Banner",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
       },
       "form": {
         "altText": {
@@ -2161,6 +2159,9 @@
       },
       "users": {
         "title": "Benutzer"
+      },
+      "virtualContributors": {
+        "title": "Virtual Contributors"
       }
     },
     "search": {
@@ -2203,7 +2204,8 @@
       "noSpaceMemberships": "You’re not currently a member of any Space. Click here to visit our {{welcomeSpace}}, which is a fantastic starting point for your journey on Alkemio!",
       "search": {
         "placeholder": "Search…",
-        "noResults": "No results matched your search terms."
+        "noResults": "No results matched your search terms.",
+        "searching": "Searching…"
       },
       "seeAll": "Show more",
       "activeSpacesFilter": "Most Active Spaces"
@@ -2320,11 +2322,6 @@
         },
         "exploreOtherSubspaces": {
           "header": "Explore the other Spaces!"
-        },
-        "innovationLibraryBlock": {
-          "title": "Innovation library: Have you seen this one yet...?",
-          "description": "In the Library you can find Innovation Packs composed for you by various organisations. Each Innovation pack can hold a variety of Whiteboard templates, Post templates, and Innovation flows.",
-          "seeMore": "Explore more Innovation Packs"
         },
         "space": {
           "header": "Erkunde die Challenge-Hubs!",
@@ -2556,6 +2553,10 @@
       "line3": "Wenn der Fehler weiterhin besteht, kontaktieren Sie bitte unseren Support.",
       "buttons": {
         "reload": "Erneut laden"
+      },
+      "errors": {
+        "LazyLoadError": "Network error occurred. Please try reloading the page.",
+        "unknown": "An unknown error occurred. Please try reloading the page."
       }
     },
     "four-ou-four": {
@@ -2744,11 +2745,13 @@
       "title": "Auf der Suche nach Hilfe?",
       "text": "Wir möchten Ihnen helfen, die Alkemio-Plattform erfolgreich zu nutzen, und dies wollen wir den Prozess der Nutzung und Interaktion erleichtern. So können Sie sich auf die Themen, die Ihnen am Herzen liegen, auswirken.<br /><br />Klicke auf die Icons unten, um Antworten auf deine Fragen zu finden, kontaktiere das Alkemio Team für Support oder starte einfach!",
       "icons": {
-        "help-center-faq": "Hilfezentrum & FAQs",
-        "community-support-forum": "Kontaktieren Sie uns!",
-        "new-user": "Neu? Hier anfangen!"
+        "exploreDocumentation": "Explore Documentation",
+        "contactTheTeam": "Contact the Team",
+        "joinTheWelcomeSpace": "Join the Welcome Space"
       },
-      "tips-and-tricks": "Suchen Sie nach Tipps & Tricks? Finden Sie sie hier in den Blog-Beiträgen!"
+      "tips-and-tricks": "Suchen Sie nach Tipps & Tricks? Finden Sie sie hier in den Blog-Beiträgen!",
+      "versionNumber": "Version Number: <b>v{{version}}</b>",
+      "serverVersionNumber": "Server Version Number: <b>v{{version}}</b>"
     },
     "forum": {
       "title": "Fragen, Anregungen oder Feedback? Kontaktieren Sie das Alkemio Team oder andere Nutzer der Plattform!",
@@ -2759,7 +2762,8 @@
       "back": "mehr Diskussionen anzeigen"
     },
     "documentation": {
-      "title": "Documentation"
+      "title": "Documentation",
+      "subtitle": "Platform Manual & Support"
     }
   },
   "operations": {
@@ -2782,7 +2786,8 @@
       "verification-flow-expired": "Der Bestätigungslink ist abgelaufen. Bitte fordern Sie einen neuen an, indem Sie Ihre E-Mail erneut senden.",
       "recovery-flow-expired": "Der Bestätigungslink ist abgelaufen. Bitte fordern Sie einen neuen an, indem Sie Ihre E-Mail erneut senden.",
       "verification-flow-continue": "Fortfahren",
-      "login-flow-account-exists": "Sie versuchen sich mit einem LinkedIn/Microsoft-Konto anzumelden, aber die zugehörige E-Mail-Adresse wurde bereits zuvor verwendet. Bitte melden Sie sich mit dieser E-Mail-Adresse und Ihrem Passwort an oder versuchen Sie das Passwort zurückzusetzen. Wenn das nicht funktioniert, senden Sie bitte eine E-Mail an support@alkem.io."
+      "login-flow-account-exists": "Sie versuchen sich mit einem LinkedIn/Microsoft-Konto anzumelden, aber die zugehörige E-Mail-Adresse wurde bereits zuvor verwendet. Bitte melden Sie sich mit dieser E-Mail-Adresse und Ihrem Passwort an oder versuchen Sie das Passwort zurückzusetzen. Wenn das nicht funktioniert, senden Sie bitte eine E-Mail an support@alkem.io.",
+      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above."
     },
     "fields": {
       "ID": "ID",
@@ -2937,6 +2942,7 @@
   },
   "createSpace": {
     "title": "Create a Space",
+    "addTutorialsLabel": "Show Tutorials in this Space",
     "terms": {
       "checkboxLabel": "I have read and accept the <terms>terms and agreements (click here to open them)</terms> for creating a Space.",
       "dialogTitle": "Terms and Conditions for creating a Space",
@@ -3058,9 +3064,7 @@
       "externalAI": "External AI"
     },
     "loadingInfo": {
-      "subspaceCreation": "A Subspace for adding the knowledge for your Virtual Contributor is being built. This process may take a few moments to complete.",
-      "spaceAndSubspaceCreation": "A Space and Subspace for adding the knowledge for your Virtual Contributor are being built. This process may take a few moments to complete.",
-      "vcCreation": "Your Virtual Contributor is being created. This process may take a few moments to complete."
+      "vcSpaceCreation": "A Space for interaction with your Virtual Contributor is being built. This process may take a few moments to complete."
     },
     "cancel": {
       "title": "Discard Virtual Contributor",
@@ -3079,6 +3083,14 @@
         "tooltip": "More posts can be added in the Body of Knowledge once the VC is created",
         "initialPosts": "Initial Posts",
         "delete": "Delete post"
+      },
+      "documents": {
+        "tooltip": "Supported file formats: Text on websites, .pdf, .doc(x), .xls(x). Maximum file size: 20mb",
+        "referenceTitle": "Reference Title",
+        "referenceUrl": "Url",
+        "addAnother": "Add Document",
+        "remove": "Remove document",
+        "initialDocuments": "Initial Links and Documents"
       },
       "submitDisabled": "Add at least one Post to continue"
     },
@@ -3099,7 +3111,7 @@
           "placeholder": "Select a provider from this list"
         }
       },
-      "commingSoon": {
+      "comingSoon": {
         "title": "🚀 Coming soon!",
         "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
         "input": {
@@ -3117,11 +3129,14 @@
     "trySection": {
       "title": "🎉 Try it out!",
       "subTitle": "Your Virtual Contributor is successfully created and we added it to your Personal Space <tooltip><icon /></tooltip>.<br/>You can interact with it by typing <b>@{{vcName}}</b> in a comment on any post in your Space. Give it a try in the preview below!",
-      "subTitleInfo": "When you create your first VC, we automatically generate a Space for you. This Space functions like any other Space on Alkemio, and you can customize the settings according to your preferences.",
       "postTitle": "Example post",
       "postDescription": "At Alkemio, we utilize Posts to facilitate collaborative interactions with AI. Unlike private chats, other members within a Space can learn from and contribute to these interactions.\n\nSimilar to mentioning a human contributor, you can use the \"@\" symbol followed by the Virtual Contributor's name.",
-      "lastInfoBox": "To <b>change the knowledge</b> of this Virtual Contributor, visit its Knowledge (Sub)Space.\nDon't forget to press the Update button on your Virtual Contributor's profile settings when you're done!",
       "continueButton": "Visit Space"
+    },
+    "tryInfoSection": {
+      "title": "👍That’s it!",
+      "description": "Your Virtual Contributor is ready! To start interacting, invite the Virtual Contributor to a space and once it’s a member, simply type @{{vcName}} in a comment.\n\nEnjoy!",
+      "goToProfile": "Visit {{vcName}}'s Profile"
     },
     "existingSpace": {
       "title": "Choose a (Sub)Space",
@@ -3129,9 +3144,19 @@
       "label": "(Sub)Space",
       "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor, please go back and follow the Written Knowledge flow."
     },
-    "insufficientPrivileges": {
-      "title": "Insufficient Privileges",
-      "description": "You don't have the necessary privileges to complete the creation. Please contact the owners of this account."
+    "chooseCommunity": {
+      "title": "Hello, {{vcName}}!",
+      "description": "Your Virtual Contributor is ready! To start interacting, your Virtual Contributor should be added to a Space. Select one below, or continue without. In that case you will have to add the VC manually through the Community tab of a Space.",
+      "label": "Space",
+      "selectSpacesPlaceholder": "Select a Space",
+      "noSpacesPlaceholder": "No Spaces available",
+      "cancelAddToCommunity": "Proceed without membership",
+      "addToCommunity": "Add and go to Space",
+      "createAndAddToCommunity": "Create, add, and go to Space",
+      "confirm": {
+        "title": "Continue without Space membership",
+        "description": "A Virtual Contributor can only interact within a Space. Are you sure you want to proceed without adding them to a Space? You can still invite the Virtual Contributor later through the Space’s Community tab."
+      }
     }
   }
 }

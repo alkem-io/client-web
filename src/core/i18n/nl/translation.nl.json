@@ -122,6 +122,7 @@
     "submit": "Verstuur",
     "remove": "Verwijder",
     "cancel": "Annuleer",
+    "upload": "Upload",
     "explore-and-connect": "Verken en verbind",
     "send-message": "Verstuur bericht",
     "edit-members": "Pas leden aan",
@@ -170,14 +171,17 @@
     "scrollToTop": "Scroll naar boven",
     "addSubject": "Voeg {{subject}} toe",
     "toolPosition": "Positie van de tool",
-    "createOwnSpace": "...of klik hier om je eigen Space te maken"
+    "createOwnSpace": "...of klik hier om je eigen Space te maken",
+    "notifications": "Notifications Button",
+    "invite": "Invite",
+    "visit": "Visit"
   },
   "tooltips": {
     "click-more-info": "Klik voor meer informatie",
     "click-delete": "Klik om te verwijderen"
   },
-  "topbar": {
-    "sign-in": "Inloggen | Aanmelden"
+  "topBar": {
+    "sign-in": "Log In | Sign Up"
   },
   "authentication": {
     "sign-in": "Log in",
@@ -250,7 +254,7 @@
     "explore": "Bijdragen",
     "edit-entity": "Pas {{entity}} aan",
     "filter": "Filter",
-    "filterby": "Filter op...",
+    "filterBy": "Filter by...",
     "forum": "Forum",
     "email": "Email",
     "state": "Staat",
@@ -382,12 +386,6 @@
       "not-verified": ""
     },
     "enums": {
-      "communityRole": {
-        "ADMIN": "$t(common.admin)",
-        "LEAD": "$t(common.lead)",
-        "HOST": "$t(common.host)",
-        "MEMBER": "$t(common.member)"
-      },
       "innovationFlowState": {
         "new": "Nieuw",
         "beingRefined": "Wordt uitgewerkt",
@@ -405,103 +403,6 @@
         "ACCOUNT": "Account",
         "HIDDEN": "Verborgen",
         "PUBLIC": "Openbaar"
-      },
-      "authorization-credentials": {
-        "GLOBAL_ADMIN": {
-          "name": "Globale Beheerder",
-          "order": 0,
-          "hidden": false
-        },
-        "GLOBAL_ADMIN_HUBS": {
-          "name": "Global Admin Spaces",
-          "order": 1,
-          "hidden": false
-        },
-        "GLOBAL_ADMIN_COMMUNITY": {
-          "name": "Globale Community Beheerder",
-          "order": 2,
-          "hidden": false
-        },
-        "GLOBAL_REGISTERED": {
-          "name": "Geregistreerd",
-          "order": 999,
-          "hidden": true
-        },
-        "HUB_ADMIN": {
-          "name": "Admin van de Space",
-          "order": 3,
-          "hidden": false
-        },
-        "HUB_HOST": {
-          "name": "Host van de Space",
-          "order": 4,
-          "hidden": true
-        },
-        "HUB_MEMBER": {
-          "name": "Member van de Space",
-          "order": 5,
-          "hidden": true
-        },
-        "subspace_ADMIN": {
-          "name": "Subspace Beheerder",
-          "order": 6,
-          "hidden": false
-        },
-        "subspace_LEAD": {
-          "name": "Subspace Lead",
-          "order": 7,
-          "hidden": true
-        },
-        "subspace_MEMBER": {
-          "name": "Subspace lid",
-          "order": 8,
-          "hidden": true
-        },
-        "OPPORTUNITY_ADMIN": {
-          "name": "Subspace Beheerder",
-          "order": 9,
-          "hidden": true
-        },
-        "OPPORTUNITY_MEMBER": {
-          "name": "Subspace Lid",
-          "order": 10,
-          "hidden": true
-        },
-        "OPPORTUNITY_LEAD": {
-          "name": "Subspace Lead",
-          "order": 11,
-          "hidden": true
-        },
-        "ORGANIZATION_OWNER": {
-          "name": "Organisatie Eigenaar",
-          "order": 12,
-          "hidden": false
-        },
-        "ORGANIZATION_ADMIN": {
-          "name": "Organisatie Beheerder",
-          "order": 13,
-          "hidden": false
-        },
-        "ORGANIZATION_ASSOCIATE": {
-          "name": "Organisatie Partner",
-          "order": 14,
-          "hidden": true
-        },
-        "USER_SELF_MANAGEMENT": {
-          "name": "Gebruiker Eigen Management",
-          "order": 15,
-          "hidden": true
-        },
-        "USER_GROUP_MEMBER": {
-          "name": "Lid Gebruikersgroep",
-          "order": 16,
-          "hidden": true
-        },
-        "INNOVATION_PACK_PROVIDER": {
-          "name": "Aanbieder Innovatiepakket",
-          "order": 17,
-          "hidden": true
-        }
       },
       "edit-mode": {
         "new": "Nieuw",
@@ -545,6 +446,21 @@
     "blocks": {
       "users-contributing": "gebruikers die bijdragen",
       "all-contributing-users": "alle gebruikers die een bijdrage leveren"
+    },
+    "roles": {
+      "ADMIN": "$t(common.admin)",
+      "LEAD": "$t(common.lead)",
+      "HOST": "$t(common.host)",
+      "MEMBER": "$t(common.member)",
+      "ASSOCIATE": "Associate",
+      "OWNER": "Owner",
+      "GLOBAL_ADMIN": "Global Admin",
+      "GLOBAL_SUPPORT": "Support Admin",
+      "GLOBAL_LICENSE_MANAGER": "License Manager",
+      "GLOBAL_COMMUNITY_READER": "Community Manager",
+      "GLOBAL_SPACES_READER": "Spaces Reader",
+      "PLATFORM_BETA_TESTER": "Beta Tester",
+      "PLATFORM_VC_CAMPAIGN": "VC Early Access"
     },
     "time": {
       "short": {
@@ -602,7 +518,8 @@
       },
       "inviteExternalVC": "Externe VC uitnodigen",
       "externalVCsInfo": "Op dit moment kan alleen Alkemio Support een externe Virtual Contributor toevoegen aan je Space. Neem <click>hier</click> contact op met Support, we helpen je graag!",
-      "searchVC": "Vind Virtual Contributor"
+      "searchVC": "Vind Virtual Contributor",
+      "inviteBtn": "Invite Virtual Contributor"
     },
     "application-form": {
       "title": "Aanmeldingsformulier",
@@ -615,13 +532,15 @@
     },
     "communityGuidelines": {
       "title": "Community Richtlijnen",
+      "saveAndDeleteContentSuccessMessage": "Community guidelines content removed and saved successfully.",
       "updatedSuccessfully": "Community richtlijnen succesvol bijgewerkt.",
       "adminsOnly": "Aangezien er geen richtlijnen voor de community zijn ingesteld, is dit blok alleen zichtbaar voor beheerders en leads.",
       "communityGuidelinesRedirect": "Klik hier om de Community Richtlijnen bij te werken in de Space instellingen.",
       "confirmationDialog": {
         "title": "Community Richtlijnen Bijwerken",
         "description": "Weet je zeker dat je de bestaande Community Richtlijnen wilt vervangen? Deze actie kan niet ongedaan worden gemaakt."
-      }
+      },
+      "deleteCommunityGuidelines": "Delete Community Guidelines"
     },
     "applicationsHelp": "Hier vind je iedereen terug die lid wil worden van deze Space. Klik op hun naam om de aanmeldingen te accepteren of af te wijzen.",
     "applicationStatus": {
@@ -681,8 +600,12 @@
         "sectionTitle": "Lid verwijderen",
         "remove": "Klik hier om deze gebruiker uit de Community te verwijderen. Wees voorzichtig, deze actie kan niet ongedaan worden gemaakt.",
         "dialogTitle": "Weet je zeker dat je dit lid wilt verwijderen?",
-        "dialogContent": "Door op 'bevestigen' te klikken zal {{member}} worden verwijderd uit deze Community en alle onderliggende Challenges en Opportunities waar {{memberFirstName}} lid van is. De bijdragen van {{memberFirstName}} blijven wel zichtbaar."
+        "dialogContent": "Door op 'bevestigen' te klikken zal {{member}} worden verwijderd uit deze Community en alle onderliggende Subspaces waar {{memberFirstName}} lid van is. De bijdragen van {{memberFirstName}} blijven wel zichtbaar."
       }
+    },
+    "removeGuidelinesConfirmationDialog": {
+      "title": "Remove Community Guidelines Content",
+      "content": "Are you sure you want to remove the Community Guidelines? This action cannot be undone."
     }
   },
   "callout": {
@@ -699,7 +622,7 @@
     "delete-confirm-title": "Oproep verwijderen?",
     "delete-confirm-text": "Alle kaarten, whiteboards en discussies onder deze oproep worden ook verwijderd.",
     "state-permission": "Accepteer nieuwe reacties",
-    "permission-helptext": "Gebruik de switch hieronder om deze oproep voor nieuwe bijdragen te sluiten.",
+    "permission-help-text": "Use the switch below to close this callout for new entries.",
     "callout-location": "Locatie: ",
     "sortContributions": "Sorteer bijdragen",
     "saveAsTemplate": "Opslaan als Template",
@@ -817,17 +740,17 @@
     "subspace": {
       "displayName": {
         "title": "Titel",
-        "description": "Probeer het kort, beschrijvend en pakkend te houden",
+        "description": "",
         "placeholder": ""
       },
       "tagline": {
         "title": "Subspace Tagline",
-        "description": "Omschrijf in één zin of vraag waar deze Subspace over gaat",
+        "description": "",
         "placeholder": ""
       },
       "background": {
         "title": "Huidige Realiteit",
-        "description": "Schets een beeld van de huidige status van het onderwerp van deze Subspace. Denk aan de 'wat, waar, wanneer en wie'.",
+        "description": "",
         "placeholder": ""
       },
       "impact": {
@@ -847,17 +770,16 @@
       },
       "tags": {
         "title": "Labels",
-        "description": "Gebruik labels in die ervoor zorgen dat de Subspace opvalt en makkelijk te vinden is.",
-        "placeholder": ""
-      },
-      "addCallouts": {
-        "title": "Voeg standaard samenwerkingstools van template toe"
+        "description": "",
+        "placeholder": "",
+        "tooltip": "Tags"
       },
       "addTutorialCallouts": {
         "title": "Voeg tutorials samenwerkingtools toe"
       },
-      "innovationFlow": {
-        "title": "Subspace Flow"
+      "template": {
+        "title": "Template:",
+        "defaultTemplate": "Default Alkemio template for subspaces"
       }
     },
     "subsubspace": {
@@ -949,10 +871,6 @@
       "editDialogTitle": "Whiteboard template bewerken",
       "errorImporting": "Fout bij het importeren van Whiteboard Template"
     },
-    "innovationFlowTemplates": {
-      "name": "$t(common.enums.templateType.INNOVATION_FLOW)",
-      "title": "$t(common.templateLibrary): $t(common.enums.templateType.INNOVATION_FLOW_plural)"
-    },
     "collaborationTemplates": {
       "name": "$t(common.enums.templateType.COLLABORATION)",
       "title": "$t(common.templateLibrary): $t(common.enums.templateType.COLLABORATION_plural)",
@@ -961,7 +879,8 @@
         "description": "Voer de URL in van de Subspace die u wilt kopiëren als template.",
         "use": "Gebruik deze Space",
         "spaceNotFoundError": "Space niet gevonden",
-        "collaborationNotFoundError": "Samenwerking niet gevonden"
+        "collaborationNotFoundError": "Samenwerking niet gevonden",
+        "selectAnother": "Update Collaboration from another Space"
       }
     },
     "communityGuidelinesTemplates": {
@@ -1044,7 +963,7 @@
       "title": "{{journey}} statistieken"
     },
     "dashboardNavigation": {
-      "help": "Deze Space bevat de volgende Challenges. Ook zijn de eventuele onderliggende Opportunities zichtbaar.",
+      "help": "Deze Space bevat de volgende Subspaces. Ook zijn de eventuele onderliggende Subspaces zichtbaar.",
       "privateSubspace": "Dit is een privé Supspace. Bezoek de Subspace en doe een verzoek om lid te worden om de inhoud ervan te bekijken.",
       "showAll": "Toon alles",
       "expand": "Toon volledige hiërarchie",
@@ -1074,6 +993,7 @@
         "editState": "Details Bewerken",
         "deleteState": "Verwijderen",
         "addState": "Fase Toevoegen",
+        "invalidChars": "A phase name cannot contain special characters.",
         "noRepeatedStates": "Er bestaat al een fase met dezelfde naam.",
         "createDialog": {
           "title": "Flow Fase Aanmaken"
@@ -1127,6 +1047,18 @@
       },
       "inviteToRole": "Uitgenodigd als: "
     },
+    "inviteContributorsDialog": {
+      "vcs": {
+        "onAccount": {
+          "title": "Virtual Contributors from my account"
+        },
+        "inLibrary": {
+          "title": "Other Virtual Contributors"
+        },
+        "emptyMessage": "No available Virtual Contributors"
+      },
+      "successfullyAdded": "{{contributor}} added successfully"
+    },
     "confirmation-dialog": {
       "delete-comment": {
         "confirmation-title": "Verwijder reactie",
@@ -1171,7 +1103,8 @@
         "list.ordered": "Nummering",
         "list.indent": "Inspringen",
         "list.outdent": "Inspringing verwijderen",
-        "remove.remove": "Verwijderen"
+        "remove.remove": "Verwijderen",
+        "embed.video": "Embed Video or other Media"
       },
       "image": {
         "dialogHeader": "Afbeelding invoegen"
@@ -1181,6 +1114,13 @@
       },
       "validation": {
         "maxLength": "De resulterende tekst gaat verder dan de grootte die door de server is geaccepteerd."
+      },
+      "embed": {
+        "iframeAria": "{{title}}",
+        "dialogTitle": "Embed Video or other Media",
+        "embedCodeTextAreaAriaLabel": "Empty textarea",
+        "pasteEmbedCode": "Paste the embed/iframe code here",
+        "invalidOrUnsupportedEmbed": "Unfortunately, this code is either not valid or not supported. Please check the code carefully or contact support@alkem.io"
       }
     },
     "top-callouts": {
@@ -1405,7 +1345,7 @@
       "extendedMessage": "{{join}} van onze {{journey}} en maak impact!",
       "dialog-apply-parent": {
         "title": "Pas toe op <strong title='Parent community name'>{{parentCommunityName}}</strong>",
-        "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet je eerst lid worden van de <strong title='Space name'>'{{spaceName}}'</strong> Space. Voeg de Challenge waarvan je lid wilt worden toe in het aanmeldingsformulier van de Space."
+        "body": "Om lid te worden van <strong title='subspace name'>'{{subspaceName}}'</strong> moet je eerst lid worden van de <strong title='Space name'>'{{spaceName}}'</strong> Space. Voeg de Subspace waarvan je lid wilt worden toe in het aanmeldingsformulier van de Space."
       },
       "dialog-parent-app-pending": {
         "title": "Bovenliggende aanmelding loopt!",
@@ -1439,7 +1379,7 @@
     "referenceSegment": {
       "title": "Referenties",
       "description": "Houd er rekening mee dat alle bestanden die je hier toevoegt openbaar zijn. Als je wilt dat alleen de leden van deze Space toegang hebben tot de bestanden, voeg het dan toe aan een bericht of een verzameling links op één van de Space pagina's.",
-      "missing-refereneces": "Nog geen referenties",
+      "missing-references": "No references yet",
       "tooltips": {
         "add-reference": "Voeg een referentie toe",
         "remove-reference": "Verwijder de referentie"
@@ -1461,7 +1401,7 @@
         "title": "Host",
         "select": "Selecteer een host"
       },
-      "read-access": "Sta niet-leden van de Space toe om de inhoud van de Challenges te zien",
+      "read-access": "Sta niet-leden van de Space toe om de inhoud van de Subspace te zien",
       "about": "Meer informatie over deze Space",
       "visibility": "Deze Space is momenteel in <strong>{{visibility}}</strong> modus",
       "readOnly": "Neem hier contact op met het Alkemio team als je informatie wilt wijzigen."
@@ -1562,8 +1502,8 @@
       },
       "parentSpace": "in: {{space}}"
     },
-    "errorblock": {
-      "message": "Excuses, er is een fout opgetreden tijdens het laden van {{blockName}}."
+    "errorBlock": {
+      "message": "Sorry, an error occurred while loading {{blockName}}."
     },
     "loading": {
       "message": "Laden van {{blockName}}..."
@@ -1646,7 +1586,7 @@
       "title": "Bijdragen",
       "leadSpacesTitle": "(Sub) Spaces die we leiden",
       "allMembershipsTitle": "(Sub)Spaces waar we in zitten",
-      "help": "De Spaces en Challenges waar deze organisatie aan bijdraagt"
+      "help": "De Spaces en Subspaces waar deze organisatie aan bijdraagt"
     },
     "discussions-list": {
       "name": "Discussies - {{community}}",
@@ -1719,9 +1659,31 @@
         "explore": "Verken discussies"
       }
     },
-    "innovationFlowTemplateSelect": {
-      "select": "Selecteer andere Flow",
-      "required": "Selecteer een Innovatie Flow"
+    "inAppNotifications": {
+      "action": {
+        "read": "Mark as read",
+        "unread": "Mark as unread",
+        "delete": "Delete Notification"
+      },
+      "type": {
+        "COLLABORATION_CALLOUT_PUBLISHED": {
+          "subject": "{{spaceName}} - New {{calloutType}} is published \"{{calloutName}}\", have a look!",
+          "description": "{{contributorName}} published a new {{calloutType}} in {{spaceType}}: {{spaceName}}, with name: {{calloutName}}."
+        },
+        "COMMUNICATION_USER_MENTION": {
+          "subject": "{{commenterName}} mentioned you in a comment on {{calloutName}}:",
+          "description": ""
+        },
+        "COMMUNITY_NEW_MEMBER": {
+          "subject": "{{spaceName}} - Welcome to the Community!",
+          "description": "Thank you for joining {{spaceName}}!<br /> You can now start contributing to the various posts and whiteboards, further deepen your knowledge about this topic, and connect with other Contributors."
+        },
+        "COMMUNITY_NEW_MEMBER_ADMIN": {
+          "subject": "{{memberType}} \"{{memberName}}\" joined {{spaceName}}",
+          "description": "The {{memberType}} {{memberName}} has joined {{spaceName}}, of which you are an admin."
+        }
+      },
+      "emptyInbox": "No pending notifications"
     }
   },
   "navigation": {
@@ -1750,7 +1712,7 @@
     "outsideOfSpace": {
       "forum": "Dit is het algemene Alkemio Forum, los van de <strong>{{space}}</strong> Space. Neem een kijkje bij de bestaande discussies of start een eigen discussie!",
       "subspaces": "Hier vind je alle Subspaces op Alkemio, ook degenen die geen onderdeel zijn van <strong>{{space}}. Neem een kijkje!</strong>",
-      "contributors": "Hier vind je alle Challenges van het Alkemio platform, ook degene die niet onderdeel zijn van <strong>{{space}}. Neem een kijkje!</strong>"
+      "contributors": "Hier vind je alle Subspaces van het Alkemio platform, ook degene die niet onderdeel zijn van <strong>{{space}}. Neem een kijkje!</strong>"
     },
     "goToMainPage": "Wil je ook graag bijdragen aan andere Spaces? Hier vind je de Alkemio homepage met alle Spaces op het platform.",
     "remove": "Verwijderen uit de Space"
@@ -1783,11 +1745,12 @@
         "profile": {
           "description": ""
         },
-        "subentities": {
-          "description": "Hier kan je de {{entities}} verkennen binnen deze {{parentEntity}}. Filter op tags om uitsluitend de onderwerpen van jouw interesse te zien.",
-          "list": "Lijst met {{entities}}",
-          "empty": "Geen {{entities}} gevonden in deze {{parentEntity}}.",
-          "empty-list": "Er zijn nog geen {{entities}} in deze {{parentEntity}}."
+        "subEntities": {
+          "description": "Here you can explore the hosted **{{entities}}**. Filter by key words to show just the topics you care about.",
+          "list": "List view",
+          "empty": "No {{entities}} found.",
+          "empty-list": "There are no {{entities}} yet.",
+          "searchPlaceholder": "Find Subspaces..."
         },
         "recommendations": {
           "title": "Aanbevolen door de Host"
@@ -1901,6 +1864,10 @@
             "hostedSpaces": "Gehoste Spaces",
             "virtualContributors": "Virtual Contributors",
             "innovationPacks": "$t(common.innovation-packs)",
+            "usageNotice": "You have created {{usage}} out of your {{limit}} available {{type}} in your account.",
+            "limitNotice": "Contact the Alkemio team to increase the limits on your account",
+            "notAvailable": "Not available",
+            "notAvailableNotice": "Contact the Alkemio team to enable this feature on your account",
             "noTemplates": "Dit Innovatiepakket heeft nog geen templates",
             "customHomepages": "Landingspagina's",
             "hostTitle": "Host",
@@ -1919,19 +1886,42 @@
             "deleteSpace_disallowed": "De Space kan alleen worden verwijderd door de host van deze Space.",
             "moreInfo": "Meer over Alkemio licenties kan <moreinfo>hier</moreinfo> gevonden worden.",
             "moreInfoUrl": "$t(plansTable.seeMoreUrl)",
-            "licenseUpdated": "Licentie is met succes bijgewerkt"
+            "licenseUpdated": "Licentie is met succes bijgewerkt",
+            "deletedSuccessfully": "{{entity}} deleted successfully"
           },
           "settings": {
             "description": "Hier kun je de zichtbaarheidsinstellingen van uw {{entity}} aanpassen."
           }
         }
       },
+      "user": {
+        "settings": {
+          "title": "Settings",
+          "subtitle": "This section allows you to modify the User settings",
+          "communication": {
+            "allowOtherUsersToSendMessages": "Allow other users to message me."
+          },
+          "privacy": {
+            "contributorRolesVisible": "Show contributor roles to all registered users"
+          }
+        }
+      },
       "organization": {
         "create-organization": "Maak organisatie aan",
         "authorization": {
-          "preferences": {
-            "title": "Authorisatie",
-            "subtitle": "In deze sectie kan je de autorisatie van de organisaties aanpassen"
+          "title": "Authorization",
+          "subtitle": "This section allows you to modify the organizations authorization"
+        },
+        "settings": {
+          "title": "Settings",
+          "subtitle": "This section allows you to modify the organization settings",
+          "membership": {
+            "usersMatchingEmail": "Allow users with emails matching the domain of the Organization to associate themselves."
+          },
+          "privacy": {
+            "title": "Privacy",
+            "subtitle": "This section allows you to modify the organization privacy settings",
+            "contributorRolesVisible": "Show contributor roles to all registered users"
           }
         },
         "notifications": {
@@ -1968,7 +1958,8 @@
         "notifications": {
           "subsubspace-created": "Subspace succesvol aangemaakt.",
           "subsubspace-removed": "Subspace succesvol verwijderd.",
-          "subsubspace-updated": "Subspace succesvol aangepast."
+          "subsubspace-updated": "Subspace succesvol aangepast.",
+          "error-creating-subsubspace": "An error occurred while creating the Subspace."
         }
       },
       "subspace": {
@@ -2057,6 +2048,7 @@
             "title": "Kopieer Subspace",
             "description": "Om deze Subspace setup te gebruiken, kun je deze dupliceren binnen dezelfde Space of opslaan als een template voor gebruik op het hele platform. In beide scenario's zullen de Innovation Flow en alle samenwerkingstools worden gekopieerd. Houd er rekening mee dat reacties of bijdragen aan een tool niet in de template of gekopieerde Subspace zullen worden opgenomen.",
             "createTemplate": "Maak Template",
+            "createTemplateTooltip": "To create a template from this Subspace, you need Space admin permissions.",
             "duplicate": "Dupliceer"
           },
           "account": {
@@ -2079,7 +2071,12 @@
         },
         "back-button": "Alle $t(common.innovation-packs)",
         "save-new-for-details": "Sla het nieuwe innovatiepakket op om de rest van de details te bewerken",
-        "saved-successfully": "Succesvol opgeslagen"
+        "saved-successfully": "Succesvol opgeslagen",
+        "notifications": {
+          "pack-created": "$t(common.innovation-pack) created successfully.",
+          "pack-error": "An error occurred while creating the $t(common.innovation-pack).",
+          "pack-removed": "$t(common.innovation-pack) '{{name}}' removed successfully."
+        }
       },
       "innovationHubs": {
         "create": "Maak Innovatie Hub",
@@ -2105,9 +2102,6 @@
             "subtitle": "De volgorde hieronder is de volgorde waarin de Spaces zichtbaar zijn op de landingspagina"
           }
         }
-      },
-      "virtualContributors": {
-        "title": "Virtual Contributors"
       }
     },
     "feedback": {
@@ -2122,23 +2116,27 @@
       }
     },
     "visualEdit": {
-      "avatar": {
+      "AVATAR": {
         "title": "Avatar",
-        "description1": "Resolutie: {{width}} breedte x {{height}} hoogte (pixels)",
-        "description2": "Gebruik: preview op de omslagfoto",
-        "description": "Omschrijving: {{alternativeText}}"
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "description2": "Usage: Journey card on page banner",
+        "description": "Description: {{alternativeText}}"
       },
-      "banner": {
-        "title": "Pagina banner",
-        "description1": "Resolutie: {{width}} breedte x {{height}} hoogte (pixels)",
-        "description2": "Gebruik: Omslagfoto op het dashboard",
-        "description": "Omschrijving: {{alternativeText}}"
+      "BANNER": {
+        "title": "Page banner",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "description2": "Usage: Banner on dashboard tab",
+        "description": "Description: {{alternativeText}}"
       },
-      "cardBanner": {
-        "title": "Kaart banner",
-        "description1": "Resolutie: {{width}} breedte x {{height}} hoogte (pixels)",
-        "description2": "Gebruik: Omslagfoto op kaarten",
-        "description": "Omschrijving: {{alternativeText}}"
+      "CARD": {
+        "title": "Card banner",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "description2": "Usage: Banner on cards",
+        "description": "Description: {{alternativeText}}"
+      },
+      "BANNER_WIDE": {
+        "title": "Wide Banner",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)"
       },
       "form": {
         "altText": {
@@ -2161,11 +2159,14 @@
       },
       "users": {
         "title": "Gebruikers"
+      },
+      "virtualContributors": {
+        "title": "Virtual Contributors"
       }
     },
     "search": {
       "title": "Zoek",
-      "subtitle": "Vind de Spaces, bijdragers en Challenges, Opportunities en inhoud van de openbare Spaces hieronder",
+      "subtitle": "Vind de Spaces, bijdragers en Subspaces en inhoud van de openbare Spaces hieronder",
       "placeholder": "Zoek...",
       "results-disclaimer": "Hier zie je de eerste 8 resultaten. Als je je zoektermen verder specificeert zul je meer resultaten vinden.",
       "max-tags-reached": "U heeft de limiet van {{max}} tekens bereikt",
@@ -2194,7 +2195,7 @@
       "title": "Verken Spaces van je interesse",
       "shortName": "$t(common.spaces)",
       "subtitle": "Alle activiteit op Alkemio gebeurt binnen de Spaces en hun bijbehorende Subspaces. Verken beide om onderwerpen te vinden waar je aan kan bijdragen!",
-      "caption": "Discover a diverse range of Spaces awaiting your exploration. Whether you're an experienced member or a curious newcomer, there's something here for everyone. Let's delve into the details:<ol><li><strong>Member Spaces:</strong> These are spaces where you already hold membership.</li><li><strong>Public Spaces:</strong> These spaces have visible content, and you can request to join them.</li><li><strong>All Spaces:</strong> This category includes both public and private spaces. In private spaces, only limited content is visible, but you can still apply for membership.</li></ol>",
+      "caption": "Ontdek een gevarieerd scala aan Spaces wachtend op jouw verkenning. Of je nu een ervaren lid bent of een nieuwsgierig nieuwkomer, er is hier iets voor iedereen. Laten we ons verdiepen in de details:<ol><li><strong>Leden Spaces:</strong> Dit zijn ruimtes waar je lidmaatschap al heeft.</li><li><strong>Openbare ruimten:</strong> Deze ruimten hebben zichtbare inhoud, en u kunt vragen om toe te treden.</li><li><strong>Alle ruimten:</strong> Deze categorie bevat zowel openbare als privé ruimtes. In privéruimten is alleen beperkte inhoud zichtbaar, maar u kunt nog steeds een lidmaatschap aanvragen.</li></ol>",
       "membershipFilter": {
         "all": "Alle Spaces",
         "member": "Spaces waarvan je lid bent",
@@ -2203,7 +2204,8 @@
       "noSpaceMemberships": "Je bent momenteel geen lid van een Space. Klik hier om onze {{welcomeSpace}} Space te bezoeken, een goed startpunt voor je reis op Alkemio!",
       "search": {
         "placeholder": "Zoek…",
-        "noResults": "Er zijn geen resultaten voor je zoekopdracht."
+        "noResults": "Er zijn geen resultaten voor je zoekopdracht.",
+        "searching": "Searching…"
       },
       "seeAll": "Meer weergeven",
       "activeSpacesFilter": "Meest Actieve Spaces"
@@ -2263,7 +2265,7 @@
         },
         "myMemberships": {
           "title": "Mijn Lidmaatschappen",
-          "noChildMemberships": "U bent geen lid van een Challenge in deze Space. Sommige Challenges vereisen niet dat je lid hoeft te zijn om bij te dragen, maar als je updates wilt ontvangen of de Challenge hier wilt weergeven, word dan toch lid!",
+          "noChildMemberships": "U bent geen lid van een Subspace in deze Space. Sommige Subspaces vereisen niet dat je lid hoeft te zijn om bij te dragen, maar als je updates wilt ontvangen of de Subspace hier wilt weergeven, word dan toch lid!",
           "seeMore": "Dat is alles! Op zoek naar andere Spaces om in mee te werken? <spaces>Klik hier</spaces> om alle Challenges op het platform te ontdekken, of <landing>klik hier</landing> om je eigen Space te openen!"
         },
         "membershipSuggestions": {
@@ -2307,7 +2309,7 @@
           "join": "Deelnemen aan de Community en meer zien?",
           "existing-user": {
             "header": "Bestaande gebruiker?",
-            "subheader": "Welkom terug! Ga verder waar je gebleven was en ontdek nieuwe Challenges.",
+            "subheader": "Welkom terug! Ga verder waar je gebleven was en ontdek nieuwe Subspaces.",
             "more-info": "Meer over Alkemio",
             "more-info-url": "https://alkemio.foundation/manifesto"
           },
@@ -2321,13 +2323,8 @@
         "exploreOtherSubspaces": {
           "header": "Ontdek ook de andere Spaces!"
         },
-        "innovationLibraryBlock": {
-          "title": "Innovatie Bibliotheek: Heb je deze al gezien...?",
-          "description": "In de Bibliotheek kun je innovatiepakketten vinden die voor je zijn samengesteld door verschillende organisaties. Elk innovatiepakket kan bestaan uit whiteboard templates, post templates, en innovatie flows.",
-          "seeMore": "Ontdek meer innovatiepakketten"
-        },
         "space": {
-          "header": "Verken de Challenge Spaces!",
+          "header": "Verken de Subspaces!",
           "subheader": "",
           "body": "Elke Space bestaat uit een community en een aantal gedeelde uitdagingen. Om samen te werken, inzichten te delen, en te innoveren.",
           "body1": "Individuele gebruikers kunnen zich aansluiten bij één of meerdere Spaces. Deze Spaces kunnen zowel openbaar als privé zijn."
@@ -2344,7 +2341,7 @@
           "subheader": "De instanties die innovatie tot stand willen brengen."
         },
         "contributors-section": {
-          "title": "Zie wie er aan Challenges op Alkemio werkt"
+          "title": "Zie wie er aan Subspaces op Alkemio werkt"
         },
         "forumMessages": {
           "title": "Laatste bijdragen van het Forum",
@@ -2494,7 +2491,7 @@
       "editDisplayName": "Wijzig titel",
       "no-whiteboards": "Er zijn nog geen whiteboards gemaakt. Wees de eerste die er een toevoegt.",
       "locked-by": "{{user}} bewerkt momenteel dit whiteboard",
-      "loadingScene": "Loading scene",
+      "loadingScene": "Inhoud laden",
       "state-actions": {
         "save-as-template": "Opslaan als template",
         "save-and-check-in": "Opslaan & bewerken stoppen",
@@ -2546,7 +2543,7 @@
     },
     "about": {
       "title": "Samenwerking hervormen",
-      "description": "Alkemio stelt de Challenges centraal, waarbij elke Challenge een centrale en neutrale plaats biedt voor samenwerking.",
+      "description": "Alkemio stelt de Subspaces centraal, waarbij elke Subspace een centrale en neutrale plaats biedt voor samenwerking.",
       "powered-by": "Powered by {{name}} v{{version}}"
     },
     "error": {
@@ -2556,6 +2553,10 @@
       "line3": "Als de fout aanblijft, neem contact op met de klantenservice.",
       "buttons": {
         "reload": "Herlaad"
+      },
+      "errors": {
+        "LazyLoadError": "Network error occurred. Please try reloading the page.",
+        "unknown": "An unknown error occurred. Please try reloading the page."
       }
     },
     "four-ou-four": {
@@ -2619,7 +2620,7 @@
         "title": "Lopende aanmeldingen"
       },
       "accountResources": {
-        "sectionTitle": "Resources I host"
+        "sectionTitle": "Items die ik host"
       },
       "communities": {
         "title": "Communities",
@@ -2744,11 +2745,13 @@
       "title": "Op zoek naar hulp?",
       "text": "Wij willen je graag helpen met het werken op het Alkemio platform door het gebruik en de interactie makkelijker maken. Zo kun jij succesvol impact maken en bijdragen aan de Challenges waar je om geeft.<br /><br />Klik op de onderstaande icons om antwoorden op je vragen te vinden, contact op te nemen met het Alkemio team voor ondersteuning, of ga meteen aan de slag!",
       "icons": {
-        "help-center-faq": "Helpcentrum & FAQ",
-        "community-support-forum": "Neem contact op!",
-        "new-user": "Nieuwe gebruiker? Begin hier!"
+        "exploreDocumentation": "Explore Documentation",
+        "contactTheTeam": "Contact the Team",
+        "joinTheWelcomeSpace": "Join the Welcome Space"
       },
-      "tips-and-tricks": "Op zoek naar tips & tricks? Vind ze hier in onze blogs!"
+      "tips-and-tricks": "Op zoek naar tips & tricks? Vind ze hier in onze blogs!",
+      "versionNumber": "Version Number: <b>v{{version}}</b>",
+      "serverVersionNumber": "Server Version Number: <b>v{{version}}</b>"
     },
     "forum": {
       "title": "Vragen, suggesties of feedback? Stel ze hier aan het Alkemio team of andere gebruikers van het platform!",
@@ -2759,7 +2762,8 @@
       "back": "Alle Discussies"
     },
     "documentation": {
-      "title": "Documentatie"
+      "title": "Documentatie",
+      "subtitle": "Platform Manual & Support"
     }
   },
   "operations": {
@@ -2782,7 +2786,8 @@
       "verification-flow-expired": "De verificatie link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven.",
       "recovery-flow-expired": "Deze wachtwoord reset-link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven.",
       "verification-flow-continue": "Volgende",
-      "login-flow-account-exists": "Je probeert je aan te melden met een LinkedIn/Microsoft-account, maar het bijbehorende e-mailadres is al eerder gebruikt. Log in met dit e-mailadres en wachtwoord of probeer het wachtwoord te resetten. Als dat niet lukt, stuur dan een e-mail naar support@alkem.io."
+      "login-flow-account-exists": "Je probeert je aan te melden met een LinkedIn/Microsoft-account, maar het bijbehorende e-mailadres is al eerder gebruikt. Log in met dit e-mailadres en wachtwoord of probeer het wachtwoord te resetten. Als dat niet lukt, stuur dan een e-mail naar support@alkem.io.",
+      "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above."
     },
     "fields": {
       "ID": "ID",
@@ -2937,6 +2942,7 @@
   },
   "createSpace": {
     "title": "Creëer een Space",
+    "addTutorialsLabel": "Show Tutorials in this Space",
     "terms": {
       "checkboxLabel": "Ik heb de <terms>Algemene voorwaarden voor het maken van een Space gelezen en geaccepteerd (klik hier om ze te openen)</terms>.",
       "dialogTitle": "Algemene voorwaarden voor het maken van een Space",
@@ -3062,9 +3068,7 @@
       "externalAI": "Externe AI"
     },
     "loadingInfo": {
-      "subspaceCreation": "Een Subspace voor het toevoegen van kennis voor je Virtual Contributor wordt gebouwd. Dit proces kan enkele ogenblikken duren.",
-      "spaceAndSubspaceCreation": "Een Space en Subspace voor het toevoegen van kennis voor je Virtual Contributor worden gebouwd. Dit proces kan enkele ogenblikken duren.",
-      "vcCreation": "Uw Virtual Contributor wordt aangemaakt. Dit proces kan enkele ogenblikken duren om te voltooien."
+      "vcSpaceCreation": "A Space for interaction with your Virtual Contributor is being built. This process may take a few moments to complete."
     },
     "cancel": {
       "title": "Verwijder Virtual Contributor",
@@ -3084,6 +3088,14 @@
         "initialPosts": "Initiële Posts",
         "delete": "Post verwijderen"
       },
+      "documents": {
+        "tooltip": "Supported file formats: Text on websites, .pdf, .doc(x), .xls(x). Maximum file size: 20mb",
+        "referenceTitle": "Reference Title",
+        "referenceUrl": "Url",
+        "addAnother": "Add Document",
+        "remove": "Remove document",
+        "initialDocuments": "Initial Links and Documents"
+      },
       "submitDisabled": "Voeg ten minste één Post toe om door te gaan"
     },
     "externalAI": {
@@ -3092,23 +3104,23 @@
         "subTitle": "Kies een provider en voer je API-sleutel of token in om je externe AI te verbinden met een Virtual Contributor",
         "apiKey": {
           "label": "API Sleutel",
-          "placeholder": "E.g. sk-proj-Uq3zU..."
+          "placeholder": "Bijv. sk-proj-Uq3zU..."
         },
         "assistantId": {
           "label": "Assistent ID",
-          "placeholder": "E.g. asst_wTLKgGkKryqR5FlEFleLy5Uq"
+          "placeholder": "Bijv. asst_wTLKgGkKryqR5FlEFleLy5Uq"
         },
         "provider": {
           "title": "Provider",
           "placeholder": "Selecteer een provider uit deze lijst"
         }
       },
-      "commingSoon": {
-        "title": "🚀 Binnenkort beschikbaar!",
-        "subTitle": "We zijn momenteel bezig met het bouwen van de functionaliteit om externe AI-diensten te gebruiken voor je Virtual Contributor. Je kunt ons helpen door te delen welke AI-service je wil gebruiken.",
+      "comingSoon": {
+        "title": "🚀 Coming soon!",
+        "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
         "input": {
           "label": "AI Service",
-          "placeholder": "Bijvoorbeeld de AI die door xx gemaakt is om xx"
+          "placeholder": "E.g. the AI that xx created to xx"
         }
       },
       "contactOptions": {
@@ -3121,11 +3133,14 @@
     "trySection": {
       "title": "🎉 Probeer het uit!",
       "subTitle": "Je Virtual Contributor is succesvol aangemaakt en we hebben het toegevoegd aan je persoonlijke Space <tooltip><icon /></tooltip>. <br/>Je kunt er nu mee communiceren door <b>@{{vcName}}</b> in te typen in een reactie op elk bericht in je Space. Probeer het in het onderstaande voorbeeld!",
-      "subTitleInfo": "Wanneer je je eerste VC maakt, genereren we automatisch een Space voor je. Deze Space werkt zoals elke andere Space op Alkemio, en je kunt de instellingen aanpassen volgens jouw voorkeuren.",
       "postTitle": "Voorbeeld post",
       "postDescription": "Bij Alkemio gebruiken we Posts om samenwerking met AI te vergemakkelijken. In tegenstelling tot privégesprekken kunnen andere leden in een Space van deze interactie leren en bijdragen aan deze interactie.\n\nVergelijkbaar met het vermelden van een menselijke bijdrager, kunt u het \"@\" symbool gebruiken, gevolgd door de naam van de Virtual Contributor.",
-      "lastInfoBox": "Voor <b>het wijzigen van de kennis</b> van deze Virtual Contributor, ga naar zijn Kennis (Sub)Space. Vergeet niet om op de knop Update te drukken op de profielinstellingen van je Virtual Contributor wanneer je klaar bent!",
       "continueButton": "Ga naar Space"
+    },
+    "tryInfoSection": {
+      "title": "👍That’s it!",
+      "description": "Your Virtual Contributor is ready! To start interacting, invite the Virtual Contributor to a space and once it’s a member, simply type @{{vcName}} in a comment.\n\nEnjoy!",
+      "goToProfile": "Visit {{vcName}}'s Profile"
     },
     "existingSpace": {
       "title": "Kies een (Sub)Space",
@@ -3133,9 +3148,19 @@
       "label": "(Sub)Space",
       "noSpaces": "Je hebt een Space nodig om door te gaan met deze optie. Om een Virtual Contributor te creëren, ga alsjeblieft terug en volg de flow voor geschreven Kennis."
     },
-    "insufficientPrivileges": {
-      "title": "Onvoldoende rechten",
-      "description": "Je hebt niet de benodigde rechten om het aanmaken te voltooien. Neem contact op met de eigenaars van dit account."
+    "chooseCommunity": {
+      "title": "Hello, {{vcName}}!",
+      "description": "Your Virtual Contributor is ready! To start interacting, your Virtual Contributor should be added to a Space. Select one below, or continue without. In that case you will have to add the VC manually through the Community tab of a Space.",
+      "label": "Space",
+      "selectSpacesPlaceholder": "Select a Space",
+      "noSpacesPlaceholder": "No Spaces available",
+      "cancelAddToCommunity": "Proceed without membership",
+      "addToCommunity": "Add and go to Space",
+      "createAndAddToCommunity": "Create, add, and go to Space",
+      "confirm": {
+        "title": "Continue without Space membership",
+        "description": "A Virtual Contributor can only interact within a Space. Are you sure you want to proceed without adding them to a Space? You can still invite the Virtual Contributor later through the Space’s Community tab."
+      }
     }
   }
 }

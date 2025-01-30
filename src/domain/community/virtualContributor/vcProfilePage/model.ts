@@ -13,6 +13,12 @@ export type VirtualContributorProfileProps = {
       city?: string;
       country?: string;
     };
+    url: string;
+  };
+  settings?: {
+    privacy?: {
+      knowledgeBaseContentVisible?: boolean;
+    };
   };
   provider?: {
     profile: {
@@ -37,4 +43,6 @@ export type VirtualContributorProfileProps = {
 export type VCProfilePageViewProps = {
   bokProfile?: BasicSpaceProps;
   virtualContributor?: VirtualContributorProfileProps;
+  navigateToKnowledgeBase?: boolean;
+  openKnowledgeBaseDialog?: boolean;
 };

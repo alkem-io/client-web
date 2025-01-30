@@ -35,6 +35,7 @@ import { SpaceIcon } from '@/domain/journey/space/icon/SpaceIcon';
 import { findKey, groupBy, identity } from 'lodash';
 import SearchResultPostChooser from './searchResults/SearchResultPostChooser';
 import SearchResultsCalloutCard from './searchResults/searchResultsCallout/SearchResultsCalloutCard';
+import useUrlResolver from '../urlResolver/useUrlResolver';
 
 export const MAX_TERMS_SEARCH = 5;
 
@@ -142,6 +143,10 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
     () => [...journeyFilter.value, ...contributionFilter.value, ...contributorFilter.value, ...calloutFilter.value],
     [journeyFilter, contributionFilter, contributorFilter, calloutFilter]
   );
+  const { spaceId, loading: resolvingSpace } = useUrlResolver({
+    throwIfNotFound: false,
+    overrideUrlParams: { spaceNameId },
+  });
 
   const { data, loading: isSearching } = useSearchQuery({
     variables: {
@@ -153,7 +158,7 @@ const SearchView = ({ searchRoute, journeyFilterConfig, journeyFilterTitle }: Se
       },
     },
     fetchPolicy: 'no-cache',
-    skip: termsFromUrl.length === 0,
+    skip: termsFromUrl.length === 0 || resolvingSpace,
   });
 
   const results = termsFromUrl.length === 0 ? undefined : toResultType(data);

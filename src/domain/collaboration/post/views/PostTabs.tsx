@@ -1,7 +1,6 @@
 import { Tabs } from '@mui/material';
 import { DashboardOutlined, SettingsOutlined, ShareOutlined } from '@mui/icons-material';
 import NavigationTab from '@/core/ui/tabs/NavigationTab';
-import { usePost } from '../context/PostProvider';
 import { PostDialogSection } from './PostDialogSection';
 import { styled } from '@mui/styles';
 import { gutters } from '@/core/ui/grid/utils';
@@ -16,7 +15,7 @@ const DialogHeaderTabs = styled(Tabs)(({ theme }) => ({
 
 const PostTabs = ({ currentTab }: { currentTab: PostDialogSection }) => {
   const { t } = useTranslation();
-  const { permissions } = usePost();
+  const { permissions } = usePost();  //!!
 
   return (
     <DialogHeaderTabs value={currentTab} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>

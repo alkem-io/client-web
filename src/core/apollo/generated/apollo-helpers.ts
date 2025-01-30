@@ -2308,6 +2308,7 @@ export type MutationKeySpecifier = (
   | 'updateOrganization'
   | 'updateOrganizationPlatformSettings'
   | 'updateOrganizationSettings'
+  | 'updatePlatformSettings'
   | 'updatePost'
   | 'updatePreferenceOnUser'
   | 'updateProfile'
@@ -2324,6 +2325,7 @@ export type MutationKeySpecifier = (
   | 'updateUserPlatformSettings'
   | 'updateUserSettings'
   | 'updateVirtualContributor'
+  | 'updateVirtualContributorSettings'
   | 'updateVisual'
   | 'updateWhiteboard'
   | 'uploadFileOnLink'
@@ -2477,6 +2479,7 @@ export type MutationFieldPolicy = {
   updateOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganizationPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganizationSettings?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatePlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePost?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePreferenceOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProfile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2493,6 +2496,7 @@ export type MutationFieldPolicy = {
   updateUserPlatformSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateVirtualContributorSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
   updateWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
   uploadFileOnLink?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2660,6 +2664,7 @@ export type PlatformKeySpecifier = (
   | 'licensingFramework'
   | 'metadata'
   | 'roleSet'
+  | 'settings'
   | 'storageAggregator'
   | 'templatesManager'
   | 'updatedDate'
@@ -2677,6 +2682,7 @@ export type PlatformFieldPolicy = {
   licensingFramework?: FieldPolicy<any> | FieldReadFunction<any>;
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  settings?: FieldPolicy<any> | FieldReadFunction<any>;
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2685,6 +2691,10 @@ export type PlatformFeatureFlagKeySpecifier = ('enabled' | 'name' | PlatformFeat
 export type PlatformFeatureFlagFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PlatformIntegrationSettingsKeySpecifier = ('iframeAllowedUrls' | PlatformIntegrationSettingsKeySpecifier)[];
+export type PlatformIntegrationSettingsFieldPolicy = {
+  iframeAllowedUrls?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformInvitationKeySpecifier = (
   | 'authorization'
@@ -2771,6 +2781,10 @@ export type PlatformLocationsFieldPolicy = {
   switchplan?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   tips?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PlatformSettingsKeySpecifier = ('integration' | PlatformSettingsKeySpecifier)[];
+export type PlatformSettingsFieldPolicy = {
+  integration?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PostKeySpecifier = (
   | 'authorization'
@@ -3967,6 +3981,7 @@ export type VirtualContributorKeySpecifier = (
   | 'profile'
   | 'provider'
   | 'searchVisibility'
+  | 'settings'
   | 'status'
   | 'updatedDate'
   | VirtualContributorKeySpecifier
@@ -3984,8 +3999,20 @@ export type VirtualContributorFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   provider?: FieldPolicy<any> | FieldReadFunction<any>;
   searchVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
+  settings?: FieldPolicy<any> | FieldReadFunction<any>;
   status?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VirtualContributorSettingsKeySpecifier = ('privacy' | VirtualContributorSettingsKeySpecifier)[];
+export type VirtualContributorSettingsFieldPolicy = {
+  privacy?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VirtualContributorSettingsPrivacyKeySpecifier = (
+  | 'knowledgeBaseContentVisible'
+  | VirtualContributorSettingsPrivacyKeySpecifier
+)[];
+export type VirtualContributorSettingsPrivacyFieldPolicy = {
+  knowledgeBaseContentVisible?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VirtualContributorUpdatedSubscriptionResultKeySpecifier = (
   | 'virtualContributor'
@@ -4761,6 +4788,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | PlatformFeatureFlagKeySpecifier | (() => undefined | PlatformFeatureFlagKeySpecifier);
     fields?: PlatformFeatureFlagFieldPolicy;
   };
+  PlatformIntegrationSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PlatformIntegrationSettingsKeySpecifier
+      | (() => undefined | PlatformIntegrationSettingsKeySpecifier);
+    fields?: PlatformIntegrationSettingsFieldPolicy;
+  };
   PlatformInvitation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformInvitationKeySpecifier | (() => undefined | PlatformInvitationKeySpecifier);
     fields?: PlatformInvitationFieldPolicy;
@@ -4768,6 +4802,10 @@ export type StrictTypedTypePolicies = {
   PlatformLocations?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformLocationsKeySpecifier | (() => undefined | PlatformLocationsKeySpecifier);
     fields?: PlatformLocationsFieldPolicy;
+  };
+  PlatformSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PlatformSettingsKeySpecifier | (() => undefined | PlatformSettingsKeySpecifier);
+    fields?: PlatformSettingsFieldPolicy;
   };
   Post?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PostKeySpecifier | (() => undefined | PostKeySpecifier);
@@ -5070,6 +5108,20 @@ export type StrictTypedTypePolicies = {
   VirtualContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VirtualContributorKeySpecifier | (() => undefined | VirtualContributorKeySpecifier);
     fields?: VirtualContributorFieldPolicy;
+  };
+  VirtualContributorSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | VirtualContributorSettingsKeySpecifier
+      | (() => undefined | VirtualContributorSettingsKeySpecifier);
+    fields?: VirtualContributorSettingsFieldPolicy;
+  };
+  VirtualContributorSettingsPrivacy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | VirtualContributorSettingsPrivacyKeySpecifier
+      | (() => undefined | VirtualContributorSettingsPrivacyKeySpecifier);
+    fields?: VirtualContributorSettingsPrivacyFieldPolicy;
   };
   VirtualContributorUpdatedSubscriptionResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

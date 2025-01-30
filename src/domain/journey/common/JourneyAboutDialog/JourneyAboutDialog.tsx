@@ -141,9 +141,7 @@ const JourneyAboutDialog = ({
     [leadUsers]
   );
 
-  // @ts-ignore TS5UPGRADE
-  const JourneyIcon = spaceLevel > -1 ? spaceIconByLevel[spaceLevel] : undefined;
-
+  const JourneyIcon = spaceIconByLevel[spaceLevel];
   const metricsItems = useMetricsItems(metrics, getMetricsSpec(spaceLevel));
 
   const breakpoint = useCurrentBreakpoint();
