@@ -15,6 +15,7 @@ import { gutters } from '@/core/ui/grid/utils';
 import { type VCProfilePageViewProps } from './model';
 import { AiPersonaBodyOfKnowledgeType } from '@/core/apollo/generated/graphql-schema';
 import KnowledgeBaseDialog from '@/domain/community/virtualContributor/knowledgeBase/KnowledgeBaseDialog';
+import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
 
 const SectionTitle = ({ children }) => {
   return (
@@ -54,7 +55,7 @@ export const VCProfileContentView = ({
 
   const handleKnowledgeBaseClick = () => {
     if (virtualContributor) {
-      navigate(`${virtualContributor.profile.url}/knowledge-base`);
+      navigate(`${virtualContributor.profile.url}/${KNOWLEDGE_BASE_PATH}`);
     }
   };
 

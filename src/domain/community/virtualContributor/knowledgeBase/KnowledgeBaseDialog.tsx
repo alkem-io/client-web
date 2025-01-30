@@ -11,6 +11,8 @@ import { DescriptionComponent } from '@/domain/common/description/DescriptionCom
 import CalloutsGroupView from '@/domain/collaboration/calloutsSet/CalloutsInContext/CalloutsGroupView';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { KnowledgeBaseCalloutsSetType } from '@/domain/journey/JourneyTypeName';
+import { Caption } from '@/core/ui/typography';
+import { Loading } from '@/core/ui/loading/Loading';
 
 type KnowledgeBaseDialogProps = {
   onClose: () => void;
@@ -27,43 +29,61 @@ const KnowledgeBaseDialog = ({ onClose, title, id }: KnowledgeBaseDialogProps) =
     callouts,
     canCreateCallout,
     loading,
+    calloutsSetLoading,
     onCalloutsSortOrderUpdate,
     refetchCallout,
     knowledgeBaseDescription,
     updateDescription,
     ingestKnowledge,
     ingestLoading,
+    hasReadAccess,
+    loadingPrivileges,
   } = useKnowledgeBase({ id });
+
+  if (!hasReadAccess && !loadingPrivileges) {
+    return (
+      <DialogWithGrid open columns={6}>
+        <DialogHeader onClose={onClose} title={t('pages.virtualContributorProfile.knowledgeBase.noAccess.title')} />
+        <DialogContent>
+          <Caption>{t('pages.virtualContributorProfile.knowledgeBase.noAccess.description')}</Caption>
+        </DialogContent>
+      </DialogWithGrid>
+    );
+  }
 
   return (
     <DialogWithGrid open columns={10}>
       <DialogHeader onClose={onClose} title={title} />
       <DialogContent>
-        <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={id}>
-          <Gutters disablePadding>
-            {(knowledgeBaseDescription || canCreateCallout) && (
-              <DescriptionComponent
-                description={knowledgeBaseDescription}
-                canEdit={canCreateCallout}
-                onUpdate={updateDescription}
+        {loadingPrivileges || loading ? (
+          <Loading />
+        ) : (
+          <StorageConfigContextProvider locationType="virtualContributor" virtualContributorId={id}>
+            <Gutters disablePadding>
+              {(knowledgeBaseDescription || canCreateCallout) && (
+                <DescriptionComponent
+                  description={knowledgeBaseDescription}
+                  canEdit={canCreateCallout}
+                  onUpdate={updateDescription}
+                />
+              )}
+              <CalloutsGroupView
+                calloutsSetId={calloutsSetId}
+                callouts={callouts}
+                canCreateCallout={canCreateCallout}
+                loading={calloutsSetLoading}
+                journeyTypeName={KnowledgeBaseCalloutsSetType}
+                onSortOrderUpdate={onCalloutsSortOrderUpdate}
+                onCalloutUpdate={refetchCallout}
+                groupName={CalloutGroupName.Knowledge}
+                createButtonPlace="bottom"
+                availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
+                disableRichMedia
+                disablePostResponses
               />
-            )}
-            <CalloutsGroupView
-              calloutsSetId={calloutsSetId}
-              callouts={callouts}
-              canCreateCallout={canCreateCallout}
-              loading={loading}
-              journeyTypeName={KnowledgeBaseCalloutsSetType}
-              onSortOrderUpdate={onCalloutsSortOrderUpdate}
-              onCalloutUpdate={refetchCallout}
-              groupName={CalloutGroupName.Knowledge}
-              createButtonPlace="bottom"
-              availableCalloutTypes={AVAILABLE_CALLOUT_TYPES}
-              disableRichMedia
-              disablePostResponses
-            />
-          </Gutters>
-        </StorageConfigContextProvider>
+            </Gutters>
+          </StorageConfigContextProvider>
+        )}
       </DialogContent>
       {canCreateCallout && (
         <DialogActions>

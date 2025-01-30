@@ -13663,6 +13663,11 @@ export const VirtualContributorDocument = gql`
           id
           myPrivileges
         }
+        settings {
+          privacy {
+            knowledgeBaseContentVisible
+          }
+        }
         provider {
           id
           profile {
@@ -13922,6 +13927,11 @@ export const UpdateVirtualContributorDocument = gql`
       listedInStore
       status
       searchVisibility
+      settings {
+        privacy {
+          knowledgeBaseContentVisible
+        }
+      }
       profile {
         id
         tagline
@@ -13977,6 +13987,75 @@ export type UpdateVirtualContributorMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.UpdateVirtualContributorMutation,
   SchemaTypes.UpdateVirtualContributorMutationVariables
 >;
+export const UpdateVirtualContributorSettingsDocument = gql`
+  mutation UpdateVirtualContributorSettings($settingsData: UpdateVirtualContributorSettingsInput!) {
+    updateVirtualContributorSettings(settingsData: $settingsData) {
+      id
+      listedInStore
+      status
+      searchVisibility
+      settings {
+        privacy {
+          knowledgeBaseContentVisible
+        }
+      }
+      profile {
+        id
+        tagline
+        tagsets {
+          ...TagsetDetails
+        }
+        displayName
+        description
+      }
+    }
+  }
+  ${TagsetDetailsFragmentDoc}
+`;
+export type UpdateVirtualContributorSettingsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateVirtualContributorSettingsMutation,
+  SchemaTypes.UpdateVirtualContributorSettingsMutationVariables
+>;
+
+/**
+ * __useUpdateVirtualContributorSettingsMutation__
+ *
+ * To run a mutation, you first call `useUpdateVirtualContributorSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateVirtualContributorSettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateVirtualContributorSettingsMutation, { data, loading, error }] = useUpdateVirtualContributorSettingsMutation({
+ *   variables: {
+ *      settingsData: // value for 'settingsData'
+ *   },
+ * });
+ */
+export function useUpdateVirtualContributorSettingsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateVirtualContributorSettingsMutation,
+    SchemaTypes.UpdateVirtualContributorSettingsMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateVirtualContributorSettingsMutation,
+    SchemaTypes.UpdateVirtualContributorSettingsMutationVariables
+  >(UpdateVirtualContributorSettingsDocument, options);
+}
+
+export type UpdateVirtualContributorSettingsMutationHookResult = ReturnType<
+  typeof useUpdateVirtualContributorSettingsMutation
+>;
+export type UpdateVirtualContributorSettingsMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateVirtualContributorSettingsMutation>;
+export type UpdateVirtualContributorSettingsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateVirtualContributorSettingsMutation,
+  SchemaTypes.UpdateVirtualContributorSettingsMutationVariables
+>;
 export const RefreshBodyOfKnowledgeDocument = gql`
   mutation refreshBodyOfKnowledge($refreshData: RefreshVirtualContributorBodyOfKnowledgeInput!) {
     refreshVirtualContributorBodyOfKnowledge(refreshData: $refreshData)
@@ -14029,6 +14108,10 @@ export const VirtualContributorKnowledgeBaseDocument = gql`
       id
       knowledgeBase {
         id
+        authorization {
+          id
+          myPrivileges
+        }
         profile {
           id
           displayName
@@ -14096,6 +14179,79 @@ export function refetchVirtualContributorKnowledgeBaseQuery(
   variables: SchemaTypes.VirtualContributorKnowledgeBaseQueryVariables
 ) {
   return { query: VirtualContributorKnowledgeBaseDocument, variables: variables };
+}
+
+export const VirtualContributorKnowledgePrivilegesDocument = gql`
+  query VirtualContributorKnowledgePrivileges($id: UUID!) {
+    virtualContributor(ID: $id) {
+      id
+      knowledgeBase {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useVirtualContributorKnowledgePrivilegesQuery__
+ *
+ * To run a query within a React component, call `useVirtualContributorKnowledgePrivilegesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useVirtualContributorKnowledgePrivilegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useVirtualContributorKnowledgePrivilegesQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useVirtualContributorKnowledgePrivilegesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.VirtualContributorKnowledgePrivilegesQuery,
+    SchemaTypes.VirtualContributorKnowledgePrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.VirtualContributorKnowledgePrivilegesQuery,
+    SchemaTypes.VirtualContributorKnowledgePrivilegesQueryVariables
+  >(VirtualContributorKnowledgePrivilegesDocument, options);
+}
+
+export function useVirtualContributorKnowledgePrivilegesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.VirtualContributorKnowledgePrivilegesQuery,
+    SchemaTypes.VirtualContributorKnowledgePrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.VirtualContributorKnowledgePrivilegesQuery,
+    SchemaTypes.VirtualContributorKnowledgePrivilegesQueryVariables
+  >(VirtualContributorKnowledgePrivilegesDocument, options);
+}
+
+export type VirtualContributorKnowledgePrivilegesQueryHookResult = ReturnType<
+  typeof useVirtualContributorKnowledgePrivilegesQuery
+>;
+export type VirtualContributorKnowledgePrivilegesLazyQueryHookResult = ReturnType<
+  typeof useVirtualContributorKnowledgePrivilegesLazyQuery
+>;
+export type VirtualContributorKnowledgePrivilegesQueryResult = Apollo.QueryResult<
+  SchemaTypes.VirtualContributorKnowledgePrivilegesQuery,
+  SchemaTypes.VirtualContributorKnowledgePrivilegesQueryVariables
+>;
+export function refetchVirtualContributorKnowledgePrivilegesQuery(
+  variables: SchemaTypes.VirtualContributorKnowledgePrivilegesQueryVariables
+) {
+  return { query: VirtualContributorKnowledgePrivilegesDocument, variables: variables };
 }
 
 export const VcMembershipsDocument = gql`
