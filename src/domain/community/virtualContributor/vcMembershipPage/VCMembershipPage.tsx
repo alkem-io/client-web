@@ -45,7 +45,7 @@ const VCMembershipPage = () => {
       const currentSpace = {
         spaceID: space.id,
         id: space.id,
-        spaceLevel: SpaceLevel.Space,
+        spaceLevel: SpaceLevel.L0,
         contributorId: vcId,
         contributorType: RoleSetContributorType.Virtual,
       };
