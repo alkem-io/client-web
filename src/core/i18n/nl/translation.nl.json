@@ -2031,7 +2031,7 @@
           },
           "membership": {
             "title": "Lidmaatschap",
-            "open": "<b>Geen aanvraag vereist:</b> Alle leden van de Space kunnen zich direct aanmelden, zonder dat je hun aanvraag hoeft te bekijken.",
+            "open": "<b>Geen aanmelding vereist:</b> Alle Alkemio gebruikers kunnen direct lid worden zonder dat je hun aanmelding hoeft te beoordelen. Anderen zullen eerst een Alkemio-account moeten aanmaken, maar kunnen dan direct deelnemen aan deze Space.",
             "applications": "<b>Aanmelding vereist:</b> Als mensen lid willen worden, moeten ze het aanvraagformulier invullen. Je ontvangt hun aanmeldingen (<community>zie tabblad Community hier</community>) en kan ervoor kiezen deze te accepteren of niet. Als je wilt, kun je kiezen om het formulier leeg te laten.",
             "invitations": "<b>Alleen op uitnodiging:</b> Gebruikers kunnen alleen lid worden nadat je ze hebt uitgenodigd (<community>wat je kunt doen vanaf het tabblad Community hier</community>) of als ze handmatig worden toegevoegd. Er is geen knop waarop andere gebruikers kunnen klikken om zich aan te melden.",
             "trustedApplicants": "Vertrouwde aanmeldingen",
@@ -2707,7 +2707,7 @@
           }
         },
         "ingestion": {
-          "title": "Kennisbank",
+          "title": "Werk kennis bij",
           "infoText": "Door op de knop hieronder te klikken, zorg je ervoor dat je Virtual Contributor is gebaseerd op de nieuwste kennis in de Subspace.",
           "refreshBtn": "Werk kennis bij"
         },
@@ -3158,7 +3158,7 @@
       },
       "comingSoon": {
         "title": "🚀 Binnenkort beschikbaar!",
-        "subTitle": "Looking for a different AI service? Let us know!",
+        "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
         "input": {
           "label": "AI Service",
           "placeholder": "Bijvoorbeeld de AI die xx gemaakt heeft om xx"
@@ -3187,7 +3187,7 @@
       "title": "Kies een (Sub)Space",
       "description": "Welke Space of Subspace wil je tot leven brengen met de Virtual Contributor? Hieronder kun je kiezen uit alle Spaces en Subspaces waar je de host van bent.",
       "label": "(Sub)Space",
-      "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor without a Space, please go back and follow the Written Knowledge flow."
+      "noSpaces": "Je hebt een Space nodig om door te gaan met deze optie. Om een Virtual Contributor te creëren, ga alsjeblieft terug en volg de flow voor geschreven Kennis."
     },
     "chooseCommunity": {
       "title": "Hallo, {{vcName}}!",
