@@ -2698,7 +2698,7 @@
           }
         },
         "ingestion": {
-          "title": "Knowledge Base",
+          "title": "Body of Knowledge",
           "infoText": "By clicking the button below, you will make sure your Virtual Contributor is based on the latest knowledge in the Subspace.",
           "refreshBtn": "Update Knowledge"
         },
