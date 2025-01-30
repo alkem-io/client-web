@@ -41,6 +41,9 @@ export interface Configuration {
   geo: {
     endpoint: string;
   };
+  integration: {
+    iframeAllowedUrls: string[];
+  };
 }
 
 interface AuthenticationProvider {

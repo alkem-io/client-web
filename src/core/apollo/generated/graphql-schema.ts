@@ -22985,6 +22985,10 @@ export type ConfigurationQuery = {
       apm: { __typename?: 'APM'; rumEnabled: boolean; endpoint: string };
       geo: { __typename?: 'Geo'; endpoint: string };
     };
+    settings: {
+      __typename?: 'PlatformSettings';
+      integration: { __typename?: 'PlatformIntegrationSettings'; iframeAllowedUrls: Array<string> };
+    };
   };
 };
 
