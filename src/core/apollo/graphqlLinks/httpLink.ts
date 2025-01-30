@@ -50,7 +50,7 @@ export const httpLink = (graphQLEndpoint: string, enableWebSockets: boolean) => 
         uploadLink
       );
     } catch (error) {
-      logWarn(error as Error, { category: TagCategoryValues.WS });
+      logWarn(error as Error, { category: TagCategoryValues.WS, label: 'Failed to create ws link' });
     }
   }
   return uploadLink;
