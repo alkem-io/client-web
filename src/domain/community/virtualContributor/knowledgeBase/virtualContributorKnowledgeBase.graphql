@@ -3,6 +3,10 @@ query VirtualContributorKnowledgeBase($id: UUID!) {
     id
     knowledgeBase {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       profile {
         id
         displayName
@@ -10,6 +14,19 @@ query VirtualContributorKnowledgeBase($id: UUID!) {
       }
       calloutsSet {
         id
+      }
+    }
+  }
+}
+
+query VirtualContributorKnowledgePrivileges($id: UUID!) {
+  virtualContributor(ID: $id) {
+    id
+    knowledgeBase {
+      id
+      authorization {
+        id
+        myPrivileges
       }
     }
   }
