@@ -2031,7 +2031,7 @@
           },
           "membership": {
             "title": "Appartenance",
-            "open": "<b>No Application required:</b> All Space members can directly join, without you having to review their application.",
+            "open": "<b>No Application required:</b> All Alkemio users can directly join, without you having to review their application. Others will first have to create an Alkemio account, but can then also join this Space directly.",
             "applications": "<b>Application required:</b> If people want to become a member, they have to fill in the application form. You receive their applications (<community>see Community tab here</community>) and can choose to accept these or not. If you want, you can choose to leave the form empty.",
             "invitations": "<b>Invitation only:</b> Users can only become a member after you’ve invited them (<community>which you can do from the Community tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
             "trustedApplicants": "Demandes de confiance",
@@ -2707,7 +2707,7 @@
           }
         },
         "ingestion": {
-          "title": "Body of Knowledge",
+          "title": "Update Knowledge",
           "infoText": "By clicking the button below, you will make sure your Virtual Contributor is based on the latest knowledge in the Subspace.",
           "refreshBtn": "Update Knowledge"
         },
@@ -3158,7 +3158,7 @@
       },
       "comingSoon": {
         "title": "🚀 Coming soon!",
-        "subTitle": "Looking for a different AI service? Let us know!",
+        "subTitle": "We're currently building the functionality to use external AI services for your Virtual Contributor. You can help us by sharing which AI service you would like to use.",
         "input": {
           "label": "AI Service",
           "placeholder": "E.g. the AI that xx created to xx"
@@ -3187,7 +3187,7 @@
       "title": "Choose a (Sub)Space",
       "description": "Which Space or Subspace do you want to bring to life with the Virtual Contributor? Below you'll be able to choose from all Spaces and Subspaces that you are host of.",
       "label": "(Sub)Space",
-      "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor without a Space, please go back and follow the Written Knowledge flow."
+      "noSpaces": "You need a Space to proceed with this option. To create a Virtual Contributor, please go back and follow the Written Knowledge flow."
     },
     "chooseCommunity": {
       "title": "Hello, {{vcName}}!",
