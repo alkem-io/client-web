@@ -65,7 +65,6 @@ interface useRoleSetAdminProvided extends useRoleSetAdminRolesAssignmentProvided
   organizationsByRole: PartialRecord<RoleName, RoleSetMemberOrganizationFragmentWithRoles[]>;
   virtualContributorsByRole: PartialRecord<RoleName, RoleSetMemberVirtualContributorFragmentWithRoles[]>;
   rolesDefinitions: Record<RoleName, RoleDefinition> | undefined;
-  refetch: () => Promise<unknown>;
   loading: boolean;
   updating: boolean;
 }
@@ -75,7 +74,7 @@ type useRoleSetAdminParams = {
   relevantRoles: readonly RoleName[];
   contributorTypes?: readonly RoleSetContributorType[];
   parentRoleSetId?: string;
-  onRefetch?: () => void;
+  onChange?: () => void;
   skip?: boolean;
 };
 
@@ -83,18 +82,14 @@ const useRoleSetAdmin = ({
   roleSetId,
   relevantRoles,
   contributorTypes = [RoleSetContributorType.User, RoleSetContributorType.Organization, RoleSetContributorType.Virtual],
-  onRefetch,
+  onChange,
   skip,
 }: useRoleSetAdminParams): useRoleSetAdminProvided => {
   if (!roleSetId || !relevantRoles || relevantRoles.length === 0) {
     skip = true;
   }
 
-  const {
-    data: roleSetDetails,
-    loading: loadingRoleSet,
-    refetch: refetchRoleSet,
-  } = useRoleSetAuthorizationQuery({
+  const { data: roleSetDetails, loading: loadingRoleSet } = useRoleSetAuthorizationQuery({
     variables: {
       roleSetId: roleSetId!,
     },
@@ -117,11 +112,7 @@ const useRoleSetAdmin = ({
     }
   }
 
-  const {
-    data: roleSetData,
-    loading: loadingRoleSetData,
-    refetch: refetchRoleSetData,
-  } = useRoleSetRoleAssignmentQuery({
+  const { data: roleSetData, loading: loadingRoleSetData } = useRoleSetRoleAssignmentQuery({
     variables: {
       roleSetId: roleSetId!,
       roles: relevantRoles as RoleName[],
@@ -214,14 +205,12 @@ const useRoleSetAdmin = ({
     };
   }, [roleSetData?.lookup]);
 
-  const refetchAll = () => Promise.all([refetchRoleSet(), refetchRoleSetData(), onRefetch?.()]);
-
-  // Wraps any function call into an await + refetch
-  const refetchAfterMutation =
+  // Wraps any function call into an await + onChange call, to perform a refetch outside here if needed
+  const onCallMutation =
     (mutation: (...args) => Promise<unknown>) =>
     async (...args) => {
       await mutation(...args);
-      refetchAll();
+      onChange?.();
     };
 
   const {
@@ -229,6 +218,10 @@ const useRoleSetAdmin = ({
     removeRoleFromUser,
     assignPlatformRoleToUser,
     removePlatformRoleFromUser,
+    assignRoleToOrganization,
+    removeRoleFromOrganization,
+    assignRoleToVirtualContributor,
+    removeRoleFromVirtualContributor,
     loading: updatingRoleSet,
   } = useRoleSetAdminRolesAssignment({ roleSetId });
 
@@ -245,12 +238,15 @@ const useRoleSetAdmin = ({
     virtualContributorsByRole: data.virtualContributorsByRole,
     rolesDefinitions: data.rolesDefinitions,
 
-    assignRoleToUser: refetchAfterMutation(assignRoleToUser),
-    assignPlatformRoleToUser: refetchAfterMutation(assignPlatformRoleToUser),
-    removeRoleFromUser: refetchAfterMutation(removeRoleFromUser),
-    removePlatformRoleFromUser: refetchAfterMutation(removePlatformRoleFromUser),
+    assignRoleToUser: onCallMutation(assignRoleToUser),
+    assignPlatformRoleToUser: onCallMutation(assignPlatformRoleToUser),
+    assignRoleToOrganization: onCallMutation(assignRoleToOrganization),
+    assignRoleToVirtualContributor: onCallMutation(assignRoleToVirtualContributor),
+    removeRoleFromUser: onCallMutation(removeRoleFromUser),
+    removePlatformRoleFromUser: onCallMutation(removePlatformRoleFromUser),
+    removeRoleFromOrganization: onCallMutation(removeRoleFromOrganization),
+    removeRoleFromVirtualContributor: onCallMutation(removeRoleFromVirtualContributor),
     updating: updatingRoleSet,
-    refetch: refetchAll,
   };
 };
 

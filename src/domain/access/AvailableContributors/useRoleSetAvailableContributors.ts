@@ -176,7 +176,7 @@ const useRoleSetAvailableContributors = ({
       },
     });
     return {
-      organizations: data?.organizationsPaginated.organization ?? [],
+      organizations: data?.organizationsPaginated.organization.filter(filterExisting) ?? [],
       hasMore: data?.organizationsPaginated.pageInfo.hasNextPage ?? false,
       refetch,
       loading,

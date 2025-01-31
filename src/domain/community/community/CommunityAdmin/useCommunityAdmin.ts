@@ -114,6 +114,7 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
   const { findAvailableUsersForRoleSetEntryRole, findAvailableOrganizationsForRoleSet } =
     useRoleSetAvailableContributors({
       roleSetId,
+      filterCurrentMembers: [...communityUsers, ...communityOrganizations],
     });
 
   const getAvailableUsers = async (filter: string | undefined) => {
