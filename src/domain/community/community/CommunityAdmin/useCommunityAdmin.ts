@@ -1,11 +1,5 @@
 import { useMemo } from 'react';
-import {
-  useAssignRoleToUserMutation,
-  useAssignRoleToOrganizationMutation,
-  useRemoveRoleFromUserMutation,
-  useRemoveRoleFromOrganizationMutation,
-  useCommunityProviderDetailsQuery,
-} from '@/core/apollo/generated/apollo-hooks';
+import { useCommunityProviderDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   RoleName,
   RoleSetMemberOrganizationFragment,
@@ -55,7 +49,17 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
     skip: !spaceId || journeyTypeName !== 'space',
   });
 
-  const { users, organizations, virtualContributors, rolesDefinitions, loading, refetch } = useRoleSetAdmin({
+  const {
+    users,
+    organizations,
+    virtualContributors,
+    rolesDefinitions,
+    assignRoleToUser,
+    removeRoleFromUser,
+    assignRoleToOrganization,
+    removeRoleFromOrganization,
+    loading,
+  } = useRoleSetAdmin({
     roleSetId,
     relevantRoles: RELEVANT_ROLES.Community,
   });
@@ -107,13 +111,10 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
   } = useInviteContributors({ roleSetId, spaceId, spaceLevel });
 
   // Available new members:
-  const {
-    refetch: refetchAvailableContributors,
-    findAvailableUsersForRoleSetEntryRole,
-    findAvailableOrganizationsForRoleSet,
-  } = useRoleSetAvailableContributors({
-    roleSetId,
-  });
+  const { findAvailableUsersForRoleSetEntryRole, findAvailableOrganizationsForRoleSet } =
+    useRoleSetAvailableContributors({
+      roleSetId,
+    });
 
   const getAvailableUsers = async (filter: string | undefined) => {
     const { users } = await findAvailableUsersForRoleSetEntryRole(filter);
@@ -125,137 +126,21 @@ const useCommunityAdmin = ({ roleSetId, spaceId, challengeId, opportunityId, spa
   };
 
   // Adding new members:
-  const [addUserToCommunity] = useAssignRoleToUserMutation();
-  const handleAddUser = async (memberId: string) => {
-    if (!roleSetId) {
-      return;
-    }
-    await addUserToCommunity({
-      variables: {
-        roleSetId,
-        contributorId: memberId,
-        role: RoleName.Member,
-      },
-    });
-    await refetchAvailableContributors();
-    return refetch();
-  };
+  const handleAddUser = (memberId: string) => assignRoleToUser(memberId, RoleName.Member);
+  const handleRemoveUser = async (memberId: string) => removeRoleFromUser(memberId, RoleName.Member);
 
-  const [addOrganizationToCommunity] = useAssignRoleToOrganizationMutation();
-  const handleAddOrganization = async (memberId: string) => {
-    if (!roleSetId) {
-      return;
-    }
-    await addOrganizationToCommunity({
-      variables: {
-        roleSetId,
-        contributorId: memberId,
-        role: RoleName.Member,
-      },
-    });
-    await refetchAvailableContributors();
-    return refetch();
-  };
+  const handleUserLeadChange = (memberId: string, isLead: boolean) =>
+    isLead ? assignRoleToUser(memberId, RoleName.Lead) : removeRoleFromUser(memberId, RoleName.Lead);
 
-  // Mutations:
+  const handleRemoveOrganization = async (memberId: string) => removeRoleFromOrganization(memberId, RoleName.Member);
 
-  const [assignRoleToUser] = useAssignRoleToUserMutation();
-  const [removeRoleFromUser] = useRemoveRoleFromUserMutation();
-  const handleUserLeadChange = async (memberId: string, isLead: boolean) => {
-    if (!roleSetId) {
-      return;
-    }
-    if (isLead) {
-      await assignRoleToUser({
-        variables: {
-          contributorId: memberId,
-          roleSetId,
-          role: RoleName.Lead,
-        },
-      });
-    } else {
-      await removeRoleFromUser({
-        variables: {
-          contributorId: memberId,
-          roleSetId,
-          role: RoleName.Lead,
-        },
-      });
-    }
-    return refetch();
-  };
+  const handleUserAuthorizationChange = async (memberId: string, isAdmin: boolean) =>
+    isAdmin ? assignRoleToUser(memberId, RoleName.Admin) : removeRoleFromUser(memberId, RoleName.Admin);
 
-  const handleUserAuthorizationChange = async (memberId: string, isAdmin: boolean) => {
-    if (!roleSetId) {
-      return;
-    }
-    if (isAdmin) {
-      await assignRoleToUser({
-        variables: { roleSetId: roleSetId, role: RoleName.Admin, contributorId: memberId },
-      });
-    } else {
-      await removeRoleFromUser({
-        variables: { roleSetId: roleSetId, role: RoleName.Admin, contributorId: memberId },
-      });
-    }
-    return refetch();
-  };
+  const handleAddOrganization = async (memberId: string) => assignRoleToOrganization(memberId, RoleName.Member);
 
-  const [removeUserAsCommunityMember] = useRemoveRoleFromUserMutation();
-  const handleRemoveUser = async (memberId: string) => {
-    if (!roleSetId) {
-      return;
-    }
-    await removeUserAsCommunityMember({
-      variables: {
-        contributorId: memberId,
-        roleSetId,
-        role: RoleName.Member,
-      },
-    });
-    return refetch();
-  };
-
-  const [assignOrganizationAsCommunityLead] = useAssignRoleToOrganizationMutation();
-  const [removeOrganizationAsCommunityLeadMutation] = useRemoveRoleFromOrganizationMutation();
-  const onOrganizationLeadChange = async (memberId: string, isLead: boolean) => {
-    if (!roleSetId) {
-      return;
-    }
-    if (isLead) {
-      await assignOrganizationAsCommunityLead({
-        variables: {
-          contributorId: memberId,
-          roleSetId,
-          role: RoleName.Lead,
-        },
-      });
-    } else {
-      await removeOrganizationAsCommunityLeadMutation({
-        variables: {
-          contributorId: memberId,
-          roleSetId,
-          role: RoleName.Lead,
-        },
-      });
-    }
-    return refetch();
-  };
-
-  const [removeOrganizationAsCommunityMember] = useRemoveRoleFromOrganizationMutation();
-  const handleRemoveOrganization = async (memberId: string) => {
-    if (!roleSetId) {
-      return;
-    }
-    await removeOrganizationAsCommunityMember({
-      variables: {
-        contributorId: memberId,
-        roleSetId,
-        role: RoleName.Member,
-      },
-    });
-    return refetch();
-  };
+  const onOrganizationLeadChange = async (memberId: string, isLead: boolean) =>
+    isLead ? assignRoleToOrganization(memberId, RoleName.Lead) : removeRoleFromOrganization(memberId, RoleName.Lead);
 
   const {
     applications,
