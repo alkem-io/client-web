@@ -15,7 +15,7 @@ import SpaceAccountPage from '@/domain/journey/space/pages/SpaceAccount/SpaceAcc
 import { ChallengesRoute } from '@/domain/platform/admin/subspace/routing/ChallengesRoute';
 import NonSpaceAdminRedirect from '../nonSpaceAdminRedirect/NonSpaceAdminRedirect';
 
-export const SpaceRoute: FC = () => {
+const SpaceSettingsRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
 
   const { spaceId, communityId } = useSpace();
@@ -40,3 +40,5 @@ export const SpaceRoute: FC = () => {
     </NonSpaceAdminRedirect>
   );
 };
+
+export default SpaceSettingsRoute;

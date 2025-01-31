@@ -13,7 +13,7 @@ import Redirect from '@/core/routing/Redirect';
 import SpaceCalloutPage from '../spaceCalloutPage/SpaceCalloutPage';
 import SpaceCommunityPage from '../SpaceCommunityPage/SpaceCommunityPage';
 import KnowledgeBasePage from '@/domain/collaboration/KnowledgeBase/KnowledgeBasePage';
-import { SpaceRoute as SpaceSettingsRoute } from '@/domain/journey/settings/routes/SpaceRoute';
+import SpaceSettingsRoute from '@/domain/journey/settings/routes/SpaceSettingsRoute';
 import { useUrlParams } from '@/core/routing/useUrlParams';
 import { reservedTopLevelRoutePaths } from '@/main/routing/TopLevelRoutePath';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
