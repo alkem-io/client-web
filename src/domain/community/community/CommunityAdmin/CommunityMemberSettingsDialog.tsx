@@ -11,6 +11,11 @@ import { Actions } from '@/core/ui/actions/Actions';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { LoadingButton } from '@mui/lab';
 import Gutters from '@/core/ui/grid/Gutters';
+import { useSpaceCommunityPageQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSpace } from '@/domain/journey/space/SpaceContext/useSpace';
+import { useUserContext } from '../../user';
+import { RoleName, RoleSetContributorType } from '@/core/apollo/generated/graphql-schema';
+import useRoleSetAdmin from '@/domain/access/RoleSetAdmin/useRoleSetAdmin';
 
 interface CommunityMemberSettingsDialogProps {
   member: {
@@ -52,6 +57,25 @@ const CommunityMemberSettingsDialog = ({
   const [isAdmin, setIsAdmin] = useState(member.isAdmin);
   const [removingMember, setRemovingMember] = useState(false);
 
+  const { spaceId } = useSpace();
+
+  const { isAuthenticated } = useUserContext();
+
+  const { data } = useSpaceCommunityPageQuery({
+    variables: { spaceId, includeCommunity: isAuthenticated },
+    skip: !spaceId,
+  });
+
+  const { refetch: refetchRoleSetAdmin } = useRoleSetAdmin({
+    roleSetId: data?.lookup.space?.community?.roleSet.id,
+    relevantRoles: [RoleName.Member, RoleName.Lead],
+    contributorTypes: [
+      RoleSetContributorType.User,
+      RoleSetContributorType.Organization,
+      RoleSetContributorType.Virtual,
+    ],
+  });
+
   const [handleSave, isLoading] = useLoadingState(async () => {
     if (isLead !== member.isLead) {
       await onLeadChange(member.id, isLead);
@@ -59,6 +83,9 @@ const CommunityMemberSettingsDialog = ({
     if (typeof isAdmin !== 'undefined' && isAdmin !== member.isAdmin) {
       await onAdminChange?.(member.id, isAdmin);
     }
+
+    refetchRoleSetAdmin();
+
     onClose?.();
   });
 

@@ -130,7 +130,6 @@ const useRoleSetAdmin = ({
       includeVirtualContributors: contributorTypes.includes(RoleSetContributorType.Virtual),
     },
     skip: skip || !canReadRoleSet || !roleSetId || loadingRoleSet || !relevantRoles || relevantRoles.length === 0,
-    fetchPolicy: 'network-only',
   });
 
   const data = useMemo(() => {
