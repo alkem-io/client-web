@@ -28,6 +28,7 @@ type UseUrlResolverProvided = {
   spaceId: string | undefined;
   subspaceIds: [string, string] | [string, string, string] | undefined; // level0, level1, level2
   subspaceId: string | undefined;
+  spaceLevel: SpaceLevel | undefined;
   organizationId: string | undefined;
   innovationPackId: string | undefined;
   innovationHubId: string | undefined;
@@ -96,6 +97,7 @@ const useUrlResolver = ({
       spaceId,
       subspaceIds,
       subspaceId,
+      spaceLevel: urlResolverData?.urlResolver.space?.level,
       organizationId: urlResolverData?.urlResolver.organizationId,
       calloutsSetId: urlResolverData?.urlResolver.space?.collaboration.calloutsSetId,
       calloutId: urlResolverData?.urlResolver.space?.collaboration.calloutId,
