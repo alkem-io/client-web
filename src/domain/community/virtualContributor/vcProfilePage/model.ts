@@ -15,6 +15,11 @@ export type VirtualContributorProfileProps = {
     };
     url: string;
   };
+  settings?: {
+    privacy?: {
+      knowledgeBaseContentVisible?: boolean;
+    };
+  };
   provider?: {
     profile: {
       displayName: string;

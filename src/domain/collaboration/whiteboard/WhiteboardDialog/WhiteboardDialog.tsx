@@ -46,6 +46,7 @@ export interface WhiteboardDetails {
     preview?: {
       id: string;
     } & PreviewImageDimensions;
+    url?: string;
   };
   createdBy?: {
     id: string;

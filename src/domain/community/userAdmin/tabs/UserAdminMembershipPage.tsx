@@ -31,7 +31,7 @@ const UserAdminMembershipPage = () => {
       const currentSpace = {
         spaceID: space.id,
         id: space.id,
-        spaceLevel: SpaceLevel.Space,
+        spaceLevel: SpaceLevel.L0,
         contributorId: userId!,
         contributorType: RoleSetContributorType.User,
       };

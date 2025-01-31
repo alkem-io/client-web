@@ -17,6 +17,7 @@ export const useConfig = () => {
       authentication: context.config?.authentication,
       locations: context.config?.locations,
       features: context.config?.featureFlags,
+      integration: context.config?.integration,
       sentry: context.config?.sentry,
       apm: context.config?.apm,
       geo: context.config?.geo,

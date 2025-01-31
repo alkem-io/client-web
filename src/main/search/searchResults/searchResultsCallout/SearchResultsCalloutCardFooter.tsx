@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { spaceIconByLevel } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
+import { spaceLevelIcon } from '@/domain/shared/components/JourneyIcon/JourneyIcon';
 import { CONTRIBUTION_ICON } from '@/domain/collaboration/callout/calloutCard/calloutIcons';
 import React, { useMemo } from 'react';
 import { CalloutContributionType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -84,7 +84,7 @@ const CalloutContributions = ({ callout }: CalloutContributionsProps) => {
 };
 
 const SearchResultsCalloutCardFooter = ({ callout, matchedTerms, space }: SearchResultsCalloutCardFooterProps) => {
-  const JourneyIcon = space && spaceIconByLevel[space.level];
+  const JourneyIcon = space && spaceLevelIcon[space.level];
 
   return (
     <Gutters padding={1} gap={1}>

@@ -40,7 +40,7 @@ const AdminOpportunityCommunityPage: FC<SettingsPageProps> = ({ routePrefix = '.
     getAvailableVirtualContributors,
     getAvailableVirtualContributorsInLibrary,
     loading,
-  } = useCommunityAdmin({ spaceId, opportunityId, roleSetId, spaceLevel: SpaceLevel.Opportunity });
+  } = useCommunityAdmin({ spaceId, opportunityId, roleSetId, spaceLevel: SpaceLevel.L2 });
 
   if (!spaceId || isLoadingChallenge) {
     return null;
