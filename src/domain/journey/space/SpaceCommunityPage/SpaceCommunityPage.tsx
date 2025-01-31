@@ -123,7 +123,7 @@ const SpaceCommunityPage = () => {
           <PageContent>
             <InfoColumn>
               <EntityDashboardLeadsSection
-                usersHeader={t('community.host')}
+                usersHeader={t('community.leads')}
                 organizationsHeader={t('pages.space.sections.dashboard.organization')}
                 leadUsers={leadUsers}
                 leadOrganizations={hostOrganizations}
