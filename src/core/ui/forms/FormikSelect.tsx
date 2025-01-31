@@ -70,12 +70,17 @@ export const FormikSelect = ({
             display: 'flex',
             alignItems: 'center',
             '&.MuiSelect-select': { height: '1.4375em' },
+            '& .MuiListItemIcon-root': { minWidth: '36px' },
           },
         }}
       >
         {values.map(el => (
           <MenuItem key={el.id} value={el.id}>
-            {el.icon && <ListItemIcon sx={{ color: 'primary.main' }}>{el.icon}</ListItemIcon>}
+            {el.icon && (
+              <ListItemIcon sx={{ color: 'primary.main', paddingRight: theme => theme.spacing(1) }}>
+                {el.icon}
+              </ListItemIcon>
+            )}
             <ListItemText>{el.name}</ListItemText>
           </MenuItem>
         ))}

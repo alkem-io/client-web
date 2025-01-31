@@ -2,7 +2,6 @@ import Avatar from '@/core/ui/avatar/Avatar';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Loading from '@/core/ui/loading/Loading';
 import TagsComponent from '@/domain/shared/components/TagsComponent/TagsComponent';
-import { buildUserProfileUrl } from '@/main/routing/urlBuilders';
 import { Box, Button, DialogActions, DialogContent, Divider, Grid, Typography, styled } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import Link from '@mui/material/Link';
@@ -183,7 +182,7 @@ const UserPopUp = ({ id, onHide }: UserPopUpProps) => {
         )}
       </DialogContent>
       <DialogActions>
-        <Link href={buildUserProfileUrl(user?.nameID || '')} underline="none">
+        <Link href={user?.profile?.url ?? ''} underline="none">
           <Button variant="outlined" aria-label="user-profile-button">
             {t('buttons.view-profile')}
           </Button>

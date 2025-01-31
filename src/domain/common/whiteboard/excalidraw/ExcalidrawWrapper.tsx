@@ -113,7 +113,7 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
     () => (exportedElements, appState) =>
       (
         <Box className="Card">
-          <Box className="Card-icon">
+          <Box className="Card-icon" sx={{ background: theme => theme.palette.primary.dark }}>
             <BackupIcon />
           </Box>
           <h2>Save to the Alkemio</h2>
