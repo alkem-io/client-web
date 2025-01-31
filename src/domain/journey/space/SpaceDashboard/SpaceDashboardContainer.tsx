@@ -67,7 +67,6 @@ export const SpaceDashboardContainer: FC<SpacePageContainerProps> = ({ spaceId, 
     },
     errorPolicy: 'all',
     skip: !spaceId,
-    fetchPolicy: 'network-only',
   });
 
   const space = spaceData?.lookup.space;
