@@ -10,6 +10,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
+import { useMemo } from 'react';
 
 type useRoleSetAdminRolesAssignmentParams = {
   roleSetId: string | undefined;
@@ -144,31 +145,22 @@ const useRoleSetAdminRolesAssignment = ({
     removeRoleFromOrganizationLoading ||
     assignRoleToVirtualContributorLoading ||
     removeRoleFromVirtualContributorLoading;
-  if (!roleSetId) {
-    return {
-      assignPlatformRoleToUser: () => Promise.reject('roleSetId is not defined'),
-      removePlatformRoleFromUser: () => Promise.reject('roleSetId is not defined'),
-      assignRoleToUser: () => Promise.reject('roleSetId is not defined'),
-      removeRoleFromUser: () => Promise.reject('roleSetId is not defined'),
-      assignRoleToOrganization: () => Promise.reject('roleSetId is not defined'),
-      removeRoleFromOrganization: () => Promise.reject('roleSetId is not defined'),
-      assignRoleToVirtualContributor: () => Promise.reject('roleSetId is not defined'),
-      removeRoleFromVirtualContributor: () => Promise.reject('roleSetId is not defined'),
-      loading: false,
-    };
-  } else {
-    return {
-      assignPlatformRoleToUser,
-      removePlatformRoleFromUser,
-      assignRoleToUser,
-      removeRoleFromUser,
-      assignRoleToOrganization,
-      removeRoleFromOrganization,
-      assignRoleToVirtualContributor,
-      removeRoleFromVirtualContributor,
+
+  const notReady = () => Promise.reject('roleSetId is not defined');
+  return useMemo(
+    () => ({
+      assignPlatformRoleToUser: roleSetId ? assignPlatformRoleToUser : notReady,
+      removePlatformRoleFromUser: roleSetId ? removePlatformRoleFromUser : notReady,
+      assignRoleToUser: roleSetId ? assignRoleToUser : notReady,
+      removeRoleFromUser: roleSetId ? removeRoleFromUser : notReady,
+      assignRoleToOrganization: roleSetId ? assignRoleToOrganization : notReady,
+      removeRoleFromOrganization: roleSetId ? removeRoleFromOrganization : notReady,
+      assignRoleToVirtualContributor: roleSetId ? assignRoleToVirtualContributor : notReady,
+      removeRoleFromVirtualContributor: roleSetId ? removeRoleFromVirtualContributor : notReady,
       loading,
-    };
-  }
+    }),
+    [roleSetId, loading]
+  );
 };
 
 export default useRoleSetAdminRolesAssignment;
