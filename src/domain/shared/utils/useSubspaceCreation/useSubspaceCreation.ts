@@ -17,6 +17,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
 import { DEFAULT_TAGSET } from '@/domain/common/tags/tagset.constants';
+import { RECENT_SPACES_LIST } from '@/domain/journey/common/journeyDashboard/constants';
 
 interface SubspaceCreationInput {
   spaceID: string;
@@ -47,7 +48,12 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
   const [uploadVisual] = useUploadVisualMutation();
 
   const {
-    refetchQueries = [refetchUserProviderQuery(), refetchDashboardWithMembershipsQuery()], // default to refetching user provider and dashboard
+    refetchQueries = [
+      refetchUserProviderQuery(),
+      refetchDashboardWithMembershipsQuery({
+        limit: RECENT_SPACES_LIST,
+      }),
+    ], // default to refetching user provider and dashboard
     ...restMutationOptions
   } = mutationOptions;
 
